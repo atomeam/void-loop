@@ -25,6 +25,10 @@
   <meta property="og:image:height" content="630" />
   <meta property="og:image:alt" content="V01D: a dark page with one input and answer cards (weather, a countdown, a sum)" />
   <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="V01D · ask, and it appears" />
+  <meta name="twitter:description" content="One quiet input. Ask for anything: the weather, a calculation, a timer, a list, a game, a page about anything. Private, fast, free." />
+  <meta name="twitter:image" content="https://a-to-mind.com/og.png" />
+  <meta name="twitter:image:alt" content="V01D: a dark page with one input and answer cards" />
   <meta name="description" content="V01D by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account." />
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"A-to-Mind","url":"https://a-to-mind.com/","email":"atom@a-to-mind.com"}</script>
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"A-to-Mind","url":"https://a-to-mind.com/","description":"V01D by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account.","potentialAction":{"@type":"SearchAction","target":"https://a-to-mind.com/?q={query}","query-input":"required name=query"}}</script>
@@ -33,8 +37,8 @@
     // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
-    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
-    // and a signed-in ask to pay just says so. Only ever shown when someone asks, signed in; never on the surface.
+    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = the ask links to /store/ instead (owner, 2026-10-15: buy and tip links shown where relevant).
+    // Only ever shown when someone asks, signed in; never on the surface.
     var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
   <script>
@@ -731,7 +735,7 @@
     /* a world: one full-stage layer a skill draws behind every card (stageApi.setWorld), above the nebula */
     #void-world { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; opacity: 0; transition: opacity 1.2s ease; }
     #void-world.on { opacity: 1; }
-    #void-stars-far.on { opacity: .55; }
+    #void-stars-far.on { opacity: .9; }
     /* ---- polish (2026-10-07): one type scale, calm cards that never sit under the ask bar ---- */
     :root {
       --font: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI Variable Text", "Segoe UI", Inter, Roboto, "Helvetica Neue", system-ui, sans-serif;
@@ -910,6 +914,93 @@
     @keyframes v01d-line { to { transform: scaleX(1); } }
     @keyframes v01d-fade { to { opacity: 1; } }
     @keyframes v01d-out { to { opacity: 0; visibility: hidden; } }
+    /* ---- design phase 1 (docs/design.md, 2026-10-15): the stage, the ask bar and the answer card shell ----
+       One light source (top centre, cool), one floor (a horizon of light the stage stands on), glass with a lit rim.
+       CSS only: no new requests, no new scripts, nothing animated at rest except one slow compositor-only drift. */
+    :root {
+      --d-ink: #f2f4fb; --d-ink-2: #c3c8d8; --d-ink-3: #8e94a8;
+      --d-key: 158 178 255; --d-warm: 255 170 214; --d-teal: 92 232 205;      /* light colours as rgb triplets */
+      --d-glass: linear-gradient(165deg, rgba(40,46,70,.80) 0%, rgba(16,18,28,.88) 46%, rgba(20,22,40,.90) 100%);
+      --d-rim: conic-gradient(from 200deg, rgb(var(--d-key) / .55), rgba(255,255,255,.05) 22%, rgb(var(--d-warm) / .32) 50%, rgba(255,255,255,.05) 74%, rgb(var(--d-teal) / .38) 90%, rgb(var(--d-key) / .55));
+      --d-lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42), 0 60px 120px rgba(0,0,0,.55);
+      --d-ease-out: cubic-bezier(.16,1,.3,1); --d-spring: cubic-bezier(.34,1.56,.64,1);
+    }
+    /* the default void (Adam 2026-10-15: "a beautiful Void by default ... puts people in awe"; no grids, no synthwave floor ever):
+       deep space, a slowly breathing event-horizon glow at the centre, a soft oval pool of light where cards arrive, star dust from the
+       two star canvases. Transforms and opacity only (GPU-composited, no layout, no per-frame JS); CSS animations pause with the tab. */
+    /* celestial-sync: the nebula and ring tint follow the visitor's local hour (set on <html> by the script below, on the device only, no
+       network, nothing stored) and the real sky's glow when sky-rules has one (--sky-glow) */
+    :root { --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1; }
+    html[data-phase="dawn"] { --neb-a: 190 90 140; --neb-b: 230 150 90; }
+    html[data-phase="day"]  { --neb-a: 70 120 210; --neb-b: 60 170 200; --ring: .9; }
+    html[data-phase="dusk"] { --neb-a: 200 80 120; --neb-b: 120 70 200; }
+    html[data-phase="night"]{ --neb-a: 92 70 190; --neb-b: 40 130 170; --ring: 1.08; }
+    #void-depth::before { content: ''; position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; pointer-events: none;
+      transform: translate(-50%, -50%); border-radius: 50%;
+      background:
+        radial-gradient(closest-side, #000 0 32.5%, rgba(255,255,255,.75) 34.2%, rgb(var(--d-key) / .85) 35%, rgb(var(--d-warm) / .32) 39%, rgb(var(--d-key) / .12) 47%, transparent 62%),
+        conic-gradient(from 210deg, rgb(var(--d-teal) / .30), rgb(var(--d-key) / .05) 15%, rgb(var(--d-key) / .45) 36%, rgb(255 236 210 / .40) 47%, transparent 60%, rgb(var(--d-warm) / .36) 78%, rgb(var(--d-teal) / .30));
+      -webkit-mask: radial-gradient(closest-side, #000 50%, transparent 100%); mask: radial-gradient(closest-side, #000 50%, transparent 100%);
+      opacity: calc(.9 * var(--ring)); animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
+    /* the gravitational lens: a thin bright arc that shimmers just outside the horizon, and the event horizon's own shadow on top */
+    #void-lens { position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; z-index: 0; pointer-events: none; border-radius: 50%;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(closest-side, transparent 35.2%, rgba(255,255,255,.16) 36%, transparent 38.4%);
+      animation: d-lens 7s ease-in-out infinite; }
+    @keyframes d-lens { 0%,100% { scale: 1; opacity: .75; } 50% { scale: 1.012; opacity: 1; } }
+    #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: screen; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);
+      background: radial-gradient(28% 22% at 36% 46%, rgb(var(--neb-a) / .30), transparent 70%), radial-gradient(24% 18% at 66% 56%, rgb(var(--neb-b) / .24), transparent 70%),
+        radial-gradient(40% 12% at 50% 50%, rgb(var(--d-warm) / .10), transparent 70%), radial-gradient(18% 14% at 24% 62%, color-mix(in srgb, var(--sky-glow, #20306a) 60%, transparent), transparent 70%);
+      animation: d-drift 70s ease-in-out infinite alternate; }
+    @keyframes d-breathe { 0%,100% { opacity: calc(.78 * var(--ring)); scale: 1; } 50% { opacity: var(--ring); scale: 1.015; } }
+    @keyframes d-turn { to { rotate: 360deg; } }
+    @keyframes d-drift { to { translate: 2.5vmax -1.5vmax; scale: 1.06; } }
+    /* the light pool: a soft oval where answers stand, and a shadow under the active card (its light on the floor) */
+    #void-glow::after { content: ''; position: absolute; left: 50%; top: 74%; width: min(760px, 110vw); height: min(150px, 22vw); transform: translate(-50%, -50%);
+      border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--d-key) / .12), rgb(var(--d-key) / .04) 60%, transparent);
+      transition: opacity 1.2s var(--d-ease-out), scale 1.2s var(--d-ease-out); opacity: .85; }
+    #void-glow::before { content: ''; position: absolute; left: 50%; top: -30vh; width: 90vmax; height: 70vh; transform: translateX(-50%);
+      background: radial-gradient(closest-side, rgb(var(--d-key) / .08), transparent); }
+    /* the void wakes when you start to ask, leans in while a card is up, and spins up while V01D is thinking */
+    html:has(#input:focus) #void-depth::before { animation-duration: 6s, 160s; }
+    html:has(.vpage.on) #void-depth::before { animation-duration: 5s, 120s; }
+    html:has(.vpage.on) #void-glow::after { opacity: 1; scale: 1.08; background: radial-gradient(closest-side, rgb(var(--d-key) / .16), rgb(0 0 0 / .35) 55%, transparent); }
+    html.void-thinking #void-depth::before { animation-duration: 1.6s, 14s; --ring: 1.35; }
+    html.void-thinking #void-lens { animation-duration: 1.8s; }
+    /* light-reactive cards: the horizon light rims the card's top edge and blooms beneath it in the nebula's colour, stronger while thinking */
+    .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .35), 0 -24px 60px -30px rgb(var(--neb-a) / .55), 0 70px 140px -50px rgb(var(--neb-b) / .30); transition: box-shadow .9s var(--d-ease-out); }
+    html.void-thinking .vpage.on { box-shadow: var(--d-lift), 0 -1px 0 0 rgb(var(--d-key) / .6), 0 -30px 80px -26px rgb(var(--neb-a) / .8), 0 80px 160px -50px rgb(var(--neb-b) / .45); }
+    @media (prefers-reduced-motion: reduce) { #void-depth::before, #void-depth::after, #void-lens { animation: none; } }
+    /* the ask bar: deeper glass, a lit rim that wakes on focus, a bigger calmer type size, a send key that glows when there is text */
+    #row { border-radius: 22px; background: var(--d-glass); box-shadow: var(--d-lift); position: relative; isolation: isolate; }
+    #row::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; z-index: -1;
+      background: var(--d-rim); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude;
+      opacity: .45; transition: opacity .35s ease; }
+    #row:focus-within::after { opacity: 1; }
+    #row:focus-within { box-shadow: var(--d-lift), 0 0 0 4px rgb(var(--d-key) / .10), 0 0 60px rgb(var(--d-key) / .16); }
+    #input { font-size: 17px; letter-spacing: -.005em; color: var(--d-ink); }
+    #input::placeholder { color: var(--d-ink-3); }
+    #go { transition: background .25s ease, box-shadow .25s ease, color .25s ease; }
+    #row:has(#input:not(:placeholder-shown)) #go { background: linear-gradient(180deg, rgb(var(--d-key) / .95), rgb(118 138 240)); color: #0a0c18;
+      box-shadow: 0 0 0 1px rgba(255,255,255,.25) inset, 0 6px 20px rgb(var(--d-key) / .35); }
+    /* the answer card shell: the same glass, a brighter top edge (light from above), a contact shadow on the floor, display numerals */
+    .vpage { background: var(--d-glass); border-radius: 24px;
+      box-shadow: 0 1px 0 rgba(255,255,255,.12) inset, 0 0 0 1px rgba(255,255,255,.05), 0 24px 60px rgba(0,0,0,.55), 0 80px 160px -40px rgb(var(--d-key) / .14); }
+    .vpage::before { background: var(--d-rim); opacity: .7; }
+    .vpage h2 { color: var(--d-ink); letter-spacing: -.015em; font-weight: 600; }
+    .vpage .sub { color: var(--d-ink-3); }
+    .vpage .big, .vpage .calc-big, .vpage .result { font-weight: 250; letter-spacing: -.03em; font-variant-numeric: tabular-nums;
+      background: linear-gradient(180deg, #fff 30%, rgb(var(--d-key) / .85)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    .vpage.on { animation: d-arrive .7s var(--d-ease-out) both; }
+    @keyframes d-arrive { from { opacity: 0; filter: blur(8px); } to { opacity: 1; filter: none; } }
+    @media (max-width: 480px) {
+      #row { border-radius: 20px; }
+      #input { font-size: 16px; } /* 16px: iOS never zooms the page when the ask bar takes focus */
+      #void-depth::before, #void-lens { top: 40%; width: 128vmin; }
+      .vpage { border-radius: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) { .vpage.on { animation: none; } #row::after { transition: none; } }
+    @media (forced-colors: active) { #void-depth::before, #void-depth::after, #void-lens, #void-glow::before, #void-glow::after, #row::after { display: none; } }
   </style>
 </head>
 <body>
@@ -929,7 +1020,7 @@
     <p>V01D by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-depth" aria-hidden="true"></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
+  <div id="void-depth" aria-hidden="true"><div id="void-lens"></div></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
@@ -2080,6 +2171,27 @@ say('nothing selected to remove');
     function wantsSelfPage(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
     }
+    // "what are you?" / "who are you" / "what is void" / "tell me about yourself": V01D says what it is and its motto first, then
+    // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
+    // (domains/void.canon.md ## Motto; tools/launch-fixes.test.mjs keeps them the same).
+    const MOTTO = 'You name it, Void learns it and does it better.';
+    const SELF_LEAD = 'I’m V01D: one box where you ask for anything and it appears as a working card, game or page. My motto: “' + MOTTO + '”';
+    function wantsIdentity(lower) {
+      return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
+    }
+    // asked "who are you", the stage answers in light too (asked by Void, ask-20261015-0540-2: "subtly shifts the stage lighting to reflect
+    // my identity"): a violet glow rises from the floor and fades over 2.4 s; nothing under reduced motion; body[data-identity] marks it
+    function identityGlow() {
+      try {
+        document.body.dataset.identity = 'glow';
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const g = document.createElement('div'); g.setAttribute('aria-hidden', 'true');
+        g.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(80% 55% at 50% 100%,rgba(122,92,255,.28),transparent 70%)';
+        document.body.appendChild(g);
+        const a = g.animate([{ opacity: 0 }, { opacity: 1, offset: 0.3 }, { opacity: 0 }], { duration: 2400, easing: 'ease-in-out' });
+        a.onfinish = () => g.remove();
+      } catch (_) {}
+    }
     function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
@@ -2166,6 +2278,7 @@ say('nothing selected to remove');
         const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
+      await mdReady;
       if (vpageEl !== el) return 'answer';
       if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
       const srcs = (j.sources || []).map((s, i) => '<a href="' + esc(/^https:\/\//i.test(String(s.url || '')) ? s.url : '#') + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.title) + '</a>').join(' · '); // https links only
@@ -2298,6 +2411,17 @@ say('nothing selected to remove');
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // a living thing ("cat", "fox") gets a facts strip from Wikidata under the summary, not just the dictionary-like lead (Adam, 2026-10-15)
+        if (j.wikibase_item && /\b(?:species|genus|family|animal|mammal|bird|fish|reptile|amphibian|insect|plant|tree|flower|breed|subspecies|domesticated)\b/i.test((j.description || '') + ' ' + (j.extract || '').slice(0, 200))) {
+          fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims&format=json&origin=*&ids=' + encodeURIComponent(j.wikibase_item)).then((x) => x.json()).then((w) => {
+            const c = ((w.entities || {})[j.wikibase_item] || {}).claims || {}, v = (p) => { const d = c[p] && c[p][0] && c[p][0].mainsnak && c[p][0].mainsnak.datavalue; return d ? d.value : null; };
+            const qty = (p, unit) => { const q = v(p); return q && q.amount ? (+q.amount).toLocaleString() + ' ' + unit : ''; };
+            const rows = [['Scientific name', typeof v('P225') === 'string' ? v('P225') : ''], ['Life span', qty('P2250', 'years')], ['Mass', qty('P2067', 'kg')], ['Length', qty('P2043', 'm')]].filter((r) => r[1]);
+            if (!rows.length || vpageEl !== el) return;
+            const p = el.querySelector('p'); if (!p) return;
+            p.insertAdjacentHTML('afterend', '<div class="facts" style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0">' + rows.map((r) => '<div class="sub">' + esc(r[0]) + '</div><div><i>' + esc(r[1]) + '</i></div>').join('') + '</div>');
+          }).catch(() => {});
+        }
         // Void's own input on top of the summary (skills/take.js): what Void can do about it at once, then its take (/api/answer, mode 'take')
         import('/skills/take.js').then((T) => {
           const slot = el.querySelector('.take-slot'); if (!slot) return;
@@ -2361,6 +2485,9 @@ say('nothing selected to remove');
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Void): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
     const refusalReady = import('/lib/refusal.js').catch(() => null);
+    // V01D keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
+    // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
+    const keeperReady = import('/lib/keeper.js').catch(() => null);
     const refusals = []; window.voidRefusals = refusals;
     function reportMiss(ask, fallback) {
       try {
@@ -2561,20 +2688,11 @@ say('nothing selected to remove');
       ['fuel', 1, 'mpg', /^(?:mpg|miles\s+per\s+gallon)$/, false], ['fuel', 1, 'L/100 km', /^(?:l\/100\s*km|litres?\s+per\s+100\s*km|liters?\s+per\s+100\s*km)$/, true],
     ].map(([cat, f, name, re, inv]) => ({ cat, f, name, re, inv }));
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
-    function wordMath(lower) {
-      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
-      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
-      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
-      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
-      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
-        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
-      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
-      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
-      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
-      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
-        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
-      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
-      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+    // wordMath, in parts (asked by Void, asked 9 times: "Refactor the 5614-line wordMath() function into smaller, manageable modules").
+    // Each part tries its asks in the order they always ran; WM_NEXT means "not mine, try the next part". Locals never cross parts.
+    function WM_NEXT() {} // a hoisted sentinel (no TDZ: wordMath may run before this line is reached)
+    // percent off, roman numerals, powers, primes, factorials, unit conversions, travel, percent-of, logs and more
+    function wmPercentsAndUnits(t, lower) {
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
@@ -2676,6 +2794,11 @@ say('nothing selected to remove');
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
       if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
         return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      return WM_NEXT;
+    }
+    // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
+    function wmEverydayCounts(t, lower) {
+      let m;
       // gas mark: "gas mark 4 in celsius", "350 degrees in gas mark", "180c to gas mark"
       const GAS = { '1/4': [225, 110], '1/2': [250, 120], 1: [275, 140], 2: [300, 150], 3: [325, 160], 4: [350, 180], 5: [375, 190], 6: [400, 200], 7: [425, 220], 8: [450, 230], 9: [475, 240] };
       m = t.match(/^(?:what\s+is\s+|convert\s+)?gas\s+mark\s+(\d|1\/[24])(?:\s+(?:in|to|into)\s+(c|celsius|centigrade|f|fahrenheit|degrees)|\s+(?:temperature|temp))?$/);
@@ -2938,6 +3061,11 @@ say('nothing selected to remove');
       // a string of 0s and 1s "in decimal" is binary: "what is 101010 in decimal"
       m = String(lower || '').trim().toLowerCase().replace(/\?+$/, '').replace(/^(?:what(?:'s|\s+is)\s+|convert\s+)/, '').match(/^([01]{4,32})(?:\s+(?:binary|in\s+binary|base\s*2))?\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number)$|^(?:binary\s+)([01]{2,32})\s+(?:in|to|as)\s+(?:decimal|base\s*10)$/); // read before "in decimal" is stripped above
       if (m) { const b = m[1] || m[2], v = parseInt(b, 2); return { value: v.toLocaleString(), note: 'binary ' + b + ' = ' + v + ' in decimal' }; }
+      return WM_NEXT;
+    }
+    // "how many <unit> in a <unit>" and the everyday unit questions
+    function wmUnitQuestions(t, lower) {
+      let m;
       // generic "how many <unit> in a <unit>" for the extra units ("how many square feet in an acre", "how many kpa in a bar")
       m = t.match(/^how\s+many\s+([a-z][a-z /²]*?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z][a-z /²]*?)$/);
       const everyday = m && Object.values(CALC_UNITS).some((u) => u[m[1].trim()] != null && u[m[2].trim()] != null); // cups in a liter, feet in a mile: the everyday converter's own answer
@@ -3037,6 +3165,11 @@ say('nothing selected to remove');
       if (m) { const now = new Date(), y = now.getFullYear(), w = m[2];
         const at = /^new/.test(w) ? new Date(y + 1, 0, 1) : /christmas|xmas/.test(w) ? new Date(now > new Date(y, 11, 25) ? y + 1 : y, 11, 25) : w === 'halloween' ? new Date(now > new Date(y, 9, 31) ? y + 1 : y, 9, 31) : new Date(y, now.getMonth(), now.getDate() + 1);
         const v = Math.floor((at - now) / { seconds: 1e3, minutes: 6e4, hours: 36e5 }[m[1]]); return { value: v.toLocaleString() + ' ' + m[1], note: 'until ' + at.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }; }
+      return WM_NEXT;
+    }
+    // clock arithmetic and time between dates
+    function wmClockAndDates(t, lower) {
+      let m;
       // clock arithmetic: "add 2 hours to 3:30 pm", "3:30 pm plus 45 minutes", "subtract 90 minutes from 2pm"
       const clockOf = (x) => { const c = String(x).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/); if (!c) return null; let h = +c[1], mi = +(c[2] || 0); const ap = (c[3] || '').replace(/\./g, ''); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; return h < 24 && mi < 60 && (ap || c[2]) ? h * 60 + mi : null; };
       const fmt12 = (mins) => { mins = ((mins % 1440) + 1440) % 1440; const h = Math.floor(mins / 60), mi = mins % 60; return ((h % 12) || 12) + ':' + String(mi).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM'); };
@@ -3124,6 +3257,11 @@ say('nothing selected to remove');
           const r = add(); if (i !== s2.length) throw 0; return r; };
         try { const f = (x) => ev(L, x) - ev(Rt, x), f0 = f(0), f1 = f(1), f2 = f(2);
           if (Math.abs((f2 - f1) - (f1 - f0)) < 1e-9 && Math.abs(f1 - f0) > 1e-12) { const x = -f0 / (f1 - f0), r = Math.round(x * 1e9) / 1e9; return { value: v + ' = ' + r, note: 'solving ' + m[1].trim() + ' (check: both sides ' + (Math.round(ev(L, x) * 1e6) / 1e6) + ')' }; } } catch (_) {} }
+      return WM_NEXT;
+    }
+    // circles, shapes and fractions
+    function wmGeometry(t, lower) {
+      let m;
       // geometry
       const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
       m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
@@ -3189,6 +3327,11 @@ say('nothing selected to remove');
       // "what year was 10 years ago", "what year will it be in 5 years"
       m = t.match(/^what\s+year\s+was\s+(\d{1,4})\s+years?\s+ago$/);
       if (m) return { value: String(new Date().getFullYear() - +m[1]), note: m[1] + ' years before ' + new Date().getFullYear() };
+      return WM_NEXT;
+    }
+    // pay, salary, tax, interest and money
+    function wmMoney(t, lower) {
+      let m;
       // ---- money ----
       const N = (x) => +String(x).replace(/[$,]/g, '').replace(/k$/i, '000'), $f = (v) => '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
       // pay: "15 an hour per year", "60000 a year is how much an hour", "salary of 75000 per month" (40 h weeks, 52 weeks: 2,080 h a year)
@@ -3320,6 +3463,11 @@ say('nothing selected to remove');
       if (m) { const x = +(m[1] || m[3]), d = m[1] ? +m[2] : 0; const v = (Math.round(x * 10 ** d) / 10 ** d).toFixed(d); return { value: v, note: (m[1] || m[3]) + ' rounded to ' + d + ' decimal' + (d === 1 ? '' : 's') }; }
       m = t.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+(?:as\s+a\s+|in\s+)?(?:percent(?:age)?|%)$/);
       if (m && +m[2]) { const v = +(+m[1] / +m[2] * 100).toPrecision(10); return { value: v + '%', note: m[1] + '/' + m[2] + ' = ' + v + '%' }; }
+      return WM_NEXT;
+    }
+    // data sizes and dates
+    function wmDataUnits(t, lower) {
+      let m;
       const DATA = { b: 1, byte: 1, bytes: 1, kb: 1e3, kilobyte: 1e3, kilobytes: 1e3, mb: 1e6, megabyte: 1e6, megabytes: 1e6, gb: 1e9, gigabyte: 1e9, gigabytes: 1e9, tb: 1e12, terabyte: 1e12, terabytes: 1e12, pb: 1e15, petabyte: 1e15, petabytes: 1e15 };
       m = t.match(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*([a-z]+)\s+(?:to|in|into)\s+([a-z]+)$/);
       if (m) {
@@ -3336,6 +3484,11 @@ say('nothing selected to remove');
       m = t.match(/^(?:how\s+many\s+)?days\s+(?:are\s+there\s+)?between\s+(.+?)\s+and\s+(.+)$/);
       if (m) { const yr = new Date().getFullYear(), d = (x) => { let v = Date.parse(x + (/\d{4}/.test(x) ? '' : ' ' + yr)); return isNaN(v) ? null : v; }; const a = d(m[1]), b = d(m[2]);
         if (a != null && b != null) { const n = Math.round(Math.abs(b - a) / 864e5); return { value: n + (n === 1 ? ' day' : ' days'), note: 'between ' + m[1] + ' and ' + m[2] + (/\d{4}/.test(m[1] + m[2]) ? '' : ' ' + yr) }; } }
+      return WM_NEXT;
+    }
+    // the arithmetic expression parser (square roots, powers, pi)
+    function wmExpression(t, lower) {
+      let m;
       const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+(\d+)(?:st|nd|rd|th)?\s+power\b/g, ' ^ $1 ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
         .replace(/\bsquared\b/g, ' ^ 2 ').replace(/\bcubed\b/g, ' ^ 3 ').replace(/\btimes\b|\bmultiplied\s+by\b|×|\bx\b/g, ' * ').replace(/\bdivided\s+by\b|\bover\b|÷/g, ' / ')
         .replace(/\bplus\b|\badded\s+to\b/g, ' + ').replace(/\bminus\b|\bless\b/g, ' - ').replace(/(\d),(\d{3})/g, '$1$2')
@@ -3349,6 +3502,24 @@ say('nothing selected to remove');
       const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = take(), r = mul(); v = o === '+' ? v + r : v - r; } return v; };
       try { const v = add(); if (i !== tk.length || !isFinite(v)) return null; const shown = Math.abs(v) >= 1e15 ? v.toExponential(6) : String(+v.toPrecision(12));
         return { value: shown, note: e.replace(/(?<![\d.])3\.141592653589793(?![\d.])/g, 'π').replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
+      return WM_NEXT;
+    }
+    function wordMath(lower) {
+      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
+      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
+      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
+      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
+        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
+      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
+      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
+        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
+      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
+      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+      for (const part of [wmPercentsAndUnits, wmEverydayCounts, wmUnitQuestions, wmClockAndDates, wmGeometry, wmMoney, wmDataUnits, wmExpression]) { const r = part(t, lower); if (r !== WM_NEXT) return r; }
+      return undefined;
     }
     function wantsCalc(lower) {
       if (wordMath(lower)) return true;
@@ -3374,7 +3545,7 @@ say('nothing selected to remove');
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
 
       let hit = false;
-      const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
+      const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
       if (wm) { setV(wm.value, wm.note); return 'calc'; }
@@ -3531,7 +3702,7 @@ say('nothing selected to remove');
 
     // row 13: entering your own Void (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
-    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'off', quiet: false, scale: 1, fx: 'off', backdrop: '' };
+    const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
     const backdropOk = (src) => typeof src === 'string' && src.length < 600000 && /^data:image\/(?:png|webp|jpeg);base64,[A-Za-z0-9+/=]+$/.test(src);
     const BGS = { 'deep blue': ['#01040f', '#0a1633'], blue: ['#01040f', '#0a1633'], purple: ['#07020f', '#1a0b2e'], warmer: ['#0d0704', '#24140a'], darker: ['#000000', '#07070a'] };
@@ -3550,29 +3721,50 @@ say('nothing selected to remove');
       document.body.classList.add('void-entered');
     }
     function seedStars() {
-      starCv.width = innerWidth; starCv.height = innerHeight;
-      if (starFar) { starFar.width = innerWidth; starFar.height = innerHeight; }
-      stars = Array.from({ length: 90 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.4 + 0.35, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18 }));
-      farStars = Array.from({ length: 160 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 0.8 + 0.12, vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05 }));
+      // the default Void (2026-10-15): DPR capped at 2 (phones stay light), denser on big screens, a few stars twinkle
+      const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight, area = Math.min(1.6, (W * H) / (1280 * 800));
+      for (const c of [starCv, starFar]) { if (!c) continue; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); }
+      const tint = () => ['255,255,255', '200,215,255', '255,228,205', '215,235,255'][Math.random() * 4 | 0];
+      stars = Array.from({ length: Math.round(110 * area) + 40 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() < .08 ? Math.random() * 1.1 + 1.3 : Math.random() * 1.1 + 0.4, vx: (Math.random() - 0.5) * 0.16, vy: (Math.random() - 0.5) * 0.16, a: 0.55 + Math.random() * 0.45, c: tint(), tw: Math.random() < .14 ? 0.6 + Math.random() * 1.6 : 0, ph: Math.random() * 6.3 }));
+      farStars = Array.from({ length: Math.round(260 * area) + 60 }, () => ({ x: Math.random() * W, y: Math.random() * H, r: Math.random() * 0.75 + 0.2, vx: (Math.random() - 0.5) * 0.04, vy: (Math.random() - 0.5) * 0.04, a: 0.25 + Math.random() * 0.5 }));
     }
-    function drawStars() {
-      starCtx.clearRect(0, 0, starCv.width, starCv.height);
-      if (starFarCtx) starFarCtx.clearRect(0, 0, starFar.width, starFar.height);
+    // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
+    // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
+    let starLast = 0;
+    function drawStars(now) {
+      if (typeof now === 'number' && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
+      if (typeof now === 'number') starLast = now;
+      const W = innerWidth, H = innerHeight, t = performance.now() / 1000;
+      starCtx.clearRect(0, 0, W, H);
+      if (starFarCtx) starFarCtx.clearRect(0, 0, W, H);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
       if (starFarCtx) {
-        starFarCtx.fillStyle = 'rgba(210,220,255,0.35)';
         for (const st of farStars) {
-          if (move) { st.x = (st.x + st.vx * k + starFar.width) % starFar.width; st.y = (st.y + st.vy * k + starFar.height) % starFar.height; }
+          if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
+          starFarCtx.globalAlpha = st.a || .35; starFarCtx.fillStyle = 'rgb(210,220,255)';
           starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill();
         }
       }
-      starCtx.fillStyle = 'rgba(255,255,255,0.7)';
+      if (starFarCtx) starFarCtx.globalAlpha = 1;
       for (const st of stars) {
-        if (move) { st.x = (st.x + st.vx * k + starCv.width) % starCv.width; st.y = (st.y + st.vy * k + starCv.height) % starCv.height; }
+        if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
+        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1;
+        starCtx.globalAlpha = (st.a || .7) * tw; starCtx.fillStyle = 'rgb(' + (st.c || '255,255,255') + ')';
         starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
+        if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha *= .18; starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
       }
+      starCtx.globalAlpha = 1;
       if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
     }
+    // celestial-sync + thinking state for the default Void (coarse, on the device only: the local hour; nothing sent or stored)
+    (function () {
+      const d = document.documentElement;
+      const phase = () => { const h = new Date().getHours(); d.dataset.phase = h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
+      phase(); setInterval(phase, 10 * 60 * 1000);
+      let q = 0; const look = () => { q = 0; const on = document.querySelector('.vpage.on'); d.classList.toggle('void-thinking', !!on && /thinking…|looking up|reading the page/.test(on.textContent.slice(0, 2000))); };
+      new MutationObserver(() => { if (!q) q = requestAnimationFrame(look); }).observe(document.body, { childList: true, subtree: true, characterData: true, attributes: true, attributeFilter: ['class'] });
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && !starRAF && starCv.classList.contains('on')) drawStars(); });
+    })();
     function applyLook(persist) {
       const r = document.documentElement.style;
       r.setProperty('--void-bg', voidLook.bg); r.setProperty('--void-glow', voidLook.glow);
@@ -3756,11 +3948,14 @@ say('nothing selected to remove');
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
     // for the ones ranked above the match, each until `deadline` (a skill still missing then is passed over, as before).
+    let askText = null; import('/lib/ask-text.js').then((m) => { askText = m; }).catch(() => {});
     async function firstSkill(lower0, text, deadline) {
-      if (skillsLoaded || !skillSlots) return learnedSkills.find((sk) => sk.match(lower0, text)) || null;
+      // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
         const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
-        if (skill && skill.match(lower0, text)) return skill;
+        if (skill && fits(skill)) return skill;
       }
       return null;
     }
@@ -3779,6 +3974,11 @@ say('nothing selected to remove');
         try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
       }, 1500)).catch(() => {});
     }
+    // Taught wordings (skills/aliases.json, written by tools/site-teach.mjs from the site tester's teach items): an ask that is
+    // exactly a taught wording runs as the ask it means, so an existing skill learns a new phrase without a new skill.
+    let skillAliases = {};
+    fetch('/skills/aliases.json').then((r) => r.ok ? r.json() : {}).then((j) => { skillAliases = j && typeof j === 'object' ? j : {}; }).catch(() => {});
+    const aliasOf = (lower) => { const k = String(lower || '').trim().replace(/[\s?!.]+$/, ''); return Object.prototype.hasOwnProperty.call(skillAliases, k) ? String(skillAliases[k]) : ''; };
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
       const skill = await firstSkill(lower0, text, deadline);
       {
@@ -3795,13 +3995,14 @@ say('nothing selected to remove');
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
-          say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
+          const who = skill.part ? (skill.part(lower0, text) || skill.name) : skill.name; // a family skill names the member that answers (lib/skill-family.js)
+          say(/weather|place|map/.test(who) ? 'looking up' : who === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent, cardBefore = vpageEl;
           const src = await skill.run(text, api);
           if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
-          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
-          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, skill, vpageEl);
-          if (src === 'none') reportMiss(text, 'skill:' + skill.name);
+          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
+          if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
       }
@@ -4366,7 +4567,7 @@ say('nothing selected to remove');
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
       const line = vm && vm.available !== false ? 'Paid V01D is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid V01D adds ' + PAID_ADDS;
-      if (!url) say(line + " · payments aren't open yet");
+      if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the V01D store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
@@ -4388,15 +4589,17 @@ say('nothing selected to remove');
         if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
       } catch (_) {}
     }
-    // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
+    // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Void's own answer (or fix). Never on self/menu/identity asks; at most one line.
     function productLine(g, p) {
       const link = String(p.url || '').replace(/^https:\/\//, '');
       return 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>';
     }
     async function attachProductTail(text, opt = {}) {
+      const lower = String(text || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '');
+      if (wantsSelfPage(lower) || wantsIdentity(lower) || wantsMenu(lower)) return; // self/meta: never a sponsor line
       const { g, products } = await storeCatalog();
-      const p = g && g.productFor(text, products, { fix: !!opt.fix });
-      if (!p) return;
+      const p = g && g.productFor(text, products, { fix: !!opt.fix, meta: !!opt.meta });
+      if (!p) { if (!opt.meta && !opt.fix && g && g.isBuyAsk && g.isBuyAsk(text)) fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ kind: 'gap', ask: String(text).slice(0, 200) }) }).catch(() => {}); return; } // no line: the server notes a product gap if it's a buy/hire ask (lib/product-gap.js)
       const html = productLine(g, p);
       if (opt.el) { if (opt.el === vpageEl) { opt.el._tail = html; keepTail(opt.el); } }
       else { pageTail = { ask: text, html }; if (vpageEl && vpageEl._ask === text) { vpageEl._tail = html; keepTail(vpageEl); } }
@@ -4422,10 +4625,13 @@ say('nothing selected to remove');
       const raw = pasteRaw, flat = pasteFlat; pasteRaw = pasteFlat = null;
       return raw && flat && text.includes(flat) ? text.replace(flat, raw) : text;
     }
+    // the light markdown a model writes (comics, stories, lists) renders as what it means, not raw asterisks (lib/md.js)
+    let mdLib = null;
+    const mdReady = import('/lib/md.js').then((m) => { mdLib = m; }).catch(() => {});
     function fixHtml(t) {
       return String(t).split(/```[\w.+-]*[ \t]*\n?/).map((part, i) => (i % 2
         ? '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code>' + esc(part.replace(/\n$/, '')) + '</code></pre>'
-        : part.trim() ? '<p>' + esc(part.trim()).replace(/\n+/g, '<br>') + '</p>' : '')).join('');
+        : part.trim() ? (mdLib ? mdLib.mdBlock(part.trim(), esc) : '<p>' + esc(part.trim()).replace(/\n+/g, '<br>') + '</p>') : '')).join('');
     }
     // a paste of any size (owner, 2026-10-15: "I thought we fixed it so that we can paste any sized message"): the title ends
     // with … at a word, the server gets the start and the end of a long paste (errors sit at the end of a log) inside its 20 kB,
@@ -4519,6 +4725,7 @@ say('nothing selected to remove');
       const deep = el.querySelector('[data-deep]');
       if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by V01D, closer read by V01D\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
         : '<div class="src">Quick checks by V01D' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
+      attachProductTail(ask || title, { el }); // one relevance-gated line after the review
       return 'review';
     }
     async function handleReviewAsk(text, full) {
@@ -4534,8 +4741,9 @@ say('nothing selected to remove');
       const code = cr.codeOf(full);
       if (cr.looksLikeCode(code, cr.langNamed(full.split(/\n|\s*⏎/)[0]))) { showReview(full.split(/\n|\s*⏎/)[0].replace(/:\s*$/, '').split(':')[0], code, cr); return true; }
       const title = text.replace(/\s*⏎[\s\S]*$/, '').slice(0, 140);
-      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
       pendingReview = { ask: title, until: Date.now() + 600000 };
+      attachProductTail(text, { el }); // Code Review Pro when the ask clearly matches
       loopLog({ domain: 'void.review', ask: text, score: 'pass', note: 'asked for code' });
       return true;
     }
@@ -4834,7 +5042,7 @@ say('nothing selected to remove');
           if (ball) { ball.answer = c.big; ball.question = q; ball.n = (ball.n || 0) + 1; ball.history = [...(ball.history || []), ev].slice(-20); save(); render(); }
           else summonThing('eightball', { answer: c.big, question: q, n: 0, history: [ev], center: true });
           say(c.big); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
-        if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
+        if (c) { showPage((p) => { p.innerHTML = '<h2>' + esc(c.title) + '</h2><div class="big" style="' + bigStyle(c.big) + '">' + esc(c.big) + '</div><p style="color:#8a8a8a">' + esc(c.note) + ' · ask again for another</p>'; }); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'chance' }); return true; } }
       if (await handleAppAsk(text, l)) return true;
       for (const [lang, re, line] of SPEAKS) if (re.test(l)) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'speaks ' + lang }); return true; }
       for (const [re, line] of WHAT_ARE_YOU) if (re.test(l.replace(/[\s?¿.!¡]+$/, '').replace(/^[¿¡\s]+/, ''))) { showSelfPage(false, null, line); say(''); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self (other language)' }); return true; }
@@ -4850,12 +5058,13 @@ say('nothing selected to remove');
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const fixed = fixTypos(typed); typoFix = fixed !== typed ? { from: typed, to: fixed } : null;
       // the name is V01D (owner, 2026-10-14); every skill still reads "void", so "make my V01D blue" and "share my v01d live" reach them
-      const text = fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void'));
+      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
+      { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by V01D</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
@@ -4904,7 +5113,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
-      if (wantsSelfPage(lower0)) { showSelfPage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
@@ -5592,6 +5801,7 @@ say('nothing selected to remove');
     sync();
   })();
   </script>
+<a id="void-support" href="/store/" style="position:fixed;right:12px;bottom:10px;font:12px system-ui,sans-serif;color:inherit;opacity:.35;text-decoration:none;z-index:1" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=.35">support V01D</a>
 </body>
 </html>
 

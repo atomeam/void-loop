@@ -10,7 +10,7 @@ import { lift3d } from './lift3d.js';
 export function fireworksOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+)?(?:game\s+of\s+)?(?:fireworks|hanabi)(?:\s+(?:card\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
-  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game(?:\s+with\s+(?:me|void|you))?$|^(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:fireworks|hanabi)$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game(?:\s+with\s+(?:me|void|you))?$|^(?:a\s+)?(?:co-?op|cooperative)\s+(?:card\s+|board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:fireworks|hanabi)$|^hanabi(?:\s+(?:card\s+|board\s+)?game)?$/.test(t)) return { kind: 'game' };
   return null;
 }
 export const HEX = ['#e2453c', '#efc23a', '#3fae5a', '#3d7fe0', '#eceae4'];
@@ -90,7 +90,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'fireworks');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'fireworks'; }
   api.summon('fireworks', { state: F.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 50 });
-  api.say('Fireworks · you and V01D on the same side · you see V01D’s cards, not your own');
+  api.say((/hanabi/i.test(String(text)) ? 'Fireworks, our version of Hanabi' : 'Fireworks') + ' · you and V01D on the same side · you see V01D’s cards, not your own');
   return 'fireworks';
 }
 

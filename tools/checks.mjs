@@ -18,10 +18,32 @@ for (const [name, file] of [
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],
   ['upgrades', 'upgrades.test.mjs'],
+  ['collide', 'collide.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
+  ['site-teach', 'site-teach.test.mjs'],
+  ['untested-unit', 'untested.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['doc-drift-unit', 'doc-drift.test.mjs'],
+  ['ask-text', 'ask-text.test.mjs'],
+  ['word-math', 'word-math.test.mjs'],
+  ['swarm', 'swarm.test.mjs'],
+  ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
+  ['store-gap', 'store-gap.test.mjs'],
+  ['film-share', 'film-share.test.mjs'],
+  ['appraise', 'appraise.test.mjs'],
+  ['launch-fixes', 'launch-fixes.test.mjs'],
+  ['price-lock', 'price-lock.test.mjs'],
+  ['reinvest', 'reinvest.test.mjs'],
+  ['store', 'store.test.mjs'],
+  ['pay-share', 'pay-share.test.mjs'],
+  ['alt-pay', 'alt-pay.test.mjs'],
+  ['keeper', 'keeper.test.mjs'],
+  ['privacy-guard', 'privacy-guard.test.mjs'],
+  ['site-test', 'site-test.test.mjs'],
+  ['product-tail', 'product-tail.test.mjs'],
+  ['product-gap', 'product-gap.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
   ['automations-seed', 'automations-seed.test.mjs'],
   ['rebuild-map', 'rebuild-map.test.mjs'],
@@ -37,6 +59,7 @@ for (const [name, file] of [
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],
   ['glyphs', 'test_glyphs.mjs'],
+  ['perf3d', 'perf3d.test.mjs'],
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
   ['motorbody', 'motorbody.test.mjs'],
@@ -91,6 +114,7 @@ for (const [name, file] of [
   ['poker', 'poker.test.mjs'],
   ['fireworks', 'fireworks.test.mjs'],
   ['connect4', 'connect4.test.mjs'],
+  ['vendor-three', 'vendor-three.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
@@ -109,6 +133,7 @@ for (const [name, file] of [
   ['bench-route', 'bench-route.test.mjs'],
   ['poster', 'poster.test.mjs'],
   ['speak', 'speak.test.mjs'],
+  ['secret-scan', 'secret-scan.test.mjs'],
   ['next-skill', 'next-skill.test.mjs'],
   ['share', 'share.test.mjs'],
   ['advance', 'advance.test.mjs'],
@@ -152,12 +177,14 @@ for (const [name, file] of [
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
+  ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
   ['video', 'video.test.mjs'],
+  ['digest', 'digest.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -182,15 +209,33 @@ for (const [name, file] of [
     if (t.length < 5e6 && !t.includes('\0')) for (const c of conflictMarkers(t)) marked.push(f + ':' + c.line);
   }
   results.push(['markers', !marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']); }
+// every bundled file the page or a skill loads by path is in the tree (issue #757: a merge dropped vendor/three-r180/build and
+// vendor/pdfjs build, the CDN kept serving a cached copy, and any fresh URL got the HTML fallback: "Failed to load module script")
+{ const root = resolve(here, '..'), gone = new Set();
+  for (const f of spawnSync('git', ['ls-files', 'void.html', 'void-live-deploy/skills/*.js', 'void-live-deploy/lib/*.js'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean))
+    for (const m of readFileSync(resolve(root, f), 'utf8').matchAll(/['"`](\/vendor\/[^'"`\s?#]+\.(?:m?js|wasm|css|json))['"`]/g)) { try { readFileSync(resolve(root, 'void-live-deploy' + m[1])); } catch (_) { gone.add(f + ' -> ' + m[1]); } }
+  results.push(['vendor', !gone.size, gone.size ? 'bundled file missing: ' + [...gone].slice(0, 4).join(', ') + ' (restore it from git history)' : 'every bundled file the page loads is in the tree']); }
+// no perspective grid floor on the stage (owner 2026-10-15: "the ugly every-AI-website grid"); docs/design.md "Never"
+{ const css = readFileSync(resolve(here, '..', 'void.html'), 'utf8'); const bad = [...css.matchAll(/\{[^{}]*repeating-linear-gradient[^{}]*rotateX\([^{}]*\}/g)].filter((m) => !/\.vpage|\.thing|card/.test(m[0]));
+  results.push(['no-grid-floor', !bad.length, bad.length ? 'a perspective grid floor is back in void.html (design.md forbids it)' : 'no perspective grid floor']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
   results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
 // skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
 // without the index rewritten, is caught here, not on the page
+// every line this branch adds, in every file type, holds no real key (tools/secret-scan.mjs; owner, 2026-10-15: "make V01D the best
+// at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
+{ const r = run([resolve(here, 'secret-scan.mjs'), '--base', 'origin/main']); results.push(['secrets', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
+// a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
+{ const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
+{ const r = run([resolve(here, 'doc-drift.mjs'), '--check']); results.push(['doc-drift', r.ok, r.out[r.out.length - 1] || '']); }
+// the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
+{ const r = run([resolve(here, 'untested.mjs'), '--check']); results.push(['untested', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.

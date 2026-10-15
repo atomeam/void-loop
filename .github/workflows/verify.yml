@@ -94,6 +94,12 @@ jobs:
           bench: skip
           part: suite
 
+      # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
+      # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
+      - name: CSP smoke (hashes as deployed)
+        if: steps.skip.outputs.skip != 'true'
+        run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
+
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true

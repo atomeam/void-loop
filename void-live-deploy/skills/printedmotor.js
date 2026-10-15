@@ -6,6 +6,7 @@
  * next step and links the magnetize step, Pentamote-1 (with its moving miniature) and Linemote-1. Original wording only.
  * "can you 3d print a motor", "printed motor", "printed robot arm".
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const STEPS = [
   { head: 'A twitch', date: '2026-02-18', line: 'A linear motor printed in one go from all five material classes (insulator, conductor, soft and hard magnetic, flexible) moved 318 µm back and forth at 41.6 Hz. It needed one step after printing: magnetizing.',
     name: 'MIT News; Virtual and Physical Prototyping', href: 'https://doi.org/10.1080/17452759.2026.2613185' },
@@ -16,7 +17,7 @@ export const STEPS = [
 ];
 export const NEXT_LINE = 'Next: a printed motor small and cool enough to wave a toy figure’s arm.';
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const PRINTED = '(?:3d[\\s-]?print(?:ed)?|print(?:ed)?)';
 const ASK_RE = new RegExp('^(?:'
   + '(?:can|could)\\s+(?:you|i|we|someone)\\s+(?:3d\\s+)?print\\s+(?:a|an)\\s+(?:electric\\s+)?motor'

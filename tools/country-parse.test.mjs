@@ -1,7 +1,7 @@
 // How skills/country.js reads a country ask: the field wanted and the country named. Run: node --test tools/country-parse.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { countryOf, rowsOf } from '../void-live-deploy/skills/country.js';
+import { countryOf, rowsOf, timeLine, offsetOf, CAPITAL_ZONES } from '../void-live-deploy/skills/country.js';
 
 const read = (a) => { const q = countryOf(a); return q ? q.want + ' | ' + q.name : 'null'; };
 
@@ -32,4 +32,15 @@ test('country: the card rows from a REST Countries record', () => {
   assert.equal(r.continent[1], 'Europe'); assert.equal(r.calling[1], '+49'); assert.equal(r.drives[1], 'on the right'); assert.equal(r.borders[1], 'France, Poland');
   assert.equal(rowsOf({ idd: { root: '+1', suffixes: ['201', '202'] } }, []).calling[1], '+1');
   assert.equal(rowsOf({}, []).borders[1], 'none (an island or no land borders)');
+});
+
+test('country: the time there now from the built-in zones, daylight saving included (no live source needed)', () => {
+  const now = new Date('2026-10-15T05:32:00Z');
+  assert.equal(timeLine('japan', [], -240, now), '2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)');
+  assert.equal(timeLine('india', ['UTC+05:30'], 0, now), '11:02 AM Thu in New Delhi, UTC+05:30 (5.5 h ahead of you)');
+  assert.match(timeLine('united states', ['UTC-05:00', 'UTC-08:00'], 0, now), /^1:32 AM Thu in Washington, D\.C\., UTC−08:00 to UTC−05:00 \(2 zones\)$/);
+  assert.equal(offsetOf('Europe/London', now), 60); assert.equal(offsetOf('Europe/London', new Date('2026-01-15T12:00:00Z')), 0);
+  assert.equal(timeLine('atlantis', ['UTC+01:00'], 0, now), 'UTC+01:00 (1 h ahead of you)');
+  assert.equal(rowsOf({ timezones: ['UTC+09:00'] }, [], -240, 'japan', now).time[1], '2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)');
+  for (const z of new Set(Object.values(CAPITAL_ZONES))) assert.notEqual(offsetOf(z, now), null, z);
 });

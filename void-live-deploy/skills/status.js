@@ -7,6 +7,7 @@
  * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
  * public API). For the owner, the card opens by itself when one of those failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -19,9 +20,37 @@ export const SOURCES = [
   { name: 'ClinicalTrials.gov', for: 'the longevity trial watch', url: 'https://clinicaltrials.gov/api/v2/version' },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+void))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+void\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
 export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
+
+// News about V01D's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs
+// every few hours and empties the lists got back only a list of run times). A long statement, not a question, that names one of
+// V01D's own parts and a change to it is news about V01D: it answers the substance first, in its own voice, and does any time math
+// only as an aside.
+const PART_RE = /\b(routines?|automations?|workflows?|cron|deploy(?:s|ment)?|tester|site tester|queues?|lists?|board|skills?|store|films?|pipeline|loop|reviewer|code review|builders?|agents?)\b/;
+const SELF_RE = /\b(v01d|void|your|yourself)\b|^(?:update|heads up|fyi|news|status update|new)\b/;
+const CHANGE_RE = /\b(new|now|runs?|running|added|ships?|shipped|starts?|started|clears?|cleans?|empties|merged?|turned on|switched|every \d+|each (?:hour|day|night))\b/;
+export function newsOf(text) {
+  const t = CLEAN(text), words = t.split(/\s+/).filter(Boolean).length;
+  if (words < 8 || /^(what|how|why|when|where|who|which|can|could|should|is|are|do|does)\b/.test(t) || /\?\s*$/.test(String(text))) return false;
+  return PART_RE.test(t) && SELF_RE.test(t) && CHANGE_RE.test(t);
+}
+/** What the news means for V01D: { part, take, aside } (aside: run times when it says every N hours from a time). Pure. */
+export function takeOf(text) {
+  const t = CLEAN(text), part = (t.match(PART_RE) || ['system'])[1] || 'system';
+  const take = [];
+  if (/\b(clears?|cleans?|empties|empty|reset)\b/.test(t)) take.push('nothing piles up between runs, so what I show you stays current, but anything left half-done gets cleared too; I should finish or save work before the next run');
+  if (/\bevery \d+ (?:hours?|minutes?)|each (?:hour|day|night)|hourly|nightly|daily\b/.test(t)) take.push('it runs on a clock rather than waiting for a person, which is the automated-company way I am built to work');
+  if (/\b(new|added|ships?|shipped|turned on)\b/.test(t)) take.push('it is a new part of me, so I will watch its first runs and say if it misbehaves');
+  if (!take.length) take.push('it changes how my ' + part + ' behaves; I will keep it in mind when I answer about it');
+  let aside = '';
+  const m = t.match(/every (\d+) hours?\b.*?\b(\d{1,2}):(\d{2})\s*(am|pm)?/);
+  if (m) { const step = +m[1]; let h = +m[2] % 12 + (m[4] === 'pm' ? 12 : 0); if (!m[4] && +m[2] >= 12) h = +m[2];
+    if (step > 0 && step <= 24) { const times = []; for (let x = h; times.length < Math.floor(24 / step); x = (x + step) % 24) times.push(((x % 12) || 12) + ':' + m[3] + (x < 12 ? ' AM' : ' PM'));
+      aside = 'That is ' + times.length + ' runs a day: ' + times.join(', ') + '.'; } }
+  return { part, take, aside };
+}
 
 /** Ping one source: { name, for, ok, ms, note }. A CORS block, a timeout and a network error all read as unreachable. */
 export async function ping(src, fetchFn = (u, o) => fetch(u, o), ms = 6000, now = () => performance.now()) {
@@ -119,6 +148,11 @@ export function statusHtml(esc, skills, browser, sources, at, build, support) {
 }
 
 async function run(text, api) {
+  if (!statusOf(text) && newsOf(text)) {
+    const { showPage, esc } = api, n = takeOf(text);
+    showPage((p) => { p.innerHTML = '<h2>News about me</h2><div class="sub">about my ' + esc(n.part) + '</div><p>Thanks for telling me. My take: ' + n.take.map(esc).join('; ') + '.</p>' + (n.aside ? '<div class="sub">' + esc(n.aside) + '</div>' : ''); });
+    return 'self-news';
+  }
   if (!statusOf(text)) return 'none';
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>V01D status</h2><div class="sub">checking…</div>'; });
@@ -134,6 +168,7 @@ export default {
   examples: ['void status', 'system status', 'is void working', 'status', 'health check', 'are the sources up'],
   nearMisses: ['what is my status', 'status of my order', 'relationship status', 'flight status', 'status quo', 'check the weather'],
   statusOf,
-  match(lower, text) { return statusOf(text); },
+  newsOf,
+  match(lower, text) { return statusOf(text) || newsOf(text); },
   run,
 };

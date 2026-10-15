@@ -57,8 +57,26 @@ export function terms(text) {
   return out;
 }
 const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
-// -> the best product, or null. fix = the ask was a broken automation (Void already answered with the fix; this line is optional).
-export function productFor(ask, products, { fix = false } = {}) {
+// -> the best product, or null. Relevance-gated (2026-10-15): one short name stem ("code", "stack") is never enough;
+// a product line only when the ask clearly matches the product's name (two name hits, or a long name hit plus a description hit).
+// fix = broken-automation ask (Void already answered with the fix); meta = self/menu/identity ask (never a product line).
+// What the ask is actually asking (2026-10-15): pasted prose (a chat message, an earlier answer) mentions "tests", "review",
+// "hack" or even a product's own name in passing. Echoed sponsor lines and store links are dropped, and a long paste counts
+// only when it opens with a short request ("review my code" + the paste); otherwise it is prose, never a product ask.
+const ECHO = /from\s+a-to-mind\s*:[^\n]*|(?:https?:\/\/)?[\w-]+\.gumroad\.com\/\S*|written by v01d[^\n]*/gi;
+// A buy/hire ask (used to decide whether a no-match is a product gap worth noting, lib/product-gap.js).
+export const isBuyAsk = (t) => /\b(?:buy|purchase|order|hire|pay\s+for|price\s+of|how\s+much|cost|subscribe|sell\s+me|for\s+sale|sell|services?|packages?|templates?|courses?|kits?|bundles?|shop|store)\b/i.test(intentOf(t));
+export function intentOf(ask) {
+  const s = String(ask || '').replace(ECHO, ' ').replace(/\s+⏎\s*/g, '\n').trim();
+  if (!s) return '';
+  if (s.length <= 160 && s.split(/\s+/).length <= 28) return s;
+  const head = s.split(/\n/)[0].split(/(?<=[.!?])\s+/)[0].trim();
+  return head.length <= 90 ? head : '';
+}
+export function productFor(ask, products, { fix = false, meta = false } = {}) {
+  if (meta) return null;
+  ask = intentOf(ask);
+  if (!ask) return null;
   const live = (products || []).filter((p) => p && p.available !== false && !isUnlock(p) && p.name);
   if (!live.length) return null;
   const docs = live.map((p) => ({ p, n: terms(shortName(p.name)), d: terms(p.description) }));
@@ -67,12 +85,21 @@ export function productFor(ask, products, { fix = false } = {}) {
   if (fix) for (const t of FIX_HINT) A.add(t);
   if (!A.size) return null;
   const scored = docs.map(({ p, n, d }) => {
-    let s = 0;
-    for (const t of A) { const k = n.has(t) ? 3 : d.has(t) ? 1 : 0; if (k) s += k * Math.log(1 + docs.length / df(t)); }
-    return { p, s };
+    let s = 0, nameHits = 0, descHits = 0, longName = 0;
+    for (const t of A) {
+      if (n.has(t)) { nameHits++; if (t.length >= 4) longName++; s += 3 * Math.log(1 + docs.length / df(t)); }
+      else if (d.has(t)) { descHits++; s += 1 * Math.log(1 + docs.length / df(t)); }
+    }
+    return { p, s, nameHits, descHits, longName };
   }).sort((x, y) => y.s - x.s);
   const [best, next] = scored;
-  if (best.s < 2.5 || (next && best.s - next.s < 0.1)) return null;
+  if (!best) return null;
+  // Clear match: two name terms, or one distinctive name term plus a description hit; fix-mode may use two strong desc hits.
+  const clear = best.nameHits >= 2
+    || (best.nameHits >= 1 && best.longName >= 1 && best.descHits >= 1)
+    || (fix && best.descHits >= 2 && best.s >= 4);
+  if (!clear) return null;
+  if (best.s < 3.5 || (next && best.s - next.s < 0.4)) return null;
   return best.p;
 }
 export function shortName(n) { return String(n || '').split(/\s+[—–]\s+|\s+-\s+/)[0].trim().slice(0, 80); }

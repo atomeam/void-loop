@@ -2,9 +2,9 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 50,
-  "checked": 13,
-  "proven": 83
+  "tested": 51,
+  "checked": 14,
+  "proven": 84
  },
  "families": [
   {
@@ -13,7 +13,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 9,
     "checked": 3,
     "proven": 11
    },
@@ -127,6 +127,11 @@
      "name": "throw-off",
      "tier": "tested",
      "why": "1 browser-suite mention"
+    },
+    {
+     "name": "swarm",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },
@@ -337,7 +342,7 @@
     {
      "name": "country",
      "tier": "proven",
-     "why": "a self-test, 54 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark"
     }
    ]
   },
@@ -553,9 +558,14 @@
     "experiment": 1,
     "tested": 10,
     "checked": 1,
-    "proven": 7
+    "proven": 8
    },
    "skills": [
+    {
+     "name": "digest",
+     "tier": "tested",
+     "why": "a self-test"
+    },
     {
      "name": "video",
      "tier": "tested",
@@ -564,12 +574,13 @@
     {
      "name": "video-play",
      "tier": "experiment",
-     "why": "nothing checks it yet"
+     "why": "nothing checks it yet",
+     "since": "2026-10-15"
     },
     {
      "name": "define",
-     "tier": "tested",
-     "why": "41 real asks in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 41 real asks in the benchmark"
     },
     {
      "name": "words",
@@ -776,7 +787,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 1,
+    "checked": 2,
     "proven": 14
    },
    "skills": [
@@ -839,6 +850,11 @@
      "name": "services",
      "tier": "proven",
      "why": "a self-test, 9 real asks in the benchmark"
+    },
+    {
+     "name": "store",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions"
     },
     {
      "name": "share",

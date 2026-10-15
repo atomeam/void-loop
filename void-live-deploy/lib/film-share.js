@@ -1,0 +1,31 @@
+// Every V01D film and ad clip is its own ad, and anyone may repost it (owner, 2026-10-15: "put an upload to youtube button in
+// V01D Films so that anyone can easily uplad each vid"; "anyone can upload them ... the more the better"). No API, no token:
+// download the MP4, copy the words, open the platform's own upload page signed in as yourself. Pure; used by /films/ and tests.
+export const SITE = 'https://a-to-mind.com';
+export const PLATFORMS = {
+  youtube: { name: 'YouTube', upload: 'https://www.youtube.com/upload', tags: ['#Shorts', '#AI', '#V01D'], max: 5000, title: 100 },
+  tiktok: { name: 'TikTok', upload: 'https://www.tiktok.com/upload', tags: ['#AI', '#tech', '#fyp', '#V01D'], max: 2200 },
+  instagram: { name: 'Reels', upload: 'https://www.instagram.com/', tags: ['#AI', '#reels', '#tech', '#V01D'], max: 2200 },
+  x: { name: 'X', upload: 'https://x.com/compose/post', tags: ['#AI', '#V01D'], max: 280 },
+};
+export const CTA = 'Try V01D free: it builds, plays and answers anything, right in your browser.';
+export const SHARE = 'Share this ad: repost it anywhere, every upload helps V01D grow. Get the file free at a-to-mind.com/films/';
+const CLIP_RE = /^[0-9]{8}-[a-z0-9-]{2,60}$/;
+/** the tracked link for one uploader on one platform: /c/<id> counts it (functions/c/[clip].js), else the films page */
+export function shareLink(id, platform) {
+  const q = 'p=' + (PLATFORMS[platform] ? platform : 'other') + '&by=share';
+  return CLIP_RE.test(String(id || '')) ? `${SITE}/c/${id}?${q}` : `${SITE}/?${q}&src=film`;
+}
+const tagList = (t) => (Array.isArray(t) ? t : String(t || '').split(/[,\s]+/)).map((x) => String(x).trim()).filter(Boolean).map((x) => (x[0] === '#' ? x : '#' + x.replace(/[^\w]/g, '')));
+/** the words one uploader pastes: title, description with the tracked a-to-mind.com link, the call to action and the share line */
+export function shareWords(film, platform = 'youtube') {
+  const P = PLATFORMS[platform] || PLATFORMS.youtube, link = shareLink(film.id, platform);
+  const seen = new Set(), tags = [...P.tags, ...tagList(film.tags)].filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, platform === 'x' ? 3 : 12);
+  const base = String(film.title || 'V01D').replace(/\s*#Shorts\b/gi, '').trim();
+  const title = (base + (/v01d/i.test(base) ? '' : ' | V01D') + (platform === 'youtube' ? ' #Shorts' : '')).slice(0, P.title || 150);
+  const body = String(film.description || '').replace(/https?:\/\/(?:www\.)?a-to-mind\.com\S*/gi, link).trim();
+  let description;
+  if (platform === 'x') description = [base, link, tags.join(' ')].join('\n');
+  else description = [`${CTA} ${link}`, '', body, '', SHARE, '', tags.join(' ')].join('\n').replace(/\n{3,}/g, '\n\n').slice(0, P.max);
+  return { title, description, tags: tags.join(' '), link, upload: P.upload, all: (platform === 'x' ? description : title + '\n\n' + description) };
+}

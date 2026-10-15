@@ -3,7 +3,8 @@
  * Two-part summons: a funny card plus a lumpy cartoon figure. Grim subjects
  * stay slapstick. Empty ask stays empty. Nothing is published.
  */
-const CLEAN = (s) => String(s || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+import { cleanLower } from '../lib/ask-text.js';
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 const TAKES = {
   'gg allin': { name: 'Lumpy Mic', line: 'a rubbery cartoon singer stage-dives off a card and bonks a pie', color: '#ff7a59' },

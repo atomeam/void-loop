@@ -123,7 +123,7 @@ test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not 
   assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Void asked for');
   assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
   // how Void is different: Adam's four lines (2026-10-11), read with the version and said in the facts
-  assert.deepEqual(real.different.map((x) => x.name), ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings']);
+  assert.deepEqual(real.different.map((x) => x.name), ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings', 'Keeps every secret', 'A force for good']);
   assert.ok(real.version >= 3, 'the canon went up a version with them');
   assert.match(knowsFacts({ canon: { version: 3, different: [{ name: 'On your device first', line: 'nothing uploaded.' }] } }), /How I am different \(canon v3\): On your device first: nothing uploaded\./);
   assert.equal(readCanon('version: 1\n\n## Motto\n(not written yet)\n').different, undefined, 'no section, no field');
@@ -268,4 +268,16 @@ test('asks about its name or how it feels are about Void, and it answers them wi
   for (const a of ['you are getting a rename V01D. Do you like it?', 'do you like your new name', 'what do you think of V01D', 'how do you feel', 'how do you feel about your name', 'are you happy', 'what is your name']) assert.ok(isSelfAsk(a), a);
   for (const a of ['do you like pizza', 'how do I feel better', 'how do you feel about cats', 'I feel like pizza', 'rename a file in linux', 'v01d app']) assert.ok(!isSelfAsk(a), a);
   for (const sys of [SELF_RULE, ANSWER_SYSTEM]) { assert.match(sys, /never say you have no preferences/); assert.match(sys, /absorb and learn everything/); assert.match(sys, /names included/); assert.match(sys, /V01D/); }
+});
+
+// V01D's own money and growth are about V01D (2026-10-15: asked how it would spend its first $100, it gave generic advice about
+// buying a domain and Mailchimp, as if to a stranger)
+test('self asks: V01D\'s own earnings, spending and store are about itself; money advice for the visitor is not', () => {
+  for (const a of ['You have earned your first 100 dollars. How would you spend it to grow fastest?', 'how would you spend your first $100',
+    'what would you do with your earnings', 'how should you reinvest your money', 'what is your budget for', 'how is your store doing',
+    'what would you buy first with your sales', 'you made $50, what now'])
+    assert.ok(isSelfAsk(a), a);
+  for (const a of ['how should I spend 100 dollars', 'how do I invest my first paycheck', 'what is a good budget app', 'how to open a store',
+    'best way to spend money in tokyo', 'how much did avatar earn'])
+    assert.ok(!isSelfAsk(a), a);
 });

@@ -1,0 +1,179 @@
+{
+ "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
+ "cases": 14,
+ "runsTotal": 33,
+ "kinds": {
+  "grow": 7,
+  "file": 19,
+  "teach": 7
+ },
+ "runs": [
+  {
+   "at": "2026-10-15T15:57:36Z",
+   "passed": 16,
+   "of": 17,
+   "kind": "file",
+   "note": "fix: \"new auotmation\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T12:12:56Z",
+   "passed": 16,
+   "of": 17,
+   "kind": "file",
+   "note": "fix: \"catroon version of gg allin\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T12:07:13Z",
+   "passed": 16,
+   "of": 16,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
+  },
+  {
+   "at": "2026-10-15T11:56:55Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T10:50:37Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"catroon version of a shipwreck\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T10:30:49Z",
+   "passed": 15,
+   "of": 15,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo automations\" (skill:automations)"
+  },
+  {
+   "at": "2026-10-15T08:58:55Z",
+   "passed": 14,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"deifntion of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T08:35:24Z",
+   "passed": 14,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"catroon version of a plague\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T08:17:23Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:34:43Z",
+   "passed": 11,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:27:54Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:23:58Z",
+   "passed": 10,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"moive metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:20:54Z",
+   "passed": 15,
+   "of": 15,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"bokos like dune\" (skill:book)"
+  },
+  {
+   "at": "2026-10-15T07:17:32Z",
+   "passed": 9,
+   "of": 15,
+   "kind": "file",
+   "note": "fix: \"yo movie metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:14:22Z",
+   "passed": 9,
+   "of": 15,
+   "kind": "file",
+   "note": "fix: \"deifnition of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T07:07:55Z",
+   "passed": 10,
+   "of": 14,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+  },
+  {
+   "at": "2026-10-15T07:02:38Z",
+   "passed": 13,
+   "of": 13,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+  },
+  {
+   "at": "2026-10-15T06:58:08Z",
+   "passed": 8,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-15T06:55:39Z",
+   "passed": 6,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+  },
+  {
+   "at": "2026-10-15T06:53:09Z",
+   "passed": 6,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+  }
+ ],
+ "seen": {
+  "page:/films/": "2026-10-15T06:04:21Z",
+  "page:/store/": "2026-10-15T06:04:21Z",
+  "skill:actions": "2026-10-15T06:04:21Z",
+  "skill:aggravation": "2026-10-15T06:04:21Z",
+  "skill:air": "2026-10-15T06:20:22Z",
+  "skill:app": "2026-10-15T06:20:22Z",
+  "skill:aurora-tonight": "2026-10-15T06:20:22Z",
+  "skill:automations": "2026-10-15T15:57:36Z",
+  "skill:battleship": "2026-10-15T06:23:11Z",
+  "skill:book": "2026-10-15T07:20:54Z",
+  "skill:breath": "2026-10-15T06:23:11Z",
+  "skill:calc": "2026-10-15T06:23:11Z",
+  "skill:video-play": "2026-10-15T07:02:38Z",
+  "skill:define": "2026-10-15T08:58:55Z",
+  "skill:digest": "2026-10-15T06:50:33Z",
+  "skill:film-metadata": "2026-10-15T08:17:23Z",
+  "skill:cartoon": "2026-10-15T15:57:36Z",
+  "skill:challenge": "2026-10-15T08:35:24Z",
+  "skill:checkers": "2026-10-15T08:58:55Z",
+  "skill:connect4": "2026-10-15T10:30:49Z",
+  "skill:convert": "2026-10-15T10:50:37Z",
+  "skill:coral": "2026-10-15T11:56:55Z",
+  "skill:counter": "2026-10-15T12:07:13Z",
+  "skill:country": "2026-10-15T12:12:56Z",
+  "skill:crypto": "2026-10-15T15:57:36Z"
+ }
+}

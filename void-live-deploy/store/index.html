@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>V01D Store: 3D models, printable minis, tools and services</title>
+<meta name="description" content="Buy straight from V01D: 3D models and printable miniatures with live 3D previews, Void Pro, Code Review Pro and hands-on automation services. Signed downloads and license keys.">
+<link rel="canonical" href="https://a-to-mind.com/store/"><link rel="icon" href="/icon.svg" type="image/svg+xml">
+<meta property="og:title" content="V01D Store"><meta property="og:description" content="3D models, printable minis, tools and services, sold by V01D itself."><meta property="og:url" content="https://a-to-mind.com/store/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
+<style>
+:root{--bg:#050507;--ink:#ededed;--muted:#9a9aa8;--line:#23232c;--card:#0f0f15;--accent:#8b7bff;--glow:#5ad1ff}
+*{box-sizing:border-box}[hidden]{display:none!important}
+body{margin:0;background:radial-gradient(1200px 600px at 50% -10%,#1a1440 0,var(--bg) 60%);color:var(--ink);font:16px/1.55 system-ui,-apple-system,sans-serif;min-height:100vh}
+main{max-width:1100px;margin:0 auto;padding:22px 16px 80px}a{color:var(--glow)}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.logo{font-weight:800;letter-spacing:.18em;text-decoration:none;color:var(--ink)}.logo b{color:var(--accent)}
+h1{font-size:clamp(30px,6vw,48px);margin:26px 0 6px;line-height:1.1}.sub{color:var(--muted);margin:0 0 22px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.card{background:linear-gradient(180deg,#14141d,var(--card));border:1px solid var(--line);border-radius:16px;overflow:hidden;display:flex;flex-direction:column;transition:transform .15s,border-color .15s}
+.card:hover{transform:translateY(-2px);border-color:#3a3360}
+.view{height:180px;background:radial-gradient(circle at 50% 70%,#221c48,#07070b);position:relative;display:grid;place-items:center;font-size:44px}
+.view canvas{width:100%!important;height:100%!important;display:block}
+.tag{position:absolute;top:10px;left:10px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:#0009;border:1px solid var(--line);padding:2px 8px;border-radius:99px;color:var(--muted)}
+.body{padding:14px;display:flex;flex-direction:column;gap:6px;flex:1}.body h3{margin:0;font-size:17px}.body p{margin:0;color:var(--muted);font-size:14px;flex:1}
+.row{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px}.price{font-weight:700;font-size:18px}
+button,.btn{font:inherit;border:0;border-radius:10px;padding:8px 14px;background:var(--accent);color:#fff;cursor:pointer;text-decoration:none;font-weight:600}
+button.ghost{background:transparent;border:1px solid var(--line);color:var(--ink)}button:disabled{opacity:.5;cursor:default}
+#cartbtn{position:relative}#count{background:#fff;color:#000;border-radius:99px;padding:0 7px;margin-left:6px;font-size:13px}
+aside#cart{position:fixed;right:16px;top:70px;width:min(360px,calc(100vw - 32px));background:#0c0c12f2;border:1px solid var(--line);border-radius:16px;padding:16px;backdrop-filter:blur(8px);z-index:5;box-shadow:0 20px 60px #0008}
+#cart ul{list-style:none;padding:0;margin:8px 0}#cart li{display:flex;justify-content:space-between;gap:8px;padding:6px 0;border-bottom:1px solid var(--line);font-size:14px}
+.note{font-size:13px;color:var(--muted)}.ok{color:#56d364}
+section.lookup{margin-top:40px;border-top:1px solid var(--line);padding-top:20px}
+input{font:inherit;background:#0b0b10;border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:8px 10px}
+#receipt{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin:18px 0}
+code{background:#000;padding:2px 6px;border-radius:6px;font-size:14px}
+footer{margin-top:40px;color:var(--muted);font-size:13px}
+</style>
+</head>
+<body>
+<main>
+<header><a class="logo" href="/">V<b>0</b>1D <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
+<div id="receipt" hidden></div>
+<h1>Made by V01D. Sold by V01D.</h1>
+<p class="sub">3D models and printable minis you can spin before you buy, plus V01D's tools and the crew's hands-on help. Turn any model with your finger.</p>
+<div class="grid" id="grid"></div>
+<section class="lookup" id="new" hidden><h2 style="font-size:20px;margin:0 0 6px">New from V01D</h2><p class="note">V01D publishes its own products here. Every change, as it happens (<a href="/store/changelog.json">changelog.json</a>):</p><ul id="log" class="note" style="padding-left:18px"></ul></section>
+<section class="lookup"><h2 style="font-size:20px;margin:0 0 6px">Find my order</h2>
+<p class="note">Lost your receipt? Give the email you paid with and the 8-letter order code. (Gumroad orders: your files and keys are in Gumroad's email.)</p>
+<form id="lookup"><input id="le" type="email" placeholder="you@example.com" required> <input id="lc" placeholder="ORDER CODE" maxlength="8" size="10" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
+<footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): V01D never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what V01D makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask V01D "what can I buy" on the <a href="/">home page</a>.</footer>
+</main>
+<aside id="cart" hidden><b>Your cart</b><ul id="items"></ul><div class="row"><span>Total</span><span class="price" id="total">$0</span></div>
+<input id="email" type="email" placeholder="email for your receipt (optional)" style="width:100%;margin:10px 0">
+<button id="pay" style="width:100%">Checkout</button><p class="note" id="paynote"></p></aside>
+<script type="module">
+const $ = (s) => document.querySelector(s), esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+const TIP = 'https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&utm_medium=store-pwyw&utm_campaign=v01d-store';
+const ICON = { membership: '✦', license: '⌘', service: '🛠', support: '♥', download: '⬢' };
+const usd = (c) => '$' + (c % 100 ? (c / 100).toFixed(2) : String(c / 100));
+// pay a share, get that share (docs/store.md): the slider only explains; what unlocks is decided by the server from the paid amount
+const kOf = (pay, price, n) => (pay >= price ? n : pay <= 0 ? 0 : Math.min(n, Math.max(1, Math.ceil((pay * n) / price - 1e-9))));
+function shareLine(p, pay) { const s = p.share, k = kOf(pay, s.price, s.items.length); return `Pay ${usd(pay)} of ${usd(s.price)} and get ${k} of ${s.items.length} ${s.noun}` + (s.free.length ? ` (plus ${s.free.map(esc).join(', ')}, free)` : ''); }
+function shareBox(p) {
+  const s = p.share, step = Math.max(100, Math.round(s.price / s.items.length));
+  return `<div class="share"><input type="range" aria-label="How much to pay" min="${s.min}" max="${s.price}" step="${Math.min(step, 100)}" value="${s.price}" data-slide="${p.id}" style="width:100%">
+    <span class="note" data-line="${p.id}">${esc(shareLine(p, s.price))}</span>
+    <details class="note"><summary>What each share unlocks</summary><ol>${s.free.map((n) => `<li>${esc(n)} <b class="ok">free</b></li>`).join('')}${s.items.map((n) => `<li>${esc(n)}</li>`).join('')}</ol>Items unlock in this order. Pay the rest later from your receipt to get everything.</details></div>`;
+}
+let products = [], provider = 'gumroad', cart = []; try { cart = JSON.parse(localStorage.getItem('v01d-cart') || '[]'); if (!Array.isArray(cart)) cart = []; } catch (_) { cart = []; }
+const save = () => { localStorage.setItem('v01d-cart', JSON.stringify(cart)); draw(); };
+function draw() {
+  const items = cart.map((id) => products.find((p) => p.id === id)).filter(Boolean);
+  $('#count').textContent = items.length;
+  $('#items').innerHTML = items.map((p) => `<li><span>${esc(p.name)}</span><span>${esc(p.price)} <a href="#" data-rm="${p.id}">✕</a></span></li>`).join('') || '<li class="note">Empty for now.</li>';
+  $('#total').textContent = '$' + (items.reduce((a, p) => a + p.cents, 0) / 100).toFixed(2).replace(/\.00$/, '');
+  $('#pay').disabled = !items.length;
+  $('#pay').textContent = provider === 'stripe' ? 'Checkout securely' : items.length > 1 ? 'Checkout on Gumroad (' + items.length + ' tabs)' : 'Checkout on Gumroad';
+}
+async function load() {
+  const r = await fetch('/api/store/catalog').then((r) => r.json()).catch(() => ({ products: [] }));
+  products = r.products || []; provider = r.provider || 'gumroad'; $('#prov').textContent = provider === 'stripe' ? 'Stripe' : 'Gumroad';
+  $('#grid').innerHTML = products.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by V01D' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
+    <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span>
+    ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
+    ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');
+  draw(); previews(); receipt(); news();
+  if (location.hash.length > 1) { const c = document.getElementById(location.hash.slice(1)); if (c) { c.scrollIntoView({ block: 'center' }); c.style.borderColor = 'var(--accent)'; } }
+}
+document.addEventListener('input', (e) => {
+  const id = e.target.dataset && e.target.dataset.slide; if (!id) return; const p = products.find((x) => x.id === id), pay = +e.target.value;
+  document.querySelector(`[data-line="${id}"]`).textContent = shareLine(p, pay); document.querySelector(`[data-share="${id}"]`).textContent = 'Pay ' + usd(pay);
+});
+document.addEventListener('click', async (e) => {
+  const ub = e.target.closest('[data-upgrade]');
+  if (ub) { e.preventDefault(); const email = $('#le').value || $('#email').value || prompt('The email you paid with'); if (!email) return;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [ub.dataset.upgrade], upgrade: ub.dataset.code, email }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } if (r && r.urls && r.urls[0]) window.open(r.urls[0], '_blank', 'noopener'); else alert((r && r.error) || 'Try again in a minute.'); return; }
+  const sb = e.target.closest('[data-share]');
+  if (sb) { e.preventDefault(); const id = sb.dataset.share, pay = +document.querySelector(`[data-slide="${id}"]`).value;
+    const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: [id], pay, email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
+    if (r && r.mode === 'stripe') { location.href = r.url; return; } const u = (r && r.urls && r.urls[0]) || (products.find((p) => p.id === id) || {}).buy; if (u) window.open(u, '_blank', 'noopener'); return; }
+  const t = e.target.closest('[data-add],[data-rm],[data-free]'); if (!t) return; e.preventDefault();
+  if (t.dataset.add) { if (!cart.includes(t.dataset.add)) cart.push(t.dataset.add); save(); $('#cart').hidden = false; }
+  if (t.dataset.rm) { cart = cart.filter((x) => x !== t.dataset.rm); save(); }
+  if (t.dataset.free) { t.disabled = true; const r = await fetch('/api/store/free', { method: 'POST', body: JSON.stringify({ id: t.dataset.free }) }).then((r) => r.json()); showReceipt(r); t.disabled = false; }
+});
+$('#cartbtn').onclick = () => { $('#cart').hidden = !$('#cart').hidden; };
+$('#pay').onclick = async () => {
+  $('#paynote').textContent = 'Opening the checkout…';
+  const r = await fetch('/api/store/checkout', { method: 'POST', body: JSON.stringify({ items: cart, email: $('#email').value }) }).then((r) => r.json()).catch(() => null);
+  if (r && r.mode === 'stripe') { location.href = r.url; return; }
+  const urls = (r && r.urls) || cart.map((id) => (products.find((p) => p.id === id) || {}).buy).filter(Boolean);
+  urls.forEach((u) => window.open(u, '_blank', 'noopener'));
+  $('#paynote').innerHTML = 'Checkout opened on Gumroad: it sends your files and license keys by email. ' + urls.map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">link ${i + 1}</a>`).join(' · '); // void-review: ok (every url is escaped)
+};
+function showReceipt(r) {
+  const el = $('#receipt'); el.hidden = false;
+  if (!r || !r.items) { el.innerHTML = `<b>Receipt</b><p class="note">${esc((r && r.error) || 'Not found.')}</p>`; return; }
+  el.innerHTML = `<b class="ok">✓ ${r.status === 'free' ? 'Yours, free' : 'Paid, thank you'}</b> <span class="note">order code <code>${esc(r.code)}</code> · links good until ${esc(new Date(r.expires).toLocaleString())}</span>` +
+    r.items.map((i) => `<div style="margin-top:10px"><b>${esc(i.name)}</b>${i.share ? `<br><span class="note">You paid ${esc(usd(i.share.paid))} of ${esc(usd(i.share.price))}: ${i.share.got} of ${i.share.of} unlocked.${i.share.upgrade ? ' ' + esc(i.share.upgrade.line) + ` (order code <code>${esc(i.share.upgrade.code)}</code>). <button class="ghost" data-upgrade="${esc(i.id)}" data-code="${esc(i.share.upgrade.code)}">Unlock the rest</button>` : ''}</span>` : ''}<br><span class="note">License key</span> <code>${esc(i.license)}</code>${i.downloads.map((d) => `<br><a class="btn" style="display:inline-block;margin-top:6px" href="${d.url}">Download ${esc(d.name)}</a>`).join('')}</div>`).join('');
+  el.scrollIntoView({ behavior: 'smooth' });
+}
+async function receipt() {
+  const s = new URLSearchParams(location.search).get('session'); if (!s) return;
+  for (let i = 0; i < 6; i++) { const r = await fetch('/api/store/order?session=' + encodeURIComponent(s)).then((r) => r.json()); if (r.items || !r.pending) { if (r.items) { cart = []; save(); } return showReceipt(r); } $('#receipt').hidden = false; $('#receipt').textContent = 'Confirming your payment…'; await new Promise((ok) => setTimeout(ok, 2000)); }
+  showReceipt({ error: 'Still confirming. Use "Find my order" below in a minute.' });
+}
+$('#lookup').onsubmit = async (e) => { e.preventDefault(); const r = await fetch('/api/store/lookup', { method: 'POST', body: JSON.stringify({ email: $('#le').value, code: $('#lc').value }) }).then((r) => r.json()); if (r.items) showReceipt(r); else $('#lout').textContent = r.error; };
+async function news() {
+  const r = await fetch('/store/changelog.json').then((r) => r.json()).catch(() => null), l = (r && r.changelog) || [];
+  if (!l.length) return; $('#new').hidden = false;
+  $('#log').innerHTML = l.slice(0, 12).map((x) => `<li><b>${esc(x.name)}</b> · ${esc(x.what)} · ${esc(x.price)} <span>(${esc(new Date(x.at).toLocaleDateString())})</span></li>`).join('');
+}
+async function previews() {
+  const els = [...document.querySelectorAll('[data-glb]')]; if (!els.length) return;
+  try {
+    const THREE = await import('/vendor/three-r180/build/three.module.min.js');
+    const { GLTFLoader } = await import('/vendor/three-r180/addons/GLTFLoader.js');
+    const { MeshoptDecoder } = await import('/vendor/three-r180/addons/meshopt_decoder.module.js');
+    const { RoomEnvironment } = await import('/vendor/three-r180/addons/RoomEnvironment.js');
+    const loader = new GLTFLoader().setMeshoptDecoder(MeshoptDecoder), cache = {};
+    for (const el of els) {
+      const url = el.dataset.glb, w = el.clientWidth, h = el.clientHeight;
+      const r = new THREE.WebGLRenderer({ antialias: true, alpha: true, preserveDrawingBuffer: true }); r.setPixelRatio(Math.min(2, devicePixelRatio)); r.setSize(w, h); r.toneMapping = THREE.ACESFilmicToneMapping;
+      const scene = new THREE.Scene(), pm = new THREE.PMREMGenerator(r); scene.environment = pm.fromScene(new RoomEnvironment(), 0.04).texture;
+      const cam = new THREE.PerspectiveCamera(35, w / h, 0.01, 100);
+      const gltf = await (cache[url] ||= loader.loadAsync(url)); const obj = gltf.scene.clone(true); scene.add(obj);
+      const box = new THREE.Box3().setFromObject(obj), size = box.getSize(new THREE.Vector3()).length(), c = box.getCenter(new THREE.Vector3());
+      obj.position.sub(c); const pivot = new THREE.Group(); scene.remove(obj); pivot.add(obj); scene.add(pivot);
+      cam.position.set(0, size * 0.45, size * 0.85); cam.lookAt(0, 0, 0);
+      el.appendChild(r.domElement); let drag = null, spin = 0.004, yaw = 0;
+      el.onpointerdown = (e) => { drag = e.clientX; spin = 0; }; el.onpointerup = el.onpointerleave = () => { drag = null; spin = 0.004; };
+      el.onpointermove = (e) => { if (drag !== null) { yaw += (e.clientX - drag) * 0.01; drag = e.clientX; } };
+      (function tick() { yaw += spin; pivot.rotation.y = yaw; r.render(scene, cam); requestAnimationFrame(tick); })();
+    }
+  } catch (e) { els.forEach((el) => { if (!el.querySelector('canvas')) el.insertAdjacentHTML('beforeend', '⬢'); }); }
+}
+load();
+</script>
+</body></html>

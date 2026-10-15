@@ -6,6 +6,7 @@
  * browser; with the network off the card shows that last snapshot and its date. The honest companion to the senolytic
  * MASH card. "trial watch", "longevity trials", "is anyone repeating the senolytic liver trial".
  */
+import { cleanLower } from '../lib/ask-text.js';
 export const API = 'https://clinicaltrials.gov/api/v2/studies/';
 export const SNAP_KEY = 'a2m.trialwatch.v1';
 export const WATCH = [
@@ -15,7 +16,7 @@ export const WATCH = [
   { topic: 'Rapamycin', ids: ['NCT06727305', 'NCT07191353'] },
 ];
 
-const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:show(?:\s+me)?|open|check)\s+(?:the\s+)?)?(?:(?:longevity\s+)?trial\s+watch|longevity\s+trials|longevity\s+trial\s+watch)$|^(?:is\s+anyone|is\s+anybody|has\s+anyone)\s+(?:repeating|replicating|redoing)\s+the\s+senolytic\s+(?:liver|mash|nash)\s+trial$/;
 export function trialwatchOf(text) { return ASK_RE.test(CLEAN(text)); }
 

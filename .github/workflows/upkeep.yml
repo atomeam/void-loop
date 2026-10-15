@@ -1,0 +1,85 @@
+# Upkeep automations (owner, 2026-10-15: "add automations ... everywhere you can"). tools/upkeep.mjs does the work; each job is
+# small (ubuntu, a few minutes at most), writes a data file to main only when it changed, and warns instead of failing.
+#   daily:  clip visits (/c/_stats -> domains/void.clips.json), Piped host health (domains/void.piped.json)
+#   weekly: dead links in sitemap.xml + llms.txt, npm audit summary, delete branches already merged into main and idle 14+ days
+#   on merge: the PR's Working on line in domains/handoff.md moves to Just finished
+name: Void upkeep
+
+on:
+  schedule:
+    - cron: '29 7 * * *'  # daily, 3:29 AM New York (EDT)
+    - cron: '29 8 * * 0'  # Sundays: the weekly jobs too
+  pull_request:
+    types: [closed]
+  workflow_dispatch:
+
+concurrency:
+  group: void-upkeep-${{ github.event_name }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+  pull-requests: read
+
+jobs:
+  daily:
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Clip visits and Piped health
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          node tools/upkeep.mjs clips-stats || true
+          node tools/upkeep.mjs piped || true
+      - name: Commit what changed
+        run: |
+          git diff --quiet -- domains/void.clips.json domains/void.piped.json && { echo "nothing changed"; exit 0; }
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/void.clips.json domains/void.piped.json
+          git commit -m "Upkeep: clip visits per moment and Piped host health"
+          for i in 1 2 3 4; do git push origin HEAD:main && exit 0; sleep $((2 ** i)); git pull --rebase origin main; done; exit 1
+
+  weekly:
+    # a schedule event carries the cron that fired in github.event.schedule, so this picks the Sunday cron (void-review: ok)
+    if: github.event_name == 'workflow_dispatch' || github.event.schedule == '29 8 * * 0'
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main, fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Dead links
+        run: node tools/upkeep.mjs links || true
+      - name: Dependency audit (summary only)
+        run: npm audit --omit=dev --audit-level=high || echo "::warning title=npm audit::high-severity advisories above"
+      - name: Branches already merged into main, idle 14+ days, no open PR
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/upkeep.mjs stale --apply
+
+  handoff-done:
+    if: github.event_name == 'pull_request' && github.event.pull_request.merged == true && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 3
+    steps:
+      - uses: actions/checkout@v4
+        with: { ref: main }
+      - uses: actions/setup-node@v4
+        with: { node-version: 22 }
+      - name: Move the branch's Working on line to Just finished
+        env:
+          BRANCH: ${{ github.event.pull_request.head.ref }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+        run: |
+          node tools/upkeep.mjs handoff-done "$BRANCH" "$PR_URL"
+          git diff --quiet -- domains/handoff.md && exit 0
+          git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/handoff.md; git commit -m "Board: $BRANCH shipped ($PR_URL)"
+          for i in 1 2 3 4; do git push origin HEAD:main && exit 0; sleep $((2 ** i)); git pull --rebase origin main; done; exit 1

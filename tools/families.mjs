@@ -10,6 +10,7 @@
 // Copied from Home Assistant's integration quality scale (bronze to platinum, earned by meeting written rules), one notch
 // past: the rules are read off the repo, so a rating can't be claimed, only earned, and it drops when a test goes.
 //   node tools/families.mjs           write void-live-deploy/skills/families.json and print the families
+//   node tools/families.mjs --stale   list experiments older than STALE_DAYS, flagged for review (never deleted)
 //   node tools/families.mjs --check   exit 1 if families.json is out of date or a skill has no family (checks.mjs runs this)
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -20,16 +21,16 @@ const OUT = resolve(root, 'void-live-deploy/skills/families.json');
 
 // what each family is for, in Void's words to a visitor, and its skills (a new skill must be placed here: --check fails)
 export const FAMILIES = [
-  { id: 'make', name: 'Making things', for: 'figures, 3D models, prints, drawings and parts', skills: ['forge', 'make', 'figure', 'figures', 'zoom-figure', 'figure-can', 'cartoon', 'part', 'together', 'gears', 'motorbody', 'printedmotor', 'magnetize', 'print-file', 'print-download', 'inventory', 'splat', 'poster', 'draw', 'shape', 'image', 'throw-off'] },
+  { id: 'make', name: 'Making things', for: 'figures, 3D models, prints, drawings and parts', skills: ['forge', 'make', 'figure', 'figures', 'zoom-figure', 'figure-can', 'cartoon', 'part', 'together', 'gears', 'motorbody', 'printedmotor', 'magnetize', 'print-file', 'print-download', 'inventory', 'splat', 'poster', 'draw', 'shape', 'image', 'throw-off', 'swarm'] },
   { id: 'games', name: 'Games', for: 'board games, card games and play', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge'] },
   { id: 'sky', name: 'Sky and earth', for: 'weather, the sky tonight, places and time zones', skills: ['sky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'sky-card', 'suntimes', 'moon', 'night-sky', 'place', 'worldtime', 'distance', 'country'] },
   { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['timer', 'clock', 'countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine'] },
   { id: 'numbers', name: 'Numbers and money', for: 'sums, unit conversions, loans, savings, prices and home projects', skills: ['calc', 'convert', 'loan', 'savings', 'fuel', 'tip', 'crypto', 'markets', 'grades', 'util', 'counter', 'room', 'walls', 'home'] },
   { id: 'body', name: 'Body and mind', for: 'sleep, cycles, food, heart and calm', skills: ['sleep', 'ovulation', 'period', 'pregnancy', 'nutrition', 'food', 'heart', 'breath', 'feelings'] },
-  { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['video', 'video-play', 'define', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes'] },
+  { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['digest', 'video', 'video-play', 'define', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes'] },
   { id: 'life', name: 'Out in the world', for: 'food delivery, rides and Waymo, social feeds and dating', skills: ['rides', 'social', 'dating'] },
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['sticky', 'notepad', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase'] },
-  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['growth', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app'] },
+  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['growth', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app'] },
 ];
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 
@@ -74,6 +75,27 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
 }
 
 /** the families with each skill rated, the counts, and any skill no family holds. Pure, given the evidence. */
+// The decay timer (asked by Void, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
+// rated one (`since`, kept across rewrites); one left an experiment longer than STALE_DAYS is flagged for review. Flag only:
+// nothing is ever deleted or retired by this; a builder decides (test it, or retire it through the ledger).
+export const STALE_DAYS = 14;
+/** carry each experiment's `since` over from the last families.json; a new experiment starts today. Pure. */
+export function carrySince(fams, prev, today) {
+  const old = new Map(); for (const f of (prev && prev.families) || []) for (const s of f.skills || []) if (s.since) old.set(s.name, s.since);
+  for (const f of fams) for (const s of f.skills) if (s.tier === 'experiment') s.since = old.get(s.name) || today;
+  return fams;
+}
+/** experiments older than `days` on `now` (YYYY-MM-DD), oldest first: [{ name, family, since, days }]. Pure. */
+export function staleExperiments(fam, now, days = STALE_DAYS) {
+  const out = [], t = Date.parse(now + 'T00:00:00Z');
+  for (const f of (fam && fam.families) || []) for (const s of f.skills || []) {
+    if (s.tier !== 'experiment' || !s.since) continue;
+    const d = Math.floor((t - Date.parse(s.since + 'T00:00:00Z')) / 864e5);
+    if (d > days) out.push({ name: s.name, family: f.name, since: s.since, days: d });
+  }
+  return out.sort((a, b) => b.days - a.days);
+}
+
 export function build(names, ev) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
   const families = FAMILIES.map((f) => {
@@ -86,8 +108,14 @@ export function build(names, ev) {
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
+  // a family skill (lib/skill-family.js) is rated by its members, each still a skill with its own evidence
+  const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8')).flatMap((n) => {
+    const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'));
+    return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
   const b = build(names, evidence(names));
+  let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
+  carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
+  if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
   const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));

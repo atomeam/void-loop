@@ -94,6 +94,27 @@ jobs:
         run: |
           node tools/review-pr.mjs --base "$BASEREF" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
 
+      # no real key in any added line, in any file type (tools/secret-scan.mjs; the review above skips docs and data, where a pasted key
+      # in a log or a note is likeliest). It prints the file, the line and the kind, never the value, and blocks the merge.
+      - name: No secrets in the added lines
+        if: ${{ inputs.report_only != true }}
+        env:
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: |
+          node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
+
+      # no personal data (emails, phones, IPs, card numbers, tokens) in the files this PR adds or changes under domains/,
+      # logs and fixtures (tools/privacy-scan.mjs, kind and line only), and nothing secret in what the site ships, owner checks
+      # that read env, /api rate limited (tools/runtime-guard.mjs)
+      - name: No personal data, nothing secret in the built site
+        if: ${{ inputs.report_only != true }}
+        env:
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: |
+          mapfile -t changed < <(git diff --name-only --diff-filter=AM "$(git merge-base "$BASEREF" HEAD)" HEAD)
+          if [ ${#changed[@]} -gt 0 ]; then node tools/privacy-scan.mjs "${changed[@]}" || { echo "::error title=Personal data::use a placeholder ([email], [phone], [ip]) or a paraphrase; a placeholder on purpose gets privacy:ok"; exit 1; }; fi
+          node tools/runtime-guard.mjs
+
       # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
       - name: Every skill file is still listed (only when the PR touches skills/)
