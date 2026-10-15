@@ -75,3 +75,9 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 | --- | --- | --- | --- |
 | 23 local copies of the ask tidier `CLEAN` (three forms) | label, layer, cartoon, motorbody, dark-look, print-download, group, incident, status, trialwatch, inventory, show-countdown, dismiss, zoom-figure, senolytic, part, figure, figure-can, today, printedmotor, print-file, light-look, coral | `lib/ask-text.js` (`clean`, `cleanLower`); the old forms live on as the oracle in `tools/ask-text.test.mjs` | 2026-10-15 |
 | store-preview and tester-log as separate skills (never shipped as their own names) | asks ask-20261015-0619-1, ask-20261015-0616-1 | the store card (`skills/store.js`) and the growth card (`skills/growth.js`), routing aliases tested in `tools/void-asks-store.test.mjs` | 2026-10-15 |
+
+## Outside experiments wired in
+
+| What | From | Wired in as | Date |
+| --- | --- | --- | --- |
+| Frontier-Engine experiment F-020 `020-webgpu-void-agents` (emergent agents with a local state machine; the field's mood reshapes the UI around it), by the external Void Frontier-Engine Assimilation job | `drafts/020-webgpu-void-agents/` in atomeam/a-to-mind.com (commit 758c7c1), ledger row "Frontier note: 020" (ID F-020) | the `swarm` card ("swarm", "void agents") with `skills/mini/swarm.js` on the shared scene3d.js engine: grid neighbours instead of the draft's all-pairs search, a still field under reduced motion, frame budget and mood checked in `tools/swarm.test.mjs` | 2026-10-15 |
