@@ -119,7 +119,7 @@
         $('div', { class: 'row tabs', role: 'tablist' }, Object.entries(share.PLATFORMS).map(([k, v]) => { const b = $('button', { class: 'btn tab', type: 'button', role: 'tab', 'aria-selected': String(k === p), text: v.name });
           b.addEventListener('click', () => draw(k)); return b; })),
         $('div', { class: 'row' }, [
-          $('a', { class: 'btn', href: f.src, download: f.id + '.mp4', text: '1. Download' }),
+          $('a', { class: 'btn', href: f.src, download: share.fileName(f), text: '1. Download' }),
           copyBtn('2. Copy for ' + P.name, w.all),
           $('a', { class: 'btn yt', href: w.upload, target: '_blank', rel: 'noopener', 'data-up': p, text: '3. Upload to ' + P.name }),
         ]),

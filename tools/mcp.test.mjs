@@ -6,12 +6,15 @@ import assert from 'node:assert/strict';
 import { rpc, TOOLS, PROTOCOL } from '../void-live-deploy/lib/mcp.js';
 import { onRequestPost, onRequestGet } from '../void-live-deploy/functions/api/mcp.js';
 import { LIMITS } from '../void-live-deploy/lib/guard.js';
+import { SKILL_TOOLS } from '../void-live-deploy/lib/mcp-skills.js';
+import { choose, evidenceOf, OVER_MCP, HELD, TOP } from './mcp-skills.mjs';
+import { readFileSync } from 'node:fs';
 
-test('mcp: initialize names Void and its tools capability; tools/list gives three read-only tools with input schemas', async () => {
+test('mcp: initialize names Void and its tools capability; tools/list gives its read-only tools with input schemas', async () => {
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers']);
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', ...SKILL_TOOLS.map((s) => s.tool), 'skill_health']);
   for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
@@ -38,7 +41,7 @@ test('mcp: bad calls are JSON-RPC errors, never a crash: unknown method, unknown
 test('mcp: the endpoint speaks HTTP: POST JSON in, JSON out; a notification is 202; bad JSON is a parse error; GET says how to use it', async () => {
   const post = (body) => onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' }, body }) });
   const r = await post(JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' }));
-  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, 5);
+  assert.equal(r.status, 200); assert.match(r.headers.get('content-type'), /application\/json/); assert.equal((await r.json()).result.tools.length, TOOLS.length);
   assert.equal((await post(JSON.stringify({ jsonrpc: '2.0', method: 'notifications/initialized' }))).status, 202);
   assert.equal((await (await post('{not json')).json()).error.code, -32700);
   const g = await onRequestGet({ request: new Request('https://a-to-mind.com/api/mcp') });
@@ -62,7 +65,7 @@ test('mcp: an MCP client (no Origin) gets through the guard to the tools; a page
   const body = JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/list' });
   const ctx = (headers) => ({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json', ...headers }, body }), env: {}, next: (req) => onRequestPost({ request: req }) });
   const r = await guard(ctx({}));
-  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, 5);
+  assert.equal(r.status, 200); assert.equal((await r.json()).result.tools.length, TOOLS.length);
   assert.equal((await guard(ctx({ origin: 'https://evil.example', 'sec-fetch-site': 'cross-site' }))).status, 403);
 });
 
@@ -137,4 +140,122 @@ test('mcp: ask_void hands the question to /api/answer and words its answer, sour
   assert.equal((await call({ ask: 'x' }, ctx(200, {}))).result.isError, true, 'a question needs words');
   assert.equal((await call({ ask: 'what is a star' }, undefined)).result.isError, true, 'only the route can lend /api/answer');
   assert.equal(got.length, 3);
+});
+
+// asked by Void (2026-10-15): "Define and implement the MCP tool definitions for my top 10 most 'proven' skills to ensure seamless
+// cross-agent invocation" and "a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family health metrics".
+// The ten are chosen from the ratings (tools/mcp-skills.mjs), each answered on ask_void's own path; skill_health reads families.json.
+const FAMILIES = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
+const ratingOf = (n) => FAMILIES.families.flatMap((f) => f.skills.map((s) => ({ ...s, family: f.id }))).find((s) => s.name === n);
+
+test('mcp skills: the skill tools (up to ten) are proven, in families that answer in words, not held back, and the most evidence of what qualifies', () => {
+  assert.ok(SKILL_TOOLS.length > 0 && SKILL_TOOLS.length <= TOP);
+  const scores = [];
+  for (const s of SKILL_TOOLS) {
+    const r = ratingOf(s.skill);
+    assert.equal(r.tier, 'proven', s.skill + ' is rated proven'); assert.ok(OVER_MCP.includes(r.family), s.skill + ' is in a family that answers in words');
+    assert.ok(!(s.skill in HELD), s.skill + ' is not held back'); assert.ok(s.examples.length >= 1, s.skill + ' has real asks as examples');
+    scores.push(evidenceOf(r.why).score);
+  }
+  // nothing left out has more evidence than the least of those chosen
+  const left = FAMILIES.families.filter((f) => OVER_MCP.includes(f.id)).flatMap((f) => f.skills)
+    .filter((s) => s.tier === 'proven' && !(s.name in HELD) && !SKILL_TOOLS.some((t) => t.skill === s.name));
+  for (const s of left) assert.ok(evidenceOf(s.why).score <= Math.min(...scores), s.name + ' has more evidence than a chosen skill');
+  // a skill that works out an exact sum is not offered: over MCP a model would answer in its name
+  assert.ok(!OVER_MCP.includes('numbers'));
+  // nothing that sends, books, spends or touches the owner's data: those families are never offered
+  for (const f of ['self', 'stage', 'make', 'games', 'time', 'body']) assert.ok(!OVER_MCP.includes(f));
+  assert.deepEqual(evidenceOf('a self-test, 4 browser-suite mentions, 30 real asks in the benchmark'), { suite: true, browser: 4, bench: 30, score: 35 });
+  assert.deepEqual(evidenceOf('1 real ask in the benchmark'), { suite: false, browser: 0, bench: 1, score: 1 });
+});
+
+test('mcp skills: the choice is a pure function of the ratings: held back, unproven, not live or a family not offered never gets in', () => {
+  const fam = (skills) => ({ families: [{ id: 'words', name: 'Words', skills }, { id: 'self', name: 'Void itself', skills: [{ name: 'actions', tier: 'proven', why: 'a self-test, 9 browser-suite mentions, 900 real asks in the benchmark' }] }] });
+  const bench = [{ ask: 'a', want: 'skill:a' }, { ask: 'b1', want: 'skill:b|calc' }, { ask: 'b1', want: 'skill:b' }];
+  const got = choose(fam([{ name: 'a', tier: 'proven', why: '3 real asks in the benchmark' }, { name: 'b', tier: 'proven', why: 'a self-test, 9 real asks in the benchmark' },
+    { name: 'c', tier: 'checked', why: 'a self-test, 99 real asks in the benchmark' }, { name: 'util', tier: 'proven', why: 'a self-test, 99 real asks in the benchmark' },
+    { name: 'gone', tier: 'proven', why: '50 real asks in the benchmark' }]), ['a', 'b', 'c', 'util', 'actions'], bench, 1);
+  assert.deepEqual(got, [{ skill: 'b', tool: 'skill_b', family: 'words', familyName: 'Words', examples: ['b1'] }]);
+});
+
+test('mcp skills: lib/mcp-skills.js and the names on /code-review/ are in step with the ratings (else: node tools/mcp-skills.mjs)', async () => {
+  const { spawnSync } = await import('node:child_process');
+  const r = spawnSync(process.execPath, [new URL('./mcp-skills.mjs', import.meta.url).pathname, '--check'], { encoding: 'utf8' });
+  assert.equal(r.status, 0, r.stderr || r.stdout);
+});
+
+test('mcp skills: each skill tool has a clear description and an ask schema, and calls ask_void\'s own path with the link to the skill', async () => {
+  const list = (await rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list' })).result.tools;
+  for (const s of SKILL_TOOLS) {
+    const t = list.find((x) => x.name === s.tool);
+    assert.ok(t, s.tool + ' is listed'); assert.deepEqual(t.inputSchema.required, ['ask']); assert.equal(t.inputSchema.properties.ask.type, 'string');
+    assert.equal(t.annotations.readOnlyHint, true); assert.equal(t.annotations.destructiveHint, false);
+    assert.match(t.description, new RegExp('"' + s.skill + '" skill[\\s\\S]*answered the way ask_void is'));
+  }
+  const seen = [];
+  const ctx = { answer: async (a) => { seen.push(a); return { status: 200, body: { answer: 'Serendipity: finding something good without looking for it.', sources: [], at: '2026-10-15T00:00:00Z' } }; } };
+  const r = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: ' define serendipity ' } } }, ctx)).result;
+  assert.deepEqual(seen, [{ ask: 'define serendipity' }], 'the same call ask_void makes, nothing more');
+  assert.equal(r.isError, false); assert.match(r.content[0].text, /^Serendipity: finding[\s\S]*The define skill itself: https:\/\/a-to-mind\.com\/\?q=define%20serendipity$/);
+  assert.deepEqual([r.structuredContent.skill, r.structuredContent.path], ['define', 'answer_engine']);
+  const viaAsk = (await rpc({ jsonrpc: '2.0', id: 3, method: 'tools/call', params: { name: 'ask_void', arguments: { ask: 'define serendipity' } } }, ctx)).result;
+  assert.equal(viaAsk.structuredContent.answer, r.structuredContent.answer, 'the same answer ask_void gives');
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 4, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'x' } } }, ctx)).result.isError, true, 'too short: ask_void\'s own check');
+  assert.equal((await rpc({ jsonrpc: '2.0', id: 5, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity' } } })).result.isError, true, 'only the route lends /api/answer');
+  const raw = (await rpc({ jsonrpc: '2.0', id: 6, method: 'tools/call', params: { name: 'skill_define', arguments: { ask: 'define serendipity', response_type: 'raw_data' } } }, ctx)).result;
+  assert.equal(JSON.parse(raw.content[0].text).skill, 'define');
+});
+
+test('mcp skills: through the real route, a skill tool reaches /api/answer and comes back with a real answer (no model bound: the open web)', async () => {
+  // only the network is stubbed: the MCP route, lib/mcp.js and /api/answer's own handler run for real
+  const real = globalThis.fetch;
+  globalThis.fetch = async (u) => {
+    const url = String(u);
+    if (url.includes('list=search')) return Response.json({ query: { search: [{ title: 'Canberra' }] } });
+    if (url.includes('/page/summary/')) return Response.json({ title: 'Canberra', extract: 'Canberra is the capital city of Australia.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Canberra' } }, timestamp: '2026-10-01T00:00:00Z' });
+    return new Response('', { status: 404 });
+  };
+  try {
+    const res = await onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' },
+      body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_country', arguments: { ask: 'capital of australia' } } }) }), env: {} });
+    const j = await res.json();
+    assert.equal(j.result.isError, false, JSON.stringify(j));
+    assert.match(j.result.content[0].text, /Canberra is the capital city of Australia\.[\s\S]*Sources:\n- Canberra: https:\/\/en\.wikipedia\.org\/wiki\/Canberra[\s\S]*The country skill itself: https:\/\/a-to-mind\.com\/\?q=capital%20of%20australia/);
+    assert.equal(j.result.structuredContent.skill, 'country');
+  } finally { globalThis.fetch = real; }
+});
+
+test('mcp skills: skill_health gives the family health metrics from families.json, a family\'s skills one by one, and errors plainly', async () => {
+  const ctx = { families: async () => FAMILIES };
+  const call = (args, c = ctx) => rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_health', arguments: args } }, c);
+  const h = (await call({})).result;
+  assert.equal(h.isError, false);
+  const d = h.structuredContent;
+  assert.deepEqual(d.totals, FAMILIES.totals, 'the totals are families.json\'s own');
+  assert.equal(d.skills, Object.values(FAMILIES.totals).reduce((a, b) => a + b, 0));
+  assert.equal(d.families.length, FAMILIES.families.length);
+  for (const f of d.families) {
+    const src = FAMILIES.families.find((x) => x.id === f.id);
+    assert.deepEqual(f.count, src.count); assert.equal(f.skills, src.skills.length); assert.ok(f.proven_share >= 0 && f.proven_share <= 1); assert.equal(f.members, undefined);
+  }
+  assert.deepEqual(d.tools, SKILL_TOOLS.map((s) => s.tool)); assert.equal(d.source, 'https://a-to-mind.com/skills/families.json');
+  assert.match(h.content[0].text, new RegExp('^' + d.skills + ' skills, rated from evidence only: ' + d.totals.proven + ' proven'));
+  const one = (await call({ family: 'Numbers' })).result.structuredContent.families.find((f) => f.id === 'numbers');
+  assert.deepEqual(one.members.map((s) => s.name), FAMILIES.families.find((f) => f.id === 'numbers').skills.map((s) => s.name));
+  assert.match((await call({ family: 'nope' })).result.content[0].text, /No family "nope"\. The families: make, /);
+  assert.equal((await call({}, null)).result.isError, true, 'only the route lends the ratings');
+  assert.equal((await call({}, { families: async () => null })).result.isError, true, 'unreadable ratings are an error, not zeros');
+  const listed = (await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' })).result.tools.find((t) => t.name === 'skill_health');
+  assert.equal(listed.annotations.readOnlyHint, true); assert.equal(listed.annotations.openWorldHint, false);
+});
+
+test('mcp skills: through the real route, skill_health reads skills/families.json as the site serves it (ASSETS, a GET)', async () => {
+  const asked = [];
+  const env = { ASSETS: { fetch: async (req) => { asked.push([req.method, new URL(req.url).pathname]); return new Response(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url))); } } };
+  const res = await onRequestPost({ request: new Request('https://a-to-mind.com/api/mcp', { method: 'POST', headers: { 'content-type': 'application/json' },
+    body: JSON.stringify({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_health', arguments: { family: 'words' } } }) }), env });
+  const j = await res.json();
+  assert.equal(j.result.isError, false); assert.deepEqual(asked, [['GET', '/skills/families.json']]);
+  assert.deepEqual(j.result.structuredContent.totals, FAMILIES.totals);
+  assert.ok(j.result.structuredContent.families.find((f) => f.id === 'words').members.length > 0);
 });

@@ -30,6 +30,12 @@
   Access-Control-Allow-Origin: *
   Cache-Control: public, max-age=300
 
+/.well-known/security.txt
+  Content-Type: text/plain; charset=utf-8
+
+/humans.txt
+  Content-Type: text/plain; charset=utf-8
+
 /.well-known/api-catalog
   Content-Type: application/linkset+json; profile="https://www.rfc-editor.org/info/rfc9727"
   Access-Control-Allow-Origin: *
