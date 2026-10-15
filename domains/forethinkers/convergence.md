@@ -103,6 +103,15 @@ nodes:
     date: 2026-10-07
     tracks: [living-figures]
     claim: "54 x 54 x 13 mm, 17.1 g, 0.5 W idle / 1.5 W full load, wake word + ASR + Qwen2.5-0.5B + TTS with no cloud; 359.8 ms first token and 10.32 tokens/s (M5Stack model page, accessed 2026-10-07). Answers toy problem 1 at the part level. Too large for a 38 mm body, so the mind lives in the figure's home base; that layout is the next bench test."
+  - id: toy-mind-long-context-prefix-cache
+    kind: shared-part
+    status: established
+    part: 1,024-token context and cached fixed prefix on the AX630C toy mind
+    title: "Qwen2.5-HA-0.5B-Instruct (qwen2.5-ha-0.5b-ctx-ax630c)"
+    url: https://docs.m5stack.com/en/stackflow/models/qwen2.5-ha-0.5b-instruct
+    date: 2026-10-15
+    tracks: [living-figures]
+    claim: "Accessed 2026-10-15. AX630C runs a 1,024-token build at 533.19 ms first token and 9.76 tokens/s (smart-home fine-tune; M5Stack benchmark table). Axera's AX630C Qwen3-VL-2B build runs a 2,047-token maximum (Hugging Face AXERA-TECH). ax-llm (AX630C, SDK >= 3.0.0) caches several prompt prefixes and reuses the longest match (docs/multi_slot_kv_cache.md, 2026-06-12). So a character sheet plus a ~200-token kid memory file fits as one cached prefix stored on the module's eMMC. Open: a general character build at 1,024 tokens, benched."
   - id: slicer-slot-3mf-layout
     kind: shared-part
     status: established
@@ -143,6 +152,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-15 02:12 ET. Toy-mind-long-context-prefix-cache established: the AX630C toy mind runs a 1,024-token build (533 ms first token) and Axera's runtime caches fixed prefixes, so the kid-memory file fits beside the conversation (living-figures open question 2, partly answered). Corrected Babaru: its maker's shop no longer promises offline operation (read 2026-10-15). Folded the unmerged batch-fetch fix from forethinkers/cycle-2026-10-14-2014 (its PR #700 merged without it). Least-recently-advanced track was living figures (last 2026-10-07 20:14).
 - 2026-10-14 20:14 ET. Florida-flonduran-heat-dose established from NOAA CRW single-pixel stations (Key Biscayne, Dry Tortugas Nursery, Carysfort, Looe Key): Key Biscayne 2025 peak DHW 7.07 (soft exam; Baker WLRN 8 Jul 2026), Dry Tortugas 2026 peak DHW 13.70 ≈ that site's 2023 kill dose of 14.35. No earlier forethinkers branches or open think-tank PRs to fold. Least-recently-advanced track was planet-restoration (last 2026-10-07 18:07). Survival split for open question 4 still unpublished.
 - 2026-10-14 14:13 ET. Blood-methylation-senescence-score established (MaGE, medRxiv 1 Oct 2026, doi 10.64898/2026.09.29.26364335): a standard blood array gives a p16 burden score that predicts mortality in 18,859 people. Registry pass of 115 senolytic records found one burden-enriched trial (NCT07270120, not yet recruiting) and no burden-selected primary result. No earlier think-tank branches or PRs to fold; the even-hour runs from 2026-10-08 to 2026-10-14 08:07 failed on the box (Node 22 symlinks, node_modules and the test browser were wiped again) and left no work behind.
 - 2026-10-07 20:14 ET. Printed-motor-waves-arm established (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994): a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot, 7.62 N mm/A, 28.2% efficiency. The figure-joint node stays hypothesis with a narrower gap: toy size, toy battery, toy-safe surface heat. Logged the AIM 2023 single-print coil-plus-gripper and the UC San Diego one-print pneumatic walker as the two earlier routes. No earlier think-tank branches or PRs to fold.
