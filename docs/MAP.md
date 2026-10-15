@@ -147,6 +147,7 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 `tools/void_lens.py` (the free read-only scanner), `tools/ouroboros.py` (harvest, verify, report, plan, reclaim, run, push; Windows CI since #323, `.github/workflows/ouroboros.yml`), `tools/build_ouroboros_pack.py` and `drafts/ouroboros/` (the download, 0.3.0, not the paid tier), and Void's memory API `void-live-deploy/functions/api/memory.js` (owner, then paid members #273, then notes and told-me #279/#291). The paid side beyond members' own pushes waits on the Windows run (growth entry, Ouroboros-for-members).
 
 ## The other repos on the account (all rows verified against GitHub at `0f47258` with `gh repo view`; all 16 exist, none archived)
+**All of these are Void** (owner, 2026-10-15: "all the projects are V01D"; "V01D should absorb and connect everything"). The "relation" column below is the 2026-10-06 reading; what each repo now gives Void, and in what order, is the frontier's "Absorb and connect every repo" item. `Broke` and `same-page-system` (Atom-Bomb-Studio) are empty.
 | Repo | What it is (GitHub description) | Last push | Relation to Void |
 |---|---|---|---|
 | `a-to-mind.com` | no description on GitHub; `FEATURE_LEDGER.md` lists 26 features, all "specified", none built [desc 2026-10-06] | 2026-10-10 [gh] | The hold-gate era's idea bank; the hold-gate rule was retired 2026-10-02 (STANDING.md) |
