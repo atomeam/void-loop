@@ -2,6 +2,16 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-14 20:14 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `run-log.md`, and frontier item 8 (growth board frozen since 2026-10-11; claimable lines go on `domains/void.frontier.md`). No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked planet-restoration: least recently advanced (2026-10-07 18:07), and its open question 5 heat-dose experiment could be answered from live NOAA files; open question 4's Dry Tortugas six-month survival numbers are not published yet.
+
+- Built: regenerable heat-dose table for Key Biscayne Cluster, Dry Tortugas Nursery, Carysfort Reef and Looe Key Reef from NOAA CRW 5 km single-pixel stations (files through 2026-10-13, read 2026-10-14). CSV and script under `domains/forethinkers/experiments/`.
+- Established: Key Biscayne 2025 peak DHW was only 7.07 (never crossed the severe-mortality line of 8), matching Baker's on-record line that the Flondurans' first Miami summer "wasn't really a hard test" ([WLRN, 8 Jul 2026](https://www.wlrn.org/environment/2026-07-08/coral-bleaching-heat-florida)). Dry Tortugas Nursery 2026 peaked at 13.70 DHW vs 14.35 in the 2023 kill summer.
+- Logged: UM/USGS/NPS Dry Tortugas outplant of 34 colonies in early April 2026 still has no published six-month survival split as of this run ([UM Rosenstiel, 19 May 2026](https://news.miami.edu/rosenstiel/stories/2026/05/scientists-deploy-experimental-elkhorn-corals-to-dry-tortugas-to-test-introduction-of-new-genetic-diversity.html)).
+- Next open question: the Flonduran vs Florida-only survival split through a ~13.7 DHW Dry Tortugas summer, once UM or USGS publish it.
+- Frontier: next line on item 8 — add regional `southeast_florida` and the Dry Tortugas Nursery single-pixel parser to the reef watch.
+
 ## 2026-10-14 14:13 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `run-log.md`, and the frontier (the growth board has been frozen history since 2026-10-11, so the new claimable line goes on `domains/void.frontier.md` item 8). No earlier `forethinkers/*` branches or open think-tank PRs to fold. The runs from 2026-10-08 to 2026-10-14 08:07 failed because the box lost its Node 22 symlinks, `node_modules` and the test browser again; this run restored `node_modules` and the browser with `npm ci` and `npx playwright-core install chromium` and ran with `~/.local/node22/bin` first on PATH. Picked life-extension: least recently advanced (2026-10-07 16:20), and its open question 4 could be answered from the live registry.
