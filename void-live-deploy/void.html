@@ -4537,6 +4537,7 @@ say('nothing selected to remove');
       const deep = el.querySelector('[data-deep]');
       if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by V01D, closer read by V01D\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
         : '<div class="src">Quick checks by V01D' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
+      attachProductTail(ask || title, { el }); // one relevance-gated line after the review
       return 'review';
     }
     async function handleReviewAsk(text, full) {
@@ -4552,8 +4553,9 @@ say('nothing selected to remove');
       const code = cr.codeOf(full);
       if (cr.looksLikeCode(code, cr.langNamed(full.split(/\n|\s*⏎/)[0]))) { showReview(full.split(/\n|\s*⏎/)[0].replace(/:\s*$/, '').split(':')[0], code, cr); return true; }
       const title = text.replace(/\s*⏎[\s\S]*$/, '').slice(0, 140);
-      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
       pendingReview = { ask: title, until: Date.now() + 600000 };
+      attachProductTail(text, { el }); // Code Review Pro when the ask clearly matches
       loopLog({ domain: 'void.review', ask: text, score: 'pass', note: 'asked for code' });
       return true;
     }

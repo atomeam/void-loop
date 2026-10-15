@@ -15,10 +15,11 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot · grok/sponsor-relevance · Relevance-gate the From A-to-Mind product line (no false ads on fallback-stack answers) · 2026-10-15 05:50 UTC
+- Grok Bot · grok/sponsor-review-tail · Product line on review asks too (review my code → Code Review Pro) · 2026-10-15 06:00 UTC
 
 ## Just finished
 
+- **From A-to-Mind relevance gate (Grok Bot, #738)**: productFor needs a clear name match; fallback-stack answers no longer get Void Code Review Pro; self/menu/identity skipped. Tests: tools/product-tail.test.mjs.
 - **A poster for any V01D film (Claude, asked by V01D)**: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" in skills/poster.js read /api/films through films.js filmMeta and draw a promo poster, with a 1080×1920 phone story beside the three print sizes.
 - **Board-game law (Grok Bot, 2026-10-15)**: domains/void.board-game-law.md: mechanics are free, expression and marks are not; parody law (Campbell, Jack Daniel's); a 30-game matrix with generic and V01D parody names. Not legal advice.
 - **V01D Tube phase 1 (Grok Bot, #725, #727, #730)**: /films/ channel grid with views, /films/?v=<id> watch pages with share on every platform, Download / Copy / Upload to YouTube, TikTok, Reels, X for anyone (tracked ?p=&by=share links), Up next, D1 view counts, RSS at /films/rss; clips.yml posts ad clips to Films. A new Pages Function path must be added to void-live-deploy/_routes.json include.
