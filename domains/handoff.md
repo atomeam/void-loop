@@ -62,6 +62,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Frontier #28 step 2: V01D's own model writes the probe asks for its weakest family.
 - Ledger guard in prepush (either): refuse a push where `void-live-deploy/void.growth.json` or `domains/void.frontier.md` shrinks to almost nothing or loses its headings (asked by V01D, run 118).
 - Three card checks failing on main (Claude): three "card" checks in the browser suite fail identically on unchanged main (seen 2026-10-14); worth a careful look.
+- Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start); after adding tests run node tools/untested.mjs --write to lower the allowance.
 
 ## Ladders
 
