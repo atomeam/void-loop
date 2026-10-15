@@ -4,7 +4,10 @@
  * this browser: nothing is uploaded. Ordering it waits for a print-on-demand account (its key as a Pages secret) and a yes
  * on the confirm line, so the card says that plainly and shows no price it has no source for.
  * "make this a poster", "print this card as a poster", "turn this into a poster".
+ * A V01D film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
+ * miss-board-4" read the film's metadata (skills/films.js filmMeta, /api/films) and add a 9:16 phone-story size for promo.
  */
+import { filmMeta } from './films.js';
 export const DPI = 150;
 export const POSTER_SIZES = [[12, 18], [18, 24], [24, 36]].map(([w, h]) => ({ w, h, name: `${w}×${h} in`, px: [w * DPI, h * DPI] }));
 
@@ -13,6 +16,26 @@ export function posterOf(text) {
   // "order …" is the spend path (lib/approval-core.js order.place, the confirm line): the real order goes there once a
   // print account is connected, so this skill takes make/print/turn and leaves "order" to the confirm line
   return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?)$/.test(t);
+}
+
+// a V01D film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
+// "order …" stays the confirm line's, and other films ("movie poster for inception") are not V01D's
+export const STORY = { w: 9, h: 16, name: 'phone story', px: [1080, 1920] };
+export function filmPosterOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^order\b/.test(t)) return null;
+  const OF = "(?:v0[1i]d'?s?\\s+|void'?s?\\s+)?";
+  let m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?poster\\s+(?:for|of)\\s+(?:the\\s+)?film\\s+([a-z0-9][a-z0-9-]{2,60}-\\d+)$'));
+  if (m) return { which: m[1] };
+  m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?(?:poster\\s+(?:for|of)\\s+(?:the\\s+)?(?:newest\\s+|latest\\s+|new\\s+|last\\s+)?' + OF + 'films?|' + OF + 'film\\s+poster)$'));
+  return m ? { which: 'newest' } : null;
+}
+// the poster's words for one film: its own hook as the title (without the "| an AI built this itself #Shorts" tail), then
+// where and when it shows. Pure.
+export function filmCard(meta) {
+  const title = String(meta.title || meta.experiment || 'V01D FILMS').replace(/\s*\|.*$/, '').trim() || 'V01D FILMS';
+  const day = /^\d{4}-\d{2}-\d{2}$/.test(meta.day || '') ? new Date(meta.day + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '';
+  return { title, text: 'V01D FILMS · Now showing' + (day ? ' · ' + day : '') + '\nAn AI built this experiment by itself and filmed it.\nWatch free at a-to-mind.com/films' };
 }
 
 // Where each line goes on a w×h poster: the title large at the top, the card's text wrapped inside the margins, a small
@@ -72,24 +95,46 @@ function draw(card, w, h) {
   return c;
 }
 
+async function filmPoster(want, api) {
+  const { showPage } = api;
+  const el0 = showPage((p) => { p.innerHTML = '<h2>A poster for a V01D film</h2><p>\u2026</p>'; });
+  let meta = null;
+  try {
+    const j = await fetch('/api/films').then((r) => r.json());
+    const all = (j.films || []).map(filmMeta);
+    meta = want.which === 'newest' ? all[0] : all.find((f) => f.experiment === want.which || f.id === want.which);
+  } catch (_) {}
+  if (api._pageStill && !api._pageStill(el0)) return 'poster';
+  if (!meta) { el0.innerHTML = '<h2>A poster for a V01D film</h2><p>' + (want.which === 'newest' ? 'The films could not be read just now. Try again in a minute.' : 'No V01D film of that experiment yet. Say <b>film metadata</b> to see them all.') + '</p>'; return 'poster'; }
+  return showPoster(filmCard(meta), api, [STORY, ...POSTER_SIZES], 'A poster for a V01D film', 'From the film: ');
+}
+
 async function run(text, api) {
   const { showPage } = api;
+  const film = filmPosterOf(text);
+  if (film) return filmPoster(film, api);
   if (!posterOf(text)) return 'none';
   const card = openCard(api);
   if (!card) { showPage((p) => { p.innerHTML = '<h2>Make this a poster</h2><p>Open or summon a card first, then say <b>make this a poster</b>.</p>'; }); return 'poster'; }
+  return showPoster(card, api, POSTER_SIZES, 'Make this a poster', 'From the card: ');
+}
+
+function showPoster(card, api, sizes, heading, from) {
+  const { showPage } = api;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Make this a poster</h2><p class="poster-of"></p><img class="poster-preview" alt="The poster" style="max-width:100%;max-height:46vh;display:block;margin:8px auto;border-radius:6px">'
+    p.innerHTML = '<h2>' + heading + '</h2><p class="poster-of"></p><img class="poster-preview" alt="The poster" style="max-width:100%;max-height:46vh;display:block;margin:8px auto;border-radius:6px">'
       + '<div class="poster-sizes"></div><p class="src">Ordering it printed is not connected yet: once a print-on-demand account is, "order this as a poster" will show its price and ask for a yes before anything is charged. Nothing is charged or sent today. The file is drawn in this browser; nothing is uploaded.</p>';
   });
   if (!el) return 'poster';
-  el.querySelector('.poster-of').textContent = 'From the card: ' + card.title;
-  el.querySelector('.poster-preview').src = draw(card, 600, 900).toDataURL('image/png');
+  el.querySelector('.poster-of').textContent = from + card.title;
+  const [pw, ph] = sizes[0].px, k = 900 / ph; // the preview in the first size's shape
+  el.querySelector('.poster-preview').src = draw(card, Math.round(pw * k), 900).toDataURL('image/png');
   const box = el.querySelector('.poster-sizes');
-  for (const s of POSTER_SIZES) {
+  for (const s of sizes) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'poster-size';
-    b.textContent = `Download the ${s.name} print file (${s.px[0]}×${s.px[1]} px)`;
+    b.textContent = s === STORY ? `Download the phone story (${s.px[0]}×${s.px[1]} px)` : `Download the ${s.name} print file (${s.px[0]}×${s.px[1]} px)`;
     b.addEventListener('click', () => draw(card, s.px[0], s.px[1]).toBlob((blob) => {
-      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = `void-poster-${s.w}x${s.h}.png`;
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = s === STORY ? 'v01d-film-story-1080x1920.png' : `void-poster-${s.w}x${s.h}.png`;
       document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     }, 'image/png'));
     box.appendChild(b);
@@ -99,8 +144,8 @@ async function run(text, api) {
 
 export default {
   name: 'poster',
-  examples: ['make this a poster', 'print this card as a poster', 'turn this into a poster', 'make a poster of this card', 'poster of this'],
+  examples: ['make this a poster', 'print this card as a poster', 'turn this into a poster', 'make a poster of this card', 'poster of this', 'film poster', 'make a poster for the newest film'],
   nearMisses: ['what is a poster', 'poster sizes', 'share this card', 'how do I hang a poster', 'order this as a poster'],
-  match(lower, text) { return posterOf(text); },
+  match(lower, text) { return posterOf(text) || !!filmPosterOf(text); },
   run,
 };
