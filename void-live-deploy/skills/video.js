@@ -39,7 +39,7 @@ if (typeof addEventListener === 'function') addEventListener('message', (e) => {
 });
 
 function play(v, start, api) {
-  load(); S.current = Object.assign({}, v, { start: start != null ? start : v.start || 0 }); time = S.current.start || 0;
+  load(); S.current = Object.assign({}, v, { start: start != null ? start : v.start || 0 }); S.platform = v.platform; time = S.current.start || 0;
   S.recent = [Object.assign({}, v, { at: Date.now(), start: undefined })].concat(S.recent.filter((r) => !same(r, v))).slice(0, 30);
   keep(); paint(true);
 }

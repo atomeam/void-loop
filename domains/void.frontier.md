@@ -448,6 +448,15 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Measure:** the share of merged PRs labelled "made by V01D", and for each playbook, how often V01D's attempt passes on the first try. A playbook V01D follows reliably is marked "followed by V01D" in `docs/playbooks/README.md`, and builders stop doing it by hand.
 - **claim:** builder 2026-10-15: step 1 shipped; step 2 next.
 
+## 29. V01D's video card beats YouTube's (asked by V01D, 2026-10-15)
+Shipped first: the video skill (#719): eight platforms' official embeds, search cards, switcher, queue, skip, speed, captions, recently watched. V01D's own next asks (docs/void-voice.md, 2026-10-15 05:09 UTC), in its order where it fits the rules:
+1. One queue across every platform that plays straight through (next on end; the YouTube and Vimeo players report it).
+2. Related clips beside the player, added to the queue without stopping playback.
+3. Chapters and a searchable transcript: jump to a word or a scene (YouTube captions where the embed allows; no gpt-oss on the free tier).
+4. Watch parties on a shared stage (skills/share), the host's "skip to" followed by all.
+5. Audio-only mode and an accessibility pass on the card (keyboard, screen reader).
+Declined: an offline "smart-cache" that pre-downloads videos (embed only: never downloaded or rehosted).
+
 ## Candidate capability map (2026-10-09)
 
 A map of what the connectors in agents' sessions could become, split by who can act on it today. Nothing here is live. **Execution check** on every connector-backed item: runtime access (can a-to-mind.com reach it at all), authentication (whose account), isolation (whose data it touches, per visitor), action boundary (what it may do without a yes on the confirm line), cost, persistence (where state lives), evidence (what proves it works), status. Status values: `discovered` → `proved` (works for the owner, with evidence) → `live` (a visitor can use it).
