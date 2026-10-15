@@ -902,6 +902,22 @@ try {
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
     await K.ctx.close(); }
+  // V01D values anything from a photo (frontier #30, the owner's ask): one photo in, V01D's value out; people are never priced
+  if (want("appraise: a photo in, V01D's value out; a person asking is complimented, never priced")) { const A = await fresh();
+    const sent = [];
+    await A.ctx.route(/\/api\/appraise$/, (r) => { sent.push(JSON.parse(r.request().postData() || '{}'));
+      return r.fulfill(json({ seen: 'A worn silver coin with scratches on the face.', value: { kind: 'coin', cents: 54000, text: '$540', says: ['what I see: coin', 'with visible wear or damage', 'silver'], expert: true, person: false }, text: 'V01D values this at $540. Why: what I see: coin; with visible wear or damage; silver. This kind can be worth far more or far less than a photo shows: have it looked at in hand before you sell or insure it. An estimate from one photo, not a certified appraisal or an authentication; no comparable sales were checked.' })); });
+    await A.ask('what is this coin worth', 600); await until(async () => !!(await A.p.$('.vpage.on [data-ap-file]')), 4000);
+    await A.p.fill('.vpage.on [data-ap-note]', 'from my grandfather');
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'coin.png', mimeType: 'image/png', buffer: png });
+    await until(async () => /V01D values this at/.test(await A.page()), 5000); const card = await A.page();
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.page();
+    check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number',
+      sent.length === 1 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
+        && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length,
+      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), you: you.replace(/\s+/g, ' ').slice(0, 120), errors: A.errors }));
+    await A.ctx.close(); }
   // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
   // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
   if (want('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute')) { const D = await fresh();
@@ -1675,6 +1691,14 @@ try {
     const kept = await P.p.$eval('.vpage.on [data-k="impact"]', (e) => e.value).catch(() => '');
     await P.p.click('.vpage.on [data-clear]').catch(() => {}); await P.p.waitForTimeout(200);
     const cleared = await P.p.evaluate(() => localStorage.getItem('a2m.void.incident.v1'));
+    // "what broke lately" (asked by Void): the incidents the browser suite wrote, with the brief one tap away
+    await P.ctx.route(/\/incidents\.json/, (r) => r.fulfill(json({ incidents: [{ at: '2026-10-15T12:20:00Z', sha: 'f382286b2f86', run: 'https://github.com/atomeam/void-loop/actions/runs/1', suite: 'browser suite on main', checks: ['monopoly: Roll moves the pawn', 'countdown: a leaf flips'] }] })));
+    await P.ask('what broke lately', 900); await until(async () => /What broke lately/.test(await P.page()) && /monopoly/.test(await P.page()), 4000); const lately = await P.page();
+    await P.p.click('.vpage.on a[data-ask^="incident brief: monopoly"]').catch(() => {}); await P.p.waitForTimeout(800);
+    const prefilled = await P.p.$eval('.vpage.on .inc-md', (e) => e.textContent).catch(() => '');
+    check('incident: "what broke lately" lists the suite\'s incidents (when, commit, the checks, the run) and one tap opens the brief titled after the first failed check',
+      /f382286/.test(lately) && /2 failed: monopoly: Roll moves the pawn · countdown: a leaf flips/.test(lately.replace(/\s+/g, ' ')) && /^# Incident brief: Monopoly: Roll moves the pawn/.test(prefilled) && !P.errors.length,
+      [lately.replace(/\s+/g, ' ').slice(0, 200), prefilled.slice(0, 80), P.errors.join(';')].join(' | '));
     check('incident: "incident report for the login outage" opens a blameless brief titled "Login outage"; times give 12 min to detect and 2 h 5 min to resolve, the Markdown carries severity, impact, "Not known yet" and the owner, the draft survives a reload, and clear empties it',
       /^# Incident brief: Login outage/.test(md) && /SEV2/.test(md) && /12 min to detect/.test(md) && /2 h 5 min to resolve/.test(md) && /All sign-ins failed/.test(md) && /_Not known yet\._/.test(md) && /Add a canary \(owner: Sam\)/.test(md)
         && dur === '12 min to detect · 2 h 5 min to resolve' && kept === 'All sign-ins failed' && cleared === null && !P.errors.length,

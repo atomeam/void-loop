@@ -1,0 +1,26 @@
+{
+ "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
+ "incidents": [
+  {
+   "at": "2026-10-15T20:31:42.711Z",
+   "sha": "e464d0f4a5c4925a5b741101e499556ba33f10ca",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38798751178",
+   "suite": "browser suite on main",
+   "checks": [
+    "404 page: a missing path answers 404 (not the homepage), noindex, V01D's dark stage, the path shown as text, the ask box focused, fits a 390 px phone",
+    "rebuild-map: show the map lists the 13 rows as they stand now",
+    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
+   ]
+  },
+  {
+   "at": "2026-10-15T20:02:20.199Z",
+   "sha": "70a90cae53d4dc7b698435f54ff9f1a2e78933b8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38795111476",
+   "suite": "browser suite on main",
+   "checks": [
+    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
+    "rebuild-map: show the map lists the 13 rows as they stand now"
+   ]
+  }
+ ]
+}
