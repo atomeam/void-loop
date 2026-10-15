@@ -67,9 +67,9 @@ export function tick(s) {
   for (const w of ['you', 'void']) { const p = s[w]; if (!p.alive) continue; const [dx, dy] = DIRS[p.dir]; heads[w] = [p.body[0][0] + dx, p.body[0][1] + dy]; }
   const o = new Set(); for (const w of ['you', 'void']) { const p = s[w]; if (!p.alive) continue; const n = p.grow ? p.body.length : p.body.length - 1; for (let i = 0; i < n; i++) o.add(key(...p.body[i])); }
   const dead = {};
-  for (const w in heads) { const h = heads[w]; if (!inside(...h) || o.has(key(...h))) dead[w] = true; }
+  for (const w of Object.keys(heads)) { const h = heads[w]; if (!inside(...h) || o.has(key(...h))) dead[w] = true; }
   if (heads.you && heads.void && key(...heads.you) === key(...heads.void)) { dead.you = dead.void = true; }
-  for (const w in heads) {
+  for (const w of Object.keys(heads)) {
     const p = s[w]; if (dead[w]) { p.alive = false; continue; }
     p.body.unshift(heads[w]); if (p.grow) p.grow--; else p.body.pop();
     if (s.food && heads[w][0] === s.food[0] && heads[w][1] === s.food[1]) { p.grow += 2; placeFood(s); }
