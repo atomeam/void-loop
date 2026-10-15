@@ -1,36 +1,38 @@
 /**
- * password skill — generate a strong random password (no key, pure)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite() }
- * "generate a password", "strong password", "password of 16 characters".
+ * password skill: "generate a password", "make a password", "password generator".
+ * Shows a summoned page with a client-side generated password. Empty surface stays empty.
+ * Nothing is sent; regenerate on the page.
  */
-const CHARS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*';
+export function passwordOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:please\s+)?(?:(?:generate|make|create|give me)\s+(?:a\s+|an\s+|me\s+)?(?:strong\s+|secure\s+|random\s+)?password|password\s+(?:generator|maker))$/.test(t) ||
+         /^new\s+password$/.test(t);
+}
+
 function generate(len = 16) {
+  const chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
   let out = '';
-  for (let i = 0; i < len; i++) out += CHARS[Math.floor(Math.random() * CHARS.length)];
+  for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
   return out;
 }
-function isPassword(text) {
-  return /^(?:generate|make|create|give\s+me)\s+(?:a\s+|an\s+)?(?:strong\s+|random\s+)?password(?:\s+(?:of\s+)?(\d+)\s*(?:characters?|chars?)?)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
-}
-async function run(text, api) {
-  const { showPage, esc } = api;
-  const m = String(text || '').match(/(\d+)/);
-  const len = m ? Math.min(64, Math.max(8, +m[1])) : 16;
-  const pw = generate(len);
+
+function run(text, api) {
+  const { showPage } = api;
+  if (!passwordOf(text)) return 'none';
+  const pw = generate();
   showPage((p) => {
-    p.innerHTML = '<h2>Password</h2><p style="font-size:24px;font-family:monospace;letter-spacing:1px">' + esc(pw) + '</p><div class="sub">' + len + ' characters · copy it now</div><div class="src">Generated locally · as of Oct 2026</div>';
+    p.innerHTML = '<h2>Password</h2><div class="sub">generated in this browser</div><p style="font-size:24px;font-family:monospace;word-break:break-all;margin:20px 0;padding:12px;background:rgba(0,0,0,.3);border-radius:8px">' + pw + '</p><p class="src">Nothing is sent. Ask again for a new one.</p>';
   });
   return 'password';
 }
-function suite() {
-  const ok = isPassword('generate a password') && isPassword('password of 12 characters') && !isPassword('what is a password');
-  return { ok, got: ok ? 'matched examples' : 'missed' };
-}
+
 export default {
   name: 'password',
-  examples: ['generate a password', 'strong password', 'password of 16 characters'],
-  nearMisses: ['what is a password', 'password manager', 'change my password'],
-  match(lower, text) { return isPassword(text); },
+  examples: ['generate a password', 'make a password', 'password generator', 'new password'],
+  nearMisses: ['what is a password', 'password strength', 'login'],
+  match(lower, text) { return passwordOf(text || lower); },
   run,
-  suite
+  suite() {
+    return { ok: passwordOf('generate a password') && passwordOf('password generator') && !passwordOf('hello') };
+  },
 };
