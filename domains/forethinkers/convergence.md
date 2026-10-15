@@ -84,7 +84,16 @@ nodes:
     url: https://doi.org/10.1126/science.adx7825
     date: 2025-10-23
     tracks: [planet-restoration]
-    claim: "Science 390:361 (Manzello et al.): SST at or above 31 C for 40.7 days on average; 97.8-100% of A. palmata and A. cervicornis dead in the Keys and Dry Tortugas by March 2024 (52,356 colonies), 37.9% offshore southeast Florida. Gene banks prevented extirpation (Conserv Biol doi 10.1111/cobi.70168). Durusdinium elkhorn +1.9 C ED50 (Coral Reefs doi 10.1007/s00338-025-02652-7). First permitted cross-border outplant (Florida x Honduras) July 2025; Dry Tortugas side-by-side trial April 2026."
+    claim: "Science 390:361 (Manzello et al.): SST at or above 31 C for 40.7 days on average; 97.8-100% of A. palmata and A. cervicornis dead in the Keys and Dry Tortugas by March 2024 (52,356 colonies), 37.9% offshore southeast Florida. Gene banks prevented extirpation (Conserv Biol doi 10.1111/cobi.70168). Durusdinium elkhorn +1.9 C ED50 (Coral Reefs doi 10.1007/s00338-025-02652-7). First permitted cross-border outplant (Florida x Honduras) July 2025; Dry Tortugas side-by-side trial April 2026. Heat-dose ruler 2026-10-14 (NOAA CRW single-pixel): Key Biscayne 2025 peak DHW 7.07 (Baker: not a hard test); Dry Tortugas Nursery 2026 peak DHW 13.70 vs 2023 kill dose 14.35; six-month survival split still unpublished."
+  - id: florida-flonduran-heat-dose
+    kind: shared-part
+    status: established
+    part: NOAA CRW heat-dose table for Flonduran trial sites (Key Biscayne, Dry Tortugas) vs 2023 kill summers
+    title: "NOAA Coral Reef Watch Florida 5 km single-pixel virtual stations"
+    url: https://coralreefwatch.noaa.gov/product/vs_single_pixel_exp/florida_keys.php
+    date: 2026-10-14
+    tracks: [planet-restoration]
+    claim: "Single-pixel DHW files read 2026-10-14 (series through 2026-10-13). Key Biscayne Cluster peak DHW 7.07 in 2025 (never crossed CRW severe line of 8) vs 10.45 in 2026; Dry Tortugas Nursery peak 13.70 in 2026 vs 14.35 in 2023. Baker (WLRN 8 Jul 2026) called 2025 not a hard test. Regenerable CSV in domains/forethinkers/experiments/florida-heat-dose-2023-2026.csv. Dry Tortugas six-month Flonduran vs Florida-only survival still unpublished."
   - id: offline-character-mind-module
     kind: shared-part
     status: established
@@ -134,6 +143,7 @@ nodes:
 
 ## Cycle log
 
+- 2026-10-14 20:14 ET. Florida-flonduran-heat-dose established from NOAA CRW single-pixel stations (Key Biscayne, Dry Tortugas Nursery, Carysfort, Looe Key): Key Biscayne 2025 peak DHW 7.07 (soft exam; Baker WLRN 8 Jul 2026), Dry Tortugas 2026 peak DHW 13.70 ≈ that site's 2023 kill dose of 14.35. No earlier forethinkers branches or open think-tank PRs to fold. Least-recently-advanced track was planet-restoration (last 2026-10-07 18:07). Survival split for open question 4 still unpublished.
 - 2026-10-14 14:13 ET. Blood-methylation-senescence-score established (MaGE, medRxiv 1 Oct 2026, doi 10.64898/2026.09.29.26364335): a standard blood array gives a p16 burden score that predicts mortality in 18,859 people. Registry pass of 115 senolytic records found one burden-enriched trial (NCT07270120, not yet recruiting) and no burden-selected primary result. No earlier think-tank branches or PRs to fold; the even-hour runs from 2026-10-08 to 2026-10-14 08:07 failed on the box (Node 22 symlinks, node_modules and the test browser were wiped again) and left no work behind.
 - 2026-10-07 20:14 ET. Printed-motor-waves-arm established (Schwalbe et al., Advanced Materials Technologies, 20 Apr 2026, doi 10.1002/admt.70994): a motor printed in every element but its magnets drives a waving arm and a multi-legged walking robot, 7.62 N mm/A, 28.2% efficiency. The figure-joint node stays hypothesis with a narrower gap: toy size, toy battery, toy-safe surface heat. Logged the AIM 2023 single-print coil-plus-gripper and the UC San Diego one-print pneumatic walker as the two earlier routes. No earlier think-tank branches or PRs to fold.
 - 2026-10-07 18:07 ET. Florida-acropora-functional-extinction established (Manzello et al. Science 23 Oct 2025): the 2023 heatwave killed 97.8-100% of Keys Acropora, answering planet-restoration question 3. Logged gene banks (Muller et al. Conserv Biol 2025), Durusdinium +1.9 C elkhorn (Coral Reefs 2025), the Baker et al. Science AGF forum, and the Flonduran field trials (Miami July 2025, Dry Tortugas April 2026). No earlier think-tank branches or PRs to fold.
