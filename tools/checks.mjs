@@ -25,6 +25,7 @@ for (const [name, file] of [
   ['ask-text', 'ask-text.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
+  ['store-gap', 'store-gap.test.mjs'],
   ['film-share', 'film-share.test.mjs'],
   ['appraise', 'appraise.test.mjs'],
   ['launch-fixes', 'launch-fixes.test.mjs'],

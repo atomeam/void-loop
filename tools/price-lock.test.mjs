@@ -20,6 +20,7 @@ assert.match(reply, /can't change them/); assert.match(reply, /free/); assert.ma
 assert.doesNotMatch(reply, /\b\d{1,3}\s*%|code:|coupon code is|\$0/i, 'never hands out a discount or code');
 const freeOne = STORE_PRODUCTS.find((p) => p.cents === 0 && !p.soon);
 if (freeOne) assert.ok(reply.includes(freeOne.name), 'points to the free items');
+assert.match(reply, /Clips Pack/, 'points to the free clips pack');
 
 // server side: checkout ignores any price, discount or coupon in the body
 const paid = STORE_PRODUCTS.find((p) => p.cents > 0 && !p.soon && p.gumroad);
