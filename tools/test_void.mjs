@@ -861,6 +861,19 @@ try {
       hintsOn && !afterHints.hints && afterHints.page && !(await B.page()) && clocks === 1, JSON.stringify({ hintsOn, afterHints, clocks }));
     check('the batch threw no page errors', !B.errors.length, B.errors.join(' | '));
     await B.ctx.close(); }
+  // The country card shows the time there now, also when REST Countries does not answer (owner, 2026-10-15: "population of Japan"
+  // fell back to the built-in list and showed no time at all, though the build note said country cards show the time).
+  if (want('country card: the time there now, from the built-in zones, with or without REST Countries')) { const K = await fresh();
+    await K.ctx.route(/restcountries\.com/, (r) => r.abort());
+    await K.ask('population of Japan', 7500);
+    await until(async () => /didn.t answer/.test(await K.page()), 9000); const down = await K.page();
+    await K.ctx.unroute(/restcountries\.com/);
+    await K.ctx.route(/restcountries\.com/, (r) => r.fulfill(json([{ name: { common: 'Japan', official: 'Japan' }, capital: ['Tokyo'], population: 123000000, currencies: { JPY: { name: 'Japanese yen', symbol: '¥' } }, languages: { jpn: 'Japanese' }, area: 377930, continents: ['Asia'], timezones: ['UTC+09:00'], flag: '' }])));
+    await K.ask('capital of Japan', 1500); await until(async () => /Source: REST Countries/.test(await K.page()), 4000); const up = await K.page();
+    const clock = /\d{1,2}:\d\d [AP]M \w{3} in Tokyo, UTC\+09:00/;
+    check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
+      clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
+    await K.ctx.close(); }
   // World clock, translation copy and MyMemory's matches, skill files cached for a minute, and a 390px phone.
   if (want("World clock, translation copy and MyMemory's matches, skill files cached for a minute, and")) { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
     await C.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url();

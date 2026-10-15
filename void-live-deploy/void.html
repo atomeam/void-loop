@@ -3640,12 +3640,7 @@ say('nothing selected to remove');
       stars = Array.from({ length: 90 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.4 + 0.35, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18 }));
       farStars = Array.from({ length: 160 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 0.8 + 0.12, vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05 }));
     }
-    // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
-    // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
-    let starLast = 0;
-    function drawStars(now) {
-      if (typeof now === 'number' && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
-      if (typeof now === 'number') starLast = now;
+    function drawStars() {
       starCtx.clearRect(0, 0, starCv.width, starCv.height);
       if (starFarCtx) starFarCtx.clearRect(0, 0, starFar.width, starFar.height);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
