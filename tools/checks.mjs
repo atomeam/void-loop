@@ -24,6 +24,7 @@ for (const [name, file] of [
   ['film-share', 'film-share.test.mjs'],
   ['launch-fixes', 'launch-fixes.test.mjs'],
   ['store', 'store.test.mjs'],
+  ['collide', 'collide.test.mjs'],
   ['product-tail', 'product-tail.test.mjs'],
   ['owner-account', 'owner-account.test.mjs'],
   ['automations-seed', 'automations-seed.test.mjs'],
