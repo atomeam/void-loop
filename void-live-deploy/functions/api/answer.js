@@ -11,6 +11,7 @@
 // the models off. With models on, D1 is written: the answer cache, the route log (void_routes), the shortfall counts.
 // An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
 // Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
+import { isPriceChangeAsk, priceLockAnswer } from '../../lib/price-lock.js';
 import { keepCited } from '../../lib/cite.js';
 import { PERSONA } from '../../lib/persona.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
@@ -247,6 +248,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
   const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
+  if (isPriceChangeAsk(ask)) return Response.json({ answer: priceLockAnswer(), sources: [], note: 'price-lock' }); // prices come only from store data (lib/price-lock.js)
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache
