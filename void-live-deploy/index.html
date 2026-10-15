@@ -4459,14 +4459,16 @@ say('nothing selected to remove');
         if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
       } catch (_) {}
     }
-    // The optional product line: only when the live catalog has something for this ask, after Void's own answer (or fix).
+    // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Void's own answer (or fix). Never on self/menu/identity asks; at most one line.
     function productLine(g, p) {
       const link = String(p.url || '').replace(/^https:\/\//, '');
       return 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>';
     }
     async function attachProductTail(text, opt = {}) {
+      const lower = String(text || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '');
+      if (wantsSelfPage(lower) || wantsIdentity(lower) || wantsMenu(lower)) return; // self/meta: never a sponsor line
       const { g, products } = await storeCatalog();
-      const p = g && g.productFor(text, products, { fix: !!opt.fix });
+      const p = g && g.productFor(text, products, { fix: !!opt.fix, meta: !!opt.meta });
       if (!p) return;
       const html = productLine(g, p);
       if (opt.el) { if (opt.el === vpageEl) { opt.el._tail = html; keepTail(opt.el); } }
@@ -4593,6 +4595,7 @@ say('nothing selected to remove');
       const deep = el.querySelector('[data-deep]');
       if (deep) deep.outerHTML = j && j.answer ? '<h3 style="margin:16px 0 6px;font-weight:500">A closer read</h3>' + fixHtml(j.answer) + '<div class="src">Quick checks by V01D, closer read by V01D\'s model · keys and passwords were masked before it was read · <a href="/code-review/">review every pull request this way</a></div>'
         : '<div class="src">Quick checks by V01D' + (j && j.note === 'slow down' ? ' · the closer read is busy, ask again in a minute' : ' · the closer read is not available right now') + ' · keys and passwords are masked · <a href="/code-review/">review every pull request this way</a></div>';
+      attachProductTail(ask || title, { el }); // one relevance-gated line after the review
       return 'review';
     }
     async function handleReviewAsk(text, full) {
@@ -4608,8 +4611,9 @@ say('nothing selected to remove');
       const code = cr.codeOf(full);
       if (cr.looksLikeCode(code, cr.langNamed(full.split(/\n|\s*⏎/)[0]))) { showReview(full.split(/\n|\s*⏎/)[0].replace(/:\s*$/, '').split(':')[0], code, cr); return true; }
       const title = text.replace(/\s*⏎[\s\S]*$/, '').slice(0, 140);
-      showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
+      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(title) + '</h2><p>Paste the code and I\'ll review it: bugs first, then security holes, then anything that will be hard to change later, each with the line and a fix. Any language. Keys and passwords are masked before it\'s read.</p>'; });
       pendingReview = { ask: title, until: Date.now() + 600000 };
+      attachProductTail(text, { el }); // Code Review Pro when the ask clearly matches
       loopLog({ domain: 'void.review', ask: text, score: 'pass', note: 'asked for code' });
       return true;
     }

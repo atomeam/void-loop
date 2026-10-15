@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 46,
+  "tested": 47,
   "checked": 14,
   "proven": 83
  },
@@ -546,11 +546,16 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 10,
+    "tested": 11,
     "checked": 1,
     "proven": 7
    },
    "skills": [
+    {
+     "name": "digest",
+     "tier": "tested",
+     "why": "a self-test"
+    },
     {
      "name": "video",
      "tier": "tested",

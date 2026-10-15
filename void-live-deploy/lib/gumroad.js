@@ -57,8 +57,11 @@ export function terms(text) {
   return out;
 }
 const FIX_HINT = ['fix', 'brok', 'fail', 'diagnos', 'repair'];
-// -> the best product, or null. fix = the ask was a broken automation (Void already answered with the fix; this line is optional).
-export function productFor(ask, products, { fix = false } = {}) {
+// -> the best product, or null. Relevance-gated (2026-10-15): one short name stem ("code", "stack") is never enough;
+// a product line only when the ask clearly matches the product's name (two name hits, or a long name hit plus a description hit).
+// fix = broken-automation ask (Void already answered with the fix); meta = self/menu/identity ask (never a product line).
+export function productFor(ask, products, { fix = false, meta = false } = {}) {
+  if (meta) return null;
   const live = (products || []).filter((p) => p && p.available !== false && !isUnlock(p) && p.name);
   if (!live.length) return null;
   const docs = live.map((p) => ({ p, n: terms(shortName(p.name)), d: terms(p.description) }));
@@ -67,12 +70,21 @@ export function productFor(ask, products, { fix = false } = {}) {
   if (fix) for (const t of FIX_HINT) A.add(t);
   if (!A.size) return null;
   const scored = docs.map(({ p, n, d }) => {
-    let s = 0;
-    for (const t of A) { const k = n.has(t) ? 3 : d.has(t) ? 1 : 0; if (k) s += k * Math.log(1 + docs.length / df(t)); }
-    return { p, s };
+    let s = 0, nameHits = 0, descHits = 0, longName = 0;
+    for (const t of A) {
+      if (n.has(t)) { nameHits++; if (t.length >= 4) longName++; s += 3 * Math.log(1 + docs.length / df(t)); }
+      else if (d.has(t)) { descHits++; s += 1 * Math.log(1 + docs.length / df(t)); }
+    }
+    return { p, s, nameHits, descHits, longName };
   }).sort((x, y) => y.s - x.s);
   const [best, next] = scored;
-  if (best.s < 2.5 || (next && best.s - next.s < 0.1)) return null;
+  if (!best) return null;
+  // Clear match: two name terms, or one distinctive name term plus a description hit; fix-mode may use two strong desc hits.
+  const clear = best.nameHits >= 2
+    || (best.nameHits >= 1 && best.longName >= 1 && best.descHits >= 1)
+    || (fix && best.descHits >= 2 && best.s >= 4);
+  if (!clear) return null;
+  if (best.s < 3.5 || (next && best.s - next.s < 0.4)) return null;
   return best.p;
 }
 export function shortName(n) { return String(n || '').split(/\s+[—–]\s+|\s+-\s+/)[0].trim().slice(0, 80); }
