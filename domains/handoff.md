@@ -15,10 +15,10 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
 
 ## Just finished
 
+- **V01D Tube phase 1 (Grok Bot, #725, #727, #730)**: /films/ channel grid with views, /films/?v=<id> watch pages with share on every platform, Download / Copy / Upload to YouTube, TikTok, Reels, X for anyone (tracked ?p=&by=share links), Up next, D1 view counts, RSS at /films/rss; clips.yml posts ad clips to Films. A new Pages Function path must be added to void-live-deploy/_routes.json include.
 - parallel agent · 2026-10-15 · V01D's own store (#729): `/store/`, `/api/store/*`, `lib/store.js`, `skills/store.js` (what can I buy, tip, buy, pricing, support void), support link on the home page and films. Design, fees, Stripe turn-on: `docs/store.md`.
 
 - **Launch-audit fixes (Grok Bot, #728)**: "play voidquest" / "play solar quest" open VoidQuest (own board on the property-game rules); model markdown renders in answers (lib/md.js, comics no longer show **); "what are you?" leads with V01D and the canon motto; a game's How to play closes on ×, Esc or the first tap off it. Tests: tools/launch-fixes.test.mjs.
