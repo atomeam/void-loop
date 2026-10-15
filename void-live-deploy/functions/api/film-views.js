@@ -7,7 +7,7 @@ export async function onRequestGet({ request, env }) {
   const ids = String(new URL(request.url).searchParams.get('ids') || '').split(',').filter((x) => ID_RE.test(x)).slice(0, 100);
   if (!env.DB || !ids.length) return json({ views: {} });
   await env.DB.prepare(TABLE).run();
-  const { results } = await env.DB.prepare('SELECT id, n FROM void_film_views WHERE id IN (' + ids.map(() => '?').join(',') + ')').bind(...ids).all();
+  const { results } = await env.DB.prepare('SELECT id, n FROM void_film_views WHERE id IN (' + ids.map(() => '?').join(',') + ')').bind(...ids).all(); // void-review: ok (only '?' placeholders are pasted; ids are bound)
   return json({ views: Object.fromEntries((results || []).map((r) => [r.id, Number(r.n)])) });
 }
 export async function onRequestPost({ request, env }) {
