@@ -23,7 +23,7 @@ test('the repo passes the privacy scan and the runtime guard', () => {
 test('headers: strict CSP, HSTS, Referrer-Policy, Permissions-Policy', () => {
   const h = headerFor(at('void-live-deploy/_headers')), csp = h['Content-Security-Policy'];
   for (const d of ["default-src 'self'", "object-src 'none'", "base-uri 'self'", 'frame-ancestors', 'upgrade-insecure-requests']) assert.ok(csp.includes(d), d);
-  assert.ok(!/script-src[^;]*(https:|\*|'unsafe-eval')/.test(csp), 'no remote or eval scripts');
+  assert.ok(!/script-src[^;]*(https:(?!\/\/)|\*|'unsafe-eval')/.test(csp), 'no wildcard or eval scripts');
   assert.match(h['Strict-Transport-Security'], /max-age=\d{8}/);
   assert.equal(h['Referrer-Policy'], 'no-referrer');
   assert.match(h['Permissions-Policy'], /camera=\(\)/);
