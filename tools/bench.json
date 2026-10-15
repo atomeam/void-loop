@@ -6010,5 +6010,10 @@
   {"ask": "what to use instead of cornstarch to thicken", "want": "skill:swaps", "says": "flour"},
   {"ask": "no powdered sugar what can i use", "want": "skill:swaps", "says": "cornstarch"},
   {"ask": "what can i use instead of wine in cooking", "want": "skill:swaps", "says": "broth"},
-  {"ask": "how to make pancakes", "want": "skill:recipe"}
+  {"ask": "how to make pancakes", "want": "skill:recipe"},
+  {"ask": "review this c: int *arr = malloc(count * sizeof(int)); arr[0] = 42;", "want": "review", "says": "runs out"},
+  {"ask": "check my c code: struct node *n = calloc(1, sizeof *n); n->value = v;", "want": "review", "says": "NULL"},
+  {"ask": "review this c: int *p = malloc(n); if (p == NULL) return 1; p[0] = 7;", "want": "review", "says": "nothing"},
+  {"ask": "review this php: if (md5($_POST['pw']) == $row['hash']) { $_SESSION['ok'] = 1; }", "want": "review", "says": "hash_equals"},
+  {"ask": "review this php: if ($token != $_GET['t']) { die('no'); }", "want": "review", "says": "magic hashes"}
 ]
