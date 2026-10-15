@@ -2623,6 +2623,28 @@ say('nothing selected to remove');
         if (k === 'ham') return { value: 'raw ham 145 °F (63 °C)\nreheating cooked ham 165 °F (74 °C)', note: 'raw or fresh ham: 145 °F, then rest 3 minutes; precooked ham can be reheated to 140 °F (60 °C) only if it was packaged in a USDA-inspected plant, otherwise 165 °F (USDA)' };
         const T = /chicken|turkey|poultry|leftover/.test(k) ? [165, 74, ''] : /ground|burger/.test(k) ? [160, 71, ''] : /egg/.test(k) ? [160, 71, ' for egg dishes; cook eggs until yolk and white are firm'] : [145, 63, /fish|salmon/.test(k) ? '' : ', then rest 3 minutes'];
         return { value: T[0] + ' °F (' + T[1] + ' °C)', note: 'safe internal temperature for ' + k + T[2] + ', measured with a thermometer in the thickest part (USDA)' }; }
+      // steak doneness: "medium rare steak temperature", "steak doneness temps", "temperature for a well done steak"
+      m = t.match(/^(?:what(?:'s|\s+is)\s+)?(?:the\s+)?(?:(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+)?(?:steak|beef)\s+(?:doneness\s+)?(?:internal\s+)?(?:temperatures?|temps?)$|^(?:what\s+)?(?:internal\s+)?(?:temperature|temp)\s+(?:for|is)\s+(?:a\s+)?(rare|medium[\s-]rare|medium[\s-]well|medium|well[\s-]done)\s+(?:steak|beef)$|^steak\s+doneness(?:\s+chart)?$/);
+      if (m) { const DONE = { rare: [125, 52], 'medium rare': [135, 57], medium: [145, 63], 'medium well': [150, 66], 'well done': [160, 71] }, k = (m[1] || m[2] || '').replace(/-/g, ' ');
+        const row = (d) => d + ' ' + DONE[d][0] + ' °F (' + DONE[d][1] + ' °C)';
+        return { value: k ? row(k) : Object.keys(DONE).map(row).join('\n'), note: 'internal temperature of a steak' + (k ? ' cooked ' + k : '') + ' after resting; take it off the heat about 5 °F (3 °C) sooner. USDA safe minimum for whole beef cuts is 145 °F (63 °C) with a 3-minute rest' }; }
+      // grams to cups: "how many cups is 500g of flour", "250 g sugar in cups"
+      m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
+      if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
+        return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      // gas mark: "gas mark 4 in celsius", "350 degrees in gas mark", "180c to gas mark"
+      const GAS = { '1/4': [225, 110], '1/2': [250, 120], 1: [275, 140], 2: [300, 150], 3: [325, 160], 4: [350, 180], 5: [375, 190], 6: [400, 200], 7: [425, 220], 8: [450, 230], 9: [475, 240] };
+      m = t.match(/^(?:what\s+is\s+|convert\s+)?gas\s+mark\s+(\d|1\/[24])(?:\s+(?:in|to|into)\s+(c|celsius|centigrade|f|fahrenheit|degrees)|\s+(?:temperature|temp))?$/);
+      if (m && GAS[m[1]]) { const [f, c] = GAS[m[1]], want = m[2] ? m[2].charAt(0) : '';
+        return { value: want === 'c' ? c + ' °C' : want === 'f' ? f + ' °F' : c + ' °C · ' + f + ' °F', note: 'gas mark ' + m[1] + ' is ' + c + ' °C (' + (c - 20) + ' °C fan), ' + f + ' °F' }; }
+      m = t.match(/^(?:convert\s+)?(\d{3})\s*(?:°\s*)?(c|f|celsius|fahrenheit|degrees(?:\s+(?:c|f|celsius|fahrenheit))?)?\s+(?:in|to|into|as)\s+gas\s+mark$|^what\s+gas\s+mark\s+is\s+(\d{3})\s*(?:°\s*)?(c|f|celsius|fahrenheit|degrees(?:\s+(?:c|f|celsius|fahrenheit))?)?$/);
+      if (m) { const n = +(m[1] || m[3]), u = (m[2] || m[4] || ''), isC = /^c|\s+c/.test(u) || (!/f/.test(u) && n < 260), f = isC ? n * 9 / 5 + 32 : n;
+        let best = null; for (const [k, [gf]] of Object.entries(GAS)) if (!best || Math.abs(gf - f) < Math.abs(GAS[best][0] - f)) best = k;
+        if (f >= 200 && f <= 500) return { value: 'gas mark ' + best, note: n + (isC ? ' °C' : ' °F') + ' is closest to gas mark ' + best + ' (' + GAS[best][1] + ' °C, ' + GAS[best][0] + ' °F)' }; }
+      // "how many eggs in a dozen", "how many is a baker's dozen", "how many in a gross"
+      m = t.match(/^how\s+many\s+(?:[a-z]+\s+)?(?:is|are|in|make)\s+(?:a|one|half\s+a)\s+(baker'?s\s+dozen|dozen|gross|score|half\s+dozen)$|^(?:a\s+)?(baker'?s\s+dozen|dozen|gross|score)\s+is\s+how\s+many$/);
+      if (m) { const k = (m[1] || m[2]), half = /^how\s+many\s+(?:[a-z]+\s+)?(?:is|are|in|make)\s+half/.test(t) || /half/.test(k), base = /baker/.test(k) ? 13 : /gross/.test(k) ? 144 : /score/.test(k) ? 20 : 12, v = half ? base / 2 : base;
+        return { value: String(v), note: (half ? 'half ' : 'a ') + k.replace(/^half\s+/, '') + ' is ' + v + ({ 13: ' (twelve plus one: bakers added an extra loaf)', 144: ' (a dozen dozens)', 20: '' }[base] || '') }; }
       // eggs: "how long to boil an egg", "how long do you boil eggs", "soft boiled egg time"
       if (/^how\s+long\s+(?:to|do\s+(?:you|i)|should\s+(?:you|i))\s+(?:hard\s+|soft\s+)?boil\s+(?:an?\s+|the\s+)?eggs?(?:\s+for)?$|^(?:hard|soft|medium)[\s-]boiled\s+eggs?\s+(?:time|how\s+long)$|^how\s+long\s+(?:for|to\s+make)\s+(?:a\s+)?(?:hard|soft)[\s-]boiled\s+eggs?$/.test(t))
         return { value: 'soft 6 min\nmedium 8 min\nhard 10–12 min', note: 'large eggs lowered into water already boiling, then into cold water; add a minute straight from the fridge' };
