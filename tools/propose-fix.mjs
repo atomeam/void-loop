@@ -64,7 +64,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const source = readFileSync(file, 'utf8');
   let proposal;
   try { proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source }); }
-  catch (e) { console.error('propose-fix: V01D proposed nothing: ' + e.message); process.exit(3); }
+  catch (e) { console.error('propose-fix: V01D proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
   const next = applyEdits(source, proposal.edits);
   if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
   const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, model: proposal.model, passed: false, failed: '', detail: '' };
