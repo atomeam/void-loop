@@ -2,7 +2,8 @@
  "note": "Public Piped hosts that answered a search (tools/upkeep.mjs piped, daily). Written only when the set changes.",
  "checked": "2026-10-15",
  "alive": [
-  "https://api.piped.private.coffee"
+  "https://api.piped.private.coffee",
+  "https://pipedapi.ducks.party"
  ],
  "hosts": [
   {
@@ -11,14 +12,14 @@
    "status": 200
   },
   {
+   "host": "https://pipedapi.ducks.party",
+   "ok": true,
+   "status": 200
+  },
+  {
    "host": "https://pipedapi.kavin.rocks",
    "ok": false,
    "status": 526
-  },
-  {
-   "host": "https://pipedapi.adminforge.de",
-   "ok": false,
-   "status": 404
   }
  ]
 }

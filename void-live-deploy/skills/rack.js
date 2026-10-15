@@ -5,6 +5,33 @@
  */
 import { grip, sideCard } from './side-card.js';
 import { LEVELS, getLevel, setLevel } from './game-level.js';
+import PARODY from '../lib/parody.js';
+
+// V01D's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
+// From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and V01D's own version.
+// "parody of monopoly", "your version of clue", "is reversi public domain", "make a v01d version of risk", "parody games". Pure.
+const PARODY_RE = /^(?:(?:what(?:'s| is)|whats|show(?: me)?|tell me|make(?: me)?|forge|build|give me)\s+)?(?:the\s+|a\s+|an\s+)?(?:v01d|void|your|ur)?\s*(?:parody|version|take|spin|remake|knock-?off)\s+(?:of|on)\s+(.+)$|^parody[\s-]forge\s+(.+)$|^is\s+(.+?)\s+(?:in\s+the\s+)?public\s+domain$|^can\s+(?:v01d|void|you)\s+(?:copy|make|clone)\s+(.+)$/;
+export function parodyOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:(?:show|list)(?: me)?\s+)?(?:the\s+|your\s+|v01d'?s?\s+|void'?s?\s+)?(?:parody|parodies)(?:\s+games?)?$|^(?:v01d|void)\s+parod(?:y|ies)$|^parody[\s-]forge$/.test(t)) return { all: true };
+  const m = PARODY_RE.exec(t); if (!m) return null;
+  const name = (m[1] || m[2] || m[3] || m[4] || '').replace(/^(?:the|a|an)\s+/, '').replace(/\s+(?:board\s+)?game$/, '').replace(/[^a-z0-9 &']+/g, '').trim();
+  const row = PARODY.find((r) => r.names.includes(name) || r.generic.toLowerCase() === name || r.parody.toLowerCase() === name);
+  return row ? { row } : (/\bgame\b/.test(t) && !(m[3] || m[4]) ? { unknown: name } : null); // an unknown name only when it is called a game
+}
+function parodyCard(q, api) {
+  const { showPage, esc } = api;
+  showPage((el) => {
+    if (q.all) { el.innerHTML = '<h2>V01D\'s parody games</h2><p class="sub">Rules are free; names, art and wording are not. My own version of each (not legal advice).</p><ul style="padding-left:18px">' + PARODY.map((r) => '<li><b>' + esc(r.parody) + '</b> · ' + esc(r.game) + (r.twist ? ' <span class="sub">— ' + esc(r.twist) + '</span>' : '') + '</li>').join('') + '</ul>'; return; }
+    if (q.unknown) { el.innerHTML = '<h2>' + esc(q.unknown) + '</h2><p>That game is not in my parody matrix yet. Its rules would be free to use; its name, art and rulebook wording are not. Ask "parody games" for the 30 I have.</p>'; return; }
+    const r = q.row, play = GAMES.find((g) => r.names.includes(g.id) || r.names.some((n) => g.ask === 'play ' + n));
+    el.innerHTML = '<h2>' + esc(r.parody) + '</h2><div class="sub">V01D\'s version of ' + esc(r.game) + '</div>' + (r.twist ? '<p>' + esc(r.twist) + '</p>' : '')
+      + '<ul style="padding-left:18px"><li><b>Public domain?</b> ' + esc(r.status) + '</li><li><b>Protected</b> ' + esc(r.protects) + '</li><li><b>Safest version</b> ' + esc(r.safest) + '</li><li><b>Generic name</b> ' + esc(r.generic) + '</li></ul>'
+      + (play ? '<a href="#" data-ask="' + esc(play.ask) + '">Play it now</a> · ' : '') + '<span class="sub">Not legal advice.</span>';
+  });
+  return 'rack';
+}
+
 
 // one entry per board game Void plays; `ask` is what opening it types
 export const GAMES = [
@@ -93,6 +120,7 @@ function mount(th, stageApi) {
 }
 
 async function run(text, api) {
+  const pq = parodyOf(text); if (pq) return parodyCard(pq, api);
   const q = rackOf(text);
   if (!q) return 'none';
   if (q.wanted && api.reportMiss) api.reportMiss(text, 'game not built yet: ' + q.wanted); // the request lands on the miss board
@@ -109,10 +137,11 @@ async function run(text, api) {
 export default {
   name: 'rack',
   rackOf,
+  parodyOf,
   GAMES,
-  examples: ['games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'games card', 'pick a game', 'play scrabble', 'scrabble board game'],
+  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
-  match(lower, text) { return !!rackOf(text); },
+  match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,
   stageKinds: { rack: { mount } },
 };

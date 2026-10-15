@@ -2,7 +2,7 @@
 
 Owner, 2026-10-15: "I wouldn't mind if V01D became unrecognizably good looking."
 
-The idea in one line: **a dark stage lit from above, with glass that catches the light**. The page stays empty until you ask (that rule does not change); what changes is that the emptiness is a place: a floor, a horizon, one key light, and everything that appears stands in it.
+The idea in one line: **a dark stage lit from above, with glass that catches the light**. The page stays empty until you ask (that rule does not change); what changes is that the emptiness is a place: deep space, a breathing event-horizon glow, a pool of light where answers stand, and everything that appears stands in it.
 
 ## Benchmarks (what we take from whom)
 
@@ -12,7 +12,7 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 | [stripe.com](https://stripe.com) | Gradients with depth, layered ambient shadows, display numerals | multi-layer shadows (contact + ambient + coloured bloom), numerals as display type |
 | [apple.com/apple-vision-pro](https://www.apple.com/apple-vision-pro/) and visionOS glass ([HIG: Materials](https://developer.apple.com/design/human-interface-guidelines/materials)) | Glass that stays legible: blur + tint + a bright rim, depth from light not lines | the glass recipe, the rim, "depth comes from lighting" |
 | [raycast.com](https://www.raycast.com) | The command bar as the hero: one input, big, glowing, keyboard first | the ask bar is the product; its rim wakes on focus; send key lights up when there is text |
-| [vercel.com](https://vercel.com) | Perspective grid floors and horizon light in pure CSS, still fast | the stage floor (perspective grid + horizon), CSS only |
+| [vercel.com](https://vercel.com) | Light done in pure CSS, still fast | (the perspective-grid floor was taken out 2026-10-15; see Never) |
 | [perplexity.ai](https://www.perplexity.ai) | Answer cards: title, one big result, sources quiet beneath | the card hierarchy: h2, display result, quiet source line |
 | [web.dev: Core Web Vitals](https://web.dev/articles/vitals) and [WCAG 2.2](https://www.w3.org/TR/WCAG22/) | The bar for fast and accessible | the gates below |
 
@@ -24,7 +24,7 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 
 **Depth.** Five levels, lit from above:
 - 0 the void (background, grain)
-- 1 the floor (perspective grid, horizon light)
+- 1 the void (event-horizon glow, nebula drift, light pool, star dust)
 - 2 the stage (3D miniatures, figures)
 - 3 glass (cards, the ask bar): `--d-glass`, rim `--d-rim`, shadow `--d-lift` (top highlight, bottom inner shade, contact 2px, near 18px, far 60px)
 - 4 overlays (hints, menus)
@@ -48,7 +48,31 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 
 ## Phases
 
-1. **Shipped 2026-10-15**: the empty stage (floor grid + horizon light), the ask bar (glass, lit rim on focus, glowing send key, bigger type), the answer card shell (glass, rim, bloom, display numerals, blur-in arrival). Screenshots: `/workspace/void-audit/redesign/` on the box.
+1. **Shipped 2026-10-15**: the empty stage (replaced the same day: the grid floor became the default void below), the ask bar (glass, lit rim on focus, glowing send key, bigger type), the answer card shell (glass, rim, bloom, display numerals, blur-in arrival). Screenshots: `/workspace/void-audit/redesign/` on the box.
 2. One card component for `.vpage` and `.thing` (with convergence step 7), per-kind accent colours (weather warm, sky teal), skeleton loading in the card's own shape.
 3. The stage reacts: the key light follows the active card, miniatures cast their glow on the floor, a horizon that tints with the real sky (`sky-rules.js`).
 4. Type and motion pass on every skill's inline styles, moved into tokens.
+
+## The default look: the Void (owner, 2026-10-15)
+
+"V01D should be a beautiful Void by default, something impressive to look at that puts people in awe."
+
+- Deep space, never a flat colour: two star-dust canvases with cursor parallax (`#void-stars-far`, `#void-stars`).
+- At the centre a dark event horizon ringed by a slowly breathing glow (11s cycle) that turns once every ~160s; a faint nebula drifts behind it (`#void-depth::before/::after`).
+- A soft oval pool of light low on the stage where answers stand; under an active card it brightens and casts a shadow (`#void-glow::after`).
+- It reacts: the breathing quickens when the ask bar has focus and leans in while a card is shown. The key light follows the cursor (existing `--dx/--dy`).
+- Performance: CSS transforms and opacity only, no per-frame JS added; animations pause when the tab is hidden. Target 60fps on phones.
+- Reduced motion: the same composition held still. Forced colours: all decoration off.
+- The ask bar stays legible: the glow sits above it, and the bar keeps its glass.
+
+### Never
+- **No perspective grids, grid floors, synthwave horizons or tron lines.** Adam called it "the ugly every-AI-website grid" and it was removed. A check in `tools/checks.mjs` fails on `rotateX(` paired with `repeating-linear-gradient` in a page background.
+- No generic SaaS feature-tile grids on the empty stage. The stage stays empty until you ask.
+
+### The Void, pass 2 (2026-10-15: "too dim to put people in awe")
+- Star dust is on by default: two canvases, DPR capped at 2, count scales with screen area, warm/cool tints, about 14% twinkle, brightest stars get a soft halo. They stop drawing when the tab is hidden and pick up again when it's visible. With reduced motion they're drawn once and held still.
+- Accretion ring: a white-hot inner edge into key/warm, plus a conic band that brings the colour round as it turns. `#void-lens` is a thin arc of lensing shimmer (7s).
+- A visible nebula: two colour clouds plus the real sky's glow (`--sky-glow`), drifting over 70s.
+- **celestial-sync** (V01D's ask): `html[data-phase]` is dawn/day/dusk/night from the device's local hour, and it tints the nebula and ring. The weather and sky come from the existing client-side sky-rules (`--sky-glow`). Nothing is sent or stored.
+- **Thinking**: `html.void-thinking` is set while the open card says "thinking…", "looking up" or "reading the page". The ring brightens and spins up (1.6s breathe, 14s turn) and the lens quickens.
+- **light-reactive cards** (V01D's ask): the active card picks up a lit top rim and a nebula-coloured bloom from the horizon, stronger while thinking.
