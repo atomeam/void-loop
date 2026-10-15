@@ -366,9 +366,9 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
-  const ctx = await browser.newContext();
+  const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   for (const init of inits) await ctx.addInitScript(init);
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
@@ -948,6 +948,34 @@ try {
       /^## v1\.4\.0 - \d{4}-\d{2}-\d{2}\n\n### Added\n- \*\*api:\*\* Add search \(#41\)\n\n### Fixed\n- Crash on empty list\n$/.test(md1)
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
+    await P.ctx.close(); }
+  // a paste of any size, and a read-aloud button on every card (owner, 2026-10-15: "I thought we fixed it so that we can past any
+  // sized message and V01D can handle it like you can . also V01D needs a read aloud button"): a 3,000-line log pasted under
+  // "my n8n workflow is broken…" reaches the server inside its 20 kB with its first and last lines (the error is at the end), the
+  // card's title ends in … at a word, the card folds away everything given and says how much of the middle was left out; the
+  // card's round button reads the whole card aloud, turns to stop while it reads, and stops when tapped again
+  if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
+    const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+    let sent = null, bytes = 0;
+    await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
+    const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
+    const log = [first, ...Array.from({ length: 3000 }, (_, i) => 'step ' + i + ' ok: wrote row ' + i + ' to the orders table'), 'Error: connect ECONNREFUSED 10.0.0.5:5432 at TCPConnectWrap.afterConnect'].join('\n');
+    await P.p.focus('#input');
+    await P.p.evaluate((t) => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.getElementById('input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, log);
+    await P.p.keyboard.press('Enter');
+    const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
+    const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+    await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    const d = (sent && sent.details) || '';
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+      !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
+      && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
+      JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
     await P.ctx.close(); }
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Void's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
@@ -2394,34 +2422,35 @@ try {
       && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
     await P.ctx.close(); }
 
-  // Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access"):
-  // /films/ asks /api/films with the visitor's credential; a stranger gets the members-only gate (and can paste a key), a member
-  // gets the films, and the owner also gets download, upload to YouTube and the words to copy
-  if (want("films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate")) {
+  // Void's films (owner, 2026-10-14: "just put void films right onto the sight"; 2026-10-15: "anyone should be able to at least watch
+  // the films those are our ads"): a stranger watches and is asked to sign in only to review (a key still works), a member gets the
+  // review box, and the owner also gets download, upload to YouTube and the words to copy
+  if (want("films page: anyone watches, a member reviews, the owner gets the YouTube steps")) {
     const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.\n\nTry it: https://a-to-mind.com', tags: 'Void, AI', bytes: 1135255, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc' };
     const seen = [];
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       const auth = r.request().headers().authorization || ''; seen.push(auth);
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true }));
-      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'pay', buy: 'https://a-to-mind.com/code-review/#pro' }) });
+      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true, member: true }));
+      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false, member: true }));
+      return r.fulfill(json({ films: [film], owner: false, member: false, buy: 'https://a-to-mind.com/code-review/#pro' }));
     });
     await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
-    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, text: document.getElementById('gate').innerText }));
-    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), gate: document.getElementById('gate').classList.contains('on') }; });
+    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video[src]'), text: document.getElementById('gate').innerText, join: document.getElementById('join').href }));
+    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    await until(async () => !!(await F.p.$('#films .review')), 5000);
+    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review'), gate: document.getElementById('gate').classList.contains('on') }; });
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
     const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
       btns: [...a.querySelectorAll('.body > .row button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
-    check('films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate',
-      gate.on && gate.films === 0 && /Members only/.test(gate.text) && seen[0] === ''
-      && member.h === film.title && member.src === film.src && !member.yt && !member.gate
+    check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
+      gate.on && gate.films === 1 && gate.video && !gate.review && /Review the films/.test(gate.text) && !/Members only/.test(gate.text) && gate.join === 'https://a-to-mind.com/code-review/#pro' && seen[0] === ''
+      && member.h === film.title && member.src === film.src && !member.yt && member.review && !member.gate
       && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
       && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
@@ -2435,8 +2464,8 @@ try {
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
       return r.request().headers().authorization === 'Bearer owner-tok'
-        ? r.fulfill(json({ owner: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
-        : r.fulfill(json({ owner: false, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
+        ? r.fulfill(json({ owner: true, member: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
+        : r.fulfill(json({ owner: false, member: true, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
     });
     await F.ctx.route(/\/api\/film-review$/, (r) => { sent.push({ auth: r.request().headers().authorization, body: JSON.parse(r.request().postData() || '{}') }); return r.fulfill(json({ ok: true })); });
     await F.p.goto(base + 'films/'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
@@ -2473,16 +2502,16 @@ try {
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: null };
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || ''; seen.push(a);
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', films: [film] }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"buy":"/code-review/#pro"}' }); });
+      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', member: true, films: [film] }));
+      return r.fulfill(json({ ok: true, owner: false, member: false, films: [film], buy: '/code-review/#pro' })); });
     const pk = [];
     await F.ctx.route(/\/api\/passkey$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); pk.push(b.step);
       return r.fulfill(json(b.step === 'get-options' ? { publicKey: { challenge: 'AAAA', rpId: '127.0.0.1', allowCredentials: [] } } : { ok: true, token: 'acct-tok', userId: 'u1', owner: { token: 'vo1.fresh', expires: '2026-11-13' } })); });
-    // 1) a stale owner session and a paid account: the account opens the films
+    // 1) a stale owner session and a paid account: the account is the one kept for reviewing
     await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
-    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    await until(async () => !!(await p.$('#films .review')), 5000);
     const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-3) };
-    // 2) nothing that works: the gate, then the passkey button signs the owner in and the YouTube steps appear
+    // 2) nothing that works: the films still play, the panel asks to sign in to review, then the passkey button signs the owner in
     await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
     await until(async () => p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
     const why = await p.$eval('#status', (e) => e.textContent);
@@ -5289,7 +5318,7 @@ try {
   { const all3d = want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)");
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
-      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a), want: (l) => all3d || want(l) }); }
+      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));
