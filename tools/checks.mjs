@@ -213,6 +213,9 @@ for (const [name, file] of [
   for (const f of spawnSync('git', ['ls-files', 'void.html', 'void-live-deploy/skills/*.js', 'void-live-deploy/lib/*.js'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean))
     for (const m of readFileSync(resolve(root, f), 'utf8').matchAll(/['"`](\/vendor\/[^'"`\s?#]+\.(?:m?js|wasm|css|json))['"`]/g)) { try { readFileSync(resolve(root, 'void-live-deploy' + m[1])); } catch (_) { gone.add(f + ' -> ' + m[1]); } }
   results.push(['vendor', !gone.size, gone.size ? 'bundled file missing: ' + [...gone].slice(0, 4).join(', ') + ' (restore it from git history)' : 'every bundled file the page loads is in the tree']); }
+// no perspective grid floor on the stage (owner 2026-10-15: "the ugly every-AI-website grid"); docs/design.md "Never"
+{ const css = readFileSync(resolve(root, 'void.html'), 'utf8'); const bad = [...css.matchAll(/\{[^{}]*repeating-linear-gradient[^{}]*rotateX\([^{}]*\}/g)].filter((m) => !/\.vpage|\.thing|card/.test(m[0]));
+  results.push(['no-grid-floor', !bad.length, bad.length ? 'a perspective grid floor is back in void.html (design.md forbids it)' : 'no perspective grid floor']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
