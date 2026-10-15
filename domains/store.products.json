@@ -208,6 +208,39 @@
      "what": "published by V01D: 11 files, 37.8 MB"
     }
    ]
+  },
+  {
+   "id": "site-tester",
+   "name": "V01D Site Tester",
+   "cents": 2400,
+   "kind": "download",
+   "pack": "sdk",
+   "pwyw": false,
+   "files": [
+    {
+     "key": "store/site-tester-v1.zip"
+    }
+   ],
+   "blurb": "Tests any site like a person in headless Chrome, one fix item per run, never submits anything.",
+   "license": "Personal and commercial use on sites you own or may test",
+   "tier": "commercial",
+   "origin": "v01d",
+   "status": "needs-gumroad",
+   "published": "2026-10-15",
+   "bytes": 26836,
+   "contents": [
+    "site-test.mjs",
+    "site-test.test.mjs",
+    "README.txt",
+    "steps.json"
+   ],
+   "wouldBe": "$24.00",
+   "log": [
+    {
+     "at": "2026-10-15T06:34:28.905Z",
+     "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
+    }
+   ]
   }
  ]
 }
