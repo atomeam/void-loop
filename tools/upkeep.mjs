@@ -73,7 +73,7 @@ async function main(cmd, a) {
       try { return [u, (await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'V01D-linkcheck' } })).status]; } catch (_) { return [u, 0]; }
     }));
     let bad = 0;
-    for (const [u, s] of codes) if (!(s >= 200 && s < 400) && s !== 403 && s !== 429) { bad++; console.log(`::warning title=Dead link::${u} answered ${s || 'nothing'}`); }
+    for (const [u, s] of codes) if (!(s >= 200 && s < 400) && ![401, 403, 405, 429].includes(s)) { bad++; console.log(`::warning title=Dead link::${u} answered ${s || 'nothing'}`); }
     console.log(`${urls.size} links, ${bad} dead`);
   } else if (cmd === 'stale') { // local git only (one call per branch to the API took minutes): needs a full fetch of origin
     const repo = process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', apply = a.includes('--apply'), cutoff = Date.now() / 1000 - 14 * 86400;
