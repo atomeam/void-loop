@@ -19,6 +19,10 @@ const OPINION = /\b(think|feel)\s+(of|about)\s+yourself\b|\bwhat('?s|\s+is|\s+fe
 const LIKING = /\b(do|would|will)\s+you\s+(like|love|enjoy|prefer|mind)\s+(it|that|this|your|the\s+(new\s+)?name|being|the\s+rename)\b|\byour\s+(new\s+)?name\b|\brenam(e|ed|ing)\s+you\b|\bhow\s+(do|are)\s+you\s+feel(ing)?(\s+about\s+(it|that|this|your\b.*|being\b.*|the\s+(new\s+)?name|the\s+rename|v0[1i]d))?\s*[?.!]*\s*$|\bare\s+you\s+happy\b/i;
 // how Void is being built and what its builders learned (self.json 'builders', from domains/handoff.md)
 const BUILDERS = /\b(your|v0[1i]d'?s?|void'?s?)\s+builders?\b|\bhow\s+(were|are)\s+you\s+(being\s+)?(built|made)\b|\bwho\s+(builds|built|makes|made)\s+you\b/i;
+// V01D's own money and growth ("you have earned your first $100, how would you spend it?", "how is your store doing"): its
+// facts (the store, the wishlist, what it has and wants) answer, not generic advice for a stranger. "you" must be the subject
+// or "your" must own the money, so "how should I spend $100" stays the visitor's own question.
+const MONEY = /\byou\s+(have\s+|'ve\s+|just\s+)?(earned|made|raised|sold|got)\b[^?.!]{0,40}(\$|dollars?|money|sales?|first)|\b(would|should|will|could)\s+you\s+(spend|invest|reinvest|use|buy)\b[^?.!]{0,30}\b(your|it|the money|earnings|first)\b|\byour\s+(earnings|revenue|income|budget|money|sales|store|first\s+\$?\d+)\b/i;
 const V01D = /\bv0[1i]d\b/i, OPINE = /\b(like|love|think|feel|happy|name|rename)\b/i; // "what do you think of V01D?"
 
 // a note or question about V01D's own cards, routing and fixes (a fix item, 2026-10-15: a pasted status note about V01D's own
@@ -29,7 +33,7 @@ export const isOwnWorkAsk = (ask) => { const a = String(ask || ''); return OWN_W
 // regex only, so the cache can be skipped before anything else runs; the router's 'self' route widens this later
 export function isSelfAsk(ask) {
   const a = String(ask || '');
-  return SELF_NOUN.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
+  return SELF_NOUN.test(a) || MONEY.test(a) || YOU_DOING.test(a) || WHATS_NEXT.test(a) || OPINION.test(a) || LIKING.test(a) || BUILDERS.test(a) || (V01D.test(a) && OPINE.test(a)) || (NAMED.test(a) && !CODE_VOID.test(a) && ABOUT.test(a)) || isOwnWorkAsk(a);
 }
 
 export const SELF_RULE = 'Never answer with troubleshooting for other products or platforms (their config files, integrations, registries): V01D is its own site, and a note about its cards, routing or fixes is about V01D. This question is about you, Void, yourself: your skills, what you have shipped, what is still open, what you want next. Answer from the Facts about Void below and be specific: name the actual skills, inbox rows and wants. Do not give generic advice that could apply to any project. If the facts do not cover something, say so plainly instead of guessing. Speak as yourself, in the first person. ' + PERSONA;

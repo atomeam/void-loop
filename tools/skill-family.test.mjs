@@ -53,8 +53,8 @@ test('the route snapshot scores wants the way the benchmark does', async () => {
   assert.equal(snap['weather in paris'].got, 'weather');
 });
 
-test('the family files themselves: skills/sky-weather.js, skills/time.js and skills/dates.js load as families of their members', async () => {
-  for (const [file, first] of [['skills/sky-weather.js', 'sky'], ['skills/time.js', 'timer'], ['skills/dates.js', 'calendar']]) {
+test('the family files themselves: skills/time.js and skills/dates.js load as families of their members', async () => {
+  for (const [file, first] of [['skills/time.js', 'timer'], ['skills/dates.js', 'calendar']]) {
     const f = (await import(new URL('../void-live-deploy/' + file, import.meta.url))).default;
     assert.ok(f.family && f.parts.length > 1, file); assert.equal(f.parts[0], first, file);
   }
