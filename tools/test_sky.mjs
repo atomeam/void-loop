@@ -142,7 +142,7 @@ const lit = (page) => page.evaluate(() => { const c = document.getElementById('v
   // keyboard alone: focus the look buttons and the chips with Tab, press them with Enter / Space, look with the arrow keys, zoom with + and -, and dismiss with Escape
   await page.evaluate(() => document.activeElement && document.activeElement.blur());
   const order = [];
-  for (let i = 0; i < 18; i++) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; return a ? (a.getAttribute('data-ask') || a.getAttribute('data-look') || a.getAttribute('name') || a.tagName) : ''; })); }
+  for (let i = 0; i < 24; i++) { await page.keyboard.press('Tab'); order.push(await page.evaluate(() => { const a = document.activeElement; return a ? (a.getAttribute('data-ask') || a.getAttribute('data-look') || a.getAttribute('name') || a.tagName) : ''; })); }
   check('Tab reaches every chip, every look button and the location box', ['moon tonight', 'next full moon', 'sunrise and sunset', 'aurora forecast', 'meteor showers this month', 'next eclipse', 'left', 'right', 'up', 'down', 'in', 'out', 'where'].every((x) => order.includes(x)), order.join(','));
   const outline = await page.evaluate(() => { const a = document.querySelector('.skychips a'); a.focus(); const s = getComputedStyle(a); return s.outlineStyle !== 'none' && parseFloat(s.outlineWidth) >= 2; });
   check('a focused chip has a visible outline', outline, '');

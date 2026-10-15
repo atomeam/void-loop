@@ -84,5 +84,168 @@
   "kind": "teach",
   "key": "teach | yo what does ephemeral mean",
   "note": "teach V01D \"yo what does ephemeral mean\" (means \"define serendipity\", skill:define): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:48:00Z",
+  "passed": 11,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | what did this video teach? pls",
+  "note": "teach V01D \"what did this video teach? pls\" (means \"summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\", skill:digest): nothing appeared"
+ },
+ {
+  "at": "2026-10-15T06:50:33Z",
+  "passed": 2,
+  "of": 13,
+  "kind": "teach",
+  "key": "teach | yo watch the apollo 11 landing",
+  "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
+ },
+ {
+  "at": "2026-10-15T06:53:09Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "what can I buy | console: script /lib/skill-family#js served as text/html; ch",
+  "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:55:39Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "site | console: script /vendor/three-r#/build/three#module#min#js s",
+  "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:58:08Z",
+  "passed": 8,
+  "of": 13,
+  "kind": "file",
+  "key": "menaing of saudade | refused: don't know this yet",
+  "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:02:38Z",
+  "passed": 13,
+  "of": 13,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
+ },
+ {
+  "at": "2026-10-15T07:07:55Z",
+  "passed": 10,
+  "of": 14,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find the book the left hand of dakrness\" (skill:book)"
+ },
+ {
+  "at": "2026-10-15T07:14:22Z",
+  "passed": 9,
+  "of": 15,
+  "kind": "file",
+  "key": "deifnition of hubris | refused: don't know this yet",
+  "note": "fix: \"deifnition of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:17:32Z",
+  "passed": 9,
+  "of": 15,
+  "kind": "file",
+  "key": "yo movie metadata for the matrix | refused: don't know this yet",
+  "note": "fix: \"yo movie metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:20:54Z",
+  "passed": 15,
+  "of": 15,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bokos like dune\" (skill:book)"
+ },
+ {
+  "at": "2026-10-15T07:23:58Z",
+  "passed": 10,
+  "of": 16,
+  "kind": "file",
+  "key": "moive metadata for the matrix | refused: don't know this yet",
+  "note": "fix: \"moive metadata for the matrix\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:27:54Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "yo menaing of saudade | refused: don't know this yet",
+  "note": "fix: \"yo menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T07:34:43Z",
+  "passed": 11,
+  "of": 16,
+  "kind": "file",
+  "key": "my auotmations | refused: don't know this yet",
+  "note": "fix: \"my auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:17:23Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "find fimls about space | refused: don't know this yet",
+  "note": "fix: \"find fimls about space\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:35:24Z",
+  "passed": 14,
+  "of": 16,
+  "kind": "file",
+  "key": "catroon version of a plague | refused: don't know this yet",
+  "note": "fix: \"catroon version of a plague\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T08:58:55Z",
+  "passed": 14,
+  "of": 16,
+  "kind": "file",
+  "key": "deifntion of hubris | refused: don't know this yet",
+  "note": "fix: \"deifntion of hubris\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T10:30:49Z",
+  "passed": 15,
+  "of": 15,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo automations\" (skill:automations)"
+ },
+ {
+  "at": "2026-10-15T10:50:37Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "catroon version of a shipwreck | refused: don't know this yet",
+  "note": "fix: \"catroon version of a shipwreck\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T11:56:55Z",
+  "passed": 15,
+  "of": 16,
+  "kind": "file",
+  "key": "auotmations | refused: don't know this yet",
+  "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-15T12:07:13Z",
+  "passed": 16,
+  "of": 16,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
+ },
+ {
+  "at": "2026-10-15T12:12:56Z",
+  "passed": 16,
+  "of": 17,
+  "kind": "file",
+  "key": "catroon version of gg allin | refused: don't know this yet",
+  "note": "fix: \"catroon version of gg allin\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]

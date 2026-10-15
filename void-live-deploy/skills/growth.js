@@ -72,6 +72,42 @@ export function friction(fam, show = 5) {
     weakest: weakest ? { name: weakest.name, failing: wFail.length, unsure: wUnsure.length, top: wTop.map(row) } : null,
   };
 }
+// The owner's view on the growth card (asked by Void: "aggregates 'decision-failures' by skill family", "a 'skill-stability' metric",
+// "a 'diff' alert ... which skills were added or modified in the last growth spurt"), folded into this card, not a new page. Pure.
+/** failing bench asks per family, most first: [{ family, skills, asks }] */
+// a short glow once the tree has grown or a branch is read (asked by Void, ask-20261014-2050-1: "a visual pulse signal ... to confirm
+// the target is ready"); none under reduced motion; data-pulsed says it happened, for tests and the site tester
+export function pulse(node) {
+  if (!node || !node.animate) return false;
+  node.dataset.pulsed = String((+node.dataset.pulsed || 0) + 1);
+  if (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches) return false;
+  node.animate([{ boxShadow: '0 0 0 0 rgba(160,128,90,0)' }, { boxShadow: '0 0 0 6px rgba(160,128,90,.35)' }, { boxShadow: '0 0 0 0 rgba(160,128,90,0)' }], { duration: 700, easing: 'ease-out' });
+  return true;
+}
+export function failuresByFamily(fam) {
+  return ((fam && fam.families) || []).map((f) => { const bad = (f.skills || []).filter((s) => Array.isArray(s.failing) && s.failing.length); return { family: f.name, skills: bad.length, asks: bad.reduce((n, s) => n + s.failing.length, 0) }; })
+    .filter((x) => x.skills).sort((a, b) => b.asks - a.asks || a.family.localeCompare(b.family));
+}
+/** the last growth spurt: entries of the last `hours` before the newest, by kind, with their first words */
+export function spurt(list, hours = 24) {
+  const L = (list || []).filter((e) => e && e.at), last = L.reduce((t, e) => Math.max(t, Date.parse(e.at)), 0);
+  const recent = L.filter((e) => last - Date.parse(e.at) <= hours * 36e5);
+  const head = (w) => String(w || '').split(/[:(]/)[0].trim().slice(0, 60);
+  return { added: recent.filter((e) => e.kind === 'grow').map((e) => head(e.what)), changed: recent.filter((e) => e.kind === 'build' || e.kind === 'fix').map((e) => head(e.what)) };
+}
+/** stability: each skill's rating and when the site tester last saw it pass, newest-tested last; seen: { 'skill:x': iso } */
+export function stability(fam, seen = {}) {
+  return ((fam && fam.families) || []).flatMap((f) => (f.skills || []).map((s) => ({ name: s.name, tier: s.tier, passed: seen['skill:' + s.name] || null, failing: !!(s.failing && s.failing.length) })));
+}
+export function ownerHtml(esc, fam, list, seen) {
+  const F = failuresByFamily(fam), S = spurt(list), st = stability(fam, seen);
+  const tested = st.filter((x) => x.passed).length, steady = st.filter((x) => x.tier === 'proven' && !x.failing).length;
+  const names = (a) => a.slice(0, 6).map(esc).join('; ') + (a.length > 6 ? '; and ' + (a.length - 6) + ' more' : '');
+  return '<div class="sub growth-owner" data-owner-view style="line-height:1.45;margin-top:4px">'
+    + 'Failures by family: ' + (F.length ? F.map((x) => '<b style="font-weight:600">' + esc(x.family) + '</b> ' + x.skills + ' skill' + (x.skills > 1 ? 's' : '') + ' (' + x.asks + ' ask' + (x.asks > 1 ? 's' : '') + ')').join(', ') : 'none on the bench') + '. '
+    + 'Stability: ' + steady + ' of ' + st.length + ' skills proven with nothing failing; the site tester has passed ' + tested + ' of them live. '
+    + 'Last spurt: ' + S.added.length + ' new' + (S.added.length ? ' (' + names(S.added) + ')' : '') + ', ' + S.changed.length + ' changed.</div>';
+}
 export function frictionHtml(esc, f) {
   if (!f || !f.top.length) return '';
   const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b>'
@@ -164,6 +200,10 @@ async function run(text, api) {
   fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
     const html = frictionHtml(esc, friction(fam)), v = el.querySelector('[data-velocity]');
     if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html);
+    fetch('/tester-log.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((t) => {
+      const o = ownerHtml(esc, fam, list, (t && t.seen) || {}), at = el.querySelector('.growth-friction') || v;
+      if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o);
+    });
   }).catch(() => {});
   const w = week ? weekSummary(list) : null;
   const body = document.createElement('div');
@@ -223,7 +263,7 @@ function plantTree(el, api, list, { from } = {}) {
   function onPick(index) {
     const e = list[index]; if (!e) return;
     selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e, causeOf(e, asked));
-    mount().catch(() => {});
+    mount().then(() => pulse(said)).catch(() => {});
   }
   function onPickGhost(g) {
     said.style.color = '';
@@ -240,7 +280,7 @@ function plantTree(el, api, list, { from } = {}) {
   mount().then(() => { // asked about the week: once the tree stands as it was a week ago, grow it to today (at once under reduced motion)
     if (!from || today()) return;
     const still = typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches;
-    setTimeout(() => { if (!el.isConnected) return; range.value = range.max; showDay(); mount().catch(() => {}); }, still ? 0 : 1200);
+    setTimeout(() => { if (!el.isConnected) return; range.value = range.max; showDay(); mount().then(() => pulse(slot)).catch(() => {}); }, still ? 0 : 1200);
   }).catch(() => { slot.remove(); when.remove(); said.remove(); });
   fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && (j.tracks || j.building || j.commits)) { self = j; if (today()) mount().catch(() => {}); } }).catch(() => {});
   // Void's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once

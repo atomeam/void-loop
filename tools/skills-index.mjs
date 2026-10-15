@@ -82,11 +82,13 @@ export const OFF = {
 const SKILL_SHAPE = /export\s+default\s*\{[\s\S]*?\bname\s*:\s*['"]([a-z0-9][a-z0-9-]*)['"][\s\S]*?\brun\b/;
 /** the skill files in skills/ that no order file registers and OFF does not keep out: [{ file, name }]. Pure given the reader. */
 export function unregistered(files, read, ranks, off = OFF) {
-  const out = [];
+  const out = [], inFamily = new Set(); // a family skill's members (its `parts:` line, lib/skill-family.js) are loaded through it
+  for (const f of files) { const fam = /^[a-z0-9][a-z0-9-]*\.js$/.test(f) && f.slice(0, -3) in ranks && /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(read(f) || '');
+    if (fam) for (const x of fam[1].matchAll(/'([a-z0-9-]+)'/g)) inFamily.add(x[1]); }
   for (const f of files) {
     if (!/^[a-z0-9][a-z0-9-]*\.js$/.test(f)) continue;
     const n = f.slice(0, -3);
-    if (n in ranks || n in off) continue;
+    if (n in ranks || n in off || inFamily.has(n)) continue;
     const m = SKILL_SHAPE.exec(read(f) || '');
     if (m && m[1] === n) out.push({ file: f, name: n });
   }

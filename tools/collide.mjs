@@ -3,6 +3,7 @@
 //   node tools/collide.mjs                   every pair of open PRs that share a file, busiest files first
 //   node tools/collide.mjs --mine [base]     the files this branch changed (vs origin/main) against every open PR
 //   node tools/collide.mjs --files a,b       those files against every open PR (ask before you start)
+//   node tools/collide.mjs --heat            the conflict heatmap: files under the most edit pressure (open PRs and this week's commits)
 // Reads only (gh api GETs). Exit 0 always: it is advice, not a gate.
 import { execFileSync } from 'node:child_process';
 import { resolve } from 'node:path';
@@ -27,6 +28,17 @@ export function against(files, prs, common = COMMON) {
 export const COMMON = ['domains/handoff.md', 'tools/checks.mjs', 'void-live-deploy/void.growth.json', 'docs/void-voice.md'];
 
 const gh = (path) => execFileSync('gh', ['api', '--paginate', path, '--jq', '.[]'], { encoding: 'utf8', maxBuffer: 64 << 20 }).split('\n').filter(Boolean).map((l) => JSON.parse(l));
+// The conflict heatmap (asked by Void, ask-20261015-0612-1: "which skill files are currently under high-frequency edit pressure"):
+// each file's heat = open PRs touching it (x3, they are the live risk) + commits to it on main in the last week. Shared ledgers
+// (COMMON) are left out, since every PR appends to them. Pure.
+export function heat(prs, commits = {}, top = 15) {
+  const h = new Map();
+  for (const p of prs) for (const f of p.files) if (!COMMON.includes(f)) { const x = h.get(f) || { file: f, prs: [], commits: 0 }; x.prs.push(p.number); h.set(f, x); }
+  for (const [f, n] of Object.entries(commits)) if (!COMMON.includes(f)) { const x = h.get(f) || { file: f, prs: [], commits: 0 }; x.commits = n; h.set(f, x); }
+  return [...h.values()].map((x) => ({ ...x, heat: x.prs.length * 3 + x.commits })).sort((a, b) => b.heat - a.heat || a.file.localeCompare(b.file)).slice(0, top);
+}
+export const heatBar = (n, max) => '█'.repeat(Math.max(1, Math.round((n / Math.max(1, max)) * 20)));
+
 export function openPrs(repo) {
   return gh(`repos/${repo}/pulls?state=open&per_page=100`).map((p) => ({ number: p.number, title: p.title, branch: p.head.ref,
     files: gh(`repos/${repo}/pulls/${p.number}/files?per_page=100`).map((f) => f.filename) }));
@@ -39,6 +51,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (a.includes('--files')) files = a[a.indexOf('--files') + 1].split(',').filter(Boolean);
   if (a.includes('--mine')) { const base = a[a.indexOf('--mine') + 1] || 'origin/main';
     files = execFileSync('git', ['diff', '--name-only', (base.startsWith('--') ? 'origin/main' : base) + '...HEAD'], { encoding: 'utf8' }).split('\n').filter(Boolean); }
+  if (a.includes('--heat')) {
+    const log = execFileSync('git', ['log', '--since=7.days', '--name-only', '--format=', 'origin/main'], { encoding: 'utf8' }).split('\n').filter(Boolean), commits = {};
+    for (const f of log) commits[f] = (commits[f] || 0) + 1;
+    const H = heat(prs, commits), max = H.length ? H[0].heat : 1;
+    console.log('Edit pressure (open PRs x3 + commits this week), hottest first:');
+    for (const x of H) console.log(heatBar(x.heat, max).padEnd(21) + ' ' + String(x.heat).padStart(3) + '  ' + x.file + (x.prs.length ? '  (open: #' + x.prs.join(', #') + ')' : ''));
+    process.exit(0);
+  }
   if (files) {
     const hits = against(files, prs);
     if (!hits.length) console.log('clear: no open PR touches ' + files.length + ' file(s)');

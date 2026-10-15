@@ -730,6 +730,8 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ask('play monopoly', 600);
     const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'monopoly'); return l && l.ready && l.draws > 0; }), 90000);
     const sep = await F.p.evaluate(() => !!document.querySelector('.free-board .monopoly-view') && !!document.querySelector('.side-card.monopoly-side'));
+    // a first game opens How to play on the card: a player reads it and presses "Got it, let's play", then Roll
+    if (await F.p.$('.monopoly-side .howto:not([hidden]) .howto-go')) await F.p.click('.monopoly-side .howto-go');
     if (ready) await F.p.click('.mono-roll');
     const moved = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'monopoly'); return t && t.state.moves >= 1 ? t.state : false; }, 10000);
     const owned = moved && Object.keys(moved.owner).filter((i) => moved.owner[i] === 0).length;

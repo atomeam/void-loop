@@ -37,8 +37,8 @@
     // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
-    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = payments aren't open: nothing links out,
-    // and a signed-in ask to pay just says so. Only ever shown when someone asks, signed in; never on the surface.
+    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = the ask links to /store/ instead (owner, 2026-10-15: buy and tip links shown where relevant).
+    // Only ever shown when someone asks, signed in; never on the surface.
     var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
   <script>
@@ -925,23 +925,34 @@
       --d-lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42), 0 60px 120px rgba(0,0,0,.55);
       --d-ease-out: cubic-bezier(.16,1,.3,1); --d-spring: cubic-bezier(.34,1.56,.64,1);
     }
-    /* the floor: a horizon of light 30% up from the bottom and a perspective grid fading into it, so the empty void reads as a stage */
-    #void-depth::before { content: ''; position: absolute; left: -20%; right: -20%; bottom: 8%; height: 52%; pointer-events: none;
+    /* the default void (Adam 2026-10-15: "a beautiful Void by default ... puts people in awe"; no grids, no synthwave floor ever):
+       deep space, a slowly breathing event-horizon glow at the centre, a soft oval pool of light where cards arrive, star dust from the
+       two star canvases. Transforms and opacity only (GPU-composited, no layout, no per-frame JS); CSS animations pause with the tab. */
+    #void-depth::before { content: ''; position: absolute; left: 50%; top: 44%; width: min(118vmin, 1100px); aspect-ratio: 1; pointer-events: none;
+      transform: translate(-50%, -50%); border-radius: 50%;
       background:
-        radial-gradient(60% 22% at 50% 0%, rgb(var(--d-key) / .16), transparent 70%),
-        repeating-linear-gradient(90deg, rgb(var(--d-key) / .17) 0 1px, transparent 1px 72px),
-        repeating-linear-gradient(0deg, rgb(var(--d-key) / .14) 0 1px, transparent 1px 72px);
-      background-position: 50% 0, calc(50% - 36px) 0, 0 0;
-      transform: perspective(520px) rotateX(64deg); transform-origin: 50% 0%;
-      -webkit-mask: linear-gradient(to bottom, transparent 0%, #000 7%, rgba(0,0,0,.55) 38%, transparent 85%), radial-gradient(70% 100% at 50% 0%, #000 40%, transparent 75%);
-      -webkit-mask-composite: source-in; mask: linear-gradient(to bottom, transparent 0%, #000 7%, rgba(0,0,0,.55) 38%, transparent 85%) intersect, radial-gradient(70% 100% at 50% 0%, #000 40%, transparent 75%);
-      opacity: .9; }
-    /* the key light: a soft cool source above the stage and a thin horizon line where the floor meets the dark */
-    #void-glow::after { content: ''; position: absolute; left: 50%; top: 50%; width: min(900px, 120vw); height: 1px; transform: translateX(-50%);
-      background: linear-gradient(90deg, transparent, rgb(var(--d-key) / .28) 30%, rgba(255,255,255,.42) 50%, rgb(var(--d-key) / .28) 70%, transparent);
-      box-shadow: 0 0 18px 0 rgb(var(--d-key) / .14); top: calc(50% + 4vh); }
+        radial-gradient(closest-side, rgba(2,3,8,.96) 0 33%, transparent 37%),
+        radial-gradient(closest-side, transparent 31%, rgb(var(--d-key) / .48) 35.5%, rgb(var(--d-warm) / .16) 41%, transparent 58%),
+        conic-gradient(from 210deg, rgb(var(--d-teal) / .10), transparent 18%, rgb(var(--d-key) / .16) 40%, transparent 58%, rgb(var(--d-warm) / .12) 78%, rgb(var(--d-teal) / .10));
+      -webkit-mask: radial-gradient(closest-side, #000 55%, transparent 100%); mask: radial-gradient(closest-side, #000 55%, transparent 100%);
+      filter: blur(2px); opacity: .85; animation: d-breathe 11s ease-in-out infinite, d-turn 160s linear infinite; }
+    #void-depth::after { content: ''; position: absolute; inset: auto; opacity: 1; mix-blend-mode: normal; background-image: none; left: 50%; top: 44%; width: 160vmax; height: 90vmax; pointer-events: none; transform: translate(-50%, -50%) rotate(-14deg);
+      background: radial-gradient(30% 22% at 38% 46%, rgba(70,60,150,.13), transparent 70%), radial-gradient(26% 18% at 64% 56%, rgba(40,110,140,.10), transparent 70%), radial-gradient(40% 14% at 50% 50%, rgb(var(--d-warm) / .05), transparent 70%);
+      animation: d-drift 70s ease-in-out infinite alternate; }
+    @keyframes d-breathe { 0%,100% { opacity: .70; } 50% { opacity: 1; } }
+    @keyframes d-turn { to { rotate: 360deg; } }
+    @keyframes d-drift { to { translate: 2.5vmax -1.5vmax; scale: 1.06; } }
+    /* the light pool: a soft oval where answers stand, and a shadow under the active card (its light on the floor) */
+    #void-glow::after { content: ''; position: absolute; left: 50%; top: 74%; width: min(760px, 110vw); height: min(150px, 22vw); transform: translate(-50%, -50%);
+      border-radius: 50%; background: radial-gradient(closest-side, rgb(var(--d-key) / .09), rgb(var(--d-key) / .03) 60%, transparent);
+      transition: opacity 1.2s var(--d-ease-out), scale 1.2s var(--d-ease-out); opacity: .8; }
     #void-glow::before { content: ''; position: absolute; left: 50%; top: -30vh; width: 90vmax; height: 70vh; transform: translateX(-50%);
-      background: radial-gradient(closest-side, rgb(var(--d-key) / .10), transparent); }
+      background: radial-gradient(closest-side, rgb(var(--d-key) / .08), transparent); }
+    /* the void wakes when you start to ask, and leans in while V01D answers */
+    html:has(#input:focus) #void-depth::before { animation-duration: 6s, 160s; }
+    html:has(.vpage.on) #void-depth::before { opacity: 1; animation-duration: 4s, 120s; }
+    html:has(.vpage.on) #void-glow::after { opacity: 1; scale: 1.08; background: radial-gradient(closest-side, rgb(var(--d-key) / .14), rgb(0 0 0 / .35) 55%, transparent); }
+    @media (prefers-reduced-motion: reduce) { #void-depth::before, #void-depth::after { animation: none; } }
     /* the ask bar: deeper glass, a lit rim that wakes on focus, a bigger calmer type size, a send key that glows when there is text */
     #row { border-radius: 22px; background: var(--d-glass); box-shadow: var(--d-lift); position: relative; isolation: isolate; }
     #row::after { content: ''; position: absolute; inset: 0; border-radius: inherit; padding: 1px; pointer-events: none; z-index: -1;
@@ -967,11 +978,11 @@
     @media (max-width: 480px) {
       #row { border-radius: 20px; }
       #input { font-size: 16px; } /* 16px: iOS never zooms the page when the ask bar takes focus */
-      #void-depth::before { bottom: 14%; height: 40%; }
+      #void-depth::before { top: 40%; width: 128vmin; }
       .vpage { border-radius: 22px; }
     }
     @media (prefers-reduced-motion: reduce) { .vpage.on { animation: none; } #row::after { transition: none; } }
-    @media (forced-colors: active) { #void-depth::before, #void-glow::before, #void-glow::after, #row::after { display: none; } }
+    @media (forced-colors: active) { #void-depth::before, #void-depth::after, #void-glow::before, #void-glow::after, #row::after { display: none; } }
   </style>
 </head>
 <body>
@@ -2150,6 +2161,19 @@ say('nothing selected to remove');
     function wantsIdentity(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
     }
+    // asked "who are you", the stage answers in light too (asked by Void, ask-20261015-0540-2: "subtly shifts the stage lighting to reflect
+    // my identity"): a violet glow rises from the floor and fades over 2.4 s; nothing under reduced motion; body[data-identity] marks it
+    function identityGlow() {
+      try {
+        document.body.dataset.identity = 'glow';
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const g = document.createElement('div'); g.setAttribute('aria-hidden', 'true');
+        g.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(80% 55% at 50% 100%,rgba(122,92,255,.28),transparent 70%)';
+        document.body.appendChild(g);
+        const a = g.animate([{ opacity: 0 }, { opacity: 1, offset: 0.3 }, { opacity: 0 }], { duration: 2400, easing: 'ease-in-out' });
+        a.onfinish = () => g.remove();
+      } catch (_) {}
+    }
     function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
@@ -2369,6 +2393,17 @@ say('nothing selected to remove');
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // a living thing ("cat", "fox") gets a facts strip from Wikidata under the summary, not just the dictionary-like lead (Adam, 2026-10-15)
+        if (j.wikibase_item && /\b(?:species|genus|family|animal|mammal|bird|fish|reptile|amphibian|insect|plant|tree|flower|breed|subspecies|domesticated)\b/i.test((j.description || '') + ' ' + (j.extract || '').slice(0, 200))) {
+          fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims&format=json&origin=*&ids=' + encodeURIComponent(j.wikibase_item)).then((x) => x.json()).then((w) => {
+            const c = ((w.entities || {})[j.wikibase_item] || {}).claims || {}, v = (p) => { const d = c[p] && c[p][0] && c[p][0].mainsnak && c[p][0].mainsnak.datavalue; return d ? d.value : null; };
+            const qty = (p, unit) => { const q = v(p); return q && q.amount ? (+q.amount).toLocaleString() + ' ' + unit : ''; };
+            const rows = [['Scientific name', typeof v('P225') === 'string' ? v('P225') : ''], ['Life span', qty('P2250', 'years')], ['Mass', qty('P2067', 'kg')], ['Length', qty('P2043', 'm')]].filter((r) => r[1]);
+            if (!rows.length || vpageEl !== el) return;
+            const p = el.querySelector('p'); if (!p) return;
+            p.insertAdjacentHTML('afterend', '<div class="facts" style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0">' + rows.map((r) => '<div class="sub">' + esc(r[0]) + '</div><div><i>' + esc(r[1]) + '</i></div>').join('') + '</div>');
+          }).catch(() => {});
+        }
         // Void's own input on top of the summary (skills/take.js): what Void can do about it at once, then its take (/api/answer, mode 'take')
         import('/skills/take.js').then((T) => {
           const slot = el.querySelector('.take-slot'); if (!slot) return;
@@ -2635,20 +2670,11 @@ say('nothing selected to remove');
       ['fuel', 1, 'mpg', /^(?:mpg|miles\s+per\s+gallon)$/, false], ['fuel', 1, 'L/100 km', /^(?:l\/100\s*km|litres?\s+per\s+100\s*km|liters?\s+per\s+100\s*km)$/, true],
     ].map(([cat, f, name, re, inv]) => ({ cat, f, name, re, inv }));
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
-    function wordMath(lower) {
-      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
-      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
-      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
-      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
-      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
-        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
-      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
-      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
-      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
-      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
-        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
-      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
-      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+    // wordMath, in parts (asked by Void, asked 9 times: "Refactor the 5614-line wordMath() function into smaller, manageable modules").
+    // Each part tries its asks in the order they always ran; WM_NEXT means "not mine, try the next part". Locals never cross parts.
+    function WM_NEXT() {} // a hoisted sentinel (no TDZ: wordMath may run before this line is reached)
+    // percent off, roman numerals, powers, primes, factorials, unit conversions, travel, percent-of, logs and more
+    function wmPercentsAndUnits(t, lower) {
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
@@ -2750,6 +2776,11 @@ say('nothing selected to remove');
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
       if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
         return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      return WM_NEXT;
+    }
+    // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
+    function wmEverydayCounts(t, lower) {
+      let m;
       // gas mark: "gas mark 4 in celsius", "350 degrees in gas mark", "180c to gas mark"
       const GAS = { '1/4': [225, 110], '1/2': [250, 120], 1: [275, 140], 2: [300, 150], 3: [325, 160], 4: [350, 180], 5: [375, 190], 6: [400, 200], 7: [425, 220], 8: [450, 230], 9: [475, 240] };
       m = t.match(/^(?:what\s+is\s+|convert\s+)?gas\s+mark\s+(\d|1\/[24])(?:\s+(?:in|to|into)\s+(c|celsius|centigrade|f|fahrenheit|degrees)|\s+(?:temperature|temp))?$/);
@@ -3012,6 +3043,11 @@ say('nothing selected to remove');
       // a string of 0s and 1s "in decimal" is binary: "what is 101010 in decimal"
       m = String(lower || '').trim().toLowerCase().replace(/\?+$/, '').replace(/^(?:what(?:'s|\s+is)\s+|convert\s+)/, '').match(/^([01]{4,32})(?:\s+(?:binary|in\s+binary|base\s*2))?\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number)$|^(?:binary\s+)([01]{2,32})\s+(?:in|to|as)\s+(?:decimal|base\s*10)$/); // read before "in decimal" is stripped above
       if (m) { const b = m[1] || m[2], v = parseInt(b, 2); return { value: v.toLocaleString(), note: 'binary ' + b + ' = ' + v + ' in decimal' }; }
+      return WM_NEXT;
+    }
+    // "how many <unit> in a <unit>" and the everyday unit questions
+    function wmUnitQuestions(t, lower) {
+      let m;
       // generic "how many <unit> in a <unit>" for the extra units ("how many square feet in an acre", "how many kpa in a bar")
       m = t.match(/^how\s+many\s+([a-z][a-z /²]*?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z][a-z /²]*?)$/);
       const everyday = m && Object.values(CALC_UNITS).some((u) => u[m[1].trim()] != null && u[m[2].trim()] != null); // cups in a liter, feet in a mile: the everyday converter's own answer
@@ -3111,6 +3147,11 @@ say('nothing selected to remove');
       if (m) { const now = new Date(), y = now.getFullYear(), w = m[2];
         const at = /^new/.test(w) ? new Date(y + 1, 0, 1) : /christmas|xmas/.test(w) ? new Date(now > new Date(y, 11, 25) ? y + 1 : y, 11, 25) : w === 'halloween' ? new Date(now > new Date(y, 9, 31) ? y + 1 : y, 9, 31) : new Date(y, now.getMonth(), now.getDate() + 1);
         const v = Math.floor((at - now) / { seconds: 1e3, minutes: 6e4, hours: 36e5 }[m[1]]); return { value: v.toLocaleString() + ' ' + m[1], note: 'until ' + at.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }; }
+      return WM_NEXT;
+    }
+    // clock arithmetic and time between dates
+    function wmClockAndDates(t, lower) {
+      let m;
       // clock arithmetic: "add 2 hours to 3:30 pm", "3:30 pm plus 45 minutes", "subtract 90 minutes from 2pm"
       const clockOf = (x) => { const c = String(x).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/); if (!c) return null; let h = +c[1], mi = +(c[2] || 0); const ap = (c[3] || '').replace(/\./g, ''); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; return h < 24 && mi < 60 && (ap || c[2]) ? h * 60 + mi : null; };
       const fmt12 = (mins) => { mins = ((mins % 1440) + 1440) % 1440; const h = Math.floor(mins / 60), mi = mins % 60; return ((h % 12) || 12) + ':' + String(mi).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM'); };
@@ -3198,6 +3239,11 @@ say('nothing selected to remove');
           const r = add(); if (i !== s2.length) throw 0; return r; };
         try { const f = (x) => ev(L, x) - ev(Rt, x), f0 = f(0), f1 = f(1), f2 = f(2);
           if (Math.abs((f2 - f1) - (f1 - f0)) < 1e-9 && Math.abs(f1 - f0) > 1e-12) { const x = -f0 / (f1 - f0), r = Math.round(x * 1e9) / 1e9; return { value: v + ' = ' + r, note: 'solving ' + m[1].trim() + ' (check: both sides ' + (Math.round(ev(L, x) * 1e6) / 1e6) + ')' }; } } catch (_) {} }
+      return WM_NEXT;
+    }
+    // circles, shapes and fractions
+    function wmGeometry(t, lower) {
+      let m;
       // geometry
       const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
       m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
@@ -3263,6 +3309,11 @@ say('nothing selected to remove');
       // "what year was 10 years ago", "what year will it be in 5 years"
       m = t.match(/^what\s+year\s+was\s+(\d{1,4})\s+years?\s+ago$/);
       if (m) return { value: String(new Date().getFullYear() - +m[1]), note: m[1] + ' years before ' + new Date().getFullYear() };
+      return WM_NEXT;
+    }
+    // pay, salary, tax, interest and money
+    function wmMoney(t, lower) {
+      let m;
       // ---- money ----
       const N = (x) => +String(x).replace(/[$,]/g, '').replace(/k$/i, '000'), $f = (v) => '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
       // pay: "15 an hour per year", "60000 a year is how much an hour", "salary of 75000 per month" (40 h weeks, 52 weeks: 2,080 h a year)
@@ -3394,6 +3445,11 @@ say('nothing selected to remove');
       if (m) { const x = +(m[1] || m[3]), d = m[1] ? +m[2] : 0; const v = (Math.round(x * 10 ** d) / 10 ** d).toFixed(d); return { value: v, note: (m[1] || m[3]) + ' rounded to ' + d + ' decimal' + (d === 1 ? '' : 's') }; }
       m = t.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+(?:as\s+a\s+|in\s+)?(?:percent(?:age)?|%)$/);
       if (m && +m[2]) { const v = +(+m[1] / +m[2] * 100).toPrecision(10); return { value: v + '%', note: m[1] + '/' + m[2] + ' = ' + v + '%' }; }
+      return WM_NEXT;
+    }
+    // data sizes and dates
+    function wmDataUnits(t, lower) {
+      let m;
       const DATA = { b: 1, byte: 1, bytes: 1, kb: 1e3, kilobyte: 1e3, kilobytes: 1e3, mb: 1e6, megabyte: 1e6, megabytes: 1e6, gb: 1e9, gigabyte: 1e9, gigabytes: 1e9, tb: 1e12, terabyte: 1e12, terabytes: 1e12, pb: 1e15, petabyte: 1e15, petabytes: 1e15 };
       m = t.match(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*([a-z]+)\s+(?:to|in|into)\s+([a-z]+)$/);
       if (m) {
@@ -3410,6 +3466,11 @@ say('nothing selected to remove');
       m = t.match(/^(?:how\s+many\s+)?days\s+(?:are\s+there\s+)?between\s+(.+?)\s+and\s+(.+)$/);
       if (m) { const yr = new Date().getFullYear(), d = (x) => { let v = Date.parse(x + (/\d{4}/.test(x) ? '' : ' ' + yr)); return isNaN(v) ? null : v; }; const a = d(m[1]), b = d(m[2]);
         if (a != null && b != null) { const n = Math.round(Math.abs(b - a) / 864e5); return { value: n + (n === 1 ? ' day' : ' days'), note: 'between ' + m[1] + ' and ' + m[2] + (/\d{4}/.test(m[1] + m[2]) ? '' : ' ' + yr) }; } }
+      return WM_NEXT;
+    }
+    // the arithmetic expression parser (square roots, powers, pi)
+    function wmExpression(t, lower) {
+      let m;
       const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+(\d+)(?:st|nd|rd|th)?\s+power\b/g, ' ^ $1 ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
         .replace(/\bsquared\b/g, ' ^ 2 ').replace(/\bcubed\b/g, ' ^ 3 ').replace(/\btimes\b|\bmultiplied\s+by\b|×|\bx\b/g, ' * ').replace(/\bdivided\s+by\b|\bover\b|÷/g, ' / ')
         .replace(/\bplus\b|\badded\s+to\b/g, ' + ').replace(/\bminus\b|\bless\b/g, ' - ').replace(/(\d),(\d{3})/g, '$1$2')
@@ -3423,6 +3484,24 @@ say('nothing selected to remove');
       const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = take(), r = mul(); v = o === '+' ? v + r : v - r; } return v; };
       try { const v = add(); if (i !== tk.length || !isFinite(v)) return null; const shown = Math.abs(v) >= 1e15 ? v.toExponential(6) : String(+v.toPrecision(12));
         return { value: shown, note: e.replace(/(?<![\d.])3\.141592653589793(?![\d.])/g, 'π').replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
+      return WM_NEXT;
+    }
+    function wordMath(lower) {
+      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
+      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
+      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
+      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
+        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
+      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
+      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
+        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
+      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
+      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+      for (const part of [wmPercentsAndUnits, wmEverydayCounts, wmUnitQuestions, wmClockAndDates, wmGeometry, wmMoney, wmDataUnits, wmExpression]) { const r = part(t, lower); if (r !== WM_NEXT) return r; }
+      return undefined;
     }
     function wantsCalc(lower) {
       if (wordMath(lower)) return true;
@@ -3835,11 +3914,14 @@ say('nothing selected to remove');
 
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
     // for the ones ranked above the match, each until `deadline` (a skill still missing then is passed over, as before).
+    let askText = null; import('/lib/ask-text.js').then((m) => { askText = m; }).catch(() => {});
     async function firstSkill(lower0, text, deadline) {
-      if (skillsLoaded || !skillSlots) return learnedSkills.find((sk) => sk.match(lower0, text)) || null;
+      // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
         const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
-        if (skill && skill.match(lower0, text)) return skill;
+        if (skill && fits(skill)) return skill;
       }
       return null;
     }
@@ -3879,13 +3961,14 @@ say('nothing selected to remove');
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
           };
-          say(/weather|place|map/.test(skill.name) ? 'looking up' : skill.name === 'translate' ? 'translating' : 'working');
+          const who = skill.part ? (skill.part(lower0, text) || skill.name) : skill.name; // a family skill names the member that answers (lib/skill-family.js)
+          say(/weather|place|map/.test(who) ? 'looking up' : who === 'translate' ? 'translating' : 'working');
           const before = whisper.textContent, cardBefore = vpageEl;
           const src = await skill.run(text, api);
           if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
-          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + skill.name });
-          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, skill, vpageEl);
-          if (src === 'none') reportMiss(text, 'skill:' + skill.name);
+          if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
+          if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
       }
@@ -4450,7 +4533,7 @@ say('nothing selected to remove');
       const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
       const line = vm && vm.available !== false ? 'Paid V01D is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid V01D adds ' + PAID_ADDS;
-      if (!url) say(line + " · payments aren't open yet");
+      if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the V01D store</a>'; }
       else {
         whisper.innerHTML = esc(line) + ' · <a class="vc" data-vpay="1" href="' + esc(url) + '" target="_blank" rel="noopener">buy it on Gumroad</a>';
         const shown = whisper.innerHTML; setTimeout(() => { if (whisper.innerHTML === shown) whisper.textContent = ''; }, 30000);
@@ -4996,7 +5079,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
-      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
@@ -5684,6 +5767,7 @@ say('nothing selected to remove');
     sync();
   })();
   </script>
+<a id="void-support" href="/store/" style="position:fixed;right:12px;bottom:10px;font:12px system-ui,sans-serif;color:inherit;opacity:.35;text-decoration:none;z-index:1" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=.35">support V01D</a>
 </body>
 </html>
 

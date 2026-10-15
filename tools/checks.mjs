@@ -25,6 +25,7 @@ for (const [name, file] of [
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
+  ['word-math', 'word-math.test.mjs'],
   ['swarm', 'swarm.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
@@ -35,6 +36,8 @@ for (const [name, file] of [
   ['price-lock', 'price-lock.test.mjs'],
   ['reinvest', 'reinvest.test.mjs'],
   ['store', 'store.test.mjs'],
+  ['pay-share', 'pay-share.test.mjs'],
+  ['alt-pay', 'alt-pay.test.mjs'],
   ['keeper', 'keeper.test.mjs'],
   ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
@@ -174,6 +177,7 @@ for (const [name, file] of [
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
+  ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
@@ -205,6 +209,15 @@ for (const [name, file] of [
     if (t.length < 5e6 && !t.includes('\0')) for (const c of conflictMarkers(t)) marked.push(f + ':' + c.line);
   }
   results.push(['markers', !marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']); }
+// every bundled file the page or a skill loads by path is in the tree (issue #757: a merge dropped vendor/three-r180/build and
+// vendor/pdfjs build, the CDN kept serving a cached copy, and any fresh URL got the HTML fallback: "Failed to load module script")
+{ const root = resolve(here, '..'), gone = new Set();
+  for (const f of spawnSync('git', ['ls-files', 'void.html', 'void-live-deploy/skills/*.js', 'void-live-deploy/lib/*.js'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean))
+    for (const m of readFileSync(resolve(root, f), 'utf8').matchAll(/['"`](\/vendor\/[^'"`\s?#]+\.(?:m?js|wasm|css|json))['"`]/g)) { try { readFileSync(resolve(root, 'void-live-deploy' + m[1])); } catch (_) { gone.add(f + ' -> ' + m[1]); } }
+  results.push(['vendor', !gone.size, gone.size ? 'bundled file missing: ' + [...gone].slice(0, 4).join(', ') + ' (restore it from git history)' : 'every bundled file the page loads is in the tree']); }
+// no perspective grid floor on the stage (owner 2026-10-15: "the ugly every-AI-website grid"); docs/design.md "Never"
+{ const css = readFileSync(resolve(here, '..', 'void.html'), 'utf8'); const bad = [...css.matchAll(/\{[^{}]*repeating-linear-gradient[^{}]*rotateX\([^{}]*\}/g)].filter((m) => !/\.vpage|\.thing|card/.test(m[0]));
+  results.push(['no-grid-floor', !bad.length, bad.length ? 'a perspective grid floor is back in void.html (design.md forbids it)' : 'no perspective grid floor']); }
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
 { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
@@ -215,6 +228,8 @@ for (const [name, file] of [
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 { const r = run([resolve(here, 'secret-scan.mjs'), '--base', 'origin/main']); results.push(['secrets', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
+// a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
+{ const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist

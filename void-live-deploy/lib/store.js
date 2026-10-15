@@ -3,17 +3,20 @@
 // switches on later by setting Pages secrets, no rebuild. We never see or touch a card number: every provider is hosted.
 //   STORE_PROVIDER      'gumroad' (default) | 'stripe'   which adapter checkout uses
 //   STRIPE_SECRET_KEY   + STRIPE_WEBHOOK_SECRET          needed before 'stripe' is used; without them checkout stays on Gumroad
+//   CASHAPP_CASHTAG / CRYPTO_USDC_BASE_ADDR   special items: Cash App and USDC-on-Base rails, manual or on-chain verified (lib/alt-pay.js)
 //   STORE_SIGNING_KEY   HMAC key for download tokens and license keys (falls back to SALT)
 // The catalog lives in domains/store.products.json (tools/store-publish.mjs adds products and regenerates ./store-products.js).
 // status: live | soon | needs-gumroad (paid, waiting for Adam to list it on Gumroad: shown as coming soon) | unpublished (hidden).
 import CATALOG from './store-products.js';
+import { isShareProduct, publicShare } from './pay-share.js';
+export { railsOf, specialRails, instructions as specialInstructions, verifyUsdcTx, usdcUnits } from './alt-pay.js';
 export const ALL_PRODUCTS = CATALOG;
 export const STORE_PRODUCTS = CATALOG.filter((p) => p.status !== 'unpublished').map((p) => ({ ...p, soon: p.status === 'soon' || p.status === 'needs-gumroad' }));
 export const productOf = (id) => STORE_PRODUCTS.find((p) => p.id === id) || null;
 // UTM on every link we hand out, so Gumroad's analytics show which V01D surface sold it
 export const gumroadUrl = (p, medium = 'store') => 'https://moonbeam846.gumroad.com/l/' + p.gumroad + '?utm_source=a-to-mind&utm_medium=' + medium + '&utm_campaign=v01d-store';
-export const price = (p) => (p.pwyw && !p.cents ? 'Free · pay what you want' : p.cents ? '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + (p.every ? ' a ' + p.every : '') : 'Free');
-export const publicCatalog = () => STORE_PRODUCTS.map(({ files, ...p }) => ({ ...p, price: price(p), buy: p.gumroad ? gumroadUrl(p) : null, files: files ? files.length : 0 }));
+export const price = (p) => (p.pwyw && p.cents > 0 ? 'Pay what you want · ' + '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + ' gets it all' : p.pwyw && !p.cents ? 'Free · pay what you want' : p.cents ? '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + (p.every ? ' a ' + p.every : '') : 'Free');
+export const publicCatalog = () => STORE_PRODUCTS.map(({ files, ...p }) => ({ ...p, price: price(p), buy: p.gumroad ? gumroadUrl(p) : null, files: files ? files.length : 0, ...(isShareProduct(p) ? { share: publicShare(p) } : {}) }));
 
 // which provider is live, without ever reading a secret's value out
 export function providerOf(env = {}) {
@@ -57,13 +60,15 @@ export async function verifyStripe(secret, header, body, now = Date.now()) {
 export const ADAPTERS = {
   gumroad: { async checkout(items) { return { mode: 'gumroad', urls: items.filter((p) => p.gumroad).map((p) => gumroadUrl(p, 'checkout')) }; } },
   stripe: {
-    async checkout(items, { env, origin, email, fetchImpl = fetch }) {
+    async checkout(items, { env, origin, email, amounts = {}, meta = {}, fetchImpl = fetch }) {
       const f = new URLSearchParams({ mode: items.some((p) => p.every) ? 'subscription' : 'payment', success_url: origin + '/store/receipt/?session={CHECKOUT_SESSION_ID}', cancel_url: origin + '/store/', 'automatic_tax[enabled]': env.STRIPE_TAX === 'on' ? 'true' : 'false' });
       if (email) f.set('customer_email', email);
       f.set('metadata[items]', items.map((p) => p.id).join(','));
+      for (const [k, v] of Object.entries(meta)) f.set('metadata[' + k + ']', String(v)); // server-made only (share / upgrade order id)
+      // amounts: only a pay-a-share amount the server clamped (functions/api/store), never a client price
       items.forEach((p, i) => {
         f.set(`line_items[${i}][quantity]`, '1'); f.set(`line_items[${i}][price_data][currency]`, 'usd');
-        f.set(`line_items[${i}][price_data][unit_amount]`, String(p.cents)); f.set(`line_items[${i}][price_data][product_data][name]`, p.name);
+        f.set(`line_items[${i}][price_data][unit_amount]`, String(amounts[p.id] ?? p.cents)); f.set(`line_items[${i}][price_data][product_data][name]`, p.name);
         if (p.every) f.set(`line_items[${i}][price_data][recurring][interval]`, p.every);
       });
       const r = await fetchImpl('https://api.stripe.com/v1/checkout/sessions', { method: 'POST', headers: { authorization: 'Bearer ' + env.STRIPE_SECRET_KEY, 'content-type': 'application/x-www-form-urlencoded' }, body: f.toString() });

@@ -8,6 +8,8 @@
 //   node tools/store-publish.mjs forge-pack [--id x]         every forge printable as a checked STL pack (watertight, fits a 180 mm bed)
 //   node tools/store-publish.mjs clips-pack [--n 10]         the newest V01D FILMS as a free clips pack
 //   node tools/store-publish.mjs publish --kind <k> --id <id> --name "<n>" --blurb "<b>" --files a,b [--preview x.glb] [--paid] [--cents n]
+//        [--share --cents n [--gumroad perma]]  pay what you want with an appraised price: pay p% get the first ceil(p% x N) items
+//        (lib/pay-share.js); every item also goes to R2 as store/<id>/items/<name> so the server zips each buyer's share
 //   node tools/store-publish.mjs auto-forge                  a new forge model re-packs the printables, appraises them, queues a rotation clip
 //   node tools/store-publish.mjs check [--site URL]          live download check of every file product; a failure unpublishes it
 //   common flags: --dry (no R2 upload, nothing written)  --no-upload (write the row, skip R2)  --no-clip
@@ -135,12 +137,14 @@ export function glb(model) {
 /** publish one shipped thing. files: [{ name, data (Uint8Array), origin }]. Returns the row. */
 export async function publish(opts, files) {
   const now = new Date().toISOString(), cat = readCatalog();
-  const paid = !!opts.paid, cents = paid ? (opts.cents ?? priceFor(opts.kind)) : 0;
+  const share = !!opts.share, paid = !!opts.paid && !share, cents = paid ? (opts.cents ?? priceFor(opts.kind)) : share ? (opts.cents ?? (opts.appraisal && opts.appraisal.cents) ?? priceFor(opts.kind)) : 0;
   const version = opts.version || 'v1', key = 'store/' + opts.id + '-' + version + '.zip';
   const row = { id: opts.id, name: opts.name, cents, kind: 'download', pack: opts.kind, pwyw: !paid, files: [{ key }], blurb: opts.blurb,
     license: opts.license || 'Personal use; prints and clips may be shared with credit to V01D (a-to-mind.com)', tier: opts.tier || 'personal',
-    origin: [...new Set(files.map((f) => f.origin))].join('+'), status: paid ? 'needs-gumroad' : 'live', published: now.slice(0, 10), bytes: 0, contents: files.map((f) => f.name) };
+    origin: [...new Set(files.map((f) => f.origin))].join('+'), status: paid || (share && !opts.gumroad) ? 'needs-gumroad' : 'live', published: now.slice(0, 10), bytes: 0, contents: files.map((f) => f.name) };
   if (opts.preview) row.preview = opts.preview;
+  if (share && opts.gumroad) row.gumroad = opts.gumroad; // a Gumroad pay-what-you-want listing ($0+), its ping amount decides the share
+  if (share && opts.order) row.order = opts.order; // V01D's value order, starter items first
   if (opts.appraisal) row.appraisal = opts.appraisal; // V01D's appraiser note (lib/appraise.js)
   if (paid) row.wouldBe = '$' + (cents / 100).toFixed(2);
   const g = guard(row, files);
@@ -150,6 +154,7 @@ export async function publish(opts, files) {
   const zf = path.join(tmp, path.basename(key)); fs.writeFileSync(zf, z);
   if (opts.dry) return { row, zip: zf };
   if (!opts.noUpload) r2put(key, zf);
+  if (share && !opts.noUpload) for (const f of files) { const fp = path.join(tmp, 'item-' + path.basename(f.name)); fs.writeFileSync(fp, f.data); r2put('store/' + opts.id + '/items/' + f.name, fp); }
   const old = cat.products.find((p) => p.id === row.id);
   row.log = [...((old && old.log) || []), { at: now, what: old ? 'updated: ' + files.length + ' files' : 'published by V01D: ' + files.length + ' files, ' + (z.length / 1048576).toFixed(1) + ' MB' + (paid ? ' (paid: needs a Gumroad listing, queued)' : '') }];
   if (old) Object.assign(old, row); else cat.products.push(row);
@@ -263,7 +268,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
     console.log(JSON.stringify({ ...r.row, log: undefined }, null, 1));
   } else if (cmd === 'publish') {
     const files = String(opt('--files', '')).split(',').filter(Boolean).map((f) => ({ name: path.basename(f), data: new Uint8Array(fs.readFileSync(f)), origin: opt('--origin', 'v01d') }));
-    const r = await publish({ ...common, kind: opt('--kind', 'download'), id: opt('--id'), name: opt('--name'), blurb: opt('--blurb'), preview: opt('--preview'), paid: flag('--paid'), cents: opt('--cents') ? +opt('--cents') : undefined, hook: opt('--hook') }, files);
+    const r = await publish({ ...common, kind: opt('--kind', 'download'), id: opt('--id'), name: opt('--name'), blurb: opt('--blurb'), preview: opt('--preview'), paid: flag('--paid'), share: flag('--share'), gumroad: opt('--gumroad'), cents: opt('--cents') ? +opt('--cents') : undefined, hook: opt('--hook') }, files);
     console.log(JSON.stringify({ ...r.row, log: undefined }, null, 1));
   } else if (cmd === 'check') { const f = await check(opt('--site', SITE), !common.dry); process.exit(f.length ? 2 : 0); }
   else { console.log('usage: sync | forge-pack | clips-pack | publish ... | check'); process.exit(1); }

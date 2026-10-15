@@ -4,7 +4,7 @@
   "experiment": 1,
   "tested": 49,
   "checked": 14,
-  "proven": 83
+  "proven": 84
  },
  "families": [
   {
@@ -13,7 +13,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 9,
     "checked": 3,
     "proven": 11
    },
@@ -127,6 +127,11 @@
      "name": "throw-off",
      "tier": "tested",
      "why": "1 browser-suite mention"
+    },
+    {
+     "name": "swarm",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },
@@ -347,7 +352,7 @@
     {
      "name": "country",
      "tier": "proven",
-     "why": "a self-test, 54 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark"
     }
    ]
   },
@@ -556,9 +561,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 11,
+    "tested": 10,
     "checked": 1,
-    "proven": 7
+    "proven": 8
    },
    "skills": [
     {
@@ -579,8 +584,8 @@
     },
     {
      "name": "define",
-     "tier": "tested",
-     "why": "41 real asks in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 41 real asks in the benchmark"
     },
     {
      "name": "words",

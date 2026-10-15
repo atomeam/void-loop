@@ -5,11 +5,13 @@
  * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
+import familyList from './families.json' with { type: 'json' };
 import { clean } from '../lib/ask-text.js';
 
 const CLEAN = clean; // shared: lib/ask-text.js
 
-export const SKILL_NAMES = skillNames;
+// a family (skills/time.js, dates.js) is one entry in index.json; its members (weather, worldtime, holidays…) are still built skills
+export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families || []).flatMap((f) => (f.skills || []).map((x) => x.name))])];
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
