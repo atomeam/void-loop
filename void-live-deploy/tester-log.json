@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 12,
- "runsTotal": 27,
+ "cases": 13,
+ "runsTotal": 28,
  "kinds": {
-  "grow": 5,
+  "grow": 6,
   "file": 15,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T10:30:49Z",
+   "passed": 15,
+   "of": 15,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo automations\" (skill:automations)"
+  },
   {
    "at": "2026-10-15T08:58:55Z",
    "passed": 14,
@@ -140,13 +147,6 @@
    "of": 12,
    "kind": "teach",
    "note": "teach V01D \"start despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920"
-  },
-  {
-   "at": "2026-10-15T06:36:52Z",
-   "passed": 2,
-   "of": 12,
-   "kind": "teach",
-   "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
   }
  ]
 }
