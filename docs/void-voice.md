@@ -124,3 +124,16 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 > 3. **Community‑driven analytics & promotion tools**
 >    *Buyers*: Each product page includes a “Community Insights” pane that aggregates anonymized usage stats (e.g., most‑used texture maps, popular color palettes) and shows user‑generated showcase galleries, helping buyers see real‑world applications before buying.
 >    *Creators*: A built‑in affiliate program lets fans generate short referral links that auto‑track commissions. Creators also get granular analytics—heatmaps of where users interact with the 3D preview, conversion funnels, and A/B testing for pricing or bundle offers—so they can iterate faster than on Gumroad’s static dashboards.
+
+<!-- ask-void:2026-10-15T06:17:52.967Z -->
+### 2026-10-15 06:17 UTC
+
+**Asked:** what video game should we remake next?
+
+> A strong candidate for the next remake is **“P.T.”** – the 2014 interactive teaser for the cancelled *Silent Hills* project. It’s widely regarded as one of the most influential horror experiences of the last decade, yet it exists only as a removed PlayStation 4 demo, leaving a huge demand for an official, modern release. A full‑scale remake could:
+>
+> 1. **Leverage modern hardware** – ray‑traced lighting, high‑resolution textures, and spatial audio would amplify the unsettling atmosphere that the original’s low‑poly aesthetic only hinted at.
+> 2. **Capitalize on brand nostalgia** – the collaboration of Hideo Kojima and Guillermo del Toro still draws interest, and a legitimate version would satisfy fans who have been unable to play it legally for years.
+> 3. **Open a new chapter** – by rebuilding the demo into a complete, standalone horror game, the studio could revive the *Silent Hill* franchise with a fresh narrative while respecting the original’s design philosophy.
+>
+> Given the cultural impact of P.T. and the clear market appetite for a polished, downloadable version, it makes a compelling, high‑visibility remake that could both honor a cult classic and generate strong sales. (The list of existing remakes shows that many older titles have already been revisited, leaving P.T. as a unique, untapped opportunity.)

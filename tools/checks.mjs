@@ -102,6 +102,7 @@ for (const [name, file] of [
   ['poker', 'poker.test.mjs'],
   ['fireworks', 'fireworks.test.mjs'],
   ['connect4', 'connect4.test.mjs'],
+  ['arcade', 'arcade.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
   ['goal', 'goal.test.mjs'],
