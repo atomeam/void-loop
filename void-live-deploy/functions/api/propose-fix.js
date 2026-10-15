@@ -9,9 +9,15 @@ import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { FIX_SYSTEM, MAX_SOURCE, fixPrompt, parseEdits } from '../../lib/propose-fix.js';
 
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
-const SCHEMA = { name: 'edits', schema: { type: 'object', properties: { why: { type: 'string' }, edits: { type: 'array', items: { type: 'object', properties: { find: { type: 'string' }, replace: { type: 'string' } }, required: ['find', 'replace'] } } }, required: ['why', 'edits'] } };
+// the schema object itself, the shape lib/review-api.js passes for this model (FINDINGS_SCHEMA)
+const SCHEMA = { type: 'object', properties: { why: { type: 'string' }, edits: { type: 'array', items: { type: 'object', properties: { find: { type: 'string' }, replace: { type: 'string' } }, required: ['find', 'replace'] } } }, required: ['why', 'edits'] };
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(ctx) {
+  // one catch around everything: a failure anywhere answers JSON with its reason category, never the platform's HTML page
+  try { return await propose(ctx); } catch (e) { try { await recordShortfall(ctx.env, 'propose-fix', reasonOf(e)); } catch (_) {} return Response.json({ error: 'V01D could not propose a fix: ' + reasonOf(e) }, { status: 502 }); }
+}
+
+async function propose({ request, env }) {
   if (!(await ownerOk(request, env))) return new Response('no', { status: 401 });
   let b = {}; try { b = JSON.parse(await request.text()); } catch (_) {}
   const ask = String(b.ask || '').replace(/\s+/g, ' ').trim().slice(0, 160), skill = String(b.skill || '').trim(), source = String(b.source || '');
