@@ -64,6 +64,18 @@
     "ask-20261015-0445-3": {
       "decision": "queued",
       "why": "repeat of ask-20261014-2134-3 (films to poster); next films build"
+    },
+    "ask-20261015-0451-1": {
+      "decision": "queued",
+      "why": "reasoning-path on each decision row: small, reversible, builders' record only; next voice build"
+    },
+    "ask-20261015-0454-3": {
+      "decision": "queued",
+      "why": "same as ask-20261015-0451-1"
+    },
+    "ask-20261015-0454-2": {
+      "decision": "queued",
+      "why": "owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)"
     }
   }
 }
