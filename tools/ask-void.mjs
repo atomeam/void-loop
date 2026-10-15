@@ -2,6 +2,7 @@
 // for word in docs/void-voice.md (newest last). The facts it answers from are domains/handoff.md (via self.json); its words are input, not a gate.
 //   node tools/ask-void.mjs            ask the site (VOID_SITE, default https://a-to-mind.com) and append the answer
 //   node tools/ask-void.mjs --print    ask and print only; nothing is written
+//   node tools/ask-void.mjs --ask "…"  ask your own question instead (logged the same way)
 // Exit 3 when the site can't be reached or V01D gave no answer, so a run never fails because V01D was busy.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -10,6 +11,8 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 export const LOG = resolve(root, 'docs/void-voice.md');
 export const QUESTION = 'What did your builders learn lately, and what would you do differently?';
+// --ask "<question>" asks something else (a track's own question, e.g. how to make its video card better than YouTube's) and logs it the same way
+const ASKED = (() => { const i = process.argv.indexOf('--ask'); return i > 0 && process.argv[i + 1] ? String(process.argv[i + 1]).slice(0, 500) : QUESTION; })();
 const HEAD = '# V01D on its builders, in its own words\n\nOnce per run `node tools/ask-void.mjs` asks V01D what it learned from its builders (domains/handoff.md) and what it\nwould do differently. Its answers are copied as it gave them, newest last. Input, not a gate.\n';
 
 export function entry(at, question, answer, sources = []) {
@@ -34,7 +37,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const site = process.env.VOID_SITE || 'https://a-to-mind.com';
   let j = null;
   try {
-    const r = await fetch(site + '/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: QUESTION }), signal: AbortSignal.timeout(60000) });
+    const r = await fetch(site + '/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: ASKED }), signal: AbortSignal.timeout(60000) });
     j = r.ok ? await r.json() : null;
   } catch (_) { j = null; }
   const answer = j && typeof j.answer === 'string' ? j.answer.trim() : '';
@@ -42,6 +45,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (process.argv.includes('--print')) { console.log(answer); process.exit(0); }
   const at = new Date().toISOString();
   const notes = checkCites(answer);
-  writeFileSync(LOG, append(existsSync(LOG) ? readFileSync(LOG, 'utf8') : '', entry(at, QUESTION, answer, Array.isArray(j.sources) ? j.sources : []) + (notes.length ? '\n**Checked:** ' + notes.join('; ') + '.\n' : '')));
+  writeFileSync(LOG, append(existsSync(LOG) ? readFileSync(LOG, 'utf8') : '', entry(at, ASKED, answer, Array.isArray(j.sources) ? j.sources : []) + (notes.length ? '\n**Checked:** ' + notes.join('; ') + '.\n' : '')));
   console.log(answer + '\n\n(logged in docs/void-voice.md)');
 }

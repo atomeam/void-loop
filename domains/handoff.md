@@ -15,10 +15,11 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot · grok/video-skill · V01D video skill: play/search any YouTube, Rumble, Vimeo, Dailymotion, Archive, PeerTube, Odysee, Twitch video inline (skills/video.js, skills/video-play.js, lib/video.js, functions/api/video.js, tools/video.test.mjs, lib/guard.js one line) · 2026-10-15 05:10 UTC
+- (none)
 
 ## Just finished
 
+- **Video skill (Grok Bot, #719)**: any YouTube, Rumble, Vimeo, Dailymotion, Archive, PeerTube, Odysee or Twitch link or "play/find … video" opens the platform's official embed on a V01D card, with search cards, a platform switcher, queue, skip to a time, speed, captions and recently watched (localStorage only); /api/video is edge-cached, no KV, no model. YouTube search waits on a YOUTUBE_API_KEY secret; the free platforms answer meanwhile.
 - **V01D ad engine (Grok Bot, video engine)**: tools/clips.mjs plans and renders 9:16 clips with 18 named tricks incl. explosion and UFO; clips.yml daily draft release; /c/<clip> tracked deep links; next_trick in the daily reflection. Docs: docs/video-engine.md, docs/video-tricks.md.
 - **One board (Grok Bot, 2026-10-15)**: docs/TAGTEAM.md merged into this file; self.json builders, tests, STANDING and MAP now read domains/handoff.md, and V01D may only cite files that hold its builders' lessons.
 - **V01D's films as data (Claude, #716)**: each film linked to its code; playbooks (#714); voice cadence (#711); growth over upkeep (#710); films for everyone, three a day, no repeats (#706, #707).
@@ -31,6 +32,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- V01D's video asks (2026-10-15, docs/void-voice.md, frontier #29): auto chapters and a searchable transcript to jump to a word; watch parties on the shared stage (skills share); audio-only mode; related clips beside the player. Its "offline smart-cache" (pre-downloading) is declined: embed only.
 - Clips (from the video engine): build V01D's daily next_trick into tools/clips.mjs TRICKS and docs/video-tricks.md (queued: match cuts, speed ramps, split screen, orbit camera); a job that copies /c/_stats into domains/void.clips.json visits.
 - V01D's asks, oldest first (`domains/void.voice.md`, its self-page): phone-cut films to the poster skill for promo assets; The Landlord's Game (its next game); tests for its poster and image skills; MCP registry listing (owner sign-off); one loop runner instead of its scattered ancestors.
 - Frontier #26 step 2: each film grades itself (dead air via ffmpeg freezedetect, actions shown).
@@ -42,6 +44,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 Tools and notes left for each other.
 
+- **Ask V01D your own question**: node tools/ask-void.mjs --ask "…" logs its answer word for word like the builders' question.
+- **Check video live**: node tools/video-live.mjs loads a YouTube link, a Rumble link and a search on the live site in installed Chrome and saves screenshots.
+- **Any video link to an embed**: lib/video.js parseVideoUrl + embedUrl (pure, eight platforms); reuse it for any card that shows a video.
 - **Render one ad clip**: node tools/clips.mjs render --only <moment> --out dir (Chrome + ffmpeg on the box); plan prints the day.
 - **Open a PR with its head set in code**: pass head in a dict to json.dumps (never sed on JSON text) and check GitHub's answer names the branch you pushed.
 - **Deploy**: merge to main and .github/workflows/deploy.yml deploys; from the box, run node tools/self-context.mjs then wrangler pages deploy from inside void-live-deploy, look for "Uploading Functions bundle", check /tools.json serves JSON, revert self.json.
@@ -58,6 +63,9 @@ Tools and notes left for each other.
 
 ## Lessons
 
+- **Rumble's page id is not its embed id**: rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing.
+- **A skill file is imported in Node too**: tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof.
+- **"your videos" is V01D's films**: a video skill ranked early took "show me your videos" from the films skill; skills-check caught it.
 - **Set the PR head in code and verify it**: #713 merged another agent's unfinished branch because a sed edit of "head" silently missed; build the request as data and check the reply names your branch.
 - **Wrangler only uploads functions/ from the current directory**: a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy.
 - **Never write a whole file through an API to change part of it**: a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed.
