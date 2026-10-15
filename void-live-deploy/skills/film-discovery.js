@@ -1,36 +1,39 @@
 /**
- * film-discovery skill — structured JSON film metadata (asked by Void, daily 2026-10-14 ask-20261014-1820-3).
+ * film-discovery skill — returns structured JSON film metadata (asked by Void, daily 2026-10-14 ask-20261014-1820-3:
+ * "Convert the 'film discovery' logic into a structured skill that outputs a JSON object containing film metadata").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "film discovery", "discover films", "film metadata for Inception", "find films about space".
- * Returns a JSON object of film metadata on the stage. Empty surface stays empty.
+ * "film discovery", "film metadata", "discover films", "list films as json", "film discovery skill".
+ * Leaves "films", "void's films", "where do I watch the films" to the films skill (the page). One-off "best films of 2025"
+ * stay with other skills. Fetches /api/films (members and owner; strangers get the pay gate) and shows the JSON.
+ * Empty surface stays empty: no stage thing is summoned.
  */
-const FILMS = [
-  { title: 'Inception', year: 2010, director: 'Christopher Nolan', genre: 'sci-fi', runtime: 148, rating: 8.8 },
-  { title: 'The Matrix', year: 1999, director: 'Lana & Lilly Wachowski', genre: 'sci-fi', runtime: 136, rating: 8.7 },
-  { title: 'Spirited Away', year: 2001, director: 'Hayao Miyazaki', genre: 'animation', runtime: 125, rating: 8.6 },
-  { title: 'Parasite', year: 2019, director: 'Bong Joon-ho', genre: 'thriller', runtime: 132, rating: 8.5 },
-  { title: 'Arrival', year: 2016, director: 'Denis Villeneuve', genre: 'sci-fi', runtime: 116, rating: 7.9 },
-];
+const ASK = /^(?:(?:please\s+)?(?:show|give|get|return|output|list|discover|what(?:'s| is))\s+(?:me\s+)?)?(?:the\s+)?(?:film\s+)?(?:discovery|metadata|meta)(?:\s+(?:as\s+)?json)?(?:\s+(?:for\s+)?(?:films?|void(?:'s)?\s+films?))?(?:\s+please)?$|^(?:film\s+discovery\s+skill|discover\s+films?(?:\s+as\s+json)?)$/i;
 
-export function metadataFor(q) {
-  const t = String(q || '').toLowerCase();
-  const hit = FILMS.find((f) => t.includes(f.title.toLowerCase()) || t.includes(f.genre) || t.includes(String(f.year)));
-  return hit || FILMS[0];
+export function wantsDiscovery(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return ASK.test(t);
 }
 
-export function wantsDiscovery(lower) {
-  const t = String(lower || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /\b(?:film\s+discovery|discover\s+films?|film\s+metadata|find\s+films?\s+about)\b/.test(t);
-}
-
-function run(text, api) {
+async function run(text, api) {
   if (!wantsDiscovery(text)) return 'none';
-  const meta = metadataFor(text);
-  const json = JSON.stringify(meta, null, 2);
-  api.showPage((el) => {
-    el.innerHTML = '<h2>Film metadata</h2><pre class="src" style="white-space:pre-wrap;font-size:13px">' + api.esc(json) + '</pre>';
-  });
-  api.say('Film metadata as JSON');
+  const { showPage, esc, _pageStill } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>Film metadata</h2><div class="sub">reading /api/films…</div>'; });
+  try {
+    const r = await fetch('/api/films', { cache: 'no-cache' });
+    if (!_pageStill || !_pageStill(el)) return 'film-discovery';
+    if (!r.ok) {
+      const err = r.status === 401 ? 'Members and the owner see the films. Sign in or become a member at /films/.' : 'The films list did not answer (' + r.status + ').';
+      el.innerHTML = '<h2>Film metadata</h2><p>' + esc(err) + '</p><div class="src">/api/films</div>';
+      return 'film-discovery';
+    }
+    const data = await r.json();
+    const meta = { films: (data.films || []).map((f) => ({ id: f.id, at: f.at, title: f.title, description: f.description, tags: f.tags, bytes: f.bytes, reviews: f.reviews || null })), owner: !!data.owner, until: data.until || null };
+    el.innerHTML = '<h2>Film metadata</h2><div class="sub">' + (meta.films.length) + ' film' + (meta.films.length === 1 ? '' : 's') + (meta.owner ? ' · owner view' : '') + '</div>'
+      + '<pre style="white-space:pre-wrap;font-size:12px;line-height:1.4;background:rgba(255,255,255,.04);padding:10px;border-radius:8px;overflow:auto;max-height:60vh">' + esc(JSON.stringify(meta, null, 2)) + '</pre>'
+      + '<div class="src">From <a href="/api/films" target="_blank" rel="noopener">/api/films</a> · for members and the owner</div>';
+  } catch (e) {
+    if (_pageStill && _pageStill(el)) el.innerHTML = '<h2>Film metadata</h2><p>Could not read the films just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>';
+  }
   return 'film-discovery';
 }
 
@@ -38,15 +41,19 @@ export default {
   name: 'film-discovery',
   examples: [
     'film discovery',
+    'film metadata',
     'discover films',
-    'film metadata for Inception',
-    'find films about space',
+    'list films as json',
+    'film discovery skill',
+    'show film metadata',
   ],
   nearMisses: [
     'films',
+    "void's films",
+    'where do I watch the films',
     'best films of 2025',
-    'void films',
-    'watch a film',
+    'film a timer',
+    'review films',
   ],
   match(lower, text) { return wantsDiscovery(text || lower); },
   run,
