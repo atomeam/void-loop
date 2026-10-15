@@ -2,8 +2,8 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 51,
-  "checked": 14,
+  "tested": 53,
+  "checked": 16,
   "proven": 84
  },
  "families": [
@@ -141,7 +141,7 @@
    "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 4,
     "checked": 4,
     "proven": 12
    },
@@ -235,6 +235,16 @@
      "name": "challenge",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark"
+    },
+    {
+     "name": "pong",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
+     "name": "snake",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },
@@ -353,7 +363,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 0,
+    "checked": 1,
     "proven": 6
    },
    "skills": [
@@ -406,6 +416,11 @@
      "name": "routine",
      "tier": "proven",
      "why": "5 browser-suite mentions, 5 real asks in the benchmark"
+    },
+    {
+     "name": "deadlines",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions"
     }
    ]
   },
@@ -787,7 +802,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 2,
+    "checked": 3,
     "proven": 14
    },
    "skills": [
@@ -885,6 +900,11 @@
      "name": "app",
      "tier": "proven",
      "why": "3 browser-suite mentions, 3 real asks in the benchmark"
+    },
+    {
+     "name": "family-health",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions"
     }
    ]
   }
