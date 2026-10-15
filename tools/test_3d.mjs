@@ -104,8 +104,8 @@ if (process.argv.includes('--browser')) {
   let pass = 0, fail = 0;
   const check = (name, ok, info) => { if (only && !only.test(name)) return; if (ok) pass++; else fail++; console.log((ok ? 'pass ' : 'FAIL ') + name + (ok ? '' : '  -> ' + String(info).slice(0, 1200))); };
   const fresh = async (...inits) => {
-    const opt = inits[0] && typeof inits[0] === 'object' && 'mini3d' in inits[0] ? inits.shift() : {};
-    const ctx = await browser.newContext();
+    const opt = inits[0] && typeof inits[0] === 'object' && ('mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {};
+    const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {});
     for (const init of inits) await ctx.addInitScript(init);
     if (opt.mini3d === false) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
     await routeOutside(ctx);
@@ -133,6 +133,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       hits.length === 0 && !index.includes('scene3d') && !index.some((n) => n.startsWith('mini/')) && !/\/vendor\/|\/models\//.test(html), JSON.stringify(hits));
     const r = await F.p.evaluate(async () => {
       const host = document.createElement('div'); host.id = 't3host'; host.style.cssText = 'position:fixed;left:40px;top:40px;width:320px;height:320px;z-index:9'; document.body.appendChild(host);
+      // the rendered signal (asked by Void): how the wrapper looks the moment it is put in, and every void:mini-rendered event after
+      window.__t3born = []; window.__t3rendered = [];
+      new MutationObserver((ms) => { for (const x of ms) for (const n of x.addedNodes) if (n.classList && n.classList.contains('void-mini')) { const c = n.querySelector('canvas'); window.__t3born.push({ rendered: n.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity }); } }).observe(host, { childList: true });
+      host.addEventListener('void:mini-rendered', (e) => window.__t3rendered.push(e.detail));
       const m = await import('/skills/scene3d.js');
       const h = await m.mountMiniature(host, 'sample', { color: '#8b3a1a' }, { key: 't3' });
       const E = await m.engine(); const T = E.THREE;
@@ -144,6 +148,12 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); return l && l[0] && l[0].draws > 0 && l[0].ready ? l[0] : false; }));
     const pixOf = () => F.p.evaluate(() => { const c = document.querySelector('#t3host canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i] > 20) n++; return n / (c.width * c.height); });
     const pix = (await until(async () => { const v = await pixOf(); return v > 0.03 ? v : 0; }, 20000)) || (await pixOf()); // a slow software renderer can hand over its first frame late
+    const sig = await F.p.evaluate(async () => { const w = document.querySelector('#t3host .void-mini'), c = w && w.querySelector('canvas'); const m = await import('/skills/scene3d.js');
+      return { born: window.__t3born, now: w && w.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity, events: window.__t3rendered, listed: (m.liveMiniatures()[0] || {}).rendered }; });
+    check('3D scene: a miniature says when it has drawn (asked by Void: a rendered signal): put in as data-rendered="false", aria-busy and invisible; its first frame sets data-rendered="true", fades it in and fires one void:mini-rendered with its key and kind; liveMiniatures() lists rendered',
+      sig.born.length === 1 && sig.born[0].rendered === 'false' && sig.born[0].busy === 'true' && sig.born[0].opacity === '0'
+      && sig.now === 'true' && sig.busy === 'false' && sig.opacity === '1' && sig.events.length === 1 && sig.events[0].key === 't3' && sig.events[0].kind === 'sample' && sig.listed === true,
+      JSON.stringify(sig));
     check('3D scene: a miniature mounts on demand (vendored three.js r180 and skills/mini/sample.js load only now) with ACES, sRGB, PCF soft shadows, a room environment map, contact shadows, orbit and zoom, and GLTFLoader with meshopt and KTX2; bad kinds are refused',
       !!drawn && Object.values(r.settings).every(Boolean) && r.badKind && pix > 0.03 && hits.some((u) => /\/vendor\/three-r180\/build\/three\.module\.min\.js$/.test(u)) && hits.some((u) => /\/skills\/mini\/sample\.js$/.test(u)) && !F.errors.length,
       JSON.stringify({ r, drawn, pix, hits, e: F.errors }));
@@ -263,6 +273,9 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
     await F.ask('growth');
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
+    // the card scrolls, and a longer friction line above the tree (#686) can leave the trunk below its first screen: bring the
+    // tree into view first, as a visitor scrolls to it, so the tap lands on the tree and not on the ask box under the card
+    if (drawn) { await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-tree canvas'); if (c) c.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
     const at = drawn && await F.p.evaluate(async () => {
       const T = await import('/skills/growth-tree.js'); const list = await (await fetch('/void.growth.json')).json(); const t = T.layout(list);
       return { pt: window.__voidMini.project('growth-tree', T.midpoint(t.branches[0])), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
@@ -272,7 +285,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
     check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'Void asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'V01D asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
@@ -410,6 +423,33 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
   }
 
   // ---- card miniatures: the clock keeps the asked zone's time, the weather diorama shows the forecast
+  // ---- closed cases, and 3D on a phone (owner, 2026-10-15: the clocks looked like "hollow rings" from behind; "on my phone the
+  // 3d was still choppy and laggy"): every case back is as wide as its case and sits on its rear edge; on a touch screen a card
+  // holding a miniature draws no filter shadow, a drag draws at a lower resolution and sharpens after, and motion nobody steers
+  // draws at most about 30 times a second (the clock's sweep 8)
+  if (want("3d: closed cases and a phone")) {
+    const F = await fresh({ phone: true });
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js');
+      const card = document.createElement('div'); card.className = 'thing'; card.style.cssText = 'position:fixed;left:10px;top:10px;width:300px;height:200px;z-index:9';
+      document.body.appendChild(card);
+      const c = await m.mountMiniature(card, 'clock', { clocks: [{ tz: 'Asia/Tokyo', label: 'Tokyo' }, { tz: 'Europe/London', label: 'London' }] }, { key: 'pclock' });
+      const box2 = document.createElement('div'); box2.style.cssText = 'position:fixed;left:10px;top:300px;width:200px;height:200px'; document.body.appendChild(box2);
+      const sw = await m.mountMiniature(box2, 'stopwatch', {}, { key: 'psw' });
+      const closed = (h) => { const out = []; h.ctx.root.traverse((o) => { if (o.name === 'case') { const back = o.parent.getObjectByName('caseback'); const cp = o.geometry.parameters, bp = back && back.geometry.parameters;
+        out.push(!!bp && Math.abs(bp.radius - cp.radiusTop) < 1e-9 && Math.abs(bp.thetaLength - Math.PI / 2) < 1e-9 && Math.abs((o.position.z - cp.height / 2) - back.position.z) < 1e-6); } }); return out; };
+      await new Promise((res) => { const w = () => (c.draws > 0 ? res() : setTimeout(w, 100)); w(); });
+      const filter = getComputedStyle(card).filter, sharp = c.canvas.width;
+      c.controls.dispatchEvent({ type: 'start' }); const dragging = c.canvas.width; c.controls.dispatchEvent({ type: 'end' }); const after = c.canvas.width;
+      const d0 = c.draws; await new Promise((res) => setTimeout(res, 2000)); const perSec = (c.draws - d0) / 2;
+      return { phone: m.isPhone(), clock: closed(c), stopwatch: closed(sw), filter, sharp, dragging, after, css: c.cssW, perSec, regress: m.REGRESS_DPR, frameMs: m.PHONE_FRAME_MS };
+    });
+    check('3d: closed cases and a phone: the clock and stopwatch backs are as wide as their cases and sit on their rear edge; on a touch screen a card with a miniature draws no filter shadow, a drag draws at 1x and sharpens after, and the clock redraws at most 8 times a second',
+      r.phone && r.clock.length === 2 && r.clock.every(Boolean) && r.stopwatch.length === 1 && r.stopwatch.every(Boolean) && r.filter === 'none'
+      && r.dragging === Math.round(r.css * r.regress) && r.after === r.sharp && r.sharp > r.dragging && r.perSec > 0 && r.perSec <= 9 && r.frameMs >= 30 && !F.errors.length,
+      JSON.stringify({ ...r, e: F.errors }));
+    await F.ctx.close();
+  }
   if (want("3d: card miniatures")) {
     const F = await fresh();
     const r = await F.p.evaluate(async () => {
@@ -538,7 +578,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^Void is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = lines.find((t) => /^V01D is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });

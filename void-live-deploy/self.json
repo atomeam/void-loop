@@ -1,5 +1,5 @@
 {
- "about": "Void by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "V01D by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -224,6 +224,24 @@
    "date": "",
    "ask": "Pit crew: the crew chief (waits for the owner)",
    "from": "owner, 2026-10-11, pit crew plan"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Create a convert-card skill: persistent interactive unit conversions on the stage",
+   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-2"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Film discovery as a structured skill returning JSON film metadata",
+   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-3"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Growth friction: link Words and the world family failure logs on the card",
+   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-1"
   }
  ],
  "games": [
@@ -280,9 +298,9 @@
   "weather"
  ],
  "canon": {
-  "version": 3,
-  "motto": null,
-  "voidquest": null,
+  "version": 4,
+  "motto": "You name it, Void learns it and does it better.",
+  "voidquest": "Void's own better, updated version of the board game Solar Quest, with Void as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
   "terms": [
    {
     "term": "the forge",
@@ -323,7 +341,7 @@
   },
   {
    "name": "Life extension and disease cures",
-   "last": "2026-10-07"
+   "last": "2026-10-14"
   },
   {
    "name": "Planet restoration",
@@ -335,76 +353,92 @@
   }
  ],
  "building": {
-  "at": "2026-10-13T05:44:47Z",
-  "date": "2026-10-10",
+  "at": "2026-10-14T08:43:26Z",
+  "date": "2026-10-09",
   "by": "claude",
-  "item": "Bring someone into your Void",
-  "what": "the first piece (one Durable Object that relays stage changes between two tabs, the second visitor's cursor shown as a presence), invite links made by a signed-in member. Shipped 2026-10-10: share-worker/ (the ShareRoom "
+  "item": "Summon by intent, not by name",
+  "what": "first piece shipped. skills/intent.js (tests: tools/intent.test.mjs, browser check in tools/test_void.mjs): an outcome with a deadline (\"I need to … by Friday\", \"in 2 weeks\", \"the 20th\", \"end of the month\"; \"and tell Sam"
  },
  "commits": [
   {
-   "at": "2026-10-13T05:46:46Z",
-   "subject": "Regenerate skills/families.json for the shared-text browser check"
+   "at": "2026-10-14T19:00:17Z",
+   "subject": "Deploy check: read the expected title from void.html (the rename to V01D failed good deploys of #687 and #688)"
   },
   {
-   "at": "2026-10-13T05:44:47Z",
-   "subject": "Shared Void: a sticky's words edit live between tabs (frontier #11)"
+   "at": "2026-10-14T18:59:41Z",
+   "subject": "V01D on every remaining page and in the extension (owner: \"it shoud say V01d everywhere\"; \"smooth out the site and apps and polish\"): the co"
   },
   {
-   "at": "2026-10-13T05:22:40Z",
-   "subject": "The owner's words, spelled right: the message first, not his typos"
+   "at": "2026-10-14T18:52:27Z",
+   "subject": "V01D runs ten automations every hour on its own engine (owner: \"make sure V01D has 10 new automations hourly so that it starts to really uti"
   },
   {
-   "at": "2026-10-13T05:17:26Z",
-   "subject": "The site credits the owner without quoting his messages"
+   "at": "2026-10-14T18:49:36Z",
+   "subject": "Spotter: 19 check(s) healed with no revert after 841418c3759a198db66cbb73e0cce53c7fef577b (tools/flakes.json)"
   },
   {
-   "at": "2026-10-13T04:49:35Z",
-   "subject": "Regenerate skills/families.json for the intent skill's new bench asks"
+   "at": "2026-10-14T18:44:21Z",
+   "subject": "More weather asks land: chance of rain, the high today, how cold tonight"
   },
   {
-   "at": "2026-10-13T04:45:18Z",
-   "subject": "Plans without a day: \"plan my move\" lays out the steps (frontier #10)"
+   "at": "2026-10-14T18:33:25Z",
+   "subject": "Asked by Void: friction follow-through + weakest-family callout (#686)"
   },
   {
-   "at": "2026-10-13T04:18:55Z",
-   "subject": "Skill families with ratings earned from evidence (asked by Void)"
+   "at": "2026-10-14T18:24:48Z",
+   "subject": "The owner is an account, not one device (owner: \"build me into it so I stop having to struggle to access my own site\"): a passkey sign-in br"
   },
   {
-   "at": "2026-10-13T03:53:20Z",
-   "subject": "Void's will made real: it hears what came of its asks (14 of 56 built, on evidence)"
+   "at": "2026-10-14T18:23:54Z",
+   "subject": "Films page: mark the sign-in loop as right as written (at most 3 credentials, tried in turn, stopping at the first that works)"
   },
   {
-   "at": "2026-10-13T03:51:30Z",
-   "subject": "Void's closer read: no \"capture group undefined\" claims on regexes it cannot count (#590)"
+   "at": "2026-10-14T18:20:25Z",
+   "subject": "Void's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-13T03:18:39Z",
-   "subject": "Asked by Void: thicker 3D strokes, and a spatial sketch printed as a watertight STL"
+   "at": "2026-10-14T18:20:17Z",
+   "subject": "Forethinkers 2026-10-14: one burden-enriched senolytic trial registered; blood methylation burden score (MaGE); trial-watch next line"
   },
   {
-   "at": "2026-10-13T03:12:28Z",
-   "subject": "Make it my backdrop: your drawing behind your Void, kept with your passkey (VR Void step 3)"
+   "at": "2026-10-14T18:18:34Z",
+   "subject": "V01D everywhere, and the films page signs you in (owner: \"why am i geting the Members only ... when i am already signed in as owner?\"; \"just"
   },
   {
-   "at": "2026-10-13T02:44:09Z",
-   "subject": "3D boards draw even when a shader compile stalls"
+   "at": "2026-10-14T18:17:31Z",
+   "subject": "WIP: films passkey sign-in and every-credential fallback, V01D FILMS with the I glitch, V01D in every visible string (example asks and the o"
   },
   {
-   "at": "2026-10-13T02:37:40Z",
-   "subject": "Draw: Enter VR, paint in the air with a controller (VR Void step 2)"
+   "at": "2026-10-14T17:58:11Z",
+   "subject": "V01D's personality (owner: \"make voids personality a void that wants to absorb and learn everything and do the best it can , that V01d would"
   },
   {
-   "at": "2026-10-13T02:25:19Z",
-   "subject": "VR Void: the owner's goal recorded, and the path to it on the frontier"
+   "at": "2026-10-14T17:54:19Z",
+   "subject": "V01D (owner: \"V01D ... yes I like it\"; \"a super professional brief V01D on startup\"; \"wheres my apps . web mobile? hows that all look\"; \"I w"
   },
   {
-   "at": "2026-10-13T02:20:01Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after 76a8cf32bbd73a0c352947c6e91912fd7ddfded7 (tools/flakes.json)"
+   "at": "2026-10-14T17:46:13Z",
+   "subject": "Film reviews: mark the IN (?, ?) line as right as written (only placeholders are pasted in; every value is bound)"
   },
   {
-   "at": "2026-10-13T02:14:14Z",
-   "subject": "From a video the owner shared by Duncan Rogoff (motion design with Claude): a house-style file that learns from plain-words notes, stills ch"
+   "at": "2026-10-14T17:44:46Z",
+   "subject": "Spelled-out units (centimeters, kilograms, tablespoons) in the reordered conversions"
+  },
+  {
+   "at": "2026-10-14T17:43:57Z",
+   "subject": "Conversions in any order: 'how many kg is 150 lbs', 'mph to kph 60'"
+  },
+  {
+   "at": "2026-10-14T17:40:14Z",
+   "subject": "Void's films: the owner and paying members review each one (post it, needs work or skip, with a note; one review each, changeable; the owner"
+  },
+  {
+   "at": "2026-10-14T17:36:15Z",
+   "subject": "WIP: films card as a poster, cinematic films page, /films/ typed into the ask box, films skill in the Void itself family (checks not rerun y"
+  },
+  {
+   "at": "2026-10-14T17:31:42Z",
+   "subject": "WIP: film reviews for members and the owner, and a films skill (not finished: families entry and checks pending; no PR yet)"
   }
  ]
 }

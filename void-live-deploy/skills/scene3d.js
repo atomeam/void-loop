@@ -141,7 +141,7 @@ async function builderFor(kind) {
   if (!builders.has(kind)) throw new Error('no miniature for ' + kind);
   return builders.get(kind);
 }
-export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, ms: h.ms, visible: h.visible, ready: h.ready })); }
+export function liveMiniatures() { return [...live.values()].map((h) => ({ key: h.key, kind: h.kind, w: h.cssW, h: h.cssH, draws: h.draws, ms: h.ms, visible: h.visible, ready: h.ready, rendered: h.draws > 0 })); }
 export function unmountMiniature(key) { const h = live.get(key); if (h) h.dispose(); return !!h; }
 
 let raf = 0, last = 0;
@@ -149,7 +149,7 @@ function wake() { if (!raf && live.size) raf = requestAnimationFrame(loop); }
 if (typeof document !== 'undefined') document.addEventListener('visibilitychange', wake);
 function loop(t) {
   raf = 0; const dt = Math.min(0.1, last ? (t - last) / 1000 : 0.016); last = t;
-  let again = false;
+  let again = false; const phone = isPhone();
   for (const h of [...live.values()]) {
     if (!h.wrap.isConnected) { // the card re-rendered (it comes straight back) or was thrown away (it doesn't)
       if (++h.gone > 90) h.dispose(); else again = true;
@@ -162,7 +162,10 @@ function loop(t) {
     if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; for (const c of h.contacts) c.dirty = true; }
     if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
     if (h.moving) again = true;
-    if (dirty && !h.E.lost) { if (h.needsCompile && h.E.renderer.compileAsync) { h.dirty = true; warmUp(h); } else if (!h.compiling) draw(h); }
+    // on a phone, motion nobody is steering (a beating heart, falling rain, a sweeping hand) draws at most every PHONE_FRAME_MS:
+    // a steady 30 fps instead of 60 that drops frames (owner, 2026-10-15: "the 3d was still choppy and laggy"); a drag stays 60
+    if (dirty && phone && !h.moving && t - (h.lastDraw || 0) < PHONE_FRAME_MS) { h.dirty = true; again = true; continue; }
+    if (dirty && !h.E.lost) { if (h.needsCompile && h.E.renderer.compileAsync) { h.dirty = true; warmUp(h); } else if (!h.compiling) { draw(h); h.lastDraw = t; } }
     if (h.dirty && !h.compiling && !h.E.lost) again = true;
   }
   if (again) raf = requestAnimationFrame(loop); else last = 0;
@@ -174,6 +177,10 @@ function loop(t) {
 // tally counter never drew on loaded CI runners (2026-10-12/13). Past this bound the first draw compiles what is left itself,
 // a slow first frame instead of none.
 export const COMPILE_BOUND_MS = 6000;
+/** On a phone, the shortest gap between two frames of motion nobody is steering (about 30 fps). */
+export const PHONE_FRAME_MS = 31;
+/** The pixel ratio a phone draws a miniature at while a finger orbits it (full sharpness again when it lifts). */
+export const REGRESS_DPR = 1;
 function warmUp(h) {
   if (h.compiling) return;
   h.compiling = true; h.needsCompile = false;
@@ -216,6 +223,12 @@ function draw(h) {
   h.g2d.clearRect(0, 0, pw, ph);
   h.g2d.drawImage(E.canvas, 0, E.h - ph, pw, ph, 0, 0, pw, ph);
   h.draws += 1; h.ms = Math.round(performance.now() - t0);
+  if (h.draws === 1) rendered(h);
+}
+// the first frame is on the canvas: say so on the page (data-rendered, aria-busy), fade it in, and tell anyone listening
+function rendered(h) {
+  h.wrap.dataset.rendered = 'true'; h.canvas.setAttribute('aria-busy', 'false'); h.canvas.style.opacity = '1';
+  try { h.wrap.dispatchEvent(new CustomEvent('void:mini-rendered', { bubbles: true, detail: { key: h.key, kind: h.kind } })); } catch (_) {}
 }
 
 /**
@@ -254,13 +267,15 @@ async function mountFresh(host, kind, data, opts, key) {
   const build = await builderFor(kind);
   const wrap = document.createElement('div');
   wrap.className = 'void-mini'; wrap.dataset.kind = kind; wrap.dataset.key = key;
+  wrap.dataset.rendered = 'false'; // until its first frame (asked by Void: a rendered signal checks and people can wait for)
   const place = opts.place || 'inside';
   wrap.style.cssText = place === 'beside'
     ? 'position:absolute;left:calc(100% + 14px);top:0;width:' + (opts.width || 220) + 'px;height:' + (opts.height || 220) + 'px;pointer-events:auto'
     : 'position:relative;width:' + (opts.width ? opts.width + 'px' : '100%') + ';height:' + (opts.height ? opts.height + 'px' : '100%');
   const canvas = document.createElement('canvas');
   canvas.setAttribute('role', 'img'); canvas.setAttribute('aria-label', opts.label || ('3D ' + kind));
-  canvas.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none';
+  canvas.style.cssText = 'display:block;width:100%;height:100%;touch-action:none;cursor:grab;outline:none;opacity:0;transition:opacity .25s ease-out';
+  canvas.setAttribute('aria-busy', 'true');
   wrap.appendChild(canvas);
   for (const ev of ['pointerdown', 'mousedown', 'touchstart']) canvas.addEventListener(ev, (e) => e.stopPropagation(), { passive: true }); // orbit, not a card drag
   const scene = new THREE.Scene(); scene.environment = E.env; scene.environmentIntensity = opts.envIntensity ?? 0.85;
@@ -335,8 +350,11 @@ async function mountFresh(host, kind, data, opts, key) {
     if (!down || Math.hypot(e.clientX - down.x, e.clientY - down.y) > 6 || e.timeStamp - down.t > 700) { down = null; return; }
     down = null; if (!h.taps.length) return; const hits = h.pick(e.clientX, e.clientY); for (const fn of h.taps) { try { fn(hits, e); } catch (err) { console.warn(err); } }
   });
-  if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
-  const pr = () => Math.min(2, Math.max(window.devicePixelRatio || 1, isPhone() ? 1 : 1.5)); // a little supersampling on desktop: no jaggies
+  // a phone orbits at a lower resolution and sharpens when the finger lifts (react-three-fiber's "regress"; owner, 2026-10-15:
+  // "on my phone the 3d was still choppy and laggy"): a drag redraws every frame, and pixels are what a phone's GPU runs short of
+  const regress = (on) => { if (!isPhone() || h.regressed === on) return; h.regressed = on; resize(); };
+  if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; regress(true); wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; regress(false); wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
+  const pr = () => h.regressed ? REGRESS_DPR : Math.min(2, Math.max(window.devicePixelRatio || 1, isPhone() ? 1 : 1.5)); // a little supersampling on desktop: no jaggies
   const resize = () => {
     const w = Math.max(1, Math.round(wrap.clientWidth)), hh = Math.max(1, Math.round(wrap.clientHeight)); h.cssW = w; h.cssH = hh;
     const p = pr(); canvas.width = Math.round(w * p); canvas.height = Math.round(hh * p); camera.aspect = w / hh; camera.updateProjectionMatrix(); h.dirty = true; wake();

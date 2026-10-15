@@ -578,7 +578,7 @@ const RULES = [
   ['gha-unpinned-action', 'risk', ['yaml'], (m, r) => { const k = r.match(/^\s*(?:-\s+)?uses:\s*["']?([\w.-]+)\/[\w./-]+@([\w./-]+)/); if (!k || /^[0-9a-f]{40}$/.test(k[2])) return false;
       return /^(?:main|master|dev|develop|head|latest)$/i.test(k[2]) || !/^(?:actions|github)$/i.test(k[1]); },
     'this action is pinned to a tag or a branch, and whoever controls that repository can move it to new code that then runs with your secrets. Pin third-party actions to a full commit SHA (uses: owner/action@<40-character sha> # v1.2.3)'],
-  ['gha-prt-checkout', 'risk', ['yaml'], (m, r, x) => /^\s*(?:-\s+)?ref:\s*["']?\$\{\{\s*(?:github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref)\b/.test(r) && /^\s*(?:-\s+)?pull_request_target\b/m.test(x.prev()),
+  ['gha-prt-checkout', 'risk', ['yaml'], (m, r, x) => /^\s*(?:-\s+)?ref:\s*["']?\$\{\{\s*(?:github\.event\.pull_request\.head\.(?:sha|ref)|github\.head_ref)\b/.test(r) && (/^\s*(?:-\s+)?pull_request_target\b/m.test(x.prev()) || /^\s*["']?on["']?\s*:[^\n#]*\bpull_request_target\b/m.test(x.all())), // "  pull_request_target:", "on: pull_request_target", "on: [push, pull_request_target]"
     'a pull_request_target workflow runs with your secrets and a write token, and this step checks out the pull request\'s own code, so anyone who opens a PR can run their code with them. Build PR code under the pull_request event instead'],
   ['gha-write-all', 'risk', ['yaml'], (m, r) => /^\s*permissions:\s*["']?write-all\b/.test(r),
     'write-all gives every step a token that can push code, change releases and edit issues. Grant only what the job needs: permissions: contents: read, plus the one write it uses'],
@@ -638,6 +638,21 @@ const RULES = [
     'the arrow function has a { } body but no return, so every result is undefined (map gives [undefined, …], filter keeps nothing). Return the value, or drop the braces: x => x * 2'],
   ['open-redirect', 'risk', JS, (m) => /\bres\.redirect\(\s*(?:\d{3}\s*,\s*)?req\.(?:query|params|body)\b/.test(m),
     'redirecting to a URL taken from the request lets anyone send your users to their site from a link on yours (an open redirect, used in phishing). Only redirect to paths you know, or check the target is on your own site'],
+  ['malloc-unchecked', 'risk', ['c'], (m, r, x) => {
+    // p = malloc(…) and the next lines write through p before any check that it is NULL
+    const a = m.match(/\b([A-Za-z_]\w*)\s*=\s*(?:\([^)]*\)\s*)?(?:malloc|calloc|realloc)\s*\(/), v = a && a[1];
+    if (!v) return false;
+    const rest = m.slice(a.index + a[0].length).split(';').slice(1).filter((t) => t.trim()); // "p = malloc(n); p[0] = 1;" pasted on one line
+    for (const n of [...rest, x.next(1), x.next(2), x.next(3)]) {
+      if (!n.trim()) continue; // a comment line is blank once masked: look past it
+      if (new RegExp('\\bif\\b[^;{]*\\b' + v + '\\b|\\b' + v + '\\s*[!=]=\\s*NULL|\\bassert\\s*\\([^)]*\\b' + v + '\\b').test(n)) return false;
+      if (new RegExp('\\b' + v + '\\s*\\[|\\*\\s*' + v + '\\b|\\b' + v + '\\s*->|\\b(?:mem(?:cpy|set|move)|str(?:n?cpy|n?cat))\\s*\\(\\s*' + v + '\\b').test(n)) return true;
+    }
+    return false;
+  },
+    'malloc, calloc and realloc return NULL when memory runs out, and writing through a NULL pointer crashes (or worse). Check it first: if (p == NULL) { … handle it … }.'],
+  ['php-loose-hash-compare', 'risk', ['php'], (m) => /(?<![=!<>])[=!]=(?!=)/.test(m) && /\$\w*(?:hash|passw(?:or)?d|pwd|token|secret|signature|digest|hmac|md5|sha1?)\w*|\b(?:md5|sha1|hash|hash_hmac|crypt)\s*\(/i.test(m) && !/\bhash_equals\s*\(|\bpassword_verify\s*\(/.test(m),
+    'PHP\'s == compares strings that look like numbers as numbers, so two different hashes such as "0e462…" and "0e830…" are equal (magic hashes) and a wrong password or token can pass. Use hash_equals($known, $given) for hashes and tokens (it is also timing-safe), password_verify() for passwords, and === elsewhere.'],
   ['format-string', 'risk', ['c'], (m) => /\b(?:printf\s*\(\s*|fprintf\s*\(\s*[\w>.-]+\s*,\s*|syslog\s*\(\s*[\w|]+\s*,\s*)(?!")[A-Za-z_][\w.>-]*\s*\)/.test(m),
     'the text is used as the format: a % in it (from a user) reads or writes memory it should not (a format-string bug). Print it through a fixed format: printf("%s", text)'],
   ['ts-any', 'style', ['typescript'], (m) => /(?::\s*any\b(?!\s*[\w$])|\bas\s+any\b|<any>)/.test(m),

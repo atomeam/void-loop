@@ -3,8 +3,8 @@
 # Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
 # tools/pr-ready.mjs); main deploys in about a minute; the full suite runs on every head of main in its own workflow
 # (verify.yml, verify-main, which no longer waits for this deploy), and a failure reverts the commit that broke it and redeploys.
-#   PR, code changed    the quick checks (seconds) and a preview deploy (Void's review is its own workflow, void-review.yml)
-#   PR, docs only       the quick checks; no preview
+#   PR                  the quick checks (seconds), no preview deploy (owner, 2026-10-15: Cloudflare is spent on growth);
+#                       Void's review is its own workflow, void-review.yml
 #   push to main        the quick checks, then deploy (one production group: deploys stay serialized and only the newest
 #                       pending one runs); the full suite is verify.yml, started by the same push, never by this deploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
@@ -66,20 +66,11 @@ jobs:
           suite=false
           [ "$EVENT" = "workflow_dispatch" ] && suite=true
           if [ "$EVENT" = "pull_request" ]; then
-            # Docs only: every changed file is markdown, and none of the few markdown files the suite reads.
-            files=$(git diff --name-only "$(git merge-base "origin/$BASE" HEAD)" HEAD)
-            light=true
-            [ -n "$files" ] || light=false
-            while IFS= read -r f; do
-              [ -n "$f" ] || continue
-              case "$f" in
-                STANDING.md|domains/void.existing-tools.md|domains/growth-inbox.md|domains/inputs/*) light=false ;;
-                *.md|*.md.part) ;;
-                *) light=false ;;
-              esac
-            done <<< "$files"
-            [ "$light" = true ] && echo "### Docs-only PR: quick checks only, no preview" >> "$GITHUB_STEP_SUMMARY"
-            echo "light=$light" >> "$GITHUB_OUTPUT"
+            # no preview deploys (owner, 2026-10-15: "cloudflare is not unlimited V01D should spend its actions on growth and not
+            # so much on testing old thing"): a PR merges in minutes and main deploys right after, so a preview was a Cloudflare
+            # deploy nobody opened. A PR gets the quick checks; main gets the deploy.
+            echo "### PR: quick checks only, no preview deploy" >> "$GITHUB_STEP_SUMMARY"
+            echo "light=true" >> "$GITHUB_OUTPUT"
           fi
           echo "suite=$suite" >> "$GITHUB_OUTPUT"
           echo "suite=$suite"
@@ -128,7 +119,7 @@ jobs:
 
       - name: Deploy to Cloudflare Pages (a-to-mind)
         id: deploy
-        # a docs-only PR changes nothing the site serves, so it gets no preview
+        # a PR gets no preview (above): only main deploys
         if: env.CF_READY == 'true' && steps.plan.outputs.light != 'true'
         uses: cloudflare/wrangler-action@v3
         with:

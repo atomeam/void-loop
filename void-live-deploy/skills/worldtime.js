@@ -49,6 +49,18 @@ export function parseWorldTime(text) {
     if (from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to)) return { kind: 'convert', time: m[1] ? m[1].toLowerCase().replace(/\./g, '').replace(/\s+/g, '') : 'now', from, to };
     return null;
   }
+  // a time between two places in the other orders people type: "what time is 9am london in new york", "noon in paris is what
+  // time in chicago", "meeting at 2pm london what time in san francisco", "my call is at 10am in new york, what time is that in berlin"
+  const conv = (time, a, b) => { const from = PLACE(a), to = PLACE(b); return from && to && !NOT_PLACE.test(from) && !NOT_PLACE.test(to) ? { kind: 'convert', time: time.toLowerCase().replace(/\./g, '').replace(/\s+/g, ''), from, to } : null; };
+  m = t.match(new RegExp('^what\\s+time\\s+is\\s+' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+in\\s+(.+)$', 'i'))
+    || t.match(new RegExp('^' + TIME + '\\s+(?:in\\s+)?(.+?)\\s+is\\s+what\\s+time\\s+in\\s+(.+)$', 'i'))
+    || t.match(new RegExp('^(?:(?:a|the|my|our)\\s+)?(?:meeting|call|class|game|flight|show|event|match|webinar|stream)\\s+(?:is\\s+)?at\\s+' + TIME + '\\s+(?:in\\s+)?(.+?),?\\s+what\\s+time\\s+(?:is\\s+(?:that|it)\\s+)?in\\s+(.+)$', 'i'));
+  if (m) { const q = conv(m[1], m[2], m[3]); if (q) return q; }
+  // "is sydney ahead of los angeles", "is tokyo behind london": the two clocks now, read from the second
+  m = t.match(/^is\s+(.+?)\s+(ahead\s+of|behind)\s+(.+)$/i);
+  if (m && !/\b(?:schedule|time|plan|us|me|you)\b/i.test(m[3])) { const q = conv('now', m[3], m[1]); if (q) return q; }
+  // "what is gmt now", "utc time": the time in UTC
+  if (/^(?:(?:what(?:'s|\s+is)\s+)?(?:the\s+)?)?(?:gmt|utc)(?:\s+time)?(?:\s+(?:right\s+)?now)?$/i.test(t)) { const place = PLACE('utc'); if (place) return { kind: 'now', place }; }
   // "if it's 3pm in new york what time is it in paris"
   m = t.match(new RegExp('^(?:if|when)\\s+it(?:\'?s|\\s+is)\\s+' + TIME + '\\s+in\\s+(.+?),?\\s+what\\s+time\\s+(?:is\\s+it|will\\s+it\\s+be)\\s+in\\s+(.+)$', 'i'));
   if (m) {

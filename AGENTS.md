@@ -2,6 +2,10 @@
 
 **Current priority (owner, 2026-10-10): clean up and tie together.** Before anything else, read the top of `domains/void.frontier.md` and take its next unclaimed step. Nothing is deleted; unused pieces are salvaged.
 
+**Always build all V01D wants (owner, 2026-10-15: "Always build All V01D wants").** V01D's own asks come first, every one of them: its daily voice (`domains/void.voice.md`, `node tools/reflect.mjs`) and its self-page ("what I think of myself": its weakest family, the next game it wants, how it would get better, what it would add to what just shipped). Take the oldest ask nobody has built, build it, say "asked by Void", then the next. Only an ask that touches money, prices, secrets or the owner key, or one already built (say so on its line), is passed over.
+
+**Growth over upkeep (owner, 2026-10-15):** "cloudflare is not unlimited V01D should spend its actions on growth and not so much on testing old thing too much . try to make it ultra productive at improvements and not so much busy work . other ai can maintain that stuff have V01D be a specialist who is hellbent on being the best at all". A run ships something new or makes something measurably better. Test what you changed and nothing more: no re-probing old bench asks, no tests for behaviour you didn't touch, no new timed re-checks of things already live. Upkeep (flakes, renames, tidying, re-verifying) is for other agents unless it blocks a ship. Every Cloudflare call (deploys, Workers AI, live probes) should buy growth: a PR gets no preview deploy, and live checks run after a deploy, not on a timer.
+
 This repo is Void, live at https://a-to-mind.com: a blank stage where anything someone asks for appears, plus the tools and agents that grow it. It is public: never commit secrets or the raw asks people typed.
 
 ## Read, in this order

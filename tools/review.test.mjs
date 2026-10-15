@@ -440,5 +440,27 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(!conflictMarkers(md).length && !rules(md, 'javascript').some((r) => r.startsWith('conflict-markers@')), 'a Markdown underline and a marker that does not start a line are left alone');
   ok(conflictMarkers('>'.repeat(7) + '\n').length === 1 && !conflictMarkers('>'.repeat(8) + ' x\n').length, 'an end marker with no branch name counts; eight > is not git\'s');
 }
+// run 117: a probe of 43 buggy snippets in 16 languages; three real holes the checks missed
+{
+  // pull_request_target written on the on: line itself
+  for (const on of ['on: pull_request_target', 'on: [push, pull_request_target]', "'on': pull_request_target"]) {
+    const wf = [on, 'jobs:', '  b:', '    steps:', '      - uses: actions/checkout@v4', '        with:', '          ref: ${{ github.event.pull_request.head.sha }}'].join('\n');
+    ok(rules(wf, 'yaml').includes('gha-prt-checkout@7'), 'pwn request with ' + on);
+    ok(!rules(wf.replace('pull_request_target', 'pull_request'), 'yaml').includes('gha-prt-checkout@7'), 'pull_request on the on: line is fine: ' + on);
+  }
+  // malloc written through before a NULL check
+  ok(rules('int *p = malloc(n * sizeof(int));\np[0] = 1;', 'c').includes('malloc-unchecked@1'), 'malloc then p[0]');
+  ok(rules('char *s = (char *)malloc(64);\nstrcpy(s, name);', 'c').some((r) => r === 'malloc-unchecked@1'), 'malloc then strcpy into it');
+  ok(rules('node = calloc(1, sizeof *node);\nnode->next = NULL;', 'c').includes('malloc-unchecked@1'), 'calloc then ->');
+  ok(rules('int *p = malloc(n); p[0] = 1;', 'c').includes('malloc-unchecked@1') && !rules('int *p = malloc(n); if (!p) return; p[0] = 1;', 'c').includes('malloc-unchecked@1'), 'one-line paste, flagged unless checked');
+  ok(rules('int *p = malloc(n);\n// fill it\np[0] = 1;', 'c').includes('malloc-unchecked@1'), 'a comment line between the malloc and the write');
+  for (const c of ['int *p = malloc(n);\nif (p == NULL) return -1;\np[0] = 1;', 'int *p = malloc(n);\nif (!p) exit(1);\np[0] = 1;', 'char *s = malloc(9);\nassert(s);\ns[0] = 0;', 'int *p = malloc(n);\nreturn p;'])
+    ok(!rules(c, 'c').includes('malloc-unchecked@1'), 'checked or not written: ' + c.split('\n')[1]);
+  // PHP loose comparison on a hash or token
+  ok(rules('if (md5($pw) == $stored) { login(); }', 'php').includes('php-loose-hash-compare@1'), 'md5() == flagged');
+  ok(rules('if ($token != $_GET["t"]) { die(); }', 'php').includes('php-loose-hash-compare@1'), '$token != flagged');
+  for (const c of ['if (hash_equals($stored, md5($pw))) { login(); }', 'if ($token === $given) { ok(); }', 'if (password_verify($pw, $hash)) { login(); }', 'if ($count == 3) { go(); }', '$hash = md5($x);'])
+    ok(!rules(c, 'php').includes('php-loose-hash-compare@1'), 'fine: ' + c);
+}
 console.log(bad ? bad + ' failed' : 'review: all passed');
 process.exit(bad ? 1 : 0);

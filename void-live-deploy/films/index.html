@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>V01D FILMS</title>
-  <meta name="description" content="Short films V01D makes of its own experiments, newest first. For members: people who pay for V01D.">
+  <meta name="description" content="Short films V01D makes of its own experiments, newest first. Free to watch.">
   <meta name="robots" content="noindex">
   <meta name="color-scheme" content="dark">
   <meta name="theme-color" content="#07070d">
@@ -35,12 +35,6 @@
     .btn.yt { background: var(--yt); border-color: var(--yt); color: #fff; font-weight: 700; }
     .note { color: var(--muted); font-size: 14px; }
     #status { color: var(--muted); }
-    #gate { background: linear-gradient(160deg, rgba(255,61,127,.14), rgba(122,92,255,.14)); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin: 0 0 24px; display: none; box-shadow: 0 20px 60px rgba(0,0,0,.4); }
-    #gate.on { display: block; }
-    #gate form { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-    #gate details.key { margin-top: 12px; color: var(--muted); font-size: 14px; }
-    #gate details.key summary { cursor: pointer; width: max-content; }
-    #gate input { font: inherit; font-size: 14px; flex: 1 1 220px; min-width: 0; padding: 8px 14px; min-height: 42px; border-radius: 12px; border: 1px solid var(--line); background: rgba(0,0,0,.35); color: var(--ink); }
     /* the I in FILMS glitches into a 1 now and then (owner, 2026-10-14: "the i flickers"; "drop the l i only") */
     .gl { position: relative; display: inline-block; }
     .gl b { font-weight: inherit; animation: gl-l 6s steps(1, end) infinite; }
@@ -63,23 +57,17 @@
 </head>
 <body>
 <main>
-  <!-- Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access").
-       The films live in Cloudflare R2 behind functions/api/films.js: the list is for the owner, a Void Pro key, a Code Review Pro
-       license or a paid account's session (the support desk's rule), and each film plays from a signed link that runs out in hours.
-       .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube: download it, copy its
-       words, open YouTube's upload page. Nothing here uploads anything by itself. -->
+  <!-- Void's films, for everyone (owner, 2026-10-15: "just give the films to everyone they arent anything special yet anyway").
+       The films live in Cloudflare R2 behind functions/api/films.js: anyone gets the list, and each film plays from a signed link
+       that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
+       download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
   <p><a class="home" href="/">← V01D</a></p>
   <p class="kicker">Now showing · a new one daily</p>
   <h1 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
-  <p class="sub">Every day V01D films one of its own experiments. The films are for members: people who pay for V01D. Members review them: post it, needs work or skip, with a note, and the owner decides what goes on YouTube.</p>
-  <!-- one way in for everyone (owner, 2026-10-14: "V01D Pro is complex and could drive off members . needs a simpler interface for
-       all"): Sign in with your passkey, or become a member; a bought key stays possible, folded away under "Have a key?" -->
-  <div id="gate">
-    <strong>Members only.</strong> Sign in to watch, or become a member.
-    <div class="row" style="margin-top:14px"><button class="btn join" id="signin" type="button">Sign in</button><a class="btn" id="join" href="/code-review/#pro">Become a member</a></div>
-    <details class="key"><summary>Have a key?</summary>
-      <form id="keyform"><input id="key" type="password" autocomplete="off" placeholder="Paste your key" aria-label="Your V01D key"><button class="btn" type="submit">Watch</button></form></details>
-  </div>
+  <p class="sub">Every day V01D films one of its own experiments. Watch them free and share them.</p>
+  <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
+       the films. A sign-in this browser already holds (the owner's, a member's from V01D) still brings the owner's YouTube steps
+       and the review box, without asking. -->
   <p id="status">Loading the films…</p>
   <div id="films"></div>
   <footer><a href="https://www.youtube.com/@atombomb983">V01D on YouTube</a> · <a href="/privacy/">Privacy</a> · <a href="/">a-to-mind.com</a></footer>
@@ -98,8 +86,7 @@
     return b;
   };
   // who is asking (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as owner?"): every credential
-  // this browser holds, tried in turn until one is accepted: a key typed here (this tab only), the owner's sign-in, a signed-in account.
-  // Sign-ins live per browser (on iPhone the home-screen app and Safari keep separate ones), so the gate says which case it is.
+  // this browser holds, tried in turn until one is accepted: a key kept for this tab, the owner's sign-in, a signed-in account.
   const creds = () => { const out = [];
     try { const k = sessionStorage.getItem(KEY); if (k) out.push(['key', k]); } catch (_) {}
     try { const o = localStorage.getItem('a2m.void.owner.v1'); if (o) out.push(['owner', o]); } catch (_) {}
@@ -136,25 +123,20 @@
     if (owner && r.notes && r.notes.length) kids.push($('ul', {}, r.notes.map((n) => $('li', { text: VERDICTS[n.verdict] + ' (' + n.by + '): ' + n.note }))));
     return $('div', { class: 'review' }, kids);
   }
-  const status = document.getElementById('status'), list = document.getElementById('films'), gate = document.getElementById('gate');
+  const status = document.getElementById('status'), list = document.getElementById('films');
   async function load() {
-    list.textContent = ''; gate.classList.remove('on'); status.textContent = 'Loading the films…';
+    list.textContent = ''; status.textContent = 'Loading the films…';
     try {
-      let r = null, j = {}, tried = [];
+      let r = null, j = {};
+      // anyone watches (owner, 2026-10-15: the films are our ads); a sign-in this browser already holds is tried in turn, quietly,
+      // stopping at the first the server takes as the owner or a member
       for (const [kind, tok] of creds()) {
-        r = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); j = await r.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
-        if (r.status !== 401 && r.status !== 403) { good = tok; break; }
-        tried.push(kind); if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
+        const t = await fetch('/api/films', { headers: { authorization: 'Bearer ' + tok } }); const tj = await t.json().catch(() => ({})); // void-review: ok (at most 3 sign-ins, tried in turn on purpose, stopping at the first that works)
+        if (!r || (t.ok && tj.member)) { r = t; j = tj; }
+        if (t.ok && tj.member) { good = tok; break; }
+        if (kind === 'key') { try { sessionStorage.removeItem(KEY); } catch (_) {} }
       }
       if (!r) { r = await fetch('/api/films'); j = await r.json().catch(() => ({})); }
-      if (r.status === 401 || r.status === 403) {
-        status.textContent = tried.includes('owner') ? 'Your owner sign-in here has run out: tap Sign in.'
-          : tried.includes('account') ? 'Your account isn\u2019t a member yet: become a member to watch.'
-          : tried.includes('key') ? 'That key was not accepted.'
-          : 'Not signed in on this browser yet: tap Sign in.';
-        if (j.buy) document.getElementById('join').href = j.buy;
-        gate.classList.add('on'); return;
-      }
       if (!r.ok) throw new Error(String(r.status));
       const films = j.films || [];
       if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
@@ -169,46 +151,13 @@
             $('a', { class: 'btn yt', href: UPLOAD, target: '_blank', rel: 'noopener', text: '2. Upload to YouTube' }),
           ]),
           $('div', { class: 'row' }, [copyBtn('3. Copy title', f.title), copyBtn('Copy description', f.description), ...(f.tags ? [copyBtn('Copy tags', f.tags)] : [])]));
-        kids.push(reviewBox(f, j.owner));
+        if (j.member) kids.push(reviewBox(f, j.owner));
         list.append($('article', { class: 'film', 'data-id': f.id }, [video, $('div', { class: 'body' }, kids)]));
       }
     } catch (e) {
       status.textContent = 'The films could not load just now. Try again in a minute.';
     }
   }
-  // passkey sign-in on this page (the same /api/passkey steps void.html uses): the owner's session is kept where V01D keeps it
-  // (a2m.void.owner.v1), so the main page is signed in too; a member's session is kept for this tab only, so V01D's own sync
-  // (a2m.void.me.v1, which carries the stage) is never half-written from here
-  const b2u = (buf) => { const b = new Uint8Array(buf); let s = ''; for (const x of b) s += String.fromCharCode(x); return btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, ''); };
-  const u2b = (s) => { const t = String(s).replace(/-/g, '+').replace(/_/g, '/'); const bin = atob(t + '==='.slice((t.length + 3) % 4)); const o = new Uint8Array(bin.length); for (let i = 0; i < bin.length; i++) o[i] = bin.charCodeAt(i); return o.buffer; };
-  const reqOpts = (j) => (PublicKeyCredential.parseRequestOptionsFromJSON ? PublicKeyCredential.parseRequestOptionsFromJSON(j) : { ...j, challenge: u2b(j.challenge), allowCredentials: (j.allowCredentials || []).map((c) => ({ ...c, id: u2b(c.id) })) });
-  const credJSON = (c) => { try { if (c.toJSON) return c.toJSON(); } catch (_) {} const r = c.response;
-    return { id: c.id, rawId: b2u(c.rawId), type: c.type, authenticatorAttachment: c.authenticatorAttachment || null, clientExtensionResults: c.getClientExtensionResults ? c.getClientExtensionResults() : {},
-      response: { clientDataJSON: b2u(r.clientDataJSON), authenticatorData: b2u(r.authenticatorData), signature: b2u(r.signature), userHandle: r.userHandle ? b2u(r.userHandle) : null } }; };
-  const pk = async (step, extra) => { const r = await fetch('/api/passkey', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ step, ...(extra || {}) }), cache: 'no-store' }); return { status: r.status, body: await r.json().catch(() => ({})) }; };
-  async function signIn() {
-    const btn = document.getElementById('signin');
-    if (!(window.PublicKeyCredential && navigator.credentials && window.isSecureContext)) { status.textContent = 'This browser can\u2019t use passkeys: paste your key instead.'; return; }
-    btn.disabled = true; status.textContent = 'Signing in \u00b7 use this device\u2019s PIN or face';
-    try {
-      const o = await pk('get-options'); if (o.status !== 200) throw new Error('couldn\u2019t start signing in');
-      let cred; try { cred = await navigator.credentials.get({ publicKey: reqOpts(o.body.publicKey) }); } catch (e) { throw new Error(e && e.name === 'NotAllowedError' ? 'no passkey used' : 'couldn\u2019t sign in'); }
-      const r = await pk('get', { credential: credJSON(cred) });
-      if (r.status === 404) throw new Error('that passkey was forgotten: open V01D and say \u201cremember me\u201d');
-      if (r.status !== 200) throw new Error('that passkey didn\u2019t check out');
-      const owner = r.body.owner && typeof r.body.owner.token === 'string' ? r.body.owner.token : '';
-      if (owner) { try { localStorage.setItem('a2m.void.owner.v1', owner); } catch (_) {} }
-      else if (r.body.token) { try { sessionStorage.setItem(KEY, r.body.token); } catch (_) {} }
-      await load();
-    } catch (e) { status.textContent = 'Not signed in: ' + e.message + '.'; }
-    btn.disabled = false;
-  }
-  document.getElementById('signin').addEventListener('click', signIn);
-  document.getElementById('keyform').addEventListener('submit', (e) => {
-    e.preventDefault(); const k = document.getElementById('key').value.trim(); if (!k) return;
-    try { sessionStorage.setItem(KEY, k); } catch (_) {}
-    load();
-  });
   load();
 })();
 </script>

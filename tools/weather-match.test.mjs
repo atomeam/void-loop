@@ -16,7 +16,7 @@ test('weather: forecast phrasings people type', () => {
 
 test('weather: look-alikes it leaves alone', () => {
   for (const a of ['what to wear to a wedding', 'what to wear for an interview', 'freezing point of water', 'chance of winning the lottery',
-    'high school near me', 'temperature to cook chicken', 'pollen count today', 'is there a meeting today', 'what is the dew point definition of',
+    'high school near me', 'temperature to cook chicken', 'medium rare steak temperature', 'well done steak temp', 'pollen count today', 'is there a meeting today', 'what is the dew point definition of',
     'the high road', 'storm area 51', 'should i wear a tie to the interview'])
     assert.ok(!takes(a), a);
 });

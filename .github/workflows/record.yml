@@ -7,21 +7,36 @@ name: Void records itself
 
 on:
   schedule:
-    - cron: '41 15 * * *' # daily
+    - cron: '41 15 * * *' # daily: three films
+  # and whenever V01D ships something (owner, 2026-10-15: "let V01D make films whenever it wants or does anything"): after each
+  # deploy of main, one film of an experiment never filmed before, or none (a deploy never re-films an old one)
+  workflow_run:
+    workflows: ['Void deploy']
+    types: [completed]
+    branches: [main]
   workflow_dispatch:
     inputs:
       id:
-        description: A lab experiment to film (empty = the newest in the lab)
+        description: A lab experiment to film (empty = the newest not filmed yet)
         default: ''
+        type: string
+      count:
+        description: How many films to make, each a different experiment (when no id is given)
+        default: '3'
         type: string
 
 permissions:
   contents: write # the film's draft release (gh release create / edit --draft); nothing else is written  void-review: ok (releases need contents: write)
 
+concurrency:
+  group: record # one recording at a time, none dropped
+  cancel-in-progress: false
+
 jobs:
   record:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 25 # several films a run
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -33,22 +48,35 @@ jobs:
         run: |
           npx playwright-core install --with-deps chromium ffmpeg
           echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      # a new experiment each time (owner, 2026-10-15: "these 3 are the same vid"): the films already made are the film-* release
+      # tags, drafts included, and tools/record.mjs picks the newest experiment not among them
       - name: Film it
+        id: film
         env:
           ID: ${{ inputs.id }}
-        run: node tools/record.mjs $ID --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
-      # MP4 for phones and YouTube (Playwright films in WebM), and the words to paste into YouTube Studio
+          COUNT: ${{ github.event_name == 'workflow_run' && '1' || inputs.count || '3' }}
+          ONLY_NEW: ${{ github.event_name == 'workflow_run' && '--only-new' || '' }}
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -o pipefail
+          export VOID_FILMED="$(gh release list --limit 300 --json tagName --jq '.[].tagName | select(startswith("film-"))' | tr '\n' ' ')"
+          node tools/record.mjs $ID --count "$COUNT" $ONLY_NEW --seconds 20 | tee -a "$GITHUB_STEP_SUMMARY"
+          echo "made=$(ls media/*.json 2>/dev/null | wc -l)" >> "$GITHUB_OUTPUT"
+      # MP4 for phones and YouTube (Playwright films in WebM), 15% faster so no moment drags (the edit: tools/record.mjs), and the words
+      # to paste into YouTube Studio
       - name: Make the MP4 and the words to paste
+        if: steps.film.outputs.made != '0'
         run: |
           sudo apt-get install -y -qq ffmpeg >/dev/null
           for m in media/*.json; do
             b="${m%.json}"
-            ffmpeg -loglevel error -y -i "$b.webm" -vf "scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
+            ffmpeg -loglevel error -y -i "$b.webm" -vf "setpts=PTS/1.15,scale=1080:1920:flags=lanczos" -c:v libx264 -preset veryfast -crf 20 -pix_fmt yuv420p -movflags +faststart -an "$b.mp4"
             node -e 'const m=JSON.parse(require("fs").readFileSync(process.argv[1],"utf8"));process.stdout.write("TITLE\n"+m.title+"\n\nDESCRIPTION\n"+m.description+"\n\nTAGS\n"+(m.tags||[]).join(", ")+"\n")' "$m" > "$b.txt"
           done
       # one draft release per film: a private copy only people with write access to the repo can see (the films are for people
       # who pay, owner 2026-10-14: "just put void films right onto the sight , with only paid access")
       - name: Keep the film as a draft release
+        if: steps.film.outputs.made != '0'
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -60,11 +88,13 @@ jobs:
           done
       # on the site for members (functions/api/films.js, stored in Cloudflare R2): https://a-to-mind.com/films/
       - name: Put the film on the site for members
+        if: steps.film.outputs.made != '0'
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: set -o pipefail; for m in media/*.json; do b="${m%.json}"; node tools/film-post.mjs "$b.mp4" "$m" --id "$(cat "$b.siteid")" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"; done
       # films posted before this were public releases: put each on the site, then make its release a draft (nothing is deleted)
       - name: Move the older public films onto the site
+        if: steps.film.outputs.made != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -78,6 +108,7 @@ jobs:
           done
       # every film's words in today's name (owner, 2026-10-14: "it shoud say V01d everywhere"): tools/film-post.mjs brands them V01D
       - name: Refresh every film's words on the site
+        if: steps.film.outputs.made != '0'
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -91,7 +122,7 @@ jobs:
       # optional: straight to Void's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
       # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
       - name: Upload to Void's YouTube channel
-        if: vars.YT_UPLOAD == '1'
+        if: vars.YT_UPLOAD == '1' && steps.film.outputs.made != '0'
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}
           YT_CLIENT_SECRET: ${{ secrets.YT_CLIENT_SECRET }}

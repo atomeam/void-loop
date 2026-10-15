@@ -168,6 +168,12 @@ function memoryMeD1({ broken = false } = {}) {
     if (/^SELECT data, rev, updated FROM void_mine WHERE user_id = \?$/.test(sql)) { need('void_mine'); return T.mine.get(a[0]) || null; }
     if (/^SELECT tier FROM void_accounts WHERE user_id = \?$/.test(sql)) { need('void_accounts'); return T.accounts.get(a[0]) || null; }
     if (/^SELECT id FROM void_owner_passkeys WHERE id = \?$/.test(sql)) { need('void_owner_passkeys'); return T.owners.get(a[0]) || null; }
+    // ownerFor (functions/api/passkey.js): an owner passkey, or any owner passkey on the same account as this one
+    if (/^SELECT o\.id FROM void_owner_passkeys o JOIN void_passkeys p ON p\.id = o\.id WHERE o\.id = \? OR p\.user_id = \(SELECT user_id FROM void_passkeys WHERE id = \?\) LIMIT 1$/.test(sql)) {
+      need('void_owner_passkeys'); need('void_passkeys'); const user = (T.passkeys.get(a[1]) || {}).user_id;
+      for (const o of T.owners.values()) { const p = T.passkeys.get(o.id); if (p && (o.id === a[0] || (user && p.user_id === user))) return { id: o.id }; }
+      return null;
+    }
     throw new Error('unexpected sql: ' + sql);
   };
   const all = (sql, a) => {
@@ -360,9 +366,9 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
-  const ctx = await browser.newContext();
+  const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   for (const init of inits) await ctx.addInitScript(init);
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
@@ -926,10 +932,10 @@ try {
     const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
     const G = await fresh({ content: gh('success', true) }); await G.p.waitForTimeout(3000); const green = await G.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
     const V = await fresh({ content: gh('failure', false) }); await V.p.waitForTimeout(3000); const visitor = await V.p.$eval('.vpage', (e) => e.textContent).catch(() => '');
-    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/Void’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
+    await V.ask('void status', 400); const asked = await (async () => { for (let i = 0; i < 40; i++) { const t = await V.page(); if (/V01D’s own build/.test(t)) return t; await V.p.waitForTimeout(250); } return V.page(); })();
     check("the owner's status card opens by itself when the checks on main failed (with the run linked); a green build or a visitor sees nothing until they ask, and asking shows Void's own build",
       /V01D status/.test(red) && /V01D’s own build · something on main failed/.test(red) && /Checks on main\s*failed \(failure\) on abc1234/.test(red) && /Deploy\s*passed/.test(red) && link === 'https://github.com/atomeam/void-loop/actions/runs/7'
-        && !green && !visitor && /Void’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
+        && !green && !visitor && /V01D’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
@@ -943,16 +949,45 @@ try {
         && /### Breaking changes\n- Drop Node 16\n\n### Removed\n- Remove the old export\n$/.test(md2) && !P.errors.length,
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
+  // a paste of any size, and a read-aloud button on every card (owner, 2026-10-15: "I thought we fixed it so that we can past any
+  // sized message and V01D can handle it like you can . also V01D needs a read aloud button"): a 3,000-line log pasted under
+  // "my n8n workflow is broken…" reaches the server inside its 20 kB with its first and last lines (the error is at the end), the
+  // card's title ends in … at a word, the card folds away everything given and says how much of the middle was left out; the
+  // card's round button reads the whole card aloud, turns to stop while it reads, and stops when tapped again
+  if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
+    const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+    let sent = null, bytes = 0;
+    await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
+    const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
+    const log = [first, ...Array.from({ length: 3000 }, (_, i) => 'step ' + i + ' ok: wrote row ' + i + ' to the orders table'), 'Error: connect ECONNREFUSED 10.0.0.5:5432 at TCPConnectWrap.afterConnect'].join('\n');
+    await P.p.focus('#input');
+    await P.p.evaluate((t) => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.getElementById('input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, log);
+    await P.p.keyboard.press('Enter');
+    const card = await until(async () => { const t = await P.page(); return /Likely cause/.test(t) && t; }, 8000) || await P.page();
+    const r = await P.p.evaluate(() => { const el = document.querySelector('.vpage.on'); const sum = el && el.querySelector('.vpaste summary');
+      return { h2: el && el.querySelector('h2').textContent, fold: sum ? sum.textContent : '', whole: el && el.querySelector('.vpaste pre') ? el.querySelector('.vpaste pre').textContent.length : 0, button: !!(el && el.querySelector(':scope > .vread')) }; });
+    await P.p.click('.vpage.on > .vread'); const reading = await P.p.evaluate(() => ({ said: window.__said.join(' '), pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    await P.p.click('.vpage.on > .vread'); const stopped = await P.p.evaluate(() => ({ cancels: window.__cancels, pressed: document.querySelector('.vpage.on > .vread').getAttribute('aria-pressed') }));
+    const d = (sent && sent.details) || '';
+    check('paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card\'s button reads the whole card aloud and stops when tapped again',
+      !!sent && sent.mode === 'fix' && bytes <= 20000 && d.startsWith(first) && /ECONNREFUSED 10\.0\.0\.5:5432/.test(d) && /characters from the middle left out/.test(d)
+      && /…$/.test(r.h2) && !/\s…$/.test(r.h2) && r.h2.length <= 121 && /3,002 lines/.test(r.fold) && /left out/.test(r.fold) && r.whole === log.length && r.button
+      && /Likely cause: Postgres refuses the connection/.test(reading.said) && /Start the database/.test(reading.said) && !/Worked out by/.test(reading.said) && reading.pressed === 'true'
+      && stopped.cancels > 0 && stopped.pressed === 'false' && !P.errors.length,
+      JSON.stringify({ bytes, start: d.slice(0, 60), end: d.slice(-60), r, reading: { ...reading, said: reading.said.slice(0, 160) }, stopped, card: card.slice(0, 120), e: P.errors }));
+    await P.ctx.close(); }
   // "do you love me?" once went to the answer engine: three songs and an album from a Wikipedia search as its sources, in a stock chatbot voice
   if (want("feelings: do you love me, do you have feelings, are you conscious answered in Void's own words, no sources, no exclamation; lyrics are not this")) { const P = await fresh();
     const r = {};
-    for (const [k, a] of [['love', 'do you love me?'], ['feel', 'Void, do you have feelings?'], ['mind', 'are you conscious'], ['lonely', 'do you get lonely']]) {
+    for (const [k, a] of [['love', 'do you love me?'], ['feel', 'Void, do you have feelings?'], ['mind', 'are you conscious'], ['lonely', 'do you get lonely'], ['pretty', 'you are pretty']]) {
       await P.ask(a, 500); r[k] = await P.page();
     }
     await P.ask('do you love me lyrics', 900); r.lyrics = await P.page();
-    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can/i.test(t) && /written by Void, about itself/.test(t);
+    // V01D's voice (owner, 2026-10-14: "I wish V01d didnt seem so grumpy"): warm and true, never opening on "no"
+    const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by V01D, about itself/.test(t);
     check('feelings: "do you love me?", "Void, do you have feelings?", "are you conscious" and "do you get lonely" get Void\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
-      own(r.love, 'won’t pretend') && own(r.feel, 'No feelings here') && own(r.mind, 'Not alive, and not conscious') && own(r.lonely, 'No feelings here') && !r.lyrics.includes('won’t pretend'),
+      own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
       JSON.stringify(r).slice(0, 600));
     await P.ctx.close(); }
   // the owner (2026-10-11): "sticky notes shoul look just like real world sticky notes"
@@ -1155,7 +1190,7 @@ try {
     await P.ask('how are you different from chatgpt?', 900); r.chat = await P.page();
     await P.ask('what makes you different', 900); r.plain = await P.page();
     await P.ask('what is different about these two words', 900); r.near = await P.page();
-    const ok = (t) => ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings'].every((n) => t.includes(n)) && /from Void's canon, version \d+/.test(t) && !/!/.test(t);
+    const ok = (t) => ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings'].every((n) => t.includes(n)) && /from V01D's canon, version \d+/.test(t) && !/!/.test(t);
     check('how Void is different: "how are you different from chatgpt?" and "what makes you different" show the four lines from Void\'s canon with its version (no exclamation marks), and "what is different about these two words" is not taken',
       ok(r.chat) && ok(r.plain) && !r.near.includes('Growth in the open') && !P.errors.length, JSON.stringify({ ...r, e: P.errors }).slice(0, 700));
     await P.ctx.close(); }
@@ -1653,7 +1688,7 @@ try {
     await D.ask('trial watch', 2500); const page3 = await D.page();
     const served = JSON.parse(fs.readFileSync(path.join(root, 'trialwatch.json'), 'utf8'));
     check('trial watch: a browser that never checked, with the registry out of reach, shows Void\'s own daily check (/trialwatch.json) and its date, not "ask again"',
-      /showing Void's own daily check, from/.test(page3) && Object.keys(served.rows).every((id) => page3.includes(id)) && !/Ask again in a moment/.test(page3) && !D.errors.length, page3.slice(0, 200) + ' | ' + D.errors.join(';'));
+      /showing V01D's own daily check, from/.test(page3) && Object.keys(served.rows).every((id) => page3.includes(id)) && !/Ask again in a moment/.test(page3) && !D.errors.length, page3.slice(0, 200) + ' | ' + D.errors.join(';'));
     await D.ctx.close(); }
   // "who is X" prefers the person; a loose match says so in one line; the board counts one ask in different words once.
   if (want("\"who is X\" prefers the person; a loose match says so in one line; the board counts one ask")) { const E = await fresh(); const sums = [];
@@ -1739,7 +1774,7 @@ try {
     let auth = null;
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ answer: 'Rex. You told me so.', sources: [], told: 1 })); });
     await T.ask('why is the sky blue', 900); const card = await T.p.evaluate(() => document.body.innerText);
-    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by Void/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
+    check('what you told me: a signed-in ask sends the member session to /api/answer and the card says it was answered from what they told Void', /^Bearer member-session-token-/.test(auth || '') && /from what you told me · written by V01D/.test(card) && !T.errors.length, (auth || '') + ' | ' + card.slice(0, 200));
     await T.ctx.close(); }
   if (want("block at line 997")) { const V2 = await fresh(); let auth = null;
     await V2.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { auth = r.request().headers().authorization; return r.fulfill(json({ answer: 'Sunlight scatters.', sources: [] })); });
@@ -2122,13 +2157,13 @@ try {
   if (want("block at line 1179")) { const G = await fresh(); let n = 0;
     await G.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { n++; return r.fulfill(json({})); });
     await G.ask('remember that I prefer tabs over spaces', 900); const said = await G.p.evaluate(() => document.body.innerText);
-    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock Void first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
+    check('memory: without a key "remember that …" says to unlock Void first and sends nothing', /Unlock V01D first/.test(said) && n === 0 && !G.errors.length, said.slice(0, 200) + ' | ' + n);
     await G.ctx.close(); }
   if (want("block at line 1184")) { const N = await fresh(); let fetched = 0;
     await N.ctx.route(/\/api\/memory(?:\?|$)/, (r) => { fetched++; return r.fulfill(json({ answer: 'x' })); });
     await N.ask('what did I build with react', 900);
     const card = await N.p.$eval('.memory-card', (e) => e.innerText).catch(() => '');
-    check('memory card: without the owner key it says so and fetches nothing', /Unlock Void first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
+    check('memory card: without the owner key it says so and fetches nothing', /Unlock V01D first/.test(card) && fetched === 0 && !N.errors.length, card.slice(0, 200) + ' | fetched ' + fetched);
     await N.ctx.close(); }
   // the card keeps itself live (skills/live.js, every minute): a record that is running when the card opens settles to done
   // on screen after one tick with nobody pressing Refresh; it fetches a page of 30 and Show more brings the next 30
@@ -2279,7 +2314,7 @@ try {
     W.p.on('dialog', (d) => d.accept()); await W.p.$eval('.watch-stop', (b) => b.click()); await until(async () => !(await W.p.$('.watch-row')), 3000);
     const empty = await W.p.$eval('.watch-list', (e) => e.innerText).catch(() => '');
     check('watch: "tell me when it\'s below 0 in Oslo" makes a watch (POST with the ask and the owner\'s key), the card shows it with its first check as evidence (a match, told on the stage), Pause pauses, Stop asks then removes it; a visitor is told watches are the owner\'s',
-      /Unlock Void|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
+      /Unlock V01D|owner/.test(visitor) && calls[0] && calls[0].method === 'POST' && calls[0].body.ask === "tell me when it's below 0 in Oslo" && /^Bearer owner-k$/.test(calls[0].auth)
       && /below 0°C in Oslo/.test(row) && /★ .*MATCH · -3°C in Oslo/.test(row) && /\(paused\)/.test(paused) && calls.some((c) => c.method === 'PATCH' && c.body.enabled === false)
       && calls.some((c) => c.method === 'DELETE' && c.body.id === 'w1') && /Nothing is watched/.test(empty) && !W.errors.length,
       JSON.stringify({ visitor, row: row.slice(0, 160), paused: paused.slice(0, 80), empty: empty.slice(0, 60), calls: calls.map((c) => c.method), errs: W.errors }));
@@ -2367,7 +2402,7 @@ try {
     await N.p.goto(base + 'code-review/'); await N.p.waitForTimeout(500);
     const learnHidden = await N.p.$eval('#learning', (e) => e.hidden).catch(() => false);
     check('code-review: the scoreboard line renders from review-stats.json ("this month Void\'s rules caught N of M findings its closer read made; K rules learned") and stays hidden without the file',
-      learnLine === "This month Void's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
+      learnLine === "This month V01D's rules caught 7 of 9 findings its closer read made; 3 rules learned from it, 2 false claims of its own filtered out." && learnHidden === true, JSON.stringify({ learnLine, learnHidden }));
     await S.ctx.close(); await N.ctx.close();
     const heads = ['handoff.html', 'surface.html'].map((f) => fs.readFileSync(path.join(root, f), 'utf8')).every((h) => /<meta name="robots" content="noindex, nofollow">/.test(h));
     const sw = fs.readFileSync(path.join(root, 'sw.js'), 'utf8');
@@ -2387,34 +2422,37 @@ try {
       && /forget me/.test(txt) && /atom@a-to-mind\.com/.test(txt) && !wide && !P.errors.length, JSON.stringify({ wide, errors: P.errors, head: txt.slice(0, 120) }));
     await P.ctx.close(); }
 
-  // Void's films, for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid access"):
-  // /films/ asks /api/films with the visitor's credential; a stranger gets the members-only gate (and can paste a key), a member
-  // gets the films, and the owner also gets download, upload to YouTube and the words to copy
-  if (want("films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate")) {
+  // Void's films (owner, 2026-10-14: "just put void films right onto the sight"; 2026-10-15: "anyone should be able to at least watch
+  // the films those are our ads"; "i just need the sign in gone ... just give the films to everyone"): a stranger watches with no
+  // sign-in anywhere on the page, a member's key kept for the tab gets the review box, and the owner also gets download, upload to
+  // YouTube and the words to copy
+  if (want("films page: anyone watches, a member reviews, the owner gets the YouTube steps")) {
     const F = await fresh(); await F.p.setViewportSize({ width: 390, height: 844 });
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.\n\nTry it: https://a-to-mind.com', tags: 'Void, AI', bytes: 1135255, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc' };
     const seen = [];
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       const auth = r.request().headers().authorization || ''; seen.push(auth);
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true }));
-      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: JSON.stringify({ ok: false, error: 'pay', buy: 'https://a-to-mind.com/code-review/#pro' }) });
+      if (auth === 'Bearer owner-tok') return r.fulfill(json({ films: [film], owner: true, member: true }));
+      if (auth === 'Bearer vr1.' + 'A'.repeat(43)) return r.fulfill(json({ films: [film], owner: false, member: true }));
+      return r.fulfill(json({ films: [film], owner: false, member: false, buy: 'https://a-to-mind.com/code-review/#pro' }));
     });
-    await F.p.goto(base + 'films/'); await until(async () => F.p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
-    const gate = await F.p.evaluate(() => ({ on: document.getElementById('gate').classList.contains('on'), films: document.querySelectorAll('#films .film').length, text: document.getElementById('gate').innerText }));
-    await F.p.click('#gate details.key summary'); await F.p.fill('#key', 'vr1.' + 'A'.repeat(43)); await F.p.click('#keyform button');
+    await F.p.goto(base + 'films/');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), gate: document.getElementById('gate').classList.contains('on') }; });
+    const gate = await F.p.evaluate(() => ({ films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('#films .review'), video: !!document.querySelector('#films .film video'),
+      yt: !!document.querySelector('#films .film a.yt'), signin: !!document.querySelector('#gate, #signin, #keyform, a[href*="code-review"]'), text: document.body.innerText }));
+    await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
+    await until(async () => !!(await F.p.$('#films .review')), 5000);
+    const member = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'), yt: !!a.querySelector('a.yt'), review: !!a.querySelector('.review') }; });
     await F.p.evaluate(() => { sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'owner-tok'); }); await F.p.reload();
     await until(async () => !!(await F.p.$('#films .film a.yt')), 5000);
     const card = await F.p.evaluate(() => { const a = document.querySelector('#films .film'); return a && { yt: a.querySelector('a.yt').href, dl: a.querySelector('a[download]').getAttribute('href'),
       btns: [...a.querySelectorAll('.body > .row button')].map((b) => b.textContent), wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#films .film button:nth-of-type(2)'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
-    check('films page: members watch, the owner gets the YouTube steps, a stranger meets the members-only gate',
-      gate.on && gate.films === 0 && /Members only/.test(gate.text) && seen[0] === ''
-      && member.h === film.title && member.src === film.src && !member.yt && !member.gate
+    check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
+      gate.films === 1 && gate.video && !gate.review && !gate.yt && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
+      && member.h === film.title && member.src === film.src && !member.yt && member.review
       && !!card && card.yt === 'https://www.youtube.com/upload' && card.dl === film.src && JSON.stringify(card.btns) === '["3. Copy title","Copy description","Copy tags"]'
       && copied === film.description && !card.wide && !F.errors.length, JSON.stringify({ gate, member, card, copied, seen, errors: F.errors }));
     await F.ctx.close(); }
@@ -2428,8 +2466,8 @@ try {
     await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => {
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
       return r.request().headers().authorization === 'Bearer owner-tok'
-        ? r.fulfill(json({ owner: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
-        : r.fulfill(json({ owner: false, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
+        ? r.fulfill(json({ owner: true, member: true, films: [film({ counts: { post: 1, fix: 1, skip: 0 }, mine: null, notes: [{ by: 'member', verdict: 'fix', note: 'Cut the first 3 seconds.' }] })] }))
+        : r.fulfill(json({ owner: false, member: true, films: [film({ counts: { post: 1, fix: 0, skip: 0 }, mine: null })] }));
     });
     await F.ctx.route(/\/api\/film-review$/, (r) => { sent.push({ auth: r.request().headers().authorization, body: JSON.parse(r.request().postData() || '{}') }); return r.fulfill(json({ ok: true })); });
     await F.p.goto(base + 'films/'); await F.p.evaluate(() => sessionStorage.setItem('a2m.void.filmkey', 'vr1.' + 'A'.repeat(43))); await F.p.reload();
@@ -2459,32 +2497,28 @@ try {
     await S.ctx.close(); }
 
   // signed in as the owner, the films open (owner, 2026-10-14: "why am i geting the Members only ... when i am already signed in as
-  // owner?" / "just sign me in and build the wall around me"): every sign-in this browser holds is tried until one works, and the
-  // gate signs in with a passkey right there
-  if (want("films page: every sign-in is tried, and the passkey button signs the owner in")) {
+  // owner?"): every sign-in this browser holds is tried, quietly, until one works; with none that works the films still play and
+  // nothing asks to sign in (owner, 2026-10-15: "i just need the sign in gone")
+  if (want("films page: every sign-in this browser holds is tried, and none is ever asked for")) {
     const F = await fresh(); const p = F.p; const seen = [];
     const film = { id: '20261014-x-r6', at: '2026-10-14T16:33:31Z', title: 'Odd moments', description: 'd', tags: '', bytes: 1, src: '/api/films?id=20261014-x-r6&exp=9999999999&sig=abc', reviews: null };
-    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || ''; seen.push(a);
+    await F.ctx.route(/\/api\/films(?:\?|$)/, (r) => { const a = r.request().headers().authorization || '';
       if (/[?&]sig=/.test(r.request().url())) return r.fulfill({ status: 404, body: '' });
-      if (a === 'Bearer vo1.fresh' || a === 'Bearer paid-acct') return r.fulfill(json({ owner: a === 'Bearer vo1.fresh', films: [film] }));
-      return r.fulfill({ status: 401, contentType: 'application/json', body: '{"ok":false,"buy":"/code-review/#pro"}' }); });
-    const pk = [];
-    await F.ctx.route(/\/api\/passkey$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); pk.push(b.step);
-      return r.fulfill(json(b.step === 'get-options' ? { publicKey: { challenge: 'AAAA', rpId: '127.0.0.1', allowCredentials: [] } } : { ok: true, token: 'acct-tok', userId: 'u1', owner: { token: 'vo1.fresh', expires: '2026-11-13' } })); });
-    // 1) a stale owner session and a paid account: the account opens the films
+      seen.push(a); // the list asks only, not the video loading its signed link
+      if (a === 'Bearer paid-acct') return r.fulfill(json({ owner: false, member: true, films: [film] }));
+      return r.fulfill(json({ ok: true, owner: false, member: false, films: [film] })); });
+    // 1) a stale owner session and a paid account: the account is the one kept for reviewing
     await p.goto(base + 'films/'); await p.evaluate(() => { localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); localStorage.setItem('a2m.void.me.v1', JSON.stringify({ token: 'paid-acct' })); }); await p.reload();
-    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-3) };
-    // 2) nothing that works: the gate, then the passkey button signs the owner in and the YouTube steps appear
+    await until(async () => !!(await p.$('#films .review')), 5000);
+    const fell = { films: await p.$$eval('#films .film', (d) => d.length), order: seen.slice(-2) };
+    // 2) only a stale owner session: the film still plays, and the page says nothing about signing in
     await p.evaluate(() => { localStorage.clear(); sessionStorage.clear(); localStorage.setItem('a2m.void.owner.v1', 'vo1.stale'); }); await p.reload();
-    await until(async () => p.$eval('#gate', (e) => e.classList.contains('on')), 5000);
-    const why = await p.$eval('#status', (e) => e.textContent);
-    await p.evaluate(() => { navigator.credentials.get = async () => ({ id: 'cred1', toJSON: () => ({ id: 'cred1', type: 'public-key', response: {} }) }); });
-    await p.click('#signin'); await until(async () => !!(await p.$('#films .film a.yt')), 5000);
-    const kept = await p.evaluate(() => localStorage.getItem('a2m.void.owner.v1'));
-    check('films page: every sign-in is tried, and the passkey button signs the owner in',
-      fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct', ''].slice(0, fell.order.length)) && /run out/.test(why)
-      && JSON.stringify(pk) === JSON.stringify(['get-options', 'get']) && kept === 'vo1.fresh' && !F.errors.length, JSON.stringify({ fell, why, pk, kept, errors: F.errors }));
+    await until(async () => (await p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
+    const stale = await p.evaluate(() => ({ status: document.getElementById('status').textContent, video: !!document.querySelector('#films .film video'), review: !!document.querySelector('#films .review'),
+      asks: !!document.querySelector('#gate, #signin, #keyform') || /sign in|run out|member/i.test(document.body.innerText) }));
+    check('films page: every sign-in this browser holds is tried, and none is ever asked for',
+      fell.films === 1 && JSON.stringify(fell.order) === JSON.stringify(['Bearer vo1.stale', 'Bearer paid-acct'])
+      && stale.video && !stale.review && !stale.asks && /^1 film, newest first\.$/.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
   // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
@@ -2971,7 +3005,7 @@ try {
     await D.p.reload(); await D.p.waitForTimeout(800); const afterReload = await backdrop();
     await D.ask('remove my backdrop', 500); const removed = await backdrop();
     check('draw backdrop: on an empty canvas it says to draw first; after a stroke "Make it my backdrop" puts the picture behind the Void, kept in the look; it is still there after a reload; "remove my backdrop" takes it off',
-      /Draw something first/.test(empty) && /now your Void's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
+      /Draw something first/.test(empty) && /now your V01D's backdrop/.test(made) && now.on && /data:image/.test(now.img) && now.kept > 1000
         && afterReload.on && /data:image/.test(afterReload.img) && !removed.on && removed.kept === 0 && !D.errors.length,
       JSON.stringify({ empty, made, now, afterReload, removed, errors: D.errors }));
     await D.ctx.close();
@@ -3049,7 +3083,7 @@ try {
     await t.ask("what can you do now that you couldn't last week?", 900); const wkPg = await t.page();
     await t.ask('what can you do', 600); const menuPg = await t.page();
     check('"what can you do now that you couldn\'t last week?" opens the growth card on the last 7 days from the ledger (since the date a week ago, the count, grouped by kind in plain words), and plain "what can you do" stays with Void\'s self answer',
-      /How Void has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How Void has grown/.test(menuPg),
+      /How V01D has grown/.test(wkPg) && new RegExp('Since ' + new Date(from).toISOString().slice(0, 10) + ', ' + n + ' change').test(wkPg) && /new things? I can do/.test(wkPg) && !/How V01D has grown/.test(menuPg),
       JSON.stringify({ n, wk: wkPg.slice(0, 300), menu: menuPg.slice(0, 120) }));
   }
   await t.ask('how much will i have if i save 200 a month for 20 years at 7%', 700); svPg = await t.page(); check('savings: 200 a month for 20 years at 7% grows to $104,185 (monthly compounding), put in vs growth and a range', /Savings growth/.test(svPg) && /\$104,185/.test(svPg) && /\$48,000/.test(svPg) && /Investor\.gov/.test(svPg) && !/don't know this yet|on your calendar/i.test(svPg), svPg.slice(0, 220));
@@ -3219,7 +3253,7 @@ try {
   check('WebMCP: agents cannot sign in or forget anyone (item 6)', idAsks.every((x) => /person at the screen/.test(x)), idAsks.join(' | '));
   paidAgent = await t.p.evaluate(async () => { const out = []; for (const a of ['upgrade', 'pay', 'pricing', 'more answers', 'make a private skill', 'raise my confirm cap', 'buy paid void']) out.push(await window.__tools.void_ask.execute({ ask: a })); return out; });
   toolText = await t.p.evaluate(() => JSON.stringify(Object.values(window.__tools).map((d) => [d.name, d.description])));
-  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid Void (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
+  check('WebMCP: a paid Void ask from an agent gets the answer (price, what it adds, how the person buys it), never a checkout', paidAgent.every((x) => /^Paid V01D (is \$49 a month|adds)/.test(x) && /remember me/.test(x)) && t.ctx.pages().length === 1 && t.errors.length === 0, paidAgent.join(' | ').slice(0, 300));
   await t.ctx.close();
 
   // Plan item 12: paid Void and Atom's store. A fresh visit is the void; a paid ask gets the price and how to buy.
@@ -3231,7 +3265,7 @@ try {
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
   check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
-  const OUT_LINE = 'Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
+  const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
   for (const a of outAsks) { await P.p.$eval('#whisper', (e) => { e.textContent = ''; }); await P.ask(a, 0); outGot.push(await until(async () => { const w = await P.whisper(); return /passkey|Paid|paid/.test(w) ? w : ''; }, 6000) || await P.whisper()); } // cleared first: never read the last ask's line
@@ -3494,14 +3528,14 @@ try {
   const meD = await meOf(D);
   await D.ask('upgrade', 0);
   const dIn = await until(async () => /Paid V01D/.test(await D.whisper()) && (await D.whisper()), 5000);
-  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid Void is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
+  check('paid: with GUMROAD_URL empty, signed-in asks say payments aren\'t open yet (no link, no checkout, no page)', dUrl === '' && !!meD && dIn === "Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · payments aren't open yet" && (await D.p.$$eval('#whisper a', (d) => d.length)) === 0 && !(await D.page()) && D.ctx.pages().length === 1,
     [dUrl, dIn].join(' | '));
   db().accounts.set(meD.userId, { tier: 'paid' });
   await D.ask('pay', 0); const dPaid = await until(async () => /your V01D is paid/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'gold' });
   await D.ask('pay', 0); const dOdd = await until(async () => /Paid V01D is/.test(await D.whisper()) && (await D.whisper()), 8000);
   db().accounts.set(meD.userId, { tier: 'paid' });
-  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your V01D is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid Void is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
+  check('paid: the tier comes from the server; only "paid" counts (anything else reads as free)', dPaid === 'your V01D is paid: more model answers, Pro code review, private skills and a higher cap on actions you confirm' && /^Paid V01D is \$49 a month/.test(dOdd), [dPaid, dOdd].join(' | '));
   const meErrsD = D.errors.slice();
   await D.ctx.close();
   const sessionsBefore = db().sessions.size;
@@ -3516,7 +3550,7 @@ try {
   await A.ask('forget me', 300); await A.p.click('#whisper [data-vf="yes"]');
   const forgot = await until(async () => /forgotten/.test(await A.whisper()), 6000);
   const sigA = await A.p.evaluate(() => window.__signals.filter((x) => x.n === 'signalAllAcceptedCredentials'));
-  if (chromeMajor < 153) skip('forget me asks first, then deletes every passkey, session and synced byte', 'Chromium ' + browser.version() + '\'s virtual authenticator does not refuse a second passkey for the same account (excludeCredentials), so "remember me" on a device that already holds the passkey makes a second account here and the account counts this check reads are off; Chrome 153 refuses it'); else check('forget me asks first, then deletes every passkey, session and synced byte', forgetLine === 'Forget your Void on every device? Yes / No' && keptAfterNo && forgot && db().passkeys.size === 0 && db().mine.size === 0 && db().sessions.size === 0 && !(await meOf(A)) && (await A.state()).some((x) => x.kind === 'clock') && sigA.length === 1 && sigA[0].o.userId === meA.userId && sigA[0].o.allAcceptedCredentialIds.length === 0,
+  if (chromeMajor < 153) skip('forget me asks first, then deletes every passkey, session and synced byte', 'Chromium ' + browser.version() + '\'s virtual authenticator does not refuse a second passkey for the same account (excludeCredentials), so "remember me" on a device that already holds the passkey makes a second account here and the account counts this check reads are off; Chrome 153 refuses it'); else check('forget me asks first, then deletes every passkey, session and synced byte', forgetLine === 'Forget your V01D on every device? Yes / No' && keptAfterNo && forgot && db().passkeys.size === 0 && db().mine.size === 0 && db().sessions.size === 0 && !(await meOf(A)) && (await A.state()).some((x) => x.kind === 'clock') && sigA.length === 1 && sigA[0].o.userId === meA.userId && sigA[0].o.allAcceptedCredentialIds.length === 0,
     [forgetLine, keptAfterNo, forgot, db().passkeys.size, db().mine.size, db().sessions.size, JSON.stringify(sigA)].join(' | '));
   check('forget me also deletes the tier row (item 12)', forgot && db().accounts.size === 0, db().accounts.size);
   await B.ask('sign in', 0);
@@ -4105,7 +4139,7 @@ try {
   await d.ask('write a python script that greets someone', 500);
   const code = await d.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const pre = pg && pg.querySelector('pre code'); return { hasPre: !!pre, text: pre ? pre.textContent : '', src: pg ? pg.querySelector('.src').textContent : '' }; });
   check('answer: a script has no Wikipedia source and is answered anyway (never refused for lack of one); the code block keeps its indentation and the footer does not claim a source that was not used',
-    code.hasPre && /^def greet\(name\):\n {4}return "hi " \+ name$/.test(code.text) && /written by Void, from what it knows/.test(code.src) && !/no source found/.test(code.src) && d.errors.length === 0,
+    code.hasPre && /^def greet\(name\):\n {4}return "hi " \+ name$/.test(code.text) && /written by V01D, from what it knows/.test(code.src) && !/no source found/.test(code.src) && d.errors.length === 0,
     JSON.stringify(code));
   await until(async () => d.p.evaluate(() => !!(window.__tools && window.__tools.void_ask)), 6000);
   const agentSend = await d.p.evaluate(() => window.__tools.void_ask.execute({ ask: 'send an email to jane@x.com saying hi' }));
@@ -5247,13 +5281,42 @@ try {
     !/api\/routes|escalat|lib\/router|bge-m3|qwen/i.test(html) && fs.readFileSync(path.join(root, 'void.html'), 'utf8') === html, '');
   }
   } // CORE
+  // the convert card (asked by Void, 2026-10-14): "unit converter" puts a converter on the stage that converts both ways,
+  // swaps, lists every other unit of the kind, keeps its kind, units and number across a reload, and puts itself away;
+  // one-off asks ("5 miles in km") and other converters (currency, pdf, time zone) are not its.
+  if (want("convert card: a unit converter on the stage, both ways, swap, every unit, survives a reload")) { const Q = await fresh();
+    const cv = await import(new URL('../void-live-deploy/skills/convert.js', import.meta.url).href);
+    const maths = cv.fmt(cv.convert('temperature', 1, 0, 98.6)) === '37' && cv.fmt(cv.convert('length', 4, 1, 5)) === '8.04672' && cv.fmt(cv.convert('data', 3, 0, 1)) === '1,048,576'
+      && cv.fmt(cv.convert('volume', 2, 3, 1)) === '16' && cv.fmt(cv.convert('mass', 3, 1, 1)) === '453.5924';
+    const routes = ['unit converter', 'open a converter', 'temperature converter', 'cooking converter', 'give me a converter for 5 miles to km', 'close the converter'].every((a) => !!cv.default.match(a.toLowerCase(), a))
+      && ['5 miles in km', 'convert 3 cups to ml', 'currency converter', 'pdf converter', 'time zone converter', 'calculator', 'units'].every((a) => !cv.default.match(a.toLowerCase(), a));
+    await Q.ask('temperature converter', 600);
+    const card = () => Q.p.$eval('.convert-card', (e) => ({ text: e.innerText, a: e.querySelector('.cv-from-val').value, b: e.querySelector('.cv-to-val').value, kind: e.querySelector('.cv-kind').value })).catch(() => null);
+    const first = await card();
+    await Q.p.fill('.convert-card .cv-from-val', '212'); await Q.p.waitForTimeout(60);
+    const boiled = await card();
+    await Q.p.fill('.convert-card .cv-to-val', '-40'); await Q.p.waitForTimeout(60);
+    const back = await card();
+    await Q.p.click('.convert-card .cv-swap'); await Q.p.waitForTimeout(60);
+    const swapped = await card();
+    await Q.ask('give me a converter for 5 miles to km', 600);
+    const miles = await card(), count = await Q.p.$$eval('.convert-card', (e) => e.length);
+    await Q.p.reload(); await Q.p.waitForTimeout(900);
+    const kept = await card();
+    await Q.ask('close the converter', 500);
+    const gone = !(await Q.p.$('.convert-card'));
+    check('convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; "temperature converter" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, "a converter for 5 miles to km" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and "close the converter" puts it away',
+      maths && routes && first && first.kind === 'temperature' && boiled && boiled.b === '413.6' && back && back.a === '-40' && swapped && /Fahrenheit/.test(swapped.text)
+      && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
+      JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
+    await Q.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
   { const all3d = want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)");
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
-      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a), want: (l) => all3d || want(l) }); }
+      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));

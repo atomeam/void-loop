@@ -20,7 +20,7 @@ function dialTexture(THREE) {
   for (let i = 0; i < 30; i++) { g.save(); g.rotate(i / 30 * Math.PI * 2); g.fillStyle = '#2a2a30'; g.fillRect(i % 5 ? -0.8 : -2, -r * 0.24, i % 5 ? 1.6 : 4, r * (i % 5 ? 0.025 : 0.045)); g.restore(); }
   g.font = '600 ' + Math.round(r * 0.055) + 'px Arial, sans-serif'; for (const m of [5, 10, 15, 20, 25, 30]) { const a = m / 30 * Math.PI * 2; g.fillText(String(m), Math.sin(a) * r * 0.165, -Math.cos(a) * r * 0.165); }
   g.restore();
-  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('Void', 0, r * 0.28);
+  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('V01D', 0, r * 0.28);
   g.font = '600 ' + Math.round(r * 0.045) + 'px Arial, sans-serif'; g.fillText('1/5 SECOND', 0, r * 0.4);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }
@@ -35,8 +35,10 @@ export default function build(ctx, data) {
   const geos = [], mats = [chrome, satin, steel, red, glass, dialMat], G = (g) => (geos.push(g), g);
   const w = new THREE.Group(); // built facing +z, then laid face-up on the desk
   const caseM = new THREE.Mesh(G(new THREE.CylinderGeometry(R * 1.12, R * 1.12, 0.012, 96, 1, true).rotateX(Math.PI / 2)), chrome); caseM.position.z = -0.003;
-  const back = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.12, 64, 12, 0, Math.PI * 2, 0, 0.55).rotateX(-Math.PI / 2).scale(1, 1, 0.3)), satin); back.position.z = -0.009;
+  // the caseback is as wide as the case and sits on its rear edge, closing it (a half-width cap left the case open; 2026-10-15)
+  const back = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.12, 64, 12, 0, Math.PI * 2, 0, Math.PI / 2).rotateX(-Math.PI / 2).scale(1, 1, 0.16)), satin); back.position.z = -0.009;
   const bezel = new THREE.Mesh(G(new THREE.TorusGeometry(R * 1.08, 0.0026, 20, 128)), chrome); bezel.position.z = 0.003;
+  caseM.name = 'case'; back.name = 'caseback'; // tests check the back closes the case
   const dial = new THREE.Mesh(G(new THREE.CircleGeometry(R, 96)), dialMat); dial.position.z = 0.0012;
   const dome = new THREE.Mesh(G(new THREE.SphereGeometry(R * 1.7, 64, 12, 0, Math.PI * 2, 0, 0.62).rotateX(Math.PI / 2)), glass);
   dome.position.z = 0.0035 - R * 1.7 * Math.cos(0.62); dome.renderOrder = 3;

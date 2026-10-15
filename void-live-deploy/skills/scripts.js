@@ -16,7 +16,7 @@ export const KNOWN_REACTS = ['greet', 'follow', 'chase', 'flee', 'argue', 'team'
 /** Role tags a script may claim; others match against these in reactsTo. */
 export const KNOWN_TAGS = [
   'police', 'troublemaker', 'animal', 'person', 'place', 'object', 'idea', 'sprite', 'chef', 'friend',
-  'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food',
+  'zombie', 'brain', 'cat', 'mouse', 'dog', 'bone', 'fish', 'cheese', 'rabbit', 'carrot', 'monkey', 'banana', 'shark', 'bee', 'flower', 'food', 'horse', 'donkey',
   'cloud', 'sun', 'fire', 'ice', 'water',
 ];
 
@@ -58,6 +58,8 @@ export const NATURES = [
   [/\b(rabbits?|bunny|bunnies|hares?)\b/i, ['rabbit'], { carrot: 'eat', dog: 'flee' }],
   [/\bcarrots?\b/i, ['carrot', 'food'], {}],
   [/\b(monkeys?|apes?|chimps?)\b/i, ['monkey'], { banana: 'eat' }],
+  [/\b(horses?|ponies|pony|foals?|stallions?|mares?)\b/i, ['horse'], { carrot: 'eat', dog: 'flee' }],
+  [/\b(donkeys?|burros?|mules?)\b/i, ['donkey'], { carrot: 'eat', dog: 'flee' }],
   [/\bbananas?\b/i, ['banana', 'food'], {}],
   [/\bsharks?\b/i, ['shark'], { fish: 'eat' }],
   [/\b(bees?|bumblebees?)\b/i, ['bee'], { flower: 'follow' }],

@@ -110,7 +110,7 @@ export default {
     if (/\b(pollen|allerg)/.test(lower)) return false;
     if (/\bwater\s+(?:boils?|freezes?)\b|\bdoes\s+water\s+(?:boil|freeze)\b|\b(?:boiling|freezing)\s+point\b/.test(lower)) return false; // a fact the calculator answers
     // food and body temperatures are not the weather ("temperature to cook chicken", "body temperature"), but "temperature in Turkey" still is
-    if (/\btemp(?:erature)?\b/.test(lower) && (/\b(cook|cooked|bake|roast|oven|internal|body|fever)\b/.test(lower) || /\btemp(?:erature)?\s+(?:for|of|should)\s+(?:a\s+|the\s+)?(chicken|pork|beef|steak|turkey|fish|salmon|burgers?|eggs?|ham|lamb|leftovers)\b/.test(lower) || /\b(chicken|pork|beef|steak|fish|salmon|burgers?)\s+(?:be|is)\s+(?:done|cooked)/.test(lower))) return false;
+    if (/\btemp(?:erature)?\b/.test(lower) && (/\b(cook|cooked|bake|roast|oven|internal|body|fever|steak|doneness|medium[\s-]rare|well[\s-]done)\b/.test(lower) || /\btemp(?:erature)?\s+(?:for|of|should)\s+(?:a\s+|the\s+)?(chicken|pork|beef|steak|turkey|fish|salmon|burgers?|eggs?|ham|lamb|leftovers)\b/.test(lower) || /\b(chicken|pork|beef|steak|fish|salmon|burgers?)\s+(?:be|is)\s+(?:done|cooked)/.test(lower))) return false;
     return /\b(weather|forecast|temperature)\b/.test(lower)
       || /\b(is it|will it|going to)\s+(rain|snow|freeze|frost|storm|hail|sleet)\b/.test(lower)
       || /^is\s+it\s+(?:going\s+to\s+be\s+)?(raining|snowing|sunny|windy|cloudy|hot|cold|freezing|foggy|humid|stormy)\b/.test(lower)

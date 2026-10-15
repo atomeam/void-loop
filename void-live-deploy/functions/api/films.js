@@ -4,12 +4,13 @@
 // support desk's rule (payer() in functions/api/support.js): the owner, a Void Pro key, a Code Review Pro license or a paid
 // account's session. A <video> cannot send a Bearer header, so the list hands each payer a link to each film that is signed and
 // stops working after WATCH_MS; the link streams from R2 with Range, so a film plays at once and seeks, however many people watch.
-//   GET                          (a paying credential) -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner }
+//   GET                          (anyone)              -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner, member }
+//                                 reviews only for the owner and members (2026-10-15: the films are V01D's ads, so anyone watches)
 //                                 reviews: lib/film-reviews.js (POST one at /api/film-review)
 //   GET ?id=&exp=&sig=           (a signed link)       -> the MP4 (206 for a Range)
 //   POST ?id= video/mp4 body     (the owner)           -> stores the film      (.github/workflows/record.yml, daily)
 //   POST ?id= application/json   (the owner)           -> stores its words { title, description, tags }
-// Strangers see 401 and the way to pay; nothing here is public.
+// Anyone lists and watches; only the owner adds films.
 import { bad, good } from '../../lib/void-me.js';
 import { payer } from './support.js';
 import { BUY_URL } from '../../lib/review-api.js';
@@ -39,7 +40,6 @@ async function signedOk(env, id, exp, sig, now) {
 }
 
 const noStore = () => bad(503, 'films are not switched on here: the FILMS bucket is not bound');
-const notPaying = () => bad(401, "Void's films are for people who pay for Void: sign in with a paid account, or send your Void Pro key or Code Review Pro license key as Bearer", { buy: BUY_URL });
 const words = (s, max) => String(s || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, max);
 
 // "bytes=a-b" | "bytes=a-" | "bytes=-n" -> an R2 range, or null for the whole film
@@ -71,8 +71,9 @@ export async function onRequestGet({ request, env }) {
     if (!(await signedOk(env, id, q.get('exp') || '', q.get('sig') || '', now))) return bad(403, 'this film link is not signed or has run out: open /films/ again');
     return stream(env, request, id);
   }
-  const p = await payer(request, env);
-  if (!p) return notPaying();
+  // anyone watches (owner, 2026-10-15: "anyone should be able to at least watch the films those are our ads its how we spread
+  // the word"); reviews and the owner's tools stay with the owner and members
+  const p = await payer(request, env).catch(() => null);
   const listed = await env.FILMS.list({ prefix: 'films/', limit: 1000 });
   const mp4s = (listed.objects || []).filter((o) => o.key.endsWith('.mp4'))
     .sort((a, b) => new Date(b.uploaded) - new Date(a.uploaded)).slice(0, LIST_MAX);
@@ -81,9 +82,9 @@ export async function onRequestGet({ request, env }) {
     let w = {}; try { const j = await env.FILMS.get('films/' + id + '.json'); if (j) w = JSON.parse(await j.text()); } catch (_) { w = {}; }
     return { id, at: new Date(o.uploaded).toISOString(), title: w.title || id, description: w.description || '', tags: w.tags || '', bytes: o.size, src: await watchLink(env, id, now) };
   }));
-  const reviews = await forFilms(env, films.map((f) => f.id), p).catch(() => ({}));
+  const reviews = p ? await forFilms(env, films.map((f) => f.id), p).catch(() => ({})) : {};
   for (const f of films) f.reviews = reviews[f.id] || null;
-  return good({ films, owner: !!p.owner, until: new Date(now + WATCH_MS).toISOString() });
+  return good({ films, owner: !!(p && p.owner), member: !!p, buy: BUY_URL, until: new Date(now + WATCH_MS).toISOString() });
 }
 
 // Only the owner writes; lib/guard.js refuses anyone else before reading a byte of the body (OWNER_WRITES).

@@ -1,5 +1,5 @@
 /**
- * films skill - Void's own films: where to watch and review them (/films/, for members and the owner)
+ * films skill - Void's own films: where to watch them (/films/, free for everyone, no sign-in)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Void should know whatI mean
  * and help". Takes "films", "voids fillms", "void's films", "where do I watch the films", "show me your videos", "review films",
@@ -56,9 +56,9 @@ function run(text, api) {
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
       + '<h2 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
       + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
-      + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch and review') + '</a></div>'
+      + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Review it: post it, needs work or skip') + '</li><li>' + esc('The best go to YouTube') + '</li></ol>'
-      + '<p class="who">' + esc('For members: tap Watch and review, then Sign in with your passkey.') + '</p>'
+      + '<p class="who">' + esc('Free for everyone to watch and share, no sign-in.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
   });
   return 'films';

@@ -93,6 +93,8 @@ function askOf(text) {
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:calorie|calories|tdee|bmr|maintenance\s+calories?|daily\s+calorie|macro|macros)\s+calculator$/.test(t)) return { kind: 'cal', s: {}, form: true };
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:protein(?:\s+intake)?)\s+calculator$/.test(t)) return { kind: 'pro', s: {}, form: true };
   if (/^(?:a\s+|open\s+(?:a\s+|the\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+)?)?(?:water(?:\s+intake)?|hydration)\s+calculator$/.test(t)) return { kind: 'h2o', s: {}, form: true };
+  // "bmi calculator", "what is my bmi", "check my bmi": the live form. With the numbers in the ask ("bmi 5'10 170 lbs") it is calc's.
+  if (/^(?:a\s+|open\s+(?:a\s+|the\s+|my\s+)?|show\s+(?:me\s+)?(?:a\s+|the\s+|my\s+)?|calculate\s+(?:my\s+)?|check\s+(?:my\s+)?|work\s+out\s+(?:my\s+)?|what(?:'s|\s+is)\s+my\s+)?(?:bmi|body\s+mass\s+index)(?:\s+(?:calculator|chart|checker))?$/.test(t)) return { kind: 'bmi', s: {}, form: true };
   const s = statsOf(t);
   // water: how much to drink
   if (/\bwater\b/.test(t) && !/\b(?:in\s+(?:a|the|an)\s+(?!day\b)|ocean|sea|earth|planet|pool|tank|bath|tub|rice|pasta|cook|boil|bottle\s+of|gallon\s+of\s+water\s+in|liters?\s+of\s+water\s+in|litres?\s+of\s+water\s+in|weigh(?:s)?\s+a|plants?|lawn|grass|garden|dog|cat|fish|tree|ratio|heater|bill|filter|translate|spanish|french|meaning)\b/.test(t)
@@ -194,6 +196,37 @@ function calForm(el, s, esc) {
     out.innerHTML = '<div class="sub">to keep your weight</div>' + BIG + fmt(o.tdee) + '<span style="font-size:18px"> calories a day</span></div>'
       + '<ul>' + o.rows.map((r) => '<li>' + esc(r.label) + ': ' + fmt(r.kcal) + (r.floored ? ' (floor)' : '') + '</li>').join('') + '</ul>'
       + GREY + 'Resting burn (BMR) ' + fmt(o.bmr) + ' calories a day.</p>';
+  };
+  box.querySelectorAll('input,select').forEach((n) => n.addEventListener('input', upd));
+  box.querySelectorAll('select').forEach((n) => n.addEventListener('change', upd));
+  upd();
+}
+
+// BMI: weight over height squared, the adult bands WHO and the CDC use, and the weights that make 18.5 to 24.9 at a height. Pure.
+export function bmiOf(kg, cm) {
+  if (!(kg > 0) || !(cm > 0)) return null;
+  const m2 = (cm / 100) ** 2, bmi = kg / m2;
+  return { bmi, band: bmi < 18.5 ? 'underweight' : bmi < 25 ? 'healthy weight' : bmi < 30 ? 'overweight' : 'obesity', lo: 18.5 * m2, hi: 24.9 * m2 };
+}
+const SRC_BMI = '<div class="src">Bands: <a href="https://www.cdc.gov/bmi/adult-calculator/bmi-categories.html" target="_blank" rel="noopener">CDC adult BMI categories</a> (the same as WHO\u2019s). BMI ignores muscle, build, age and where weight sits; for children and teens it is read on growth charts instead.</div>';
+function bmiForm(el, esc) {
+  const box = el.querySelector('#nu-form');
+  box.innerHTML = '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:10px 0">'
+    + '<select id="nu-u" aria-label="units"><option value="us">ft / lb</option><option value="m">cm / kg</option></select>'
+    + '<span id="nu-hus"><input id="nu-ft" type="number" min="3" max="8" value="5" style="width:48px" aria-label="feet"> ft <input id="nu-in" type="number" min="0" max="11" value="9" style="width:48px" aria-label="inches"> in</span>'
+    + '<span id="nu-hm" hidden><input id="nu-cm" type="number" min="90" max="250" value="175" style="width:64px" aria-label="height in cm"> cm</span>'
+    + '<input id="nu-w" type="number" min="20" max="700" value="160" style="width:64px" aria-label="weight"> <span id="nu-wu">lb</span></div>'
+    + '<div id="nu-out" aria-live="polite"></div>';
+  const q = (id) => box.querySelector('#' + id), out = q('nu-out');
+  const upd = () => {
+    const metric = q('nu-u').value === 'm';
+    q('nu-hus').hidden = metric; q('nu-hm').hidden = !metric; q('nu-wu').textContent = metric ? 'kg' : 'lb';
+    const w = +q('nu-w').value, cm = metric ? +q('nu-cm').value : (+q('nu-ft').value * 12 + +q('nu-in').value) * 2.54;
+    const b = bmiOf(metric ? w : w * LB, cm);
+    if (!b) { out.textContent = 'fill in your height and weight'; return; }
+    const range = metric ? fmt(b.lo) + '\u2013' + fmt(b.hi) + ' kg' : fmt(b.lo / LB) + '\u2013' + fmt(b.hi / LB) + ' lb';
+    out.innerHTML = BIG + fmt(b.bmi, 1) + '</div><div class="sub nu-bmi-band">' + esc(b.band) + ' (adult bands: under 18.5, 18.5\u201324.9 healthy, 25\u201329.9 overweight, 30+ obesity)</div>'
+      + GREY + 'A healthy BMI at this height is ' + esc(range) + '.</p>';
   };
   box.querySelectorAll('input,select').forEach((n) => n.addEventListener('input', upd));
   box.querySelectorAll('select').forEach((n) => n.addEventListener('change', upd));
@@ -322,6 +355,7 @@ async function run(text, api) {
     calForm(el, s, esc);
     return 'nutrition';
   }
+  if (q.kind === 'bmi') { const el = showPage((p) => { p.innerHTML = '<h2>BMI calculator</h2><div class="sub">body mass index: weight for height</div><div id="nu-form"></div>' + SRC_BMI; }); bmiForm(el, esc); return 'nutrition'; }
   if (q.kind === 'pro') { showPage((el) => { el.innerHTML = proHtml(s, esc).replace(SRC_PRO, note + SRC_PRO); }); return 'nutrition'; }
   showPage((el) => { el.innerHTML = h2oHtml(s, q.t, esc).replace(SRC_H2O, note + SRC_H2O); });
   return 'nutrition';
@@ -335,6 +369,7 @@ export default {
     'calories for a 30 year old male 5\'10 180 lbs moderately active',
     'how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight',
     'calorie calculator',
+    'bmi calculator',
     'how much protein do i need if i weigh 180 pounds',
     'how much protein do i need',
     'how much water should i drink a day',
