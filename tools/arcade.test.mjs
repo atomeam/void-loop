@@ -4,6 +4,9 @@ import * as P from '../void-live-deploy/skills/pong-rules.js';
 import * as S from '../void-live-deploy/skills/snake-rules.js';
 import pong from '../void-live-deploy/skills/pong.js';
 import snake from '../void-live-deploy/skills/snake.js';
+import { arcadeCard } from '../void-live-deploy/skills/arcade-card.js';
+
+test('the arcade card is a function the games share', () => assert.equal(typeof arcadeCard, 'function'));
 
 test('pong and snake asks route to their games, near misses do not', () => {
   for (const a of pong.examples) assert.ok(pong.match(a.toLowerCase(), a), a);
