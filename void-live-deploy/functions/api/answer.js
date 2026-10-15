@@ -16,6 +16,7 @@ import { keepCited } from '../../lib/cite.js';
 import { PERSONA } from '../../lib/persona.js';
 import { isPayAsk, payAnswer, HONEST_RULE } from '../../lib/pay-honest.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
+import { guardAnswer, heldBack } from '../../lib/patch-guard.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
 import { keeperOf, scrubOut } from '../../lib/keeper.js';
@@ -78,6 +79,7 @@ async function fixAnswer(request, env, body) {
   const all = ask + (details ? '\n\n' + details : '');
   const platform = platformOf(all);
   const on = modelsOn(env);
+  let held = '';
   if (on) {
     try {
       const r = await env.AI.run(MODEL, {
@@ -88,14 +90,18 @@ async function fixAnswer(request, env, body) {
         max_tokens: 1600, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
       });
       const answer = scrubOut(redact(String(pick(r)).trim()), env); // never echo a secret, even one the model made up
-      if (answer) return Response.json({ answer, sources: [], fix: 'model', platform });
-      await recordShortfall(env, 'fix', 'empty');
+      // the patch guard (lib/patch-guard.js): a corrected config with "rest of the code" in it, or code that does not
+      // parse, is not shown as a fix; the rules answer instead, and the reason travels with it
+      const g = answer ? guardAnswer(answer, { before: all }) : null;
+      if (answer && g.ok) return Response.json({ answer, sources: [], fix: 'model', platform });
+      if (answer) { held = heldBack(g.reasons, "the model's fix"); await recordShortfall(env, 'fix', 'guard'); }
+      else await recordShortfall(env, 'fix', 'empty');
     } catch (e) { await recordShortfall(env, 'fix', reasonOf(e)); }
   }
   // the fallback: fixed from the error itself (rules only)
   const rules = ruleFix(all);
-  const note = on ? (rules ? 'model busy, fixed from the error' : 'model busy') : (rules ? null : 'no rule for that');
-  return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note });
+  const note = held ? held + (rules ? '; fixed from the error' : '') : on ? (rules ? 'model busy, fixed from the error' : 'model busy') : (rules ? null : 'no rule for that');
+  return Response.json({ answer: rules, sources: [], fix: rules ? 'rules' : null, platform, note, ...(held ? { held } : {}) });
 }
 
 // Code review (lib/code-review.js): the quick checks always run and come back as structured findings; the model adds a closer

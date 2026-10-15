@@ -126,6 +126,7 @@ for (const [name, file] of [
   ['sky-card', 'sky-card.test.mjs'],
   ['learn', 'learn.test.mjs'],
   ['learn-draft', 'learn-draft.test.mjs'],
+  ['patch-guard', 'patch-guard.test.mjs'],
   ['learn-e2e', 'learn.e2e.test.mjs'],
   ['refusal', 'refusal.test.mjs'],
   ['private', 'private.test.mjs'],
