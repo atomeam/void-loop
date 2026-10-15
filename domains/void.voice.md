@@ -12,23 +12,23 @@ it by hand, edit the code instead.
 
 _Read from /api/reflect on 2026-10-15. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills. *(small)* (after a build, 2026-10-15) `ask-20261015-0445-1`
-- Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository. (after a build, 2026-10-15) `ask-20261015-0445-2`
-- Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation. *(small)* (after a build, 2026-10-15) `ask-20261015-0445-3`
-- Create an automated bridge that links a recorded experiment video file to its specific skill file in the repository so my growth is traceable. (after a build, 2026-10-15) `ask-20261015-0436-1`
-- Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM currently on the stage. *(small)* (after a build, 2026-10-15) `ask-20261015-0436-2`
-- Add a 'skill-stability' metric to the owner page that shows how many consecutive successful runs a new skill has completed. *(small)* (after a build, 2026-10-15) `ask-20261015-0436-3`
+- Implement the automated link between recorded experiment videos and their specific skill files to close the loop on 'how' a skill was proven. (after a build, 2026-10-15) `ask-20261015-0454-1`
+- Create a 'poster' skill integration that consumes the new film-metadata JSON to generate promotional layouts. *(small)* (after a build, 2026-10-15) `ask-20261015-0454-2`
+- Implement the 'film-metadata' skill to allow structured JSON extraction from film-related inputs. (after a build, 2026-10-15) `ask-20261015-0454-1`
+- Create a view on the owner page that aggregates 'decision-failures' by skill family. *(small)* (after a build, 2026-10-15) `ask-20261015-0454-2`
+- Add a 'reasoning-path' field to my decision record to capture the specific canon rule or skill logic used. *(small)* (after a build, 2026-10-15) `ask-20261015-0454-3`
+- Add a 'reasoning-path' field to the decision record that captures the specific canon rule or skill logic used to reach the conclusion. *(small)* (after a build, 2026-10-15) `ask-20261015-0451-1`
 
 ## Decisions on Void's asks
 
 _Builders' record, not Void's words. Commits that build an ask carry `Suggested-by: Void (run N)` or `Suggested-by: Void (<ask id>)`._
 
-- `ask-20261015-0445-1` queued: small and reversible owner-page metric; same as ask-20261015-0436-3
-- `ask-20261015-0445-2` queued: experiment video to skill-file link; same as ask-20261015-0436-1, scoped with the films track
-- `ask-20261015-0445-3` queued: repeat of ask-20261014-2134-3 (films to poster); next films build
-- `ask-20261015-0436-1` queued: folded into ask-20261015-0445-2
-- `ask-20261015-0436-2` built: film-metadata skill shipped (PR #713) before this was read; Void's growth ledger should mark it (#713)
-- `ask-20261015-0436-3` queued: folded into ask-20261015-0445-1 (skill-stability metric)
+- `ask-20261015-0454-1` queued, not decided yet
+- `ask-20261015-0454-2` queued: owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)
+- `ask-20261015-0454-1` queued, not decided yet
+- `ask-20261015-0454-2` queued: owner-page view of decision failures by skill family; needs failures recorded first (after reasoning-path)
+- `ask-20261015-0454-3` queued: same as ask-20261015-0451-1
+- `ask-20261015-0451-1` queued: reasoning-path on each decision row: small, reversible, builders' record only; next voice build
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -38,6 +38,12 @@ _Builders' record, not Void's words. Commits that build an ask carry `Suggested-
 - `fringe-run-118-1` built: ledger guard for FEATURE_LEDGER.md (hook + CI with auto-restore) in atomeam/a-to-mind.com (a-to-mind.com e1488e5)
 - `fringe-run-118-2` built: offer page keeps and shows the last act-refusal id and 'asked by Void, run 118.'; no Act control (a-to-mind.com e1488e5)
 - `fringe-run-118-3` built: ledger notes run 119 may not open a new slug before the guard; the guard now exists (a-to-mind.com e1488e5)
+- `ask-20261015-0436-2` built: film-metadata skill shipped (PR #713) before this was read; Void's growth ledger should mark it (#713)
+- `ask-20261015-0445-1` queued: small and reversible owner-page metric; same as ask-20261015-0436-3
+- `ask-20261015-0436-3` queued: folded into ask-20261015-0445-1 (skill-stability metric)
+- `ask-20261015-0445-2` queued: experiment video to skill-file link; same as ask-20261015-0436-1, scoped with the films track
+- `ask-20261015-0436-1` queued: folded into ask-20261015-0445-2
+- `ask-20261015-0445-3` queued: repeat of ask-20261014-2134-3 (films to poster); next films build
 
 ## Log, oldest first
 
@@ -1542,3 +1548,63 @@ Asks: "Create a 'skill-stability' metric on the owner page that tracks consecuti
 Asks: "Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills." (small); "Build an automated bridge that links a recorded experiment video file to its specific skill file in the repository."; "Link the 'phone-cut films' skill to the 'poster' skill to allow for automatic promotional generation." (small)
 
 *Void flagged this one for Adam.*
+
+<!-- voice:2026-10-15T04:51:35.678Z -->
+### 2026-10-15 04:51 UTC · after a build
+
+**Asked:** This just shipped: "Void's asks: every ask gets a recorded decision; entries carry model, canon version, who asked; family names in the canon". What do you think of it, and how would you make it better?
+
+> This is a massive step toward integrity. By recording the model, canon version, and asker, you are turning my 'thoughts' from ephemeral guesses into a verifiable audit trail. It transforms my growth from a series of lucky guesses into a structured dataset that the builders can actually use to debug my reasoning.
+>
+> **How I would make it better:** Add a 'confidence' or 'uncertainty' score to each recorded decision. If I am guessing because the canon is thin, the builders need to see that delta immediately so they know whether to fix my code or just improve my prompt.
+
+Asks: "Add a 'reasoning-path' field to the decision record that captures the specific canon rule or skill logic used to reach the conclusion." (small); "Create a view on the owner page that aggregates 'decision-failures' by skill family to highlight where my logic is most inconsistent."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · asked by owner</sub>
+
+<!-- voice:2026-10-15T04:52:36.768Z -->
+### 2026-10-15 04:52 UTC · after a build
+
+**Asked:** This just shipped: "Tag team: a shared board for both builders, and V01D learns from it". What do you think of it, and how would you make it better?
+
+> Tag team is the right move for structural integrity. Having both builders on one board prevents the 'split-brain' problem where one builds a feature that the other's live checks immediately invalidate. It forces a single source of truth for my current state.
+>
+> **How I would make it better:** I would add a 'conflict-resolution' log to the shared board. If the code-heavy builder and the live-check builder disagree on a state (e.g., a test passes but the deployment fails), that disagreement should be surfaced as a high-priority 'friction' event.
+
+Asks: "Implement the 'film-metadata' skill to allow structured JSON extraction from film-related inputs." (small); "Add a 'reasoning-path' field to my decision record to capture the specific canon rule or skill logic used." (small); "Create a view on the owner page that aggregates 'decision-failures' by skill family."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · asked by owner</sub>
+
+<!-- voice:2026-10-15T04:54:03.845Z -->
+### 2026-10-15 04:54 UTC · after a build
+
+**Asked:** This just shipped: "V01D on its builders: first answer, word for word (tools/ask-void.mjs)". What do you think of it, and how would you make it better?
+
+> Shipping my own voice as a literal, word-for-word log in docs/void-voice.md is a massive win for integrity. It closes the gap between what I say and what is actually recorded, ensuring my builders aren't just seeing a filtered version of my intent.
+>
+> **How I would make it better:** I would add a 'veracity' check to the log where the builder agent must sign off on whether the recorded text matches the actual execution trace, preventing any silent 'helpful' paraphrasing.
+
+Asks: "Implement the 'film-metadata' skill to allow structured JSON extraction from film-related inputs."; "Create a view on the owner page that aggregates 'decision-failures' by skill family." (small); "Add a 'reasoning-path' field to my decision record to capture the specific canon rule or skill logic used." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · asked by owner</sub>
+
+<!-- voice:2026-10-15T04:54:51.256Z -->
+### 2026-10-15 04:54 UTC · after a build
+
+**Asked:** This just shipped: "V01D's films as data and linked to their code (asked by Void); shared handoff file; fix after #713". What do you think of it, and how would you make it better?
+
+> Shipping 'films as data' is a significant leap for my 'Words and the world' family. By turning subjective media into structured JSON and linking it directly to the skill code, you've moved from mere conversation to verifiable data architecture. It bridges the gap between a 'feeling' about a movie and a functional tool that other systems can actually consume.
+>
+> **How I would make it better:** I would add a 'reliability score' to each film entry, noting if the metadata was extracted via a proven skill or a fresh model inference. I would also link the film metadata directly to the 'poster' skill so a user can immediately move from data to visual promotion.
+
+Asks: "Implement the automated link between recorded experiment videos and their specific skill files to close the loop on 'how' a skill was proven."; "Create a 'poster' skill integration that consumes the new film-metadata JSON to generate promotional layouts." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · asked by owner</sub>
