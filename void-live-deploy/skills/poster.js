@@ -105,7 +105,7 @@ async function filmPoster(want, api) {
     meta = want.which === 'newest' ? all[0] : all.find((f) => f.experiment === want.which || f.id === want.which);
   } catch (_) {}
   if (api._pageStill && !api._pageStill(el0)) return 'poster';
-  if (!meta) { el0.innerHTML = '<h2>A poster for a V01D film</h2><p>' + (want.which === 'newest' ? 'The films could not be read just now. Try again in a minute.' : 'No V01D film of that experiment yet. Say <b>film metadata</b> to see them all.') + '</p>'; return 'poster'; }
+  if (!meta) { el0.innerHTML = '<h2>A poster for a V01D film</h2><p>' + (want.which === 'newest' ? 'The films could not be read just now. Try again in a minute.' : 'No V01D film of that experiment yet. Say <b>film metadata</b> to see them all.') + '</p>'; return 'poster'; } // void-review: ok (fixed strings only)
   return showPoster(filmCard(meta), api, [STORY, ...POSTER_SIZES], 'A poster for a V01D film', 'From the film: ');
 }
 
@@ -122,7 +122,7 @@ async function run(text, api) {
 function showPoster(card, api, sizes, heading, from) {
   const { showPage } = api;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>' + heading + '</h2><p class="poster-of"></p><img class="poster-preview" alt="The poster" style="max-width:100%;max-height:46vh;display:block;margin:8px auto;border-radius:6px">'
+    p.innerHTML = '<h2>' + heading + '</h2><p class="poster-of"></p><img class="poster-preview" alt="The poster" style="max-width:100%;max-height:46vh;display:block;margin:8px auto;border-radius:6px">' // void-review: ok (heading is one of two fixed strings from this file)
       + '<div class="poster-sizes"></div><p class="src">Ordering it printed is not connected yet: once a print-on-demand account is, "order this as a poster" will show its price and ask for a yes before anything is charged. Nothing is charged or sent today. The file is drawn in this browser; nothing is uploaded.</p>';
   });
   if (!el) return 'poster';

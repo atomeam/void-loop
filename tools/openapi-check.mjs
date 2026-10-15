@@ -12,6 +12,8 @@ const FN = join(ROOT, 'functions');
 
 // Void's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/store/{[path}]': "the /store page's own API: catalog, checkout, receipts and signed downloads (functions/api/store/[[path]].js, docs/store.md)",
+  '/api/digest': "the page's digest card: a pasted transcript or an open-captions video, summarized for that ask only (functions/api/digest.js, lib/digest.js)",
   '/api/film-review': 'the films page review form: members and the owner give a film a verdict and a note (functions/api/film-review.js)',
   '/api/film-views': 'V01D Tube view counts on /films/: one D1 upsert per view, read for the grid (functions/api/film-views.js)',
   '/api/actions': 'the actions record, for the page and the owner',
