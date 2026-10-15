@@ -940,7 +940,8 @@ try {
   // visitor, keeps the blank stage. GitHub is stubbed in the page (an init script), so the page's own check at load sees it.
   if (want("the owner's status card opens by itself when the checks or deploy on main failed; visitors keep the blank stage")) {
     const gh = (conclusion, owner) => (owner ? 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' : '') + `{ const f = window.fetch; window.fetch = (u, o) => /api\\.github\\.com\\/repos\\/atomeam\\/void-loop\\/actions\\/workflows\\/(verify|deploy)\\.yml\\/runs/.test(String(u)) ? Promise.resolve(new Response(JSON.stringify({ workflow_runs: [{ status: 'completed', conclusion: /verify/.test(String(u)) ? '${conclusion}' : 'success', head_sha: 'abc1234def', created_at: '2026-10-13T16:20:00Z', html_url: 'https://github.com/atomeam/void-loop/actions/runs/7' }] }), { status: 200, headers: { 'content-type': 'application/json' } })) : f(u, o); }`;
-    const cardOf = async (P) => { for (let i = 0; i < 24; i++) { const t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (t) return t; await P.p.waitForTimeout(250); } return ''; };
+    // the filled card, not its "checking…" placeholder (the sources are pinged in parallel; under load that takes a few seconds)
+    const cardOf = async (P) => { let t = ''; for (let i = 0; i < 60; i++) { t = await P.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); if (/own build|Outside sources/.test(t)) return t; await P.p.waitForTimeout(250); } return t; };
     const O = await fresh({ content: gh('failure', true) });
     const red = await cardOf(O);
     const link = await O.p.$eval('.vpage a[href*="/actions/runs/7"]', (a) => a.href).catch(() => null);
