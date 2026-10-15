@@ -53,6 +53,10 @@
         "selector": ".thing"
       },
       "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
+    },
+    {
+      "ask": "yo watch the apollo 11 landing",
+      "taught": "video-play"
     }
   ],
   "candidates": [
@@ -101,11 +105,6 @@
       "ask": "what did this video teach? pls",
       "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
       "feature": "skill:digest"
-    },
-    {
-      "ask": "yo watch the apollo 11 landing",
-      "means": "play despacito",
-      "feature": "skill:video-play"
     }
   ],
   "priority": [
