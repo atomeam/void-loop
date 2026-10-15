@@ -32,8 +32,8 @@ export const VOIDQUEST_NAMES = [
   'Deep Signal', 'Altair Forge', 'Jupiter Gate', 'Nebula Drift', 'Orion Spire', 'Void Tax', 'The Void Core',
 ];
 export const THEMES = {
-  monopoly: { kind: 'monopoly', title: 'The Landlord’s Game', mid: 'THE LANDLORD’S GAME', names: null, sky: '#e9f1e2', ground: '#1d2a22', centre: '#cfe2c8', ink: '#2b4a33' },
-  voidquest: { kind: 'voidquest', title: 'VoidQuest', mid: 'VOIDQUEST', names: VOIDQUEST_NAMES, sky: '#dfe3ff', ground: '#120f2a', centre: '#1b1640', ink: '#b9a8ff' },
+  monopoly: { kind: 'monopoly', title: 'The Landlord’s Game', mid: 'THE LANDLORD’S GAME', sub: 'you against V01D', names: null, sky: '#e9f1e2', ground: '#1d2a22', centre: '#cfe2c8', ink: '#2b4a33' },
+  voidquest: { kind: 'voidquest', title: 'VoidQuest', mid: 'VOIDQUEST', sub: 'our version of SolarQuest · you against V01D', names: VOIDQUEST_NAMES, sky: '#dfe3ff', ground: '#120f2a', centre: '#1b1640', ink: '#b9a8ff' },
 };
 /** a space's name on this board */
 export const spaceName = (theme, i) => (theme.names ? theme.names[i] : M.SPACES[i].n);
@@ -61,8 +61,9 @@ const makeMount = (theme) => function mount(th, stageApi) {
   el.className = 'thing kept-card game-card monopoly-card' + (theme.kind === 'voidquest' ? ' voidquest-card' : '');
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(470px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub">you against V01D</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub"></span></div>';
   el.querySelector('.g-title').textContent = theme.title;
+  el.querySelector('.g-sub').textContent = theme.sub;
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const board = document.createElement('div'); board.className = 'mono-board';
   board.style.cssText = 'display:grid;grid-template-columns:repeat(11,1fr);grid-template-rows:repeat(11,1fr);aspect-ratio:1;gap:1px;background:' + theme.ground + ';border-radius:8px;padding:2px;font-size:6.5px;line-height:1.05';
@@ -180,7 +181,7 @@ async function run(text, api) {
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return kind; }
   if (kind === 'voidquest') {
     api.summon('voidquest', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
-    api.say('VoidQuest · V01D’s own space trading game (after Solar Quest) · you against V01D · roll to start; buying is always your choice');
+    api.say('VoidQuest, our version of SolarQuest · you against V01D · roll to start; buying is always your choice');
     return 'voidquest';
   }
   api.summon('monopoly', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
@@ -191,7 +192,7 @@ async function run(text, api) {
 export default {
   name: 'monopoly',
   monopolyOf,
-  examples: ['play monopoly', 'play voidquest', 'play solar quest', "let's play monopoly", 'monopoly board game', 'a game of monopoly', 'play monopoly against void', 'property trading game'],
+  examples: ['play monopoly', 'play voidquest', 'play solar quest', 'solarquest', 'solar quest board game', "let's play monopoly", 'monopoly board game', 'a game of monopoly', 'play monopoly against void', 'property trading game'],
   nearMisses: ['monopoly', 'what is a monopoly', 'is google a monopoly', 'monopoly money', 'play chess'],
   match(lower, text) { return !!monopolyOf(text); },
   run,

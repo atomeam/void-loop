@@ -64,3 +64,18 @@ test('4. "How to play" never stays over the board', () => {
   assert.match(src, /addEventListener\('pointerdown', onTap, true\)/, 'the first tap off it (a move) folds it');
   assert.match(src, /max-height:min\(46vh,340px\)/, 'never taller than half the screen');
 });
+
+test('5. the real game\'s name finds the Void version (owner, 2026-10-15)', async () => {
+  const skill = async (n) => (await import('../void-live-deploy/skills/' + n + '.js')).default;
+  const routes = {
+    monopoly: ['solarquest', 'solar quest', 'play solarquest', 'solar quest board game', 'play monopoly', 'monopoly board game'],
+    fireworks: ['hanabi', 'play hanabi', 'hanabi card game'],
+    sorry: ['play sorry', 'sorry board game'], battleship: ['play battleship'], connect4: ['play connect four'], othello: ['play reversi'],
+  };
+  for (const [n, asks] of Object.entries(routes)) { const s = await skill(n); for (const a of asks) assert.ok(s.match(a.toLowerCase(), a), a + ' -> ' + n); }
+  const mono = await import('../void-live-deploy/skills/monopoly.js');
+  for (const a of routes.monopoly.slice(0, 4)) assert.equal(mono.monopolyOf(a).theme, 'voidquest', a);
+  assert.match(mono.THEMES.voidquest.sub, /our version of SolarQuest/);
+  assert.match(read('void-live-deploy/skills/monopoly.js'), /VoidQuest, our version of SolarQuest/);
+  assert.match(read('void-live-deploy/skills/fireworks.js'), /Fireworks, our version of Hanabi/);
+});
