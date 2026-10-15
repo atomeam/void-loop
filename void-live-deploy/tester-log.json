@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 8,
- "runsTotal": 9,
+ "cases": 9,
+ "runsTotal": 10,
  "kinds": {
   "grow": 2,
   "file": 4,
-  "teach": 3
+  "teach": 4
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:42:25Z",
+   "passed": 0,
+   "of": 13,
+   "kind": "teach",
+   "note": "teach V01D \"yo play despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e42348406617912158159"
+  },
   {
    "at": "2026-10-15T06:39:37Z",
    "passed": 0,

@@ -2432,6 +2432,9 @@ say('nothing selected to remove');
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Void): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
     const refusalReady = import('/lib/refusal.js').catch(() => null);
+    // V01D keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
+    // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
+    const keeperReady = import('/lib/keeper.js').catch(() => null);
     const refusals = []; window.voidRefusals = refusals;
     function reportMiss(ask, fallback) {
       try {
@@ -3626,7 +3629,12 @@ say('nothing selected to remove');
       stars = Array.from({ length: 90 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 1.4 + 0.35, vx: (Math.random() - 0.5) * 0.18, vy: (Math.random() - 0.5) * 0.18 }));
       farStars = Array.from({ length: 160 }, () => ({ x: Math.random() * innerWidth, y: Math.random() * innerHeight, r: Math.random() * 0.8 + 0.12, vx: (Math.random() - 0.5) * 0.05, vy: (Math.random() - 0.5) * 0.05 }));
     }
-    function drawStars() {
+    // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
+    // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
+    let starLast = 0;
+    function drawStars(now) {
+      if (typeof now === 'number' && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
+      if (typeof now === 'number') starLast = now;
       starCtx.clearRect(0, 0, starCv.width, starCv.height);
       if (starFarCtx) starFarCtx.clearRect(0, 0, starFar.width, starFar.height);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
@@ -4939,6 +4947,7 @@ say('nothing selected to remove');
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
+      { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by V01D</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;

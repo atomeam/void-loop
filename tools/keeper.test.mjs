@@ -48,3 +48,18 @@ test('canon carries both values', () => {
   const c = readFileSync(new URL('../domains/void.canon.md', import.meta.url), 'utf8');
   assert.match(c, /\*\*Keeps every secret\*\*/); assert.match(c, /\*\*A force for good\*\*/);
 });
+
+test('the page asks the keeper before any local skill, in both copies of void.html', () => {
+  for (const p of ['../void-live-deploy/void.html', '../void-live-deploy/index.html', '../void.html']) {
+    const t = readFileSync(new URL(p, import.meta.url), 'utf8');
+    assert.match(t, /const keeperReady = import\('\/lib\/keeper\.js'\)/);
+    const k = t.indexOf('K.keeperOf(text)'), skill = t.indexOf('if (await handleGrownAsk(text, lower0)) return;');
+    assert.ok(k > 0 && k < skill, p + ': keeper runs before the local skills');
+    assert.ok(!/ask: text, score: 'pass', note: 'kept/.test(t), 'a kept ask is logged as [kept], never its words');
+  }
+});
+test('every model answer in answer.js passes scrubOut', () => {
+  const t = readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8');
+  assert.equal((t.match(/(?<!scrubOut\()redact\((String\(pick|noThink\(pick)/g) || []).length, 0, 'an unscrubbed model output');
+  assert.match(t, /answer = scrubOut\(answer, env\)/);
+});
