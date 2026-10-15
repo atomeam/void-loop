@@ -15,13 +15,13 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- Grok Bot · perf/3d-smooth · 3D board perf + looks (skills/scene3d.js, figures3d.js, mini/monopoly.js, 24fps starfield in index.html/void.html: one function, drawStars), then the video-games ladder (docs/video-games.md, Void Pong, Void Snake) · 2026-10-15 06:05 UTC
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
 - Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
 - parallel agent · store-phase1 · V01D's own store: docs/store.md, /store page, /api/store (checkout handoff, Stripe webhook, signed downloads, license keys, receipt, order lookup), Gumroad fallback · 2026-10-15 05:10 UTC
 
 ## Just finished
 
+- **3D board perf + looks (skills/scene3d.js, figures3d.js, mini/monopoly.js, 24fps starfield in index.html/void.html: one function, drawStars), then the video-games ladder (docs/video-games.md, Void Pong, Void Snake) (Grok Bot, 2026-10-15)**: shipped in https://github.com/atomeam/void-loop/pull/751.
 - **V01D keeps secrets, a force for good (Grok Bot, 2026-10-15)**: lib/keeper.js answers env/key/prompt/other-visitor/harmful/mean asks first in /api/answer with a positive alternative (red-team tools/keeper.test.mjs); lib/privacy.js redacts emails, phones, IPs, cards before /api/answer and /api/miss store anything; tools/privacy-scan.mjs + tools/runtime-guard.mjs gate PRs; secret-scan.mjs --history; strict CSP in _headers (tools/csp-smoke.mjs). Policy: docs/secrets.md.
 - **V01D's store and tester asks, combined into existing cards (Grok Bot, 2026-10-15)**: "what's new in the store" carousel in the store card; store-publish rows in V01D's growth inbox with the next product; `store-publish auto-forge` (new forge model: re-pack, appraise, rotation clip); decay timer for stale experiments (`tools/families.mjs --stale`, flag only); the site tester's log in the growth card (`/tester-log.json`). Tests: tools/void-asks-store.test.mjs.
 - **Site tester (Grok Bot, 2026-10-15)**: tools/site-test.mjs drives live a-to-mind.com in headless Chrome after every deploy and hourly (.github/workflows/site-test.yml, #743): regression asks in tools/site-test.json plus 4 never-tried asks a run from the least recently tested skills/pages (new wordings, typos, real game names); console errors, screenshots, 3D fps. It only tests (non-GET never leaves the browser) and every run ends in one improvement logged in tools/site-test.log.json; failures and missed wordings open one site-test issue each. Ranked list: docs/multipliers.md.
