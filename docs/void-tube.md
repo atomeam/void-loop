@@ -8,7 +8,7 @@ Owner, 2026-10-15: "V01D should be its own version of YouTube, on top of sharing
 - **Watch page:** `/films/?v=<id>`: player, title, description, views, Share it (X, Facebook, Reddit, WhatsApp, Bluesky, LinkedIn, copy link, the phone's share sheet), Upload it to your own channel, Up next (related videos).
 - **Anyone uploads, free** (`lib/film-share.js`): tabs for YouTube, TikTok, Reels and X. 1. Download (free MP4), 2. Copy for <platform> (title, description that opens with the V01D call to action and a tracked `a-to-mind.com/c/<id>?p=<platform>&by=share` link, a share-this-ad line, hashtags), 3. Upload to <platform> (its own upload page, signed in as you). No API or token.
 - **Views:** `functions/api/film-views.js`: one D1 row per video, one upsert per view (once per tab), no KV.
-- **RSS:** `/films/feed.xml`: each item links its watch page.
+- **RSS:** `/films/rss`: each item links its watch page.
 - **Hosting:** Cloudflare R2 `void-films` (10 GB and egress free on the free tier); a 20-second Short is about 5 MB, so about 2,000 videos fit free.
 - V01D knows it: self.json `clips.upload`; "upload this to YouTube" opens the films skill's steps.
 
