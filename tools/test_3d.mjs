@@ -104,8 +104,8 @@ if (process.argv.includes('--browser')) {
   let pass = 0, fail = 0;
   const check = (name, ok, info) => { if (only && !only.test(name)) return; if (ok) pass++; else fail++; console.log((ok ? 'pass ' : 'FAIL ') + name + (ok ? '' : '  -> ' + String(info).slice(0, 1200))); };
   const fresh = async (...inits) => {
-    const opt = inits[0] && typeof inits[0] === 'object' && 'mini3d' in inits[0] ? inits.shift() : {};
-    const ctx = await browser.newContext();
+    const opt = inits[0] && typeof inits[0] === 'object' && ('mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {};
+    const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {});
     for (const init of inits) await ctx.addInitScript(init);
     if (opt.mini3d === false) await ctx.route(/\/skills\/scene3d\.js(?:\?|$)/, (r) => r.fulfill({ status: 404, body: '' }));
     await routeOutside(ctx);
@@ -423,6 +423,33 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
   }
 
   // ---- card miniatures: the clock keeps the asked zone's time, the weather diorama shows the forecast
+  // ---- closed cases, and 3D on a phone (owner, 2026-10-15: the clocks looked like "hollow rings" from behind; "on my phone the
+  // 3d was still choppy and laggy"): every case back is as wide as its case and sits on its rear edge; on a touch screen a card
+  // holding a miniature draws no filter shadow, a drag draws at a lower resolution and sharpens after, and motion nobody steers
+  // draws at most about 30 times a second (the clock's sweep 8)
+  if (want("3d: closed cases and a phone")) {
+    const F = await fresh({ phone: true });
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js');
+      const card = document.createElement('div'); card.className = 'thing'; card.style.cssText = 'position:fixed;left:10px;top:10px;width:300px;height:200px;z-index:9';
+      document.body.appendChild(card);
+      const c = await m.mountMiniature(card, 'clock', { clocks: [{ tz: 'Asia/Tokyo', label: 'Tokyo' }, { tz: 'Europe/London', label: 'London' }] }, { key: 'pclock' });
+      const box2 = document.createElement('div'); box2.style.cssText = 'position:fixed;left:10px;top:300px;width:200px;height:200px'; document.body.appendChild(box2);
+      const sw = await m.mountMiniature(box2, 'stopwatch', {}, { key: 'psw' });
+      const closed = (h) => { const out = []; h.ctx.root.traverse((o) => { if (o.name === 'case') { const back = o.parent.getObjectByName('caseback'); const cp = o.geometry.parameters, bp = back && back.geometry.parameters;
+        out.push(!!bp && Math.abs(bp.radius - cp.radiusTop) < 1e-9 && Math.abs(bp.thetaLength - Math.PI / 2) < 1e-9 && Math.abs((o.position.z - cp.height / 2) - back.position.z) < 1e-6); } }); return out; };
+      await new Promise((res) => { const w = () => (c.draws > 0 ? res() : setTimeout(w, 100)); w(); });
+      const filter = getComputedStyle(card).filter, sharp = c.canvas.width;
+      c.controls.dispatchEvent({ type: 'start' }); const dragging = c.canvas.width; c.controls.dispatchEvent({ type: 'end' }); const after = c.canvas.width;
+      const d0 = c.draws; await new Promise((res) => setTimeout(res, 2000)); const perSec = (c.draws - d0) / 2;
+      return { phone: m.isPhone(), clock: closed(c), stopwatch: closed(sw), filter, sharp, dragging, after, css: c.cssW, perSec, regress: m.REGRESS_DPR, frameMs: m.PHONE_FRAME_MS };
+    });
+    check('3d: closed cases and a phone: the clock and stopwatch backs are as wide as their cases and sit on their rear edge; on a touch screen a card with a miniature draws no filter shadow, a drag draws at 1x and sharpens after, and the clock redraws at most 8 times a second',
+      r.phone && r.clock.length === 2 && r.clock.every(Boolean) && r.stopwatch.length === 1 && r.stopwatch.every(Boolean) && r.filter === 'none'
+      && r.dragging === Math.round(r.css * r.regress) && r.after === r.sharp && r.sharp > r.dragging && r.perSec > 0 && r.perSec <= 9 && r.frameMs >= 30 && !F.errors.length,
+      JSON.stringify({ ...r, e: F.errors }));
+    await F.ctx.close();
+  }
   if (want("3d: card miniatures")) {
     const F = await fresh();
     const r = await F.p.evaluate(async () => {

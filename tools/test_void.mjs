@@ -366,9 +366,9 @@ async function catalogRoute(r) {
 }
 
 async function fresh(...inits) {
-  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
+  const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
-  const ctx = await browser.newContext();
+  const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
   for (const init of inits) await ctx.addInitScript(init);
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
@@ -5289,7 +5289,7 @@ try {
   { const all3d = want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)");
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
-      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true }, ...a), want: (l) => all3d || want(l) }); }
+      await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
 } catch (e) {
   // always, --only included: a section that throws is a failure, never "0/0 passed" (finish.mjs's first shot runs --only)
   check('suite ran to the end', false, String(e && e.message));
