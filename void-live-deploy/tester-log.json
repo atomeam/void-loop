@@ -1,11 +1,62 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 8,
- "runsTotal": 2,
+ "runsTotal": 9,
  "kinds": {
-  "grow": 2
+  "grow": 2,
+  "file": 4,
+  "teach": 3
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:39:37Z",
+   "passed": 0,
+   "of": 12,
+   "kind": "teach",
+   "note": "teach V01D \"start despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e4234840661791215815920"
+  },
+  {
+   "at": "2026-10-15T06:36:52Z",
+   "passed": 2,
+   "of": 12,
+   "kind": "teach",
+   "note": "teach V01D \"can we play despacito\" (means \"play despacito\", skill:video-play): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+  },
+  {
+   "at": "2026-10-15T06:34:08Z",
+   "passed": 7,
+   "of": 12,
+   "kind": "teach",
+   "note": "teach V01D \"yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon\" (means \"summarize this transcript: black holes form when massive star"
+  },
+  {
+   "at": "2026-10-15T06:31:10Z",
+   "passed": 11,
+   "of": 12,
+   "kind": "file",
+   "note": "fix: \"what did this video teach?\" nothing appeared"
+  },
+  {
+   "at": "2026-10-15T06:28:23Z",
+   "passed": 7,
+   "of": 12,
+   "kind": "file",
+   "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+  },
+  {
+   "at": "2026-10-15T06:25:50Z",
+   "passed": 8,
+   "of": 12,
+   "kind": "file",
+   "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+  },
+  {
+   "at": "2026-10-15T06:23:11Z",
+   "passed": 6,
+   "of": 12,
+   "kind": "file",
+   "note": "fix: \"what are you?\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+  },
   {
    "at": "2026-10-15T06:20:22Z",
    "passed": 11,

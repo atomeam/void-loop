@@ -1,0 +1,40 @@
+// Loads the site's pages with the real _headers CSP applied (served from void-live-deploy/ on a local port) and fails on
+// any CSP violation: the home page with its 3D, /films/, /store/ and a Gumroad-style embed frame. Needs Chrome
+// (playwright-core). Outside requests are answered empty, so it runs offline.
+//   node tools/csp-smoke.mjs
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+
+const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../void-live-deploy');
+export function headerFor(file = path.join(root, '_headers')) {
+  const lines = fs.readFileSync(file, 'utf8').split('\n'); const out = {}; let inAll = false;
+  for (const l of lines) { if (/^\S/.test(l)) inAll = l.trim() === '/*'; else if (inAll && l.includes(':')) { const i = l.indexOf(':'); out[l.slice(0, i).trim()] = l.slice(i + 1).trim(); } }
+  return out;
+}
+const TYPES = { '.html': 'text/html', '.js': 'text/javascript', '.mjs': 'text/javascript', '.css': 'text/css', '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png', '.glb': 'model/gltf-binary', '.wasm': 'application/wasm', '.webmanifest': 'application/manifest+json' };
+if (import.meta.url === 'file://' + process.argv[1]) {
+  const hdr = headerFor();
+  const srv = http.createServer((req, res) => {
+    let p = decodeURIComponent(req.url.split('?')[0]); if (p.startsWith('/api/')) { res.writeHead(200, { 'content-type': 'application/json', ...hdr }); return res.end('{}'); }
+    let f = path.join(root, p); if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html');
+    if (!fs.existsSync(f)) { res.writeHead(404); return res.end(); }
+    res.writeHead(200, { 'content-type': TYPES[path.extname(f)] || 'application/octet-stream', ...hdr }); fs.createReadStream(f).pipe(res);
+  }).listen(0);
+  const port = srv.address().port;
+  const { chromium } = await import('playwright-core');
+  const exe = process.env.CHROME || ['/usr/bin/google-chrome', '/usr/bin/chromium'].find((x) => fs.existsSync(x));
+  const browser = await chromium.launch({ executablePath: exe, args: ['--use-gl=swiftshader', '--enable-unsafe-swiftshader'] });
+  const bad = [];
+  for (const page of ['/', '/films/', '/store/']) {
+    const ctx = await browser.newContext(); const pg = await ctx.newPage();
+    await pg.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 200, body: '' }));
+    pg.on('console', (m) => { if (/Content Security Policy|Refused to/i.test(m.text())) bad.push(page + ': ' + m.text().slice(0, 200)); });
+    await pg.goto(`http://127.0.0.1:${port}${page}`, { waitUntil: 'load' }); await pg.waitForTimeout(2500);
+    if (page === '/') await pg.evaluate(() => { const f = document.createElement('iframe'); f.src = 'https://gumroad.com/l/x'; document.body.append(f); const v = document.createElement('iframe'); v.src = 'https://www.youtube-nocookie.com/embed/x'; document.body.append(v); });
+    await pg.waitForTimeout(800); await ctx.close();
+  }
+  await browser.close(); srv.close();
+  if (bad.length) { console.log([...new Set(bad)].join('\n')); process.exit(1); }
+  console.log('csp-smoke: /, /films/, /store/ and embeds load with no CSP violation');
+}
