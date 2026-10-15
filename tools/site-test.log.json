@@ -28,5 +28,13 @@
   "kind": "file",
   "key": "play voidquest | console: Failed to load module script: Expected a JavaScript",
   "note": "fix: \"play voidquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
+ },
+ {
+  "at": "2026-10-15T06:28:23Z",
+  "passed": 7,
+  "of": 12,
+  "kind": "file",
+  "key": "play solarquest | console: Failed to load module script: Expected a JavaScript",
+  "note": "fix: \"play solarquest\" console: Failed to load module script: Expected a JavaScript-or-Wasm module script but the server responded with a MIME type of \""
  }
 ]
