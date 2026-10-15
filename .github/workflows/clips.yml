@@ -40,3 +40,13 @@ jobs:
         run: |
           d=$(date -u +%Y%m%d)
           gh release create "clips-$d-${{ github.run_attempt }}" media/clips/*.mp4 media/clips/manifest.json --draft --title "V01D clips $d" --notes "Daily ad batch: words per platform in manifest.json. Posting: drafts unless an account is connected."
+      # every ad clip is on the films page too, where anyone can download it and upload it (owner, 2026-10-15)
+      - name: Put each clip in V01D FILMS
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          set -o pipefail
+          for id in $(jq -r '.clips[].id' media/clips/manifest.json); do
+            jq --arg id "$id" '.clips[] | select(.id == $id) | (.words.youtube // .platforms.youtube // .youtube // {}) as $w | { title: ($w.title // $id), description: ($w.description // ""), tags: ($w.hashtags // []) }' media/clips/manifest.json > "media/clips/$id.words.json"
+            node tools/film-post.mjs "media/clips/$id.mp4" "media/clips/$id.words.json" --id "$id" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
+          done
