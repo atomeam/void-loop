@@ -55,11 +55,14 @@ export function sinceLast(entries, seenAt = '') {
 }
 
 /** up to n steps from newest-first entries, each ask once: [{ line, ask, at }]. Pure. */
-export function pick(entries, n = 5) {
+// verified: the asks tools/claims-verify.mjs saw answer with their own card (claims-verified.json). Given a set, a build whose
+// ask is not on it is never played as "built": it counts as in progress (Adam, 2026-10-15: no claiming what doesn't answer).
+export function pick(entries, n = 5, verified = null, pending = null) {
   const out = [], asks = new Set();
   for (const e of entries) {
     const p = playable(e);
     if (!p || asks.has(CLEAN(p.ask))) continue;
+    if (verified && !verified.has(CLEAN(p.ask))) { asks.add(CLEAN(p.ask)); if (pending) pending.push(p); continue; }
     asks.add(CLEAN(p.ask)); out.push({ ...p, at: e.at });
     if (out.length >= n) break;
   }
@@ -71,10 +74,15 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+export const VERIFIED_URL = '/claims-verified.json';
 async function ledger() {
   const r = await fetch(LEDGER_URL, { cache: 'no-cache' });
   if (!r.ok) throw new Error('HTTP ' + r.status);
   return r.json();
+}
+// the verified asks; when the list can't be read nothing counts as verified (no claim without proof)
+async function verifiedSet() {
+  try { const r = await fetch(VERIFIED_URL, { cache: 'no-cache' }); const j = r.ok ? await r.json() : {}; return new Set((j.ok || []).map(CLEAN)); } catch (_) { return new Set(); }
 }
 
 let tour = null; // the walkthrough on screen: { steps, i, made, bar, newest }
@@ -167,7 +175,7 @@ export async function nudge(stageApi, note) {
   if (!seen) { write(SEEN_KEY, new Date().toISOString().replace(/\.\d+Z$/, 'Z')); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const steps = pick(sinceLast(list, seen));
+  const steps = pick(sinceLast(list, seen), 5, await verifiedSet());
   const newest = newestAt(list);
   if (!steps.length) { if (newest > seen) write(SEEN_KEY, newest); return 0; }
   if (!note) return steps.length;
@@ -186,11 +194,13 @@ async function run(text, api) {
   const stageApi = api.stage;
   let list = [];
   try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
-  const seen = read(SEEN_KEY);
-  const fresh = seen ? pick(sinceLast(list, seen)) : [];
-  const steps = fresh.length ? fresh : pick(sinceLast(list));
-  if (!steps.length) { api.say('nothing new to show yet'); return 'none'; }
-  start(stageApi, steps, { label: fresh.length ? 'Built while you were away' : 'Built lately', newest: newestAt(list) });
+  const seen = read(SEEN_KEY), V = await verifiedSet(), pending = [];
+  const fresh = seen ? pick(sinceLast(list, seen), 5, V, pending) : [];
+  if (!fresh.length) pending.length = 0;
+  const steps = fresh.length ? fresh : pick(sinceLast(list), 5, V, pending);
+  const wip = pending.length ? ' · ' + pending.length + ' more in progress (not answering yet)' : '';
+  if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
+  start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: newestAt(list) });
   return 'showcase';
 }
 
