@@ -1,0 +1,46 @@
+// Kitchen swaps (skills/swaps.js): "substitute for buttermilk", "what can i use instead of eggs", "out of brown sugar"
+// read from a built-in table; an ingredient not in it, or a look-alike, is left to the other skills.
+// Run: node --test tools/swaps.test.mjs
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import swaps, { swapAsk, swapHit, SWAPS } from '../void-live-deploy/skills/swaps.js';
+
+test('swaps: the asks it takes, with the ingredient', () => {
+  const cases = [
+    ['substitute for buttermilk', 'buttermilk'], ['buttermilk substitute', 'buttermilk'], ['what is a good substitute for buttermilk?', 'buttermilk'],
+    ['what can i use instead of eggs in baking', 'eggs'], ['egg substitute', 'eggs'], ['what can i use instead of an egg', 'eggs'],
+    ['baking powder substitute', 'baking powder'], ['substitute for baking soda', 'baking soda'], ['out of brown sugar', 'brown sugar'],
+    ['i ran out of baking powder what can i use', 'baking powder'], ['how to make self rising flour', 'self-rising flour'],
+    ['how do i make buttermilk', 'buttermilk'], ['make cake flour at home', 'cake flour'], ['replacement for heavy cream', 'heavy cream'],
+    ['alternative to sour cream', 'sour cream'], ['what to use instead of butter in cookies', 'butter'], ['substitute cornstarch', 'cornstarch'],
+    ['what can i use instead of vanilla extract', 'vanilla extract'], ['no powdered sugar what can i use', 'powdered sugar'],
+    ['substitute for icing sugar', 'powdered sugar'], ['what can i use instead of wine in a sauce', 'wine'], ['mayo substitute', 'mayonnaise'],
+    ['Substitute for Buttermilk?', 'buttermilk'], ['substitute for cream of tartar', 'cream of tartar'], ['what to use instead of cornstarch to thicken soup', 'cornstarch']
+  ];
+  for (const [ask, name] of cases) { const a = swapAsk(ask); assert.ok(a, ask); assert.equal(a.item.name, name, ask); assert.equal(a.use, '', ask); }
+});
+
+test('swaps: "can i use X instead of Y" says yes when X is one of the swaps', () => {
+  let a = swapAsk('can i use greek yogurt instead of sour cream');
+  assert.equal(a.item.name, 'sour cream'); assert.equal(a.use, 'greek yogurt'); assert.ok(swapHit(a.item, a.use) >= 0);
+  a = swapAsk('can i use applesauce instead of eggs'); assert.ok(swapHit(a.item, a.use) >= 0);
+  a = swapAsk('can i use baking powder instead of baking soda'); assert.equal(a.item.name, 'baking soda'); assert.ok(swapHit(a.item, a.use) >= 0);
+  a = swapAsk('can i use ketchup instead of eggs'); assert.equal(swapHit(a.item, a.use), -1);
+});
+
+test('swaps: leaves look-alikes and unknown things to others', () => {
+  for (const ask of ['substitute teacher', 'what can i use instead of google', 'substitution method', 'how to make bread', 'egg timer',
+    'replacement windows', 'substitute for x in algebra', 'alternative to chrome', 'how to make pancakes', 'no', 'out of office',
+    'substitute for sugar in my life', 'can i use my phone instead of a wallet', 'calories in buttermilk', 'eggs', 'buttermilk pancakes recipe',
+    'how many cups is 500g of flour', 'no more milk', 'replace windows', 'swaps'])
+    assert.equal(swapAsk(ask), null, ask);
+});
+
+test('swaps: every row is whole, and the skill names its examples and near misses truly', () => {
+  for (const s of SWAPS) {
+    for (const k of ['name', 're', 'amount']) assert.ok(s[k], s.name + ' ' + k);
+    assert.ok(Array.isArray(s.swaps) && s.swaps.length, s.name + ' swaps');
+  }
+  for (const ex of swaps.examples) assert.ok(swaps.match(ex.toLowerCase(), ex), ex);
+  for (const nm of swaps.nearMisses) assert.ok(!swaps.match(nm.toLowerCase(), nm), nm);
+});
