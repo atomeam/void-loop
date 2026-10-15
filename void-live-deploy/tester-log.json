@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 14,
- "runsTotal": 35,
+ "runsTotal": 36,
  "kinds": {
   "grow": 7,
-  "file": 21,
+  "file": 22,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T16:40:07Z",
+   "passed": 17,
+   "of": 18,
+   "kind": "file",
+   "note": "fix: \"dismiss this\" nothing appeared"
+  },
   {
    "at": "2026-10-15T16:35:42Z",
    "passed": 14,
@@ -140,13 +147,6 @@
    "of": 13,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"put on lofi hip hop pls\" (skill:video-play)"
-  },
-  {
-   "at": "2026-10-15T06:58:08Z",
-   "passed": 8,
-   "of": 13,
-   "kind": "file",
-   "note": "fix: \"menaing of saudade\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -176,6 +176,10 @@
   "skill:country": "2026-10-15T12:12:56Z",
   "skill:crypto": "2026-10-15T15:57:36Z",
   "skill:dark-look": "2026-10-15T16:11:51Z",
-  "skill:dates": "2026-10-15T16:35:42Z"
+  "skill:dates": "2026-10-15T16:35:42Z",
+  "skill:dating": "2026-10-15T16:40:07Z",
+  "skill:different": "2026-10-15T16:40:07Z",
+  "skill:dismiss": "2026-10-15T16:40:07Z",
+  "skill:distance": "2026-10-15T16:40:07Z"
  }
 }
