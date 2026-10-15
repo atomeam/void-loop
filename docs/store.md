@@ -72,6 +72,27 @@ V01D sets up `you@yourdomain.com` for a creator in minutes and charges for the s
 - **Pricing:** $15 one-time setup (or free with any store plan), or **$3/month** for "Business Email Care": monitoring that mail still flows, DMARC reports read in plain words, new aliases on request. Bundled into V01D Store Pro.
 - For Adam now: `atom@a-to-mind.com` via Email Routing would be free and gives Stripe/press a business address (it is not a Stripe requirement).
 
+## Self-publishing (owner, 2026-10-15: "V01D can make a new product every time it needs in our store")
+
+- **One catalog:** `domains/store.products.json`. `tools/store-publish.mjs sync` regenerates `void-live-deploy/lib/store-products.js`
+  (what `lib/store.js`, `/api/store/*`, the `/store/` page and V01D's store card read), `void-live-deploy/store/changelog.json`
+  (the public "New from V01D" list on `/store/`) and `docs/store-changelog.md`. `tools/store-publish.test.mjs` fails if they drift.
+- **Publishing a shipped thing:** `node tools/store-publish.mjs forge-pack | clips-pack | publish --kind <k> --id <id> --name … --blurb … --files a,b [--preview x.glb] [--paid]`.
+  It runs the guardrails, zips the files, uploads `store/<id>-v1.zip` to R2 (FILMS bucket `void-films`), writes the row (V01D's voice,
+  price from `PRICE_RULE`, preview, licence tier), adds a changelog row and queues an ad clip. On the box set
+  `WRANGLER_BIN=/workspace/.wrangler3/node_modules/.bin/wrangler` (wrangler 3, which can write its cache there).
+- **Price:** free / pay what you want (the $1 tip jar) until Stripe is on. `--paid` prices by `PRICE_RULE` inside `PRICE_RANGE`
+  ($1–$50) and sets status `needs-gumroad`: shown as coming soon, queued in `domains/store.queue.jsonl` for Adam to list by hand
+  (there is no Gumroad API key, so no listing is faked).
+- **Guardrails (checks, not approval gates):** price in range; no trademarked names (`TRADEMARKS`) in title, blurb or file names;
+  every file made by V01D or under an allowed licence (`ORIGINS`); every STL closed, consistently wound, finite and inside a 180 mm
+  bed (`checkStl`, from the bytes); a public changelog row per product; and `.github/workflows/store-check.yml` fetches every live
+  download daily and unpublishes (by an automerge PR) any that fail.
+- **Ad clips:** every published product goes into `domains/store.clips.jsonl`; `tools/clips.mjs` turns each into a moment that
+  films the product's card at `/store/#<id>` and ranks it first for a week, so the daily clips run makes its ad.
+- **Live (2026-10-15):** V01D Forge Printables (10 checked STLs, free) and V01D Clips Pack (10 shorts, free). The VoidQuest minis pack
+  stays "coming soon": no VoidQuest miniature models exist yet to print.
+
 ## Next steps
 
 1. Upload the first paid pack (VoidQuest minis STL/3MF zip) to R2 `store/voidquest-minis-v1.zip` and list it on Gumroad too.

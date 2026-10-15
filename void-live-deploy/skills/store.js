@@ -13,7 +13,7 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = '<h2>' + esc(a.lead) + '</h2><ul style="padding-left:18px">' +
       a.rows.map((r) => '<li style="margin:6px 0"><a href="' + esc(r.url) + '" target="_blank" rel="noopener"><b>' + esc(r.name) + '</b></a> · ' + esc(r.price) + '<br><span class="sub">' + esc(r.blurb) + '</span></li>').join('') +
-      '</ul><p><a href="/store/">Open the V01D store</a>: 3D previews, a cart and signed downloads.</p><div class="src">Source: V01D\u2019s own catalog (lib/store.js) \u00b7 checkout on Gumroad today</div>';
+      '</ul>' + (a.made && a.made.length ? '<h3>Made by V01D</h3><ul style="padding-left:18px">' + a.made.map((r) => '<li style="margin:6px 0"><a href="' + esc(r.url) + '"><b>' + esc(r.name) + '</b></a> · ' + esc(r.price) + '<br><span class="sub">' + esc(r.blurb) + '</span></li>').join('') + '</ul>' : '') + '<p><a href="/store/">Open the V01D store</a>: 3D previews, a cart and signed downloads.</p><div class="src">Source: V01D\u2019s own catalog (domains/store.products.json) \u00b7 checkout on Gumroad today</div>';
   });
   return 'store';
 }
