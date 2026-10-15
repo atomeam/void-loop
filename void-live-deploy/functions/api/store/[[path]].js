@@ -13,6 +13,8 @@
 //        provider-verified amount (Stripe amount_total, Gumroad ping price), never from these fields.
 import { isShareProduct, shareFor, itemKey, paidTotal, CREDITS_TABLE, zipStore } from '../../../lib/pay-share.js';
 import { parsePing } from '../../../lib/earnings.js';
+import { ownerOk } from '../../../lib/guard.js';
+import { specialRails, instructions, verifyUsdcTx, usdcUnits, railsOf, USDC_BASE } from '../../../lib/alt-pay.js';
 import { sellerMatches } from '../../../lib/gumroad.js';
 import { gumroadUrl, STORE_PRODUCTS, productOf, publicCatalog, providerOf, signingKey, signToken, verifyToken, licenseKey, verifyStripe, ADAPTERS, ORDERS_TABLE, emailHash, orderCode } from '../../../lib/store.js';
 
@@ -50,8 +52,8 @@ export async function onRequest(ctx) {
   const { request, env, params } = ctx, url = new URL(request.url), origin = url.origin;
   const path = [].concat(params.path || []).join('/'), m = request.method;
   try {
-    if (path === 'catalog' && m === 'GET') return J({ products: publicCatalog(), provider: providerOf(env).provider }, 200, 'public, max-age=300');
-    if (path === 'status' && m === 'GET') { const s = providerOf(env); return J({ provider: s.provider, wanted: s.wanted, stripe_keys: s.stripeReady, signing_key: s.signing, orders_db: !!env.DB, files_bucket: !!env.FILMS }); }
+    if (path === 'catalog' && m === 'GET') return J({ products: publicCatalog().map((p) => { const r = specialRails(productOf(p.id), env); return r.length ? { ...p, special: r } : p; }), provider: providerOf(env).provider }, 200, 'public, max-age=300');
+    if (path === 'status' && m === 'GET') { const s = providerOf(env); return J({ provider: s.provider, wanted: s.wanted, stripe_keys: s.stripeReady, signing_key: s.signing, orders_db: !!env.DB, files_bucket: !!env.FILMS, special_rails: Object.keys(railsOf(env)) }); }
     if (path === 'checkout' && m === 'POST') {
       const b = await request.json().catch(() => ({}));
       // product ids only: any price, amount, discount or coupon in the body is ignored, every amount comes from lib/store.js (lib/price-lock.js)
@@ -115,6 +117,68 @@ export async function onRequest(ctx) {
       if (!p || p.cents !== 0 || !p.files || !signingKey(env)) return J({ ok: false, error: 'not a free download' }, 400);
       return J(await receipt(env, { id: 'free_' + crypto.randomUUID().replace(/-/g, ''), items: p.id, status: 'free', provider: 'free', created: new Date().toISOString() }, origin));
     }
+    // special items (lib/alt-pay.js): Cash App / USDC on Base. Price and amount come from the catalog and order id only.
+    if (path === 'special/start' && m === 'POST') {
+      const b = await request.json().catch(() => ({})), p = productOf(String(b.id || '')), rail = String(b.rail || ''), D = await db(env);
+      if (!p || !specialRails(p, env).includes(rail)) return J({ ok: false, error: 'that item has no ' + (rail || 'such') + ' option' }, 400);
+      if (!D || !signingKey(env) || !/^[^@\s]{1,64}@[^@\s]{1,190}$/.test(String(b.email || ''))) return J({ ok: false, error: 'give an email for your receipt' }, 400);
+      const id = 'ord_' + crypto.randomUUID().replace(/-/g, ''), o = { id };
+      await D.prepare('INSERT INTO store_orders (id, provider, ref, email_hash, items, cents, status, created, pi) VALUES (?,?,?,?,?,?,?,?,?)')
+        .bind(id, rail, 'pending:' + id, await emailHash(signingKey(env), b.email), p.id, p.cents, 'awaiting', new Date().toISOString(), '').run();
+      return J({ ok: true, order: id, code: orderCode(id), status: 'awaiting', ...instructions(rail, p, o, env) });
+    }
+    if (path === 'special/confirm' && m === 'POST') { // the buyer's reference; crypto is checked on chain, Cash App waits for the owner
+      const b = await request.json().catch(() => ({})), D = await db(env), code = String(b.code || '').trim().toUpperCase();
+      if (!D || !/^[A-Z0-9]{8}$/.test(code) || !b.email) return J({ ok: false, error: 'give the email and 8-letter order code' }, 400);
+      const rows = (await D.prepare("SELECT * FROM store_orders WHERE email_hash=? AND provider IN ('cashapp','usdc-base') ORDER BY created DESC LIMIT 50").bind(await emailHash(signingKey(env), b.email)).all()).results || [];
+      const o = rows.find((r) => orderCode(r.id) === code);
+      if (!o) return J({ ok: false, error: 'no special order with that email and code' }, 404);
+      if (o.status !== 'awaiting') return J(await receipt(env, o, origin));
+      const ref = String(b.ref || '').trim();
+      if (o.provider === 'usdc-base') {
+        const to = (railsOf(env)['usdc-base'] || {}).address; if (!to) return J({ ok: false, error: 'crypto checkout is off right now' }, 503);
+        const tx = ref.toLowerCase(), v = await verifyUsdcTx(env, tx, to, usdcUnits(o.cents, o.id), env.BASE_FETCH);
+        if (!v.ok) return J({ ok: false, status: 'awaiting', retry: !!v.retry, error: v.reason }, v.retry ? 202 : 400);
+        if (await D.prepare('SELECT id FROM store_orders WHERE ref=?').bind('usdc-base:' + tx).first()) return J({ ok: false, error: 'that transaction already paid for an order' }, 409);
+        await D.prepare("UPDATE store_orders SET status='paid', ref=?, pi=? WHERE id=? AND status='awaiting'").bind('usdc-base:' + tx, tx, o.id).run();
+        return J(await receipt(env, { ...o, status: 'paid', ref: 'usdc-base:' + tx }, origin));
+      }
+      if (!/^[A-Za-z0-9#_-]{4,64}$/.test(ref)) return J({ ok: false, error: 'give the payment reference from your Cash App receipt' }, 400);
+      await D.prepare("UPDATE store_orders SET pi=? WHERE id=? AND status='awaiting'").bind('cashapp:' + ref, o.id).run();
+      return J({ ok: true, status: 'awaiting', code, note: 'Got it. The owner checks Cash App and confirms; then the same order code and email open your downloads.' }, 202);
+    }
+    if (path === 'special/queue' && m === 'GET') { // owner only: Cash App (and stuck crypto) orders waiting for a human
+      if (!(await ownerOk(request, env))) return J({ ok: false, error: 'only the owner' }, 403);
+      const D = await db(env), r = D ? (await D.prepare("SELECT id, provider, items, cents, created, pi FROM store_orders WHERE status='awaiting' ORDER BY created LIMIT 100").all()).results || [] : [];
+      return J({ ok: true, awaiting: r.map((o) => ({ ...o, code: orderCode(o.id) })) });
+    }
+    if (path === 'special/approve' && m === 'POST') { // owner only, after seeing the money in Cash App: paid, or rejected
+      if (!(await ownerOk(request, env))) return J({ ok: false, error: 'only the owner' }, 403);
+      const b = await request.json().catch(() => ({})), D = await db(env), st = b.ok === false ? 'rejected' : 'paid';
+      const r = D && /^ord_[a-f0-9]{32}$/.test(String(b.order || '')) ? await D.prepare("UPDATE store_orders SET status=? WHERE id=? AND status='awaiting' AND provider='cashapp'").bind(st, b.order).run() : null;
+      return J({ ok: !!(r && r.meta && r.meta.changes), status: st });
+    }
+    // x402-style pay-per-resource (docs/payments.md), off unless X402_ENABLED=on and a USDC address is set. Receive-only:
+    // no facilitator, no keys. GET -> 402 with exact requirements and an order id; pay on Base; retry with X-PAYMENT: {"order","tx"}.
+    if (path.startsWith('x402/') && m === 'GET') {
+      const p = productOf(path.slice(5)), to = (railsOf(env)['usdc-base'] || {}).address, D = await db(env);
+      if (env.X402_ENABLED !== 'on' || !to || !D || !signingKey(env)) return J({ ok: false, error: 'x402 is off' }, 404);
+      if (!p || !specialRails(p, env).includes('usdc-base')) return J({ ok: false, error: 'not sold over x402' }, 404);
+      let pay = null; try { pay = JSON.parse(request.headers.get('x-payment') || 'null'); } catch (_) {}
+      if (pay && /^ord_[a-f0-9]{32}$/.test(String(pay.order || ''))) {
+        const o = await D.prepare("SELECT * FROM store_orders WHERE id=? AND provider='usdc-base'").bind(pay.order).first();
+        if (!o || o.items !== p.id) return J({ ok: false, error: 'unknown order' }, 404);
+        if (o.status === 'paid') return J(await receipt(env, o, origin));
+        const tx = String(pay.tx || '').toLowerCase(), v = await verifyUsdcTx(env, tx, to, usdcUnits(o.cents, o.id), env.BASE_FETCH);
+        if (!v.ok) return J({ ok: false, error: v.reason, retry: !!v.retry }, 402);
+        if (await D.prepare('SELECT id FROM store_orders WHERE ref=?').bind('usdc-base:' + tx).first()) return J({ ok: false, error: 'that transaction already paid for an order' }, 409);
+        await D.prepare("UPDATE store_orders SET status='paid', ref=?, pi=? WHERE id=? AND status='awaiting'").bind('usdc-base:' + tx, tx, o.id).run();
+        return J(await receipt(env, { ...o, status: 'paid' }, origin));
+      }
+      const id = 'ord_' + crypto.randomUUID().replace(/-/g, '');
+      await D.prepare('INSERT INTO store_orders (id, provider, ref, email_hash, items, cents, status, created, pi) VALUES (?,?,?,?,?,?,?,?,?)').bind(id, 'usdc-base', 'pending:' + id, '', p.id, p.cents, 'awaiting', new Date().toISOString(), 'x402').run();
+      return J({ x402Version: 1, error: 'payment required', accepts: [{ scheme: 'exact-onchain', network: 'base', asset: USDC_BASE, payTo: to, maxAmountRequired: usdcUnits(p.cents, id).toString(), resource: origin + '/api/store/x402/' + p.id, description: p.name, extra: { order: id, retryHeader: 'X-PAYMENT: {"order":"' + id + '","tx":"0x..."}', confirmations: 5 } }] }, 402);
+    }
     if (path === 'share/claim' && m === 'POST') { // a Gumroad pay-a-share sale, from the keyed ping gumroad.js already stored
       const b = await request.json().catch(() => ({})), D = await db(env), sid = String(b.sale_id || '').trim();
       if (!D || !/^[A-Za-z0-9=_-]{6,80}$/.test(sid) || !b.email || !signingKey(env)) return J({ ok: false, error: 'give the Gumroad sale id from your receipt and the email you paid with' }, 400);
@@ -166,7 +230,7 @@ export async function onRequest(ctx) {
       const obj = env.FILMS && await env.FILMS.get(f.key); // R2: paid files live under store/ in the existing bucket (10 GB free)
       return obj ? new Response(obj.body, { headers: { ...headers, 'content-type': 'application/octet-stream' } }) : J({ ok: false, error: 'file not uploaded yet' }, 404);
     }
-    return J({ ok: false, error: 'unknown store route', routes: ['catalog', 'status', 'checkout', 'webhook/stripe', 'order', 'lookup', 'free', 'download', 'share/claim'] }, 404);
+    return J({ ok: false, error: 'unknown store route', routes: ['catalog', 'status', 'checkout', 'webhook/stripe', 'order', 'lookup', 'free', 'download', 'share/claim', 'special/start', 'special/confirm', 'special/queue', 'special/approve'] }, 404);
   } catch (e) { return J({ ok: false, error: 'store error' }, 500); }
 }
 export { STORE_PRODUCTS };

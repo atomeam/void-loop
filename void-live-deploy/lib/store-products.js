@@ -198,6 +198,10 @@ export default [
  },
  {
   "id": "site-tester",
+  "special": [
+   "cashapp",
+   "usdc-base"
+  ],
   "name": "V01D Site Tester",
   "cents": 2400,
   "kind": "download",
