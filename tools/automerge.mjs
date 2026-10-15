@@ -1,5 +1,5 @@
 // Merge on GitHub's side, so no session has to sit and watch a PR (.github/workflows/automerge.yml runs this on every CI
-// finish, every review and every answer to one). It looks at each open PR labelled "automerge" (or the one PR given),
+// finish, every review and every answer to one). It looks at each open PR from this repository (every one is labelled "automerge" by this script; owner 2026-10-15: "automerge everything always"; or the one PR given),
 // asks tools/pr-ready.mjs whether it is ready, and merges the ready ones. A merge made with the workflow's own token does
 // not start the push-to-main workflows, so it starts both itself: the deploy (deploy.yml, after_merge=true: it deploys at
 // once) and the full suite on that head (verify.yml, which reverts what broke it if it fails). A PR GitHub reports dirty (it conflicts with main)
@@ -31,7 +31,12 @@ if (process.argv.includes('--label')) {
 const prs = one ? [gh(`repos/${repo}/pulls/${one}`)] : gh(`repos/${repo}/pulls?state=open&per_page=100`);
 let merged = 0;
 for (let p of prs) {
-  if (!p || p.state !== 'open' || !(p.labels || []).some((l) => l.name === LABEL)) continue;
+  if (!p || p.state !== 'open') continue;
+  // every PR from this repository is merged automatically (owner, 2026-10-15: "automerge everything always"): a PR nobody
+  // labelled gets the label here, so the rest of the loop (and anyone reading the PR) sees the same thing
+  if (!(p.labels || []).some((l) => l.name === LABEL) && !(p.head.repo && p.head.repo.full_name !== repo)) {
+    try { run(['api', '-X', 'POST', `repos/${repo}/issues/${p.number}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] })); console.log(`#${p.number}: labelled ${LABEL} (every PR merges by itself)`); } catch (_) {}
+  }
   if (p.head.repo && p.head.repo.full_name !== repo) { console.log(`#${p.number}: from a fork, never merged automatically`); continue; }
   // GitHub works out whether a PR is mergeable only when asked; the first answer after a push is "unknown", so ask once more
   if (p.mergeable_state === 'unknown') { try { execFileSync('sleep', ['4']); p = gh(`repos/${repo}/pulls/${p.number}`) || p; } catch (_) {} }
