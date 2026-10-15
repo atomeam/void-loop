@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 9,
- "runsTotal": 14,
+ "runsTotal": 15,
  "kinds": {
   "grow": 2,
-  "file": 5,
+  "file": 6,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:55:39Z",
+   "passed": 6,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+  },
   {
    "at": "2026-10-15T06:53:09Z",
    "passed": 6,

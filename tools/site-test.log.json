@@ -108,5 +108,13 @@
   "kind": "file",
   "key": "what can I buy | console: script /lib/skill-family#js served as text/html; ch",
   "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-15T06:55:39Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "site | console: script /vendor/three-r#/build/three#module#min#js s",
+  "note": "fix: \"what are you?\" console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
  }
 ]
