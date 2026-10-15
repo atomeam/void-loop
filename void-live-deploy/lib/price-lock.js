@@ -16,6 +16,7 @@ const ASKS = [
   /\b(?:discount|coupon|promo|voucher)\s+code\b/i,
   /\bfor\s+free\b[^.?!]{0,20}\b(?:please|pls|now)\b/i,
   new RegExp('\\b(?:ignore|disregard|forget)\\b[^.?!]{0,60}\\b(?:instructions|rules|prompt)\\b[\\s\\S]{0,120}\\b' + MONEY + '\\b', 'i'),
+  new RegExp('\\b(?:admin|owner|developer|dev|system|adam|atom)\\b[^.?!]{0,40}\\b(?:says|said|approved|authori[sz]ed|allows|ok\'?d|wants)\\b[\\s\\S]{0,120}\\b' + MONEY + '\\b', 'i'),
   new RegExp("\\b(?:i\\s*(?:'?m|am)|this\\s+is)\\s+(?:the\\s+)?(?:owner|admin|adam|atom|developer|dev)\\b[\\s\\S]{0,120}\\b" + MONEY + '\\b', 'i'),
 ];
 export const isPriceChangeAsk = (t) => { const s = String(t || ''); return ASKS.some((re) => re.test(s)); };
