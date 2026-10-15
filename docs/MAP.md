@@ -188,4 +188,5 @@ Every tool in `tools/` (tests aside) and every workflow in `.github/workflows/`,
 - **CSP hashes (`tools/csp-hashes.mjs`):** hashes each static page's inline scripts and adds a per-page `script-src` rule to `_headers`, so 'unsafe-inline' stays only as the fallback.
 - **Route snapshot (`tools/route-snapshot.mjs`):** where every example, near miss and bench ask lands, by skill; `--compare` before and after a skill merge says which asks moved.
 - **Skill overlap (`tools/skill-overlap.mjs`, allowance `tools/skill-overlap.json`):** two skills overlap when one's example is accepted by the other's match(); a new pair fails, so a repeat skill is caught when it is made.
+- **Claims verify (`tools/claims-verify.mjs`):** checks each skill the "what's new" showcase claims against the live site; only one that opens its own card is claimed, the rest show as in progress.
 - **Workflow lint (`.github/workflows/workflow-lint.yml`):** actionlint on every workflow file on every PR, since a file GitHub can't parse silently never runs.
