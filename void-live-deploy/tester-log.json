@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 13,
- "runsTotal": 29,
+ "runsTotal": 30,
  "kinds": {
   "grow": 6,
-  "file": 16,
+  "file": 17,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T11:56:55Z",
+   "passed": 15,
+   "of": 16,
+   "kind": "file",
+   "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-15T10:50:37Z",
    "passed": 15,
@@ -140,13 +147,6 @@
    "of": 13,
    "kind": "teach",
    "note": "teach V01D \"yo what does ephemeral mean\" (means \"define serendipity\", skill:define): console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-  },
-  {
-   "at": "2026-10-15T06:42:25Z",
-   "passed": 0,
-   "of": 13,
-   "kind": "teach",
-   "note": "teach V01D \"yo play despacito\" (means \"play despacito\", skill:video-play): console: Loading the script 'https://static.cloudflareinsights.com/beacon.min.js/v4bc70e2c01a94c73b74392e42348406617912158159"
   }
  ],
  "seen": {
@@ -157,7 +157,7 @@
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-15T06:20:22Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
-  "skill:automations": "2026-10-15T10:50:37Z",
+  "skill:automations": "2026-10-15T11:56:55Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
   "skill:breath": "2026-10-15T06:23:11Z",
@@ -166,10 +166,11 @@
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
-  "skill:cartoon": "2026-10-15T10:50:37Z",
+  "skill:cartoon": "2026-10-15T11:56:55Z",
   "skill:challenge": "2026-10-15T08:35:24Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-15T10:50:37Z"
+  "skill:convert": "2026-10-15T10:50:37Z",
+  "skill:coral": "2026-10-15T11:56:55Z"
  }
 }
