@@ -63,7 +63,13 @@
     "othello": "reversi",
     "stratego": "fog of v01d"
   },
-  "teach": [],
+  "teach": [
+    {
+      "ask": "yo summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "means": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
+      "feature": "skill:digest"
+    }
+  ],
   "priority": [
     "skill:video-play",
     "skill:book",
