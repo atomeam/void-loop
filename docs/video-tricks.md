@@ -33,6 +33,20 @@ synthesized with `aevalsrc`. No stock footage, no model calls, no Workers AI.
 - Visible result, before/after or a question in the first 3 s, not a logo: https://www.capcut.com/create/short-form-video-hooks
 (The retention percentages in those third-party posts are their claims, not YouTube's.)
 
+## Learned from open videos
+Techniques V01D read in openly captioned tutorials (tools/learn-tricks.mjs). Each is a lead for a new entry in `TRICKS`, not a built trick.
+
+- **tracking**: "And I'm gonna go ahead and proxy the clip so I can make sure …" (Tutorial: Motion Tracking in Kdenlive, https://tilvids.com/videos/watch/a0a45e4d-9ed3-4aaa-b51f-828c1c55cda9, learned 2026-10-15)
+- **keyframe**: "Keyframe spacing is basically how many frames in the video you want to track." (Tutorial: Motion Tracking in Kdenlive, https://tilvids.com/videos/watch/a0a45e4d-9ed3-4aaa-b51f-828c1c55cda9, learned 2026-10-15)
+- **subtitle**: "This tools used for lots of things in Kdenlive Including like, you can pre …" (Automatic Subtitles with Kdenlive, https://tilvids.com/videos/watch/1e1b786f-b9e1-4c8c-8d4f-167e1d91613f, learned 2026-10-15)
+- **fade**: "this purple click to add a composition and now it's gonna be fade it's …" (2021 KDENLIVE TUTORIAL [FOR BEGINNERS], https://tilvids.com/videos/watch/64d07505-c62e-4325-a4e0-01facf55ff4d, learned 2026-10-15)
+- **mask**: "If you're like me and you couldn't find a guide anywhere online that tells …" (Mask With Shape in Davinci Resolve with just two clicks - Dub'ya Shorts, https://makertube.net/videos/watch/90bd5620-179c-4bb9-ae0d-2cb162dcd637, learned 2026-10-15)
+- **zoom in**: "hence the snap on the right we have a slider to zoom in and …" (DaVinci Resolve Tutorial, https://archive.org/details/stuctvca-DaVinci_Resolve_Tutorial, learned 2026-10-15)
+- **zoom out**: "so now we have and you can zoom out here so you can see …" (DaVinci Resolve Tutorial, https://archive.org/details/creatv-DaVinci_Resolve_Tutorial, learned 2026-10-15)
+- **transition**: "little bit of effects so now we're just gonna add a simple transition and …" (DaVinci Resolve Tutorial, https://archive.org/details/creatv-DaVinci_Resolve_Tutorial, learned 2026-10-15)
+- **lower third**: "it'll put in the lower third of the video on the left so I …" (DaVinci Resolve Tutorial, https://archive.org/details/creatv-DaVinci_Resolve_Tutorial, learned 2026-10-15)
+- **b-roll**: "the one clip you're looking at in the timeline I have some b-roll to …" (Editing In LumaFusion iOS Tutorial, https://archive.org/details/cmac-Editing_In_LumaFusion_iOS_Tutorial, learned 2026-10-15)
+
 ## Queue (not built yet)
 match cuts between two moments, speed ramps (trim + setpts segments), split screen of two games (vstack), 3D-stage orbit camera
 driven from the page instead of the mouse, word-level karaoke captions, sound-designed whooshes on transitions, debris chunks with

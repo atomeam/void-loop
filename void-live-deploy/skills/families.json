@@ -552,6 +552,11 @@
    },
    "skills": [
     {
+     "name": "digest",
+     "tier": "tested",
+     "why": "a self-test"
+    },
+    {
      "name": "video",
      "tier": "tested",
      "why": "a self-test"

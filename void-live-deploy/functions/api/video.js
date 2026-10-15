@@ -36,9 +36,11 @@ export async function search(platform, q, env) {
 // YOUTUBE_API_KEY is set; a key takes over by itself. Layers, first one with hits wins, each with a short timeout:
 //   1. public Piped API instances (open source, CORS *, no key); we only read ids, titles and thumbnails and still play
 //      through YouTube's own youtube-nocookie embed, so views stay on YouTube. Several hosts, since public ones come and go.
+//      Then one public Invidious instance the same way. All asked at once; the first with hits wins.
 //   2. Wikidata (CC0, official API): items carrying a YouTube video ID (P1651) that match the words; titles from YouTube's oEmbed.
 // Nothing else: DuckDuckGo's terms forbid automated querying, and Invidious' public search API is mostly closed (403/401).
-export const PIPED = ['https://api.piped.private.coffee', 'https://pipedapi.kavin.rocks', 'https://pipedapi.adminforge.de'];
+export const PIPED = ['https://api.piped.private.coffee', 'https://pipedapi.ducks.party', 'https://pipedapi.kavin.rocks']; // re-probed 2026-10-15
+export const INVIDIOUS = ['https://invidious.f5.si']; // the one public instance with /api/v1/search open (api.invidious.io, 2026-10-15)
 const YTID = /^[A-Za-z0-9_-]{11}$/;
 async function timed(u, ms = 4000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(u, { headers: UA, signal: c.signal, cf: { cacheTtl: 21600 } }); if (!r.ok) throw new Error('upstream ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
 export function pipedHits(j) {
@@ -53,8 +55,13 @@ async function wikidataHits(q) {
   const out = await Promise.all(vids.map(async (v) => { try { const o = await timed('https://www.youtube.com/oembed?format=json&url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + v.id), 3000); return { platform: 'youtube', id: v.id, title: String(o.title || v.label || '').slice(0, 200), channel: String(o.author_name || '').slice(0, 200), seconds: null, thumb: 'https://i.ytimg.com/vi/' + v.id + '/mqdefault.jpg' }; } catch (_) { return null; } }));
   return out.filter(Boolean);
 }
-export async function keylessYouTube(q, searchUrl, hosts = PIPED) {
-  for (const h of hosts) { try { const hits = pipedHits(await timed(h + '/search?filter=videos&q=' + encodeURIComponent(q))); if (hits.length) return { ok: true, platform: 'youtube', hits, searchUrl, via: 'piped' }; } catch (_) {} }
+export function invidiousHits(j) {
+  const s = (x) => String(x == null ? '' : x).slice(0, 200);
+  return (Array.isArray(j) ? j : []).filter((v) => v && v.type === 'video' && YTID.test(v.videoId)).map((v) => ({ platform: 'youtube', id: v.videoId, title: s(v.title), channel: s(v.author), seconds: v.lengthSeconds > 0 ? Math.round(v.lengthSeconds) : null, thumb: 'https://i.ytimg.com/vi/' + v.videoId + '/mqdefault.jpg' })).slice(0, 8);
+}
+export async function keylessYouTube(q, searchUrl, hosts = PIPED, inv = INVIDIOUS) {
+  const e = encodeURIComponent(q), tries = hosts.map((h) => () => timed(h + '/search?filter=videos&q=' + e).then(pipedHits)).concat(inv.map((h) => () => timed(h + '/api/v1/search?type=video&q=' + e).then(invidiousHits)));
+  try { const hits = await Promise.any(tries.map((t) => t().then((h) => (h.length ? h : Promise.reject(new Error('empty')))))); return { ok: true, platform: 'youtube', hits, searchUrl, via: 'open-frontend' }; } catch (_) {}
   try { const hits = await wikidataHits(q); if (hits.length) return { ok: true, platform: 'youtube', hits, searchUrl, via: 'wikidata' }; } catch (_) {}
   return { ok: true, platform: 'youtube', hits: [], searchUrl, need: 'YOUTUBE_API_KEY', note: 'YouTube search did not answer just now; paste any YouTube link to play it here, or try the free platforms' };
 }
