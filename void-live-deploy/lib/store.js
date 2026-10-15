@@ -4,25 +4,15 @@
 //   STORE_PROVIDER      'gumroad' (default) | 'stripe'   which adapter checkout uses
 //   STRIPE_SECRET_KEY   + STRIPE_WEBHOOK_SECRET          needed before 'stripe' is used; without them checkout stays on Gumroad
 //   STORE_SIGNING_KEY   HMAC key for download tokens and license keys (falls back to SALT)
-export const STORE_PRODUCTS = [
-  { id: 'void-monthly', name: 'Void Monthly', cents: 4900, every: 'month', kind: 'membership', gumroad: 'yinmj', blurb: 'Paid Void: every pro skill, films, code review, priority.' },
-  { id: 'code-review-pro', name: 'Void Code Review Pro', cents: 1000, every: 'month', kind: 'license', gumroad: 'void-code-review', alt: ['dkmcjk'], blurb: 'An AI reviewer on every pull request, with a license key.' },
-  { id: 'one-time-fix', name: 'Automation Cleanup (One-Time Fix)', cents: 2500, kind: 'service', gumroad: 'eozcma', blurb: 'One broken Zap, Make or n8n flow fixed, with proof.' },
-  { id: 'first-automation-setup', name: 'First Automation Setup', cents: 10000, kind: 'service', gumroad: 'first-automation-setup', blurb: 'Your first automation built for you, end to end.' },
-  { id: 'full-stack-audit', name: 'Full Stack Audit', cents: 30000, kind: 'service', gumroad: 'full-stack-audit', blurb: 'Every automation reviewed, with a ranked repair plan.' },
-  { id: 'keep-it-running', name: 'Keep-It-Running Plan', cents: 4900, kind: 'service', gumroad: 'keep-it-running-membership', blurb: 'Automations watched around the clock, fixed when they break.' },
-  { id: 'big-board', name: 'The Big Board', cents: 2500, every: 'month', kind: 'membership', gumroad: 'gqsgib', blurb: 'Real jobs that pay real money.' },
-  { id: 'join-the-team', name: 'Join the Team', cents: 100, kind: 'support', gumroad: 'join-the-team', blurb: 'The tip jar: a dollar to back the crew.', tip: true },
-  // Digital downloads. The chess set is the free sample that runs the whole signed-download path live.
-  { id: 'chess-set-glb', name: 'V01D Wooden Chess Set (GLB)', cents: 0, kind: 'download', files: [{ key: 'chess-set-wood-v1-2k.glb', asset: '/models/chess-set-wood-v1-2k.glb' }],
-    preview: '/models/chess-set-wood-v1-1k.glb', license: 'CC0 (Poly Haven, re-textured by V01D)', blurb: 'Free: the 3D set V01D plays chess on. Drop it in Blender, a game or a slicer.' },
-  { id: 'voidquest-minis', name: 'VoidQuest Miniatures Pack (STL + 3MF)', cents: 900, kind: 'download', soon: true, preview: '/models/chess-set-wood-v1-1k.glb', files: [{ key: 'store/voidquest-minis-v1.zip' }],
-    blurb: 'Printable VoidQuest heroes and monsters. Coming soon: preview shown is the chess set.' },
-];
+// The catalog lives in domains/store.products.json (tools/store-publish.mjs adds products and regenerates ./store-products.js).
+// status: live | soon | needs-gumroad (paid, waiting for Adam to list it on Gumroad: shown as coming soon) | unpublished (hidden).
+import CATALOG from './store-products.js';
+export const ALL_PRODUCTS = CATALOG;
+export const STORE_PRODUCTS = CATALOG.filter((p) => p.status !== 'unpublished').map((p) => ({ ...p, soon: p.status === 'soon' || p.status === 'needs-gumroad' }));
 export const productOf = (id) => STORE_PRODUCTS.find((p) => p.id === id) || null;
 // UTM on every link we hand out, so Gumroad's analytics show which V01D surface sold it
 export const gumroadUrl = (p, medium = 'store') => 'https://moonbeam846.gumroad.com/l/' + p.gumroad + '?utm_source=a-to-mind&utm_medium=' + medium + '&utm_campaign=v01d-store';
-export const price = (p) => (p.cents ? '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + (p.every ? ' a ' + p.every : '') : 'Free');
+export const price = (p) => (p.pwyw && !p.cents ? 'Free · pay what you want' : p.cents ? '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + (p.every ? ' a ' + p.every : '') : 'Free');
 export const publicCatalog = () => STORE_PRODUCTS.map(({ files, ...p }) => ({ ...p, price: price(p), buy: p.gumroad ? gumroadUrl(p) : null, files: files ? files.length : 0 }));
 
 // which provider is live, without ever reading a secret's value out
@@ -91,5 +81,6 @@ export const orderCode = (id) => String(id).slice(-8).toUpperCase();
 // "what can I buy": V01D's answer, from the catalog
 export function buyAnswer() {
   const live = STORE_PRODUCTS.filter((p) => p.gumroad && !p.soon);
-  return { lead: 'What V01D sells · support V01D', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), more: 'Everything is at a-to-mind.com/store.' };
+  const made = STORE_PRODUCTS.filter((p) => !p.gumroad && !p.soon && p.files).map((p) => ({ id: p.id, name: p.name, price: p.pwyw ? 'Free · pay what you want' : price(p), blurb: p.blurb, url: '/store/#' + p.id }));
+  return { lead: 'What V01D sells · support V01D', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
 }
