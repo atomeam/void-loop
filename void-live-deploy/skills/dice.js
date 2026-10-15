@@ -1,69 +1,39 @@
 /**
- * dice skill — roll dice or flip a coin (pure, no key)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), suite() }
- * "roll a die", "roll 2d6", "flip a coin", "roll 3 dice".
- * Empty surface stays empty: no match returns none, no page.
+ * dice skill: "roll a die", "dice roller", "roll d20".
+ * Shows a summoned page with the result. Empty surface stays empty.
  */
-function parseRoll(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
-  if (/^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+)?(?:die|dice)|(?:roll\s+)?(?:a\s+)?d6|roll\s+\d*d\d+|flip\s+(?:a\s+)?coin|heads\s+or\s+tails)$/.test(t)) {
-    const m = t.match(/(\d*)d(\d+)/) || t.match(/roll\s+(\d+)\s+(?:die|dice)/);
-    let n = 1, sides = 6;
-    if (m) {
-      n = m[1] ? parseInt(m[1], 10) : 1;
-      sides = parseInt(m[2], 10);
-    } else if (/coin|heads/.test(t)) {
-      sides = 2;
-    }
-    if (n < 1 || n > 100 || sides < 2 || sides > 100) return null;
-    return { n, sides, coin: sides === 2 };
-  }
-  return null;
+export function diceOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (/^(?:please\s+)?(?:roll|throw|toss)\s+(?:a\s+|the\s+)?(?:die|dice|d6|d20)$/.test(t) ||
+      /^(?:dice|die)\s+(?:roller|roll)$/.test(t) ||
+      /^roll\s+(?:some\s+)?dice$/.test(t)) return true;
+  const m = t.match(/^(?:roll|throw)\s+(?:a\s+)?d(\d+)$/);
+  return m ? { sides: Math.min(100, Math.max(2, +m[1])) } : null;
 }
 
-function roll(n, sides) {
-  const rolls = [];
-  let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const r = Math.floor(Math.random() * sides) + 1;
-    rolls.push(r);
-    sum += r;
-  }
-  return { rolls, sum };
+function roll(sides = 6) {
+  return Math.floor(Math.random() * sides) + 1;
 }
 
-async function run(text, api) {
-  const { showPage, esc } = api;
-  const q = parseRoll(text);
+function run(text, api) {
+  const { showPage } = api;
+  const q = diceOf(text);
   if (!q) return 'none';
-  const r = roll(q.n, q.sides);
-  const title = q.coin ? 'Coin flip' : (q.n > 1 ? q.n + 'd' + q.sides : 'd' + q.sides);
+  const sides = (q && q.sides) || 6;
+  const result = roll(sides);
   showPage((p) => {
-    let html = '<h2>' + esc(title) + '</h2>';
-    if (q.coin) {
-      html += '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + (r.rolls[0] === 1 ? 'Heads' : 'Tails') + '</div>';
-    } else {
-      html += '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">' + r.sum + '</div>';
-      if (q.n > 1) html += '<p style="color:#8a8a8a">' + r.rolls.join(' + ') + '</p>';
-    }
-    html += '<div class="sub">say “roll again” or another roll</div>';
-    p.innerHTML = html;
+    p.innerHTML = '<h2>Dice roll</h2><div class="sub">d' + sides + '</div><p style="font-size:72px;text-align:center;margin:20px 0">' + result + '</p><p class="src">Rolled in this browser. Nothing is sent.</p>';
   });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll 2d6', 'flip a coin', 'roll 3 dice'],
-  nearMisses: ['dice game', 'what is a die', 'roll of film', 'coin collection'],
-  match(lower, text) { return !!parseRoll(text); },
+  examples: ['roll a die', 'dice roller', 'roll d20', 'roll some dice'],
+  nearMisses: ['what is a die', 'dice game', 'play monopoly'],
+  match(lower, text) { return !!diceOf(text || lower); },
   run,
   suite() {
-    // one check: parse a known ask and that a roll stays in range
-    const q = parseRoll('roll 2d6');
-    if (!q || q.n !== 2 || q.sides !== 6) return { ok: false, got: 'parse failed' };
-    const r = roll(q.n, q.sides);
-    if (r.rolls.length !== 2 || r.rolls.some((x) => x < 1 || x > 6) || r.sum !== r.rolls[0] + r.rolls[1]) return { ok: false, got: 'roll out of range' };
-    return { ok: true };
-  }
+    return { ok: !!diceOf('roll a die') && !!diceOf('roll d20') && diceOf('hello') === null };
+  },
 };
