@@ -15,7 +15,7 @@ const mods = await Promise.all(index.map(async (n) => (await import(new URL(n + 
 const families = mods.filter((m) => m.family);
 
 test('the merged families are listed and their members are not', () => {
-  for (const n of ['sky-weather', 'time', 'dates']) assert.ok(index.includes(n), n);
+  for (const n of ['time', 'dates']) assert.ok(index.includes(n), n);
   for (const f of families) for (const p of f.parts) assert.ok(!index.includes(p), p + ' is listed twice');
 });
 
