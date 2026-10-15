@@ -88,6 +88,10 @@
     "adam-20261015-appraiser": {
       "decision": "built",
       "why": "Adam 2026-10-15: V01D is the appraiser and sets its own prices. No per-item approval (Adam rejected Claude's confirm line). lib/appraise.js prices from comparable items, effort, file contents, topic demand and sales, and writes a public 'why this price' note. Sanity bound: paid items never $0; over 10x the comparables' median is flagged, not blocked. Visitors can still never change prices (adam-20261015-price-lock)."
+    },
+    "adam-20261015-reinvest": {
+      "decision": "built",
+      "why": "Adam 2026-10-15: V01D reinvests its own money smartly. lib/reinvest.js splits net earnings (read from the owner-only /api/earnings, never stored in the repo): 20% reserve kept, free paths first, then ROI per dollar, re-ranked only by honest payoff tests (one metric, a baseline and a check date recorded before each spend) and V01D's own answer (weight 0.3). Spend proposals go to the confirm line (order.place) with cost, expected payback and check date. Real spending still happens only through Adam's existing accounts: V01D holds no card, opens no account and stores no payment details. Public repo: plan logic only (domains/void.reinvest.json, docs/reinvest.md), no real dollar amounts; the growth card shows no money."
     }
   }
 }
