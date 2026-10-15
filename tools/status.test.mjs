@@ -89,3 +89,16 @@ test('paying users who said it broke: read with the owner key only, shown on the
   try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null }), true); assert.ok(opened); }
   finally { delete globalThis.localStorage; }
 });
+
+// news about V01D's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
+test('a pasted update about my own routine is news about me, not a time list', async () => {
+  const { newsOf, takeOf } = await import('../void-live-deploy/skills/status.js');
+  const paste = 'update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list';
+  assert.equal(newsOf(paste), true);
+  const n = takeOf(paste); assert.equal(n.part, 'routine'); assert.ok(n.take.some((x) => /piles up/.test(x)));
+  assert.match(n.aside, /^That is 8 runs a day: 3:17 AM, 6:17 AM/);
+  for (const not of ['what routine runs every 3 hours at 3:17 am for void', 'add milk to my list', 'a new routine: i run every day at 6, can you track it', 'set a new routine for my mornings every day', 'void status', 'flight status'])
+    assert.equal(newsOf(not), false, not);
+  let html = ''; const out = await (await import('../void-live-deploy/skills/status.js')).default.run(paste, { showPage: (b) => { const p = {}; b(p); html = p.innerHTML; return p; }, esc: (s) => String(s) });
+  assert.equal(out, 'self-news'); assert.match(html, /News about me/); assert.ok(html.indexOf('My take') < html.indexOf('runs a day'));
+});

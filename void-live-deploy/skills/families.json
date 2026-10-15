@@ -574,7 +574,8 @@
     {
      "name": "video-play",
      "tier": "experiment",
-     "why": "nothing checks it yet"
+     "why": "nothing checks it yet",
+     "since": "2026-10-15"
     },
     {
      "name": "define",

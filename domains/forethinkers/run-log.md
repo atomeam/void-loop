@@ -2,6 +2,17 @@
 
 Newest first. The even-hour job is the backstop. Talking cycles write here too.
 
+## 2026-10-15 02:12 ET even-hour cycle
+
+Read `convergence.md`, every track, `index.md`, `toy-problems.md`, `run-log.md` and the frontier. Folded `forethinkers/cycle-2026-10-14-2014`: its PR #700 squash-merged before the last fix (one batched `Promise.all` for the four NOAA fetches in `experiments/heat-dose.mjs`), so that fix comes in here and the branch is deleted. Picked living figures: least recently advanced (2026-10-07 20:14), and open question 2 (kid memory in a tiny context) could be moved from live vendor pages.
+
+- Established: the AX630C toy mind runs a 1,024-token build, `qwen2.5-ha-0.5b-ctx-ax630c`, at 533.19 ms first token and 9.76 tokens/s ([M5Stack](https://docs.m5stack.com/en/stackflow/models/qwen2.5-ha-0.5b-instruct), accessed 2026-10-15). It is a smart-home fine-tune, so a general character build is the next conversion.
+- Established: Axera's ax-llm runtime caches several prompt prefixes and reuses the longest match ([design doc](https://github.com/AXERA-TECH/ax-llm/blob/axllm/docs/multi_slot_kv_cache.md), 2026-06-12), so a character sheet plus a five-line kid memory is paid for once per session and lives as a file on the module.
+- Corrected: Babaru's own shop (read 2026-10-15) says "We do not promise offline operation"; $199, ages 8+, 0.96 Wh Ni-MH.
+- Logged: price anchors for a thinking figure (Babaru $199, Waylo €199 to €349, Moxie $799; LLM630 kit $99.90 retail).
+- Next open question: first-word time with a 200-token memory prefix cached, on a general 1,024-token build.
+- Frontier: a next line on item 4 for a figure that remembers you on your own device.
+
 ## 2026-10-14 20:14 ET even-hour cycle
 
 Read `convergence.md`, every track, `index.md`, `run-log.md`, and frontier item 8 (growth board frozen since 2026-10-11; claimable lines go on `domains/void.frontier.md`). No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked planet-restoration: least recently advanced (2026-10-07 18:07), and its open question 5 heat-dose experiment could be answered from live NOAA files; open question 4's Dry Tortugas six-month survival numbers are not published yet.

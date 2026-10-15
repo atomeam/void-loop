@@ -41,7 +41,19 @@ export function countryOf(text) {
 // names that look like a country ask's place but are not countries ("what currency does bitcoin use" is the crypto skill's)
 const NOT_COUNTRY = /^(?:the\s+)?(?:world|earth|bitcoin|ethereum|crypto|eu|euro\s?zone|internet|universe)$/i;
 // the card's rows from a REST Countries record (and the names of the countries on its borders). Pure.
-export function rowsOf(c, borderNames = []) {
+// the time zone row (asked by Void, ask-20261015-0048-2): the offset and how far ahead of or behind the asker it is. Pure.
+// zones: REST Countries strings like 'UTC+09:00'; mine: the asker's offset from UTC in minutes (east positive).
+export function tzLine(zones, mine) {
+  const mins = (z) => { const m = /^UTC(?:([+-−])(\d\d):(\d\d))?$/.exec(String(z).trim()); return m ? (m[1] ? (m[1] === '+' ? 1 : -1) * (+m[2] * 60 + +m[3]) : 0) : null; };
+  const Z = (zones || []).map(mins).filter((x) => x !== null);
+  if (!Z.length) return '';
+  const lo = Math.min(...Z), hi = Math.max(...Z);
+  const fmt = (m) => 'UTC' + (m ? (m > 0 ? '+' : '−') + String(Math.floor(Math.abs(m) / 60)).padStart(2, '0') + ':' + String(Math.abs(m) % 60).padStart(2, '0') : '');
+  const rel = (d) => { if (!d) return 'same time as you'; const h = Math.abs(d) / 60; return (Number.isInteger(h) ? h : h.toFixed(1)) + ' h ' + (d > 0 ? 'ahead of' : 'behind') + ' you'; };
+  if (lo === hi) return fmt(lo) + (typeof mine === 'number' ? ' (' + rel(lo - mine) + ')' : '');
+  return fmt(lo) + ' to ' + fmt(hi) + ' (' + Z.length + ' zones)';
+}
+export function rowsOf(c, borderNames = [], mine = typeof Date !== 'undefined' ? -new Date().getTimezoneOffset() : 0) {
   const cur = Object.values(c.currencies || {}).map((x) => x.name + (x.symbol ? ' (' + x.symbol + ')' : '')).join(', ');
   const langs = Object.values(c.languages || {}).join(', ');
   const idd = c.idd || {}, suf = idd.suffixes || [];
@@ -51,7 +63,8 @@ export function rowsOf(c, borderNames = []) {
     continent: ['Continent', (c.continents || []).join(', ') || c.region || ''],
     borders: ['Borders', borderNames.length ? borderNames.join(', ') : 'none (an island or no land borders)'],
     calling: ['Calling code', idd.root ? idd.root + (suf.length === 1 ? suf[0] : '') : ''],
-    drives: ['Drives', c.car && c.car.side ? 'on the ' + c.car.side : '']
+    drives: ['Drives', c.car && c.car.side ? 'on the ' + c.car.side : ''],
+    time: ['Time', tzLine(c.timezones, mine)]
   };
 }
 // Built-in capitals (UN members and common names), used only when REST Countries does not answer, so a capital ask never fails.
@@ -75,7 +88,7 @@ async function run(text, api) {
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {
-    const r = await fetch('https://restcountries.com/v3.1/name/' + encodeURIComponent(q.name) + '?fields=name,capital,population,currencies,languages,area,flag,region,subregion,continents,borders,idd,car,cca3', { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
+    const r = await fetch('https://restcountries.com/v3.1/name/' + encodeURIComponent(q.name) + '?fields=name,capital,population,currencies,languages,area,flag,region,subregion,continents,borders,idd,car,cca3,timezones', { signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined });
     const all = r.ok ? await r.json() : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();
@@ -92,7 +105,7 @@ async function run(text, api) {
       if (!borderNames.length) borderNames = c.borders.slice();
       if (!api._pageStill(el)) return 'country';
     }
-    const all5 = rowsOf(c, borderNames), extra = ['continent', 'borders', 'calling', 'drives'];
+    const all5 = rowsOf(c, borderNames), extra = ['continent', 'borders', 'calling', 'drives', 'time'];
     const rows = Object.fromEntries(Object.entries(all5).filter(([k, v]) => k === q.want || (!extra.includes(k) && v[1]) || (extra.includes(k) && k !== 'borders' && v[1])));
     const main = rows[q.want] && rows[q.want][1] ? rows[q.want] : q.want in all5 ? [all5[q.want][0], 'not known'] : rows.capital;
     const rest = Object.entries(rows).filter(([k]) => rows[k] !== main && k !== q.want).map(([, v]) => '<li><b>' + esc(v[0]) + '</b> <span style="color:#9a9a9a">— ' + esc(v[1]) + '</span></li>').join('');
