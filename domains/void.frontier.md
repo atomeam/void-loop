@@ -139,7 +139,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
-After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"): 26 → 27 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"; "every kind of video ... every type of book. and every type of game"): 26 → 27 → 28 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
 **Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
 
@@ -434,6 +434,19 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **Pace (owner, 2026-10-15):** "V01D should be improving on all fronts as fast as possible": every pass improves one made kind and, where the build order allows, starts one new one; nothing waits for a kind to be finished before the next is tried.
 - **Order:** films first (the owner's ask of the day), then one new game kind and one book kind per week, alternating, while each made kind gets one improvement per pass. Every new kind is also filmed (#26), so V01D's voice shows its range.
 - **claim:**
+
+
+## 28. V01D does the builders' work itself
+
+- **Why (owner, 2026-10-15):** "dont forget to teach a man to fish so that V01D can do all this itself one day . you should be training it to do everything you can better than you".
+- **How:** every kind of work a builder does by hand becomes a playbook in `docs/playbooks/` (what starts it, the exact commands, how to tell it worked, the mistakes already made). V01D's own loop then follows one playbook at a time with its own model (`lib/models.js`, Workers AI, `redact()` on anything it reads) and opens its work as a PR that passes Void's review like anyone's.
+- **Steps, smallest first:**
+  1. **done** (builder 2026-10-15, this PR): the first four playbooks, written from what the builders did today: probe-and-fix, table-skill, review-rule, film.
+  2. **V01D writes the asks itself:** for probe-and-fix, a workflow asks V01D's model for 25 asks in the area its self-page calls weakest ("Words and the world" today), runs `tools/bench.mjs --probe` on them and posts the misses it found as a PR comment or queue job (`miss:`), so the probe is V01D's, the fix still a builder's.
+  3. **V01D proposes the fix:** for each miss, the model reads the owning skill's matcher and proposes the narrowest change; the tests and the probe decide; a passing change goes up as a PR labelled "made by V01D".
+  4. **Then the next playbook**, in the order: probe-and-fix, review-rule, table-skill, film.
+- **Measure:** the share of merged PRs labelled "made by V01D", and for each playbook, how often V01D's attempt passes on the first try. A playbook V01D follows reliably is marked "followed by V01D" in `docs/playbooks/README.md`, and builders stop doing it by hand.
+- **claim:** builder 2026-10-15: step 1 shipped; step 2 next.
 
 ## Candidate capability map (2026-10-09)
 
