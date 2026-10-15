@@ -2702,6 +2702,35 @@ try {
       !!real && Number(real.n) === least && /^Friction: /.test(real.text) && !!stub && /^Friction: 1 failing, 1 barely checked\. weather failing \(the bench got 2 of its asks wrong: “weather in oslo”, “rain <later>”\); tide unchecked \(nothing checks it yet\)\.$/.test(stub.text)
       && !/<later>/.test(stub.html) && !/clock/.test(stub.text) && under && !G.errors.length && !H.errors.length, JSON.stringify({ real, least, stub, under, errors: G.errors.concat(H.errors) }));
     await G.ctx.close(); }
+  // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
+  // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
+  // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
+  if (want("family-health: the skill families card")) { const F = await fresh({ phone: true });
+    const fam = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'families.json'), 'utf8'));
+    await F.ask('show me your skill families', 1200);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.fh-family')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, totals: Object.fromEntries([...p.querySelectorAll('[data-total]')].map((e) => [e.dataset.total, Number(e.textContent)])),
+        families: rows.map((r) => ({ id: r.dataset.family, segs: [...r.querySelectorAll('.fh-bar [data-tier]')].map((s) => s.dataset.tier), open: !r.querySelector('.fh-open').hidden })),
+        wide: p.scrollWidth > p.clientWidth + 1, text: p.textContent };
+    }).catch(() => null), 6000);
+    const first = fam.families[0];
+    await F.p.tap('.vpage .fh-family[data-family="' + first.id + '"] button').catch(() => {});
+    const opened = await F.p.$eval('.vpage .fh-family[data-family="' + first.id + '"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
+      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent })) })).catch(() => null);
+    const want4 = Object.fromEntries(['proven', 'checked', 'tested', 'experiment'].map((t) => [t, fam.families.reduce((n, f) => n + f.skills.filter((s) => s.tier === t).length, 0)]));
+    const truth = Object.fromEntries(first.skills.map((s) => [s.name, s]));
+    check('family-health: "show me your skill families" shows every family with a stacked bar of its ratings, totals from families.json, and a tap lists each skill with its rating and why',
+      !!card && card.title === 'How healthy my skills are' && JSON.stringify(card.totals) === JSON.stringify(want4)
+      && card.families.length === fam.families.length && card.families.every((f) => f.segs.length >= 1 && !f.open) && !card.wide
+      && !!opened && opened.open && opened.expanded === 'true' && opened.skills.length === first.skills.length
+      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why)) && !F.errors.length,
+      JSON.stringify({ card: card && { ...card, text: card.text.slice(0, 300) }, want4, opened: opened && { ...opened, skills: opened.skills.slice(0, 3) }, errors: F.errors }));
+    await F.ask('how healthy are your skills', 1200);
+    const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
+    check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    await F.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.

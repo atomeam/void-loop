@@ -3,7 +3,7 @@
  "totals": {
   "experiment": 1,
   "tested": 53,
-  "checked": 14,
+  "checked": 15,
   "proven": 84
  },
  "families": [
@@ -797,7 +797,7 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 2,
+    "checked": 3,
     "proven": 14
    },
    "skills": [
@@ -895,6 +895,11 @@
      "name": "app",
      "tier": "proven",
      "why": "3 browser-suite mentions, 3 real asks in the benchmark"
+    },
+    {
+     "name": "family-health",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions"
     }
    ]
   }
