@@ -52,8 +52,8 @@ export function overlays(tricks, c) {
   const L = [];
   if (tricks.includes('explosion')) {
     const a = c.boomAt || 6, R = 'hypot(X-300,Y-300)', r = '(300*min(1,T/0.45))', ang = 'atan2(Y-300,X-300)';
-    const fire = `lt(${R},${r}*(0.85+0.15*sin(${ang}*9+T*25)+0.08*sin(${ang}*23-T*40)))`, ring = `lt(abs(${R}-${r}*1.7),10)*lt(T,0.7)`;
-    const ember = `gt(random(1),0.9985)*lt(${R},${r}*1.9)`, smoke = `lt(${R},${r}*1.05)*gt(T,0.6)`;
+    const fire = `lt(${R},${r}*(0.6+0.15*sin(${ang}*9+T*25)+0.08*sin(${ang}*23-T*40)))`, ring = `lt(abs(${R}-${r}*0.97),10)*lt(T,0.7)`;
+    const ember = `gt(random(1),0.9985)*lt(${R},${r}*1.0)`, smoke = `lt(${R},${r}*0.7)*gt(T,0.6)`;
     L.push({ src: `color=c=black@0:s=600x600:r=${FPS}:d=1.6,format=rgba,geq=r='255*(${fire}+${ring}+${ember})+90*${smoke}':g='255*(1-${R}/(${r}+1))*${fire}+200*${ring}+170*${ember}+90*${smoke}':b='60*${fire}+255*${ring}+40*${ember}+95*${smoke}':a='255*min(1,${fire}*max(0,1-T/0.9)+${ring}+${ember}+0.55*${smoke}*max(0,1-(T-0.6)))'`, at: a, x: '(W-600)/2', y: '(H-600)/2' });
     L.push({ src: `color=c=white:s=${W}x${H}:r=${FPS}:d=0.12,format=rgba`, at: a, x: '0', y: '0' }); // the flash
   }
@@ -124,7 +124,7 @@ export function filterGraph(m, tricks, ctx) {
   if (tricks.includes('ufo-abduction')) { const a = (m.ufoAt || 4) + 1.4; chain.push(`zoompan=z='if(between(it,${a},${a + 2.6}),1+0.25*(it-${a})/2.6,1)':x='iw/2-(iw/zoom/2)':y='ih/2-(ih/zoom/2)+(ih*0.08)*between(it,${a},${a + 2.6})*(it-${a})/2.6':d=1:s=${W}x${H}:fps=${FPS}`); } // the lift
   if (tricks.includes('explosion') && !tricks.includes('camera-shake')) chain.push(...TRICKS['camera-shake'].f(ctx, m));
   let g = chain.join(',') + '[b0]', cur = 'b0';
-  overlays(tricks, m).forEach((o, i) => { g += `;${o.src},setpts=PTS+${o.at}/TB[o${i}];[${cur}][o${i}]overlay=x='${o.x}':y='${o.y}':eof_action=pass:format=auto[b${i + 1}]`; cur = 'b' + (i + 1); });
+  overlays(tricks, m).forEach((o, i) => { g += `;${o.src},format=yuva420p,setpts=PTS+${o.at}/TB[o${i}];[${cur}][o${i}]overlay=x='${o.x}':y='${o.y}':eof_action=pass:format=auto[b${i + 1}]`; cur = 'b' + (i + 1); });
   const main = g + `;[${cur}]format=yuv420p,setsar=1,trim=0:${ctx.dur},setpts=PTS-STARTPTS[main]`;
   const end = `color=c=black:s=${W}x${H}:r=${FPS}:d=3,` + [draw(txt(ctx, 'e1', 'a-to-mind.com'), { size: 110, y: 'h*0.42', color: '#7CF7FF' }), draw(txt(ctx, 'e2', 'TRY IT: type "' + m.ask + '"'), { size: 58, y: 'h*0.52' }), draw(txt(ctx, 'e3', 'V01D'), { size: 64, y: 'h*0.30' })].join(',') + ',setsar=1,fps=30,settb=1/30[end]';
   // seamless loop: the end card crossfades into the opening frame
