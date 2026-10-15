@@ -100,7 +100,8 @@ jobs:
         if: ${{ inputs.report_only != true }}
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
-        run: node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
+        run: |
+          node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
 
       # no personal data (emails, phones, IPs, card numbers, tokens) in the files this PR adds or changes under domains/,
       # logs and fixtures (tools/privacy-scan.mjs, kind and line only), and nothing secret in what the site ships, owner checks
