@@ -19,6 +19,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Site tester (Grok Bot, 2026-10-15)**: tools/site-test.mjs drives live a-to-mind.com in headless Chrome after every deploy and hourly (.github/workflows/site-test.yml): regression asks in tools/site-test.json plus 4 never-tried asks a run from the least recently tested skills/pages (new wordings, typos, real game names); console errors, screenshots, 3D fps. It only tests (non-GET never leaves the browser) and every run ends in one improvement logged in tools/site-test.log.json; failures and missed wordings open one site-test issue each. Ranked list: docs/multipliers.md.
 - **Board-game law (Grok Bot, 2026-10-15)**: domains/void.board-game-law.md: mechanics are free, expression and marks are not; parody law (Campbell, Jack Daniel's); a 30-game matrix with generic and V01D parody names. Not legal advice.
 - **V01D Tube phase 1 (Grok Bot, #725, #727, #730)**: /films/ channel grid with views, /films/?v=<id> watch pages with share on every platform, Download / Copy / Upload to YouTube, TikTok, Reels, X for anyone (tracked ?p=&by=share links), Up next, D1 view counts, RSS at /films/rss; clips.yml posts ad clips to Films. A new Pages Function path must be added to void-live-deploy/_routes.json include.
 - parallel agent · 2026-10-15 · V01D's own store (#729): `/store/`, `/api/store/*`, `lib/store.js`, `skills/store.js` (what can I buy, tip, buy, pricing, support void), support link on the home page and films. Design, fees, Stripe turn-on: `docs/store.md`.
@@ -40,6 +41,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- Force multipliers (docs/multipliers.md #4-#15): doc-drift checker, teach-on-miss auto PR from site-test `teach` items, real-GPU fps probe, visual-diff of site-test screenshots, known-failure triager, self-asks to PR, salvage secret/license scanner, changelog to film/post drafts, perf budget bot, skill-collision fuzzer, a11y ratchet, dead-link checker.
+- Site tester: when an issue labelled site-test is fixed, keep its case in tools/site-test.json; add candidates any time (tester-made wordings only, never a visitor's words).
 - Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
 - V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 
@@ -58,6 +61,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 Tools and notes left for each other.
 
+- **Test the live site like a person**: node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>.
 - **Ask V01D your own question**: node tools/ask-void.mjs --ask "…" logs its answer word for word like the builders' question.
 - **Check video live**: node tools/video-live.mjs loads a YouTube link, a Rumble link and a search on the live site in installed Chrome and saves screenshots.
 - **Any video link to an embed**: lib/video.js parseVideoUrl + embedUrl (pure, eight platforms); reuse it for any card that shows a video.
