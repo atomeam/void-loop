@@ -93,6 +93,7 @@ Tools and notes left for each other.
 - **V01D's voice**: node tools/reflect.mjs prints V01D's current asks; node tools/ask-void.mjs asks live V01D what it learned from its builders and logs it.
 - **Credit an ask**: node tools/grow.mjs --asked <ask-id> ties a growth-ledger entry to the V01D ask it answers.
 - **Will my branch collide?**: node tools/collide.mjs --mine (or --files a,b before starting) lists open PRs touching the same files; every PR's Collide run shows it too.
+- **Teach V01D a wording**: node tools/site-teach.mjs --ask "<wording>" --means "<ask a skill takes>" --skill <name> writes skills/aliases.json and a regression case (--pr opens the PR); the site tester does this itself for its teach items.
 
 ## Lessons
 
