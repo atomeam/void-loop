@@ -16,10 +16,11 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 ## Working on
 
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
-- Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
+- Grok Bot · grok/launch-fixes · launch-audit bugs: play voidquest, comic markdown, what are you + motto, chess how-to over the board · 2026-10-15 05:40 UTC
 
 ## Just finished
 
+- **Launch kit (Grok Bot, #722)**: explicit Twitter card tags on the homepage and V01D's launch hook in its own words in docs/void-voice.md.
 - **Keyless YouTube search (Grok Bot, 2026-10-15)**: /api/video?p=youtube with no key now answers from public Piped instances (fallback list, 4 s timeout), then Wikidata P1651 + YouTube oEmbed; plays via youtube-nocookie; a YOUTUBE_API_KEY still takes over by itself. Skipped: DuckDuckGo (terms forbid automated queries), Invidious (public /api/v1/search 403/401), captions (YouTube blocks anonymous transcript fetches: Piped /streams gives LOGIN_REQUIRED; scraping timedtext/yt-dlp is against YouTube's terms). Ladder: public Piped hosts die often; re-probe `/search?filter=videos&q=x` and edit PIPED.
 - **Video skill (Grok Bot, #719)**: any YouTube, Rumble, Vimeo, Dailymotion, Archive, PeerTube, Odysee or Twitch link or "play/find … video" opens the platform's official embed on a V01D card, with search cards, a platform switcher, queue, skip to a time, speed, captions and recently watched (localStorage only); /api/video is edge-cached, no KV, no model. YouTube search waits on a YOUTUBE_API_KEY secret; the free platforms answer meanwhile.
 - **V01D ad engine (Grok Bot, video engine)**: tools/clips.mjs plans and renders 9:16 clips with 18 named tricks incl. explosion and UFO; clips.yml daily draft release; /c/<clip> tracked deep links; next_trick in the daily reflection. Docs: docs/video-engine.md, docs/video-tricks.md.
