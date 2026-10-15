@@ -16,6 +16,8 @@ import { PERSONA } from '../../lib/persona.js';
 import { FIX_SYSTEM, INJECTION_RULE, ruleFix, redact, platformOf } from '../../lib/automation-fix.js';
 import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/code-review.js';
 import { models } from '../../lib/models.js';
+import { keeperOf } from '../../lib/keeper.js';
+import { redactPersonal } from '../../lib/privacy.js';
 import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
@@ -245,8 +247,11 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body && body.mode === 'draft') return draftAnswer(request, env, body);
   if (body && body.mode === 'proposal') return proposalAnswer(request, env, body);
   if (body && body.mode === 'plan') return planAnswer(request, env, body);
-  const typed = norm(body.ask), ask = redact(typed), masked = ask !== typed;
+  const typed = norm(body.ask), ask = redactPersonal(typed), masked = ask !== typed;
   if (ask.length < 3) return new Response('empty', { status: 400 });
+  // secrets, other visitors' data and harmful asks are answered here, kindly, before any cache, model or skill (lib/keeper.js)
+  const kept = keeperOf(typed);
+  if (kept) return Response.json({ answer: kept.answer, sources: [], kept: kept.kind });
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache

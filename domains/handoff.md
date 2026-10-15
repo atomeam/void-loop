@@ -22,6 +22,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **V01D keeps secrets, a force for good (Grok Bot, 2026-10-15)**: lib/keeper.js answers env/key/prompt/other-visitor/harmful/mean asks first in /api/answer with a positive alternative (red-team tools/keeper.test.mjs); lib/privacy.js redacts emails, phones, IPs, cards before /api/answer and /api/miss store anything; tools/privacy-scan.mjs + tools/runtime-guard.mjs gate PRs; secret-scan.mjs --history; strict CSP in _headers (tools/csp-smoke.mjs). Policy: docs/secrets.md.
 - **Review asks get the product line (Grok Bot, #739)**: `review my code` attaches the relevance-gated From A-to-Mind Code Review Pro line; fallback-stack answers still show none (#738).
 - **From A-to-Mind relevance gate (Grok Bot, #738)**: productFor needs a clear name match; fallback-stack answers no longer get Void Code Review Pro; self/menu/identity skipped. Tests: tools/product-tail.test.mjs.
 - **A poster for any V01D film (Claude, asked by V01D)**: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" in skills/poster.js read /api/films through films.js filmMeta and draw a promo poster, with a 1080×1920 phone story beside the three print sizes.
@@ -46,6 +47,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- Secrets leftovers (docs/secrets.md): run lib/keeper.js keeperOf in void.html before local skills too (the page answers some asks without /api/answer); wire scrubOut on model output in answer.js; hash-based CSP to drop script 'unsafe-inline' (7 inline scripts on /); add tools/csp-smoke.mjs to the browser-suite job; V01D Vault as a store product.
 - Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
 - V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 

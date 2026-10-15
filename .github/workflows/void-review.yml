@@ -102,6 +102,18 @@ jobs:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: node tools/secret-scan.mjs --base "$BASEREF" || { echo "::error title=Secret in the added lines::remove it and rotate it (anything that reached GitHub is public); a made-up test key gets a secret-scan: ok comment"; exit 1; }
 
+      # no personal data (emails, phones, IPs, card numbers, tokens) in the files this PR adds or changes under domains/,
+      # logs and fixtures (tools/privacy-scan.mjs, kind and line only), and nothing secret in what the site ships, owner checks
+      # that read env, /api rate limited (tools/runtime-guard.mjs)
+      - name: No personal data, nothing secret in the built site
+        if: ${{ inputs.report_only != true }}
+        env:
+          BASEREF: ${{ steps.pr.outputs.baseref }}
+        run: |
+          mapfile -t changed < <(git diff --name-only --diff-filter=AM "$(git merge-base "$BASEREF" HEAD)" HEAD)
+          if [ ${#changed[@]} -gt 0 ]; then node tools/privacy-scan.mjs "${changed[@]}" || { echo "::error title=Personal data::use a placeholder ([email], [phone], [ip]) or a paraphrase; a placeholder on purpose gets privacy:ok"; exit 1; }; fi
+          node tools/runtime-guard.mjs
+
       # a PR that touches the skills must leave every skill file registered in skills/index.json (tools/skills-unlisted.mjs, run by skills-check):
       # a merge once dropped "services" from the index and nine pricing asks fell through. It blocks the merge here, not only the next local run.
       - name: Every skill file is still listed (only when the PR touches skills/)
