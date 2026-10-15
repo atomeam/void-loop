@@ -72,6 +72,7 @@ for (const [name, file] of [
   ['body-asks', 'body-asks.test.mjs'],
   ['bmi', 'bmi.test.mjs'],
   ['worldtime-parse', 'worldtime-parse.test.mjs'],
+  ['country-parse', 'country-parse.test.mjs'],
   ['sky-skills', 'sky-skills.test.mjs'],
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],

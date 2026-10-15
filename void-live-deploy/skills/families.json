@@ -2,9 +2,9 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 0,
-  "tested": 45,
+  "tested": 44,
   "checked": 13,
-  "proven": 81
+  "proven": 82
  },
  "families": [
   {
@@ -239,9 +239,9 @@
    "for": "weather, the sky tonight, places and time zones",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 10,
     "checked": 0,
-    "proven": 8
+    "proven": 9
    },
    "skills": [
     {
@@ -336,8 +336,8 @@
     },
     {
      "name": "country",
-     "tier": "tested",
-     "why": "48 real asks in the benchmark"
+     "tier": "proven",
+     "why": "a self-test, 54 real asks in the benchmark"
     }
    ]
   },
