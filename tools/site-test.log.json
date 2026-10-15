@@ -279,5 +279,13 @@
   "kind": "file",
   "key": "dismiss this | nothing appeared",
   "note": "fix: \"dismiss this\" nothing appeared"
+ },
+ {
+  "at": "2026-10-15T16:50:11Z",
+  "passed": 17,
+  "of": 18,
+  "kind": "file",
+  "key": "what can this figure do | nothing appeared",
+  "note": "fix: \"what can this figure do\" nothing appeared"
  }
 ]
