@@ -5980,5 +5980,11 @@
   {"ask": "what time is 4pm tokyo in london", "want": "skill:worldtime"},
   {"ask": "the call is at 11am in chicago what time is that in paris", "want": "skill:worldtime"},
   {"ask": "is london ahead of new york", "want": "skill:worldtime"},
-  {"ask": "utc time now", "want": "skill:worldtime|timenow"}
+  {"ask": "utc time now", "want": "skill:worldtime|timenow"},
+  {"ask": "which continent is chile in", "want": "skill:country"},
+  {"ask": "what countries border spain", "want": "skill:country"},
+  {"ask": "dialing code for germany", "want": "skill:country"},
+  {"ask": "do they drive on the left in the uk", "want": "skill:country"},
+  {"ask": "what do they speak in portugal", "want": "skill:country"},
+  {"ask": "what currency does the us use", "want": "skill:country", "says": "dollar"}
 ]
