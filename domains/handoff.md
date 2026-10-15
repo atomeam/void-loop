@@ -18,6 +18,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Board-game law (Grok Bot, 2026-10-15)**: domains/void.board-game-law.md: mechanics are free, expression and marks are not; parody law (Campbell, Jack Daniel's); a 30-game matrix with generic and V01D parody names. Not legal advice.
 - **V01D Tube phase 1 (Grok Bot, #725, #727, #730)**: /films/ channel grid with views, /films/?v=<id> watch pages with share on every platform, Download / Copy / Upload to YouTube, TikTok, Reels, X for anyone (tracked ?p=&by=share links), Up next, D1 view counts, RSS at /films/rss; clips.yml posts ad clips to Films. A new Pages Function path must be added to void-live-deploy/_routes.json include.
 - parallel agent · 2026-10-15 · V01D's own store (#729): `/store/`, `/api/store/*`, `lib/store.js`, `skills/store.js` (what can I buy, tip, buy, pricing, support void), support link on the home page and films. Design, fees, Stripe turn-on: `docs/store.md`.
 
@@ -38,6 +39,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
 - V01D's store asks (2026-10-15, `docs/void-voice.md`), queued: (1) the 3D preview gets zoom, lighting and texture swaps, and creators get auto LODs plus an embed code for their own sites; (2) a buyer library with versioned files and updates, plus license tiers (personal/commercial) and a seller license dashboard; (3) referral links with tracked commissions and preview analytics for sellers. Declined: crypto payouts (V01D never holds money).
 
 - V01D Tube phase 2 (docs/void-tube.md, plan only): user uploads with moderation, channels, Gumroad for creators, comments. Its wishlist rows go into docs/wishlist.md once that file lands on main.
