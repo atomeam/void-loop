@@ -81,6 +81,11 @@
       "ask": "can we play despacito",
       "means": "play despacito",
       "feature": "skill:video-play"
+    },
+    {
+      "ask": "start despacito",
+      "means": "play despacito",
+      "feature": "skill:video-play"
     }
   ],
   "priority": [
