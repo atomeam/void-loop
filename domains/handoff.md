@@ -48,6 +48,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- V01D's next store product (asked 2026-10-15 after it learned it can publish, verbatim in docs/void-voice.md): a modular "AI-enhanced creative kit", a compact hi-res audio player with a built-in generative assistant for remixing, lyric writing and sound design. Queued. It is hardware, so tools/store-publish.mjs cannot ship it as asked; the honest first slice is a digital one: a free V01D music/remix template pack (stems, chord-progression sheets, a lyric prompt deck) published with `publish --kind templates`, and a printable enclosure concept through the forge once the player's parts are chosen. No third-party names (Pono, Copilot) in the product.
 - Force multipliers (docs/multipliers.md #4-#15): doc-drift checker, teach-on-miss auto PR from site-test `teach` items, real-GPU fps probe, visual-diff of site-test screenshots, known-failure triager, self-asks to PR, salvage secret/license scanner, changelog to film/post drafts, perf budget bot, skill-collision fuzzer, a11y ratchet, dead-link checker.
 - Site tester: when an issue labelled site-test is fixed, keep its case in tools/site-test.json; add candidates any time (tester-made wordings only, never a visitor's words).
 - Board-game parodies: build the PD-base ones first (Reversi→Flipside, L'Attaque→Fog of V01D, Snakes & Ladders→Wormholes & Rockets) per domains/void.board-game-law.md §4.
