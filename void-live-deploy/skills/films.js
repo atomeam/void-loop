@@ -36,6 +36,33 @@ export function filmMeta(f) {
   const tags = Array.isArray(f.tags) ? f.tags : String(f.tags || '').split(',').map((x) => x.trim()).filter(Boolean);
   return { id: f.id, day, experiment: exp, title: f.title || '', tags, source: src, watch: 'https://a-to-mind.com/films/' };
 }
+// The feed monitor (asked by Void: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
+// (asked by Void: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
+// v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
+// card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
+const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
+export const wantsNewFilms = (lower) => NEW_RE.test(String(lower || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim());
+/** the films newer than the last one seen (newest first); none seen yet: the newest three. Pure. */
+export function newSince(films, seenId, firstN = 3) {
+  const F = (films || []).filter((f) => f && f.id); const i = seenId ? F.findIndex((f) => f.id === seenId) : -1;
+  return i < 0 ? F.slice(0, firstN) : F.slice(0, i); // an unknown or aged-out id: the newest few
+}
+async function runNew(api) {
+  const { showPage, esc } = api, KEY = 'v01d.films.seen';
+  const el = showPage((p) => { p.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub">\u2026</div>'; });
+  try {
+    const j = await fetch('/api/films').then((r) => r.json()), F = j.films || [];
+    if (api._pageStill && !api._pageStill(el)) return 'films';
+    let seen = null; try { seen = localStorage.getItem(KEY); } catch (_) {}
+    const N = newSince(F, seen);
+    try { if (F[0]) localStorage.setItem(KEY, F[0].id); } catch (_) {}
+    el.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub" data-new-films="' + N.length + '">' + esc(N.length ? N.length + (seen ? ' new since you last looked' : ' newest') : 'Nothing new since you last looked') + '</div>'
+      + N.map((f) => { const m = filmMeta(f); return '<div class="vfilm-card" style="margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><b>' + esc(m.title || f.title || f.id) + '</b><div class="sub">' + esc([m.day, m.experiment].filter(Boolean).join(' · ')) + '</div><a href="' + esc(PAGE + '?v=' + encodeURIComponent(f.id)) + '">Watch</a></div>'; }).join('')
+      + '<div class="src"><a href="/films/rss">RSS</a> · <a href="' + PAGE + '">All films</a></div>';
+  } catch (_) { el.innerHTML = '<h2>New from V01D FILMS</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>'; }
+  return 'films';
+}
+
 async function runMeta(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">\u2026</div>'; });
@@ -83,6 +110,7 @@ const STYLE = `<style>
 </style>`;
 
 function run(text, api) {
+  if (wantsNewFilms(text)) return runNew(api);
   if (wantsFilmMeta(text)) return runMeta(api);
   const { showPage, esc } = api;
   showPage((el) => {
@@ -113,6 +141,8 @@ export default {
     '/films/',
     'v01d films',
     'film metadata',
+    'new films',
+    'any new videos from v01d',
     'films as json',
     'upload this to youtube',
     'post a clip on tiktok',
@@ -124,6 +154,6 @@ export default {
     'how do I film a video',
     'horror movies',
   ],
-  match(lower) { return wantsFilms(lower) || wantsFilmMeta(lower); },
+  match(lower) { return wantsFilms(lower) || wantsFilmMeta(lower) || wantsNewFilms(lower); },
   run,
 };

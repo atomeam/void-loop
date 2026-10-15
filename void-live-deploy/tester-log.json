@@ -1,6 +1,6 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 8,
+ "cases": 9,
  "runsTotal": 9,
  "kinds": {
   "grow": 2,
@@ -71,5 +71,22 @@
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"my actions\" (skill:actions)"
   }
- ]
+ ],
+ "seen": {
+  "page:/films/": "2026-10-15T06:04:21Z",
+  "page:/store/": "2026-10-15T06:04:21Z",
+  "skill:actions": "2026-10-15T06:04:21Z",
+  "skill:aggravation": "2026-10-15T06:04:21Z",
+  "skill:air": "2026-10-15T06:20:22Z",
+  "skill:app": "2026-10-15T06:20:22Z",
+  "skill:aurora-tonight": "2026-10-15T06:20:22Z",
+  "skill:automations": "2026-10-15T06:20:22Z",
+  "skill:battleship": "2026-10-15T06:23:11Z",
+  "skill:book": "2026-10-15T06:39:37Z",
+  "skill:breath": "2026-10-15T06:23:11Z",
+  "skill:calc": "2026-10-15T06:23:11Z",
+  "skill:video-play": "2026-10-15T06:39:37Z",
+  "skill:define": "2026-10-15T06:39:37Z",
+  "skill:digest": "2026-10-15T06:39:37Z"
+ }
 }

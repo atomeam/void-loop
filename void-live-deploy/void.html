@@ -2150,6 +2150,19 @@ say('nothing selected to remove');
     function wantsIdentity(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
     }
+    // asked "who are you", the stage answers in light too (asked by Void, ask-20261015-0540-2: "subtly shifts the stage lighting to reflect
+    // my identity"): a violet glow rises from the floor and fades over 2.4 s; nothing under reduced motion; body[data-identity] marks it
+    function identityGlow() {
+      try {
+        document.body.dataset.identity = 'glow';
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const g = document.createElement('div'); g.setAttribute('aria-hidden', 'true');
+        g.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(80% 55% at 50% 100%,rgba(122,92,255,.28),transparent 70%)';
+        document.body.appendChild(g);
+        const a = g.animate([{ opacity: 0 }, { opacity: 1, offset: 0.3 }, { opacity: 0 }], { duration: 2400, easing: 'ease-in-out' });
+        a.onfinish = () => g.remove();
+      } catch (_) {}
+    }
     function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
@@ -5031,7 +5044,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
-      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {

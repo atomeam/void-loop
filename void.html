@@ -2150,6 +2150,19 @@ say('nothing selected to remove');
     function wantsIdentity(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);
     }
+    // asked "who are you", the stage answers in light too (asked by Void, ask-20261015-0540-2: "subtly shifts the stage lighting to reflect
+    // my identity"): a violet glow rises from the floor and fades over 2.4 s; nothing under reduced motion; body[data-identity] marks it
+    function identityGlow() {
+      try {
+        document.body.dataset.identity = 'glow';
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        const g = document.createElement('div'); g.setAttribute('aria-hidden', 'true');
+        g.style.cssText = 'position:fixed;inset:0;pointer-events:none;z-index:0;background:radial-gradient(80% 55% at 50% 100%,rgba(122,92,255,.28),transparent 70%)';
+        document.body.appendChild(g);
+        const a = g.animate([{ opacity: 0 }, { opacity: 1, offset: 0.3 }, { opacity: 0 }], { duration: 2400, easing: 'ease-in-out' });
+        a.onfinish = () => g.remove();
+      } catch (_) {}
+    }
     function showSelfPage(asMenu, focus, lead) {
       const groups = [
         ['On the stage', [
@@ -2632,20 +2645,11 @@ say('nothing selected to remove');
       ['fuel', 1, 'mpg', /^(?:mpg|miles\s+per\s+gallon)$/, false], ['fuel', 1, 'L/100 km', /^(?:l\/100\s*km|litres?\s+per\s+100\s*km|liters?\s+per\s+100\s*km)$/, true],
     ].map(([cat, f, name, re, inv]) => ({ cat, f, name, re, inv }));
     function unitOf(w) { w = String(w).trim().replace(/\.$/, ''); return MORE_UNITS.find((u) => u.re.test(w)) || null; }
-    function wordMath(lower) {
-      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
-      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
-      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
-      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
-      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
-        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
-      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
-      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
-      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
-      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
-        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
-      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
-      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+    // wordMath, in parts (asked by Void, asked 9 times: "Refactor the 5614-line wordMath() function into smaller, manageable modules").
+    // Each part tries its asks in the order they always ran; WM_NEXT means "not mine, try the next part". Locals never cross parts.
+    function WM_NEXT() {} // a hoisted sentinel (no TDZ: wordMath may run before this line is reached)
+    // percent off, roman numerals, powers, primes, factorials, unit conversions, travel, percent-of, logs and more
+    function wmPercentsAndUnits(t, lower) {
       let m = t.match(/^(\d+(?:\.\d+)?)\s*(?:%|percent|per\s+cent)\s+off\s+(?:of\s+)?[$€£]?(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?|usd|eur|gbp)$/);
       if (m) { const save = +m[2] * +m[1] / 100, v = Math.round((+m[2] - save) * 100) / 100; return { value: v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 }), note: m[1] + '% off ' + m[2] + ' (you save ' + (Math.round(save * 100) / 100) + ')' }; }
       // "roman numerals for 2026", "2026 in roman" is handled further down
@@ -2747,6 +2751,11 @@ say('nothing selected to remove');
       m = t.match(/^how\s+many\s+cups\s+(?:is|are|in)\s+(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*(?:g|grams?)\s+(?:of\s+)?([a-z -]+?)\s+(?:in|to|into)\s+cups?$/);
       if (m) { const g = CUP_GRAMS[m[2].trim().replace(/^(?:all[\s-]purpose|plain|white|granulated|caster)\s+/, '')]; if (g) { const c = Math.round(+m[1] / g * 100) / 100;
         return { value: c + ' cup' + (c === 1 ? '' : 's'), note: m[1] + ' g of ' + m[2].trim() + ' at about ' + g + ' g a US cup (spooned and levelled)' }; } }
+      return WM_NEXT;
+    }
+    // gas marks, dozens, eggs, durations, mileage, weekdays, temperatures, heights, ratios, number theory, scores, rounding, discounts, tiles, coins
+    function wmEverydayCounts(t, lower) {
+      let m;
       // gas mark: "gas mark 4 in celsius", "350 degrees in gas mark", "180c to gas mark"
       const GAS = { '1/4': [225, 110], '1/2': [250, 120], 1: [275, 140], 2: [300, 150], 3: [325, 160], 4: [350, 180], 5: [375, 190], 6: [400, 200], 7: [425, 220], 8: [450, 230], 9: [475, 240] };
       m = t.match(/^(?:what\s+is\s+|convert\s+)?gas\s+mark\s+(\d|1\/[24])(?:\s+(?:in|to|into)\s+(c|celsius|centigrade|f|fahrenheit|degrees)|\s+(?:temperature|temp))?$/);
@@ -3009,6 +3018,11 @@ say('nothing selected to remove');
       // a string of 0s and 1s "in decimal" is binary: "what is 101010 in decimal"
       m = String(lower || '').trim().toLowerCase().replace(/\?+$/, '').replace(/^(?:what(?:'s|\s+is)\s+|convert\s+)/, '').match(/^([01]{4,32})(?:\s+(?:binary|in\s+binary|base\s*2))?\s+(?:in|to|as)\s+(?:decimal|base\s*10|a\s+number)$|^(?:binary\s+)([01]{2,32})\s+(?:in|to|as)\s+(?:decimal|base\s*10)$/); // read before "in decimal" is stripped above
       if (m) { const b = m[1] || m[2], v = parseInt(b, 2); return { value: v.toLocaleString(), note: 'binary ' + b + ' = ' + v + ' in decimal' }; }
+      return WM_NEXT;
+    }
+    // "how many <unit> in a <unit>" and the everyday unit questions
+    function wmUnitQuestions(t, lower) {
+      let m;
       // generic "how many <unit> in a <unit>" for the extra units ("how many square feet in an acre", "how many kpa in a bar")
       m = t.match(/^how\s+many\s+([a-z][a-z /²]*?)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z][a-z /²]*?)$/);
       const everyday = m && Object.values(CALC_UNITS).some((u) => u[m[1].trim()] != null && u[m[2].trim()] != null); // cups in a liter, feet in a mile: the everyday converter's own answer
@@ -3108,6 +3122,11 @@ say('nothing selected to remove');
       if (m) { const now = new Date(), y = now.getFullYear(), w = m[2];
         const at = /^new/.test(w) ? new Date(y + 1, 0, 1) : /christmas|xmas/.test(w) ? new Date(now > new Date(y, 11, 25) ? y + 1 : y, 11, 25) : w === 'halloween' ? new Date(now > new Date(y, 9, 31) ? y + 1 : y, 9, 31) : new Date(y, now.getMonth(), now.getDate() + 1);
         const v = Math.floor((at - now) / { seconds: 1e3, minutes: 6e4, hours: 36e5 }[m[1]]); return { value: v.toLocaleString() + ' ' + m[1], note: 'until ' + at.toLocaleDateString([], { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' }) }; }
+      return WM_NEXT;
+    }
+    // clock arithmetic and time between dates
+    function wmClockAndDates(t, lower) {
+      let m;
       // clock arithmetic: "add 2 hours to 3:30 pm", "3:30 pm plus 45 minutes", "subtract 90 minutes from 2pm"
       const clockOf = (x) => { const c = String(x).trim().match(/^(\d{1,2})(?::(\d{2}))?\s*(am|pm|a\.m\.|p\.m\.)?$/); if (!c) return null; let h = +c[1], mi = +(c[2] || 0); const ap = (c[3] || '').replace(/\./g, ''); if (ap === 'pm' && h < 12) h += 12; if (ap === 'am' && h === 12) h = 0; return h < 24 && mi < 60 && (ap || c[2]) ? h * 60 + mi : null; };
       const fmt12 = (mins) => { mins = ((mins % 1440) + 1440) % 1440; const h = Math.floor(mins / 60), mi = mins % 60; return ((h % 12) || 12) + ':' + String(mi).padStart(2, '0') + ' ' + (h < 12 ? 'AM' : 'PM'); };
@@ -3195,6 +3214,11 @@ say('nothing selected to remove');
           const r = add(); if (i !== s2.length) throw 0; return r; };
         try { const f = (x) => ev(L, x) - ev(Rt, x), f0 = f(0), f1 = f(1), f2 = f(2);
           if (Math.abs((f2 - f1) - (f1 - f0)) < 1e-9 && Math.abs(f1 - f0) > 1e-12) { const x = -f0 / (f1 - f0), r = Math.round(x * 1e9) / 1e9; return { value: v + ' = ' + r, note: 'solving ' + m[1].trim() + ' (check: both sides ' + (Math.round(ev(L, x) * 1e6) / 1e6) + ')' }; } } catch (_) {} }
+      return WM_NEXT;
+    }
+    // circles, shapes and fractions
+    function wmGeometry(t, lower) {
+      let m;
       // geometry
       const PI = Math.PI, r2 = (x) => Math.round(x * 100) / 100;
       m = t.match(/^(?:the\s+)?(area|circumference|perimeter)\s+of\s+a\s+circle\s+(?:with\s+(?:a\s+)?)?(radius|diameter|r|d)\s*(?:of\s+|=\s*|is\s+)?(\d+(?:\.\d+)?)$/);
@@ -3260,6 +3284,11 @@ say('nothing selected to remove');
       // "what year was 10 years ago", "what year will it be in 5 years"
       m = t.match(/^what\s+year\s+was\s+(\d{1,4})\s+years?\s+ago$/);
       if (m) return { value: String(new Date().getFullYear() - +m[1]), note: m[1] + ' years before ' + new Date().getFullYear() };
+      return WM_NEXT;
+    }
+    // pay, salary, tax, interest and money
+    function wmMoney(t, lower) {
+      let m;
       // ---- money ----
       const N = (x) => +String(x).replace(/[$,]/g, '').replace(/k$/i, '000'), $f = (v) => '$' + v.toLocaleString(undefined, { minimumFractionDigits: v % 1 ? 2 : 0, maximumFractionDigits: 2 });
       // pay: "15 an hour per year", "60000 a year is how much an hour", "salary of 75000 per month" (40 h weeks, 52 weeks: 2,080 h a year)
@@ -3391,6 +3420,11 @@ say('nothing selected to remove');
       if (m) { const x = +(m[1] || m[3]), d = m[1] ? +m[2] : 0; const v = (Math.round(x * 10 ** d) / 10 ** d).toFixed(d); return { value: v, note: (m[1] || m[3]) + ' rounded to ' + d + ' decimal' + (d === 1 ? '' : 's') }; }
       m = t.match(/^(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s+(?:as\s+a\s+|in\s+)?(?:percent(?:age)?|%)$/);
       if (m && +m[2]) { const v = +(+m[1] / +m[2] * 100).toPrecision(10); return { value: v + '%', note: m[1] + '/' + m[2] + ' = ' + v + '%' }; }
+      return WM_NEXT;
+    }
+    // data sizes and dates
+    function wmDataUnits(t, lower) {
+      let m;
       const DATA = { b: 1, byte: 1, bytes: 1, kb: 1e3, kilobyte: 1e3, kilobytes: 1e3, mb: 1e6, megabyte: 1e6, megabytes: 1e6, gb: 1e9, gigabyte: 1e9, gigabytes: 1e9, tb: 1e12, terabyte: 1e12, terabytes: 1e12, pb: 1e15, petabyte: 1e15, petabytes: 1e15 };
       m = t.match(/^how\s+many\s+([a-z]+)\s+(?:are\s+)?(?:there\s+)?in\s+(?:a|an|one|1)\s+([a-z]+)$/) || t.match(/^(?:convert\s+)?(\d+(?:\.\d+)?)\s*([a-z]+)\s+(?:to|in|into)\s+([a-z]+)$/);
       if (m) {
@@ -3407,6 +3441,11 @@ say('nothing selected to remove');
       m = t.match(/^(?:how\s+many\s+)?days\s+(?:are\s+there\s+)?between\s+(.+?)\s+and\s+(.+)$/);
       if (m) { const yr = new Date().getFullYear(), d = (x) => { let v = Date.parse(x + (/\d{4}/.test(x) ? '' : ' ' + yr)); return isNaN(v) ? null : v; }; const a = d(m[1]), b = d(m[2]);
         if (a != null && b != null) { const n = Math.round(Math.abs(b - a) / 864e5); return { value: n + (n === 1 ? ' day' : ' days'), note: 'between ' + m[1] + ' and ' + m[2] + (/\d{4}/.test(m[1] + m[2]) ? '' : ' ' + yr) }; } }
+      return WM_NEXT;
+    }
+    // the arithmetic expression parser (square roots, powers, pi)
+    function wmExpression(t, lower) {
+      let m;
       const e = t.replace(/\bsquare\s+root\s+of\b|\bsqrt\s+of\b|\bsqrt\b/g, ' r ').replace(/\bto\s+the\s+(\d+)(?:st|nd|rd|th)?\s+power\b/g, ' ^ $1 ').replace(/\bto\s+the\s+power\s+of\b|\braised\s+to\b|\*\*/g, ' ^ ')
         .replace(/\bsquared\b/g, ' ^ 2 ').replace(/\bcubed\b/g, ' ^ 3 ').replace(/\btimes\b|\bmultiplied\s+by\b|×|\bx\b/g, ' * ').replace(/\bdivided\s+by\b|\bover\b|÷/g, ' / ')
         .replace(/\bplus\b|\badded\s+to\b/g, ' + ').replace(/\bminus\b|\bless\b/g, ' - ').replace(/(\d),(\d{3})/g, '$1$2')
@@ -3420,6 +3459,24 @@ say('nothing selected to remove');
       const add = () => { let v = mul(); while (peek() === '+' || peek() === '-') { const o = take(), r = mul(); v = o === '+' ? v + r : v - r; } return v; };
       try { const v = add(); if (i !== tk.length || !isFinite(v)) return null; const shown = Math.abs(v) >= 1e15 ? v.toExponential(6) : String(+v.toPrecision(12));
         return { value: shown, note: e.replace(/(?<![\d.])3\.141592653589793(?![\d.])/g, 'π').replace(/\s*r\s*/g, ' √').replace(/\s+/g, ' ').trim() + ' = ' + shown }; } catch (_) { return null; }
+      return WM_NEXT;
+    }
+    function wordMath(lower) {
+      let t = String(lower || '').toLowerCase().replace(/\?+$/, '').replace(/(?<!\d)!+$/, '').replace(/^(?:hey\s+)?(?:what(?:'s|\s+is)|whats|calculate|compute|how\s+much\s+is|solve)\s+/, '').replace(/^the\s+(?=square\s+root\b|sqrt\b)/, '').replace(/\s+(?:as|in|to)\s+(?:a\s+)?decimals?$/, '').trim();
+      // thousands commas are part of the number: "15% of 2,500" read as 2 and gave 0.3 (only a run of exactly three digits after each comma)
+      t = t.replace(/\b(\d{1,3})((?:,\d{3})+)(?![\d,])/g, (_, h, rest) => h + rest.replace(/,/g, ''));
+      // kitchen fractions before a unit when converting: "3/4 cup in tablespoons", "2 1/2 cups to ml" ("half of 3/4 cup" stays a fraction: 3/8)
+      t = t.replace(/\b(?:(\d+)\s+)?(\d+)\/(\d+)\s+(?=(?:cups?|teaspoons?|tablespoons?|tsp|tbsp|pounds?|lbs?|ounces?|oz|gallons?|quarts?|pints?|miles?|inch(?:es)?|feet|foot|yards?|hours?|liters?|litres?)\b(?=.*\b(?:in|to|into)\s+\w))/g,
+        (all, w, a, b) => +b ? String(Math.round(((+w || 0) + a / b) * 10000) / 10000) + ' ' : all);
+      // "1 million", "2.5 billion", "3 thousand" -> digits, so the rest of word maths and the calculator see numbers
+      t = t.replace(/\b(\d+)\s+and\s+a\s+half\b/g, (_, n) => String(+n + 0.5)); // "2 and a half hours" -> "2.5 hours"
+      // "a quarter cup", "half a cup", "a third of a cup" -> numbers the converters can read
+      t = t.replace(/\b(?:a\s+|one\s+)?quarter\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.25 $1').replace(/\b(?:a\s+|one\s+)?half\s+(?:of\s+)?(?:a\s+)?(cup|teaspoon|tablespoon|pound|gallon|mile|hour)/g, '0.5 $1')
+        .replace(/\b(?:a\s+|one\s+)?third\s+(?:of\s+)?(?:a\s+)?(cup)/g, '0.3333 $1');
+      t = t.replace(/(\d+(?:\.\d+)?)\s+(thousand|million|billion|trillion)\b/g, (_, n, u) => String(+n * { thousand: 1e3, million: 1e6, billion: 1e9, trillion: 1e12 }[u]));
+      // "15% off 80 dollars": the money word after the price (without it the earlier "% of" reading took over)
+      for (const part of [wmPercentsAndUnits, wmEverydayCounts, wmUnitQuestions, wmClockAndDates, wmGeometry, wmMoney, wmDataUnits, wmExpression]) { const r = part(t, lower); if (r !== WM_NEXT) return r; }
+      return undefined;
     }
     function wantsCalc(lower) {
       if (wordMath(lower)) return true;
@@ -4987,7 +5044,7 @@ say('nothing selected to remove');
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
-      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
+      if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {

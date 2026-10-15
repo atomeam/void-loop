@@ -145,6 +145,61 @@
     "ask-20261015-0048-2": {
       "decision": "built",
       "why": "country card shows the time zone and its offset from you"
+    },
+    "ask-20261015-0603-1": {
+      "decision": "declined",
+      "why": "a visible \"no product here\" note under answers is noise for visitors; the skip is silent by design (#738), the owner sees it in tests",
+      "path": "owner rule: ads only where they fit"
+    },
+    "ask-20261015-0541-2": {
+      "decision": "declined",
+      "why": "there are no upvotes, and counting them would mean telling visitors apart",
+      "path": "privacy rule: topic counts, never people"
+    },
+    "ask-20261015-0151-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0250-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2348-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-1523-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0100-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-1548-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2248-1": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261014-2248-2": {
+      "decision": "blocked",
+      "why": "blocked: the skill-merge worker is merging the kitchen, time, weather and words families right now (helper/merge-skills-kitchen); workaround tried: tools/collide.mjs, then handed over on the board to build into the merged card",
+      "path": "handoff rule: never collide with an open track"
+    },
+    "ask-20261015-0613-1": {
+      "decision": "blocked",
+      "why": "the skill-merge worker is writing tools/skill-overlap.mjs, the same scanner; building a second one would duplicate it. Handed over on the board",
+      "path": "convergence: one engine per job"
     }
   }
 }
