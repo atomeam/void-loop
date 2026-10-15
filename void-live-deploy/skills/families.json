@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 47,
+  "tested": 48,
   "checked": 14,
   "proven": 83
  },
@@ -13,7 +13,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 9,
     "checked": 3,
     "proven": 11
    },
@@ -127,6 +127,11 @@
      "name": "throw-off",
      "tier": "tested",
      "why": "1 browser-suite mention"
+    },
+    {
+     "name": "swarm",
+     "tier": "tested",
+     "why": "a self-test"
     }
    ]
   },
