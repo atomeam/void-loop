@@ -1,56 +1,38 @@
 /**
- * dice skill — roll dice that stay on the stage
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a die", "roll 2d6", "dice", "roll the dice".
- * Puts a dice card on the stage that can be rolled again. Empty surface stays empty.
+ * dice skill — roll dice for tabletop. "roll a d20", "roll 2d6", "dice roll", "throw the dice".
+ * Shows the rolls and total on a card. Empty surface stays empty.
  */
-export function wantsDice(text) {
+export function diceOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:please\s+)?(?:roll\s+(?:a\s+|the\s+|some\s+)?(?:dice|die|d6|2d6)|dice(?:\s+roller)?|roll\s+dice)$/.test(t);
-}
-
-function roll(n = 1, sides = 6) {
-  const rolls = Array.from({ length: n }, () => Math.floor(Math.random() * sides) + 1);
-  return { rolls, total: rolls.reduce((a, b) => a + b, 0) };
-}
-
-function mount(th, stageApi) {
-  const el = document.createElement('div');
-  el.className = 'thing kept-card dice-card';
-  el.dataset.id = th.id;
-  el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(220px, calc(100vw - 20px));padding:12px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:12px';
-  const head = document.createElement('div');
-  head.innerHTML = '<b>Dice</b><div class="g-sub">tap to roll</div>';
-  const out = document.createElement('div');
-  out.style.cssText = 'font-size:28px;margin:8px 0;text-align:center';
-  const btn = document.createElement('button');
-  btn.textContent = 'Roll';
-  btn.style.cssText = 'width:100%;padding:8px;border-radius:8px;background:#7a5cff;color:#fff;border:0;font:inherit';
-  const doRoll = () => {
-    const r = roll(2, 6);
-    out.textContent = r.rolls.join(' + ') + ' = ' + r.total;
-    th.last = r;
-    stageApi.save();
-  };
-  btn.addEventListener('click', (e) => { e.stopPropagation(); doRoll(); });
-  el.append(head, out, btn);
-  doRoll();
-  stageApi.bindDrag(el, th);
-  stageApi.stage.appendChild(el);
+  let m = t.match(/^(?:roll|throw|dice)\s+(?:a\s+)?(\d+)?d(\d+)$/);
+  if (m) return { count: +(m[1] || 1), sides: +m[2] };
+  m = t.match(/^(?:roll|throw)\s+(?:a\s+)?(\d+)\s*sided(?:\s+dice)?$/);
+  if (m) return { count: 1, sides: +m[1] };
+  if (/^(?:roll|throw)\s+(?:the\s+)?dice$/.test(t)) return { count: 1, sides: 6 };
+  return null;
 }
 
 function run(text, api) {
-  if (!wantsDice(text)) return 'none';
-  api.summon('dice', { center: true });
-  api.say('Dice on the stage · tap to roll again · it stays after a reload');
+  const d = diceOf(text);
+  if (!d || d.sides < 2 || d.count < 1 || d.count > 20) return 'none';
+  const { showPage, esc } = api;
+  const rolls = Array.from({ length: d.count }, () => 1 + Math.floor(Math.random() * d.sides));
+  const total = rolls.reduce((a, b) => a + b, 0);
+  showPage((p) => {
+    p.innerHTML = '<h2>Dice roll</h2><div class="sub">' + esc(d.count + 'd' + d.sides) + '</div><p style="font-size:42px;text-align:center;margin:12px 0">' + esc(rolls.join(' · ')) + '</p><div class="sub">Total: ' + total + '</div>';
+  });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll 2d6', 'dice', 'roll the dice', 'dice roller'],
-  nearMisses: ['what is a die', 'dice game', 'roll the credits'],
-  match(lower, text) { return wantsDice(text || lower); },
+  examples: ['roll a d20', 'roll 2d6', 'dice roll', 'throw the dice'],
+  nearMisses: ['what is a dice', 'roll the figure', 'spin the figure'],
+  match(lower, text) { return !!diceOf(text); },
   run,
-  stageKinds: { dice: { mount } }
+  suite() {
+    const hit = diceOf('roll a d20');
+    const two = diceOf('roll 2d6');
+    return { ok: !!hit && hit.sides === 20 && hit.count === 1 && !!two && two.count === 2 && diceOf('hello') === null };
+  },
 };
