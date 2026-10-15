@@ -8,6 +8,7 @@
 // (lib/used.js): only an id naming a live /fringe/ page, nothing typed, one per connection per experiment per day. `origin: 'agent'` (sent by the page for a WebMCP call) is counted
 // apart in void_misses.agent and only ever takes a miss out of the job count: asks only agents made never become jobs.
 import { redact } from '../../lib/automation-fix.js';
+import { redactPersonal } from '../../lib/privacy.js';
 import { isNoise } from '../../lib/noise.js';
 import { learnFromMiss, noteAgentMiss, agentCount } from '../../lib/learn.js';
 import { isLab, noteUse } from '../../lib/used.js';
@@ -29,12 +30,12 @@ export async function onRequestPost({ request: req, env, waitUntil }) {
   try { body = JSON.parse((await req.text()).slice(0, 1000)); } catch (_) { return new Response('bad', { status: 400 }); }
   if (body && body.kind === 'used') return used(req, env, body.id);
   if (body && body.kind === 'gap') { // no product matched a buy/hire ask: count its topic (stems only), never its words
-    const a = redact(norm(body.ask));
+    const a = redactPersonal(norm(body.ask));
     if (!a || isNoise(a)) return new Response(null, { status: 204 });
     try { const cat = await loadCatalog(env); await recordGap(env, a, (cat && cat.products) || cat || []); } catch (_) {}
     return new Response(null, { status: 204 });
   }
-  const ask = redact(norm(body.ask)); // a key typed into Void never lands on the miss list
+  const ask = redactPersonal(norm(body.ask)); // a key typed into Void never lands on the miss list
   const fallback = String(body.fallback || '').slice(0, 40);
   const fromAgent = body.origin === 'agent'; // the page's label for a miss a visiting agent's tool call caused; anything else is people
   if (!ask || ask.length < 2) return new Response('empty', { status: 400 });

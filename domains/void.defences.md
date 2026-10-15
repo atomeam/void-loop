@@ -10,7 +10,7 @@ making A-to-Mind the best company ever made. Rule 7: use what already exists bef
 - **npm audit**: 0 vulnerabilities (the only dependency is `playwright-core`, dev only; nothing is bundled into the site).
 - **Semgrep** (open source; p/javascript, p/secrets, p/xss): 104 rules on 22 files, 0 findings.
 - **gitleaks** (full git history): 7 hits, all false positives (the localStorage key name `a2m.void.owner.v1` and a
-  `sk_live_12345678` test fixture). No real key has ever been committed.
+  `sk_live_12345678` test fixture). No real key has ever been committed. <!-- privacy:ok: a fake fixture key -->
 - **Cloudflare**: Pages Functions have no rate-limit binding, and wrangler can't manage WAF rules, so the limits use the
   platform's edge cache (`caches.default`) plus a per-isolate counter. A zone WAF rate-limiting rule is the stronger outer
   layer and needs Atom's dashboard (see "Left for Atom").

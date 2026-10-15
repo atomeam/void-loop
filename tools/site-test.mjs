@@ -153,6 +153,8 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
   try { for (const c of onceEach(suite.cases)) {
     const cx = await ctx(), p = await cx.newPage(), errors = [];
     p.on('pageerror', (e) => errors.push(e.message)); p.on('console', (m) => m.type() === 'error' && !/favicon|204|net::ERR/i.test(m.text()) && errors.push(m.text()));
+    // a script answered with the wrong type: name the file (the console line alone does not, issue #757)
+    p.on('response', (res) => { const q = res.request(), ct = res.headers()['content-type'] || ''; if (q.resourceType() === 'script' && res.status() < 300 && !/javascript|wasm|json/.test(ct)) errors.unshift('script ' + new URL(res.url()).pathname + ' served as ' + (ct || 'nothing') + ' (' + res.status() + ')'); });
     const t0 = Date.now(); await p.goto(site + (c.path || '/'), { waitUntil: 'load', timeout: 45000 }); const loadMs = Date.now() - t0;
     if (c.page) { await p.waitForTimeout(1500); const text = (await p.evaluate(() => document.body.innerText)).slice(0, 1500);
       const v = judge(c, { text, errors, loadMs }, suite.limits); out.push({ ...v, ...meta(c), loadMs, chars: text.trim().length });

@@ -19,9 +19,11 @@ for (const [name, file] of [
   ['upgrades', 'upgrades.test.mjs'],
   ['collide', 'collide.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
+  ['site-teach', 'site-teach.test.mjs'],
   ['untested-unit', 'untested.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
+  ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
@@ -31,6 +33,8 @@ for (const [name, file] of [
   ['launch-fixes', 'launch-fixes.test.mjs'],
   ['price-lock', 'price-lock.test.mjs'],
   ['store', 'store.test.mjs'],
+  ['keeper', 'keeper.test.mjs'],
+  ['privacy-guard', 'privacy-guard.test.mjs'],
   ['site-test', 'site-test.test.mjs'],
   ['product-tail', 'product-tail.test.mjs'],
   ['product-gap', 'product-gap.test.mjs'],
@@ -208,6 +212,8 @@ for (const [name, file] of [
 { const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
+{ const r = run([resolve(here, 'doc-drift.mjs'), '--check']); results.push(['doc-drift', r.ok, r.out[r.out.length - 1] || '']); }
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
 { const r = run([resolve(here, 'untested.mjs'), '--check']); results.push(['untested', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in

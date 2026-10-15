@@ -3850,6 +3850,11 @@ say('nothing selected to remove');
         try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text).slice(0, 200), fallback: 'ungrounded:' + skill.name }), keepalive: true }).catch(() => {}); } catch (_) {}
       }, 1500)).catch(() => {});
     }
+    // Taught wordings (skills/aliases.json, written by tools/site-teach.mjs from the site tester's teach items): an ask that is
+    // exactly a taught wording runs as the ask it means, so an existing skill learns a new phrase without a new skill.
+    let skillAliases = {};
+    fetch('/skills/aliases.json').then((r) => r.ok ? r.json() : {}).then((j) => { skillAliases = j && typeof j === 'object' ? j : {}; }).catch(() => {});
+    const aliasOf = (lower) => { const k = String(lower || '').trim().replace(/[\s?!.]+$/, ''); return Object.prototype.hasOwnProperty.call(skillAliases, k) ? String(skillAliases[k]) : ''; };
     async function runLearnedSkills(text, lower0, deadline = Date.now()) {
       const skill = await firstSkill(lower0, text, deadline);
       {
@@ -4928,7 +4933,7 @@ say('nothing selected to remove');
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const fixed = fixTypos(typed); typoFix = fixed !== typed ? { from: typed, to: fixed } : null;
       // the name is V01D (owner, 2026-10-14); every skill still reads "void", so "make my V01D blue" and "share my v01d live" reach them
-      const text = fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void'));
+      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
