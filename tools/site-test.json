@@ -76,10 +76,12 @@
     },
     {
       "ask": "convert 5 miles to km"
+    },
+    {
+      "ask": "play connect four"
     }
   ],
   "candidates": [
-    "play connect four",
     "set a timer for 5 minutes",
     "what is 17 times 23",
     "play reversi",

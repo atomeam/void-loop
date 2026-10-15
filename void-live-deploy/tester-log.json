@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 17,
- "runsTotal": 48,
+ "cases": 18,
+ "runsTotal": 49,
  "kinds": {
-  "grow": 10,
+  "grow": 11,
   "file": 31,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T23:20:00Z",
+   "passed": 0,
+   "of": 21,
+   "kind": "grow",
+   "note": "grew the suite: \"play connect four\""
+  },
   {
    "at": "2026-10-15T22:49:16Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 16,
    "kind": "file",
    "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T10:50:37Z",
-   "passed": 15,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"catroon version of a shipwreck\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -228,6 +228,10 @@
   "skill:ovulation": "2026-10-15T22:49:16Z",
   "skill:part": "2026-10-15T22:49:16Z",
   "skill:pdf-card": "2026-10-15T22:49:16Z",
-  "skill:period": "2026-10-15T22:49:16Z"
+  "skill:period": "2026-10-15T22:49:16Z",
+  "skill:place": "2026-10-15T23:20:00Z",
+  "skill:pong": "2026-10-15T23:20:00Z",
+  "skill:poster": "2026-10-15T23:20:00Z",
+  "skill:pregnancy": "2026-10-15T23:20:00Z"
  }
 }
