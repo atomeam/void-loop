@@ -65,4 +65,9 @@ const html = readFileSync(resolve(here, '../void.html'), 'utf8');
 assert.match(html, /wantsSelfPage\(lower\) \|\| wantsIdentity\(lower\) \|\| wantsMenu\(lower\)/);
 assert.match(html, /productFor\(text, products, \{ fix: !!opt\.fix, meta: !!opt\.meta \}\)/);
 
+// review path: "review my code" used to return from handleReviewAsk without a product line
+assert.match(html, /attachProductTail\(text, \{ el \}\); \/\/ Code Review Pro/);
+assert.match(html, /attachProductTail\(ask \|\| title, \{ el \}\)/);
+
+
 console.log('product-tail: ok (clear matches, no fallback-stack false positives, fix mode, meta skip, page gate)');
