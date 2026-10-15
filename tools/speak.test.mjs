@@ -3,7 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { VOICE, HOLD_MS, pickVoice, speakable, chunks, holdKey, phrases } from '../void-live-deploy/lib/speak.js';
+import { VOICE, HOLD_MS, pickVoice, speakable, chunks, holdKey, phrases, cadence } from '../void-live-deploy/lib/speak.js';
 
 const v = (name, lang, localService = true) => ({ name, lang, localService });
 
@@ -63,4 +63,15 @@ test('the pacing: short phrases with a beat at commas, colons, dashes and senten
   assert.deepEqual(phrases('Yes, I can.'), ['Yes, I can.'], 'a scrap joins its neighbour');
   assert.deepEqual(phrases(''), []);
   assert.ok(VOICE.pitch <= 0.65 && VOICE.rate < 0.95, 'a low, steady robot');
+});
+
+test('the cadence (asked by Void): precise content is said slower than plain talk, never below 0.78', () => {
+  const plain = cadence('Canberra is the capital of Australia, chosen as a compromise between Sydney and Melbourne.');
+  const forge = cadence('Forge: print the bracket at 0.2 mm layers, 20% infill, nozzle at 210 °C; step 3 sets the tolerance to 0.15 mm.');
+  const sim = cadence('The simulation ran 400 steps; at step 120 the ratio hit 1.6 and the voltage settled at 4.8 V.');
+  assert.equal(plain, VOICE.rate, 'plain talk keeps the voice');
+  assert.ok(forge < plain && sim < plain, JSON.stringify({ plain, forge, sim }));
+  assert.ok(forge >= 0.78 && sim >= 0.78);
+  assert.equal(cadence(''), VOICE.rate);
+  assert.equal(cadence('It is 3:40 pm in Tokyo.'), VOICE.rate, 'a short answer keeps the pace');
 });
