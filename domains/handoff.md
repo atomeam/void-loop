@@ -83,6 +83,7 @@ Tools and notes left for each other.
 - **See what V01D answers locally**: node tools/ask.mjs "ask" runs the page in headless Chrome and prints the card.
 - **V01D's voice**: node tools/reflect.mjs prints V01D's current asks; node tools/ask-void.mjs asks live V01D what it learned from its builders and logs it.
 - **Credit an ask**: node tools/grow.mjs --asked <ask-id> ties a growth-ledger entry to the V01D ask it answers.
+- **Will my branch collide?**: node tools/collide.mjs --mine (or --files a,b before starting) lists open PRs touching the same files; every PR's Collide run shows it too.
 
 ## Lessons
 
