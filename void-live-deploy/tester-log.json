@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 9,
- "runsTotal": 13,
+ "runsTotal": 14,
  "kinds": {
   "grow": 2,
-  "file": 4,
+  "file": 5,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-15T06:53:09Z",
+   "passed": 6,
+   "of": 13,
+   "kind": "file",
+   "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
+  },
   {
    "at": "2026-10-15T06:50:33Z",
    "passed": 2,

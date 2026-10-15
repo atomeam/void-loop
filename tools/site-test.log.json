@@ -100,5 +100,13 @@
   "kind": "teach",
   "key": "teach | yo watch the apollo 11 landing",
   "note": "teach V01D \"yo watch the apollo 11 landing\" (means \"play despacito\", skill:video-play): console: Executing inline script violates the following Content Security Policy directive 'script-src 'self' 'wasm-unsafe-eval' b"
+ },
+ {
+  "at": "2026-10-15T06:53:09Z",
+  "passed": 6,
+  "of": 13,
+  "kind": "file",
+  "key": "what can I buy | console: script /lib/skill-family#js served as text/html; ch",
+  "note": "fix: \"what can I buy\" console: script /lib/skill-family.js served as text/html; charset=utf-8 (200)"
  }
 ]
