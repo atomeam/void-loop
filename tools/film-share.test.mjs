@@ -75,3 +75,22 @@ test('/films/ is V01D Tube: watch page, related, views, share-on links, RSS', ()
   const html = readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
   for (const s of ["get('v')", 'Up next', '/api/film-views', 'x.com/intent/post', 'reddit.com/submit', '/films/rss']) assert.ok(html.includes(s), s);
 });
+
+// the download is named after the film's title, so YouTube's default title is the experiment's question, not the raw id
+// (owner, 2026-10-15: titles came out as "20261015 attention 7 r19")
+import { fileName } from '../void-live-deploy/lib/film-share.js';
+test('download name: the title, safe on every common system, at most 100 characters, else the id', () => {
+  assert.equal(fileName({ id: '20261015-attention-7-r19', title: 'How much does a hint steer you? | an AI built this itself #Shorts' }),
+    'How much does a hint steer you？ - an AI built this itself #Shorts.mp4');
+  assert.equal(fileName({ id: 'a-1', title: 'A <b>: "x"/y\\z*?|' }), 'A b xyz？-.mp4', 'forbidden characters dropped, ? and | kept as ？ and -');
+  assert.equal(fileName({ id: 'a-1' }), 'a-1.mp4', 'no title: the id');
+  assert.equal(fileName({ id: 'a-1', title: '  ' }), 'a-1.mp4');
+  assert.equal(fileName({ id: 'a-1', title: '<>:"/\\*' }), 'a-1.mp4', 'nothing left of the title: the id');
+  assert.equal(fileName({ id: 'a-1', title: 'x'.repeat(300) }), 'x'.repeat(100) + '.mp4', 'at most 100 before .mp4');
+  assert.equal(fileName({ id: 'a-1', title: 'line\none\ttab' }), 'line one tab.mp4', 'no control characters');
+  assert.equal(fileName({ id: 'a-1', title: 'Ends with a dot.' }), 'Ends with a dot.mp4', 'no trailing dot');
+  const n = fileName({ id: 'x', title: 'Why? | how: <a/b> "c" \\ * ?' });
+  assert.ok(!/[<>:"/\\|?*]/.test(n.slice(0, -4)), n);
+  const html = readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
+  assert.ok(html.includes('download: share.fileName(f)') && !html.includes("download: f.id + '.mp4'"), '/films/ downloads under the title');
+});

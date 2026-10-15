@@ -4,13 +4,16 @@
 // tables and reaches no other service, except ask_void, which is /api/answer itself (the route hands it over, ctx.answer: the open
 // web and the model, on that endpoint's terms and limits). One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
 // closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
-// count. /tools.json is the same list, public.
+// count. /tools.json is the same list, public. The skill tools (asked by Void, 2026-10-15) are Void's most proven read-only (up to ten)
+// skills, generated from the ratings (tools/mcp-skills.mjs -> lib/mcp-skills.js): each is ask_void's own path with the skill's
+// name on it and the link where the skill itself runs. skill_health reads skills/families.json (the route lends it, ctx.families).
 import { quick } from './review-api.js';
 import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
+import { SKILL_TOOLS } from './mcp-skills.js';
 
 export const PROTOCOL = '2025-06-18';
-export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.1.0' };
+export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.2.0' };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
 // what shape an agent wants back (asked by Void, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
 // (the structured result as JSON text). 'image' is named so an agent learns it is not offered yet, rather than guessing.
@@ -21,6 +24,13 @@ export function shaped(result, type) {
   return { content: [{ type: 'text', text: "This tool gives 'text' or 'raw_data'; 'image' is not offered yet." }], isError: true };
 }
 const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Leave it out for now.' };
+const SITE = 'https://a-to-mind.com';
+const ASKS = { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a model and the open web answer
+// one of Void's most proven skills as its own tool: the definition is built from lib/mcp-skills.js, never written by hand
+const skillTool = (s) => ({ name: s.tool, title: "Void's " + s.skill + ' skill', annotations: ASKS,
+  description: "Ask Void's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Void offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Void's benchmark, its tests), never from how it describes itself. Asks like "
+    + s.examples.map((e) => '"' + e + '"').join(', ') + ". Over MCP it is answered the way ask_void is: Void's answer engine (a model, citing Wikipedia when it matches; up to 12 a minute per caller). The skill itself works it out on its own card at the \"open\" link in the result.",
+  inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The ask in plain words (3 to 600 characters)' + (s.examples[0] ? ', e.g. "' + s.examples[0] + '"' : '') + '.' }, response_type: RESPONSE_TYPE } } });
 
 export const TOOLS = [
   { name: 'ask_void', title: 'Ask Void anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
@@ -38,6 +48,10 @@ export const TOOLS = [
   { name: 'meteor_showers', title: 'Meteor showers', annotations: RO,
     description: 'The meteor showers active on a date (strongest first, with days to each peak and the peak rate) and the next peak on or after it, from the IMO calendar of the major showers.',
     inputSchema: { type: 'object', properties: { date: DATE } } },
+  ...SKILL_TOOLS.map(skillTool),
+  { name: 'skill_health', title: "Void's skill-family health", annotations: RO,
+    description: "How far each of Void's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Void's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
+    inputSchema: { type: 'object', properties: { family: { type: 'string', description: "A family's id (families[].id in this tool's result, e.g. numbers) for its skills one by one." }, response_type: RESPONSE_TYPE } } },
 ];
 
 const err = (id, code, message) => ({ jsonrpc: '2.0', id: id ?? null, error: { code, message } });
@@ -83,8 +97,45 @@ async function askVoid(a, ctx) {
   return toolResult(text, { answer: body.answer, sources, at: body.at || null, cached: !!body.cached });
 }
 
+// a skill tool: ask_void's path exactly (same checks, same limit), then the skill's name and the link where the skill itself runs
+async function askSkill(s, a, ctx) {
+  const r = await askVoid(a, ctx);
+  if (r.isError) return r;
+  const open = SITE + '/?q=' + encodeURIComponent(a.ask.trim().slice(0, 600));
+  return { ...r, content: [{ type: 'text', text: r.content[0].text + '\n\nThe ' + s.skill + ' skill itself: ' + open }], structuredContent: { ...r.structuredContent, skill: s.skill, path: 'answer_engine', open } };
+}
+
+const TIERS = ['experiment', 'tested', 'checked', 'proven'];
+const pct = (n, of) => (of ? Math.round((n / of) * 1000) / 1000 : 0);
+// skill_health: skills/families.json (ctx.families reads it as the site serves it), summed up for an agent. Read-only.
+async function health(a, ctx) {
+  if (!ctx || typeof ctx.families !== 'function') return toolError('The skill ratings are only reachable at https://a-to-mind.com/api/mcp (or read https://a-to-mind.com/skills/families.json).');
+  const data = await ctx.families().catch(() => null);
+  if (!data || !Array.isArray(data.families)) return toolError('The skill ratings could not be read just now; try https://a-to-mind.com/skills/families.json.');
+  const want = typeof a.family === 'string' ? a.family.trim().toLowerCase() : '';
+  if (want && !data.families.some((f) => f.id === want)) return toolError('No family "' + want.slice(0, 40) + '". The families: ' + data.families.map((f) => f.id).join(', ') + '.');
+  const totals = Object.fromEntries(TIERS.map((t) => [t, data.families.reduce((n, f) => n + ((f.count && f.count[t]) || 0), 0)]));
+  const skills = TIERS.reduce((n, t) => n + totals[t], 0);
+  const families = data.families.map((f) => {
+    const list = Array.isArray(f.skills) ? f.skills : [], count = Object.fromEntries(TIERS.map((t) => [t, (f.count && f.count[t]) || 0]));
+    const out = { id: f.id, name: f.name, for: f.for, skills: list.length, count, proven_share: pct(count.proven, list.length), failing: list.filter((s) => s.failing && s.failing.length).map((s) => s.name) };
+    if (f.id === want) out.members = list.map((s) => ({ name: s.name, tier: s.tier, why: s.why, ...(s.failing && s.failing.length ? { failing: s.failing } : {}) }));
+    return out;
+  });
+  const tools = SKILL_TOOLS.map((s) => s.tool);
+  const failing = families.flatMap((f) => f.failing);
+  const text = skills + ' skills, rated from evidence only: ' + TIERS.slice().reverse().map((t) => totals[t] + ' ' + t).join(', ') + ' (' + Math.round(pct(totals.proven, skills) * 100) + '% proven).\n'
+    + families.map((f) => f.name + ': ' + f.count.proven + ' of ' + f.skills + ' proven').join('\n')
+    + (failing.length ? '\nFailing a benchmark ask: ' + failing.join(', ') + '.' : '\nNo skill is failing a benchmark ask.')
+    + '\nTheir own tools here: ' + tools.join(', ') + '.'
+    + (want ? '\n\n' + families.find((f) => f.id === want).members.map((s) => s.name + ': ' + s.tier + ' (' + s.why + ')').join('\n') : '');
+  return toolResult(text, { skills, totals, proven_share: pct(totals.proven, skills), families, failing, tools, source: SITE + '/skills/families.json' });
+}
+
 const RUN = {
   ask_void: askVoid,
+  skill_health: health,
+  ...Object.fromEntries(SKILL_TOOLS.map((s) => [s.tool, (a, ctx) => askSkill(s, a, ctx)])),
   review_code_closer: closer,
   review_code(a) {
     if (typeof a.code !== 'string' && typeof a.diff !== 'string') return toolError('Give the code to review as "code" (or a unified diff as "diff").');
@@ -114,7 +165,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers. ask_void and the closer read call a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {

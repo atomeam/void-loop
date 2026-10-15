@@ -18,7 +18,11 @@ const server = http.createServer((req, res) => {
   if (p === '/') p = '/index.html';
   let f = path.join(root, p);
   if (f.startsWith(root) && fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, 'index.html'); // /code-review/ is code-review/index.html, as Pages serves it
-  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { res.writeHead(404); return res.end(); }
+  if (!f.startsWith(root) || !fs.existsSync(f) || fs.statSync(f).isDirectory()) { // as Pages does: a missing path gets the root 404.html, still a 404
+    const nf = path.join(root, '404.html');
+    if (!fs.existsSync(nf)) { res.writeHead(404); return res.end(); }
+    res.writeHead(404, { 'content-type': 'text/html' }); return fs.createReadStream(nf).pipe(res);
+  }
   res.writeHead(200, { 'content-type': types[path.extname(f)] || 'application/octet-stream' });
   fs.createReadStream(f).pipe(res);
 }).listen(0);
@@ -439,6 +443,29 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+  // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
+  // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
+  if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
+    const res = await N.p.goto(base + 'no-such-page/at-all?x=1'); await N.p.waitForTimeout(200);
+    const info = await N.p.evaluate(() => ({ path: (document.getElementById('path') || {}).textContent, robots: (document.querySelector('meta[name=robots]') || {}).content,
+      links: [...document.querySelectorAll('nav a')].map((a) => a.getAttribute('href')), bg: getComputedStyle(document.body).backgroundColor,
+      focused: document.activeElement && document.activeElement.id, fits: document.documentElement.scrollWidth <= innerWidth }));
+    const linkStatus = await N.p.evaluate((ls) => Promise.all(ls.map((u) => fetch(u).then((r) => r.status))), info.links);
+    const wkStatus = await N.p.evaluate(() => Promise.all(['/.well-known/security.txt', '/humans.txt', '/.well-known/gpc.json'].map((u) => fetch(u).then((r) => r.status))));
+    const navs = []; N.p.on('request', (r) => { if (r.isNavigationRequest()) navs.push(r.url()); }); // the page drops ?q= from the address once it has read it
+    await N.p.fill('#q', 'what time is it in Tokyo'); await N.p.press('#q', 'Enter');
+    await until(async () => navs.length > 0, 5000); const sent = navs[0] || 'http://x/';
+    const ran = await until(async () => /Tokyo/i.test(await N.page()), 8000);
+    check('404 page: a missing path answers 404 (not the homepage), noindex, V01D\'s dark stage, the path shown as text, the ask box focused, fits a 390 px phone',
+      res && res.status() === 404 && info.robots === 'noindex' && info.bg === 'rgb(5, 5, 5)' && info.path === '/no-such-page/at-all' && info.focused === 'q' && info.fits,
+      JSON.stringify({ status: res && res.status(), ...info }));
+    check('404 page: every link on it is a page that answers 200; security.txt and humans.txt are there, gpc.json is not claimed',
+      info.links.length >= 4 && linkStatus.every((s) => s === 200) && wkStatus[0] === 200 && wkStatus[1] === 200 && wkStatus[2] === 404,
+      JSON.stringify(info.links) + ' ' + JSON.stringify(linkStatus) + ' ' + JSON.stringify(wkStatus));
+    check('404 page: typing in its ask box goes to /?q=<words> and V01D answers it there',
+      new URL(sent).pathname === '/' && new URL(sent).searchParams.get('q') === 'what time is it in Tokyo' && ran,
+      sent + ' | ' + String(await N.page()).slice(0, 80));
+    await N.ctx.close(); }
   // Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss board (items 3-8 of the 2026-09-28 list).
   if (want("Top misses from the board route to the stage or a quiet line, never Wikipedia or the miss ")) { const M = await fresh(); const out = [];
     const net = []; M.p.on('request', (r) => { const u = r.url(); if (/wikipedia\.org|\/api\/(miss|answer)$/.test(u)) net.push(u); });
@@ -875,6 +902,29 @@ try {
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
     await K.ctx.close(); }
+  // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
+  // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
+  if (want('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute')) { const D = await fresh();
+    await D.p.clock.install({ time: new Date(2026, 9, 15, 10, 30) });
+    const rows = () => D.p.$$eval('.vpage.on .dl-row', (r) => r.map((x) => ({ s: x.dataset.state, t: x.innerText.replace(/\s+/g, ' ') })));
+    await D.ask('when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month', 900);
+    await until(async () => (await rows()).length === 4, 12000); const mon = await rows(), head = await D.page();
+    await D.p.click('.vpage.on .dl-row[data-i="2"] .dl-met'); await D.p.waitForTimeout(150);
+    const marked = (await rows())[2].s, pressed = await D.p.$eval('.vpage.on .dl-row[data-i="2"] .dl-met', (b) => b.getAttribute('aria-pressed'));
+    await D.ask('when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month', 900); const kept = (await rows())[2];
+    await D.ask('reporting deadlines from 2026-10-15 14:00', 900); const rep = await rows(), repPage = await D.page();
+    await D.ask('deadline chain from today: 24 hours, 72 hours, 14 days', 900); const today = await rows();
+    await D.p.clock.fastForward('22:00:00'); // 2 hours before the first one: under a tenth of its 24-hour window
+    await until(async () => (await rows())[0].s === 'soon', 4000); const later = await rows(), cap = await D.p.$eval('.vpage.on .vlive', (e) => e.textContent).catch(() => '');
+    check('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute ("started monday 9am: 1 day, 3 days, 2 weeks, 1 month")',
+      mon.map((r) => r.s).join() === 'passed,passed,pending,pending' && /Oct 13.*9:00/.test(mon[0].t) && /ago/.test(mon[0].t) && /Nov 12.*9:00/.test(mon[3].t) && /in \d+ days/.test(mon[3].t)
+      && /Deadlines/.test(head) && /From Mon, Oct 12, 2026, 9:00/.test(head) && /just the dates/.test(head)
+      && marked === 'met' && pressed === 'true' && kept.s === 'met' && /undo/.test(kept.t)
+      && rep.length === 4 && /1 month/.test(rep[3].t) && /Nov 15.*2:00/.test(rep[3].t) && /the common chain/.test(repPage)
+      && today.length === 3 && today.every((r) => r.s === 'pending') && /in (?:1 day|23 h 5\d min)/.test(today[0].t)
+      && later[0].s === 'soon' && /in (?:2 h|1 h 5\d min)/.test(later[0].t) && later[1].s === 'pending' && /refreshes every 1 min/.test(cap) && !D.errors.length,
+      JSON.stringify({ mon, marked, pressed, kept, rep: rep.map((r) => r.t), today: today.map((r) => r.s + ' ' + r.t), later: later.map((r) => r.s + ' ' + r.t), cap, errs: D.errors }).slice(0, 1500));
+    await D.ctx.close(); }
   // World clock, translation copy and MyMemory's matches, skill files cached for a minute, and a 390px phone.
   if (want("World clock, translation copy and MyMemory's matches, skill files cached for a minute, and")) { const C = await fresh(); await C.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
     await C.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const u = r.request().url();
@@ -2487,6 +2537,7 @@ try {
     await until(async () => !!(await F.p.$('#watch .watchbox a.yt')), 5000);
     const watcher = await F.p.evaluate(() => { const a = document.querySelector('#watch .watchbox'); return a && { h: a.querySelector('h2').textContent, src: a.querySelector('video').getAttribute('src'),
       yt: (a.querySelector('a.yt') || {}).href || '', dl: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('href'), review: !!a.querySelector('.review'),
+      dn: (a.querySelector('a[download]') || { getAttribute: () => '' }).getAttribute('download'), // saved under the title, so YouTube's default title is the question (2026-10-15)
       wide: document.documentElement.scrollWidth > innerWidth }; });
     await F.ctx.grantPermissions(['clipboard-read', 'clipboard-write']);
     await F.p.click('#watch .share .row:not(.tabs) button'); const copied = await F.p.evaluate(() => navigator.clipboard.readText()).catch(() => '');
@@ -2496,7 +2547,7 @@ try {
     const member = await F.p.evaluate(() => !!document.querySelector('#watch .review'));
     check('films page: anyone watches, a member reviews, the owner gets the YouTube steps',
       gate.films === 1 && gate.video && !gate.review && gate.href === '?v=' + film.id && !gate.signin && !/sign in|member|have a key/i.test(gate.text) && seen[0] === ''
-      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && !watcher.review && !watcher.wide
+      && !!watcher && watcher.h === film.title && watcher.src === film.src && watcher.yt === 'https://www.youtube.com/upload' && watcher.dl === film.src && watcher.dn === 'Odd moments - an AI built this itself #Shorts.mp4' && !watcher.review && !watcher.wide
       && /Odd moments/.test(copied) && /a-to-mind\.com\/c\/20261014-x-r6\?p=youtube&by=share/.test(copied) && member && !F.errors.length,
       JSON.stringify({ gate: { ...gate, text: gate.text.slice(0, 80) }, watcher, copied: copied.slice(0, 120), member, seen, errors: F.errors }));
     await F.ctx.close(); }
@@ -2700,6 +2751,35 @@ try {
       !!real && Number(real.n) === least && /^Friction: /.test(real.text) && !!stub && /^Friction: 1 failing, 1 barely checked\. weather failing \(the bench got 2 of its asks wrong: “weather in oslo”, “rain <later>”\); tide unchecked \(nothing checks it yet\)\.$/.test(stub.text)
       && !/<later>/.test(stub.html) && !/clock/.test(stub.text) && under && !G.errors.length && !H.errors.length, JSON.stringify({ real, least, stub, under, errors: G.errors.concat(H.errors) }));
     await G.ctx.close(); }
+  // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
+  // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
+  // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
+  if (want("family-health: the skill families card")) { const F = await fresh({ phone: true });
+    const fam = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'families.json'), 'utf8'));
+    await F.ask('show me your skill families', 1200);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.fh-family')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, totals: Object.fromEntries([...p.querySelectorAll('[data-total]')].map((e) => [e.dataset.total, Number(e.textContent)])),
+        families: rows.map((r) => ({ id: r.dataset.family, segs: [...r.querySelectorAll('.fh-bar [data-tier]')].map((s) => s.dataset.tier), open: !r.querySelector('.fh-open').hidden })),
+        wide: p.scrollWidth > p.clientWidth + 1, text: p.textContent };
+    }).catch(() => null), 6000);
+    const first = fam.families[0];
+    await F.p.tap('.vpage .fh-family[data-family="' + first.id + '"] button').catch(() => {});
+    const opened = await F.p.$eval('.vpage .fh-family[data-family="' + first.id + '"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
+      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent })) })).catch(() => null);
+    const want4 = Object.fromEntries(['proven', 'checked', 'tested', 'experiment'].map((t) => [t, fam.families.reduce((n, f) => n + f.skills.filter((s) => s.tier === t).length, 0)]));
+    const truth = Object.fromEntries(first.skills.map((s) => [s.name, s]));
+    check('family-health: "show me your skill families" shows every family with a stacked bar of its ratings, totals from families.json, and a tap lists each skill with its rating and why',
+      !!card && card.title === 'How healthy my skills are' && JSON.stringify(card.totals) === JSON.stringify(want4)
+      && card.families.length === fam.families.length && card.families.every((f) => f.segs.length >= 1 && !f.open) && !card.wide
+      && !!opened && opened.open && opened.expanded === 'true' && opened.skills.length === first.skills.length
+      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why)) && !F.errors.length,
+      JSON.stringify({ card: card && { ...card, text: card.text.slice(0, 300) }, want4, opened: opened && { ...opened, skills: opened.skills.slice(0, 3) }, errors: F.errors }));
+    await F.ask('how healthy are your skills', 1200);
+    const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
+    check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    await F.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.
@@ -3210,7 +3290,9 @@ try {
   await t.ask('why is the sky blue', 900); an = await t.page(); check('answer engine answers with sources', /blue light scatters/.test(an) && /Rayleigh scattering/.test(an) && /as of/.test(an), an.slice(0, 120));
   await t.ask('why is the model busy', 600); check('answer engine busy -> article excerpt', await until(async () => /Black hole/.test(await t.page()), 5000));
   await t.ask('what do you want to be?', 300); check('will: Void says what it wants', await until(async () => /I want to answer every question about tides/.test(await t.page()), 4000));
-  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /2 of my 5 asks were built/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await t.page()).slice(0, 200)); }
+  await t.ask('what do you think of yourself?', 300); { const ok = await until(async () => { const pg = await t.page(); return /I am strong at sums and thin on places/.test(pg) && /Backgammon/.test(pg) && /Give the map card terrain/.test(pg) && /What got built/i.test(pg) && /\b2\s+of my 5 asks/.test(pg) && /Learn Go on the stage/.test(pg); }, 4000); check('voice: Void says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built', ok, (await t.page()).slice(0, 200)); }
+  { const v = await t.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); const b = pg && pg.querySelector('[role=progressbar]'); const d = pg ? [...pg.querySelectorAll('.v-asks details')] : []; if (d[0]) d[0].open = true; return { now: b && b.getAttribute('aria-valuenow'), max: b && b.getAttribute('aria-valuemax'), w: b && b.firstElementChild.style.width, asks: d.length, meta: d[0] ? d[0].innerText : '' }; });
+    check('voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Void asked it and that it is not built yet', v.now === '2' && v.max === '5' && v.w === '40%' && v.asks > 0 && /Asked (in my daily reflection|after a build)/.test(v.meta) && /not built yet/.test(v.meta), JSON.stringify(v)); }
   } // CORE
   if (want("block at line 1599")) { const q0 = queued.length; await t.ask('update yourself', 700); const w = await t.whisper();
     check('build asks are owner-only (a stranger\'s goes the ordinary way: nothing queued, no word of an owner)', queued.length === q0 && !/owner/i.test(w), w); }
