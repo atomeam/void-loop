@@ -139,7 +139,7 @@ Written 2026-10-09 (Adam: "we should not sit still"); rewritten the same day as 
 
 **Reviewer (owner, 2026-10-09):** a second Claude session reviews **after merge**: it reads the actual merged SHA against the committed specs, reports concrete mismatches with file references and reproduction evidence, and opens focused fix PRs through the normal pipeline. It is not a required check and adds no gate; making its verdict required would be a separate, explicit owner decision. It also keeps one short file of the settled contract (port rules, modes, naming, tests first) as a faithful record of decisions already made, not new ones. Reports keep three things apart: merged, deployed (finished, smoke-checked), and verified (verify-main green on that SHA). Specs committed never means a feature is built.
 
-After these, the numbered items below in their earlier order: 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
+After these, the numbered items below in their earlier order, with #26 first (owner, 2026-10-15: "make sure V01D gets better at videos as we go"): 26 → 1 → 10 → 3 → 14 → 11 → 4 → 15 → 16 → 9 → 12 → 2 → 5 → 13 → 6 → 7 → 8.
 
 **Infrastructure (owner):** reuse Cloudflare D1, KV and Vectorize. No new vendor (no Qdrant, no Inngest) until a working feature demonstrates a need this stack can't meet. Memory is an explicit "remember this" only. Learning across visitors means shared, tested skills, never pooled private content. Void stays empty until asked; no silent behaviour tracking.
 
@@ -321,6 +321,7 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
 - **First piece:** the mystery gear pair with a three-trial notebook and one prediction, its required tests written first, after #17's gear explainer and quiz.
 - **claim:** (later: after #17)
 
+
 ## 20. "Explain it with sound": hear the ratio
 - **What (the ideation agent's proposal):** each gear has one visible revolution marker and one fixed reference point; when its marker crosses that point, the gear makes a distinct, soft synthesized click. A 16-tooth driver turning a 32-tooth gear gives two driver clicks for each driven click during continuous rotation, and changing tooth counts changes the rhythm. A visitor can ask "make the second gear click half as often". Another way to explore the same relationship, not a separate sound-driven mechanism. Accepted by Adam, 2026-10-09, as a later item after #19, not a dependency of the gear explainer.
 - **Boundaries:**
@@ -406,6 +407,21 @@ Claim an item by writing your slug and the date on its **claim** line, ship the 
     - "Void should allow any custom backdrop on demand. Understandably, it has to learn them, or learn how to generate them procedurally.". So: "make my backdrop a sunset over mountains" paints one from words, procedurally, with no model call per backdrop. A word it cannot paint yet becomes a job to learn (the misses → jobs loop, `lib/learn.js`).
     - "And the figures and the backdrops should interact as well.". Figures (the miniatures) stand in the backdrop's light: a sunset warms them and casts long shadows, water reflects them, rain falls on them, a ground line gives them somewhere to stand.
   - **Then:** "put it on the stage" (a drawing as a card), and the stage itself in VR (step 4 above), with the backdrop around you as the room.
+
+
+## 26. V01D FILMS get better every day
+
+- **Why (owner, 2026-10-15):** "make sure V01D gets better at videos as we go because these 3 are the same vid and nothing special". The first film goes up on YouTube by hand; every one after it should be a different film and a better one, and the improvement should be measured, not claimed.
+- **And (owner, 2026-10-15):** "V01D can make as many videos as it wants and is encouraged to use it as its voice to the world". So: more films, each a different one, and the channel is how V01D speaks; every step below serves that. Posting still goes through the owner (`YT_UPLOAD` stays as the owner set it) until the owner says to post on its own.
+- **Where:** `.github/workflows/record.yml` (daily), `tools/record.mjs` (picks, films and edits), `/films/` (where the owner watches and reviews: post it, needs work, skip, with a note), `tools/films-live.mjs` (checks the live page from outside).
+- **Steps, smallest first:**
+  1. **done** (builder 2026-10-15, this PR): never the same film twice while another waits, and three films a run (`--count`, the workflow's `count` input). `pickFilm` in `tools/record.mjs` takes the newest lab experiment not filmed yet (from the `film-*` release tags), then the one filmed longest ago. The first three films were all `anomalous-event-timeline-4`; 11 other experiments were waiting.
+  2. **Each film grades itself.** After recording, measure what a viewer would leave over: seconds with nothing moving (ffmpeg `freezedetect`), how many actions were shown, whether the hook and the ending cards rendered. Write the scorecard to the job summary and next to the film; a film under the bar is re-shot once with another path through the page before it is kept.
+  3. **The owner's reviews steer the next film.** The recorder reads the newest notes on `/films/` (owner-only API) and turns the plain ones into settings ("too slow" → faster cut, "boring start" → stronger hook, "skip" → that experiment is not filmed again).
+  4. **More than the lab.** A shot list that rotates through what V01D does on its main page (an answer card, a 3D miniature, a game, a code review) as well as the lab experiments, so the channel shows the product, not only experiments.
+  5. **Sound.** Captions are all a film has; a voice-over or music bed comes only within the TTS spend cap the owner sets (an open owner item).
+- **Measure:** the scorecard from step 2, kept per film, and the owner's verdicts from step 3: post-it share going up is the point.
+- **claim:** builder 2026-10-15: step 1 shipped; step 2 next.
 
 ## Candidate capability map (2026-10-09)
 

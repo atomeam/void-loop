@@ -6,7 +6,7 @@
 // shown as a caption on the video (a headless browser has no speech voices) and written next to it as the title and
 // description an upload will carry. Nothing is uploaded here: that is step 2, with the owner's YouTube credentials.
 //   node tools/record.mjs [id] [--seconds 20] [--out media]   -> media/<id>.webm and media/<id>.json { title, description, tags, caption }
-// id: a lab experiment such as attention-7 (default: the newest experiment in the lab).
+// id: a lab experiment such as attention-7 (default: the newest one not filmed yet, from VOID_FILMED, the film release tags).
 import fs from 'node:fs';
 import path from 'node:path';
 import http from 'node:http';
@@ -57,6 +57,27 @@ export function script(tool0, run0) {
   ].filter(Boolean);
   return { hook, caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
     tags: ['V01D', 'V01D FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
+}
+
+/** which lab experiment each film was, from the film release tags (film-<yyyymmdd>-<id>-r<run>), oldest first: [{ id, day }] */
+export function filmedOf(tags) {
+  return (Array.isArray(tags) ? tags : String(tags || '').split(/[\s,]+/)).map((t) => String(t).match(/^film-(\d{8})-(.+)-r\d+$/))
+    .filter(Boolean).map((m) => ({ id: m[2], day: m[1] })).sort((a, b) => a.day.localeCompare(b.day));
+}
+/** the experiment to film next (owner, 2026-10-15: "these 3 are the same vid and nothing special"): the newest one in the lab not
+ *  filmed yet; when every one has been, the one filmed longest ago. Never the same film twice while another is waiting. Pure. */
+export function pickFilm(labIds, filmed) {
+  const last = new Map(); for (const f of filmed || []) last.set(f.id, f.day); // filmed is oldest first, so this keeps each id's latest day
+  const fresh = labIds.filter((id) => !last.has(id));
+  if (fresh.length) return fresh[fresh.length - 1];
+  return labIds.slice().sort((a, b) => last.get(a).localeCompare(last.get(b)) || labIds.indexOf(b) - labIds.indexOf(a))[0];
+}
+
+/** n films in one run, each a different experiment: pickFilm again with each pick counted as filmed today. Pure. */
+export function picksOf(labIds, filmed, n) {
+  const out = [], seen = [...(filmed || [])];
+  for (let i = 0; i < Math.min(Math.max(1, n | 0), labIds.length); i++) { const id = pickFilm(labIds, seen); out.push(id); seen.push({ id, day: '99999999' }); }
+  return out;
 }
 
 function serve() {
@@ -170,11 +191,20 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const arg = (f) => { const i = process.argv.indexOf(f); return i > 0 ? process.argv[i + 1] : undefined; };
   const { toolList } = await import('../void-live-deploy/skills/make.js');
   const lab = toolList().filter((t) => /-\d+$/.test(t.id));
-  const id = process.argv[2] && !process.argv[2].startsWith('--') ? process.argv[2] : lab[lab.length - 1].id;
+  // the films already made, as their release tags (record.yml passes them in VOID_FILMED), so a new film is a new experiment
+  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "V01D can make as many videos as it wants and
+  // is encouraged to use it as its voice to the world")
+  // --only-new (after a deploy): only experiments never filmed, possibly none
+  const filmed = filmedOf(process.env.VOID_FILMED || ''), done = new Set(filmed.map((f) => f.id));
+  const ids = process.argv[2] && !process.argv[2].startsWith('--') ? [process.argv[2]]
+    : picksOf(lab.map((t) => t.id), filmed, Number(arg('--count')) || 1).filter((id) => !process.argv.includes('--only-new') || !done.has(id));
+  if (!ids.length) console.log('nothing new to film: every lab experiment has a film already');
   const { acquire } = await import('./heavy.mjs');
-  const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
-  try {
-    const r = await record(id, { seconds: Number(arg('--seconds')) || 20, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
-    console.log('recorded ' + path.relative(process.cwd(), r.video) + ' and ' + path.relative(process.cwd(), r.meta));
-  } finally { release(); }
+  for (const id of ids) {
+    const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
+    try {
+      const r = await record(id, { seconds: Number(arg('--seconds')) || 20, ...(arg('--out') ? { out: path.resolve(arg('--out')) } : {}) });
+      console.log('recorded ' + path.relative(process.cwd(), r.video) + ' and ' + path.relative(process.cwd(), r.meta));
+    } finally { release(); }
+  }
 }
