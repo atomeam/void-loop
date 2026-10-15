@@ -37,7 +37,9 @@ export function judge(c, r, limits = {}) {
   const fpsMin = ex.fpsMin ?? (c.fps ? limits.fpsMin : undefined);
   if (fpsMin && typeof r.fps === 'number' && r.fps < fpsMin) why.push('fps ' + r.fps + ' < ' + fpsMin);
   if (limits.loadMs && r.loadMs > limits.loadMs) why.push('load ' + r.loadMs + ' ms > ' + limits.loadMs);
-  return { ask: c.ask, ok: !why.length, why, key: c.ask + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
+  // a console error or a broken file is the page's, not the ask's: one key for all asks, so it is filed once, not once per ask
+  const site = why.length && /^console: /.test(why[0]);
+  return { ask: c.ask, ok: !why.length, why, key: (site ? 'site' : c.ask) + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
 }
 
 /** The asks of a suite, each once (a repeat is dropped, never sent twice in a run). Pure. */
@@ -92,8 +94,9 @@ export function plan(inv, seen = {}, n = NEW_PER_RUN, games = {}, priority = [])
     if (out.length >= n) break;
     if (f.path) { if (!tried.has(f.path)) out.push({ ask: f.path, path: f.path, feature: f.id, page: true }); continue; }
     const fresh = f.asks.find((x) => !tried.has(x.toLowerCase()));
-    const ask = fresh || f.asks.flatMap((x) => variants(x, games)).find((x) => !tried.has(x));
-    if (ask) out.push({ ask, feature: f.id, variant: !fresh, base: f.asks[0] });
+    const v = fresh ? null : f.asks.flatMap((x) => variants(x, games).map((w) => [w, x])).find(([w]) => !tried.has(w));
+    const ask = fresh || (v && v[0]);
+    if (ask) out.push({ ask, feature: f.id, variant: !fresh, base: fresh || v[1] }); // base: the example this wording came from
   }
   return out;
 }
