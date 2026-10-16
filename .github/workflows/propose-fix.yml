@@ -3,8 +3,10 @@
 # (owner-only /api/propose-fix, lib/propose-fix.js); tools/propose-fix.mjs applies it to a copy and lets the repo decide: the skill
 # collision check, the skill's unit test, Void's review as a gate, and the everyday benchmark on the missed ask plus every bench ask
 # the skill already answers. Only a proposal that passes all four leaves this job, as a patch file; the second job holds the write
-# token, moves the patch's bytes into a branch (git apply, nothing run) and opens a pull request labelled "made by V01D", never
-# automerge: a builder reads it like anyone's. A proposal that fails is undone and the job's note says which step, for a builder.
+# token, moves the patch's bytes into a branch (git apply, nothing run) and opens a pull request labelled "made by V01D" and
+# automerge (owner, 2026-10-16): it merges on Void's review like any PR, and verify.yml reverts it if main's suite goes red. A PR the
+# workflow token opens starts no pull_request runs, so this job dispatches Void's review and the automerge bot on it itself.
+# A proposal that fails is undone and the job's note says which step, for a builder.
 # Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
 name: V01D proposes a fix
 
@@ -115,6 +117,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
+      actions: write # start Void's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -147,9 +150,12 @@ jobs:
           git commit -q -m "V01D fixes its $SKILL skill: learn to handle \"$ASK\"" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "Suggested-by: Void (probe)"
           git push -q origin "$branch"
           gh label create "made by V01D" --color 5c5cff --description "a change V01D's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
-          url=$(gh pr create --base main --head "$branch" --label "made by V01D" --title "V01D fixes its $SKILL skill: learn to handle \"$ASK\"" \
-            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. Not labelled automerge on purpose: a builder reads it like anyone's. The ask is V01D's own words, not a visitor's.")
+          url=$(gh pr create --base main --head "$branch" --label "made by V01D" --label automerge --title "V01D fixes its $SKILL skill: learn to handle \"$ASK\"" \
+            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. Labelled automerge (owner, 2026-10-16: \"set them to automerge\"): it merges on Void's review like any PR, and verify.yml takes it back if the suite goes red. The ask is V01D's own words, not a visitor's.")
           echo "### V01D's fix is up: $url" >> "$GITHUB_STEP_SUMMARY"
+          # the merge gate: Void's review on this head, then the bot that merges labelled PRs once it is clean
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Void's review on ${url} by hand"
+          gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true
           # the job's note says where the fix went (counts and the link only)
           if [ -n "$VOID_OWNER_TOKEN" ]; then
             node -e "

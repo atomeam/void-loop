@@ -101,6 +101,6 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   const [propose, pr] = wf.split(/\n  pull-request:\n/);
   assert.match(propose, /node tools\/propose-fix\.mjs/); assert.match(propose, /VOID_OWNER_TOKEN: \$\{\{ secrets\.VOID_OWNER_TOKEN \}\}/); assert.doesNotMatch(propose, /contents: write|pull-requests: write/);
-  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs|--label "automerge"|label automerge/);
+  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label automerge/, 'V01D\'s passing fixes automerge (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
   assert.doesNotMatch(wf, /OPENROUTER|ANTHROPIC|secrets\.(?!VOID_OWNER_TOKEN)/);
 });
