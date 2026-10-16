@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 89,
+ "runsTotal": 90,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 14
+  "none": 15
  },
  "runs": [
+  {
+   "at": "2026-10-16T18:17:08Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T18:09:42Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "tighten",
    "note": "load ceiling 1700 -> 1500 ms"
-  },
-  {
-   "at": "2026-10-16T07:56:26Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"what can motelet do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -246,9 +246,9 @@
   "skill:releasenotes": "2026-10-16T18:09:42Z",
   "skill:rides": "2026-10-16T18:09:42Z",
   "skill:room": "2026-10-16T18:09:42Z",
-  "skill:routine": "2026-10-16T03:25:28Z",
-  "skill:savings": "2026-10-16T03:41:58Z",
-  "skill:senolytic": "2026-10-16T03:41:58Z",
+  "skill:routine": "2026-10-16T18:17:08Z",
+  "skill:savings": "2026-10-16T18:17:08Z",
+  "skill:senolytic": "2026-10-16T18:17:08Z",
   "skill:services": "2026-10-16T03:41:58Z",
   "skill:shape": "2026-10-16T03:41:58Z",
   "skill:share": "2026-10-16T04:06:43Z",
