@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 78,
+ "runsTotal": 79,
  "kinds": {
   "grow": 15,
   "file": 44,
   "teach": 7,
   "tighten": 6,
-  "none": 6
+  "none": 7
  },
  "runs": [
+  {
+   "at": "2026-10-16T13:54:16Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T13:06:04Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T06:02:43Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"what are they doing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -213,9 +213,9 @@
   "skill:layer": "2026-10-16T13:06:04Z",
   "skill:light-look": "2026-10-16T13:06:04Z",
   "skill:link": "2026-10-16T13:06:04Z",
-  "skill:list": "2026-10-15T20:35:25Z",
-  "skill:loan": "2026-10-15T20:35:25Z",
-  "skill:local-inference": "2026-10-15T21:48:02Z",
+  "skill:list": "2026-10-16T13:54:16Z",
+  "skill:loan": "2026-10-16T13:54:16Z",
+  "skill:local-inference": "2026-10-16T13:54:16Z",
   "skill:lock": "2026-10-15T21:48:02Z",
   "skill:magnetize": "2026-10-15T21:48:02Z",
   "skill:make": "2026-10-15T21:48:02Z",

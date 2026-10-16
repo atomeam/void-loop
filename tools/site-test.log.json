@@ -595,5 +595,12 @@
   "kind": "file",
   "key": "play voidquest | nothing appeared",
   "note": "fix: \"play voidquest\" nothing appeared; no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 (); fps 3 < 5"
+ },
+ {
+  "at": "2026-10-16T13:54:16Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
  }
 ]
