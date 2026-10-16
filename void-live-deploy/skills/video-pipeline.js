@@ -1,43 +1,37 @@
 /**
- * video-pipeline skill — browser video recordings pipeline to GitHub release assets.
+ * video-pipeline skill: browser video recordings pipeline to GitHub release assets.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "browser video recordings pipeline", "how films get to github releases", "video recordings to release assets".
- * Surfaces the live record.yml and clips.yml pipelines. Empty surface stays empty.
- * No secrets written; nothing is uploaded from this skill.
+ * "browser video recordings pipeline", "pipeline to GitHub release assets", "record video for release".
+ * Shows the steps to record in the browser with MediaRecorder and attach the file as a GitHub release asset.
+ * No secrets written, nothing uploaded from Void. Empty surface stays empty.
  */
-export function pipelineOf(text) {
+export function wantsPipeline(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:browser\s+)?video\s+recordings?\s+pipeline(?:\s+to\s+(?:github\s+)?release\s+assets?)?$/.test(t)) return true;
-  if (/^(?:how\s+(?:do|are)\s+)?(?:films?|videos?|recordings?)\s+(?:get|go|uploaded?)\s+to\s+(?:github\s+)?releases?$/.test(t)) return true;
-  if (/^video\s+pipeline$/.test(t)) return true;
-  if (/^(?:show|open)\s+(?:the\s+)?(?:browser\s+)?recordings?\s+pipeline$/.test(t)) return true;
-  return false;
+  return /^(?:browser\s+)?video\s+recordings?\s+pipeline(?:\s+to\s+github\s+release\s+assets)?$|pipeline\s+to\s+(?:github\s+)?release\s+assets|record\s+(?:browser\s+)?video\s+for\s+release$/i.test(t);
 }
 
-async function run(text, api) {
+function run(text, api) {
   const { showPage, esc } = api;
-  if (!pipelineOf(text)) return 'none';
-  showPage((el) => {
-    el.innerHTML = '<h2>Browser video recordings → GitHub releases</h2>'
-      + '<p>V01D already films itself and keeps every film as a draft GitHub Release (MP4 + words).</p>'
-      + '<ol>'
-      + '<li>' + esc('record.yml (daily + after each deploy): tools/record.mjs opens a lab experiment in a real browser, films it, converts to 9:16 MP4, and creates a draft release tagged film-YYYYMMDD-…') + '</li>'
-      + '<li>' + esc('clips.yml (daily ads): tools/clips.mjs films the live site, renders Shorts, and keeps the batch as a draft release.') + '</li>'
-      + '<li>' + esc('The owner reviews the draft, then uploads to YouTube by hand (or automatic when YT_UPLOAD=1). Nothing is public until then.') + '</li>'
-      + '</ol>'
-      + '<p class="src">Live: .github/workflows/record.yml and clips.yml · tools/record.mjs · tools/clips.mjs</p>'
-      + '<div class="src">Empty stage stays empty. This card appears only when asked.</div>';
+  if (!wantsPipeline(text)) return 'none';
+  showPage((p) => {
+    p.innerHTML = '<h2>Browser video → GitHub release assets</h2>'
+      + '<ol><li>Capture in the browser: MediaRecorder on a canvas or video element, start/stop to get a Blob (webm).</li>'
+      + '<li>Create or choose a GitHub release for the repo.</li>'
+      + '<li>Upload the Blob as a release asset (via the UI or the releases API with your own token).</li>'
+      + '<li>Use the asset download URL in film metadata or the /films/ page.</li></ol>'
+      + '<p>Void stores no tokens and uploads nothing. The pipeline is the steps above.</p>'
+      + '<div class="src">For automating Void’s films</div>';
   });
   return 'video-pipeline';
 }
 
 export default {
   name: 'video-pipeline',
-  examples: ['browser video recordings pipeline', 'how films get to github releases', 'video recordings to release assets', 'video pipeline'],
-  nearMisses: ['play a video', 'films', 'upload this to youtube', 'what is github'],
-  match(lower, text) { return pipelineOf(text); },
+  examples: ['browser video recordings pipeline', 'pipeline to GitHub release assets', 'record video for release'],
+  nearMisses: ['play a video', 'video skill', 'youtube video', 'films'],
+  match(lower, text) { return wantsPipeline(text); },
   run,
   suite() {
-    return { ok: pipelineOf('browser video recordings pipeline') && pipelineOf('how films get to github releases') && !pipelineOf('hello') };
+    return { ok: wantsPipeline('browser video recordings pipeline') && !wantsPipeline('play lofi beats') };
   },
 };
