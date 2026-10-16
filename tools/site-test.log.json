@@ -460,5 +460,27 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:26:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:31:32Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "zoom in on the figure | nothing appeared",
+  "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:38:50Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1900 -> 1700 ms"
  }
 ]

@@ -443,6 +443,40 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+
+  // V01D's body asks (skills/nutrition.js, food.js, words.js): the BMI card saves a dated entry only on "save this" and shows the
+  // trend; its band links to the calorie card with the same numbers; "plan my meals" splits the day and the calorie and food
+  // cards link to it; an unscrambled word is a tap from a cartoon of it.
+  if (want("body asks: bmi save this keeps a trend only on tap, the band links to calories, plan my meals splits the day, food links to it, an unscrambled word draws a cartoon")) { const B = await fresh();
+    await B.ask('bmi calculator', 900); await until(async () => /Nothing saved/.test(await B.page()), 8000); const bmiPg = await B.page();
+    const stored0 = await B.p.evaluate(() => localStorage.getItem('a2m.void.bmi.v1'));
+    check('body: the BMI card opens with nothing saved and a save this button', /BMI calculator/.test(bmiPg) && /Nothing saved/.test(bmiPg) && stored0 === null && !!(await B.p.$('.vpage.on #nu-save')), bmiPg.slice(0, 120));
+    await B.p.click('.vpage.on #nu-save'); await until(async () => /One entry saved/.test(await B.page()), 4000);
+    const stored1 = await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]'));
+    check('body: save this keeps one dated entry in this browser and the trend line shows it', stored1.length === 1 && stored1[0].kg > 0 && /One entry saved/.test(await B.page()), JSON.stringify(stored1));
+    await B.p.fill('.vpage.on #nu-w', '150'); await B.p.waitForTimeout(200); await B.p.click('.vpage.on #nu-save'); await until(async () => /2 entries since/.test(await B.page()), 4000);
+    const trendPg = await B.page();
+    check('body: a second save shows the trend (2 entries, BMI first -> last, the change)', /2 entries since/.test(trendPg) && /\u2192|→/.test(trendPg) && (await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]').length)) === 2, trendPg.slice(0, 200));
+    const bandAskStr = await B.p.$eval('.vpage.on .nu-next a[data-ask]', (a) => a.getAttribute('data-ask'));
+    check('body: the band link is a calorie ask carrying the height and weight', /^how many calories should i eat .* at 5'9 150 lb$/.test(bandAskStr), bandAskStr);
+    await B.p.click('.vpage.on .nu-next a[data-ask]'); await until(async () => /Daily calories/.test(await B.page()), 8000); const calFromBmi = await B.page();
+    check('body: the tap opens the daily calories card for those numbers, with the meals link', /Daily calories/.test(calFromBmi) && /5'9/.test(calFromBmi) && /150 lb/.test(calFromBmi) && /plan my meals around/.test(calFromBmi), calFromBmi.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="plan my meals for"]'); await until(async () => /Meals for the day/.test(await B.page()), 8000); const mealsPg = await B.page();
+    check('body: "plan my meals for N calories" splits the day into breakfast, lunch, dinner and snacks', /Meals for the day/.test(mealsPg) && /Breakfast/.test(mealsPg) && /Snacks/.test(mealsPg) && /25%/.test(mealsPg) && /35%/.test(mealsPg), mealsPg.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="make a list with Breakfast"]'); await until(async () => (await B.state()).some((x) => x.kind === 'list'), 8000);
+    const lists = (await B.state()).filter((x) => x.kind === 'list');
+    check('body: "put it on the stage" makes the meals checklist', lists.length === 1 && lists[0].items.length === 4 && /Breakfast/.test(lists[0].items[0].text), JSON.stringify(lists.map((l) => l.items.map((i) => i.text))).slice(0, 200));
+    await B.ask('calories in a banana', 900); await until(async () => /Banana/.test(await B.page()), 8000); const foodPg = await B.page();
+    check('body: food facts link to plan my meals', /Banana/.test(foodPg) && !!(await B.p.$('.vpage.on a[data-ask="plan my meals"]')), foodPg.slice(0, 100));
+    await B.ask('plan my meals', 900); await until(async () => /Meals for the day/.test(await B.page()), 8000); const meals2 = await B.page();
+    check('body: a bare "plan my meals" uses the last calorie card\'s target (page memory), not 2,000', /Meals for the day/.test(meals2) && /your last calorie card/.test(meals2), meals2.slice(0, 160));
+    await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
+    const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
+    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
+    await B.ctx.close(); }
   // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
   // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
   if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
@@ -701,6 +735,39 @@ try {
     check('undo after a plan takes back the whole plan (checklist, timer and note), and leaves what was there before it',
       /list/.test(during) && /timer/.test(during) && /sticky/.test(during) && after === 'clock' && !U.errors.length, JSON.stringify({ during, after, e: U.errors }));
     await U.ctx.close(); }
+
+  // Plan history (asked by Void, skills/intent.js): a plan is kept in this browser as it was laid out; after "clear" wipes the
+  // stage, "plan history" lists it and "restore plan 1" puts it back as new pieces, so a wipe is never total.
+  if (want("plan history: a plan survives a clear, plan history lists it, restore puts it back")) { const H = await fresh();
+    await H.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, note: 'Little and often.', model: 'gemma' })));
+    await H.ask('make a plan to learn spanish', 3000); await until(() => H.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]')).length), 8000);
+    const kept = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]'));
+    check('plan history: the plan is kept with its goal and pieces', kept.length === 1 && kept[0].goal === 'learn spanish' && kept[0].things.length >= 3 && kept[0].things.every((t) => Number.isFinite(t.x)), JSON.stringify(kept.map((k) => [k.goal, k.pieces])));
+    await H.ask('clear', 800); const wiped = (await H.state()).length;
+    await H.ask('plan history', 800); await until(async () => /Plan history/.test(await H.page()), 6000); const histPg = await H.page();
+    check('plan history: after a clear the list names the plan with a restore link', wiped === 0 && /Plan history/.test(histPg) && /learn spanish/.test(histPg) && /just now/.test(histPg) && !!(await H.p.$('.vpage.on a[data-ask="restore plan 1"]')), histPg.slice(0, 160) + ' | wiped=' + wiped);
+    await H.p.click('.vpage.on a[data-ask="restore plan 1"]'); await until(async () => (await H.state()).length >= 3, 6000);
+    const back = (await H.state()).map((x) => x.kind).sort().join(',');
+    check('plan history: restore puts the checklist, timer and note back as new pieces', /list/.test(back) && /timer/.test(back) && /sticky/.test(back) && /restored/.test(await H.whisper()), back + ' | ' + (await H.whisper()));
+    await H.ask('clear', 800); await H.ask('plan my move', 2000); await until(() => H.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]')).length === 2), 8000);
+    check('plan history: a second plan (after a clear) is listed first, one line per distinct goal', (await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]').map((p) => p.goal))).join('|') === 'move|learn spanish' && !H.errors.length, (await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]').map((p) => p.goal))).join('|') + ' | ' + H.errors.join(' | '));
+    await H.ctx.close(); }
+  // The weather prompt and the coral heat dose (asked by Void): rain in the next hours offers a reminder the remind skill takes;
+  // the coral heat card projects the next 48 hours from Open-Meteo's marine and UV forecasts.
+  if (want("weather prompt and heat dose: rain offers a reminder, a dry day offers none, the coral heat card projects 48 hours")) { const W = await fresh();
+    await W.ask('weather in Bergen', 1500); await until(async () => /Rain from/.test(await W.page()), 8000); const wxPg = await W.page();
+    const wxAsk = await W.p.$eval('.vpage.on .wx-next a[data-ask]', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('weather prompt: rain in Bergen in two hours offers "remind me to bring an umbrella in N minutes" (the timer skill)', /Bergen/.test(wxPg) && /Rain from/.test(wxPg) && /^remind me to bring an umbrella in \d{1,3} minutes$/.test(wxAsk) && +wxAsk.replace(/\D/g, '') >= 5 && +wxAsk.replace(/\D/g, '') <= 120, wxPg.slice(0, 120) + ' | ' + wxAsk);
+    await W.p.click('.vpage.on .wx-next a[data-ask]'); await until(async () => (await W.state()).some((x) => x.kind === 'timer'), 6000);
+    const wxTimers = (await W.state()).filter((x) => x.kind === 'timer');
+    check('weather prompt: the tap starts a timer on the stage for those minutes', wxTimers.length === 1 && wxTimers[0].running && Math.abs(wxTimers[0].duration - +wxAsk.replace(/\D/g, '') * 60000) < 1000, JSON.stringify(wxTimers.map((t) => [t.duration, t.running])) + ' | ' + wxAsk);
+    await W.ask('weather in Lisbon', 1500); await until(async () => /Lisbon/.test(await W.page()) && /Open-Meteo/.test(await W.page()), 8000);
+    check('weather prompt: a dry mild day offers nothing', /Lisbon/.test(await W.page()) && !(await W.p.$('.vpage.on .wx-next')), (await W.page()).slice(0, 80));
+    await W.ask('can coral survive heatwaves', 2500); await until(async () => /Projected heat dose/.test(await W.page()), 8000); const heatPg = await W.page();
+    check('heat dose: the coral heat card projects the next 48 hours (water over the threshold, the degree heating weeks it adds, UV)', /Projected heat dose, next 48 hours/.test(heatPg) && /30 of 48 hours at or above the bleaching threshold/.test(heatPg) && /degree heating weeks/.test(heatPg) && /UV peaks at/.test(heatPg), heatPg.slice(0, 200));
+    await W.ask('coral heat dose', 2500); await until(async () => /Projected heat dose/.test(await W.page()), 8000);
+    check('heat dose: "coral heat dose" opens the same card', /Projected heat dose/.test(await W.page()) && !W.errors.length, W.errors.join(' | '));
+    await W.ctx.close(); }
   // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
   // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
   if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();
@@ -1163,6 +1230,25 @@ try {
         && b.side === 'rgb(93, 255, 165)' && b.bg === a.bg && !P.errors.length,
       JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // The fuzzy layer (lib/fuzzy.js, asked by Void three times, 2026-10-14): a slip of a skill's trigger word reaches the skill with no
+  // typo pattern written by hand; the ask is logged as typed; a slip that no skill would take, a real word and a place stay as typed.
+  if (want("fuzzy layer: a slip of a skill's trigger word reaches the skill, logged as typed, and a real word or a place is never corrected")) { const F = await fresh();
+    await F.ask('open a notpad', 900);
+    const pad = await F.p.$('.thing.notepad');
+    await F.ask('generate a pasword', 900);
+    const pw = await F.page();
+    const log = await F.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => /skill:/.test(x.note || '')).map((x) => x.ask + '=' + x.note));
+    // a real word (whether) runs as typed: the card's heading is the ask as routed; a place after "in" and a slip no skill takes stay as typed (the pure layer on the page's own skills)
+    await F.ask('whether in paris', 1200);
+    const real = await F.page();
+    const pure = await F.p.evaluate(async () => { const m = await import('/lib/fuzzy.js'); const names = await (await fetch('/skills/index.json')).json(); const sks = [];
+      for (const n of names) { try { sks.push((await import('/skills/' + n + '.js')).default); } catch (_) {} }
+      const v = m.vocabulary(sks); return m.correct('weather in sofia', v).text + ' | ' + m.correct('tokio time', v).text + ' | ' + String(m.confirm(m.correct('tokio time', v), null)) + ' | ' + m.correct('recipie for pancakes', v).text; });
+    check("fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
+      !!pad && /password/i.test(pw) && log.some((l) => l.startsWith('open a notpad=skill:notepad')) && log.some((l) => l.startsWith('generate a pasword=skill:util'))
+      && /whether in paris/.test(real) && !/weather in paris/.test(real) && pure === 'weather in sofia | tokyo time | false | recipe for pancakes',
+      JSON.stringify({ pad: !!pad, pw: pw.slice(0, 60), log, real: real.slice(0, 50), pure }));
+    await F.ctx.close(); }
   // step 6's visible upgrade for the notepad (owner, 2026-10-11: every cleanup move ships one): the card is the legal pad its 3D view shows
   if (want("notepad legal pad look: yellow ruled paper, red margin and binding, the felt-tip hand, rules that line up with the writing, a colour still edges it")) { const P = await fresh();
     await P.ask('notepad: buy bread', 600);

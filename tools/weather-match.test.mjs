@@ -20,3 +20,21 @@ test('weather: look-alikes it leaves alone', () => {
     'the high road', 'storm area 51', 'should i wear a tie to the interview'])
     assert.ok(!takes(a), a);
 });
+
+// The actionable prompt (asked by Void): rain, snow, frost or heat in the next hours offers one ask the timer skill takes.
+import { weatherPrompt } from '../void-live-deploy/skills/weather.js';
+import { wantsCreate } from '../void-live-deploy/skills/timer.js';
+const H = (over) => ({ time: Array.from({ length: 8 }, (_, i) => '2026-10-16T' + String(13 + i).padStart(2, '0') + ':00'), temperature_2m: Array(8).fill(12), precipitation_probability: Array(8).fill(5), weather_code: Array(8).fill(1), ...over });
+const NOW = Date.parse('2026-10-16T12:40:00'); // twenty to one, in the forecast's own clock
+test('weather prompt: rain, snow, frost and heat, timed to the hour before; a dry mild day offers nothing', () => {
+  const rain = weatherPrompt(H({ precipitation_probability: [5, 10, 70, 80, 60, 20, 5, 5], weather_code: [1, 1, 61, 63, 61, 2, 1, 1] }), NOW);
+  assert.equal(rain.kind, 'rain'); assert.equal(rain.minutes, 80); assert.equal(rain.ask, 'remind me to bring an umbrella in 80 minutes'); assert.match(rain.why, /Rain from 3pm \(70% chance\)/); assert.equal(rain.at, '2pm');
+  assert.equal(weatherPrompt(H({ precipitation_probability: [60, 60, 5, 5, 5, 5, 5, 5] }), NOW).ask, 'remind me to bring an umbrella in 20 minutes', 'rain in the first hour: the minutes to that hour');
+  assert.equal(weatherPrompt(H({ precipitation_probability: [60, 60, 5, 5, 5, 5, 5, 5] }), Date.parse('2026-10-16T13:30:00')).minutes, 5, 'already raining: five minutes, never a past time');
+  assert.equal(weatherPrompt(H({ weather_code: [1, 1, 1, 73, 73, 1, 1, 1] }), NOW).kind, 'snow');
+  assert.equal(weatherPrompt(H({ temperature_2m: [3, 1, -1, -2, -2, 0, 2, 3] }), NOW).ask, 'remind me to cover the plants, frost tonight in 80 minutes');
+  assert.equal(weatherPrompt(H({ temperature_2m: [28, 31, 33, 34, 33, 30, 28, 26] }), NOW).ask, 'remind me to drink water and find shade in 80 minutes');
+  assert.equal(weatherPrompt(H({}), NOW), null); assert.equal(weatherPrompt(null, NOW), null);
+  assert.equal(weatherPrompt(H({ precipitation_probability: [5, 5, 5, 5, 5, 5, 5, 5, 90] }), NOW), null, 'past the hours shown is not a prompt');
+  for (const p of [rain, weatherPrompt(H({ weather_code: [1, 1, 1, 73, 73, 1, 1, 1] }), NOW), weatherPrompt(H({ temperature_2m: [3, 1, -1, -2, -2, 0, 2, 3] }), NOW)]) assert.ok(wantsCreate(p.ask.toLowerCase()), p.ask + ' is an ask the timer skill takes');
+});

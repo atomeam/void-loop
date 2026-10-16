@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 3,
+    "tested": 8,
+    "checked": 4,
     "proven": 11
    },
    "from": 5,
@@ -71,8 +71,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 2,
+    "tested": 3,
+    "checked": 3,
     "proven": 9
    },
    "from": 83,
@@ -311,7 +311,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "n": 8
   },
   {
@@ -370,8 +370,8 @@
     "cartoon version of a shipwreck",
     "cartoon version of gg allin"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 12
   },
   {
@@ -1120,7 +1120,7 @@
     "what is the moon phase today"
    ],
    "tier": "tested",
-   "why": "15 real asks in the benchmark",
+   "why": "17 real asks in the benchmark",
    "n": 53
   },
   {
@@ -1195,7 +1195,7 @@
     "will it rain tomorrow"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 45 real asks in the benchmark",
    "n": 58
   },
   {
@@ -1358,7 +1358,7 @@
     "how far from New York to Boston"
    ],
    "tier": "tested",
-   "why": "23 real asks in the benchmark",
+   "why": "26 real asks in the benchmark",
    "n": 69
   },
   {
@@ -1373,7 +1373,7 @@
     "capital of Australia"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 56 real asks in the benchmark",
    "n": 70
   },
   {
@@ -1408,7 +1408,7 @@
     "timer"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 33 real asks in the benchmark",
+   "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
    "n": 72
   },
   {
@@ -1438,7 +1438,7 @@
     "days until january 1"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 17 real asks in the benchmark",
+   "why": "a self-test, 6 browser-suite mentions, 18 real asks in the benchmark",
    "n": 74
   },
   {
@@ -1597,7 +1597,7 @@
     "give me a calc"
    ],
    "tier": "proven",
-   "why": "a self-test, 827 real asks in the benchmark",
+   "why": "a self-test, 829 real asks in the benchmark",
    "n": 84
   },
   {
@@ -1611,8 +1611,8 @@
     "convert card",
     "open a converter"
    ],
-   "tier": "tested",
-   "why": "3 browser-suite mentions",
+   "tier": "checked",
+   "why": "3 browser-suite mentions, 1 real ask in the benchmark",
    "n": 85
   },
   {
@@ -1732,7 +1732,7 @@
     "what color is #ff8800"
    ],
    "tier": "proven",
-   "why": "a self-test, 68 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
    "n": 93
   },
   {
@@ -1900,7 +1900,7 @@
     "how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 21 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 22 real asks in the benchmark",
    "n": 104
   },
   {
@@ -1915,7 +1915,7 @@
     "sugar in a can of coke"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 real asks in the benchmark",
+   "why": "a self-test, 11 real asks in the benchmark",
    "n": 105
   },
   {
@@ -2064,7 +2064,7 @@
     "what rhymes with orange"
    ],
    "tier": "proven",
-   "why": "a self-test, 58 real asks in the benchmark",
+   "why": "a self-test, 60 real asks in the benchmark",
    "n": 114
   },
   {
@@ -2094,7 +2094,7 @@
     "good morning in French"
    ],
    "tier": "proven",
-   "why": "3 browser-suite mentions, 31 real asks in the benchmark",
+   "why": "3 browser-suite mentions, 33 real asks in the benchmark",
    "n": 116
   },
   {
@@ -2139,7 +2139,7 @@
     "recipes with chicken"
    ],
    "tier": "tested",
-   "why": "8 real asks in the benchmark",
+   "why": "9 real asks in the benchmark",
    "n": 119
   },
   {
@@ -2400,7 +2400,7 @@
     "write in the notepad call the vet"
    ],
    "tier": "proven",
-   "why": "4 browser-suite mentions, 4 real asks in the benchmark",
+   "why": "5 browser-suite mentions, 5 real asks in the benchmark",
    "n": 136
   },
   {
@@ -2715,7 +2715,7 @@
     "I need to prepare a talk by next week and tell Sam"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
    "n": 156
   },
   {

@@ -420,6 +420,58 @@
       "ask": "ask-20261013-1802-1",
       "ledgerAt": "2026-10-16T05:09:54Z",
       "why": "built: the same root-cause row, with the run linked"
+    },
+    {
+      "ask": "ask-20261013-2054-1",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: a plan's stickies carry a tab that reads note to self or draft, not sent (void.html .thing.sticky[data-role], skills/sticky.js), so a note is never taken for an order; the ledger line names this id in prose, which followThrough's word match missed"
+    },
+    {
+      "ask": "ask-20261015-0250-2",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: substitution impact, one 'then:' line per swap (IMPACT in skills/swaps.js, #859)"
+    },
+    {
+      "ask": "ask-20261014-2248-2",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: the BMI band links to the calorie card with the same height and weight (bandAsk in skills/nutrition.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1453-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: food facts and the calorie card link to 'plan my meals', which splits the day and puts the list on the stage (#866)"
+    },
+    {
+      "ask": "ask-20261014-1548-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: each word in the unscramble and pattern lists runs 'cartoon version of a <word>' (pictureAsk in skills/words.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1523-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the weather card offers a timer when rain, snow, frost or heat is in the next hours (weatherPrompt in skills/weather.js); the remind skill's 'remind me at' is owner-only, so the timer carries it"
+    },
+    {
+      "ask": "ask-20261014-1012-3",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: plan history (skills/intent.js): the last 5 distinct plans kept in this browser, 'plan history' lists them, 'restore plan 1' puts one back"
+    },
+    {
+      "ask": "ask-20261014-0847-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the same plan history, asked first in these words"
+    },
+    {
+      "ask": "ask-20261014-1658-1",
+      "words": "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js corrects a slip of a skill's trigger word from the skills' own examples, no typo pattern by hand"
+    },
+    {
+      "ask": "ask-20261014-0847-3",
+      "words": "Implement a fuzzy-matching layer in the semantic validator to handle common misspellings of skill names.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: the same fuzzy layer; a misspelled skill name ('notpad', 'pasword') reaches the skill, and the skill that takes the ask must own the corrected word"
     }
   ]
 }
