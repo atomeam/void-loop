@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 88,
+ "runsTotal": 89,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 13
+  "none": 14
  },
  "runs": [
+  {
+   "at": "2026-10-16T18:09:42Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T17:30:08Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"what can motelet do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T07:50:13Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -243,9 +243,9 @@
   "skill:rebuild-map": "2026-10-16T17:30:08Z",
   "skill:recent": "2026-10-16T17:30:08Z",
   "skill:recipe": "2026-10-16T17:30:08Z",
-  "skill:releasenotes": "2026-10-16T03:25:28Z",
-  "skill:rides": "2026-10-16T03:25:28Z",
-  "skill:room": "2026-10-16T03:25:28Z",
+  "skill:releasenotes": "2026-10-16T18:09:42Z",
+  "skill:rides": "2026-10-16T18:09:42Z",
+  "skill:room": "2026-10-16T18:09:42Z",
   "skill:routine": "2026-10-16T03:25:28Z",
   "skill:savings": "2026-10-16T03:41:58Z",
   "skill:senolytic": "2026-10-16T03:41:58Z",
