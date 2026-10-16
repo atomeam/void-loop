@@ -44,6 +44,12 @@ export const jobOf = (m, family) => ({
   note: ('V01D wrote this ask for its ' + family + ' family and missed it (wanted ' + m.want + '); from the daily probe (tools/probe-asks.mjs), not a visitor\'s words').slice(0, 300),
 });
 
+/** the things a probe asked the forge to make and it missed (frontier #14): the misses that wanted the forge, "make me a giraffe" ->
+ * "giraffe"; only the thing's name. */
+export const forgeWants = (misses) => [...new Set((misses || []).filter((m) => m && /\bforge\b/.test(String(m.want || '')))
+  .map((m) => String(m.ask).toLowerCase().replace(/^.*?(?:make|build|forge|3d[\s-]?print|print|sculpt)\s+(?:me\s+)?(?:an?\s+)?(?:3d\s+)?/, '').replace(/[^a-z -]+/g, ' ').trim().replace(/\s+(?:in 3d|i can print|for me|please)$/, '').replace(/\s+/g, ' ').trim().slice(0, 30))
+  .filter((t) => /^[a-z][a-z -]{1,30}$/.test(t)))].slice(0, 8);
+
 /** What to queue: the misses in order, within the open limit, skipping targets already in the queue. */
 export function plan(misses, queue, family, { openMax = PROBE_OPEN_MAX } = {}) {
   const items = (queue && queue.items) || [];
@@ -86,7 +92,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   } catch (e) { console.error('probe-asks: V01D did not write asks: ' + e.message); process.exit(3); }
   const fresh = freshOnly(asks, bench);
   if (noProbe) { console.log(JSON.stringify({ family, asks }, null, 1)); process.exit(0); }
-  if (!fresh.length) { console.log(summary({ family, wrote: asks.length, probed: 0, misses: [], queued: [], dry })); process.exit(asks.length ? 0 : 3); }
+  // one record per run in V01D's probe ledger (lib/probe-log.js, the growth card's "My probes"): counts only, never the asks
+  const logRun = async (probed, missed, queuedN, forge = []) => { if (dry) return; try { await api('/api/probe-log', 'POST', { kind: 'probe', family: family && family.id, wrote: asks.length, probed, misses: missed, queued: queuedN, forge }); } catch (e) { console.error('probe-asks: the probe ledger was not written: ' + e.message); } };
+  if (!fresh.length) { await logRun(0, 0, 0); console.log(summary({ family, wrote: asks.length, probed: 0, misses: [], queued: [], dry })); process.exit(asks.length ? 0 : 3); }
   const file = join(os.tmpdir(), 'void-probe-asks-' + Date.now().toString(36) + '.json');
   writeFileSync(file, JSON.stringify(fresh, null, 1));
   const run = spawnSync(process.execPath, [join(here, 'bench.mjs'), '--probe', file], { stdio: 'inherit', timeout: 20 * 60000 });
@@ -103,5 +111,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       if (p.later.length) console.log(p.later.length + ' more miss(es) wait: ' + PROBE_OPEN_MAX + ' probe jobs open at once');
     } catch (e) { console.error('probe-asks: could not queue: ' + e.message); }
   }
+  await logRun(fresh.length, misses.length, queued.length, forgeWants(misses));
   console.log('\n' + summary({ family, wrote: asks.length, probed: fresh.length, misses, queued, dry }));
 }

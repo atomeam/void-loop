@@ -161,3 +161,9 @@ test('forge: "print it" and the Print button only download a file that passed; a
     assert.match(said.at(-1), /^Not printed: the rocket's file did not pass its check · open edges: 12/);
   } finally { delete globalThis.document; URL.createObjectURL = realURL.create; URL.revokeObjectURL = realURL.revoke; }
 });
+
+test('forge history (asked by Void twice): "forge history" and "what can you make" list the recipes; other asks are untouched', () => {
+  for (const a of ['forge history', 'what can you make', 'What can you 3D print for me?', 'show me the forge gallery', 'forge recipes']) assert.deepEqual(forgeOf(a), { list: true }, a);
+  for (const a of ['what can you do', 'make me a coffee', 'history of the forge in england', 'what can you make of this']) assert.ok(!forgeOf(a) || !forgeOf(a).list, a);
+  assert.deepEqual(forgeOf('make me a rocket'), { make: 'rocket' });
+});
