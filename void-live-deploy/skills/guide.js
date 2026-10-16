@@ -144,8 +144,12 @@ function mount(book, api, startAt, text) {
     rustle();
     after(leaf, 'transform', 720, () => { leaf.remove(); turning = false; draw(); });
   };
-  const turn = (d) => { const vis = shown().filter(Boolean); turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
-  const go = (n) => turnTo(n);
+  // the cover is part of the book (owner, 2026-10-16: "the cover swings open and I can't go back to view it ever"): turning back from
+  // the title page swings it shut over the pages; turning forward, a tap or a key opens it again
+  const shutCover = () => { if (tome.classList.contains('shut') || turning) return; tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.add('shut'); rustle(); live.textContent = 'the cover'; if (window.__voidBook) window.__voidBook.shut = true; };
+  const openCover = () => { if (!tome.classList.contains('shut')) return; tome.classList.remove('shut'); tome.classList.add('open'); rustle(); if (window.__voidBook) window.__voidBook.shut = false; const opened = () => { tome.classList.add('opened'); draw(); }; if (motionless()) opened(); else after(tome.querySelector('.tome-cover'), 'transform', 550, opened); };
+  const turn = (d) => { if (tome.classList.contains('shut')) { if (d > 0) openCover(); return; } if (d < 0 && shown().filter(Boolean)[0] === 1) { shutCover(); return; } const vis = shown().filter(Boolean); turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
+  const go = (n) => { if (tome.classList.contains('shut')) openCover(); turnTo(n); };
 
   // ---- the controls, Skyrim's: turn or close, nothing else
   const onKey = (e) => {
@@ -161,6 +165,7 @@ function mount(book, api, startAt, text) {
   root.addEventListener('wheel', onWheel, { passive: false });
   root.addEventListener('click', (e) => {
     const t = e.target;
+    if (tome.classList.contains('shut') && tome.contains(t)) { e.preventDefault(); e.stopPropagation(); openCover(); return; }
     const ask = t.closest && t.closest('a[data-ask]'); if (ask) { e.preventDefault(); e.stopPropagation(); const a = ask.getAttribute('data-ask'); closeTome('ask'); setTimeout(() => { try { api.stage.ask(a); } catch (_) {} }, 60); return; }
     const j = t.closest && t.closest('a[data-page]'); if (j) { e.preventDefault(); e.stopPropagation(); go(j.getAttribute('data-page')); return; }
     if (t.classList.contains('tome-dim') || t === root) { closeTome('tap'); return; }
