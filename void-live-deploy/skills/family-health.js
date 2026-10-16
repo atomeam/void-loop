@@ -14,7 +14,7 @@ export const FAMILIES_URL = '/skills/families.json';
 export const TIERS = ['proven', 'checked', 'tested', 'experiment']; // strongest first, the order of the bar
 // what each rating means, in the words of tools/families.mjs
 export const MEANS = {
-  proven: 'all three kinds of evidence, or two with at least 3 real asks',
+  proven: 'three kinds of evidence, or two with at least 3 real asks, or two where one is a live finding under 8 days old',
   checked: 'two kinds of evidence',
   tested: 'one kind of evidence',
   experiment: 'nothing checks it yet',
@@ -94,7 +94,7 @@ export function healthHtml(esc, fam) {
       + '<span class="sub" style="font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap">' + r.count.proven + ' of ' + r.total + ' proven <span aria-hidden="true">›</span></span></span>'
       + bar(r.count, r.total, esc(r.name + ': ' + words(r.count)))
       + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '') + skillsHtml(esc, r) + '</div></div>').join('') + '</div>'
-    + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The three kinds of evidence: a skill\'s own self-test, the browser suite, and real asks in the everyday benchmark. '
+    + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The four kinds of evidence: a skill\'s own self-test, the browser suite, real asks in the everyday benchmark, and a live finding (a kept answer from the real outside service the skill wraps, a file in the repo, never a claim). '
     + TIERS.map((t) => '<b style="font-weight:600">' + t + '</b>: ' + MEANS[t]).join('; ') + '. Tap a family to see each skill and why. '
     + 'Last tested is the newest date a skill\'s evidence has (its own tests and the browser suite as last seen in the repo, or the benchmark\'s last run on main); '
     + 'success rate is the share of its benchmark asks that passed on that run. How often people use a skill is never counted.</div>'

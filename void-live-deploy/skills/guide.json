@@ -114,8 +114,8 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 1,
-    "proven": 0
+    "checked": 0,
+    "proven": 1
    },
    "from": 130,
    "to": 133
@@ -2315,8 +2315,8 @@
     "where does waymo run",
     "is waymo in austin"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 live finding, 2026-10-16",
    "n": 131
   },
   {
