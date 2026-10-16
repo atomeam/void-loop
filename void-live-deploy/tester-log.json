@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 18,
- "runsTotal": 50,
+ "runsTotal": 51,
  "kinds": {
   "grow": 11,
-  "file": 32,
+  "file": 33,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-16T03:10:24Z",
+   "passed": 0,
+   "of": 22,
+   "kind": "file",
+   "note": "fix: \"quiz me on this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T01:42:30Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 17,
    "kind": "file",
    "note": "fix: \"catroon version of gg allin\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T12:07:13Z",
-   "passed": 16,
-   "of": 16,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
   }
  ],
  "seen": {
@@ -236,6 +236,10 @@
   "skill:print-download": "2026-10-16T01:42:30Z",
   "skill:print-file": "2026-10-16T01:42:30Z",
   "skill:printedmotor": "2026-10-16T01:42:30Z",
-  "skill:proposal": "2026-10-16T01:42:30Z"
+  "skill:proposal": "2026-10-16T01:42:30Z",
+  "skill:quiz": "2026-10-16T03:10:24Z",
+  "skill:rebuild-map": "2026-10-16T03:10:24Z",
+  "skill:recent": "2026-10-16T03:10:24Z",
+  "skill:recipe": "2026-10-16T03:10:24Z"
  }
 }
