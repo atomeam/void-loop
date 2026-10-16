@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 61,
+ "runsTotal": 62,
  "kinds": {
   "grow": 15,
-  "file": 35,
+  "file": 36,
   "teach": 7,
   "tighten": 2,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-10-16T06:31:32Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T06:26:11Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 19,
    "kind": "file",
    "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T20:06:20Z",
-   "passed": 0,
-   "of": 18,
-   "kind": "grow",
-   "note": "grew the suite: \"what time is it in tokyo\""
   }
  ],
  "seen": {
@@ -278,6 +278,9 @@
   "skill:v01d-fixes": "2026-10-16T06:09:19Z",
   "skill:video": "2026-10-16T06:26:11Z",
   "skill:walls": "2026-10-16T06:26:11Z",
-  "skill:watch": "2026-10-16T06:26:11Z"
+  "skill:watch": "2026-10-16T06:26:11Z",
+  "skill:words": "2026-10-16T06:31:32Z",
+  "skill:work": "2026-10-16T06:31:32Z",
+  "skill:zoom-figure": "2026-10-16T06:31:32Z"
  }
 }

@@ -130,3 +130,20 @@ test('plan asks said other ways: "i need a plan to", "create a study plan for", 
   for (const a of ['i plan to go to bed', 'plan my day', 'what is the plan for today', 'write me a plan to start running', 'i need a plan to lose weight', 'what is a plan'])
     assert.ok(!openPlanOf(a) && !planOf(a), a);
 });
+
+// Plan history (asked by Void): the last few distinct plans this browser made, listed and restored, so a wipe is never total.
+import { historyAskOf, withPlanKept, restoredThings, PLANS_MAX } from '../void-live-deploy/skills/intent.js';
+test('plan history: the asks, the kept list (one per goal, newest first, five at most) and a restore with fresh ids', () => {
+  assert.deepEqual(historyAskOf('plan history'), { kind: 'list' }); assert.deepEqual(historyAskOf('show me my plans'), { kind: 'list' }); assert.deepEqual(historyAskOf('my past plans'), { kind: 'list' });
+  assert.deepEqual(historyAskOf('restore the last plan'), { kind: 'restore', n: 1 }); assert.deepEqual(historyAskOf('restore plan 2'), { kind: 'restore', n: 2 });
+  assert.deepEqual(historyAskOf('bring back my plan to learn spanish'), { kind: 'restore', goal: 'learn spanish' });
+  for (const a of ['plan my move', 'history of rome', 'restore factory settings', 'my plans for the weekend are', 'restore']) assert.equal(historyAskOf(a), null, a);
+  assert.ok(skill.match('plan history', 'plan history') && skill.examples.includes('plan history'));
+  const e = (goal, at) => ({ goal, at, pieces: ['list'], things: [{ id: 'list_1', kind: 'list', x: 24, y: 56 }] });
+  let L = []; for (const g of ['a', 'b', 'c', 'd', 'e', 'f']) L = withPlanKept(L, e(g, g));
+  assert.deepEqual(L.map((p) => p.goal), ['f', 'e', 'd', 'c', 'b']); assert.equal(L.length, PLANS_MAX);
+  L = withPlanKept(L, e('d', 'again')); assert.deepEqual(L.map((p) => p.goal), ['d', 'f', 'e', 'c', 'b']); assert.equal(L[0].at, 'again');
+  const r = restoredThings({ goal: 'x', things: [{ id: 'list_1', kind: 'list', x: 24, y: 56, group: 'old' }, { id: 'timer_1', kind: 'timer', x: 300, y: 56, group: 'old' }] });
+  assert.equal(r.length, 2); assert.notEqual(r[0].id, 'list_1'); assert.equal(r[0].group, r[1].group); assert.notEqual(r[0].group, 'old'); assert.equal(r[0].x, 24); assert.equal(r[1].kind, 'timer');
+  assert.deepEqual(restoredThings(null), []);
+});
