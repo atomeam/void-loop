@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 76,
+ "runsTotal": 77,
  "kinds": {
   "grow": 15,
-  "file": 42,
+  "file": 43,
   "teach": 7,
   "tighten": 6,
   "none": 6
  },
  "runs": [
+  {
+   "at": "2026-10-16T11:56:52Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"label the note groceries\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T11:10:19Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"throw it off the screen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T05:25:04Z",
-   "passed": 0,
-   "of": 26,
-   "kind": "tighten",
-   "note": "fps floor 1 -> 3"
   }
  ],
  "seen": {
@@ -207,9 +207,9 @@
   "skill:intent": "2026-10-16T11:10:19Z",
   "skill:inventory": "2026-10-16T11:10:19Z",
   "skill:invite": "2026-10-16T11:10:19Z",
-  "skill:appraise": "2026-10-15T20:10:35Z",
-  "skill:joke": "2026-10-15T20:10:35Z",
-  "skill:label": "2026-10-15T20:10:35Z",
+  "skill:appraise": "2026-10-16T11:56:52Z",
+  "skill:joke": "2026-10-16T11:56:52Z",
+  "skill:label": "2026-10-16T11:56:52Z",
   "skill:layer": "2026-10-15T20:10:35Z",
   "skill:light-look": "2026-10-15T20:35:25Z",
   "skill:link": "2026-10-15T20:35:25Z",

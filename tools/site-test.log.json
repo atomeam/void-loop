@@ -579,5 +579,13 @@
   "of": 25,
   "kind": "tighten",
   "note": "load ceiling 1500 -> 1400 ms"
+ },
+ {
+  "at": "2026-10-16T11:56:52Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "label the note groceries | nothing appeared",
+  "note": "fix: \"label the note groceries\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
