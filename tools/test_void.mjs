@@ -1345,6 +1345,27 @@ try {
       JSON.stringify({ first, seenAfterFirst, second }));
     await P.ctx.close();
   }
+  // previewed once (owner, 2026-10-16: "keeps saying the same 4 things now, it's only supposed to preview once"): the line that says
+  // what V01D made while you were away shows once for a set of things; a later visit does not say the same things again, and asking
+  // "what's new" afterwards recaps the last day instead of everything
+  if (want("look what I made: previewed once, the same things are never offered twice")) {
+    const LEDGER = [
+      { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+      { at: '2026-10-14T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+    ];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
+    const note = () => P.p.$eval('#away-note', (e) => e.textContent).catch(() => '');
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const first = await until(async () => { const t = await note(); return /while you were away/.test(t) ? t : ''; }, 6000) || await note();
+    // the line was seen and ignored: the next visit does not say it again
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220); await P.p.waitForTimeout(2500);
+    const second = await note();
+    check('look what I made: previewed once: the line about what V01D made shows once for a set of things (even if ignored), a later visit does not repeat it',
+      /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
+    await P.ctx.close();
+  }
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
     const LEDGER = [
       { at: '2026-10-10T00:00:00Z', by: 'claude', kind: 'grow', what: 'older', show: 'an old thing', try: 'make a clock' },
@@ -1385,7 +1406,7 @@ try {
       !r.firstBefore && !r.firstAfter && r.firstSeen && !r.before && /show me$/.test(r.pill)
         && /^1 of 3 · Built while you were away sticky notes look like real paper/.test(r.s1) && /^2 of 3 .*a counter you can tap/.test(r.s2)
         && /the growth page/.test(r.s3) && r.s3kinds === 'counter'
-        && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-12T04:00:00Z'
+        && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-11T00:00:00Z'
         && !/I made/.test(r.reload) && /^1 of 4 · Built lately/.test(r.typed) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }

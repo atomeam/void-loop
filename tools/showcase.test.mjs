@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { showcaseOf, playable, sinceLast, pick, newestAt, lineOf, KNOWN } from '../void-live-deploy/skills/showcase.js';
+import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, recent } from '../void-live-deploy/skills/showcase.js';
 
 const e = (at, kind, what, extra = {}) => ({ at, by: 'claude', kind, what, ...extra });
 
@@ -27,13 +27,13 @@ test('since the last visit, newest first, all of them, each ask once', () => {
   const list = [e('2026-10-10T00:00:00Z', 'grow', 'old', { try: 'a' }), e('2026-10-12T00:00:00Z', 'grow', 'new', { try: 'b' }),
     e('2026-10-11T00:00:00Z', 'build', 'mid', { try: 'B' }), e('2026-10-13T00:00:00Z', 'idea', 'thought')];
   assert.deepEqual(sinceLast(list, '2026-10-10T12:00:00Z').map((x) => x.what), ['thought', 'new', 'mid']);
-  assert.deepEqual(pick(sinceLast(list, '2026-10-10T12:00:00Z')).map((x) => x.ask), ['b'], 'the same ask twice is shown once');
+  assert.deepEqual(whatsNew(sinceLast(list, '2026-10-10T12:00:00Z')).steps.map((x) => x.ask), ['b'], 'the same ask twice is shown once');
   assert.equal(sinceLast(list).length, 4, 'no visit yet: everything');
   const many = Array.from({ length: 9 }, (_, i) => e('2026-10-12T0' + i + ':00:00Z', 'grow', 'w' + i, { try: 'ask ' + i }));
-  assert.equal(pick(sinceLast(many)).length, 9, 'no ceiling: every build is counted and shown (it used to stop at five)');
+  assert.equal(whatsNew(sinceLast(many)).steps.length, 9, 'no ceiling: every build is counted and shown (it used to stop at five)');
   const lots = Array.from({ length: 1200 }, (_, i) => e(new Date(Date.UTC(2026, 9, 1) + i * 60000).toISOString().replace(/\.\d+Z$/, 'Z'), 'grow', 'w' + i, { try: 'ask ' + i }));
-  assert.equal(pick(sinceLast(lots)).length, 1200, 'a thousand and more, all of them');
-  assert.equal(pick(sinceLast(many), 3).length, 3, 'a caller can still ask for fewer');
+  assert.equal(whatsNew(sinceLast(lots)).steps.length, 1200, 'a thousand and more, all of them');
+  assert.equal(whatsNew(sinceLast(many), { n: 3 }).steps.length, 3, 'a caller can still ask for fewer');
   assert.equal(newestAt(list), '2026-10-13T00:00:00Z');
 });
 
@@ -66,27 +66,36 @@ test('the site shows the owner\'s words as he meant them, spelled right; a quote
   }
 });
 
-test('a build still waiting for its live check is held back, not marked seen unshown (2026-10-15: "while you were away" went quiet)', async () => {
-  const { seenUpTo } = await import('../void-live-deploy/skills/showcase.js');
+test('a build still waiting for its live check is not shown and not marked shown: it is offered the day it answers', () => {
   const L = [
-    { at: '2026-10-14T10:00:00Z', kind: 'grow', what: 'Old thing: shown already', try: 'old thing' },
+    { at: '2026-10-14T10:00:00Z', kind: 'grow', what: 'Old thing: before this device first visited', try: 'old thing' },
     { at: '2026-10-15T09:00:00Z', kind: 'grow', what: 'Ready thing: answers live', try: 'ready thing' },
     { at: '2026-10-15T11:00:00Z', kind: 'grow', what: 'Fresh thing: not checked live yet', try: 'fresh thing' },
     { at: '2026-10-15T12:00:00Z', kind: 'idea', what: 'an idea line' },
   ];
-  const seen = '2026-10-14T12:00:00Z';
-  // the fresh build is not verified yet: it is pending, and seen stops just before it
-  const pending = [], steps = pick(sinceLast(L, seen), 5, new Set(['ready thing']), pending);
-  assert.deepEqual(steps.map((s) => s.ask), ['ready thing']);
-  assert.deepEqual(pending.map((p) => [p.ask, p.at]), [['fresh thing', '2026-10-15T11:00:00Z']]);
-  assert.equal(seenUpTo(L, seen, pending), '2026-10-15T09:00:00Z');
-  // nothing ready at all: seen does not move, so the fresh build is offered once it is checked
-  const p2 = [], s2 = pick(sinceLast(L, seen), 5, new Set(), p2);
-  assert.equal(s2.length, 0);
-  assert.equal(seenUpTo(L, seen, p2), seen);
-  // the next visit, after the live check passed: the fresh build is offered
-  const s3 = pick(sinceLast(L, seenUpTo(L, seen, p2)), 5, new Set(['ready thing', 'fresh thing']));
-  assert.deepEqual(s3.map((s) => s.ask), ['fresh thing', 'ready thing']);
-  // nothing pending: seen goes to the newest line, as before
-  assert.equal(seenUpTo(L, seen, []), newestAt(L));
+  const floor = '2026-10-14T12:00:00Z';
+  const first = whatsNew(sinceLast(L, floor), { verified: new Set(['ready thing']) });
+  assert.deepEqual(first.steps.map((s) => s.ask), ['ready thing']); assert.deepEqual(first.waiting.map((p) => [p.ask, p.at]), [['fresh thing', '2026-10-15T11:00:00Z']]);
+  // the next visit: ready thing was previewed; fresh thing answers now, so it is the one new thing
+  const next = whatsNew(sinceLast(L, floor), { shown: new Set(['ready thing']), verified: new Set(['ready thing', 'fresh thing']) });
+  assert.deepEqual(next.steps.map((s) => s.ask), ['fresh thing']); assert.equal(next.waiting.length, 0);
+  // and after that, nothing: the floor never moves and the shown list holds both
+  assert.equal(whatsNew(sinceLast(L, floor), { shown: new Set(['ready thing', 'fresh thing']), verified: new Set(['ready thing', 'fresh thing']) }).steps.length, 0);
+  assert.equal(newestAt(L), '2026-10-15T12:00:00Z');
+});
+
+test('previewed once: an ask already shown is never offered again, and the recap with nothing new is the last day, not everything ever', async () => {
+  const list = [e('2026-10-12T00:00:00Z', 'grow', 'a', { try: 'ask a' }), e('2026-10-12T01:00:00Z', 'grow', 'b', { try: 'ask b' }), e('2026-10-12T02:00:00Z', 'grow', 'c', { try: 'ask c' })];
+  const all = sinceLast(list);
+  assert.deepEqual(whatsNew(all, { shown: new Set(['ask b']) }).steps.map((x) => x.ask), ['ask c', 'ask a'], 'ask b was previewed already');
+  assert.equal(whatsNew(all, { shown: new Set(['ask a', 'ask b', 'ask c']) }).steps.length, 0);
+  const store = new Map(); globalThis.localStorage = { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, String(v)) };
+  const { markShown, shownSet } = await import('../void-live-deploy/skills/showcase.js');
+  markShown([{ ask: 'Ask B' }, { ask: 'ask c' }]); markShown([{ ask: 'ask b' }]);
+  assert.deepEqual([...shownSet()], ['ask b', 'ask c'], 'cleaned, each once');
+  const many = Array.from({ length: 30 }, (_, i) => ({ ask: 'x' + i, at: new Date(Date.UTC(2026, 9, 1) + i * 36e5 * 40).toISOString().replace(/\.\d+Z$/, 'Z') })).reverse();
+  const now = Date.parse(many[0].at) + 36e5;
+  assert.equal(recent(many, now).length, 5, 'nothing in the last day: the newest five');
+  const busy = Array.from({ length: 40 }, (_, i) => ({ ask: 'y' + i, at: new Date(now - i * 36e5 / 2).toISOString().replace(/\.\d+Z$/, 'Z') }));
+  assert.equal(recent(busy, now).length, 40, 'a busy day is all of the day (40 builds half an hour apart fit in 24 hours)');
 });

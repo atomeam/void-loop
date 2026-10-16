@@ -4,18 +4,17 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
-import { pick } from '../void-live-deploy/skills/showcase.js';
+import { whatsNew } from '../void-live-deploy/skills/showcase.js';
 import { claimsOf, isFallthrough, MUST, CLEAN } from './claims-verify.mjs';
 
 const E = [{ at: '2026-10-15T02:00:00Z', kind: 'grow', what: 'Tester log on the growth card', try: 'tester log' },
   { at: '2026-10-15T01:00:00Z', kind: 'grow', what: 'A thing that only finds Wikipedia', try: 'zebra facts deluxe' }];
 
 test('an unverified build is never played as built; it counts as in progress', () => {
-  const pending = [];
-  const steps = pick(E, 5, new Set(['tester log']), pending);
-  assert.deepEqual(steps.map((s) => s.ask), ['tester log']);
-  assert.deepEqual(pending.map((p) => p.ask), ['zebra facts deluxe']);
-  assert.equal(pick(E, 5, new Set()).length, 0, 'no proof, no claim');
+  const r = whatsNew(E, { verified: new Set(['tester log']) });
+  assert.deepEqual(r.steps.map((s) => s.ask), ['tester log']);
+  assert.deepEqual(r.waiting.map((p) => p.ask), ['zebra facts deluxe']);
+  assert.equal(whatsNew(E, { verified: new Set() }).steps.length, 0, 'no proof, no claim');
 });
 test('the fallback notes count as fallthrough; a skill card does not', () => {
   for (const n of ['article', 'answer', 'short topic', 'article fallback', null, 'miss:cat']) assert.ok(isFallthrough(n), String(n));
