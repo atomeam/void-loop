@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (session 4 of 4) · helper/evidence-metadata, helper/deps-map, helper/review-jobs, helper/fringe-to-skill, helper/skill-smoke · V01D's asks: last_tested + success_rate in families.json and the family-health card; a dependency map (tools/deps.mjs, skills/deps.js); review findings on main become review:<skill> queue jobs; fringe-to-skill card and `near` in the fringe ledger; a daily skill smoke test · 2026-10-16 UTC
 - Grok Bot · grok/void-pong-snake · docs/video-games.md ladder; Void Pong + Void Snake vs V01D (skills/pong.js, snake.js, arcade-card.js, tools/arcade.test.mjs) · 2026-10-15 06:40 UTC
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
 - Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
