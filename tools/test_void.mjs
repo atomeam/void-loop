@@ -2840,6 +2840,49 @@ try {
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
     await F.ctx.close(); }
+  // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
+  // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
+  // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
+  if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
+    const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+    await B.ask('open the book', 900);
+    const open = await until(async () => B.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { skills: window.__voidBook.totals.skills, pages: window.__voidBook.totals.pages, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), num: document.querySelector('.vpage.on .gb-num').textContent, title: document.querySelector('.vpage.on h2').textContent, tabs: document.querySelectorAll('.vpage.on .gb-tab').length, cover: (document.querySelector('.vpage.on .gb-page[data-page="1"] h3') || {}).textContent } : null).catch(() => null), 8000);
+    check('the book: "open the book" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened',
+      !!open && open.title === 'The V01D Book' && open.cover === 'The V01D Book' && open.skills === members.length && open.tabs >= 12 && open.shown.includes('1') && /page 1 of \d+/.test(open.num), JSON.stringify({ open, members: members.length }));
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(150);
+    const after = await B.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), text: document.querySelector('.vpage.on .gb-spread').innerText }));
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(150);
+    const back = await B.p.evaluate(() => document.querySelector('.vpage.on .gb-num').textContent);
+    check('the book: → turns to the spread of pages 2–3 (how to ask, how to read a page: the four rating words explained), ← turns back',
+      /pages 2–3 of/.test(after.num) && after.shown.join(',') === '2,3' && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && /page 1 of/.test(back), JSON.stringify({ after: { ...after, text: after.text.slice(0, 120) }, back }));
+    // the index at the back names every skill, each with its page, and a jump from it lands on that page
+    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('.vpage.on .gb-page .gb-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
+    const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
+    const indexed = idx.names.map(([n]) => n);
+    const clockEntry = idx.names.find(([n]) => n === 'Clock');
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('.vpage.on .gb-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.gb-tier') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph',
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph,
+      JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
+    // an ask on a page runs on the stage, as it does from any card
+    await B.p.click('.vpage.on .gb-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(900);
+    check('the book: tapping "make a clock" on the clock page closes the book and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.page()).includes('The V01D Book') && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
+    // "the book at chess" opens on the chess page
+    await B.ask('the book at chess', 900);
+    const at = await until(async () => B.p.evaluate(() => { const pg = document.querySelector('.vpage.on .gb-page h3'); return pg ? pg.textContent : ''; }).catch(() => ''), 6000);
+    const shownAt = await B.p.evaluate(() => [...document.querySelectorAll('.vpage.on .gb-page h3')].map((h) => h.textContent));
+    check('the book: "the book at chess" opens on the Chess page', shownAt.includes('Chess'), JSON.stringify({ at, shownAt }));
+    await B.ctx.close();
+    const P = await fresh({ phone: true });
+    await P.ask('open the book', 900);
+    const ph = await until(async () => P.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { pages: document.querySelectorAll('.vpage.on .gb-page').length, num: document.querySelector('.vpage.on .gb-num').textContent, width: document.querySelector('.vpage.on').getBoundingClientRect().width, fits: document.documentElement.scrollWidth <= innerWidth } : null).catch(() => null), 8000);
+    await P.p.evaluate(() => { const s = document.querySelector('.vpage.on .gb-spread'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
+    await P.p.waitForTimeout(150);
+    const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
+    check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
+    await P.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.
@@ -5496,6 +5539,25 @@ try {
       && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
       JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
     await Q.ctx.close(); }
+
+  // cook-flow (asked by Void, lib/cook-flow.js): a kitchen conversion and a kitchen swap end with one tap that starts a timer;
+  // a distance conversion gets no chip; a swap says what else to adjust ("then:" under the swap, skills/swaps.js IMPACT).
+  if (want("cook-flow: a kitchen conversion and a swap offer a timer in one tap, the swap says what else to adjust, a distance gets no chip")) { const K = await fresh();
+    await K.ask('3 cups in ml', 900); await until(async () => /709\.76 ml/.test(await K.page()), 8000); const cupsPg = await K.page();
+    const chip = await until(() => K.p.$('.vpage.on a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "3 cups in ml" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)', /709\.76 ml/.test(cupsPg) && !!chip && (await K.p.$$eval('.vpage.on .cook-flow a[data-ask]', (a) => a.map((x) => x.getAttribute('data-ask')))).join('|') === 'set a 10 minute timer|set a 5 minute timer|set a 20 minute timer', cupsPg.slice(0, 120));
+    await K.p.click('.vpage.on a[data-ask="set a 10 minute timer"]'); await until(async () => (await K.state()).some((x) => x.kind === 'timer'), 6000);
+    const timers = (await K.state()).filter((x) => x.kind === 'timer');
+    check('cook-flow: the tap starts a 10 minute timer on the stage', timers.length === 1 && Number(timers[0].duration) >= 599 && Number(timers[0].duration) <= 600000 && !!timers[0].running && !(await K.p.$('.vpage.on')), JSON.stringify(timers.map((t) => ({ kind: t.kind, total: t.total, ms: t.ms, duration: t.duration, running: t.running }))));
+    await K.ask('how many cups is 500g of flour', 900); await until(async () => /4\.17 cups/.test(await K.page()), 8000); const flourChip = await until(() => K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "how many cups is 500g of flour" (word maths) ends with the chip too', /4\.17 cups/.test(await K.page()) && !!flourChip, (await K.page()).slice(0, 80));
+    await K.ask('5 miles in km', 900); await until(async () => /8\.05|8\.04672/.test(await K.page()), 8000); await K.p.waitForTimeout(400);
+    check('cook-flow: "5 miles in km" gets no timer chip', /8\.05 km|8\.04672 km|8\.05/.test(await K.page()) && !(await K.p.$('.vpage.on .cook-flow')), (await K.page()).slice(0, 80));
+    await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
+    const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
+    await K.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
