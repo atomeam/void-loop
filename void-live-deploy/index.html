@@ -4697,7 +4697,12 @@ say('nothing selected to remove');
         pendingFix = { ask: title, until: Date.now() + 600000 };
         return 'none';
       }
-      el.innerHTML = '<h2>' + esc(title) + '</h2>' + fixHtml(j.answer) + (String(details || '').length > 200 ? pasteFold(String(details), sent.cut) : '') + '<div class="src">Worked out by V01D from what you gave it' + (j.fix === 'rules' ? ' (from the error itself)' : '') + ' · run it once to confirm</div>';
+      // honest provenance (owner, 2026-10-16): "from the error itself" only when there is one, quoted; a fix worked out from a
+      // description opens by saying how it was read, so a wrong reading is easy to correct (lib/automation-fix.js basisOf)
+      const b = j.basis || {}, fromErr = b.from === 'error' && b.quote;
+      el.innerHTML = '<h2>' + esc(title) + '</h2>' + (b.from === 'description' ? '<p class="sub fix-read">I read this as a broken automation, from what you described: there is no error in it. If that is not what you meant, say so and I will answer it as it is.</p>' : '')
+        + fixHtml(j.answer) + (String(details || '').length > 200 ? pasteFold(String(details), sent.cut) : '')
+        + '<div class="src">Worked out by V01D from what you gave it' + (fromErr ? ' (from the error itself: “' + esc(b.quote) + '”)' : b.from === 'description' ? ' (from your description)' : '') + ' · run it once to confirm</div>';
       loopLog({ domain: 'void.fix', ask: title, score: 'pass', note: (j.fix || '') + ' ' + (j.platform || '') });
       attachProductTail(title + '\n' + details, { fix: true, el });
       return 'fix';
