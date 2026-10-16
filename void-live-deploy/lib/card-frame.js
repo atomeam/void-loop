@@ -130,8 +130,10 @@ export function lookup(stats, name) {
 }
 /** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), or null. Pure. */
 export function editedDaysAgo(text, now = Date.now()) {
-  const m = /last edited ([A-Z][a-z]{2,8}\.? \d{1,2}, \d{4})/.exec(String(text || '')); if (!m) return null;
-  const t = Date.parse(m[1]); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
+  const m = /last edited ([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
+  const months = { Jan: 0, January: 0, Feb: 1, February: 1, Mar: 2, March: 2, Apr: 3, April: 3, May: 4, Jun: 5, June: 5, Jul: 6, July: 6, Aug: 7, August: 7, Sep: 8, September: 8, Oct: 9, October: 9, Nov: 10, November: 10, Dec: 11, December: 11 };
+  const month = months[m[1]];
+  const t = month == null ? NaN : Date.UTC(Number(m[3]), month, Number(m[2])); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
 }
 
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */
