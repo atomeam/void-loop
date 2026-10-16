@@ -3566,6 +3566,8 @@ say('nothing selected to remove');
       cardMini(band, 'calculator', { expression: m[1].replace(/,/g, ''), result: m[2].replace(/,/g, ''), typed: true },
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
+    // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Void, lib/cook-flow.js)
+    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
@@ -3574,7 +3576,7 @@ say('nothing selected to remove');
       const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
-      if (wm) { setV(wm.value, wm.note); return 'calc'; }
+      if (wm) { setV(wm.value, wm.note); cookFlow(el, query); return 'calc'; }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
       const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
@@ -3613,6 +3615,7 @@ say('nothing selected to remove');
           }
           if (!hit) { setV('?', 'I don\'t convert ' + fromU + ' to ' + toU + ' yet.'); }
         }
+        if (hit) cookFlow(el, query);
       }
 
       // currency: "100 dollars in euros", "$50 to yen", "250 canadian dollars in pounds" (Frankfurter, ECB reference rates, no key).
