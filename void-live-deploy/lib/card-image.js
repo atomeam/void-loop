@@ -1,0 +1,87 @@
+// The whole V01D card as one picture (owner, 2026-10-16: "the whole card, images and all" copyable and saved; cards will be printed).
+// Drawn by us, not a screenshot of the page: cardSvg() builds a standalone SVG at the 63 x 88 mm card ratio (744 x 1039 px at 300 dpi; with
+// bleed 3 mm = 35 px more on every side, 814 x 1109) holding the frame, title bar and cost, the art (lib/card-art.js), the type line, the first
+// lines of the text, the Power / Resistance / Income plates, the collector number and the foil by rarity. toPng() renders it in the browser.
+// Pure except toPng(). Every text field is escaped; nothing is fetched, so the picture never taints a canvas.
+import { artInner, rarityKey, RARITY_LOOK } from './card-art.js';
+
+export const CARD_W = 744, CARD_H = 1039, BLEED = 35;
+const INK = '#0a0a10';
+const GEM = { mythic: '#f0852d', rare: '#e3c15a', uncommon: '#c5ccd6', common: '#6b7280' };
+const FOIL = { mythic: ['#ffb347', '#c4561a', '#ffd27a', '#b8430f'], rare: ['#f1dc8a', '#a98a2e', '#f6e7a6', '#8a6d1c'], uncommon: ['#e8edf4', '#8b95a3', '#dfe5ee', '#6f7886'], common: ['#5b6483', '#2c3350', '#5b6483', '#262c46'] };
+const esc = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+const num = (n) => (Number.isFinite(+n) && n !== null && n !== '' ? String(Math.max(0, Math.min(99, Math.round(+n)))) : '');
+
+/** wrap text into lines of at most `cols` characters, at most `max` lines, the last ending in an ellipsis when cut. Pure. */
+export function wrap(text, cols, max) {
+  const lines = [];
+  for (const para of String(text || '').replace(/\r/g, '').split(/\n+/)) {
+    let line = '';
+    for (const word of para.trim().split(/\s+/).filter(Boolean)) {
+      const w = word.length > cols ? word.slice(0, cols - 1) + '\u2026' : word;
+      if ((line + ' ' + w).trim().length > cols) { lines.push(line); line = w; } else line = (line + ' ' + w).trim();
+    }
+    if (line) lines.push(line);
+  }
+  if (lines.length > max) { const cut = lines.slice(0, max); cut[max - 1] = cut[max - 1].replace(/[\s.,;:…]*$/, '').slice(0, cols - 1) + '…'; return cut; }
+  return lines;
+}
+
+/** the card as a standalone SVG string. data: { title, cost, typeLine, kind, rarity, hue, chapter, key, text, adds, power, toughness, income, number, tested, season, glyph, fetched }.
+ *  bleed: true adds the 3 mm print bleed on every side. */
+export function cardSvg(data = {}, { bleed = false } = {}) {
+  const d = data || {}, rk = rarityKey(d.rarity), RL = RARITY_LOOK[rk], foil = FOIL[rk], b = bleed ? BLEED : 0, W = CARD_W + b * 2, H = CARD_H + b * 2;
+  const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
+  const title = String(d.title || d.name || 'V01D').replace(/\s+/g, ' ').trim();
+  const shown = title.length > 38 ? title.slice(0, 37) + '…' : title, fs = Math.max(22, Math.min(38, Math.round(600 / (shown.length * 0.56))));
+  const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
+  const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
+  let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — V01D card">';
+  s += '<defs><linearGradient id="' + id + 'f" x1="0" y1="0" x2="1" y2="1">' + foil.map((c, i) => '<stop offset="' + (i / (foil.length - 1)).toFixed(2) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>';
+  s += '<linearGradient id="' + id + 'p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(' + hue + ' 26% 15%)"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>';
+  s += '<linearGradient id="' + id + 's" x1="0" y1="0" x2="1" y2="1"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (rk === 'common' ? 0 : RL.a * 0.9) + '"/><stop offset=".7" stop-color="#fff" stop-opacity="0"/></linearGradient>';
+  s += '<clipPath id="' + id + 'k"><rect width="' + W + '" height="' + H + '" rx="' + (bleed ? 0 : 34) + '"/></clipPath></defs>';
+  s += '<g clip-path="url(#' + id + 'k)"><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'f)"/><g transform="translate(' + b + ' ' + b + ')">';
+  s += '<rect x="22" y="22" width="700" height="995" rx="20" fill="url(#' + id + 'p)" stroke="' + INK + '" stroke-width="4"/><rect x="26" y="26" width="692" height="987" rx="17" fill="none" stroke="' + edge + '" stroke-width="3"/>';
+  // title bar
+  s += '<rect x="40" y="44" width="664" height="66" rx="14" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/>';
+  s += '<text x="62" y="' + (77 + fs * 0.35) + '" font-family="Georgia,\'Times New Roman\',serif" font-weight="700" font-size="' + fs + '" fill="#f3efe2">' + esc(shown) + '</text>';
+  for (let i = 0; i < cost; i++) { const x = 684 - i * 24; s += '<path d="M' + x + ' 68l9 10-9 10-9-10z" fill="' + soft + '" stroke="' + INK + '" stroke-width="2"/>'; }
+  // art
+  const aw = 664, ah = 440;
+  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '">' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + '</svg>';
+  s += '<rect x="40" y="122" width="' + aw + '" height="' + ah + '" fill="none" stroke="' + edge + '" stroke-width="4"/>';
+  // type line
+  const type = String(d.typeLine || d.kind || '').replace(/\s+/g, ' ').trim().toUpperCase().slice(0, 52);
+  s += '<rect x="40" y="574" width="664" height="48" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="60" y="606" font-family="Georgia,serif" font-size="22" letter-spacing="2" fill="' + soft + '">' + esc(type) + '</text>';
+  s += '<path d="M676 598l11 11-11 11-11-11z" fill="' + GEM[rk] + '" stroke="' + INK + '" stroke-width="2.5"/>';
+  // text box
+  s += '<rect x="40" y="636" width="664" height="262" rx="10" fill="hsl(' + hue + ' 22% 12%)" stroke="' + edge + '" stroke-width="2"/>';
+  const lines = wrap(d.text, 50, d.adds ? 7 : 9);
+  lines.forEach((l, i) => { s += '<text x="60" y="' + (672 + i * 29) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="23" fill="#e6e1d3">' + esc(l) + '</text>'; });
+  if (d.adds) { const a = wrap('Adds to V01D: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 828h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
+  // footer: collector number and the three plates
+  const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'V01D', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
+  s += '<text x="44" y="990" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
+  const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
+  stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="926" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="952" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="980" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
+  s += '</g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
+  return s;
+}
+
+/** the PNG of a card's SVG, in the browser: an Image and a canvas. Resolves a Blob; rejects when the browser cannot draw it. */
+export function toPng(svg, scale = 1) {
+  const m = /viewBox="0 0 (\d+) (\d+)"/.exec(svg) || [0, CARD_W, CARD_H], w = +m[1], h = +m[2];
+  return new Promise((resolve, reject) => {
+    const url = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml;charset=utf-8' })), img = new Image();
+    img.onload = () => {
+      try {
+        const c = document.createElement('canvas'); c.width = Math.round(w * scale); c.height = Math.round(h * scale);
+        c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); URL.revokeObjectURL(url);
+        c.toBlob((blob) => (blob ? resolve(blob) : reject(new Error('no png'))), 'image/png');
+      } catch (e) { URL.revokeObjectURL(url); reject(e); }
+    };
+    img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('card image failed')); };
+    img.src = url;
+  });
+}

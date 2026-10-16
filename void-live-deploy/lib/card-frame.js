@@ -9,9 +9,10 @@
 // source is. The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
 // (what it imports), an arrow in at the top when other skills lean on it, Income being how many do. Pure: cardOf(), chromeHtml(); the page calls keep() and style().
-import { hueOf, glyphSvg } from './guide.js';
+import { hueOf } from './guide.js';
 import { typeWords, kindOf } from './card-kinds.js';
 import { bar as shareBar, SHARE_CSS } from './card-share.js';
+import { artSvg, kindWord, seasonOf } from './card-art.js';
 
 export const RARITY = {
   proven: { name: 'Mythic', gem: '#f0852d', foil: '#ffb347,#c4561a,#ffd27a,#b8430f' }, checked: { name: 'Rare', gem: '#e3c15a', foil: '#f1dc8a,#a98a2e,#f6e7a6,#8a6d1c' },
@@ -42,14 +43,14 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
     adds: page && page.line ? String(page.line).replace(/\s+/g, ' ').slice(0, 120) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
-    name: (skill && skill.name) || (page && page.name) || '',
+    name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
   };
 }
 
 const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color:' + r.gem + '" title="' + r.name + '"></i>' : '');
 /** the art box, the type bar, the adds line and the footer as HTML. Pure. */
 export function chromeHtml(c, esc) {
-  const art = '<div class="vc-art">' + glyphSvg({ chapter: c.chapter, name: c.name || c.typeLine, kind: 'skill' }, 54) + '</div>';
+  const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: kindWord(c.typeLine), chapter: c.chapter, hue: c.hue, rarity: c.rarity, season: c.season, glyph: c.isSkill }, { w: 520, h: 150 }) + '</div>';
   const type = '<div class="vc-type"><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
   const adds = c.adds ? '<div class="vc-adds"><b>Adds to V01D</b> ' + esc(c.adds) + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
@@ -69,7 +70,7 @@ export const CARD_CSS = [
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
   '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:72px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art .gglyph{filter:drop-shadow(0 0 8px hsl(var(--h) 80% 60% / .6))}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -110,13 +111,14 @@ export function keep(el, esc, stats) {
   const name = el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   const c = cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  const key = JSON.stringify([c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
+  const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
+  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
   if (el.dataset.cardKey === key && el.querySelector(':scope > .vc-type') && el.querySelector(':scope > .vc-arrows') === el.lastElementChild) return;
   for (const n of el.querySelectorAll(':scope > .vc-art, :scope > .vc-type, :scope > .vc-adds, :scope > .vc-foot, :scope > .vc-arrows')) n.remove();
   el.style.setProperty('--h', String(c.hue));
-  el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
+  el._vcard = c; el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];

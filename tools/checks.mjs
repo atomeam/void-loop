@@ -215,6 +215,8 @@ for (const [name, file] of [
   ['card-frame', 'card-frame.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
+  ['card-art', 'card-art.test.mjs'],
+  ['card-image', 'card-image.test.mjs'],
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],

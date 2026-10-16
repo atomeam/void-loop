@@ -3189,6 +3189,20 @@ try {
     check('V01D cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into V01D brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
       !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
     await S.ctx.close(); }
+  // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
+  // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
+  if (want("V01D card art: every card has its own ink plate, and save card downloads the whole card as a PNG")) { const A = await fresh();
+    const art = async (ask) => { await A.ask('close', 400); await A.ask(ask, 1800); return until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const v = e && e.querySelector('.vc-art svg'); return v && e.querySelector('.vc-share') ? { svg: v.outerHTML, kids: v.querySelectorAll('path,circle,rect').length, vb: v.getAttribute('viewBox') } : null; }).catch(() => null), 8000); };
+    const got = []; for (const q of ['20% tip on 45', 'tell me about the ocean', 'convert 10 miles to km']) got.push(await art(q));
+    check('V01D card art: three different asks each open a card whose art box holds an SVG with its plate drawn (a viewBox, many shapes), and no two cards\' art are the same',
+      got.every((g) => g && g.kids > 40 && /^0 0 \d+ \d+$/.test(g.vb)) && new Set(got.map((g) => g && g.svg)).size === got.length && !A.errors.length, JSON.stringify({ kids: got.map((g) => g && g.kids), errors: A.errors }));
+    const dl = A.p.waitForEvent('download', { timeout: 8000 }).catch(() => null);
+    await A.p.click('.vpage.on.vcard .vc-share button:nth-child(2)');
+    const d = await dl; let png = null;
+    if (d) { const f = await d.path(); const buf = fs.readFileSync(f); png = { name: d.suggestedFilename(), magic: buf.subarray(0, 8).toString('hex'), w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), n: buf.length }; }
+    check('V01D card art: "save card" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio',
+      !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
+    await A.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
