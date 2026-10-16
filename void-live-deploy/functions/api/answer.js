@@ -353,7 +353,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
-  if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
+  if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
   const facts = self ? selfFacts(await selfP) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
