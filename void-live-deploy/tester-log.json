@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 72,
+ "runsTotal": 73,
  "kinds": {
   "grow": 15,
-  "file": 41,
+  "file": 42,
   "teach": 7,
   "tighten": 4,
   "none": 5
  },
  "runs": [
+  {
+   "at": "2026-10-16T08:39:08Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"group the timer with the clock\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T08:24:59Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 24,
    "kind": "grow",
    "note": "grew the suite: \"play reversi\""
-  },
-  {
-   "at": "2026-10-16T03:41:58Z",
-   "passed": 0,
-   "of": 23,
-   "kind": "grow",
-   "note": "grew the suite: \"what is 17 times 23\""
   }
  ],
  "seen": {
@@ -195,9 +195,9 @@
   "skill:games": "2026-10-16T08:24:59Z",
   "skill:gears": "2026-10-16T08:24:59Z",
   "skill:goal": "2026-10-16T08:24:59Z",
-  "skill:grades": "2026-10-15T18:58:00Z",
-  "skill:group": "2026-10-15T18:58:00Z",
-  "skill:growth": "2026-10-15T18:58:00Z",
+  "skill:grades": "2026-10-16T08:39:08Z",
+  "skill:group": "2026-10-16T08:39:08Z",
+  "skill:growth": "2026-10-16T08:39:08Z",
   "skill:heart": "2026-10-15T18:58:00Z",
   "skill:deadlines": "2026-10-15T19:02:51Z",
   "skill:family-health": "2026-10-15T19:02:51Z",
