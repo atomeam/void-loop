@@ -19,6 +19,8 @@ export const INTERNAL = {
   '/api/actions': 'the actions record, for the page and the owner',
   '/api/propose-fix': "V01D proposes the narrowest matcher fix for an ask its own probe missed (owner only, frontier #28 step 3; tools/propose-fix.mjs and its daily workflow are the only callers)",
   '/api/probe-asks': "V01D writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
+  '/api/probe-log': "V01D's probe ledger: counts and outcomes the growth card shows, written by its probe and fix tools (POST owner only; lib/probe-log.js)",
+  '/api/v01d-fixes': "approve one of V01D's own fix pull requests that waits for the owner (owner only; skills/v01d-fixes.js, lib/v01d-fixes.js)",
   '/api/answer': "the page's answer model",
   '/api/appraise': "the page's appraise card: one photo in, V01D's valuation out (functions/api/appraise.js, lib/appraise-photo.js)",
   '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",

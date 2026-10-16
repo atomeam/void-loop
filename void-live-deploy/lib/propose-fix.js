@@ -21,14 +21,30 @@ export const FIX_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' +
   + 'Reply with JSON only: {"why":"<one or two sentences: what did not match and what you changed>","confidence":<0.0-1.0: how sure you are this change makes the ask reach the skill without stealing another skill\'s asks>","edits":[{"find":"<one existing line, copied exactly, whole>","replace":"<that line as it should read; several lines joined with \\n are allowed>"}]} with at most ' + MAX_EDITS + ' edits. '
   + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
 
-/** The ask and the skill a probe or miss job is about: 'learn to handle "<ask>"' and a note that says (wanted skill:<name>). */
+// The other way round (owner, 2026-10-16: a card reply said "I am quoting a conversation about your memory, not fixing a webhook"):
+// an ask a skill took that belongs elsewhere. V01D proposes the narrowest change that makes this skill let go of it.
+export const NARROW_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' + PERSONA + ' '
+  + 'You are fixing one of your own skills: it answered a short ask that is not its job (your owner told you so), because its matcher (the match() function and the patterns it uses) is too loose for that wording. '
+  + 'Propose the narrowest change that makes the matcher reject the ask and asks like it, while still accepting every example the skill lists, and add the ask to the nearMisses list. '
+  + 'Change only the matcher and the nearMisses: never run(), never anything that fetches, imports, stores or draws. Prefer tightening one pattern or adding one exclusion to rewriting a pattern. '
+  + 'Reply with JSON only: {"why":"<one or two sentences: what matched wrongly and what you changed>","confidence":<0.0-1.0: how sure you are this change lets the ask go without losing any ask the skill should keep>","edits":[{"find":"<one existing line, copied exactly, whole>","replace":"<that line as it should read; several lines joined with \\n are allowed>"}]} with at most ' + MAX_EDITS + ' edits. '
+  + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
+
+/** The ask and the skill a job is about. A probe or miss job: 'learn to handle "<ask>"' with a note that says (wanted skill:<name>),
+ * mode 'learn'. A routing job from a correction: 'stop answering "<ask>"' with a note that says (wrong skill:<name>) and
+ * (wanted <route>), mode 'narrow': the skill to change is the one that wrongly answered. */
 export function jobAsk(job) {
   if (!job) return null;
+  const n = /^stop answering "(.+)"$/.exec(String(job.ask || '').trim());
+  if (n) {
+    const wrong = /\(wrong skill:([a-z][a-z0-9-]{1,40})\)/.exec(String(job.note || '')), w = /\(wanted ([^)]+)\)/.exec(String(job.note || ''));
+    return wrong ? { ask: n[1], skill: wrong[1], want: w ? w[1] : 'answer', mode: 'narrow' } : null;
+  }
   const m = /^learn to handle "(.+)"$/.exec(String(job.ask || '').trim());
   if (!m) return null;
   const w = /\(wanted ([^)]+)\)/.exec(String(job.note || ''));
   const skill = w ? skillOf(w[1]) : null;
-  return skill ? { ask: m[1], skill, want: w[1] } : null;
+  return skill ? { ask: m[1], skill, want: w[1], mode: 'learn' } : null;
 }
 
 /** The skill file a want names: the first alternative that is a skill (skill:<name>), else a bare word that is one. */
@@ -40,9 +56,13 @@ export function skillOf(want) {
   return null;
 }
 
-/** The question: the ask, the skill and its file (clipped to MAX_SOURCE), with the contract reminder. */
-export function fixPrompt(ask, skill, source) {
+/** The question: the ask, the skill and its file (clipped to MAX_SOURCE), with the contract reminder. In 'narrow' mode the ask is
+ * one the skill took wrongly, with the owner's words on why when there are any. */
+export function fixPrompt(ask, skill, source, mode = 'learn', said = '') {
   const src = String(source || ''), shown = src.length > MAX_SOURCE ? src.slice(0, MAX_SOURCE) + '\n// … (clipped)' : src;
+  if (mode === 'narrow') return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask it answered but should not have: "' + ask + '"\n'
+    + (said ? 'What your owner said about it: "' + String(said).replace(/\s+/g, ' ').slice(0, 300) + '"\n' : '')
+    + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
   return 'Skill: ' + skill + ' (void-live-deploy/skills/' + skill + '.js).\nThe ask that did not reach it: "' + ask + '"\n'
     + 'Its contract: { name, examples, nearMisses, match(lower, text), run(text, api) }; match() decides whether the skill answers.\n\n' + shown;
 }
@@ -76,6 +96,15 @@ export function parseEdits(text, source) {
 
 /** the model's own confidence in its proposal (asked by Void), 0 to 1 with two decimals, or null when it gave none. Pure. */
 export const confidenceOf = (v) => { const n = typeof v === 'string' ? parseFloat(v) : v; return typeof n === 'number' && Number.isFinite(n) ? Math.round(Math.min(1, Math.max(0, n)) * 100) / 100 : null; };
+
+/** the evidence for a proposal (asked by Void: "a specific file/line reference that justifies why ... translates to that specific code
+ * change"): for each edit, the file and the line number it changes, and that line as it stood. Pure. */
+export function evidenceOf(source, edits, skill) {
+  const lines = String(source || '').split('\n'), file = 'void-live-deploy/skills/' + skill + '.js';
+  return (edits || []).map((e) => { const i = lines.findIndex((l) => l.includes(e.find)); return i < 0 ? null : { file, line: i + 1, was: lines[i].trim().slice(0, 160) }; }).filter(Boolean);
+}
+/** the evidence in a few words: "void-live-deploy/skills/rides.js lines 42, 57". Pure. */
+export const whereOf = (ev) => (ev && ev.length ? ev[0].file + (ev.length > 1 ? ' lines ' : ' line ') + ev.map((e) => e.line).join(', ') : '');
 
 const occurrences = (s, sub) => { let n = 0, i = 0; while ((i = s.indexOf(sub, i)) >= 0) { n++; i += sub.length; if (n > 1) break; } return n; };
 

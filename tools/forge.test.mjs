@@ -176,3 +176,9 @@ test('recipe versioning (asked by Void twice): every recipe has a stable id that
   assert.notEqual(s1, s2); const fnv = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
   assert.equal(fnv(s1), F.recipeId('vase')); assert.notEqual(fnv(s2), F.recipeId('vase'));
 });
+
+test('forge history (asked by Void twice): "forge history" and "what can you make" list the recipes; other asks are untouched', () => {
+  for (const a of ['forge history', 'what can you make', 'What can you 3D print for me?', 'show me the forge gallery', 'forge recipes']) assert.deepEqual(forgeOf(a), { list: true }, a);
+  for (const a of ['what can you do', 'make me a coffee', 'history of the forge in england', 'what can you make of this']) assert.ok(!forgeOf(a) || !forgeOf(a).list, a);
+  assert.deepEqual(forgeOf('make me a rocket'), { make: 'rocket' });
+});

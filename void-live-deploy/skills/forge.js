@@ -13,9 +13,11 @@ const NAMES = Object.values(F.THINGS).flatMap((t) => t.names).sort((a, b) => b.l
 const MAKE = new RegExp('^(?:please\\s+)?(?:(?:can|could)\\s+you\\s+)?(?:make|build|forge|model|sculpt|create|3d[\\s-]?print|print)\\s+(?:me\\s+)?(?:a\\s+|an\\s+)?(?:3d\\s+|printable\\s+)?(' + NAMES + ')(?:\\s+(?:in\\s+3d|i\\s+can\\s+print|to\\s+print|model))?(?:\\s+please)?$');
 const PRINT = /^(?:please\s+)?(?:print\s+(?:it|this|that)|3d[\s-]?print\s+(?:it|this|that)|download\s+(?:the|its|an?)\s+stl|(?:give\s+me\s+|export\s+)?(?:the\s+|an?\s+)?stl(?:\s+file)?(?:\s+(?:of|for)\s+(?:it|this|that))?|save\s+(?:it|this)\s+as\s+(?:an?\s+)?stl)(?:\s+please)?$/;
 
-/** what the ask means: null, { make: key } or { print: true } */
+const LIST = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:forge\s+(?:history|gallery|recipes?|catalog(?:ue)?)|what\s+can\s+you\s+(?:make|forge|3d\s+print)(?:\s+(?:for\s+)?me)?|what\s+(?:things\s+)?(?:can|do)\s+you\s+(?:forge|make\s+in\s+3d)|(?:my|your)\s+forge)$/;
+/** what the ask means: null, { make: key }, { print: true } or { list: true } (the forge history: every recipe and what stands on the stage) */
 export function forgeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (LIST.test(t)) return { list: true };
   const m = MAKE.exec(t);
   if (m) return { make: F.thingOf(m[1].replace(/\s+/g, ' ')) };
   if (PRINT.test(t)) return { print: true };
@@ -103,6 +105,15 @@ async function run(text, api) {
   const q = forgeOf(text);
   if (!q) return 'none';
   const forged = Object.values(api.stage.things()).filter((t) => t.kind === 'forge');
+  if (q.list) { // forge history (asked by Void twice): the recipes it can make, each with its size and print notes, and the ones standing on the stage now
+    const { showPage, esc } = api, onStage = new Map(); for (const t of forged) onStage.set(t.key, (onStage.get(t.key) || 0) + 1);
+    showPage((p) => {
+      p.innerHTML = '<h2>Forge history</h2><div class="sub">' + Object.keys(F.THINGS).length + ' recipes, one mesh each: what you spin is what prints. ' + (forged.length ? forged.length + ' on the stage now.' : 'Nothing forged on this stage yet.') + '</div>'
+        + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + '</li>'; }).join('') + '</ul>'
+        + '<div class="src">Recipes from skills/forge-rules.js; a frontier #14 "make me a…" the forge cannot make yet shows on the growth card under My probes.</div>';
+    });
+    return 'forge';
+  }
   if (q.print) {
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1];
     if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree)'); return 'forge'; }
@@ -119,7 +130,7 @@ async function run(text, api) {
 export default {
   name: 'forge',
   forgeOf,
-  examples: ['make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a teapot', 'make a little house', 'make me a sailboat', 'forge a tree', 'make me a table i can print', 'print it', 'download the stl'],
+  examples: ['forge history', 'what can you make', 'make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a teapot', 'make a little house', 'make me a sailboat', 'forge a tree', 'make me a table i can print', 'print it', 'download the stl'],
   nearMisses: ['make me a coffee', 'make a reservation', 'print the page', 'table of contents', 'what is a rocket', 'make me a zombie', 'make a list', 'make a 3d torus', 'make me a mug', 'make a chair'],
   match(lower, text) { return !!forgeOf(text); },
   run,
