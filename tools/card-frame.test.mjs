@@ -62,3 +62,8 @@ test('the Illuminati layer: income and control arrows come from the real depende
   assert.match(chromeHtml(forge, esc).arrows, /vc-arrows/); assert.match(chromeHtml(forge, esc).arrows, /\u25b6/);
   assert.doesNotMatch(chromeHtml(cardOf({ kind: 'Answer', sources: 1, ageDays: 3 }), esc).foot, />I</, 'an answer has no income');
 });
+
+test('an unknown tier word never gives a negative stat', () => {
+  const c = cardOf({ skill: { name: 'z', tier: 'mystery' } });
+  assert.ok(c.power >= 0 && c.toughness >= 1);
+});

@@ -23,7 +23,7 @@ const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
-  const rarity = RARITY[tier] || null;
+  const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
   const typeKind = kind || (page && page.game ? 'Game' : page && page.kind === 'mini' ? 'Miniature' : skill || page ? 'Skill' : 'Answer');
   const words = page && page.examples && page.examples[0] ? String(page.examples[0]).trim().split(/\s+/).length : 0;
   const sr = skill && Number.isFinite(+skill.success_rate) ? Math.max(0, Math.min(1, +skill.success_rate)) : null;
@@ -34,8 +34,8 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     rarity, chapter, hue: hueOf(chapter), fetched,
     cost: words ? Math.min(6, words) : 0,
     typeLine: typeKind + (typeKind === 'Answer' ? ' — ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from V01D') : chap && chap.name ? ' — ' + chap.name : ''),
-    power: stats ? (sr == null ? TIERS.indexOf(tier) * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
-    toughness: stats ? (asks ? Math.min(99, +asks) : TIERS.indexOf(tier) + 1) : fetched ? (ageDays == null ? 1 : Math.max(0, Math.min(99, Math.round(ageDays)))) : null,
+    power: stats ? (sr == null ? ti * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
+    toughness: stats ? (asks ? Math.min(99, +asks) : ti + 1) : fetched ? (ageDays == null ? 1 : Math.max(0, Math.min(99, Math.round(ageDays)))) : null,
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
