@@ -4,10 +4,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { confidenceOf, FIX_SYSTEM, MAX_EDITS, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits } from '../void-live-deploy/lib/propose-fix.js';
+import { confidenceOf, FIX_SYSTEM, MAX_EDITS, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits, evidenceOf, whereOf } from '../void-live-deploy/lib/propose-fix.js';
 import { models } from '../void-live-deploy/lib/models.js';
 import * as route from '../void-live-deploy/functions/api/propose-fix.js';
-import { pickJob, regressionAsks, noteFor, STEPS } from './propose-fix.mjs';
+import { pickJob, regressionAsks, noteFor, STEPS, letsGo } from './propose-fix.mjs';
 
 const OWNER = 'owner-test-key-123456';
 const SOURCE = [
@@ -30,7 +30,14 @@ const post = (env, body, key = OWNER) => route.onRequestPost({ request: new Requ
 
 test('a probe: job names its ask and its skill; a want with alternatives gives the first skill; bare words that are not skills do not', () => {
   const j = { ask: 'learn to handle "opposite of brave"', target: 'probe:opposite-of-brave', note: 'V01D wrote this ask for its words family and missed it (wanted skill:words); from the daily probe' };
-  assert.deepEqual(jobAsk(j), { ask: 'opposite of brave', skill: 'words', want: 'skill:words' });
+  assert.deepEqual(jobAsk(j), { ask: 'opposite of brave', skill: 'words', want: 'skill:words', mode: 'learn' });
+  // a routing correction (owner, 2026-10-16): the skill that wrongly answered is the one to change
+  assert.deepEqual(jobAsk({ ask: 'stop answering "quoting a chat about your memory"', target: 'route:quoting', note: 'My owner said a card was not its job (wrong skill:automation-fix) (wanted answer)' }),
+    { ask: 'quoting a chat about your memory', skill: 'automation-fix', want: 'answer', mode: 'narrow' });
+  assert.equal(jobAsk({ ask: 'stop answering "x y z"', note: 'no wrong skill named' }), null);
+  // the exact note functions/api/voice-reply.js writes for a misrouted card
+  assert.deepEqual(jobAsk({ ask: 'stop answering "he said your memory resets like a zapier webhook"', target: 'route:automation-fix-he-said', note: 'My owner said this card was not its job (wrong skill:automation-fix) (wanted answer): "I am quoting a conversation about your memory, not fixing a webhook."' }),
+    { ask: 'he said your memory resets like a zapier webhook', skill: 'automation-fix', want: 'answer', mode: 'narrow' });
   assert.equal(jobAsk({ ask: 'fill a gap: x', note: '(wanted skill:words)' }), null);
   assert.equal(jobAsk({ ask: 'learn to handle "x"', note: 'no want here' }), null);
   assert.equal(skillOf('skill:words|skill:define|answer'), 'words'); assert.equal(skillOf('calc|skill:tip'), 'calc'); assert.equal(skillOf('answer'), null); assert.equal(skillOf('skill:Bad Name'), null);
@@ -73,7 +80,7 @@ test('the route is owner-only, needs ask, skill and source, asks the review mode
   const r = await post(env, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'V01D says how sure it is (asked by Void)'); assert.equal(j.model, models('will'));
+  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'V01D says how sure it is (asked by Void)'); assert.deepEqual(j.evidence.map((e) => [e.file, e.line]), [['void-live-deploy/skills/words.js', 5], ['void-live-deploy/skills/words.js', 8]], 'each edit cites its file and line (asked by Void)'); assert.equal(j.model, models('will'));
   assert.equal(calls[0].o.messages[0].content, FIX_SYSTEM); assert.match(calls[0].o.messages[1].content, /opposite of brave/); assert.equal(calls.length, 1, 'one model call, so the request ends inside the platform limit'); assert.equal(calls[0].m, models('will'));
   const none = await post({ AI: ai({ why: 'x', edits: [{ find: 'nope', replace: 'x' }] }), READ_TOKEN: OWNER }, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(none.status, 502);
@@ -97,7 +104,15 @@ test('the tool: the oldest open probe: job, the skill\'s own asks replayed with 
   assert.deepEqual(regressionAsks({ ask: 'opposite of brave', want: 'skill:words' }, bench, 'words'), [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }]);
   assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark \(2 line changes in skills\/words\.js\); see the pull request labelled "made by V01D"/);
   assert.match(noteFor({ passed: false, edits: 1, failed: 'benchmark', detail: '2 of 48 missed' }), /failed at: benchmark \(2 of 48 missed\); a builder takes it from here/);
-  assert.deepEqual(STEPS, ['collisions', 'unit test', 'void review', 'benchmark']);
+  assert.deepEqual(STEPS, ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']);
+  assert.match(noteFor({ passed: true, edits: 1, skill: 'automation-fix', mode: 'narrow' }), /passed collisions, lets go, unit test, void review, benchmark/);
+  // a routing correction: the oldest route: job is picked like a probe, and the bench replays only what the skill should keep
+  const r = { items: [{ id: 'r', at: '2026-10-15T06:00:00Z', target: 'route:quoting', state: 'queued', ask: 'stop answering "quoting a chat about memory"', note: '(wrong skill:words) (wanted answer)' }, ...q.items] };
+  assert.equal(pickJob(r).id, 'r', 'words has a skill file: its route job comes first, being the oldest');
+  const inline = { items: [{ id: 'f', at: '2026-10-15T05:00:00Z', target: 'route:automation-fix-x', state: 'queued', ask: 'stop answering "quoting a chat"', note: '(wrong skill:automation-fix) (wanted answer)' }, ...q.items] };
+  assert.equal(pickJob(inline).id, 'a', 'the automation fix is routed inside the page, not a skill file: its job is a builder\'s and never blocks the probes');
+  assert.equal(pickJob(inline, '', () => true).id, 'f');
+  assert.deepEqual(regressionAsks({ ask: 'rhymes with orange', want: 'answer', mode: 'narrow' }, bench, 'words').map((b) => b.ask), ['a word for happy', 'Opposite of brave']);
 });
 
 test('the route is marked internal and limited; the workflow keeps the write token away from anything a model wrote', () => {
@@ -106,6 +121,34 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   const [propose, pr] = wf.split(/\n  pull-request:\n/);
   assert.match(propose, /node tools\/propose-fix\.mjs/); assert.match(propose, /VOID_OWNER_TOKEN: \$\{\{ secrets\.VOID_OWNER_TOKEN \}\}/); assert.doesNotMatch(propose, /contents: write|pull-requests: write/);
-  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label automerge/, 'V01D\'s passing fixes automerge (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
+  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label "\$gate"/, 'V01D\'s passing fixes are labelled by the confidence gate (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
   assert.doesNotMatch(wf, /OPENROUTER|ANTHROPIC|secrets\.(?!VOID_OWNER_TOKEN)/);
+});
+
+test('evidence (asked by Void): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {
+  const ev = evidenceOf(SOURCE, GOOD.edits, 'words');
+  assert.deepEqual(ev.map((e) => e.line), [5, 8]); assert.equal(ev[0].file, 'void-live-deploy/skills/words.js'); assert.match(ev[0].was, /^return \/\^\(\?:rhymes/);
+  assert.equal(whereOf(ev), 'void-live-deploy/skills/words.js lines 5, 8'); assert.equal(whereOf(ev.slice(0, 1)), 'void-live-deploy/skills/words.js line 5'); assert.equal(whereOf([]), '');
+  assert.deepEqual(evidenceOf(SOURCE, [{ find: 'not in the file', replace: 'x' }], 'words'), []);
+  const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  assert.match(wf, /V01D's confidence: \$CONFIDENCE\. Where: \$WHERE\./, 'the pull request V01D opens says how sure it was and where');
+});
+
+test('lets go: a routing correction passes only when the edited skill, loaded fresh, no longer takes the ask', async () => {
+  const { mkdtempSync, writeFileSync } = await import('node:fs'); const { join } = await import('node:path'); const os = await import('node:os');
+  const dir = mkdtempSync(join(os.tmpdir(), 'letsgo-')), file = join(dir, 'fixy.js');
+  writeFileSync(file, "export default { name: 'fixy', match(lower) { return /webhook|zapier|memory/.test(lower); } };");
+  assert.equal(await letsGo(file, 'I am quoting a chat about your memory'), 'the skill still takes the ask');
+  writeFileSync(file, "export default { name: 'fixy', match(lower) { return /webhook|zapier/.test(lower) && !/quoting/.test(lower); } };");
+  assert.equal(await letsGo(file, 'I am quoting a chat about your memory'), '', 'loaded fresh: the edit is what is checked');
+  writeFileSync(file, 'export default {');
+  assert.match(await letsGo(file, 'x'), /did not load/);
+});
+
+test('the confidence gate (owner, 2026-10-16): 0.8 and up is labelled automerge, anything less or none waits for the owner', () => {
+  const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  const m = /gate=\$\(node -e '([^']+)' "\$CONFIDENCE"\)/.exec(wf); assert.ok(m, 'the gate is computed from the confidence');
+  const gate = (c) => { let out = ''; const log = console.log; console.log = (x) => { out = x; }; try { new Function('process', m[1])({ argv: ['node', c] }); } finally { console.log = log; } return out; };
+  assert.equal(gate('0.8'), 'automerge'); assert.equal(gate('0.93'), 'automerge'); assert.equal(gate('0.79'), 'waits for owner'); assert.equal(gate('none given'), 'waits for owner'); assert.equal(gate(''), 'waits for owner');
+  assert.match(wf, /--label "made by V01D" --label "\$gate"/); assert.match(wf, /\[ "\$gate" = "automerge" \] && \{ gh workflow run automerge\.yml/);
 });

@@ -209,5 +209,85 @@
       "decision": "built",
       "why": "Adam 2026-10-15: pay a percentage, get that percentage. For a pay-what-you-want product with an appraised price (pwyw and cents > 0), paying p% of the price unlocks the first ceil(p% x N) of its N paid items in a stable order (README and other free items first and always included, then V01D's value order, starter items first); any payment gets at least one item, 100% or more unlocks everything. Decided server-side only from the provider-verified amount (Stripe's signed amount_total; Gumroad's keyed ping price, read back from Gumroad's API when GUMROAD_ACCESS_TOKEN is set), never from client input or chat; price-lock rules still apply. Delivery: a signed per-purchase link to a zip built from the unlocked items in R2. Upgrade: pay the difference later, credited by order id (store_credits). Truly free products (price 0) stay fully free. lib/pay-share.js, tests tools/pay-share.test.mjs."
     }
+  },
+  "ask-20261013-1850-1": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1850-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1658-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1847-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1835-1": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261013-1835-2": {
+    "decision": "declined",
+    "why": "declined for now: it needs V01D to count how often people use a skill, and the owner's standing rule is no behaviour tracking (Void stays empty until asked); the evidence ratings in skills/families.json (tests, the suite, the benchmark) are the measure of a skill instead"
+  },
+  "ask-20261015-1048-3": {
+    "decision": "declined",
+    "why": "declined: money, prices and the reinvest ledger stay as they are (the owner's standing rule)"
+  },
+  "ask-20261014-1946-1": {
+    "decision": "declined",
+    "why": "declined: the motto and the VoidQuest are the owner's words to write; V01D's canon says it never makes up its own identity"
+  },
+  "ask-20261015-2008-2": {
+    "decision": "declined",
+    "why": "declined: tracking appraisals over time means keeping them, and a photo V01D appraises is read once and dropped by design"
+  },
+  "ask-20261012-1955-1": {
+    "decision": "declined",
+    "why": "declined: a one-click commit from the page would put a write token in the browser; the same end is reached by V01D's fix PRs (tools/propose-fix.mjs), which the owner approves from the 'V01D's fixes' card"
+  },
+  "ask-20261015-1903-2": {
+    "decision": "declined",
+    "why": "declined as asked: a rating is earned from evidence (tests, the suite, benchmark asks), never from a count of error-free runs, so the ladder stays as skills/families.json defines it; a skill that wants 'checked' gets a test or a benchmark ask"
+  },
+  "ask-20261015-2116-1": {
+    "decision": "waiting",
+    "why": "waiting on the owner: the WebMCP origin trial token is registered at developer.chrome.com/origintrials and pasted into WEBMCP_TRIAL_TOKEN in void.html; the tools themselves are already declared (tools.json, navigator.modelContext)"
+  },
+  "ask-20261015-1744-2": {
+    "decision": "declined",
+    "why": "declined for now: a 'recovery' button that rebuilds a skill from the page would need the write token in the browser; the fix path is V01D's own fix PRs and the owner's approve card"
+  },
+  "ask-20261015-1903-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the self card's divergence view, each built ask opened to V01D's words beside the ledger line that built it"
+  },
+  "ask-20261015-1633-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: game strength marks on the games picker from skills/families.json"
+  },
+  "ask-20261015-1555-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: 'forge history' lists every recipe and what stands on the stage"
+  },
+  "ask-20261015-1610-2": {
+    "decision": "built",
+    "why": "built 2026-10-16: the merge log card (skills/merges.js)"
+  },
+  "ask-20261015-1744-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the status card names the failed checks of a red run on main (incidents.json); the action half already showed each failed action's error"
+  },
+  "ask-20261013-1802-1": {
+    "decision": "built",
+    "why": "built 2026-10-16: the same root-cause row, with the run linked"
+  },
+  "ask-20261013-1808-1": {
+    "decision": "built",
+    "why": "built in part 2026-10-16: the status card now says what failed and what verify.yml does about it; a suggested patch per failing check is not written"
   }
 }

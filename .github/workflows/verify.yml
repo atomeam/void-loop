@@ -110,6 +110,7 @@ jobs:
           node tools/incident-log.mjs record "$(git rev-parse HEAD)" "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" test-output.txt || true
           if ! git diff --quiet void-live-deploy/incidents.json; then
             cp void-live-deploy/incidents.json /tmp/incidents.json
+            git checkout -q -- void-live-deploy/incidents.json # a dirty tree made the checkout below abort and lost the record
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git fetch -q origin main && git checkout -q -B main origin/main

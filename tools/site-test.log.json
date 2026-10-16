@@ -423,5 +423,94 @@
   "of": 25,
   "kind": "grow",
   "note": "grew the suite: \"show me the night sky\""
+ },
+ {
+  "at": "2026-10-16T05:13:33Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "tighten",
+  "note": "load ceiling 15000 -> 1900 ms"
+ },
+ {
+  "at": "2026-10-16T05:25:04Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "tighten",
+  "note": "fps floor 1 -> 3"
+ },
+ {
+  "at": "2026-10-16T05:48:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "throw it off the screen | nothing appeared",
+  "note": "fix: \"throw it off the screen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:02:43Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what are they doing | nothing appeared",
+  "note": "fix: \"what are they doing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:09:19Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:26:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T06:31:32Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "zoom in on the figure | nothing appeared",
+  "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:38:50Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1900 -> 1700 ms"
+ },
+ {
+  "at": "2026-10-16T06:45:10Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "give me 5 minutes with that | nothing appeared",
+  "note": "fix: \"give me 5 minutes with that\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:51:30Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:04:58Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "make my void dark | nothing appeared",
+  "note": "fix: \"make my void dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T07:15:33Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
  }
 ]
