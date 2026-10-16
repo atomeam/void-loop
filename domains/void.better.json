@@ -1,0 +1,23 @@
+{
+  "at": "2026-10-16T16:00:00.000Z",
+  "scores": {
+    "ask_throughput": null,
+    "open_void_asks": 0,
+    "built_void_asks_7d": 0,
+    "friction_failing": 0,
+    "friction_unsure": 0,
+    "friction_total": 0,
+    "queue_lag_hours": null,
+    "queue_queued": 0,
+    "probe_yield": null
+  },
+  "small_eligible": [],
+  "trend": "same",
+  "summary": "Baseline scorecard. Run node tools/better.mjs after deploy to refresh from live voice, ledger, families and queue.",
+  "means": {
+    "ask_throughput": "share of current Void asks that led to a grow/build ledger line in 7 days",
+    "friction_total": "failing + barely-checked skills from families.json",
+    "queue_lag_hours": "median hours items sit on the build queue",
+    "probe_yield": "share of self-probe fix proposals that passed every check"
+  }
+}
