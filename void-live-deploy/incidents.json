@@ -2,9 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T08:12:31.222Z",
-   "sha": "8eca4a34bec0d4049822274f376c6267eafe2b41",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38870020550",
+   "at": "2026-10-16T08:19:22.359Z",
+   "sha": "4c4312804380f8b67060ee08caeed9a7305fbc21",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38870688800",
+   "suite": "browser suite on main",
+   "checks": [
+    "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+    "cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
+    "suite ran to the end"
+   ]
+  },
+  {
+   "at": "2026-10-16T07:53:02.305Z",
+   "sha": "ae7fd213c1883dea55ec8989c8614ace801b36a4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38867912392",
    "suite": "browser suite on main",
    "checks": [
     "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
