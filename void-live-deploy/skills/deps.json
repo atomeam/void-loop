@@ -54,7 +54,7 @@
    "file": "lib/probe-log.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 12
+   "dependants": 13
   },
   {
    "file": "lib/arena-say.js",
@@ -102,7 +102,7 @@
    "file": "lib/automation-fix.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 40
+   "dependants": 41
   },
   {
    "file": "lib/gumroad.js",
@@ -222,13 +222,13 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 38
+   "dependants": 39
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 29
+   "dependants": 30
   },
   {
    "file": "lib/pages.js",
@@ -237,16 +237,16 @@
    "dependants": 22
   },
   {
-   "file": "lib/webauthn.js",
+   "file": "lib/actions.js",
    "skills": 0,
    "direct": 0,
    "dependants": 21
   },
   {
-   "file": "lib/actions.js",
+   "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20
+   "dependants": 21
   },
   {
    "file": "lib/void-me.js",
@@ -267,13 +267,13 @@
    "dependants": 16
   },
   {
-   "file": "lib/earnings.js",
+   "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 12
+   "dependants": 13
   },
   {
-   "file": "lib/persona.js",
+   "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
    "dependants": 12
@@ -282,7 +282,7 @@
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9
+   "dependants": 10
   },
   {
    "file": "lib/paid-access.js",
@@ -297,13 +297,13 @@
    "dependants": 7
   },
   {
-   "file": "lib/memory-scope.js",
+   "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6
+   "dependants": 7
   },
   {
-   "file": "lib/voice.js",
+   "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
    "dependants": 6
@@ -961,6 +961,16 @@
    ],
    "importedBy": []
   },
+  "functions/api/voice-reply.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/models.js",
+    "lib/shortfall.js",
+    "lib/voice.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/watch.js": {
    "imports": [
     "lib/guard.js",
@@ -1017,6 +1027,7 @@
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/will.js",
     "lib/automations-run.js",
@@ -1183,6 +1194,7 @@
     "functions/api/review.js",
     "functions/api/routes.js",
     "functions/api/routines.js",
+    "functions/api/voice-reply.js",
     "functions/films/rss.js",
     "functions/tools.json.js",
     "lib/clef.js",
@@ -1409,6 +1421,7 @@
     "functions/api/store/[[path]].js",
     "functions/api/support.js",
     "functions/api/v01d-fixes.js",
+    "functions/api/voice-reply.js",
     "functions/api/watch.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
@@ -1576,6 +1589,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "functions/api/will.js",
     "lib/approval-core.js",
     "lib/clef.js",
@@ -1753,6 +1767,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "lib/bench-asks.js"
    ]
   },
@@ -1820,6 +1835,7 @@
     "functions/api/bench.js",
     "functions/api/mcp.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "lib/bench-asks.js",
     "lib/self-context.js",
     "lib/voice.js",
@@ -2013,6 +2029,7 @@
     "functions/api/probe-asks.js",
     "functions/api/propose-fix.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "functions/api/will.js"
    ],
    "reachedBy": [
@@ -2199,6 +2216,7 @@
    ],
    "importedBy": [
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "lib/self-context.js"
    ],
    "reachedBy": [
@@ -2849,6 +2867,7 @@
     "functions/api/bench.js",
     "functions/api/mcp.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "lib/bench-asks.js",
     "lib/self-context.js",
     "skills/growth-tree.js"
@@ -2867,6 +2886,7 @@
     "functions/api/bench.js",
     "functions/api/mcp.js",
     "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
     "lib/bench-asks.js",
     "lib/self-context.js",
     "lib/voice.js",
