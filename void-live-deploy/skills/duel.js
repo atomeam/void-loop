@@ -6,10 +6,12 @@
  */
 import * as D from '../lib/duel-rules.js';
 import { loadStats, lookup, cardOf, chromeHtml } from '../lib/card-frame.js';
+import { gamesOf, playTurns, playLines } from '../lib/rules-play.js';
 
 export function duelOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
   if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play\s+)?(?:a\s+)?(?:(?:card\s+)?duel|cards|the card game|(?:a\s+)?card game)(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(l) || /^play (?:a )?(?:card duel|cards|the card game)$/.test(l)) return { kind: 'open' };
+  const games = gamesOf(t); if (games) return { kind: 'rules', games };
   let m = /^summon (.{1,40})$/i.exec(t); if (m) return { kind: 'summon', idea: m[1] };
   m = /^attack (.{1,40}?) with (.{1,40})$/i.exec(t); if (m) return { kind: 'attack', target: m[1], mine: m[2] };
   return null;
@@ -140,8 +142,43 @@ function mount(th, stageApi) {
   voidPlays();
 }
 
+const RCSS = '.rules-card .r-sets{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}.rules-card .r-set{font-size:12px;padding:3px 8px;border:1px solid rgba(255,255,255,.25);border-radius:999px}'
+  + '.rules-card .r-log{margin:8px 0;padding:0;list-style:none;font-size:13px;line-height:1.4;max-height:260px;overflow:auto}.rules-card .r-log li{padding:3px 0;border-bottom:1px solid rgba(255,255,255,.08)}'
+  + '.rules-card .r-log li.clash{color:#ffd27a;border-left:3px solid #ffd27a;padding-left:6px}.rules-card .r-log li.block{color:#e8a0a8}.rules-card .r-log li.turn{color:#f3efe2;font-weight:600;margin-top:4px}';
+const ruleSets = (names) => Promise.all(names.map((n) => fetch(new URL('../lib/rulesets/' + n + '.json', import.meta.url)).then((r) => r.json())));
+
+/** the rules stack on the stage: the named rule sets in force at once, a few turns played by two deterministic sides, every clash in words */
+function mountRules(th, stageApi) {
+  if (!document.getElementById('duel-style')) { const st = document.createElement('style'); st.id = 'duel-style'; st.textContent = CSS; document.head.appendChild(st); }
+  if (!document.getElementById('rules-style')) { const st = document.createElement('style'); st.id = 'rules-style'; st.textContent = RCSS; document.head.appendChild(st); }
+  const el = document.createElement('div'); el.className = 'thing kept-card game-card duel-card rules-card'; el.dataset.id = th.id;
+  el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(520px, calc(100vw - 20px));max-height:calc(100vh - 80px);overflow:auto';
+  el.innerHTML = '<div class="g-head"><span class="g-title">V01D Rules</span><span class="g-sub">all in force at once</span></div><div class="r-sets"></div><div class="d-lab">V01D</div><div class="d-row r-foe"></div><div class="d-lab">You</div><div class="d-row r-me"></div><div class="d-bar r-bar"></div><ol class="r-log" aria-label="what happened, in words"></ol><div class="d-ctl"><button type="button" class="g-btn r-more">Play 4 more turns</button></div>';
+  for (const b of el.querySelectorAll('button')) b.addEventListener('pointerdown', (e) => e.stopPropagation());
+  const q = (sel) => el.querySelector(sel); let turns = 4, stats = null, sets = null;
+  function paint() {
+    if (!sets) return;
+    const play = playTurns(sets, { turns }), lines = playLines(play), st = play.state;
+    q('.r-sets').textContent = ''; for (const x of sets) { const c = document.createElement('span'); c.className = 'r-set'; c.textContent = x.title + ' · ' + x.rules.length + ' rules'; c.title = x.about; q('.r-sets').appendChild(c); }
+    for (const [row, side] of [[q('.r-foe'), 'void'], [q('.r-me'), 'you']]) { row.textContent = ''; for (const c of st.cards.filter((x) => x.side === side)) row.appendChild(tile(c, st, stats, () => {})); }
+    q('.r-bar').innerHTML = '<span>Turn <b>' + (st.turn + 1) + '</b></span><span>Coins: you <b>' + st.res.you.coins + '</b> · V01D <b>' + st.res.void.coins + '</b></span><span>' + (st.over ? esc((st.over.winner === 'draw' ? 'a draw' : (st.over.winner === 'you' ? 'you win' : 'V01D wins')) + ' (' + st.over.why + ')') : 'play goes on') + '</span>';
+    const ol = q('.r-log'); ol.textContent = '';
+    for (const l of lines) { const li = document.createElement('li'); li.textContent = l; if (/^Clash on/.test(l)) li.className = 'clash'; else if (/ blocked the /.test(l)) li.className = 'block'; else if (/^Turn \d+:/.test(l)) li.className = 'turn'; ol.appendChild(li); }
+    q('.r-more').disabled = !!st.over;
+  }
+  q('.r-more').addEventListener('click', (e) => { e.stopPropagation(); turns += 4; paint(); });
+  stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
+  ruleSets(th.names).then((s) => { sets = s; paint(); }).catch(() => { q('.r-log').textContent = 'The rule sets could not be loaded.'; });
+  loadStats().then((s) => { stats = s; paint(); });
+}
+
 async function run(text, api) {
   const ask = duelOf(text); if (!ask) return 'none';
+  if (ask.kind === 'rules') {
+    api.summon('rulesduel', { names: ask.games, x: Math.max(10, Math.round(innerWidth / 2 - 260)), y: 50 });
+    api.say('V01D Rules · ' + ask.games.join(' + ') + ' in force at once · every clash is written out');
+    return 'duel';
+  }
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'duel');
   if (ask.kind === 'open' || !existing) {
     if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'duel'; }
@@ -158,9 +195,9 @@ async function run(text, api) {
 export default {
   name: 'duel',
   duelOf,
-  examples: ['duel', 'play cards', 'card duel', 'play the card game', "let's play a card duel"],
+  examples: ['duel', 'play cards', 'card duel', 'play the card game', "let's play a card duel", 'duel with mana and tribute rules', 'play cards with initiative'],
   nearMisses: ['duel of the fates movie', 'card game rules history', 'who won the duel between hamilton and burr', 'attack on titan'],
-  match(lower, text) { const a = duelOf(text); return !!a && (a.kind === 'open' || onStage()); },
+  match(lower, text) { const a = duelOf(text); return !!a && (a.kind === 'open' || a.kind === 'rules' || onStage()); },
   run,
-  stageKinds: { duel: { mount } },
+  stageKinds: { duel: { mount }, rulesduel: { mount: mountRules } },
 };

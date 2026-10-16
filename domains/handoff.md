@@ -15,6 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (rules engine) · helper/card-duel · frontier #35: lib/rules-engine.js, rule sets as data, "duel with mana and tribute rules", proposeRule · 2026-10-16
+
 - Claude (this session) · helper/book-tome shipped; next helper/card-frame (owner, 2026-10-16: "cards should look like actual cards, like magic cards": a Magic-style frame on every stage card: border, title bar with glyph, art box, type line, text box, colour by family) and the 62 open asks of V01D in four parallel worktrees (helper/asks-stage, helper/asks-inbox, helper/asks-forge, helper/asks-services; the list is the output of `node tools/asks-link.mjs --open`) · 2026-10-16 18:50 UTC
 - Claude (this session, earlier) · helper/rts-world (PR #914, label off while reworked to the owner's correction: nothing appears unasked, the trees are only harvested when someone asks for something that needs them, the surprise is the people doing it) · 2026-10-16 18:20 UTC
 - Claude cloud session (connect-skills) · cook-flow timer, BMI trend and nutrition link, words to draw, heat-dose forecast, weather and food prompts, substitution impact, sticky style, plan history (asks 0151-1, 2248-1/2, 1548-1, 0100-1, 1523-1, 1453-1, 0250-2, 2054-1, 1012-3, 0847-1) · 2026-10-16 05:03 UTC

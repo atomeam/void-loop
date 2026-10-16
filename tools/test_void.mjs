@@ -2451,6 +2451,16 @@ try {
     check('V01D card game: "summon <idea>" typed while a duel is on the stage prepares that card on the table (not a new duel)', await G.p.evaluate(() => document.querySelectorAll('.duel-card').length === 1 && document.querySelector('.duel-card .d-idea').value === 'a comet'), await G.p.evaluate(() => document.querySelector('.duel-card .d-idea').value));
     check('V01D card game: no page errors through a few real turns', !G.errors.length, JSON.stringify(G.errors));
     await G.ctx.close(); }
+  // V01D rules engine (frontier #35): "duel with mana and tribute rules" loads three rule sets as one stack, plays a few turns and writes every clash in words.
+  if (want("V01D rules engine: \"duel with mana and tribute rules\" puts the three rule sets in force at once, plays turns and writes the clash in plain words")) {
+    const R = await fresh(); await R.ask('duel with mana and tribute rules', 900);
+    await R.p.waitForSelector('.rules-card .r-log li', { timeout: 8000 }).catch(() => {});
+    const got = await R.p.evaluate(() => ({ sets: [...document.querySelectorAll('.rules-card .r-set')].map((e) => e.textContent), clash: [...document.querySelectorAll('.rules-card .r-log li.clash')].map((e) => e.textContent), lines: document.querySelectorAll('.rules-card .r-log li').length, tiles: document.querySelectorAll('.rules-card .duel-tile').length, plain: !/undefined|\[object|NaN/.test((document.querySelector('.rules-card .r-log') || {}).textContent || ''), duel: document.querySelectorAll('.duel-card:not(.rules-card)').length }));
+    check('V01D rules engine: "duel with mana and tribute rules" shows all three rule sets in force at once', got.sets.length === 3 && got.duel === 0, JSON.stringify(got.sets));
+    check('V01D rules engine: the clash between the tribute rule and the duel rule is written in plain words with how it was settled', got.clash.some((l) => /^Clash on the summon: the tribute rules/.test(l) && /layer 1 is settled before layer 2/.test(l)) && got.plain, JSON.stringify(got.clash.slice(0, 1)));
+    check('V01D rules engine: a few turns were played and drawn as V01D cards', got.lines > 10 && got.tiles >= 4, JSON.stringify({ lines: got.lines, tiles: got.tiles }));
+    check('V01D rules engine: no page errors', !R.errors.length, JSON.stringify(R.errors));
+    await R.ctx.close(); }
   // the self-play arena's record (frontier #5): "how good are you at connect four" answers from /arena.json, the games' own ratings, with the curve, and opens no game.
   if (want("the self-play arena's record (frontier #5): \"how good are you at connect four\" answers")) {
     const A = await fresh(); await A.ask('how good are you at connect four', 900); await A.p.waitForFunction(() => /Rated from/.test((document.querySelector('[data-arena-say]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});
