@@ -496,6 +496,12 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
      - **Not built here:** prices, checkout, a marketplace (money is the owner's call, `STANDING.md`), a trademark search of the name before anything physical ships.
 - **Done when:** any ask ends in a card whose type is what the thing is, whose art is its own, that prints at card size, and whose numbers are earned from evidence, never claimed.
 
+## 34. Merge: any two cards make a new one, and every subscriber's V01D can grow its own rules
+
+- **Why (owner, 2026-10-16):** "research merge games so V01D can experiment with card merges. V01D should understand and combine all systems and be smart, so when each subscriber proposes things like this it can individually alter their personal V01D." Research and the design are in `docs/research/merge-games.md` (Infinite Craft, merge puzzles, Yu-Gi-Oh fusion).
+- **Steps, smallest first:** 1. `lib/merge-rules.js` (pure: pair key, kinds, stats from the parents by fixed rules, a deterministic fallback name) and a `merge` skill: "merge a pizza and a black hole" makes the card; the model names it once, the pair is cached for everyone with its first discoverer. 2. Drop one card on another on the stage and they merge, surprising people. 3. Art blended from both parents; depth raises rarity and cost; chains. 4. Personal rules: a subscriber's proposal, read against every system, becomes a data rule on their own V01D (kinds in, kind out, stat rule, name template); never code. 5. A rule many subscribers propose is offered to the owner as global. 6. In duels (#33) a merge consumes its materials; in the collection it does not.
+- **Not here:** prices, packs, trading; another game's art or text.
+
 ## Candidate capability map (2026-10-09)
 
 A map of what the connectors in agents' sessions could become, split by who can act on it today. Nothing here is live. **Execution check** on every connector-backed item: runtime access (can a-to-mind.com reach it at all), authentication (whose account), isolation (whose data it touches, per visitor), action boundary (what it may do without a yes on the confirm line), cost, persistence (where state lives), evidence (what proves it works), status. Status values: `discovered` → `proved` (works for the owner, with evidence) → `live` (a visitor can use it).
