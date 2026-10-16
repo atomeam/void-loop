@@ -2544,6 +2544,8 @@ say('nothing selected to remove');
     }
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
+    // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Void, lib/cook-flow.js)
+    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency

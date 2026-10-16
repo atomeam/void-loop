@@ -30,6 +30,9 @@
 //   smoke           the daily smoke test's failures for the skill (tools/skills-smoke.json, written by tools/skills-check.mjs --write
 //                   in the upkeep workflow; asked by Void, ask-20261013-1823-2): a skill in it has no passing self-test that day, so
 //                   its rating drops; one not in it was tested that day (last_tested_by: the daily smoke test).
+//   re-test         tools/retest.json (tools/retest.mjs, daily in upkeep.yml; asked by Void): skills not tested in 7 days are re-tested
+//                   (routing of their own examples and near misses, their unit test); a pass dates the skill ("a re-test"), a failure
+//                   joins `smoke` as "re-test: …" and drops its self-test evidence until it passes again.
 // Nothing here counts how often people use a skill: no usage, no "popular", no "last used" (the owner's rule: no behaviour tracking).
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -56,7 +59,7 @@ export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 export const MEANS = {
   last_tested: 'the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.',
   success_rate: 'benchmark asks routed to the skill that passed on the bench\'s last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it',
-  smoke: 'what the daily smoke test of every skill found wrong with this one (tools/skills-check.mjs --write, the upkeep workflow): its examples not reaching it, a near miss taken, or its suite() failing; while present the skill has no passing self-test, so its rating is lower',
+  smoke: 'what the daily smoke test of every skill (tools/skills-check.mjs --write) or the 7-day re-test (tools/retest.mjs, lines starting re-test:) found wrong with this one: its examples not reaching it, a near miss taken, its suite() or unit test failing; while present the skill has no passing self-test, so its rating is lower',
   live: 'a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven',
   not_here: 'how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)',
 };
@@ -99,7 +102,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
   // for the growth card's friction line (Void's ask: "a 'friction' indicator ... which skills are currently failing")
   let missed = []; try { const m = JSON.parse(read('tools/bench.misses.json')); missed = Array.isArray(m && m.misses) ? m.misses.map((x) => String(x).replace(/\s+->\s+[^>]*$/, '').toLowerCase()) : []; } catch (_) {}
   const unitTexts = listTests().map((f) => { try { return read('tools/' + f); } catch (_) { return ''; } });
-  const smoke = smokeRun(read); // the daily smoke test's failures: a skill in it has no passing self-test today
+  const smoke = smokeRun(read), retest = retestRun(read); // the daily smoke test's and re-test's failures: a skill in them has no passing self-test today
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const out = {};
   for (const n of names) {
@@ -116,7 +119,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
     const routed = bench.filter((b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n)).length;
     const wants = (b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
     const failing = [...new Set(bench.filter((b) => wants(b) && missed.includes(String(b.ask).toLowerCase())).map((b) => b.ask))];
-    const smoked = Array.isArray(smoke.failing[n]) && smoke.failing[n].length ? smoke.failing[n].slice(0, 3) : null;
+    const smokedAll = [...(Array.isArray(smoke.failing[n]) ? smoke.failing[n] : []), ...(retest.failing[n] || [])], smoked = smokedAll.length ? smokedAll.slice(0, 3) : null;
     const lv = liveFindings(n, listFindings, read); // a kept artifact of a real call to the service it wraps
     out[n] = { suite: !smoked && (unit || /\bsuite\s*\(\s*\)\s*\{/.test(src)), browser, bench: routed, ...(failing.length ? { failing } : {}), ...(smoked ? { smoke: smoked } : {}), ...(lv.n ? { live: lv.n, liveAt: lv.at } : {}) };
   }
@@ -138,6 +141,17 @@ export function smokeRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
   try { const j = JSON.parse(read('tools/skills-smoke.json')); return { at: typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '', failing: j && j.failing && typeof j.failing === 'object' ? j.failing : {} }; } catch (_) { return { at: '', failing: {} }; }
 }
 
+/** the daily re-test's last record (tools/retest.json): { at, passed: Set of skills, failing: { skill: [what] } }. Pure apart from the read. */
+export function retestRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
+  const out = { at: '', passed: new Set(), failing: {} };
+  try {
+    const j = JSON.parse(read('tools/retest.json'));
+    out.at = typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '';
+    for (const [k, r] of Object.entries(j && j.retested && typeof j.retested === 'object' ? j.retested : {})) { if (r && r.ok) out.passed.add(k); else if (r && Array.isArray(r.failing) && r.failing.length) out.failing[k] = r.failing.map((x) => 're-test: ' + x); }
+  } catch (_) {}
+  return out;
+}
+
 /** the share of a skill's benchmark asks that passed on the bench's last run, or null when it can't be known. Pure. */
 export function successRate(e, recorded) {
   if (!recorded || !e || !(e.bench > 0)) return null;
@@ -149,12 +163,13 @@ export function successRate(e, recorded) {
 export const testsOf = (why) => String(why || '').split(', ').filter((w) => !/ in the benchmark$/.test(w) && !/ live findings?$/.test(w) && !/^\d{4}-\d{2}-\d{2}$/.test(w)).join(', ');
 /** when a skill was last tested: its tests' date (today when they changed since the last file, else carried from it) or the bench's
  * run date, the newer; a tie keeps what the last file said. Pure. */
-export function lastTested(e, why, prevRow, today, bench, smoke) {
+export function lastTested(e, why, prevRow, today, bench, smoke, retestAt = '') {
   const tests = testsOf(why), prevTests = prevRow ? testsOf(prevRow.why) : null, c = [];
   // real runs first, so on a tie they name the date rather than the carried "seen in the repo" date of its tests
   if (e && e.live > 0 && e.liveAt) c.push({ at: e.liveAt, by: 'a live call' }); // the day of its newest kept answer from the real service
   if (e && e.bench > 0 && bench && bench.at) c.push({ at: bench.at, by: 'the benchmark' });
-  if (smoke && smoke.at && !(e && e.smoke)) c.push({ at: smoke.at, by: 'the daily smoke test' }); // every listed skill is loaded and matched that day; one that failed has no passing test to date
+  if (smoke && smoke.at && !(e && e.smoke)) c.push({ at: smoke.at, by: 'the daily smoke test' });
+  if (retestAt && !(e && e.smoke)) c.push({ at: retestAt, by: 'a re-test' }); // the 7-day re-test it passed (tools/retest.mjs) // every listed skill is loaded and matched that day; one that failed has no passing test to date
   if (tests && tests !== 'nothing checks it yet') c.push({ at: prevRow && prevRow.last_tested && prevTests === tests ? prevRow.last_tested : today, by: 'its tests' });
   if (!c.length) return null;
   const top = c.reduce((a, b) => (b.at > a.at ? b : a));
@@ -186,11 +201,11 @@ export function staleExperiments(fam, now, days = STALE_DAYS) {
 export function build(names, ev, meta = {}) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
   const prevRows = new Map(); for (const f of (meta.prev && meta.prev.families) || []) for (const s of f.skills || []) if (s && s.name) prevRows.set(s.name, s);
-  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10), smoke = meta.smoke || { at: '', failing: {} };
+  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10), smoke = meta.smoke || { at: '', failing: {} }, retest = meta.retest || { at: '', passed: new Set(), failing: {} };
   const families = FAMILIES.map((f) => {
     const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e, today) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); // failing: bench asks it got wrong
       if (e.smoke) x.smoke = e.smoke; // the daily smoke test's failures (its self-test does not count while they stand)
-      const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
+      const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
       const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
       return x; });
     const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
@@ -206,7 +221,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'));
     return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
   let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
-  const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), today: new Date().toISOString().slice(0, 10) });
+  const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), retest: retestRun(), today: new Date().toISOString().slice(0, 10) });
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
   if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
   const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, totals: b.totals, families: b.families }, null, 1) + '\n';

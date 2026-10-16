@@ -477,6 +477,11 @@
       "words": "turn those 3 tested skills into 3 proven ones by actually interacting with external APIs or real-world data",
       "ledgerAt": "2026-10-16T07:34:33Z",
       "why": "built: a kept artifact of a real call to the outside service a skill wraps (findings/<skill>/*.json, attempt live, ok) is a fourth kind of evidence in tools/families.mjs; two kinds with a live finding under 8 days old make the skill proven, so the three tested Out-in-the-world skills become proven by real answers, never by claim (rides first, tools/rides-live.mjs)"
+    },
+    {
+      "words": "Implement an automated 're-test' trigger: if a skill hasn't been last_tested in 7 days, queue a small, non-destructive validation task to refresh its success_rate.",
+      "ledgerAt": "2026-10-16T07:57:15Z",
+      "why": "built: tools/retest.mjs re-tests every skill whose last_tested is missing or older than 7 days (its examples routed, near misses kept out, its unit test run), daily in upkeep.yml; a pass dates the skill, a failure lowers its rating and queues one retest:<skill> job with the skill's own example; success_rate stays the benchmark's (the one place attempts are recorded)"
     }
   ]
 }
