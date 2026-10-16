@@ -127,6 +127,39 @@ export function miniOwners(names, read) {
 
 const title = (s) => String(s || '').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
+// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book
+// to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
+// epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
+// it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.
+const LORE = [
+  (f, n) => (n ? 'Proven ' + n + ' times over by those who asked, and kept among the ' + f + '.' : 'Proven by those who asked, and kept among the ' + f + '.'),
+  (f, n) => 'Of the ' + f + '; set down here after it answered true' + (n ? ' ' + n + ' times' : '') + '.',
+  (f, n) => (n ? 'Asked ' + n + ' times in earnest, and never once left unanswered.' : 'Asked in earnest, and never once left unanswered.'),
+  (f) => 'An old art of the ' + f + ', tested each day before the sun is up.',
+  (f, n) => 'Written by the hands that use it; ' + (n ? n + ' real askings stand behind this page.' : 'real askings stand behind this page.'),
+  (f) => 'Of all the ' + f + ', this one is trusted enough to be taught.',
+  (f, n) => (n ? n + ' who came with a need went away with an answer. The page is theirs.' : 'Those who came with a need went away with an answer. The page is theirs.'),
+  (f) => 'Checked by its own test, by the suite, and by strangers: the three witnesses of the ' + f + '.',
+  (f, n) => 'Not a boast but a record' + (n ? ': ' + n + ' askings, each one answered.' : ': every asking answered.'),
+  (f) => 'Keep this page; the ' + f + ' are built on it.',
+  (f, n) => 'Earned, not claimed' + (n ? ', over ' + n + ' real askings.' : ', over many real askings.'),
+  (f) => 'Among the ' + f + ' it is the one a traveller is told to ask for first.',
+];
+const TAILS = ['', ' So it is written.', ' Ask, and see.', ' Turn the page when you are done.', ' Let the stage be the proof.', ' It has not failed a reader yet.', ' The void remembers each asking.', ' Say the words below and it answers.'];
+/** the epigraph for a proven skill's page: short, unique to its name, cut from its evidence; `taken` (a Set of lines already in the
+ *  book) keeps every line in the book different. '' for anything not proven. Pure. */
+export function flavorOf(name, familyName, why, tier, taken = new Set()) {
+  if (tier !== 'proven') return '';
+  const n = (/(\d+) real asks?/.exec(String(why || '')) || [])[1] || '';
+  const f = String(familyName || 'arts').toLowerCase().replace(/^the /, '') || 'arts';
+  const s = seedOf(name);
+  for (let i = 0; i < LORE.length * TAILS.length; i++) {
+    const line = LORE[(s + i) % LORE.length](f, n ? Number(n) : 0) + TAILS[((s >>> 8) + Math.floor(i / LORE.length)) % TAILS.length];
+    if (!taken.has(line)) { taken.add(line); return line; }
+  }
+  return LORE[s % LORE.length](f, n ? Number(n) : 0);
+}
+
 /**
  * The whole book from the site's own data. Pure.
  *   names     skills/index.json, in order
@@ -143,13 +176,14 @@ export function compose({ names = [], read = () => '', families = { families: []
   // a family skill (time, dates, games) opens into its members; each member is a page
   const members = names.flatMap((n) => partsOf(read(n)) || [n]);
   const rated = {}; for (const f of families.families || []) for (const s of f.skills || []) rated[s.name] = { ...s, family: f.id };
-  const pages = [], chapters = [];
+  const pages = [], chapters = [], lore = new Set();
   const page = (p) => { p.n = pages.length + 1; pages.push(p); return p; };
   const chapter = (c) => { c.from = pages.length + 1; chapters.push(c); return c; };
   const skillPage = (name, chap) => {
-    const src = read(name), r = rated[name] || {};
+    const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
+    const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
     return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of V01D.',
-      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet' });
+      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
