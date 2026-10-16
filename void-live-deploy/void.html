@@ -5208,9 +5208,10 @@ say('nothing selected to remove');
       if (ranSkill) return;
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
+      if (/^(?:close|close (?:the )?book|shut (?:the )?book|put (?:the )?book (?:down|away|back))$/.test(lower0) && window.__voidBook && window.__voidBook.open) { window.__voidBook.close(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'book closed' }); return; } // the open tome is what "close" closes first (skills/guide.js)
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
-      if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
+      if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)

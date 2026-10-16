@@ -211,6 +211,7 @@ for (const [name, file] of [
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
   ['guide', 'guide.test.mjs'],
+  ['tome', 'tome.test.mjs'],
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
