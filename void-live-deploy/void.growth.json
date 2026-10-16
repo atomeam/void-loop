@@ -3997,6 +3997,15 @@
   "try": "what can i use instead of butter in cookies"
  },
  {
+  "at": "2026-10-16T05:23:42Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "A dependency map: who imports whom under the site's code, in skills/deps.json and a card (asked by Void)",
+  "asked": "ask-20261012-1942-2",
+  "show": "a dependency map: which skills a change to shared code reaches",
+  "try": "dependency map"
+ },
+ {
   "at": "2026-10-16T05:29:36Z",
   "by": "claude",
   "kind": "grow",
@@ -4030,6 +4039,15 @@
   "asked": "ask-20261012-1942-1"
  },
  {
+  "at": "2026-10-16T06:06:16Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the fuzzy layer for skill activation: a slip of a skill's trigger word ('recipie for pancakes', 'poulation of japan', 'tranlsate hello to spanish') is corrected from the skills' own examples (one edit from 5 letters, two from 8, a transposition counts as one) with no typo pattern written by hand; numbers, units, quoted names, real words, inflections, the word after a place preposition and every valid trigger word are never touched, and the corrected ask runs only when the skill that takes it owns the corrected word; the ask is logged as typed, the corrected one is routed; 23 misspelled asks join the bench (asked by Void three times)",
+  "asked": "ask-20261014-1648-1",
+  "show": "a slip of a skill's own word now reaches the skill",
+  "try": "recipie for pancakes"
+ },
+ {
   "at": "2026-10-16T06:06:20Z",
   "by": "claude",
   "kind": "build",
@@ -4037,5 +4055,20 @@
   "asked": "ask-20261013-0026-2",
   "show": "a card that links each fringe experiment to the skill it grew into",
   "try": "fringe to skill"
+ },
+ {
+  "at": "2026-10-16T06:11:31Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the page's load pays for less: the four ask-only libs (approval, store, fix, review: 56 KB compressed) load after the skills instead of beside them, the skills index is preloaded from the head, the dead weather page (57 lines, shelved on docs/SALVAGE.md) is out, and the page says data-skills=ready once its skills are in; node tools/page-perf.mjs measures a load before and after (docs/playbooks/perf-pass.md)"
+ },
+ {
+  "at": "2026-10-16T06:48:43Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "A daily smoke test of every skill feeds the ratings: a failing skill's rating drops, a passing one has its tested day (asked by Void)",
+  "asked": "ask-20261013-1823-2",
+  "show": "every skill is smoke-tested daily; a failing one's rating drops",
+  "try": "show me your skill families"
  }
 ]

@@ -460,6 +460,18 @@
       "ask": "ask-20261014-0847-1",
       "ledgerAt": "2026-10-16T05:50:00Z",
       "why": "built: the same plan history, asked first in these words"
+    },
+    {
+      "ask": "ask-20261014-1658-1",
+      "words": "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js corrects a slip of a skill's trigger word from the skills' own examples, no typo pattern by hand"
+    },
+    {
+      "ask": "ask-20261014-0847-3",
+      "words": "Implement a fuzzy-matching layer in the semantic validator to handle common misspellings of skill names.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: the same fuzzy layer; a misspelled skill name ('notpad', 'pasword') reaches the skill, and the skill that takes the ask must own the corrected word"
     }
   ]
 }

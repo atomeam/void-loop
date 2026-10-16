@@ -1230,6 +1230,25 @@ try {
         && b.side === 'rgb(93, 255, 165)' && b.bg === a.bg && !P.errors.length,
       JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // The fuzzy layer (lib/fuzzy.js, asked by Void three times, 2026-10-14): a slip of a skill's trigger word reaches the skill with no
+  // typo pattern written by hand; the ask is logged as typed; a slip that no skill would take, a real word and a place stay as typed.
+  if (want("fuzzy layer: a slip of a skill's trigger word reaches the skill, logged as typed, and a real word or a place is never corrected")) { const F = await fresh();
+    await F.ask('open a notpad', 900);
+    const pad = await F.p.$('.thing.notepad');
+    await F.ask('generate a pasword', 900);
+    const pw = await F.page();
+    const log = await F.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => /skill:/.test(x.note || '')).map((x) => x.ask + '=' + x.note));
+    // a real word (whether) runs as typed: the card's heading is the ask as routed; a place after "in" and a slip no skill takes stay as typed (the pure layer on the page's own skills)
+    await F.ask('whether in paris', 1200);
+    const real = await F.page();
+    const pure = await F.p.evaluate(async () => { const m = await import('/lib/fuzzy.js'); const names = await (await fetch('/skills/index.json')).json(); const sks = [];
+      for (const n of names) { try { sks.push((await import('/skills/' + n + '.js')).default); } catch (_) {} }
+      const v = m.vocabulary(sks); return m.correct('weather in sofia', v).text + ' | ' + m.correct('tokio time', v).text + ' | ' + String(m.confirm(m.correct('tokio time', v), null)) + ' | ' + m.correct('recipie for pancakes', v).text; });
+    check("fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
+      !!pad && /password/i.test(pw) && log.some((l) => l.startsWith('open a notpad=skill:notepad')) && log.some((l) => l.startsWith('generate a pasword=skill:util'))
+      && /whether in paris/.test(real) && !/weather in paris/.test(real) && pure === 'weather in sofia | tokyo time | false | recipe for pancakes',
+      JSON.stringify({ pad: !!pad, pw: pw.slice(0, 60), log, real: real.slice(0, 50), pure }));
+    await F.ctx.close(); }
   // step 6's visible upgrade for the notepad (owner, 2026-10-11: every cleanup move ships one): the card is the legal pad its 3D view shows
   if (want("notepad legal pad look: yellow ruled paper, red margin and binding, the felt-tip hand, rules that line up with the writing, a colour still edges it")) { const P = await fresh();
     await P.ask('notepad: buy bread', 600);
@@ -2959,6 +2978,30 @@ try {
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
     await F.ctx.close(); }
+  // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
+  // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
+  // are skills/deps.json's top lib files in its order, a tap lists that file's dependants, and "what depends on <file>" opens on it.
+  if (want("deps: the dependency map card")) { const D = await fresh({ phone: true });
+    const deps = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'deps.json'), 'utf8')), top = deps.libs[0];
+    await D.ask('dependency map', 1200);
+    const card = await until(async () => D.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.dp-lib')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, libs: rows.map((r) => ({ file: r.dataset.lib, skills: Number(r.querySelector('.dp-count').dataset.skills), open: !r.querySelector('.dp-open').hidden })), wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    await D.p.tap('.vpage .dp-lib[data-lib="' + top.file + '"] button').catch(() => {});
+    const opened = await D.p.$eval('.vpage .dp-lib[data-lib="' + top.file + '"]', (r) => ({ open: !r.querySelector('.dp-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
+      deps: [...r.querySelectorAll('[data-dep]')].map((li) => li.dataset.dep) })).catch(() => null);
+    const want12 = deps.libs.slice(0, 12).map((l) => [l.file, l.skills]);
+    const all = [...(deps.files[top.file].importedBy || []), ...(deps.files[top.file].reachedBy || [])].sort();
+    check('deps: "dependency map" lists the lib files the most skills depend on, from skills/deps.json, and a tap lists every dependant of one',
+      !!card && card.title === 'What depends on what' && JSON.stringify(card.libs.map((l) => [l.file, l.skills])) === JSON.stringify(want12) && card.libs.every((l) => !l.open) && !card.wide
+      && !!opened && opened.open && opened.expanded === 'true' && JSON.stringify(opened.deps.slice().sort()) === JSON.stringify(all) && opened.deps.length >= 1 && !D.errors.length,
+      JSON.stringify({ card, want12, opened: opened && { ...opened, deps: opened.deps.slice(0, 4) }, all: all.slice(0, 4), errors: D.errors }));
+    await D.ask('what depends on ' + top.file, 1200);
+    const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
+    check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
+    await D.ctx.close(); }
   // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
   // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
   // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
