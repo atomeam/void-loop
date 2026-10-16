@@ -8,6 +8,9 @@
 # workflow token opens starts no pull_request runs, so this job dispatches Void's review and the automerge bot on it itself.
 # A proposal that fails is undone and the job's note says which step, for a builder.
 # Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
+# The brain: the daily run asks V01D's own model (Workers AI, free). A run started by hand can pick "claude" instead
+# (tools/claude-brain.mjs): one call on the GitHub runner with the ANTHROPIC_API_KEY repo secret, the output capped, about $0.20 at
+# most; the key goes to that step only and never to the site. Same gate, same checks, same pull request.
 name: V01D proposes a fix
 
 on:
@@ -23,6 +26,11 @@ on:
         description: "propose, apply and test, but leave the queue note alone and open no pull request"
         type: boolean
         default: false
+      brain:
+        description: "who proposes: v01d (its own model, free) or claude (ANTHROPIC_API_KEY, one capped call)"
+        type: choice
+        options: [v01d, claude]
+        default: v01d
 
 concurrency:
   group: void-propose-fix
@@ -44,6 +52,7 @@ jobs:
       confidence: ${{ steps.result.outputs.confidence }}
       title: ${{ steps.result.outputs.title }}
       where: ${{ steps.result.outputs.where }}
+      model: ${{ steps.result.outputs.model }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,7 +63,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Checks
-        run: node --test tools/propose-fix.test.mjs
+        run: node --test tools/propose-fix.test.mjs tools/claude-brain.test.mjs
       - name: Every workflow file parses (asked by Void; a broken YAML stopped this one from loading on 2026-10-15)
         run: |
           python3 - <<'PY'
@@ -93,13 +102,20 @@ jobs:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
           JOB: ${{ inputs.job }}
           DRY: ${{ inputs.dry && '--dry' || '' }}
+          BRAIN: ${{ inputs.brain || 'v01d' }}
+          # only a run that picked Claude carries the key
+          ANTHROPIC_API_KEY: ${{ inputs.brain == 'claude' && secrets.ANTHROPIC_API_KEY || '' }}
         run: |
           echo "passed=0" >> "$GITHUB_OUTPUT"
           if [ -z "$VOID_OWNER_TOKEN" ]; then
             echo "::warning title=V01D did not propose a fix::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
             exit 0
           fi
-          args=($DRY --out "$RUNNER_TEMP/fix"); [ -n "$JOB" ] && args+=(--job "$JOB")
+          if [ "$BRAIN" = "claude" ] && [ -z "$ANTHROPIC_API_KEY" ]; then
+            echo "::warning title=Claude did not propose a fix::Repo secret ANTHROPIC_API_KEY is not set."
+            exit 0
+          fi
+          args=($DRY --brain "$BRAIN" --out "$RUNNER_TEMP/fix"); [ -n "$JOB" ] && args+=(--job "$JOB")
           code=0; node tools/propose-fix.mjs "${args[@]}" > propose.txt || code=$?
           sed -n '/^### V01D proposed/,$p' propose.txt >> "$GITHUB_STEP_SUMMARY" || true
           tail -n 30 propose.txt
@@ -118,6 +134,7 @@ jobs:
             # the evidence (asked by Void): V01D's confidence and the file and lines each edit changes
             echo "title=$(node -p "require(process.argv[1]).title.replace(/[^\w ,.'?!:\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "confidence=$(node -p "String(require(process.argv[1]).confidence ?? 'none given').replace(/[^\w .-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "model=$(node -p "String(require(process.argv[1]).model || 'V01D\'s own model').replace(/[^\w .\/@:-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "where=$(node -p "const e = require(process.argv[1]).evidence || []; (e.length ? e[0].file + (e.length > 1 ? ' lines ' : ' line ') + e.map((x) => x.line).join(', ') : 'not found').replace(/[^\w ./,-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
           fi
       - uses: actions/upload-artifact@v4
@@ -157,6 +174,7 @@ jobs:
           CONFIDENCE: ${{ needs.propose.outputs.confidence }}
           TITLE: ${{ needs.propose.outputs.title }}
           WHERE: ${{ needs.propose.outputs.where }}
+          MODEL: ${{ needs.propose.outputs.model }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           patch="$RUNNER_TEMP/fix/propose-fix.patch"
@@ -170,7 +188,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "void-live-deploy/skills/$SKILL.js"
-          git commit -q -m "$TITLE" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "V01D's confidence: $CONFIDENCE. Where: $WHERE." -m "Suggested-by: Void (probe)"
+          git commit -q -m "$TITLE" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "V01D's confidence: $CONFIDENCE. Where: $WHERE. Model: $MODEL." -m "Suggested-by: Void (probe)"
           git push -q origin "$branch"
           gh label create "made by V01D" --color 5c5cff --description "a change V01D's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
           # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"): sure enough, it
@@ -178,7 +196,7 @@ jobs:
           gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
           gh label create "waits for owner" --color d4a72c --description "V01D was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
           url=$(gh pr create --base main --head "$branch" --label "made by V01D" --label "$gate" --title "$TITLE" \
-            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. V01D's confidence: $CONFIDENCE. Where: $WHERE. Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-16), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"V01D's fixes\" card on the site). The ask is V01D's own words, not a visitor's.")
+            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. V01D's confidence: $CONFIDENCE. Where: $WHERE. Model: $MODEL. Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-16), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"V01D's fixes\" card on the site). The ask is V01D's own words, not a visitor's.")
           echo "### V01D's fix is up: $url" >> "$GITHUB_STEP_SUMMARY"
           # the merge gate: Void's review on this head, then the bot that merges labelled PRs once it is clean
           gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Void's review on ${url} by hand"
