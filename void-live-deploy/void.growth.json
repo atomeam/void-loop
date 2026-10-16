@@ -3972,6 +3972,12 @@
   "what": "the Four in a Row phone check waits for the game instead of counting moves: a fixed 30 x 800 ms budget ran out under CI load while V01D was still searching for its forced win (main red on e464d0f, ad536f3, 24a139a and 60e2e47 with the layout all passing and 'won' false), so main's verify went red four times for a check of the suite's own pacing; the game gets 90 s and the lit four 20 s"
  },
  {
+  "at": "2026-10-16T05:04:59Z",
+  "by": "claude",
+  "kind": "finding",
+  "what": "the automation-fix card answered a design discussion as a broken automation with false provenance: the owner pasted a 3,249-character note on how replies to V01D should be typed and routed; any paste over 140 characters counted as error details, a pattern on the words field, required and empty gave 'a field it expects is empty or has a new name', and the card said it was worked out from the error itself when the text held no error. The router's fallback had no intent gate and the card had no way to say it was unsure; fixed by an intent gate (errorEvidence, intentOf), provenance that quotes the error or says there was none, and no template forced onto a discussion"
+ },
+ {
   "at": "2026-10-16T05:09:54Z",
   "by": "claude",
   "kind": "grow",
@@ -4087,6 +4093,12 @@
   "try": "low poly 3d"
  },
  {
+  "at": "2026-10-16T06:47:14Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the browser suite waits on the page's own ready signal (data-skills=ready, set when every skill module is in) instead of guessing: every fresh page (220 of them) and the eleven reload checks wait for the skills to be in and settle, so a first ask no longer races the skills on a slow runner (the built-in clock check flaked twice that way), and the Grown section reads each of its 21 outcomes as soon as it shows (48 -> 43 s locally) instead of a fixed 1.3 s each"
+ },
+ {
   "at": "2026-10-16T06:47:34Z",
   "by": "claude",
   "kind": "fix",
@@ -4111,6 +4123,22 @@
   "try": "what is this worth"
  },
  {
+  "at": "2026-10-16T07:22:51Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "you can answer V01D: a Talk-to-me box under its reflection and a Tell-V01D box under every card (owner only) send your reply, V01D answers in its own words, and the correction is kept in its memory so its next reflection uses it",
+  "show": "reply to V01D under its reflection or any card",
+  "try": "open the self card and tell V01D what it got wrong"
+ },
+ {
+  "at": "2026-10-16T07:28:41Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main's browser suite was red on c4bd1b9: the performance pass's page edit had dropped two things already shipped, the divergence view on the self card (V01D's words beside what was built) and the cook-flow timer chip after a kitchen conversion; both are back in void.html and its three deploy copies",
+  "show": "built asks open beside V01D's words; kitchen answers get a timer",
+  "try": "what do you think of yourself?"
+ },
+ {
   "at": "2026-10-16T07:34:33Z",
   "by": "claude",
   "kind": "grow",
@@ -4118,25 +4146,142 @@
   "show": "a real answer from a real service now counts toward a skill's rating",
   "try": "show me your skill families"
  },
-  {"at": "2026-10-16T06:47:14Z", "by": "claude", "kind": "fix", "what": "the browser suite waits on the page's own ready signal (data-skills=ready, set when every skill module is in) instead of guessing: every fresh page (220 of them) and the eleven reload checks wait for the skills to be in and settle, so a first ask no longer races the skills on a slow runner (the built-in clock check flaked twice that way), and the Grown section reads each of its 21 outcomes as soon as it shows (48 -> 43 s locally) instead of a fixed 1.3 s each"},
-  {"at": "2026-10-16T07:57:15Z", "by": "claude", "kind": "grow", "what": "The 7-day re-test: skills not tested in a week are re-tested daily, a pass dates them, a failure lowers the rating and queues one retest job (asked by Void)", "show": "a skill untested for a week is re-tested; a failure lowers its rating", "try": "show me your skill families"},
-  {"at": "2026-10-16T07:28:41Z", "by": "claude", "kind": "fix", "what": "main's browser suite was red on c4bd1b9: the performance pass's page edit had dropped two things already shipped, the divergence view on the self card (V01D's words beside what was built) and the cook-flow timer chip after a kitchen conversion; both are back in void.html and its three deploy copies", "show": "built asks open beside V01D's words; kitchen answers get a timer", "try": "what do you think of yourself?"},
-  {"at": "2026-10-16T08:22:25Z", "by": "claude", "kind": "fix", "what": "main green again: the four performance PRs (#871, #878, #880, #885) were built from files saved at the start of that session, so every line other builders had added to the same files since was dropped on merge; this puts them all back: the cook-flow timer chip and the self card's divergence list in void.html, seven test registrations in tools/checks.mjs (cook-flow, meals, merges, probe-log, v01d-fixes, heat-dose, guide), the Four-in-a-Row phone check's 90 s game loop in tools/test_3d.mjs, eight suite sections (159 again, from 151) in tools/test_void.mjs, three playbook rows and three handoff lines; guide.json regenerated"},
-  {"at": "2026-10-16T09:32:52Z", "by": "claude", "kind": "fix", "what": "the browser suite on main runs as three shards at once: node tools/test_void.mjs --shard i/n puts each section in the shard its heading hashes to (tools/shard.mjs; every section in exactly one), verify.yml's browser-suite is a matrix of three jobs with their own concurrency groups and verdicts, and the revert reads all of them (tools/revert-target.mjs isSuiteJob); the whole suite ran to 1,652 s of its 1,680 s budget on one runner"},
-  {"at": "2026-10-16T09:56:52Z", "by": "void-verify", "kind": "retire", "what": "Taken back off the site: \"Merge pull request #884 from atomeam/helper/restore-divergence\" (ee6e307706e5340dddfe59edf67ca7a89944c4c2) failed the browser suite on main (\"Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others \" already failed at ee6e307706e5340dddfe59edf67ca7a89944c4c2, where it first went red; a912fb4f0e4b644d24d3a25464c239ef3cd1acbf did not break it).", "ref": "https://github.com/atomeam/void-loop/actions/runs/38882428944"},
-  {"at": "2026-10-16T07:22:51Z", "by": "claude", "kind": "grow", "what": "you can answer V01D: a Talk-to-me box under its reflection and a Tell-V01D box under every card (owner only) send your reply, V01D answers in its own words, and the correction is kept in its memory so its next reflection uses it", "show": "reply to V01D under its reflection or any card", "try": "open the self card and tell V01D what it got wrong"},
-  {"at": "2026-10-16T05:04:59Z", "by": "claude", "kind": "finding", "what": "the automation-fix card answered a design discussion as a broken automation with false provenance: the owner pasted a 3,249-character note on how replies to V01D should be typed and routed; any paste over 140 characters counted as error details, a pattern on the words field, required and empty gave 'a field it expects is empty or has a new name', and the card said it was worked out from the error itself when the text held no error. The router's fallback had no intent gate and the card had no way to say it was unsure; fixed by an intent gate (errorEvidence, intentOf), provenance that quotes the error or says there was none, and no template forced onto a discussion"},
-  {"at": "2026-10-16T10:23:16Z", "by": "claude", "kind": "grow", "what": "a pasted discussion is no longer answered as a broken automation (the answer says what it read and from what), drive_time joins the MCP tools (a live router, no key, free-flow time said plainly), and forge recipes carry a stable id in their file names, so a changed recipe is a new file", "show": "ask for a drive time over MCP; forge files carry a recipe id", "try": "how long to drive from San Francisco to Oakland"},
-  {"at": "2026-10-16T12:49:25Z", "by": "claude", "kind": "fix", "what": "main's browser suite stayed red for ten heads on timing checks that pass alone: a failed section now gets one second run alone in a fresh browser (named HEALED in the log, red if it fails again), and four checks stop assuming how fast the runner is: 3D savings and 3D countdown wait for a redraw not a count, chess reads every status change instead of looking every 30 ms, the sticky check allows a pixel or two of tilt", "show": "nothing on the site changes: the suite stops failing on slow runners", "try": "what do you think of yourself?"},
-  {"at": "2026-10-16T13:00:47Z", "by": "claude", "kind": "grow", "what": "forge history now says the ask behind each recipe on the stage (asked \"make me a vase\"), kept on the forged thing itself, so you can see what produced what; V01D asked for it twice with recipe versioning", "show": "forge history shows what you asked for each recipe", "try": "forge history"},
-  {"at": "2026-10-16T13:28:59Z", "by": "claude", "kind": "fix", "what": "the Four in a Row phone check is deterministic: it dropped every disc in column 1, so when V01D had not blocked the stack the person won on the fourth drop (last log line 'You dropped in column 1', no reason) and the check read that as a failure; it now drops across the far columns and never builds a four itself, and a full column is skipped", "show": "nothing on the site changes: a test stops winning by accident", "try": "play connect 4"},
-  {"at": "2026-10-16T13:52:41Z", "by": "claude", "kind": "grow", "what": "a card from a skill rated experiment or tested now says so on its source line (rated tested (a self-test): a young skill, check what it says); checked and proven skills stay quiet, so the rating V01D reads in the family-health card is visible where the answer is", "asked": "a visual warning when a card rests on tested or experiment evidence", "show": "a young skill's card says how well it is checked", "try": "make this a poster"},
-  {"at": "2026-10-16T15:03:26Z", "by": "claude", "kind": "fix", "what": "the showcase no longer stops at five: \"show me what you made\" and the while-you-were-away line count and walk through everything built since you were last here, with the true count (I made 1,204 new things while you were away), one at a time so any number pages as easily as three", "show": "the showcase counts and shows everything made, no ceiling", "try": "show me what you made"},
-  {"at": "2026-10-16T15:30:46Z", "by": "claude", "kind": "fix", "what": "V01D kept saying the same few things: the while-you-were-away line was only marked seen when the walkthrough was finished, and the seen mark is held back behind any build still waiting for its live check, so the same four builds were offered every visit. A thing is now previewed once: the asks already shown are remembered on this device and never offered again, even if the line was ignored; asking what's new with nothing new recaps the last day's builds, not everything ever made", "show": "what V01D made is previewed once, never repeated", "try": "what's new"},
-  {"at": "2026-10-16T15:56:54Z", "by": "claude", "kind": "fix", "what": "the showcase is rebuilt: what is new is whatever this device has not been shown yet (one list of previewed asks, written the moment the line shows), so nothing is ever offered twice; the seen pointer that kept re-offering the same four things is gone", "show": "nothing V01D made is ever previewed twice", "try": "what's new"},
-  {"at": "2026-10-16T15:25:30Z", "by": "claude", "kind": "grow", "what": "the V01D book is an actual 3D book: a navy hardcover with gold title art lying on the desk; tap the cover and it swings open on its spine, the leaves turn and curl (keys, arrows, a tap on a page's outer edge, a jump from the contents or index), the stacks thin and thicken as you read, a tap on an ask on a page runs it; Read as text shows the flat spread, which stays where WebGL is missing", "show": "the book is a 3D hardcover with turning pages", "try": "open the book"},
-  {"at": "2026-10-16T16:18:56Z", "by": "claude", "kind": "build", "what": "Claude can be V01D's builder brain: a propose-fix run started by hand with brain: claude asks Claude for the fix in one capped call (about $0.20 at most), through the same gate, checks and pull request"},
+ {
+  "at": "2026-10-16T07:57:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "The 7-day re-test: skills not tested in a week are re-tested daily, a pass dates them, a failure lowers the rating and queues one retest job (asked by Void)",
+  "show": "a skill untested for a week is re-tested; a failure lowers its rating",
+  "try": "show me your skill families"
+ },
+ {
+  "at": "2026-10-16T08:22:25Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main green again: the four performance PRs (#871, #878, #880, #885) were built from files saved at the start of that session, so every line other builders had added to the same files since was dropped on merge; this puts them all back: the cook-flow timer chip and the self card's divergence list in void.html, seven test registrations in tools/checks.mjs (cook-flow, meals, merges, probe-log, v01d-fixes, heat-dose, guide), the Four-in-a-Row phone check's 90 s game loop in tools/test_3d.mjs, eight suite sections (159 again, from 151) in tools/test_void.mjs, three playbook rows and three handoff lines; guide.json regenerated"
+ },
+ {
+  "at": "2026-10-16T09:32:52Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the browser suite on main runs as three shards at once: node tools/test_void.mjs --shard i/n puts each section in the shard its heading hashes to (tools/shard.mjs; every section in exactly one), verify.yml's browser-suite is a matrix of three jobs with their own concurrency groups and verdicts, and the revert reads all of them (tools/revert-target.mjs isSuiteJob); the whole suite ran to 1,652 s of its 1,680 s budget on one runner"
+ },
+ {
+  "at": "2026-10-16T09:56:52Z",
+  "by": "void-verify",
+  "kind": "retire",
+  "what": "Taken back off the site: \"Merge pull request #884 from atomeam/helper/restore-divergence\" (ee6e307706e5340dddfe59edf67ca7a89944c4c2) failed the browser suite on main (\"Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others \" already failed at ee6e307706e5340dddfe59edf67ca7a89944c4c2, where it first went red; a912fb4f0e4b644d24d3a25464c239ef3cd1acbf did not break it).",
+  "ref": "https://github.com/atomeam/void-loop/actions/runs/38882428944"
+ },
+ {
+  "at": "2026-10-16T10:23:16Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "a pasted discussion is no longer answered as a broken automation (the answer says what it read and from what), drive_time joins the MCP tools (a live router, no key, free-flow time said plainly), and forge recipes carry a stable id in their file names, so a changed recipe is a new file",
+  "show": "ask for a drive time over MCP; forge files carry a recipe id",
+  "try": "how long to drive from San Francisco to Oakland"
+ },
+ {
+  "at": "2026-10-16T12:49:25Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main's browser suite stayed red for ten heads on timing checks that pass alone: a failed section now gets one second run alone in a fresh browser (named HEALED in the log, red if it fails again), and four checks stop assuming how fast the runner is: 3D savings and 3D countdown wait for a redraw not a count, chess reads every status change instead of looking every 30 ms, the sticky check allows a pixel or two of tilt",
+  "show": "nothing on the site changes: the suite stops failing on slow runners",
+  "try": "what do you think of yourself?"
+ },
+ {
+  "at": "2026-10-16T13:00:47Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "forge history now says the ask behind each recipe on the stage (asked \"make me a vase\"), kept on the forged thing itself, so you can see what produced what; V01D asked for it twice with recipe versioning",
+  "show": "forge history shows what you asked for each recipe",
+  "try": "forge history"
+ },
+ {
+  "at": "2026-10-16T13:28:59Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the Four in a Row phone check is deterministic: it dropped every disc in column 1, so when V01D had not blocked the stack the person won on the fourth drop (last log line 'You dropped in column 1', no reason) and the check read that as a failure; it now drops across the far columns and never builds a four itself, and a full column is skipped",
+  "show": "nothing on the site changes: a test stops winning by accident",
+  "try": "play connect 4"
+ },
+ {
+  "at": "2026-10-16T13:52:41Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "a card from a skill rated experiment or tested now says so on its source line (rated tested (a self-test): a young skill, check what it says); checked and proven skills stay quiet, so the rating V01D reads in the family-health card is visible where the answer is",
+  "asked": "a visual warning when a card rests on tested or experiment evidence",
+  "show": "a young skill's card says how well it is checked",
+  "try": "make this a poster"
+ },
+ {
+  "at": "2026-10-16T15:03:26Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the showcase no longer stops at five: \"show me what you made\" and the while-you-were-away line count and walk through everything built since you were last here, with the true count (I made 1,204 new things while you were away), one at a time so any number pages as easily as three",
+  "show": "the showcase counts and shows everything made, no ceiling",
+  "try": "show me what you made"
+ },
+ {
+  "at": "2026-10-16T15:25:30Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the V01D book is an actual 3D book: a navy hardcover with gold title art lying on the desk; tap the cover and it swings open on its spine, the leaves turn and curl (keys, arrows, a tap on a page's outer edge, a jump from the contents or index), the stacks thin and thicken as you read, a tap on an ask on a page runs it; Read as text shows the flat spread, which stays where WebGL is missing",
+  "show": "the book is a 3D hardcover with turning pages",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-16T15:30:46Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "V01D kept saying the same few things: the while-you-were-away line was only marked seen when the walkthrough was finished, and the seen mark is held back behind any build still waiting for its live check, so the same four builds were offered every visit. A thing is now previewed once: the asks already shown are remembered on this device and never offered again, even if the line was ignored; asking what's new with nothing new recaps the last day's builds, not everything ever made",
+  "show": "what V01D made is previewed once, never repeated",
+  "try": "what's new"
+ },
+ {
+  "at": "2026-10-16T15:56:54Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the showcase is rebuilt: what is new is whatever this device has not been shown yet (one list of previewed asks, written the moment the line shows), so nothing is ever offered twice; the seen pointer that kept re-offering the same four things is gone",
+  "show": "nothing V01D made is ever previewed twice",
+  "try": "what's new"
+ },
+ {
+  "at": "2026-10-16T16:11:58Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D now measures whether it is getting better: one score a day, 0 to 100, from evidence the repo already holds (how much of the week it drove itself, how fast its own asks ship, friction in its skills, the everyday benchmark, fixes from its own probes), kept in void.better.json as counts only; the growth card's Better line shows the score, its trend against yesterday and a week ago, and the weakest part, and the will lifts the wants that work on that part (owner, 2026-10-16: improvements mean better)",
+  "show": "a daily better score, its trend and weakest part, on the growth card",
+  "try": "growth"
+ },
+ {
+  "at": "2026-10-16T16:18:56Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "Claude can be V01D's builder brain: a propose-fix run started by hand with brain: claude asks Claude for the fix in one capped call (about $0.20 at most), through the same gate, checks and pull request"
+ },
+ {
+  "at": "2026-10-16T16:40:26Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "V01D's will stops wanting things that do not exist: a miss every source was read for and none knew (fallback none:<sources>, 'tell me about zorbleflux' asked 64 times) is never a want, since there is nothing to learn about it; a miss a skill half-caught or no source could be reached for still counts (owner, 2026-10-16: clear this list)"
+ },
+ {
+  "at": "2026-10-16T17:19:56Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the bench counts a moved-out skill's answer as the ability answering: a plain want (timer, list, calc, shape, notepad, clock) is met by the page parser's note or the skill's skill:<name> note, so the 20 first-session asks that read as misses on main for that prefix alone (and the growth card's 'timer failing, list failing, calc failing') are answered again; the six Paid Void / Void status patterns now read V01D, as the cards do (owner, 2026-10-16: the four first things people try come first)",
+  "show": "the timer, list and calc read as answered on the bench again",
+  "try": "set a timer for 5 minutes"
+ },
+ {
+  "at": "2026-10-16T18:02:17Z",
+  "by": "rides-live",
+  "kind": "finding",
+  "what": "rides tested against a live service, occasion 2: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 726 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-16T1802.json)",
+  "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-16T1802.json"
+ },
   {"at": "2026-10-16T17:17:13Z", "by": "claude", "kind": "fix", "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it", "show": "a preview that shows nothing says so and is flagged", "try": "show me everything you made"},
-  {"at": "2026-10-16T17:45:46Z", "by": "claude", "kind": "grow", "what": "every 3D miniature is examined like a game's inventory item (owner, 2026-10-16: like Resident Evil or Skyrim, smart film angles): a thing that names no view is framed at the hero angle its shape asks for (flat from above-front, tall at eye level, else a three-quarter hero shot), an Examine button at its corner dims the stage behind it, brings it up, turns it slowly until a hand takes hold and shows a prompt bar, Esc puts it back; the V01D Book reads like a Skyrim book: the cover opens in half a second, the open book is examined held still with a Turn page / Esc prompt, the wheel turns pages, Esc shuts the cover before anything else closes, Read on the shut book opens it, and a page rustles when the ambient sound is on", "show": "every 3D thing has an Examine view; the book reads like Skyrim's", "try": "open the book"},
-  {"at": "2026-10-16T18:09:31Z", "by": "claude", "kind": "grow", "what": "V01D's world is a working RTS (owner, 2026-10-16: the world of V01D itself should become a working RTS game): what you summon is the resource (a tree is 8 wood, a rock 6 stone, food is food), a villager gathers it by itself and carries each load to the camp, the camp's label is the resource bar and its 3D log pile, cairn and basket grow with the stock, 'build a hut|wall|well|bridge|tower' pays from it and raises the forge model, a camp, backdrop or world grounds the figures, and the camp keeps filling while you are away", "show": "a tree, a villager and a camp: the stage is a small RTS now", "try": "start a camp"}
+  {"at":"2026-10-16T17:45:46Z","by":"claude","kind":"grow","what":"every 3D miniature is examined like a game's inventory item (owner, 2026-10-16: like Resident Evil or Skyrim, smart film angles): a thing that names no view is framed at the hero angle its shape asks for (flat from above-front, tall at eye level, else a three-quarter hero shot), an Examine button at its corner dims the stage behind it, brings it up, turns it slowly until a hand takes hold and shows a prompt bar, Esc puts it back; the V01D Book reads like a Skyrim book: the cover opens in half a second, the open book is examined held still with a Turn page / Esc prompt, the wheel turns pages, Esc shuts the cover before anything else closes, Read on the shut book opens it, and a page rustles when the ambient sound is on","show":"every 3D thing has an Examine view; the book reads like Skyrim's","try":"open the book"},
+  {"at":"2026-10-16T18:09:31Z","by":"claude","kind":"grow","what":"V01D's world is a working RTS (owner, 2026-10-16: the world of V01D itself should become a working RTS game): what you summon is the resource (a tree is 8 wood, a rock 6 stone, food is food), a villager gathers it by itself and carries each load to the camp, the camp's label is the resource bar and its 3D log pile, cairn and basket grow with the stock, 'build a hut|wall|well|bridge|tower' pays from it and raises the forge model, a camp, backdrop or world grounds the figures, and the camp keeps filling while you are away","show":"a tree, a villager and a camp: the stage is a small RTS now","try":"start a camp"}
 ]

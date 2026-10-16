@@ -1,7 +1,18 @@
 {
-  "at": "2026-10-16T16:00:00.000Z",
+  "at": "2026-10-16T17:22:27.704Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
-  "note": "Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery. Run node tools/pit-crew.mjs to refresh."
+  "selected": [
+    {
+      "id": "ask-20261015-2116-2",
+      "ask": "Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings.",
+      "target": "voice:ask-20261015-2116-2"
+    },
+    {
+      "id": "ask-20261015-2045-2",
+      "ask": "Link the 'probe-ask' output to the 'frontier #14' tracker so that every time I probe a 'make me a...' request, it updates the status of that item in the forge.",
+      "target": "voice:ask-20261015-2045-2"
+    }
+  ],
+  "note": "Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery."
 }
