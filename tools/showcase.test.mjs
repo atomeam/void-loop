@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { showcaseOf, playable, sinceLast, pick, newestAt, lineOf, KNOWN } from '../void-live-deploy/skills/showcase.js';
+import { showcaseOf, playable, sinceLast, pick, newestAt, lineOf, KNOWN, recent } from '../void-live-deploy/skills/showcase.js';
 
 const e = (at, kind, what, extra = {}) => ({ at, by: 'claude', kind, what, ...extra });
 
@@ -89,4 +89,20 @@ test('a build still waiting for its live check is held back, not marked seen uns
   assert.deepEqual(s3.map((s) => s.ask), ['fresh thing', 'ready thing']);
   // nothing pending: seen goes to the newest line, as before
   assert.equal(seenUpTo(L, seen, []), newestAt(L));
+});
+
+test('previewed once: an ask already shown is never offered again, and the recap with nothing new is the last day, not everything ever', async () => {
+  const list = [e('2026-10-12T00:00:00Z', 'grow', 'a', { try: 'ask a' }), e('2026-10-12T01:00:00Z', 'grow', 'b', { try: 'ask b' }), e('2026-10-12T02:00:00Z', 'grow', 'c', { try: 'ask c' })];
+  const all = sinceLast(list);
+  assert.deepEqual(pick(all, Infinity, null, null, new Set(['ask b'])).map((x) => x.ask), ['ask c', 'ask a'], 'ask b was previewed already');
+  assert.equal(pick(all, Infinity, null, null, new Set(['ask a', 'ask b', 'ask c'])).length, 0);
+  const store = new Map(); globalThis.localStorage = { getItem: (k) => (store.has(k) ? store.get(k) : null), setItem: (k, v) => store.set(k, String(v)) };
+  const { markShown, shownSet } = await import('../void-live-deploy/skills/showcase.js');
+  markShown([{ ask: 'Ask B' }, { ask: 'ask c' }]); markShown([{ ask: 'ask b' }]);
+  assert.deepEqual([...shownSet()], ['ask b', 'ask c'], 'cleaned, each once');
+  const many = Array.from({ length: 30 }, (_, i) => ({ ask: 'x' + i, at: new Date(Date.UTC(2026, 9, 1) + i * 36e5 * 40).toISOString().replace(/\.\d+Z$/, 'Z') })).reverse();
+  const now = Date.parse(many[0].at) + 36e5;
+  assert.equal(recent(many, now).length, 5, 'nothing in the last day: the newest five');
+  const busy = Array.from({ length: 40 }, (_, i) => ({ ask: 'y' + i, at: new Date(now - i * 36e5 / 2).toISOString().replace(/\.\d+Z$/, 'Z') }));
+  assert.equal(recent(busy, now).length, 40, 'a busy day is all of the day (40 builds half an hour apart fit in 24 hours)');
 });
