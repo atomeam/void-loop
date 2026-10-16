@@ -7,6 +7,8 @@
  * the card reaches it through stageApi.ext. The card never serializes: it is not in the saved stage, /api/mine or undo.
  */
 
+import { contentOf, suggestionHtml } from '../lib/context-check.js';
+
 function mount(th, stageApi) {
   const bridge = stageApi.ext, ext = bridge.state; // the page's extension bridge: the tab, the draft, what was sent, and its senders
   const t = ext.tab;
@@ -28,6 +30,8 @@ function mount(th, stageApi) {
       + '<div class="tab-host">' + lock + bridge.esc(host) + '</div>'
       + (t.selection ? '<blockquote class="tab-sel"><mark>' + bridge.esc(t.selection) + '</mark></blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
       + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
+      // the context check (asked by Void): what the page mostly is, from the extension's counts, and one skill for it (lib/context-check.js)
+      + suggestionHtml(bridge.esc, contentOf(t.content))
       + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
       // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
       // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
@@ -65,6 +69,7 @@ function mount(th, stageApi) {
     }));
     const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
     stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
+    { const sg = body.querySelector('.tab-suggest'); if (sg) sg.addEventListener('click', (e) => { e.preventDefault(); const b = body.querySelector('.tab-ask-' + sg.dataset.intent); if (b && !b.disabled) b.click(); }); }
     body.querySelector('.tab-propose').addEventListener('click', () => { const st = bridge.stepsOf(stepIn.value); if (!Array.isArray(st)) { actSp.textContent = bridge.ACT_WHY[st || 'bad-step']; return; } actSp.textContent = bridge.propose(st) ? 'asking you in the panel…' : bridge.DRAFT_WHY['no-panel']; });
   }
   el.appendChild(body);

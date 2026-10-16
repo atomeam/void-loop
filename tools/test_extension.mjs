@@ -73,6 +73,9 @@ await ctx.route(/^https?:\/\//, (r) => {
       + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
       + '<div id="body" contenteditable="true" aria-label="Message Body" style="min-height:80px;border:1px solid #ccc"></div></div>' });
   }
+  if (u.origin === 'https://fixture.test' && u.pathname === '/table') { // a page that is mostly a table (the context check, lib/context-check.js)
+    return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Prices</title><p>Our prices</p><table>' + Array.from({ length: 8 }, (_, i) => '<tr><td>item ' + i + '</td><td>' + (i * 3) + '</td><td>each</td></tr>').join('') + '</table>' });
+  }
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
       + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
@@ -141,6 +144,19 @@ await read(FIXTURE);
 await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /nothing selected/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
 const card2 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
 check('B1: reading again updates the card (no selection now; the box you are in is named)', /nothing selected/.test(card2) && /goes into: Reply/.test(card2), card2.slice(0, 300));
+
+// the context check (lib/context-check.js, asked by Void): the extension counts what the tab holds, the card names the kind and one skill to try;
+// the short fixture page is too little of anything, so its card carries no such line
+const tablePage = await ctx.newPage(); await tablePage.goto(FIXTURE + 'table');
+const r3 = await read(FIXTURE + 'table');
+await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /mostly a table/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
+const card3 = await V.evaluate(() => { const c = document.querySelector('.tab-card'); return c ? { text: c.innerText, ask: (c.querySelector('.tab-context a') || {}).getAttribute && c.querySelector('.tab-context a').getAttribute('data-ask') } : null; });
+const counts = await sw.evaluate(async () => (await chrome.storage.session.get('tab')).tab.content);
+await tablePage.close();
+check('context check: a page that is mostly a table reads as "mostly a table · try make a list to check off" (a data-ask link), from counts only; the short fixture page carries no such line',
+  r3 && r3.ok && card3 && /Prices/.test(card3.text) && /mostly a table/.test(card3.text) && card3.ask === 'make a list' && counts && counts.rows === 8 && counts.cells === 24 && !/mostly/.test(card2),
+  { card3, counts, card2: card2.slice(0, 120) });
+await page.bringToFront();
 
 // B2: the draft goes into the box, as typing would, and nothing is sent or submitted
 await V.fill('.tab-draft', DRAFT);
