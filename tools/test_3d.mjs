@@ -751,9 +751,21 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     if (ask) await tapAt(await proj(ask.p));
     await F.p.waitForTimeout(900);
     const ran = (await F.state()).some((x) => x.kind === 'clock');
-    check('the V01D book in 3D: a shut hardcover whose cover swings open when tapped (the flat spread is the text version, hidden), → and a tap on a page\'s outer edge turn its leaves, a jump lands on its page, and a tap on an ask on the page runs it on the stage',
-      !!shut && !shut.open && shut.pages >= 200 && flatHidden && !!opened && opened.k === 0 && opened.left === 0 && opened.right === 1 && !!turned && turned.left === 2 && turned.right === 3 && !!second && second.left === 4 && !!back && !!ask && ran && !F.errors.length,
-      JSON.stringify({ shut, flatHidden, opened, turned, second, back, ask, ran, errors: F.errors }));
+    // the Skyrim screen (owner, 2026-10-16): open, the book is examined (the stage dims, a prompt bar says Turn page / Esc), the wheel
+    // turns a page, and Esc shuts the cover and leaves the card up; shut, the Examine button reads "Read"
+    const reading = await F.p.evaluate(() => document.documentElement.classList.contains('v-inspect'));
+    const prompt = await F.p.$eval('.vpage.on .gb-3d .mini-prompt', (e) => e.textContent).catch(() => '');
+    const hb = await F.p.$eval('.vpage.on .gb-3d', (e) => { const r = e.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; }).catch(() => null);
+    const beforeWheel = key && await st();
+    if (hb) { await F.p.mouse.move(hb[0], hb[1]); await F.p.mouse.wheel(0, 160); }
+    const wheeled = key && beforeWheel && await until(async () => { const s = await st(); return s.open && s.k === beforeWheel.k + 1 && !s.turning ? s : null; }, 20000);
+    await F.p.keyboard.press('Escape');
+    const escShut = key && await until(async () => { const s = await st(); return !s.open && !s.turning ? s : null; }, 20000);
+    const after = await F.p.evaluate(() => ({ card: !!document.querySelector('.vpage.on .gb-3d'), dim: document.documentElement.classList.contains('v-inspect'), examine: (document.querySelector('.vpage.on .gb-3d .mini-examine') || {}).textContent || '' }));
+    check('the V01D book in 3D: a shut hardcover whose cover swings open when tapped (the flat spread is the text version, hidden), → and a tap on a page\'s outer edge turn its leaves, a jump lands on its page, and a tap on an ask on the page runs it on the stage; open it is examined like a Skyrim book (the stage dims, a Turn page / Esc prompt), the wheel turns a page, Esc shuts the cover and keeps the card, and the shut book offers "Read"',
+      !!shut && !shut.open && shut.pages >= 200 && flatHidden && !!opened && opened.k === 0 && opened.left === 0 && opened.right === 1 && !!turned && turned.left === 2 && turned.right === 3 && !!second && second.left === 4 && !!back && !!ask && ran
+        && reading && /Turn page/.test(prompt) && !!wheeled && !!escShut && after.card && !after.dim && after.examine === 'Read' && !F.errors.length,
+      JSON.stringify({ shut, flatHidden, opened, turned, second, back, ask, ran, reading, prompt, wheeled, escShut, after, errors: F.errors }));
     await F.ctx.close();
   }
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer

@@ -57,6 +57,20 @@ const CSS = '.vbook{width:min(940px,calc(100vw - 24px))!important;max-height:cal
   + '@media (max-width:700px){.vbook{padding:12px 10px 10px!important;max-height:calc(100vh - 90px)!important}.vbook .gb-body{flex-direction:column}.vbook .gb-tabs{flex-direction:row;width:auto;overflow-x:auto;padding-bottom:4px}.vbook .gb-tab{white-space:nowrap}.vbook .gb-spread{min-height:0}.vbook .gb-list{columns:1}.vbook .gb-cover .gopener,.vbook .gopener{grid-template-columns:repeat(4,1fr)}}';
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
+
+// a page's rustle (a short brush of filtered noise), only while the page's ambient sound is on (the speaker button, aria-pressed)
+let rustleCtx = null;
+export function rustle() {
+  try {
+    const btn = document.getElementById('sound'); if (!btn || btn.getAttribute('aria-pressed') !== 'true') return false;
+    const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return false;
+    rustleCtx = rustleCtx || new AC(); const c = rustleCtx, n = Math.floor(c.sampleRate * 0.16), buf = c.createBuffer(1, n, c.sampleRate), d = buf.getChannelData(0);
+    for (let i = 0; i < n; i++) { const t = i / n; d[i] = (Math.random() * 2 - 1) * Math.sin(Math.PI * t) ** 2 * (0.5 + 0.5 * Math.sin(t * 40)); }
+    const src = c.createBufferSource(); src.buffer = buf; const f = c.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 2600; f.Q.value = 0.7;
+    const g = c.createGain(); g.gain.value = 0.18; src.connect(f); f.connect(g); g.connect(c.destination); src.start();
+    return true;
+  } catch (_) { return false; }
+}
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
 const tries = (p, esc) => (p.examples && p.examples.length ? '<div class="gb-sub">Try it: tap one</div><ul class="gb-try">' + p.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>' : '');
 const tier = (p, esc) => (p.tier ? '<span class="gb-tier gb-tier-' + esc(p.tier) + '" title="' + esc(p.why || '') + '">' + esc(p.tier) + '</span>' : '');
@@ -143,7 +157,7 @@ function run(text, api) {
       + '<div class="gb-body"><nav class="gb-tabs" aria-label="chapters">' + book.chapters.map((c) => '<button type="button" class="gb-tab" data-page="' + c.from + '" data-chapter="' + esc(c.id) + '">' + esc(c.name) + '</button>').join('') + '</nav>'
       + '<div class="gb-3d" aria-label="the book, lying open on a desk" hidden></div><div class="gb-spread"></div></div>'
       + '<div class="gb-nav"><button type="button" class="gb-prev" aria-label="previous page">←</button><span class="gb-num" aria-live="polite"></span><button type="button" class="gb-next" aria-label="next page">→</button></div>'
-      + '<div class="src">Written by V01D from its own skill files · ← → or swipe to turn · Esc closes</div>';
+      + '<div class="src">Written by V01D from its own skill files · ← →, the wheel or a swipe turn the pages · Esc closes the book, then the card</div>';
     const spread = el.querySelector('.gb-spread'), num = el.querySelector('.gb-num'), prev = el.querySelector('.gb-prev'), next = el.querySelector('.gb-next');
     // the 3D book (skills/mini/book.js): the same pages on a hardcover you open and turn; the flat spread below stays the text version
     // and the fallback where WebGL is missing. The cover is shut until you open it (a tap, "Open the book", or an ask for a page).
@@ -171,7 +185,14 @@ function run(text, api) {
       if (window.__voidBook) window.__voidBook.cur = cur;
     };
     const go = (n) => { cur = Math.min(Math.max(Number(n) || 1, 1), total); draw(); };
-    const turn = (d) => { const vis = shown(); go(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
+    const turn = (d) => { const was = cur; const vis = shown(); go(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); if (cur !== was) rustle(); };
+    // the wheel turns pages while the book is open in 3D (Skyrim), and does not zoom the camera then
+    let wheelAt = 0;
+    host.addEventListener('wheel', (e) => {
+      if (el.classList.contains('gb-flat') || !open3) return;
+      e.preventDefault(); e.stopPropagation();
+      const now = Date.now(); if (now - wheelAt < 350 || Math.abs(e.deltaY) < 4) return; wheelAt = now; turn(e.deltaY > 0 ? 1 : -1);
+    }, { capture: true, passive: false });
     prev.addEventListener('click', () => turn(-1)); next.addEventListener('click', () => turn(1));
     el.addEventListener('click', (e) => {
       const j = e.target.closest && e.target.closest('.gjump, .gb-tab'); if (!j) return;

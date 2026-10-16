@@ -6,6 +6,10 @@
  * open (false: the cover is shut), onTurn(dir), onJump(page), onAsk(text), onOpen(), onClose() }. Taps: the cover opens the book;
  * the outer edge of a page turns it; an ask on a page runs it; a contents or index line jumps to its page.
  * Only the spread you can see (and the leaf in the air) is painted: a 220-page book is a handful of textures, not 220.
+ * It reads the way a Skyrim book does (owner, 2026-10-16: "research how the books on Skyrim work and make it like that"): the
+ * cover opens in half a second (Skyrim's fBookOpenTime is 500 ms) and the book comes up to fill the view with the world dimmed
+ * behind it; shut, it lies back on the desk. skills/guide.js adds the rest of that screen: the Turn page / Close prompt bar, the
+ * wheel turning pages, Esc closing the book before it closes anything else, and a page's rustle when the sound is on.
  */
 import { layoutFace, paint, hitAt, edgeAt, PAGE_W, PAGE_H } from '../../lib/book-face.js';
 import { spreadOf, pagesOfSpread, hueOf } from '../../lib/guide.js';
@@ -138,7 +142,7 @@ export default async function build(ctx, data) {
   }
 
   function startCover(open) {
-    anim = { kind: 'cover', t: 0, dur: still ? 0.001 : 1.1 * pace(), from: open ? 0 : Math.PI, to: open ? Math.PI : 0, open };
+    anim = { kind: 'cover', t: 0, dur: still ? 0.001 : 0.5 * pace(), from: open ? 0 : Math.PI, to: open ? Math.PI : 0, open }; // Skyrim's half-second open
     if (open) { setStatic(landed.k, landed.k, landed.k); rightPlane.visible = true; leftPlane.visible = false; leftBlock.visible = false; }
   }
   function startLeaf(k0, k1) {
@@ -155,10 +159,17 @@ export default async function build(ctx, data) {
     leafFront.visible = leafBack.visible = true;
   }
 
+  // open, the book is examined the way a game's inventory shows one (scene3d inspect): it comes up to fill the view with the stage
+  // dimmed behind, held still (a book is read, not spun), with the Skyrim-style prompt bar; Esc shuts the cover and puts it back
+  const READ = { view: [0, 1.05, 1.0], pad: 0.58, turn: false, prompt: '◂ ▸ Turn page · Esc closes the book' };
+  const examine = () => { const d = ctx.handle.data || data; if (!ctx.inspect) return; if (landed.open) ctx.inspect(true, { ...READ, onEsc: () => { d.onClose && d.onClose(); } }); else ctx.inspect(false); };
+  if (ctx.examine) ctx.examine('Read', () => { const d = ctx.handle.data || data; d.onOpen && d.onOpen(); });
+
   function finish() {
     if (!anim) return;
     if (anim.kind === 'cover') landed.open = anim.open; else landed.k = anim.k1;
     anim = null; settle();
+    if (anim === null && landed.open !== undefined) examine();
   }
 
   const tick = (dt) => {
@@ -198,6 +209,7 @@ export default async function build(ctx, data) {
   // frame the book open and centred: the camera does not move when the cover swings
   const frameBox = new THREE.Mesh(new THREE.BoxGeometry(W * 2 + OV * 2, T + B * 3, H + OV * 2)); frameBox.position.set(0, (T + B * 3) / 2, 0);
   ctx.frame(frameBox, { view: [0, 1.7, 0.55], pad: 0.72, light: [0.35, 1.2, 0.55], minZoom: 0.55, maxZoom: 1.6 });
+  if (landed.open) examine();
 
   return {
     state() { return { open: landed.open, k: landed.k, left: cur.leftN, right: cur.rightN, turning: !!anim, coverX: bookRoot.position.x, pages: total }; },

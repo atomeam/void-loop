@@ -19,6 +19,7 @@
  * three.js r180 is vendored under /vendor/three-r180 (add-ons import it by relative path, so they resolve without an importmap).
  */
 import * as guard from './guard3d.js';
+import { heroView, inspectPrompt } from '../lib/hero-view.js';
 const V = '/vendor/three-r180/';
 export const THREE_URL = V + 'build/three.module.min.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
@@ -218,6 +219,7 @@ function loop(t) {
     if (!h.ready || !h.visible || document.hidden) continue;
     let dirty = h.dirty;
     if (h.controls && h.controls.update(dt)) dirty = true;
+    if (h.inspecting && h.controls && h.controls.autoRotate) again = true; // the examined thing keeps turning until a hand takes hold
     if (h.anim.length) { for (const a of h.anim.splice(0)) a(); dirty = true; h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; }
     if (h.inst && h.inst.tick) { try { const r = h.inst.tick(dt, t / 1000); if (r !== false) { dirty = true; h.shadowDirty = true; if (r !== 'view') for (const c of h.contacts) c.dirty = true; } /* 'view': redraw, shadows unchanged */ } catch (e) { console.warn('[miniature ' + h.kind + '] tick', e); h.inst.tick = null; } again = true; }
     if (h.moving) again = true;
@@ -452,11 +454,40 @@ async function mountFresh(host, kind, data, opts, key) {
     },
     /** fn(hits, event) on a tap or click that did not orbit (moved under 6 px). */
     onTap(fn) { h.taps.push(fn); },
+    /** Examine it the way a game's inventory does (owner, 2026-10-16: Resident Evil, Skyrim): the stage dims behind it, the camera
+     *  comes up to the hero angle (or o.view/o.pad), it turns slowly until a hand takes hold (o.turn false: it holds still), a
+     *  prompt bar says what a hand can do (o.prompt), and Esc puts it back (o.onEsc runs instead when given: the book shuts its
+     *  cover). inspect(false) restores the view it had. */
+    inspect(on, o = {}) {
+      if (on) {
+        if (h.inspecting) { if (o.view || o.pad) h.frame(root, { view: o.view, pad: o.pad, ground: false }); return; }
+        h.inspecting = true; h.before = { pos: camera.position.clone(), target: controls ? controls.target.clone() : camera.position.clone(), minD: controls && controls.minDistance, maxD: controls && controls.maxDistance };
+        inspectStyle(); document.documentElement.classList.add('v-inspect'); wrap.classList.add('inspecting');
+        h.frame(root, { view: o.view, pad: o.pad, ground: false });
+        if (controls) { controls.autoRotate = o.turn !== false && !motionStill(); controls.autoRotateSpeed = 1.1; }
+        let bar = wrap.querySelector('.mini-prompt'); if (!bar) { bar = document.createElement('div'); bar.className = 'mini-prompt'; wrap.appendChild(bar); }
+        bar.textContent = o.prompt || inspectPrompt({ turn: o.turn !== false, zoom: opts.zoom !== false });
+        h.onEsc = (e) => { if (e.key !== 'Escape') return; e.stopImmediatePropagation(); e.preventDefault(); if (o.onEsc) o.onEsc(); else h.inspect(false); };
+        document.addEventListener('keydown', h.onEsc, true);
+        if (h.examine) h.examine.hidden = true;
+      } else {
+        if (!h.inspecting) return;
+        h.inspecting = false; document.documentElement.classList.remove('v-inspect'); wrap.classList.remove('inspecting');
+        if (h.onEsc) { document.removeEventListener('keydown', h.onEsc, true); h.onEsc = null; }
+        const bar = wrap.querySelector('.mini-prompt'); if (bar) bar.remove();
+        if (controls) { controls.autoRotate = false; }
+        if (h.before) { camera.position.copy(h.before.pos); if (controls) { controls.target.copy(h.before.target); controls.minDistance = h.before.minD; controls.maxDistance = h.before.maxD; controls.update(); } else camera.lookAt(h.before.target); h.before = null; }
+        if (h.examine) h.examine.hidden = false;
+      }
+      h.requestRender();
+    },
     /** Fit the camera to an object: target its centre, distance from its bounding sphere, key light and shadow box around it. */
     frame(obj = root, o = {}) {
       const box = new THREE.Box3().setFromObject(obj), sph = box.getBoundingSphere(new THREE.Sphere()), c = sph.center, rad = Math.max(sph.radius, 1e-3);
-      const dir = new THREE.Vector3(...(o.view || opts.view || [0, 0.75, 1])).normalize();
-      const fit = (o.pad || opts.pad || 1.15) * rad / Math.sin((camera.fov * Math.PI / 180) / 2);
+      // a miniature that names no view is framed the way a game's inventory frames an item: the angle its shape asks for (lib/hero-view.js)
+      const hero = o.view || opts.view ? null : heroView(box.getSize(new THREE.Vector3()));
+      const dir = new THREE.Vector3(...(o.view || opts.view || hero.view)).normalize();
+      const fit = (o.pad || opts.pad || (hero ? hero.pad : 1.15)) * rad / Math.sin((camera.fov * Math.PI / 180) / 2);
       const dist = Math.max(fit, fit / Math.max(0.6, camera.aspect) * (camera.aspect < 1 ? 1 : 0.85));
       camera.near = rad / 50; camera.far = dist + rad * 10; camera.position.copy(c).addScaledVector(dir, dist); camera.updateProjectionMatrix();
       if (controls) { controls.target.copy(c); controls.minDistance = dist * (o.minZoom || 0.45); controls.maxDistance = dist * (o.maxZoom || 1.8); controls.update(); }
@@ -500,7 +531,14 @@ async function mountFresh(host, kind, data, opts, key) {
   // a phone orbits at a lower resolution and sharpens when the finger lifts (react-three-fiber's "regress"; owner, 2026-10-15:
   // "on my phone the 3d was still choppy and laggy"): a drag redraws every frame, and pixels are what a phone's GPU runs short of
   const regress = (on) => { if (!isPhone() || h.regressed === on) return; h.regressed = on; resize(); };
-  if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; regress(true); wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; regress(false); wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
+  if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; controls.autoRotate = false; regress(true); wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; regress(false); wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
+  // the Examine button at the corner (a game's inventory prompt): a kind may give it its own word and its own act (the book's "Read" opens the cover)
+  if (opts.examine !== false) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'mini-examine'; b.textContent = 'Examine';
+    b.addEventListener('click', (e) => { e.stopPropagation(); if (h.onExamine) h.onExamine(); else h.inspect(true); });
+    for (const ev of ['pointerdown', 'mousedown', 'touchstart']) b.addEventListener(ev, (e) => e.stopPropagation(), { passive: true });
+    wrap.appendChild(b); h.examine = b; inspectStyle();
+  }
   // capped at MAX_DPR (a 3x phone screen drew 9x the pixels for no visible gain; desktop no longer supersamples 1x screens:
   // antialias already smooths edges) and scaled by the governor's quality while frames run late
   const pr = () => h.regressed || lowPoly() ? REGRESS_DPR : Math.min(MAX_DPR, window.devicePixelRatio || 1) * (h.E.quality || 1);
@@ -514,6 +552,7 @@ async function mountFresh(host, kind, data, opts, key) {
   h.attach(host); resize();
   const ctx = { THREE, lib, scene, root, camera, controls, keyLight, sky, canvas, handle: h, still: motionStill(), phone: isPhone(),
     loadGLTF, loadTexture, frame: (o, x) => h.frame(o, x), addContactShadow: (o) => h.addContactShadow(o), requestRender: (x) => h.requestRender(x), onTap: (fn) => h.onTap(fn), pick: (x, y, o) => h.pick(x, y, o),
+    inspect: (on, o) => h.inspect(on, o), examine: (label, act) => { if (h.examine && label) h.examine.textContent = label; h.onExamine = act || null; },
     animate: (fn) => { h.anim.push(fn); wake(); } };
   h.ctx = ctx;
   try { h.inst = (await build(ctx, data)) || {}; } catch (e) { h.dispose(); failCard(host, wrap, kind, key, e); throw e; } // the model failed its own build: a status card, not empty space
@@ -531,4 +570,15 @@ export function projectPoint(key, [x, y, z]) {
   return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height };
 }
 if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, keys: () => [...live.keys()], project: projectPoint, detail, setDetail,
+  inspect: (key, on, o) => { const h = live.get(key); if (h) h.inspect(on !== false, o); return !!(h && h.inspecting); }, inspecting: (key) => { const h = live.get(key); return !!(h && h.inspecting); },
   state: (key) => { const h = live.get(key); try { return h && h.inst && h.inst.state ? h.inst.state() : null; } catch (_) { return null; } } }; // a kind's own state(), for tests
+// the examine look: the stage dims behind the thing, the prompt bar and the Examine button sit on the miniature (once per page)
+function inspectStyle() {
+  if (typeof document === 'undefined' || document.getElementById('void-mini-inspect')) return;
+  const s = document.createElement('style'); s.id = 'void-mini-inspect';
+  s.textContent = 'html.v-inspect #stage{filter:brightness(.5) blur(2px);transition:filter .45s ease}html.v-inspect #void-syn{opacity:.3}'
+    + '.void-mini .mini-prompt{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:5px 13px;border-radius:999px;background:rgba(10,12,20,.74);color:#e9e2cf;font:13px Georgia,"Times New Roman",serif;letter-spacing:.02em;white-space:nowrap;pointer-events:none;border:1px solid rgba(233,226,207,.18);box-shadow:0 4px 14px rgba(0,0,0,.35)}'
+    + '.void-mini .mini-examine{position:absolute;right:8px;top:8px;padding:3px 10px;border-radius:999px;background:rgba(10,12,20,.6);color:#e9e2cf;font:12px Georgia,"Times New Roman",serif;letter-spacing:.03em;border:1px solid rgba(233,226,207,.22);cursor:pointer;opacity:0;transition:opacity .2s}'
+    + '.void-mini:hover .mini-examine,.void-mini .mini-examine:focus-visible{opacity:1}@media (hover:none){.void-mini .mini-examine{opacity:.85}}.void-mini .mini-examine[hidden]{display:none}';
+  document.head.appendChild(s);
+}
