@@ -1366,6 +1366,22 @@ try {
       /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
     await P.ctx.close();
   }
+  if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Void
+    const LEDGER = [
+      { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+      { at: '2026-10-14T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+    ];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bellOk = await until(async () => P.p.$eval('#whatsnew-bell', (e) => ({ count: e.dataset.count, label: e.getAttribute('aria-label'), anim: getComputedStyle(e).animationName, fixed: getComputedStyle(e).position })).catch(() => null), 20000);
+    await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
+    const gone = await P.p.$('#whatsnew-bell');
+    check('look what I made: when something is new a small pulsing icon with the count sits on the stage; tapping it starts the walkthrough (the bar says 1 of 2) and the icon goes, with nothing typed',
+      !!bellOk && bellOk.count === '2' && /2 new things/.test(bellOk.label) && /wn-pulse/.test(bellOk.anim) && bellOk.fixed === 'fixed' && /1 of 2/.test(bar) && !gone && !P.errors.length, JSON.stringify({ bellOk, bar, gone: !!gone, errors: P.errors }));
+    await P.ctx.close();
+  }
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
     const LEDGER = [
       { at: '2026-10-10T00:00:00Z', by: 'claude', kind: 'grow', what: 'older', show: 'an old thing', try: 'make a clock' },
@@ -3172,10 +3188,59 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  if (want("V01D cards: a skill that earned a higher rating glows once and says so, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
+    await E.ask('20% tip on 45', 1600);
+    const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
+    const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on.vc-evolving'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
+    await E.p.evaluate((n) => { localStorage.setItem('a2m.void.tiers.v1', JSON.stringify({ [n]: 'experiment' })); }, name);
+    await E.ask('close', 500); await E.ask('20% tip on 45', 1600);
+    const up = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vc-evolving'); return e ? { to: e.dataset.evolved, note: (e.querySelector('.vc-evolved-note') || {}).textContent || '', anim: getComputedStyle(e).animationName } : null; }).catch(() => null), 6000);
+    await E.ask('close', 500); await E.ask('tell me about the ocean', 1800);
+    const an = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { kind: e.dataset.kind || '', type: e.querySelector('.vc-type').innerText.split(/[\s\u2014]/)[0].toLowerCase() } : null; }).catch(() => null), 8000);
+    check('V01D cards: a first sight of a skill does not evolve it, but a skill whose remembered rating was lower glows once ("Evolved: ... -> ...") and is remembered at its new rating; an answer card carries its kind (data-kind) so its layout can differ',
+      !!name && first.evolving === false && !!up && /^(Uncommon|Rare|Mythic)$/.test(up.to) && /^Evolved: Common/.test(up.note) && /vc-evolve/.test(up.anim) && !!an && an.kind === an.type && !E.errors.length,
+      JSON.stringify({ name, first, up, an, errors: E.errors }));
+    await E.ctx.close(); }
+  if (want("type filter: show only one kind of thing on the stage, then all of them again")) { const T = await fresh(); // asked by Void
+    await T.ask('make a clock', 700); await T.ask('make a counter', 700); await T.ask('make a counter', 700);
+    const vis = () => T.p.$$eval('#stage > [data-id]', (l) => l.map((e) => ({ id: e.dataset.id, hidden: getComputedStyle(e).display === 'none' })));
+    const before = await vis(); const kinds = await T.state();
+    await T.ask('show only clocks', 600); await T.p.waitForTimeout(300);
+    const only = await vis(), bar = await T.p.$$eval('#type-filter-bar button[data-kind]', (l) => l.map((b) => b.dataset.kind + ':' + b.getAttribute('aria-pressed')));
+    await T.p.click('#type-filter-bar button[data-kind="counter"]'); await T.p.waitForTimeout(200);
+    const swapped = await vis();
+    await T.ask('make a clock', 700); const afterDraw = await vis(); // a redraw keeps the filter
+    await T.ask('show all cards', 600); await T.p.waitForTimeout(300);
+    const all = await vis(), gone = await T.p.$('#type-filter-bar');
+    const clocks = kinds.filter((x) => x.kind === 'clock').map((x) => x.id);
+    check('type filter: "show only clocks" hides every other kind on the stage (the toggles name each kind and its count, the clock one pressed), a tap on another kind swaps, a redraw keeps the filter, and "show all cards" brings everything back and removes the bar',
+      before.length >= 2 && before.every((e) => !e.hidden) && only.filter((e) => !e.hidden).length === clocks.length && only.some((e) => e.hidden) && bar.includes('clock:true') && bar.some((b) => /^counter:false$/.test(b))
+        && swapped.filter((e) => e.hidden).length === clocks.length && afterDraw.some((e) => e.hidden) && all.every((e) => !e.hidden) && !gone && !T.errors.length,
+      JSON.stringify({ before: before.length, only, bar, swapped, afterDraw: afterDraw.length, all: all.length, gone: !!gone, errors: T.errors }));
+    await T.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
   // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
+  if (want("the book: search the tome from the docked bar, with the cover shut or open, and jump to the page")) { const B = await fresh(); // asked by Void
+    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
+    await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened .tome-search input, #vtome.on .tome.opened')), 8000); await B.p.waitForTimeout(400);
+    const dock = await B.p.$eval('#vtome .tome-search', (e) => { const r = e.getBoundingClientRect(); return { top: r.top, w: r.width, vw: innerWidth }; });
+    await B.p.fill('#vtome .tome-search input', 'weather'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
+    const hits = await B.p.$$eval('#vtome .tome-hits button[data-n]', (l) => l.map((b) => Number(b.dataset.n)));
+    await B.p.keyboard.press('Enter'); await until(async () => (await B.p.evaluate(() => window.__voidBook && window.__voidBook.cur)) === wx.n || (await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page))).includes(wx.n), 5000);
+    await B.p.waitForTimeout(1300);
+    const shown = await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page).filter(Boolean));
+    await B.p.keyboard.press('Escape'); const stillOpen = await B.p.evaluate(() => !!document.getElementById('vtome')); // Escape with the box in use clears it first
+    await B.p.fill('#vtome .tome-search input', 'clock'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
+    await B.p.click('#vtome .tome-hits button[data-n]'); await B.p.waitForTimeout(1200);
+    const shown2 = await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page).filter(Boolean));
+    await B.p.fill('#vtome .tome-search input', 'zzqqxx wibble'); await B.p.waitForTimeout(300);
+    const none = await B.p.$eval('#vtome .tome-hits', (e) => e.textContent);
+    check('the book: a search bar stays docked at the top of the tome; typing "weather" lists its page first, Enter turns the book to it, a tap on a hit does the same for the clock, and a word the book lacks says so',
+      dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
+      JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
+    await B.ctx.close(); }
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
     const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button, #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });
