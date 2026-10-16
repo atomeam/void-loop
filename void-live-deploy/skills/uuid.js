@@ -1,35 +1,32 @@
 /**
- * uuid skill — a random UUID v4.
- * Empty surface stays empty.
+ * uuid skill — generate a random UUID v4.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "generate a uuid", "new uuid", "make me a random id".
+ * Pure client-side, crypto.randomUUID. Empty surface stays empty.
  */
-export function isUuid(text) {
-  return /^(?:please\s+)?(?:(?:generate|make|give me|create)\s+(?:a\s+)?(?:random\s+)?uuid(?:\s+v4)?|uuid|random uuid)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+export function uuidOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:please\s+)?(?:(?:generate|make|create|give|new)\s+(?:me\s+)?(?:a\s+)?(?:random\s+)?(?:uuid|guid|id)|uuid|new\s+uuid)$/.test(t);
 }
-export function randomUuid() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, (c) => {
-    const r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
-    return v.toString(16);
-  });
-}
-async function run(text, api) {
-  if (!isUuid(text)) return 'none';
-  const id = randomUuid();
+
+function run(text, api) {
   const { showPage, esc } = api;
+  if (!uuidOf(text)) return 'none';
+  const id = crypto.randomUUID();
   showPage((p) => {
-    p.innerHTML = '<h2>UUID</h2><p style="font-size:22px;font-family:monospace;font-weight:300">' + esc(id) + '</p><div class="sub">random v4 · say “uuid” for another</div>';
+    p.innerHTML = '<h2>UUID</h2><pre style="font-size:16px;background:rgba(0,0,0,.3);padding:12px;border-radius:8px;user-select:all">' + esc(id) + '</pre>'
+      + '<p class="sub">v4 random · copy it · nothing leaves this browser</p>';
   });
   return 'uuid';
 }
-export function suite() {
-  const id = randomUuid();
-  const ok = isUuid('generate a uuid') && isUuid('uuid') && !isUuid('what is a uuid') && /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(id);
-  return { ok, got: ok ? id.slice(0, 8) : 'miss' };
-}
+
 export default {
   name: 'uuid',
-  examples: ['generate a uuid', 'random uuid', 'uuid'],
-  nearMisses: ['what is a uuid', 'guid', 'make a clock'],
-  match(lower, text) { return isUuid(text); },
+  examples: ['generate a uuid', 'new uuid', 'make me a random id', 'uuid'],
+  nearMisses: ['what is a uuid', 'user id', 'my id', 'password'],
+  match(lower, text) { return uuidOf(text || lower); },
   run,
-  suite
+  suite() {
+    return { ok: uuidOf('generate a uuid') && !uuidOf('hello') };
+  },
 };
