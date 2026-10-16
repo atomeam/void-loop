@@ -1230,6 +1230,25 @@ try {
         && b.side === 'rgb(93, 255, 165)' && b.bg === a.bg && !P.errors.length,
       JSON.stringify({ a, b, e: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // The fuzzy layer (lib/fuzzy.js, asked by Void three times, 2026-10-14): a slip of a skill's trigger word reaches the skill with no
+  // typo pattern written by hand; the ask is logged as typed; a slip that no skill would take, a real word and a place stay as typed.
+  if (want("fuzzy layer: a slip of a skill's trigger word reaches the skill, logged as typed, and a real word or a place is never corrected")) { const F = await fresh();
+    await F.ask('open a notpad', 900);
+    const pad = await F.p.$('.thing.notepad');
+    await F.ask('generate a pasword', 900);
+    const pw = await F.page();
+    const log = await F.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((x) => /skill:/.test(x.note || '')).map((x) => x.ask + '=' + x.note));
+    // a real word (whether) runs as typed: the card's heading is the ask as routed; a place after "in" and a slip no skill takes stay as typed (the pure layer on the page's own skills)
+    await F.ask('whether in paris', 1200);
+    const real = await F.page();
+    const pure = await F.p.evaluate(async () => { const m = await import('/lib/fuzzy.js'); const names = await (await fetch('/skills/index.json')).json(); const sks = [];
+      for (const n of names) { try { sks.push((await import('/skills/' + n + '.js')).default); } catch (_) {} }
+      const v = m.vocabulary(sks); return m.correct('weather in sofia', v).text + ' | ' + m.correct('tokio time', v).text + ' | ' + String(m.confirm(m.correct('tokio time', v), null)) + ' | ' + m.correct('recipie for pancakes', v).text; });
+    check("fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
+      !!pad && /password/i.test(pw) && log.some((l) => l.startsWith('open a notpad=skill:notepad')) && log.some((l) => l.startsWith('generate a pasword=skill:util'))
+      && /whether in paris/.test(real) && !/weather in paris/.test(real) && pure === 'weather in sofia | tokyo time | false | recipe for pancakes',
+      JSON.stringify({ pad: !!pad, pw: pw.slice(0, 60), log, real: real.slice(0, 50), pure }));
+    await F.ctx.close(); }
   // step 6's visible upgrade for the notepad (owner, 2026-10-11: every cleanup move ships one): the card is the legal pad its 3D view shows
   if (want("notepad legal pad look: yellow ruled paper, red margin and binding, the felt-tip hand, rules that line up with the writing, a colour still edges it")) { const P = await fresh();
     await P.ask('notepad: buy bread', 600);
