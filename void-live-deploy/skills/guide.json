@@ -2379,7 +2379,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 1 live finding, 2026-10-16",
+   "why": "a self-test, 2 browser-suite mentions, 2 live findings, 2026-10-16",
    "flavor": "Not a boast but a record: every asking answered. Say the words below and it answers.",
    "n": 131
   },
@@ -2713,7 +2713,7 @@
     "show me everything you can do"
    ],
    "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 151
   },
   {
