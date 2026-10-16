@@ -3030,6 +3030,15 @@ try {
     check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
       !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
     await G.ctx.close(); }
+  // Is V01D getting better? (lib/better.js; owner, 2026-10-16): the growth card carries the daily score from void.better.json, with
+  // its trend and the weakest part, under the friction and owner lines, never between the velocity line and the friction line
+  if (want("The growth card says whether V01D is getting better")) { const G = await fresh();
+    await G.ask('growth', 1500);
+    const b = await until(async () => G.p.$eval('.vpage .growth-better', (e) => ({ score: +e.dataset.better, trend: e.dataset.betterTrend, weakest: e.dataset.weakest, text: e.textContent, afterVelocity: e.previousElementSibling && e.previousElementSibling.hasAttribute('data-velocity') && !!document.querySelector('.vpage .growth-friction') })).catch(() => null), 8000);
+    check('the growth card says whether V01D is getting better: a score out of 100, its trend, the facts and the weakest part',
+      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && !b.afterVelocity && !G.errors.length,
+      JSON.stringify({ b, errors: G.errors }));
+    await G.ctx.close(); }
   // V01D's probes on the growth card (lib/probe-log.js, asked by Void: a probe-success-rate card, and confidence in the growth inbox
   // so high-certainty fixes come first): nothing shows without records; with them, the rate and the proposals most certain first
   if (want("The growth card shows V01D's probes")) { const G = await fresh();

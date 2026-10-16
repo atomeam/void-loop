@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 87,
+ "runsTotal": 88,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 12
+  "none": 13
  },
  "runs": [
+  {
+   "at": "2026-10-16T17:30:08Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T16:59:40Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T07:37:17Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"send this away\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -240,9 +240,9 @@
   "skill:printedmotor": "2026-10-16T16:59:40Z",
   "skill:proposal": "2026-10-16T16:59:40Z",
   "skill:quiz": "2026-10-16T16:59:40Z",
-  "skill:rebuild-map": "2026-10-16T03:10:24Z",
-  "skill:recent": "2026-10-16T03:10:24Z",
-  "skill:recipe": "2026-10-16T03:10:24Z",
+  "skill:rebuild-map": "2026-10-16T17:30:08Z",
+  "skill:recent": "2026-10-16T17:30:08Z",
+  "skill:recipe": "2026-10-16T17:30:08Z",
   "skill:releasenotes": "2026-10-16T03:25:28Z",
   "skill:rides": "2026-10-16T03:25:28Z",
   "skill:room": "2026-10-16T03:25:28Z",

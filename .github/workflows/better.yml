@@ -1,68 +1,47 @@
-# Product "better" scorecard + pit-crew dry run. No spend. Refreshes domains/void.better.json
-# and domains/void.pit-crew.json so V01D and builders know whether leaving the system alone
-# is actually improving the metrics that take load off the owner.
-name: Void better
+# Is V01D getting better? Once a day tools/better.mjs measures five parts from the repo's own evidence (lib/better.js), appends
+# the row to void-live-deploy/void.better.json (the growth card's "Better:" line) and writes today's row with its trend to
+# domains/void.better.json (the builders, tools/will.py's boost, tools/pit-crew.mjs); the pit crew's dry run then lists V01D's
+# small asks in domains/void.pit-crew.json. Counts only, no network, no secret, no spend (#906 and the better-score branch, one tool).
+name: Better
 
 on:
   schedule:
-    - cron: "11 16 * * *" # 12:11 PM New York (EDT)
+    - cron: '51 6 * * *'
   workflow_dispatch:
 
-permissions:
-  contents: write
-
 concurrency:
-  group: void-better
+  group: better
   cancel-in-progress: false
 
+permissions:
+  contents: write # the rows on main
+
 jobs:
-  score:
+  measure:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          ref: main
       - uses: actions/setup-node@v4
         with:
-          node-version: "20"
-
+          node-version: 22
       - name: Unit tests
         run: node --test tools/better.test.mjs tools/pit-crew.test.mjs
-
-      - name: Compute better scorecard
-        run: node tools/better.mjs
-
-      - name: Pit crew dry-run (eligible small asks)
-        run: node tools/pit-crew.mjs
-
-      - name: Commit scorecard if changed
+      - name: Measure and write today's row
+        run: node tools/better.mjs --write | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Pit crew dry run (V01D's small asks, nothing queued)
+        run: node tools/pit-crew.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+      - name: Commit what changed
         run: |
-          set -euo pipefail
+          git add void-live-deploy/void.better.json domains/void.better.json domains/void.pit-crew.json
+          git diff --staged --quiet && { echo "nothing changed"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add domains/void.better.json domains/void.pit-crew.json
-          if git diff --staged --quiet; then
-            echo "no scorecard change"
-          else
-            git commit -m "better: refresh product scorecard and pit-crew eligibility"
-            git push
-          fi
-
-      - name: Summary
-        run: |
-          set -euo pipefail
-          {
-            echo "### Better"
-            echo
-            echo '```json'
-            head -c 4000 domains/void.better.json || true
-            echo
-            echo '```'
-            echo
-            echo "### Pit crew (dry-run)"
-            echo
-            echo '```json'
-            head -c 2000 domains/void.pit-crew.json || true
-            echo
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          git commit -m "Better: today's measure and the pit crew's list (counts only)"
+          for i in 1 2 3 4; do
+            git push origin HEAD:main && exit 0
+            sleep $((2 ** i)); git pull --rebase origin main
+          done
+          exit 1

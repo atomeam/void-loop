@@ -1,0 +1,27 @@
+[
+ {
+  "at": "2026-10-16T17:22:27.491Z",
+  "score": 75,
+  "parts": {
+   "self": 80,
+   "asks": 88,
+   "friction": 78,
+   "bench": 99,
+   "probes": 30
+  },
+  "facts": {
+   "week": 451,
+   "owner": 91,
+   "askedBuilt": 41,
+   "medianLagDays": 0.3,
+   "open": 4,
+   "oldestOpenDays": 0.9,
+   "skills": 160,
+   "failing": 9,
+   "unsure": 52,
+   "benchScore": 2343,
+   "benchTotal": 2368,
+   "probeFixes": 3
+  }
+ }
+]
