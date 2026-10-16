@@ -487,6 +487,7 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
   4. Print: a card at 63 x 88 mm with 3 mm bleed at 300 dpi, a sheet of nine, a PDF a print shop takes; a card back; collector numbers and edition marks. No prices, checkout or sales terms here: money is the owner's decision (`STANDING.md`), and the name "V01D" needs a trademark search before anything physical ships (a Korean band of the same spelling debuted March 2026).
   5. Stage widgets (clock, timer, notes) as cards, and the V01D Book's pages as the same cards.
   6. Decks: a hand of the cards you summoned, a card's control arrows drawn between cards on the stage (the Illuminati game's power structure), cards that interact (a Film card and a Song card of the same name link).
+  7. A V01D card holds any other game's card (owner, 2026-10-16: "the irony of a Pokemon card and a Magic card each being a V01D card proves V01D's superiority at being a card game"): ask for a Charizard or a Black Lotus and the answer is a V01D card of kind Card carrying the name, type, set, year, rules text as the source gives it and the stats V01D earns, with the source linked. The frame is the universal one; another game's art, logo and rules text are never copied in (their trademarks), only facts and a link. Decks can then mix V01D's own cards with the world's.
 - **Done when:** any ask ends in a card whose type is what the thing is, whose art is its own, that prints at card size, and whose numbers are earned from evidence, never claimed.
 
 ## Candidate capability map (2026-10-09)

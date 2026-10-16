@@ -12,6 +12,7 @@ export const KINDS = [
   ['Album', /\balbum\b/i, 'words'],
   ['Song', /\b(?:songs?|single by|hit by|ballad)\b/i, 'words'],
   ['Band', /\b(?:band|musical group|boy group|girl group|rock group|duo)\b/i, 'words'],
+  ['Card', /\b(?:trading card|collectible card|playing card|tarot card|pok[eé]mon (?:species|card)|magic: the gathering card|yu-gi-oh! card)\b/i, 'games'],
   ['Game', /\b(?:video game|board game|card game|tabletop game|role-playing game|game series)\b/i, 'games'],
   ['Book', /\b(?:novel|novella|poem|short story|play by|comic book|manga|book by|memoir|textbook)\b/i, 'words'],
   ['Person', /\((?:born|b\.)\s|\(\d{3,4}\s*[–-]\s*\d{2,4}\)|\b(?:actor|actress|singer|songwriter|musician|rapper|politician|writer|author|novelist|poet|playwright|scientist|mathematician|physicist|chemist|biologist|philosopher|artist|painter|sculptor|director|comedian|footballer|athlete|player|inventor|engineer|president|king|queen|emperor|explorer|economist|composer|conductor|astronaut|businessman|businesswoman|entrepreneur|activist|journalist|presenter|model|chef|boxer|racing driver|coach)\b/i, 'self'],
@@ -21,7 +22,7 @@ export const KINDS = [
   ['Event', /\b(?:war|battle|festival|election|treaty|disaster|revolution|championship|tournament|olympics|massacre|conference|protest|uprising)\b/i, 'time'],
   ['Idea', /./, 'index'],
 ];
-const WORD = { film: 'Film', movie: 'Film', song: 'Song', single: 'Song', album: 'Album', band: 'Band', 'tv series': 'Show', 'tv show': 'Show', 'television series': 'Show', novel: 'Book', book: 'Book', play: 'Book', poem: 'Book', 'video game': 'Game', game: 'Game', musical: 'Show', manga: 'Book', 'comic book': 'Book', company: 'Organisation', band_: 'Band', ep: 'Album', mixtape: 'Album', soundtrack: 'Album', 'film series': 'Film', 'tv episode': 'Show', episode: 'Show' };
+const WORD = { card: 'Card', 'trading card': 'Card', film: 'Film', movie: 'Film', song: 'Song', single: 'Song', album: 'Album', band: 'Band', 'tv series': 'Show', 'tv show': 'Show', 'television series': 'Show', novel: 'Book', book: 'Book', play: 'Book', poem: 'Book', 'video game': 'Game', game: 'Game', musical: 'Show', manga: 'Book', 'comic book': 'Book', company: 'Organisation', band_: 'Band', ep: 'Album', mixtape: 'Album', soundtrack: 'Album', 'film series': 'Film', 'tv episode': 'Show', episode: 'Show' };
 
 /** { kind, chapter, detail }: what a page's short description says it is, with its year and maker when it says them. Pure. */
 export function kindOf(description, extract = '') {
