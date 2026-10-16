@@ -98,3 +98,27 @@ test('last_tested and success_rate (asked by Void, ask-20261013-1823-1): from ev
   assert.deepEqual(row(b2, 'weather'), row(b1, 'weather'), 'four days later, nothing changed: the same row');
   for (const s of b1.families.flatMap((f) => f.skills)) for (const k of Object.keys(s)) assert.doesNotMatch(k, /usage|popular|used/, 'no behaviour tracking');
 });
+
+test('the daily smoke test (asked by Void, ask-20261013-1823-2): a failing skill loses its self-test evidence and carries the reasons; a passing one was tested that day', async () => {
+  const { smokeRun, evidence: ev2, build: B2, lastTested: LT } = await import('./families.mjs');
+  const files = {
+    'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '', 'tools/bench.json': '[]',
+    'tools/skills-smoke.json': JSON.stringify({ at: '2026-10-17', checked: 2, failing: { weather: ['"rain later" -> place', 'suite got x'] } }),
+    'void-live-deploy/skills/weather.js': 'export default { suite() { return { ok: true }; } }', 'void-live-deploy/skills/clock.js': 'export default { suite() { return { ok: true }; } }',
+  };
+  const read = (p) => { if (p in files) return files[p]; throw new Error('no ' + p); };
+  assert.deepEqual(smokeRun(read), { at: '2026-10-17', failing: { weather: ['"rain later" -> place', 'suite got x'] } });
+  assert.deepEqual(smokeRun(() => { throw new Error('none'); }), { at: '', failing: {} });
+  const e = ev2(['weather', 'clock'], read, () => []);
+  assert.deepEqual(e.weather, { suite: false, browser: 0, bench: 0, smoke: ['"rain later" -> place', 'suite got x'] }, 'its own test does not count while the smoke test fails it');
+  assert.deepEqual(e.clock, { suite: true, browser: 0, bench: 0 });
+  const smoke = smokeRun(read), today = '2026-10-18';
+  const b = B2(['weather', 'clock'], e, { prev: null, bench: { at: '', recorded: false }, smoke, today });
+  const row = (n) => b.families.flatMap((f) => f.skills).find((s) => s.name === n);
+  assert.equal(row('weather').tier, 'experiment'); assert.deepEqual(row('weather').smoke, ['"rain later" -> place', 'suite got x']); assert.equal(row('weather').last_tested, undefined, 'no passing test, no date');
+  assert.equal(row('clock').tier, 'tested'); assert.deepEqual([row('clock').last_tested, row('clock').last_tested_by], ['2026-10-18', 'its tests'], 'its tests changed today (first file), newer than the smoke run');
+  const b2 = B2(['weather', 'clock'], e, { prev: { families: b.families }, bench: { at: '', recorded: false }, smoke: { ...smoke, at: '2026-10-20' }, today: '2026-10-21' });
+  const c2 = b2.families.flatMap((f) => f.skills).find((s) => s.name === 'clock');
+  assert.deepEqual([c2.last_tested, c2.last_tested_by], ['2026-10-20', 'the daily smoke test'], 'a later smoke run is the newest test of a passing skill');
+  assert.equal(LT({ suite: false, smoke: ['x'] }, 'nothing checks it yet', null, today, { at: '' }, { at: '2026-10-17' }), null, 'a smoke failure gives no date: its self-test does not count and the smoke run did not pass it');
+});

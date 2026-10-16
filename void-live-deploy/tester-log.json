@@ -1,15 +1,50 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 63,
+ "runsTotal": 68,
  "kinds": {
   "grow": 15,
-  "file": 36,
+  "file": 39,
   "teach": 7,
   "tighten": 3,
-  "none": 2
+  "none": 4
  },
  "runs": [
+  {
+   "at": "2026-10-16T07:37:17Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"send this away\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-16T07:15:33Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-16T07:04:58Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"make my void dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-16T06:51:30Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-16T06:45:10Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"give me 5 minutes with that\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T06:38:50Z",
    "passed": 0,
@@ -114,41 +149,6 @@
    "of": 21,
    "kind": "grow",
    "note": "grew the suite: \"play connect four\""
-  },
-  {
-   "at": "2026-10-15T22:49:16Z",
-   "passed": 0,
-   "of": 21,
-   "kind": "file",
-   "note": "fix: \"play chess\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T22:07:53Z",
-   "passed": 0,
-   "of": 21,
-   "kind": "file",
-   "note": "fix: \"hide the sky\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T22:01:53Z",
-   "passed": 0,
-   "of": 20,
-   "kind": "grow",
-   "note": "grew the suite: \"convert 5 miles to km\""
-  },
-  {
-   "at": "2026-10-15T21:48:02Z",
-   "passed": 0,
-   "of": 19,
-   "kind": "grow",
-   "note": "grew the suite: \"weather in boston\""
-  },
-  {
-   "at": "2026-10-15T20:35:25Z",
-   "passed": 0,
-   "of": 19,
-   "kind": "file",
-   "note": "fix: \"make my void light\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -163,26 +163,26 @@
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
   "skill:breath": "2026-10-16T06:38:50Z",
-  "skill:calc": "2026-10-15T06:23:11Z",
+  "skill:calc": "2026-10-16T06:45:10Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
-  "skill:challenge": "2026-10-15T08:35:24Z",
+  "skill:challenge": "2026-10-16T06:45:10Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-15T10:50:37Z",
-  "skill:coral": "2026-10-15T11:56:55Z",
-  "skill:counter": "2026-10-15T12:07:13Z",
-  "skill:country": "2026-10-15T12:12:56Z",
-  "skill:crypto": "2026-10-15T15:57:36Z",
-  "skill:dark-look": "2026-10-15T16:11:51Z",
-  "skill:dates": "2026-10-15T16:35:42Z",
-  "skill:dating": "2026-10-15T16:40:07Z",
-  "skill:different": "2026-10-15T16:40:07Z",
-  "skill:dismiss": "2026-10-15T16:40:07Z",
-  "skill:distance": "2026-10-15T16:40:07Z",
+  "skill:convert": "2026-10-16T06:45:10Z",
+  "skill:coral": "2026-10-16T06:51:30Z",
+  "skill:counter": "2026-10-16T06:51:30Z",
+  "skill:country": "2026-10-16T06:51:30Z",
+  "skill:crypto": "2026-10-16T07:04:58Z",
+  "skill:dark-look": "2026-10-16T07:04:58Z",
+  "skill:dates": "2026-10-16T07:04:58Z",
+  "skill:dating": "2026-10-16T07:15:33Z",
+  "skill:different": "2026-10-16T07:15:33Z",
+  "skill:dismiss": "2026-10-16T07:37:17Z",
+  "skill:distance": "2026-10-16T07:37:17Z",
   "skill:draw": "2026-10-15T16:50:11Z",
   "skill:feelings": "2026-10-15T16:50:11Z",
   "skill:figure": "2026-10-15T16:50:11Z",
@@ -281,6 +281,8 @@
   "skill:watch": "2026-10-16T06:26:11Z",
   "skill:words": "2026-10-16T06:31:32Z",
   "skill:work": "2026-10-16T06:31:32Z",
-  "skill:zoom-figure": "2026-10-16T06:31:32Z"
+  "skill:zoom-figure": "2026-10-16T06:31:32Z",
+  "skill:deps": "2026-10-16T07:15:33Z",
+  "skill:fringe-to-skill": "2026-10-16T07:37:17Z"
  }
 }
