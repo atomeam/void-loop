@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T08:04:56.188Z",
-   "sha": "e367d1ea1e807bfd89e82af518b11275c654981c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38869174423",
+   "at": "2026-10-16T08:12:31.222Z",
+   "sha": "8eca4a34bec0d4049822274f376c6267eafe2b41",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38870020550",
    "suite": "browser suite on main",
    "checks": [
     "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
