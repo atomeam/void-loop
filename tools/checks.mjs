@@ -66,6 +66,7 @@ for (const [name, file] of [
   ['review', 'review.test.mjs'],
   ['figures', 'figures.test.mjs'],
   ['scene3d-detail', 'scene3d.test.mjs'],
+  ['shard', 'shard.test.mjs'],
   ['motorbody', 'motorbody.test.mjs'],
   ['incident', 'incident.test.mjs'],
   ['incident-log', 'incident-log.test.mjs'],

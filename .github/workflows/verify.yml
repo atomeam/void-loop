@@ -63,11 +63,19 @@ jobs:
           echo "### python-tests failed on ${{ github.sha }}: a fast test is red (see the log); browser-suite reports separately" >> "$GITHUB_STEP_SUMMARY"
           exit 1
 
+  # Three shards since 2026-10-16: the whole suite ran to 1,652 s of its 1,680 s budget on one runner, so every new section risked
+  # going red on the clock alone. Each job runs the sections whose heading hashes to its shard (tools/test_void.mjs --shard i/n,
+  # tools/shard.mjs), every section in exactly one of them (60 / 67 / 76 sections; the shared-page section, the longest, is in
+  # the third), each job its own verdict; the revert reads all three (tools/revert-target.mjs isSuiteJob).
   browser-suite:
     runs-on: ubuntu-latest
     timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [1, 2, 3]
     concurrency:
-      group: void-verify-${{ github.sha }}
+      group: void-verify-${{ github.sha }}-${{ matrix.shard }}
       cancel-in-progress: false
     permissions:
       contents: write # push the revert
@@ -86,18 +94,19 @@ jobs:
             echo "skip=true" >> "$GITHUB_OUTPUT"; echo "### Automatic revert: not re-tested" >> "$GITHUB_STEP_SUMMARY"
           fi
 
-      - name: Test what shipped (full suite)
+      - name: Test what shipped (shard ${{ matrix.shard }} of 3 of the full suite)
         id: test
         if: steps.skip.outputs.skip != 'true'
         uses: ./.github/actions/void-test
         with:
           bench: skip
           part: suite
+          shard: ${{ matrix.shard }}/3
 
       # the site under its real CSP, with the per-page script hashes the deploy adds (tools/csp-hashes.mjs): /, /films/ and /store/
       # with the 3D, a Gumroad and a YouTube frame, zero violations (tools/csp-smoke.mjs; docs/secrets.md)
       - name: CSP smoke (hashes as deployed)
-        if: steps.skip.outputs.skip != 'true'
+        if: steps.skip.outputs.skip != 'true' && matrix.shard == 1
         run: node tools/csp-hashes.mjs --write && node tools/csp-smoke.mjs
 
       - name: Name the failed checks (the next red run reads them to find the commit that broke each one)

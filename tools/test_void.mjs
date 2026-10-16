@@ -9,6 +9,7 @@ import { chromium } from 'playwright-core';
 import nodeOs from 'node:os';
 import { spawnSync } from 'node:child_process';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { parseShard, inShard } from './shard.mjs';
 
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..', 'void-live-deploy');
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.txt': 'text/plain', '.xml': 'application/xml', '.webmanifest': 'application/manifest+json', '.png': 'image/png', '.svg': 'image/svg+xml' };
@@ -35,12 +36,17 @@ const exe = [process.env.VOID_TEST_BROWSER, 'C:/Program Files (x86)/Microsoft/Ed
 const argOf = (f) => { const i = process.argv.indexOf(f); return i > 0 ? String(process.argv[i + 1] || '') : ''; };
 const ONLY = (argOf('--only') || process.env.VOID_ONLY || '').toLowerCase().split(/\s+/).filter(Boolean);
 const wanted = new Set(); // the sections --only picked: none at all is a failed run, never a silent pass (tools/finish.mjs leans on it)
-const want = (label) => { const on = !ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w)); if (on && ONLY.length) wanted.add(label); return on; };
+// --shard i/n (or VOID_SHARD): this run takes the sections whose heading hashes to shard i of n (tools/shard.mjs), so verify.yml
+// can run the suite as n jobs at once (three, since 2026-10-16), every section in exactly one of them, each well inside the
+// 28-minute budget (the whole suite ran to 1,652 s of 1,680 s on main that day). --only still narrows within the shard;
+// --list shows the shard's headings.
+const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
+const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
 if (process.argv.includes('--list')) {
-  for (const f of [import.meta.url, new URL('./test_3d.mjs', import.meta.url)]) for (const m of fs.readFileSync(new URL(f), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) console.log(JSON.parse(m[1]));
+  for (const f of [import.meta.url, new URL('./test_3d.mjs', import.meta.url)]) for (const m of fs.readFileSync(new URL(f), 'utf8').matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)) { const l = JSON.parse(m[1]); if (inShard(l, SHARD)) console.log(l); }
   exitFlushed(0);
 }
 const releaseHeavy = await acquireHeavy('browser suite (tools/test_void.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs)
@@ -5777,7 +5783,7 @@ try {
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
-  { const all3d = want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)");
+  { const all3d = !SHARD && want("the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)"); // in a shard each 3D block goes by its own heading
     const t3d = fs.readFileSync(new URL('./test_3d.mjs', import.meta.url), 'utf8');
     if (all3d || [...t3d.matchAll(/^  if \(want\(("(?:[^"\\]|\\.)*")\)\)/gm)].some((m) => want(JSON.parse(m[1]))))
       await (await import(new URL('./test_3d.mjs', import.meta.url).href)).run3dChecks({ check, fresh: (...a) => fresh({ mini3d: true, ...(a[0] && typeof a[0] === 'object' && 'phone' in a[0] ? a.shift() : {}) }, ...a), want: (l) => all3d || want(l) }); }
