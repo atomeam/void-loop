@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 398,
+ "counted": 401,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -25,6 +25,12 @@
    "skills": 9,
    "direct": 8,
    "dependants": 9
+  },
+  {
+   "file": "lib/rts.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 10
   },
   {
    "file": "lib/where.js",
@@ -2008,6 +2014,23 @@
     "skills/routine.js"
    ]
   },
+  "lib/rts.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/rts.js",
+    "skills/scripts.js"
+   ],
+   "reachedBy": [
+    "functions/api/figurescript.js",
+    "skills/figures.js",
+    "skills/figures3d.js",
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js",
+    "skills/together.js",
+    "skills/zoom-figure.js"
+   ]
+  },
   "lib/sale-jobs.js": {
    "imports": [
     "lib/products.js",
@@ -2732,6 +2755,7 @@
   "skills/figures.js": {
    "imports": [
     "skills/scripts.js",
+    "skills/forge-rules.js",
     "skills/scene3d.js"
    ],
    "importedBy": [
@@ -2793,9 +2817,15 @@
    "importedBy": [
     "skills/appraise.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/forge.js",
     "skills/inventory.js",
     "skills/mini/forge.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
    ]
   },
   "skills/forge.js": {
@@ -3222,6 +3252,10 @@
    "importedBy": []
   },
   "skills/mini/calculator.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/camp.js": {
    "imports": [],
    "importedBy": []
   },
@@ -3741,6 +3775,13 @@
    ],
    "importedBy": []
   },
+  "skills/rts.js": {
+   "imports": [
+    "lib/rts.js",
+    "skills/scripts.js"
+   ],
+   "importedBy": []
+  },
   "skills/savings.js": {
    "imports": [],
    "importedBy": []
@@ -3761,11 +3802,14 @@
    ]
   },
   "skills/scripts.js": {
-   "imports": [],
+   "imports": [
+    "lib/rts.js"
+   ],
    "importedBy": [
     "functions/api/figurescript.js",
     "skills/figures.js",
     "skills/figures3d.js",
+    "skills/rts.js",
     "skills/together.js"
    ],
    "reachedBy": [
@@ -3784,9 +3828,13 @@
    "reachedBy": [
     "skills/appraise.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/forge.js",
+    "skills/games.js",
     "skills/inventory.js",
     "skills/mini/forge.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js",
     "skills/together.js",
     "skills/zoom-figure.js"
    ]

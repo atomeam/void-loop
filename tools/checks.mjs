@@ -52,6 +52,7 @@ for (const [name, file] of [
   ['rebuild-map', 'rebuild-map.test.mjs'],
   ['record', 'record.test.mjs'],
   ['hero-view', 'hero-view.test.mjs'],
+  ['rts', 'rts.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
   ['skills', 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],

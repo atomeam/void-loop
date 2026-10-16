@@ -1346,7 +1346,7 @@ Object.values(things).forEach((th) => {
         const figs = Object.values(things).filter((t) => t.kind === 'figure');
         if (opts.hide) { for (const f of figs) delete things[f.id]; if (figs.length) { save(); render(); } return figs.length; }
         if (figs.length >= 6) return null;
-        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, script: opts.script || null, seed: opts.seed ?? ((Math.random() * 4294967296) >>> 0), kindOf: opts.kindOf || null, size: opts.size || null, wide: opts.wide || null, tall: opts.tall || null, pace: opts.pace || null, x: 0, y: 0 };
+        const th = { id: uid('figure'), kind: 'figure', body: opts.body || 'sprite', color: opts.color || null, prop: opts.prop || null, line: opts.line || null, title: opts.title || null, script: opts.script || null, seed: opts.seed ?? ((Math.random() * 4294967296) >>> 0), kindOf: opts.kindOf || null, size: opts.size || null, wide: opts.wide || null, tall: opts.tall || null, pace: opts.pace || null, res: opts.res || null, x: 0, y: 0 }; // res: what an RTS node yields and how much is left (lib/rts.js)
         things[th.id] = th; save(); render(); return th;
       }
       if (stageKinds[kind] && typeof stageKinds[kind].summon === 'function') return stageKinds[kind].summon(stageApi, opts); // a kind with its own rule (one calendar card)
@@ -5584,15 +5584,16 @@ say('nothing selected to remove');
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
-      const figs = Object.values(things).filter((t) => t && t.kind === 'figure' && t.kindOf);
+      const figs = Object.values(things).filter((t) => t && ((t.kind === 'figure' && t.kindOf) || t.kind === 'camp')); // the RTS camp goes too: the villagers carry to it (lib/rts.js)
       if (!figs.length || awayMs < m.AWAY_MIN_MS) return;
-      const r = m.advance(figs.map((t) => ({ id: t.id, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
+      const r = m.advance(figs.map((t) => ({ id: t.id, kind: t.kind, kindOf: t.kindOf, x: t.x, y: t.y, at: t.at, seed: t.seed, nature: t.nature, title: t.title, res: t.res, stock: t.stock, carry: t.carry })), awayMs, { bounds: { w: innerWidth, h: innerHeight } });
       const stamp = Date.now();
       for (const n of r.things) {
         if (!things[n.id]) continue;
         if (n.gone) { delete things[n.id]; continue; }
         if (n.nature) things[n.id].nature = n.nature;
         if (n.at) things[n.id].at = n.at;
+        if (n.res) things[n.id].res = n.res; if (n.stock) things[n.id].stock = n.stock; if ('carry' in n) { if (n.carry) things[n.id].carry = n.carry; else delete things[n.id].carry; } // the RTS world: loads left, the camp's stock, a load on a back
         things[n.id].adv = stamp;
       }
       save(); render();

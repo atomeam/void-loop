@@ -50,6 +50,28 @@ export const THINGS = {
     { type: 'box', c: [0, 18, 36], r: [8, 16, 4], cut: true, k: 0.6 },
     { type: 'box', c: [-28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 }, { type: 'box', c: [28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 },
     FLOOR] },
+  // the RTS world builds (lib/rts.js BUILDS): what a camp's villagers raise from what they gathered
+  hut: { label: 'Hut', names: ['hut', 'small hut', 'cabin', 'shack'], k: 1.5, cell: 1.2, shapes: [
+    { type: 'box', c: [0, 22, 0], r: [34, 22, 28] },
+    ...[0, 1, 2, 3, 4, 5].map((i) => ({ type: 'box', c: [0, 46 + i * 5, 0], r: [38 - i * 4, 2.6, 32 - i * 4], k: 2.5 })),
+    { type: 'box', c: [0, 14, 28], r: [7, 13, 4], cut: true, k: 0.6 },
+    FLOOR] },
+  wall: { label: 'Wall', names: ['wall', 'rampart', 'palisade'], k: 1.5, cell: 1.2, shapes: [
+    { type: 'box', c: [0, 20, 0], r: [80, 20, 16] }, ...[-60, -20, 20, 60].map((x) => ({ type: 'box', c: [x, 46, 0], r: [12, 8, 16] })),
+    FLOOR] },
+  well: { label: 'Well', names: ['well', 'water well', 'stone well'], k: 2, cell: 1.2, shapes: [
+    cyl(0, 30, 30, 30), { ...cyl(6, 40, 20), cut: true, k: 0.6 }, { type: 'box', c: [-30, 50, 0], r: [4, 24, 4] }, { type: 'box', c: [30, 50, 0], r: [4, 24, 4] },
+    ...[0, 1, 2, 3].map((i) => ({ type: 'box', c: [0, 74 + i * 5, 0], r: [44 - i * 7, 2.4, 30 - i * 6], k: 2 })),
+    FLOOR] },
+  bridge: { label: 'Bridge', names: ['bridge', 'wooden bridge', 'footbridge'], k: 2, cell: 1.3, shapes: [
+    { type: 'box', c: [0, 26, 0], r: [90, 4, 24] }, { type: 'box', c: [0, 10, 0], r: [100, 16, 26], cut: true, k: 1 },
+    ...[-70, -35, 0, 35, 70].flatMap((x) => [{ type: 'box', c: [x, 42, 22], r: [3, 14, 3] }, { type: 'box', c: [x, 42, -22], r: [3, 14, 3] }]),
+    { type: 'box', c: [0, 56, 22], r: [84, 2.5, 2.5] }, { type: 'box', c: [0, 56, -22], r: [84, 2.5, 2.5] },
+    FLOOR] },
+  tower: { label: 'Watchtower', names: ['tower', 'watchtower', 'watch tower', 'lookout'], k: 2, cell: 1.4, shapes: [
+    { type: 'box', c: [0, 50, 0], r: [26, 50, 26] }, { type: 'box', c: [0, 104, 0], r: [34, 6, 34] }, ...[-28, 28].flatMap((x) => [{ type: 'box', c: [x, 118, 0], r: [4, 10, 34] }, { type: 'box', c: [0, 118, x], r: [34, 10, 4] }]),
+    { type: 'box', c: [0, 30, 26], r: [8, 14, 4], cut: true, k: 0.6 },
+    FLOOR] },
   boat: { label: 'Sailboat', names: ['boat', 'sailboat', 'sail boat', 'sailing boat', 'yacht'], k: 3, cell: 1.3, shapes: [
     { type: 'ellipsoid', c: [0, 26, 0], r: [72, 26, 24] },
     { type: 'box', c: [0, 80, 0], r: [100, 34, 40], cut: true, k: 1 }, { type: 'ellipsoid', c: [0, 30, 0], r: [64, 20, 18], cut: true, k: 1 },
