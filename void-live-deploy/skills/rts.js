@@ -111,7 +111,8 @@ async function run(text, api) {
   }
   if (o.act === 'build') {
     const c = campOf(things);
-    if (!c) { say('start a camp first: "start a camp"'); return 'rts'; }
+    // with no camp standing, "build a hut" stays the forge's (a printable model, as before): the pair forge~rts in tools/skill-overlap.json is this
+    if (!c) return 'none';
     if (!BUILDS[o.key]) { say('the camp cannot build that yet'); return 'rts'; }
     if (!canPay(c.stock, o.key)) { say(missing(c.stock, o.key) + (villagersOf(things).length ? '; the villagers are on it' : '; summon a villager to gather it')); return 'rts'; }
     c.stock = pay(c.stock, o.key); c.built = [...(c.built || []), o.key];
