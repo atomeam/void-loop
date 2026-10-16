@@ -8,6 +8,7 @@ import path from 'node:path';
 import { chromium } from 'playwright-core';
 import nodeOs from 'node:os';
 import { spawnSync } from 'node:child_process';
+import { fileURLToPath } from 'node:url';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { parseShard, inShard } from './shard.mjs';
 
@@ -1415,7 +1416,8 @@ try {
       r[slow ? 'slow' : w] = { before, under, during, after, same: place === placeDuring && place === await saved(), errors: P.errors.length };
       await P.ctx.close();
     }
-    const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && x.after.join() === x.before.join() && !x.errors;
+    const near = (a, b) => a.every((v, i) => Math.abs(v - b[i]) <= 3); // the sticky's box breathes by a pixel or two with its tilt (179 against 181 on a slow runner): the spot is what counts
+    const ok = (x) => x.under === 0 && x.same && x.during.join() !== x.before.join() && near(x.after, x.before) && !x.errors;
     check('an open card never buries a stage thing: a sticky in the middle steps aside when "how good are you at othello" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over',
       ok(r[1280]) && ok(r[390]) && ok(r.slow), JSON.stringify(r));
   }
@@ -5845,7 +5847,23 @@ clearInterval(watchdog);
 await browser.close(); server.close();
 // the slowest stretches between checks: where making the suite faster (suite split (3)) pays most
 for (const [ms, name] of watch.gaps.slice().sort((a, b) => b[0] - a[0]).slice(0, 5)) console.log('slow ' + Math.round(ms / 1000) + ' s before: ' + name.slice(0, 100));
-const bad = results.filter((r) => !r.ok);
+let bad = results.filter((r) => !r.ok);
+// One second chance for a timing check, in a fresh browser on a quiet machine (2026-10-16: main stayed red for ten heads on
+// checks that pass alone and fail when the runner is slow: 3D savings, the sticky that steps aside, chess's thinking line, the
+// quiz card). A check that fails twice is red, as before; one that heals is named below so it is not forgotten, and the spotter
+// (tools/flakes.mjs) counts it. Not for --only runs (finish.mjs, a person) and not after the suite threw: nothing after that ran.
+if (bad.length && !ONLY.length && !process.env.VOID_RETRY && !bad.some((r) => r.name === 'suite ran to the end')) {
+  const heads = [...new Set(bad.map((r) => r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ')))];
+  if (heads.length <= 6) {
+    releaseHeavy();
+    for (const h of heads) {
+      const c = spawnSync(process.execPath, [fileURLToPath(import.meta.url), '--only', h], { env: { ...process.env, VOID_RETRY: '1', VOID_SKIP_BENCH: '1', VOID_SHARD: '' }, encoding: 'utf8', timeout: 8 * 60e3 });
+      if (c.status !== 0) console.log('second run of "' + h + '" failed too (exit ' + c.status + '): ' + String(c.stdout || '').split('\n').filter((l) => /^FAIL|passed|matched/.test(l)).join(' | ').slice(0, 300) + ' ' + String(c.stderr || '').slice(-200));
+      if (c.status === 0) for (const r of bad) if (r.name.split(':')[0].split(/\s+/).slice(0, 6).join(' ') === h) { r.ok = true; r.name += '  (healed on a second run alone)'; console.log('HEALED ' + h); }
+    }
+    bad = results.filter((r) => !r.ok);
+  }
+}
 for (const r of results) console.log(line(r));
 const skipped = results.filter((r) => r.skipped).length;
 console.log(`${results.length - bad.length}/${results.length} passed` + (skipped ? ` (${skipped} skipped on this machine)` : ''));

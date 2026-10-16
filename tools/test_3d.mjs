@@ -188,7 +188,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // shows, not the whole run (verify on 54f4297: "Cannot read properties of undefined (reading 'key')" ended it at 464/465)
     if (drawn) await F.p.evaluate(async () => { const m = await import('/skills/scene3d.js'); const k = m.liveMiniatures().find((x) => x.kind === 'countdown').key; const card = document.querySelector('.countdown-card .countdown-mini'); const d = new Date(); d.setDate(d.getDate() + 3); const t = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
       await m.mountMiniature(card, 'countdown', { days: 3, label: 'Moved', target: t }, { key: k }); });
-    const flipped = !!drawn && await until(() => F.p.evaluate((b) => { const c = window.__voidMini.list().find((x) => x.kind === 'countdown'); return c && c.draws > b + 2; }, before), 15000);
+    const flipped = !!drawn && await until(() => F.p.evaluate((b) => { const c = window.__voidMini.list().find((x) => x.kind === 'countdown'); return c && c.draws > b + 2; }, before), 40000);
     check('3D countdown: "days until december 25" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)',
       !!drawn && r.inCard && r.d3 === 3 && r.d0 === 0 && r.bad === null && r.saved && flipped && !F.errors.length, JSON.stringify({ drawn, r, flipped, e: F.errors }));
     await F.ctx.close();
@@ -573,10 +573,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       return window.__voidMini.project(k, [(3.5 - f) * 0.0579, 0.0174 + y, (r - 3.5) * 0.0579]); }, [name, lift]);
     const tap = async (name, lift = 0) => { const pt = await sq(name, lift); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); };
     // every line the card's status shows while Void answers (asked by Void: say what it is weighing while it thinks)
-    await F.p.evaluate(() => { const seen = window.__chessLines = []; setInterval(() => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }, 30); });
+    await F.p.evaluate(() => { const seen = window.__chessLines = []; const note = () => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }; new MutationObserver(note).observe(document.body, { subtree: true, childList: true, characterData: true }); note(); }); // every change, not a look every 30 ms: a quick search came and went between two looks
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
+    await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
     const weighing = lines.find((t) => /^V01D is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
@@ -831,7 +832,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const flat = g.coinsFor([{ label: 'a', paid: 100, total: 100 }, { label: 'b', paid: 200, total: 200 }]);
       return { n: cols.length, labels: cols.map((c) => c.label).join(','), last: Math.round(cols[5].total), tallest: st[5].silver + st[5].gold, goldGrows: st.every((s, i) => i === 0 || s.gold >= st[i - 1].gold), noGold: flat.every((s) => s.gold === 0), inPage: !!document.querySelector('.vpage .savings-mini canvas') };
     });
-    const rose = drawn && await until(() => F.p.evaluate(() => window.__voidMini.list().find((x) => x.kind === 'savings').draws > 6), 15000);
+    const rose = drawn && await until(() => F.p.evaluate((n) => window.__voidMini.list().find((x) => x.kind === 'savings').draws > n, drawn.draws), 40000); // redrawn at least once after the first frame: how many frames a slow runner manages in a second is not what this checks
     check('3D savings: "save 300 a month for 30 years at 7%" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn',
       !!drawn && r.inPage && r.n === 6 && r.labels === '5 yrs,10 yrs,15 yrs,20 yrs,25 yrs,30 yrs' && r.last === 365991 && r.tallest === 34 && r.goldGrows && r.noGold && rose && !F.errors.length, JSON.stringify({ drawn, r, rose, e: F.errors }));
     await F.ctx.close();
