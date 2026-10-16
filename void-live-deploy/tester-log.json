@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 18,
- "runsTotal": 51,
+ "cases": 19,
+ "runsTotal": 52,
  "kinds": {
-  "grow": 11,
+  "grow": 12,
   "file": 33,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-16T03:25:28Z",
+   "passed": 0,
+   "of": 22,
+   "kind": "grow",
+   "note": "grew the suite: \"set a timer for 5 minutes\""
+  },
   {
    "at": "2026-10-16T03:10:24Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 17,
    "kind": "file",
    "note": "fix: \"new auotmation\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T12:12:56Z",
-   "passed": 16,
-   "of": 17,
-   "kind": "file",
-   "note": "fix: \"catroon version of gg allin\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -240,6 +240,10 @@
   "skill:quiz": "2026-10-16T03:10:24Z",
   "skill:rebuild-map": "2026-10-16T03:10:24Z",
   "skill:recent": "2026-10-16T03:10:24Z",
-  "skill:recipe": "2026-10-16T03:10:24Z"
+  "skill:recipe": "2026-10-16T03:10:24Z",
+  "skill:releasenotes": "2026-10-16T03:25:28Z",
+  "skill:rides": "2026-10-16T03:25:28Z",
+  "skill:room": "2026-10-16T03:25:28Z",
+  "skill:routine": "2026-10-16T03:25:28Z"
  }
 }

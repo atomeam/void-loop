@@ -79,10 +79,12 @@
     },
     {
       "ask": "play connect four"
+    },
+    {
+      "ask": "set a timer for 5 minutes"
     }
   ],
   "candidates": [
-    "set a timer for 5 minutes",
     "what is 17 times 23",
     "play reversi",
     "show me the night sky"
