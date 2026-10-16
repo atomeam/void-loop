@@ -1,34 +1,58 @@
 /**
- * palette skill — generate a random color palette
- * "show a color palette", "random colors", "generate a palette"
- * Pure client-side, no external calls. Empty surface stays empty.
+ * palette skill — a harmonious color palette from a word or color name (generated here, nothing sent)
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "color palette for ocean", "palette from blue", "make a palette for sunset"
  */
-export function isPalette(text) {
-  return /^(?:(?:show|give|generate|make|get)\\s+(?:me\\s+)?)?(?:a\\s+|another\\s+|random\\s+)?(?:color\\s+)?palette(?:\\s+of\\s+colors)?$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+function hash(s) {
+  let h = 0;
+  for (let i = 0; i < s.length; i++) h = ((h << 5) - h + s.charCodeAt(i)) | 0;
+  return Math.abs(h);
 }
 
-function randomHex() {
-  return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+export function paletteOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  const m = t.match(/^(?:(?:make|generate|create|show|give)\s+(?:me\s+)?)?(?:a\s+|an\s+)?(?:color\s+|colour\s+)?palette(?:\s+(?:for|from|of)\s+(.+))?$/);
+  if (!m) return null;
+  return { seed: (m[1] || 'void').trim() };
+}
+
+export function makePalette(seed) {
+  const h = hash(seed) % 360;
+  const colors = [];
+  for (let i = 0; i < 5; i++) {
+    const hue = (h + i * 28) % 360;
+    const sat = 55 + (i % 3) * 12;
+    const light = 42 + (i % 2) * 18;
+    colors.push(`hsl(${hue}, ${sat}%, ${light}%)`);
+  }
+  return colors;
 }
 
 function run(text, api) {
+  const want = paletteOf(text);
+  if (!want) return 'none';
   const { showPage, esc } = api;
-  const colors = Array.from({ length: 5 }, randomHex);
+  const colors = makePalette(want.seed);
   showPage((el) => {
-    el.innerHTML = '<h2>Color palette</h2><div style="display:flex;gap:8px;margin:12px 0">'
-      + colors.map(c => `<div style="width:48px;height:48px;background:${esc(c)};border-radius:8px" title="${esc(c)}"></div>`).join('')
-      + '</div><div class="sub">' + colors.map(esc).join(' · ') + '</div><div class="src">Generated in this browser</div>';
+    const swatches = colors.map((c) => `<div style="flex:1;height:72px;background:${c};border-radius:8px" title="${esc(c)}"></div>`).join('');
+    el.innerHTML = '<h2>Palette for ' + esc(want.seed) + '</h2>'
+      + '<div style="display:flex;gap:8px;margin:12px 0">' + swatches + '</div>'
+      + '<div class="sub">' + colors.map(esc).join(' · ') + '</div>'
+      + '<div class="src">Generated from the word · nothing is sent or stored</div>';
   });
   return 'palette';
 }
 
 export default {
   name: 'palette',
-  examples: ['show a color palette', 'random palette', 'generate a palette'],
-  nearMisses: ['what is a palette', 'paint palette', 'color of the sky'],
-  match(lower, text) { return isPalette(text); },
+  examples: ['color palette for ocean', 'palette from blue', 'make a palette for sunset', 'generate a palette'],
+  nearMisses: ['what is a color palette', 'paint palette', 'color theory'],
+  match(lower, text) { return !!paletteOf(text); },
   run,
   suite() {
-    return { ok: isPalette('show a color palette') && !isPalette('hello') };
+    const p = makePalette('ocean');
+    const ok = paletteOf('color palette for ocean') && paletteOf('palette from blue') && !paletteOf('what is a palette')
+      && p.length === 5 && p.every((c) => /^hsl\(/.test(c));
+    return { ok, got: ok ? 'parsed and made five hsl' : 'failed' };
   },
 };
