@@ -5,6 +5,7 @@
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
+import { betterHtml } from '../lib/better.js';
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
@@ -56,6 +57,7 @@ export function velocity(list, now = Date.now()) {
  * 2026-10-14: Void asked again to link it to the failure logs of the least-proven family (Words and the world): each skill names
  * its family, and the line leads with that family's failing and barely-checked skills from the same evidence. */
 export const FAMILIES_URL = '/skills/families.json';
+export const BETTER_URL = '/void.better.json';
 export function friction(fam, show = 5) {
   const families = (fam && fam.families) || [];
   const all = families.flatMap((f) => ((f && f.skills) || []).filter((s) => s && s.name).map((s) => ({ ...s, family: f.name })));
@@ -211,6 +213,12 @@ async function run(text, api) {
       const o = ownerHtml(esc, fam, list, (t && t.seen) || {}), at = el.querySelector('.growth-friction') || v;
       if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o);
     });
+  }).catch(() => {});
+  // is V01D getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
+  // yesterday and a week ago, and the weakest part, under the owner's view (or whatever of those lines is there yet)
+  fetch(BETTER_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((rows) => {
+    const html = betterHtml(esc, rows), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
+    if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: betterHtml escapes every value (lib/better.js, tested)
   }).catch(() => {});
   const w = week ? weekSummary(list) : null;
   const body = document.createElement('div');

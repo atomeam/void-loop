@@ -41,6 +41,33 @@ def recent(last, days=MISS_DAYS, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     return (now - t).days < days
 
+# The weakest part of Void's daily "better" score (lib/better.js; the newest row of void.better.json) and the kinds of want that
+# work on it. A boost is small (never above the frontier's first item on its own) and says why in the candidate's `why`.
+BETTER_KINDS = {
+    "asks": ("I asked for this",),                    # its own asks ship slowly or wait long
+    "friction": ("fix myself", "upgrade my architecture"),  # skills failing or barely checked
+    "bench": ("fix myself",),                         # the everyday benchmark slipping
+    "probes": ("fix myself", "people asked"),         # few fixes coming out of its own probes
+    "self": ("I asked for this", "frontier"),         # the owner is driving most changes: Void's own wants and its build order
+}
+BETTER_BOOST = 8
+
+def better_boost(cands, rows):
+    """Lift the weight of candidates whose kind works on the weakest part of the newest better row. Returns that part or None."""
+    rows = [r for r in (rows or []) if isinstance(r, dict) and isinstance(r.get("parts"), dict)]
+    if not rows:
+        return None
+    parts = rows[-1]["parts"]
+    have = [(k, v) for k, v in parts.items() if isinstance(v, (int, float)) and k in BETTER_KINDS]
+    if not have:
+        return None
+    weakest = min(have, key=lambda kv: (kv[1], list(BETTER_KINDS).index(kv[0])))[0]
+    for c in cands:
+        if c.get("kind") in BETTER_KINDS[weakest]:
+            c["weight"] = int(c.get("weight", 0)) + BETTER_BOOST
+            c["why"] = (str(c.get("why", "")) + f" (my weakest part today: {weakest} {parts[weakest]})")[:240]
+    return weakest
+
 def gather(cap=60, with_done=False):
     cands = []
     # 1. what people asked for and Void couldn't do
@@ -260,6 +287,12 @@ def gather(cap=60, with_done=False):
                 cands.append({"kind": "grow from the lab", "title": f"give the lab's \"{v['label']}\" a self-test on main", "why": v["why"], "weight": 6 + int(v["days"]), "source": "lab"})
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
+
+    # is Void getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more
+    try:
+        better_boost(cands, json.loads((ROOT / "void-live-deploy" / "void.better.json").read_text(encoding="utf-8")))
+    except Exception as e:
+        print("better:", e, file=sys.stderr)
 
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
