@@ -22,7 +22,7 @@ export function forgeOf(text) {
   return null;
 }
 
-export const fileName = (key) => 'void-' + key + '.stl';
+export const fileName = (key) => 'void-' + key + (F.recipeId(key) ? '-' + F.recipeId(key) : '') + '.stl'; // the recipe's id rides in the file name (asked by Void: recipe versioning)
 const dims = (s) => s.map((v) => Math.round(v)).join(' × ') + ' mm';
 
 /** the flat fallback: the same mesh, shaded and drawn back to front, turned about its upright axis */
@@ -84,7 +84,7 @@ function mount(th, stageApi) {
   cv.style.cssText = 'width:100%;height:auto;display:block;background:#0b0b0e;border-radius:10px';
   const facts = document.createElement('div'); facts.className = 'forge-facts g-status'; facts.style.cssText = 'display:block;margin-top:8px';
   const pc = F.printCheck(model);
-  facts.textContent = dims(model.size) + ' · ' + pc.triangles.toLocaleString('en') + ' triangles · ' + pc.notes.join(' · ');
+  facts.textContent = dims(model.size) + ' · ' + pc.triangles.toLocaleString('en') + ' triangles · ' + pc.notes.join(' · ') + (model.id ? ' · recipe ' + model.id : '');
   const row = document.createElement('div'); row.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:8px';
   const stop = (b) => { b.addEventListener('pointerdown', (e) => e.stopPropagation()); return b; };
   const btn = (label, cls, fn, aria) => { const b = stop(document.createElement('button')); b.type = 'button'; b.className = 'g-btn ' + cls; b.textContent = label; if (aria) b.setAttribute('aria-label', aria); b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };

@@ -86,6 +86,17 @@ function bounds(shapes) {
 }
 
 const cache = new Map();
+/** the recipe's id (asked by Void twice, 2026-10-16: "a 'recipe-versioning' system in the forge so that every 'make' can be saved as a
+ * unique, immutable ID linked to its resulting STL"): eight hex characters of FNV-1a over the recipe as written (its key, shapes,
+ * blend and cell), so the same recipe always gives the same id and any change to it gives a new one. The STL's file name carries
+ * it (skills/forge.js fileName), so a printed file names the exact recipe it came from. Pure. */
+export function recipeId(key) {
+  const t = THINGS[key]; if (!t) return null;
+  const s = JSON.stringify({ key, k: t.k, cell: t.cell, shapes: t.shapes });
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h.toString(16).padStart(8, '0');
+}
 export function build(key) {
   if (!THINGS[key]) throw new Error('No recipe for ' + key);
   if (cache.has(key)) return cache.get(key);
@@ -94,7 +105,7 @@ export function build(key) {
   for (let i = 0; i < m.positions.length; i += 3) for (let a = 0; a < 3; a++) { const v = m.positions[i + a]; if (v < lo[a]) lo[a] = v; if (v > hi[a]) hi[a] = v; }
   // rest it on the bed: the lowest point at y = 0
   for (let i = 1; i < m.positions.length; i += 3) m.positions[i] -= lo[1];
-  const model = { key, label: t.label, positions: m.positions, normals: m.normals, indices: m.indices,
+  const model = { key, id: recipeId(key), label: t.label, positions: m.positions, normals: m.normals, indices: m.indices,
     size: [hi[0] - lo[0], hi[1] - lo[1], hi[2] - lo[2]].map((v) => Math.round(v * 10) / 10) };
   cache.set(key, model);
   return model;

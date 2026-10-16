@@ -154,10 +154,25 @@ test('forge: "print it" and the Print button only download a file that passed; a
   URL.createObjectURL = () => 'blob:x'; URL.revokeObjectURL = () => {};
   try {
     await forge.run('print it', { stage: { things: () => ({ t1: th }), selected: () => 't1' }, say, summon() {} });
-    assert.equal(downloads, 1); assert.match(said.at(-1), /^Checked and downloading void-rocket\.stl/);
+    assert.equal(downloads, 1); assert.match(said.at(-1), /^Checked and downloading void-rocket-[0-9a-f]{8}\.stl/);
     const m = F.build('rocket');
     assert.equal(printOrRefuse(m, say, () => ({ ok: false, problems: ['open edges: 12 (a slicer may need to mend it)'], triangles: 0 })), false);
     assert.equal(downloads, 1, 'nothing downloaded');
     assert.match(said.at(-1), /^Not printed: the rocket's file did not pass its check · open edges: 12/);
   } finally { delete globalThis.document; URL.createObjectURL = realURL.create; URL.revokeObjectURL = realURL.revoke; }
+});
+
+test('recipe versioning (asked by Void twice): every recipe has a stable id that changes with the recipe, and the STL file name carries it', () => {
+  const ids = Object.keys(F.THINGS).map((k) => F.recipeId(k));
+  assert.ok(ids.every((id) => /^[0-9a-f]{8}$/.test(id)), ids.join(','));
+  assert.equal(new Set(ids).size, ids.length, 'no two recipes share an id');
+  assert.equal(F.recipeId('vase'), F.recipeId('vase'), 'the same recipe, the same id');
+  assert.equal(F.recipeId('nothing'), null);
+  assert.equal(F.build('vase').id, F.recipeId('vase'));
+  assert.equal(fileName('vase'), 'void-vase-' + F.recipeId('vase') + '.stl');
+  assert.equal(fileName('mug'), 'void-mug.stl', 'a thing with no recipe here has no id to carry');
+  // a changed recipe is a new id: the same hashing over a recipe with one radius moved
+  const t = F.THINGS.vase, s1 = JSON.stringify({ key: 'vase', k: t.k, cell: t.cell, shapes: t.shapes }), s2 = s1.replace(/"r":\[42,46,42\]/, '"r":[43,46,42]');
+  assert.notEqual(s1, s2); const fnv = (s) => { let h = 0x811c9dc5; for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; } return h.toString(16).padStart(8, '0'); };
+  assert.equal(fnv(s1), F.recipeId('vase')); assert.notEqual(fnv(s2), F.recipeId('vase'));
 });
