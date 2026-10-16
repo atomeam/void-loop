@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 60,
+ "runsTotal": 61,
  "kinds": {
   "grow": 15,
   "file": 35,
   "teach": 7,
   "tighten": 2,
-  "none": 1
+  "none": 2
  },
  "runs": [
+  {
+   "at": "2026-10-16T06:26:11Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T06:09:19Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 18,
    "kind": "grow",
    "note": "grew the suite: \"what time is it in tokyo\""
-  },
-  {
-   "at": "2026-10-15T19:02:51Z",
-   "passed": 0,
-   "of": 18,
-   "kind": "file",
-   "note": "fix: \"yo automations\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -275,6 +275,9 @@
   "skill:trialwatch": "2026-10-16T06:02:43Z",
   "skill:merges": "2026-10-16T06:09:19Z",
   "skill:util": "2026-10-16T06:09:19Z",
-  "skill:v01d-fixes": "2026-10-16T06:09:19Z"
+  "skill:v01d-fixes": "2026-10-16T06:09:19Z",
+  "skill:video": "2026-10-16T06:26:11Z",
+  "skill:walls": "2026-10-16T06:26:11Z",
+  "skill:watch": "2026-10-16T06:26:11Z"
  }
 }
