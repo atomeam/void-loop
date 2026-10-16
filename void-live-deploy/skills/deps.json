@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 391,
+ "counted": 392,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -181,6 +181,12 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2
+  },
+  {
+   "file": "lib/context-check.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
   },
   {
    "file": "lib/guide.js",
@@ -1270,6 +1276,12 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/context-check.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/tab.js"
    ]
   },
   "lib/cook-flow.js": {
@@ -2639,7 +2651,8 @@
   },
   "skills/figures.js": {
    "imports": [
-    "skills/scripts.js"
+    "skills/scripts.js",
+    "skills/scene3d.js"
    ],
    "importedBy": [
     "skills/mini/ringer.js",
@@ -2857,11 +2870,13 @@
     "skills/battleship.js",
     "skills/connect4.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
     "skills/lock.js",
     "skills/mancala.js",
+    "skills/mini/ringer.js",
     "skills/monopoly.js",
     "skills/moon.js",
     "skills/othello.js",
@@ -3646,7 +3661,13 @@
     "skills/guard3d.js"
    ],
    "importedBy": [
-    "skills/draw.js"
+    "skills/draw.js",
+    "skills/figures.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
    ]
   },
   "skills/scripts.js": {
@@ -3943,7 +3964,9 @@
    "importedBy": []
   },
   "skills/tab.js": {
-   "imports": [],
+   "imports": [
+    "lib/context-check.js"
+   ],
    "importedBy": []
   },
   "skills/take.js": {

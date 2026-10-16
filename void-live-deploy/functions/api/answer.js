@@ -46,12 +46,14 @@ async function sources(ask) {
   const q = ask.replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
   const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
   const hits = (s && s.query && s.query.search) || [];
+  // the three summaries are fetched together, not one after another (perf pass 2026-10-16: two round trips to Wikipedia saved
+  // on every uncached answer); the sources keep the search's order
+  const pages = await Promise.all(hits.slice(0, 3).map((h) => fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(h.title.replace(/ /g, '_')), { headers: UA }).then((r) => r.json()).catch(() => null)));
   const out = [];
-  for (const h of hits.slice(0, 3)) {
-    const j = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(h.title.replace(/ /g, '_')), { headers: UA }).then((r) => r.json()).catch(() => null);
-    const page = j && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
+  hits.slice(0, 3).forEach((h, i) => {
+    const j = pages[i], page = j && j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page;
     if (j && j.extract) out.push({ title: String(j.title || h.title).slice(0, 200), url: /^https:\/\/en\.wikipedia\.org\//.test(page || '') ? page : 'https://en.wikipedia.org/wiki/' + encodeURIComponent(h.title), text: j.extract.slice(0, 1200), edited: j.timestamp || null });
-  }
+  });
   return out;
 }
 function fromWeb(src) {
@@ -415,9 +417,10 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   ({ answer, sources: pub } = keepCited(answer, pub));
   answer = scrubOut(answer, env); // no env value or key shape leaves in a model's words, whatever the model was told (lib/keeper.js)
   const at = new Date().toISOString();
+  // the cache write finishes after the answer has gone out (waitUntil), not before: nobody waits on D1 for an answer they already have
   if (!masked && !self && !told) try {
-    await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
-      .bind(key, ask, answer, JSON.stringify(pub), at).run();
+    later(env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
+      .bind(key, ask, answer, JSON.stringify(pub), at).run().catch(() => {}));
   } catch (_) {}
   return Response.json({ answer, sources: pub, at, route: route.kind, ...nearOut, ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
 }

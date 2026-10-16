@@ -88,8 +88,23 @@ light, blurred contact shadows. A miniature redraws only when it is on screen an
 When a miniature has drawn its first frame it says so (asked by Void, 2026-10-14: a rendered signal): its wrapper goes
 from `data-rendered="false"` to `"true"`, its canvas from `aria-busy="true"` to `"false"` and fades in from transparent,
 and one `void:mini-rendered` event bubbles up with `{ key, kind }`; `liveMiniatures()` lists `rendered`. Before that the card
-shows nothing where the miniature will be, never a half-built scene. A test or a skill that must wait for the 3D can wait on
+shows a low-poly wire shape turning slowly on its own small canvas (`.void-mini-wire`, plain 2D, there the moment the card asks and
+before three.js has loaded; still with reduced motion), never a half-built scene; it fades out as the first frame fades in (asked by
+Void, 2026-10-14: a progressive loading state during 3D card transitions). A test or a skill that must wait for the 3D can wait on
 `.void-mini[data-rendered="true"]` or the event instead of polling `draws`.
+
+A model that fails (its module missing, its build throwing, three.js not loading on a device that has WebGL) leaves a small status
+card where the empty space would have been (`.void-mini-status`: "3D <kind> did not load", why in plain words, "Ask for it again to
+retry"), marks the wrap `data-rendered="failed"` and bubbles one `void:mini-failed` event with `{ key, kind, why }`; the mount still
+rejects, so a card that shows its flat version on rejection still does (asked by Void, 2026-10-12). Without WebGL nothing is put in and
+the rejection alone tells the card to go flat, as before.
+
+**Detail (asked by Void, 2026-10-15: a low-poly toggle for older hardware).** One setting, `a2m.void.3d.v1`: `low` draws every
+miniature at 1x pixels (`REGRESS_DPR`) with no key-light or contact shadows and keeps the stage figures at their light mesh tier;
+`full` never steps down; unset is auto, where the quality governor, having reached its lowest pixel step and still running late,
+takes low-poly as the step below it and climbs back once frames keep up (`governStep`, pure, `tools/scene3d.test.mjs`). "low poly 3d",
+"full 3d" and "auto 3d" set it (`skills/figures.js`); `setDetail(mode)`, `detail()` and `lowPoly()` are exported, a `void:3d-detail`
+event follows every change, and `window.__voidMini.detail()` shows it in the console.
 
 ## Tests
 

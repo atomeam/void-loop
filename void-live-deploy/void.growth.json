@@ -4039,6 +4039,12 @@
   "asked": "ask-20261012-1942-1"
  },
  {
+  "at": "2026-10-16T05:58:18Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the actions card's live check no longer counts fetches: the stage redraws and remounts every card (render() runs again after the card opens), so the opening load can happen twice, once, or with the status card's 50-row read between, depending on timing, and main's verify went red on 99acc8d on exactly that; the check now pins what the card is for: the fetches of the opening phase are all first-page reads, the faked minute makes one 30-row read, and Show more makes one read of the next page"
+ },
+ {
   "at": "2026-10-16T06:06:16Z",
   "by": "claude",
   "kind": "grow",
@@ -4063,6 +4069,30 @@
   "what": "the page's load pays for less: the four ask-only libs (approval, store, fix, review: 56 KB compressed) load after the skills instead of beside them, the skills index is preloaded from the head, the dead weather page (57 lines, shelved on docs/SALVAGE.md) is out, and the page says data-skills=ready once its skills are in; node tools/page-perf.mjs measures a load before and after (docs/playbooks/perf-pass.md)"
  },
  {
+  "at": "2026-10-16T06:28:29Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "a near miss becomes a visible proposal: when an ask maps to no skill and V01D says 'I don't know this yet', and the router's closest skill scored near its bar (or the router said a skill should have caught it), the card adds 'Did you mean <that skill's first example>?' as a data-ask link that runs it; /api/answer sends the near skill with its reply, the page draws the line under the refusal line, nothing new is sent or stored (asked by Void twice)",
+  "asked": "ask-20261014-1155-3",
+  "show": "a miss that nearly had a skill now asks: did you mean this?",
+  "try": "does it look like rain in zorbleton tomorrow"
+ },
+ {
+  "at": "2026-10-16T06:46:09Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void, three asks about 3D on phones: a low-poly setting for older hardware ('low poly 3d' / 'full 3d' / 'auto 3d': 1x pixels, no shadow passes, stage figures at their light tier; the quality governor steps into it by itself past its last pixel step and climbs back), a low-poly wire placeholder on the card the moment it asks for 3D, before three.js has loaded, fading out as the first frame fades in, and a status card where a model that failed its build used to leave empty space (ask-20261015-0347-2, ask-20261014-1025-1, ask-20261012-0856-1)",
+  "asked": "ask-20261012-0856-1",
+  "show": "3D: a wire while loading, a card when a model fails, 'low poly 3d'",
+  "try": "low poly 3d"
+ },
+ {
+  "at": "2026-10-16T06:47:34Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the answer route stops waiting where it need not: the three Wikipedia summaries behind an uncached answer are fetched together instead of one after another (two round trips saved per answer), and the answer cache write goes through waitUntil after the reply has gone out instead of before it"
+ },
+ {
   "at": "2026-10-16T06:48:43Z",
   "by": "claude",
   "kind": "grow",
@@ -4071,8 +4101,29 @@
   "show": "every skill is smoke-tested daily; a failing one's rating drops",
   "try": "show me your skill families"
  },
-  {"at": "2026-10-16T06:28:29Z", "by": "claude", "kind": "build", "what": "a near miss becomes a visible proposal: when an ask maps to no skill and V01D says 'I don't know this yet', and the router's closest skill scored near its bar (or the router said a skill should have caught it), the card adds 'Did you mean <that skill's first example>?' as a data-ask link that runs it; /api/answer sends the near skill with its reply, the page draws the line under the refusal line, nothing new is sent or stored (asked by Void twice)", "asked": "ask-20261014-1155-3", "show": "a miss that nearly had a skill now asks: did you mean this?", "try": "does it look like rain in zorbleton tomorrow"},
-  {"at": "2026-10-16T05:58:18Z", "by": "claude", "kind": "fix", "what": "the actions card's live check no longer counts fetches: the stage redraws and remounts every card (render() runs again after the card opens), so the opening load can happen twice, once, or with the status card's 50-row read between, depending on timing, and main's verify went red on 99acc8d on exactly that; the check now pins what the card is for: the fetches of the opening phase are all first-page reads, the faked minute makes one 30-row read, and Show more makes one read of the next page"},
-  {"at": "2026-10-16T07:34:33Z", "by": "claude", "kind": "grow", "what": "Live evidence: a kept answer from the real outside service is a fourth kind of evidence, and a fresh one makes a skill proven (asked by Void)", "show": "a real answer from a real service now counts toward a skill's rating", "try": "show me your skill families"},
-  {"at": "2026-10-16T07:57:15Z", "by": "claude", "kind": "grow", "what": "The 7-day re-test: skills not tested in a week are re-tested daily, a pass dates them, a failure lowers the rating and queues one retest job (asked by Void)", "show": "a skill untested for a week is re-tested; a failure lowers its rating", "try": "show me your skill families"}
+ {
+  "at": "2026-10-16T07:21:18Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "the extension's context check: the extension counts what the tab holds (characters of text, large pictures on screen, table rows and cells; counts only, never the page's words), the page decides whether the tab is mostly text, pictures or a table (lib/context-check.js) and the tab card names the kind and suggests one skill for it: a text page its own summary draft, pictures the appraiser, a table a list to check off; extension 0.7.2 (asked by Void)",
+  "asked": "ask-20261014-1904-1",
+  "show": "the tab card says what a page mostly is and one thing to try",
+  "try": "what is this worth"
+ },
+ {
+  "at": "2026-10-16T07:34:33Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Live evidence: a kept answer from the real outside service is a fourth kind of evidence, and a fresh one makes a skill proven (asked by Void)",
+  "show": "a real answer from a real service now counts toward a skill's rating",
+  "try": "show me your skill families"
+ },
+ {
+  "at": "2026-10-16T07:57:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "The 7-day re-test: skills not tested in a week are re-tested daily, a pass dates them, a failure lowers the rating and queues one retest job (asked by Void)",
+  "show": "a skill untested for a week is re-tested; a failure lowers its rating",
+  "try": "show me your skill families"
+ }
 ]
