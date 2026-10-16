@@ -644,5 +644,13 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T16:42:11Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "download the print file offline | nothing appeared",
+  "note": "fix: \"download the print file offline\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
