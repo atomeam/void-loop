@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 3,
+    "tested": 8,
+    "checked": 4,
     "proven": 11
    },
    "from": 5,
@@ -311,7 +311,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "n": 8
   },
   {
@@ -370,8 +370,8 @@
     "cartoon version of a shipwreck",
     "cartoon version of gg allin"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 12
   },
   {
@@ -1195,7 +1195,7 @@
     "will it rain tomorrow"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 44 real asks in the benchmark",
    "n": 58
   },
   {
@@ -1900,7 +1900,7 @@
     "how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 21 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 21 real asks in the benchmark",
    "n": 104
   },
   {
@@ -2716,7 +2716,7 @@
     "I need to prepare a talk by next week and tell Sam"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
    "n": 156
   },
   {

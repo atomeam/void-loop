@@ -221,6 +221,51 @@ function layOut(st, ids, live) {
 }
 
 let seq = 0;
+
+// Plan history (asked by Void, ask-20261014-1012-3 and ask-20261014-0847-1: "a 'plan history' sidebar that shows the name or
+// timestamp of each distinct plan block to prevent accidental total wipes"): the last few distinct plans this browser made
+// (goal, when, the pieces as they were laid out) in localStorage, so "clear" or a lost undo is never total: "plan history"
+// lists them, "restore plan 2" or "restore the plan to learn spanish" puts one back on the stage as new things.
+export const PLANS_KEY = 'a2m.void.plans.v1', PLANS_MAX = 5;
+export function planHistory() { try { const a = JSON.parse(localStorage.getItem(PLANS_KEY) || '[]'); return Array.isArray(a) ? a.filter((p) => p && p.goal && Array.isArray(p.things)) : []; } catch (_) { return []; } }
+/** the history with a plan kept: newest first, one per goal, at most PLANS_MAX. Pure. */
+export function withPlanKept(list, entry) { return [entry, ...(list || []).filter((p) => p && p.goal !== entry.goal)].slice(0, PLANS_MAX); }
+function keepPlan(entry) { try { localStorage.setItem(PLANS_KEY, JSON.stringify(withPlanKept(planHistory(), entry))); } catch (_) {} }
+/** "plan history" -> { kind: 'list' }; "restore plan 2" -> { kind: 'restore', n: 2 }; "restore the plan to learn spanish" -> { kind: 'restore', goal }. Pure. */
+export function historyAskOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
+  if (/^(?:(?:show|open|list)\s+(?:me\s+)?)?(?:my\s+|the\s+)?(?:plan\s+history|past\s+plans|previous\s+plans|old\s+plans|saved\s+plans|plans\s+(?:i|we)\s+made)$/.test(t) || /^(?:show\s+(?:me\s+)?)?my\s+plans$/.test(t)) return { kind: 'list' };
+  let m = t.match(/^(?:restore|bring\s+back|put\s+back|undo\s+the\s+wipe\s+of)\s+(?:the\s+|my\s+)?(?:last|previous|latest)\s+plan$/);
+  if (m) return { kind: 'restore', n: 1 };
+  m = t.match(/^(?:restore|bring\s+back|put\s+back)\s+(?:the\s+|my\s+)?plan\s+(\d)$/);
+  if (m) return { kind: 'restore', n: +m[1] };
+  m = t.match(/^(?:restore|bring\s+back|put\s+back)\s+(?:the\s+|my\s+)?plan\s+(?:to|for)\s+(.{3,60})$/);
+  if (m) return { kind: 'restore', goal: m[1].trim() };
+  return null;
+}
+/** the plan's things as new stage things: fresh ids, one new group, places as they were. Pure. */
+export function restoredThings(entry, rand = Math.random) {
+  const g = 'g' + Date.now().toString(36) + 'r' + Math.floor(rand() * 1e6).toString(36);
+  return (entry && entry.things || []).map((t) => ({ ...t, id: String(t.kind || 'thing') + '_' + rand().toString(36).slice(2, 9), group: g }));
+}
+const ago = (iso) => { const m = Math.round((Date.now() - Date.parse(iso)) / 60000); return !Number.isFinite(m) ? '' : m < 2 ? 'just now' : m < 60 ? m + ' min ago' : m < 1440 ? Math.round(m / 60) + ' h ago' : new Date(iso).toLocaleDateString([], { month: 'short', day: 'numeric' }); };
+function historyRun(q, api) {
+  const { showPage, esc } = api, st = api.stage || {}, list = planHistory();
+  if (q.kind === 'list') {
+    showPage((el) => { el.innerHTML = '<h2>Plan history</h2><div class="sub">the last ' + PLANS_MAX + ' plans this browser made, newest first \u00b7 saved here only</div>'
+      + (list.length ? '<ol class="plan-history" style="padding-left:20px;line-height:1.7">' + list.map((p, i) => '<li><b>' + esc(p.goal) + '</b> <span style="color:#8a8a8a">\u00b7 ' + esc(ago(p.at)) + ' \u00b7 ' + esc((p.pieces || []).join(', ')) + '</span> \u00b7 <a href="#" data-ask="restore plan ' + (i + 1) + '">restore</a></li>').join('') + '</ol><p style="color:#8a8a8a">A restored plan comes back as new pieces, so a wipe is never total.</p>'
+        : '<p>No plans yet. Ask for one, like "make a plan to learn spanish" or "plan my move", and it is kept here.</p>'); });
+    return 'intent';
+  }
+  const entry = q.n ? list[q.n - 1] : list.find((p) => p.goal.toLowerCase() === q.goal) || list.find((p) => p.goal.toLowerCase().includes(q.goal));
+  if (!entry) { if (api.say) api.say(list.length ? 'no such plan · "plan history" lists the ' + list.length + ' kept' : 'no plans kept yet'); return 'intent'; }
+  if (!st.things || !st.save) return 'none';
+  const live = st.things();
+  for (const t of restoredThings(entry)) live[t.id] = t;
+  st.save(); if (st.render) st.render();
+  if (api.say) api.say('plan "' + entry.goal + '" restored \u00b7 ' + entry.things.length + ' piece' + (entry.things.length === 1 ? '' : 's') + ', as they were');
+  return 'intent';
+}
 // the plan's steps from the answer engine, and the one practice timer it may suggest (whole minutes, 5 to 60, checked here
 // too); null when it has no steps (no model, busy, or no reply)
 async function engineSteps(goal) {
@@ -240,6 +285,8 @@ const timerAsk = (min, practice) => ({ piece: 'timer', ask: 'set a timer for ' +
 const noteAsk = (note) => ({ piece: 'note', ask: 'add a sticky that says ' + note });
 const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
 async function run(text, api) {
+  const hist = historyAskOf(text);
+  if (hist) return historyRun(hist, api);
   let plan = planOf(text);
   if (!plan) {
     const open = openPlanOf(text);
@@ -266,6 +313,7 @@ async function run(text, api) {
   }
   const live = st.things();
   const ids = Object.keys(live).filter((id) => !before.has(id));
+  if (ids.length) keepPlan({ goal: plan.goal, at: new Date().toISOString(), pieces: ids.map((id) => live[id].kind), things: ids.map((id) => JSON.parse(JSON.stringify(live[id]))) }); // plan history (asked by Void): kept after the pieces are laid out below, by reference
   if (ids.length > 1) {
     const g = 'g' + Date.now().toString(36) + 'p' + (seq++).toString(36);
     for (const id of ids) live[id].group = g;
@@ -274,6 +322,7 @@ async function run(text, api) {
     if (st.save) st.save();
     if (st.render) st.render();
   }
+  if (ids.length) keepPlan({ goal: plan.goal, at: new Date().toISOString(), pieces: ids.map((id) => live[id].kind), things: ids.map((id) => JSON.parse(JSON.stringify(live[id]))) }); // with their places
   // Clef called it a skill to learn (lib/plan.js withLearnStep), so the engine's steps open with finding a teacher
   const taught = plan.learn ? ' · a skill to learn, so it starts with finding a teacher or a course' : '';
   const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? (a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
@@ -289,7 +338,7 @@ export default {
   name: 'intent',
   examples: ['I need to ship the product page by Friday', 'I have to finish my essay by October 20', 'I need to prepare a talk by next week and tell Sam',
     'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks',
-    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move', 'plan my garden', 'make a plan to learn Spanish'],
+    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move', 'plan my garden', 'make a plan to learn Spanish', 'plan history', 'restore the last plan'],
   nearMisses: ['I need to wake up at 6 am, what time should I go to bed?', 'remind me at 5 to call home', 'days until friday', 'what do i need to get a 90',
     'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday',
     'my birthday on Friday', 'the exam was on Friday', 'plan my day', 'make a plan to lose weight', 'meal plan for the week'],
@@ -299,6 +348,6 @@ export default {
   stepsFor,
   planOf,
   openPlanOf,
-  match(lower, text) { return !!planOf(text) || !!openPlanOf(text); },
+  match(lower, text) { return !!planOf(text) || !!openPlanOf(text) || !!historyAskOf(text); },
   run,
 };
