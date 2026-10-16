@@ -35,13 +35,14 @@ export function outsideReply(u) {
     ] });
   }
   if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10); return json({ current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5 }, daily: { temperature_2m_max: [24], temperature_2m_min: [15], precipitation_probability_max: [10], uv_index_max: [7.2] }, hourly: { time: Array.from({ length: 24 }, (_, i) => d + 'T' + String(i).padStart(2, '0') + ':00'), temperature_2m: Array(24).fill(20), precipitation_probability: Array(24).fill(5), weather_code: Array(24).fill(1), uv_index: Array(24).fill(6.5) } }); }
+  if (u.includes('api.datamuse.com')) return json([{ word: 'islet' }, { word: 'stile' }, { word: 'tiles' }, { word: 'inlet' }, { word: 'steal' }]); // the words skill: anagrams of tlesi keep islet, stile, tiles
   if (u.includes('frankfurter')) return json({ amount: 100, base: 'USD', date: '2026-09-26', rates: { EUR: 92 } });
   return { status: 204, body: '' };
 }
 
 // Void's own data-only endpoints the page reads on load (what Void said of itself, what it wants next), the same in every runner
 export function voidApiReply(u) {
-  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }], follow: { total: 5, built: 2, recent: [{ ask: 'Learn Go on the stage', at: '2026-10-08T17:55:00Z', ref: 'https://github.com/atomeam/void-loop/pull/244' }] } });
+  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }], follow: { total: 5, built: 2, recent: [{ ask: 'Learn Go on the stage', at: '2026-10-08T17:55:00Z', ref: 'https://github.com/atomeam/void-loop/pull/244', what: 'asked by Void: Go. skills/go.js is a two-player 9x9 board', times: 2 }] } });
   if (u.includes('/api/will')) return json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] });
   return null;
 }

@@ -99,6 +99,18 @@ function mount(th, stageApi) {
     list.appendChild(b);
   }
   card.appendChild(list);
+  // game strength (asked by Void twice): each game's evidence rating from skills/families.json, proven to experiment, as a mark on its
+  // button and in its title; nothing shows until the file is read, and a game with no skill of its own gets none
+  fetch('/skills/families.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
+    if (!fam || !list.isConnected) return;
+    const tiers = new Map(); for (const f of fam.families || []) for (const s of f.skills || []) tiers.set(s.name, s);
+    for (const b of list.querySelectorAll('button[data-game]')) {
+      const s = tiers.get(b.dataset.game) || tiers.get(GAMES.find((g) => g.id === b.dataset.game)?.skill || ''); if (!s) continue;
+      b.dataset.tier = s.tier; b.title = s.tier + ': ' + (s.why || '');
+      const m = document.createElement('span'); m.className = 'rack-tier'; m.style.cssText = 'margin-left:5px;font-size:10px;opacity:' + ({ proven: '1', checked: '.8', tested: '.6', experiment: '.45' }[s.tier] || '.6');
+      m.textContent = { proven: '●●●', checked: '●●○', tested: '●○○', experiment: '○○○' }[s.tier] || ''; m.setAttribute('aria-label', s.tier); b.appendChild(m);
+    }
+  }).catch(() => {});
   // one Void strength for every game (skills/game-level.js): the games read it before Void moves
   const lv = document.createElement('div'); lv.className = 'rack-level'; lv.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)';
   lv.append('V01D plays:');
