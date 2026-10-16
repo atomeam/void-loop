@@ -268,7 +268,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache
-  const self = isSelfAsk(ask);
+  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Void is still a paste, not a question about Void (owner, 2026-10-16)
   // what this person told Void (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
   try {
@@ -324,6 +324,10 @@ async function pageAnswer(request, env, ask, pg) {
 // Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
 // none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
 export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + HONEST_RULE + ' ' + PERSONA + ' ' + INJECTION_RULE;
+// A long pasted text is not a question (owner, 2026-10-16: V01D's own plan, pasted back, was answered with an invented "Card" definition and
+// "Frontier step 7"). Say what the text says, in its own words; never define its terms from general knowledge or invent content for it.
+export const PASTE_RULE = 'The ask is text someone pasted, not a question. Say in two to four sentences what it says and what it wants, using its own words. Do not define its terms from general knowledge, do not add steps, sections or facts it does not contain, and do not write a document in its name. If it is about Void\'s own plans, say you only see what was pasted and that the plan itself is in the V01D book and the frontier.';
+export const isPaste = (ask) => { const t = String(ask || ''); return t.length > 400 && (t.match(/[.!:;]\s/g) || []).length >= 3 && !/^[^.!]{0,200}\?\s*$/.test(t); };
 // How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
 // a challenger is measured the way Void runs it: thinking off, low reasoning effort, the same token budget.
 export const ANSWER_RUN = { max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
@@ -348,7 +352,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
-  if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
+  if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
   const facts = self ? selfFacts(await selfP) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
@@ -356,7 +360,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
     { role: 'user', content: `Question: ${ask}\n\nFacts about Void:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
-    { role: 'system', content: ANSWER_SYSTEM + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
+    { role: 'system', content: ANSWER_SYSTEM + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
   ];
   let answer = '', model = MODEL, outcome = route.kind === 'fallback' ? route.why : 'default', would = null;

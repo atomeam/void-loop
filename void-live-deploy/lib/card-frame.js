@@ -76,7 +76,7 @@ export const CARD_CSS = [
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:linear-gradient(180deg,hsl(var(--h) 28% 26%),hsl(var(--h) 26% 14%));border:2px solid var(--edge);border-radius:9px 4px 9px 4px;font-size:17px;font-weight:700;letter-spacing:.05em;color:#f3efe2;box-shadow:0 2px 6px rgba(0,0,0,.5)}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 30% 70%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:16px;color:#f3efe2;letter-spacing:.02em}',
   '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:-1px;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:-1px;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
-  '@media (max-width:520px){.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
+  '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
 ].join('');
 
 let cache = null;
@@ -98,8 +98,10 @@ export function lookup(stats, name) {
 }
 /** how many days ago a source line says it was edited ("Source: Wikipedia · last edited Sep 3, 2026"), or null. Pure. */
 export function editedDaysAgo(text, now = Date.now()) {
-  const m = /last edited ([A-Z][a-z]{2,8}\.? \d{1,2}, \d{4})/.exec(String(text || '')); if (!m) return null;
-  const t = Date.parse(m[1]); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
+  const m = /last edited ([A-Z][a-z]{2,8})\.? (\d{1,2}), (\d{4})/.exec(String(text || '')); if (!m) return null;
+  const months = { Jan: 0, January: 0, Feb: 1, February: 1, Mar: 2, March: 2, Apr: 3, April: 3, May: 4, Jun: 5, June: 5, Jul: 6, July: 6, Aug: 7, August: 7, Sep: 8, September: 8, Oct: 9, October: 9, Nov: 10, November: 10, Dec: 11, December: 11 };
+  const month = months[m[1]];
+  const t = month == null ? NaN : Date.UTC(Number(m[3]), month, Number(m[2])); return Number.isFinite(t) ? Math.max(0, (now - t) / 864e5) : null;
 }
 
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */

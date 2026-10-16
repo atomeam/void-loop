@@ -5,7 +5,7 @@ import { kindOf, alsoFrom, typeWords, kindOfWord, KINDS } from '../void-live-dep
 import { cardOf } from '../void-live-deploy/lib/card-frame.js';
 
 test('a page is typed by what its short description says', () => {
-  const cases = [['1965 film by Clive Donner', 'Film'], ['2010 song by Katy Perry', 'Song'], ['British rock band', 'Band'], ['American actor (born 1935)', 'Person'], ['capital of France', 'Place'], ['species of mammal', 'Creature'], ['American multinational technology company', 'Organisation'], ['1939–1945 global conflict', 'Idea'], ['1994 video game', 'Game'], ['novel by Jane Austen', 'Book'], ['American sitcom', 'Show']];
+  const cases = [['1965 film by Clive Donner', 'Film'], ['2010 song by Katy Perry', 'Song'], ['British rock band', 'Band'], ['American actor (born 1935)', 'Person'], ['capital of France', 'Place'], ['species of mammal', 'Creature'], ['American multinational technology company', 'Organisation'], ['1939–1945 global conflict', 'Idea'], ['1994 video game', 'Game'], ['novel by Jane Austen', 'Book'], ['American sitcom', 'Show'], ['trading card from the Pokémon card game', 'Card'], ['Magic: The Gathering card', 'Card']];
   for (const [d, k] of cases) assert.equal(kindOf(d).kind, k, d);
   assert.deepEqual(kindOf('1965 film by Clive Donner'), { kind: 'Film', chapter: 'stage', detail: '1965 · Clive Donner' });
   assert.equal(kindOf('').kind, 'Idea'); assert.ok(KINDS.length >= 12);
