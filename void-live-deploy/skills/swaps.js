@@ -4,7 +4,11 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * A built-in table of the usual kitchen equivalents, so the answer is instant. An ingredient not in the table ("instead of
  * google", "substitute teacher") is left to the other skills; weights and conversions are calc's, recipes are recipe's.
+ * Each swap says what else to adjust (asked by Void, ask-20261015-0250-2: "when a user selects a swap, the stage can suggest
+ * relevant adjustments to other ingredients (e.g., adding more liquid if swapping flour)"): IMPACT, one line per swap, from
+ * what the swap changes (water, fat, acid, sugar, salt), and the card ends with the cook-flow timer chip (lib/cook-flow.js).
  */
+import { cookChip } from '../lib/cook-flow.js';
 // each: the ingredient, the words that name it, the amount the swaps replace, the swaps (closest first), a note
 export const SWAPS = [
   { name: 'buttermilk', re: 'buttermilk', amount: '1 cup', swaps: ['1 tbsp lemon juice or white vinegar, plus milk to make 1 cup; stand 5–10 minutes', '¾ cup plain yogurt + ¼ cup milk', '1 cup kefir'] },
@@ -36,6 +40,42 @@ export const SWAPS = [
   { name: 'wine', re: '(?:red\\s+|white\\s+|cooking\\s+)?wine', amount: '1 cup in cooking', swaps: ['1 cup broth + 1 tbsp vinegar (red wine vinegar for red, white wine or cider vinegar for white)', '1 cup grape juice + 1 tbsp vinegar'] },
   { name: 'ricotta', re: 'ricotta(?:\\s+cheese)?', amount: '1 cup', swaps: ['1 cup cottage cheese, blended smooth', '1 cup mascarpone (richer)'] }
 ];
+// What else to adjust for each swap, in SWAPS order (one line per swap, '' when nothing else changes). Pure data: the water, fat,
+// acid, sugar and salt a swap brings or takes away decide the line. A swap with no line here still shows; the check in
+// tools/swaps.test.mjs keeps the two tables the same shape.
+export const IMPACT = {
+  buttermilk: ['Keep the baking soda the recipe calls for: the acid in the swap is what it reacts with', 'Thicker than buttermilk, so add 1–2 tbsp milk if the batter looks stiff', ''],
+  eggs: ['Denser and less rise: add ¼ tsp extra baking powder per egg replaced', 'Adds moisture and a little sweetness: cut the sugar by 1 tbsp per egg and bake 2–3 minutes longer', 'Adds banana flavour and sugar: cut the sugar by 1 tbsp per egg', 'Whip it first for lift; it brings no fat, so the crumb is lighter and a little drier'],
+  'baking powder': ['Use it straight away: the soda starts reacting as soon as it is wet', 'Take ½ cup of the recipe\'s other liquid out, since the buttermilk or yogurt is liquid too'],
+  'baking soda': ['Leave out any salt the recipe adds, and expect a paler, more cake-like bake'],
+  'self-rising flour': ['Drop any extra baking powder and salt the recipe lists: they are in the mix now'],
+  'cake flour': ['Sift twice so the cornstarch spreads; the crumb comes out a touch less tender than real cake flour'],
+  'brown sugar': ['', 'Coarser and less sweet: the bake is a little drier, so take it out of the oven 1–2 minutes sooner', 'Drier and crisper, and cookies spread more: add 1–2 tsp liquid, or chill the dough first'],
+  'powdered sugar': ['Blend until it is a fine powder, or frosting comes out grainy'],
+  'heavy cream': ['Thinner, so a sauce needs a few more minutes of simmering to thicken', 'Tastes of coconut; it whips only when chilled overnight', 'Sweeter and thinner: cut any sugar a little and simmer sauces longer'],
+  'sour cream': ['Tangier and leaner: stir it in off the heat, since it splits if boiled', '', 'Leaner: add 1 tsp oil per cup in a bake'],
+  butter: ['Oil carries no water, so add 2–3 tbsp milk or water per cup of butter replaced; no creaming means less rise', 'Melt and cool it first; the bake sets firmer and tastes faintly of coconut', 'Moister and denser; cut the sugar by 1 tbsp since applesauce is sweet'],
+  oil: ['Butter is about a sixth water, so the bake is a little drier: add 1 tbsp liquid per cup, or use 1¼ cups butter', 'Less fat, so the crumb is denser and it dries out sooner; cut the sugar by 1 tbsp'],
+  milk: ['', 'Thinner and leaner: add 1 tsp oil per cup in a bake, and whisk oat milk in slowly', 'Whisk the powder into the dry ingredients first so it does not clump'],
+  cornstarch: ['Twice as much, and simmer 2–3 minutes longer to cook out the raw-flour taste; the sauce stays cloudier', 'Add it at the end: arrowroot thins again if boiled long'],
+  'lemon juice': ['', 'Half the amount: vinegar is sharper and brings no citrus taste'],
+  'cream of tartar': ['Fine in meringue and whipped cream; in snickerdoodles the tang is lost'],
+  honey: ['Thinner: cut the recipe\'s other liquid by 2 tbsp per cup', 'Sugar is dry: the ¼ cup water replaces honey\'s own, and the bake browns a little slower'],
+  'maple syrup': ['Browns faster: lower the oven 25 °F (15 °C) and check early', 'Brown sugar is dry: the ¼ cup water replaces the syrup\'s own'],
+  molasses: ['Less bitter and less acid: if the recipe leans on baking soda for lift, swap ¼ tsp of it for ½ tsp baking powder'],
+  'vanilla extract': ['', 'Adds a little alcohol flavour; use it in the same amount', 'Scrape the seeds into the sugar and rub them in so they spread'],
+  'fresh herbs': ['Add dried herbs early so they soften; fresh ones would go in at the end'],
+  garlic: ['Add the powder with the liquid, not into hot oil, or it burns', 'Already in oil or water: cut the salt a pinch if the jar is salted'],
+  onion: ['Fresh onion brings water: add 1–2 tbsp water or stock', 'Soak it 5 minutes first, or it stays crunchy', 'Milder and sweeter; cook a minute less'],
+  breadcrumbs: ['Crackers are salted: cut the recipe\'s salt by half', 'Oats soak more liquid: add 1–2 tbsp milk in meatballs or meatloaf', 'Cornflakes are sweeter and crisper; crush them fine'],
+  mayonnaise: ['Thinner and tangier: add 1 tsp oil and a pinch of sugar for a dressing', 'Looser: chill it 10 minutes before serving', 'Browns: add a squeeze of lemon and serve the same day'],
+  'tomato paste': ['Brings more liquid: cut the recipe\'s other liquid by 2 tbsp per tbsp of paste, or simmer longer', 'Sweeter and tangier: cut any sugar and taste before salting'],
+  wine: ['Less acid and no sweetness: taste at the end and add a pinch of sugar if it is flat', 'Sweeter: cut any sugar, and finish with a squeeze of lemon'],
+  ricotta: ['Wetter: drain it 10 minutes in a sieve first', 'Richer and softer: use a little less, and it needs no draining']
+};
+/** what else to adjust for swap `i` of `item` ('' when nothing). Pure. */
+export function impactOf(item, i) { const r = IMPACT[item && item.name]; return (r && r[i]) || ''; }
+
 const TAIL = /\s+(?:to\s+thicken(?:\s+\w+)?|for\s+thickening|(?:in|for)\s+(?:gravy|soup|stew|a\s+stew|baking|a\s+cake|cakes?|cookies|muffins|brownies|bread|pancakes|a\s+recipe|recipes?|cooking|a\s+sauce))$/;
 const of = (s) => {
   s = s.trim().replace(TAIL, '').replace(/^(?:some|the|any)\s+/, '');
@@ -73,9 +113,10 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = '<h2>Instead of ' + esc(s.name) + '</h2><div class="sub">for ' + esc(s.amount) + '</div>'
       + (lead ? '<p style="font-size:20px;margin:8px 0">' + esc(lead) + '</p>' : '')
-      + '<ol style="padding-left:20px;line-height:1.6">' + s.swaps.map((w) => '<li>' + esc(w) + '</li>').join('') + '</ol>'
+      + '<ol style="padding-left:20px;line-height:1.6">' + s.swaps.map((w, i) => '<li>' + esc(w) + (impactOf(s, i) ? '<div class="swap-then" style="color:#8a8a8a;font-size:14px;line-height:1.4">then: ' + esc(impactOf(s, i)) + '</div>' : '') + '</li>').join('') + '</ol>'
       + (s.note ? '<p style="color:#8a8a8a">' + esc(s.note) + '</p>' : '')
-      + '<div class="src">The usual kitchen equivalents. Any swap changes the taste or texture a little; the first one listed is the closest.</div>';
+      + '<div class="src">The usual kitchen equivalents. Any swap changes the taste or texture a little; the first one listed is the closest.</div>'
+      + cookChip('substitute for ' + s.name, esc);
   });
   return 'swaps';
 }
