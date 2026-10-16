@@ -35,6 +35,7 @@ export function outsideReply(u) {
     ] });
   }
   if (u.includes('api.open-meteo.com')) { const d = new Date().toISOString().slice(0, 10); return json({ current: { temperature_2m: 20, apparent_temperature: 19, weather_code: 1, wind_speed_10m: 5 }, daily: { temperature_2m_max: [24], temperature_2m_min: [15], precipitation_probability_max: [10], uv_index_max: [7.2] }, hourly: { time: Array.from({ length: 24 }, (_, i) => d + 'T' + String(i).padStart(2, '0') + ':00'), temperature_2m: Array(24).fill(20), precipitation_probability: Array(24).fill(5), weather_code: Array(24).fill(1), uv_index: Array(24).fill(6.5) } }); }
+  if (u.includes('api.datamuse.com')) return json([{ word: 'islet' }, { word: 'stile' }, { word: 'tiles' }, { word: 'inlet' }, { word: 'steal' }]); // the words skill: anagrams of tlesi keep islet, stile, tiles
   if (u.includes('frankfurter')) return json({ amount: 100, base: 'USD', date: '2026-09-26', rates: { EUR: 92 } });
   return { status: 204, body: '' };
 }

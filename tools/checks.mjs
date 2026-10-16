@@ -102,6 +102,7 @@ for (const [name, file] of [
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],
   ['bmi', 'bmi.test.mjs'],
+  ['meals', 'meals.test.mjs'],
   ['worldtime-parse', 'worldtime-parse.test.mjs'],
   ['country-parse', 'country-parse.test.mjs'],
   ['sky-skills', 'sky-skills.test.mjs'],
