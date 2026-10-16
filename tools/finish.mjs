@@ -57,7 +57,27 @@ function firstShot(a) {
     return 1;
   }
   for (const t of a.tests) { console.log('  test_void --only "' + t + '"'); const code = run(...node('heavy.mjs', process.execPath, resolve(root, 'tools', 'test_void.mjs'), '--only', t)); if (code !== 0) return code; }
+  // the --try ask is what "look what I made" plays for this line, so a skill on this very tree has to answer it (owner,
+  // 2026-10-16: "the preview is supposed to actually preview what it says"): typed into the page with outside services blocked
+  if (a.try) {
+    console.log('  ask.mjs "' + a.try + '" (the preview has to show something)');
+    const r = spawnSync(process.execPath, [resolve(root, 'tools', 'ask.mjs'), a.try], { encoding: 'utf8', timeout: 180e3, env: process.env });
+    const text = (r.stdout || '') + (r.stderr || '');
+    process.stdout.write(text);
+    const p = tryProblem(text);
+    if (p) { console.error('  --try "' + a.try + '": ' + p + '\n  Give --try an ask this change answers (node tools/ask.mjs "<ask>" shows who answers), or fix the matcher.'); return 1; }
+  }
   return 0;
+}
+
+/** what is wrong with ask.mjs's report on the --try ask, or '' when a skill answered it. Pure. */
+export function tryProblem(report) {
+  const t = String(report || '');
+  if (/\n\s*ERROR: /.test(t)) return 'the page threw an error on it';
+  const by = /\n\s*by: (.*)/.exec(t);
+  if (!by || /^\((?:nothing logged|no note)\)/.test(by[1])) return 'nothing answered it (no skill logged the ask)';
+  if (/^(?:article|answer|short topic|article fallback)$|^miss/.test(by[1].trim())) return 'it fell through to the generic answer (' + by[1].trim() + ')';
+  return '';
 }
 
 /** the agent-log line, in the log's own shape. Pure. */

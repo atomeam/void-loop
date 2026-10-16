@@ -4280,5 +4280,6 @@
   "kind": "finding",
   "what": "rides tested against a live service, occasion 2: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 726 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-16T1802.json)",
   "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-16T1802.json"
- }
+ },
+  {"at": "2026-10-16T17:17:13Z", "by": "claude", "kind": "fix", "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it", "show": "a preview that shows nothing says so and is flagged", "try": "show me everything you made"}
 ]

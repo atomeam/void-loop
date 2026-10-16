@@ -1401,15 +1401,43 @@ try {
     r.after = { bar: await barText(P), page: await P.page(), kinds: await kinds(P), seen: await P.p.evaluate(() => localStorage.getItem('a2m.void.growthSeen.v1')) };
     await P.p.reload(); await P.p.waitForTimeout(800); await P.p.mouse.move(260, 260); await P.p.waitForTimeout(1500);
     r.reload = await note(P);
-    await P.ask("what's new", 1500); r.typed = await barText(P);
-    check('look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor\'s first move brings "I made 3 new things while you were away · show me"; "show me" puts the newest (a paper sticky) on the stage with "1 of 3", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; "what\'s new" runs it again as "Built lately" over the latest builds',
+    await P.ask("what's new", 1500); r.typed = await barText(P); r.typedSaid = await P.p.$eval('#whisper', (e) => e.textContent).catch(() => '');
+    await P.ask('show me everything you made', 1500); r.all = await barText(P);
+    check('look what I made: a first visit shows nothing before or after its first touch (and remembers it); a returning visitor\'s first move brings "I made 3 new things while you were away · show me"; "show me" puts the newest (a paper sticky) on the stage with "1 of 3", Next → takes it away and puts up a counter, Keep leaves the counter and opens the growth page, the last Done closes it and marks everything seen (the idea is never a step); a reload shows no line; "what\'s new" afterwards replays nothing and says so with the count; "show me everything you made" walks all 4 by name',
       !r.firstBefore && !r.firstAfter && r.firstSeen && !r.before && /show me$/.test(r.pill)
         && /^1 of 3 · Built while you were away sticky notes look like real paper/.test(r.s1) && /^2 of 3 .*a counter you can tap/.test(r.s2)
         && /the growth page/.test(r.s3) && r.s3kinds === 'counter'
         && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-11T00:00:00Z'
-        && !/I made/.test(r.reload) && /^1 of 4 · Built lately/.test(r.typed) && !P.errors.length,
+        && !/I made/.test(r.reload) && !r.typed && /nothing new since you last looked.*for all 4/.test(r.typedSaid) && /^1 of 4 · Everything I made/.test(r.all) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // the preview proves itself (owner, 2026-10-16: "the preview is supposed to actually preview what it says it almost never does"): a
+  // step whose ask nothing answers says so on its line and files the ask as a miss (preview:nothing-shown); a step that puts a thing
+  // on the stage is left alone
+  if (want("look what I made: a preview that shows nothing says so and flags it")) {
+    const LEDGER = [
+      { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'a thing with a wrong try', show: 'a hardcover book with turning pages', try: 'zzqx nothing answers this zzqx' },
+      { at: '2026-10-14T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+    ];
+    const misses = [];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['zzqx nothing answers this zzqx', 'make a counter'] }) }));
+    await P.ctx.route(/\/api\/miss(?:\?|$)/, (r) => { try { misses.push(JSON.parse(r.request().postData() || '{}')); } catch (_) {} r.fulfill({ status: 204, body: '' }); });
+    const barText = () => P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')).catch(() => '');
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    await until(async () => /while you were away/.test(await P.p.$eval('#away-note', (e) => e.textContent).catch(() => '')), 6000);
+    await P.p.click('[data-showcase="show"]');
+    const first = await until(async () => { const t = await barText(); return /1 of 2 .*counter/.test(t) && !/flagged/.test(t) ? t : ''; }, 6000) || await barText();
+    await P.p.click('[data-showcase="next"]');
+    const second = await until(async () => { const t = await barText(); return /flagged/.test(t) ? t : ''; }, 8000) || await barText();
+    const flagged = misses.filter((m) => m.fallback === 'preview:nothing-shown').map((m) => m.ask);
+    check('look what I made: a preview that shows nothing says so on its line ("but nothing showed just now: I flagged it for the builders") and files the ask as a preview:nothing-shown miss; a step that puts a counter on the stage is left alone',
+      /^1 of 2 · Built while you were away a counter you can tap/.test(first) && /2 of 2 .*a hardcover book with turning pages · but nothing showed just now: I flagged it for the builders/.test(second)
+        && flagged.length === 1 && flagged[0] === 'zzqx nothing answers this zzqx' && !P.errors.length,
+      JSON.stringify({ first, second, misses, errors: P.errors }).slice(0, 900));
+    await P.ctx.close();
+  }
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};

@@ -148,7 +148,11 @@ function run(text, api) {
     // the 3D book (skills/mini/book.js): the same pages on a hardcover you open and turn; the flat spread below stays the text version
     // and the fallback where WebGL is missing. The cover is shut until you open it (a tap, "Open the book", or an ask for a page).
     const host = el.querySelector('.gb-3d'), view = el.querySelector('.gb-view');
-    let open3 = !!(want.at && pageFor(book, want.at)) || readKept() > 1, has3d = false;
+    // the hardcover shows from the first paint wherever WebGL runs (owner, 2026-10-16: the book came up as the flat text, "no book no
+    // cover no turning pages"): the host was hidden until the miniature had mounted, so a slow or stuck mount left the text with no
+    // word why. Now the 3D host is visible while it loads; only a failed mount, or no WebGL, falls to the text, and a failure says why.
+    const webgl = (() => { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (_) { return false; } })();
+    let open3 = !!(want.at && pageFor(book, want.at)) || readKept() > 1, has3d = webgl, mounted = false;
     const miniData = () => ({ book, cur, open: open3, onTurn: (d) => turn(d), onJump: (n) => go(n), onAsk: (a) => { try { api.stage.ask(a); } catch (_) {} },
       onOpen: () => { open3 = true; cur = Math.max(cur, 1); draw(); }, onClose: () => { open3 = false; draw(); } });
     const mount3d = () => api.stage.miniature(host, 'book', miniData(), { key: 'v01d-book' });
@@ -163,7 +167,7 @@ function run(text, api) {
       prev.disabled = vis[0] <= 1; next.disabled = vis[vis.length - 1] >= total;
       for (const b of el.querySelectorAll('.gb-tab')) b.classList.toggle('on', b.getAttribute('data-chapter') === chapter);
       keep(cur);
-      if (has3d) mount3d().catch(() => {});
+      if (has3d && mounted) mount3d().catch(() => {});
       if (window.__voidBook) window.__voidBook.cur = cur;
     };
     const go = (n) => { cur = Math.min(Math.max(Number(n) || 1, 1), total); draw(); };
@@ -191,8 +195,15 @@ function run(text, api) {
     window.addEventListener('resize', () => { if (api._pageStill(el)) draw(); });
     window.__voidBook = { open3: () => open3, totals: book.totals, index: book.index, chapters: book.chapters, go, get cur() { return cur; }, set cur(v) {} }; // tools/test_void.mjs reads it
     draw();
-    host.hidden = false; showView();
-    try { mount3d().then(() => { has3d = true; showView(); }).catch(() => { host.remove(); has3d = false; showView(); }); } catch (_) { host.remove(); showView(); }
+    host.hidden = !webgl; showView();
+    const no3d = (e) => {
+      has3d = false; host.remove(); showView();
+      const why = String((e && e.message) || e || 'unknown').slice(0, 80), sub = el.querySelector('.gb-top .sub');
+      if (sub) sub.textContent += ' · the 3D book did not load (' + why + '): this is the text version';
+      el.dataset.book3d = 'failed';
+      try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(text || 'open the book').slice(0, 200), fallback: 'mini:book:' + why.slice(0, 60) }), keepalive: true }).catch(() => {}); } catch (_) {}
+    };
+    if (webgl) { try { mount3d().then(() => { mounted = true; el.dataset.book3d = 'on'; showView(); }).catch(no3d); } catch (e) { no3d(e); } } else el.dataset.book3d = 'no-webgl';
   }).catch((e) => { const s = el.querySelector('.sub'); if (s) s.textContent = "the book didn't load: " + (e && e.message); });
   return 'guide';
 }

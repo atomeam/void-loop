@@ -47,3 +47,14 @@ test('--dry runs nothing', () => {
   assert.equal(r.status, 0, r.stderr);
   assert.match(r.stdout, /\[8\/8\] pull request/);
 });
+
+test('the --try ask has to be answered by a skill: nothing logged, a page error or the generic answer stop the finish', async () => {
+  const { tryProblem } = await import('./finish.mjs');
+  assert.equal(tryProblem('> open the book\n  by: skill:guide\n  shows: The V01D Book'), '');
+  assert.match(tryProblem('> open the book\n  by: (nothing logged)\n  shows:'), /nothing answered/);
+  assert.match(tryProblem('> x\n  by: (no note)\n  shows:'), /nothing answered/);
+  assert.match(tryProblem('> cat\n  by: article\n  shows: Cat'), /generic answer \(article\)/);
+  assert.match(tryProblem('> zz\n  by: miss\n  shows:'), /generic answer/);
+  assert.match(tryProblem('> x\n  by: skill:timer\n  shows: 5:00\n  ERROR: boom'), /threw an error/);
+  assert.match(tryProblem(''), /nothing answered/);
+});
