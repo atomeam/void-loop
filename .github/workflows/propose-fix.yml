@@ -62,7 +62,7 @@ jobs:
         with:
           node-version: 22
           cache: npm
-      - name: npm ci (before the checks: the Claude brain's test imports the SDK, a dev dependency; without it this step failed every day from 2026-10-16 and V01D never proposed a fix)
+      - name: npm ci (first, because the Claude brain test imports the SDK)
         run: npm ci --no-audit --no-fund
       - name: Checks
         run: node --test tools/propose-fix.test.mjs tools/claude-brain.test.mjs
