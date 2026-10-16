@@ -4038,6 +4038,17 @@ say('nothing selected to remove');
     // ask's subject ("how do i make guacamole" -> a pancakes card) goes to the miss list as ungrounded:<skill>, quietly (nothing is
     // shown to the person), so the learning loop (lib/learn.js) turns a repeated one into a job. window.voidUngrounded keeps the
     // last 20 for the tests and the console.
+    // a card from a skill rated "experiment" or "tested" says so on its source line (asked by Void; lib/rating-note.js, ratings from skills/families.json)
+    let ratingsP = null;
+    function ratingNote(who, el) {
+      ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
+      Promise.all([import('/lib/rating-note.js'), ratingsP]).then(([m, f]) => setTimeout(() => {
+        if (vpageEl !== el || !f || el.querySelector('.rating-note')) return;
+        const t = m.noteText(m.ratingOf(f, who)); if (!t) return;
+        let src = el.querySelector('.src'); if (!src) { src = document.createElement('div'); src.className = 'src'; el.appendChild(src); }
+        const n = document.createElement('span'); n.className = 'rating-note'; n.title = 'From the skill ratings (tools/families.mjs): evidence only'; n.textContent = (src.textContent.trim() ? ' · ' : '') + t; src.appendChild(n);
+      }, 700)).catch(() => {});
+    }
     function groundCheck(text, skill, el) {
       import('/lib/ground.js').then((g) => setTimeout(() => {
         if (vpageEl !== el) return; // replaced before it settled: not this card's to judge
@@ -4076,6 +4087,7 @@ say('nothing selected to remove');
           if (whisper.textContent === before) say(src === 'none' ? (navigator.onLine === false ? "you're offline · this one needs the internet" : "couldn't") : ''); // a skill that said something keeps its line; a finished one clears it
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) ratingNote(who, vpageEl);
           if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }

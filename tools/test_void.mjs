@@ -2057,6 +2057,17 @@ try {
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
+  // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
+  if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
+    const rated = (tier) => ({ families: [{ skills: [{ name: 'weather', tier, why: 'a self-test' }, { name: 'convert', tier: 'proven', why: 'many' }] }] });
+    let tier = 'experiment'; await R.ctx.route(/\/skills\/families\.json/, (r) => r.fulfill(json(rated(tier))));
+    await R.ask('weather in Bergen', 1500); await until(async () => !!(await R.p.$('.vpage.on .rating-note')), 5000);
+    const thin = await R.p.$eval('.vpage.on .rating-note', (e) => ({ text: e.textContent, inSrc: !!e.closest('.src'), title: e.title })).catch(() => null);
+    await R.ask('close', 600); await R.ask('5 miles in km', 1200); await R.p.waitForTimeout(1200);
+    const quiet = await R.p.$$eval('.vpage.on .rating-note', (l) => l.length);
+    check('rating note: a card from a skill rated experiment says so on its source line ("rated experiment (…): not checked yet"), a proven skill\'s card says nothing',
+      !!thin && thin.inSrc && /^ · rated experiment \(a self-test\): not checked yet$/.test(thin.text) && /evidence only/.test(thin.title) && quiet === 0 && !R.errors.length, JSON.stringify({ thin, quiet, errors: R.errors }));
+    await R.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
