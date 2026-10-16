@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 390,
+ "counted": 391,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -369,6 +369,12 @@
    "dependants": 4
   },
   {
+   "file": "lib/near-miss.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
@@ -596,6 +602,7 @@
     "lib/keeper.js",
     "lib/privacy.js",
     "lib/router.js",
+    "lib/near-miss.js",
     "lib/clef.js",
     "lib/shortfall.js",
     "lib/self-context.js",
@@ -1563,6 +1570,17 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/near-miss.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
    ]
   },
   "lib/noise.js": {
