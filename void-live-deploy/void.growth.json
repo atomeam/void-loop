@@ -4259,5 +4259,6 @@
   "by": "claude",
   "kind": "build",
   "what": "Claude can be V01D's builder brain: a propose-fix run started by hand with brain: claude asks Claude for the fix in one capped call (about $0.20 at most), through the same gate, checks and pull request"
- }
+ },
+  {"at": "2026-10-16T18:02:17Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 2: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 726 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-16T1802.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-16T1802.json"}
 ]
