@@ -199,6 +199,7 @@ for (const [name, file] of [
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
+  ['review-main', 'review-main.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
