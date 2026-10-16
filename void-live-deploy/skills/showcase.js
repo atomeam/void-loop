@@ -16,6 +16,7 @@
  */
 import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
 export const SEEN_KEY = 'a2m.void.growthSeen.v1';
+export const SHOWN_KEY = 'a2m.void.growthShown.v1'; // the asks already previewed on this device, so a thing is previewed once and never offered again
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -59,8 +60,8 @@ export function sinceLast(entries, seenAt = '') {
 /** steps from newest-first entries, each ask once, all of them unless n caps it: [{ line, ask, at }]. Pure. */
 // verified: the asks tools/claims-verify.mjs saw answer with their own card (claims-verified.json). Given a set, a build whose
 // ask is not on it is never played as "built": it counts as in progress (Adam, 2026-10-15: no claiming what doesn't answer).
-export function pick(entries, n = Infinity, verified = null, pending = null) {
-  const out = [], asks = new Set();
+export function pick(entries, n = Infinity, verified = null, pending = null, shown = null) {
+  const out = [], asks = new Set(shown || []); // an ask already previewed is skipped like a repeat
   for (const e of entries) {
     const p = playable(e);
     if (!p || asks.has(CLEAN(p.ask))) continue;
@@ -85,6 +86,12 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
+/** the asks already previewed (cleaned), newest last; bounded so it stays small however much V01D makes */
+export function shownSet() { try { return new Set(JSON.parse(read(SHOWN_KEY) || '[]')); } catch (_) { return new Set(); } }
+export function markShown(steps) {
+  const all = [...shownSet()]; for (const s of steps) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
+  write(SHOWN_KEY, JSON.stringify(all.slice(-2000)));
+}
 export const VERIFIED_URL = '/claims-verified.json';
 async function ledger() {
   const r = await fetch(LEDGER_URL, { cache: 'no-cache' });
@@ -186,7 +193,7 @@ export async function nudge(stageApi, note) {
   if (!seen) { write(SEEN_KEY, new Date().toISOString().replace(/\.\d+Z$/, 'Z')); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const pending = [], steps = pick(sinceLast(list, seen), Infinity, await verifiedSet(), pending);
+  const pending = [], steps = pick(sinceLast(list, seen), Infinity, await verifiedSet(), pending, shownSet());
   const newest = seenUpTo(list, seen, pending); // a build still waiting for its live check stays unseen
   if (!steps.length) { if (newest > seen) write(SEEN_KEY, newest); return 0; }
   if (!note) return steps.length;
@@ -198,7 +205,15 @@ export async function nudge(stageApi, note) {
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
   go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps, { newest }); });
   note.textContent = ''; note.append(lead, go);
+  markShown(steps); // previewed once: the next visit does not offer these again, whether or not the link was tapped
   return n;
+}
+
+/** a recap with nothing new to preview: the last day's builds (at least the newest five), so asking again is never everything ever made. Pure. */
+export function recent(steps, now = Date.now()) {
+  const cut = new Date(now - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
+  const day = steps.filter((x) => x.at >= cut);
+  return day.length >= 5 ? day : steps.slice(0, 5);
 }
 
 async function run(text, api) {
@@ -206,11 +221,12 @@ async function run(text, api) {
   let list = [];
   try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
   const seen = read(SEEN_KEY), V = await verifiedSet(), pending = [];
-  const fresh = seen ? pick(sinceLast(list, seen), Infinity, V, pending) : [];
+  const fresh = seen ? pick(sinceLast(list, seen), Infinity, V, pending, shownSet()) : [];
   if (!fresh.length) pending.length = 0;
-  const steps = fresh.length ? fresh : pick(sinceLast(list), Infinity, V, pending);
+  const steps = fresh.length ? fresh : recent(pick(sinceLast(list), Infinity, V, pending));
   const wip = pending.length ? ' · ' + pending.length + ' more in progress (not answering yet)' : '';
   if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
+  markShown(steps);
   start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: seenUpTo(list, seen, pending) });
   return 'showcase';
 }
