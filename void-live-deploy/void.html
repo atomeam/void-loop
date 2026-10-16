@@ -2367,8 +2367,13 @@ say('nothing selected to remove');
       const hits = words.filter((w) => hay.includes(w.length > 4 ? w.slice(0, -1) : w)).length;
       return hits / words.length < 0.5;
     }
+    // the sources the last lookup actually read (each answered, even if only to say it has no such page): an "I don't know" after
+    // reading them means no referent was found; one with none read means nothing was looked up (owner, 2026-10-16: tell them apart)
+    let lookedIn = [];
+    const lookedUp = () => (lookedIn.length ? 'none:' + lookedIn.join(',') : 'unreached');
     async function showArticle(query) {
       const topic = topicFrom(query);
+      lookedIn = [];
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">…</div>'; });
       try {
         // "who is X" means a person: among the first five results, the first whose Wikidata description reads like a person
@@ -2376,6 +2381,7 @@ say('nothing selected to remove');
         if (/^(please\s+)?who\s+(is|was|are|were)\b|^who'?s\b/i.test(query.trim())) {
           try {
             const g = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrlimit=5&prop=description&format=json&origin=*&gsrsearch=' + encodeURIComponent(topic)).then((x) => x.json());
+            if (g && typeof g === 'object' && !lookedIn.includes('wikipedia')) lookedIn.push('wikipedia');
             const pages = Object.values((g && g.query && g.query.pages) || {}).sort((a, b) => (a.index || 0) - (b.index || 0));
             const person = pages.find((pg) => PERSON_RE.test(pg.description || ''));
             if (person) hit = { title: person.title };
@@ -2384,6 +2390,7 @@ say('nothing selected to remove');
         if (!hit) {
           const sr = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch=' + encodeURIComponent(topic));
           const sj = await sr.json();
+          if (sr.ok && sj && sj.query && !lookedIn.includes('wikipedia')) lookedIn.push('wikipedia');
           hit = sj && sj.query && sj.query.search && sj.query.search[0];
         }
         if (!hit) throw new Error('none');
@@ -2481,7 +2488,8 @@ say('nothing selected to remove');
       } catch (_) {
         try {
           const w = topic.toLowerCase().replace(/\s+/g, '_');
-          const d = await fetch('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(w)).then((r) => { if (!r.ok) throw 0; return r.json(); });
+          const d = await fetch('https://en.wiktionary.org/api/rest_v1/page/definition/' + encodeURIComponent(w)).then((r) => { if (r.status === 404) lookedIn.push('wiktionary'); if (!r.ok) throw 0; return r.json(); });
+          if (d && typeof d === 'object' && !lookedIn.includes('wiktionary')) lookedIn.push('wiktionary');
           const en = (d.en || [])[0];
           const def = en && en.definitions && en.definitions[0] && en.definitions[0].definition;
           if (!def) throw 0;
@@ -2492,7 +2500,7 @@ say('nothing selected to remove');
           return 'wiktionary';
         } catch (__) {
           if (vpageEl !== el) return 'none';
-          el.innerHTML = '<h2>' + esc(topic) + '</h2><p>I don\'t know this yet. I\'ve noted it, so I can learn it.</p>';
+          el.innerHTML = '<h2>' + esc(topic) + '</h2><p>' + (lookedIn.length ? 'I don\'t know this yet. I\'ve noted it, so I can learn it.' : 'I couldn\'t look this up just now: none of my sources answered. I\'ve noted it; try again in a moment.') + '</p>';
           return 'none';
         }
       }
@@ -2515,7 +2523,7 @@ say('nothing selected to remove');
         const r = m.refusalOf(ask, fallback);
         refusals.push(r); if (refusals.length > 20) refusals.shift();
         window.dispatchEvent(new CustomEvent('void-refusal', { detail: r }));
-        if (pg && pg === vpageEl && /^(knowledge|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
+        if (pg && pg === vpageEl && /^(knowledge|lookup|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
           const d = document.createElement('div'); d.className = 'src refusal'; d.textContent = m.refusalLine(r); pg.appendChild(d);
         }
         return r;
@@ -5133,16 +5141,16 @@ say('nothing selected to remove');
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
           && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|give me|show me)\b/.test(lower0)) {
-        showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
+        showAnswer(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'answer' }); return;
       }
-      if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
+      if (wantsArticle(lower0)) { showArticle(text).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); attachProductTail(text); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'article' }); return; }
       const result = freerEnglishParse(text);
       // one or two plain words the stage doesn't take ("brazil", "saturn"): a sourced page, and a miss only if there is none
       if (!result.ok && /^[\p{L}][\p{L}'’ -]{1,40}$/u.test(text.trim()) && text.trim().split(/\s+/).length <= 2 && !/\b(make|add|draw|create|open|set|start|put|clear|remove|move|show|give|me|my|you|your|i)\b/.test(lower0)) {
-        showArticle('tell me about ' + text.trim()).then((src) => { if (src === 'none') reportMiss(text, 'none'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'short topic' }); return;
+        showArticle('tell me about ' + text.trim()).then((src) => { if (src === 'none') reportMiss(text, lookedUp()); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'short topic' }); return;
       }
       if (!result.ok) {
-        showAnswer(text).then((src) => reportMiss(text, src || 'none')); attachProductTail(text);
+        showAnswer(text).then((src) => reportMiss(text, src === 'none' || !src ? lookedUp() : src)); attachProductTail(text);
         loopLog({ domain: 'void.page', ask: text, score: 'fallback', note: 'article fallback' });
         return;
       }

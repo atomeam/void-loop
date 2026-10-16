@@ -10,6 +10,7 @@ import { targetOf } from './learn.js';
 // what reportMiss's fallback says -> the kind of ability that was missing, in words a person reads
 export const KINDS = {
   knowledge: 'what this is (no source I can read knows it yet)',
+  lookup: 'a source that answered (none could be reached just now, so nothing was looked up)',
   skill: 'the data this skill needs for that ask',
   connector: 'a connected service',
   app: 'an app for this',
@@ -23,11 +24,18 @@ export function kindOf(fallback) {
   if (/^skill:/.test(f)) return 'skill';
   if (f === 'not-connected') return 'connector';
   if (f === 'app' || f === 'figure' || f === 'calc') return f;
-  if (f === 'none' || /not built yet/i.test(f)) return 'knowledge';
+  if (f === 'unreached') return 'lookup';
+  if (f === 'none' || /^none:/.test(f) || /not built yet/i.test(f)) return 'knowledge';
   return 'unknown';
 }
 
-/** ask + reportMiss's fallback -> { cannot, id, kind, missing, skill, target, next }. */
+// the sources a lookup read, from the fallback the page sends ('none:wikipedia,wiktionary'); [] for a plain 'none' or 'unreached'
+export const SOURCES = { wikipedia: 'Wikipedia', wiktionary: 'Wiktionary' };
+export const sourcesOf = (fallback) => { const m = /^none:([a-z,]+)$/.exec(String(fallback || '')); return m ? [...new Set(m[1].split(',').filter((x) => SOURCES[x]))] : []; };
+
+/** ask + reportMiss's fallback -> { cannot, id, kind, missing, skill, target, sources_checked, next }. sources_checked lists the
+ * sources that were read for a knowledge or lookup gap ([] = none was reached: "nothing was looked up", not "no such thing");
+ * null for any other kind, where no lookup ran. */
 export function refusalOf(ask, fallback) {
   const kind = kindOf(fallback);
   const target = targetOf(String(ask || '').trim() || 'nothing');
@@ -39,9 +47,12 @@ export function refusalOf(ask, fallback) {
     missing: KINDS[kind],
     skill,
     target,
+    sources_checked: kind === 'knowledge' || kind === 'lookup' ? sourcesOf(fallback) : null,
     next: 'noted; asked enough, it becomes a build job (' + target + ')',
   };
 }
 
 /** one line a person reads under the page */
-export const refusalLine = (r) => 'Missing: ' + r.missing + (r.skill ? ' (' + r.skill + ')' : '') + '. Noted as ' + r.target + '.';
+export const refusalLine = (r) => 'Missing: ' + r.missing + (r.skill ? ' (' + r.skill + ')' : '') + '.'
+  + (r.sources_checked && r.sources_checked.length ? ' Looked in ' + r.sources_checked.map((x) => SOURCES[x]).join(' and ') + '.' : '')
+  + ' Noted as ' + r.target + '.';
