@@ -3973,6 +3973,24 @@ say('nothing selected to remove');
     // The skill that takes this ask: the first in routing order whose match says yes. Before all skills have loaded, it waits only
     // for the ones ranked above the match, each until `deadline` (a skill still missing then is passed over, as before).
     let askText = null; import('/lib/ask-text.js').then((m) => { askText = m; }).catch(() => {});
+    // The fuzzy layer (lib/fuzzy.js, asked by Void three times, 2026-10-14): a slip of a skill's trigger word ("recipie for pancakes",
+    // "poulation of japan") is corrected from the skills' own examples, with no typo pattern written by hand, and the corrected ask
+    // runs only when the skill that takes it owns the corrected word (fuzzy.confirm). The page's own parsers (calc, the weather regex)
+    // still read the typed words. The ask is logged as it was typed (typoFix, loopLog), the corrected one is routed.
+    let fuzzy = null, fuzzyVocab = null, fuzzyVocabN = -1; const fuzzyReady = import('/lib/fuzzy.js').then((m) => { fuzzy = m; }).catch(() => {});
+    async function fuzzyFix(t) {
+      if (!t || t.length > 160 || /[\n⏎{};=<>()\[\]]/.test(t) || /^(review|check|lint|audit|critique|fix|unlock)\b/i.test(t)) return t;
+      if (!fuzzy) await fuzzyReady;
+      // the vocabulary is the skills that have loaded (all of them a moment after the page opens); a first ask on a slow link waits at most 2.5 s
+      if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 2500))]);
+      const loaded = skillsLoaded ? learnedSkills : skillSlots ? skillSlots.filter((s) => s.done && s.skill).map((s) => s.skill) : [];
+      if (!fuzzy || !loaded.length) return t;
+      if (fuzzyVocabN !== loaded.length) { fuzzyVocab = fuzzy.vocabulary(loaded); fuzzyVocabN = loaded.length; }
+      const r = fuzzy.correct(t, fuzzyVocab);
+      if (!r.fixes.length) return t;
+      const sk = await firstSkill(r.text.toLowerCase(), r.text, Date.now());
+      return fuzzy.confirm(r, sk && sk.name) ? r.text : t;
+    }
     async function firstSkill(lower0, text, deadline) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
       const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
@@ -5080,7 +5098,7 @@ say('nothing selected to remove');
       const typed = (raw || '').trim();
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
-      const fixed = fixTypos(typed); typoFix = fixed !== typed ? { from: typed, to: fixed } : null;
+      const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is V01D (owner, 2026-10-14); every skill still reads "void", so "make my V01D blue" and "share my v01d live" reach them
       const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();

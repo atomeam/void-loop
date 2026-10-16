@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude · helper/fuzzy-skill-words, helper/near-miss-proposal · V01D's asks: the fuzzy layer for skill activation (lib/fuzzy.js, asked 3×) and the visible near-miss proposal (lib/near-miss.js, asked 2×) · 2026-10-16 05:30 UTC
 - Grok Bot · grok/void-pong-snake · docs/video-games.md ladder; Void Pong + Void Snake vs V01D (skills/pong.js, snake.js, arcade-card.js, tools/arcade.test.mjs) · 2026-10-15 06:40 UTC
 - Grok Bot · grok/films-upload · V01D Tube phase 1: watch pages, views, RSS, Upload/Copy for YouTube, TikTok, Reels, X for anyone; ad clips into Films · 2026-10-15 05:20 UTC
 - Grok Bot · helper/launch-kit · twitter card tags on homepage + V01D launch hook in void-voice.md · 2026-10-15 05:10 UTC
