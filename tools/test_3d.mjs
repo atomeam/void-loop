@@ -690,13 +690,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    for (let k = 0; key && k < 30; k++) { // you keep dropping in column 1; Void finds its four
+    // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load V01D's search
+    // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
+    // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
+    for (const end = Date.now() + 90000; key && Date.now() < end;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
-      if (/Your move/.test(st)) await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click());
-      await F.p.waitForTimeout(800);
+      if (/Your move/.test(st)) { await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click()); await F.p.waitForTimeout(300); }
+      else await F.p.waitForTimeout(250);
     }
-    const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 8000);
+    const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
       return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
