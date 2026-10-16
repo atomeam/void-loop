@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T22:49:04.464Z",
-   "sha": "3ffa02ebde46a879308ad7a818855e19a0983cc6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38976900907",
+   "at": "2026-10-16T22:50:39.584Z",
+   "sha": "2876ee4be3941c73f6a74a8cfc68e70efe582054",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38976984326",
    "suite": "browser suite on main",
    "checks": [
     "intent gate: a pasted discussion is not a broken automation (no fix card, no fix request); a real error gets its fix with the error quoted as the source; a fix from a description says so and how it was read",
