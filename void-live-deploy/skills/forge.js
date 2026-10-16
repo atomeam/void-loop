@@ -106,10 +106,10 @@ async function run(text, api) {
   if (!q) return 'none';
   const forged = Object.values(api.stage.things()).filter((t) => t.kind === 'forge');
   if (q.list) { // forge history (asked by Void twice): the recipes it can make, each with its size and print notes, and the ones standing on the stage now
-    const { showPage, esc } = api, onStage = new Map(); for (const t of forged) onStage.set(t.key, (onStage.get(t.key) || 0) + 1);
+    const { showPage, esc } = api, onStage = new Map(), askedOf = new Map(); for (const t of forged) { onStage.set(t.key, (onStage.get(t.key) || 0) + 1); if (t.ask) askedOf.set(t.key, t.ask); } // the ask behind a recipe on the stage is kept on its thing (asked by Void: recipe versioning)
     showPage((p) => {
       p.innerHTML = '<h2>Forge history</h2><div class="sub">' + Object.keys(F.THINGS).length + ' recipes, one mesh each: what you spin is what prints. ' + (forged.length ? forged.length + ' on the stage now.' : 'Nothing forged on this stage yet.') + '</div>'
-        + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + '</li>'; }).join('') + '</ul>'
+        + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + (askedOf.get(key) ? ' · <span class="sub">asked "' + esc(askedOf.get(key)) + '"</span>' : '') + '</li>'; }).join('') + '</ul>'
         + '<div class="src">Recipes from skills/forge-rules.js; a frontier #14 "make me a…" the forge cannot make yet shows on the growth card under My probes.</div>';
     });
     return 'forge';
@@ -121,7 +121,7 @@ async function run(text, api) {
     return 'forge';
   }
   const model = F.build(q.make);
-  api.summon('forge', { key: q.make, angle: 0, center: true });
+  api.summon('forge', { key: q.make, angle: 0, center: true, ask: String(text || '').trim().slice(0, 80) });
   const pc = F.printCheck(model);
   api.say(model.label + ' · ' + dims(model.size) + (pc.supports ? ' · prints with supports' : ' · prints without supports') + ' · say "print it" for the STL');
   return 'forge';
