@@ -2,13 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T09:52:03.163Z",
+   "at": "2026-10-16T09:56:33.822Z",
    "sha": "a912fb4f0e4b644d24d3a25464c239ef3cd1acbf",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38882428944",
    "suite": "browser suite on main",
    "checks": [
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)",
-    "3D savings: \"save 300 a month for 30 years at 7%\" shows coin stacks on the page (6 stacks, 5 to 30 yrs, $365,991 at the end), the tallest is 34 coins, gold grows stack by stack, no growth means no gold, and the stacks rise in turn"
+    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
    ]
   },
   {
