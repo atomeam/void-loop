@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 92,
+ "runsTotal": 93,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 17
+  "none": 18
  },
  "runs": [
+  {
+   "at": "2026-10-16T19:10:46Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T19:04:15Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T08:39:08Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"group the timer with the clock\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -255,9 +255,9 @@
   "skill:show": "2026-10-16T19:04:15Z",
   "skill:show-countdown": "2026-10-16T19:04:15Z",
   "skill:showcase": "2026-10-16T19:04:15Z",
-  "skill:skycard": "2026-10-16T04:18:47Z",
-  "skill:sleep": "2026-10-16T04:18:47Z",
-  "skill:snake": "2026-10-16T04:18:47Z",
+  "skill:skycard": "2026-10-16T19:10:46Z",
+  "skill:sleep": "2026-10-16T19:10:46Z",
+  "skill:snake": "2026-10-16T19:10:46Z",
   "skill:social": "2026-10-16T04:18:47Z",
   "skill:spanish": "2026-10-16T05:13:33Z",
   "skill:splat": "2026-10-16T05:13:33Z",
