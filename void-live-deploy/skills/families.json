@@ -3,7 +3,7 @@
  "totals": {
   "experiment": 1,
   "tested": 53,
-  "checked": 17,
+  "checked": 19,
   "proven": 84
  },
  "families": [
@@ -690,15 +690,15 @@
    "for": "food delivery, rides and Waymo, social feeds and dating",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 0,
+    "tested": 2,
+    "checked": 1,
     "proven": 0
    },
    "skills": [
     {
      "name": "rides",
-     "tier": "tested",
-     "why": "a self-test"
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions"
     },
     {
      "name": "social",
@@ -806,15 +806,25 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 3,
+    "tested": 4,
+    "checked": 4,
     "proven": 14
    },
    "skills": [
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark"
+     "why": "a self-test, 9 browser-suite mentions, 9 real asks in the benchmark"
+    },
+    {
+     "name": "v01d-fixes",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention"
+    },
+    {
+     "name": "merges",
+     "tier": "tested",
+     "why": "a self-test"
     },
     {
      "name": "goal",

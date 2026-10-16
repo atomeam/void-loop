@@ -13,7 +13,7 @@ const NAMES = Object.values(F.THINGS).flatMap((t) => t.names).sort((a, b) => b.l
 const MAKE = new RegExp('^(?:please\\s+)?(?:(?:can|could)\\s+you\\s+)?(?:make|build|forge|model|sculpt|create|3d[\\s-]?print|print)\\s+(?:me\\s+)?(?:a\\s+|an\\s+)?(?:3d\\s+|printable\\s+)?(' + NAMES + ')(?:\\s+(?:in\\s+3d|i\\s+can\\s+print|to\\s+print|model))?(?:\\s+please)?$');
 const PRINT = /^(?:please\s+)?(?:print\s+(?:it|this|that)|3d[\s-]?print\s+(?:it|this|that)|download\s+(?:the|its|an?)\s+stl|(?:give\s+me\s+|export\s+)?(?:the\s+|an?\s+)?stl(?:\s+file)?(?:\s+(?:of|for)\s+(?:it|this|that))?|save\s+(?:it|this)\s+as\s+(?:an?\s+)?stl)(?:\s+please)?$/;
 
-const LIST = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:forge\s+(?:history|gallery|recipes?|catalog(?:ue)?)|what\s+can\s+you\s+(?:make|forge|print|3d\s+print)(?:\s+(?:for\s+)?me)?|what\s+(?:things\s+)?(?:can|do)\s+you\s+(?:forge|make\s+in\s+3d)|(?:my|your)\s+forge)$/;
+const LIST = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:forge\s+(?:history|gallery|recipes?|catalog(?:ue)?)|what\s+can\s+you\s+(?:make|forge|3d\s+print)(?:\s+(?:for\s+)?me)?|what\s+(?:things\s+)?(?:can|do)\s+you\s+(?:forge|make\s+in\s+3d)|(?:my|your)\s+forge)$/;
 /** what the ask means: null, { make: key }, { print: true } or { list: true } (the forge history: every recipe and what stands on the stage) */
 export function forgeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
