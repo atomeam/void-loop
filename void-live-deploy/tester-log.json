@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 90,
+ "runsTotal": 91,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 15
+  "none": 16
  },
  "runs": [
+  {
+   "at": "2026-10-16T18:24:14Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T18:17:08Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"give me a goal with this\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T08:04:30Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "tighten",
-   "note": "load ceiling 1700 -> 1500 ms"
   }
  ],
  "seen": {
@@ -249,9 +249,9 @@
   "skill:routine": "2026-10-16T18:17:08Z",
   "skill:savings": "2026-10-16T18:17:08Z",
   "skill:senolytic": "2026-10-16T18:17:08Z",
-  "skill:services": "2026-10-16T03:41:58Z",
-  "skill:shape": "2026-10-16T03:41:58Z",
-  "skill:share": "2026-10-16T04:06:43Z",
+  "skill:services": "2026-10-16T18:24:14Z",
+  "skill:shape": "2026-10-16T18:24:14Z",
+  "skill:share": "2026-10-16T18:24:14Z",
   "skill:show": "2026-10-16T04:06:43Z",
   "skill:show-countdown": "2026-10-16T04:06:43Z",
   "skill:showcase": "2026-10-16T04:06:43Z",
