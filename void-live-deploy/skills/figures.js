@@ -7,6 +7,7 @@
  */
 import { fallbackScript, natureOf } from './scripts.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
+export const DETAIL_KEY = 'a2m.void.3d.v1'; // the same key skills/scene3d.js reads
 
 const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare figure(s): Motelet
 const FIG = '(?:sprites?|buddy|buddies|friends?|figures?|figurines?|critters?|creatures?|companions?|pals?)';
@@ -22,7 +23,16 @@ const DISMISS = [
 const STILL = /^(?:please\s+)?(?:less\s+motion|reduce(?:d)?\s+motion|hold\s+still|stay\s+still|stop\s+moving|keep\s+(?:them|the\s+(?:figures?|sprites?))\s+still|(?:figures?|sprites?)\s+hold\s+still)$/;
 const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sprites?))\s+(?:roam|move|wander)(?:\s+again)?|roam\s+free|you\s+can\s+move(?:\s+again)?)$/;
 
-/** What a figures ask wants: { act: 'summon' | 'dismiss' | 'still' | 'roam' } or null. */
+// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Void, ask-20261015-0347-2: a low-poly toggle for older hardware)
+const LOW_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?low[\s-]?poly(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:lighter|simpler?|lite|light)\s+3d|3d\s+(?:low|light|lite|simple|low[\s-]?poly)(?:\s+mode)?|low\s+3d\s+detail)$/;
+const FULL_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?(?:full|high)[\s-]?(?:poly|detail)(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:full|detailed|sharp)\s+3d|3d\s+(?:full|high|detailed)(?:\s+(?:detail|mode))?|full\s+3d\s+detail)$/;
+const AUTO_POLY = /^(?:please\s+)?(?:auto(?:matic)?\s+3d(?:\s+(?:detail|mode))?|3d\s+(?:detail\s+)?auto(?:matic)?|3d\s+auto\s+detail|(?:let\s+)?3d\s+(?:detail\s+)?decide(?:\s+itself)?)$/;
+/** The 3D detail an ask sets: 'low' | 'full' | 'auto', or null. */
+export function detailAsk(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return LOW_POLY.test(t) ? 'low' : FULL_POLY.test(t) ? 'full' : AUTO_POLY.test(t) ? 'auto' : null;
+}
+/** What a figures ask wants: { act: 'summon' | 'dismiss' | 'still' | 'roam' | 'detail' } or null. */
 // Things with a nature (skills/scripts.js NATURES): "summon a zombie" and "add a brain", and the zombie finds the brain and
 // eats it; "bring a cat" and "add a mouse", and the cat gives chase. Each arrives with the body and colour its kind wears.
 const NATURE_LOOK = { zombie: ['person', '#7d9a5a'], brain: ['object', '#e9a3b4'], cat: ['animal', '#e39a4f'], mouse: ['animal', '#b9b3ad'],
@@ -95,6 +105,7 @@ export function figuresOf(text) {
   if (DISMISS.some((re) => re.test(t))) return { act: 'dismiss' };
   if (STILL.test(t)) return { act: 'still' };
   if (ROAM.test(t)) return { act: 'roam' };
+  const d = detailAsk(t); if (d) return { act: 'detail', mode: d };
   return null;
 }
 
@@ -136,6 +147,15 @@ async function run(text, api) {
     return 'figures';
   }
   const bag = store();
+  if (q.act === 'detail') {
+    // the setting is written here so it holds even before any 3D has loaded; a live engine applies it at once
+    try { if (bag) { if (q.mode === 'auto') bag.removeItem(DETAIL_KEY); else bag.setItem(DETAIL_KEY, q.mode); } } catch (_) {}
+    if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.querySelector('.void-mini, #void-3d')) import('/skills/scene3d.js').then((m) => m.setDetail(q.mode)).catch(() => {});
+    say(q.mode === 'low' ? 'low-poly 3D: 1x pixels, no shadows, light figures. "full 3d" brings the detail back.'
+      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets V01D step down when frames run late.'
+      : 'auto 3D detail: full, stepping down to low-poly only while frames run late.');
+    return 'figures';
+  }
   if (q.act === 'still') {
     try { if (bag) bag.setItem(MOTION_KEY, 'still'); } catch (_) {}
     if (typeof window !== 'undefined') window.dispatchEvent(new Event('void-motion'));
@@ -150,7 +170,7 @@ async function run(text, api) {
 
 export default {
   name: 'figures',
-  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie', 'add a cloud', 'add a sea', 'add an ice cube', 'add a campfire'],
+  examples: ['summon a sprite', 'bring a friend', 'show me a 3D buddy', 'send them away', 'dismiss figures', 'less motion', 'low poly 3d', 'full 3d', 'summon a zombie', 'add a brain', 'bring a cat', 'add a mouse', 'clone the zombie', 'add a cloud', 'add a sea', 'add an ice cube', 'add a campfire'],
   nearMisses: ['what is a sprite', 'how do I make friends', 'show me a figure of the heart', 'summon a figure', 'summon motelet', 'send an email to sam', 'what is reduced motion', 'sprite soda'],
   match(lower, text) { return !!figuresOf(text); },
   run,

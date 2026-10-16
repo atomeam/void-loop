@@ -18,7 +18,16 @@ function voidReadTab() {
   const field = fieldOf(el);
   // remembered in the extension's own world in this page (pages can't see it), so a draft goes to the box you were in
   window.__voidField = field ? el : null;
-  return { title: document.title.slice(0, 200), url: location.href.slice(0, 500), selection: selection.trim().slice(0, 5000), field };
+  // the context check (lib/context-check.js): what kind of page this mostly is, as counts only (characters of text, large pictures
+  // on screen, table rows and cells); Void decides text / image / table from these and the tab card suggests one skill
+  let content = null;
+  try {
+    const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length);
+    content = { text: (document.body && document.body.innerText || '').replace(/\s+/g, ' ').trim().length,
+      images: [...document.images].filter((i) => i.naturalWidth >= 200 && i.naturalHeight >= 200 && shown(i)).length,
+      rows: document.querySelectorAll('table tr').length, cells: document.querySelectorAll('table td, table th').length };
+  } catch (_) {}
+  return { title: document.title.slice(0, 200), url: location.href.slice(0, 500), selection: selection.trim().slice(0, 5000), field, content };
 }
 
 // "draft for me: proposal" (sends it to Void): the text of the thread you are reading, once, when you press it. Gmail keeps the

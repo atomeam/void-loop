@@ -78,6 +78,10 @@ const watchdog = setInterval(() => {
 watchdog.unref();
 // Poll instead of guessing a delay: the shared box is often busy, fixed sleeps flake.
 const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) { try { const v = await fn(); if (v) return v; } catch (_) {} if (Date.now() > end) return false; await new Promise((r) => setTimeout(r, 150)); } };
+// After a reload or a goto: the page's skills are in (void.html sets data-skills="ready" on <html> once every module has
+// loaded and the kept things are rendered), then a short settle. Replaces guessed 1.5 s waits: quicker on a fast machine,
+// and right on a slow one, where the skills took longer than the guess (suite speed, 2026-10-16).
+const skillsUp = async (p, settleMs = 200) => { const ok = await until(() => p.evaluate(() => document.documentElement.dataset.skills === 'ready' || !document.getElementById('stage')).catch(() => false), 10000); await p.waitForTimeout(ok ? settleMs : 1500); return ok; };
 // Voice stubs: a fake SpeechRecognition that "hears" window.__said, and speechSynthesis that records what it would say.
 const VOICE_STUB = () => {
   class FakeRec {
@@ -419,7 +423,7 @@ async function fresh(...inits) {
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
   p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; } });
-  await p.goto(at); await p.waitForTimeout(700);
+  await p.goto(at); await skillsUp(p, 100); // the skills are in before the first ask (it used to be a 700 ms guess, which the skills outran on a slow machine: the first ask then raced them)
   const ask = async (t, w = 450) => { watch.ask = t; await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
@@ -1190,7 +1194,7 @@ try {
       return { id: e.dataset.id, w: e.offsetWidth, h: e.offsetHeight, rot: c.rotate, bg: c.backgroundColor, img: c.backgroundImage, radius: parseFloat(c.borderTopLeftRadius), font: c.fontFamily }; }));
     const a = await look();
     const hand = await until(() => P.p.evaluate(() => document.fonts.check('21px "Void Hand"') && [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     const b = await look();
     const tilt = (x) => (x.find((n) => n.rot !== 'none' && n.rot !== '0deg') || {}).rot;
     check('sticky paper look: each note is square (180 px, like a 3x3 in Post-it) with sharp paper corners, a glue strip and curl over its colour, the felt-tip hand (Caveat, served from /fonts) loaded, its own slight tilt kept after a reload, and the colours unchanged (yellow, then pink)',
@@ -1471,7 +1475,7 @@ try {
     await P.ask('make the counter big', 400); r.size = (await one())[0].size;
     await P.p.click('.counter .counter-chip[aria-label="increment counter"]'); await P.p.waitForTimeout(200); r.button = await v();
     r.shown = await P.p.$eval('.counter .counter-value', (e) => e.textContent).catch(() => '');
-    await P.p.reload(); await P.p.waitForTimeout(1500); r.reload = await v();
+    await P.p.reload(); await skillsUp(P.p); r.reload = await v();
     r.shownAfter = await until(() => P.p.$eval('.counter .counter-value', (e) => e.textContent).catch(() => ''), 6000);
     await P.ask('reset the counter', 400); r.reset = await v();
     await P.ask('remove the counter', 500); r.removed = (await one()).length;
@@ -1490,7 +1494,7 @@ try {
     await P.ask('make it bigger', 400); s = await one(); r.bigger = s[0].width + 'x' + s[0].height;
     await P.ask('make the shape blue', 400); s = await one(); r.blue = s[0].color;
     r.shown = await P.p.$eval('.thing.shape .shape-circle', () => true).catch(() => false);
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$eval('.thing.shape .shape-circle', () => true).catch(() => false), 6000);
     await P.ask('remove the shape', 500); r.removed = (await one()).length;
     check('built-in shape: "draw a red square" puts up one red rect, "draw a circle" keeps it one shape and makes it round, "make it bigger" grows it to 120, "make the shape blue" turns it blue, it comes back after a reload, and "remove the shape" takes it away',
@@ -1540,7 +1544,7 @@ try {
     await P.ask('move it to the top left', 400); r.i = await ck();
     await P.ask('make the clock 24 hour', 400); r.j = await ck();
     r.face = await P.p.$eval('.thing.clock span', (e) => e.textContent);
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.clock span', (els) => els.length === 1 && /^\d{2}:\d{2}$/.test(els[0].textContent) ? 'ok' : false), 6000);
     await P.ask('remove the clock', 500); r.k = await ck();
     await P.ask('a big red clock', 600); r.l = await ck();
@@ -1577,7 +1581,7 @@ try {
     await P.ask('another timer for 2 minutes', 600); r.g = await tm();
     await P.ask('pause', 500); r.h = await tm();
     r.faces = await P.p.$$eval('.thing.timer', (els) => els.map((e) => e.textContent.replace(/\s+/g, ' ').trim()).join(' / '));
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.timer', (els) => els.length === 2 ? els.length : false), 6000);
     await P.ask('remove the timer', 500); r.i = await tm();
     await P.ask('remove the timer', 500); r.j = await tm();
@@ -1621,7 +1625,7 @@ try {
     await P.ask('make the calculator blue', 400); r.c = await cc();
     await P.ask('calculator 2+5', 800); r.d = await cc();
     r.shown = await P.p.$$eval('.thing.calc-card', (els) => els.map((e) => e.querySelector('.calc-expression').textContent + '=' + e.querySelector('.calc-result').textContent).join(' / '));
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.calc-card .calc-result', (els) => els.length === 1 && els[0].textContent ? els[0].textContent : false), 6000);
     await P.ask('remove the calculator', 500); r.e = await cc();
     check('built-in calculator: "open a calculator" puts one up and "add a calculator" keeps it one, "make the calculator blue" edges it blue, "calculator 2+5" works it out on the card (7), it comes back after a reload, and "remove the calculator" takes it away',
@@ -1653,7 +1657,7 @@ try {
     await P.ask('show this image https://img.example.org/cat.png', 700); r.a = await im(); r.aShown = await shown();
     await P.ask('https://img.example.org/dog.png', 600); r.b = await im();
     await P.ask('make the image red', 400); r.c = await im();
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.image img', (els) => els.length === 1 && els[0].naturalWidth > 0 ? els[0].getAttribute('src') : false), 6000);
     await P.ask('show image https://img.example.org/missing.png', 900); r.d = await im(); r.dShown = await shown();
     await P.ask('remove the image', 500); r.e = await im();
@@ -1674,7 +1678,7 @@ try {
       return { bg: c.backgroundColor, padTop: parseFloat(c.paddingTop), padBottom: parseFloat(c.paddingBottom), stripe: e.offsetHeight - (im.offsetTop + im.offsetHeight), below: t.offsetTop >= im.offsetTop + im.offsetHeight, // layout, not the tilted screen boxes
         font: tc.fontFamily, ink: tc.color, caption: t.textContent, rot: c.rotate, side: c.borderLeftColor }; });
     const a = await look(), saved = (await P.state()).filter((t) => t.kind === 'image').map((t) => t.title).join();
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     const b = await until(() => P.p.$$eval('.thing.image img', (els) => els.length === 1 && els[0].naturalWidth > 0).then((ok) => ok && look()), 6000);
     await P.ask('make the image blue', 400);
     const c = await look();
@@ -1691,7 +1695,7 @@ try {
     await P.ask('add a link https://github.com/atomeam', 500); r.b = await ln();
     await P.ask('make the link blue', 400); r.c = await ln();
     r.href = await P.p.$$eval('.thing.link-card a', (els) => els.map((e) => e.getAttribute('href') + '|' + e.target + '|' + e.rel).join(' / '));
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.link-card a', (els) => els.length === 1 ? els[0].textContent : false), 6000);
     await P.ask('https://example.org/cat.png', 500); r.d = await ln();
     r.img = (await P.state()).filter((t) => t.kind === 'image').length;
@@ -1713,7 +1717,7 @@ try {
     await P.ask('make the notepad blue', 400); r.d = await np();
     await P.ask('new notepad', 400); r.e = await np();
     r.shown = await P.p.$$eval('.thing.notepad textarea', (els) => els.map((e) => e.value).join(' / '));
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.notepad textarea', (els) => els.length === 1 ? els[0].value : false), 6000);
     await P.ask('clear the notepad', 500); r.f = await np();
     await P.ask('remove the notepad', 500); r.g = await np();
@@ -1734,7 +1738,7 @@ try {
     await P.ask('make the sticky green', 400); r.f = await st();
     await P.ask('take notes', 400); r.g = await st();
     r.shown = await P.p.$$eval('.thing.sticky', (els) => els.map((e) => e.textContent).join(' / '));
-    await P.p.reload(); await P.p.waitForTimeout(1500);
+    await P.p.reload(); await skillsUp(P.p);
     r.reload = await until(() => P.p.$$eval('.thing.sticky', (els) => els.length === 2 ? els.map((e) => e.textContent).join(' / ') : false), 6000);
     await P.ask('remove the sticky', 500); r.h = await st();
     check('built-in sticky: "sticky note buy milk" writes it, "make a pink sticky" turns it pink, "another note" adds a second, "note: call mom" writes the picked one, "make it blue" and "make the sticky green" recolour it, "take notes" keeps two, both come back after a reload, and after the reload (nothing picked) "remove the sticky" takes the first one',
@@ -3100,6 +3104,26 @@ try {
     const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
     check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
     await P.ctx.close(); }
+  // fringe-to-skill: the fringe ledger card (asked by Void, ask-20261013-0026-2: "a dashboard that visualizes the relationship
+  // between a fringe experiment and its potential as a permanent skill"). On a phone: one row per published family in
+  // fringe/ledger.json's order, each draft a link to its live page, findings or the "no research notes yet" line, "no skill yet" the flag.
+  if (want("fringe-to-skill: the fringe ledger card")) { const F = await fresh({ phone: true });
+    const led = JSON.parse(fs.readFileSync(path.join(root, 'fringe', 'ledger.json'), 'utf8'));
+    await F.ask('fringe to skill', 1200);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.fs-family')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, rows: rows.map((r) => ({ family: r.dataset.family, drafts: [...r.querySelectorAll('[data-draft]')].map((a) => a.getAttribute('href')), none: !!r.querySelector('.fs-none'), findings: r.querySelectorAll('.fs-findings li').length, skills: [...r.querySelectorAll('[data-skill]')].map((e) => e.dataset.skill), noskill: !!r.querySelector('.fs-noskill') })),
+        wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    const truth = led.families.map((f) => ({ family: f.family, drafts: f.drafts.map((d) => '/fringe/' + d.id + '.html'), none: !f.findings.length, findings: Math.min(5, f.findings.length), skills: f.skills, noskill: !f.skills.length }));
+    check('fringe-to-skill: "fringe to skill" lists every published fringe family from fringe/ledger.json with its live drafts, findings and the skill it grew into (or "no skill yet")',
+      !!card && card.title === 'From the fringe to a skill' && JSON.stringify(card.rows) === JSON.stringify(truth) && card.rows.length >= 1 && !card.wide && !F.errors.length,
+      JSON.stringify({ card: card && { ...card, rows: card.rows.slice(0, 2) }, truth: truth.slice(0, 2), errors: F.errors }));
+    const live = card && card.rows[0] && card.rows[0].drafts[0];
+    const page = live ? await F.p.evaluate(async (u) => { const r = await fetch(u); return r.status; }, live).catch(() => 0) : 0;
+    check('fringe-to-skill: the first draft link is a live page', page === 200, JSON.stringify({ live, page }));
+    await F.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.
@@ -3461,10 +3485,13 @@ try {
     const R = await fresh(); const miss = [];
     R.p.on('request', (r) => { if (/\/api\/miss$/.test(r.url())) miss.push(r.url()); });
     for (const g of grown) {
-      await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
-      const n0 = miss.length; await R.ask(g.ask, 1300);
-      const pg = await R.page(), w = await R.whisper(), st = (await R.state()).map((x) => x.kind).join(',');
-      const hit = g.expect === 'page' ? pg.includes(g.text) : g.expect === 'say' ? w.includes(g.text) : g.expect === 'stage' ? st.includes(g.text) : !pg && !st;
+      await R.p.goto(base); await skillsUp(R.p, 100); await R.p.evaluate(() => localStorage.clear());
+      const n0 = miss.length; await R.ask(g.ask, 150);
+      // the outcome is read as soon as it shows (then a short grace for a late miss post), capped at the 1.3 s the fixed wait used to be
+      const read = async () => { const pg = await R.page(), w = await R.whisper(), st = (await R.state()).map((x) => x.kind).join(','); return { pg, w, st, hit: g.expect === 'page' ? pg.includes(g.text) : g.expect === 'say' ? w.includes(g.text) : g.expect === 'stage' ? st.includes(g.text) : false }; };
+      let got = await until(async () => { const x = await read(); return x.hit ? x : false; }, 1150);
+      if (got) await R.p.waitForTimeout(150); got = await read();
+      const { pg, w, st } = got, hit = g.expect === 'quiet' || !['page', 'say', 'stage'].includes(g.expect) ? !pg && !st : got.hit;
       if (miss.length !== n0 || !hit) bad.push(g.ask + ' -> ' + (miss.length !== n0 ? 'MISS ' : '') + JSON.stringify({ pg: pg.slice(0, 60), w, st }));
     }
     // the two-step app: "make me an app", then what it should do; and one line that says it all at once

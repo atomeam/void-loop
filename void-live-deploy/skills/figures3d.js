@@ -22,6 +22,12 @@
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
 import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS, foodMesh, lifeMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
+// the shared 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Void, ask-20261015-0347-2): low-poly keeps every figure at its
+// light tier and draws at 1x. Read here, not imported: scene3d.js is the miniatures' engine and is absent where they are off.
+const DETAIL_KEY = 'a2m.void.3d.v1';
+let autoLow = false; // the miniature governor's own low step, told by its void:3d-detail event
+function lowPoly() { let v = null; try { v = localStorage.getItem(DETAIL_KEY); } catch (_) {} return v === 'low' || (v !== 'full' && autoLow); }
+if (typeof document !== 'undefined') document.addEventListener('void:3d-detail', (e) => { autoLow = !!(e.detail && e.detail.auto); });
 import { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, climateAt, CONDITIONS, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey } from './scripts.js';
 export { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard };
 export { trimScript, fallbackScript, pickIdleAction, visualAct, allowsDrive, pickReaction, pickNearbyReaction, KNOWN_DRIVES, KNOWN_ACTIONS, KNOWN_REACTS, KNOWN_TAGS, FALLBACKS, subjectKey };
@@ -278,7 +284,9 @@ export function mountStage3D() {
     try {
       renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power', premultipliedAlpha: true });
     } catch (e) { canvas.remove(); mountP = null; throw e; }
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5)); // full-screen layer: 1.5x is sharp and a 3x phone no longer draws 4x the pixels (perf, 2026-10-15)
+    const ratio = () => (lowPoly() ? 1 : Math.min(window.devicePixelRatio || 1, 1.5)); // full-screen layer: 1.5x is sharp and a 3x phone no longer draws 4x the pixels (perf, 2026-10-15); low-poly draws at 1x
+    renderer.setPixelRatio(ratio());
+    document.addEventListener('void:3d-detail', () => { renderer.setPixelRatio(ratio()); if (stage && stage.onResize) stage.onResize(); requestRender(); }); // "low poly 3d" / "full 3d": pixels now, tiers settle one figure a frame
     renderer.setClearColor(0x000000, 0);
     renderer.toneMapping = THREE.ACESFilmicToneMapping; renderer.toneMappingExposure = 1.05;
     renderer.outputColorSpace = THREE.SRGBColorSpace;
@@ -852,7 +860,7 @@ function trisOf(f) { return Math.round(f.parts.geos.reduce((n, g) => n + (g.inde
 // the tier one figure should have now: one step toward its target per call; null when it is already there
 function nextTier(f, zoomId, zoomTo) {
   if (f.leaving || !sdfBody(f.spec)) return null;
-  const have = f.spec.detail | 0, want = zoomId === f.brain.id ? tierForZoom(zoomTo) : 0;
+  const have = f.spec.detail | 0, want = zoomId === f.brain.id && !lowPoly() ? tierForZoom(zoomTo) : 0; // low-poly: every figure stays at its light tier
   return want === have ? null : want < have ? want : have + 1;
 }
 function retier(f, t, now) {

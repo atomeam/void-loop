@@ -57,5 +57,10 @@
   {"check": "pdf card: \"ask questions about a pdf\" opens a card with a file chooser that says nothing leaves the device; a file that is not a PDF says why (as an alert); a r", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
   {"check": "suite ran to the end", "sha": "16e592fd9ef484b4b74d634ea42f5417876ba67b", "at": "2026-10-15T06:23:16Z"},
   {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "705796a843cddb38fa46beb6b1d5e3e75256fb67", "at": "2026-10-15T17:02:23Z"},
-  {"check": "rack: \"what games do you have\" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ring", "sha": "705796a843cddb38fa46beb6b1d5e3e75256fb67", "at": "2026-10-15T17:02:23Z"}
+  {"check": "rack: \"what games do you have\" stands a 3D shelf of boxed games in the void (chess, checkers, go, othello, connect four, tic-tac-toe, mancala, aggravation, ring", "sha": "705796a843cddb38fa46beb6b1d5e3e75256fb67", "at": "2026-10-15T17:02:23Z"},
+  {"check": "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make li", "sha": "5a5479cb5f985fd122713efba06aa05a2488916d", "at": "2026-10-16T07:30:44Z"},
+  {"check": "countdown: \"days until new year\" lands as an outcome card on the stage (not a popup page) with the right day count, a working copy button, and it survives a rel", "sha": "5a5479cb5f985fd122713efba06aa05a2488916d", "at": "2026-10-16T07:30:44Z"},
+  {"check": "cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)", "sha": "5a5479cb5f985fd122713efba06aa05a2488916d", "at": "2026-10-16T07:30:44Z"},
+  {"check": "suite ran to the end", "sha": "5a5479cb5f985fd122713efba06aa05a2488916d", "at": "2026-10-16T07:30:44Z"},
+  {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "ee6e307706e5340dddfe59edf67ca7a89944c4c2", "at": "2026-10-16T09:01:23Z"}
 ]

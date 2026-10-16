@@ -41,6 +41,49 @@ export function motionStill() { let mine = false; try { mine = localStorage.getI
 /** Can this browser draw WebGL at all? (cheap; no three.js needed) */
 export function webglOk() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (_) { return false; } }
 
+// ---------- detail: low-poly for older hardware (asked by Void, ask-20261015-0347-2: "a 'low-poly' toggle for 3D miniatures to
+// further optimize the 'smoother 3D on phones' shipment for older hardware") ----------
+// Three settings in one key: 'low' (always), 'full' (never), or unset = auto, where the governor below turns low-poly on when
+// a device still runs late at its lowest pixel step, and off again once it has kept up for a while. Low-poly draws every
+// miniature at 1x pixels (REGRESS_DPR) with no key-light or contact shadows, and the stage figures (skills/figures3d.js) stay
+// at their light mesh tier instead of re-meshing finer on zoom. "low poly 3d" / "full 3d" / "auto 3d" set it (skills/figures.js).
+export const DETAIL_KEY = 'a2m.void.3d.v1';
+let autoLow = false;
+function detailMode() { try { const v = localStorage.getItem(DETAIL_KEY); return v === 'low' || v === 'full' ? v : 'auto'; } catch (_) { return 'auto'; } }
+/** True while miniatures draw low-poly (the setting says so, or the governor stepped there on its own). */
+export function lowPoly() { const m = detailMode(); return m === 'low' || (m === 'auto' && autoLow); }
+/** The detail state: { mode: 'low' | 'full' | 'auto', low: drawing low-poly now, auto: the governor's own low step }. */
+export function detail() { return { mode: detailMode(), low: lowPoly(), auto: autoLow }; }
+/** Set 'low', 'full' or 'auto'. Every live miniature follows at once; a 'void:3d-detail' event tells the stage figures. */
+export function setDetail(mode) {
+  try { if (mode === 'low' || mode === 'full') localStorage.setItem(DETAIL_KEY, mode); else localStorage.removeItem(DETAIL_KEY); } catch (_) {}
+  autoLow = false; // a person's choice, or back to auto, starts from full; the governor steps down again only if it must
+  applyDetail();
+}
+function applyDetail() {
+  for (const h of live.values()) { if (h.resize) h.resize(); h.shadowDirty = true; for (const c of h.contacts) c.dirty = true; h.dirty = true; }
+  wake();
+  if (typeof document !== 'undefined') document.dispatchEvent(new CustomEvent('void:3d-detail', { detail: detail() }));
+}
+if (typeof window !== 'undefined') window.addEventListener('storage', (e) => { if (e.key === DETAIL_KEY) applyDetail(); });
+/**
+ * One governor decision, pure so it can be tested: s = { at: index into QUALITY_STEPS, ema: smoothed frame gap in ms, n: frames
+ * since the last step, good: frames in a row that kept up, low: on the auto low-poly step, canLow: auto mode }, target = the
+ * frame gap aimed at. Returns the next state. Late for 20 frames: one pixel step down, and past the last step, low-poly (when
+ * canLow). Keeping up for 180 frames: one step back, low-poly first.
+ */
+export function governStep(s, target) {
+  const last = QUALITY_STEPS.length - 1, r = { ...s };
+  if (s.n > 20 && s.ema > target * 1.35) {
+    if (s.at < last) { r.at = s.at + 1; r.n = 0; r.good = 0; }
+    else if (s.canLow && !s.low) { r.low = true; r.n = 0; r.good = 0; }
+  } else if (s.ema < target * 1.1 && (s.at > 0 || s.low)) {
+    r.good = s.good + 1;
+    if (r.good > 180) { if (s.low) r.low = false; else r.at = s.at - 1; r.good = 0; r.n = 0; }
+  } else r.good = 0;
+  return r;
+}
+
 let engineP = null;
 /** The one renderer: created on first use, throws (rejects) where WebGL is unavailable so callers can show their 2D version. */
 export function engine() {
@@ -201,9 +244,10 @@ function govern(drew, t, floor) {
   if (!floor && idleGaps.length < 30) { idleGaps.push(gap); if (idleGaps.length === 30) { const s = [...idleGaps].sort((a, b) => a - b); refreshMs = Math.max(1000 / 165, Math.min(1000 / 30, s[10])); } }
   g.ema = g.ema ? g.ema * 0.9 + gap * 0.1 : gap; g.n++;
   const at = QUALITY_STEPS.indexOf(E.quality), target = Math.max(refreshMs, floor || 0);
-  if (g.n > 20 && g.ema > target * 1.35 && at < QUALITY_STEPS.length - 1) { setQuality(E, QUALITY_STEPS[at + 1]); g.n = 0; g.good = 0; }
-  else if (g.ema < target * 1.1 && at > 0) { if (++g.good > 180) { setQuality(E, QUALITY_STEPS[at - 1]); g.good = 0; g.n = 0; } }
-  else g.good = 0;
+  const next = governStep({ at, ema: g.ema, n: g.n, good: g.good, low: autoLow, canLow: detailMode() === 'auto' }, target);
+  g.n = next.n; g.good = next.good;
+  if (next.at !== at) setQuality(E, QUALITY_STEPS[next.at]);
+  if (next.low !== autoLow) { autoLow = next.low; applyDetail(); } // the step below the last pixel step: low-poly, and back
 }
 function setQuality(E, q) { E.quality = q; for (const h of live.values()) if (h.E === E && h.resize) h.resize(); }
 /** The governor's state, for tests and the console. */
@@ -253,8 +297,11 @@ function draw(h) {
   h.dirty = false; const t0 = performance.now();
   if (E.w < pw || E.h < ph) { E.w = Math.max(E.w, pw); E.h = Math.max(E.h, ph); r.setSize(E.w, E.h, false); }
   r.toneMappingExposure = h.exposure;
-  r.shadowMap.needsUpdate = !!h.shadowDirty; h.shadowDirty = false; if (r.shadowMap.needsUpdate) h.shadowDraws = (h.shadowDraws || 0) + 1;
-  for (const c of h.contacts) if (c.dirty) { c.render(r, h.scene); c.dirty = false; }
+  // low-poly: the key light casts no shadow and the contact shadows are skipped (their planes hidden); the dirt stays so the
+  // first full frame afterwards redraws them
+  const low = lowPoly(); r.shadowMap.enabled = !low;
+  r.shadowMap.needsUpdate = !low && !!h.shadowDirty; if (!low) h.shadowDirty = false; if (r.shadowMap.needsUpdate) h.shadowDraws = (h.shadowDraws || 0) + 1;
+  for (const c of h.contacts) { c.plane.visible = !low; if (!low && c.dirty) { c.render(r, h.scene); c.dirty = false; } }
   r.setRenderTarget(null); r.setViewport(0, 0, pw, ph); r.setScissor(0, 0, pw, ph); r.setScissorTest(true);
   r.setClearColor(0x000000, 0); r.clear();
   r.render(h.scene, h.camera);
@@ -267,7 +314,58 @@ function draw(h) {
 // the first frame is on the canvas: say so on the page (data-rendered, aria-busy), fade it in, and tell anyone listening
 function rendered(h) {
   h.wrap.dataset.rendered = 'true'; h.canvas.setAttribute('aria-busy', 'false'); h.canvas.style.opacity = '1';
+  if (h.wire) { h.wire.stop(); h.wire = null; }
   try { h.wrap.dispatchEvent(new CustomEvent('void:mini-rendered', { bubbles: true, detail: { key: h.key, kind: h.kind } })); } catch (_) {}
+}
+
+// ---------- before the first frame, and when there is none ----------
+// A low-poly wire shape turns slowly on its own small canvas over the (still transparent) miniature canvas from the moment a
+// card asks for 3D, so the space is never blank while three.js, the kind's module and its model load; it fades out as the
+// first real frame fades in (rendered). Plain 2D canvas: nothing of three.js is needed to draw it. Still with reduced motion.
+function wireFrame(wrap) {
+  const c = document.createElement('canvas'); c.className = 'void-mini-wire'; c.setAttribute('aria-hidden', 'true');
+  c.style.cssText = 'position:absolute;left:0;top:0;width:100%;height:100%;pointer-events:none;opacity:.9;transition:opacity .3s ease-out';
+  wrap.appendChild(c);
+  const g = c.getContext('2d'), still = motionStill(), t0 = performance.now(), V = [];
+  for (const x of [-1, 1]) for (const y of [-1, 1]) for (const z of [-1, 1]) V.push([x, y, z]);
+  const EDGES = []; for (let i = 0; i < 8; i++) for (let j = i + 1; j < 8; j++) if (V[i].filter((v, k) => v !== V[j][k]).length === 1) EDGES.push([i, j]);
+  let gone = false, raf = 0, lastAt = 0;
+  const draw = (now) => {
+    raf = 0; if (gone || !c.isConnected) return;
+    const w = Math.max(1, wrap.clientWidth), hh = Math.max(1, wrap.clientHeight);
+    if (c.width !== w || c.height !== hh) { c.width = w; c.height = hh; }
+    const a = still ? 0.7 : (now - t0) / 1400, s = Math.min(w, hh) * 0.17, cx = w / 2, cy = hh / 2 - s * 0.15, ca = Math.cos(a), sa = Math.sin(a);
+    const P = V.map(([x, y, z]) => { const rx = x * ca - z * sa, rz = x * sa + z * ca; return [cx + rx * s, cy - y * s * 0.85 + rz * s * 0.32]; });
+    g.clearRect(0, 0, w, hh); g.lineWidth = 1; g.lineJoin = 'round';
+    g.strokeStyle = 'rgba(255,255,255,0.34)'; g.beginPath(); for (const [i, j] of EDGES) { g.moveTo(P[i][0], P[i][1]); g.lineTo(P[j][0], P[j][1]); } g.stroke();
+    // the ground it stands on: a wire diamond, where the contact shadow will be
+    const gy = cy + s * 0.85 + s * 0.42; g.strokeStyle = 'rgba(255,255,255,0.16)'; g.beginPath();
+    g.moveTo(cx - s * 1.5, gy); g.lineTo(cx, gy + s * 0.48); g.lineTo(cx + s * 1.5, gy); g.lineTo(cx, gy - s * 0.48); g.closePath(); g.stroke();
+    lastAt = now;
+    if (!still) raf = requestAnimationFrame((t) => (t - lastAt < 45 ? (raf = requestAnimationFrame(draw)) : draw(t))); // about 20 fps is plenty for a placeholder
+  };
+  draw(t0);
+  return { el: c, stop(now) { gone = true; if (raf) cancelAnimationFrame(raf); if (now) c.remove(); else { c.style.opacity = '0'; setTimeout(() => c.remove(), 320); } } };
+}
+// A 3D model that could not be built or drawn leaves a small status card in its place (asked by Void, ask-20261012-0856-1:
+// "a visual 'error state' for 3D models that fail their self-check, replacing the empty space with a clear status card"):
+// the kind, what went wrong in plain words, and how to retry. Only where WebGL works: without it the card's flat version is the
+// answer, not an error. The wrap is marked data-rendered="failed" and one void:mini-failed event bubbles up with { key, kind, why }.
+let styled = false;
+function failCard(host, wrap, kind, key, err) {
+  const msg = String((err && err.message) || err || '').replace(/\s+/g, ' ').trim();
+  const why = /^no miniature for /.test(msg) ? 'there is no 3D model for this yet'
+    : /Failed to fetch|import|Loading|network|404|HTTP/i.test(msg) ? 'its model could not be fetched'
+    : msg ? 'its model failed its check: ' + msg.slice(0, 90) : 'its model failed its check';
+  if (!styled && typeof document !== 'undefined') { styled = true; const st = document.createElement('style'); st.textContent = '.void-mini-status{position:absolute;left:0;top:0;right:0;bottom:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:12px;box-sizing:border-box;text-align:center;font:13px/1.4 ui-sans-serif,system-ui,sans-serif;color:#cfcfcf;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.22);border-radius:12px}.void-mini-status b{font-weight:500;color:#fff}.void-mini-status small{color:#8a8a8a}'; document.head.appendChild(st); }
+  const card = document.createElement('div'); card.className = 'void-mini-status'; card.setAttribute('role', 'status');
+  const b = document.createElement('b'); b.textContent = '3D ' + kind + ' did not load';
+  const w = document.createElement('span'); w.textContent = why;
+  const hint = document.createElement('small'); hint.textContent = 'Ask for it again to retry.';
+  card.append(b, w, hint);
+  wrap.replaceChildren(card); wrap.dataset.rendered = 'failed';
+  if (!wrap.isConnected && host && host.isConnected) host.appendChild(wrap);
+  try { wrap.dispatchEvent(new CustomEvent('void:mini-failed', { bubbles: true, detail: { key, kind, why } })); } catch (_) {}
 }
 
 /**
@@ -302,8 +400,6 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
   try { return await p; } finally { if (loading.get(key) === p) loading.delete(key); }
 }
 async function mountFresh(host, kind, data, opts, key) {
-  const E = await engine(); const { THREE, lib } = E;
-  const build = await builderFor(kind);
   const wrap = document.createElement('div');
   wrap.className = 'void-mini'; wrap.dataset.kind = kind; wrap.dataset.key = key;
   wrap.dataset.rendered = 'false'; // until its first frame (asked by Void: a rendered signal checks and people can wait for)
@@ -317,6 +413,17 @@ async function mountFresh(host, kind, data, opts, key) {
   canvas.setAttribute('aria-busy', 'true');
   wrap.appendChild(canvas);
   for (const ev of ['pointerdown', 'mousedown', 'touchstart']) canvas.addEventListener(ev, (e) => e.stopPropagation(), { passive: true }); // orbit, not a card drag
+  // Where WebGL exists the wrap goes in now, with a wire placeholder on it, before three.js, the kind's module or its model
+  // have loaded (asked by Void, ask-20261014-1025-1: "a progressive mesh loading state where a low-poly wireframe appears
+  // instantly during 3D card transitions"); the real canvas stays transparent until its first frame, as before. Where WebGL
+  // is missing nothing is put in and the mount rejects as it always did, so the card shows its flat version.
+  const canDraw = webglOk();
+  if (canDraw) { host.appendChild(wrap); if (place === 'beside') fitBeside(wrap); }
+  const wire = canDraw ? wireFrame(wrap) : null;
+  let E, build;
+  try { E = await engine(); build = await builderFor(kind); }
+  catch (e) { if (canDraw) failCard(host, wrap, kind, key, e); else wrap.remove(); throw e; } // the engine or the kind: a status card says which (ask-20261012-0856-1)
+  const { THREE, lib } = E;
   const scene = new THREE.Scene(); scene.environment = E.env; scene.environmentIntensity = opts.envIntensity ?? 0.85;
   const camera = new THREE.PerspectiveCamera(opts.fov || 32, 1, 0.01, 100);
   const keyLight = new THREE.DirectionalLight(0xfff0dc, opts.keyIntensity ?? 2.4); keyLight.castShadow = true;
@@ -331,7 +438,7 @@ async function mountFresh(host, kind, data, opts, key) {
     controls.minPolarAngle = opts.minPolar ?? 0.12; controls.maxPolarAngle = opts.maxPolar ?? 1.38;
   }
   const h = {
-    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, draws: 0, gone: 0, dirty: true, shadowDirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
+    key, kind, E, wrap, canvas, scene, camera, controls, root, keyLight, sky, data, wire, draws: 0, gone: 0, dirty: true, shadowDirty: true, visible: true, ready: false, needsCompile: true, compiling: false,
     anim: [], moving: false, exposure: opts.exposure ?? 1.0, contact: null, contacts: [], cssW: 0, cssH: 0, inst: null, taps: [],
     attach(host2) { if (host2 && wrap.parentNode !== host2) host2.appendChild(wrap); if (place === 'beside') fitBeside(wrap); h.dirty = true; wake(); },
     update(d) { h.data = d; h.needsCompile = true; if (h.inst && h.inst.update) { try { h.inst.update(d); } catch (e) { console.warn('[miniature ' + kind + '] update', e); } } h.requestRender(); },
@@ -374,6 +481,7 @@ async function mountFresh(host, kind, data, opts, key) {
     },
     dispose() {
       if (h.disposed) return; h.disposed = true; if (live.get(key) === h) live.delete(key);
+      if (h.wire) { h.wire.stop(true); h.wire = null; }
       try { h.inst && h.inst.dispose && h.inst.dispose(); } catch (_) {}
       if (controls) controls.dispose(); for (const c of h.contacts) c.dispose(); if (h.ground) h.ground.dispose(); if (h.ro) h.ro.disconnect(); if (h.io) h.io.disconnect();
       scene.traverse((o) => { if (o.isMesh && !o.userData.shared) { o.geometry && o.geometry.dispose(); } });
@@ -395,7 +503,7 @@ async function mountFresh(host, kind, data, opts, key) {
   if (controls) { controls.addEventListener('start', () => { h.moving = true; canvas.style.cursor = 'grabbing'; regress(true); wake(); }); controls.addEventListener('end', () => { h.moving = false; canvas.style.cursor = 'grab'; regress(false); wake(); }); controls.addEventListener('change', () => { h.dirty = true; wake(); }); }
   // capped at MAX_DPR (a 3x phone screen drew 9x the pixels for no visible gain; desktop no longer supersamples 1x screens:
   // antialias already smooths edges) and scaled by the governor's quality while frames run late
-  const pr = () => h.regressed ? REGRESS_DPR : Math.min(MAX_DPR, window.devicePixelRatio || 1) * (h.E.quality || 1);
+  const pr = () => h.regressed || lowPoly() ? REGRESS_DPR : Math.min(MAX_DPR, window.devicePixelRatio || 1) * (h.E.quality || 1);
   const resize = () => {
     const w = Math.max(1, Math.round(wrap.clientWidth)), hh = Math.max(1, Math.round(wrap.clientHeight)); h.cssW = w; h.cssH = hh;
     const p = pr(); canvas.width = Math.round(w * p); canvas.height = Math.round(hh * p); camera.aspect = w / hh; camera.updateProjectionMatrix(); h.dirty = true; wake();
@@ -408,7 +516,7 @@ async function mountFresh(host, kind, data, opts, key) {
     loadGLTF, loadTexture, frame: (o, x) => h.frame(o, x), addContactShadow: (o) => h.addContactShadow(o), requestRender: (x) => h.requestRender(x), onTap: (fn) => h.onTap(fn), pick: (x, y, o) => h.pick(x, y, o),
     animate: (fn) => { h.anim.push(fn); wake(); } };
   h.ctx = ctx;
-  try { h.inst = (await build(ctx, data)) || {}; } catch (e) { h.dispose(); throw e; }
+  try { h.inst = (await build(ctx, data)) || {}; } catch (e) { h.dispose(); failCard(host, wrap, kind, key, e); throw e; } // the model failed its own build: a status card, not empty space
   if (h.disposed) return h;
   if (!h.home) h.frame(root);
   h.ready = true; h.dirty = true; wake();
@@ -422,5 +530,5 @@ export function projectPoint(key, [x, y, z]) {
   const v = new h.E.THREE.Vector3(x, y, z).project(h.camera), r = h.canvas.getBoundingClientRect();
   return { x: r.left + (v.x + 1) / 2 * r.width, y: r.top + (1 - v.y) / 2 * r.height };
 }
-if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, keys: () => [...live.keys()], project: projectPoint,
+if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, keys: () => [...live.keys()], project: projectPoint, detail, setDetail,
   state: (key) => { const h = live.get(key); try { return h && h.inst && h.inst.state ? h.inst.state() : null; } catch (_) { return null; } } }; // a kind's own state(), for tests

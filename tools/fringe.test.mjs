@@ -3,7 +3,7 @@
 // back for the next run. The first 73 runs stand as written.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { check, sameBehavior, notesOf, learned, next, demand, labOf, unreachable } from './fringe.mjs';
+import { check, sameBehavior, notesOf, learned, next, demand, labOf, unreachable, nearOf, skillsNamed, ledgerOf, ledgerJson, LEDGER } from './fringe.mjs';
 import { labTools } from '../void-live-deploy/skills/make.js';
 
 const real = JSON.parse(readFileSync(new URL('./fringe.json', import.meta.url), 'utf8'));
@@ -61,4 +61,28 @@ assert.deepEqual(unreachable(real), [], 'today every published draft is in the l
 const T = labTools([{ id: 'attention-9', label: 'Scroll pauses', sub: 's', asks: ['scroll pauses', 'what did i pause on'] }, { id: 'miss-board', label: 'dupe', asks: ['dupe'] }, { id: 'Bad Id', label: 'x', asks: ['x'] }, { id: 'no-asks', label: 'x', asks: [] }]);
 assert.deepEqual(T.map((t) => t[1]), ['attention-9']);
 assert.ok(T[0][0].test('scroll pauses') && T[0][0].test('open the scroll pauses') && T[0][0].test('what did i pause on') && !T[0][0].test('scroll pauses please'));
+// near (asked by Void, ask-20261013-1719-1): what a run was built toward, one target or a list, kept as written; junk is refused
+assert.deepEqual(check(withNotes({ near: 'skill:weather' })), []);
+assert.deepEqual(check(withNotes({ near: ['probe:sky', 'miss-board', 'step:14'] })), []);
+for (const bad of [{ near: '' }, { near: 'Has Spaces' }, { near: ['skill:weather', 7] }, { near: 'x'.repeat(81) }]) assert.match(check(withNotes(bad)).join('\n'), /near must name/, JSON.stringify(bad));
+assert.deepEqual(nearOf({ near: 'skill:weather' }), ['skill:weather']); assert.deepEqual(nearOf({}), []); assert.deepEqual(nearOf({ near: ['a b'] }), []);
+assert.deepEqual(notesOf({ sources: [1], near: 'skill:weather' }), { sources: [1], near: 'skill:weather' }, '--record keeps it from the sources file');
+assert.deepEqual(learned(withNotes({ near: ['skill:weather'] })).near, [{ run: last.run, family: last.family, x: 'skill:weather' }]);
+// the core skills a run's notes name: file, skill: tag, "<n> skill", "the <n> card", and its near targets
+const skills = ['weather', 'growth', 'sky', 'make'];
+assert.deepEqual(skillsNamed({ findings: ['the growth card could show it', 'skills/weather.js takes rain asks'], next_experiments: ['fold into the sky skill'], near: 'skill:make' }, skills), ['weather', 'growth', 'sky', 'make']);
+assert.deepEqual(skillsNamed({ findings: ['it makes the sky look good'] }, skills), [], 'a word is not a skill: the pattern needs skills/<n>.js, skill:<n>, "<n> skill" or "the <n> card"');
+// ledgerOf (ask-20261013-0026-2): each published family, drafts once, notes merged newest first, near and skills; an unpublished run is not in it
+const pub = real.filter((r) => r.emit).length;
+const L2 = ledgerOf(real.slice(0, -1).concat({ ...last, emit: true, findings: ['works on touch'], failure_modes: [{ what: 'pinch', evidence: 'iPad' }], near: 'skill:make', lab }), skills, [{ id: 'attention-9', label: 'Attn', sub: 's' }]);
+const og = L2.find((f) => f.family === last.family);
+assert.ok(og && og.runs >= 1 && og.drafts[0].id === id && og.drafts[0].label === 'Scroll pauses' && og.findings.join() === 'works on touch' && og.failures[0].what === 'pinch' && og.near.join() === 'skill:make' && og.skills.join() === 'make' && og.noted === 1);
+assert.equal(L2.length, [...new Set(real.filter((r) => r.emit).map((r) => r.family))].length, 'one row per published family');
+assert.deepEqual(ledgerOf(real.filter((r) => !r.emit)), [], 'nothing published, nothing in it');
+assert.equal(ledgerOf(real).reduce((n, f) => n + f.runs, 0), pub, 'every published run is counted under its family');
+assert.equal(readFileSync(new URL('../' + LEDGER, import.meta.url), 'utf8'), await ledgerJson(real), 'the written ledger.json is current (tools/fringe.mjs --publish)');
+// the card (skills/fringe-to-skill.js) reads the written file
+const { rows: cardRows, asksFringe } = await import('../void-live-deploy/skills/fringe-to-skill.js');
+const CR = cardRows(JSON.parse(readFileSync(new URL('../' + LEDGER, import.meta.url), 'utf8')));
+assert.equal(CR.length, ledgerOf(real).length); assert.ok(CR.every((r) => r.drafts.length >= 1) && asksFringe('which skills came from the fringe') && !asksFringe('fringe festival'));
 console.log('fringe-notes: ok');
