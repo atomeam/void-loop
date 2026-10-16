@@ -111,5 +111,23 @@ export function appraisalText(v) {
   return lines.join(' ');
 }
 
+/** the object a description is about: its first sentence up to where it says where the thing sits ("on a wooden table", "in a
+ * garden", "next to a lamp"), so the table under a coin is never taken for the subject. Pure. */
+export function subjectOf(desc) {
+  const first = String(desc || '').split(/(?<=[.!?])\s/)[0].toLowerCase();
+  return first.split(/\b(?:sitting|resting|lying|placed|standing|set|displayed|photographed|shown|on|in front of|beside|next to|against|near|under|behind|atop|inside|in|with|and|held)\b/)[0].replace(/[^a-z0-9]+/g, ' ').trim();
+}
+
+/** the thing in a photo that V01D's forge can model, for a "make me one" link (asked by Void, ask-20261015-2008-1: connect an
+ * appraised photo to its make recipe): the longest forge name (skills/forge-rules.js THINGS, passed in so this file never loads the
+ * mesher) found as whole words in the description's subject, as { key, label, ask }; null for none, and never for a person. Pure. */
+export function makeableIn(desc, things) {
+  if (!things || personIn(desc)) return null;
+  const subject = ' ' + subjectOf(desc) + ' ';
+  let best = null;
+  for (const [key, t] of Object.entries(things)) for (const n of (t && t.names) || []) if (subject.includes(' ' + n + ' ') && (!best || n.length > best.n.length)) best = { key, label: t.label, n };
+  return best ? { key: best.key, label: best.label, ask: 'make me a ' + best.key } : null;
+}
+
 /** the vision model's prompt: describe, never value (the valuing is V01D's own, above). Pure. */
 export const VISION_PROMPT = 'Describe exactly what is in this photo in two or three plain sentences: what the object is, its material, brand or maker if printed on it, any year or edition marks, and its condition (scratches, wear, damage, or mint). If a person or pet is in the photo, say so first. Do not guess a price.';

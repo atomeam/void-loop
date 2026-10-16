@@ -6,7 +6,7 @@
  * sees and gives one value, the details that moved it, and when an expert in hand is needed. The photo is sent once for that
  * answer and never kept. People are never priced: "what am I worth", or a person in the photo, gets a compliment and no number.
  */
-import { isPersonAsk, complimentFor } from '../lib/appraise-photo.js';
+import { isPersonAsk, complimentFor, makeableIn } from '../lib/appraise-photo.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const THING = "(?:(?:this|that|these|those|my|our|an?|the) [a-z]+(?: [a-z]+)?|this|that|it|these|those)";
@@ -67,6 +67,13 @@ async function run(text, api) {
       out.innerHTML = (v.person ? '<p class="ap-person">' + esc(j.text) + '</p>'
         : '<div style="font-size:40px;font-weight:300;line-height:1.1;margin:8px 0 4px" class="ap-value">' + esc(v.text || '') + '</div><p class="ap-text">' + esc(j.text || '') + '</p>')
         + (j.seen ? '<p class="sub ap-seen">What I saw: ' + esc(j.seen) + '</p>' : '');
+      // what V01D saw is a thing its forge can model: one tap makes it (asked by Void, ask-20261015-2008-1); the mesher loads only then
+      if (!v.person && j.seen) import('./forge-rules.js').then((F) => {
+        const m = makeableIn(j.seen, F.THINGS); if (!m || !out.isConnected) return;
+        const line = document.createElement('p'), a = document.createElement('a');
+        line.className = 'ap-make'; a.href = '#'; a.dataset.ask = m.ask; a.textContent = m.ask;
+        line.append('I can make one of these: ', a, ', a model you can turn and an STL you can print.'); out.appendChild(line);
+      }).catch(() => {});
     } catch (_) { out.innerHTML = '<p>I could not read that photo. Try a JPEG or PNG.</p>'; }
   });
   return 'appraise';
