@@ -4261,12 +4261,18 @@
   "what": "Claude can be V01D's builder brain: a propose-fix run started by hand with brain: claude asks Claude for the fix in one capped call (about $0.20 at most), through the same gate, checks and pull request"
  },
  {
-  "at": "2026-10-16T17:17:13Z",
+  "at": "2026-10-16T16:40:26Z",
   "by": "claude",
   "kind": "fix",
-  "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it",
-  "show": "a preview that shows nothing says so and is flagged",
-  "try": "show me everything you made"
+  "what": "V01D's will stops wanting things that do not exist: a miss every source was read for and none knew (fallback none:<sources>, 'tell me about zorbleflux' asked 64 times) is never a want, since there is nothing to learn about it; a miss a skill half-caught or no source could be reached for still counts (owner, 2026-10-16: clear this list)"
+ },
+ {
+  "at": "2026-10-16T17:19:56Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the bench counts a moved-out skill's answer as the ability answering: a plain want (timer, list, calc, shape, notepad, clock) is met by the page parser's note or the skill's skill:<name> note, so the 20 first-session asks that read as misses on main for that prefix alone (and the growth card's 'timer failing, list failing, calc failing') are answered again; the six Paid Void / Void status patterns now read V01D, as the cards do (owner, 2026-10-16: the four first things people try come first)",
+  "show": "the timer, list and calc read as answered on the bench again",
+  "try": "set a timer for 5 minutes"
  },
  {
   "at": "2026-10-16T18:02:17Z",
@@ -4274,5 +4280,6 @@
   "kind": "finding",
   "what": "rides tested against a live service, occasion 2: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 726 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-16T1802.json)",
   "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-16T1802.json"
- }
+ },
+  {"at": "2026-10-16T17:17:13Z", "by": "claude", "kind": "fix", "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it", "show": "a preview that shows nothing says so and is flagged", "try": "show me everything you made"}
 ]

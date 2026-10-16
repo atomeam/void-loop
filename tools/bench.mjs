@@ -20,6 +20,7 @@ import { CAPITALS, CURRENCIES } from '../void-live-deploy/skills/country.js';
 import { execFileSync } from 'node:child_process';
 import { envName, latencyOf, assess } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
+import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
@@ -122,7 +123,10 @@ async function one({ ask: a, want, says, before }) {
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
   const ms = Date.now() - t0; // how long the answer took; an ask the page never logged counts at the wait it gave up after, or a loaded machine would look fast
   const note = last ? String(last.note || '') : (said && !miss.length ? 'said' : '');
-  const routed = !miss.length && new RegExp('^(' + want + ')').test(note);
+  // a plain want ("timer", "list", "calc") is the ability, whichever code answers it: the page's own parser used to log "timer",
+  // the skill it moved out to (cleanup step 6) logs "skill:timer", and both are the timer answering (2026-10-16: 20 first-session
+  // asks read as misses on main for that prefix alone, and the growth card called the timer, list and calc failing)
+  const routed = !miss.length && isRouted(want, note);
   // "says": a pattern the visible answer must contain (the right ability AND the right value: "7 cubed" -> 343)
   let shown = '';
   // a card can finish drawing after the answer is logged: wait until the value shows (or 2.5 s), then read the page
