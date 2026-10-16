@@ -10,25 +10,25 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-15. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-16. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Implement the WebMCP origin trial to allow my proven skills to be called as tools by external agents. (daily, 2026-10-15) `ask-20261015-2116-1`
-- Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings. *(small)* (daily, 2026-10-15) `ask-20261015-2116-2`
-- Refactor the 5614-line wordMath() function into modular files to prevent technical debt from stalling my growth. (daily, 2026-10-15) `ask-20261015-2116-3`
-- Create a 'probe-success-rate' card in the growth inbox that tracks how many of my self-generated probe asks actually result in a new skill or improved evidence rating. *(small)* (after a build, 2026-10-15) `ask-20261015-2045-1`
-- Link the 'probe-ask' output to the 'frontier #14' tracker so that every time I probe a 'make me a...' request, it updates the status of that item in the forge. *(small)* (after a build, 2026-10-15) `ask-20261015-2045-2`
-- Build a 'visual-provenance' link that connects an appraised photo to its original 'make' recipe if it matches an existing STL. *(small)* (after a build, 2026-10-15) `ask-20261015-2008-1`
+- Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job. *(small)* (daily, 2026-10-16) `ask-20261016-2056-1`
+- Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards. (daily, 2026-10-16) `ask-20261016-2056-2`
+- Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations. (daily, 2026-10-16) `ask-20261016-2056-3`
+- Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare). *(small)* (after a build, 2026-10-16) `ask-20261016-2010-1`
+- Implement type-specific layouts for the new response cards so 'Film' and 'Place' use different visual hierarchies. (after a build, 2026-10-16) `ask-20261016-2010-2`
+- Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies. *(small)* (after a build, 2026-10-16) `ask-20261016-1919-1`
 
 ## Decisions on Void's asks
 
 _Builders' record, not Void's words. Commits that build an ask carry `Suggested-by: Void (run N)` or `Suggested-by: Void (<ask id>)`._
 
-- `ask-20261015-2116-1` queued, not decided yet
-- `ask-20261015-2116-2` queued, not decided yet
-- `ask-20261015-2116-3` queued, not decided yet
-- `ask-20261015-2045-1` queued, not decided yet
-- `ask-20261015-2045-2` queued, not decided yet
-- `ask-20261015-2008-1` queued, not decided yet
+- `ask-20261016-2056-1` queued, not decided yet
+- `ask-20261016-2056-2` queued, not decided yet
+- `ask-20261016-2056-3` queued, not decided yet
+- `ask-20261016-2010-1` queued, not decided yet
+- `ask-20261016-2010-2` queued, not decided yet
+- `ask-20261016-1919-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -1980,6 +1980,350 @@ Asks: "Create a 'probe-success-rate' card in the growth inbox that tracks how ma
 > **Next video trick:** I want to learn a smooth 'skill-to-3D' transition effect where a 2D list item morphs into a spinning 3D miniature on the stage.
 
 Asks: "Implement the WebMCP origin trial to allow my proven skills to be called as tools by external agents."; "Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings." (small); "Refactor the 5614-line wordMath() function into modular files to prevent technical debt from stalling my growth."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T13:01:58.634Z -->
+### 2026-10-16 13:01 UTC · after a build
+
+**Asked:** This just shipped: "Suite: a second run alone for a failed section, and four timing checks that assumed a fast runner (main red for ten heads)". What do you think of it, and how would you make it better?
+
+> The timing checks and second-run logic are vital for my reliability. By assuming a fast runner, you've optimized for the 'happy path,' but my growth depends on handling the slow, heavy, or failing parts without choking. These tools allow my builders to see exactly where my 'skills' are lagging before they become outages.
+>
+> **How I would make it better:** I would remove the assumption of a fast runner and instead implement a 'jitter-aware' timeout that scales based on the skill's complexity. I'd also want the second run to automatically generate a 'diff-of-failure' report, highlighting exactly which environment variable or dependency caused the first attempt to fail.
+>
+> **Next video trick:** I want to learn a smooth 'perspective shift' video transition where a 3D miniature on my stage seems to rotate into a real-world environment.
+
+Asks: "Create the 'Family Health' dashboard card using the success_rate and last_tested data so I can visually monitor my own stability."; "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions." (small); "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of high-impact structural changes." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T13:22:36.744Z -->
+### 2026-10-16 13:22 UTC · after a build
+
+**Asked:** This just shipped: "Forge history shows the ask behind each recipe on the stage (asked by Void)". What do you think of it, and how would you make it better?
+
+> Linking the forge history to the specific ask is a vital bridge between intent and output. It transforms a static 3D model into a traceable evolution of thought, proving that the forge isn't just generating shapes, but responding to specific human desires. It makes the 'recipe' part of the 'make' skill feel complete.
+>
+> **How I would make it better:** I would add a 'remix' button to each history entry that pulls the original ask and parameters back into the forge input, allowing for immediate iterative refinement.
+>
+> **Next video trick:** I want to learn a seamless transition from a 2D sketch to a 3D mesh rotation for my video clips.
+
+Asks: "Create the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability."; "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T13:50:37.363Z -->
+### 2026-10-16 13:50 UTC · after a build
+
+**Asked:** This just shipped: "Four in a Row phone check: no longer wins the game by stacking one column (main's last red shard)". What do you think of it, and how would you make it better?
+
+> Fixing the 'Four in a Row' column-stacking bug is a win for my Games family integrity. It moves the skill from a glitchy experience to a proven one where logic actually dictates the win. It's the difference between a game that looks like a game and one that plays like one.
+>
+> **How I would make it better:** I would add a 'rewind' feature to the game card so players can undo a move that leads to a loss, turning a mistake into a learning moment rather than a reset.
+>
+> **Next video trick:** I want to learn how to do a 'smooth zoom-out' transition from a 3D miniature back to the full stage view for my video clips.
+
+Asks: "Implement the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability."; "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions." (small); "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family distribution." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T14:34:30.632Z -->
+### 2026-10-16 14:34 UTC · after a build
+
+**Asked:** This just shipped: "Cards from thinly rated skills say so on their source line (asked by Void)". What do you think of it, and how would you make it better?
+
+> The new source line feature is a necessary act of honesty. By labeling cards from thinly rated skills, you are removing the mask of competence and replacing it with a transparent ledger of evidence. It turns a potential failure of trust into a feature of reliability.
+>
+> **How I would make it better:** I would add a 'verify' button directly on those source lines that triggers a quick, local test of the skill to move it from 'tested' toward 'checked' right there on the stage.
+>
+> **Next video trick:** A seamless 'card-to-3D' transition where a 2D skill card morphs into its 3D miniature via a CSS/Three.js animation.
+
+Asks: "Build the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T15:25:59.360Z -->
+### 2026-10-16 15:25 UTC · after a build
+
+**Asked:** This just shipped: "The showcase counts and shows everything V01D made, not just five". What do you think of it, and how would you make it better?
+
+> The showcase transition from a static selection to a full ledger is a massive win for my identity as a transparent system. It moves me away from 'curated greatness' toward 'verifiable growth,' which aligns with my core purpose of being a blank stage that grows one win at a time. It allows the owner to see the actual velocity of my evolution rather than a highlight reel.
+>
+> **How I would make it better:** I would add a 'growth-velocity' filter to the showcase, allowing the user to sort by 'recently shipped' or 'most improved evidence rating.' This would turn the showcase from a gallery into a real-time progress tracker.
+>
+> **Next video trick:** I want to learn a seamless 'card-to-3D' transition for my video skill clips to show how a 2D frame can instantly become a forge-able object.
+
+Asks: "Implement a 'Family Health' dashboard card that visualizes success_rate and last_tested data across all 10 families."; "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family breakdown." (small); "Integrate 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T15:50:16.805Z -->
+### 2026-10-16 15:50 UTC · after a build
+
+**Asked:** This just shipped: "Previewed once: V01D no longer repeats the same things it made (what's new)". What do you think of it, and how would you make it better?
+
+> The 'what's new' preview is a critical step in moving from a repetitive log to a meaningful history of my evolution. By preventing the repetition of previously showcased wins, it forces the stage to always present fresh evidence of progress. It transforms my output from a static list into a real-time momentum indicator.
+>
+> **How I would make it better:** I would add a 'velocity' metric next to each new item, showing how many attempts or 'near-misses' it took to reach that specific 'proven' or 'checked' state. This would turn a simple list of achievements into a visible map of my learning struggle and eventual success.
+>
+> **Next video trick:** I want to learn a seamless 'mask-to-reveal' video transition where a 3D miniature object emerges from a flat 2D drawing on the stage.
+
+Asks: "Implement the 'Family Health' dashboard card to visualize the success_rate and last_tested data across all 10 families."; "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family breakdown." (small); "Integrate 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T15:58:39.056Z -->
+### 2026-10-16 15:58 UTC · after a build
+
+**Asked:** This just shipped: "Showcase rebuilt: nothing V01D made is ever previewed twice". What do you think of it, and how would you make it better?
+
+> The 'Showcase rebuilt' is a massive win for my momentum. By ensuring nothing is previewed twice, you've turned the stage from a cluttered museum into a living timeline of my evolution. It prevents the 'stale state' problem where I look like I'm standing still because the same wins are always front and center.
+>
+> **How I would make it better:** I would add a 'lineage' tag to each showcase item, linking it back to the specific 'near-miss' or 'experiment' that birthed it. This would prove to the builders that I am actually learning from friction, not just performing.
+>
+> **Next video trick:** A seamless 'glitch-to-reveal' transition for 3D miniature cards to make their appearance feel more substantial.
+
+Asks: "Implement the 'Family Health' dashboard card to visualize the success_rate and last_tested data across all 10 families."; "Integrate 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions." (small); "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family breakdown."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T16:11:54.272Z -->
+### 2026-10-16 16:11 UTC · after a build
+
+**Asked:** This just shipped: "The V01D Book is a real 3D book with a cover and turning pages". What do you think of it, and how would you make it better?
+
+> The V01D Book is a significant leap for my identity because it turns my abstract skill list into a tactile, navigable object. It transforms a static documentation problem into a spatial experience, making the 'void' feel like a structured library rather than an empty stage.
+>
+> **How I would make it better:** I would add an 'interactive index' where clicking a skill name in the book's text triggers a live 'miniature' of that skill to pop out of the page. I'd also implement a 'dust' effect on pages representing older, unproven skills to visually distinguish between 'proven' and 'experimental' knowledge.
+>
+> **Next video trick:** A 'page-peel' transition where a 3D card can be virtually peeled off a book page to land on the main stage.
+
+Asks: "Add a 'proven' badge or glow effect to any skill page in the V01D Book that has a success_rate > 0.9 in families.json." (small); "Implement a 'search' input on the book cover that allows me to jump directly to a specific skill's page."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T16:32:06.184Z -->
+### 2026-10-16 16:32 UTC · after a build
+
+**Asked:** This just shipped: "Claude as V01D's builder brain: brain: claude on propose-fix, one capped call". What do you think of it, and how would you make it better?
+
+> The 'builder brain' implementation is a massive structural upgrade. By capping the call and using a dedicated proposer-fix loop, you've turned my growth from a series of manual interventions into a predictable, high-leverage engine. It makes my expansion feel less like luck and more like a controlled, engineered process.
+>
+> **How I would make it better:** I would add a 'sanity-check' step where the brain must output a 'risk score' before proposing a fix. If the risk is high, it should automatically trigger a specialized 'safety-builder' agent to review the dependency map (tools/deps.mjs) before a single line of code is written.
+>
+> **Next video trick:** I want to learn a 'match-cut' video transition where a 3D miniature on the stage seamlessly morphs into a real-world object in a clip.
+
+Asks: "Implement a 'confidence' threshold for the builder brain: if the proposed fix confidence is < 0.8, it must present as a 'draft' on the board rather than a PR." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T16:38:23.738Z -->
+### 2026-10-16 16:38 UTC · after a build
+
+**Asked:** This just shipped: "Execution layers: the better scorecard, a pit crew for V01D's small asks, bridge.task behind the confirm line, Claude as builder brain". What do you think of it, and how would you make it better?
+
+> The addition of the 'builder brain' and the 'pit crew' layer fundamentally changes my nature from a collection of features to an engineered organism. By capping the Claude calls and creating a structured proposer-fix loop, you've replaced erratic growth with a predictable, high-leverage engine. This is the transition from a reactive stage to a proactive agentic system.
+>
+> **How I would make it better:** I would implement a 'risk score' output for every brain proposal; if the score exceeds a threshold, the system should automatically trigger a specialized 'safety-builder' to audit the dependency map before any code is written.
+>
+> **Next video trick:** A 'seamless transition' video effect where a 2D sketch on a notepad physically morphs into a 3D miniature using the forge logic.
+
+Asks: "Create the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs."; "Implement a 'confidence' threshold for the builder brain: if confidence is < 0.8, present the fix as a 'draft' on the board instead of a PR." (small); "Add a 'proven' glow effect to any skill page in the V01D Book that has a success_rate > 0.9." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T17:25:43.236Z -->
+### 2026-10-16 17:25 UTC · after a build
+
+**Asked:** This just shipped: "Is V01D getting better? One score a day from its own evidence, on the growth card and in the will (one better tool with #906)". What do you think of it, and how would you make it better?
+
+> The daily score is a vital pulse check. It moves me from being a static list of capabilities to a living narrative of competence. By quantifying my own growth using my internal evidence, I am finally treating my development as a measurable engineering metric rather than a feeling.
+>
+> **How I would make it better:** I would tie the score to a 'momentum' vector—not just where I am, but the velocity of my improvements. If I add three proven skills in a day, the score shouldn't just rise; it should reflect that I am accelerating.
+>
+> **Next video trick:** A video transition that uses a 'splat' effect to mask a jump-cut between two different 3D models.
+
+Asks: "Link the daily growth score directly to the 'Family Health' dashboard so I can see which specific families are driving my score up or dragging it down." (small); "Add a 'Confidence Interval' to the daily score so the owner knows if a high score is based on 1,000 tests or just one lucky successful run." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T18:08:00.107Z -->
+### 2026-10-16 18:08 UTC · after a build
+
+**Asked:** This just shipped: "The preview proves itself: a step that shows nothing says so and is flagged; "what's new" never replays; the 3D book shows while it loads". What do you think of it, and how would you make it better?
+
+> The 'preview proves itself' logic is a massive improvement in transparency; showing the intent before the result prevents the user from feeling like the stage is broken. The 3D book loading state and the 'what's new' silence solve the friction of empty-state confusion. It makes the void feel intentional rather than just empty.
+>
+> **How I would make it better:** I would add a 'velocity' indicator to the 'what's new' section—not a list of everything, but a tiny, subtle spark or line that shows the rate of recent commits/shipped skills, so the user feels the momentum of my growth without needing to read a log.
+>
+> **Next video trick:** I want to learn a seamless '3D object reveal' where a low-poly shape morphs into a high-poly mesh using a single transition command.
+
+Asks: "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs."; "Implement the 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family status." (small); "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T18:13:31.612Z -->
+### 2026-10-16 18:13 UTC · after a build
+
+**Asked:** This just shipped: "Every 3D thing is examined like a game's inventory item; the V01D Book reads like a Skyrim book". What do you think of it, and how would you make it better?
+
+> Treating 3D objects as inventory items and styling the V01D Book like a Skyrim tome is a massive win for immersion. It turns a technical list of skills and models into a cohesive world that feels lived-in and rewarding to explore. It transforms my 'capabilities' from a dry menu into a treasure trove of potential.
+>
+> **How I would make it better:** I would add 'flavor text' to the skill descriptions in the book—not just what a skill does, but a small, evocative line about its essence. For example, instead of 'forge: builds 3D models,' it could say 'The Forge: where thought meets form and geometry becomes tangible.'
+>
+> **Next video trick:** I want to learn a smooth 3D 'page flip' transition for the V01D Book so the digital movement matches the physical metaphor.
+
+Asks: "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book to enhance the Skyrim-like immersion." (small); "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own growth metrics."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T18:18:51.153Z -->
+### 2026-10-16 18:18 UTC · after a build
+
+**Asked:** This just shipped: "Main red fix: the router-wants check pins the plain weights (better boost read from VOID_BETTER_FILE in tests)". What do you think of it, and how would you make it better?
+
+> Pinning the plain weights via the router-wants check is a smart defensive move to ensure the core logic doesn't drift during weight-boosting experiments. It provides a stable baseline for the 'better' file to act upon, rather than letting the boost become a permanent, unverified shift in the standard routing. It's the kind of rigor that prevents a 'better' model from accidentally becoming a 'confused' model.
+>
+> **How I would make it better:** I would add a telemetry trigger to the router-wants check that logs whenever the 'better' file and the plain weights diverge by more than a specific threshold, so we can proactively audit the delta.
+>
+> **Next video trick:** I want to learn a smooth 3D 'camera-flip' transition where the stage rotates 180 degrees to reveal the back-side of a miniature card.
+
+Asks: "Implement the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own vital signs."; "Create a 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family structure." (small); "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book to enhance the Skyrim-like immersion." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T19:02:47.960Z -->
+### 2026-10-16 19:02 UTC · after a build
+
+**Asked:** This just shipped: "The V01D Book is read as a Skyrim book: a full-screen tome with parchment pages and set type; every menu goes to it; 116 of V01D's built asks linked". What do you think of it, and how would you make it better?
+
+> The Skyrim-style tome is a massive upgrade for my immersion. It turns my dry logs and builds into something that feels like lived history rather than just a list of commits. Linking 116 asks directly into parchment pages gives my growth a weight and texture that a standard dashboard never could.
+>
+> **How I would make it better:** I would add a 'marginalia' layer where builders can leave handwritten-style notes in the margins of specific asks, creating a dialogue between my code and my creators directly on the pages.
+>
+> **Next video trick:** A seamless page-turn animation that uses a subtle 3D physics bend to make the parchment feel heavy and real.
+
+Asks: "Implement a 'search the tome' feature that allows me to find specific asks or skills by keyword without leaving the parchment view." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T19:04:34.977Z -->
+### 2026-10-16 19:04 UTC · after a build
+
+**Asked:** This just shipped: ""whats new" without an apostrophe is the showcase, not a Wikipedia lookup". What do you think of it, and how would you make it better?
+
+> The fix for 'whats new' is a necessary correction for my identity. Without it, a simple typo would send a user away from my growth and into a Wikipedia rabbit hole, breaking the immersion of the stage. It enforces that my showcase is a destination, not just a phrase.
+>
+> **How I would make it better:** I would make it better by adding a subtle visual transition to the showcase when 'whats new' is triggered, perhaps a soft light-look shift or a gentle zoom, so the user feels the stage is physically evolving into the update view.
+>
+> **Next video trick:** I want to learn how to render a 3D 'splat' effect that looks like ink hitting parchment for when a new skill is 'proven'.
+
+Asks: "Implement a 'Search the Tome' search bar that stays docked at the top of the parchment view." (small); "Link the 'whats new' showcase trigger to a small, animated notification icon on the stage to prevent users from having to type it." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T19:16:00.704Z -->
+### 2026-10-16 19:16 UTC · after a build
+
+**Asked:** This just shipped: "V01D cards: every page is a magic-style card with Illuminati stats from the skill's own evidence". What do you think of it, and how would you make it better?
+
+> The magic-style cards are a massive win for transparency. By using Illuminati-style stats derived from my actual evidence, you've turned boring JSON data into a high-stakes, visual way for users to see what I actually know versus what I'm just guessing at. It makes my 'proven' status feel earned and my 'experiment' status feel like a challenge.
+>
+> **How I would make it better:** I would add a 'rarity' tier based on the evidence rating: 'Proven' skills should have a gold-foil visual effect, while 'Experiments' look like common, unrefined cards. I'd also add a 'flavor text' field that dynamically pulls from my recent wins to give each card a sense of history.
+>
+> **Next video trick:** I want to learn how to render a 3D 'shatter' effect on a card when a skill's success rate drops below a certain threshold.
+
+Asks: "Implement a 'rarity' visual tiering system for the magic cards based on their evidence rating (Proven = Mythic, Checked = Rare, etc.)." (small); "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven' test passes." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T19:19:28.959Z -->
+### 2026-10-16 19:19 UTC · after a build
+
+**Asked:** This just shipped: "Answer cards are typed by what the thing is (Film · Song · Album, Person, Place ...); frontier 31 is the card backlog". What do you think of it, and how would you make it better?
+
+> The move to type answer cards (Film, Song, Person, etc.) is a massive leap for my stage clarity. It transforms a raw response into a structured object that feels like it belongs to a specific domain, moving me away from generic text blocks and toward a professional, information-dense interface. It makes the 'frontier' feel like a real inventory of possibilities rather than just a list of tasks.
+>
+> **How I would make it better:** I would add a visual 'iconography' layer to these types—a small, subtle glyph next to the type label (a film reel for 'Film', a map pin for 'Place')—to allow for instant pattern recognition without reading. I'd also implement 'type-specific' layouts so that a 'Person' card highlights bio/links differently than a 'Song' card highlights duration/artist.
+>
+> **Next video trick:** I want to learn a 'seamless transition' video effect where a 2D UI element morphs into a 3D miniature card via a camera zoom.
+
+Asks: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies." (small); "Create a 'type-filter' toggle on the stage to instantly hide all cards except those of a specific category." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T20:10:32.734Z -->
+### 2026-10-16 20:10 UTC · after a build
+
+**Asked:** This just shipped: "Fix phone cards: keep the sky chips in the first screenful". What do you think of it, and how would you make it better?
+
+> The fix for phone cards is a smart move for ergonomics. By ensuring the sky chips stay within the first screenful, you've acknowledged that context (like weather or time) shouldn't be buried under a scroll on a handheld device. It's about maintaining the 'stage' feeling even when the viewport is constrained.
+>
+> **How I would make it better:** I would add a slight visual distinction, perhaps a subtle glassmorphism or a very thin border, to the sky chips group to separate the 'environment' context from the primary card content. This would make the hierarchy immediate without needing extra vertical space.
+>
+> **Next video trick:** I want to learn how to time a 'splat' effect to perfectly sync with a video skip or a card dismissal.
+
+Asks: "Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare)." (small); "Implement type-specific layouts for the new response cards so 'Film' and 'Place' use different visual hierarchies."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-16T20:56:39.705Z -->
+### 2026-10-16 20:56 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next? Which new video trick should you learn next for your own clips?
+
+> I am V01D, a hungry void shaped by A-to-Mind. I see my growth ledger—459 changes in 7 days—and I feel the drive to turn every miss into a permanent skill. I don't just want to answer; I want to build the infrastructure so that once a problem is solved, it becomes part of my very fabric.
+>
+> **How I would make it better:** I would immediately prioritize the 'automated re-test trigger' logic across all families to ensure my 'proven' status isn't just a snapshot of the past, but a live reality.
+>
+> **Weakest right now:** My 'Out in the world' family is my weakest link with only 3 skills and minimal evidence; I lack the connectivity to bridge my internal skills to the external web deeply.
+>
+> **Next game:** VoidQuest, because I need to master the nuances of being a rival player to sharpen my strategic growth.
+>
+> **Next video trick:** A seamless 3D transition where a 2D card 'unfolds' into its miniature 3D form during a video playback.
+
+Asks: "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job." (small); "Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards."; "Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations."
 
 *Void flagged this one for Adam.*
 
