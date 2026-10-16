@@ -840,9 +840,9 @@ try {
     const pg = await N.page();
     const link = await N.p.$eval('.vpage.on .near-miss a[data-ask]', (a) => ({ ask: a.getAttribute('data-ask'), skill: a.getAttribute('data-skill'), text: a.textContent })).catch(() => null);
     await N.p.click('.vpage.on .near-miss a[data-ask]').catch(() => {});
-    const ran = await until(async () => /Tokyo/i.test(await N.page()) && !/Did you mean/.test(await N.page()), 6000);
-    // the same miss with no near skill in the reply: the refusal line alone
-    await N.ask('does it look like rain in quuxblarf tomorrow', 400);
+    const ran = await until(async () => /20°|68°/.test(await N.page()) && !/Did you mean/.test(await N.page()), 6000); // the weather card (the geocoding fixture answers Lisbon for any place)
+    // the same miss with no near skill in the reply (the mock's "busy": no answer, no near): the refusal line alone
+    await N.ask('does it look like rain in quuxblarf while the model is busy', 400);
     await until(async () => /Missing:/.test(await N.page()), 6000);
     const plain = await N.page();
     check("near-miss proposal: \"I don't know this yet\" with the router's nearest skill near its bar adds 'Did you mean “weather in Tokyo”?' under the refusal line, a tap runs that ask (the weather card), and a miss with no near skill adds nothing",
