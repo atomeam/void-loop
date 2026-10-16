@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 63,
+ "runsTotal": 64,
  "kinds": {
   "grow": 15,
-  "file": 36,
+  "file": 37,
   "teach": 7,
   "tighten": 3,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-10-16T06:45:10Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"give me 5 minutes with that\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-16T06:38:50Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 19,
    "kind": "grow",
    "note": "grew the suite: \"weather in boston\""
-  },
-  {
-   "at": "2026-10-15T20:35:25Z",
-   "passed": 0,
-   "of": 19,
-   "kind": "file",
-   "note": "fix: \"make my void light\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -163,16 +163,16 @@
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
   "skill:breath": "2026-10-16T06:38:50Z",
-  "skill:calc": "2026-10-15T06:23:11Z",
+  "skill:calc": "2026-10-16T06:45:10Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
-  "skill:challenge": "2026-10-15T08:35:24Z",
+  "skill:challenge": "2026-10-16T06:45:10Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-15T10:50:37Z",
+  "skill:convert": "2026-10-16T06:45:10Z",
   "skill:coral": "2026-10-15T11:56:55Z",
   "skill:counter": "2026-10-15T12:07:13Z",
   "skill:country": "2026-10-15T12:12:56Z",
