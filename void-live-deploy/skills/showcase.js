@@ -1,8 +1,10 @@
 /**
  * showcase skill: "look what I made". Void puts what it built since you were last here on the real stage, one thing at a
  * time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
- * "show me what you made", "what's new", "what did you make for me", "look what you did": the newest five. A returning
- * visitor also gets one quiet line on their first touch, "I made 3 new things while you were away · show me" (nudge below,
+ * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
+ * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
+ * it used to stop at five). One at a time, so a thousand is as easy to page through as three; Done ends it whenever you like. A returning
+ * visitor also gets one quiet line on their first touch, "I made 1,204 new things while you were away · show me" (the true count) (nudge below,
  * called by the page); a first visit gets nothing, so the empty page stays empty.
  * Each step runs the change's own ask through the stage (stageApi.ask), so the actual card or thing appears; a small bar
  * above the ask box says "1 of 3", the change in plain words, and Next → (takes that step's things away and runs the next),
@@ -54,10 +56,10 @@ export function sinceLast(entries, seenAt = '') {
     .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
 }
 
-/** up to n steps from newest-first entries, each ask once: [{ line, ask, at }]. Pure. */
+/** steps from newest-first entries, each ask once, all of them unless n caps it: [{ line, ask, at }]. Pure. */
 // verified: the asks tools/claims-verify.mjs saw answer with their own card (claims-verified.json). Given a set, a build whose
 // ask is not on it is never played as "built": it counts as in progress (Adam, 2026-10-15: no claiming what doesn't answer).
-export function pick(entries, n = 5, verified = null, pending = null) {
+export function pick(entries, n = Infinity, verified = null, pending = null) {
   const out = [], asks = new Set();
   for (const e of entries) {
     const p = playable(e);
@@ -149,7 +151,7 @@ async function step(stageApi) {
   el.textContent = '';
   const head = document.createElement('span');
   head.style.cssText = 'color:var(--ink-3,#8b90a0);white-space:nowrap';
-  head.textContent = (tour.i + 1) + ' of ' + tour.steps.length + ' · ' + tour.label;
+  head.textContent = (tour.i + 1).toLocaleString('en') + ' of ' + tour.steps.length.toLocaleString('en') + ' · ' + tour.label;
   const line = document.createElement('span');
   line.className = 'showcase-line';
   line.style.cssText = 'color:var(--ink,#e9ebf2);flex:1 1 220px';
@@ -184,14 +186,14 @@ export async function nudge(stageApi, note) {
   if (!seen) { write(SEEN_KEY, new Date().toISOString().replace(/\.\d+Z$/, 'Z')); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const pending = [], steps = pick(sinceLast(list, seen), 5, await verifiedSet(), pending);
+  const pending = [], steps = pick(sinceLast(list, seen), Infinity, await verifiedSet(), pending);
   const newest = seenUpTo(list, seen, pending); // a build still waiting for its live check stays unseen
   if (!steps.length) { if (newest > seen) write(SEEN_KEY, newest); return 0; }
   if (!note) return steps.length;
   const n = steps.length;
   const lead = document.createElement('span');
   lead.className = 'showcase-pill';
-  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I made ' + (n === 1 ? 'a new thing' : n + ' new things') + ' while you were away · ';
+  lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I made ' + (n === 1 ? 'a new thing' : n.toLocaleString('en') + ' new things') + ' while you were away · ';
   const go = document.createElement('a');
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
   go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps, { newest }); });
@@ -204,9 +206,9 @@ async function run(text, api) {
   let list = [];
   try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
   const seen = read(SEEN_KEY), V = await verifiedSet(), pending = [];
-  const fresh = seen ? pick(sinceLast(list, seen), 5, V, pending) : [];
+  const fresh = seen ? pick(sinceLast(list, seen), Infinity, V, pending) : [];
   if (!fresh.length) pending.length = 0;
-  const steps = fresh.length ? fresh : pick(sinceLast(list), 5, V, pending);
+  const steps = fresh.length ? fresh : pick(sinceLast(list), Infinity, V, pending);
   const wip = pending.length ? ' · ' + pending.length + ' more in progress (not answering yet)' : '';
   if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
   start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: seenUpTo(list, seen, pending) });
