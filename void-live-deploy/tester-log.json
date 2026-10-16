@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 93,
+ "runsTotal": 94,
  "kinds": {
   "grow": 15,
   "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 18
+  "none": 19
  },
  "runs": [
+  {
+   "at": "2026-10-16T22:51:37Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T19:10:46Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "tighten",
    "note": "fps floor 3 -> 5"
-  },
-  {
-   "at": "2026-10-16T09:49:37Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -258,9 +258,9 @@
   "skill:skycard": "2026-10-16T19:10:46Z",
   "skill:sleep": "2026-10-16T19:10:46Z",
   "skill:snake": "2026-10-16T19:10:46Z",
-  "skill:social": "2026-10-16T04:18:47Z",
-  "skill:spanish": "2026-10-16T05:13:33Z",
-  "skill:splat": "2026-10-16T05:13:33Z",
+  "skill:social": "2026-10-16T22:51:37Z",
+  "skill:spanish": "2026-10-16T22:51:37Z",
+  "skill:splat": "2026-10-16T22:51:37Z",
   "skill:sport": "2026-10-16T05:13:33Z",
   "skill:status": "2026-10-16T05:13:33Z",
   "skill:sticky": "2026-10-16T05:25:04Z",
