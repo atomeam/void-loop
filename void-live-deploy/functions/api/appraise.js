@@ -27,7 +27,7 @@ export async function describe(env, bytes, dataUrl) {
     const s = said(r); if (s) return s;
   } catch (e) { first = e; }
   try { return said(await env.AI.run(VISION_FALLBACK, { image: [...bytes], prompt: VISION_PROMPT, max_tokens: 256 })); }
-  catch (e) { throw first || e; }
+  catch (e) { const m = (x) => String((x && x.message) || x || 'said nothing').replace(/\s+/g, ' ').slice(0, 80); throw new Error('vision: ' + m(first) + '; fallback: ' + m(e)); }
 }
 
 const json = (body, status = 200) => Response.json(body, { status });
@@ -41,7 +41,7 @@ export async function onRequestPost({ request, env }) {
   if (!bytes) return json({ error: 'a PNG, JPEG or WebP photo, under 800 KB' }, 400);
   if (!env || !env.AI) return json({ error: 'V01D cannot see photos from this deploy yet (no vision model bound)' }, 503);
   let seen = '';
-  try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 120) }, 502); }
+  try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 200) }, 502); }
   const value = valueFrom(seen, note);
   return json({ seen: value.person ? '' : seen, value, text: appraisalText(value) });
 }
