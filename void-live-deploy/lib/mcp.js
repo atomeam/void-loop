@@ -11,6 +11,7 @@ import { quick } from './review-api.js';
 import { jde, moonPhase } from './sky-math.js';
 import { activeShowers, nextShower } from './showers.js';
 import { SKILL_TOOLS } from './mcp-skills.js';
+import { drive } from './drive.js';
 
 export const PROTOCOL = '2025-06-18';
 export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.2.0' };
@@ -48,6 +49,9 @@ export const TOOLS = [
   { name: 'meteor_showers', title: 'Meteor showers', annotations: RO,
     description: 'The meteor showers active on a date (strongest first, with days to each peak and the peak rate) and the next peak on or after it, from the IMO calendar of the major showers.',
     inputSchema: { type: 'object', properties: { date: DATE } } },
+  { name: 'drive_time', title: 'Drive time between two places', annotations: { ...RO, idempotentHint: false, openWorldHint: true },
+    description: "How long the drive is between two places, and how far, from a live routing service (the public OSRM router, no key; road network at free-flow speed, so no live traffic). Places by name (looked up with Open-Meteo's geocoder) or as \"lat,lon\". Void's rides family checks this same router once a day.",
+    inputSchema: { type: 'object', required: ['from', 'to'], properties: { from: { type: 'string', description: 'Where from: a place name ("San Francisco") or "lat,lon".' }, to: { type: 'string', description: 'Where to: a place name or "lat,lon".' } } } },
   ...SKILL_TOOLS.map(skillTool),
   { name: 'skill_health', title: "Void's skill-family health", annotations: RO,
     description: "How far each of Void's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Void's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
@@ -149,6 +153,11 @@ const RUN = {
     const phase = name === 'new moon' || name === 'full moon' ? name : (p.waxing ? 'waxing ' : 'waning ') + (name === 'quarter' ? (p.waxing ? 'first quarter' : 'last quarter') : name);
     const out = { date: d.toISOString(), illuminated: Math.round(p.fraction * 1000) / 1000, waxing: p.waxing, phase };
     return toolResult(Math.round(p.fraction * 100) + '% lit, ' + phase + ' (' + out.date + ').', out);
+  },
+  async drive_time(a, ctx) {
+    const r = await drive(a.from, a.to, (ctx && ctx.fetch) || fetch);
+    if (!r.ok) return toolError(r.error);
+    return toolResult('About ' + r.minutes + ' min by car, ' + r.km + ' km, from ' + (r.from.name || r.from.lat + ',' + r.from.lon) + ' to ' + (r.to.name || r.to.lat + ',' + r.to.lon) + ' (' + r.note + '; ' + r.service + ').', r);
   },
   meteor_showers(a) {
     const d = when(a.date); if (!d) return toolError('That date could not be read; use ISO, like 2026-10-11.');
