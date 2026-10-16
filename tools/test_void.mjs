@@ -394,6 +394,7 @@ async function fresh(...inits) {
           .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
       }
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
+      if (/zorbleton/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'nothing on the web', route: 'simple', near: { skill: 'weather', score: 0.64, bar: 0.7, example: 'weather in Tokyo' } })); // no answer, and the router's nearest skill scored near its bar (lib/near-miss.js)
       if (/^inject/.test(ask)) return r.fulfill(json({ answer: INJECTED, sources: [{ title: 'Trap', url: 'javascript:alert(1)' }] })); // a model that obeyed an injection
       if (/^write a python/.test(ask)) return r.fulfill(json({ answer: 'Here it is.\n\n```python\ndef greet(name):\n    return "hi " + name\n```\n', sources: [] })); // no Wikipedia page for a script; answered anyway, no refusal
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
@@ -896,6 +897,26 @@ try {
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
+  // A near miss becomes a visible proposal (lib/near-miss.js, asked by Void twice): "I don't know this yet" with the router's nearest skill
+  // near its bar adds "Did you mean <that skill's first example>?", a data-ask link that runs it; without a near miss the card adds nothing.
+  if (want('near-miss proposal: "I don\'t know this yet" offers the nearest skill\'s first example as a tap')) { const N = await fresh();
+    await N.ctx.route(/wikipedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ batchcomplete: '', query: { searchinfo: { totalhits: 0 }, search: [] } }) }));
+    await N.ctx.route(/wiktionary\.org/, (r) => r.fulfill({ status: 404, contentType: 'application/json', body: '{}' }));
+    await N.ask('does it look like rain in zorbleton tomorrow', 400);
+    await until(async () => /Did you mean/.test(await N.page()), 6000);
+    const pg = await N.page();
+    const link = await N.p.$eval('.vpage.on .near-miss a[data-ask]', (a) => ({ ask: a.getAttribute('data-ask'), skill: a.getAttribute('data-skill'), text: a.textContent })).catch(() => null);
+    await N.p.click('.vpage.on .near-miss a[data-ask]').catch(() => {});
+    const ran = await until(async () => /20°|68°/.test(await N.page()) && !/Did you mean/.test(await N.page()), 6000); // the weather card (the geocoding fixture answers Lisbon for any place)
+    // the same miss with no near skill in the reply (the mock's "busy": no answer, no near): the refusal line alone
+    await N.ask('does it look like rain in quuxblarf while the model is busy', 400);
+    await until(async () => /Missing:/.test(await N.page()), 6000);
+    const plain = await N.page();
+    check("near-miss proposal: \"I don't know this yet\" with the router's nearest skill near its bar adds 'Did you mean “weather in Tokyo”?' under the refusal line, a tap runs that ask (the weather card), and a miss with no near skill adds nothing",
+      /don't know this yet/.test(pg) && /Missing: what this is/.test(pg) && /Did you mean\s*weather in Tokyo\s*\?/.test(pg) && link && link.ask === 'weather in Tokyo' && link.skill === 'weather'
+      && ran && /Missing:/.test(plain) && !/Did you mean/.test(plain),
+      JSON.stringify({ pg: pg.slice(-160), link, ran, plain: plain.slice(-100) }));
+    await N.ctx.close(); }
   // The refusal object (asked by Void): every "I cannot" says what is missing, to the person and as data to an agent.
   if (want('refusal object: every "I cannot" names what is missing')) { const R = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
     // the sources answer and know nothing (Wikipedia: an empty search; Wiktionary: no such entry), as they do live
