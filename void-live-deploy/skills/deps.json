@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 402,
+ "counted": 405,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -42,6 +42,12 @@
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/prints.js",
+   "skills": 5,
+   "direct": 3,
    "dependants": 6
   },
   {
@@ -114,7 +120,7 @@
    "file": "lib/automation-fix.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 41
+   "dependants": 42
   },
   {
    "file": "lib/gumroad.js",
@@ -183,13 +189,13 @@
    "dependants": 5
   },
   {
-   "file": "lib/appraise-photo.js",
+   "file": "lib/shared-routines.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 3
   },
   {
-   "file": "lib/shared-routines.js",
+   "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -202,6 +208,12 @@
   },
   {
    "file": "lib/context-check.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/forge-makes.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -220,6 +232,12 @@
   },
   {
    "file": "lib/reefwatch.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/routine-skill.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1243,6 +1261,7 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
+    "lib/routine-skill.js",
     "lib/self-context.js",
     "skills/routine.js"
    ]
@@ -1468,6 +1487,12 @@
   "lib/film-share.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/forge-makes.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge.js"
+   ]
   },
   "lib/fuzzy.js": {
    "imports": [],
@@ -1899,6 +1924,19 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/prints.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge.js",
+    "skills/inventory.js",
+    "skills/print-file.js"
+   ],
+   "reachedBy": [
+    "skills/mini/pentamote.js",
+    "skills/motorbody.js",
+    "skills/print-download.js"
+   ]
+  },
   "lib/privacy.js": {
    "imports": [
     "lib/automation-fix.js"
@@ -2060,6 +2098,14 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/routine-skill.js": {
+   "imports": [
+    "lib/shared-routines.js"
+   ],
+   "importedBy": [
+    "skills/routine.js"
+   ]
+  },
   "lib/routines.js": {
    "imports": [],
    "importedBy": [
@@ -2120,6 +2166,7 @@
    ],
    "importedBy": [
     "functions/api/routines.js",
+    "lib/routine-skill.js",
     "skills/routine.js"
    ]
   },
@@ -2866,7 +2913,9 @@
   },
   "skills/forge.js": {
    "imports": [
-    "skills/forge-rules.js"
+    "skills/forge-rules.js",
+    "lib/prints.js",
+    "lib/forge-makes.js"
    ],
    "importedBy": []
   },
@@ -3113,7 +3162,8 @@
     "skills/index.json",
     "skills/families.json",
     "lib/ask-text.js",
-    "skills/forge-rules.js"
+    "skills/forge-rules.js",
+    "lib/prints.js"
    ],
    "importedBy": []
   },
@@ -3676,7 +3726,8 @@
   "skills/print-file.js": {
    "imports": [
     "skills/figure.js",
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "lib/prints.js"
    ],
    "importedBy": [
     "skills/motorbody.js",
@@ -3805,6 +3856,7 @@
   "skills/routine.js": {
    "imports": [
     "lib/routines.js",
+    "lib/routine-skill.js",
     "lib/shared-routines.js"
    ],
    "importedBy": []
