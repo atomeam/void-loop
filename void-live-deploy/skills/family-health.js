@@ -5,6 +5,9 @@
  * (proven, checked, tested, experiment) for all 9 families."
  * The card: the totals on top, one row per family with a stacked bar of its proven / checked / tested / experiment counts; tap a
  * family to list its skills with their rating and the reason (the `why` the evidence gave). One accent (--d-key) at four strengths.
+ * Each skill also shows when it was last tested and its benchmark success rate (asked by Void, ask-20261013-1823-1), straight from
+ * families.json's `last_tested`, `last_tested_by` and `success_rate`. Nothing about how often people use a skill is shown or
+ * known: no usage, no popular or unused, no last used (the owner's rule: no behaviour tracking).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 export const FAMILIES_URL = '/skills/families.json';
@@ -51,6 +54,16 @@ function bar(count, total, label) {
 }
 const words = (count) => TIERS.map((t) => count[t] + ' ' + t).join(', ');
 
+/** one skill's dates and rates in words: when it was last tested (and by what) and its benchmark success rate. Pure. */
+export function metaWords(s) {
+  const out = [];
+  if (s && /^\d{4}-\d{2}-\d{2}$/.test(String(s.last_tested || ''))) out.push('last tested ' + s.last_tested + (s.last_tested_by ? ' by ' + s.last_tested_by : ''));
+  else out.push('never tested');
+  if (s && typeof s.success_rate === 'number' && s.success_rate >= 0 && s.success_rate <= 1) out.push('success rate ' + Math.round(s.success_rate * 1000) / 10 + '% on the benchmark');
+  else if (s && /real asks? in the benchmark/.test(String(s.why || ''))) out.push('success rate not measured yet');
+  return out.join(' · ');
+}
+
 /** one family's skills, strongest first: name, rating, and the evidence behind it. Pure. */
 export function skillsHtml(esc, row) {
   return '<ul class="fh-skills" style="list-style:none;margin:6px 0 10px;padding:0">' + row.skills.map((s) => {
@@ -60,7 +73,9 @@ export function skillsHtml(esc, row) {
       + '<span style="flex:1;min-width:0"><b style="font-weight:600;color:var(--d-ink,#f2f4fb)">' + esc(s.name) + '</b> '
       + '<span class="fh-tier" style="color:var(--d-ink-2,#c3c8d8)">' + esc(s.tier || 'unrated') + '</span>'
       + '<br><span class="fh-why" style="font-size:13px;color:var(--d-ink-3,#8e94a8)">' + esc(s.why || '')
-      + (fail ? '; the everyday benchmark got ' + s.failing.length + ' of its asks wrong on its last run' : '') + '</span></span></li>';
+      + (fail ? '; the everyday benchmark got ' + s.failing.length + ' of its asks wrong on its last run' : '')
+      + (Array.isArray(s.smoke) && s.smoke.length ? '; <span class="fh-smoke">the daily smoke test failed it: ' + esc(s.smoke[0]) + (s.smoke.length > 1 ? ' (and ' + (s.smoke.length - 1) + ' more)' : '') + '</span>' : '') + '</span>'
+      + '<br><span class="fh-meta" style="font-size:12px;color:var(--d-ink-3,#8e94a8);font-variant-numeric:tabular-nums">' + esc(metaWords(s)) + '</span></span></li>';
   }).join('') + '</ul>';
 }
 
@@ -80,7 +95,9 @@ export function healthHtml(esc, fam) {
       + bar(r.count, r.total, esc(r.name + ': ' + words(r.count)))
       + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '') + skillsHtml(esc, r) + '</div></div>').join('') + '</div>'
     + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The three kinds of evidence: a skill\'s own self-test, the browser suite, and real asks in the everyday benchmark. '
-    + TIERS.map((t) => '<b style="font-weight:600">' + t + '</b>: ' + MEANS[t]).join('; ') + '. Tap a family to see each skill and why.</div>'
+    + TIERS.map((t) => '<b style="font-weight:600">' + t + '</b>: ' + MEANS[t]).join('; ') + '. Tap a family to see each skill and why. '
+    + 'Last tested is the newest date a skill\'s evidence has (its own tests and the browser suite as last seen in the repo, or the benchmark\'s last run on main); '
+    + 'success rate is the share of its benchmark asks that passed on that run. How often people use a skill is never counted.</div>'
     + '<div class="src">Source: skills/families.json, written from the repo by tools/families.mjs</div>';
 }
 
@@ -104,13 +121,17 @@ async function run(text, api) {
 export function suite() {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const fam = { families: [
-    { id: 'a', name: 'Alpha', for: 'x', skills: [{ name: 'p', tier: 'proven', why: 'a self-test' }, { name: 'e', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'c', tier: 'checked', why: 'two', failing: ['q <i>'] }] },
-    { id: 'b', name: 'Be <ta>', skills: [{ name: 't', tier: 'tested', why: 'one' }] },
+    { id: 'a', name: 'Alpha', for: 'x', skills: [{ name: 'p', tier: 'proven', why: 'a self-test', last_tested: '2026-10-16', last_tested_by: 'its tests', success_rate: 0.967 }, { name: 'e', tier: 'experiment', why: 'nothing checks it yet' }, { name: 'c', tier: 'checked', why: 'two, 2 real asks in the benchmark', failing: ['q <i>'] }] },
+    { id: 'b', name: 'Be <ta>', skills: [{ name: 't', tier: 'tested', why: 'one', smoke: ['suite <x> failed', 'near miss "b" taken'] }] },
   ] };
   const H = healthRows(fam), h = healthHtml(esc, fam);
   const ok = H.skills === 4 && H.rows.length === 2 && H.totals.proven === 1 && H.totals.checked === 1 && H.totals.tested === 1 && H.totals.experiment === 1
     && H.rows[0].skills.map((s) => s.name).join() === 'p,c,e' && h.includes('Be &lt;ta&gt;') && !h.includes('<ta>') && h.includes('1 of 3 proven')
     && h.includes('got 1 of its asks wrong') && h.includes('4 skills in 2 families') && healthHtml(esc, null).includes('could not be read')
+    && metaWords(fam.families[0].skills[0]) === 'last tested 2026-10-16 by its tests · success rate 96.7% on the benchmark' && metaWords(fam.families[0].skills[1]) === 'never tested'
+    && metaWords(fam.families[0].skills[2]) === 'never tested · success rate not measured yet' && metaWords({ last_tested: 'yesterday', success_rate: 7 }) === 'never tested'
+    && h.includes('class="fh-meta"') && !/usage|popular|unused|last used/i.test(h.replace(/never counted/, ''))
+    && h.includes('the daily smoke test failed it: suite &lt;x&gt; failed (and 1 more)') && !h.includes('suite <x>')
     && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals');
   return { ok, got: ok ? '' : JSON.stringify(H) };
 }

@@ -21,7 +21,8 @@ import { REVIEW_SYSTEM, ruleReview, findingsText, langNamed } from '../../lib/co
 import { models } from '../../lib/models.js';
 import { keeperOf, scrubOut } from '../../lib/keeper.js';
 import { redactPersonal } from '../../lib/privacy.js';
-import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
+import { PAID_MODEL, BUDGET_MS, STRONG_TIMEOUT_MS, SKILLS, classify, settle, paidAccess, costCents, recordSpend, logRoute } from '../../lib/router.js';
+import { nearOf } from '../../lib/near-miss.js';
 import { clefRoute, clefOn, mergeRoute, clefYesNo } from '../../lib/clef.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { isSelfAsk, readSelf, selfFacts, SELF_RULE } from '../../lib/self-context.js';
@@ -341,6 +342,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   let src = self ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
+  // the skill the ask nearly was (lib/near-miss.js, asked by Void): the page offers that skill's first example when it ends up with no answer
+  const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
   if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
@@ -401,8 +404,8 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
         // no paid path: the open-web answer, as with the switch off (for an ask about Void: its facts)
         const web = self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
-        if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind });
-        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+        if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });
+        return Response.json({ answer: web, sources: pub, at: new Date().toISOString(), route: route.kind, ...nearOut, note: self ? 'model busy, my own facts' : told ? 'model busy, from what you told me' : 'model busy, from the web', ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
       }
       answer = paid; model = access.model; outcome += '; default busy, paid from earnings';
     }
@@ -416,5 +419,5 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
     await env.DB.prepare('INSERT INTO void_answers (id, ask, answer, sources, at) VALUES (?, ?, ?, ?, ?) ON CONFLICT(id) DO UPDATE SET answer = excluded.answer, sources = excluded.sources, at = excluded.at')
       .bind(key, ask, answer, JSON.stringify(pub), at).run();
   } catch (_) {}
-  return Response.json({ answer, sources: pub, at, route: route.kind, ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
+  return Response.json({ answer, sources: pub, at, route: route.kind, ...nearOut, ...(self ? { self: true } : {}), ...(told ? { told: told.length } : {}) });
 }

@@ -39,6 +39,8 @@ export const LIMITS = {
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
   'voice-reply': { rpm: 20, body: 4000 }, // owner-only: a reply to V01D's reflection or card; one model call (functions/api/voice-reply.js)
+  'probe-log': { rpm: 60, body: 2000 }, // the growth card reads it; the probe and fix tools write one record each (lib/probe-log.js)
+  'v01d-fixes': { rpm: 10, body: 500 }, // owner-only: approve one of V01D's fix pull requests (functions/api/v01d-fixes.js)
   'propose-fix': { rpm: 6, body: 40000 }, // owner-only: V01D proposes a matcher fix for an ask its probe missed (lib/propose-fix.js); the body carries one skill file
   'probe-asks': { rpm: 6, body: 8000 }, // owner-only: V01D writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
