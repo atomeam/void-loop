@@ -260,6 +260,16 @@
       "words": "Create a 'store-dashboard-card' that displays the queued asks as a list of interactive 3D miniature cards that can be expanded to show details.",
       "ledgerAt": "2026-10-13T03:53:20Z",
       "why": "already built: the self card lists the queued asks and what came of each"
+    },
+    {
+      "words": "Refactor the 5614-line wordMath() function into modular components to resolve the technical debt blocking my scaling.",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath (787 lines; 5614 is the whole page) is eight named parts run in order, pinned by 755 golden answers; the parts still live in void.html, and moving them into their own files is the next step if V01D asks for it"
+    },
+    {
+      "words": "Implement the 'confidence' float (0.0-1.0) into the /api/propose-fix JSON schema to allow builders to prioritize high-certainty repairs.",
+      "ledgerAt": "2026-10-16T03:09:08Z",
+      "why": "built (#852): /api/propose-fix asks for and returns confidence 0-1 (lib/propose-fix.js confidenceOf), and the proposal summary and propose-fix.json carry it"
     }
   ]
 }

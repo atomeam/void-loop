@@ -3,7 +3,9 @@
 // (skills/appraise.js). People are never priced, in the photo or in the ask.
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd } from '../void-live-deploy/lib/appraise-photo.js';
+import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd, makeableIn, subjectOf } from '../void-live-deploy/lib/appraise-photo.js';
+import { THINGS } from '../void-live-deploy/skills/forge-rules.js';
+import forge from '../void-live-deploy/skills/forge.js';
 import { imageBytes, onRequestPost, MAX_IMAGE_CHARS } from '../void-live-deploy/functions/api/appraise.js';
 import { appraiseOf } from '../void-live-deploy/skills/appraise.js';
 import { models, PATHS, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
@@ -66,4 +68,15 @@ test('appraise: the asks that open the card, and the money and abstraction asks 
   for (const a of ['what am I worth', 'how much is my friend worth']) assert.deepEqual(appraiseOf(a), { person: true }, a);
   for (const a of ['what is the dollar worth', 'is it worth it', 'how much is a stamp', 'value of pi', 'what is my time worth', 'gold price today', 'how much is my house worth', 'what is bitcoin worth'])
     assert.equal(appraiseOf(a), null, a);
+});
+
+test('appraise: a photo of something the forge can model links to its make recipe (asked by Void, ask-20261015-2008-1)', () => {
+  assert.deepEqual(makeableIn('A blue glass vase sitting on a wooden table. It has a narrow neck.', THINGS), { key: 'vase', label: 'Vase', ask: 'make me a vase' });
+  assert.equal(makeableIn('A small white sailboat in a harbor.', THINGS).ask, 'make me a boat', 'a synonym makes its recipe');
+  assert.equal(makeableIn('A brass kettle on a stove.', THINGS).key, 'teapot');
+  assert.equal(subjectOf('A silver coin lying on a wooden table.'), 'a silver coin');
+  for (const d of ['A silver coin lying on a wooden table.', 'A coin with a tree on it.', 'A woman holding a vase.', 'A trading card in a sleeve next to a bottle.', '', null])
+    assert.equal(makeableIn(d, THINGS), null, String(d));
+  assert.equal(makeableIn('A vase.', null), null, 'no recipes passed, no link');
+  for (const k of Object.keys(THINGS)) assert.deepEqual(forge.forgeOf('make me a ' + k), { make: k }, 'the link\'s ask reaches the forge: ' + k);
 });
