@@ -1,40 +1,36 @@
 /**
- * dice skill: roll dice on the stage.
- * "roll a d6", "roll 2d20", "dice", "roll dice".
- * Empty surface stays empty.
+ * dice skill — roll dice on the stage.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "roll the dice", "roll a d20", "dice roll".
+ * Shows a simple result card. Empty surface stays empty.
  */
-function parseDice(text) {
+export function diceOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:roll\s+)?(\d+)?d(\d+)$/) || t.match(/^roll\s+(?:a\s+)?(?:d)?(\d+)$/) || t.match(/^dice(?:\s+roll)?$/);
-  if (m) {
-    if (m[0].startsWith('dice')) return { n: 1, sides: 6 };
-    const n = m[1] ? parseInt(m[1], 10) : 1;
-    const sides = parseInt(m[2] || m[1], 10);
-    return { n: Math.min(n || 1, 10), sides: Math.min(sides || 6, 100) };
-  }
-  return null;
+  const m = t.match(/^(?:roll\s+)?(?:the\s+|a\s+|some\s+)?(?:dice|die|d(\d+)|(\d+)d(\d+))$/);
+  return m ? { sides: +(m[1] || m[3] || 6), count: +(m[2] || 1) } : null;
 }
 
-async function run(text, api) {
+function run(text, api) {
   const { showPage, esc } = api;
-  const d = parseDice(text);
+  const d = diceOf(text);
   if (!d) return 'none';
-  const rolls = Array.from({ length: d.n }, () => Math.floor(Math.random() * d.sides) + 1);
-  const sum = rolls.reduce((a, b) => a + b, 0);
+  const rolls = Array.from({ length: d.count }, () => 1 + Math.floor(Math.random() * d.sides));
+  const total = rolls.reduce((a, b) => a + b, 0);
   showPage((p) => {
-    p.innerHTML = '<h2>Dice roll</h2><div class="sub">' + esc(d.n + 'd' + d.sides) + '</div><p style="font-size:24px">' + esc(rolls.join(', ')) + (d.n > 1 ? ' = ' + sum : '') + '</p>';
+    p.innerHTML = '<h2>Dice roll</h2><p style="font-size:28px;font-weight:300">' + esc(rolls.join(' + ')) + ' = <b>' + esc(String(total)) + '</b></p>'
+      + '<div class="sub">' + esc(d.count + 'd' + d.sides) + ' · say "roll the dice" again for another</div>';
   });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a d6', 'roll 2d20', 'dice'],
-  nearMisses: ['what is a dice', 'dice game'],
-  match(lower, text) { return !!parseDice(text); },
+  examples: ['roll the dice', 'roll a d20', '2d6', 'dice roll'],
+  nearMisses: ['what are dice', 'dice game rules', 'how to play craps'],
+  match(lower, text) { return !!diceOf(text); },
   run,
   suite() {
-    const a = parseDice('roll 2d6');
-    return { ok: a && a.n === 2 && a.sides === 6 && !!parseDice('dice') && !parseDice('hello') };
+    const d = diceOf('roll a d20');
+    return { ok: d && d.sides === 20 && d.count === 1 && !diceOf('hello') };
   },
 };
