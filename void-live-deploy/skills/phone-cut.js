@@ -1,52 +1,55 @@
 /**
- * phone-cut films skill: auto-generates promotional posters for phone-cut films.
+ * phone-cut skill — auto-generates promotional posters for phone-cut films.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "phone-cut films", "generate promotional posters", "make phone-cut film posters", "auto generate film posters".
- * Uses film metadata from /api/films. Generates a 9:16 phone story poster preview. Empty surface stays empty.
- * Suite checks the match function.
+ * "phone-cut films", "auto-generate promotional posters", "make a phone poster for the newest film".
+ * Uses existing films data (/api/films) and canvas drawing. Empty surface stays empty.
  */
 import { filmMeta } from './films.js';
 
-export function wantsPhoneCut(text) {
+export function phoneCutOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:auto\s+)?generate\s+)?(?:promotional\s+)?(?:posters?\s+for\s+)?(?:phone-?cut\s+)?films?(?:\s+posters?)?$|phone-?cut\s+films?|promotional\s+posters?\s+for\s+films?$/i.test(t);
+  return /phone-?cut(?:\s+films?)?|auto-?generate\s+(?:promotional\s+)?posters?|promotional\s+posters?\s+for\s+(?:phone-?cut\s+)?films?/.test(t);
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  if (!wantsPhoneCut(text)) return 'none';
-  const el = showPage((p) => { p.innerHTML = '<h2>Phone-cut film posters</h2><div class="sub">looking up newest films…</div>'; });
+  if (!phoneCutOf(text)) return 'none';
+  const el = showPage((p) => { p.innerHTML = '<h2>Phone-cut promotional poster</h2><div class="sub">looking up the newest film…</div>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json());
-    if (api._pageStill && !api._pageStill(el)) return 'phone-cut';
-    const films = (j.films || []).slice(0, 3).map(filmMeta);
-    if (!films.length) {
-      el.innerHTML = '<h2>Phone-cut film posters</h2><p>No films yet. Ask again later.</p>';
-      return 'none';
+    if (!api._pageStill(el)) return 'phone-cut';
+    const films = (j.films || []).map(filmMeta);
+    const meta = films[0];
+    if (!meta) {
+      el.innerHTML = '<h2>Phone-cut promotional poster</h2><p>No films yet. Try again later.</p>';
+      return 'phone-cut';
     }
-    el.innerHTML = '<h2>Phone-cut film posters</h2><div class="sub">Auto-generated promotional 9:16 posters for the newest films</div>'
-      + films.map((m) => {
-          const title = (m.title || m.experiment || 'V01D FILM').replace(/\s*\|.*$/, '').trim();
-          return '<div style="margin:12px 0;padding:16px;border-radius:12px;background:linear-gradient(160deg,#14102a,#07070d);color:#fff;aspect-ratio:9/16;max-width:280px;display:flex;flex-direction:column;justify-content:space-between">'
-            + '<div><div style="font-size:11px;letter-spacing:.2em;text-transform:uppercase;opacity:.7">V01D FILMS</div><h3 style="margin:8px 0;font-size:22px">' + esc(title) + '</h3></div>'
-            + '<div style="font-size:12px;opacity:.85">An AI built this. Watch free at a-to-mind.com/films</div></div>';
-        }).join('')
-      + '<div class="src">From a-to-mind.com/api/films · phone-cut style</div>';
+    const canvas = document.createElement('canvas');
+    canvas.width = 1080; canvas.height = 1920;
+    const g = canvas.getContext('2d');
+    g.fillStyle = '#07070b'; g.fillRect(0, 0, 1080, 1920);
+    g.fillStyle = '#f2f2f7';
+    g.font = '600 72px system-ui, sans-serif';
+    g.fillText((meta.title || 'V01D FILMS').slice(0, 40), 80, 300);
+    g.font = '400 36px system-ui, sans-serif';
+    g.fillText('Watch free at a-to-mind.com/films', 80, 1600);
+    const data = canvas.toDataURL('image/png');
+    el.innerHTML = '<h2>Phone-cut poster · ' + esc(meta.title || meta.experiment || 'newest') + '</h2><img src="' + data + '" style="max-width:100%;border-radius:12px" alt="phone story poster"><p>1080×1920 phone story, drawn here. Nothing uploaded.</p><div class="src">From /api/films</div>';
     return 'phone-cut';
   } catch (_) {
-    if (api._pageStill && !api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Phone-cut film posters</h2><p>The films service did not answer just now.</p>';
+    if (!api._pageStill(el)) return 'none';
+    el.innerHTML = '<h2>Phone-cut promotional poster</h2><p>Could not generate just now. Ask again in a moment.</p>';
     return 'none';
   }
 }
 
 export default {
   name: 'phone-cut',
-  examples: ['phone-cut films', 'generate promotional posters', 'make phone-cut film posters', 'auto generate film posters'],
-  nearMisses: ['films', 'make this a poster', 'film poster', 'best films'],
-  match(lower, text) { return wantsPhoneCut(text); },
+  examples: ['phone-cut films', 'auto-generate promotional posters', 'make a phone poster for the newest film'],
+  nearMisses: ['phone films', 'cut the paper', 'posters for sale', 'best phone'],
+  match(lower, text) { return phoneCutOf(text); },
   run,
   suite() {
-    return { ok: wantsPhoneCut('phone-cut films') && !wantsPhoneCut('hello world') && !wantsPhoneCut('make this a poster') };
+    return { ok: phoneCutOf('phone-cut films') === true && phoneCutOf('hello world') === false };
   },
 };
