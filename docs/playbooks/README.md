@@ -7,10 +7,8 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | Playbook | What it grows | Followed by V01D yet |
 |:--|:--|:--|
 | [probe-and-fix.md](probe-and-fix.md) | an existing skill, from asks it misses | steps 1–5: V01D writes 25 asks for its least proven family and probes them daily (`.github/workflows/probe-asks.yml`), then proposes the matcher fix for the oldest miss and the repo's checks decide (`.github/workflows/propose-fix.yml`, a pull request labelled "made by V01D"); a builder still reviews and merges |
-| [route-correction.md](route-correction.md) | a skill that took an ask that is not its job | V01D narrows its own matcher from the owner's correction (`route:` jobs, `tools/propose-fix.mjs` narrow mode, checked by "lets go"); a route made inside the page goes to a builder |
 | [table-skill.md](table-skill.md) | a new skill answered from a built-in table | not yet |
 | [review-rule.md](review-rule.md) | a code-review check for a bug the review missed | not yet |
 | [film.md](film.md) | a film, and the next film being better | not yet |
-| [generated-book.md](generated-book.md) | a page for everything, read off the repo, with a stale check (the book) | not yet |
-| [manifest-field.md](manifest-field.md) | a generated manifest (families.json and its kin): a new per-row fact read off the repo, and the card that shows it | not yet |
 | [study-with-rea.md](study-with-rea.md) | a brief built on how the best really do it (REA, with evidence) | not yet |
+| [perf-pass.md](perf-pass.md) | the page, the 3D or the suite measurably faster, numbers before and after | not yet |

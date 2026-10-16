@@ -114,6 +114,7 @@
   "quiz me on this",
   "recent asks",
   "recipe for pancakes",
+  "recipie for pancakes",
   "redo a 12x14 room",
   "review code",
   "review this code: function f(t) { return math.round(t * 100) / 100; } const ok = f(3) === 0.15;",
@@ -160,7 +161,6 @@
   "validate this diff",
   "view a gaussian splat",
   "void status",
-  "weather in lisbon",
   "what are they doing",
   "what can i buy",
   "what can i use instead of butter in cookies",
@@ -182,7 +182,6 @@
   "when am i ovulating if my last period was march 1",
   "where is jupiter",
   "where is orion",
-  "who are you",
   "write an incident brief",
   "write release notes for my repo",
   "zoom in on the figure"

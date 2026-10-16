@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 387,
+ "counted": 389,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -184,6 +184,12 @@
   },
   {
    "file": "lib/guide.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -502,6 +508,12 @@
   },
   {
    "file": "lib/film-share.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/fuzzy.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -1328,6 +1340,10 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/fuzzy.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "lib/ground.js": {
    "imports": [],
    "importedBy": []
@@ -1407,6 +1423,12 @@
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/products.js"
+   ]
+  },
+  "lib/heat-dose.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/coral.js"
    ]
   },
   "lib/honest.js": {
@@ -2460,7 +2482,8 @@
   "skills/coral.js": {
    "imports": [
     "lib/reefwatch.js",
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "lib/heat-dose.js"
    ],
    "importedBy": []
   },
