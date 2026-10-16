@@ -41,6 +41,14 @@ def recent(last, days=MISS_DAYS, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     return (now - t).days < days
 
+def learnable(m):
+    """A miss Void could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
+    for and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to learn about 'zorbleflux', however often it is
+    typed (owner, 2026-10-16: it sat at the top of the wants, asked 64 times). A lookup that could not be reached (unreached)
+    and a plain gap still count."""
+    fb = str(m.get("fallback") or "")
+    return not fb.startswith("skill:") and not fb.startswith("none:")
+
 def gather(cap=60, with_done=False):
     cands = []
     # 1. what people asked for and Void couldn't do
@@ -50,7 +58,7 @@ def gather(cap=60, with_done=False):
         # the page learned to answer since (e.g. "add milk", now the inline list) would otherwise stay a want forever
         mf = os.environ.get("VOID_MISSES_FILE", "")
         board = json.loads(pathlib.Path(mf).read_text(encoding="utf-8")) if mf else call("/api/misses")
-        misses = [m for m in board[:40] if not str(m.get("fallback", "")).startswith("skill:") and recent(m.get("last"))]
+        misses = [m for m in board[:40] if learnable(m) and recent(m.get("last"))]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
             if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
