@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, recent } from '../void-live-deploy/skills/showcase.js';
+import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, everythingOf, proved } from '../void-live-deploy/skills/showcase.js';
 
 const e = (at, kind, what, extra = {}) => ({ at, by: 'claude', kind, what, ...extra });
 
@@ -93,9 +93,25 @@ test('previewed once: an ask already shown is never offered again, and the recap
   const { markShown, shownSet } = await import('../void-live-deploy/skills/showcase.js');
   markShown([{ ask: 'Ask B' }, { ask: 'ask c' }]); markShown([{ ask: 'ask b' }]);
   assert.deepEqual([...shownSet()], ['ask b', 'ask c'], 'cleaned, each once');
-  const many = Array.from({ length: 30 }, (_, i) => ({ ask: 'x' + i, at: new Date(Date.UTC(2026, 9, 1) + i * 36e5 * 40).toISOString().replace(/\.\d+Z$/, 'Z') })).reverse();
-  const now = Date.parse(many[0].at) + 36e5;
-  assert.equal(recent(many, now).length, 5, 'nothing in the last day: the newest five');
-  const busy = Array.from({ length: 40 }, (_, i) => ({ ask: 'y' + i, at: new Date(now - i * 36e5 / 2).toISOString().replace(/\.\d+Z$/, 'Z') }));
-  assert.equal(recent(busy, now).length, 40, 'a busy day is all of the day (40 builds half an hour apart fit in 24 hours)');
+});
+
+test('"show me everything you made" is the whole walkthrough by name; nothing else is', () => {
+  for (const a of ['show me everything you made', 'everything you have made', "walk me through all the things you've built", 'Everything V01D made so far', 'all you made for me'])
+    assert.ok(everythingOf(a), a);
+  for (const a of ['show me what you made', "what's new", 'everything you can do', 'show me everything', 'all the things'])
+    assert.ok(!everythingOf(a), a);
+});
+
+test('a preview is proved by a new thing, a new card, or the page log saying a skill answered; the encyclopedia and a miss are not proof', () => {
+  assert.ok(proved({ madeIds: ['t_1'] }));
+  assert.ok(proved({ pageChanged: true }));
+  assert.ok(proved({ log: { ask: 'open the book', score: 'pass', note: 'skill:guide' } }));
+  assert.ok(!proved({ log: { ask: 'x', score: 'pass', note: 'article' } }), 'Wikipedia is not the thing it said it made');
+  assert.ok(!proved({ pageChanged: true, log: { ask: 'x', score: 'pass', note: 'answer' } }), 'the generic answer opens a card too; the log wins');
+  assert.ok(!proved({ madeIds: ['t_1'], log: { ask: 'x', score: 'fail', note: 'miss:x' } }));
+  assert.ok(!proved({ log: { ask: 'x', score: 'pass', note: 'short topic' } }));
+  assert.ok(!proved({ log: { ask: 'x', score: 'fail', note: 'miss' } }));
+  assert.ok(!proved({ log: { ask: 'x', score: 'pass', note: '' } }));
+  assert.ok(!proved({}));
+  assert.ok(!proved({ madeIds: [], pageChanged: false, log: null }));
 });

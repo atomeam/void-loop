@@ -172,6 +172,34 @@ async function step(stageApi) {
   await stageApi.ask(s.ask);
   if (!tour || tour.steps[tour.i] !== s) return;
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
+  // the preview has to show the thing it names (owner, 2026-10-16: "the preview is supposed to actually preview what it says"):
+  // a moment for the card to land, then proof: a new thing on the stage, a new card, or the page's own log saying a skill
+  // answered (not the encyclopedia, not a miss). Without proof the line says so, and the ask goes to the miss board as a
+  // preview that showed nothing, so the builders fix the ledger line's try or the skill.
+  for (let t = 0; t < 10 && !lastLog(s.ask); t++) await new Promise((r) => setTimeout(r, 150)); // the log line lands a moment after the answer
+  await new Promise((r) => setTimeout(r, 300));
+  if (!tour || tour.steps[tour.i] !== s) return;
+  const pageNow = document.querySelector('.vpage');
+  if (!proved({ madeIds: tour.made.ids, pageChanged: !!pageNow && pageNow !== pageBefore, log: lastLog(s.ask) })) {
+    line.textContent = s.line + ' · but nothing showed just now: I flagged it for the builders';
+    line.dataset.showcaseFailed = '1';
+    try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(s.ask).slice(0, 200), fallback: 'preview:nothing-shown' }), keepalive: true }).catch(() => {}); } catch (_) {}
+  }
+}
+
+// what the page logs when an ask fell through to the encyclopedia or a generic answer, or missed (tools/claims-verify.mjs FALLBACK)
+const FALLTHROUGH = /^(?:article|answer|short topic|article fallback)$|^miss/;
+/** did the preview show the thing? The page's own log decides first: an ask that fell through to the encyclopedia or the generic
+ *  answer opened a card too, and that card is not the thing. Otherwise a new thing on the stage or a new card is proof; failing
+ *  those, the log has to say a skill answered. Pure. */
+export function proved({ madeIds = [], pageChanged = false, log = null } = {}) {
+  if (log && FALLTHROUGH.test(String(log.note || ''))) return false;
+  if ((madeIds && madeIds.length) || pageChanged) return true;
+  return !!(log && log.score === 'pass' && log.note);
+}
+/** the page's newest loop-log entry for this ask (void.html loopLog, localStorage), or null */
+function lastLog(ask) {
+  try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return (Array.isArray(l) ? l : []).filter((x) => x && CLEAN(x.ask) === CLEAN(ask)).pop() || null; } catch (_) { return null; }
 }
 
 /** start the walkthrough over these steps */
@@ -205,32 +233,41 @@ export async function nudge(stageApi, note) {
   return n;
 }
 
-/** a recap with nothing new to preview: the last day's builds (at least the newest five), so asking again is never everything ever made. Pure. */
-export function recent(steps, now = Date.now()) {
-  const cut = new Date(now - 864e5).toISOString().replace(/\.\d+Z$/, 'Z');
-  const day = steps.filter((x) => x.at >= cut);
-  return day.length >= 5 ? day : steps.slice(0, 5);
-}
+/** "show me everything you made": the whole walkthrough, previewed before or not, asked for by name. Pure. */
+const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything|all(?: the things)?|every single thing) (?:you|v01d|void)(?:'ve| have|'s| has)? (?:ever )?(?:made|built|done)(?: for me)?(?: so far| ever)?$/;
+export const everythingOf = (text) => ALL_RE.test(CLEAN(text));
 
 async function run(text, api) {
   const stageApi = api.stage;
   let list = [];
   try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
-  const floor = read(SEEN_KEY), V = await verifiedSet();
+  const V = await verifiedSet();
+  // everything, asked for by name: every playable build, whether or not this device has been shown it (never on its own)
+  if (everythingOf(text)) {
+    const all = whatsNew(sinceLast(list), { verified: V }).steps;
+    if (!all.length) { api.say('nothing to show yet'); return 'none'; }
+    markShown(all);
+    start(stageApi, all, { label: 'Everything I made' });
+    return 'showcase';
+  }
+  const floor = read(SEEN_KEY);
   const fresh = floor ? whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: V }) : { steps: [], waiting: [] };
-  // nothing new to preview: a recap of the last day (at least the newest five), never everything ever made
-  const steps = fresh.steps.length ? fresh.steps : recent(whatsNew(sinceLast(list), { verified: V }).steps);
   const wip = fresh.waiting.length ? ' · ' + fresh.waiting.length + ' more in progress (not answering yet)' : '';
-  if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
-  markShown(steps);
-  start(stageApi, steps, { label: (fresh.steps.length ? 'Built while you were away' : 'Built lately') + wip });
+  // a thing is previewed once (owner, 2026-10-16): with nothing new there is no replay, only the count and the way to see it all
+  if (!fresh.steps.length) {
+    const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
+    api.say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
+    return 'none';
+  }
+  markShown(fresh.steps);
+  start(stageApi, fresh.steps, { label: 'Built while you were away' + wip });
   return 'showcase';
 }
 
 export default {
   name: 'showcase',
-  examples: ['show me what you made', "what's new", 'what did you make for me', 'look what you did'],
+  examples: ['show me what you made', "what's new", 'what did you make for me', 'look what you did', 'show me everything you made'],
   nearMisses: ["what's new in the news", 'show me what you can do', 'what did you make for dinner'],
-  match(lower, text) { return showcaseOf(text || lower); },
+  match(lower, text) { return showcaseOf(text || lower) || everythingOf(text || lower); },
   run,
 };
