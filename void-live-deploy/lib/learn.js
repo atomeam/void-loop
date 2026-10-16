@@ -20,7 +20,7 @@ const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za
 
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34);
 export const targetOf = (ask) => 'miss:' + slug(ask);
-export const unbuilt = (fallback) => /not built yet|^none$/i.test(String(fallback || ''));
+export const unbuilt = (fallback) => /not built yet|^none(?:$|:)/i.test(String(fallback || '')); // 'none:<sources>': looked up, nothing found
 
 // one row from the board -> a learnable ask, or null (noise, secrets, pasted transcripts, test traffic)
 export function learnable(r) {

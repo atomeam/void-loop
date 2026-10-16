@@ -831,18 +831,28 @@ try {
     await D.ctx.close(); }
   // The refusal object (asked by Void): every "I cannot" says what is missing, to the person and as data to an agent.
   if (want('refusal object: every "I cannot" names what is missing')) { const R = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
-    await R.ctx.route(/wikipedia\.org|wiktionary\.org/, (r) => r.fulfill({ status: 404, body: '' }));
+    // the sources answer and know nothing (Wikipedia: an empty search; Wiktionary: no such entry), as they do live
+    let reachable = true; const missed = [];
+    R.p.on('request', (q) => { if (/\/api\/miss$/.test(q.url())) { try { missed.push(JSON.parse(q.postData() || '{}').fallback); } catch (_) {} } });
+    await R.ctx.route(/wikipedia\.org/, (r) => (reachable ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ batchcomplete: '', query: { searchinfo: { totalhits: 0 }, search: [] } }) }) : r.abort()));
+    await R.ctx.route(/wiktionary\.org/, (r) => (reachable ? r.fulfill({ status: 404, contentType: 'application/json', body: '{}' }) : r.abort()));
     await R.ask('tell me about zorbleflux', 400);
     await until(async () => /Missing:/.test(await R.page()), 6000);
     const pg = await R.page();
     const agent = await R.p.evaluate(async () => { for (let i = 0; i < 50 && !window.__tools.void_ask; i++) await new Promise((r) => setTimeout(r, 100)); return window.__tools.void_ask ? String(await window.__tools.void_ask.execute({ ask: 'tell me about quuxblarf' })) : 'no tool'; });
     const obj = (() => { try { return JSON.parse(agent.split('[cannot] ')[1]); } catch (_) { return null; } })();
     const kept = await R.p.evaluate(() => (window.voidRefusals || []).map((r) => r.id));
-    check('refusal object: every "I cannot" names what is missing: the page says it and where it is noted; the agent door returns the object as data; one id per gap',
-      /don't know this yet/.test(pg) && /Missing: what this is .*Noted as miss:tell-me-about-zorbleflux\./.test(pg)
-      && obj && obj.cannot === true && obj.kind === 'knowledge' && obj.id === 'cannot:knowledge:tell-me-about-quuxblarf'
-      && kept.includes('cannot:knowledge:tell-me-about-zorbleflux'),
-      [pg.slice(0, 200), agent.slice(-200), kept.join(',')].join(' | '));
+    // and when no source can be reached, the gap says nothing was looked up, never that there is no such thing
+    reachable = false;
+    await R.ask('tell me about glimberwock', 400);
+    await until(async () => /nothing was looked up/.test(await R.page()), 6000);
+    const pg2 = await R.page(), last = await R.p.evaluate(() => { const l = window.voidRefusals || []; return l[l.length - 1] || null; });
+    check('refusal object: every "I cannot" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from "no such thing"',
+      /don't know this yet/.test(pg) && /Missing: what this is .*Looked in Wikipedia and Wiktionary\. Noted as miss:tell-me-about-zorbleflux\./.test(pg)
+      && obj && obj.cannot === true && obj.kind === 'knowledge' && obj.id === 'cannot:knowledge:tell-me-about-quuxblarf' && JSON.stringify(obj.sources_checked) === '["wikipedia","wiktionary"]'
+      && kept.includes('cannot:knowledge:tell-me-about-zorbleflux') && missed.includes('none:wikipedia,wiktionary')
+      && /couldn't look this up/.test(pg2) && !/don't know this yet/.test(pg2) && last && last.kind === 'lookup' && JSON.stringify(last.sources_checked) === '[]' && missed.includes('unreached'),
+      [pg.slice(0, 200), agent.slice(-200), kept.join(','), missed.join(','), pg2.slice(0, 160)].join(' | '));
     await R.ctx.close(); }
   // The next batch: every ECB currency with the rate's date, a choice between Springfields, a choice between meanings,
   // the same ask again keeps its page, and Esc does one thing at a time.
