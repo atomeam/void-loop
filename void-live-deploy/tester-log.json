@@ -1,14 +1,21 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 56,
+ "runsTotal": 57,
  "kinds": {
   "grow": 15,
   "file": 33,
   "teach": 7,
-  "tighten": 1
+  "tighten": 2
  },
  "runs": [
+  {
+   "at": "2026-10-16T05:25:04Z",
+   "passed": 0,
+   "of": 26,
+   "kind": "tighten",
+   "note": "fps floor 1 -> 3"
+  },
   {
    "at": "2026-10-16T05:13:33Z",
    "passed": 0,
@@ -141,13 +148,6 @@
    "of": 18,
    "kind": "file",
    "note": "fix: \"summon a sprite\" nothing appeared; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
-  },
-  {
-   "at": "2026-10-15T16:50:11Z",
-   "passed": 17,
-   "of": 18,
-   "kind": "file",
-   "note": "fix: \"what can this figure do\" nothing appeared"
   }
  ],
  "seen": {
@@ -261,6 +261,10 @@
   "skill:spanish": "2026-10-16T05:13:33Z",
   "skill:splat": "2026-10-16T05:13:33Z",
   "skill:sport": "2026-10-16T05:13:33Z",
-  "skill:status": "2026-10-16T05:13:33Z"
+  "skill:status": "2026-10-16T05:13:33Z",
+  "skill:sticky": "2026-10-16T05:25:04Z",
+  "skill:store": "2026-10-16T05:25:04Z",
+  "skill:swaps": "2026-10-16T05:25:04Z",
+  "skill:swarm": "2026-10-16T05:25:04Z"
  }
 }
