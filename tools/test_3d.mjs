@@ -272,7 +272,8 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
     await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
     await F.ask('growth');
-    const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
+    // the tree draws while it is on screen, and the card has grown long (friction, the better score, the probes above it): scroll it into view as a visitor would while waiting, or it never draws and this waits for nothing
+    const drawn = await until(() => F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'growthtree'); return c && c.draws > 0 && c.ready ? c : false; }), 60000);
     // the card scrolls, and a longer friction line above the tree (#686) can leave the trunk below its first screen: bring the
     // tree into view first, as a visitor scrolls to it, so the tap lands on the tree and not on the ask box under the card
     if (drawn) { await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-tree canvas'); if (c) c.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }

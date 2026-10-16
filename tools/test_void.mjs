@@ -904,7 +904,7 @@ try {
       && /serendipity/.test(def) && /faculty of making happy discoveries/.test(def) && /Wiktionary/.test(def) && /ephemeral/.test(def2),
       [dir.slice(0, 80), def.slice(0, 80), def2.slice(0, 40)].join(' | '));
     check('list: "how many days until friday" counts to the next Friday; "what day is it in Tokyo" shows the day there; "time difference between London and Tokyo" says the gap in words; none reach Wikipedia, the miss board or the calendar',
-      new RegExp('^Calculated\\s+' + want + ' days?').test(fri) && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
+      new RegExp('^Calculated\\s+(?:ANSWER[^\\n]*\\s+)?' + want + ' days?').test(fri) /* the card's type line (V01D cards) sits between the title and the answer */ && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
