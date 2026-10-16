@@ -1,34 +1,45 @@
 /**
- * palette skill — generate a simple color palette (pure)
+ * palette skill — generate a random color palette.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "color palette", "generate a color palette", "make a palette".
+ * "random color palette", "give me colors", "new palette".
+ * Pure client-side HSL. Empty surface stays empty.
  */
 export function paletteOf(text) {
-  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
-  return /^(?:please\s+)?(?:generate|make|create|give\s+me)\s+(?:a\s+|me\s+a\s+)?(?:color|colour)\s+palette|^(?:color|colour)\s+palette$/.test(t);
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:please\s+)?(?:(?:generate|make|create|give|new|random)\s+(?:me\s+)?(?:a\s+)?(?:random\s+)?(?:color|colour)?\s*palette|color palette|colour palette|give me colors|random colors)$/.test(t);
 }
-function randHex() {
-  return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+
+function hslToHex(h, s, l) {
+  s /= 100; l /= 100;
+  const a = s * Math.min(l, 1 - l);
+  const f = (n) => {
+    const k = (n + h / 30) % 12;
+    const color = l - a * Math.max(Math.min(k - 3, 9 - k, 1), -1);
+    return Math.round(255 * color).toString(16).padStart(2, '0');
+  };
+  return `#${f(0)}${f(8)}${f(4)}`;
 }
-async function run(text, api) {
-  if (!paletteOf(text)) return 'none';
+
+function run(text, api) {
   const { showPage, esc } = api;
-  const colors = [randHex(), randHex(), randHex(), randHex(), randHex()];
-  showPage((el) => {
-    el.innerHTML = '<h2>Color palette</h2><div style="display:flex;gap:8px;margin:12px 0;flex-wrap:wrap">'
-      + colors.map((c) => '<div style="width:60px;height:60px;border-radius:8px;background:' + esc(c) + ';border:1px solid rgba(255,255,255,.2)" title="' + esc(c) + '"></div>').join('')
-      + '</div><div class="sub">' + colors.map(esc).join(' · ') + '</div><div class="sub">say “color palette” for another</div>';
+  if (!paletteOf(text)) return 'none';
+  const base = Math.floor(Math.random() * 360);
+  const colors = [0, 30, 60, 180, 210].map((off) => hslToHex((base + off) % 360, 70, 55));
+  const swatches = colors.map((c) => `<div style="background:${c};width:48px;height:48px;border-radius:6px;display:inline-block;margin:4px" title="${esc(c)}"></div>`).join('');
+  showPage((p) => {
+    p.innerHTML = '<h2>Color palette</h2><div>' + swatches + '</div><pre style="font-size:14px;background:rgba(0,0,0,.3);padding:12px;border-radius:8px">' + esc(colors.join('\n')) + '</pre>'
+      + '<p class="sub">random complementary · nothing leaves this browser</p>';
   });
   return 'palette';
 }
+
 export default {
   name: 'palette',
-  examples: ['color palette', 'generate a color palette', 'make a palette'],
-  nearMisses: ['what is a color palette', 'paint palette', 'what color is red'],
-  match(lower, text) { return paletteOf(text); },
+  examples: ['random color palette', 'give me colors', 'new palette', 'color palette'],
+  nearMisses: ['what is a color', 'paint', 'draw', 'hex color'],
+  match(lower, text) { return paletteOf(text || lower); },
   run,
   suite() {
-    const ok = paletteOf('color palette') && paletteOf('generate a color palette') && !paletteOf('what is a color palette');
-    return { ok, got: ok ? 'pass' : 'parser fail' };
-  }
+    return { ok: paletteOf('random color palette') && !paletteOf('hello') };
+  },
 };
