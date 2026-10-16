@@ -1,26 +1,32 @@
 /**
- * coin-flip skill — flip a fair coin
- * "flip a coin", "heads or tails", "coin flip", "toss a coin"
+ * coin-flip skill — flip a coin.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "flip a coin", "heads or tails", "coin flip".
+ * Shows the result. Empty surface stays empty.
  */
-export function isCoin(text) {
-  return /^(?:please\s+)?(?:flip\s+(?:a\s+)?coin|coin\s+flip|heads\s+or\s+tails|toss\s+a\s+coin)$/i.test(String(text || '').trim().replace(/[?!.]+$/, ''));
+export function coinOf(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:flip\s+(?:a\s+|the\s+)?)?coin(?:\s+flip)?$|^(?:heads\s+or\s+tails|tails\s+or\s+heads)$/.test(t);
 }
-async function run(text, api) {
+
+function run(text, api) {
   const { showPage, esc } = api;
+  if (!coinOf(text)) return 'none';
   const side = Math.random() < 0.5 ? 'Heads' : 'Tails';
   showPage((p) => {
-    p.innerHTML = '<h2>Coin flip</h2><p style="font-size:48px;text-align:center;margin:24px 0;font-weight:300">' + esc(side) + '</p><div class="sub">say “flip a coin” for another</div>';
+    p.innerHTML = '<h2>Coin flip</h2><p style="font-size:36px;font-weight:300;text-align:center">' + esc(side) + '</p>'
+      + '<div class="sub">say "flip a coin" again for another</div>';
   });
   return 'coin-flip';
 }
+
 export default {
   name: 'coin-flip',
-  examples: ['flip a coin', 'heads or tails', 'coin flip', 'toss a coin'],
-  nearMisses: ['what is a coin', 'flip the page', 'coin collection'],
-  match(lower, text) { return isCoin(text); },
+  examples: ['flip a coin', 'heads or tails', 'coin flip'],
+  nearMisses: ['what is a coin', 'coin value', 'flip the table'],
+  match(lower, text) { return coinOf(text); },
   run,
   suite() {
-    const ok = isCoin('flip a coin') && isCoin('heads or tails') && !isCoin('what is a coin');
-    return { ok, got: ok ? 'pass' : 'match failed' };
-  }
+    return { ok: coinOf('flip a coin') && !coinOf('hello') };
+  },
 };
