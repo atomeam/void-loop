@@ -1211,7 +1211,7 @@
     {
      "name": "guide",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
