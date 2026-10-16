@@ -5,7 +5,7 @@
 // when it has one, Void's review as a gate (tools/review-pr.mjs --gate), and the everyday benchmark on the missed ask plus every
 // bench ask the skill already answers (BENCH_ASKS, so nothing it knew is lost). A proposal that passes everything is written as
 // a patch file for the workflow's write job (.github/workflows/propose-fix.yml), which moves the bytes into a pull request labelled
-// "made by V01D" and never automerge; a proposal that fails any step is undone here and the job's note says which step, so a builder
+// "made by V01D" and automerge (owner, 2026-10-16); a proposal that fails any step is undone here and the job's note says which step, so a builder
 // picks it up. Nothing a model wrote runs with a write token, and the job's ask is V01D's own words.
 //   node tools/propose-fix.mjs                         the oldest open probe: job (owner token VOID_OWNER_TOKEN)
 //   node tools/propose-fix.mjs --job <id>              that job
