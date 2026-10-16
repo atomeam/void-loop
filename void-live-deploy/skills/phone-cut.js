@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "phone-cut films", "generate promotional posters", "make phone-cut film posters", "auto generate film posters".
  * Uses film metadata from /api/films. Generates a 9:16 phone story poster preview. Empty surface stays empty.
+ * Suite checks the match function.
  */
 import { filmMeta } from './films.js';
 

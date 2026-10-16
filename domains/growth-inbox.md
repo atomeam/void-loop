@@ -41,3 +41,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
 | open | 2026-10-15 | show probe success rate card | asked by Void (ask-20261015-2116-2, daily) |
 | open | 2026-10-15 | daily growth summary on empty stage | new idea to keep inbox open |
+| open | 2026-10-16 | local tide times for a harbor | new idea from growth examples |
+| open | 2026-10-16 | random daily quote on empty box | new idea to fill empty surface |
