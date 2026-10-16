@@ -2,12 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T18:18:00.953Z",
-   "sha": "461a4cce26495a30e700ee299030cfb51d87cb86",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38944793634",
+   "at": "2026-10-16T18:21:12.997Z",
+   "sha": "4f2a59cb66fb4c174893f23fa6446168229d2156",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38944620004",
    "suite": "browser suite on main",
    "checks": [
-    "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tips, the readout ending on today"
+    "router: the will turns routing into wants: a skill near-miss becomes \"learn to handle ...\", a router that keeps falling back is a fix; would-escalate is not counted twice (it reaches the upgrade through void_shortfalls)"
    ]
   },
   {
