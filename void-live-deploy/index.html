@@ -4045,6 +4045,18 @@ say('nothing selected to remove');
     // every page is a V01D card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
     // with a rarity gem, an "adds to V01D" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
     let cardLib = null, cardStats = null;
+    const shareReady = import('/lib/card-share.js').catch(() => null);
+    // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
+    function showSharedCard(sc) {
+      currentAsk = sc.t;
+      const el = showPage((p) => {
+        p.dataset.cardKind = 'Answer';
+        p.innerHTML = '<h2>' + esc(sc.t) + '</h2>' + String(sc.b || '').split(/\n{2,}/).filter(Boolean).map((x) => '<p>' + esc(x) + '</p>').join('')
+          + '<div class="src">brought back from a copied V01D card' + (sc.src.length ? ' · Source: ' + sc.src.map((s, i) => (s.u ? '<a href="' + esc(s.u) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.t) + '</a>' : esc(s.t))).join(' · ') : '') + '</div>'; // void-review: ok: every field escaped, links https only
+      });
+      say('');
+      return el;
+    }
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
     import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl); m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); }).catch(() => {});
     let ratingsP = null;
@@ -5172,6 +5184,8 @@ say('nothing selected to remove');
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by V01D</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
+      // a pasted V01D card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
+      { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
       rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
