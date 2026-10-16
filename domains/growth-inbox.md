@@ -39,3 +39,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
+| building | 2026-10-16 | show probe success rate card | asked by Void (ask-20261015-2116-2, daily); skill added |
+| open | 2026-10-16 | daily growth summary on empty stage | new idea to keep inbox open |
+| open | 2026-10-16 | void ambient soundscape card | new idea: quiet generative audio for the stage |
