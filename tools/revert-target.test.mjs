@@ -1,7 +1,7 @@
 // verify-main reverts the commit that broke the failing check, not whichever commit it happened to test (tools/revert-target.mjs).
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { SUITE_JOBS, failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS, NO_SUITE, noSuitePick } from './revert-target.mjs';
+import { SUITE_JOBS, failingChecks, annotations, namesFrom, pickRevert, verifiedState, stillLive, stillRed, pickLive, TITLE, COUNT_TITLE, VERIFY_WORKFLOWS, NO_SUITE, noSuitePick, isSuiteJob } from './revert-target.mjs';
 
 const RACK = 'rack: "what games do you have" stands a 3D shelf';
 
@@ -174,7 +174,9 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
   assert.doesNotMatch(verify, /^\s+needs:/m);
   assert.match(verify, /group: void-verify-fast-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the fast tests');
-  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}\n\s+cancel-in-progress: false/, 'one group per head for the suite, never cancelled');
+  assert.match(verify, /group: void-verify-\$\{\{ github\.sha \}\}-\$\{\{ matrix\.shard \}\}\n\s+cancel-in-progress: false/, 'one group per head and shard for the suite, never cancelled (three shards since 2026-10-16)');
+  assert.match(verify, /matrix:\n\s+shard: \[1, 2, 3\]/, 'the suite runs as three shards'); assert.match(verify, /shard: \$\{\{ matrix\.shard \}\}\/3/, 'each job gets its shard');
+  assert.ok(isSuiteJob('browser-suite') && isSuiteJob('browser-suite (2)') && isSuiteJob('verify-main') && !isSuiteJob('python-tests') && !isSuiteJob('browser-suite-x'), 'a shard job counts as the suite job');
   assert.match(verify, /part: fast/); assert.match(verify, /part: suite/);
   assert.match(verify, /::error title=python-tests failed::/, 'a red fast test says so and reverts nothing');
   const action = read('.github/actions/void-test/action.yml');

@@ -20,6 +20,8 @@ export const COUNT_TITLE = 'verify-main failed checks';
 // the job whose verdict the revert reads: browser-suite since 2026-10-10 (verify.yml split the fast tests off into python-tests,
 // so a Python test red on the runner no longer hides the suite); verify-main before, and those verdicts still count
 export const SUITE_JOBS = ['browser-suite', 'verify-main'];
+/** a job of the suite: the plain name, or a shard of it ("browser-suite (1)", verify.yml's matrix since 2026-10-16). Pure. */
+export const isSuiteJob = (name) => SUITE_JOBS.some((n) => name === n || String(name).startsWith(n + ' ('));
 const MAX_NAMES = 9; // GitHub keeps 10 error annotations per step: up to 9 names plus the count
 const NAME_LEN = 160;
 
@@ -130,12 +132,14 @@ export function verifiedState(sha, repo, api = gh, body = (s) => run('git', ['lo
   const runs = (api('repos/' + repo + '/actions/runs?head_sha=' + sha + '&per_page=20').workflow_runs || [])
     .filter((r) => VERIFY_WORKFLOWS.includes(r.name) && r.event !== 'pull_request');
   for (const r of runs) {
-    const job = (api('repos/' + repo + '/actions/runs/' + r.id + '/jobs').jobs || []).find((j) => SUITE_JOBS.includes(j.name));
-    if (!job || job.status !== 'completed') continue;
-    if (job.conclusion === 'success') return { sha, state: 'pass', failing: [] };
-    if (job.conclusion === 'failure') {
-      const { names, complete } = namesFrom(api('repos/' + repo + '/check-runs/' + job.id + '/annotations?per_page=50'));
-      return { sha, state: 'fail', failing: complete ? names : null };
+    const jobs = (api('repos/' + repo + '/actions/runs/' + r.id + '/jobs').jobs || []).filter((j) => isSuiteJob(j.name)); // one job, or one per shard
+    if (!jobs.length || jobs.some((j) => j.status !== 'completed')) continue;
+    if (jobs.every((j) => j.conclusion === 'success')) return { sha, state: 'pass', failing: [] };
+    const red = jobs.filter((j) => j.conclusion === 'failure');
+    if (red.length) {
+      const names = [], completes = [];
+      for (const job of red) { const r2 = namesFrom(api('repos/' + repo + '/check-runs/' + job.id + '/annotations?per_page=50')); names.push(...r2.names); completes.push(r2.complete); }
+      return { sha, state: 'fail', failing: completes.every(Boolean) ? [...new Set(names)] : null };
     }
   }
   return { sha, state: 'unknown', failing: null };

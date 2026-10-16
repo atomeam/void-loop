@@ -4,6 +4,9 @@ inputs:
   bench:
     description: "with = suite then dedicated everyday benchmark; skip = suite only (a parallel job runs the bench); only = just the benchmark against tools/bench.best.json"
     default: with
+  shard:
+    description: "i/n = run only the browser-suite sections whose heading hashes to shard i of n (tools/shard.mjs), so n jobs share the suite; empty = the whole suite"
+    default: ""
   part:
     description: "all = the fast tests then the browser suite; fast = only the fast tests (Python tools, node unit tests, extension, glyphs, calendar, growth suites); suite = only the browser suite (verify.yml runs the two as separate jobs, so one never hides the other's result)"
     default: all
@@ -97,6 +100,7 @@ runs:
         # dedicated step below covers bench:with; deploy.yml PRs use bench:skip + a
         # parallel bench:only job.
         VOID_SKIP_BENCH: '1'
+        VOID_SHARD: ${{ inputs.shard }}
       run: |
         set -o pipefail
         node tools/test_void.mjs 2>&1 | tee test-output.txt
