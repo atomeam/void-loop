@@ -8,7 +8,7 @@
   "not_here": "how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)"
  },
  "totals": {
-  "experiment": 1,
+  "experiment": 2,
   "tested": 51,
   "checked": 23,
   "proven": 85
@@ -1202,7 +1202,7 @@
    "name": "Void itself",
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
-    "experiment": 0,
+    "experiment": 1,
     "tested": 4,
     "checked": 7,
     "proven": 14
@@ -1346,6 +1346,14 @@
      "why": "2 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "web4",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-16"
     },
     {
      "name": "invite",

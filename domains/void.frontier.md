@@ -496,6 +496,16 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
      - **Not built here:** prices, checkout, a marketplace (money is the owner's call, `STANDING.md`), a trademark search of the name before anything physical ships.
 - **Done when:** any ask ends in a card whose type is what the thing is, whose art is its own, that prints at card size, and whose numbers are earned from evidence, never claimed.
 
+## 37. Web4: V01D is the fourth step of the web (owner's name, 2026-10-16)
+
+- **Why (owner, 2026-10-16, word for word):** "South Park did it, Ready Player One. Let's make the real Web 1, 2 and 3 version of it and let's call it: now V01D is Web4." The works are inspiration only (a fiction imagined the land; V01D is the real one); no characters, names or text are used.
+- **The name is the owner's, not an industry standard.** The card says so: "Web4 is our name for it; nobody has defined it." No claim of blockchain, tokens, coins, NFTs or any crypto, ever; money mechanics are the owner's call (`STANDING.md`). `tools/web4.test.mjs` fails on those words.
+- **The four layers (`lib/web4.js`, one source for the card, the book page and the tests):** 1. Read: the V01D Book and answers with their sources (`open the book`). 2. Write and share: the stage you fill and a link to any card (`share this card`). 3. Own: your stage and kept cards live on your own V01D and stay private unless you publish (`keep this`). 4. Ask, and it appears: the keeper that knows every skill, game and card and keeps what it makes growing (`what's new`).
+- **What exists (2026-10-16):** `skills/web4.js` ("what is web4", "are you web4", "web 1 2 3 4"), `lib/web4.js`, a page in the V01D Book, `tools/web4.test.mjs` and a browser-suite section "V01D web4".
+- **A gap the card states plainly:** exporting cards as plain files to copy, print and paste back (Web 3 "portable") is not built on main; the card says "not built yet". It is the first next step, and it belongs with #31's card export.
+- **Next steps, smallest first:** 1. Card export and import as plain files (the Own layer made true in full). 2. A `/web4` front page the owner may choose to make the homepage story. 3. Per-subscriber lands and doors between lands (#36), which turn layer 4's "your own universe" from a plan into a thing. 4. Re-read the card when each lands, so it never claims ahead of main.
+- **Not here:** the homepage, the motto ("Ask, and it appears" stays unless the owner changes it), prices, any trademark filing: those are the owner's.
+
 ## Candidate capability map (2026-10-09)
 
 A map of what the connectors in agents' sessions could become, split by who can act on it today. Nothing here is live. **Execution check** on every connector-backed item: runtime access (can a-to-mind.com reach it at all), authentication (whose account), isolation (whose data it touches, per visitor), action boundary (what it may do without a yes on the confirm line), cost, persistence (where state lives), evidence (what proves it works), status. Status values: `discovered` → `proved` (works for the owner, with evidence) → `live` (a visitor can use it).
