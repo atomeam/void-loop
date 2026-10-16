@@ -2,12 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T18:27:27.858Z",
+   "at": "2026-10-16T18:30:56.887Z",
    "sha": "f830ac3de0af1925bc1f9884b5ca3eea924863d8",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38946233577",
    "suite": "browser suite on main",
    "checks": [
-    "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tips, the readout ending on today"
+    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
    ]
   },
   {
