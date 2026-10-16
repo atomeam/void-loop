@@ -2,12 +2,13 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T07:28:30.173Z",
-   "sha": "54663a2e3c667936b9511d421cc6b92aa043f991",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38865487578",
+   "at": "2026-10-16T07:30:24.546Z",
+   "sha": "5a5479cb5f985fd122713efba06aa05a2488916d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38865674175",
    "suite": "browser suite on main",
    "checks": [
     "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+    "countdown: \"days until new year\" lands as an outcome card on the stage (not a popup page) with the right day count, a working copy button, and it survives a reload",
     "cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
     "suite ran to the end"
    ]
