@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 64,
+ "runsTotal": 65,
  "kinds": {
   "grow": 15,
   "file": 37,
   "teach": 7,
   "tighten": 3,
-  "none": 2
+  "none": 3
  },
  "runs": [
+  {
+   "at": "2026-10-16T06:51:30Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T06:45:10Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 20,
    "kind": "grow",
    "note": "grew the suite: \"convert 5 miles to km\""
-  },
-  {
-   "at": "2026-10-15T21:48:02Z",
-   "passed": 0,
-   "of": 19,
-   "kind": "grow",
-   "note": "grew the suite: \"weather in boston\""
   }
  ],
  "seen": {
@@ -173,9 +173,9 @@
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
   "skill:convert": "2026-10-16T06:45:10Z",
-  "skill:coral": "2026-10-15T11:56:55Z",
-  "skill:counter": "2026-10-15T12:07:13Z",
-  "skill:country": "2026-10-15T12:12:56Z",
+  "skill:coral": "2026-10-16T06:51:30Z",
+  "skill:counter": "2026-10-16T06:51:30Z",
+  "skill:country": "2026-10-16T06:51:30Z",
   "skill:crypto": "2026-10-15T15:57:36Z",
   "skill:dark-look": "2026-10-15T16:11:51Z",
   "skill:dates": "2026-10-15T16:35:42Z",
