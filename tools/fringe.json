@@ -1828,5 +1828,49 @@
     ],
     "sha256": "aca3f4fba92efbe8e4ba4f4dcbb31e8465fab9f1836df58aa2cfdce0745e3c1a",
     "emit": true
+  },
+  {
+    "run": 74,
+    "at": "2026-10-16T04:24:25Z",
+    "family": "attention",
+    "draft": "drafts/fringe/attention-8.html",
+    "sources": [
+      {
+        "claim": "Responses to a central target letter are slowed when the flanking letters call for the other response (the flanker effect)",
+        "source": "https://doi.org/10.3758/BF03203267",
+        "confidence": "confirmed"
+      },
+      {
+        "claim": "The flanker cost is smaller on a trial that follows an incongruent trial than on one that follows a congruent trial (conflict adaptation, the Gratton effect)",
+        "source": "https://doi.org/10.1037/0096-3445.121.4.480",
+        "confidence": "claim"
+      },
+      {
+        "claim": "Part of that sequence effect comes from exact stimulus repeats rather than adaptation to conflict, so the shrink is not pure control",
+        "source": "https://doi.org/10.1038/nn1051",
+        "confidence": "claim"
+      },
+      {
+        "claim": "A person's own crowd cost and its shrink after conflict, tracked over sittings at home, are stable enough to notice a change in how focused they are",
+        "source": "drafts/fringe/attention-8.html",
+        "confidence": "open"
+      }
+    ],
+    "hypothesis": "A 48-row flanker sitting in the browser can measure a person's own crowd cost and whether it shrinks right after a row that fought them, without any server.",
+    "behavior": "five arrows, answer the middle one; the cost of disagreeing neighbours in ms, split by the row before (the Gratton effect), kept per sitting in this browser only",
+    "findings": [
+      "the after-row split needs both rows correct and leaves about a dozen rows per cell in one sitting, so the draft asks for about six sittings before reading the shrink"
+    ],
+    "failure_modes": [
+      {
+        "what": "exact repeats of the same row inflate the after-conflict shrink",
+        "evidence": "Mayr, Awh and Laurey (2003, https://doi.org/10.1038/nn1051) found the sequence effect largely vanished once exact repeats were removed; this draft does not remove them yet"
+      }
+    ],
+    "next_experiments": [
+      "drop exact stimulus repeats from the after-row split and compare the shrink with and without them"
+    ],
+    "sha256": "0923656e7441099272585f50fb995492020fa41ccddac8a8bf93b3b7020be458",
+    "emit": false
   }
 ]
