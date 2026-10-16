@@ -74,7 +74,7 @@ export function skillsHtml(esc, row) {
       + '<span class="fh-tier" style="color:var(--d-ink-2,#c3c8d8)">' + esc(s.tier || 'unrated') + '</span>'
       + '<br><span class="fh-why" style="font-size:13px;color:var(--d-ink-3,#8e94a8)">' + esc(s.why || '')
       + (fail ? '; the everyday benchmark got ' + s.failing.length + ' of its asks wrong on its last run' : '')
-      + (Array.isArray(s.smoke) && s.smoke.length ? '; <span class="fh-smoke">the daily smoke test failed it: ' + esc(s.smoke[0]) + (s.smoke.length > 1 ? ' (and ' + (s.smoke.length - 1) + ' more)' : '') + '</span>' : '') + '</span>'
+      + (Array.isArray(s.smoke) && s.smoke.length ? '; <span class="fh-smoke">its daily test failed: ' + esc(s.smoke[0]) + (s.smoke.length > 1 ? ' (and ' + (s.smoke.length - 1) + ' more)' : '') + '</span>' : '') + '</span>'
       + '<br><span class="fh-meta" style="font-size:12px;color:var(--d-ink-3,#8e94a8);font-variant-numeric:tabular-nums">' + esc(metaWords(s)) + '</span></span></li>';
   }).join('') + '</ul>';
 }
@@ -131,7 +131,7 @@ export function suite() {
     && metaWords(fam.families[0].skills[0]) === 'last tested 2026-10-16 by its tests · success rate 96.7% on the benchmark' && metaWords(fam.families[0].skills[1]) === 'never tested'
     && metaWords(fam.families[0].skills[2]) === 'never tested · success rate not measured yet' && metaWords({ last_tested: 'yesterday', success_rate: 7 }) === 'never tested'
     && h.includes('class="fh-meta"') && !/usage|popular|unused|last used/i.test(h.replace(/never counted/, ''))
-    && h.includes('the daily smoke test failed it: suite &lt;x&gt; failed (and 1 more)') && !h.includes('suite <x>')
+    && h.includes('its daily test failed: suite &lt;x&gt; failed (and 1 more)') && !h.includes('suite <x>')
     && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals');
   return { ok, got: ok ? '' : JSON.stringify(H) };
 }

@@ -19,6 +19,6 @@ test('the daily smoke test (asked by Void): skills-check --write records every s
   assert.match(r.stdout, /smoke: \d+ skills checked, \d+ failing/);
   // the committed record is today's shape (the upkeep workflow rewrites it daily; a clean tree has no failing skill)
   const kept = JSON.parse(readFileSync(resolve(root, 'tools/skills-smoke.json'), 'utf8'));
-  assert.equal(kept.checked, names.length, 'tools/skills-smoke.json counts every listed skill (node tools/skills-check.mjs --write tools/skills-smoke.json)');
+  assert.ok(kept.checked > 0 && /^\d{4}-\d{2}-\d{2}$/.test(kept.at), 'tools/skills-smoke.json is a real record (the upkeep workflow rewrites it daily; a PR adding a skill need not)');
   assert.deepEqual(Object.keys(kept.failing).filter((k) => !names.includes(k)), []);
 });
