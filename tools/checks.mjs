@@ -26,6 +26,7 @@ for (const [name, file] of [
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
+  ['near-miss', 'near-miss.test.mjs'],
   ['word-math', 'word-math.test.mjs'],
   ['swarm', 'swarm.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
