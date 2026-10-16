@@ -22,7 +22,7 @@ export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:hey\s+)?void,?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'s|\s+is)\s+new|what(?:'s|\s+is)\s+new(?:\s+(?:with\s+you|in\s+void|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
+const ASK_RE = /^(?:(?:hey\s+)?void,?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:\s+(?:with\s+you|in\s+void|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
 
 /** the ask wants the walkthrough. Pure. */
 export const showcaseOf = (text) => ASK_RE.test(CLEAN(text));
