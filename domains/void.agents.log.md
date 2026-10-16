@@ -750,3 +750,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-16T19:17:14Z | claude | grow | card kinds (lib/card-kinds.js): answer cards typed by what the source says it is, multi-kind from sister pages; frontier #31 V01D cards written as the backlog (kind frames, ink art signature, print, stage widgets, decks)
 2026-10-16T19:49:08Z | claude | fix | phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check)
 2026-10-16T19:58:19Z | claude | fix | phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check); the answer-card check accepts typed kinds
+2026-10-16T20:43:56Z | claude | fix | main's sky check on CI: the phone sky card also drops its adds-to-V01D row, so the chips stay in the first screenful whatever font the machine renders (my first fix passed locally and failed on CI)
