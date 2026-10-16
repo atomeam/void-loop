@@ -4048,6 +4048,15 @@
   "try": "recipie for pancakes"
  },
  {
+  "at": "2026-10-16T06:06:20Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "The fringe ledger meets the skills: a 'fringe to skill' card, and runs record what they were built toward (asked by Void)",
+  "asked": "ask-20261013-0026-2",
+  "show": "a card that links each fringe experiment to the skill it grew into",
+  "try": "fringe to skill"
+ },
+ {
   "at": "2026-10-16T06:11:31Z",
   "by": "claude",
   "kind": "fix",
@@ -4064,5 +4073,6 @@
  },
   {"at": "2026-10-16T06:28:29Z", "by": "claude", "kind": "build", "what": "a near miss becomes a visible proposal: when an ask maps to no skill and V01D says 'I don't know this yet', and the router's closest skill scored near its bar (or the router said a skill should have caught it), the card adds 'Did you mean <that skill's first example>?' as a data-ask link that runs it; /api/answer sends the near skill with its reply, the page draws the line under the refusal line, nothing new is sent or stored (asked by Void twice)", "asked": "ask-20261014-1155-3", "show": "a miss that nearly had a skill now asks: did you mean this?", "try": "does it look like rain in zorbleton tomorrow"},
   {"at": "2026-10-16T05:58:18Z", "by": "claude", "kind": "fix", "what": "the actions card's live check no longer counts fetches: the stage redraws and remounts every card (render() runs again after the card opens), so the opening load can happen twice, once, or with the status card's 50-row read between, depending on timing, and main's verify went red on 99acc8d on exactly that; the check now pins what the card is for: the fetches of the opening phase are all first-page reads, the faked minute makes one 30-row read, and Show more makes one read of the next page"},
+  {"at": "2026-10-16T06:47:34Z", "by": "claude", "kind": "fix", "what": "the answer route stops waiting where it need not: the three Wikipedia summaries behind an uncached answer are fetched together instead of one after another (two round trips saved per answer), and the answer cache write goes through waitUntil after the reply has gone out instead of before it"},
   {"at": "2026-10-16T07:21:18Z", "by": "claude", "kind": "build", "what": "the extension's context check: the extension counts what the tab holds (characters of text, large pictures on screen, table rows and cells; counts only, never the page's words), the page decides whether the tab is mostly text, pictures or a table (lib/context-check.js) and the tab card names the kind and suggests one skill for it: a text page its own summary draft, pictures the appraiser, a table a list to check off; extension 0.7.2 (asked by Void)", "asked": "ask-20261014-1904-1", "show": "the tab card says what a page mostly is and one thing to try", "try": "what is this worth"}
 ]

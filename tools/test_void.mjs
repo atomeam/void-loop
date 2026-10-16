@@ -3072,6 +3072,26 @@ try {
     const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
     check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
     await P.ctx.close(); }
+  // fringe-to-skill: the fringe ledger card (asked by Void, ask-20261013-0026-2: "a dashboard that visualizes the relationship
+  // between a fringe experiment and its potential as a permanent skill"). On a phone: one row per published family in
+  // fringe/ledger.json's order, each draft a link to its live page, findings or the "no research notes yet" line, "no skill yet" the flag.
+  if (want("fringe-to-skill: the fringe ledger card")) { const F = await fresh({ phone: true });
+    const led = JSON.parse(fs.readFileSync(path.join(root, 'fringe', 'ledger.json'), 'utf8'));
+    await F.ask('fringe to skill', 1200);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.fs-family')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, rows: rows.map((r) => ({ family: r.dataset.family, drafts: [...r.querySelectorAll('[data-draft]')].map((a) => a.getAttribute('href')), none: !!r.querySelector('.fs-none'), findings: r.querySelectorAll('.fs-findings li').length, skills: [...r.querySelectorAll('[data-skill]')].map((e) => e.dataset.skill), noskill: !!r.querySelector('.fs-noskill') })),
+        wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    const truth = led.families.map((f) => ({ family: f.family, drafts: f.drafts.map((d) => '/fringe/' + d.id + '.html'), none: !f.findings.length, findings: Math.min(5, f.findings.length), skills: f.skills, noskill: !f.skills.length }));
+    check('fringe-to-skill: "fringe to skill" lists every published fringe family from fringe/ledger.json with its live drafts, findings and the skill it grew into (or "no skill yet")',
+      !!card && card.title === 'From the fringe to a skill' && JSON.stringify(card.rows) === JSON.stringify(truth) && card.rows.length >= 1 && !card.wide && !F.errors.length,
+      JSON.stringify({ card: card && { ...card, rows: card.rows.slice(0, 2) }, truth: truth.slice(0, 2), errors: F.errors }));
+    const live = card && card.rows[0] && card.rows[0].drafts[0];
+    const page = live ? await F.p.evaluate(async (u) => { const r = await fetch(u); return r.status; }, live).catch(() => 0) : 0;
+    check('fringe-to-skill: the first draft link is a live page', page === 200, JSON.stringify({ live, page }));
+    await F.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.

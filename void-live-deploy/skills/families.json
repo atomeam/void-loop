@@ -9,7 +9,7 @@
  "totals": {
   "experiment": 1,
   "tested": 51,
-  "checked": 23,
+  "checked": 24,
   "proven": 84
  },
  "families": [
@@ -1083,7 +1083,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 6,
+    "checked": 7,
     "proven": 14
    },
    "skills": [
@@ -1252,6 +1252,13 @@
      "name": "deps",
      "tier": "checked",
      "why": "a self-test, 5 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "fringe-to-skill",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     }

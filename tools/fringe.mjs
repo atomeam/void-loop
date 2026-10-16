@@ -29,9 +29,16 @@
 //   failure_modes     [{ what, evidence }]: what failed and what shows it, so the next run does not repeat it
 //   next_experiments  what to try next
 //   combines          other families this run joins with its own (the combination map is read off these)
+//   near              the miss-board target or router skill the run was built toward ("skill:weather", "probe:sky", "miss-board",
+//                     "step:14"), one or a list; --learned shows them, and the "fringe to skill" card links the family to the skill
+//                     (asked by Void, ask-20261013-1719-1: tag each novelty or failure with the input that triggered it)
 //   lab               { label, sub, asks: [phrases] }: how a published draft is opened from the stage. --publish writes
 //                     void-live-deploy/fringe/lab.json from these and skills/make.js reads it, so a draft that ships reaches
 //                     people without anyone editing the lab list by hand (the fringe → core loop, owner's direction 2026-10-13)
+//   --publish also writes void-live-deploy/fringe/ledger.json: each published family with its research notes, what it was built
+//   toward and the core skills its notes name (ledgerOf), for the "fringe to skill" card (skills/fringe-to-skill.js; asked by Void,
+//   ask-20261013-0026-2: "a dashboard that visualizes the relationship between a fringe experiment and its potential as a
+//   permanent skill")
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { resolve, dirname } from 'node:path';
@@ -106,7 +113,8 @@ export function learned(runs = load(), recent = WINDOW) {
     pool.forEach((pr, k) => { const sc = (seen[pr[0]] || 0) + (seen[pr[1]] || 0) + (may.has(pr[0]) || may.has(pr[1]) ? 0 : 100); if (sc < score) { score = sc; best = k; } });
     const [pr] = pool.splice(best, 1); ordered.push(pr); seen[pr[0]] = (seen[pr[0]] || 0) + 1; seen[pr[1]] = (seen[pr[1]] || 0) + 1;
   }
-  return { findings: pick('findings'), failures: pick('failure_modes'), next: pick('next_experiments'), behaviors: runs.filter((r) => r.behavior).map((r) => ({ run: r.run, family: r.family, x: r.behavior })), untried: ordered, noted: runs.filter((r) => r.hypothesis || r.behavior || r.findings).length };
+  const near = runs.filter((r) => nearOf(r).length).map((r) => ({ run: r.run, family: r.family, x: nearOf(r).join(', ') }));
+  return { near, findings: pick('findings'), failures: pick('failure_modes'), next: pick('next_experiments'), behaviors: runs.filter((r) => r.behavior).map((r) => ({ run: r.run, family: r.family, x: r.behavior })), untried: ordered, noted: runs.filter((r) => r.hypothesis || r.behavior || r.findings).length };
 }
 
 const labOk = (l) => !!l && typeof l.label === 'string' && l.label.trim() && l.label.length <= 40 && typeof l.sub === 'string' && l.sub.trim() && l.sub.length <= 160
@@ -122,6 +130,42 @@ export function labOf(runs = load()) {
 export function unreachable(runs = load(), makeSrc = readFileSync(resolve(root, 'void-live-deploy/skills/make.js'), 'utf8')) {
   const listed = new Set([...makeSrc.matchAll(/'(?:[^'\\]|\\.)*', '([a-z0-9-]+)', '/g)].map((m) => m[1])), lab = new Set(labOf(runs).map((x) => x.id));
   return [...new Set(runs.filter((r) => r && r.emit === true).map((r) => live(r).split('/').pop().replace(/\.html$/, '')))].filter((id) => !listed.has(id) && !lab.has(id));
+}
+
+const NEAR = /^[a-z0-9][a-z0-9:_.-]{0,79}$/;
+/** what a run was built toward, as a list of targets (near: one string or a list; anything else is nothing). Pure. */
+export function nearOf(r) {
+  const xs = r && r.near !== undefined ? (Array.isArray(r.near) ? r.near : [r.near]) : [];
+  return xs.every((x) => typeof x === 'string' && NEAR.test(x)) ? xs : [];
+}
+/** the core skill a target names: skill:weather -> weather, a bare skill name -> itself, else null. Pure. */
+export const skillOfTarget = (t, skills) => { const m = /^skill:([a-z0-9-]+)$/.exec(String(t || '')); const n = m ? m[1] : String(t || ''); return skills.includes(n) ? n : null; };
+/** the core skills a run's notes name: skills/<n>.js, skill:<n>, "<n> skill", "the <n> card", and its near targets. Pure. */
+export function skillsNamed(r, skills) {
+  const text = [r.hypothesis, r.behavior, ...(r.findings || []), ...(r.next_experiments || []), ...((r.failure_modes || []).map((f) => f && f.what))].filter(Boolean).join('\n');
+  const esc = (n) => n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const out = skills.filter((n) => new RegExp('skills/' + esc(n) + '\\.js|skill:' + esc(n) + '\\b|\\b' + esc(n) + ' skill\\b|\\bthe ' + esc(n) + ' card\\b', 'i').test(text));
+  for (const t of nearOf(r)) { const n = skillOfTarget(t, skills); if (n && !out.includes(n)) out.push(n); }
+  return out;
+}
+export const LEDGER = 'void-live-deploy/fringe/ledger.json';
+/** the published families for the "fringe to skill" card: each with its live drafts, notes merged newest first, what it was built
+ * toward and the core skills its notes name. tools: [{ id, label, sub }] from skills/make.js toolList(), to label each draft. Pure. */
+export function ledgerOf(runs = load(), skills = [], tools = []) {
+  const byId = new Map(tools.map((t) => [t.id, t])), fams = new Map();
+  for (const r of runs.slice().reverse()) {
+    if (!r || r.emit !== true) continue;
+    const id = live(r).split('/').pop().replace(/\.html$/, ''), f = fams.get(r.family) || { family: r.family, runs: 0, drafts: [], hypothesis: '', behavior: '', findings: [], failures: [], next: [], combines: [], near: [], skills: [], noted: 0 };
+    f.runs++;
+    if (!f.drafts.some((d) => d.id === id)) f.drafts.push({ id, run: r.run, at: String(r.at || '').slice(0, 10), label: (r.lab && r.lab.label) || (byId.get(id) || {}).label || '', sub: (r.lab && r.lab.sub) || (byId.get(id) || {}).sub || '' });
+    if (r.hypothesis || r.behavior || r.findings) f.noted++;
+    if (!f.hypothesis && r.hypothesis) f.hypothesis = r.hypothesis;
+    if (!f.behavior && r.behavior) f.behavior = r.behavior;
+    const add = (k, xs) => { for (const x of xs || []) if (x && !f[k].some((y) => JSON.stringify(y) === JSON.stringify(x))) f[k].push(x); };
+    add('findings', r.findings); add('failures', r.failure_modes); add('next', r.next_experiments); add('combines', r.combines); add('near', nearOf(r)); add('skills', skillsNamed(r, skills));
+    fams.set(r.family, f);
+  }
+  return [...fams.values()];
 }
 
 export function check(runs = load()) {
@@ -152,6 +196,7 @@ export function check(runs = load()) {
     if ('failure_modes' in r && (!Array.isArray(r.failure_modes) || r.failure_modes.some((x) => !x || typeof x.what !== 'string' || typeof x.evidence !== 'string' || !x.what.trim() || !x.evidence.trim()))) bad.push(`${at}: failure_modes must be a list of { what, evidence }`);
     if ('lab' in r && !labOk(r.lab)) bad.push(`${at}: lab must be { label (40 characters at most), sub (160 at most), asks: 1 to 6 lowercase phrases }`);
     if ('combines' in r && (!Array.isArray(r.combines) || r.combines.some((f) => !FAMILIES.includes(f) || f === r.family))) bad.push(`${at}: combines must list other known families`);
+    if ('near' in r && !nearOf(r).length) bad.push(`${at}: near must name the miss-board target or router skill the run was built toward (like skill:weather or probe:sky), one or a list, 80 characters at most`);
     if (typeof r.behavior === 'string') { const twin = runs.slice(0, i).find((x) => x && typeof x.behavior === 'string' && sameBehavior(x.behavior, r.behavior)); if (twin) bad.push(`${at}: its behavior repeats run ${twin.run}'s ("${twin.behavior.slice(0, 80)}"): novelty is what a person can do, not the family's name`); }
     if (!Array.isArray(r.sources) || !r.sources.length) bad.push(`${at}: needs at least one source`);
     else r.sources.forEach((s, k) => {
@@ -163,7 +208,7 @@ export function check(runs = load()) {
 }
 
 /** the sources file: the sources array, or { sources, ...research notes } (only the notes the ledger knows are kept) */
-export const NOTES = ['hypothesis', 'behavior', 'findings', 'failure_modes', 'next_experiments', 'combines', 'lab'];
+export const NOTES = ['hypothesis', 'behavior', 'findings', 'failure_modes', 'next_experiments', 'combines', 'lab', 'near'];
 export function notesOf(j) {
   if (Array.isArray(j)) return { sources: j };
   const out = { sources: j && j.sources };
@@ -176,6 +221,13 @@ export function next(runs = load()) {
   return FAMILIES.filter((f) => !recent.includes(f));
 }
 
+/** the ledger file's text: ledgerOf on the live skill names and the lab's tool list (skills/make.js) */
+export async function ledgerJson(runs = load()) {
+  let skills = []; try { skills = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8')); } catch (_) {}
+  let tools = []; try { tools = (await import('../void-live-deploy/skills/make.js')).toolList(); } catch (_) {}
+  return JSON.stringify({ note: 'The fringe ledger\'s published families for the "fringe to skill" card (tools/fringe.mjs --publish, from tools/fringe.json): each family\'s live drafts, its research notes newest first, what its runs were built toward (near) and the core skills its notes name.', families: ledgerOf(runs, skills, tools) }, null, 1) + '\n';
+}
+
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const arg = process.argv[2];
   if (arg === '--next') console.log(next().join('\n'));
@@ -185,6 +237,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     out.push('', 'Findings (recent runs):', ...(L.findings.length ? L.findings.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
     out.push('', 'What failed, and the evidence (do not repeat these):', ...(L.failures.length ? L.failures.map((f) => line(`run ${f.run} (${f.family}): ${f.x.what} (${f.x.evidence})`)) : [line('none recorded yet')]));
     out.push('', 'Next experiments the runs suggested:', ...(L.next.length ? L.next.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
+    out.push('', 'Built toward (the miss-board target or router skill each run served; say yours in near):', ...(L.near.length ? L.near.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
     out.push('', 'Behaviors already built (a new run must do something else):', ...(L.behaviors.length ? L.behaviors.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
     const D = demand(), dl = (xs) => (xs.length ? xs.map(line) : [line('none recorded yet')]);
     out.push('', 'What the core needs (build toward one of these when your family can serve it, and say which in findings):',
@@ -218,12 +271,14 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     mkdirSync(resolve(root, 'void-live-deploy/fringe'), { recursive: true });
     for (const r of load()) if (r.emit === true) { writeFileSync(resolve(root, live(r)), published(readFileSync(resolve(root, r.draft), 'utf8'))); console.log('published ' + live(r)); }
     writeFileSync(resolve(root, LAB), JSON.stringify(labOf(), null, 1) + '\n'); console.log('wrote ' + LAB + ' (' + labOf().length + ' from the ledger)');
+    const led = await ledgerJson(); writeFileSync(resolve(root, LEDGER), led); console.log('wrote ' + LEDGER + ' (' + JSON.parse(led).families.length + ' published families)');
   }
   else {
     const runs = load(), bad = check(runs);
     for (const id of unreachable(runs)) bad.push(`${id} is published but nobody can open it: give its run a lab { label, sub, asks } and run --publish`);
     const want = JSON.stringify(labOf(runs), null, 1) + '\n', lp = resolve(root, LAB);
     if (labOf(runs).length ? !existsSync(lp) || readFileSync(lp, 'utf8') !== want : existsSync(lp) && readFileSync(lp, 'utf8') !== want) bad.push(`${LAB} is out of date (run --publish)`);
+    const lj = resolve(root, LEDGER); if (runs.some((r) => r && r.emit === true) && (!existsSync(lj) || readFileSync(lj, 'utf8') !== await ledgerJson(runs))) bad.push(`${LEDGER} is out of date (run --publish)`);
     if (bad.length) { console.error(bad.join('\n')); process.exit(1); }
     console.log(`fringe ledger ok: ${runs.length} run(s); last: ${runs.length ? runs[runs.length - 1].family : 'none'}; next may pick ${next(runs).length} families`);
   }
