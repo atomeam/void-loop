@@ -164,6 +164,7 @@ for (const [name, file] of [
   ['mcp', 'mcp.test.mjs'],
   ['trial-changes', 'trial-changes.test.mjs'],
   ['reef-changes', 'reef-changes.test.mjs'],
+  ['heat-dose', 'heat-dose.test.mjs'],
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],

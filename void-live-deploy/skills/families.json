@@ -395,7 +395,7 @@
     {
      "name": "weather",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark",
+     "why": "a self-test, 10 browser-suite mentions, 44 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1122,7 +1122,7 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
