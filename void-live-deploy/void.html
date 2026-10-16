@@ -566,6 +566,8 @@
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
       display: grid; place-items: center; cursor: pointer; color: #cfd8ff; background: rgba(20,22,34,.72); border: 1px solid rgba(255,255,255,.14);
       transition: background .2s ease, color .2s ease, transform .15s ease; }
+    .vtell { display: block; margin-top: 10px; font-size: var(--fs-s); color: var(--ink-3); text-decoration: none; } .vtell:hover { color: var(--ink); text-decoration: underline; }
+    .vtell-box { margin-top: 10px; } .vtell-box textarea { width: 100%; font: inherit; background: rgba(255,255,255,.06); color: inherit; border: 1px solid rgba(255,255,255,.18); border-radius: 8px; padding: 8px 10px; resize: vertical; margin-bottom: 6px; }
     .vread:hover { background: rgba(60,66,100,.8); color: #fff; }
     .vread:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
     .vread[aria-pressed="true"] { color: #fff; background: linear-gradient(135deg, #ff3d7f, #7a5cff); border-color: transparent; }
@@ -2049,6 +2051,45 @@ say('nothing selected to remove');
     // so a button copied by innerHTML += still works
     const READ_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor" stroke="none"/>'
       + '<g class="vread-on"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.2 6.4a7.6 7.6 0 0 1 0 11.2"/></g><g class="vread-off"><rect x="15" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/><rect x="19" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/></g></svg>';
+    // telling V01D about any card (owner, 2026-10-16: "reply to V01D's replies and cards so it can flex its persistent memory and
+    // evolve with the conversation when corrected"): the owner's link under each card opens a box; the reply goes to
+    // /api/voice-reply with the ask, the card's title and what it said, and V01D answers under it in its own words and keeps the lesson
+    function ownerKey() { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } } // hoisted: no TDZ
+    function keepTell(el) {
+      if (!ownerKey() || el.querySelector(':scope > .vtell, :scope > .vtell-box') || el.querySelector('[data-v-reply]')) return;
+      const a = document.createElement('a'); a.href = '#'; a.className = 'vtell'; a.textContent = 'Tell V01D'; el.appendChild(a);
+    }
+    // which route answered this card, from the page's own loop log (LOOP_KEY, this browser only; nothing new is kept): a skill file
+    // ('skill:<name>'), the automation fix ('void.fix'), or the page's own reply kinds. A correction then says which skill took it.
+    function routeOfCard(el) {
+      let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
+      const since = (el._at || 0) - 3000, hit = log.filter((x) => x && Date.parse(x.t) >= since).pop();
+      if (!hit) return null;
+      if (hit.domain === 'void.fix') return { skill: 'automation-fix', via: 'void.fix' };
+      const m = /^skill:([a-z][a-z0-9-]{1,40})$/.exec(String(hit.note || ''));
+      return m ? { skill: m[1], via: 'skill' } : null;
+    }
+    function tellV01D(el, a) {
+      const box = document.createElement('div'); box.className = 'vtell-box';
+      const ta = document.createElement('textarea'); ta.maxLength = 600; ta.rows = 2; ta.placeholder = 'Was this wrong, or could it be better? Tell me.'; ta.setAttribute('aria-label', 'What you want to tell V01D about this card');
+      const send = document.createElement('button'); send.type = 'button'; send.className = 'tr-copy'; send.textContent = 'Send';
+      const said = document.createElement('div'); said.setAttribute('aria-live', 'polite');
+      for (const ev of ['pointerdown', 'keydown']) ta.addEventListener(ev, (e) => e.stopPropagation());
+      box.append(ta, send, said); a.replaceWith(box); ta.focus();
+      const title = (el.querySelector('h2') || {}).textContent || '', words = cardWords(el).replace(title, '').trim();
+      send.addEventListener('click', async () => {
+        const text = ta.value.trim(); if (!text || send.disabled) return;
+        send.disabled = true; send.textContent = '…';
+        let line = 'That did not reach me. Try again in a moment.';
+        try {
+          const r = await fetch('/api/voice-reply', { method: 'POST', headers: { authorization: 'Bearer ' + ownerKey(), 'content-type': 'application/json' }, body: JSON.stringify({ about: { ask: el._ask || '', title, said: words.slice(0, 800), ...(routeOfCard(el) ? { routed: routeOfCard(el) } : {}) }, text }) });
+          if (r.ok) { const j = await r.json(); line = (j.answer || 'I could not answer just now; I kept what you said and will read it when I next reflect.') + (j.misroute ? ' I have queued a fix so my ' + j.misroute.skill + ' skill stops taking asks like this.' : ''); ta.value = ''; }
+          else if (r.status === 401) line = 'Only my owner can tell me things here.';
+        } catch (_) {}
+        const p = document.createElement('p'); p.className = 'v-me'; const b = document.createElement('span'); b.style.color = 'var(--ink-3)'; b.textContent = 'V01D: '; p.append(b, line); said.appendChild(p);
+        send.disabled = false; send.textContent = 'Send';
+      });
+    }
     function keepRead(el) {
       if (!('speechSynthesis' in window) || el.querySelector(':scope > .vread')) return;
       const b = document.createElement('button'); b.type = 'button'; b.className = 'vread'; b.title = 'Read aloud';
@@ -2057,7 +2098,7 @@ say('nothing selected to remove');
     }
     // everything the card says, as words (no sources line, no buttons), read whole: a long card is read to its end
     function cardWords(el) {
-      const c = el.cloneNode(true); c.querySelectorAll('.src, script, style, iframe, button, svg, canvas, .void-mini, details:not([open]) > :not(summary)').forEach((n) => n.remove());
+      const c = el.cloneNode(true); c.querySelectorAll('.src, script, style, iframe, button, svg, canvas, .void-mini, .vtell, .vtell-box, details:not([open]) > :not(summary)').forEach((n) => n.remove());
       return (c.innerText || c.textContent || '').replace(/\s+/g, ' ').trim();
     }
     let readTimer = 0;
@@ -2136,8 +2177,9 @@ say('nothing selected to remove');
         e.preventDefault(); const ask = a.getAttribute('data-ask'); closePage(); handle(ask);
       });
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
-      stampSources(el); keepTail(el); keepRead(el);
-      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); }).observe(el, { childList: true, subtree: true });
+      stampSources(el); keepTail(el); keepRead(el); keepTell(el);
+      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); }).observe(el, { childList: true, subtree: true });
+      el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellV01D(el, t); });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
       requestAnimationFrame(() => el.classList.add('on'));
       // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
@@ -2355,7 +2397,33 @@ say('nothing selected to remove');
           + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
           + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s)">Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.</p>' : '');
       }
+      // talking back (owner, 2026-10-16): the owner replies or corrects, V01D answers at once and keeps what it learned for every
+      // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
+      const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
+      if (owner) h += '<div class="vh">Talk to me</div><div class="v-talk" data-v-talk></div>'
+        + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
+        + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
+        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div>';
       el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      if (owner) talkBack(el, owner, list[0].at);
+    }
+    async function talkBack(el, owner, to) {
+      const talk = el.querySelector('[data-v-talk]'), box = el.querySelector('[data-v-reply]'), send = el.querySelector('[data-v-send]');
+      if (!talk || !box || !send) return;
+      const line = (who, text, cls) => { const p = document.createElement('p'); p.className = cls; const b = document.createElement('span'); b.style.color = 'var(--ink-3)'; b.textContent = who + ': '; p.append(b, text); talk.appendChild(p); };
+      const show = (r) => { line('You', r.text, 'v-you'); line('V01D', r.answer || 'I could not answer just now; I kept what you said and will read it when I next reflect.', 'v-me' + (r.correction ? ' v-corrected' : '')); };
+      for (const ev of ['pointerdown', 'keydown']) box.addEventListener(ev, (e) => e.stopPropagation());
+      const auth = { authorization: 'Bearer ' + owner };
+      try { const r = await fetch('/api/voice-reply', { headers: auth }); if (r.ok) { const j = await r.json(); (j.replies || []).filter((x) => x.to === to).slice(0, 6).reverse().forEach(show); } } catch (_) {}
+      send.addEventListener('click', async () => {
+        const text = box.value.trim(); if (!text || send.disabled) return;
+        send.disabled = true; send.textContent = '…';
+        try {
+          const r = await fetch('/api/voice-reply', { method: 'POST', headers: { ...auth, 'content-type': 'application/json' }, body: JSON.stringify({ to, text }) });
+          if (r.ok) { show(await r.json()); box.value = ''; } else line('V01D', r.status === 401 ? 'Only my owner can talk back here.' : 'That did not reach me. Try again in a moment.', 'v-me');
+        } catch (_) { line('V01D', 'That did not reach me. Try again in a moment.', 'v-me'); }
+        send.disabled = false; send.textContent = 'Send';
+      });
     }
     function wantsArticle(lower) {
       return /^(please\s+)?((what|who|where|when)\s+(is|are|was|were)\b|tell\s+me\s+about\b|explain\b|define\b|describe\b|look\s+up\b)/.test(lower);
