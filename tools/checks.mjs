@@ -97,6 +97,7 @@ for (const [name, file] of [
   ['films-live', 'films-live.test.mjs'],
   ['appraise-live', 'appraise-live.test.mjs'],
   ['swaps', 'swaps.test.mjs'],
+  ['cook-flow', 'cook-flow.test.mjs'],
   ['words', 'words.test.mjs'],
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],

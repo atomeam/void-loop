@@ -5533,6 +5533,25 @@ try {
       && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
       JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
     await Q.ctx.close(); }
+
+  // cook-flow (asked by Void, lib/cook-flow.js): a kitchen conversion and a kitchen swap end with one tap that starts a timer;
+  // a distance conversion gets no chip; a swap says what else to adjust ("then:" under the swap, skills/swaps.js IMPACT).
+  if (want("cook-flow: a kitchen conversion and a swap offer a timer in one tap, the swap says what else to adjust, a distance gets no chip")) { const K = await fresh();
+    await K.ask('3 cups in ml', 900); await until(async () => /709\.76 ml/.test(await K.page()), 8000); const cupsPg = await K.page();
+    const chip = await until(() => K.p.$('.vpage.on a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "3 cups in ml" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)', /709\.76 ml/.test(cupsPg) && !!chip && (await K.p.$$eval('.vpage.on .cook-flow a[data-ask]', (a) => a.map((x) => x.getAttribute('data-ask')))).join('|') === 'set a 10 minute timer|set a 5 minute timer|set a 20 minute timer', cupsPg.slice(0, 120));
+    await K.p.click('.vpage.on a[data-ask="set a 10 minute timer"]'); await until(async () => (await K.state()).some((x) => x.kind === 'timer'), 6000);
+    const timers = (await K.state()).filter((x) => x.kind === 'timer');
+    check('cook-flow: the tap starts a 10 minute timer on the stage', timers.length === 1 && Number(timers[0].duration) >= 599 && Number(timers[0].duration) <= 600000 && !!timers[0].running && !(await K.p.$('.vpage.on')), JSON.stringify(timers.map((t) => ({ kind: t.kind, total: t.total, ms: t.ms, duration: t.duration, running: t.running }))));
+    await K.ask('how many cups is 500g of flour', 900); await until(async () => /4\.17 cups/.test(await K.page()), 8000); const flourChip = await until(() => K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "how many cups is 500g of flour" (word maths) ends with the chip too', /4\.17 cups/.test(await K.page()) && !!flourChip, (await K.page()).slice(0, 80));
+    await K.ask('5 miles in km', 900); await until(async () => /8\.05|8\.04672/.test(await K.page()), 8000); await K.p.waitForTimeout(400);
+    check('cook-flow: "5 miles in km" gets no timer chip', /8\.05 km|8\.04672 km|8\.05/.test(await K.page()) && !(await K.p.$('.vpage.on .cook-flow')), (await K.page()).slice(0, 80));
+    await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
+    const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
+    await K.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
