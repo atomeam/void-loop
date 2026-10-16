@@ -52,6 +52,19 @@ jobs:
           cache: npm
       - name: Checks
         run: node --test tools/propose-fix.test.mjs
+      - name: Every workflow file parses (asked by Void; a broken YAML stopped this one from loading on 2026-10-15)
+        run: |
+          python3 - <<'PY'
+          import glob, sys, yaml
+          bad = []
+          for f in glob.glob('.github/workflows/*.yml'):
+              try:
+                  if not isinstance(yaml.safe_load(open(f)), dict): bad.append(f)
+              except yaml.YAMLError as e:
+                  bad.append(f + ' (' + str(e).splitlines()[0] + ')')
+          print('every workflow parses' if not bad else 'does not parse - ' + '; '.join(bad))
+          sys.exit(1 if bad else 0)
+          PY
       - name: npm ci
         run: npm ci --no-audit --no-fund
       - name: Playwright version

@@ -67,7 +67,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   catch (e) { console.error('propose-fix: V01D proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
   const next = applyEdits(source, proposal.edits);
   if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
-  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, model: proposal.model, passed: false, failed: '', detail: '' };
+  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, model: proposal.model, passed: false, failed: '', detail: '' };
   let committed = false;
   writeFileSync(file, next);
   const stop = (step, detail) => { result.failed = step; result.detail = String(detail || '').replace(/\s+/g, ' ').trim().slice(0, 160); };

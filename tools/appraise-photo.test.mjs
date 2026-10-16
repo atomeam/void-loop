@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { valueFrom, appraisalText, isPersonAsk, personIn, complimentFor, KINDS, usd } from '../void-live-deploy/lib/appraise-photo.js';
 import { imageBytes, onRequestPost, MAX_IMAGE_CHARS } from '../void-live-deploy/functions/api/appraise.js';
 import { appraiseOf } from '../void-live-deploy/skills/appraise.js';
-import { models, PATHS } from '../void-live-deploy/lib/models.js';
+import { models, PATHS, VISION_FALLBACK } from '../void-live-deploy/lib/models.js';
 
 const PNG = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==';
 
@@ -43,13 +43,16 @@ test('appraise: the route reads one small image, asks the vision model, and answ
   assert.equal(imageBytes('data:image/png;base64,' + 'A'.repeat(MAX_IMAGE_CHARS + 4)), null);
   const req = (body) => new Request('http://x/api/appraise', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) });
   let asked = null;
-  const env = { AI: { run: async (model, input) => { asked = { model, input }; return { description: 'A vintage Omega wristwatch with a gold case, light scratches on the glass.' }; } } };
+  const env = { AI: { run: async (model, input) => { asked = { model, input }; return { response: 'A vintage Omega wristwatch with a gold case, light scratches on the glass.' }; } } };
   const r = await onRequestPost({ request: req({ image: PNG, note: 'my grandfather\'s' }), env }); const j = await r.json();
-  assert.equal(r.status, 200); assert.equal(asked.model, models('vision')); assert.ok(Array.isArray(asked.input.image) && asked.input.image.length === 70); assert.match(asked.input.prompt, /Do not guess a price/);
+  assert.equal(r.status, 200); assert.equal(asked.model, models('vision')); const parts = asked.input.messages[0].content; assert.match(parts[0].text, /Do not guess a price/); assert.equal(parts[1].image_url.url, PNG, 'the photo goes to the vision slot as a chat image');
+  // the vision slot fails or says nothing: the beta image-to-text model gets the raw bytes
+  const tried = []; const fb = await (await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async (model, input) => { tried.push(model); if (input.messages) throw new Error('no vision here'); assert.equal(input.image.length, 70); return { description: 'A silver coin, worn on the face.' }; } } } })).json();
+  assert.deepEqual(tried, [models('vision'), VISION_FALLBACK]); assert.equal(fb.value.kind, 'coin');
   assert.equal(j.value.kind, 'watch'); assert.match(j.text, /^V01D values this at \$/); assert.match(j.seen, /Omega/);
   assert.equal((await onRequestPost({ request: req({ image: PNG }), env: {} })).status, 503);
   assert.equal((await onRequestPost({ request: req({ image: 'nope' }), env })).status, 400);
-  assert.equal((await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } })).status, 502);
+  const down = await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } }); assert.equal(down.status, 502); assert.equal((await down.json()).reason, 'busy', 'a 502 says why');
   const p = await (await onRequestPost({ request: req({ image: PNG, note: 'what am I worth' }), env })).json();
   assert.equal(p.value.person, true); assert.ok(!/\$/.test(p.text));
   const person = await (await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => ({ description: 'A woman smiling at the camera in a park.' }) } } })).json();
