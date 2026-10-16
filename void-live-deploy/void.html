@@ -3525,6 +3525,8 @@ say('nothing selected to remove');
       cardMini(band, 'calculator', { expression: m[1].replace(/,/g, ''), result: m[2].replace(/,/g, ''), typed: true },
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
+    // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Void, lib/cook-flow.js)
+    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
