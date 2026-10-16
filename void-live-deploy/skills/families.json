@@ -7,7 +7,7 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 53,
+  "tested": 54,
   "checked": 20,
   "proven": 84
  },
@@ -1079,7 +1079,7 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 5,
     "checked": 5,
     "proven": 14
    },
@@ -1242,6 +1242,13 @@
      "name": "family-health",
      "tier": "checked",
      "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "fringe-to-skill",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     }
