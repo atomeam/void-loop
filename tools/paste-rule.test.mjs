@@ -1,6 +1,10 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { isPaste, PASTE_RULE } from '../void-live-deploy/functions/api/answer.js';
+test('the answer route keeps a paste off the ask-about-Void path', async () => {
+  const src = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8');
+  assert.match(src, /const self = isSelfAsk\(ask\) && !isPaste\(ask\)/);
+});
 test('a long pasted discussion is a paste; a question is not', () => {
   const pasted = 'I will capture this richer concept of cards as persistent, evolving entities. It is in the frontier as step 7. What the design says: Mint the first time anything touches an idea. Evolve as evidence arrives. Privacy: facts and counts only. Where it lives: server side storage, written only by the answer route. ' + 'More detail follows here. '.repeat(10);
   assert.equal(isPaste(pasted), true);

@@ -268,7 +268,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache
-  const self = isSelfAsk(ask);
+  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Void is still a paste, not a question about Void (owner, 2026-10-16)
   // what this person told Void (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
   try {
