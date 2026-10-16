@@ -1,13 +1,21 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 55,
+ "runsTotal": 56,
  "kinds": {
   "grow": 15,
   "file": 33,
-  "teach": 7
+  "teach": 7,
+  "tighten": 1
  },
  "runs": [
+  {
+   "at": "2026-10-16T05:13:33Z",
+   "passed": 0,
+   "of": 26,
+   "kind": "tighten",
+   "note": "load ceiling 15000 -> 1900 ms"
+  },
   {
    "at": "2026-10-16T04:18:47Z",
    "passed": 0,
@@ -140,13 +148,6 @@
    "of": 18,
    "kind": "file",
    "note": "fix: \"what can this figure do\" nothing appeared"
-  },
-  {
-   "at": "2026-10-15T16:40:07Z",
-   "passed": 17,
-   "of": 18,
-   "kind": "file",
-   "note": "fix: \"dismiss this\" nothing appeared"
   }
  ],
  "seen": {
@@ -256,6 +257,10 @@
   "skill:skycard": "2026-10-16T04:18:47Z",
   "skill:sleep": "2026-10-16T04:18:47Z",
   "skill:snake": "2026-10-16T04:18:47Z",
-  "skill:social": "2026-10-16T04:18:47Z"
+  "skill:social": "2026-10-16T04:18:47Z",
+  "skill:spanish": "2026-10-16T05:13:33Z",
+  "skill:splat": "2026-10-16T05:13:33Z",
+  "skill:sport": "2026-10-16T05:13:33Z",
+  "skill:status": "2026-10-16T05:13:33Z"
  }
 }
