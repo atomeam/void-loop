@@ -9,7 +9,7 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 51,
+  "tested": 52,
   "checked": 23,
   "proven": 85
  },
@@ -541,7 +541,7 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 5,
     "checked": 1,
     "proven": 6
    },
@@ -639,6 +639,13 @@
      "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "shortcut",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },
