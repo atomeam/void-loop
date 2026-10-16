@@ -1,5 +1,10 @@
 {
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
+ "means": {
+  "last_tested": "the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.",
+  "success_rate": "benchmark asks routed to the skill that passed on the bench's last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it",
+  "not_here": "how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)"
+ },
  "totals": {
   "experiment": 1,
   "tested": 53,
@@ -21,117 +26,163 @@
     {
      "name": "forge",
      "tier": "proven",
-     "why": "a self-test, 10 real asks in the benchmark"
+     "why": "a self-test, 10 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "make",
      "tier": "proven",
-     "why": "a self-test, 4 browser-suite mentions, 30 real asks in the benchmark"
+     "why": "a self-test, 4 browser-suite mentions, 30 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "figure",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "figures",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "zoom-figure",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "figure-can",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "cartoon",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "part",
      "tier": "checked",
-     "why": "1 browser-suite mention, 2 real asks in the benchmark"
+     "why": "1 browser-suite mention, 2 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "together",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "gears",
      "tier": "proven",
-     "why": "a self-test, 8 real asks in the benchmark"
+     "why": "a self-test, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "motorbody",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "printedmotor",
      "tier": "proven",
-     "why": "1 browser-suite mention, 6 real asks in the benchmark"
+     "why": "1 browser-suite mention, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "magnetize",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "print-file",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions"
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "print-download",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "inventory",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 5 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "splat",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 8 real asks in the benchmark"
+     "why": "4 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "poster",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "draw",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 8 real asks in the benchmark"
+     "why": "a self-test, 14 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "shape",
      "tier": "checked",
-     "why": "2 browser-suite mentions, 1 real ask in the benchmark"
+     "why": "2 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "image",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "throw-off",
      "tier": "tested",
-     "why": "1 browser-suite mention"
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "swarm",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -149,102 +200,142 @@
     {
      "name": "aggravation",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "sorry",
      "tier": "proven",
-     "why": "a self-test, 7 real asks in the benchmark"
+     "why": "a self-test, 7 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "connect4",
      "tier": "proven",
-     "why": "a self-test, 10 real asks in the benchmark"
+     "why": "a self-test, 10 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "tictactoe",
      "tier": "proven",
-     "why": "a self-test, 8 real asks in the benchmark"
+     "why": "a self-test, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "othello",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 9 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 9 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "mancala",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "chess",
      "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions"
+     "why": "a self-test, 7 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "checkers",
      "tier": "tested",
-     "why": "5 browser-suite mentions"
+     "why": "5 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "go",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions"
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "monopoly",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "battleship",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "poker",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions"
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "fireworks",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions"
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rack",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "eightball",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "ringer",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 6 real asks in the benchmark"
+     "why": "a self-test, 10 browser-suite mentions, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "quiz",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "challenge",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "pong",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "snake",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -262,97 +353,135 @@
     {
      "name": "sky",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "moontonight",
      "tier": "tested",
-     "why": "15 real asks in the benchmark"
+     "why": "15 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "aurora-tonight",
      "tier": "tested",
-     "why": "8 real asks in the benchmark"
+     "why": "8 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "eclipse",
      "tier": "tested",
-     "why": "8 real asks in the benchmark"
+     "why": "8 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "meteors",
      "tier": "tested",
-     "why": "8 real asks in the benchmark"
+     "why": "8 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "constellation",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 8 real asks in the benchmark"
+     "why": "2 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "weather",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "air",
      "tier": "proven",
-     "why": "1 browser-suite mention, 7 real asks in the benchmark"
+     "why": "1 browser-suite mention, 7 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "uv",
      "tier": "proven",
-     "why": "1 browser-suite mention, 8 real asks in the benchmark"
+     "why": "1 browser-suite mention, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "quake",
      "tier": "tested",
-     "why": "4 real asks in the benchmark"
+     "why": "4 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "pollen",
      "tier": "proven",
-     "why": "1 browser-suite mention, 9 real asks in the benchmark"
+     "why": "1 browser-suite mention, 9 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "sky-card",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "suntimes",
      "tier": "tested",
-     "why": "6 real asks in the benchmark"
+     "why": "6 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "moon",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 11 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 11 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "night-sky",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "place",
      "tier": "tested",
-     "why": "4 real asks in the benchmark"
+     "why": "4 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "worldtime",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 91 real asks in the benchmark"
+     "why": "a self-test, 14 browser-suite mentions, 91 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "distance",
      "tier": "tested",
-     "why": "23 real asks in the benchmark"
+     "why": "23 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "country",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 54 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -370,57 +499,79 @@
     {
      "name": "timer",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 33 real asks in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 33 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "clock",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark"
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "countdown",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 17 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 17 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "show-countdown",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "7 browser-suite mentions, 14 real asks in the benchmark"
+     "why": "7 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "today",
      "tier": "proven",
-     "why": "9 browser-suite mentions, 28 real asks in the benchmark"
+     "why": "9 browser-suite mentions, 28 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "remind",
      "tier": "tested",
-     "why": "5 real asks in the benchmark"
+     "why": "5 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "holidays",
      "tier": "tested",
-     "why": "19 real asks in the benchmark"
+     "why": "19 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "work",
      "tier": "tested",
-     "why": "2 real asks in the benchmark"
+     "why": "2 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "routine",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 5 real asks in the benchmark"
+     "why": "5 browser-suite mentions, 5 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "deadlines",
      "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions"
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -438,77 +589,107 @@
     {
      "name": "calc",
      "tier": "proven",
-     "why": "a self-test, 827 real asks in the benchmark"
+     "why": "a self-test, 827 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "convert",
      "tier": "tested",
-     "why": "3 browser-suite mentions"
+     "why": "3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "loan",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 15 real asks in the benchmark"
+     "why": "5 browser-suite mentions, 15 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "savings",
      "tier": "proven",
-     "why": "9 browser-suite mentions, 13 real asks in the benchmark"
+     "why": "9 browser-suite mentions, 13 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "fuel",
      "tier": "tested",
-     "why": "10 real asks in the benchmark"
+     "why": "10 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "tip",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 36 real asks in the benchmark"
+     "why": "2 browser-suite mentions, 36 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "crypto",
      "tier": "tested",
-     "why": "7 real asks in the benchmark"
+     "why": "7 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "markets",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "grades",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 20 real asks in the benchmark"
+     "why": "8 browser-suite mentions, 20 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "util",
      "tier": "proven",
-     "why": "a self-test, 68 real asks in the benchmark"
+     "why": "a self-test, 68 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "counter",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions"
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "room",
      "tier": "proven",
-     "why": "7 browser-suite mentions, 14 real asks in the benchmark"
+     "why": "7 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "walls",
      "tier": "proven",
-     "why": "10 browser-suite mentions, 16 real asks in the benchmark"
+     "why": "10 browser-suite mentions, 16 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "home",
      "tier": "proven",
-     "why": "11 browser-suite mentions, 19 real asks in the benchmark"
+     "why": "11 browser-suite mentions, 19 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "appraise",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions"
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -526,47 +707,65 @@
     {
      "name": "sleep",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 14 real asks in the benchmark"
+     "why": "3 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "ovulation",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 18 real asks in the benchmark"
+     "why": "4 browser-suite mentions, 18 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "period",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 21 real asks in the benchmark"
+     "why": "8 browser-suite mentions, 21 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "pregnancy",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 14 real asks in the benchmark"
+     "why": "4 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "nutrition",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 21 real asks in the benchmark"
+     "why": "a self-test, 8 browser-suite mentions, 21 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "food",
      "tier": "proven",
-     "why": "a self-test, 8 real asks in the benchmark"
+     "why": "a self-test, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "heart",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark"
+     "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "breath",
      "tier": "proven",
-     "why": "a self-test, 8 real asks in the benchmark"
+     "why": "a self-test, 8 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "feelings",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -584,12 +783,16 @@
     {
      "name": "digest",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "video",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "video-play",
@@ -600,87 +803,121 @@
     {
      "name": "define",
      "tier": "proven",
-     "why": "a self-test, 41 real asks in the benchmark"
+     "why": "a self-test, 41 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "words",
      "tier": "proven",
-     "why": "a self-test, 58 real asks in the benchmark"
+     "why": "a self-test, 58 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "spanish",
      "tier": "checked",
-     "why": "1 browser-suite mention, 1 real ask in the benchmark"
+     "why": "1 browser-suite mention, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "translate",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 31 real asks in the benchmark"
+     "why": "3 browser-suite mentions, 31 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "news",
      "tier": "tested",
-     "why": "9 real asks in the benchmark"
+     "why": "9 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "joke",
      "tier": "tested",
-     "why": "9 real asks in the benchmark"
+     "why": "9 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "recipe",
      "tier": "tested",
-     "why": "8 real asks in the benchmark"
+     "why": "8 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "swaps",
      "tier": "proven",
-     "why": "a self-test, 12 real asks in the benchmark"
+     "why": "a self-test, 12 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "film-metadata",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "book",
      "tier": "tested",
-     "why": "5 real asks in the benchmark"
+     "why": "5 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "show",
      "tier": "tested",
-     "why": "1 real ask in the benchmark"
+     "why": "1 real ask in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "sport",
      "tier": "tested",
-     "why": "4 real asks in the benchmark"
+     "why": "4 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "pdf-card",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 14 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "coral",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "senolytic",
      "tier": "tested",
-     "why": "4 real asks in the benchmark"
+     "why": "4 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "trialwatch",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark"
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "releasenotes",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -698,17 +935,23 @@
     {
      "name": "rides",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "social",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "dating",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -726,77 +969,107 @@
     {
      "name": "sticky",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 10 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "notepad",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "4 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "link",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "kept",
      "tier": "tested",
-     "why": "8 browser-suite mentions"
+     "why": "8 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "list",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 17 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 17 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "tab",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "group",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 9 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 9 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "layer",
      "tier": "proven",
-     "why": "a self-test, 7 real asks in the benchmark"
+     "why": "a self-test, 7 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "label",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 15 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 15 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "dismiss",
      "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention"
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "lock",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark"
+     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "light-look",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark"
+     "why": "a self-test, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "dark-look",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark"
+     "why": "a self-test, 1 real ask in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "recent",
      "tier": "tested",
-     "why": "1 browser-suite mention"
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "showcase",
      "tier": "tested",
-     "why": "a self-test"
+     "why": "a self-test",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -814,102 +1087,142 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "goal",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark"
+     "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "different",
      "tier": "tested",
-     "why": "4 browser-suite mentions"
+     "why": "4 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark"
+     "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "watch",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 7 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 7 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "incident",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 6 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "actions",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark"
+     "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "automations",
      "tier": "tested",
-     "why": "6 real asks in the benchmark"
+     "why": "6 real asks in the benchmark",
+     "last_tested": "2026-10-11",
+     "last_tested_by": "the benchmark"
     },
     {
      "name": "proposal",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark"
+     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "services",
      "tier": "proven",
-     "why": "a self-test, 9 real asks in the benchmark"
+     "why": "a self-test, 9 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "store",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions"
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "share",
      "tier": "tested",
-     "why": "2 browser-suite mentions"
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "invite",
      "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention"
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "local-inference",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rebuild-map",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "films",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark"
+     "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "app",
      "tier": "proven",
-     "why": "3 browser-suite mentions, 3 real asks in the benchmark"
+     "why": "3 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     },
     {
      "name": "family-health",
      "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions"
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
     }
    ]
   }

@@ -2817,14 +2817,18 @@ try {
     const first = fam.families[0];
     await F.p.tap('.vpage .fh-family[data-family="' + first.id + '"] button').catch(() => {});
     const opened = await F.p.$eval('.vpage .fh-family[data-family="' + first.id + '"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
-      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent })) })).catch(() => null);
+      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent, meta: (li.querySelector('.fh-meta') || {}).textContent || '' })) })).catch(() => null);
     const want4 = Object.fromEntries(['proven', 'checked', 'tested', 'experiment'].map((t) => [t, fam.families.reduce((n, f) => n + f.skills.filter((s) => s.tier === t).length, 0)]));
     const truth = Object.fromEntries(first.skills.map((s) => [s.name, s]));
     check('family-health: "show me your skill families" shows every family with a stacked bar of its ratings, totals from families.json, and a tap lists each skill with its rating and why',
       !!card && card.title === 'How healthy my skills are' && JSON.stringify(card.totals) === JSON.stringify(want4)
       && card.families.length === fam.families.length && card.families.every((f) => f.segs.length >= 1 && !f.open) && !card.wide
       && !!opened && opened.open && opened.expanded === 'true' && opened.skills.length === first.skills.length
-      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why)) && !F.errors.length,
+      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why))
+      // asked by Void (ask-20261013-1823-1): each skill says when it was last tested and its benchmark success rate, from families.json; nothing about usage
+      && opened.skills.every((s) => (truth[s.name].last_tested ? s.meta.includes('last tested ' + truth[s.name].last_tested) : s.meta.startsWith('never tested'))
+        && (typeof truth[s.name].success_rate === 'number' ? s.meta.includes('success rate ' + Math.round(truth[s.name].success_rate * 1000) / 10 + '%') : !/success rate \d/.test(s.meta)) && !/usage|popular|last used/i.test(s.meta))
+      && !F.errors.length,
       JSON.stringify({ card: card && { ...card, text: card.text.slice(0, 300) }, want4, opened: opened && { ...opened, skills: opened.skills.slice(0, 3) }, errors: F.errors }));
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
