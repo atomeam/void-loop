@@ -23,14 +23,17 @@ test('a step comes from the ledger line\'s try, or a known recent build; never f
   assert.equal(playable(e('2026-10-12T00:00:00Z', 'fix', 'sticky notes look like real paper again: the font moved')).ask, 'sticky note buy milk');
 });
 
-test('since the last visit, newest first; up to five, each ask once', () => {
+test('since the last visit, newest first, all of them, each ask once', () => {
   const list = [e('2026-10-10T00:00:00Z', 'grow', 'old', { try: 'a' }), e('2026-10-12T00:00:00Z', 'grow', 'new', { try: 'b' }),
     e('2026-10-11T00:00:00Z', 'build', 'mid', { try: 'B' }), e('2026-10-13T00:00:00Z', 'idea', 'thought')];
   assert.deepEqual(sinceLast(list, '2026-10-10T12:00:00Z').map((x) => x.what), ['thought', 'new', 'mid']);
   assert.deepEqual(pick(sinceLast(list, '2026-10-10T12:00:00Z')).map((x) => x.ask), ['b'], 'the same ask twice is shown once');
   assert.equal(sinceLast(list).length, 4, 'no visit yet: everything');
   const many = Array.from({ length: 9 }, (_, i) => e('2026-10-12T0' + i + ':00:00Z', 'grow', 'w' + i, { try: 'ask ' + i }));
-  assert.equal(pick(sinceLast(many)).length, 5);
+  assert.equal(pick(sinceLast(many)).length, 9, 'no ceiling: every build is counted and shown (it used to stop at five)');
+  const lots = Array.from({ length: 1200 }, (_, i) => e(new Date(Date.UTC(2026, 9, 1) + i * 60000).toISOString().replace(/\.\d+Z$/, 'Z'), 'grow', 'w' + i, { try: 'ask ' + i }));
+  assert.equal(pick(sinceLast(lots)).length, 1200, 'a thousand and more, all of them');
+  assert.equal(pick(sinceLast(many), 3).length, 3, 'a caller can still ask for fewer');
   assert.equal(newestAt(list), '2026-10-13T00:00:00Z');
 });
 
