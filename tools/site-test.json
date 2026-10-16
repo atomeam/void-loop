@@ -85,10 +85,12 @@
     },
     {
       "ask": "what is 17 times 23"
+    },
+    {
+      "ask": "play reversi"
     }
   ],
   "candidates": [
-    "play reversi",
     "show me the night sky"
   ],
   "games": {
