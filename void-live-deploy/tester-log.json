@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 62,
+ "runsTotal": 63,
  "kinds": {
   "grow": 15,
   "file": 36,
   "teach": 7,
-  "tighten": 2,
+  "tighten": 3,
   "none": 2
  },
  "runs": [
+  {
+   "at": "2026-10-16T06:38:50Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "tighten",
+   "note": "load ceiling 1900 -> 1700 ms"
+  },
   {
    "at": "2026-10-16T06:31:32Z",
    "passed": 0,
@@ -142,27 +149,20 @@
    "of": 19,
    "kind": "file",
    "note": "fix: \"make my void light\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T20:10:35Z",
-   "passed": 0,
-   "of": 19,
-   "kind": "file",
-   "note": "fix: \"label the clock kitchen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
   "page:/films/": "2026-10-15T06:04:21Z",
   "page:/store/": "2026-10-15T06:04:21Z",
-  "skill:actions": "2026-10-15T06:04:21Z",
+  "skill:actions": "2026-10-16T06:38:50Z",
   "skill:aggravation": "2026-10-15T06:04:21Z",
   "skill:air": "2026-10-15T06:20:22Z",
-  "skill:app": "2026-10-15T06:20:22Z",
+  "skill:app": "2026-10-16T06:38:50Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
   "skill:automations": "2026-10-15T16:35:42Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
-  "skill:breath": "2026-10-15T06:23:11Z",
+  "skill:breath": "2026-10-16T06:38:50Z",
   "skill:calc": "2026-10-15T06:23:11Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
