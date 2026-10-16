@@ -11,12 +11,14 @@
  * Keep (leaves them and runs the next) and Done. The person moves it on: it never advances by itself (the owner's choice).
  * Where the ask comes from: the ledger line's `try` (tools/finish.mjs --try), else a few recent builds named in KNOWN
  * (old ledger lines are never edited). Never a quoted ask fished out of a line: tried, it ran "call this my morning" and
- * saved a routine; a demo must change nothing the person did not ask for, so each ask here is one a person chose. Seen is kept on this device
- * only (a2m.void.growthSeen.v1, the newest `at` shown); nothing is sent anywhere.
+ * saved a routine; a demo must change nothing the person did not ask for, so each ask here is one a person chose.
+ * Previewed once (owner, 2026-10-16: "it's only supposed to preview once"): the asks offered are remembered on this device the moment the
+ * line shows (a2m.void.shown.v1), tapped or not, and never offered again; what is new is what is not in that list. A first visit only
+ * remembers when it was (a2m.void.growthSeen.v1), so a newcomer is not told about everything ever built. Nothing is sent anywhere.
  */
 import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
-export const SEEN_KEY = 'a2m.void.growthSeen.v1';
-export const SHOWN_KEY = 'a2m.void.growthShown.v1'; // the asks already previewed on this device, so a thing is previewed once and never offered again
+export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visited: nothing older is ever new to it (a first visit stays empty)
+export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once, then never offered again
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -51,34 +53,29 @@ export function playable(e) {
   return k ? { line: k.show, ask: k.try } : null;
 }
 
-/** the entries newer than `seenAt` (all of them when it is empty), newest first. Pure. */
-export function sinceLast(entries, seenAt = '') {
-  return (Array.isArray(entries) ? entries : []).filter((e) => e && typeof e.at === 'string' && (!seenAt || e.at > seenAt))
+/** the entries newer than `after` (all of them when it is empty), newest first. Pure. */
+export function sinceLast(entries, after = '') {
+  return (Array.isArray(entries) ? entries : []).filter((e) => e && typeof e.at === 'string' && (!after || e.at > after))
     .sort((a, b) => (a.at < b.at ? 1 : a.at > b.at ? -1 : 0));
 }
 
-/** steps from newest-first entries, each ask once, all of them unless n caps it: [{ line, ask, at }]. Pure. */
-// verified: the asks tools/claims-verify.mjs saw answer with their own card (claims-verified.json). Given a set, a build whose
-// ask is not on it is never played as "built": it counts as in progress (Adam, 2026-10-15: no claiming what doesn't answer).
-export function pick(entries, n = Infinity, verified = null, pending = null, shown = null) {
-  const out = [], asks = new Set(shown || []); // an ask already previewed is skipped like a repeat
+/**
+ * What is new to show: the playable entries (newest first) whose ask has not been previewed on this device, each ask once.
+ * `shown` is the set of asks already previewed here (cleaned); `verified` (claims-verified.json, tools/claims-verify.mjs) is the
+ * set of asks seen to answer with their own card: a build not on it is never played as built (Adam, 2026-10-15: no claiming what
+ * doesn't answer). It is not marked shown either, so it is offered the day it answers. Returns { steps, waiting }. Pure.
+ */
+export function whatsNew(entries, { shown = new Set(), verified = null, n = Infinity } = {}) {
+  const steps = [], waiting = [], asks = new Set(shown);
   for (const e of entries) {
     const p = playable(e);
     if (!p || asks.has(CLEAN(p.ask))) continue;
-    if (verified && !verified.has(CLEAN(p.ask))) { asks.add(CLEAN(p.ask)); if (pending) pending.push({ ...p, at: e.at }); continue; }
-    asks.add(CLEAN(p.ask)); out.push({ ...p, at: e.at });
-    if (out.length >= n) break;
+    asks.add(CLEAN(p.ask));
+    if (verified && !verified.has(CLEAN(p.ask))) { waiting.push({ ...p, at: e.at }); continue; }
+    steps.push({ ...p, at: e.at });
+    if (steps.length >= n) break;
   }
-  return out;
-}
-
-/** how far the ledger counts as seen once what is ready has been offered: the newest `at`, but never past a build still
- *  waiting for its live check (`pending` from pick), so it is offered once it answers instead of being marked seen unshown
- *  (2026-10-15: every fresh build was unverified on the first visit after it, so "while you were away" went quiet). Pure. */
-export function seenUpTo(entries, seen = '', pending = []) {
-  const held = (pending || []).map((p) => p && p.at).filter((a) => typeof a === 'string').sort()[0];
-  if (!held) return newestAt(entries);
-  return (Array.isArray(entries) ? entries : []).reduce((m, e) => (e && typeof e.at === 'string' && e.at < held && e.at > m ? e.at : m), seen || '');
+  return { steps, waiting };
 }
 
 /** the newest `at` in the ledger. Pure. */
@@ -86,11 +83,12 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
-/** the asks already previewed (cleaned), newest last; bounded so it stays small however much V01D makes */
+const nowIso = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
+/** the asks already previewed on this device (cleaned); bounded, so it stays small however much V01D makes */
 export function shownSet() { try { return new Set(JSON.parse(read(SHOWN_KEY) || '[]')); } catch (_) { return new Set(); } }
 export function markShown(steps) {
-  const all = [...shownSet()]; for (const s of steps) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
-  write(SHOWN_KEY, JSON.stringify(all.slice(-2000)));
+  const all = [...shownSet()]; for (const s of steps || []) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
+  write(SHOWN_KEY, JSON.stringify(all.slice(-3000)));
 }
 export const VERIFIED_URL = '/claims-verified.json';
 async function ledger() {
@@ -103,7 +101,7 @@ async function verifiedSet() {
   try { const r = await fetch(VERIFIED_URL, { cache: 'no-cache' }); const j = r.ok ? await r.json() : {}; return new Set((j.ok || []).map(CLEAN)); } catch (_) { return new Set(); }
 }
 
-let tour = null; // the walkthrough on screen: { steps, i, made, bar, newest }
+let tour = null; // the walkthrough on screen: { steps, i, made, bar }
 
 // the bar sits just above the ask box and above an open card (a step's card must not cover its own controls)
 function bar() {
@@ -134,7 +132,6 @@ function button(label, on) {
 
 function end(stageApi) {
   if (!tour) return;
-  if (tour.newest && tour.newest > read(SEEN_KEY)) write(SEEN_KEY, tour.newest);
   const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); el.remove(); }
   removeEventListener('keydown', tour.esc, true);
   tour = null;
@@ -178,10 +175,10 @@ async function step(stageApi) {
 }
 
 /** start the walkthrough over these steps */
-export function start(stageApi, steps, { label = 'Built while you were away', newest = '' } = {}) {
+export function start(stageApi, steps, { label = 'Built while you were away' } = {}) {
   if (tour) end(stageApi);
   if (!steps.length) return false;
-  tour = { steps, i: 0, made: null, label, newest, esc: (e) => { if (e.key === 'Escape' && tour && !document.querySelector('.vpage.on')) end(stageApi); } };
+  tour = { steps, i: 0, made: null, label, esc: (e) => { if (e.key === 'Escape' && tour && !document.querySelector('.vpage.on')) end(stageApi); } };
   addEventListener('keydown', tour.esc, true);
   step(stageApi);
   return true;
@@ -189,13 +186,13 @@ export function start(stageApi, steps, { label = 'Built while you were away', ne
 
 /** the page calls this once, on a returning visitor's first touch: the quiet line, or nothing (a first visit only remembers now) */
 export async function nudge(stageApi, note) {
-  const seen = read(SEEN_KEY);
-  if (!seen) { write(SEEN_KEY, new Date().toISOString().replace(/\.\d+Z$/, 'Z')); return 0; }
+  const floor = read(SEEN_KEY);
+  if (!floor) { write(SEEN_KEY, nowIso()); return 0; }
   let list = [];
   try { list = await ledger(); } catch (_) { return 0; }
-  const pending = [], steps = pick(sinceLast(list, seen), Infinity, await verifiedSet(), pending, shownSet());
-  const newest = seenUpTo(list, seen, pending); // a build still waiting for its live check stays unseen
-  if (!steps.length) { if (newest > seen) write(SEEN_KEY, newest); return 0; }
+  const { steps } = whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: await verifiedSet() });
+  if (!steps.length) return 0;
+  markShown(steps); // previewed once: from here on these are never offered again on this device, whether or not the line is tapped
   if (!note) return steps.length;
   const n = steps.length;
   const lead = document.createElement('span');
@@ -203,9 +200,8 @@ export async function nudge(stageApi, note) {
   lead.textContent = (note.textContent ? note.textContent + ' · ' : '') + 'I made ' + (n === 1 ? 'a new thing' : n.toLocaleString('en') + ' new things') + ' while you were away · ';
   const go = document.createElement('a');
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
-  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps, { newest }); });
+  go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps); });
   note.textContent = ''; note.append(lead, go);
-  markShown(steps); // previewed once: the next visit does not offer these again, whether or not the link was tapped
   return n;
 }
 
@@ -220,14 +216,14 @@ async function run(text, api) {
   const stageApi = api.stage;
   let list = [];
   try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
-  const seen = read(SEEN_KEY), V = await verifiedSet(), pending = [];
-  const fresh = seen ? pick(sinceLast(list, seen), Infinity, V, pending, shownSet()) : [];
-  if (!fresh.length) pending.length = 0;
-  const steps = fresh.length ? fresh : recent(pick(sinceLast(list), Infinity, V, pending));
-  const wip = pending.length ? ' · ' + pending.length + ' more in progress (not answering yet)' : '';
+  const floor = read(SEEN_KEY), V = await verifiedSet();
+  const fresh = floor ? whatsNew(sinceLast(list, floor), { shown: shownSet(), verified: V }) : { steps: [], waiting: [] };
+  // nothing new to preview: a recap of the last day (at least the newest five), never everything ever made
+  const steps = fresh.steps.length ? fresh.steps : recent(whatsNew(sinceLast(list), { verified: V }).steps);
+  const wip = fresh.waiting.length ? ' · ' + fresh.waiting.length + ' more in progress (not answering yet)' : '';
   if (!steps.length) { api.say('nothing new to show yet' + wip); return 'none'; }
   markShown(steps);
-  start(stageApi, steps, { label: (fresh.length ? 'Built while you were away' : 'Built lately') + wip, newest: seenUpTo(list, seen, pending) });
+  start(stageApi, steps, { label: (fresh.steps.length ? 'Built while you were away' : 'Built lately') + wip });
   return 'showcase';
 }
 

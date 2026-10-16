@@ -1406,7 +1406,7 @@ try {
       !r.firstBefore && !r.firstAfter && r.firstSeen && !r.before && /show me$/.test(r.pill)
         && /^1 of 3 · Built while you were away sticky notes look like real paper/.test(r.s1) && /^2 of 3 .*a counter you can tap/.test(r.s2)
         && /the growth page/.test(r.s3) && r.s3kinds === 'counter'
-        && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-12T04:00:00Z'
+        && !r.after.bar && !r.after.page && r.after.kinds === 'counter' && r.after.seen === '2026-10-11T00:00:00Z'
         && !/I made/.test(r.reload) && /^1 of 4 · Built lately/.test(r.typed) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
