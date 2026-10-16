@@ -1,38 +1,41 @@
 /**
- * quote skill: random inspirational quotes.
- * "give me a quote", "inspirational quote", "random quote".
- * Empty surface stays empty. Quotes are static, no external call.
+ * quote skill — a short inspirational or random quote.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "give me a quote", "inspirational quote", "random quote", "say a quote".
+ * Uses the free Quotable API (no key). Empty surface stays empty.
  */
-const QUOTES = [
-  'The only way to do great work is to love what you do. — Steve Jobs',
-  'In the middle of difficulty lies opportunity. — Albert Einstein',
-  'Be the change that you wish to see in the world. — Mahatma Gandhi',
-  'The future belongs to those who believe in the beauty of their dreams. — Eleanor Roosevelt',
-  'Success is not final, failure is not fatal: it is the courage to continue that counts. — Winston Churchill',
-];
-
-function isQuote(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:give\s+me\s+(?:a\s+)?|random\s+|inspirational\s+)?quote$/.test(t);
+export function quoteOf(text) {
+  const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  return /^(?:please\s+)?(?:(?:give|tell|show|say)\s+(?:me\s+)?(?:an?\s+)?(?:inspirational|random|short|nice|good)?\s*quotes?|inspirational\s+quotes?|random\s+quotes?|a\s+quotes?|quotes?\s+please)$/i.test(t);
 }
 
 async function run(text, api) {
   const { showPage, esc } = api;
-  if (!isQuote(text)) return 'none';
-  const q = QUOTES[Math.floor(Math.random() * QUOTES.length)];
-  showPage((p) => {
-    p.innerHTML = '<h2>Quote</h2><p style="font-style:italic;font-size:18px">' + esc(q) + '</p>';
-  });
-  return 'quote';
+  if (!quoteOf(text)) return 'none';
+  const el = showPage((p) => { p.innerHTML = '<h2>A quote</h2><div class="sub">…</div>'; });
+  try {
+    const r = await fetch('https://api.quotable.io/random');
+    if (!api._pageStill(el)) return 'quote';
+    const j = await r.json();
+    if (!j || !j.content) throw 0;
+    el.innerHTML = '<h2>A quote</h2><p style="font-size:22px;line-height:1.45;font-weight:300;font-style:italic">“' + esc(j.content) + '”</p>'
+      + '<div class="sub">— ' + esc(j.author || 'Unknown') + '</div>'
+      + '<div class="src">Source: <a href="https://quotable.io" target="_blank" rel="noopener">Quotable</a></div>';
+    return 'quote';
+  } catch (_) {
+    if (!api._pageStill(el)) return 'none';
+    el.innerHTML = '<h2>A quote</h2><p>The quote service did not answer just now. Try again in a minute.</p>';
+    return 'none';
+  }
 }
 
 export default {
   name: 'quote',
-  examples: ['give me a quote', 'inspirational quote', 'random quote'],
-  nearMisses: ['quote the bible', 'what is a quote'],
-  match(lower, text) { return isQuote(text); },
+  examples: ['give me a quote', 'inspirational quote', 'random quote', 'say a quote'],
+  nearMisses: ['what is a quote', 'quote of the day app', 'stock quote'],
+  match(lower, text) { return quoteOf(text); },
   run,
   suite() {
-    return { ok: isQuote('give me a quote') && !isQuote('hello') };
+    return { ok: quoteOf('give me a quote') && quoteOf('inspirational quote') && !quoteOf('what is a quote') && !quoteOf('hello') };
   },
 };
