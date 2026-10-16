@@ -4,6 +4,7 @@
  */
 import * as S from './snake-rules.js';
 import { arcadeCard } from './arcade-card.js';
+import { finish } from '../lib/ladder.js'; // a finished match goes on V01D's arcade ladder (asked by Void)
 
 export function snakeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -38,6 +39,7 @@ function mount(th, stageApi) {
     g.shadowBlur = 0;
     c.status.textContent = !go ? 'Press an arrow key or swipe to start' : s.over === 'you' ? 'You win! (' + s.you.body.length + ' long)' : s.over === 'void' ? 'V01D wins (' + s.void.body.length + ' long)' : s.over === 'draw' ? 'A draw' : 'You ' + s.you.body.length + ' · V01D ' + s.void.body.length;
     c.why.textContent = s.why ? 'V01D: ' + s.why : '';
+    if (s.over && !s._counted) { s._counted = true; finish('snake', s.over); }
   });
 }
 

@@ -3067,6 +3067,20 @@ try {
       !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && !b.afterVelocity && !G.errors.length,
       JSON.stringify({ b, errors: G.errors }));
     await G.ctx.close(); }
+  // V01D's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
+  if (want("self-knowledge and state: voidquest and the games read from the canon, what the device keeps, the arcade ladder on the growth card")) {
+    const G = await fresh(() => { localStorage.setItem('a2m.void.ladder.v1', JSON.stringify({ pong: { void: 3, you: 1, draw: 0 }, snake: { void: 0, you: 2, draw: 0 } })); localStorage.setItem('a2m.void.owner.v1', 'owner-key-stand-in'); }); // secret-scan: ok: a made-up value
+    const pageWith = async (re) => (await until(async () => { const t = await G.page(); return re.test(t) ? t : null; }, 5000)) || (await G.page());
+    await G.ask('what is voidquest', 300); const vq = await pageWith(/canon, version/);
+    await G.ask('which games do you know', 300); const games = await pageWith(/Reversi/);
+    await G.ask('show my state', 300); const st = await pageWith(/What I keep on this device/);
+    await G.ask('growth', 1500);
+    const lad = await until(async () => G.p.$eval('.vpage .growth-ladder', (e) => ({ rates: e.dataset.ladder, text: e.textContent })).catch(() => null), 6000);
+    check('self-knowledge and state: "what is voidquest" reads the canon\'s words, "which games do you know" lists the games with a play link each, "show my state" lists what the device keeps and never shows the owner key\'s value, and the growth card shows V01D\'s arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device',
+      /Solar Quest/.test(vq) && /canon, version \d+/.test(vq) && /Reversi/.test(games) && /Tic-tac-toe/.test(games) && /session: owner/.test(st) && /owner/.test(st) && !/owner-key-stand-in/.test(st) && /ladder/.test(st)
+        && !!lad && lad.rates === '1032,968' && /Void Pong 1032/.test(lad.text) && /Void Snake 968/.test(lad.text) && !G.errors.length,
+      JSON.stringify({ vq: vq.slice(0, 200), games: games.slice(0, 200), st: st.slice(0, 300), lad, e: G.errors }));
+    await G.ctx.close(); }
   // V01D's probes on the growth card (lib/probe-log.js, asked by Void: a probe-success-rate card, and confidence in the growth inbox
   // so high-certainty fixes come first): nothing shows without records; with them, the rate and the proposals most certain first
   if (want("The growth card shows V01D's probes")) { const G = await fresh();

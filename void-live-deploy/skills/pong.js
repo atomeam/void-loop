@@ -4,6 +4,7 @@
  */
 import * as P from './pong-rules.js';
 import { arcadeCard } from './arcade-card.js';
+import { finish } from '../lib/ladder.js'; // a finished match goes on V01D's arcade ladder (asked by Void)
 
 export function pongOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -31,6 +32,7 @@ function mount(th, stageApi) {
     g.shadowColor = '#fff'; g.fillStyle = '#fff'; g.beginPath(); g.arc(s.ball.x, s.ball.y, P.BALL / 2, 0, 7); g.fill(); g.shadowBlur = 0;
     c.status.textContent = s.over === 'you' ? 'You win ' + s.you.score + '–' + s.void.score + '!' : s.over === 'void' ? 'V01D wins ' + s.void.score + '–' + s.you.score : 'You ' + s.you.score + ' · V01D ' + s.void.score;
     c.why.textContent = s.lastWhy ? 'V01D: ' + s.lastWhy : '';
+    if (s.over && !s._counted) { s._counted = true; finish('pong', s.over); }
   });
 }
 
