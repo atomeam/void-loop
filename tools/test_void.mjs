@@ -1157,6 +1157,28 @@ try {
   // "my n8n workflow is broken…" reaches the server inside its 20 kB with its first and last lines (the error is at the end), the
   // card's title ends in … at a word, the card folds away everything given and says how much of the middle was left out; the
   // card's round button reads the whole card aloud, turns to stop while it reads, and stops when tapped again
+  // The intent gate (owner, 2026-10-16: a pasted design discussion came back as "a field it expects is empty", labelled "from the
+  // error itself" with no error in it): a discussion never opens the fix card; a real error does, and its card quotes the error
+  if (want('intent gate: a pasted discussion is not a broken automation')) { const G = await fresh();
+    const fixes = []; G.p.on('request', (q) => { if (/\/api\/answer$/.test(q.url())) { try { const b = JSON.parse(q.postData() || '{}'); if (b.mode === 'fix') fixes.push(b); } catch (_) {} } });
+    const talk = ['Here is how the reply channel should work. A reply needs a type, so the loop knows whether it is a correction, a question or design feedback.',
+      'When a correction arrives it should route to a rule rewrite, not to a fix template; the workflow is broken in that sense only.',
+      'I think the router needs an intent gate before anything else: an incident, a design note and a question are different jobs.',
+      'The required field here is the type, and an empty type should never be guessed into an error report. Fixing that is a rule change, not new infrastructure.'].join('\n');
+    await G.p.focus('#input');
+    await G.p.evaluate((t) => { const dt = new DataTransfer(); dt.setData('text/plain', t); document.getElementById('input').dispatchEvent(new ClipboardEvent('paste', { clipboardData: dt, bubbles: true, cancelable: true })); }, talk);
+    await G.p.keyboard.press('Enter'); await G.p.waitForTimeout(1500);
+    const talked = await G.page();
+    await G.ask('my zap is failing with 401 Unauthorized', 300); await until(async () => /Likely cause/.test(await G.page()), 6000);
+    const real = await G.p.$eval('.vpage.on', (e) => ({ src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    await G.ask('my zap stopped firing yesterday and nothing in it runs anymore, the trigger looks switched on and the sheet still gets new rows every hour', 300); await until(async () => /Likely cause|Paste what it shows/.test(await G.page()), 6000);
+    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    check('intent gate: a pasted discussion is not a broken automation (no fix card, no fix request); a real error gets its fix with the error quoted as the source; a fix from a description says so and how it was read',
+      fixes.filter((b) => /reply channel/.test(b.details || b.ask || '')).length === 0 && !/Likely cause/.test(talked)
+        && !!real && /from the error itself: “[^”]*401/.test(real.src) && !real.read
+        && !!told && (!/Likely cause/.test(told.text) || (told.read && /from your description/.test(told.src) && !/from the error itself/.test(told.src))) && !G.errors.length,
+      JSON.stringify({ talked: talked.slice(0, 200), real, told: told && { ...told, text: told.text.slice(0, 200) }, fixes: fixes.map((b) => (b.ask || '').slice(0, 60)), errors: G.errors }));
+    await G.ctx.close(); }
   if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
     const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
       if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });

@@ -9,12 +9,13 @@ import { labTools } from '../void-live-deploy/skills/make.js';
 const real = JSON.parse(readFileSync(new URL('./fringe.json', import.meta.url), 'utf8'));
 assert.deepEqual(check(real), [], 'the ledger as it stands, no notes anywhere, is fine');
 const last = real[real.length - 1];
+const other = last.family === 'attention' ? 'opt-in-gesture' : 'attention'; // a family that is not the last run's own
 const withNotes = (notes) => real.slice(0, -1).concat({ ...last, ...notes });
 
 // the notes, each checked only when present
-assert.deepEqual(check(withNotes({ hypothesis: 'A gesture you opt into can stand in for a typed ask.', behavior: 'Hold two fingers on the stage to save the current card as a gesture.', findings: ['works on touch screens'], failure_modes: [{ what: 'pinch zoom fights the gesture', evidence: 'iPad Safari: the card zooms instead' }], next_experiments: ['try it with a pen'], combines: ['attention'] })), []);
+assert.deepEqual(check(withNotes({ hypothesis: 'A gesture you opt into can stand in for a typed ask.', behavior: 'Hold two fingers on the stage to save the current card as a gesture.', findings: ['works on touch screens'], failure_modes: [{ what: 'pinch zoom fights the gesture', evidence: 'iPad Safari: the card zooms instead' }], next_experiments: ['try it with a pen'], combines: [other] })), []);
 for (const [bad, re] of [[{ hypothesis: '' }, /hypothesis must be a line/], [{ behavior: 'x'.repeat(401) }, /behavior must be a line/], [{ findings: 'one' }, /findings must be a list/],
-  [{ failure_modes: [{ what: 'it broke' }] }, /failure_modes must be a list of \{ what, evidence \}/], [{ combines: ['opt-in-gesture'] }, /combines must list other known families/], [{ combines: ['tarot'] }, /combines must list other/]])
+  [{ failure_modes: [{ what: 'it broke' }] }, /failure_modes must be a list of \{ what, evidence \}/], [{ combines: [last.family] }, /combines must list other known families/], [{ combines: ['tarot'] }, /combines must list other/]])
   assert.match(check(withNotes(bad)).join('\n'), re, JSON.stringify(bad));
 
 // novelty is behavior, not vocabulary: a later run that does the same thing under another family is refused
@@ -28,7 +29,7 @@ assert.deepEqual(notesOf([{ claim: 'c', source: 's', confidence: 'open' }]), { s
 assert.deepEqual(notesOf({ sources: [1], hypothesis: 'h', behavior: 'b', secret: 'x' }), { sources: [1], hypothesis: 'h', behavior: 'b' });
 
 // --learned: recent notes back, and the published pairs no run has joined, the next run's own families first
-const L = learned(withNotes({ findings: ['works on touch'], failure_modes: [{ what: 'pinch zoom', evidence: 'iPad' }], next_experiments: ['a pen'], behavior: 'Hold two fingers to save a card', combines: ['attention'] }));
+const L = learned(withNotes({ findings: ['works on touch'], failure_modes: [{ what: 'pinch zoom', evidence: 'iPad' }], next_experiments: ['a pen'], behavior: 'Hold two fingers to save a card', combines: [other] }));
 assert.deepEqual([L.findings[0].x, L.failures[0].x.what, L.next[0].x, L.behaviors[0].x], ['works on touch', 'pinch zoom', 'a pen', 'Hold two fingers to save a card']);
 assert.ok(!L.untried.some(([a, b]) => a + '+' + b === 'attention+opt-in-gesture'), 'a pair a run combined is no longer untried');
 const may = new Set(next(real));

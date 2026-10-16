@@ -152,6 +152,7 @@ for (const [name, file] of [
   ['gaps', 'gaps.test.mjs'],
   ['propose-fix', 'propose-fix.test.mjs'],
   ['probe-asks', 'probe-asks.test.mjs'],
+  ['drive', 'drive.test.mjs'],
   ['voice-reply', 'voice-reply.test.mjs'],
   ['merges', 'merges.test.mjs'],
   ['probe-log', 'probe-log.test.mjs'],
