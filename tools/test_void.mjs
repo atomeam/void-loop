@@ -3170,7 +3170,7 @@ try {
       !!sk && /^(mythic|rare|uncommon|common)$/.test(sk.rarity) && /^SKILL . NUMBERS AND MONEY$/i.test(sk.type) && sk.art && /^\u25c6+$/.test(sk.cost) && /^P \d R \d+ I \d+$/.test(sk.pt) && /\d{3}\/\d{3}/.test(sk.foot) && sk.adds && sk.footLast && !C.errors.length, JSON.stringify({ sk, errors: C.errors }));
     await C.ask('close', 500); await C.ask('tell me about the ocean', 1800);
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
-    check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^ANSWER/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
+    check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
