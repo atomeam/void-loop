@@ -69,7 +69,11 @@ function mount(th, stageApi) {
     }));
     const stepIn = body.querySelector('.tab-step'), actSp = body.querySelector('.tab-act-said');
     stepIn.value = ext.stepText || ''; stepIn.addEventListener('input', () => { ext.stepText = stepIn.value; }); // a redraw of the stage keeps what you typed
-    { const sg = body.querySelector('.tab-suggest'); if (sg) sg.addEventListener('click', (e) => { e.preventDefault(); const b = body.querySelector('.tab-ask-' + sg.dataset.intent); if (b && !b.disabled) b.click(); }); }
+    // the context check's suggestion: a text page presses the card's own summary button; a picture or table page runs the ask it names
+    // (the card is a thing on the stage, not an answer page, so the page's data-ask handler does not reach it: the summon event does, void.html)
+    { const sg = body.querySelector('.tab-context a'); if (sg) sg.addEventListener('click', (e) => { e.preventDefault();
+      if (sg.dataset.intent) { const b = body.querySelector('.tab-ask-' + sg.dataset.intent); if (b && !b.disabled) b.click(); return; }
+      if (sg.dataset.ask) document.dispatchEvent(new CustomEvent('void:summon', { detail: sg.dataset.ask })); }); }
     body.querySelector('.tab-propose').addEventListener('click', () => { const st = bridge.stepsOf(stepIn.value); if (!Array.isArray(st)) { actSp.textContent = bridge.ACT_WHY[st || 'bad-step']; return; } actSp.textContent = bridge.propose(st) ? 'asking you in the panel…' : bridge.DRAFT_WHY['no-panel']; });
   }
   el.appendChild(body);

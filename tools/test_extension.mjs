@@ -152,10 +152,15 @@ const rCtx = await read(FIXTURE + 'table');
 await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /mostly a table/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
 const ctxCard = await V.evaluate(() => { const c = document.querySelector('.tab-card'); return c ? { text: c.innerText, ask: (c.querySelector('.tab-context a') || {}).getAttribute && c.querySelector('.tab-context a').getAttribute('data-ask') } : null; });
 const ctxCounts = await sw.evaluate(async () => (await chrome.storage.session.get('tab')).tab.content);
+// the tap runs the ask it names (the card is a thing on the stage, so it goes through the page's summon event, not the answer page's data-ask handler)
+await V.evaluate(() => { const a = document.querySelector('.tab-card .tab-context a'); if (a) a.click(); });
+await V.waitForSelector('.thing.list-card', { timeout: 5000 }).catch(() => {});
+const ctxTap = await V.evaluate(() => !!document.querySelector('.thing.list-card'));
+await V.evaluate(() => { const l = document.querySelector('.thing.list-card'); if (l) l.remove(); });
 await ctxPage.close();
-check('context check: a page that is mostly a table reads as "mostly a table · try make a list to check off" (a data-ask link), from counts only; the short fixture page carries no such line',
-  rCtx && rCtx.ok && ctxCard && /Prices/.test(ctxCard.text) && /mostly a table/.test(ctxCard.text) && ctxCard.ask === 'make a list' && ctxCounts && ctxCounts.rows === 8 && ctxCounts.cells === 24 && !/mostly/.test(card2),
-  { ctxCard, ctxCounts, card2: card2.slice(0, 120) });
+check('context check: a page that is mostly a table reads as "mostly a table · try make a list to check off" (a data-ask link), from counts only; the tap puts a list on the stage; the short fixture page carries no such line',
+  rCtx && rCtx.ok && ctxCard && /Prices/.test(ctxCard.text) && /mostly a table/.test(ctxCard.text) && ctxCard.ask === 'make a list' && ctxCounts && ctxCounts.rows === 8 && ctxCounts.cells === 24 && ctxTap && !/mostly/.test(card2),
+  { ctxCard, ctxCounts, ctxTap, card2: card2.slice(0, 120) });
 // back to the fixture tab for the steps below: pointed at again, the box you were in focused, the card shows it again
 await page.evaluate(() => document.getElementById('reply').focus());
 await read(FIXTURE);
