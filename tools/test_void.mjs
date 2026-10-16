@@ -2314,13 +2314,19 @@ try {
     const states = () => L.p.$$eval('.actions-row', (r) => r.map((x) => x.dataset.state));
     const before = await states();
     all = all.map((r) => (r.id === 'act-0' ? { ...r, state: 'done', result: 'posted', finished: '2026-10-10T00:11:00Z' } : r));
+    // the fetches by phase, not by count: a redraw of the stage after the card opens (render() remounts every card) loads it
+    // again at open, which is by design and depends on timing (main's verify red on 99acc8d and an overloaded local run both
+    // saw two opening loads); what the check pins is one load during the faked minute and one page fetch for Show more
+    const opened = calls.length;
     await L.p.clock.runFor(61e3); await until(async () => (await states())[0] === 'done', 3000);
-    const after = await states(); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    const after = await states(), ticked = calls.slice(opened); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    const beforeMore = calls.length;
     await L.p.click('.actions-more'); await until(async () => (await states()).length === 41, 3000);
-    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none');
+    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none'), pagedCalls = calls.slice(beforeMore);
     check('actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides',
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
-      && calls.filter((c) => c.startsWith('30/')).slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors })); // the owner's status card reads 50 at load (skills/status.js failedActions); only this card's pages of 30 are counted
+      && calls.slice(0, opened).every((c) => /^(30|50)\/0$/.test(c)) && calls.slice(0, opened).some((c) => c === '30/0') && ticked.filter((c) => c.startsWith('30/')).join(',') === '30/0' && pagedCalls.join(',') === '30/30' && !L.errors.length,
+      JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, opened, ticked, pagedCalls, errs: L.errors })); // the owner's status card reads 50 at load (skills/status.js failedActions); only this card's pages of 30 are counted
     await L.ctx.close(); }
   // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
   // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
