@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T19:12:40.755Z",
-   "sha": "31810e41b3056f7f744af400f318e7069b24520f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38951829673",
+   "at": "2026-10-16T19:12:51.530Z",
+   "sha": "fdaad939b8d55fd37e894faa0dc4e62b099be06a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38952061647",
    "suite": "browser suite on main",
    "checks": [
     "\"what can you do now that you couldn't last week?\": the card's tree first stands as it was a week ago (fewer branches), then grows to today with this week's tips, the readout ending on today"
