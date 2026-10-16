@@ -1,23 +1,41 @@
 {
-  "at": "2026-10-16T16:00:00.000Z",
-  "scores": {
-    "ask_throughput": null,
-    "open_void_asks": 0,
-    "built_void_asks_7d": 0,
-    "friction_failing": 0,
-    "friction_unsure": 0,
-    "friction_total": 0,
-    "queue_lag_hours": null,
-    "queue_queued": 0,
-    "probe_yield": null
-  },
-  "small_eligible": [],
-  "trend": "same",
-  "summary": "Baseline scorecard. Run node tools/better.mjs after deploy to refresh from live voice, ledger, families and queue.",
-  "means": {
-    "ask_throughput": "share of current Void asks that led to a grow/build ledger line in 7 days",
-    "friction_total": "failing + barely-checked skills from families.json",
-    "queue_lag_hours": "median hours items sit on the build queue",
-    "probe_yield": "share of self-probe fix proposals that passed every check"
-  }
+ "at": "2026-10-16T17:22:27.491Z",
+ "score": 75,
+ "parts": {
+  "self": 80,
+  "asks": 88,
+  "friction": 78,
+  "bench": 99,
+  "probes": 30
+ },
+ "facts": {
+  "week": 451,
+  "owner": 91,
+  "askedBuilt": 41,
+  "medianLagDays": 0.3,
+  "open": 4,
+  "oldestOpenDays": 0.9,
+  "skills": 160,
+  "failing": 9,
+  "unsure": 52,
+  "benchScore": 2343,
+  "benchTotal": 2368,
+  "probeFixes": 3
+ },
+ "trend": {
+  "score": 75,
+  "day": null,
+  "week": null,
+  "weakest": "probes",
+  "at": "2026-10-16T17:22:27.491Z",
+  "frictionWeek": null
+ },
+ "summary": "better: 75 of 100; weakest: probes",
+ "means": {
+  "self": "the share of this week's ledger lines that do not cite the owner (V01D driving its own changes)",
+  "asks": "how fast V01D's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
+  "friction": "skills failing the bench or barely checked, against all skills (skills/families.json)",
+  "bench": "the everyday benchmark's score on main (tools/bench.misses.json)",
+  "probes": "fixes this week that came from V01D's own probes"
+ }
 }

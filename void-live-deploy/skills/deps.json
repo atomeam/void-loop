@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 398,
+ "counted": 399,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -61,6 +61,12 @@
    "skills": 3,
    "direct": 1,
    "dependants": 13
+  },
+  {
+   "file": "lib/better.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 12
   },
   {
    "file": "lib/arena-say.js",
@@ -1261,6 +1267,25 @@
    ],
    "importedBy": [
     "functions/api/bench.js"
+   ]
+  },
+  "lib/better.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/book-face.js": {
@@ -2921,6 +2946,7 @@
   "skills/growth.js": {
    "imports": [
     "lib/probe-log.js",
+    "lib/better.js",
     "skills/growth-tree.js"
    ],
    "importedBy": [

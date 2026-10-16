@@ -660,5 +660,19 @@
   "kind": "file",
   "key": "quiz me | nothing appeared",
   "note": "fix: \"quiz me\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T17:30:08Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T18:09:42Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
  }
 ]

@@ -41,6 +41,40 @@ def recent(last, days=MISS_DAYS, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     return (now - t).days < days
 
+def learnable(m):
+    """A miss Void could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
+    for and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to learn about 'zorbleflux', however often it is
+    typed (owner, 2026-10-16: it sat at the top of the wants, asked 64 times). A lookup that could not be reached (unreached)
+    and a plain gap still count."""
+    fb = str(m.get("fallback") or "")
+    return not fb.startswith("skill:") and not fb.startswith("none:")
+# The weakest part of Void's daily "better" score (lib/better.js; the newest row of void.better.json) and the kinds of want that
+# work on it. A boost is small (never above the frontier's first item on its own) and says why in the candidate's `why`.
+BETTER_KINDS = {
+    "asks": ("I asked for this",),                    # its own asks ship slowly or wait long
+    "friction": ("fix myself", "upgrade my architecture"),  # skills failing or barely checked
+    "bench": ("fix myself",),                         # the everyday benchmark slipping
+    "probes": ("fix myself", "people asked"),         # few fixes coming out of its own probes
+    "self": ("I asked for this", "frontier"),         # the owner is driving most changes: Void's own wants and its build order
+}
+BETTER_BOOST = 8
+
+def better_boost(cands, rows):
+    """Lift the weight of candidates whose kind works on the weakest part of the newest better row. Returns that part or None."""
+    rows = [r for r in (rows or []) if isinstance(r, dict) and isinstance(r.get("parts"), dict)]
+    if not rows:
+        return None
+    parts = rows[-1]["parts"]
+    have = [(k, v) for k, v in parts.items() if isinstance(v, (int, float)) and k in BETTER_KINDS]
+    if not have:
+        return None
+    weakest = min(have, key=lambda kv: (kv[1], list(BETTER_KINDS).index(kv[0])))[0]
+    for c in cands:
+        if c.get("kind") in BETTER_KINDS[weakest]:
+            c["weight"] = int(c.get("weight", 0)) + BETTER_BOOST
+            c["why"] = (str(c.get("why", "")) + f" (my weakest part today: {weakest} {parts[weakest]})")[:240]
+    return weakest
+
 def gather(cap=60, with_done=False):
     cands = []
     # 1. what people asked for and Void couldn't do
@@ -50,7 +84,7 @@ def gather(cap=60, with_done=False):
         # the page learned to answer since (e.g. "add milk", now the inline list) would otherwise stay a want forever
         mf = os.environ.get("VOID_MISSES_FILE", "")
         board = json.loads(pathlib.Path(mf).read_text(encoding="utf-8")) if mf else call("/api/misses")
-        misses = [m for m in board[:40] if not str(m.get("fallback", "")).startswith("skill:") and recent(m.get("last"))]
+        misses = [m for m in board[:40] if learnable(m) and recent(m.get("last"))]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
             if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
@@ -260,6 +294,12 @@ def gather(cap=60, with_done=False):
                 cands.append({"kind": "grow from the lab", "title": f"give the lab's \"{v['label']}\" a self-test on main", "why": v["why"], "weight": 6 + int(v["days"]), "source": "lab"})
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
+
+    # is Void getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more
+    try:
+        better_boost(cands, json.loads((ROOT / "void-live-deploy" / "void.better.json").read_text(encoding="utf-8")))
+    except Exception as e:
+        print("better:", e, file=sys.stderr)
 
     # keep it to the strongest 60, unique titles
     seen, out = set(), []
