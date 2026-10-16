@@ -56,3 +56,6 @@ export function printsHtml(esc, list) {
     + '<div class="sub">The files, newest first</div><ul>' + files + '</ul>'
     + '<div class="src">Source: this browser\'s print ledger (lib/prints.js), written by “print it” and “export a print file” · nothing about you leaves this device · “what can you print” lists what the forge can still make</div>';
 }
+
+/** this browser's storage, or null (kept here so the skills that read the ledger touch no storage themselves) */
+export const storeOf = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };

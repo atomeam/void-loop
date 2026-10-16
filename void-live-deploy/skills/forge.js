@@ -9,6 +9,7 @@
  */
 import * as F from './forge-rules.js';
 import { add as recordPrint } from '../lib/prints.js';
+import * as Makes from '../lib/forge-makes.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
 /** What V01D's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
@@ -27,10 +28,16 @@ const MAKE = new RegExp('^(?:please\\s+)?(?:(?:can|could)\\s+you\\s+)?(?:make|bu
 const PRINT = /^(?:please\s+)?(?:print\s+(?:it|this|that)|3d[\s-]?print\s+(?:it|this|that)|download\s+(?:the|its|an?)\s+stl|(?:give\s+me\s+|export\s+)?(?:the\s+|an?\s+)?stl(?:\s+file)?(?:\s+(?:of|for)\s+(?:it|this|that))?|save\s+(?:it|this)\s+as\s+(?:an?\s+)?stl)(?:\s+please)?$/;
 
 const LIST = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:forge\s+(?:history|gallery|recipes?|catalog(?:ue)?)|what\s+can\s+you\s+(?:make|forge|3d\s+print)(?:\s+(?:for\s+)?me)?|what\s+(?:things\s+)?(?:can|do)\s+you\s+(?:forge|make\s+in\s+3d)|(?:my|your)\s+forge)$/;
+// "check it before printing" / "verify the vase": the geometry check without the download (asked by Void: forge to print-file link); "forge iterations": every make kept (recipe versioning)
+const VERIFY = new RegExp('^(?:please\\s+)?(?:(?:check|verify|inspect|test)\\s+(?:the\\s+|my\\s+)?(?:geometry\\s+of\\s+(?:the\\s+|my\\s+)?)?(' + NAMES + '|it|this|that)(?:\\s+(?:before\\s+(?:i\\s+)?print(?:ing)?(?:\\s+it)?|geometry))?|(?:check|verify)\\s+(?:it|this|that)\\s+before\\s+(?:i\\s+)?print(?:ing)?(?:\\s+it)?|is\\s+(?:it|this|that)\\s+(?:ready|safe)\\s+to\\s+print)$');
+const ITER = /^(?:show\s+(?:me\s+)?)?(?:the\s+|my\s+)?(?:forge\s+(?:iterations?|makes|versions|log)|recipe\s+(?:versions|iterations))$/;
 /** what the ask means: null, { make: key }, { print: true } or { list: true } (the forge history: every recipe and what stands on the stage) */
 export function forgeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (LIST.test(t)) return { list: true };
+  if (ITER.test(t)) return { iterations: true };
+  const v = VERIFY.exec(t);
+  if (v) { const w = (v[1] || 'it').replace(/\s+/g, ' '); return { verify: /^(?:it|this|that)$/.test(w) ? true : F.thingOf(w) }; }
   const m = MAKE.exec(t);
   if (m) return { make: F.thingOf(m[1].replace(/\s+/g, ' ')) };
   if (PRINT.test(t)) return { print: true };
@@ -136,6 +143,19 @@ async function run(text, api) {
     } catch (_) {}
     return 'forge';
   }
+  if (q.iterations) {
+    const rows = Makes.withStatus(Makes.load(store()), (k) => F.recipeId(k));
+    api.showPage((p) => { p.innerHTML = Makes.iterationsHtml(api.esc, rows); }); // void-review: ok: iterationsHtml escapes every value
+    return 'forge';
+  }
+  if (q.verify) { // the check "print it" runs, without the download (asked by Void)
+    const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1], key = q.verify === true ? (th && th.key) : q.verify;
+    if (!key) { api.say('Nothing forged to check yet · say "make me a vase", then "check it before printing"'); return 'forge'; }
+    const m = F.build(key), v = F.verifyStl(F.stl(m), m), pc = F.printCheck(m);
+    api.say(v.ok ? 'Geometry checked, not printed · the ' + m.label.toLowerCase() + ' is watertight, faces outward, ' + v.triangles.toLocaleString('en') + ' facets, fits a ' + F.BED_MM + ' mm bed · ' + dims(m.size) + (pc.supports ? ' · needs supports' : ' · no supports needed') + ' · say "print it" for the STL'
+      : 'Held back: the ' + m.label.toLowerCase() + '\'s file did not pass its check · ' + v.problems.join(' · '));
+    return 'forge';
+  }
   if (q.print) {
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1];
     if (!th) { api.say('Nothing forged to print yet · say "make me a rocket" (or a vase, a bottle, a table, a snowman, a lighthouse, a teapot, a house, a sailboat, a tree)'); return 'forge'; }
@@ -143,6 +163,7 @@ async function run(text, api) {
     return 'forge';
   }
   const model = F.build(q.make);
+  const ls = store(); if (ls) Makes.add(ls, { key: q.make, recipe: model.id, ask: text }); // the iteration is kept (lib/forge-makes.js)
   api.summon('forge', { key: q.make, angle: 0, center: true, ask: String(text || '').trim().slice(0, 80) });
   const pc = F.printCheck(model);
   api.say(model.label + ' · ' + dims(model.size) + (pc.supports ? ' · prints with supports' : ' · prints without supports') + ' · say "print it" for the STL');
@@ -152,7 +173,7 @@ async function run(text, api) {
 export default {
   name: 'forge',
   forgeOf,
-  examples: ['forge history', 'what can you make', 'make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a teapot', 'make a little house', 'make me a sailboat', 'forge a tree', 'make me a table i can print', 'print it', 'download the stl'],
+  examples: ['forge history', 'what can you make', 'make me a rocket', 'make a vase', '3d print a bottle', 'forge a lighthouse', 'build me a snowman', 'make me a teapot', 'make a little house', 'make me a sailboat', 'forge a tree', 'make me a table i can print', 'print it', 'download the stl', 'check it before printing', 'forge iterations', 'make me a person'],
   nearMisses: ['make me a coffee', 'make a reservation', 'print the page', 'table of contents', 'what is a rocket', 'make me a zombie', 'make a list', 'make a 3d torus', 'make me a mug', 'make a chair'],
   match(lower, text) { return !!forgeOf(text); },
   run,

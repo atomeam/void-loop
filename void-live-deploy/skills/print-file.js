@@ -6,6 +6,7 @@
  */
 import { bodyFor } from './figure.js';
 import { clean } from '../lib/ask-text.js';
+import { add as recordPrint, storeOf } from '../lib/prints.js';
 
 const CLEAN = clean; // shared: lib/ask-text.js
 
@@ -194,6 +195,8 @@ async function run(text, api, verify = verify3mf) {
     return 'print-file';
   }
   save3mf(file);
+  // the print ledger (lib/prints.js, asked by Void: print-file feeds the inventory): the file that left, so "what have I printed" knows it
+  try { if (storeOf()) recordPrint(storeOf(), { kind: '3mf', file: 'void-stage.3mf', label: 'The stage', triangles: v.triangles, figures: Object.values(things).filter((t) => t && t.kind === 'fig3d').length }); } catch (_) {}
   if (api.say) api.say('Checked: void-stage.3mf · ' + Object.values(things).filter((t) => t && t.kind === 'fig3d').length + ' on the stage · ' + v.triangles + ' triangles, every part whole');
   return 'print-file';
 }
