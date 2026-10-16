@@ -535,5 +535,12 @@
   "kind": "file",
   "key": "what can motelet do | nothing appeared",
   "note": "fix: \"what can motelet do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T08:04:30Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1700 -> 1500 ms"
  }
 ]
