@@ -42,3 +42,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
 | open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
+| building | 2026-10-16 | mood tracker skill: daily mood log with one-line trend | new idea (this run); helper/mood-tracker |
+| open | 2026-10-16 | constellation overlay skill for the night-sky card | new idea |
+| open | 2026-10-16 | habit streak card that rides with a counter | new idea |
+| open | 2026-10-16 | aurora alert card that pings when KP is high | new idea |
