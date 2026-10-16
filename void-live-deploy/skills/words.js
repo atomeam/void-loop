@@ -3,6 +3,8 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "synonym for happy", "another word for big", "opposite of cold", "what rhymes with orange", "how do you spell necessary",
  * "5 letter words starting with cr", "words ending in ology", "anagram of listen", "unscramble tlesi".
+ * Asked by Void (ask-20261014-1548-1): an unscrambled or pattern word is a tap away from a picture of it: each word in the
+ * list runs "cartoon version of a <word>" (skills/cartoon.js: a cartoon figure on the stage), so the words get a visual context.
  */
 // "plural of cactus": English rules plus the common irregulars, no network needed
 const IRREGULAR = { cactus: 'cacti (or cactuses)', fungus: 'fungi', nucleus: 'nuclei', radius: 'radii', stimulus: 'stimuli', syllabus: 'syllabi (or syllabuses)',
@@ -65,6 +67,9 @@ export function wordsOf(text) {
   return null;
 }
 const NUMS = { three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10 };
+/** the ask that draws a word (the cartoon skill), or '' for a word that is not plain letters. Pure. */
+export const pictureAsk = (w) => (/^[a-z]{2,20}$/.test(String(w || '')) ? 'cartoon version of ' + (/^[aeiou]/.test(w) ? 'an ' : 'a ') + w : '');
+const wordLink = (w, esc) => { const a = pictureAsk(w); return a ? '<a href="#" class="word-pic" data-ask="' + esc(a) + '" style="color:inherit;text-decoration:none;border-bottom:1px dotted rgba(150,175,255,.5)">' + esc(w) + '</a>' : esc(w); };
 const sorted = (w) => w.toLowerCase().split('').sort().join('');
 /** the words in a list made of exactly the letters of `letters` (not the letters themselves), each once, in list order. Pure. */
 export function anagramsIn(list, letters) {
@@ -90,7 +95,7 @@ async function listRun(q, api) {
       list = Array.from(new Set((await get(q.sp, 80)).filter((w) => re.test(w)))).slice(0, 60);
     }
     if (!api._pageStill(el)) return 'words';
-    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map(esc).join(' · ') + '</p>'
+    el.innerHTML = '<h2>' + esc(title) + '</h2>' + (list.length ? '<p style="font-size:18px;line-height:1.7">' + list.map((w) => wordLink(w, esc)).join(' · ') + '</p><p style="color:#8a8a8a">Tap a word for a cartoon of it on the stage.</p>'
       : '<p>' + (q.kind === 'ana' ? 'No common English word uses exactly the letters ' + esc(up(q.word)) + '.' : 'I didn\'t find common words like that.') + '</p>') + src;
     return 'words'; // an empty list is still an answer: no common word fits
   } catch (_) {

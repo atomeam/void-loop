@@ -443,6 +443,40 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+
+  // V01D's body asks (skills/nutrition.js, food.js, words.js): the BMI card saves a dated entry only on "save this" and shows the
+  // trend; its band links to the calorie card with the same numbers; "plan my meals" splits the day and the calorie and food
+  // cards link to it; an unscrambled word is a tap from a cartoon of it.
+  if (want("body asks: bmi save this keeps a trend only on tap, the band links to calories, plan my meals splits the day, food links to it, an unscrambled word draws a cartoon")) { const B = await fresh();
+    await B.ask('bmi calculator', 900); await until(async () => /Nothing saved/.test(await B.page()), 8000); const bmiPg = await B.page();
+    const stored0 = await B.p.evaluate(() => localStorage.getItem('a2m.void.bmi.v1'));
+    check('body: the BMI card opens with nothing saved and a save this button', /BMI calculator/.test(bmiPg) && /Nothing saved/.test(bmiPg) && stored0 === null && !!(await B.p.$('.vpage.on #nu-save')), bmiPg.slice(0, 120));
+    await B.p.click('.vpage.on #nu-save'); await until(async () => /One entry saved/.test(await B.page()), 4000);
+    const stored1 = await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]'));
+    check('body: save this keeps one dated entry in this browser and the trend line shows it', stored1.length === 1 && stored1[0].kg > 0 && /One entry saved/.test(await B.page()), JSON.stringify(stored1));
+    await B.p.fill('.vpage.on #nu-w', '150'); await B.p.waitForTimeout(200); await B.p.click('.vpage.on #nu-save'); await until(async () => /2 entries since/.test(await B.page()), 4000);
+    const trendPg = await B.page();
+    check('body: a second save shows the trend (2 entries, BMI first -> last, the change)', /2 entries since/.test(trendPg) && /\u2192|→/.test(trendPg) && (await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]').length)) === 2, trendPg.slice(0, 200));
+    const bandAskStr = await B.p.$eval('.vpage.on .nu-next a[data-ask]', (a) => a.getAttribute('data-ask'));
+    check('body: the band link is a calorie ask carrying the height and weight', /^how many calories should i eat .* at 5'9 150 lb$/.test(bandAskStr), bandAskStr);
+    await B.p.click('.vpage.on .nu-next a[data-ask]'); await until(async () => /Daily calories/.test(await B.page()), 8000); const calFromBmi = await B.page();
+    check('body: the tap opens the daily calories card for those numbers, with the meals link', /Daily calories/.test(calFromBmi) && /5'9/.test(calFromBmi) && /150 lb/.test(calFromBmi) && /plan my meals around/.test(calFromBmi), calFromBmi.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="plan my meals for"]'); await until(async () => /Meals for the day/.test(await B.page()), 8000); const mealsPg = await B.page();
+    check('body: "plan my meals for N calories" splits the day into breakfast, lunch, dinner and snacks', /Meals for the day/.test(mealsPg) && /Breakfast/.test(mealsPg) && /Snacks/.test(mealsPg) && /25%/.test(mealsPg) && /35%/.test(mealsPg), mealsPg.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="make a list with Breakfast"]'); await until(async () => (await B.state()).some((x) => x.kind === 'list'), 8000);
+    const lists = (await B.state()).filter((x) => x.kind === 'list');
+    check('body: "put it on the stage" makes the meals checklist', lists.length === 1 && lists[0].items.length === 4 && /Breakfast/.test(lists[0].items[0].text), JSON.stringify(lists.map((l) => l.items.map((i) => i.text))).slice(0, 200));
+    await B.ask('calories in a banana', 900); await until(async () => /Banana/.test(await B.page()), 8000); const foodPg = await B.page();
+    check('body: food facts link to plan my meals', /Banana/.test(foodPg) && !!(await B.p.$('.vpage.on a[data-ask="plan my meals"]')), foodPg.slice(0, 100));
+    await B.ask('plan my meals', 900); await until(async () => /Meals for the day/.test(await B.page()), 8000); const meals2 = await B.page();
+    check('body: a bare "plan my meals" uses the last calorie card\'s target (page memory), not 2,000', /Meals for the day/.test(meals2) && /your last calorie card/.test(meals2), meals2.slice(0, 160));
+    await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
+    const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
+    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
+    await B.ctx.close(); }
   // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
   // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
   if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
