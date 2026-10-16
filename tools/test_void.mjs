@@ -3222,6 +3222,13 @@ try {
     const back = await look();
     check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page',
       mid && !!after && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
+    // the cover is part of the book (owner, 2026-10-16): ← from the title page swings it shut, → opens it again
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
+    const shut = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened'), book: !!window.__voidBook && window.__voidBook.open }; });
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(1000);
+    const reopened = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened') }; });
+    check('the book: ← from the title page swings the cover shut over the pages (the book stays up), and → or a tap opens it again',
+      shut.shut && !shut.opened && shut.book && !reopened.shut && reopened.opened, JSON.stringify({ shut, reopened }));
     // the index at the back names every skill, each with its page, and a jump from it lands on that page
     const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('#vtome .tome-page .tome-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
     const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));

@@ -214,6 +214,7 @@ for (const [name, file] of [
   ['tome', 'tome.test.mjs'],
   ['card-frame', 'card-frame.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
+  ['paste-rule', 'paste-rule.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
   ['card-art', 'card-art.test.mjs'],
   ['card-image', 'card-image.test.mjs'],

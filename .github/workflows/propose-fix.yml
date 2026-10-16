@@ -62,6 +62,8 @@ jobs:
         with:
           node-version: 22
           cache: npm
+      - name: npm ci (first, because the Claude brain test imports the SDK)
+        run: npm ci --no-audit --no-fund
       - name: Checks
         run: node --test tools/propose-fix.test.mjs tools/claude-brain.test.mjs
       - name: Every workflow file parses (asked by Void; a broken YAML stopped this one from loading on 2026-10-15)
@@ -77,8 +79,6 @@ jobs:
           print('every workflow parses' if not bad else 'does not parse - ' + '; '.join(bad))
           sys.exit(1 if bad else 0)
           PY
-      - name: npm ci
-        run: npm ci --no-audit --no-fund
       - name: Playwright version
         id: pw
         run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"

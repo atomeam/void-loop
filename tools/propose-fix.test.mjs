@@ -157,3 +157,8 @@ test('the confidence gate (owner, 2026-10-16): 0.8 and up is labelled automerge,
   assert.equal(gate('0.8'), 'automerge'); assert.equal(gate('0.93'), 'automerge'); assert.equal(gate('0.79'), 'waits for owner'); assert.equal(gate('none given'), 'waits for owner'); assert.equal(gate(''), 'waits for owner');
   assert.match(wf, /--label "made by V01D" --label "\$gate"/); assert.match(wf, /\[ "\$gate" = "automerge" \] && \{ gh workflow run automerge\.yml/);
 });
+
+test('the workflow installs packages before its checks (the Claude brain test imports the SDK; the daily fix run failed at this step until 2026-10-16)', async () => {
+  const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  assert.ok(wf.indexOf('npm ci --no-audit') > 0 && wf.indexOf('npm ci --no-audit') < wf.indexOf('node --test tools/propose-fix.test.mjs'));
+});
