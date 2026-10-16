@@ -52,7 +52,7 @@ test('appraise: the route reads one small image, asks the vision model, and answ
   assert.equal(j.value.kind, 'watch'); assert.match(j.text, /^V01D values this at \$/); assert.match(j.seen, /Omega/);
   assert.equal((await onRequestPost({ request: req({ image: PNG }), env: {} })).status, 503);
   assert.equal((await onRequestPost({ request: req({ image: 'nope' }), env })).status, 400);
-  const down = await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } }); assert.equal(down.status, 502); assert.equal((await down.json()).reason, 'busy', 'a 502 says why');
+  const down = await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } }); assert.equal(down.status, 502); assert.equal((await down.json()).reason, 'vision: busy; fallback: busy', 'a 502 says why, for both models');
   const p = await (await onRequestPost({ request: req({ image: PNG, note: 'what am I worth' }), env })).json();
   assert.equal(p.value.person, true); assert.ok(!/\$/.test(p.text));
   const person = await (await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => ({ description: 'A woman smiling at the camera in a park.' }) } } })).json();
