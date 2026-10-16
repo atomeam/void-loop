@@ -7,8 +7,8 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 51,
-  "checked": 22,
+  "tested": 55,
+  "checked": 18,
   "proven": 84
  },
  "families": [
@@ -18,8 +18,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 8,
-    "checked": 4,
+    "tested": 9,
+    "checked": 3,
     "proven": 11
    },
    "skills": [
@@ -40,7 +40,7 @@
     {
      "name": "figure",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -67,8 +67,8 @@
     },
     {
      "name": "cartoon",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -291,7 +291,7 @@
     {
      "name": "rack",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -395,7 +395,7 @@
     {
      "name": "weather",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 45 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 45 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -652,7 +652,7 @@
     {
      "name": "util",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
+     "why": "a self-test, 70 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -735,7 +735,7 @@
     {
      "name": "nutrition",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 22 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -852,7 +852,7 @@
     {
      "name": "swaps",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 12 real asks in the benchmark",
+     "why": "a self-test, 12 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -927,15 +927,15 @@
    "for": "food delivery, rides and Waymo, social feeds and dating",
    "count": {
     "experiment": 0,
-    "tested": 2,
-    "checked": 1,
+    "tested": 3,
+    "checked": 0,
     "proven": 0
    },
    "skills": [
     {
      "name": "rides",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -976,7 +976,7 @@
     {
      "name": "notepad",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 5 real asks in the benchmark",
+     "why": "4 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1079,29 +1079,29 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 5,
+    "tested": 6,
+    "checked": 3,
     "proven": 14
    },
    "skills": [
     {
      "name": "guide",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 9 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
     {
      "name": "v01d-fixes",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1122,7 +1122,7 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
