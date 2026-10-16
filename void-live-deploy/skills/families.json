@@ -8,7 +8,7 @@
  "totals": {
   "experiment": 1,
   "tested": 53,
-  "checked": 17,
+  "checked": 18,
   "proven": 84
  },
  "families": [
@@ -291,7 +291,7 @@
     {
      "name": "rack",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1080,10 +1080,17 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 3,
+    "checked": 4,
     "proven": 14
    },
    "skills": [
+    {
+     "name": "guide",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "growth",
      "tier": "proven",
