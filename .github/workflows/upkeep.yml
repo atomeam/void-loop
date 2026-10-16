@@ -1,7 +1,8 @@
 # Upkeep automations (owner, 2026-10-15: "add automations ... everywhere you can"). tools/upkeep.mjs does the work; each job is
 # small (ubuntu, a few minutes at most), writes a data file to main only when it changed, and warns instead of failing.
 #   daily:  clip visits (/c/_stats -> domains/void.clips.json), Piped host health (domains/void.piped.json), the smoke test of every
-#           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Void)
+#           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Void),
+#           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Void)
 #   weekly: dead links in sitemap.xml + llms.txt, npm audit summary, delete branches already merged into main and idle 14+ days
 #   on merge: the PR's Working on line in domains/handoff.md moves to Just finished
 name: Void upkeep
@@ -43,12 +44,19 @@ jobs:
         run: |
           node tools/skills-check.mjs --write tools/skills-smoke.json || true
           node tools/families.mjs > /dev/null || true
+      - name: Re-test skills not tested in 7 days (asked by Void)
+        # non-destructive: their examples routed, near misses kept out, their unit test run; a failure becomes one retest:<skill> queue job
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          node tools/retest.mjs || true
+          node tools/families.mjs > /dev/null || true
       - name: Commit what changed
         run: |
-          git diff --quiet -- domains/void.clips.json domains/void.piped.json tools/skills-smoke.json void-live-deploy/skills/families.json && { echo "nothing changed"; exit 0; }
+          git diff --quiet -- domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/retest.json void-live-deploy/skills/families.json && { echo "nothing changed"; exit 0; }
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add domains/void.clips.json domains/void.piped.json tools/skills-smoke.json void-live-deploy/skills/families.json
-          git commit -m "Upkeep: clip visits, Piped host health, the daily skill smoke test"
+          git add domains/void.clips.json domains/void.piped.json tools/skills-smoke.json tools/retest.json void-live-deploy/skills/families.json
+          git commit -m "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
           for i in 1 2 3 4; do git push origin HEAD:main && exit 0; sleep $((2 ** i)); git pull --rebase origin main; done; exit 1
 
   weekly:

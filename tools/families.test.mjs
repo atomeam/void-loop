@@ -152,3 +152,24 @@ test('live evidence (the owner, 2026-10-16): a kept ok artifact of a real call i
   const b2 = (await import('./families.mjs')).build(['rides', 'social', 'dating'], ev, { prev: { families: b.families }, bench: { at: '', recorded: false }, smoke: { at: '', failing: {} }, today: '2026-10-17' });
   assert.deepEqual(row('rides'), b2.families.flatMap((f) => f.skills).find((s) => s.name === 'rides'), 'a day later, nothing changed: the same row');
 });
+
+test('the 7-day re-test (asked by Void): a pass dates the skill, a failure joins smoke as re-test lines and drops its self-test', async () => {
+  const { retestRun, evidence: E, build: B } = await import('./families.mjs');
+  const files = {
+    'tools/retest.json': JSON.stringify({ at: '2026-10-20', retested: { clock: { ok: true, failing: [], test: 'clock.test.mjs' }, timer: { ok: false, failing: ['"high timer" -> weather'], test: null } } }),
+    'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '', 'tools/bench.json': '[]',
+    'void-live-deploy/skills/clock.js': 'export default { suite() { return { ok: true }; } }', 'void-live-deploy/skills/timer.js': 'export default { suite() { return { ok: true }; } }',
+  };
+  const read = (p) => { if (p in files) return files[p]; throw new Error('no ' + p); };
+  const R = retestRun(read);
+  assert.deepEqual([R.at, [...R.passed], R.failing], ['2026-10-20', ['clock'], { timer: ['re-test: "high timer" -> weather'] }]);
+  assert.deepEqual(retestRun(() => { throw new Error('none'); }).at, '');
+  const ev = E(['clock', 'timer'], read, () => [], () => []);
+  assert.deepEqual(ev.timer, { suite: false, browser: 0, bench: 0, smoke: ['re-test: "high timer" -> weather'] });
+  const b = B(['clock', 'timer'], ev, { prev: null, bench: { at: '', recorded: false }, smoke: { at: '', failing: {} }, retest: R, today: '2026-10-21' });
+  const row = (n) => b.families.flatMap((f) => f.skills).find((s) => s.name === n);
+  assert.deepEqual([row('clock').last_tested, row('clock').last_tested_by], ['2026-10-21', 'its tests'], 'its tests are newer (first file); the re-test date is a candidate');
+  const b2 = B(['clock', 'timer'], ev, { prev: { families: b.families }, bench: { at: '', recorded: false }, smoke: { at: '', failing: {} }, retest: { ...R, at: '2026-10-28' }, today: '2026-10-29' });
+  assert.deepEqual([row('clock').last_tested, b2.families.flatMap((f) => f.skills).find((s) => s.name === 'clock').last_tested_by], ['2026-10-21', 'a re-test'], 'a week on, the re-test is its newest test');
+  assert.equal(row('timer').tier, 'experiment'); assert.equal(row('timer').last_tested, undefined);
+});
