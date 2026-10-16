@@ -5171,6 +5171,7 @@ say('nothing selected to remove');
       if (pendingConfirm && NO_RE.test(lower0)) { await decideConfirm('reject', 'said no'); return; }
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
       else if (lastConfirm && lastConfirm.until > Date.now() && (YES_RE.test(lower0) || NO_RE.test(lower0))) { say(lastConfirm.expired && YES_RE.test(lower0) ? 'that one expired, ' + lastConfirm.nothing : 'nothing is waiting for a yes'); return; }
+      if (/^(?:close|close it|close this|close (?:the )?book|shut (?:the )?book|put (?:the )?book (?:down|away|back))$/.test(lower0) && window.__voidBook && window.__voidBook.open) { window.__voidBook.close(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'book closed' }); return; } // the open tome is what "close" closes first (skills/guide.js)
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
@@ -5210,7 +5211,7 @@ say('nothing selected to remove');
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
-      if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
+      if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
