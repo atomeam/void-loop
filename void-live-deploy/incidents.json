@@ -2,6 +2,17 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-16T06:49:46.903Z",
+   "sha": "deffc9b5a0f4b7e1bb63de567a583a00b1fb493b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38860688646",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph",
+    "suite budget: the whole suite ran past 1680 s"
+   ]
+  },
+  {
    "at": "2026-10-16T06:09:45.130Z",
    "sha": "8146df3d7d7fd927783264b2e6b9c3d32e72a6e0",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38857322305",
