@@ -110,9 +110,10 @@ async function run(text, api) {
     return 'rts';
   }
   if (o.act === 'build') {
-    const c = campOf(things);
-    // with no camp standing, "build a hut" stays the forge's (a printable model, as before): the pair forge~rts in tools/skill-overlap.json is this
-    if (!c) return 'none';
+    // a build order on a bare stage starts the game: the camp goes up first and the order says what it still needs
+    // (the forge's "make a hut" is still a printable model; the pair forge~rts in tools/skill-overlap.json is this one word, build)
+    let c = campOf(things);
+    if (!c) { c = ensure(stageApi); tagNodes(things); }
     if (!BUILDS[o.key]) { say('the camp cannot build that yet'); return 'rts'; }
     if (!canPay(c.stock, o.key)) { say(missing(c.stock, o.key) + (villagersOf(things).length ? '; the villagers are on it' : '; summon a villager to gather it')); return 'rts'; }
     c.stock = pay(c.stock, o.key); c.built = [...(c.built || []), o.key];
