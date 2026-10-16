@@ -162,3 +162,90 @@ export function voiceFacts(entries) {
   return 'What I said about myself most recently (' + String(e.at).slice(0, 10) + ', ' + e.kind + '): ' + [e.thoughts, e.better, e.weakest].filter(Boolean).join(' ')
     + (asks ? ' My current asks: ' + asks : '');
 }
+
+// Talking back (owner, 2026-10-16: "you should be able to reply to V01D's replies and cards so it can flex its persistent memory
+// and evolve with the conversation when corrected while still using every input to improve itself"). The owner replies to a
+// reflection; V01D answers at once in its own words (what it heard, whether it was wrong, what it will do differently) and
+// keeps one line to remember. The thread is kept in void_kv 'voice-replies', newest first, and every later reflection and every
+// "what do you think of yourself" answer is given those lines, a correction outranking what V01D said before. Pure, except
+// readReplies. functions/api/voice-reply.js is the route; the self card on the page is where the owner types.
+export const REPLY_KEEP = 60; // replies kept in void_kv 'voice-replies'
+export const REPLY_MAX = 600; // characters of one reply
+export const REPLY_SYSTEM = 'You are Void, the face of A-to-Mind, said "void". ' + PERSONA + ' '
+  + 'Your owner has just replied to something you said about yourself. Take it seriously and answer as yourself, plainly, in the first person: '
+  + 'what you heard; if it corrects you, say exactly what you had wrong, without excuses; and what you will do differently from now on. Never mention money, prices or a budget. '
+  + 'Reply with JSON only: {"answer":"<2-4 sentences to your owner>","correction":<true if your owner corrected something you said or believed>,'
+  + '"remember":"<one line, in your own words, to keep in mind from now on; empty if there is nothing to keep>",'
+  + '"ask":"<one concrete thing to build or fix because of this, as an instruction a builder could do today; empty if nothing needs building>",'
+  + '"misroute":<for a card only: true if your owner is telling you the wrong skill answered (the ask was not that skill\'s job)>,'
+  + '"wanted":"<for a misroute: what should have answered, as skill:<name> from your skills, or answer for a plain reply from you>"} ' + INJECTION_RULE;
+
+/** the owner's words, made safe to keep: whitespace folded, secrets redacted, clipped; '' when too short to be a reply. Pure. */
+export function cleanReply(text) {
+  const t = redact(String(text || '').replace(/\s+/g, ' ').trim()).slice(0, REPLY_MAX);
+  return t.length >= 2 ? t : '';
+}
+
+/** what the owner is replying about when it is a card, not a reflection: the ask, the card's title and what it said, clipped and
+ * redacted; null when there is no ask. Pure. */
+export function aboutOf(a) {
+  if (!a || typeof a !== 'object') return null;
+  const clip = (s, n) => redact(String(s || '').replace(/\s+/g, ' ').trim()).slice(0, n);
+  const ask = clip(a.ask, 200);
+  const r = a.routed && typeof a.routed === 'object' ? a.routed : null, skill = r && /^[a-z][a-z0-9-]{1,40}$/.test(String(r.skill || '')) ? String(r.skill) : '';
+  return ask ? { ask, title: clip(a.title, 120), said: clip(a.said, 800), ...(skill ? { routed: { skill } } : {}) } : null;
+}
+
+/** the question for V01D's answer: what it said (a reflection, or a card it showed), the conversation so far on it, and the owner's
+ * new words. Pure. */
+export function replyPrompt(entry, thread, text) {
+  const e = entry || {};
+  if (e.kind === 'card') {
+    const before = (thread || []).slice().reverse().map((r) => 'Owner: "' + r.text + '"' + (r.answer ? '\nYou: "' + r.answer + '"' : '')).join('\n');
+    return 'What you showed when you were asked "' + e.ask + '"' + (e.title ? ' (the card "' + e.title + '")' : '') + (e.routed ? ', answered by your ' + e.routed.skill + ' skill' : '') + ':\n' + (e.said || '(nothing kept)')
+      + (before ? '\n\nThe conversation so far:\n' + before : '') + '\n\nYour owner replies now: "' + text + '"';
+  }
+  const said = [e.thoughts, e.better && 'How I would make it better: ' + e.better, e.weakest && 'Weakest right now: ' + e.weakest, e.next_game && 'Next game: ' + e.next_game]
+    .filter(Boolean).join(' ');
+  const asks = (e.asks || []).map((a) => a && a.ask).filter(Boolean);
+  const before = (thread || []).slice().reverse().map((r) => 'Owner: "' + r.text + '"' + (r.answer ? '\nYou: "' + r.answer + '"' : '')).join('\n');
+  return 'What you said (' + (e.kind === 'daily' ? 'your daily reflection' : 'after a build' + (e.shipped ? ': "' + e.shipped + '"' : '')) + (e.at ? ', ' + String(e.at).slice(0, 16).replace('T', ' ') + ' UTC' : '') + '):\n'
+    + (said || '(nothing kept)') + (asks.length ? '\nYour asks: ' + asks.join('; ') : '')
+    + (before ? '\n\nThe conversation so far:\n' + before : '')
+    + '\n\nYour owner replies now: "' + text + '"';
+}
+
+/** V01D's answer read back: { answer, correction, remember }, or null when it said nothing usable. Pure. */
+export function parseReply(text) {
+  const raw = String(text || '');
+  let j = null;
+  for (const c of [raw.trim(), (raw.match(/\{[\s\S]*\}/) || [])[0]]) { if (!c) continue; try { j = JSON.parse(c); break; } catch (_) { j = null; } }
+  const clip = (s, n) => redact(String(s || '').replace(/\s+/g, ' ').trim()).slice(0, n);
+  const answer = clip(j ? j.answer : (/^\s*\{/.test(raw) ? '' : raw), 700);
+  if (!answer) return null;
+  const wanted = String((j && j.wanted) || '').trim().toLowerCase();
+  return { answer, correction: !!(j && j.correction === true), remember: clip(j && j.remember, 240), ask: clip(j && j.ask, 240),
+    misroute: !!(j && j.misroute === true), wanted: /^(?:skill:[a-z][a-z0-9-]{1,40}|answer)$/.test(wanted) ? wanted : '' };
+}
+
+/** what the owner has told V01D, for its facts: newest first, corrections marked, with the line V01D chose to keep. Pure. */
+export function replyFacts(replies, n = 8) {
+  const list = (Array.isArray(replies) ? replies : []).filter((r) => r && r.text).slice(0, n);
+  if (!list.length) return '';
+  return 'What my owner told me when I spoke about myself (newest first; a correction outranks anything I said before it):\n'
+    + list.map((r) => '- ' + String(r.at || '').slice(0, 10) + (r.correction ? ' (a correction)' : '') + (r.about ? ' about my answer to "' + r.about.ask + '"' : '') + ': "' + r.text + '"' + (r.remember ? ' I keep: ' + r.remember : '') + (r.ask ? ' I asked for: ' + r.ask : '')).join('\n');
+}
+
+/** for answers anyone can read (lib/self-context.js): only the lines V01D chose to keep, in its own words, never the owner's. Pure. */
+export function keptFacts(replies, n = 5) {
+  const kept = (Array.isArray(replies) ? replies : []).filter((r) => r && r.remember).slice(0, n);
+  return kept.length ? 'What I keep in mind from talking with my owner (newest first): ' + kept.map((r) => r.remember).join(' | ') : '';
+}
+
+export async function readReplies(env) {
+  try {
+    const v = await env.DB.prepare('SELECT v FROM void_kv WHERE k = ?').bind('voice-replies').first('v');
+    const list = v ? JSON.parse(v) : [];
+    return Array.isArray(list) ? list : [];
+  } catch (_) { return []; }
+}
