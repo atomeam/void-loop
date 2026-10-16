@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 81,
+ "runsTotal": 82,
  "kinds": {
   "grow": 15,
   "file": 44,
   "teach": 7,
   "tighten": 7,
-  "none": 8
+  "none": 9
  },
  "runs": [
+  {
+   "at": "2026-10-16T15:54:55Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T15:29:50Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "tighten",
    "note": "load ceiling 1900 -> 1700 ms"
-  },
-  {
-   "at": "2026-10-16T06:31:32Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"zoom in on the figure\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -222,9 +222,9 @@
   "skill:markets": "2026-10-16T15:29:50Z",
   "skill:memory": "2026-10-16T15:29:50Z",
   "skill:moon": "2026-10-16T15:29:50Z",
-  "skill:motorbody": "2026-10-15T22:01:53Z",
-  "skill:news": "2026-10-15T22:07:53Z",
-  "skill:nightsky": "2026-10-15T22:07:53Z",
+  "skill:motorbody": "2026-10-16T15:54:55Z",
+  "skill:news": "2026-10-16T15:54:55Z",
+  "skill:nightsky": "2026-10-16T15:54:55Z",
   "skill:notepad": "2026-10-15T22:07:53Z",
   "skill:nutrition": "2026-10-15T22:07:53Z",
   "skill:ovulation": "2026-10-15T22:49:16Z",
