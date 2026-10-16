@@ -512,5 +512,28 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:37:17Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "send this away | nothing appeared",
+  "note": "fix: \"send this away\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T07:50:13Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-16T07:56:26Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what can motelet do | nothing appeared",
+  "note": "fix: \"what can motelet do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
