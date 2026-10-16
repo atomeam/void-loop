@@ -35,10 +35,13 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Void (ask-20261014-1820-2, daily) |
 | building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Void (ask-20261014-1820-3, daily) |
 | shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Void (ask-20261014-1820-1, daily; base friction already shipped) |
-| open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Void (ask-20261014-2134-3, daily) |
+| building | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Void (ask-20261014-2134-3, daily); helper/phone-cut-posters |
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
-| open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
+| building | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily); helper/video-releases |
 | shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
 | open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
+| open | 2026-10-16 | weather alert poster when rain or extreme UV | new idea from Void voice: link weather to poster |
+| open | 2026-10-16 | visual provenance link from appraised photo to make recipe | new idea from Void ask ask-20261015-2008-1 |
+| open | 2026-10-16 | probe success rate dedicated card | new idea from Void daily asks |
