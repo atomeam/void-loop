@@ -26,6 +26,7 @@ for (const [name, file] of [
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],
   ['ask-text', 'ask-text.test.mjs'],
+  ['fuzzy', 'fuzzy.test.mjs'],
   ['word-math', 'word-math.test.mjs'],
   ['swarm', 'swarm.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
@@ -102,6 +103,7 @@ for (const [name, file] of [
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],
   ['bmi', 'bmi.test.mjs'],
+  ['meals', 'meals.test.mjs'],
   ['worldtime-parse', 'worldtime-parse.test.mjs'],
   ['country-parse', 'country-parse.test.mjs'],
   ['sky-skills', 'sky-skills.test.mjs'],
@@ -146,6 +148,9 @@ for (const [name, file] of [
   ['gaps', 'gaps.test.mjs'],
   ['propose-fix', 'propose-fix.test.mjs'],
   ['probe-asks', 'probe-asks.test.mjs'],
+  ['merges', 'merges.test.mjs'],
+  ['probe-log', 'probe-log.test.mjs'],
+  ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
@@ -160,6 +165,7 @@ for (const [name, file] of [
   ['mcp', 'mcp.test.mjs'],
   ['trial-changes', 'trial-changes.test.mjs'],
   ['reef-changes', 'reef-changes.test.mjs'],
+  ['heat-dose', 'heat-dose.test.mjs'],
   ['pdf-qa', 'pdf-qa.test.mjs'],
   ['arena', 'arena.test.mjs'],
   ['calc', 'calc.test.mjs'],
@@ -196,6 +202,7 @@ for (const [name, file] of [
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
+  ['review-main', 'review-main.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }

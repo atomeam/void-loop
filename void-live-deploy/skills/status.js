@@ -102,10 +102,25 @@ export async function buildRun(wf, fetchFn = (u, o) => fetch(u, o)) {
     const run = ((await r.json()).workflow_runs || [])[0];
     if (!run) return { ...wf, state: 'unknown', note: 'no run on main yet' };
     const state = run.status !== 'completed' ? 'running' : run.conclusion === 'success' ? 'passed' : run.conclusion === 'skipped' || run.conclusion === 'cancelled' ? 'unknown' : 'failed';
-    return { ...wf, state, note: (state === 'failed' ? 'failed (' + run.conclusion + ')' : state === 'running' ? 'running now' : state === 'passed' ? 'passed' : run.conclusion) + ' on ' + String(run.head_sha || '').slice(0, 7) + ' · ' + String(run.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: /^https:\/\/github\.com\//.test(run.html_url || '') ? run.html_url : null };
+    return { ...wf, state, sha: String(run.head_sha || '').slice(0, 7), note: (state === 'failed' ? 'failed (' + run.conclusion + ')' : state === 'running' ? 'running now' : state === 'passed' ? 'passed' : run.conclusion) + ' on ' + String(run.head_sha || '').slice(0, 7) + ' · ' + String(run.created_at || '').slice(0, 16).replace('T', ' ') + ' UTC', url: /^https:\/\/github\.com\//.test(run.html_url || '') ? run.html_url : null };
   } catch (_) { return { ...wf, state: 'unknown', note: 'GitHub could not be reached from this browser' }; }
 }
 export const buildState = (fetchFn) => Promise.all(BUILD.map((w) => buildRun(w, fetchFn)));
+// the root cause (asked by Void: "a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed
+// action", and twice before: the failure linked to its log): a red check on main is written down with the checks that failed
+// (void-live-deploy/incidents.json, verify.yml), so the card can say which ones, not only that something failed. Pure except the fetch.
+export function causesOf(rows, incidents) {
+  const list = Array.isArray(incidents) ? incidents : (incidents && incidents.incidents) || [];
+  return (rows || []).map((r) => {
+    if (r.state !== 'failed' || !r.sha) return r;
+    const hit = list.find((i) => i && String(i.sha || '').startsWith(r.sha)) || null;
+    return hit && Array.isArray(hit.checks) && hit.checks.length ? { ...r, checks: hit.checks.map((c) => String(c).slice(0, 160)).slice(0, 5), suite: hit.suite || '' } : r;
+  });
+}
+export async function withCauses(rows, fetchFn = (u, o) => fetch(u, o)) {
+  if (!buildFailed(rows)) return rows;
+  try { const r = await fetchFn('/incidents.json', { cache: 'no-cache' }); return r.ok ? causesOf(rows, await r.json()) : rows; } catch (_) { return rows; }
+}
 export const buildFailed = (rows) => Array.isArray(rows) && rows.some((r) => r.state === 'failed');
 // once a page load, for the owner only: the build is read, and the status card opens when a run on main failed. Read at most once
 // in ten minutes per tab (sessionStorage), so reloads don't spend the public API's hourly allowance.
@@ -156,7 +171,8 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">V01D’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
-      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>').join('') + '</table>' : '')
+      + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>'
+        + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span></td></tr>' : '')).join('') + '</table>' : '')
     + (support ? '<h3 style="margin:12px 0 4px;font-size:15px">Paying users who said it broke · ' + (support.open ? '<span style="color:#e0584a">' + support.open + ' waiting on you</span>' : 'none waiting') + '</h3>'
       + support.tickets.map((t) => '<p style="margin:4px 0"><b>' + esc(t.id) + '</b> · ' + esc(t.where) + ' · ' + esc(String(t.at).slice(0, 16).replace('T', ' ')) + '<br>' + esc(t.what) + '</p>').join('')
       + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
@@ -176,7 +192,7 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>V01D status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
-  const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState() : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
+  const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions);
   return 'status';

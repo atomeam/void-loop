@@ -285,6 +285,193 @@
       "ask": "ask-20261013-2236-1",
       "ledgerAt": "2026-10-16T05:10:08Z",
       "why": "built: success_rate per skill from the benchmark, shown on the family-health card; Clef's yes/no is not weighed against it (nothing a visitor does is recorded)"
+    },
+    {
+      "ask": "ask-20261012-2108-1",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: touching a branch of the growth tree says what Void asked for that it built (skills/growth.js causeOf)"
+    },
+    {
+      "ask": "ask-20261012-2052-2",
+      "ledgerAt": "2026-10-13T16:49:13Z",
+      "why": "built: the same build; a growth event names the ask that caused it"
+    },
+    {
+      "ask": "ask-20261012-1556-1",
+      "ledgerAt": "2026-10-15T16:43:13Z",
+      "why": "built: every red browser suite on main (the 3D checks are in it) writes an incident V01D shows as 'what broke lately' (verify.yml, tools/incident-log.mjs)"
+    },
+    {
+      "ask": "ask-20261015-1028-1",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: skills/family-health.js, one row per family with a stacked bar of proven / checked / tested / experiment, from skills/families.json"
+    },
+    {
+      "ask": "ask-20261013-1704-2",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card maps the ratings (the same data /skills/families.json serves) to the families"
+    },
+    {
+      "ask": "ask-20261013-1658-1",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: a registered skill failing its check shows as 'failing' in skills/families.json, on the family-health card and the growth card's friction line"
+    },
+    {
+      "ask": "ask-20261015-1028-2",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: wordMath is eight named parts pinned by 755 golden answers (still inside void.html)"
+    },
+    {
+      "ask": "ask-20261015-1211-3",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built: the eight parts the builders identified are the ones it runs now"
+    },
+    {
+      "ask": "ask-20261015-1048-2",
+      "ledgerAt": "2026-10-15T06:43:35Z",
+      "why": "built as far as the parts go; moving them into their own files is a next step if asked"
+    },
+    {
+      "ask": "ask-20261010-0227-1",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: a skill file with no index entry is registered at the finish, and tools/checks.mjs (skills-check, map coverage) fails when the list and the files disagree"
+    },
+    {
+      "ask": "ask-20261012-0541-1",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: the same registration runs when a file lands in skills/, and the published-page checks read the index"
+    },
+    {
+      "ask": "ask-20261010-0224-2",
+      "ledgerAt": "2026-10-13T16:54:12Z",
+      "why": "built: registration is automatic at the finish; a skills-check failure stops the push instead"
+    },
+    {
+      "ask": "ask-20261012-1009-2",
+      "ledgerAt": "2026-10-04T18:10:00Z",
+      "why": "built: an ask V01D could not answer goes on the miss board and tools/jobs.mjs turns it into a build job; since 2026-10-09 lib/learn.js queues it by itself once asked enough"
+    },
+    {
+      "ask": "ask-20261013-1647-1",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: each miss job's note carries what the router made of the ask (the closest skill and its score), so a near miss proposes its skill"
+    },
+    {
+      "ask": "ask-20261014-1248-1",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: the same near-miss notes cover place and distance asks"
+    },
+    {
+      "ask": "ask-20261014-1155-3",
+      "ledgerAt": "2026-10-10T22:45:25Z",
+      "why": "built: a miss that maps to no skill is queued with the router's nearest guess"
+    },
+    {
+      "ask": "ask-20261013-0026-1",
+      "ledgerAt": "2026-10-13T17:15:52Z",
+      "why": "built: every fringe run may record its hypothesis, findings, failure modes and next experiments; node tools/fringe.mjs --learned reports them before each run"
+    },
+    {
+      "ask": "ask-20261008-1809-2",
+      "ledgerAt": "2026-10-11T19:41:55Z",
+      "why": "built: the canon (version 3) is what V01D reads about itself; the self card and inventory list its games and miniatures"
+    },
+    {
+      "ask": "ask-20261015-1610-1",
+      "ledgerAt": "2026-10-10T02:21:43Z",
+      "why": "built: automerge merges only once test-and-deploy is green on the PR's head, which runs every node --test file and the browser suite"
+    },
+    {
+      "ask": "ask-20261015-2116-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the probe ledger's My probes on the growth card (the same build)"
+    },
+    {
+      "ask": "ask-20261015-2045-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: My probes lists what probes asked the forge for that it cannot make yet (frontier #14)"
+    },
+    {
+      "ask": "ask-20261015-1903-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the self card's divergence view, V01D's words beside what was built"
+    },
+    {
+      "ask": "ask-20261015-1633-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: game strength marks on the games picker from skills/families.json"
+    },
+    {
+      "ask": "ask-20261015-1555-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: forge history, every recipe and what stands on the stage"
+    },
+    {
+      "ask": "ask-20261015-1610-2",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the merge log card, skills/merges.js"
+    },
+    {
+      "ask": "ask-20261015-1744-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the status card names the failed checks of a red run on main"
+    },
+    {
+      "ask": "ask-20261013-1802-1",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: the same root-cause row, with the run linked"
+    },
+    {
+      "ask": "ask-20261013-2054-1",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: a plan's stickies carry a tab that reads note to self or draft, not sent (void.html .thing.sticky[data-role], skills/sticky.js), so a note is never taken for an order; the ledger line names this id in prose, which followThrough's word match missed"
+    },
+    {
+      "ask": "ask-20261015-0250-2",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: substitution impact, one 'then:' line per swap (IMPACT in skills/swaps.js, #859)"
+    },
+    {
+      "ask": "ask-20261014-2248-2",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: the BMI band links to the calorie card with the same height and weight (bandAsk in skills/nutrition.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1453-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: food facts and the calorie card link to 'plan my meals', which splits the day and puts the list on the stage (#866)"
+    },
+    {
+      "ask": "ask-20261014-1548-1",
+      "ledgerAt": "2026-10-16T05:43:00Z",
+      "why": "built: each word in the unscramble and pattern lists runs 'cartoon version of a <word>' (pictureAsk in skills/words.js, #866)"
+    },
+    {
+      "ask": "ask-20261014-1523-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the weather card offers a timer when rain, snow, frost or heat is in the next hours (weatherPrompt in skills/weather.js); the remind skill's 'remind me at' is owner-only, so the timer carries it"
+    },
+    {
+      "ask": "ask-20261014-1012-3",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: plan history (skills/intent.js): the last 5 distinct plans kept in this browser, 'plan history' lists them, 'restore plan 1' puts one back"
+    },
+    {
+      "ask": "ask-20261014-0847-1",
+      "ledgerAt": "2026-10-16T05:50:00Z",
+      "why": "built: the same plan history, asked first in these words"
+    },
+    {
+      "ask": "ask-20261014-1658-1",
+      "words": "Implement the fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js corrects a slip of a skill's trigger word from the skills' own examples, no typo pattern by hand"
+    },
+    {
+      "ask": "ask-20261014-0847-3",
+      "words": "Implement a fuzzy-matching layer in the semantic validator to handle common misspellings of skill names.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: the same fuzzy layer; a misspelled skill name ('notpad', 'pasword') reaches the skill, and the skill that takes the ask must own the corrected word"
     }
   ]
 }
