@@ -114,7 +114,7 @@ export function appraisalText(v) {
 /** the object a description is about: its first sentence up to where it says where the thing sits ("on a wooden table", "in a
  * garden", "next to a lamp"), so the table under a coin is never taken for the subject. Pure. */
 export function subjectOf(desc) {
-  const first = String(desc || '').split(/(?<=[.!?])\s/)[0].toLowerCase();
+  const first = String(desc || '').split(/[.!?](?:\s|$)/)[0].toLowerCase();
   return first.split(/\b(?:sitting|resting|lying|placed|standing|set|displayed|photographed|shown|on|in front of|beside|next to|against|near|under|behind|atop|inside|in|with|and|held)\b/)[0].replace(/[^a-z0-9]+/g, ' ').trim();
 }
 

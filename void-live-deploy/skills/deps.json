@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 378,
+ "counted": 387,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -51,6 +51,12 @@
    "dependants": 4
   },
   {
+   "file": "lib/probe-log.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 12
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -79,6 +85,12 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3
+  },
+  {
+   "file": "lib/cook-flow.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2
   },
   {
    "file": "lib/eclipses.js",
@@ -165,6 +177,18 @@
    "dependants": 2
   },
   {
+   "file": "lib/v01d-fixes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/pdf-qa.js",
    "skills": 1,
    "direct": 1,
@@ -186,7 +210,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 36
+   "dependants": 38
   },
   {
    "file": "lib/models.js",
@@ -207,16 +231,16 @@
    "dependants": 21
   },
   {
-   "file": "lib/void-me.js",
+   "file": "lib/actions.js",
    "skills": 0,
    "direct": 0,
    "dependants": 20
   },
   {
-   "file": "lib/actions.js",
+   "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19
+   "dependants": 20
   },
   {
    "file": "lib/code-review.js",
@@ -775,6 +799,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/probe-log.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/probe-log.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/propose-fix.js": {
    "imports": [
     "lib/guard.js",
@@ -885,6 +916,14 @@
     "functions/films/rss.js"
    ]
   },
+  "functions/api/v01d-fixes.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/video.js": {
    "imports": [
     "lib/video.js"
@@ -946,6 +985,7 @@
     "functions/api/queue.js",
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
+    "functions/api/v01d-fixes.js",
     "functions/api/watch.js",
     "functions/api/will.js",
     "lib/automations-run.js",
@@ -1213,6 +1253,15 @@
     "lib/paid-access.js"
    ]
   },
+  "lib/cook-flow.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/swaps.js"
+   ],
+   "reachedBy": [
+    "skills/recipe.js"
+   ]
+  },
   "lib/digest.js": {
    "imports": [],
    "importedBy": [
@@ -1298,6 +1347,7 @@
     "functions/api/misses.js",
     "functions/api/passkey.js",
     "functions/api/probe-asks.js",
+    "functions/api/probe-log.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
     "functions/api/reflect.js",
@@ -1307,6 +1357,7 @@
     "functions/api/routines.js",
     "functions/api/store/[[path]].js",
     "functions/api/support.js",
+    "functions/api/v01d-fixes.js",
     "functions/api/watch.js",
     "functions/api/will.js",
     "functions/c/[clip].js",
@@ -1324,6 +1375,12 @@
     "functions/api/memory.js",
     "functions/films/rss.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/guide.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
    ]
   },
   "lib/gumroad.js": {
@@ -1683,6 +1740,25 @@
     "functions/api/probe-asks.js"
    ]
   },
+  "lib/probe-log.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/probe-log.js",
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
   "lib/product-gap.js": {
    "imports": [
     "lib/gumroad.js"
@@ -2029,6 +2105,13 @@
    "importedBy": [
     "functions/api/miss.js",
     "functions/api/misses.js"
+   ]
+  },
+  "lib/v01d-fixes.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/v01d-fixes.js",
+    "skills/v01d-fixes.js"
    ]
   },
   "lib/video.js": {
@@ -2698,6 +2781,7 @@
   },
   "skills/growth.js": {
    "imports": [
+    "lib/probe-log.js",
     "skills/growth-tree.js"
    ],
    "importedBy": [
@@ -2741,6 +2825,12 @@
     "skills/sorry.js",
     "skills/tictactoe.js"
    ]
+  },
+  "skills/guide.js": {
+   "imports": [
+    "lib/guide.js"
+   ],
+   "importedBy": []
   },
   "skills/heart.js": {
    "imports": [
@@ -2891,6 +2981,7 @@
     "skills/actions.js",
     "skills/deadlines.js",
     "skills/memory.js",
+    "skills/merges.js",
     "skills/news.js",
     "skills/watch.js",
     "skills/weather.js"
@@ -2947,6 +3038,12 @@
    "importedBy": []
   },
   "skills/memory.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/merges.js": {
    "imports": [
     "skills/live.js"
    ],
@@ -3789,7 +3886,9 @@
    ]
   },
   "skills/swaps.js": {
-   "imports": [],
+   "imports": [
+    "lib/cook-flow.js"
+   ],
    "importedBy": [
     "skills/recipe.js"
    ]
@@ -3885,6 +3984,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/v01d-fixes.js": {
+   "imports": [
+    "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
   },
   "skills/video-play.js": {
    "imports": [

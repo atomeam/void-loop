@@ -430,5 +430,35 @@
   "of": 26,
   "kind": "tighten",
   "note": "load ceiling 15000 -> 1900 ms"
+ },
+ {
+  "at": "2026-10-16T05:25:04Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "tighten",
+  "note": "fps floor 1 -> 3"
+ },
+ {
+  "at": "2026-10-16T05:48:40Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "throw it off the screen | nothing appeared",
+  "note": "fix: \"throw it off the screen\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:02:43Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what are they doing | nothing appeared",
+  "note": "fix: \"what are they doing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-16T06:09:19Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
  }
 ]

@@ -443,6 +443,40 @@ try {
   await t.ask('undo'); check('undo brings the group back', (await t.state()).filter((x) => x.kind === 'sticky').length === 2);
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
+
+  // V01D's body asks (skills/nutrition.js, food.js, words.js): the BMI card saves a dated entry only on "save this" and shows the
+  // trend; its band links to the calorie card with the same numbers; "plan my meals" splits the day and the calorie and food
+  // cards link to it; an unscrambled word is a tap from a cartoon of it.
+  if (want("body asks: bmi save this keeps a trend only on tap, the band links to calories, plan my meals splits the day, food links to it, an unscrambled word draws a cartoon")) { const B = await fresh();
+    await B.ask('bmi calculator', 900); await until(async () => /Nothing saved/.test(await B.page()), 8000); const bmiPg = await B.page();
+    const stored0 = await B.p.evaluate(() => localStorage.getItem('a2m.void.bmi.v1'));
+    check('body: the BMI card opens with nothing saved and a save this button', /BMI calculator/.test(bmiPg) && /Nothing saved/.test(bmiPg) && stored0 === null && !!(await B.p.$('.vpage.on #nu-save')), bmiPg.slice(0, 120));
+    await B.p.click('.vpage.on #nu-save'); await until(async () => /One entry saved/.test(await B.page()), 4000);
+    const stored1 = await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]'));
+    check('body: save this keeps one dated entry in this browser and the trend line shows it', stored1.length === 1 && stored1[0].kg > 0 && /One entry saved/.test(await B.page()), JSON.stringify(stored1));
+    await B.p.fill('.vpage.on #nu-w', '150'); await B.p.waitForTimeout(200); await B.p.click('.vpage.on #nu-save'); await until(async () => /2 entries since/.test(await B.page()), 4000);
+    const trendPg = await B.page();
+    check('body: a second save shows the trend (2 entries, BMI first -> last, the change)', /2 entries since/.test(trendPg) && /\u2192|→/.test(trendPg) && (await B.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.bmi.v1') || '[]').length)) === 2, trendPg.slice(0, 200));
+    const bandAskStr = await B.p.$eval('.vpage.on .nu-next a[data-ask]', (a) => a.getAttribute('data-ask'));
+    check('body: the band link is a calorie ask carrying the height and weight', /^how many calories should i eat .* at 5'9 150 lb$/.test(bandAskStr), bandAskStr);
+    await B.p.click('.vpage.on .nu-next a[data-ask]'); await until(async () => /Daily calories/.test(await B.page()), 8000); const calFromBmi = await B.page();
+    check('body: the tap opens the daily calories card for those numbers, with the meals link', /Daily calories/.test(calFromBmi) && /5'9/.test(calFromBmi) && /150 lb/.test(calFromBmi) && /plan my meals around/.test(calFromBmi), calFromBmi.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="plan my meals for"]'); await until(async () => /Meals for the day/.test(await B.page()), 8000); const mealsPg = await B.page();
+    check('body: "plan my meals for N calories" splits the day into breakfast, lunch, dinner and snacks', /Meals for the day/.test(mealsPg) && /Breakfast/.test(mealsPg) && /Snacks/.test(mealsPg) && /25%/.test(mealsPg) && /35%/.test(mealsPg), mealsPg.slice(0, 160));
+    await B.p.click('.vpage.on a[data-ask^="make a list with Breakfast"]'); await until(async () => (await B.state()).some((x) => x.kind === 'list'), 8000);
+    const lists = (await B.state()).filter((x) => x.kind === 'list');
+    check('body: "put it on the stage" makes the meals checklist', lists.length === 1 && lists[0].items.length === 4 && /Breakfast/.test(lists[0].items[0].text), JSON.stringify(lists.map((l) => l.items.map((i) => i.text))).slice(0, 200));
+    await B.ask('calories in a banana', 900); await until(async () => /Banana/.test(await B.page()), 8000); const foodPg = await B.page();
+    check('body: food facts link to plan my meals', /Banana/.test(foodPg) && !!(await B.p.$('.vpage.on a[data-ask="plan my meals"]')), foodPg.slice(0, 100));
+    await B.ask('plan my meals', 900); await until(async () => /Meals for the day/.test(await B.page()), 8000); const meals2 = await B.page();
+    check('body: a bare "plan my meals" uses the last calorie card\'s target (page memory), not 2,000', /Meals for the day/.test(meals2) && /your last calorie card/.test(meals2), meals2.slice(0, 160));
+    await B.ask('unscramble tlesi', 1500); await until(async () => /Tap a word/.test(await B.page()), 8000); const anaPg = await B.page();
+    const picAsk = await B.p.$eval('.vpage.on a.word-pic', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('body: an unscrambled word links to a cartoon of it', /Anagrams of TLESI/.test(anaPg) && /islet|stile|tiles/.test(anaPg) && /^cartoon version of an? [a-z]+$/.test(picAsk) && /Tap a word/.test(anaPg), anaPg.slice(0, 120) + ' | ' + picAsk);
+    await B.p.click('.vpage.on a.word-pic'); await until(async () => (await B.state()).some((x) => x.kind === 'figure'), 8000);
+    check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
+    check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
+    await B.ctx.close(); }
   // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
   // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
   if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
@@ -1866,6 +1900,47 @@ try {
     await O.ctx.close(); }
   // the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) and shows every kind of action,
   // not only automation steps: here a queue.add from the miss board (lib/learn.js) and a stubbed confirm-line send
+  // V01D's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
+  if (want("V01D's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
+    const body = (c) => "V01D's own model proposed this change. Why, in V01D's words: the matcher only knew ride words. V01D's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
+    const prs = [{ number: 900, title: 'V01D fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
+      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', body: body('0.55'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
+      { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
+    const approvals = [];
+    await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
+    await O.ctx.route(/\/api\/v01d-fixes$/, (r) => { approvals.push({ b: JSON.parse(r.request().postData() || '{}'), auth: r.request().headers().authorization }); return r.fulfill(json({ ok: true, pr: 901 })); });
+    await O.ask("V01D's fixes", 300); await until(async () => /how to get from/.test(await O.page()), 6000);
+    const card = await O.page(), order = await O.p.$$eval('.vpage.on .vfix', (l) => l.map((x) => x.dataset.pr)), buttons = await O.p.$$eval('.vpage.on button[data-approve]', (l) => l.map((b) => b.dataset.approve));
+    await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Void's review is clean/.test(await O.page()), 4000);
+    const after = await O.page();
+    const S = await fresh(); await S.ask("V01D's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
+    check("V01D's fixes: the owner previews the fixes V01D opened, the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · waits for you/.test(card)
+        && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
+        && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
+        && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
+      JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
+    await O.ctx.close(); }
+  // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
+  if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
+    await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
+      { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
+      { number: 900, title: 'Closed, not merged', merged_at: null, html_url: 'https://github.com/atomeam/void-loop/pull/900', labels: [] },
+      { number: 899, title: 'A photo <b>appraised</b>', merged_at: '2026-10-16T03:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/899', labels: [{ name: 'automerge' }] }])));
+    await B.ask('what did you merge', 300); await until(async () => /#901/.test(await B.page()), 5000);
+    const log = await B.p.$eval('.vpage.on', (e) => ({ text: e.textContent.replace(/\s+/g, ' '), bolds: e.querySelectorAll('li b').length, links: [...e.querySelectorAll('li a')].map((a) => a.href) }));
+    await B.ask('forge history', 300); await until(async () => /Forge history/.test(await B.page()), 5000);
+    const forge = await B.p.$eval('.vpage.on', (e) => ({ asks: [...e.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: e.textContent.replace(/\s+/g, ' ') }));
+    await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
+    await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
+    await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
+    const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
+    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+      /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
+        && forge.asks.length === 10 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage/.test(again) && /1 on the stage now/.test(again)
+        && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Void: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
+      JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+    await B.ctx.close(); }
   if (want("the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) a")) { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const recs = [
       { id: 'act-1', owner: 'void', kind: 'queue.add', ref: 'miss:learn-to-handle-tides', state: 'done', result: 'queued k1: learn to handle "tides"', error: null, started: '2026-10-10T00:10:00Z', finished: '2026-10-10T00:10:00Z' },
@@ -2782,6 +2857,23 @@ try {
     check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
       !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
     await G.ctx.close(); }
+  // V01D's probes on the growth card (lib/probe-log.js, asked by Void: a probe-success-rate card, and confidence in the growth inbox
+  // so high-certainty fixes come first): nothing shows without records; with them, the rate and the proposals most certain first
+  if (want("The growth card shows V01D's probes")) { const G = await fresh();
+    await G.ask('growth', 1500); await until(async () => !!(await G.p.$('.vpage [data-velocity]')), 6000); await G.p.waitForTimeout(600);
+    const none = await G.p.$$eval('.vpage .growth-probes', (l) => l.length);
+    const H = await fresh();
+    await H.ctx.route(/\/api\/probe-log$/, (r) => r.fulfill(json({ log: [], stats: { runs: 2, wrote: 50, misses: 8, missRate: 16, proposed: 3, passed: 1, rate: 13, passRate: 33, stoppedAt: { collisions: 2 }, high: { n: 2, passed: 1 }, low: { n: 1, passed: 0 }, forge: [{ thing: 'giraffe', n: 2 }, { thing: 'bicycle', n: 1 }],
+      ranked: [{ at: '2026-10-18T13:00:00Z', kind: 'fix', skill: 'weather', edits: 1, confidence: 0.9, passed: true, failed: null, pr: 'https://github.com/atomeam/void-loop/pull/900' }, { at: '2026-10-16T13:00:00Z', kind: 'fix', skill: 'rides', edits: 2, confidence: 0.8, passed: false, failed: 'collisions' }, { at: '2026-10-17T13:00:00Z', kind: 'fix', skill: '<b>x</b>', edits: 2, confidence: 0.4, passed: false, failed: 'collisions' }] } })));
+    await H.ask('growth', 1500);
+    const box = await until(async () => H.p.$eval('.vpage .growth-probes', (e) => ({ text: e.textContent.replace(/\s+/g, ' '), rate: (e.querySelector('[data-probe-rate]') || {}).textContent, items: [...e.querySelectorAll('li')].map((l) => l.textContent), bolds: e.querySelectorAll('li b').length, link: (e.querySelector('li a') || {}).href })).catch(() => null), 6000);
+    check("The growth card shows V01D's probes (asked by Void): the asks it wrote and missed, fixes proposed and passed as a rate, where fixes stop, whether being sure predicted a pass, and its proposals most certain first; nothing without records",
+      none === 0 && !!box && /2 probe runs: 50 asks I wrote for myself, 8 missed \(16%\)\. 3 fixes proposed, 1 passed every check: 13% of my misses fixed\./.test(box.text) && box.rate === '13%'
+        && /Where my fixes stop: collisions 2/.test(box.text) && /Things my probes asked the forge for that it cannot make yet \(frontier #14\): giraffe \(2\), bicycle/.test(box.text) && /When I was sure \(0\.7 and up\) 1 of 2 passed; when I was not, 0 of 1\./.test(box.text)
+        && box.items.length === 3 && /^0\.90 · weather · 1 line change · passed/.test(box.items[0]) && /^0\.80 · rides · 2 line changes · stopped at collisions/.test(box.items[1]) && /<b>x<\/b>/.test(box.items[2]) && box.bolds === 3 && box.link === 'https://github.com/atomeam/void-loop/pull/900'
+        && !G.errors.length && !H.errors.length,
+      JSON.stringify({ none, box, errors: [...G.errors, ...H.errors] }));
+    await G.ctx.close(); await H.ctx.close(); }
   // The growth card's friction line (asked by Void, five times since 2026-10-12: "a 'friction' indicator on the growth card that
   // highlights which skills are currently failing or returning high uncertainty"): from skills/families.json, the bench's wrong
   // asks first, then the least checked skills, each with its reason.
@@ -2858,6 +2950,49 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
+  // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
+  // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
+  // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
+  if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
+    const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+    await B.ask('open the book', 900);
+    const open = await until(async () => B.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { skills: window.__voidBook.totals.skills, pages: window.__voidBook.totals.pages, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), num: document.querySelector('.vpage.on .gb-num').textContent, title: document.querySelector('.vpage.on h2').textContent, tabs: document.querySelectorAll('.vpage.on .gb-tab').length, cover: (document.querySelector('.vpage.on .gb-page[data-page="1"] h3') || {}).textContent } : null).catch(() => null), 8000);
+    check('the book: "open the book" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened',
+      !!open && open.title === 'The V01D Book' && open.cover === 'The V01D Book' && open.skills === members.length && open.tabs >= 12 && open.shown.includes('1') && /page 1 of \d+/.test(open.num), JSON.stringify({ open, members: members.length }));
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(150);
+    const after = await B.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), text: document.querySelector('.vpage.on .gb-spread').innerText }));
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(150);
+    const back = await B.p.evaluate(() => document.querySelector('.vpage.on .gb-num').textContent);
+    check('the book: → turns to the spread of pages 2–3 (how to ask, how to read a page: the four rating words explained), ← turns back',
+      /pages 2–3 of/.test(after.num) && after.shown.join(',') === '2,3' && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && /page 1 of/.test(back), JSON.stringify({ after: { ...after, text: after.text.slice(0, 120) }, back }));
+    // the index at the back names every skill, each with its page, and a jump from it lands on that page
+    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('.vpage.on .gb-page .gb-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
+    const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
+    const indexed = idx.names.map(([n]) => n);
+    const clockEntry = idx.names.find(([n]) => n === 'Clock');
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('.vpage.on .gb-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.gb-tier') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph',
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph,
+      JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
+    // an ask on a page runs on the stage, as it does from any card
+    await B.p.click('.vpage.on .gb-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(900);
+    check('the book: tapping "make a clock" on the clock page closes the book and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.page()).includes('The V01D Book') && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
+    // "the book at chess" opens on the chess page
+    await B.ask('the book at chess', 900);
+    const at = await until(async () => B.p.evaluate(() => { const pg = document.querySelector('.vpage.on .gb-page h3'); return pg ? pg.textContent : ''; }).catch(() => ''), 6000);
+    const shownAt = await B.p.evaluate(() => [...document.querySelectorAll('.vpage.on .gb-page h3')].map((h) => h.textContent));
+    check('the book: "the book at chess" opens on the Chess page', shownAt.includes('Chess'), JSON.stringify({ at, shownAt }));
+    await B.ctx.close();
+    const P = await fresh({ phone: true });
+    await P.ask('open the book', 900);
+    const ph = await until(async () => P.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { pages: document.querySelectorAll('.vpage.on .gb-page').length, num: document.querySelector('.vpage.on .gb-num').textContent, width: document.querySelector('.vpage.on').getBoundingClientRect().width, fits: document.documentElement.scrollWidth <= innerWidth } : null).catch(() => null), 8000);
+    await P.p.evaluate(() => { const s = document.querySelector('.vpage.on .gb-spread'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
+    await P.p.waitForTimeout(150);
+    const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
+    check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
+    await P.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.
@@ -5514,6 +5649,25 @@ try {
       && miles && miles.kind === 'length' && miles.a === '5' && miles.b === '8.04672' && /feet/.test(miles.text) && count === 1 && kept && kept.b === '8.04672' && gone && Q.errors.length === 0,
       JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
     await Q.ctx.close(); }
+
+  // cook-flow (asked by Void, lib/cook-flow.js): a kitchen conversion and a kitchen swap end with one tap that starts a timer;
+  // a distance conversion gets no chip; a swap says what else to adjust ("then:" under the swap, skills/swaps.js IMPACT).
+  if (want("cook-flow: a kitchen conversion and a swap offer a timer in one tap, the swap says what else to adjust, a distance gets no chip")) { const K = await fresh();
+    await K.ask('3 cups in ml', 900); await until(async () => /709\.76 ml/.test(await K.page()), 8000); const cupsPg = await K.page();
+    const chip = await until(() => K.p.$('.vpage.on a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "3 cups in ml" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)', /709\.76 ml/.test(cupsPg) && !!chip && (await K.p.$$eval('.vpage.on .cook-flow a[data-ask]', (a) => a.map((x) => x.getAttribute('data-ask')))).join('|') === 'set a 10 minute timer|set a 5 minute timer|set a 20 minute timer', cupsPg.slice(0, 120));
+    await K.p.click('.vpage.on a[data-ask="set a 10 minute timer"]'); await until(async () => (await K.state()).some((x) => x.kind === 'timer'), 6000);
+    const timers = (await K.state()).filter((x) => x.kind === 'timer');
+    check('cook-flow: the tap starts a 10 minute timer on the stage', timers.length === 1 && Number(timers[0].duration) >= 599 && Number(timers[0].duration) <= 600000 && !!timers[0].running && !(await K.p.$('.vpage.on')), JSON.stringify(timers.map((t) => ({ kind: t.kind, total: t.total, ms: t.ms, duration: t.duration, running: t.running }))));
+    await K.ask('how many cups is 500g of flour', 900); await until(async () => /4\.17 cups/.test(await K.page()), 8000); const flourChip = await until(() => K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]'), 3000);
+    check('cook-flow: "how many cups is 500g of flour" (word maths) ends with the chip too', /4\.17 cups/.test(await K.page()) && !!flourChip, (await K.page()).slice(0, 80));
+    await K.ask('5 miles in km', 900); await until(async () => /8\.05|8\.04672/.test(await K.page()), 8000); await K.p.waitForTimeout(400);
+    check('cook-flow: "5 miles in km" gets no timer chip', /8\.05 km|8\.04672 km|8\.05/.test(await K.page()) && !(await K.p.$('.vpage.on .cook-flow')), (await K.page()).slice(0, 80));
+    await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
+    const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
+    await K.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
