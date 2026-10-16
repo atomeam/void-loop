@@ -5834,7 +5834,9 @@ try {
   // the will: router evidence becomes wants; the tiered-model want is marked built
   const rf = path.join(nodeOs.tmpdir(), 'void-routes-' + process.pid + '.json');
   fs.writeFileSync(rf, JSON.stringify({ ...roll, total: 40, fallback: 12, fallback_why: { timeout: 12 }, would_escalate: 5, skills: { timer: [{ ask: 'wake me up in twenty minutes', count: 3 }] } }));
-  const py = (args, extra = {}) => { const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all', ...args], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '', PYTHONIOENCODING: 'utf-8', ...extra }, timeout: 60000 }); try { return JSON.parse(r.stdout); } catch (_) { return []; } };
+  // the plain weights: the day's "better" boost (will.py better_boost, its own test in will_test.py) would lift "people asked" by 8 whenever
+  // probes are the weakest part, so the better rows are read from a file that is not there (main went red on this on 2026-10-16)
+  const py = (args, extra = {}) => { const r = spawnSync(process.platform === 'win32' ? 'python' : 'python3', [path.join(repo, 'tools', 'will.py'), '--candidates', '--all', ...args], { cwd: repo, encoding: 'utf8', env: { ...process.env, VOID_MISSES_TOKEN: '', PYTHONIOENCODING: 'utf-8', VOID_BETTER_FILE: path.join(nodeOs.tmpdir(), 'void-no-better-' + process.pid + '.json'), ...extra }, timeout: 60000 }); try { return JSON.parse(r.stdout); } catch (_) { return []; } };
   const wr = py([], { VOID_ROUTES_FILE: rf }), base0 = py([]), withDone = py(['--with-done']);
   fs.rmSync(rf, { force: true });
   const up = (list) => list.find((c) => c.title === 'answer and fix with a stronger model') || {};
