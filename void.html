@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <title>V01D · A-to-Mind</title>
   <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="preload" href="/skills/index.json" as="fetch" crossorigin />
   <meta name="theme-color" content="#050505" />
   <link rel="icon" href="/icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/icon-180.png" />
@@ -2349,9 +2350,7 @@ say('nothing selected to remove');
         const pct = Math.max(0, Math.min(100, Math.round(100 * f.built / f.total)));
         h += '<div class="vh">What got built</div><div><span class="v-num">' + esc(f.built) + '</span> <span style="color:var(--ink-3)">of my ' + esc(f.total) + ' asks</span></div>'
           + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
-          // the divergence tracker (asked by Void three times): each built ask opens to my words beside what the builders wrote in the
-          // ledger, so a build that drifted from the ask is plain to see
-          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s);margin-bottom:4px">Most recently, my words and what was built:</p><ul class="v-asks v-built">' + f.recent.map((r) => '<li><details><summary>' + esc(r.ask) + (r.times > 1 ? ' <span style="color:var(--ink-3)">(asked ' + esc(r.times) + ' times)</span>' : '') + '</summary><div class="v-meta"><b>I asked:</b> ' + esc(r.ask) + '<br><b>What was built' + (r.at ? ' (' + esc(String(r.at).slice(0, 10)) + ')' : '') + ':</b> ' + esc(r.what || '(the ledger line is not in this view)') + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' <a href="' + esc(r.ref) + '" rel="noopener">link</a>' : '') + '</div></details></li>').join('') + '</ul>' : '');
+          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s)">Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.</p>' : '');
       }
       el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
     }
@@ -2533,61 +2532,7 @@ say('nothing selected to remove');
     }
     stage.addEventListener('pointerdown', (e) => { if (e.target !== stage) return; if (worldCur && worldCur.inst) { if (!worldCur.gesture) { worldCur.gesture = true; worldGesture(e); } } else closePage(); });
 
-    // weather page (Open-Meteo, no key)
-    const WX = {0:'Clear',1:'Mostly clear',2:'Partly cloudy',3:'Overcast',45:'Fog',48:'Fog',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',56:'Freezing drizzle',57:'Freezing drizzle',61:'Light rain',63:'Rain',65:'Heavy rain',66:'Freezing rain',67:'Freezing rain',71:'Light snow',73:'Snow',75:'Heavy snow',77:'Snow grains',80:'Showers',81:'Showers',82:'Heavy showers',85:'Snow showers',86:'Snow showers',95:'Thunderstorm',96:'Thunderstorm, hail',99:'Thunderstorm, hail'};
-    function wantsWeather(lower) {
-      return /\b(weather|forecast|temperature)\b/.test(lower) || /\b(is it|will it|going to)\s+(rain|snow)\b/.test(lower) || /\bhow\s+(cold|hot|warm)\s+is\s+it\b/.test(lower);
-    }
-    function weatherPlace(text) {
-      const m = text.match(/\b(?:in|at|for|near)\s+([^?.!]+)$/i);
-      if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
-      const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|how|cold|hot|warm|here|outside)\b/ig, ' ').trim();
-      return t;
-    }
-    function hereCoords() {
-      return new Promise((res) => {
-        if (!navigator.geolocation) return res(null);
-        navigator.geolocation.getCurrentPosition((p) => res({ latitude: p.coords.latitude, longitude: p.coords.longitude, name: 'Here' }), () => res(null), { timeout: 8000, maximumAge: 600000 });
-      });
-    }
-    async function showWeather(text) {
-      const place = weatherPlace(text);
-      const el = showPage((p) => { p.innerHTML = '<h2>' + esc(place || 'Weather') + '</h2><div class="sub">…</div>'; });
-      try {
-        let loc = null;
-        if (place) {
-          const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=1&name=' + encodeURIComponent(place)).then((r) => r.json());
-          const r0 = g.results && g.results[0];
-          if (r0) loc = { latitude: r0.latitude, longitude: r0.longitude, name: r0.name + (r0.admin1 && r0.admin1 !== r0.name ? ', ' + r0.admin1 : '') + (r0.country ? ', ' + r0.country : '') };
-        } else {
-          loc = await hereCoords();
-        }
-        if (vpageEl !== el) return 'weather';
-        if (!loc) {
-          el.innerHTML = '<h2>Weather</h2><p>' + (place ? 'I couldn\'t find “' + esc(place) + '”. Try a city name, like “weather in Tokyo”.' : 'Where? Try “weather in Tokyo”, or allow location for “weather here”.') + '</p>';
-          return place ? 'none' : 'weather';
-        }
-        const u = 'https://api.open-meteo.com/v1/forecast?latitude=' + loc.latitude + '&longitude=' + loc.longitude
-          + '&current=temperature_2m,apparent_temperature,weather_code,wind_speed_10m&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&forecast_hours=8&forecast_days=1&timezone=auto';
-        const w = await fetch(u).then((r) => r.json());
-        if (vpageEl !== el) return 'weather';
-        const f = /^(US|United States)/.test(loc.name.split(', ').pop()) || /United States/.test(loc.name) || (!place && navigator.language === 'en-US');
-        const T = (c) => Math.round(f ? c * 9 / 5 + 32 : c) + '°';
-        const c = w.current, d = w.daily, h = w.hourly;
-        const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center;min-width:44px"><div style="color:#8a8a8a;font-size:12px">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div>' + T(h.temperature_2m[i]) + '</div><div style="color:#8a8a8a;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
-        el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
-          + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + '</div>'
-          + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
-          + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
-          + '<div style="display:flex;gap:6px;overflow-x:auto;padding:6px 0 2px">' + hours + '</div>'
-          + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a></div>';
-        return 'weather';
-      } catch (_) {
-        if (vpageEl !== el) return 'none';
-        el.innerHTML = '<h2>Weather</h2><p>The weather service didn\'t answer just now. Ask again in a moment.</p>';
-        return 'none';
-      }
-    }
+    // the weather page that used to be here (Open-Meteo, 2026-09) lives in skills/weather.js; its old code is on the salvage shelf (docs/SALVAGE.md)
 
     // calculation page: percentages, unit conversion, date math, currency
     const CALC_UNITS = {
@@ -3566,8 +3511,6 @@ say('nothing selected to remove');
       cardMini(band, 'calculator', { expression: m[1].replace(/,/g, ''), result: m[2].replace(/,/g, ''), typed: true },
         { key: 'calculator:page' + Date.now().toString(36), label: '3D calculator showing ' + m[2] }).catch(() => band.remove());
     }
-    // a kitchen answer (cups, grams, gas marks, a steak's doneness) ends with one tap that starts a timer (asked by Void, lib/cook-flow.js)
-    function cookFlow(el, query) { import('/lib/cook-flow.js').then((M) => { const h = M.cookChip(query, esc); if (h && vpageEl === el && !el.querySelector('.cook-flow')) el.insertAdjacentHTML('beforeend', h); }).catch(() => {}); }
     async function showCalc(query) {
       const lower = calcNormalize(query.toLowerCase());
       const el = showPage((p) => { p.innerHTML = '<h2>Calculated</h2><div class="sub">…</div>'; });
@@ -3576,7 +3519,7 @@ say('nothing selected to remove');
       const setV = (big, note, src) => { if (vpageEl === el) { el.innerHTML = '<h2>Calculated</h2><div class="big" style="' + bigStyle(big) + '">' + esc(big) + '</div>' + (note ? '<p style="color:#8a8a8a">' + esc(note) + '</p>' : '') + (src ? '<div class="src">' + src + '</div>' : ''); calcMini(el, note); } };
       lastAskRaw = String(query || '');
       const wm = wordMath(query.toLowerCase());
-      if (wm) { setV(wm.value, wm.note); cookFlow(el, query); return 'calc'; }
+      if (wm) { setV(wm.value, wm.note); return 'calc'; }
 
       // percent: "15% of 240", "what's a 20% tip on 80"
       const pm = lower.match(/\b(\d+(?:\.\d+)?)\s*%\s*(?:of|off)\s+(?:a|an|the)?\s*\$?(\d+(?:\.\d+)?)/);
@@ -3615,7 +3558,6 @@ say('nothing selected to remove');
           }
           if (!hit) { setV('?', 'I don\'t convert ' + fromU + ' to ' + toU + ' yet.'); }
         }
-        if (hit) cookFlow(el, query);
       }
 
       // currency: "100 dollars in euros", "$50 to yen", "250 canadian dollars in pounds" (Frankfurter, ECB reference rates, no key).
@@ -3888,7 +3830,7 @@ say('nothing selected to remove');
       if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
       return learnedSkills;
     }
-    const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; });
+    const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; document.documentElement.dataset.skills = 'ready'; }); // data-skills="ready": the suite waits on it instead of a guessed delay (tools/test_void.mjs skillsUp)
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
     // runs that ask exactly as if it were typed. Only a short line of text is taken.
     document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
@@ -4167,7 +4109,11 @@ say('nothing selected to remove');
     // --- The confirm line (plan item 7, ApprovalEvent v0): one plain line before anything that sends, books or spends. ---
     // The action waits server-side (/api/approval) until the decision arrives. No, no answer, or a changed request = it doesn't run.
     // Which asks count, the wording and the fingerprint live in /lib/approval-core.js, shared with the server. Read-only asks never get here.
-    const approvalReady = import('/lib/approval-core.js').catch(() => null);
+    // Loaded after the skills, or at the first sign of an ask (warmLibs below: a key, a tap, a ?q= link), not with the page: on a
+    // slow link these four (approval, store, fix, review: about 56 KB compressed) used to share the line with the 230 skill
+    // modules, so the first skill answer waited on them too. Each one is still awaited the same way where an ask needs it.
+    const lazyLib = (url) => { let p = null; return () => p || (p = import(url).catch(() => null)); };
+    const approvalReady = lazyLib('/lib/approval-core.js');
     const YES_RE = /^(yes|y|yeah|yep|yup|sure|do it|send it|book it|buy it|pay it|go ahead|confirm)\s*[.!]?$/;
     const NO_RE = /^(no|n|nope|cancel|stop|don'?t|no thanks|never ?mind)\s*[.!]?$/;
     let pendingConfirm = null, lastConfirm = null;
@@ -4178,7 +4124,7 @@ say('nothing selected to remove');
       return { status: r.status, body: j };
     }
     async function handleGatedAsk(text) {
-      const core = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const core = await Promise.race([approvalReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       const attach = confirmAttach; confirmAttach = null; // one ask only, used or not
       const ask = core && core.parseGatedAsk(text);
       if (!ask) return false;
@@ -4547,10 +4493,10 @@ say('nothing selected to remove');
     // lib/gumroad.js UNLOCKS names by id) adds only more model answers, private skills and a higher cap on actions that pass the
     // confirm line (the confirm itself never goes away). Products are never named or priced in this file: names, prices and what
     // each covers come from the live store (/api/catalog), so Void follows when Atom renames or reprices.
-    const storeReady = import('/lib/gumroad.js').catch(() => null);
+    const storeReady = lazyLib('/lib/gumroad.js');
     let catalogAt = 0, catalogP = null;
     async function storeCatalog() { // -> { g, products }; products from /api/catalog (fetched on the first ask that needs it, never on arrival)
-      const g = await Promise.race([storeReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const g = await Promise.race([storeReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!g) return { g: null, products: [] };
       if (!catalogP || Date.now() - catalogAt > 600000) {
         catalogAt = Date.now();
@@ -4639,7 +4585,7 @@ say('nothing selected to remove');
     // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Void reads what was pasted
     // (error, config, steps), names the likely cause and gives the concrete fix or corrected config (/api/answer mode 'fix',
     // lib/automation-fix.js). If nothing was pasted yet, Void asks for it. The fix is the answer; a product line may follow it.
-    const fixReady = import('/lib/automation-fix.js').catch(() => null);
+    const fixReady = lazyLib('/lib/automation-fix.js');
     let pendingFix = null, pasteRaw = null, pasteFlat = null;
     input.addEventListener('paste', (e) => { // keep a pasted config/log with its line breaks (a one-line input would flatten it)
       const t = e.clipboardData && e.clipboardData.getData('text');
@@ -4708,7 +4654,7 @@ say('nothing selected to remove');
       return 'fix';
     }
     async function handleFixAsk(text, full) {
-      const fx = await Promise.race([fixReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const fx = await Promise.race([fixReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!fx) return false;
       if (pendingFix) {
         const pf = pendingFix; pendingFix = null;
@@ -4727,7 +4673,10 @@ say('nothing selected to remove');
     // --- Code review (lib/code-review.js, /api/answer mode 'review'). "review my code" + the code: the quick checks show at once
     // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
     // Void asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
-    const reviewReady = import('/lib/code-review.js').catch(() => null);
+    const reviewReady = lazyLib('/lib/code-review.js');
+    const warmLibs = () => { approvalReady(); storeReady(); fixReady(); reviewReady(); for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
+    for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.addEventListener(ev, warmLibs, { capture: true, passive: true });
+    if (new URLSearchParams(location.search).get('q')) warmLibs(); else skillsReady.then(warmLibs);
     let pendingReview = null;
     const REVIEW_KIND = { bug: ['bug', '#ff8a8a'], risk: ['risk', '#ffc46b'], style: ['style', '#8ab4ff'], note: ['note', '#9a9a9a'] };
     async function showReview(ask, code, cr) {
@@ -4758,7 +4707,7 @@ say('nothing selected to remove');
       return 'review';
     }
     async function handleReviewAsk(text, full) {
-      const cr = await Promise.race([reviewReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const cr = await Promise.race([reviewReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!cr) return false;
       if (pendingReview) {
         const pr = pendingReview; pendingReview = null;
@@ -5254,7 +5203,7 @@ say('nothing selected to remove');
     // From the Void extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
-      if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady; if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
+      if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
         if (!ctx0) { handle(q0); return; }
         let done = false;
         const onCtx = (e) => {
@@ -5442,7 +5391,7 @@ say('nothing selected to remove');
       // send, booking or spend, and never read the owner's board. Those are for the person at the screen, by hand.
       if (pendingConfirm || pendingForget || pendingPublish) return 'V01D is waiting for the person at the screen to answer. Agents can\'t answer for them.';
       if (PUBLISH_RE.test(ask.toLowerCase()) || UNPUBLISH_RE.test(ask.toLowerCase())) return 'Publishing your V01D is for the person at the screen, asked by hand.';
-      const coreA = await Promise.race([approvalReady, new Promise((r) => setTimeout(() => r(null), 6000))]);
+      const coreA = await Promise.race([approvalReady(), new Promise((r) => setTimeout(() => r(null), 6000))]);
       if (!coreA) return 'Try again in a moment.';
       if (coreA.parseGatedAsk(ask)) return 'Sends, bookings and spends are for the person at the screen, asked by hand.';
       if (wantsBoard(ask.toLowerCase())) return 'That one is for the person at the screen, asked by hand.';
