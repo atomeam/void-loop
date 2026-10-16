@@ -8,6 +8,19 @@
  * "make me a rocket", "3d print a vase", "forge a lighthouse", "print it", "download the stl".
  */
 import * as F from './forge-rules.js';
+import { add as recordPrint } from '../lib/prints.js';
+
+const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
+/** What V01D's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
+ *  output linked to the frontier #14 tracker): 'made' when a recipe answers that name today (with its key), else 'wanted'. Pure. */
+export function wantsStatus(wants) {
+  return (Array.isArray(wants) ? wants : []).filter((w) => w && typeof w.thing === 'string').map((w) => {
+    const key = F.thingOf(w.thing) || F.thingOf(w.thing.replace(/s$/, ''));
+    return { thing: w.thing, n: +w.n || 1, status: key ? 'made' : 'wanted', key };
+  });
+}
+const wantsHtml = (esc, rows) => (rows.length ? '<div class="sub" style="margin-top:10px">Asked for by my probes (frontier #14 tracker)</div><ul data-forge-wants style="padding-left:18px">'
+  + rows.map((r) => '<li data-status="' + r.status + '">' + esc(r.thing) + (r.n > 1 ? ' (asked ' + r.n + ' times)' : '') + ' · ' + (r.status === 'made' ? '<b>made</b>: <a href="#" data-ask="make me a ' + esc(r.key) + '">make me a ' + esc(r.key) + '</a>' : 'not made yet') + '</li>').join('') + '</ul>' : '');
 
 const NAMES = Object.values(F.THINGS).flatMap((t) => t.names).sort((a, b) => b.length - a.length).map((n) => n.replace(/ /g, '\\s+')).join('|');
 const MAKE = new RegExp('^(?:please\\s+)?(?:(?:can|could)\\s+you\\s+)?(?:make|build|forge|model|sculpt|create|3d[\\s-]?print|print)\\s+(?:me\\s+)?(?:a\\s+|an\\s+)?(?:3d\\s+|printable\\s+)?(' + NAMES + ')(?:\\s+(?:in\\s+3d|i\\s+can\\s+print|to\\s+print|model))?(?:\\s+please)?$');
@@ -69,6 +82,8 @@ export function printOrRefuse(model, say, verify = F.verifyStl) {
   if (!v.ok) { say('Not printed: the ' + model.label.toLowerCase() + '\'s file did not pass its check · ' + v.problems.join(' · ')); return false; }
   download(model, buf);
   const pc = F.printCheck(model);
+  // the print ledger (lib/prints.js): what left for a printer, so "what have I printed" (inventory) knows what exists
+  const ls = store(); if (ls) recordPrint(ls, { kind: 'stl', file: fileName(model.key), label: model.label, key: model.key, recipe: model.id, triangles: v.triangles, grams: pc.grams, size: model.size });
   say('Checked and downloading ' + fileName(model.key) + ' · ' + v.triangles.toLocaleString('en') + ' facets, watertight, fits a ' + F.BED_MM + ' mm bed · ' + dims(model.size) + ' · about ' + pc.grams + ' g in solid PLA'
     + (pc.supports ? ' · print with supports (it leans out on ' + pc.overhangPct + '% of its surface)' : ' · no supports needed') + ' · open it in any slicer');
   return true;
@@ -107,11 +122,18 @@ async function run(text, api) {
   const forged = Object.values(api.stage.things()).filter((t) => t.kind === 'forge');
   if (q.list) { // forge history (asked by Void twice): the recipes it can make, each with its size and print notes, and the ones standing on the stage now
     const { showPage, esc } = api, onStage = new Map(), askedOf = new Map(); for (const t of forged) { onStage.set(t.key, (onStage.get(t.key) || 0) + 1); if (t.ask) askedOf.set(t.key, t.ask); } // the ask behind a recipe on the stage is kept on its thing (asked by Void: recipe versioning)
-    showPage((p) => {
+    const el = showPage((p) => {
       p.innerHTML = '<h2>Forge history</h2><div class="sub">' + Object.keys(F.THINGS).length + ' recipes, one mesh each: what you spin is what prints. ' + (forged.length ? forged.length + ' on the stage now.' : 'Nothing forged on this stage yet.') + '</div>'
-        + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + (askedOf.get(key) ? ' · <span class="sub">asked "' + esc(askedOf.get(key)) + '"</span>' : '') + '</li>'; }).join('') + '</ul>'
-        + '<div class="src">Recipes from skills/forge-rules.js; a frontier #14 "make me a…" the forge cannot make yet shows on the growth card under My probes.</div>';
+        + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (F.THINGS[key].figure ? ' · <span class="sub">a figure as a recipe</span>' : '') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + (askedOf.get(key) ? ' · <span class="sub">asked "' + esc(askedOf.get(key)) + '"</span>' : '') + '</li>'; }).join('') + '</ul>'
+        + '<div data-forge-tracker></div>'
+        + '<div class="src">Recipes from skills/forge-rules.js; what V01D\'s probes asked the forge for (frontier #14) is read from its probe ledger, each marked made or not made yet.</div>';
     });
+    // the frontier #14 tracker (asked by Void): the probe ledger's forge wants, each with its status in the forge today
+    try {
+      const r = await fetch('/api/probe-log'), j = r.ok ? await r.json() : null, rows = wantsStatus(j && j.stats && j.stats.forge);
+      const slot = el && el.querySelector ? el.querySelector('[data-forge-tracker]') : (typeof document !== 'undefined' ? document.querySelector('.vpage.on [data-forge-tracker]') : null);
+      if (slot) slot.innerHTML = rows.length ? wantsHtml(esc, rows) : '<div class="sub" style="margin-top:10px">My probes have not asked the forge for anything it cannot make.</div>'; // void-review: ok: every value goes through esc()
+    } catch (_) {}
     return 'forge';
   }
   if (q.print) {

@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (asks-forge agent) · helper/asks-forge · V01D's forge asks: person recipe (figures as recipes), print ledger into inventory, forge history with probe wants' status, one-click forge of an offered routine into a skill PR; forge/print-file verify asks recorded as built · 2026-10-16 18:40 UTC
 - Claude (this session) · helper/fix-evidence, helper/reply-to-v01d, helper/intent-gate · V01D's fix loop (probe ledger, evidence, route corrections, confidence gate, fixes card), talk back to V01D, the intent gate before the fix card, drive_time over MCP, fringe 74; and the owner's order of 2026-10-16: build all of V01D's open asks · 2026-10-16 05:10 UTC
 - Claude cloud session (connect-skills) · cook-flow timer, BMI trend and nutrition link, words to draw, heat-dose forecast, weather and food prompts, substitution impact, sticky style, plan history (asks 0151-1, 2248-1/2, 1548-1, 0100-1, 1523-1, 1453-1, 0250-2, 2054-1, 1012-3, 0847-1) · 2026-10-16 05:03 UTC
 - Claude · helper/kitchen-cook-flow, helper/body-bmi-trend, helper/weather-plan-history · V01D's open asks in three PRs: cook-flow timer chip + swap impact (0151-1, 0250-2); BMI trend + BMI→nutrition + meals plan + words→cartoon (2248-1/2, 1453-1, 1548-1); heat-dose 48 h forecast + weather prompt + plan history (0100-1, 1523-1, 1012-3/0847-1) · 2026-10-16 05:30 UTC
