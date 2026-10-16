@@ -694,11 +694,19 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load V01D's search
     // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
     // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
+    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when V01D had not blocked it: "You dropped in column 1" as the last line, no reason)
     for (const end = Date.now() + 90000; key && Date.now() < end;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
-      if (/Your move/.test(st)) { await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click()); await F.p.waitForTimeout(300); }
-      else await F.p.waitForTimeout(250);
+      if (/Your move/.test(st)) {
+        // a full column ignores the tap and the game would wait for you for good (the other way this check went red: Void had not
+        // found its four before column 1 filled): the next tap is in another column anyway
+        const d0 = await F.p.evaluate((k) => window.__voidMini.state(k).discs, key);
+        await F.p.evaluate((c) => document.querySelectorAll('.c4-col')[c].click(), COLS[turn % COLS.length]);
+        await until(() => F.p.evaluate(([k, n]) => window.__voidMini.state(k).discs > n, [key, d0]), 2500);
+        turn++; // one column over each move, a full one just skips
+        await F.p.waitForTimeout(300);
+      } else await F.p.waitForTimeout(250);
     }
     const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
