@@ -3,6 +3,10 @@
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
  * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.
+ * Asked by Void (ask-20261014-1523-1, "link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger
+ * actionable prompts"): when rain, snow, frost or heat is in the next hours, the card offers one ask the timer skill takes
+ * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
+ * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).
  */
 import { keepLive } from './live.js';
 const WX = {
@@ -19,6 +23,25 @@ function weatherPlace(text) {
   if (m) return m[1].replace(/\b(today|tomorrow|now|right now|this week)\b/ig, '').trim();
   const t = text.replace(/[?.!]/g, '').replace(/\b(what'?s|what is|the|weather|forecast|temperature|like|today|now|is it|will it|going to|rain|snow|raining|snowing|sunny|windy|cloudy|how|cold|hot|warm|here|outside|what should i wear|do i|should i|will i|need|bring|take|an?|umbrella|raincoat|jacket|coat)\b/ig, ' ').trim();
   return t;
+}
+
+const RAIN = (c) => (c >= 51 && c <= 67) || (c >= 80 && c <= 82) || c >= 95, SNOW = (c) => (c >= 71 && c <= 77) || c === 85 || c === 86;
+const hourWord = (iso) => { const hr = new Date(iso).getHours(); return (hr % 12 || 12) + (hr < 12 ? 'am' : 'pm'); };
+/** the one actionable prompt in the next hours: { kind, at, minutes, ask, why } for rain, snow, frost or heat (°C), or null; the
+ * ask is the timer skill's "remind me to … in N minutes", N the minutes until the hour before it starts (5 at least). Pure. */
+export function weatherPrompt(hourly, now = Date.now(), hours = 8) {
+  const h = hourly || {}, T = Array.isArray(h.time) ? h.time : [];
+  const at = (i) => hourWord(T[i > 0 ? i - 1 : 0]), from = (i) => hourWord(T[i]);
+  const mins = (i) => { const ms = Date.parse(T[i > 0 ? i - 1 : 0]) - now; return Number.isFinite(ms) ? Math.max(5, Math.round(ms / 60000)) : 5; };
+  const one = (kind, i, what, why) => ({ kind, at: at(i), minutes: mins(i), ask: 'remind me to ' + what + ' in ' + mins(i) + ' minutes', why });
+  for (let i = 0; i < Math.min(T.length, hours); i++) {
+    const c = +(h.weather_code || [])[i], p = +(h.precipitation_probability || [])[i], t = +(h.temperature_2m || [])[i];
+    if (SNOW(c)) return one('snow', i, 'leave early, snow is coming', 'Snow from ' + from(i) + '.');
+    if (RAIN(c) || p >= 50) return one('rain', i, 'bring an umbrella', 'Rain from ' + from(i) + (p >= 50 ? ' (' + p + '% chance)' : '') + '.');
+    if (Number.isFinite(t) && t <= 0) return one('frost', i, 'cover the plants, frost tonight', 'Frost from ' + from(i) + '.');
+    if (Number.isFinite(t) && t >= 32) return one('heat', i, 'drink water and find shade', 'Heat from ' + from(i) + ' (' + Math.round(t) + ' °C).');
+  }
+  return null;
 }
 
 function hereCoords() {
@@ -70,12 +93,15 @@ async function run(text, api) {
       const c = w.current, d = w.daily, h = w.hourly;
       if (!c || !d || !h) throw new Error('no forecast');
       queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
+      const next = weatherPrompt(h); // asked by Void: rain, snow, frost or heat in the next hours offers one reminder
+      const nextLine = next ? '<p class="wx-next">' + esc(next.why) + ' <a href="#" data-ask="' + esc(next.ask) + '">' + esc(next.ask) + '</a> <span style="color:#8b90a0;font-size:12px">· a timer on the stage, to ' + esc(next.at) + '</span></p>' : '';
       const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
       el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half
       el.innerHTML = '<h2>' + esc(loc.name) + '</h2>'
         + '<div class="sub">' + esc(WX[c.weather_code] || '') + ' · feels ' + T(c.apparent_temperature) + ' · wind ' + Math.round(f ? c.wind_speed_10m * 0.621 : c.wind_speed_10m) + (f ? ' mph' : ' km/h') + (Number.isFinite(c.relative_humidity_2m) ? ' · humidity ' + Math.round(c.relative_humidity_2m) + '%' : '') + '</div>'
         + '<div style="font-size:56px;font-weight:300;line-height:1.1;margin:6px 0 4px">' + T(c.temperature_2m) + '</div>'
         + '<p>Today ' + T(d.temperature_2m_max[0]) + ' / ' + T(d.temperature_2m_min[0]) + (d.precipitation_probability_max && d.precipitation_probability_max[0] != null ? ' · rain chance ' + d.precipitation_probability_max[0] + '%' : '') + '</p>'
+        + nextLine
         + '<div class="wx-hours" style="display:grid;grid-template-columns:repeat(8,minmax(46px,1fr));overflow-x:auto;gap:2px;padding:10px 0 4px;margin-top:6px;border-top:1px solid rgba(255,255,255,.07)">' + hours + '</div>'
         + '<div class="src">Source: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a>' + (loc.guessed ? ' · place from your time zone; ask "weather in …" for another' : '') + '</div>';
     };

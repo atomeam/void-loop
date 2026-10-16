@@ -701,6 +701,39 @@ try {
     check('undo after a plan takes back the whole plan (checklist, timer and note), and leaves what was there before it',
       /list/.test(during) && /timer/.test(during) && /sticky/.test(during) && after === 'clock' && !U.errors.length, JSON.stringify({ during, after, e: U.errors }));
     await U.ctx.close(); }
+
+  // Plan history (asked by Void, skills/intent.js): a plan is kept in this browser as it was laid out; after "clear" wipes the
+  // stage, "plan history" lists it and "restore plan 1" puts it back as new pieces, so a wipe is never total.
+  if (want("plan history: a plan survives a clear, plan history lists it, restore puts it back")) { const H = await fresh();
+    await H.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, note: 'Little and often.', model: 'gemma' })));
+    await H.ask('make a plan to learn spanish', 3000); await until(() => H.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]')).length), 8000);
+    const kept = await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]'));
+    check('plan history: the plan is kept with its goal and pieces', kept.length === 1 && kept[0].goal === 'learn spanish' && kept[0].things.length >= 3 && kept[0].things.every((t) => Number.isFinite(t.x)), JSON.stringify(kept.map((k) => [k.goal, k.pieces])));
+    await H.ask('clear', 800); const wiped = (await H.state()).length;
+    await H.ask('plan history', 800); await until(async () => /Plan history/.test(await H.page()), 6000); const histPg = await H.page();
+    check('plan history: after a clear the list names the plan with a restore link', wiped === 0 && /Plan history/.test(histPg) && /learn spanish/.test(histPg) && /just now/.test(histPg) && !!(await H.p.$('.vpage.on a[data-ask="restore plan 1"]')), histPg.slice(0, 160) + ' | wiped=' + wiped);
+    await H.p.click('.vpage.on a[data-ask="restore plan 1"]'); await until(async () => (await H.state()).length >= 3, 6000);
+    const back = (await H.state()).map((x) => x.kind).sort().join(',');
+    check('plan history: restore puts the checklist, timer and note back as new pieces', /list/.test(back) && /timer/.test(back) && /sticky/.test(back) && /restored/.test(await H.whisper()), back + ' | ' + (await H.whisper()));
+    await H.ask('clear', 800); await H.ask('plan my move', 2000); await until(() => H.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]')).length === 2), 8000);
+    check('plan history: a second plan (after a clear) is listed first, one line per distinct goal', (await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]').map((p) => p.goal))).join('|') === 'move|learn spanish' && !H.errors.length, (await H.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.plans.v1') || '[]').map((p) => p.goal))).join('|') + ' | ' + H.errors.join(' | '));
+    await H.ctx.close(); }
+  // The weather prompt and the coral heat dose (asked by Void): rain in the next hours offers a reminder the remind skill takes;
+  // the coral heat card projects the next 48 hours from Open-Meteo's marine and UV forecasts.
+  if (want("weather prompt and heat dose: rain offers a reminder, a dry day offers none, the coral heat card projects 48 hours")) { const W = await fresh();
+    await W.ask('weather in Bergen', 1500); await until(async () => /Rain from/.test(await W.page()), 8000); const wxPg = await W.page();
+    const wxAsk = await W.p.$eval('.vpage.on .wx-next a[data-ask]', (a) => a.getAttribute('data-ask')).catch(() => '');
+    check('weather prompt: rain in Bergen in two hours offers "remind me to bring an umbrella in N minutes" (the timer skill)', /Bergen/.test(wxPg) && /Rain from/.test(wxPg) && /^remind me to bring an umbrella in \d{1,3} minutes$/.test(wxAsk) && +wxAsk.replace(/\D/g, '') >= 5 && +wxAsk.replace(/\D/g, '') <= 120, wxPg.slice(0, 120) + ' | ' + wxAsk);
+    await W.p.click('.vpage.on .wx-next a[data-ask]'); await until(async () => (await W.state()).some((x) => x.kind === 'timer'), 6000);
+    const wxTimers = (await W.state()).filter((x) => x.kind === 'timer');
+    check('weather prompt: the tap starts a timer on the stage for those minutes', wxTimers.length === 1 && wxTimers[0].running && Math.abs(wxTimers[0].duration - +wxAsk.replace(/\D/g, '') * 60000) < 1000, JSON.stringify(wxTimers.map((t) => [t.duration, t.running])) + ' | ' + wxAsk);
+    await W.ask('weather in Lisbon', 1500); await until(async () => /Lisbon/.test(await W.page()) && /Open-Meteo/.test(await W.page()), 8000);
+    check('weather prompt: a dry mild day offers nothing', /Lisbon/.test(await W.page()) && !(await W.p.$('.vpage.on .wx-next')), (await W.page()).slice(0, 80));
+    await W.ask('can coral survive heatwaves', 2500); await until(async () => /Projected heat dose/.test(await W.page()), 8000); const heatPg = await W.page();
+    check('heat dose: the coral heat card projects the next 48 hours (water over the threshold, the degree heating weeks it adds, UV)', /Projected heat dose, next 48 hours/.test(heatPg) && /30 of 48 hours at or above the bleaching threshold/.test(heatPg) && /degree heating weeks/.test(heatPg) && /UV peaks at/.test(heatPg), heatPg.slice(0, 200));
+    await W.ask('coral heat dose', 2500); await until(async () => /Projected heat dose/.test(await W.page()), 8000);
+    check('heat dose: "coral heat dose" opens the same card', /Projected heat dose/.test(await W.page()) && !W.errors.length, W.errors.join(' | '));
+    await W.ctx.close(); }
   // a dated plan of a kind with no steps of its own: the engine's steps, dated back from the day; with no engine, the generic
   // steps, and the checklist is there (its "check it" step used to stop the list ask, so the plan came without one)
   if (want("dated open plan: \"make a plan to learn spanish by friday\" takes the engine's steps")) { const D = await fresh();

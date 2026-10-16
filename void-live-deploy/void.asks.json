@@ -270,6 +270,11 @@
       "words": "Implement the 'confidence' float (0.0-1.0) into the /api/propose-fix JSON schema to allow builders to prioritize high-certainty repairs.",
       "ledgerAt": "2026-10-16T03:09:08Z",
       "why": "built (#852): /api/propose-fix asks for and returns confidence 0-1 (lib/propose-fix.js confidenceOf), and the proposal summary and propose-fix.json carry it"
+    },
+    {
+      "ask": "ask-20261013-2054-1",
+      "ledgerAt": "2026-10-14T02:46:52Z",
+      "why": "built: a plan's stickies carry a tab that reads note to self or draft, not sent (void.html .thing.sticky[data-role], skills/sticky.js), so a note is never taken for an order; the ledger line names this id in prose, which followThrough's word match missed"
     }
   ]
 }
