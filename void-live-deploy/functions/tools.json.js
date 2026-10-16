@@ -2,7 +2,7 @@
 // Each tool is called by opening https://a-to-mind.com/?q=<ask>. Agents can also call Void's read-only tools over MCP
 // (functions/api/mcp.js, lib/mcp.js): the `mcp` field names the endpoint and lists those tools, from the same table tools/list serves.
 import { TOOLS as MCP_TOOLS, PROTOCOL } from '../lib/mcp.js';
-const CORE = [
+export const CORE = [ // the page's own built-ins; the book's "How to ask" page reads them too (tools/guide.mjs)
   { name: 'stage', description: 'Put a thing on the stage: clock, timer, counter, sticky note, notepad, list, calculator, shape, image or link card.', examples: ['make a clock', 'make a 5 minute timer', 'add a sticky that says hi', 'make a list', 'draw a circle'] },
   { name: 'page', description: 'A short sourced page about almost any topic (Wikipedia, Wiktionary).', examples: ['what is a black hole', 'who was Ada Lovelace', 'define serendipity'] },
   { name: 'calculate', description: 'Arithmetic, percentages, unit and currency conversion.', examples: ['15% of 80', '5 miles in km', '100 usd in eur'] },

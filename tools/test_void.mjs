@@ -2875,19 +2875,66 @@ try {
     const first = fam.families[0];
     await F.p.tap('.vpage .fh-family[data-family="' + first.id + '"] button').catch(() => {});
     const opened = await F.p.$eval('.vpage .fh-family[data-family="' + first.id + '"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
-      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent })) })).catch(() => null);
+      skills: [...r.querySelectorAll('[data-skill]')].map((li) => ({ name: li.dataset.skill, tier: li.querySelector('.fh-tier').textContent, why: li.querySelector('.fh-why').textContent, meta: (li.querySelector('.fh-meta') || {}).textContent || '' })) })).catch(() => null);
     const want4 = Object.fromEntries(['proven', 'checked', 'tested', 'experiment'].map((t) => [t, fam.families.reduce((n, f) => n + f.skills.filter((s) => s.tier === t).length, 0)]));
     const truth = Object.fromEntries(first.skills.map((s) => [s.name, s]));
     check('family-health: "show me your skill families" shows every family with a stacked bar of its ratings, totals from families.json, and a tap lists each skill with its rating and why',
       !!card && card.title === 'How healthy my skills are' && JSON.stringify(card.totals) === JSON.stringify(want4)
       && card.families.length === fam.families.length && card.families.every((f) => f.segs.length >= 1 && !f.open) && !card.wide
       && !!opened && opened.open && opened.expanded === 'true' && opened.skills.length === first.skills.length
-      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why)) && !F.errors.length,
+      && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why))
+      // asked by Void (ask-20261013-1823-1): each skill says when it was last tested and its benchmark success rate, from families.json; nothing about usage
+      && opened.skills.every((s) => (truth[s.name].last_tested ? s.meta.includes('last tested ' + truth[s.name].last_tested) : s.meta.startsWith('never tested'))
+        && (typeof truth[s.name].success_rate === 'number' ? s.meta.includes('success rate ' + Math.round(truth[s.name].success_rate * 1000) / 10 + '%') : !/success rate \d/.test(s.meta)) && !/usage|popular|last used/i.test(s.meta))
+      && !F.errors.length,
       JSON.stringify({ card: card && { ...card, text: card.text.slice(0, 300) }, want4, opened: opened && { ...opened, skills: opened.skills.slice(0, 3) }, errors: F.errors }));
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
     await F.ctx.close(); }
+  // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
+  // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
+  // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
+  if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
+    const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+    await B.ask('open the book', 900);
+    const open = await until(async () => B.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { skills: window.__voidBook.totals.skills, pages: window.__voidBook.totals.pages, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), num: document.querySelector('.vpage.on .gb-num').textContent, title: document.querySelector('.vpage.on h2').textContent, tabs: document.querySelectorAll('.vpage.on .gb-tab').length, cover: (document.querySelector('.vpage.on .gb-page[data-page="1"] h3') || {}).textContent } : null).catch(() => null), 8000);
+    check('the book: "open the book" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened',
+      !!open && open.title === 'The V01D Book' && open.cover === 'The V01D Book' && open.skills === members.length && open.tabs >= 12 && open.shown.includes('1') && /page 1 of \d+/.test(open.num), JSON.stringify({ open, members: members.length }));
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(150);
+    const after = await B.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), text: document.querySelector('.vpage.on .gb-spread').innerText }));
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(150);
+    const back = await B.p.evaluate(() => document.querySelector('.vpage.on .gb-num').textContent);
+    check('the book: → turns to the spread of pages 2–3 (how to ask, how to read a page: the four rating words explained), ← turns back',
+      /pages 2–3 of/.test(after.num) && after.shown.join(',') === '2,3' && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && /page 1 of/.test(back), JSON.stringify({ after: { ...after, text: after.text.slice(0, 120) }, back }));
+    // the index at the back names every skill, each with its page, and a jump from it lands on that page
+    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('.vpage.on .gb-page .gb-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
+    const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
+    const indexed = idx.names.map(([n]) => n);
+    const clockEntry = idx.names.find(([n]) => n === 'Clock');
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('.vpage.on .gb-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.gb-tier') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph',
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph,
+      JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
+    // an ask on a page runs on the stage, as it does from any card
+    await B.p.click('.vpage.on .gb-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(900);
+    check('the book: tapping "make a clock" on the clock page closes the book and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.page()).includes('The V01D Book') && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
+    // "the book at chess" opens on the chess page
+    await B.ask('the book at chess', 900);
+    const at = await until(async () => B.p.evaluate(() => { const pg = document.querySelector('.vpage.on .gb-page h3'); return pg ? pg.textContent : ''; }).catch(() => ''), 6000);
+    const shownAt = await B.p.evaluate(() => [...document.querySelectorAll('.vpage.on .gb-page h3')].map((h) => h.textContent));
+    check('the book: "the book at chess" opens on the Chess page', shownAt.includes('Chess'), JSON.stringify({ at, shownAt }));
+    await B.ctx.close();
+    const P = await fresh({ phone: true });
+    await P.ask('open the book', 900);
+    const ph = await until(async () => P.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { pages: document.querySelectorAll('.vpage.on .gb-page').length, num: document.querySelector('.vpage.on .gb-num').textContent, width: document.querySelector('.vpage.on').getBoundingClientRect().width, fits: document.documentElement.scrollWidth <= innerWidth } : null).catch(() => null), 8000);
+    await P.p.evaluate(() => { const s = document.querySelector('.vpage.on .gb-spread'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
+    await P.p.waitForTimeout(150);
+    const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
+    check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
+    await P.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
   // a plain reason stays in Void's words.

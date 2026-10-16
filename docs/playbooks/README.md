@@ -11,4 +11,6 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [table-skill.md](table-skill.md) | a new skill answered from a built-in table | not yet |
 | [review-rule.md](review-rule.md) | a code-review check for a bug the review missed | not yet |
 | [film.md](film.md) | a film, and the next film being better | not yet |
+| [generated-book.md](generated-book.md) | a page for everything, read off the repo, with a stale check (the book) | not yet |
+| [manifest-field.md](manifest-field.md) | a generated manifest (families.json and its kin): a new per-row fact read off the repo, and the card that shows it | not yet |
 | [study-with-rea.md](study-with-rea.md) | a brief built on how the best really do it (REA, with evidence) | not yet |
