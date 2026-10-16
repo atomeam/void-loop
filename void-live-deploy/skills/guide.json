@@ -1195,7 +1195,7 @@
     "will it rain tomorrow"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 44 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 44 real asks in the benchmark",
    "n": 58
   },
   {
@@ -2683,7 +2683,7 @@
     "I need to prepare a talk by next week and tell Sam"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
    "n": 154
   },
   {
