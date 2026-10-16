@@ -88,11 +88,12 @@
     },
     {
       "ask": "play reversi"
+    },
+    {
+      "ask": "show me the night sky"
     }
   ],
-  "candidates": [
-    "show me the night sky"
-  ],
+  "candidates": [],
   "games": {
     "solarquest": "voidquest",
     "solar quest": "voidquest",

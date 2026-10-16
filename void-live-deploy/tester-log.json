@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 21,
- "runsTotal": 54,
+ "cases": 22,
+ "runsTotal": 55,
  "kinds": {
-  "grow": 14,
+  "grow": 15,
   "file": 33,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-16T04:18:47Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "grow",
+   "note": "grew the suite: \"show me the night sky\""
+  },
   {
    "at": "2026-10-16T04:06:43Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 18,
    "kind": "file",
    "note": "fix: \"dismiss this\" nothing appeared"
-  },
-  {
-   "at": "2026-10-15T16:35:42Z",
-   "passed": 14,
-   "of": 17,
-   "kind": "file",
-   "note": "fix: \"catroon version of a hard subject\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -252,6 +252,10 @@
   "skill:share": "2026-10-16T04:06:43Z",
   "skill:show": "2026-10-16T04:06:43Z",
   "skill:show-countdown": "2026-10-16T04:06:43Z",
-  "skill:showcase": "2026-10-16T04:06:43Z"
+  "skill:showcase": "2026-10-16T04:06:43Z",
+  "skill:skycard": "2026-10-16T04:18:47Z",
+  "skill:sleep": "2026-10-16T04:18:47Z",
+  "skill:snake": "2026-10-16T04:18:47Z",
+  "skill:social": "2026-10-16T04:18:47Z"
  }
 }
