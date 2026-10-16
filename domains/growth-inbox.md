@@ -39,3 +39,6 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
+| building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
+| open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
+| open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |

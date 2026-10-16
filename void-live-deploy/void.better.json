@@ -1,21 +1,21 @@
 [
  {
-  "at": "2026-10-16T16:10:05.120Z",
+  "at": "2026-10-16T17:22:27.491Z",
   "score": 75,
   "parts": {
    "self": 80,
-   "asks": 89,
+   "asks": 88,
    "friction": 78,
    "bench": 99,
    "probes": 30
   },
   "facts": {
-   "week": 450,
-   "owner": 90,
+   "week": 451,
+   "owner": 91,
    "askedBuilt": 41,
    "medianLagDays": 0.3,
    "open": 4,
-   "oldestOpenDays": 0.8,
+   "oldestOpenDays": 0.9,
    "skills": 160,
    "failing": 9,
    "unsure": 52,

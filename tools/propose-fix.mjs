@@ -11,6 +11,7 @@
 //   node tools/propose-fix.mjs --job <id>              that job
 //   node tools/propose-fix.mjs --ask "…" --skill words  no queue: propose for this ask and skill (always --dry)
 //   node tools/propose-fix.mjs --dry                   propose, apply and test, but leave the queue note alone
+//   --brain claude   Claude proposes instead of V01D's own model (tools/claude-brain.mjs; ANTHROPIC_API_KEY, one call, capped)
 //   --out <dir>   where the patch (propose-fix.patch) and the result (propose-fix.json) are written (default: the temp folder)
 // Exit 0 when it ran (passed or failed cleanly), 3 when there is no job, the site could not be reached or V01D proposed nothing.
 import { readFileSync, writeFileSync, existsSync, mkdirSync } from 'node:fs';
@@ -75,11 +76,18 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!existsSync(file)) { console.error('propose-fix: no skill file for ' + miss.skill); process.exit(3); }
   const source = readFileSync(file, 'utf8');
   let proposal;
-  try { proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source, ...(miss.mode === 'narrow' ? { mode: 'narrow', said: job && job.note } : {}) }); }
-  catch (e) { console.error('propose-fix: V01D proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
+  const brain = opt('--brain') === 'claude' ? 'claude' : 'v01d';
+  try {
+    if (brain === 'claude') {
+      if (!process.env.ANTHROPIC_API_KEY) throw new Error('ANTHROPIC_API_KEY is not set in this environment');
+      const { proposeWithClaude } = await import('./claude-brain.mjs');
+      proposal = await proposeWithClaude({ ask: miss.ask, skill: miss.skill, source, mode: miss.mode, said: miss.mode === 'narrow' ? (job && job.note) || '' : '' });
+      delete process.env.ANTHROPIC_API_KEY; // the checks below run the edited skill: none of them gets the key
+    } else proposal = await api('/api/propose-fix', 'POST', { ask: miss.ask, skill: miss.skill, source, ...(miss.mode === 'narrow' ? { mode: 'narrow', said: job && job.note } : {}) });
+  } catch (e) { console.error('propose-fix: ' + (brain === 'claude' ? 'Claude' : 'V01D') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
   const next = applyEdits(source, proposal.edits);
   if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
-  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), model: proposal.model, mode: miss.mode || 'learn',
+  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
     title: miss.mode === 'narrow' ? 'V01D\'s ' + miss.skill + ' skill lets go of "' + miss.ask + '" (a correction)' : 'V01D fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"', passed: false, failed: '', detail: '' };
   let committed = false;
   writeFileSync(file, next);
@@ -117,6 +125,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
   // one record in V01D's probe ledger (lib/probe-log.js): the skill, the line changes, V01D's confidence and what came of it, never the ask
   if (job && !dry) { try { await api('/api/probe-log', 'POST', { kind: 'fix', skill: result.skill, edits: result.edits, confidence: result.confidence, passed: result.passed, failed: result.failed }); } catch (e) { console.error('propose-fix: the probe ledger was not written: ' + e.message); } }
-  console.log('### V01D proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| V01D\'s confidence | ' + (result.confidence ?? '—') + ' |\n| why, in V01D\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
+  console.log('### V01D proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| V01D\'s confidence | ' + (result.confidence ?? '—') + ' |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| why, in V01D\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
   process.exit(0);
 }

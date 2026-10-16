@@ -1,0 +1,41 @@
+{
+ "at": "2026-10-16T17:22:27.491Z",
+ "score": 75,
+ "parts": {
+  "self": 80,
+  "asks": 88,
+  "friction": 78,
+  "bench": 99,
+  "probes": 30
+ },
+ "facts": {
+  "week": 451,
+  "owner": 91,
+  "askedBuilt": 41,
+  "medianLagDays": 0.3,
+  "open": 4,
+  "oldestOpenDays": 0.9,
+  "skills": 160,
+  "failing": 9,
+  "unsure": 52,
+  "benchScore": 2343,
+  "benchTotal": 2368,
+  "probeFixes": 3
+ },
+ "trend": {
+  "score": 75,
+  "day": null,
+  "week": null,
+  "weakest": "probes",
+  "at": "2026-10-16T17:22:27.491Z",
+  "frictionWeek": null
+ },
+ "summary": "better: 75 of 100; weakest: probes",
+ "means": {
+  "self": "the share of this week's ledger lines that do not cite the owner (V01D driving its own changes)",
+  "asks": "how fast V01D's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
+  "friction": "skills failing the bench or barely checked, against all skills (skills/families.json)",
+  "bench": "the everyday benchmark's score on main (tools/bench.misses.json)",
+  "probes": "fixes this week that came from V01D's own probes"
+ }
+}

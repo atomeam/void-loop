@@ -1,15 +1,43 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 83,
+ "runsTotal": 87,
  "kinds": {
   "grow": 15,
-  "file": 44,
+  "file": 46,
   "teach": 7,
   "tighten": 7,
-  "none": 10
+  "none": 12
  },
  "runs": [
+  {
+   "at": "2026-10-16T16:59:40Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"quiz me\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-16T16:42:11Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"download the print file offline\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-16T16:36:48Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-16T16:16:40Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T16:03:40Z",
    "passed": 0,
@@ -121,34 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"send this away\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T07:15:33Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T07:04:58Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"make my void dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T06:51:30Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T06:45:10Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"give me 5 minutes with that\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -228,18 +228,18 @@
   "skill:notepad": "2026-10-16T16:03:40Z",
   "skill:nutrition": "2026-10-16T16:03:40Z",
   "skill:ovulation": "2026-10-16T16:03:40Z",
-  "skill:part": "2026-10-15T22:49:16Z",
-  "skill:pdf-card": "2026-10-15T22:49:16Z",
-  "skill:period": "2026-10-15T22:49:16Z",
-  "skill:place": "2026-10-15T23:20:00Z",
-  "skill:pong": "2026-10-15T23:20:00Z",
-  "skill:poster": "2026-10-15T23:20:00Z",
-  "skill:pregnancy": "2026-10-15T23:20:00Z",
-  "skill:print-download": "2026-10-16T01:42:30Z",
-  "skill:print-file": "2026-10-16T01:42:30Z",
-  "skill:printedmotor": "2026-10-16T01:42:30Z",
-  "skill:proposal": "2026-10-16T01:42:30Z",
-  "skill:quiz": "2026-10-16T03:10:24Z",
+  "skill:part": "2026-10-16T16:16:40Z",
+  "skill:pdf-card": "2026-10-16T16:16:40Z",
+  "skill:period": "2026-10-16T16:16:40Z",
+  "skill:place": "2026-10-16T16:36:48Z",
+  "skill:pong": "2026-10-16T16:36:48Z",
+  "skill:poster": "2026-10-16T16:36:48Z",
+  "skill:pregnancy": "2026-10-16T16:42:11Z",
+  "skill:print-download": "2026-10-16T16:42:11Z",
+  "skill:print-file": "2026-10-16T16:42:11Z",
+  "skill:printedmotor": "2026-10-16T16:59:40Z",
+  "skill:proposal": "2026-10-16T16:59:40Z",
+  "skill:quiz": "2026-10-16T16:59:40Z",
   "skill:rebuild-map": "2026-10-16T03:10:24Z",
   "skill:recent": "2026-10-16T03:10:24Z",
   "skill:recipe": "2026-10-16T03:10:24Z",

@@ -12,7 +12,17 @@ import { measure, rowOf, withRow, compare, asksOf, PARTS } from '../void-live-de
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const P = (f) => resolve(root, f);
-export const OUT = P('void-live-deploy/void.better.json');
+export const OUT = P('void-live-deploy/void.better.json'); // every row, for the growth card
+export const OUT_DOMAINS = P('domains/void.better.json'); // today's row with its trend, for the builders and tools/pit-crew.mjs
+
+/** V01D's current asks as tools/pit-crew.mjs reads them: [{ ask, id, small }] (one shape, lib/better.js asksOf). Pure. */
+export const parseVoiceAsks = (md) => asksOf(md).map((a) => ({ ask: a.words, id: a.id, small: a.small }));
+/** the ask ids a ledger line built (`asked: ask-…`, set by finish.mjs --asked). Pure. */
+export function builtAskIds(ledger) {
+  const ids = new Set();
+  for (const e of Array.isArray(ledger) ? ledger : []) if (e && typeof e.asked === 'string' && /^ask-\d/.test(e.asked)) ids.add(e.asked);
+  return ids;
+}
 const json = (f, d) => { try { return JSON.parse(readFileSync(P(f), 'utf8')); } catch { return d; } };
 
 /** today's row from the repo's files, and the rows with it on the end */
@@ -29,6 +39,14 @@ export function today(now = Date.now()) {
   const rows = withRow(json('void-live-deploy/void.better.json', []), row);
   return { row, rows, trend: compare(rows) };
 }
+
+export const MEANS = {
+  self: 'the share of this week\'s ledger lines that do not cite the owner (V01D driving its own changes)',
+  asks: 'how fast V01D\'s own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait',
+  friction: 'skills failing the bench or barely checked, against all skills (skills/families.json)',
+  bench: 'the everyday benchmark\'s score on main (tools/bench.misses.json)',
+  probes: 'fixes this week that came from V01D\'s own probes',
+};
 
 /** the measure in words, one line a part */
 export function lines({ row, trend }) {
@@ -48,5 +66,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const t = today();
   if (process.argv.includes('--json')) console.log(JSON.stringify({ row: t.row, trend: t.trend, parts: PARTS }, null, 1));
   else console.log(lines(t).join('\n'));
-  if (process.argv.includes('--write')) { writeFileSync(OUT, JSON.stringify(t.rows, null, 1) + '\n'); console.log(`wrote ${t.rows.length} row(s) to void-live-deploy/void.better.json`); }
+  if (process.argv.includes('--write')) {
+    writeFileSync(OUT, JSON.stringify(t.rows, null, 1) + '\n');
+    writeFileSync(OUT_DOMAINS, JSON.stringify({ ...t.row, trend: t.trend, summary: lines(t)[0], means: Object.fromEntries(PARTS.map((k) => [k, MEANS[k]])) }, null, 1) + '\n');
+    console.log(`wrote ${t.rows.length} row(s) to void-live-deploy/void.better.json and today's to domains/void.better.json`);
+  }
 }

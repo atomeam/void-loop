@@ -4253,5 +4253,11 @@
   "what": "V01D now measures whether it is getting better: one score a day, 0 to 100, from evidence the repo already holds (how much of the week it drove itself, how fast its own asks ship, friction in its skills, the everyday benchmark, fixes from its own probes), kept in void.better.json as counts only; the growth card's Better line shows the score, its trend against yesterday and a week ago, and the weakest part, and the will lifts the wants that work on that part (owner, 2026-10-16: improvements mean better)",
   "show": "a daily better score, its trend and weakest part, on the growth card",
   "try": "growth"
+ },
+ {
+  "at": "2026-10-16T16:18:56Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "Claude can be V01D's builder brain: a propose-fix run started by hand with brain: claude asks Claude for the fix in one capped call (about $0.20 at most), through the same gate, checks and pull request"
  }
 ]
