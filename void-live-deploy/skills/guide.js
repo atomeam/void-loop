@@ -52,6 +52,8 @@ const CSS = '.vbook{width:min(940px,calc(100vw - 24px))!important;max-height:cal
   + '.vbook .gb-toc li{font-size:13px}.vbook .gb-legend dt{color:var(--ink,#e9ebf2);margin-top:6px}.vbook .gb-legend dd{margin:0;color:var(--ink-2,#b9bdcb)}'
   + '.vbook .gb-nav{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:10px}.vbook .gb-nav button{background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.14);color:var(--ink,#e9ebf2);border-radius:999px;width:38px;height:32px;font:inherit;font-size:16px;cursor:pointer}'
   + '.vbook .gb-nav button:disabled{opacity:.3;cursor:default}.vbook .gb-num{font-size:12px;color:var(--ink-3,#8b90a0);min-width:150px;text-align:center}'
+  + '.vbook .gb-3d{flex:1;min-width:0;height:clamp(320px,60vh,540px);position:relative;border-radius:12px;overflow:hidden;background:radial-gradient(120% 90% at 50% 30%,#1c2236,#0a0d18)}.vbook .gb-3d .void-mini{width:100%;height:100%}'
+  + '.vbook.gb-flat .gb-3d{display:none}.vbook:not(.gb-flat) .gb-spread{display:none}.vbook .gb-view{background:none;border:1px solid rgba(255,255,255,.14);color:var(--ink-3,#8b90a0);border-radius:999px;padding:3px 10px;font:inherit;font-size:12px;cursor:pointer;margin-left:auto}.vbook .gb-view:hover{color:var(--ink,#e9ebf2)}'
   + '@media (max-width:700px){.vbook{padding:12px 10px 10px!important;max-height:calc(100vh - 90px)!important}.vbook .gb-body{flex-direction:column}.vbook .gb-tabs{flex-direction:row;width:auto;overflow-x:auto;padding-bottom:4px}.vbook .gb-tab{white-space:nowrap}.vbook .gb-spread{min-height:0}.vbook .gb-list{columns:1}.vbook .gb-cover .gopener,.vbook .gopener{grid-template-columns:repeat(4,1fr)}}';
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
@@ -137,12 +139,21 @@ function run(text, api) {
     if (!api._pageStill(el)) return;
     const total = book.pages.length, onePage = () => window.matchMedia('(max-width: 700px)').matches;
     let cur = (want.at && pageFor(book, want.at)) || Math.min(Math.max(readKept(), 1), total) || 1;
-    el.innerHTML = '<style>' + CSS + '</style><div class="gb-top"><h2>The V01D Book</h2><span class="sub">' + book.totals.skills + ' skills · ' + book.totals.games + ' games · ' + book.totals.minis + ' miniatures · nothing left out</span></div>'
+    el.innerHTML = '<style>' + CSS + '</style><div class="gb-top"><h2>The V01D Book</h2><span class="sub">' + book.totals.skills + ' skills · ' + book.totals.games + ' games · ' + book.totals.minis + ' miniatures · nothing left out</span><button type="button" class="gb-view" hidden></button></div>'
       + '<div class="gb-body"><nav class="gb-tabs" aria-label="chapters">' + book.chapters.map((c) => '<button type="button" class="gb-tab" data-page="' + c.from + '" data-chapter="' + esc(c.id) + '">' + esc(c.name) + '</button>').join('') + '</nav>'
-      + '<div class="gb-spread"></div></div>'
+      + '<div class="gb-3d" aria-label="the book, lying open on a desk" hidden></div><div class="gb-spread"></div></div>'
       + '<div class="gb-nav"><button type="button" class="gb-prev" aria-label="previous page">←</button><span class="gb-num" aria-live="polite"></span><button type="button" class="gb-next" aria-label="next page">→</button></div>'
       + '<div class="src">Written by V01D from its own skill files · ← → or swipe to turn · Esc closes</div>';
     const spread = el.querySelector('.gb-spread'), num = el.querySelector('.gb-num'), prev = el.querySelector('.gb-prev'), next = el.querySelector('.gb-next');
+    // the 3D book (skills/mini/book.js): the same pages on a hardcover you open and turn; the flat spread below stays the text version
+    // and the fallback where WebGL is missing. The cover is shut until you open it (a tap, "Open the book", or an ask for a page).
+    const host = el.querySelector('.gb-3d'), view = el.querySelector('.gb-view');
+    let open3 = !!(want.at && pageFor(book, want.at)) || readKept() > 1, has3d = false;
+    const miniData = () => ({ book, cur, open: open3, onTurn: (d) => turn(d), onJump: (n) => go(n), onAsk: (a) => { try { api.stage.ask(a); } catch (_) {} },
+      onOpen: () => { open3 = true; cur = Math.max(cur, 1); draw(); }, onClose: () => { open3 = false; draw(); } });
+    const mount3d = () => api.stage.miniature(host, 'book', miniData(), { key: 'v01d-book' });
+    const showView = () => { el.classList.toggle('gb-flat', !has3d || localStorage.getItem('a2m.void.book3d.v1') === 'flat'); view.hidden = !has3d; view.textContent = el.classList.contains('gb-flat') ? 'See the book' : 'Read as text'; };
+    view.addEventListener('click', () => { try { localStorage.setItem('a2m.void.book3d.v1', el.classList.contains('gb-flat') ? '3d' : 'flat'); } catch (_) {} showView(); });
     const shown = () => (onePage() ? [cur] : pagesOfSpread(spreadOf(cur), total).filter(Boolean));
     const draw = () => {
       const ns = onePage() ? [cur] : pagesOfSpread(spreadOf(cur), total);
@@ -152,6 +163,7 @@ function run(text, api) {
       prev.disabled = vis[0] <= 1; next.disabled = vis[vis.length - 1] >= total;
       for (const b of el.querySelectorAll('.gb-tab')) b.classList.toggle('on', b.getAttribute('data-chapter') === chapter);
       keep(cur);
+      if (has3d) mount3d().catch(() => {});
       if (window.__voidBook) window.__voidBook.cur = cur;
     };
     const go = (n) => { cur = Math.min(Math.max(Number(n) || 1, 1), total); draw(); };
@@ -177,8 +189,10 @@ function run(text, api) {
     spread.addEventListener('pointerdown', (e) => { if (e.pointerType !== 'touch') start(e.clientX); });
     spread.addEventListener('pointerup', (e) => { if (e.pointerType !== 'touch') end(e.clientX); });
     window.addEventListener('resize', () => { if (api._pageStill(el)) draw(); });
-    window.__voidBook = { totals: book.totals, index: book.index, chapters: book.chapters, go, get cur() { return cur; }, set cur(v) {} }; // tools/test_void.mjs reads it
+    window.__voidBook = { open3: () => open3, totals: book.totals, index: book.index, chapters: book.chapters, go, get cur() { return cur; }, set cur(v) {} }; // tools/test_void.mjs reads it
     draw();
+    host.hidden = false; showView();
+    try { mount3d().then(() => { has3d = true; showView(); }).catch(() => { host.remove(); has3d = false; showView(); }); } catch (_) { host.remove(); showView(); }
   }).catch((e) => { const s = el.querySelector('.sub'); if (s) s.textContent = "the book didn't load: " + (e && e.message); });
   return 'guide';
 }
