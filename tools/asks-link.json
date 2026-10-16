@@ -50,7 +50,8 @@
     { "match": "probe-success-rate|self-generated probe", "ledgerAt": "2026-10-16T05:09:54Z", "why": "My probes on the growth card: success rate, where fixes stop, whether confidence predicted a pass" },
     { "match": "MCP tool definitions for my top 10|Skill Discovery|'reliability' score for each skill", "ledgerAt": "2026-10-15T18:17:06Z", "why": "MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings" },
     { "match": "visual-provenance|vision-health", "ledgerAt": "2026-10-16T04:02:10Z", "why": "a photo V01D appraises links to its make recipe when its forge can model what it saw" },
-    { "match": "reinvestment ledger", "ledgerAt": "2026-10-15T07:05:00Z", "why": "the daily allocator and its ledger: 20% in reserve, every free path first, then what returns the most per dollar" }
+    { "match": "reinvestment ledger", "ledgerAt": "2026-10-15T07:05:00Z", "why": "the daily allocator and its ledger: 20% in reserve, every free path first, then what returns the most per dollar" },
+    { "match": "cook-flow|substitution-impact", "ledgerAt": "2026-10-16T05:15:52Z", "why": "cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust" }
   ],
   "extra": [
     { "words": "Create a 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family structure.", "ledgerAt": "2026-10-15T18:17:06Z", "why": "built: the MCP skill_health tool and /tools.json expose every family, its skills and their ratings as the site serves them" },

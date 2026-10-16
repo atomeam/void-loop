@@ -1117,6 +1117,21 @@
       "words": "Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings.",
       "ledgerAt": "2026-10-16T05:09:54Z",
       "why": "built: My probes on the growth card: success rate, where fixes stop, whether confidence predicted a pass (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'cook-flow' card that combines the new kitchen conversions with the 'timer' skill, allowing a user to set a countdown immediately after a conversion.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'cook-flow' card that links the new kitchen swaps/conversions directly to the 'timer' skill, so a user can set a countdown immediately after selecting a substitution or measurement.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'substitution-impact' metadata layer so that when a user selects a swap, the stage can suggest relevant adjustments to other ingredients (e.g., adding more liquid if swapping flour).",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
     }
   ]
 }
