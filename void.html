@@ -1407,7 +1407,9 @@ Object.values(things).forEach((th) => {
         ext.on = true; document.body.classList.add('in-ext-panel');
         const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
         ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
-          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null };
+          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null,
+          // the context check's counts (extension/page.js, lib/context-check.js): numbers only, nothing of the page's words
+          content: t.content && typeof t.content === 'object' ? Object.fromEntries(['text', 'images', 'rows', 'cells'].map((k) => [k, Math.max(0, Math.floor(+t.content[k]) || 0)])) : null };
         let th = Object.values(things).find((x) => x.kind === 'tab');
         if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
           th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;

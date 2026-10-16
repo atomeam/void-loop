@@ -73,6 +73,9 @@ await ctx.route(/^https?:\/\//, (r) => {
       + '<div class="msg">From: Dana Reyes &lt;dana@acme.test&gt;<p>' + THREAD_ASK + '</p></div>'
       + '<div id="body" contenteditable="true" aria-label="Message Body" style="min-height:80px;border:1px solid #ccc"></div></div>' });
   }
+  if (u.origin === 'https://fixture.test' && u.pathname === '/table') { // a page that is mostly a table (the context check, lib/context-check.js)
+    return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Prices</title><p>Our prices</p><table>' + Array.from({ length: 8 }, (_, i) => '<tr><td>item ' + i + '</td><td>' + (i * 3) + '</td><td>each</td></tr>').join('') + '</table>' });
+  }
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
       + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
@@ -141,6 +144,27 @@ await read(FIXTURE);
 await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /nothing selected/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
 const card2 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
 check('B1: reading again updates the card (no selection now; the box you are in is named)', /nothing selected/.test(card2) && /goes into: Reply/.test(card2), card2.slice(0, 300));
+
+// the context check (lib/context-check.js, asked by Void): the extension ctxCounts what the tab holds, the card names the kind and one skill to try;
+// the short fixture page is too little of anything, so its card carries no such line
+const ctxPage = await ctx.newPage(); await ctxPage.goto(FIXTURE + 'table');
+const rCtx = await read(FIXTURE + 'table');
+await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /mostly a table/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
+const ctxCard = await V.evaluate(() => { const c = document.querySelector('.tab-card'); return c ? { text: c.innerText, ask: (c.querySelector('.tab-context a') || {}).getAttribute && c.querySelector('.tab-context a').getAttribute('data-ask') } : null; });
+const ctxCounts = await sw.evaluate(async () => (await chrome.storage.session.get('tab')).tab.content);
+// the tap runs the ask it names (the card is a thing on the stage, so it goes through the page's summon event, not the answer page's data-ask handler)
+await V.evaluate(() => { const a = document.querySelector('.tab-card .tab-context a'); if (a) a.click(); });
+await V.waitForSelector('.thing.list-card', { timeout: 5000 }).catch(() => {});
+const ctxTap = await V.evaluate(() => !!document.querySelector('.thing.list-card'));
+await V.evaluate(() => { const l = document.querySelector('.thing.list-card'); if (l) l.remove(); });
+await ctxPage.close();
+check('context check: a page that is mostly a table reads as "mostly a table · try make a list to check off" (a data-ask link), from counts only; the tap puts a list on the stage; the short fixture page carries no such line',
+  rCtx && rCtx.ok && ctxCard && /Prices/.test(ctxCard.text) && /mostly a table/.test(ctxCard.text) && ctxCard.ask === 'make a list' && ctxCounts && ctxCounts.rows === 8 && ctxCounts.cells === 24 && ctxTap && !/mostly/.test(card2),
+  { ctxCard, ctxCounts, ctxTap, card2: card2.slice(0, 120) });
+// back to the fixture tab for the steps below: pointed at again, the box you were in focused, the card shows it again
+await page.evaluate(() => document.getElementById('reply').focus());
+await read(FIXTURE);
+await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); return c && /Fixture page/.test(c.innerText) && !/mostly/.test(c.innerText); }, null, { timeout: 5000 }).catch(() => {});
 
 // B2: the draft goes into the box, as typing would, and nothing is sent or submitted
 await V.fill('.tab-draft', DRAFT);
@@ -309,9 +333,11 @@ const autoCard = await panel.evaluate(() => ({ on: document.getElementById('act'
 await press('.act-no', async () => !(await cardOn()));
 await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
 await page.waitForTimeout(200);
-await draftReply();
-await page.waitForTimeout(800);
-const offList = { on: await cardOn(), said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || ''), act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
+// the card's line is read the moment the draft lands (a later redraw of the card may reset it), not after a fixed wait
+await V.evaluate(() => document.querySelector('.tab-ask-reply').click());
+const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from V01D/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+await page.waitForTimeout(400);
+const offList = { on: await cardOn(), said: offSaid, act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
 check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
   && !offList.on && /^reply from V01D/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,

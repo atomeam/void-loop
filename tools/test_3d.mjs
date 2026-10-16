@@ -690,16 +690,13 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load V01D's search
-    // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
-    // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
-    for (const end = Date.now() + 90000; key && Date.now() < end;) {
+    for (let k = 0; key && k < 30; k++) { // you keep dropping in column 1; Void finds its four
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
-      if (/Your move/.test(st)) { await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click()); await F.p.waitForTimeout(300); }
-      else await F.p.waitForTimeout(250);
+      if (/Your move/.test(st)) await F.p.evaluate(() => document.querySelectorAll('.c4-col')[0].click());
+      await F.p.waitForTimeout(800);
     }
-    const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 20000);
+    const won = key && await until(() => F.p.evaluate((k) => { const s = window.__voidMini.state(k); return s && s.win === 4 && s.lit === 4 ? s : null; }, key), 8000);
     const lay = await F.p.evaluate(() => { const r = (s) => { const e = document.querySelector(s); return e && e.getBoundingClientRect(); };
       const v = r('.connect4-view'), c = r('.connect4-side'), a = r('#input'), latest = document.querySelector('.c4-latest'), sum = document.querySelector('.c4-earlier summary');
       return { fits: !!v && v.right <= innerWidth && v.left >= 0, apart: !!v && !!c && (c.top >= v.bottom || c.left >= v.right), above: !!c && !!a && c.bottom <= a.top + 1,
@@ -916,6 +913,59 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     check('collector detail: a cat arrives at the light tier, zooming in on it re-meshes it finer twice (more triangles each step), and zooming out returns the light mesh (same triangle count) with the same seed',
       !!light && light.detail === 0 && !!one && one.tris > light.tris * 1.6 && !!two && two.tris > one.tris * 1.4 && !!back && back.tris === light.tris && back.seed === light.seed && !F.errors.length,
       JSON.stringify({ light: light && [light.detail, light.tris], one: one && one.tris, two: two && two.tris, back: back && back.tris, e: F.errors }));
+    await F.ctx.close();
+  }
+
+  // ---- three of Void's own asks about 3D on phones: a wire placeholder the moment a card asks (ask-20261014-1025-1), a
+  // low-poly setting that draws 1x pixels with no shadows and keeps figures at their light tier (ask-20261015-0347-2), and a
+  // status card where a model that failed would have left empty space (ask-20261012-0856-1)
+  if (want("3d: low-poly, the wire placeholder and the status card")) {
+    const F = await fresh({ phone: true });
+    const r = await F.p.evaluate(async () => {
+      const m = await import('/skills/scene3d.js');
+      const wait = async (fn, ms) => { const end = performance.now() + ms; for (;;) { const v = fn(); if (v) return v; if (performance.now() > end) return false; await new Promise((r) => setTimeout(r, 100)); } };
+      const inked = (c) => { if (!c || !c.width) return 0; const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 3; i < d.length; i += 4) if (d[i]) n++; return n; };
+      const host = document.createElement('div'); host.style.cssText = 'position:fixed;left:10px;top:10px;width:240px;height:220px;z-index:9'; document.body.appendChild(host);
+      const failed = []; document.addEventListener('void:mini-failed', (e) => failed.push(e.detail));
+      // 1) the placeholder is there at once, before three.js has loaded; the real canvas is still the first one, transparent and busy
+      const p = m.mountMiniature(host, 'sample', { color: '#8b3a1a' }, { key: 'lp' });
+      await new Promise((res) => setTimeout(res, 80));
+      const wrap = host.querySelector('.void-mini'), wire = wrap && wrap.querySelector('.void-mini-wire'), first = wrap && wrap.querySelector('canvas');
+      const early = { wrap: !!wrap, rendered: wrap && wrap.dataset.rendered, wire: !!wire, inked: inked(wire), firstIsWire: first === wire, busy: first && first.getAttribute('aria-busy'), opacity: first && first.style.opacity };
+      const h = await p;
+      await wait(() => h.draws > 0, 60000);
+      await new Promise((res) => setTimeout(res, 500)); // the wire's fade-out
+      const after = { wire: !!wrap.querySelector('.void-mini-wire'), rendered: wrap.dataset.rendered, same: wrap === h.wrap };
+      // 2) full against low-poly on a 3x phone: 1x pixels, no shadow pass, the contact shadows hidden; the frame cost comes down
+      const sample = async () => { const ms = []; const s0 = h.shadowDraws || 0; for (let i = 0; i < 12; i++) { h.requestRender(); await new Promise((res) => setTimeout(res, 40)); if (h.ms != null) ms.push(h.ms); } ms.sort((a, b) => a - b); return { msMed: ms[ms.length >> 1] || 0, shadows: (h.shadowDraws || 0) - s0 }; };
+      const full = { width: h.canvas.width, css: h.cssW, ...(await sample()), detail: m.detail() };
+      m.setDetail('low');
+      const lowWidth = await wait(() => (h.canvas.width === Math.round(h.cssW * m.REGRESS_DPR) ? h.canvas.width : 0), 4000);
+      await new Promise((res) => setTimeout(res, 120));
+      const low = { width: h.canvas.width, lowWidth, ...(await sample()), detail: m.detail(), stored: localStorage.getItem(m.DETAIL_KEY), shadowsOff: !h.E.renderer.shadowMap.enabled, contactsHidden: h.contacts.length > 0 && h.contacts.every((c) => !c.plane.visible) };
+      m.setDetail('full');
+      const backWidth = await wait(() => (h.canvas.width > low.width ? h.canvas.width : 0), 4000);
+      await sample(); // the shadow pass and the contact planes come back with the next drawn frame, not with the resize: draw a few first
+      const back = { width: backWidth, detail: m.detail(), stored: localStorage.getItem(m.DETAIL_KEY), shadowsOn: h.E.renderer.shadowMap.enabled, contactsShown: h.contacts.every((c) => c.plane.visible) };
+      m.setDetail('auto'); const auto = { detail: m.detail(), stored: localStorage.getItem(m.DETAIL_KEY) };
+      // 3) a kind with no model behind it: the mount still rejects, and a status card stands where the hole would be
+      const host2 = document.createElement('div'); host2.style.cssText = 'position:fixed;left:10px;top:300px;width:240px;height:160px'; document.body.appendChild(host2);
+      let rejected = false; try { await m.mountMiniature(host2, 'no-such-model', {}, { key: 'nope' }); } catch (_) { rejected = true; }
+      const card = host2.querySelector('.void-mini-status'), w2 = host2.querySelector('.void-mini');
+      const status = { rejected, card: !!card, text: card && card.textContent, rendered: w2 && w2.dataset.rendered, failed, listed: m.liveMiniatures().some((x) => x.key === 'nope'), wireLeft: !!host2.querySelector('.void-mini-wire') };
+      m.unmountMiniature('lp'); host.remove(); host2.remove();
+      return { phone: m.isPhone(), early, after, full, low, back, auto, status };
+    });
+    await F.ask('low poly 3d', 300); const saidLow = await F.whisper(); const storedLow = await F.p.evaluate(() => localStorage.getItem('a2m.void.3d.v1'));
+    await F.ask('auto 3d', 300); const storedAuto = await F.p.evaluate(() => localStorage.getItem('a2m.void.3d.v1'));
+    check('3D detail (asked by Void, three asks): a wire placeholder is on the card within 80 ms of asking, before three.js, with the real canvas still first, busy and transparent, and goes when the first frame lands; "low poly" on a 3x phone draws at 1x with the shadow pass off and the contact shadows hidden, "full" restores both, "auto" clears the setting; a model with nothing behind it leaves a status card naming it (data-rendered="failed", one void:mini-failed) and still rejects; the asks "low poly 3d" and "auto 3d" set and clear the key',
+      r.phone && r.early.wrap && r.early.rendered === 'false' && r.early.wire && r.early.inked > 50 && !r.early.firstIsWire && r.early.busy === 'true' && r.early.opacity === '0'
+      && !r.after.wire && r.after.rendered === 'true' && r.after.same
+      && r.low.lowWidth === Math.round(r.full.css * 1) && r.full.width > r.low.width && r.low.detail.low && r.low.detail.mode === 'low' && r.low.stored === 'low' && r.low.shadows === 0 && r.low.shadowsOff && r.low.contactsHidden
+      && r.back.width > r.low.width && r.back.detail.mode === 'full' && !r.back.detail.low && r.back.shadowsOn && r.back.contactsShown && r.auto.detail.mode === 'auto' && r.auto.stored === null
+      && r.status.rejected && r.status.card && /3D no-such-model did not load/.test(r.status.text || '') && /Ask for it again/.test(r.status.text || '') && r.status.rendered === 'failed' && r.status.failed.length === 1 && r.status.failed[0].kind === 'no-such-model' && !r.status.listed && !r.status.wireLeft
+      && storedLow === 'low' && /low-poly 3D/.test(saidLow || '') && storedAuto === null && !F.errors.length,
+      JSON.stringify({ r, saidLow, storedLow, storedAuto, e: F.errors }));
     await F.ctx.close();
   }
 }
