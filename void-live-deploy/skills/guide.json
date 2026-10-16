@@ -2807,7 +2807,7 @@
     "action log"
    ],
    "tier": "proven",
-   "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark",
+   "why": "a self-test, 6 browser-suite mentions, 7 real asks in the benchmark",
    "n": 162
   },
   {
