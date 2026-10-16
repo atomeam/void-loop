@@ -19,6 +19,9 @@ export function fixesAsk(text) {
     || /^(?:v01d\s+)?fixes\s+(?:waiting|that wait)\s+(?:for|on)\s+me$/.test(t);
 }
 
+// the changed files of one pull request, from GitHub's public API
+const readFiles = (n) => fetch(GH + '/pulls/' + n + '/files', { headers: { accept: 'application/vnd.github+json' } });
+
 async function run(text, api) {
   if (!fixesAsk(text)) return 'none';
   const { showPage, esc } = api;
@@ -42,7 +45,8 @@ async function run(text, api) {
   // the changed lines, one pull request at a time (GitHub's public API; at most the first five)
   for (const f of fixes.slice(0, 5)) {
     const box = el.querySelector('.vfix[data-pr="' + f.number + '"] .vfix-diff'); if (!box) continue;
-    try { const r = await fetch(GH + '/pulls/' + f.number + '/files', { headers: { accept: 'application/vnd.github+json' } }); const files = r.ok ? await r.json() : null; box.textContent = files ? diffLines(files).join('\n') || '(no changed lines)' : 'the diff did not load'; }
+    try { const r = await readFiles(f.number); const files = r.ok ? await r.json() : null; // void-review: ok: a GitHub API read for each of at most five pull requests, not a database query
+      box.textContent = files ? diffLines(files).join('\n') || '(no changed lines)' : 'the diff did not load'; }
     catch (_) { box.textContent = 'the diff did not load'; }
   }
   for (const f of fixes.slice(5)) { const box = el.querySelector('.vfix[data-pr="' + f.number + '"] .vfix-diff'); if (box) box.textContent = 'open it on GitHub to see the diff'; }

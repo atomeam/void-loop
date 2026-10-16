@@ -201,7 +201,7 @@ async function run(text, api) {
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
-    if (slot && html && el.isConnected) slot.innerHTML = html;
+    if (slot && html && el.isConnected) slot.innerHTML = html; // void-review: ok: probeHtml escapes every value (lib/probe-log.js, tested with markup in a skill name)
   }).catch(() => {});
   // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
   fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
