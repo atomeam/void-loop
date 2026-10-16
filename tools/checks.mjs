@@ -155,6 +155,7 @@ for (const [name, file] of [
   ['drive', 'drive.test.mjs'],
   ['voice-reply', 'voice-reply.test.mjs'],
   ['rating-note', 'rating-note.test.mjs'],
+  ['book-face', 'book-face.test.mjs'],
   ['merges', 'merges.test.mjs'],
   ['probe-log', 'probe-log.test.mjs'],
   ['v01d-fixes', 'v01d-fixes.test.mjs'],

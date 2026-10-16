@@ -721,6 +721,41 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       JSON.stringify({ won, lay, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the V01D Book as a real book (owner, 2026-10-16: "an actual 3D book with a cover and turnable pages"): a shut hardcover, a tap
+  // on the cover opens it, the leaves turn (keys and a tap on a page's outer edge), a tap on an ask on a page runs it on the stage,
+  // "Read as text" shows the flat spread, and the flat book stays where there is no WebGL (tools/test_void.mjs "the book:")
+  if (want("3d: the V01D book is a real book with a cover and turning pages")) {
+    const F = await fresh();
+    await F.ask('open the book', 900);
+    const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'book' && x.ready && x.draws > 0); return m && m.key; }), 90000);
+    const st = () => F.p.evaluate((k) => window.__voidMini.state(k), key);
+    const shut = key && await st();
+    const flatHidden = await F.p.evaluate(() => getComputedStyle(document.querySelector('.vpage.on .gb-spread')).display === 'none');
+    // tap the cover where a visitor sees it
+    const tapAt = async (pt) => { await F.p.mouse.click(pt.x, pt.y); };
+    const proj = (p) => F.p.evaluate(([k, q]) => window.__voidMini.project(k, q), [key, p]);
+    if (key) await tapAt(await proj([0.03, 0.006, 0.0]));
+    const opened = key && await until(async () => { const s = await st(); return s.open && !s.turning ? s : null; }, 20000);
+    await F.p.keyboard.press('ArrowRight');
+    const turned = key && await until(async () => { const s = await st(); return s.open && s.k === 1 && !s.turning ? s : null; }, 20000);
+    // a tap on the right page's outer edge turns again (the sheet's x 0.93 of its width, a third of the way down)
+    const edge = key && await proj([0.12 * 0.95, 0.03, -0.02]);
+    if (edge) await tapAt(edge);
+    const second = key && await until(async () => { const s = await st(); return s.open && s.k === 2 && !s.turning ? s : null; }, 20000);
+    // a jump from the contents lands on its page, and an ask on a page runs on the stage
+    await F.p.evaluate(() => window.__voidBook.go(2)); // "How to ask": five asks to tap, the first is "make a clock"
+    const back = key && await until(async () => { const s = await st(); return s.k === 1 && !s.turning ? s : null; }, 20000);
+    const ask = key && await F.p.evaluate(async (k) => { const f = await import('/lib/book-face.js'), g = await fetch('/skills/guide.json').then((r) => r.json()), c = document.createElement('canvas').getContext('2d');
+      const l = f.layoutFace(g.pages[1], g, 'left', (s, font) => { c.font = font; return c.measureText(s).width; }), h = l.hits[0];
+      return { ask: h.ask, p: [-0.12 + ((h.x + h.w / 2) / f.PAGE_W) * 0.12, 0.0036, ((h.y + h.h / 2) / f.PAGE_H - 0.5) * 0.12 * f.PAGE_H / f.PAGE_W] }; }, key);
+    if (ask) await tapAt(await proj(ask.p));
+    await F.p.waitForTimeout(900);
+    const ran = (await F.state()).some((x) => x.kind === 'clock');
+    check('the V01D book in 3D: a shut hardcover whose cover swings open when tapped (the flat spread is the text version, hidden), → and a tap on a page\'s outer edge turn its leaves, a jump lands on its page, and a tap on an ask on the page runs it on the stage',
+      !!shut && !shut.open && shut.pages >= 200 && flatHidden && !!opened && opened.k === 0 && opened.left === 0 && opened.right === 1 && !!turned && turned.left === 2 && turned.right === 3 && !!second && second.left === 4 && !!back && !!ask && ran && !F.errors.length,
+      JSON.stringify({ shut, flatHidden, opened, turned, second, back, ask, ran, errors: F.errors }));
+    await F.ctx.close();
+  }
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer
   if (want("3d: the magic 8 ball is a ball in the void")) {
     const F = await fresh();
