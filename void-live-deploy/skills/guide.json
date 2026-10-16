@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 3,
+    "tested": 8,
+    "checked": 4,
     "proven": 11
    },
    "from": 5,
@@ -141,8 +141,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 6,
+    "tested": 4,
+    "checked": 7,
     "proven": 14
    },
    "from": 150,
@@ -311,7 +311,7 @@
     "a chair"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "n": 8
   },
   {
@@ -370,8 +370,8 @@
     "cartoon version of a shipwreck",
     "cartoon version of gg allin"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 12
   },
   {
@@ -1195,7 +1195,7 @@
     "will it rain tomorrow"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 45 real asks in the benchmark",
+   "why": "a self-test, 10 browser-suite mentions, 45 real asks in the benchmark",
    "n": 58
   },
   {
@@ -1732,7 +1732,7 @@
     "what color is #ff8800"
    ],
    "tier": "proven",
-   "why": "a self-test, 70 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
    "n": 93
   },
   {
@@ -1900,7 +1900,7 @@
     "how many calories should a 25 year old woman 165 cm 60 kg eat to lose weight"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 22 real asks in the benchmark",
    "n": 104
   },
   {
@@ -2154,7 +2154,7 @@
     "baking powder substitute"
    ],
    "tier": "proven",
-   "why": "a self-test, 12 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 12 real asks in the benchmark",
    "n": 120
   },
   {
@@ -2316,7 +2316,7 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 1 live finding, 2026-10-16",
+   "why": "a self-test, 2 browser-suite mentions, 1 live finding, 2026-10-16",
    "n": 131
   },
   {
@@ -2400,7 +2400,7 @@
     "write in the notepad call the vet"
    ],
    "tier": "proven",
-   "why": "4 browser-suite mentions, 5 real asks in the benchmark",
+   "why": "5 browser-suite mentions, 5 real asks in the benchmark",
    "n": 136
   },
   {
@@ -2657,7 +2657,7 @@
     "growth"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 9 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 9 real asks in the benchmark",
    "n": 152
   },
   {
@@ -2671,8 +2671,8 @@
     "show V01D's fixes",
     "fixes waiting for me"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 browser-suite mention",
    "n": 153
   },
   {
@@ -2717,7 +2717,7 @@
     "I need to prepare a talk by next week and tell Sam"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 37 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 37 real asks in the benchmark",
    "n": 156
   },
   {
