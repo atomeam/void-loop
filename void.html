@@ -1407,7 +1407,9 @@ Object.values(things).forEach((th) => {
         ext.on = true; document.body.classList.add('in-ext-panel');
         const t = m.tab, s = (v, n) => String(v == null ? '' : v).slice(0, n);
         ext.tab = { title: s(t.title, 200), url: s(t.url, 500), selection: s(t.selection, 5000), readable: t.readable !== false,
-          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null };
+          field: t.field && typeof t.field === 'object' ? { tag: s(t.field.tag, 20), name: s(t.field.name, 80) } : null,
+          // the context check's counts (extension/page.js, lib/context-check.js): numbers only, nothing of the page's words
+          content: t.content && typeof t.content === 'object' ? Object.fromEntries(['text', 'images', 'rows', 'cells'].map((k) => [k, Math.max(0, Math.floor(+t.content[k]) || 0)])) : null };
         let th = Object.values(things).find((x) => x.kind === 'tab');
         if (!th) { // a card that never serializes (toJSON gives nothing): not in localStorage, not in /api/mine, not in undo
           th = { id: uid('tab'), kind: 'tab', x: 24, y: 24 }; Object.defineProperty(th, 'toJSON', { value: () => undefined }); things[th.id] = th;
@@ -2288,6 +2290,7 @@ say('nothing selected to remove');
         const r = await fetch('/api/answer', { method: 'POST', headers: who ? { 'content-type': 'application/json', authorization: 'Bearer ' + who } : { 'content-type': 'application/json' }, body: JSON.stringify(page ? { ask: text, page } : { ask: text }) });
         if (r.ok || r.status === 429) j = await r.json();
       } catch (_) {}
+      lastNear = j && j.near && !page ? { ask: text, near: j.near } : null; // the skill this ask nearly was, for the "Did you mean" line if nothing answers
       await mdReady;
       if (vpageEl !== el) return 'answer';
       if (!j || !j.answer) { say(''); if (page) { el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + '<p>' + esc(j && j.note || 'I couldn’t read that page just now. Try again in a moment.') + '</p>'; return 'answer'; } return showArticle(text); }
@@ -2514,6 +2517,12 @@ say('nothing selected to remove');
     // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
     const keeperReady = import('/lib/keeper.js').catch(() => null);
     const refusals = []; window.voidRefusals = refusals;
+    // A near miss becomes a visible proposal (lib/near-miss.js; asked by Void twice, 2026-10-14: "Create a visual 'near-miss' skill
+    // proposal when a user ask fails to map to an existing skill."): when /api/answer had nothing and the router's closest skill scored
+    // near its bar, the "I don't know this yet" card adds "Did you mean <that skill's first example>?" as a data-ask link. Nothing new
+    // is sent or stored: the answer route already knew the nearest skill.
+    const nearMissReady = import('/lib/near-miss.js').catch(() => null);
+    let lastNear = null; // { ask, near } from the last /api/answer reply that carried a near miss
     function reportMiss(ask, fallback) {
       try {
         fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : {}) }), keepalive: true }).catch(() => {});
@@ -2526,6 +2535,7 @@ say('nothing selected to remove');
         window.dispatchEvent(new CustomEvent('void-refusal', { detail: r }));
         if (pg && pg === vpageEl && /^(knowledge|lookup|skill|calc)$/.test(r.kind) && !pg.querySelector('.refusal')) {
           const d = document.createElement('div'); d.className = 'src refusal'; d.textContent = m.refusalLine(r); pg.appendChild(d);
+          if (lastNear && lastNear.ask === ask) nearMissReady.then((nm) => { const pr = nm && nm.proposalOf(lastNear.near); if (pr && pg === vpageEl && !pg.querySelector('.near-miss')) pg.insertAdjacentHTML('beforeend', nm.proposalHtml(esc, pr)); }).catch(() => {});
         }
         return r;
       }).catch(() => null);

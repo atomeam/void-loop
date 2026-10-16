@@ -3,12 +3,13 @@
  "means": {
   "last_tested": "the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.",
   "success_rate": "benchmark asks routed to the skill that passed on the bench's last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it",
+  "smoke": "what the daily smoke test of every skill found wrong with this one (tools/skills-check.mjs --write, the upkeep workflow): its examples not reaching it, a near miss taken, or its suite() failing; while present the skill has no passing self-test, so its rating is lower",
   "not_here": "how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)"
  },
  "totals": {
   "experiment": 1,
-  "tested": 55,
-  "checked": 18,
+  "tested": 54,
+  "checked": 21,
   "proven": 84
  },
  "families": [
@@ -291,7 +292,7 @@
     {
      "name": "rack",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 3 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -361,29 +362,29 @@
      "name": "moontonight",
      "tier": "tested",
      "why": "17 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "aurora-tonight",
      "tier": "tested",
      "why": "8 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "eclipse",
      "tier": "tested",
      "why": "8 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "meteors",
      "tier": "tested",
      "why": "8 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "constellation",
@@ -417,8 +418,8 @@
      "name": "quake",
      "tier": "tested",
      "why": "4 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "pollen",
@@ -438,8 +439,8 @@
      "name": "suntimes",
      "tier": "tested",
      "why": "6 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "moon",
@@ -459,8 +460,8 @@
      "name": "place",
      "tier": "tested",
      "why": "4 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "worldtime",
@@ -473,8 +474,8 @@
      "name": "distance",
      "tier": "tested",
      "why": "26 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "country",
@@ -542,22 +543,22 @@
      "name": "remind",
      "tier": "tested",
      "why": "5 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "holidays",
      "tier": "tested",
      "why": "19 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "work",
      "tier": "tested",
      "why": "2 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "routine",
@@ -618,8 +619,8 @@
      "name": "fuel",
      "tier": "tested",
      "why": "10 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "tip",
@@ -632,8 +633,8 @@
      "name": "crypto",
      "tier": "tested",
      "why": "7 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "markets",
@@ -798,7 +799,9 @@
      "name": "video-play",
      "tier": "experiment",
      "why": "nothing checks it yet",
-     "since": "2026-10-15"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-16"
     },
     {
      "name": "define",
@@ -832,22 +835,22 @@
      "name": "news",
      "tier": "tested",
      "why": "9 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "joke",
      "tier": "tested",
      "why": "9 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "recipe",
      "tier": "tested",
      "why": "9 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "swaps",
@@ -867,22 +870,22 @@
      "name": "book",
      "tier": "tested",
      "why": "5 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "show",
      "tier": "tested",
      "why": "1 real ask in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "sport",
      "tier": "tested",
      "why": "4 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "pdf-card",
@@ -902,8 +905,8 @@
      "name": "senolytic",
      "tier": "tested",
      "why": "4 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "trialwatch",
@@ -1079,15 +1082,15 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 6,
-    "checked": 3,
+    "tested": 5,
+    "checked": 6,
     "proven": 14
    },
    "skills": [
     {
      "name": "guide",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1172,13 +1175,13 @@
      "name": "automations",
      "tier": "tested",
      "why": "6 real asks in the benchmark",
-     "last_tested": "2026-10-11",
-     "last_tested_by": "the benchmark"
+     "last_tested": "2026-10-16",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "proposal",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1240,6 +1243,20 @@
     },
     {
      "name": "family-health",
+     "tier": "checked",
+     "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "deps",
+     "tier": "checked",
+     "why": "a self-test, 5 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "fringe-to-skill",
      "tier": "checked",
      "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-16",

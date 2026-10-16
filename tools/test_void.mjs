@@ -398,6 +398,7 @@ async function fresh(...inits) {
           .then(async (res) => r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }));
       }
       if (/busy/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'model busy' }));
+      if (/zorbleton/.test(ask)) return r.fulfill(json({ answer: null, sources: [], note: 'nothing on the web', route: 'simple', near: { skill: 'weather', score: 0.64, bar: 0.7, example: 'weather in Tokyo' } })); // no answer, and the router's nearest skill scored near its bar (lib/near-miss.js)
       if (/^inject/.test(ask)) return r.fulfill(json({ answer: INJECTED, sources: [{ title: 'Trap', url: 'javascript:alert(1)' }] })); // a model that obeyed an injection
       if (/^write a python/.test(ask)) return r.fulfill(json({ answer: 'Here it is.\n\n```python\ndef greet(name):\n    return "hi " + name\n```\n', sources: [] })); // no Wikipedia page for a script; answered anyway, no refusal
       return r.fulfill(json({ answer: 'Sunlight scatters off air molecules, and blue light scatters most [1].', sources: [{ title: 'Rayleigh scattering', url: 'https://en.wikipedia.org/wiki/Rayleigh_scattering' }] }));
@@ -833,6 +834,26 @@ try {
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
+  // A near miss becomes a visible proposal (lib/near-miss.js, asked by Void twice): "I don't know this yet" with the router's nearest skill
+  // near its bar adds "Did you mean <that skill's first example>?", a data-ask link that runs it; without a near miss the card adds nothing.
+  if (want('near-miss proposal: "I don\'t know this yet" offers the nearest skill\'s first example as a tap')) { const N = await fresh();
+    await N.ctx.route(/wikipedia\.org/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ batchcomplete: '', query: { searchinfo: { totalhits: 0 }, search: [] } }) }));
+    await N.ctx.route(/wiktionary\.org/, (r) => r.fulfill({ status: 404, contentType: 'application/json', body: '{}' }));
+    await N.ask('does it look like rain in zorbleton tomorrow', 400);
+    await until(async () => /Did you mean/.test(await N.page()), 6000);
+    const pg = await N.page();
+    const link = await N.p.$eval('.vpage.on .near-miss a[data-ask]', (a) => ({ ask: a.getAttribute('data-ask'), skill: a.getAttribute('data-skill'), text: a.textContent })).catch(() => null);
+    await N.p.click('.vpage.on .near-miss a[data-ask]').catch(() => {});
+    const ran = await until(async () => /20°|68°/.test(await N.page()) && !/Did you mean/.test(await N.page()), 6000); // the weather card (the geocoding fixture answers Lisbon for any place)
+    // the same miss with no near skill in the reply (the mock's "busy": no answer, no near): the refusal line alone
+    await N.ask('does it look like rain in quuxblarf while the model is busy', 400);
+    await until(async () => /Missing:/.test(await N.page()), 6000);
+    const plain = await N.page();
+    check("near-miss proposal: \"I don't know this yet\" with the router's nearest skill near its bar adds 'Did you mean “weather in Tokyo”?' under the refusal line, a tap runs that ask (the weather card), and a miss with no near skill adds nothing",
+      /don't know this yet/.test(pg) && /Missing: what this is/.test(pg) && /Did you mean\s*weather in Tokyo\s*\?/.test(pg) && link && link.ask === 'weather in Tokyo' && link.skill === 'weather'
+      && ran && /Missing:/.test(plain) && !/Did you mean/.test(plain),
+      JSON.stringify({ pg: pg.slice(-160), link, ran, plain: plain.slice(-100) }));
+    await N.ctx.close(); }
   // The refusal object (asked by Void): every "I cannot" says what is missing, to the person and as data to an agent.
   if (want('refusal object: every "I cannot" names what is missing')) { const R = await fresh(() => { window.__tools = {}; document.modelContext = { registerTool: async (x) => { window.__tools[x.name] = x; } }; });
     // the sources answer and know nothing (Wikipedia: an empty search; Wiktionary: no such entry), as they do live
@@ -2318,13 +2339,19 @@ try {
     const states = () => L.p.$$eval('.actions-row', (r) => r.map((x) => x.dataset.state));
     const before = await states();
     all = all.map((r) => (r.id === 'act-0' ? { ...r, state: 'done', result: 'posted', finished: '2026-10-10T00:11:00Z' } : r));
+    // the fetches by phase, not by count: a redraw of the stage after the card opens (render() remounts every card) loads it
+    // again at open, which is by design and depends on timing (main's verify red on 99acc8d and an overloaded local run both
+    // saw two opening loads); what the check pins is one load during the faked minute and one page fetch for Show more
+    const opened = calls.length;
     await L.p.clock.runFor(61e3); await until(async () => (await states())[0] === 'done', 3000);
-    const after = await states(); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    const after = await states(), ticked = calls.slice(opened); const cap = await L.p.$eval('.actions-card .vlive', (e) => e.textContent).catch(() => '');
+    const beforeMore = calls.length;
     await L.p.click('.actions-more'); await until(async () => (await states()).length === 41, 3000);
-    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none');
+    const paged = (await states()).length, moreHidden = await L.p.$eval('.actions-more', (b) => b.style.display === 'none'), pagedCalls = calls.slice(beforeMore);
     check('actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides',
       before[0] === 'running' && before.length === 30 && after[0] === 'done' && after.length === 30 && /^updated .* · refreshes every 1 min/.test(cap) && paged === 41 && moreHidden
-      && calls.filter((c) => c.startsWith('30/')).slice(0, 3).join(',') === '30/0,30/0,30/30' && !L.errors.length, JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, errs: L.errors })); // the owner's status card reads 50 at load (skills/status.js failedActions); only this card's pages of 30 are counted
+      && calls.slice(0, opened).every((c) => /^(30|50)\/0$/.test(c)) && calls.slice(0, opened).some((c) => c === '30/0') && ticked.filter((c) => c.startsWith('30/')).join(',') === '30/0' && pagedCalls.join(',') === '30/30' && !L.errors.length,
+      JSON.stringify({ before: [before[0], before.length], after: [after[0], after.length], cap, paged, moreHidden, calls, opened, ticked, pagedCalls, errs: L.errors })); // the owner's status card reads 50 at load (skills/status.js failedActions); only this card's pages of 30 are counted
     await L.ctx.close(); }
   // the quiz (skills/quiz.js, frontier #17) is a learning card: never in the saved stage after a reload unless the visitor
   // kept that one card ("keep this quiz"); the gears it quizzed on are saved as always (void.html keptThings)
@@ -2833,6 +2860,93 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    await F.ctx.close(); }
+  // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
+  // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
+  // are skills/deps.json's top lib files in its order, a tap lists that file's dependants, and "what depends on <file>" opens on it.
+  if (want("deps: the dependency map card")) { const D = await fresh({ phone: true });
+    const deps = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'deps.json'), 'utf8')), top = deps.libs[0];
+    await D.ask('dependency map', 1200);
+    const card = await until(async () => D.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.dp-lib')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, libs: rows.map((r) => ({ file: r.dataset.lib, skills: Number(r.querySelector('.dp-count').dataset.skills), open: !r.querySelector('.dp-open').hidden })), wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    await D.p.tap('.vpage .dp-lib[data-lib="' + top.file + '"] button').catch(() => {});
+    const opened = await D.p.$eval('.vpage .dp-lib[data-lib="' + top.file + '"]', (r) => ({ open: !r.querySelector('.dp-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
+      deps: [...r.querySelectorAll('[data-dep]')].map((li) => li.dataset.dep) })).catch(() => null);
+    const want12 = deps.libs.slice(0, 12).map((l) => [l.file, l.skills]);
+    const all = [...(deps.files[top.file].importedBy || []), ...(deps.files[top.file].reachedBy || [])].sort();
+    check('deps: "dependency map" lists the lib files the most skills depend on, from skills/deps.json, and a tap lists every dependant of one',
+      !!card && card.title === 'What depends on what' && JSON.stringify(card.libs.map((l) => [l.file, l.skills])) === JSON.stringify(want12) && card.libs.every((l) => !l.open) && !card.wide
+      && !!opened && opened.open && opened.expanded === 'true' && JSON.stringify(opened.deps.slice().sort()) === JSON.stringify(all) && opened.deps.length >= 1 && !D.errors.length,
+      JSON.stringify({ card, want12, opened: opened && { ...opened, deps: opened.deps.slice(0, 4) }, all: all.slice(0, 4), errors: D.errors }));
+    await D.ask('what depends on ' + top.file, 1200);
+    const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
+    check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
+    await D.ctx.close(); }
+  // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
+  // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
+  // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
+  if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
+    const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+    await B.ask('open the book', 900);
+    const open = await until(async () => B.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { skills: window.__voidBook.totals.skills, pages: window.__voidBook.totals.pages, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), num: document.querySelector('.vpage.on .gb-num').textContent, title: document.querySelector('.vpage.on h2').textContent, tabs: document.querySelectorAll('.vpage.on .gb-tab').length, cover: (document.querySelector('.vpage.on .gb-page[data-page="1"] h3') || {}).textContent } : null).catch(() => null), 8000);
+    check('the book: "open the book" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened',
+      !!open && open.title === 'The V01D Book' && open.cover === 'The V01D Book' && open.skills === members.length && open.tabs >= 12 && open.shown.includes('1') && /page 1 of \d+/.test(open.num), JSON.stringify({ open, members: members.length }));
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(150);
+    const after = await B.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), text: document.querySelector('.vpage.on .gb-spread').innerText }));
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(150);
+    const back = await B.p.evaluate(() => document.querySelector('.vpage.on .gb-num').textContent);
+    check('the book: → turns to the spread of pages 2–3 (how to ask, how to read a page: the four rating words explained), ← turns back',
+      /pages 2–3 of/.test(after.num) && after.shown.join(',') === '2,3' && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && /page 1 of/.test(back), JSON.stringify({ after: { ...after, text: after.text.slice(0, 120) }, back }));
+    // the index at the back names every skill, each with its page, and a jump from it lands on that page
+    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('.vpage.on .gb-page .gb-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
+    const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
+    const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
+    const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
+    const indexed = idx.names.map(([n]) => n);
+    const clockEntry = idx.names.find(([n]) => n === 'Clock');
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('.vpage.on .gb-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.gb-tier') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph',
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph,
+      JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
+    // an ask on a page runs on the stage, as it does from any card
+    await B.p.click('.vpage.on .gb-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(900);
+    check('the book: tapping "make a clock" on the clock page closes the book and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.page()).includes('The V01D Book') && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
+    // "the book at chess" opens on the chess page
+    await B.ask('the book at chess', 900);
+    const at = await until(async () => B.p.evaluate(() => { const pg = document.querySelector('.vpage.on .gb-page h3'); return pg ? pg.textContent : ''; }).catch(() => ''), 6000);
+    const shownAt = await B.p.evaluate(() => [...document.querySelectorAll('.vpage.on .gb-page h3')].map((h) => h.textContent));
+    check('the book: "the book at chess" opens on the Chess page', shownAt.includes('Chess'), JSON.stringify({ at, shownAt }));
+    await B.ctx.close();
+    const P = await fresh({ phone: true });
+    await P.ask('open the book', 900);
+    const ph = await until(async () => P.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { pages: document.querySelectorAll('.vpage.on .gb-page').length, num: document.querySelector('.vpage.on .gb-num').textContent, width: document.querySelector('.vpage.on').getBoundingClientRect().width, fits: document.documentElement.scrollWidth <= innerWidth } : null).catch(() => null), 8000);
+    await P.p.evaluate(() => { const s = document.querySelector('.vpage.on .gb-spread'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
+    await P.p.waitForTimeout(150);
+    const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
+    check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
+    await P.ctx.close(); }
+  // fringe-to-skill: the fringe ledger card (asked by Void, ask-20261013-0026-2: "a dashboard that visualizes the relationship
+  // between a fringe experiment and its potential as a permanent skill"). On a phone: one row per published family in
+  // fringe/ledger.json's order, each draft a link to its live page, findings or the "no research notes yet" line, "no skill yet" the flag.
+  if (want("fringe-to-skill: the fringe ledger card")) { const F = await fresh({ phone: true });
+    const led = JSON.parse(fs.readFileSync(path.join(root, 'fringe', 'ledger.json'), 'utf8'));
+    await F.ask('fringe to skill', 1200);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.fs-family')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, rows: rows.map((r) => ({ family: r.dataset.family, drafts: [...r.querySelectorAll('[data-draft]')].map((a) => a.getAttribute('href')), none: !!r.querySelector('.fs-none'), findings: r.querySelectorAll('.fs-findings li').length, skills: [...r.querySelectorAll('[data-skill]')].map((e) => e.dataset.skill), noskill: !!r.querySelector('.fs-noskill') })),
+        wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    const truth = led.families.map((f) => ({ family: f.family, drafts: f.drafts.map((d) => '/fringe/' + d.id + '.html'), none: !f.findings.length, findings: Math.min(5, f.findings.length), skills: f.skills, noskill: !f.skills.length }));
+    check('fringe-to-skill: "fringe to skill" lists every published fringe family from fringe/ledger.json with its live drafts, findings and the skill it grew into (or "no skill yet")',
+      !!card && card.title === 'From the fringe to a skill' && JSON.stringify(card.rows) === JSON.stringify(truth) && card.rows.length >= 1 && !card.wide && !F.errors.length,
+      JSON.stringify({ card: card && { ...card, rows: card.rows.slice(0, 2) }, truth: truth.slice(0, 2), errors: F.errors }));
+    const live = card && card.rows[0] && card.rows[0].drafts[0];
+    const page = live ? await F.p.evaluate(async (u) => { const r = await fetch(u); return r.status; }, live).catch(() => 0) : 0;
+    check('fringe-to-skill: the first draft link is a live page', page === 200, JSON.stringify({ live, page }));
     await F.ctx.close(); }
   // Void's will tells no lies (the owner, 2026-10-12: "its also lying aboout it being the most frequent . we have a 0 lie policy"):
   // a stored reason that ranks or counts ("the most frequent thing people are asking me to do") shows the recorded fact instead;
