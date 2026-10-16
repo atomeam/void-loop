@@ -572,5 +572,12 @@
   "of": 25,
   "kind": "tighten",
   "note": "fps floor 3 -> 5"
+ },
+ {
+  "at": "2026-10-16T11:10:19Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "tighten",
+  "note": "load ceiling 1500 -> 1400 ms"
  }
 ]
