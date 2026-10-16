@@ -1153,7 +1153,7 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark",
+     "why": "a self-test, 4 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
