@@ -2,14 +2,25 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-16T07:06:20.342Z",
-   "sha": "a1423d1e5af52dfa5faafcec0339d42f7df0ab35",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38863106385",
+   "at": "2026-10-16T07:18:32.919Z",
+   "sha": "c4bd1b9cc6d50dd35a6331a21eca0dff1ff214b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38864395836",
    "suite": "browser suite on main",
    "checks": [
     "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
     "cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
     "suite ran to the end"
+   ]
+  },
+  {
+   "at": "2026-10-16T06:49:46.903Z",
+   "sha": "deffc9b5a0f4b7e1bb63de567a583a00b1fb493b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38860688646",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph",
+    "suite budget: the whole suite ran past 1680 s"
    ]
   },
   {
