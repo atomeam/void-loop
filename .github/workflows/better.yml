@@ -1,0 +1,68 @@
+# Product "better" scorecard + pit-crew dry run. No spend. Refreshes domains/void.better.json
+# and domains/void.pit-crew.json so V01D and builders know whether leaving the system alone
+# is actually improving the metrics that take load off the owner.
+name: Void better
+
+on:
+  schedule:
+    - cron: "11 16 * * *" # 12:11 PM New York (EDT)
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: void-better
+  cancel-in-progress: false
+
+jobs:
+  score:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Unit tests
+        run: node --test tools/better.test.mjs tools/pit-crew.test.mjs
+
+      - name: Compute better scorecard
+        run: node tools/better.mjs
+
+      - name: Pit crew dry-run (eligible small asks)
+        run: node tools/pit-crew.mjs
+
+      - name: Commit scorecard if changed
+        run: |
+          set -euo pipefail
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains/void.better.json domains/void.pit-crew.json
+          if git diff --staged --quiet; then
+            echo "no scorecard change"
+          else
+            git commit -m "better: refresh product scorecard and pit-crew eligibility"
+            git push
+          fi
+
+      - name: Summary
+        run: |
+          set -euo pipefail
+          {
+            echo "### Better"
+            echo
+            echo '```json'
+            head -c 4000 domains/void.better.json || true
+            echo
+            echo '```'
+            echo
+            echo "### Pit crew (dry-run)"
+            echo
+            echo '```json'
+            head -c 2000 domains/void.pit-crew.json || true
+            echo
+            echo '```'
+          } >> "$GITHUB_STEP_SUMMARY"

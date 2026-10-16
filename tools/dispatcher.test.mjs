@@ -130,10 +130,9 @@ test('every audit record names the confirm line and the bridge call it is gating
   assert.equal(bridgeUrl('https://bridge.example/'), 'https://bridge.example' + BRIDGE_PATH);
 });
 
-// The gap this PR cannot close: approval.js refuses any toolName that is not in the GATED policy
-// (400 'not a gated action'), so until bridge.task is gated the approval can never be granted.
-// Recorded here so the refusal is a test, not a surprise in production.
-test('bridge.task is not gated yet: approval.js would answer 400 until it is added to GATED', () => {
-  assert.equal(isGated(TOOL_NAME), false);
-  assert.equal(GATED[TOOL_NAME], undefined);
+// Execution layer 2026-10-16: bridge.task is gated so approval mode can reach the confirm line.
+test('bridge.task is gated: approval.js can accept dispatcher approval requests', () => {
+  assert.equal(isGated(TOOL_NAME), true);
+  assert.ok(GATED[TOOL_NAME]);
+  assert.equal(GATED[TOOL_NAME].kind, 'send');
 });

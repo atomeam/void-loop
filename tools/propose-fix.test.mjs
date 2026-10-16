@@ -122,7 +122,12 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   const [propose, pr] = wf.split(/\n  pull-request:\n/);
   assert.match(propose, /node tools\/propose-fix\.mjs/); assert.match(propose, /VOID_OWNER_TOKEN: \$\{\{ secrets\.VOID_OWNER_TOKEN \}\}/); assert.doesNotMatch(propose, /contents: write|pull-requests: write/);
   assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label "\$gate"/, 'V01D\'s passing fixes are labelled by the confidence gate (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
-  assert.doesNotMatch(wf, /OPENROUTER|ANTHROPIC|secrets\.(?!VOID_OWNER_TOKEN)/);
+  // the one outside key (owner, 2026-10-16: Claude as the builder brain): the propose job only, and only on a run that picked Claude;
+  // the job that holds the write token never sees it
+  assert.doesNotMatch(wf, /OPENROUTER|secrets\.(?!VOID_OWNER_TOKEN|ANTHROPIC_API_KEY\b)/);
+  assert.equal(propose.match(/secrets\.ANTHROPIC_API_KEY/g).length, 1);
+  assert.match(propose, /ANTHROPIC_API_KEY: \$\{\{ inputs\.brain == 'claude' && secrets\.ANTHROPIC_API_KEY \|\| '' \}\}/);
+  assert.doesNotMatch(pr, /ANTHROPIC/);
 });
 
 test('evidence (asked by Void): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {

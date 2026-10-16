@@ -34,6 +34,9 @@ export const GATED = {
   'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Void pay for a stronger model' },
   // Phone push is not connected. The ask still stops on the confirm line; no executor, so a yes does not send.
   'reminder.ping': { rule: 'send.reminder', kind: 'send', service: 'reminders', board: 'remind me' },
+  // Build-queue handoff to a2m-bridge (tools/dispatcher.mjs). Not a spend: hands a task title to the bridge after the owner yes.
+  // Execution layer 2026-10-16: without this gate, approval mode always got 400 'not a gated action'.
+  'bridge.task': { rule: 'send.bridge-task', kind: 'send', service: 'build queue', board: 'hand a build task to the bridge' },
 };
 export const isGated = (toolName) => Object.prototype.hasOwnProperty.call(GATED, toolName);
 export const NOTHING = { send: 'nothing sent', book: 'nothing booked', spend: 'nothing spent' };
@@ -82,6 +85,7 @@ export function confirmLine(toolName, args) {
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
     case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
     case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;
+    case 'bridge.task': return a.title ? `Hand build task “${a.title}” to the bridge?` : 'Hand this build task to the bridge?';
     default: return '';
   }
 }

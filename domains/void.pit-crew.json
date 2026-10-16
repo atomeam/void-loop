@@ -1,0 +1,7 @@
+{
+  "at": "2026-10-16T16:00:00.000Z",
+  "mode": "dry-run",
+  "max_per_run": 3,
+  "selected": [],
+  "note": "Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery. Run node tools/pit-crew.mjs to refresh."
+}
