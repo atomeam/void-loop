@@ -194,6 +194,7 @@ for (const [name, file] of [
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
+  ['deps', 'deps.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -241,6 +242,8 @@ for (const [name, file] of [
 { const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// the dependency map (skills/deps.json, tools/deps.mjs; asked by Void) is read off the import lines and kept current like families.json
+{ const r = run([resolve(here, 'deps.mjs'), '--check']); results.push(['deps-json', r.ok, r.out[r.out.length - 1] || '']); }
 // the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
 { const r = run([resolve(here, 'mcp-skills.mjs'), '--check']); results.push(['mcp-skills', r.ok, r.out[r.out.length - 1] || '']); }
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
