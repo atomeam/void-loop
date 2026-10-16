@@ -2651,7 +2651,8 @@
   },
   "skills/figures.js": {
    "imports": [
-    "skills/scripts.js"
+    "skills/scripts.js",
+    "skills/scene3d.js"
    ],
    "importedBy": [
     "skills/mini/ringer.js",
@@ -2869,11 +2870,13 @@
     "skills/battleship.js",
     "skills/connect4.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/fireworks.js",
     "skills/games.js",
     "skills/gears.js",
     "skills/lock.js",
     "skills/mancala.js",
+    "skills/mini/ringer.js",
     "skills/monopoly.js",
     "skills/moon.js",
     "skills/othello.js",
@@ -3658,7 +3661,13 @@
     "skills/guard3d.js"
    ],
    "importedBy": [
-    "skills/draw.js"
+    "skills/draw.js",
+    "skills/figures.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
    ]
   },
   "skills/scripts.js": {

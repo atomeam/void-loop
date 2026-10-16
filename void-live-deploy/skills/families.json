@@ -4,13 +4,14 @@
   "last_tested": "the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.",
   "success_rate": "benchmark asks routed to the skill that passed on the bench's last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it",
   "smoke": "what the daily smoke test of every skill found wrong with this one (tools/skills-check.mjs --write, the upkeep workflow): its examples not reaching it, a near miss taken, or its suite() failing; while present the skill has no passing self-test, so its rating is lower",
+  "live": "a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven",
   "not_here": "how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)"
  },
  "totals": {
   "experiment": 1,
-  "tested": 54,
+  "tested": 53,
   "checked": 21,
-  "proven": 84
+  "proven": 85
  },
  "families": [
   {
@@ -801,7 +802,7 @@
      "why": "nothing checks it yet",
      "last_tested": "2026-10-16",
      "last_tested_by": "the daily smoke test",
-     "since": "2026-10-16"
+     "since": "2026-10-15"
     },
     {
      "name": "define",
@@ -930,15 +931,15 @@
    "for": "food delivery, rides and Waymo, social feeds and dating",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 2,
     "checked": 0,
-    "proven": 0
+    "proven": 1
    },
    "skills": [
     {
      "name": "rides",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 1 live finding, 2026-10-16",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },
@@ -1153,7 +1154,7 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 5 real asks in the benchmark",
+     "why": "a self-test, 4 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     },

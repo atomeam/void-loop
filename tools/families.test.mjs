@@ -122,3 +122,33 @@ test('the daily smoke test (asked by Void, ask-20261013-1823-2): a failing skill
   assert.deepEqual([c2.last_tested, c2.last_tested_by], ['2026-10-20', 'the daily smoke test'], 'a later smoke run is the newest test of a passing skill');
   assert.equal(LT({ suite: false, smoke: ['x'] }, 'nothing checks it yet', null, today, { at: '' }, { at: '2026-10-17' }), null, 'a smoke failure gives no date: its self-test does not count and the smoke run did not pass it');
 });
+
+test('live evidence (the owner, 2026-10-16): a kept ok artifact of a real call is a fourth kind; fresh, it makes two kinds proven; stale, it still counts as a kind', async () => {
+  const { liveFindings, ratingOf: R, evidence: E, LIVE_FRESH_DAYS } = await import('./families.mjs');
+  const dir = { rides: ['2026-10-16T0341.json', '2026-10-15T0341.json', 'notes.txt'], social: ['2026-10-01T0100.json'] };
+  const files = {
+    'findings/rides/2026-10-16T0341.json': JSON.stringify({ attempt: 'live', ok: true, at: '2026-10-16T03:41:41.364Z', skill: 'rides' }),
+    'findings/rides/2026-10-15T0341.json': JSON.stringify({ attempt: 'live', ok: false, at: '2026-10-15T03:41:00Z', error: 'timeout' }),
+    'findings/social/2026-10-01T0100.json': JSON.stringify({ attempt: 'live', ok: true, at: '2026-10-01T01:00:00Z' }),
+    'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '', 'tools/bench.json': '[]',
+    'void-live-deploy/skills/rides.js': 'export default { suite() { return { ok: true }; } }', 'void-live-deploy/skills/social.js': 'export default { suite() { return { ok: true }; } }', 'void-live-deploy/skills/dating.js': 'export default { suite() { return { ok: true }; } }',
+  };
+  const read = (p) => { if (p in files) return files[p]; throw new Error('no ' + p); };
+  assert.deepEqual(liveFindings('rides', (s) => dir[s], read), { n: 1, at: '2026-10-16' }, 'a failed call and a non-JSON file do not count');
+  assert.deepEqual(liveFindings('dating', (s) => dir[s], read), { n: 0, at: '' });
+  const ev = E(['rides', 'social', 'dating'], read, () => [], (s) => dir[s]);
+  assert.deepEqual(ev.rides, { suite: true, browser: 0, bench: 0, live: 1, liveAt: '2026-10-16' });
+  assert.deepEqual(ev.dating, { suite: true, browser: 0, bench: 0 }, 'no findings dir: no live field, the row is unchanged');
+  const today = '2026-10-16';
+  assert.deepEqual(R(ev.rides, today), { tier: 'proven', why: 'a self-test, 1 live finding, 2026-10-16' }, 'two kinds, one a fresh live finding: proven');
+  assert.equal(R(ev.social, today).tier, 'checked', 'a live finding ' + LIVE_FRESH_DAYS + '+ days old is a kind, not the fresh-live rule');
+  assert.equal(R(ev.rides, '2026-10-24').tier, 'checked', 'eight days on, no new finding: back to checked');
+  assert.equal(R({ live: 2, liveAt: today }, today).tier, 'tested', 'live alone is one kind');
+  assert.equal(R({ suite: true, browser: 1, live: 1, liveAt: '2026-01-01' }, today).tier, 'proven', 'three kinds, stale live included');
+  assert.equal(R({ suite: true, browser: 1, bench: 1 }, today).tier, 'proven', 'the three repo kinds still make proven: nothing already proven drops');
+  const b = (await import('./families.mjs')).build(['rides', 'social', 'dating'], ev, { prev: null, bench: { at: '', recorded: false }, smoke: { at: '', failing: {} }, today });
+  const row = (n) => b.families.flatMap((f) => f.skills).find((s) => s.name === n);
+  assert.deepEqual([row('rides').tier, row('rides').last_tested, row('rides').last_tested_by], ['proven', '2026-10-16', 'a live call']);
+  const b2 = (await import('./families.mjs')).build(['rides', 'social', 'dating'], ev, { prev: { families: b.families }, bench: { at: '', recorded: false }, smoke: { at: '', failing: {} }, today: '2026-10-17' });
+  assert.deepEqual(row('rides'), b2.families.flatMap((f) => f.skills).find((s) => s.name === 'rides'), 'a day later, nothing changed: the same row');
+});
