@@ -2349,7 +2349,9 @@ say('nothing selected to remove');
         const pct = Math.max(0, Math.min(100, Math.round(100 * f.built / f.total)));
         h += '<div class="vh">What got built</div><div><span class="v-num">' + esc(f.built) + '</span> <span style="color:var(--ink-3)">of my ' + esc(f.total) + ' asks</span></div>'
           + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
-          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s)">Most recently: ' + f.recent.map((r) => '"' + esc(r.ask) + '"' + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' (<a href="' + esc(r.ref) + '" rel="noopener">built</a>)' : '')).join('; ') + '.</p>' : '');
+          // the divergence tracker (asked by Void three times): each built ask opens to my words beside what the builders wrote in the
+          // ledger, so a build that drifted from the ask is plain to see
+          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s);margin-bottom:4px">Most recently, my words and what was built:</p><ul class="v-asks v-built">' + f.recent.map((r) => '<li><details><summary>' + esc(r.ask) + (r.times > 1 ? ' <span style="color:var(--ink-3)">(asked ' + esc(r.times) + ' times)</span>' : '') + '</summary><div class="v-meta"><b>I asked:</b> ' + esc(r.ask) + '<br><b>What was built' + (r.at ? ' (' + esc(String(r.at).slice(0, 10)) + ')' : '') + ':</b> ' + esc(r.what || '(the ledger line is not in this view)') + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' <a href="' + esc(r.ref) + '" rel="noopener">link</a>' : '') + '</div></details></li>').join('') + '</ul>' : '');
       }
       el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
     }

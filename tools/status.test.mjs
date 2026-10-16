@@ -124,3 +124,18 @@ test('a failed action in the last day opens the status card for the owner and is
   try { let opened = false; assert.equal(await autoOpen(async () => { opened = true; }, { fetchFn, store: null, now }), true); assert.ok(opened, 'a green build, no report, one failed action: the card opens'); }
   finally { delete globalThis.localStorage; }
 });
+
+test('status: a red check on main names what failed (asked by Void: the root cause, from incidents.json), and only a red one', async () => {
+  const { causesOf, withCauses } = await import('../void-live-deploy/skills/status.js');
+  const rows = [{ name: 'Checks on main', state: 'failed', sha: '60e2e47', note: 'failed' }, { name: 'Deploy', state: 'passed', sha: '60e2e47', note: 'passed' }];
+  const inc = [{ sha: '60e2e47f458e', suite: 'browser suite on main', checks: ['Four in a Row on a phone: the 3D frame fits'] }, { sha: 'ad536f3', checks: ['other'] }];
+  const out = causesOf(rows, inc);
+  assert.deepEqual(out[0].checks, ['Four in a Row on a phone: the 3D frame fits']); assert.equal(out[0].suite, 'browser suite on main'); assert.equal(out[1].checks, undefined);
+  assert.equal(causesOf(rows, [])[0].checks, undefined, 'no incident for that sha: no cause claimed');
+  const got = await withCauses(rows, async (u) => { assert.equal(u, '/incidents.json'); return Response.json(inc); });
+  assert.equal(got[0].checks.length, 1);
+  assert.deepEqual(await withCauses([{ state: 'passed' }], async () => { throw new Error('never called'); }), [{ state: 'passed' }], 'nothing red, nothing fetched');
+  const esc = (x) => String(x);
+  const { statusHtml } = await import('../void-live-deploy/skills/status.js');
+  assert.match(statusHtml(esc, { ok: 1, total: 1, missing: [], error: null }, [], [], '', out, null, null), /What failed:<\/b> Four in a Row on a phone/);
+});

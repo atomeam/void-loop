@@ -4,6 +4,7 @@
  * next deploy makes it summonable here. Kinds: grow (a new thing), build (better at one), fix, retire, idea and finding
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
+import { probeHtml } from '../lib/probe-log.js';
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
@@ -195,7 +196,13 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How V01D has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list);
+  el.innerHTML = growthHead(esc, list) + '<div data-probes></div>';
+  // V01D's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
+  // and passed, and its proposals most certain first; nothing shows until the ledger has a record
+  fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+    const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
+    if (slot && html && el.isConnected) slot.innerHTML = html;
+  }).catch(() => {});
   // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
   fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
     const html = frictionHtml(esc, friction(fam)), v = el.querySelector('[data-velocity]');
