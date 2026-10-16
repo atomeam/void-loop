@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 395,
+ "counted": 397,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -165,6 +165,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/guide.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
@@ -184,12 +190,6 @@
   },
   {
    "file": "lib/context-check.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/guide.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -454,6 +454,12 @@
   },
   {
    "file": "lib/bench-asks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/book-face.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1
@@ -1251,6 +1257,14 @@
     "functions/api/bench.js"
    ]
   },
+  "lib/book-face.js": {
+   "imports": [
+    "lib/guide.js"
+   ],
+   "importedBy": [
+    "skills/mini/book.js"
+   ]
+  },
   "lib/cite.js": {
    "imports": [],
    "importedBy": [
@@ -1450,7 +1464,9 @@
   "lib/guide.js": {
    "imports": [],
    "importedBy": [
-    "skills/guide.js"
+    "lib/book-face.js",
+    "skills/guide.js",
+    "skills/mini/book.js"
    ]
   },
   "lib/gumroad.js": {
@@ -3177,6 +3193,13 @@
   },
   "skills/mini/battleship.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/book.js": {
+   "imports": [
+    "lib/book-face.js",
+    "lib/guide.js"
+   ],
    "importedBy": []
   },
   "skills/mini/calculator.js": {
