@@ -904,7 +904,7 @@ try {
       && /serendipity/.test(def) && /faculty of making happy discoveries/.test(def) && /Wiktionary/.test(def) && /ephemeral/.test(def2),
       [dir.slice(0, 80), def.slice(0, 80), def2.slice(0, 40)].join(' | '));
     check('list: "how many days until friday" counts to the next Friday; "what day is it in Tokyo" shows the day there; "time difference between London and Tokyo" says the gap in words; none reach Wikipedia, the miss board or the calendar',
-      new RegExp('^Calculated\\s+' + want + ' days?').test(fri) && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
+      new RegExp('^Calculated\\s+(?:ANSWER[^\\n]*\\s+)?' + want + ' days?').test(fri) /* the card's type line (V01D cards) sits between the title and the answer */ && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
@@ -990,7 +990,7 @@ try {
     await B.ask('what is a black hole', 500); const again = await B.whisper(); const n2 = summaries.length; const glow = await B.p.$eval('.vpage.on', (e) => e.classList.contains('again')).catch(() => false);
     check('the same ask again with its page open keeps that page (no second fetch, a brief glow)', n1 >= 1 && n2 === n1 && /same page/.test(again) && glow, JSON.stringify({ n1, n2, again, glow }));
     await B.ask('close', 400);
-    await B.ask('make a clock', 400); await B.ask('menu', 500);
+    await B.ask('make a clock', 400); await B.ask('what can you do', 500); // a page open (the menu is the book now, which covers the input)
     await B.p.fill('#input', 'ma'); await B.p.waitForTimeout(150);
     const hintsOn = await B.p.$eval('#hints', (e) => e.classList.contains('on'));
     await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(100);
@@ -3160,48 +3160,76 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
-  // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
-  // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
-  // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
+  // V01D cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
+  // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to V01D" line and a
+  // footer with a collector number and a stat plate; a skill's numbers come from its own evidence, an encyclopedia answer is an Answer card
+  if (want("V01D cards: every page is a card with a frame, a type line, a rarity and stats")) { const C = await fresh();
+    await C.ask('20% tip on 45', 1600);
+    const sk = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, art: !!e.querySelector('.vc-art svg'), cost: (e.querySelector('h2') || {}).dataset.cost || '', pt: e.querySelector('.vc-pt').innerText.replace(/\s+/g, ' '), foot: e.querySelector('.vc-foot').innerText.replace(/\s+/g, ' '), adds: !!e.querySelector('.vc-adds'), footLast: e.querySelector('.vc-foot') === e.lastElementChild || !!e.querySelector(':scope > .vc-arrows') } : null; }).catch(() => null), 8000);
+    check('V01D cards: "20% tip on 45" is a Skill card in its family (Numbers and money) with a rarity from its evidence, a cost in words said, an art box, an "adds to V01D" line and a footer with its collector number and Power / Resistance / Income',
+      !!sk && /^(mythic|rare|uncommon|common)$/.test(sk.rarity) && /^SKILL . NUMBERS AND MONEY$/i.test(sk.type) && sk.art && /^\u25c6+$/.test(sk.cost) && /^P \d R \d+ I \d+$/.test(sk.pt) && /\d{3}\/\d{3}/.test(sk.foot) && sk.adds && sk.footLast && !C.errors.length, JSON.stringify({ sk, errors: C.errors }));
+    await C.ask('close', 500); await C.ask('tell me about the ocean', 1800);
+    const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
+    check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
+    await C.ctx.close(); }
+  // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
+  // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
+  // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
+  // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
+    const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button, #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });
     await B.ask('open the book', 900);
-    const open = await until(async () => B.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { skills: window.__voidBook.totals.skills, pages: window.__voidBook.totals.pages, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), num: document.querySelector('.vpage.on .gb-num').textContent, title: document.querySelector('.vpage.on h2').textContent, tabs: document.querySelectorAll('.vpage.on .gb-tab').length, cover: (document.querySelector('.vpage.on .gb-page[data-page="1"] h3') || {}).textContent } : null).catch(() => null), 8000);
-    check('the book: "open the book" opens The V01D Book on its cover (page 1 alone on the right), with a tab per chapter and as many skill pages as skills/index.json has skills, families opened',
-      !!open && open.title === 'The V01D Book' && open.cover === 'The V01D Book' && open.skills === members.length && open.tabs >= 12 && open.shown.includes('1') && /page 1 of \d+/.test(open.num), JSON.stringify({ open, members: members.length }));
-    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(150);
-    const after = await B.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, shown: [...document.querySelectorAll('.vpage.on .gb-page')].map((s) => s.dataset.page), text: document.querySelector('.vpage.on .gb-spread').innerText }));
-    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(150);
-    const back = await B.p.evaluate(() => document.querySelector('.vpage.on .gb-num').textContent);
-    check('the book: → turns to the spread of pages 2–3 (how to ask, how to read a page: the four rating words explained), ← turns back',
-      /pages 2–3 of/.test(after.num) && after.shown.join(',') === '2,3' && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && /page 1 of/.test(back), JSON.stringify({ after: { ...after, text: after.text.slice(0, 120) }, back }));
+    const open = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) ? l : null; }, 8000);
+    check('the book: "open the book" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills',
+      !!open && !open.card && open.dim && !open.chrome && open.shown[1] === '1' && open.folio === '1' && /The V01D Book/.test(open.text) && open.skills === members.length && open.serif && /rgb\(230, 213, 174\)/.test(open.paper) && open.w > 600 && open.fits && /Turn page/i.test(open.prompt) && /Esc/i.test(open.prompt),
+      JSON.stringify({ open: open && { ...open, text: open.text.slice(0, 80) }, members: members.length }));
+    await B.p.keyboard.press('ArrowRight');
+    const mid = await B.p.evaluate(() => !!document.querySelector('#vtome .tome-leaf')); // a leaf is in the air
+    const after = await until(async () => { const l = await look(); return l && l.shown.join(',') === '2,3' && !l.turning ? l : null; }, 4000);
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(1000);
+    const back = await look();
+    check('the book: → turns a leaf (a sheet swings over the spine) to the spread of pages 2–3 (how to ask, with a drop capital; how to read a page: the four rating words), ← turns back to the title page',
+      mid && !!after && /How to ask/.test(after.text) && /nothing checks it yet/.test(after.text) && after.drop && !!back && back.shown[1] === '1', JSON.stringify({ mid, after: after && { shown: after.shown, drop: after.drop, text: after.text.slice(0, 100) }, back: back && back.shown }));
+    // the cover is part of the book (owner, 2026-10-16): ← from the title page swings it shut, → opens it again
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
+    const shut = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened'), book: !!window.__voidBook && window.__voidBook.open }; });
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(1000);
+    const reopened = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { shut: t.classList.contains('shut'), opened: t.classList.contains('opened') }; });
+    check('the book: ← from the title page swings the cover shut over the pages (the book stays up), and → or a tap opens it again',
+      shut.shut && !shut.opened && shut.book && !reopened.shut && reopened.opened, JSON.stringify({ shut, reopened }));
     // the index at the back names every skill, each with its page, and a jump from it lands on that page
-    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('.vpage.on .gb-page .gb-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
+    const idx = await B.p.evaluate(() => { const b = window.__voidBook; const last = b.chapters.find((c) => c.id === 'index'); const names = []; for (let n = last.from; n <= last.to; n++) { b.go(n); names.push(...[...document.querySelectorAll('#vtome .tome-page .tome-list a.gjump')].map((a) => [a.textContent, Number(a.dataset.page)])); } return { names, first: last.from }; });
     const idxNames = new Set(idx.names.map(([n]) => n.toLowerCase().replace(/ \(3d\)$/, '').replace(/ /g, '-')));
     const missing = members.filter((n) => !idxNames.has(n) && !idxNames.has(n === 'place' ? 'map' : n));
     const gameTitles = (await import(new URL('../void-live-deploy/skills/rack.js', import.meta.url).href)).GAMES.map((g) => g.title);
     const indexed = idx.names.map(([n]) => n);
     const clockEntry = idx.names.find(([n]) => n === 'Clock');
-    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('.vpage.on .gb-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.gb-tier') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph') } : null; }, clockEntry ? clockEntry[1] : 0);
-    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: name, one line, asks to tap, a rating and a glyph',
-      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph,
+    const landed = await B.p.evaluate((n) => { window.__voidBook.go(n); const pg = document.querySelector('#vtome .tome-page[data-page="' + n + '"]'); return pg ? { h3: pg.querySelector('h3').textContent, asks: [...pg.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), tier: (pg.querySelector('.tome-tier b') || {}).textContent, line: (pg.querySelector('.gb-line') || {}).textContent, glyph: !!pg.querySelector('svg.gglyph'), heads: [...document.querySelectorAll('#vtome .tome-page .tome-head')].map((h) => h.textContent).join(' | ') } : null; }, clockEntry ? clockEntry[1] : 0);
+    check('the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph',
+      !missing.length && gameTitles.every((t) => indexed.includes(t)) && !!landed && landed.h3 === 'Clock' && landed.asks.includes('make a clock') && /^(proven|checked|tested|experiment)$/.test(landed.tier || '') && landed.line.length > 10 && landed.glyph && /Time/.test(landed.heads || '') && /The V01D Book/.test(landed.heads || ''),
       JSON.stringify({ missing, games: gameTitles.filter((t) => !indexed.includes(t)), landed }));
-    // an ask on a page runs on the stage, as it does from any card
-    await B.p.click('.vpage.on .gb-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(900);
-    check('the book: tapping "make a clock" on the clock page closes the book and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.page()).includes('The V01D Book') && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
-    // "the book at chess" opens on the chess page
+    // a proven skill's page opens with a line of lore (asked by Void: flavor text for every proven skill), each page's its own
+    const lore = await B.p.evaluate(() => { const b = window.__voidBook; const first = b.chapters.find((c) => c.id === 'make'); const byPage = new Map(); for (let k = first.from; k <= first.to; k++) { b.go(k); for (const pg of document.querySelectorAll('#vtome .tome-page[data-page]')) { const e = pg.querySelector('.tome-epigraph'); if (e) byPage.set(pg.dataset.page, e.textContent); } } const lines = [...byPage.values()]; return { n: lines.length, distinct: new Set(lines).size, sample: lines[0] }; });
+    check('the book: every proven skill in the Making things chapter opens with its own line of lore under the title, no two alike (asked by Void)', lore.n >= 5 && lore.distinct === lore.n, JSON.stringify(lore));
+    // an ask on a page closes the book and runs on the stage
+    await B.p.evaluate((n) => window.__voidBook.go(n), clockEntry ? clockEntry[1] : 0); await B.p.waitForTimeout(1000);
+    await B.p.click('#vtome .tome-page a[data-ask="make a clock"]'); await B.p.waitForTimeout(1400);
+    check('the book: touching "make a clock" on the clock page closes the book (the stage is bright again) and puts a clock on the stage', (await B.state()).some((x) => x.kind === 'clock') && !(await B.p.$('#vtome')) && !(await B.p.evaluate(() => document.documentElement.classList.contains('v-tome'))) && !B.errors.length, JSON.stringify({ state: (await B.state()).map((x) => x.kind), errors: B.errors }));
+    // "the book at chess" opens on the chess page; Esc closes the book and not the stage's things
     await B.ask('the book at chess', 900);
-    const at = await until(async () => B.p.evaluate(() => { const pg = document.querySelector('.vpage.on .gb-page h3'); return pg ? pg.textContent : ''; }).catch(() => ''), 6000);
-    const shownAt = await B.p.evaluate(() => [...document.querySelectorAll('.vpage.on .gb-page h3')].map((h) => h.textContent));
-    check('the book: "the book at chess" opens on the Chess page', shownAt.includes('Chess'), JSON.stringify({ at, shownAt }));
+    const atChess = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) && /Chess/.test(l.text) ? l : null; }, 8000);
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(1200);
+    const closed = await B.p.evaluate(() => ({ tome: !!document.getElementById('vtome'), dim: document.documentElement.classList.contains('v-tome') }));
+    check('the book: "the book at chess" opens on the Chess page, and Esc shuts the cover and takes the book away (the clock stays on the stage)', !!atChess && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, closed, errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);
-    const ph = await until(async () => P.p.evaluate(() => window.__voidBook && document.querySelector('.vpage.on .gb-page') ? { pages: document.querySelectorAll('.vpage.on .gb-page').length, num: document.querySelector('.vpage.on .gb-num').textContent, width: document.querySelector('.vpage.on').getBoundingClientRect().width, fits: document.documentElement.scrollWidth <= innerWidth } : null).catch(() => null), 8000);
-    await P.p.evaluate(() => { const s = document.querySelector('.vpage.on .gb-spread'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
-    await P.p.waitForTimeout(150);
-    const swiped = await P.p.evaluate(() => ({ num: document.querySelector('.vpage.on .gb-num').textContent, pages: document.querySelectorAll('.vpage.on .gb-page').length }));
-    check('the book on a 390 px phone: one page at a time, the book fits the screen, and a swipe left turns to page 2', !!ph && ph.pages === 1 && /page 1 of/.test(ph.num) && ph.width <= 390 && ph.fits && swiped.pages === 1 && /page 2 of/.test(swiped.num) && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
+    const ph = await until(async () => P.p.evaluate(() => { const t = document.querySelector('#vtome .tome.opened'); if (!t) return null; const r = t.getBoundingClientRect(); const vis = [...document.querySelectorAll('#vtome .tome-page')].filter((s) => s.dataset.page); return { pages: vis.length, page: vis[0] && vis[0].dataset.page, w: r.width, fits: r.right <= innerWidth && document.documentElement.scrollWidth <= innerWidth, prompt: document.querySelector('#vtome .tome-prompt').innerText }; }).catch(() => null), 8000);
+    await P.p.evaluate(() => { const s = document.querySelector('#vtome .tome'); const t = (type, x) => s.dispatchEvent(new TouchEvent(type, { bubbles: true, touches: type === 'touchstart' ? [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] : [], changedTouches: [new Touch({ identifier: 1, target: s, clientX: x, clientY: 300 })] })); t('touchstart', 300); t('touchend', 80); });
+    await P.p.waitForTimeout(400);
+    const swiped = await P.p.evaluate(() => ({ cur: window.__voidBook.cur, pages: [...document.querySelectorAll('#vtome .tome-page')].filter((s) => s.dataset.page).length }));
+    check('the book on a 390 px phone: one page at a time, the tome fits the screen, the prompt says swipe, and a swipe left turns to page 2', !!ph && ph.pages === 1 && ph.page === '1' && ph.w <= 390 && ph.fits && /swipe/i.test(ph.prompt) && swiped.pages === 1 && swiped.cur === 2 && !P.errors.length, JSON.stringify({ ph, swiped, errors: P.errors }));
     await P.ctx.close(); }
   // fringe-to-skill: the fringe ledger card (asked by Void, ask-20261013-0026-2: "a dashboard that visualizes the relationship
   // between a fringe experiment and its potential as a permanent skill"). On a phone: one row per published family in
@@ -3614,7 +3642,8 @@ try {
       shape && !bad.length && grown.length >= 15 && !R.errors.length, bad.join(' | ') + ' ' + R.errors.join('|'));
     await R.ctx.close(); }
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
-  await t.ask('menu'); menu = await t.page(); check('menu lists skills', /Menu/.test(menu) && /map/.test(menu) && /translate/.test(menu) && /weather/.test(menu), menu.slice(0, 80));
+  await t.ask('menu', 900); menu = await t.p.evaluate(() => ({ tome: !!document.getElementById('vtome'), skills: window.__voidBook && window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on') }));
+  check('"menu" is the book (owner, 2026-10-16: every menu goes back to the book): the tome opens, no menu card', menu.tome && menu.skills > 100 && !menu.card, JSON.stringify(menu));
   await t.ask('close');
   await t.ask('what is a black hole', 300); await until(async () => /as of/.test(await t.page()), 5000); art = await t.page(); check('page about anything, dated', /Black hole/.test(art) && /last edited/.test(art) && /as of/.test(art), art.slice(0, 120));
   await t.ask('translate hello to Spanish', 1200); tr = await t.page(); check('translate', /hola/.test(tr) && /Google Translate/.test(tr), tr.slice(0, 80));
@@ -3835,8 +3864,9 @@ try {
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
   check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
-  await P.ask('menu', 600); const menuPg = await P.page(); await P.ask('close');
-  check('"what can you do" and the menu open', /Ask, and it appears/.test(selfPg) && /Menu/.test(menuPg), selfPg.slice(0, 60));
+  await P.ask('menu', 900); const menuTome = await P.p.evaluate(() => !!document.getElementById('vtome')); await P.ask('close', 900);
+  const menuGone = await P.p.evaluate(() => !document.getElementById('vtome'));
+  check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
   const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
   const outGot = [], callsBefore = gate.calls.length;
