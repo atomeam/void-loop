@@ -1,13 +1,20 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 18,
- "runsTotal": 49,
+ "runsTotal": 50,
  "kinds": {
   "grow": 11,
-  "file": 31,
+  "file": 32,
   "teach": 7
  },
  "runs": [
+  {
+   "at": "2026-10-16T01:42:30Z",
+   "passed": 0,
+   "of": 22,
+   "kind": "file",
+   "note": "fix: \"download the print file\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-15T23:20:00Z",
    "passed": 0,
@@ -140,13 +147,6 @@
    "of": 16,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"yo new automation\" (skill:automations)"
-  },
-  {
-   "at": "2026-10-15T11:56:55Z",
-   "passed": 15,
-   "of": 16,
-   "kind": "file",
-   "note": "fix: \"auotmations\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -232,6 +232,10 @@
   "skill:place": "2026-10-15T23:20:00Z",
   "skill:pong": "2026-10-15T23:20:00Z",
   "skill:poster": "2026-10-15T23:20:00Z",
-  "skill:pregnancy": "2026-10-15T23:20:00Z"
+  "skill:pregnancy": "2026-10-15T23:20:00Z",
+  "skill:print-download": "2026-10-16T01:42:30Z",
+  "skill:print-file": "2026-10-16T01:42:30Z",
+  "skill:printedmotor": "2026-10-16T01:42:30Z",
+  "skill:proposal": "2026-10-16T01:42:30Z"
  }
 }
