@@ -44,3 +44,17 @@ test('swaps: every row is whole, and the skill names its examples and near misse
   for (const ex of swaps.examples) assert.ok(swaps.match(ex.toLowerCase(), ex), ex);
   for (const nm of swaps.nearMisses) assert.ok(!swaps.match(nm.toLowerCase(), nm), nm);
 });
+
+// Substitution impact (asked by Void): every swap has its "then:" line slot, and the ones that change water, fat, acid or salt say so.
+import { IMPACT, impactOf } from '../void-live-deploy/skills/swaps.js';
+test('swaps: IMPACT is one line per swap, in SWAPS order, and the known adjustments are there', () => {
+  for (const s of SWAPS) { assert.ok(Array.isArray(IMPACT[s.name]), 'IMPACT has ' + s.name); assert.equal(IMPACT[s.name].length, s.swaps.length, s.name + ' has a line per swap'); }
+  for (const k of Object.keys(IMPACT)) assert.ok(SWAPS.some((s) => s.name === k), k + ' is a SWAPS ingredient');
+  const butter = SWAPS.find((s) => s.name === 'butter');
+  assert.match(impactOf(butter, 0), /water|liquid/i); // oil for butter: add liquid
+  assert.match(impactOf(SWAPS.find((s) => s.name === 'cornstarch'), 0), /simmer|longer/i);
+  assert.match(impactOf(SWAPS.find((s) => s.name === 'breadcrumbs'), 0), /salt/i);
+  assert.equal(impactOf(SWAPS.find((s) => s.name === 'brown sugar'), 0), ''); // white sugar + molasses: nothing else changes
+  assert.equal(impactOf(null, 0), ''); assert.equal(impactOf(butter, 99), '');
+  for (const s of SWAPS) for (const line of IMPACT[s.name]) assert.ok(line.length <= 140, s.name + ': a line fits under a swap');
+});

@@ -98,6 +98,7 @@ for (const [name, file] of [
   ['films-live', 'films-live.test.mjs'],
   ['appraise-live', 'appraise-live.test.mjs'],
   ['swaps', 'swaps.test.mjs'],
+  ['cook-flow', 'cook-flow.test.mjs'],
   ['words', 'words.test.mjs'],
   ['weather-match', 'weather-match.test.mjs'],
   ['body-asks', 'body-asks.test.mjs'],
@@ -146,6 +147,9 @@ for (const [name, file] of [
   ['gaps', 'gaps.test.mjs'],
   ['propose-fix', 'propose-fix.test.mjs'],
   ['probe-asks', 'probe-asks.test.mjs'],
+  ['merges', 'merges.test.mjs'],
+  ['probe-log', 'probe-log.test.mjs'],
+  ['v01d-fixes', 'v01d-fixes.test.mjs'],
   ['rides-live', 'rides-live.test.mjs'],
   ['sky', 'sky.test.mjs'],
   ['inventory', 'inventory.test.mjs'],
@@ -192,9 +196,11 @@ for (const [name, file] of [
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
   ['families', 'families.test.mjs'],
+  ['guide', 'guide.test.mjs'],
   ['video', 'video.test.mjs'],
   ['digest', 'digest.test.mjs'],
   ['well-known', 'well-known.test.mjs'],
+  ['review-main', 'review-main.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
@@ -242,6 +248,8 @@ for (const [name, file] of [
 { const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+// the book (skills/guide.json) names every skill, game and miniature on one page each; stale or a skill on no page fails (tools/guide.mjs)
+{ const r = run([resolve(here, 'guide.mjs'), '--check']); results.push(['guide-json', r.ok, r.out[r.out.length - 1] || '']); }
 // the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
 { const r = run([resolve(here, 'mcp-skills.mjs'), '--check']); results.push(['mcp-skills', r.ok, r.out[r.out.length - 1] || '']); }
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist

@@ -12,6 +12,16 @@
 //   node tools/families.mjs           write void-live-deploy/skills/families.json and print the families
 //   node tools/families.mjs --stale   list experiments older than STALE_DAYS, flagged for review (never deleted)
 //   node tools/families.mjs --check   exit 1 if families.json is out of date or a skill has no family (checks.mjs runs this)
+// Each skill also carries (asked by Void, ask-20261013-1823-1: "Add a 'last_tested' timestamp and a 'success_rate' float to each
+// entry in the skills manifest"):
+//   last_tested     YYYY-MM-DD, the newest date its evidence has: for its own tests and the browser suite, the day this file was
+//                   last regenerated with that evidence changed (carried across rewrites while it is unchanged: the checks run on
+//                   every PR and the suite on every merge, so this is the last day the repo was seen with it, not a run log); for
+//                   the benchmark, the date of its last conclusive run on main (tools/bench.misses.json, else the run that set the
+//                   floor in tools/bench.best.json). last_tested_by says which. No evidence: no date.
+//   success_rate    benchmark asks routed to the skill that pass, over all routed to it (0 to 1), from tools/bench.json and the
+//                   misses of the bench's last conclusive run; left out until that run is recorded, or when no ask is routed to it.
+// Nothing here counts how often people use a skill: no usage, no "popular", no "last used" (the owner's rule: no behaviour tracking).
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -30,9 +40,15 @@ export const FAMILIES = [
   { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['digest', 'video', 'video-play', 'define', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes'] },
   { id: 'life', name: 'Out in the world', for: 'food delivery, rides and Waymo, social feeds and dating', skills: ['rides', 'social', 'dating'] },
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['sticky', 'notepad', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase'] },
-  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['growth', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health'] },
+  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health'] },
 ];
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
+// what the two per-skill dates and rates mean, written into the file so a reader of the JSON knows (asked by Void)
+export const MEANS = {
+  last_tested: 'the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.',
+  success_rate: 'benchmark asks routed to the skill that passed on the bench\'s last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it',
+  not_here: 'how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)',
+};
 
 /** a skill's rating from its evidence: { suite, browser, bench } -> tier and the reason in words. Pure. */
 export function ratingOf(ev) {
@@ -74,6 +90,36 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
   return out;
 }
 
+/** the benchmark's last conclusive run on main: { at: 'YYYY-MM-DD' | '', recorded: whether its misses were written }. Pure apart from the reads. */
+export function benchRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
+  const day = (t) => (typeof t === 'string' && /^\d{4}-\d{2}-\d{2}/.test(t) ? t.slice(0, 10) : '');
+  let m = null, best = null;
+  try { m = JSON.parse(read('tools/bench.misses.json')); } catch (_) {}
+  try { best = JSON.parse(read('tools/bench.best.json')); } catch (_) {}
+  const recorded = !!(m && Array.isArray(m.misses));
+  return { at: (recorded && day(m.at)) || day(best && best.latency && best.latency.ci && best.latency.ci.at) || day(best && best.date) || '', recorded };
+}
+
+/** the share of a skill's benchmark asks that passed on the bench's last run, or null when it can't be known. Pure. */
+export function successRate(e, recorded) {
+  if (!recorded || !e || !(e.bench > 0)) return null;
+  const failing = Array.isArray(e.failing) ? e.failing.length : 0;
+  return Math.round(Math.max(0, e.bench - failing) / e.bench * 1000) / 1000;
+}
+
+/** the evidence from the repo's own tests, as the `why` words say it (the benchmark part left out), to see when it changed. Pure. */
+export const testsOf = (why) => String(why || '').split(', ').filter((w) => !/ in the benchmark$/.test(w)).join(', ');
+/** when a skill was last tested: its tests' date (today when they changed since the last file, else carried from it) or the bench's
+ * run date, the newer; a tie keeps what the last file said. Pure. */
+export function lastTested(e, why, prevRow, today, bench) {
+  const tests = testsOf(why), prevTests = prevRow ? testsOf(prevRow.why) : null, c = [];
+  if (tests && tests !== 'nothing checks it yet') c.push({ at: prevRow && prevRow.last_tested && prevTests === tests ? prevRow.last_tested : today, by: 'its tests' });
+  if (e && e.bench > 0 && bench && bench.at) c.push({ at: bench.at, by: 'the benchmark' });
+  if (!c.length) return null;
+  const top = c.reduce((a, b) => (b.at > a.at ? b : a));
+  return c.find((x) => x.at === top.at && prevRow && x.by === prevRow.last_tested_by) || top;
+}
+
 /** the families with each skill rated, the counts, and any skill no family holds. Pure, given the evidence. */
 // The decay timer (asked by Void, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
 // rated one (`since`, kept across rewrites); one left an experiment longer than STALE_DAYS is flagged for review. Flag only:
@@ -96,10 +142,15 @@ export function staleExperiments(fam, now, days = STALE_DAYS) {
   return out.sort((a, b) => b.days - a.days);
 }
 
-export function build(names, ev) {
+export function build(names, ev, meta = {}) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
+  const prevRows = new Map(); for (const f of (meta.prev && meta.prev.families) || []) for (const s of f.skills || []) if (s && s.name) prevRows.set(s.name, s);
+  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10);
   const families = FAMILIES.map((f) => {
-    const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); return x; }); // failing: bench asks it got wrong
+    const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); // failing: bench asks it got wrong
+      const lt = lastTested(e, x.why, prevRows.get(n), today, bench); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
+      const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
+      return x; });
     const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
     return { id: f.id, name: f.name, for: f.for, count, skills };
   });
@@ -112,11 +163,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const names = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8')).flatMap((n) => {
     const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(readFileSync(resolve(root, 'void-live-deploy/skills/' + n + '.js'), 'utf8'));
     return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
-  const b = build(names, evidence(names));
   let prev = null; try { prev = JSON.parse(readFileSync(OUT, 'utf8')); } catch (_) {}
+  const b = build(names, evidence(names), { prev, bench: benchRun(), today: new Date().toISOString().slice(0, 10) });
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
   if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
-  const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', totals: b.totals, families: b.families }, null, 1) + '\n';
+  const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
   if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));
