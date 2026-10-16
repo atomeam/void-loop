@@ -1,0 +1,4083 @@
+{
+ "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
+ "counted": 389,
+ "libs": [
+  {
+   "file": "lib/ask-text.js",
+   "skills": 24,
+   "direct": 23,
+   "dependants": 25
+  },
+  {
+   "file": "lib/sky-math.js",
+   "skills": 12,
+   "direct": 2,
+   "dependants": 17
+  },
+  {
+   "file": "lib/astro.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 10
+  },
+  {
+   "file": "lib/skyfacts.js",
+   "skills": 9,
+   "direct": 8,
+   "dependants": 9
+  },
+  {
+   "file": "lib/where.js",
+   "skills": 8,
+   "direct": 7,
+   "dependants": 8
+  },
+  {
+   "file": "lib/skyask.js",
+   "skills": 7,
+   "direct": 6,
+   "dependants": 7
+  },
+  {
+   "file": "lib/observations.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 5
+  },
+  {
+   "file": "lib/stars.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 4
+  },
+  {
+   "file": "lib/probe-log.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 12
+  },
+  {
+   "file": "lib/arena-say.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 4
+  },
+  {
+   "file": "lib/parody.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
+   "file": "lib/skill-family.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3
+  },
+  {
+   "file": "lib/showers.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
+   "file": "lib/video.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3
+  },
+  {
+   "file": "lib/cook-flow.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/eclipses.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/automation-fix.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 40
+  },
+  {
+   "file": "lib/gumroad.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 19
+  },
+  {
+   "file": "lib/store-db.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 16
+  },
+  {
+   "file": "lib/products.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 12
+  },
+  {
+   "file": "lib/alt-pay.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
+   "file": "lib/pay-share.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
+   "file": "lib/proposal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7
+  },
+  {
+   "file": "lib/watch.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 7
+  },
+  {
+   "file": "lib/plan.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
+   "file": "lib/appraise-photo.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/shared-routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/v01d-fixes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/heat-dose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/pdf-qa.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/reefwatch.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/guard.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 38
+  },
+  {
+   "file": "lib/models.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 29
+  },
+  {
+   "file": "lib/pages.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 22
+  },
+  {
+   "file": "lib/webauthn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 21
+  },
+  {
+   "file": "lib/actions.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20
+  },
+  {
+   "file": "lib/void-me.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 20
+  },
+  {
+   "file": "lib/code-review.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 17
+  },
+  {
+   "file": "lib/review-api.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 16
+  },
+  {
+   "file": "lib/earnings.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 12
+  },
+  {
+   "file": "lib/persona.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 12
+  },
+  {
+   "file": "lib/shortfall.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9
+  },
+  {
+   "file": "lib/paid-access.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7
+  },
+  {
+   "file": "lib/router.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7
+  },
+  {
+   "file": "lib/memory-scope.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/voice.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/automations.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/memory-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/noise.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/privacy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/self-context.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/automations-run.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/clef.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/film-reviews.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/keeper.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/patch-guard.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/pay-honest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/price-lock.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/mcp-skills.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3
+  },
+  {
+   "file": "lib/share.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 3
+  },
+  {
+   "file": "lib/learn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
+  },
+  {
+   "file": "lib/mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
+  },
+  {
+   "file": "lib/sale-jobs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
+  },
+  {
+   "file": "lib/used.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
+  },
+  {
+   "file": "lib/approval-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/aurora-feed.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/bench-asks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/digest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/email-send.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/honest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/job-draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/misskey.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/probe-asks.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/product-gap.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/propose-fix.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/scene-advance.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
+   "file": "lib/appraise.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/arena.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/film-share.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/fuzzy.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/ground.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/placement.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/refusal.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/reinvest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/share-client.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/speak.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  }
+ ],
+ "files": {
+  "functions/[handle].js": {
+   "imports": [
+    "lib/pages.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/_middleware.js": {
+   "imports": [
+    "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/actions.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/memory-scope.js",
+    "lib/scene-advance.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/answer.js": {
+   "imports": [
+    "lib/price-lock.js",
+    "lib/cite.js",
+    "lib/persona.js",
+    "lib/pay-honest.js",
+    "lib/automation-fix.js",
+    "lib/patch-guard.js",
+    "lib/code-review.js",
+    "lib/models.js",
+    "lib/keeper.js",
+    "lib/privacy.js",
+    "lib/router.js",
+    "lib/clef.js",
+    "lib/shortfall.js",
+    "lib/self-context.js",
+    "lib/draft.js",
+    "lib/memory-scope.js",
+    "lib/memory-core.js",
+    "lib/proposal.js",
+    "lib/plan.js"
+   ],
+   "importedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "functions/api/appraise.js": {
+   "imports": [
+    "lib/models.js",
+    "lib/appraise-photo.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/approval.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/router.js",
+    "lib/actions.js",
+    "lib/email-send.js",
+    "lib/approval-core.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/aurora.js": {
+   "imports": [
+    "lib/aurora-feed.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/automations.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/automations.js",
+    "lib/automations-run.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/automations/tick.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/automations-run.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/bench.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/models.js",
+    "lib/review-api.js",
+    "functions/api/answer.js",
+    "lib/router.js",
+    "lib/clef.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/catalog.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/gumroad.js",
+    "lib/store-db.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/digest.js": {
+   "imports": [
+    "lib/digest.js",
+    "lib/models.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/earnings.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/store-db.js",
+    "lib/earnings.js",
+    "lib/shortfall.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/figurescript.js": {
+   "imports": [
+    "lib/automation-fix.js",
+    "skills/scripts.js",
+    "lib/models.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/film-review.js": {
+   "imports": [
+    "lib/void-me.js",
+    "functions/api/support.js",
+    "lib/review-api.js",
+    "lib/film-reviews.js",
+    "functions/api/films.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/film-views.js": {
+   "imports": [
+    "functions/api/films.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/films.js": {
+   "imports": [
+    "lib/void-me.js",
+    "functions/api/support.js",
+    "lib/review-api.js",
+    "lib/film-reviews.js"
+   ],
+   "importedBy": [
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/films/rss.js"
+   ]
+  },
+  "functions/api/gumroad.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/gumroad.js",
+    "lib/store-db.js",
+    "lib/void-me.js",
+    "lib/earnings.js",
+    "lib/sale-jobs.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/handoff.js": {
+   "imports": [
+    "lib/actions.js",
+    "lib/automation-fix.js",
+    "lib/sale-jobs.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/hook/[id].js": {
+   "imports": [
+    "lib/automations-run.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/markets.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "functions/api/mcp.js": {
+   "imports": [
+    "lib/mcp.js",
+    "lib/shortfall.js",
+    "functions/api/review.js",
+    "functions/api/answer.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/memory.js": {
+   "imports": [
+    "lib/memory-scope.js",
+    "lib/memory-core.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/mine.js": {
+   "imports": [
+    "lib/void-me.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/miss.js": {
+   "imports": [
+    "lib/automation-fix.js",
+    "lib/privacy.js",
+    "lib/noise.js",
+    "lib/learn.js",
+    "lib/used.js",
+    "lib/product-gap.js",
+    "lib/store-db.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/misses.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/misskey.js",
+    "lib/used.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/passkey.js": {
+   "imports": [
+    "lib/webauthn.js",
+    "lib/guard.js",
+    "lib/void-me.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/probe-asks.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/shortfall.js",
+    "lib/probe-asks.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/probe-log.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/probe-log.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/propose-fix.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/models.js",
+    "lib/shortfall.js",
+    "lib/propose-fix.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/publish.js": {
+   "imports": [
+    "lib/void-me.js",
+    "lib/pages.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/queue.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/job-draft.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/reflect.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/models.js",
+    "lib/self-context.js",
+    "lib/shortfall.js",
+    "lib/voice.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/rehearsal.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/automation-fix.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/review.js": {
+   "imports": [
+    "lib/void-me.js",
+    "lib/guard.js",
+    "lib/review-api.js",
+    "lib/products.js",
+    "lib/paid-access.js"
+   ],
+   "importedBy": [
+    "functions/api/mcp.js"
+   ]
+  },
+  "functions/api/routes.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/router.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/routines.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/shared-routines.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/share/[room].js": {
+   "imports": [
+    "lib/share.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/share/index.js": {
+   "imports": [
+    "lib/share.js",
+    "lib/void-me.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/store/[[path]].js": {
+   "imports": [
+    "lib/pay-share.js",
+    "lib/earnings.js",
+    "lib/guard.js",
+    "lib/alt-pay.js",
+    "lib/gumroad.js",
+    "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/support.js": {
+   "imports": [
+    "lib/void-me.js",
+    "lib/guard.js",
+    "lib/automation-fix.js",
+    "lib/paid-access.js",
+    "lib/review-api.js"
+   ],
+   "importedBy": [
+    "functions/api/film-review.js",
+    "functions/api/films.js"
+   ],
+   "reachedBy": [
+    "functions/api/film-views.js",
+    "functions/films/rss.js"
+   ]
+  },
+  "functions/api/v01d-fixes.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/video.js": {
+   "imports": [
+    "lib/video.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/watch.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/void-me.js",
+    "lib/watch.js",
+    "lib/automations.js",
+    "lib/automations-run.js",
+    "lib/actions.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/where.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "functions/api/will.js": {
+   "imports": [
+    "lib/persona.js",
+    "lib/guard.js",
+    "lib/actions.js",
+    "lib/earnings.js",
+    "lib/automation-fix.js",
+    "lib/shortfall.js",
+    "lib/models.js",
+    "lib/honest.js"
+   ],
+   "importedBy": []
+  },
+  "functions/c/[clip].js": {
+   "imports": [
+    "lib/guard.js"
+   ],
+   "importedBy": []
+  },
+  "functions/films/rss.js": {
+   "imports": [
+    "functions/api/films.js"
+   ],
+   "importedBy": []
+  },
+  "functions/tools.json.js": {
+   "imports": [
+    "lib/mcp.js"
+   ],
+   "importedBy": []
+  },
+  "lib/actions.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/actions.js",
+    "functions/api/approval.js",
+    "functions/api/handoff.js",
+    "functions/api/queue.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/v01d-fixes.js",
+    "functions/api/watch.js",
+    "functions/api/will.js",
+    "lib/automations-run.js",
+    "lib/job-draft.js",
+    "lib/learn.js",
+    "lib/sale-jobs.js",
+    "lib/scene-advance.js"
+   ],
+   "reachedBy": [
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/gumroad.js",
+    "functions/api/hook/[id].js",
+    "functions/api/miss.js",
+    "lib/refusal.js"
+   ]
+  },
+  "lib/alt-pay.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/store/[[path]].js",
+    "lib/store.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js",
+    "lib/price-lock.js",
+    "skills/store.js"
+   ]
+  },
+  "lib/appraise-photo.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/appraise.js",
+    "skills/appraise.js"
+   ]
+  },
+  "lib/appraise.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/approval-core.js": {
+   "imports": [
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/approval.js"
+   ]
+  },
+  "lib/arena-say.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arena.js",
+    "skills/connect4.js",
+    "skills/othello.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "lib/arena.js": {
+   "imports": [
+    "skills/connect4-rules.js",
+    "skills/othello.js",
+    "lib/arena-say.js"
+   ],
+   "importedBy": []
+  },
+  "lib/ask-text.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/cartoon.js",
+    "skills/coral.js",
+    "skills/dark-look.js",
+    "skills/dismiss.js",
+    "skills/figure-can.js",
+    "skills/figure.js",
+    "skills/group.js",
+    "skills/incident.js",
+    "skills/inventory.js",
+    "skills/label.js",
+    "skills/layer.js",
+    "skills/light-look.js",
+    "skills/motorbody.js",
+    "skills/part.js",
+    "skills/print-download.js",
+    "skills/print-file.js",
+    "skills/printedmotor.js",
+    "skills/senolytic.js",
+    "skills/show-countdown.js",
+    "skills/status.js",
+    "skills/today.js",
+    "skills/trialwatch.js",
+    "skills/zoom-figure.js"
+   ],
+   "reachedBy": [
+    "skills/dates.js",
+    "skills/mini/pentamote.js"
+   ]
+  },
+  "lib/astro.js": {
+   "imports": [
+    "lib/sky-math.js"
+   ],
+   "importedBy": [
+    "lib/skyfacts.js",
+    "skills/aurora-tonight.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/moontonight.js",
+    "skills/sky-world.js",
+    "skills/sky.js",
+    "skills/suntimes.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "lib/aurora-feed.js": {
+   "imports": [
+    "skills/aurora.js"
+   ],
+   "importedBy": [
+    "functions/api/aurora.js"
+   ]
+  },
+  "lib/automation-fix.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/figurescript.js",
+    "functions/api/handoff.js",
+    "functions/api/miss.js",
+    "functions/api/rehearsal.js",
+    "functions/api/support.js",
+    "functions/api/will.js",
+    "lib/bench-asks.js",
+    "lib/code-review.js",
+    "lib/job-draft.js",
+    "lib/privacy.js",
+    "lib/probe-asks.js",
+    "lib/propose-fix.js",
+    "lib/review-api.js",
+    "lib/router.js",
+    "lib/shared-routines.js",
+    "lib/voice.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/approval.js",
+    "functions/api/bench.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/queue.js",
+    "functions/api/reflect.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js",
+    "lib/clef.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js",
+    "lib/self-context.js",
+    "skills/routine.js"
+   ]
+  },
+  "lib/automations-run.js": {
+   "imports": [
+    "lib/actions.js",
+    "lib/automations.js",
+    "lib/watch.js",
+    "lib/guard.js"
+   ],
+   "importedBy": [
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/hook/[id].js",
+    "functions/api/watch.js"
+   ]
+  },
+  "lib/automations.js": {
+   "imports": [
+    "lib/watch.js"
+   ],
+   "importedBy": [
+    "functions/api/automations.js",
+    "functions/api/watch.js",
+    "lib/automations-run.js"
+   ],
+   "reachedBy": [
+    "functions/api/automations/tick.js",
+    "functions/api/hook/[id].js"
+   ]
+  },
+  "lib/bench-asks.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/self-context.js",
+    "lib/automation-fix.js",
+    "lib/code-review.js",
+    "lib/review-api.js"
+   ],
+   "importedBy": [
+    "functions/api/bench.js"
+   ]
+  },
+  "lib/cite.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/clef.js": {
+   "imports": [
+    "lib/router.js",
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/code-review.js": {
+   "imports": [
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "lib/bench-asks.js",
+    "lib/review-api.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/bench.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/review.js",
+    "functions/api/support.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ]
+  },
+  "lib/cook-flow.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/swaps.js"
+   ],
+   "reachedBy": [
+    "skills/recipe.js"
+   ]
+  },
+  "lib/digest.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/digest.js"
+   ]
+  },
+  "lib/draft.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/earnings.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/earnings.js",
+    "functions/api/gumroad.js",
+    "functions/api/store/[[path]].js",
+    "functions/api/will.js",
+    "lib/router.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/routes.js",
+    "lib/bench-asks.js",
+    "lib/clef.js"
+   ]
+  },
+  "lib/eclipses.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/eclipse.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "lib/email-send.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/approval.js"
+   ]
+  },
+  "lib/film-reviews.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/film-review.js",
+    "functions/api/films.js"
+   ],
+   "reachedBy": [
+    "functions/api/film-views.js",
+    "functions/films/rss.js"
+   ]
+  },
+  "lib/film-share.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/fuzzy.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/ground.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/guard.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/_middleware.js",
+    "functions/api/actions.js",
+    "functions/api/approval.js",
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/bench.js",
+    "functions/api/catalog.js",
+    "functions/api/earnings.js",
+    "functions/api/gumroad.js",
+    "functions/api/misses.js",
+    "functions/api/passkey.js",
+    "functions/api/probe-asks.js",
+    "functions/api/probe-log.js",
+    "functions/api/propose-fix.js",
+    "functions/api/queue.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/api/store/[[path]].js",
+    "functions/api/support.js",
+    "functions/api/v01d-fixes.js",
+    "functions/api/watch.js",
+    "functions/api/will.js",
+    "functions/c/[clip].js",
+    "lib/automations-run.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/hook/[id].js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/films/rss.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/guide.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
+   ]
+  },
+  "lib/gumroad.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/catalog.js",
+    "functions/api/gumroad.js",
+    "functions/api/store/[[path]].js",
+    "lib/product-gap.js",
+    "lib/sale-jobs.js",
+    "lib/store-db.js",
+    "skills/services.js"
+   ],
+   "reachedBy": [
+    "functions/api/earnings.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/handoff.js",
+    "functions/api/mcp.js",
+    "functions/api/miss.js",
+    "functions/api/review.js",
+    "functions/api/support.js",
+    "functions/films/rss.js",
+    "lib/paid-access.js",
+    "lib/products.js"
+   ]
+  },
+  "lib/heat-dose.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/coral.js"
+   ]
+  },
+  "lib/honest.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js"
+   ]
+  },
+  "lib/job-draft.js": {
+   "imports": [
+    "lib/proposal.js",
+    "lib/automation-fix.js",
+    "lib/actions.js"
+   ],
+   "importedBy": [
+    "functions/api/queue.js"
+   ]
+  },
+  "lib/keeper.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/learn.js": {
+   "imports": [
+    "lib/actions.js",
+    "lib/noise.js"
+   ],
+   "importedBy": [
+    "functions/api/miss.js",
+    "lib/refusal.js"
+   ]
+  },
+  "lib/mcp-skills.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/mcp.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js"
+   ]
+  },
+  "lib/mcp.js": {
+   "imports": [
+    "lib/review-api.js",
+    "lib/sky-math.js",
+    "lib/showers.js",
+    "lib/mcp-skills.js"
+   ],
+   "importedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js"
+   ]
+  },
+  "lib/md.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/memory-core.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/memory.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/memory-scope.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/void-me.js",
+    "lib/review-api.js"
+   ],
+   "importedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/memory.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/misskey.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/misses.js"
+   ]
+  },
+  "lib/models.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/appraise.js",
+    "functions/api/bench.js",
+    "functions/api/digest.js",
+    "functions/api/figurescript.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/reflect.js",
+    "functions/api/will.js",
+    "lib/approval-core.js",
+    "lib/clef.js",
+    "lib/review-api.js",
+    "lib/router.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/approval.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/support.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js",
+    "lib/bench-asks.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ]
+  },
+  "lib/noise.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/miss.js",
+    "lib/learn.js",
+    "lib/probe-asks.js"
+   ],
+   "reachedBy": [
+    "functions/api/probe-asks.js",
+    "lib/refusal.js"
+   ]
+  },
+  "lib/observations.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/challenge-rules.js",
+    "skills/quiz-rules.js"
+   ],
+   "reachedBy": [
+    "skills/challenge.js",
+    "skills/goal.js",
+    "skills/quiz.js"
+   ]
+  },
+  "lib/pages.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/[handle].js",
+    "functions/api/publish.js",
+    "lib/void-me.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/gumroad.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/mine.js",
+    "functions/api/passkey.js",
+    "functions/api/review.js",
+    "functions/api/share/index.js",
+    "functions/api/support.js",
+    "functions/api/watch.js",
+    "functions/films/rss.js",
+    "lib/bench-asks.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ]
+  },
+  "lib/paid-access.js": {
+   "imports": [
+    "lib/void-me.js",
+    "lib/guard.js",
+    "lib/review-api.js",
+    "lib/products.js"
+   ],
+   "importedBy": [
+    "functions/api/review.js",
+    "functions/api/support.js"
+   ],
+   "reachedBy": [
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/mcp.js",
+    "functions/films/rss.js"
+   ]
+  },
+  "lib/parody.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/rack.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/rebuild-map.js"
+   ]
+  },
+  "lib/patch-guard.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/pay-honest.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/pay-share.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/store/[[path]].js",
+    "lib/store.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js",
+    "lib/price-lock.js",
+    "skills/store.js"
+   ]
+  },
+  "lib/pdf-qa.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pdf-card.js"
+   ]
+  },
+  "lib/persona.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/will.js",
+    "lib/probe-asks.js",
+    "lib/propose-fix.js",
+    "lib/self-context.js",
+    "lib/voice.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/placement.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/plan.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "skills/intent.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/price-lock.js": {
+   "imports": [
+    "lib/store.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/privacy.js": {
+   "imports": [
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/miss.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/probe-asks.js": {
+   "imports": [
+    "lib/persona.js",
+    "lib/automation-fix.js",
+    "lib/noise.js"
+   ],
+   "importedBy": [
+    "functions/api/probe-asks.js"
+   ]
+  },
+  "lib/probe-log.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/probe-log.js",
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
+  "lib/product-gap.js": {
+   "imports": [
+    "lib/gumroad.js"
+   ],
+   "importedBy": [
+    "functions/api/miss.js"
+   ]
+  },
+  "lib/products.js": {
+   "imports": [
+    "lib/store-db.js"
+   ],
+   "importedBy": [
+    "functions/api/review.js",
+    "lib/paid-access.js",
+    "lib/sale-jobs.js",
+    "skills/services.js"
+   ],
+   "reachedBy": [
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/gumroad.js",
+    "functions/api/handoff.js",
+    "functions/api/mcp.js",
+    "functions/api/support.js",
+    "functions/films/rss.js"
+   ]
+  },
+  "lib/proposal.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "lib/job-draft.js",
+    "skills/proposal.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/queue.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/propose-fix.js": {
+   "imports": [
+    "lib/persona.js",
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "functions/api/propose-fix.js"
+   ]
+  },
+  "lib/reefwatch.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/coral.js"
+   ]
+  },
+  "lib/refusal.js": {
+   "imports": [
+    "lib/learn.js"
+   ],
+   "importedBy": []
+  },
+  "lib/reinvest.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/review-api.js": {
+   "imports": [
+    "lib/code-review.js",
+    "lib/automation-fix.js",
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/bench.js",
+    "functions/api/film-review.js",
+    "functions/api/films.js",
+    "functions/api/review.js",
+    "functions/api/support.js",
+    "lib/bench-asks.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/film-views.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js"
+   ]
+  },
+  "lib/router.js": {
+   "imports": [
+    "lib/automation-fix.js",
+    "lib/earnings.js",
+    "lib/models.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/bench.js",
+    "functions/api/routes.js",
+    "lib/clef.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/routines.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/routine.js"
+   ]
+  },
+  "lib/sale-jobs.js": {
+   "imports": [
+    "lib/products.js",
+    "lib/actions.js",
+    "lib/gumroad.js"
+   ],
+   "importedBy": [
+    "functions/api/gumroad.js",
+    "functions/api/handoff.js"
+   ]
+  },
+  "lib/scene-advance.js": {
+   "imports": [
+    "lib/actions.js"
+   ],
+   "importedBy": [
+    "functions/api/actions.js"
+   ]
+  },
+  "lib/self-context.js": {
+   "imports": [
+    "lib/voice.js",
+    "lib/persona.js"
+   ],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js"
+   ]
+  },
+  "lib/share-client.js": {
+   "imports": [
+    "lib/share.js"
+   ],
+   "importedBy": []
+  },
+  "lib/share.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/share/[room].js",
+    "functions/api/share/index.js",
+    "lib/share-client.js"
+   ]
+  },
+  "lib/shared-routines.js": {
+   "imports": [
+    "lib/automation-fix.js"
+   ],
+   "importedBy": [
+    "functions/api/routines.js",
+    "skills/routine.js"
+   ]
+  },
+  "lib/shortfall.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/answer.js",
+    "functions/api/earnings.js",
+    "functions/api/mcp.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/reflect.js",
+    "functions/api/will.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/showers.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/mcp.js",
+    "skills/meteors.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "skills/time.js"
+   ]
+  },
+  "lib/skill-family.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/dates.js",
+    "skills/games.js",
+    "skills/time.js"
+   ]
+  },
+  "lib/sky-math.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/astro.js",
+    "lib/mcp.js",
+    "skills/night-sky.js",
+    "skills/sky-card-rules.js"
+   ],
+   "reachedBy": [
+    "functions/api/mcp.js",
+    "functions/tools.json.js",
+    "lib/skyfacts.js",
+    "skills/aurora-tonight.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/moontonight.js",
+    "skills/sky-card.js",
+    "skills/sky-world.js",
+    "skills/sky.js",
+    "skills/suntimes.js",
+    "skills/time.js"
+   ]
+  },
+  "lib/skyask.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/aurora-tonight.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/moontonight.js",
+    "skills/suntimes.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "lib/skyfacts.js": {
+   "imports": [
+    "lib/astro.js"
+   ],
+   "importedBy": [
+    "skills/aurora-tonight.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/moontonight.js",
+    "skills/sky-world.js",
+    "skills/sky.js",
+    "skills/suntimes.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "lib/speak.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/stars.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/constellation.js",
+    "skills/sky-world.js"
+   ],
+   "reachedBy": [
+    "skills/sky.js",
+    "skills/time.js"
+   ]
+  },
+  "lib/store-db.js": {
+   "imports": [
+    "lib/gumroad.js"
+   ],
+   "importedBy": [
+    "functions/api/catalog.js",
+    "functions/api/earnings.js",
+    "functions/api/gumroad.js",
+    "functions/api/miss.js",
+    "lib/products.js"
+   ],
+   "reachedBy": [
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/handoff.js",
+    "functions/api/mcp.js",
+    "functions/api/review.js",
+    "functions/api/support.js",
+    "functions/films/rss.js",
+    "lib/paid-access.js",
+    "lib/sale-jobs.js",
+    "skills/services.js"
+   ]
+  },
+  "lib/store-products.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/store.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/store/[[path]].js",
+    "lib/bench-asks.js",
+    "lib/price-lock.js",
+    "skills/store.js"
+   ]
+  },
+  "lib/store.js": {
+   "imports": [
+    "lib/store-products.js",
+    "lib/pay-share.js",
+    "lib/alt-pay.js"
+   ],
+   "importedBy": [
+    "functions/api/store/[[path]].js",
+    "lib/price-lock.js",
+    "skills/store.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/used.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/miss.js",
+    "functions/api/misses.js"
+   ]
+  },
+  "lib/v01d-fixes.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/v01d-fixes.js",
+    "skills/v01d-fixes.js"
+   ]
+  },
+  "lib/video.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/video.js",
+    "skills/video-play.js",
+    "skills/video.js"
+   ]
+  },
+  "lib/voice.js": {
+   "imports": [
+    "lib/persona.js",
+    "lib/automation-fix.js",
+    "skills/growth-tree.js"
+   ],
+   "importedBy": [
+    "functions/api/reflect.js",
+    "lib/self-context.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/void-me.js": {
+   "imports": [
+    "lib/webauthn.js",
+    "lib/pages.js"
+   ],
+   "importedBy": [
+    "functions/api/film-review.js",
+    "functions/api/films.js",
+    "functions/api/gumroad.js",
+    "functions/api/mine.js",
+    "functions/api/passkey.js",
+    "functions/api/publish.js",
+    "functions/api/review.js",
+    "functions/api/share/index.js",
+    "functions/api/support.js",
+    "functions/api/watch.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/film-views.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/films/rss.js",
+    "lib/bench-asks.js"
+   ]
+  },
+  "lib/watch.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/watch.js",
+    "lib/automations-run.js",
+    "lib/automations.js",
+    "skills/watch.js"
+   ],
+   "reachedBy": [
+    "functions/api/automations.js",
+    "functions/api/automations/tick.js",
+    "functions/api/hook/[id].js"
+   ]
+  },
+  "lib/webauthn.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/passkey.js",
+    "lib/void-me.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/gumroad.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/mine.js",
+    "functions/api/publish.js",
+    "functions/api/review.js",
+    "functions/api/share/index.js",
+    "functions/api/support.js",
+    "functions/api/watch.js",
+    "functions/films/rss.js",
+    "lib/bench-asks.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js"
+   ]
+  },
+  "lib/where.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/aurora-tonight.js",
+    "skills/constellation.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/moontonight.js",
+    "skills/sky.js",
+    "skills/suntimes.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/actions.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/aggravation.js": {
+   "imports": [
+    "skills/lift3d.js",
+    "skills/sfx.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/air.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/app.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/appraise.js": {
+   "imports": [
+    "lib/appraise-photo.js",
+    "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/arcade-card.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pong.js",
+    "skills/snake.js"
+   ]
+  },
+  "skills/aurora-tonight.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/aurora.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/aurora-feed.js"
+   ],
+   "reachedBy": [
+    "functions/api/aurora.js"
+   ]
+  },
+  "skills/automations.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/battleship-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/battleship.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/battleship.js": {
+   "imports": [
+    "skills/battleship-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/bodies.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/figures3d.js"
+   ],
+   "reachedBy": [
+    "skills/together.js",
+    "skills/zoom-figure.js"
+   ]
+  },
+  "skills/book.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/breath.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/calc.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/calendar.js": {
+   "imports": [
+    "skills/calendar3d.js",
+    "skills/countdown.js"
+   ],
+   "importedBy": [
+    "skills/dates.js"
+   ]
+  },
+  "skills/calendar3d.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/calendar.js"
+   ],
+   "reachedBy": [
+    "skills/dates.js"
+   ]
+  },
+  "skills/cartoon.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/challenge-rules.js": {
+   "imports": [
+    "lib/observations.js",
+    "skills/quiz-rules.js"
+   ],
+   "importedBy": [
+    "skills/challenge.js"
+   ]
+  },
+  "skills/challenge.js": {
+   "imports": [
+    "skills/challenge-rules.js",
+    "skills/quiz.js"
+   ],
+   "importedBy": []
+  },
+  "skills/checkers-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/checkers.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/checkers.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/side-card.js",
+    "skills/checkers-rules.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/chess-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/chess-worker.js",
+    "skills/chess.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/chess-worker.js": {
+   "imports": [
+    "skills/chess-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/chess.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/side-card.js",
+    "skills/chess-rules.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/clock.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/connect4-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arena.js",
+    "skills/connect4.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/connect4.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/connect4-rules.js",
+    "skills/lift3d.js",
+    "lib/arena-say.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/constellation.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js",
+    "lib/stars.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/convert.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/coral.js": {
+   "imports": [
+    "lib/reefwatch.js",
+    "lib/ask-text.js",
+    "lib/heat-dose.js"
+   ],
+   "importedBy": []
+  },
+  "skills/countdown.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/calendar.js",
+    "skills/dates.js",
+    "skills/show-countdown.js"
+   ]
+  },
+  "skills/counter.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/country.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/crypto.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/dark-look.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/dates.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/calendar.js",
+    "skills/today.js",
+    "skills/holidays.js",
+    "skills/countdown.js"
+   ],
+   "importedBy": []
+  },
+  "skills/dating.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/deadlines.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/define.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/deps.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/different.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/digest.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/dismiss.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/distance.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/draw.js": {
+   "imports": [
+    "skills/scene3d.js",
+    "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/drone.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/eclipse.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/eclipses.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/eightball.js": {
+   "imports": [
+    "skills/side-card.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/family-health.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/feelings.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/figure-can.js": {
+   "imports": [
+    "skills/figure.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/figure.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": [
+    "skills/figure-can.js",
+    "skills/print-file.js"
+   ],
+   "reachedBy": [
+    "skills/mini/pentamote.js",
+    "skills/motorbody.js",
+    "skills/print-download.js"
+   ]
+  },
+  "skills/figures.js": {
+   "imports": [
+    "skills/scripts.js"
+   ],
+   "importedBy": [
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/figures3d.js": {
+   "imports": [
+    "skills/bodies.js",
+    "skills/sdfmesh.js",
+    "skills/sky3d.js",
+    "skills/scripts.js"
+   ],
+   "importedBy": [
+    "skills/together.js",
+    "skills/zoom-figure.js"
+   ]
+  },
+  "skills/film-metadata.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/films.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/poster.js"
+   ]
+  },
+  "skills/fireworks-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/fireworks.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/fireworks.js": {
+   "imports": [
+    "skills/fireworks-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/food.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/forge-rules.js": {
+   "imports": [
+    "skills/sdfmesh.js"
+   ],
+   "importedBy": [
+    "skills/appraise.js",
+    "skills/draw.js",
+    "skills/forge.js",
+    "skills/inventory.js",
+    "skills/mini/forge.js"
+   ]
+  },
+  "skills/forge.js": {
+   "imports": [
+    "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/fuel.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/game-level.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/mancala.js",
+    "skills/othello.js",
+    "skills/rack.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js",
+    "skills/rebuild-map.js"
+   ]
+  },
+  "skills/games.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/aggravation.js",
+    "skills/sorry.js",
+    "skills/connect4.js",
+    "skills/ringer.js",
+    "skills/tictactoe.js",
+    "skills/othello.js",
+    "skills/mancala.js",
+    "skills/chess.js",
+    "skills/checkers.js",
+    "skills/go.js",
+    "skills/monopoly.js",
+    "skills/battleship.js",
+    "skills/poker.js",
+    "skills/fireworks.js",
+    "skills/rack.js",
+    "skills/eightball.js"
+   ],
+   "importedBy": []
+  },
+  "skills/gear-pair-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gears.js",
+    "skills/mini/gears.js"
+   ]
+  },
+  "skills/gears.js": {
+   "imports": [
+    "skills/gear-pair-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/go.js": {
+   "imports": [
+    "skills/side-card.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/goal-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/goal.js"
+   ]
+  },
+  "skills/goal.js": {
+   "imports": [
+    "skills/goal-rules.js",
+    "skills/quiz.js"
+   ],
+   "importedBy": []
+  },
+  "skills/grades.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/group.js": {
+   "imports": [
+    "skills/layer.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/growth-tree.js": {
+   "imports": [
+    "skills/growth.js"
+   ],
+   "importedBy": [
+    "lib/voice.js",
+    "skills/growth.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "skills/growth-tree.js"
+   ]
+  },
+  "skills/growth.js": {
+   "imports": [
+    "lib/probe-log.js",
+    "skills/growth-tree.js"
+   ],
+   "importedBy": [
+    "skills/growth-tree.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
+  "skills/guard3d.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/lift3d.js",
+    "skills/scene3d.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/draw.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
+  },
+  "skills/guide.js": {
+   "imports": [
+    "lib/guide.js"
+   ],
+   "importedBy": []
+  },
+  "skills/heart.js": {
+   "imports": [
+    "skills/nutrition.js"
+   ],
+   "importedBy": []
+  },
+  "skills/holidays.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/dates.js"
+   ]
+  },
+  "skills/home.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/room.js",
+    "skills/walls.js"
+   ]
+  },
+  "skills/howto.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/side-card.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/eightball.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
+  },
+  "skills/image.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/incident.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/intent.js": {
+   "imports": [
+    "lib/plan.js"
+   ],
+   "importedBy": []
+  },
+  "skills/inventory.js": {
+   "imports": [
+    "skills/index.json",
+    "skills/families.json",
+    "lib/ask-text.js",
+    "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/invite.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/joke.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/kept.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/label.js": {
+   "imports": [
+    "skills/layer.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/layer.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": [
+    "skills/group.js",
+    "skills/label.js"
+   ]
+  },
+  "skills/lift3d.js": {
+   "imports": [
+    "skills/side-card.js",
+    "skills/guard3d.js"
+   ],
+   "importedBy": [
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/fireworks.js",
+    "skills/gears.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js"
+   ]
+  },
+  "skills/light-look.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/link.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/list.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/live.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/actions.js",
+    "skills/deadlines.js",
+    "skills/memory.js",
+    "skills/merges.js",
+    "skills/news.js",
+    "skills/watch.js",
+    "skills/weather.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/loan.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/local-inference.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/lock-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/lock.js",
+    "skills/mini/lock.js"
+   ]
+  },
+  "skills/lock.js": {
+   "imports": [
+    "skills/lock-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/magnetize.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/make.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mancala.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/map.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/markets.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/memory.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/merges.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/meteors.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/showers.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/mini/aggravation.js": {
+   "imports": [
+    "skills/mini/tabletop.js",
+    "skills/sfx.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/battleship.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/calculator.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/checkers.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/chess.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/clock.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/connect4.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/countdown.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/counter.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/eightball.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/fireworks.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/forge.js": {
+   "imports": [
+    "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/gears.js": {
+   "imports": [
+    "skills/gear-pair-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/go.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/growthtree.js": {
+   "imports": [
+    "skills/growth-tree.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/heart.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/list.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/lock.js": {
+   "imports": [
+    "skills/lock-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/mancala.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/monopoly.js": {
+   "imports": [
+    "skills/mini/tabletop.js",
+    "skills/monopoly-rules.js",
+    "vendor/three-r180/addons/RoundedBoxGeometry.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/moon.js": {
+   "imports": [
+    "skills/moon-phases-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/notepad.js": {
+   "imports": [
+    "skills/mini/paper.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/othello.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/paper.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/mini/notepad.js"
+   ]
+  },
+  "skills/mini/pentamote.js": {
+   "imports": [
+    "skills/motorbody.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/piggybank.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/poker.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/rack.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/ringer.js": {
+   "imports": [
+    "skills/figures.js",
+    "skills/ringer-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/mini/sample.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/savings.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/stopwatch.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/swarm.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/tabletop.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/mini/aggravation.js",
+    "skills/mini/checkers.js",
+    "skills/mini/chess.js",
+    "skills/mini/connect4.js",
+    "skills/mini/go.js",
+    "skills/mini/monopoly.js",
+    "skills/mini/othello.js",
+    "skills/mini/poker.js",
+    "skills/mini/rack.js",
+    "skills/mini/weather.js"
+   ]
+  },
+  "skills/mini/tictactoe.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/timer.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/tip.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/void.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/weather.js": {
+   "imports": [
+    "skills/mini/tabletop.js",
+    "skills/sky3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/monopoly-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/mini/monopoly.js",
+    "skills/monopoly.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/monopoly.js": {
+   "imports": [
+    "skills/monopoly-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/moon-phases-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/mini/moon.js",
+    "skills/moon.js"
+   ]
+  },
+  "skills/moon.js": {
+   "imports": [
+    "skills/moon-phases-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/moontonight.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/motorbody.js": {
+   "imports": [
+    "skills/print-file.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": [
+    "skills/mini/pentamote.js"
+   ]
+  },
+  "skills/news.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/night-sky.js": {
+   "imports": [
+    "lib/sky-math.js"
+   ],
+   "importedBy": [
+    "skills/sky-card.js"
+   ]
+  },
+  "skills/notepad.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/nutrition.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/heart.js"
+   ]
+  },
+  "skills/othello.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/lift3d.js",
+    "lib/arena-say.js"
+   ],
+   "importedBy": [
+    "lib/arena.js",
+    "skills/games.js"
+   ]
+  },
+  "skills/ovulation.js": {
+   "imports": [
+    "skills/pregnancy.js",
+    "skills/period.js"
+   ],
+   "importedBy": [
+    "skills/period.js"
+   ],
+   "reachedBy": [
+    "skills/ovulation.js"
+   ]
+  },
+  "skills/part.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/pdf-card.js": {
+   "imports": [
+    "lib/pdf-qa.js"
+   ],
+   "importedBy": []
+  },
+  "skills/period.js": {
+   "imports": [
+    "skills/pregnancy.js",
+    "skills/ovulation.js"
+   ],
+   "importedBy": [
+    "skills/ovulation.js"
+   ],
+   "reachedBy": [
+    "skills/period.js"
+   ]
+  },
+  "skills/place.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/poker-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/poker.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/poker.js": {
+   "imports": [
+    "skills/poker-rules.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/pollen.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/pong-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pong.js"
+   ]
+  },
+  "skills/pong.js": {
+   "imports": [
+    "skills/pong-rules.js",
+    "skills/arcade-card.js"
+   ],
+   "importedBy": []
+  },
+  "skills/poster.js": {
+   "imports": [
+    "skills/films.js"
+   ],
+   "importedBy": []
+  },
+  "skills/pregnancy.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/ovulation.js",
+    "skills/period.js"
+   ]
+  },
+  "skills/print-download.js": {
+   "imports": [
+    "skills/print-file.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/print-file.js": {
+   "imports": [
+    "skills/figure.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": [
+    "skills/motorbody.js",
+    "skills/print-download.js"
+   ],
+   "reachedBy": [
+    "skills/mini/pentamote.js"
+   ]
+  },
+  "skills/printedmotor.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/proposal.js": {
+   "imports": [
+    "lib/proposal.js"
+   ],
+   "importedBy": []
+  },
+  "skills/providers.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/rides.js"
+   ]
+  },
+  "skills/quake.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/quiz-rules.js": {
+   "imports": [
+    "lib/observations.js"
+   ],
+   "importedBy": [
+    "skills/challenge-rules.js",
+    "skills/quiz.js"
+   ],
+   "reachedBy": [
+    "skills/challenge.js",
+    "skills/goal.js"
+   ]
+  },
+  "skills/quiz.js": {
+   "imports": [
+    "skills/quiz-rules.js"
+   ],
+   "importedBy": [
+    "skills/challenge.js",
+    "skills/goal.js"
+   ]
+  },
+  "skills/rack.js": {
+   "imports": [
+    "skills/side-card.js",
+    "skills/game-level.js",
+    "lib/parody.js"
+   ],
+   "importedBy": [
+    "skills/games.js",
+    "skills/rebuild-map.js"
+   ]
+  },
+  "skills/rebuild-map.js": {
+   "imports": [
+    "skills/rack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/recent.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/recipe.js": {
+   "imports": [
+    "skills/swaps.js"
+   ],
+   "importedBy": []
+  },
+  "skills/releasenotes.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/remind.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/rides.js": {
+   "imports": [
+    "skills/providers.js"
+   ],
+   "importedBy": []
+  },
+  "skills/ringer-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/ringer.js": {
+   "imports": [
+    "skills/ringer-rules.js",
+    "skills/figures.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/room.js": {
+   "imports": [
+    "skills/home.js",
+    "skills/walls.js"
+   ],
+   "importedBy": []
+  },
+  "skills/routine.js": {
+   "imports": [
+    "lib/routines.js",
+    "lib/shared-routines.js"
+   ],
+   "importedBy": []
+  },
+  "skills/savings.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/scene3d.js": {
+   "imports": [
+    "skills/guard3d.js"
+   ],
+   "importedBy": [
+    "skills/draw.js"
+   ]
+  },
+  "skills/scripts.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/figurescript.js",
+    "skills/figures.js",
+    "skills/figures3d.js",
+    "skills/together.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js",
+    "skills/zoom-figure.js"
+   ]
+  },
+  "skills/sdfmesh.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/figures3d.js",
+    "skills/forge-rules.js"
+   ],
+   "reachedBy": [
+    "skills/appraise.js",
+    "skills/draw.js",
+    "skills/forge.js",
+    "skills/inventory.js",
+    "skills/mini/forge.js",
+    "skills/together.js",
+    "skills/zoom-figure.js"
+   ]
+  },
+  "skills/senolytic.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/services.js": {
+   "imports": [
+    "lib/products.js",
+    "lib/gumroad.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sfx.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/aggravation.js",
+    "skills/mini/aggravation.js",
+    "skills/side-card.js",
+    "skills/sorry.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/eightball.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/tictactoe.js"
+   ]
+  },
+  "skills/shape.js": {
+   "imports": [
+    "skills/void-ring.js"
+   ],
+   "importedBy": []
+  },
+  "skills/share.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/show-countdown.js": {
+   "imports": [
+    "skills/countdown.js",
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/show.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/showcase.js": {
+   "imports": [
+    "skills/growth-tree.js"
+   ],
+   "importedBy": []
+  },
+  "skills/side-card.js": {
+   "imports": [
+    "skills/howto.js",
+    "skills/sfx.js"
+   ],
+   "importedBy": [
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/eightball.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/rack.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/connect4.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
+  },
+  "skills/sky-card-rules.js": {
+   "imports": [
+    "lib/sky-math.js"
+   ],
+   "importedBy": [
+    "skills/sky-card.js"
+   ]
+  },
+  "skills/sky-card.js": {
+   "imports": [
+    "skills/sky-card-rules.js",
+    "skills/night-sky.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sky-rules.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/sky-world.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/stars.js",
+    "lib/skyfacts.js"
+   ],
+   "importedBy": [
+    "skills/sky.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/sky.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "skills/sky-world.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/sky3d.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/figures3d.js",
+    "skills/mini/weather.js"
+   ],
+   "reachedBy": [
+    "skills/together.js",
+    "skills/zoom-figure.js"
+   ]
+  },
+  "skills/sleep.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/slogan3d.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/snake-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/snake.js"
+   ]
+  },
+  "skills/snake.js": {
+   "imports": [
+    "skills/snake-rules.js",
+    "skills/arcade-card.js"
+   ],
+   "importedBy": []
+  },
+  "skills/social.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/sorry-rules.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/sorry.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/sorry.js": {
+   "imports": [
+    "skills/lift3d.js",
+    "skills/sfx.js",
+    "skills/sorry-rules.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/spanish.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/splat-core.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/splat.js"
+   ]
+  },
+  "skills/splat.js": {
+   "imports": [
+    "skills/splat-core.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sport.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/status.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sticky.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/store.js": {
+   "imports": [
+    "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "skills/suntimes.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyfacts.js",
+    "lib/where.js",
+    "lib/skyask.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/swaps.js": {
+   "imports": [
+    "lib/cook-flow.js"
+   ],
+   "importedBy": [
+    "skills/recipe.js"
+   ]
+  },
+  "skills/swarm.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/tab.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/take.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/throw-off.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/tictactoe.js": {
+   "imports": [
+    "skills/game-level.js",
+    "skills/lift3d.js"
+   ],
+   "importedBy": [
+    "skills/games.js"
+   ]
+  },
+  "skills/time.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/timer.js",
+    "skills/clock.js",
+    "skills/sky.js",
+    "skills/moontonight.js",
+    "skills/aurora-tonight.js",
+    "skills/eclipse.js",
+    "skills/meteors.js",
+    "skills/constellation.js",
+    "skills/weather.js",
+    "skills/air.js",
+    "skills/uv.js",
+    "skills/quake.js",
+    "skills/pollen.js",
+    "skills/worldtime.js",
+    "skills/suntimes.js",
+    "skills/remind.js"
+   ],
+   "importedBy": []
+  },
+  "skills/timer.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/tip.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/today.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": [
+    "skills/dates.js"
+   ]
+  },
+  "skills/together.js": {
+   "imports": [
+    "skills/scripts.js",
+    "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/translate.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/trialwatch.js": {
+   "imports": [
+    "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/util.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/uv.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/v01d-fixes.js": {
+   "imports": [
+    "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/video-play.js": {
+   "imports": [
+    "lib/video.js",
+    "skills/video.js"
+   ],
+   "importedBy": []
+  },
+  "skills/video.js": {
+   "imports": [
+    "lib/video.js"
+   ],
+   "importedBy": [
+    "skills/video-play.js"
+   ]
+  },
+  "skills/void-ring.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/shape.js"
+   ]
+  },
+  "skills/walls.js": {
+   "imports": [
+    "skills/home.js"
+   ],
+   "importedBy": [
+    "skills/room.js"
+   ]
+  },
+  "skills/watch.js": {
+   "imports": [
+    "lib/watch.js",
+    "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/weather.js": {
+   "imports": [
+    "skills/live.js"
+   ],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/words.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/work.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/worldtime.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/time.js"
+   ]
+  },
+  "skills/zoom-figure.js": {
+   "imports": [
+    "lib/ask-text.js",
+    "skills/figures3d.js"
+   ],
+   "importedBy": []
+  }
+ }
+}
