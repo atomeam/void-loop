@@ -3160,6 +3160,18 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
+  // V01D cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
+  // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to V01D" line and a
+  // footer with a collector number and a stat plate; a skill's numbers come from its own evidence, an encyclopedia answer is an Answer card
+  if (want("V01D cards: every page is a card with a frame, a type line, a rarity and stats")) { const C = await fresh();
+    await C.ask('20% tip on 45', 1600);
+    const sk = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, art: !!e.querySelector('.vc-art svg'), cost: (e.querySelector('h2') || {}).dataset.cost || '', pt: e.querySelector('.vc-pt').innerText.replace(/\s+/g, ' '), foot: e.querySelector('.vc-foot').innerText.replace(/\s+/g, ' '), adds: !!e.querySelector('.vc-adds'), footLast: e.querySelector('.vc-foot') === e.lastElementChild || !!e.querySelector(':scope > .vc-arrows') } : null; }).catch(() => null), 8000);
+    check('V01D cards: "20% tip on 45" is a Skill card in its family (Numbers and money) with a rarity from its evidence, a cost in words said, an art box, an "adds to V01D" line and a footer with its collector number and Power / Resistance / Income',
+      !!sk && /^(mythic|rare|uncommon|common)$/.test(sk.rarity) && /^SKILL . NUMBERS AND MONEY$/i.test(sk.type) && sk.art && /^\u25c6+$/.test(sk.cost) && /^P \d R \d+ I \d+$/.test(sk.pt) && /\d{3}\/\d{3}/.test(sk.foot) && sk.adds && sk.footLast && !C.errors.length, JSON.stringify({ sk, errors: C.errors }));
+    await C.ask('close', 500); await C.ask('tell me about the ocean', 1800);
+    const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
+    check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^ANSWER/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
+    await C.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,

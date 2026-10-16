@@ -2177,8 +2177,8 @@ say('nothing selected to remove');
         e.preventDefault(); const ask = a.getAttribute('data-ask'); closePage(); handle(ask);
       });
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
-      stampSources(el); keepTail(el); keepRead(el); keepTell(el);
-      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); }).observe(el, { childList: true, subtree: true });
+      stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el);
+      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el); }).observe(el, { childList: true, subtree: true });
       el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellV01D(el, t); });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
       requestAnimationFrame(() => el.classList.add('on'));
@@ -4039,6 +4039,11 @@ say('nothing selected to remove');
     // shown to the person), so the learning loop (lib/learn.js) turns a repeated one into a job. window.voidUngrounded keeps the
     // last 20 for the tests and the console.
     // a card from a skill rated "experiment" or "tested" says so on its source line (asked by Void; lib/rating-note.js, ratings from skills/families.json)
+    // every page is a V01D card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
+    // with a rarity gem, an "adds to V01D" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
+    let cardLib = null, cardStats = null;
+    function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
+    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl); m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); }).catch(() => {});
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -4088,6 +4093,7 @@ say('nothing selected to remove');
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) ratingNote(who, vpageEl);
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
