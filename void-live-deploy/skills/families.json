@@ -9,7 +9,7 @@
  "totals": {
   "experiment": 1,
   "tested": 51,
-  "checked": 22,
+  "checked": 23,
   "proven": 84
  },
  "families": [
@@ -1083,7 +1083,7 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 5,
+    "checked": 6,
     "proven": 14
    },
    "skills": [
@@ -1245,6 +1245,13 @@
      "name": "family-health",
      "tier": "checked",
      "why": "a self-test, 3 browser-suite mentions",
+     "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "deps",
+     "tier": "checked",
+     "why": "a self-test, 5 browser-suite mentions",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
     }

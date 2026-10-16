@@ -2978,6 +2978,30 @@ try {
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
     await F.ctx.close(); }
+  // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
+  // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
+  // are skills/deps.json's top lib files in its order, a tap lists that file's dependants, and "what depends on <file>" opens on it.
+  if (want("deps: the dependency map card")) { const D = await fresh({ phone: true });
+    const deps = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'deps.json'), 'utf8')), top = deps.libs[0];
+    await D.ask('dependency map', 1200);
+    const card = await until(async () => D.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.dp-lib')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, libs: rows.map((r) => ({ file: r.dataset.lib, skills: Number(r.querySelector('.dp-count').dataset.skills), open: !r.querySelector('.dp-open').hidden })), wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    await D.p.tap('.vpage .dp-lib[data-lib="' + top.file + '"] button').catch(() => {});
+    const opened = await D.p.$eval('.vpage .dp-lib[data-lib="' + top.file + '"]', (r) => ({ open: !r.querySelector('.dp-open').hidden, expanded: r.querySelector('button').getAttribute('aria-expanded'),
+      deps: [...r.querySelectorAll('[data-dep]')].map((li) => li.dataset.dep) })).catch(() => null);
+    const want12 = deps.libs.slice(0, 12).map((l) => [l.file, l.skills]);
+    const all = [...(deps.files[top.file].importedBy || []), ...(deps.files[top.file].reachedBy || [])].sort();
+    check('deps: "dependency map" lists the lib files the most skills depend on, from skills/deps.json, and a tap lists every dependant of one',
+      !!card && card.title === 'What depends on what' && JSON.stringify(card.libs.map((l) => [l.file, l.skills])) === JSON.stringify(want12) && card.libs.every((l) => !l.open) && !card.wide
+      && !!opened && opened.open && opened.expanded === 'true' && JSON.stringify(opened.deps.slice().sort()) === JSON.stringify(all) && opened.deps.length >= 1 && !D.errors.length,
+      JSON.stringify({ card, want12, opened: opened && { ...opened, deps: opened.deps.slice(0, 4) }, all: all.slice(0, 4), errors: D.errors }));
+    await D.ask('what depends on ' + top.file, 1200);
+    const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
+    check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
+    await D.ctx.close(); }
   // The book (skills/guide.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" opens a two-page spread you
   // flip with the arrows, the ← → keys and a swipe; every skill in skills/index.json (families opened into their members) has
   // a page; an ask on a page runs on the stage; the index at the back lists every skill; a 390 px phone shows one page at a time.
