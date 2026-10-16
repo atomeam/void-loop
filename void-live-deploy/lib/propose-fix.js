@@ -18,7 +18,7 @@ export const FIX_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' +
   + 'You are fixing one of your own skills: a short ask that this skill should answer did not reach it, because its matcher (the match() function and the patterns it uses) does not recognise that wording. '
   + 'Propose the narrowest change that makes the matcher accept the ask and asks like it, without accepting asks that belong to other skills, and add the ask to the examples list. '
   + 'Change only the matcher and the examples: never run(), never anything that fetches, imports, stores or draws. Keep every pattern anchored and specific; prefer adding one alternative to loosening an existing one. '
-  + 'Reply with JSON only: {"why":"<one or two sentences: what did not match and what you changed>","edits":[{"find":"<one existing line, copied exactly, whole>","replace":"<that line as it should read; several lines joined with \\n are allowed>"}]} with at most ' + MAX_EDITS + ' edits. '
+  + 'Reply with JSON only: {"why":"<one or two sentences: what did not match and what you changed>","confidence":<0.0-1.0: how sure you are this change makes the ask reach the skill without stealing another skill\'s asks>","edits":[{"find":"<one existing line, copied exactly, whole>","replace":"<that line as it should read; several lines joined with \\n are allowed>"}]} with at most ' + MAX_EDITS + ' edits. '
   + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
 
 /** The ask and the skill a probe or miss job is about: 'learn to handle "<ask>"' and a note that says (wanted skill:<name>). */
@@ -71,8 +71,11 @@ export function parseEdits(text, source) {
     if (out.length >= MAX_EDITS) break;
   }
   const why = String((j && j.why) || '').replace(/\s+/g, ' ').trim().slice(0, 400);
-  return { edits: out, why };
+  return { edits: out, why, confidence: confidenceOf(j && j.confidence) };
 }
+
+/** the model's own confidence in its proposal (asked by Void), 0 to 1 with two decimals, or null when it gave none. Pure. */
+export const confidenceOf = (v) => { const n = typeof v === 'string' ? parseFloat(v) : v; return typeof n === 'number' && Number.isFinite(n) ? Math.round(Math.min(1, Math.max(0, n)) * 100) / 100 : null; };
 
 const occurrences = (s, sub) => { let n = 0, i = 0; while ((i = s.indexOf(sub, i)) >= 0) { n++; i += sub.length; if (n > 1) break; } return n; };
 

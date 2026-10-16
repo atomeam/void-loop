@@ -4,7 +4,8 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { FIX_SYSTEM, MAX_EDITS, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits } from '../void-live-deploy/lib/propose-fix.js';
+import { confidenceOf, FIX_SYSTEM, MAX_EDITS, jobAsk, skillOf, fixPrompt, safeReplacement, parseEdits, applyEdits } from '../void-live-deploy/lib/propose-fix.js';
+import { models } from '../void-live-deploy/lib/models.js';
 import * as route from '../void-live-deploy/functions/api/propose-fix.js';
 import { pickJob, regressionAsks, noteFor, STEPS } from './propose-fix.mjs';
 
@@ -19,7 +20,7 @@ const SOURCE = [
   'async function run(text, api) { const r = await fetch("/api/words?q=" + encodeURIComponent(text)); return r.ok ? "words" : "none"; }',
   "export default { name: 'words', examples: ['rhymes with orange', 'synonym for happy'], nearMisses: ['define orange'], match, run };",
 ].join('\n');
-const GOOD = { why: 'The matcher only knew rhymes and synonyms; "opposite of" is the antonym ask.', edits: [
+const GOOD = { why: 'The matcher only knew rhymes and synonyms; "opposite of" is the antonym ask.', confidence: 0.82, edits: [
   { find: "  return /^(?:rhymes? (?:with|for) |synonyms? (?:of|for) )\\S+/.test(t);", replace: "  return /^(?:rhymes? (?:with|for) |synonyms? (?:of|for) |opposite of |antonyms? (?:of|for) )\\S+/.test(t);" },
   { find: "export default { name: 'words', examples: ['rhymes with orange', 'synonym for happy'], nearMisses: ['define orange'], match, run };", replace: "export default { name: 'words', examples: ['rhymes with orange', 'synonym for happy', 'opposite of brave'], nearMisses: ['define orange'], match, run };" },
 ] };
@@ -72,12 +73,16 @@ test('the route is owner-only, needs ask, skill and source, asks the review mode
   const r = await post(env, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.ok(j.model);
-  assert.equal(calls[0].o.messages[0].content, FIX_SYSTEM); assert.match(calls[0].o.messages[1].content, /opposite of brave/); assert.ok(calls[0].o.response_format);
+  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'V01D says how sure it is (asked by Void)'); assert.equal(j.model, models('will'));
+  assert.equal(calls[0].o.messages[0].content, FIX_SYSTEM); assert.match(calls[0].o.messages[1].content, /opposite of brave/); assert.equal(calls.length, 1, 'one model call, so the request ends inside the platform limit'); assert.equal(calls[0].m, models('will'));
   const none = await post({ AI: ai({ why: 'x', edits: [{ find: 'nope', replace: 'x' }] }), READ_TOKEN: OWNER }, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(none.status, 502);
   const busy = await post({ AI: ai(new Error('429 busy')), READ_TOKEN: OWNER, DB: { prepare: () => ({ bind: () => ({ run: async () => {} }) }) } }, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(busy.status, 503);
+});
+
+test('confidence: a number from 0 to 1 with two decimals, clamped; anything else is null', () => {
+  assert.equal(confidenceOf(0.823), 0.82); assert.equal(confidenceOf('0.5'), 0.5); assert.equal(confidenceOf(7), 1); assert.equal(confidenceOf(-1), 0); assert.equal(confidenceOf('sure'), null); assert.equal(confidenceOf(undefined), null);
 });
 
 test('the tool: the oldest open probe: job, the skill\'s own asks replayed with the miss first, and a note that names the step', () => {
