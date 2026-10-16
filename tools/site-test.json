@@ -82,10 +82,12 @@
     },
     {
       "ask": "set a timer for 5 minutes"
+    },
+    {
+      "ask": "what is 17 times 23"
     }
   ],
   "candidates": [
-    "what is 17 times 23",
     "play reversi",
     "show me the night sky"
   ],
