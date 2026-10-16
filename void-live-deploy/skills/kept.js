@@ -7,7 +7,7 @@
  * "note this card", copies its title and words as one line under what the notepad holds (lib/bridges.js keptNote).
  */
 import { append } from './notepad.js';
-import { keptNote } from '../lib/bridges.js';
+import { keptNote, plainOf } from '../lib/bridges.js';
 
 /** "turn this card into a note", "copy the card to the notepad", "note this card": the kept card goes to the notepad. Pure. */
 export function toNoteAsk(text) {
@@ -16,7 +16,7 @@ export function toNoteAsk(text) {
     || /^(?:please\s+)?(?:copy|send|put|add|write)\s+(?:this|the|that)\s+(?:kept\s+)?card\s+(?:to|into|in|on)\s+(?:the\s+|my\s+)?notepad$/.test(t)
     || /^(?:please\s+)?note\s+(?:this|the|that)\s+(?:kept\s+)?card$/.test(t);
 }
-const plain = (html) => { try { return new DOMParser().parseFromString(String(html || ''), 'text/html').body.textContent || ''; } catch (_) { return ''; } };
+const plain = plainOf;
 /** the card's line in the notepad: a new notepad when there is none; the line */
 export function noteKept(th, stageApi) {
   const line = keptNote(th, plain(th && th.html));

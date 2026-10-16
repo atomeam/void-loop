@@ -10,7 +10,7 @@
  * on every entry copies it as a line into the notepad (skills/notepad.js append).
  */
 import { append as noteAppend } from './notepad.js';
-import { entryFor, itemLine, boxOverlap } from '../lib/bridges.js';
+import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 
 const uid = (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 9);
 
@@ -223,7 +223,6 @@ function mount(th, stageApi) {
 
 // drag-and-drop into the list: a thing set down over a list card becomes an entry on it (the thing stays; "undo" takes the entry back)
 const boxOf = (root, id) => { const el = root && root.querySelector('[data-id="' + (typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(id) : id) + '"]'); return el ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 } : null; };
-const plainOf = (html) => { try { return new DOMParser().parseFromString(String(html || ''), 'text/html').body.textContent || ''; } catch (_) { return ''; } };
 /** the list the dropped thing landed on, or null. Pure given the boxes. */
 export function landedOn(things, boxes, id) {
   const me = boxes[id]; if (!me) return null;

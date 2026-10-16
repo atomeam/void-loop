@@ -4,6 +4,15 @@
 
 const squeeze = (s) => String(s || '').replace(/\s+/g, ' ').trim();
 
+/** the words of a kept card's saved html: the answer and what it answered, without the buttons, art, title and footer. Browser only. */
+export function plainOf(html) {
+  try {
+    const body = new DOMParser().parseFromString(String(html || ''), 'text/html').body;
+    body.querySelectorAll('button, svg, canvas, script, style, .vc-title, .vc-art, .vc-type, .vc-foot, .vc-arrows, .src').forEach((e) => e.remove());
+    return squeeze([...body.children].map((e) => e.textContent).join(' ') || body.textContent);
+  } catch (_) { return ''; }
+}
+
 /** a kept card as one notepad line: its name (or the ask it kept) and its words, at most `max` characters. Pure. */
 export function keptNote(th, plain = '', max = 600) {
   if (!th) return '';
@@ -18,7 +27,7 @@ export function entryFor(th, plain = '') {
   const k = th.kind;
   if (k === 'list' || k === 'figure' || k === 'pong' || k === 'snake') return '';
   const text = k === 'sticky' || k === 'label' ? th.text : k === 'notepad' ? (th.title || th.text) : k === 'kept' ? (th.name || th.ask || plain) : k === 'link' ? (th.title || th.url) : k === 'timer' ? 'timer ' + Math.round((th.duration || 0) / 60000) + ' min' : k === 'counter' ? 'count ' + (th.value || 0) : (th.title || th.name || th.label || k);
-  return squeeze(text).split('\n')[0].slice(0, 120);
+  return squeeze(String(text || '').split('\n')[0]).slice(0, 120);
 }
 
 /** a list entry as a notepad line, ticked ones marked. Pure. */

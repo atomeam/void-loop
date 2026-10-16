@@ -1568,6 +1568,7 @@ Object.values(things).forEach((th) => {
             if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
+            try { document.dispatchEvent(new CustomEvent('void:dropped', { detail: { id: th.id } })); } catch (_) {} // skills react to a thing set down (skills/list.js: a drop on a list adds an entry)
             save();
             if (share) { shareMoved(th, true); for (const m of mates) shareMoved(m.t, true); } // where it was set down, exactly
             return;
