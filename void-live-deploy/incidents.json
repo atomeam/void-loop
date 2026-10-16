@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-16T04:41:49.647Z",
+   "sha": "60e2e47f458e091b3b25dc138c79ef076924518a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38849503818",
+   "suite": "browser suite on main",
+   "checks": [
+    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
+   ]
+  },
+  {
    "at": "2026-10-16T04:06:16.511Z",
    "sha": "24a139ac3d6a3b714defdd134f09e09bc91af4d1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38846458407",
