@@ -3172,6 +3172,32 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // V01D merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so V01D can experiment
+  // with card merges"): "merge a pizza and a black hole" makes a card showing both parents, the model's name for the pair, and numbers worked out from the
+  // parents by fixed rules; with the route down the card is still made, named by the plain blend
+  if (want("V01D merge: two ideas make one card, with the parents shown, earned stats, the route's name, and a plain blend when the route is down")) {
+    const cardOfMerge = (P) => P.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.mg-parents') && e.querySelector('.vc-pt') ? { title: e.querySelector('h2').textContent, parents: [...e.querySelectorAll('.mg-p b')].map((b) => b.textContent), plate: e.querySelector('.vc-pt').innerText.replace(/\s+/g, ' '), type: e.querySelector('.vc-type').innerText.replace(/\s+/g, ' '), rarity: e.dataset.rarity, adds: (e.querySelector('.vc-adds') || {}).innerText || '', src: (e.querySelector('.src') || {}).innerText || '', skill: e.dataset.skill } : null; }).catch(() => null);
+    const M = await fresh(); const sent = []; let reading = 0;
+    await M.ctx.route(/\/api\/merge/, (r) => { const q = r.request(); if (q.method() === 'POST') { sent.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ name: 'Pizza Singularity', line: 'Every slice bends the light around it.', cached: false, power: 99, resistance: 99, income: 9, cost: 0, depth: 40, tier: 'proven' }) }); } reading++; return r.fulfill({ status: 200, contentType: 'application/json', body: '{"cached":false}' }); });
+    await M.ask('merge a pizza and a black hole', 900);
+    const mc = await until(async () => { const c = await cardOfMerge(M); return c && c.title === 'Pizza Singularity' ? c : null; }, 8000);
+    check('V01D merge: "merge a pizza and a black hole" is a V01D card named by the route, with both parents shown', !!mc && mc.parents.join('|') === 'Pizza|Black hole' && /Every slice bends the light/.test(mc.adds) && sent.length === 1 && reading === 1 && sent[0].a === 'pizza' && sent[0].b === 'black hole' && !M.errors.length, JSON.stringify({ mc, sent, reading, errors: M.errors }));
+    check('V01D merge: the numbers are earned from the parents (1 / 1 / 0 each gives P 1 R 1 I 0, depth 1, uncommon), whatever numbers the route sends', !!mc && mc.plate === 'P 1 R 1 I 0' && /IDEA . MERGED, DEPTH 1$/i.test(mc.type) && mc.rarity === 'uncommon' && /named once by V01D/i.test(mc.src), JSON.stringify(mc));
+    await M.ask('close', 400); await M.ask('what do you get if you merge forge with a pizza', 900);
+    const sk = await until(async () => { const c = await cardOfMerge(M); return c && c.parents[0] === 'Forge' ? c : null; }, 8000);
+    check('V01D merge: a name that is a V01D skill brings the skill\'s real stats (Forge is 9 / 10: merged with a fresh idea it is P 9 R 6, a Skill, depth 1)', !!sk && /^P 9 R 6 I \d+$/.test(sk.plate) && /^SKILL/i.test(sk.type) && sk.parents.join('|') === 'Forge|Pizza' && !M.errors.length, JSON.stringify({ sk, errors: M.errors }));
+    await M.ctx.close();
+    const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.abort());
+    await D.ask('merge a pizza and a black hole', 900);
+    const off = await until(async () => { const c = await cardOfMerge(D); return c && /offline/i.test(c.src) ? c : null; }, 8000);
+    check('V01D merge: with the route down the card is still made, named by the plain blend, and says so, with no page errors', !!off && off.title === 'Black hole-Pizza' && off.plate === 'P 1 R 1 I 0' && off.parents.join('|') === 'Pizza|Black hole' && !D.errors.length, JSON.stringify({ off, errors: D.errors }));
+    await D.ask('close', 400); await D.ask('merge two pdf files', 700);
+    check('V01D merge: "merge two pdf files" is not a card merge', !(await cardOfMerge(D)), '');
+    await D.ctx.close();
+    const K = await fresh(); await K.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ kept: 'secret', answer: 'I keep keys out of everything I touch.' }) }));
+    await K.ask('merge a cat and the moon', 900);
+    const kept = await until(async () => /keep keys out/.test(await K.page()), 6000);
+    check('V01D merge: a refusal from the route is shown kindly, with no card and no page errors', kept && !(await cardOfMerge(K)) && !K.errors.length, JSON.stringify(K.errors)); await K.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
