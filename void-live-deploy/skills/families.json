@@ -2,7 +2,7 @@
  "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "totals": {
   "experiment": 1,
-  "tested": 53,
+  "tested": 54,
   "checked": 17,
   "proven": 84
  },
@@ -806,11 +806,16 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 3,
+    "tested": 4,
     "checked": 3,
     "proven": 14
    },
    "skills": [
+    {
+     "name": "guide",
+     "tier": "tested",
+     "why": "a self-test"
+    },
     {
      "name": "growth",
      "tier": "proven",
