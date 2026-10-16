@@ -66,7 +66,8 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   const curated = JSON.parse(readFileSync(resolve(root, 'tools/asks-link.json'), 'utf8')), byAt = new Map(ledger.filter((e) => e && e.at).map((e) => [e.at, e]));
   let ruled = 0;
   for (const a of openAsks(asks, ledger, links)) {
-    const r = (curated.rules || []).find((x) => new RegExp(x.match, x.flags || 'i').test(a.ask)); if (!r || !byAt.has(r.ledgerAt)) continue;
+    // the rule patterns are this repo's own curated file, never user input (void-review: ok)
+    const r = (curated.rules || []).find((x) => new RegExp(x.match, x.flags || 'i').test(a.ask)); if (!r || !byAt.has(r.ledgerAt)) continue; // void-review: ok
     ruled++; console.log('RULE      | ' + a.ask.slice(0, 110) + '\n      -> ' + r.ledgerAt + ' ' + r.why.slice(0, 120));
     if (argv.includes('--write')) links.push({ words: a.ask, ledgerAt: r.ledgerAt, why: 'built: ' + r.why + ' (tools/asks-link.json)' });
   }
