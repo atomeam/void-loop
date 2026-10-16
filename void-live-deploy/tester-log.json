@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 66,
+ "runsTotal": 67,
  "kinds": {
   "grow": 15,
   "file": 38,
   "teach": 7,
   "tighten": 3,
-  "none": 3
+  "none": 4
  },
  "runs": [
+  {
+   "at": "2026-10-16T07:15:33Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-16T07:04:58Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 21,
    "kind": "file",
    "note": "fix: \"play chess\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-15T22:07:53Z",
-   "passed": 0,
-   "of": 21,
-   "kind": "file",
-   "note": "fix: \"hide the sky\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -179,8 +179,8 @@
   "skill:crypto": "2026-10-16T07:04:58Z",
   "skill:dark-look": "2026-10-16T07:04:58Z",
   "skill:dates": "2026-10-16T07:04:58Z",
-  "skill:dating": "2026-10-15T16:40:07Z",
-  "skill:different": "2026-10-15T16:40:07Z",
+  "skill:dating": "2026-10-16T07:15:33Z",
+  "skill:different": "2026-10-16T07:15:33Z",
   "skill:dismiss": "2026-10-15T16:40:07Z",
   "skill:distance": "2026-10-15T16:40:07Z",
   "skill:draw": "2026-10-15T16:50:11Z",
@@ -281,6 +281,7 @@
   "skill:watch": "2026-10-16T06:26:11Z",
   "skill:words": "2026-10-16T06:31:32Z",
   "skill:work": "2026-10-16T06:31:32Z",
-  "skill:zoom-figure": "2026-10-16T06:31:32Z"
+  "skill:zoom-figure": "2026-10-16T06:31:32Z",
+  "skill:deps": "2026-10-16T07:15:33Z"
  }
 }
