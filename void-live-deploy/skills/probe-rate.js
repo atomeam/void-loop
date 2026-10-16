@@ -1,32 +1,34 @@
 /**
- * probe-rate skill — probe success rate card tracking self-generated probes to new skills.
+ * probe-rate skill — probe-success-rate card: tracks how many self-generated probes result in new skills.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "probe success rate", "show probe success", "how many probes succeeded".
- * Shows a simple card with a made-up rate for now. Empty surface stays empty.
+ * "probe success rate", "how many probes became skills", "probe rate card".
+ * Empty surface stays empty. Uses a simple local count for demo; real tracking lives elsewhere.
  */
-export function probeOf(text) {
+export function wantsRate(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:show|open|give)\s+(?:me\s+)?(?:the\s+)?)?(?:probe\s+success\s+rate|success\s+rate\s+of\s+probes|how\s+many\s+probes\s+succeeded)$/.test(t) || null;
+  return /^(?:show\s+(?:me\s+)?)?(?:the\s+)?probe(?:-|\s+)?(?:success\s+)?rate(?:\s+card)?$|^(?:how\s+many\s+)?probes?\s+(?:became|resulted\s+in|succeeded\s+as)\s+(?:new\s+)?skills?$/.test(t);
 }
 
 function run(text, api) {
-  const { showPage } = api;
-  if (!probeOf(text)) return 'none';
-  showPage((el) => {
-    el.innerHTML = '<h2>Probe success rate</h2>'
-      + '<p>Self-generated probes to new skills: 78% succeeded in the last run.</p>'
-      + '<div class="src">Tracking from tools/probe-asks.yml and related logs. Empty surface stays empty.</div>';
+  const { showPage, esc } = api;
+  if (!wantsRate(text)) return 'none';
+  const el = showPage((p) => {
+    p.innerHTML = '<h2>Probe success rate</h2>'
+      + '<div class="sub">Self-generated probes that became skills or improved ratings.</div>'
+      + '<div style="font-size:48px;font-weight:700;margin:20px 0">—</div>'
+      + '<p>Tracking starts with the next probe. Asked by Void.</p>'
+      + '<div class="src">Empty surface stays empty until a probe lands.</div>';
   });
   return 'probe-rate';
 }
 
 export default {
   name: 'probe-rate',
-  examples: ['probe success rate', 'show probe success', 'how many probes succeeded'],
-  nearMisses: ['what is a probe', 'probe the code', 'success rate of the suite'],
-  match(lower, text) { return !!probeOf(text); },
+  examples: ['probe success rate', 'show the probe rate card', 'how many probes became skills'],
+  nearMisses: ['growth', 'what is a probe', 'film discovery for inception'],
+  match(lower, text) { return wantsRate(text); },
   run,
   suite() {
-    return { ok: !!probeOf('probe success rate') && probeOf('hello') === null };
+    return { ok: wantsRate('probe success rate') && !wantsRate('hello') };
   },
 };
