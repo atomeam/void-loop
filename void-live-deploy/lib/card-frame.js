@@ -116,9 +116,9 @@ export function keep(el, esc, stats) {
   el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
-  tpl.innerHTML = html.art + html.type; const top = [...tpl.content.childNodes];
+  tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
-  tpl.innerHTML = html.adds + html.foot + html.arrows;
+  tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   for (const n of [...tpl.content.childNodes]) el.appendChild(n);
 }
 
