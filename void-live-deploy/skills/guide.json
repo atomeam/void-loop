@@ -283,6 +283,7 @@
    "tier": "proven",
    "why": "a self-test, 10 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 10 real askings stand behind this page. Let the stage be the proof.",
+   "glow": 100,
    "n": 6
   },
   {
@@ -299,6 +300,7 @@
    "tier": "proven",
    "why": "a self-test, 4 browser-suite mentions, 30 real asks in the benchmark",
    "flavor": "Among the making things it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "glow": 100,
    "n": 7
   },
   {
@@ -315,6 +317,7 @@
    "tier": "proven",
    "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Of all the making things, this one is trusted enough to be taught. It has not failed a reader yet.",
+   "glow": 100,
    "n": 8
   },
   {
@@ -331,6 +334,7 @@
    "tier": "proven",
    "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Asked 3 times in earnest, and never once left unanswered. Say the words below and it answers.",
+   "glow": 100,
    "n": 9
   },
   {
@@ -391,6 +395,7 @@
    ],
    "tier": "checked",
    "why": "1 browser-suite mention, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 13
   },
   {
@@ -407,6 +412,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "An old art of the making things, tested each day before the sun is up. It has not failed a reader yet.",
+   "glow": 100,
    "n": 14
   },
   {
@@ -423,6 +429,7 @@
    "tier": "proven",
    "why": "a self-test, 8 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Say the words below and it answers.",
+   "glow": 100,
    "n": 15
   },
   {
@@ -439,6 +446,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 6 real askings. The void remembers each asking.",
+   "glow": 100,
    "n": 16
   },
   {
@@ -455,6 +463,7 @@
    "tier": "proven",
    "why": "1 browser-suite mention, 6 real asks in the benchmark",
    "flavor": "Asked 6 times in earnest, and never once left unanswered. So it is written.",
+   "glow": 100,
    "n": 17
   },
   {
@@ -532,6 +541,7 @@
    "tier": "proven",
    "why": "4 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. The void remembers each asking.",
+   "glow": 100,
    "n": 22
   },
   {
@@ -563,6 +573,7 @@
    "tier": "proven",
    "why": "a self-test, 14 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "An old art of the making things, tested each day before the sun is up. Let the stage be the proof.",
+   "glow": 100,
    "n": 24
   },
   {
@@ -667,6 +678,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Not a boast but a record: 4 askings, each one answered. Say the words below and it answers.",
+   "glow": 100,
    "n": 30,
    "game": {
     "title": "Star Marbles",
@@ -690,6 +702,7 @@
    "tier": "proven",
    "why": "a self-test, 7 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 7 real askings.",
+   "glow": 100,
    "n": 31,
    "game": {
     "title": "Back to Start",
@@ -713,6 +726,7 @@
    "tier": "proven",
    "why": "a self-test, 10 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the games. The void remembers each asking.",
+   "glow": 100,
    "n": 32,
    "game": {
     "title": "Four in a Row",
@@ -736,6 +750,7 @@
    "tier": "proven",
    "why": "a self-test, 8 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the games. Say the words below and it answers.",
+   "glow": 100,
    "n": 33,
    "game": {
     "title": "Tic-tac-toe",
@@ -759,6 +774,7 @@
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 9 real asks in the benchmark",
    "flavor": "9 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "glow": 100,
    "n": 34,
    "game": {
     "title": "Reversi",
@@ -782,6 +798,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
    "flavor": "Proven 4 times over by those who asked, and kept among the games. Let the stage be the proof.",
+   "glow": 100,
    "n": 35,
    "game": {
     "title": "Mancala",
@@ -871,6 +888,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
    "flavor": "Not a boast but a record: 1 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 39,
    "game": {
     "title": "The Landlord’s Game",
@@ -894,6 +912,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
    "flavor": "Of the games; set down here after it answered true 1 times. Ask, and see.",
+   "glow": 100,
    "n": 40,
    "game": {
     "title": "Sea Battle",
@@ -961,6 +980,7 @@
    "tier": "proven",
    "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "An old art of the games, tested each day before the sun is up. Say the words below and it answers.",
+   "glow": 100,
    "n": 43
   },
   {
@@ -998,6 +1018,7 @@
    "tier": "proven",
    "why": "a self-test, 10 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 6 real askings stand behind this page. So it is written.",
+   "glow": 100,
    "n": 45,
    "game": {
     "title": "Ringer",
@@ -1021,6 +1042,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 4 real askings stand behind this page. The void remembers each asking.",
+   "glow": 100,
    "n": 46
   },
   {
@@ -1037,6 +1059,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Asked 4 times in earnest, and never once left unanswered.",
+   "glow": 100,
    "n": 47
   },
   {
@@ -1130,6 +1153,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 10 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 10 real askings. Say the words below and it answers.",
+   "glow": 100,
    "n": 52
   },
   {
@@ -1145,6 +1169,7 @@
    ],
    "tier": "tested",
    "why": "17 real asks in the benchmark",
+   "glow": 100,
    "n": 53
   },
   {
@@ -1160,6 +1185,7 @@
    ],
    "tier": "tested",
    "why": "8 real asks in the benchmark",
+   "glow": 100,
    "n": 54
   },
   {
@@ -1175,6 +1201,7 @@
    ],
    "tier": "tested",
    "why": "8 real asks in the benchmark",
+   "glow": 100,
    "n": 55
   },
   {
@@ -1190,6 +1217,7 @@
    ],
    "tier": "tested",
    "why": "8 real asks in the benchmark",
+   "glow": 100,
    "n": 56
   },
   {
@@ -1206,6 +1234,7 @@
    "tier": "proven",
    "why": "2 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "Not a boast but a record: 8 askings, each one answered. It has not failed a reader yet.",
+   "glow": 100,
    "n": 57
   },
   {
@@ -1222,6 +1251,7 @@
    "tier": "proven",
    "why": "a self-test, 10 browser-suite mentions, 45 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Say the words below and it answers.",
+   "glow": 100,
    "n": 58
   },
   {
@@ -1238,6 +1268,7 @@
    "tier": "proven",
    "why": "1 browser-suite mention, 7 real asks in the benchmark",
    "flavor": "An old art of the sky and earth, tested each day before the sun is up. Ask, and see.",
+   "glow": 100,
    "n": 59
   },
   {
@@ -1254,6 +1285,7 @@
    "tier": "proven",
    "why": "1 browser-suite mention, 8 real asks in the benchmark",
    "flavor": "8 who came with a need went away with an answer. The page is theirs. Let the stage be the proof.",
+   "glow": 100,
    "n": 60
   },
   {
@@ -1269,6 +1301,7 @@
    ],
    "tier": "tested",
    "why": "4 real asks in the benchmark",
+   "glow": 100,
    "n": 61
   },
   {
@@ -1285,6 +1318,7 @@
    "tier": "proven",
    "why": "1 browser-suite mention, 9 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the sky and earth. Let the stage be the proof.",
+   "glow": 100,
    "n": 62
   },
   {
@@ -1315,6 +1349,7 @@
    ],
    "tier": "tested",
    "why": "6 real asks in the benchmark",
+   "glow": 100,
    "n": 64
   },
   {
@@ -1331,6 +1366,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 11 real asks in the benchmark",
    "flavor": "Not a boast but a record: 11 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 65
   },
   {
@@ -1359,6 +1395,7 @@
    ],
    "tier": "tested",
    "why": "4 real asks in the benchmark",
+   "glow": 100,
    "n": 67
   },
   {
@@ -1375,6 +1412,7 @@
    "tier": "proven",
    "why": "a self-test, 14 browser-suite mentions, 91 real asks in the benchmark",
    "flavor": "91 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
+   "glow": 100,
    "n": 68
   },
   {
@@ -1390,6 +1428,7 @@
    ],
    "tier": "tested",
    "why": "26 real asks in the benchmark",
+   "glow": 100,
    "n": 69
   },
   {
@@ -1406,6 +1445,7 @@
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 56 real asks in the benchmark",
    "flavor": "Keep this page; the sky and earth are built on it. It has not failed a reader yet.",
+   "glow": 100,
    "n": 70
   },
   {
@@ -1474,6 +1514,7 @@
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 18 real asks in the benchmark",
    "flavor": "Not a boast but a record: 18 askings, each one answered. So it is written.",
+   "glow": 100,
    "n": 74
   },
   {
@@ -1505,6 +1546,7 @@
    "tier": "proven",
    "why": "7 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the time. It has not failed a reader yet.",
+   "glow": 100,
    "n": 76
   },
   {
@@ -1521,6 +1563,7 @@
    "tier": "proven",
    "why": "9 browser-suite mentions, 28 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 28 real askings. Ask, and see.",
+   "glow": 100,
    "n": 77
   },
   {
@@ -1536,6 +1579,7 @@
    ],
    "tier": "tested",
    "why": "5 real asks in the benchmark",
+   "glow": 100,
    "n": 78
   },
   {
@@ -1551,6 +1595,7 @@
    ],
    "tier": "tested",
    "why": "19 real asks in the benchmark",
+   "glow": 100,
    "n": 79
   },
   {
@@ -1566,6 +1611,7 @@
    ],
    "tier": "tested",
    "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 80
   },
   {
@@ -1582,6 +1628,7 @@
    "tier": "proven",
    "why": "5 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Among the time it is the one a traveller is told to ask for first. So it is written.",
+   "glow": 100,
    "n": 81
   },
   {
@@ -1637,6 +1684,7 @@
    "tier": "proven",
    "why": "a self-test, 829 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 829 real askings stand behind this page. Ask, and see.",
+   "glow": 99.9,
    "n": 84
   },
   {
@@ -1652,6 +1700,7 @@
    ],
    "tier": "checked",
    "why": "3 browser-suite mentions, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 85
   },
   {
@@ -1668,6 +1717,7 @@
    "tier": "proven",
    "why": "5 browser-suite mentions, 15 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the numbers and money. Turn the page when you are done.",
+   "glow": 100,
    "n": 86
   },
   {
@@ -1684,6 +1734,7 @@
    "tier": "proven",
    "why": "9 browser-suite mentions, 13 real asks in the benchmark",
    "flavor": "Proven 13 times over by those who asked, and kept among the numbers and money. Turn the page when you are done.",
+   "glow": 100,
    "n": 87
   },
   {
@@ -1699,6 +1750,7 @@
    ],
    "tier": "tested",
    "why": "10 real asks in the benchmark",
+   "glow": 100,
    "n": 88
   },
   {
@@ -1715,6 +1767,7 @@
    "tier": "proven",
    "why": "2 browser-suite mentions, 36 real asks in the benchmark",
    "flavor": "36 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
+   "glow": 100,
    "n": 89
   },
   {
@@ -1730,6 +1783,7 @@
    ],
    "tier": "tested",
    "why": "7 real asks in the benchmark",
+   "glow": 100,
    "n": 90
   },
   {
@@ -1761,6 +1815,7 @@
    "tier": "proven",
    "why": "8 browser-suite mentions, 20 real asks in the benchmark",
    "flavor": "Of the numbers and money; set down here after it answered true 20 times. So it is written.",
+   "glow": 100,
    "n": 92
   },
   {
@@ -1777,6 +1832,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 70 real asks in the benchmark",
    "flavor": "Of all the numbers and money, this one is trusted enough to be taught. Say the words below and it answers.",
+   "glow": 100,
    "n": 93
   },
   {
@@ -1808,6 +1864,7 @@
    "tier": "proven",
    "why": "7 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "14 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "glow": 100,
    "n": 95
   },
   {
@@ -1824,6 +1881,7 @@
    "tier": "proven",
    "why": "10 browser-suite mentions, 16 real asks in the benchmark",
    "flavor": "Asked 16 times in earnest, and never once left unanswered. Say the words below and it answers.",
+   "glow": 100,
    "n": 96
   },
   {
@@ -1840,6 +1898,7 @@
    "tier": "proven",
    "why": "11 browser-suite mentions, 19 real asks in the benchmark",
    "flavor": "Asked 19 times in earnest, and never once left unanswered. Ask, and see.",
+   "glow": 100,
    "n": 97
   },
   {
@@ -1889,6 +1948,7 @@
    "tier": "proven",
    "why": "3 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Not a boast but a record: 14 askings, each one answered. Turn the page when you are done.",
+   "glow": 100,
    "n": 100
   },
   {
@@ -1905,6 +1965,7 @@
    "tier": "proven",
    "why": "4 browser-suite mentions, 18 real asks in the benchmark",
    "flavor": "Asked 18 times in earnest, and never once left unanswered. The void remembers each asking.",
+   "glow": 100,
    "n": 101
   },
   {
@@ -1921,6 +1982,7 @@
    "tier": "proven",
    "why": "8 browser-suite mentions, 21 real asks in the benchmark",
    "flavor": "Proven 21 times over by those who asked, and kept among the body and mind. Say the words below and it answers.",
+   "glow": 100,
    "n": 102
   },
   {
@@ -1937,6 +1999,7 @@
    "tier": "proven",
    "why": "4 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "Not a boast but a record: 14 askings, each one answered. Let the stage be the proof.",
+   "glow": 100,
    "n": 103
   },
   {
@@ -1953,6 +2016,7 @@
    "tier": "proven",
    "why": "a self-test, 9 browser-suite mentions, 22 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the body and mind.",
+   "glow": 100,
    "n": 104
   },
   {
@@ -1969,6 +2033,7 @@
    "tier": "proven",
    "why": "a self-test, 11 real asks in the benchmark",
    "flavor": "Of the body and mind; set down here after it answered true 11 times. Turn the page when you are done.",
+   "glow": 100,
    "n": 105
   },
   {
@@ -1985,6 +2050,7 @@
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 16 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the body and mind. It has not failed a reader yet.",
+   "glow": 100,
    "n": 106
   },
   {
@@ -2001,6 +2067,7 @@
    "tier": "proven",
    "why": "a self-test, 8 real asks in the benchmark",
    "flavor": "An old art of the body and mind, tested each day before the sun is up. Say the words below and it answers.",
+   "glow": 100,
    "n": 107
   },
   {
@@ -2106,6 +2173,7 @@
    "tier": "proven",
    "why": "a self-test, 41 real asks in the benchmark",
    "flavor": "41 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
+   "glow": 100,
    "n": 113
   },
   {
@@ -2122,6 +2190,7 @@
    "tier": "proven",
    "why": "a self-test, 60 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 60 real askings. Ask, and see.",
+   "glow": 100,
    "n": 114
   },
   {
@@ -2137,6 +2206,7 @@
    ],
    "tier": "checked",
    "why": "1 browser-suite mention, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 115
   },
   {
@@ -2153,6 +2223,7 @@
    "tier": "proven",
    "why": "3 browser-suite mentions, 33 real asks in the benchmark",
    "flavor": "Of the words and the world; set down here after it answered true 33 times. Say the words below and it answers.",
+   "glow": 100,
    "n": 116
   },
   {
@@ -2168,6 +2239,7 @@
    ],
    "tier": "tested",
    "why": "9 real asks in the benchmark",
+   "glow": 100,
    "n": 117
   },
   {
@@ -2183,6 +2255,7 @@
    ],
    "tier": "tested",
    "why": "9 real asks in the benchmark",
+   "glow": 100,
    "n": 118
   },
   {
@@ -2198,6 +2271,7 @@
    ],
    "tier": "tested",
    "why": "9 real asks in the benchmark",
+   "glow": 100,
    "n": 119
   },
   {
@@ -2214,6 +2288,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 12 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up. It has not failed a reader yet.",
+   "glow": 100,
    "n": 120
   },
   {
@@ -2244,6 +2319,7 @@
    ],
    "tier": "tested",
    "why": "5 real asks in the benchmark",
+   "glow": 100,
    "n": 122
   },
   {
@@ -2259,6 +2335,7 @@
    ],
    "tier": "tested",
    "why": "1 real ask in the benchmark",
+   "glow": 100,
    "n": 123
   },
   {
@@ -2274,6 +2351,7 @@
    ],
    "tier": "tested",
    "why": "4 real asks in the benchmark",
+   "glow": 100,
    "n": 124
   },
   {
@@ -2290,6 +2368,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 14 real asks in the benchmark",
    "flavor": "14 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
+   "glow": 100,
    "n": 125
   },
   {
@@ -2306,6 +2385,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 6 real asks in the benchmark",
    "flavor": "Asked 6 times in earnest, and never once left unanswered. Say the words below and it answers.",
+   "glow": 100,
    "n": 126
   },
   {
@@ -2321,6 +2401,7 @@
    ],
    "tier": "tested",
    "why": "4 real asks in the benchmark",
+   "glow": 100,
    "n": 127
   },
   {
@@ -2337,6 +2418,7 @@
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 3 real askings. Turn the page when you are done.",
+   "glow": 100,
    "n": 128
   },
   {
@@ -2353,6 +2435,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. It has not failed a reader yet.",
+   "glow": 100,
    "n": 129
   },
   {
@@ -2451,6 +2534,7 @@
    "tier": "proven",
    "why": "a self-test, 10 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "An old art of the stage, tested each day before the sun is up.",
+   "glow": 100,
    "n": 135
   },
   {
@@ -2542,6 +2626,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 9 real asks in the benchmark",
    "flavor": "Proven 9 times over by those who asked, and kept among the stage. The void remembers each asking.",
+   "glow": 100,
    "n": 141
   },
   {
@@ -2558,6 +2643,7 @@
    "tier": "proven",
    "why": "a self-test, 7 real asks in the benchmark",
    "flavor": "7 who came with a need went away with an answer. The page is theirs.",
+   "glow": 100,
    "n": 142
   },
   {
@@ -2574,6 +2660,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 15 real asks in the benchmark",
    "flavor": "Of the stage; set down here after it answered true 15 times. Say the words below and it answers.",
+   "glow": 100,
    "n": 143
   },
   {
@@ -2605,6 +2692,7 @@
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
    "flavor": "5 who came with a need went away with an answer. The page is theirs.",
+   "glow": 100,
    "n": 145
   },
   {
@@ -2620,6 +2708,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 146
   },
   {
@@ -2635,6 +2724,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 1 real ask in the benchmark",
+   "glow": 100,
    "n": 147
   },
   {
@@ -2730,6 +2820,7 @@
    "tier": "proven",
    "why": "a self-test, 11 browser-suite mentions, 9 real asks in the benchmark",
    "flavor": "9 who came with a need went away with an answer. The page is theirs.",
+   "glow": 100,
    "n": 152
   },
   {
@@ -2776,6 +2867,7 @@
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 5 real askings.",
+   "glow": 100,
    "n": 155
   },
   {
@@ -2792,6 +2884,7 @@
    "tier": "proven",
    "why": "a self-test, 10 browser-suite mentions, 37 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. The void remembers each asking.",
+   "glow": 100,
    "n": 156
   },
   {
@@ -2823,6 +2916,7 @@
    "tier": "proven",
    "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark",
    "flavor": "10 who came with a need went away with an answer. The page is theirs. So it is written.",
+   "glow": 100,
    "n": 158
   },
   {
@@ -2839,6 +2933,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 7 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 7 real askings stand behind this page. Ask, and see.",
+   "glow": 100,
    "n": 159
   },
   {
@@ -2871,6 +2966,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. Ask, and see.",
+   "glow": 100,
    "n": 161
   },
   {
@@ -2887,6 +2983,7 @@
    "tier": "proven",
    "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 7 real askings stand behind this page. The void remembers each asking.",
+   "glow": 100,
    "n": 162
   },
   {
@@ -2902,6 +2999,7 @@
    ],
    "tier": "tested",
    "why": "6 real asks in the benchmark",
+   "glow": 100,
    "n": 163
   },
   {
@@ -2918,6 +3016,7 @@
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Among the void itself it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "glow": 100,
    "n": 164
   },
   {
@@ -2995,6 +3094,7 @@
    "tier": "proven",
    "why": "2 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Asked 3 times in earnest, and never once left unanswered. Let the stage be the proof.",
+   "glow": 100,
    "n": 169
   },
   {
@@ -3011,6 +3111,7 @@
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. Let the stage be the proof.",
+   "glow": 100,
    "n": 170
   },
   {
@@ -3027,6 +3128,7 @@
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "Written by the hands that use it; 4 real askings stand behind this page. So it is written.",
+   "glow": 100,
    "n": 171
   },
   {
@@ -3043,6 +3145,7 @@
    "tier": "proven",
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Proven 3 times over by those who asked, and kept among the void itself. Turn the page when you are done.",
+   "glow": 100,
    "n": 172
   },
   {

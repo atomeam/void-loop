@@ -10,6 +10,7 @@
  */
 
 import { cleanNote } from '../lib/plan.js';
+import { readLog, entryOf, weigh } from '../lib/practice.js';
 const WEEKDAYS = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 const MON_RE = String.raw`(?:jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|june?|july?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)`;
@@ -275,15 +276,18 @@ async function engineSteps(goal) {
     const steps = Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
     const timer = Number.isInteger(j.timer) && j.timer >= 5 && j.timer <= 60 ? j.timer : null;
     const note = typeof j.note === 'string' && cleanNote(j.note).length >= 3 ? cleanNote(j.note) : null;
-    return steps ? { steps, timer, practice: !!timer && j.practice === true, learn: j.learn === true, note } : null;
+    // asked by Void: Clef's yes/no (a daily practice, so a timer) is weighed against how this goal's earlier sessions went (lib/practice.js)
+    let w = { minutes: timer, why: '' };
+    try { w = weigh(timer, j.practice === true, entryOf(readLog(localStorage), goal)); } catch (_) {}
+    return steps ? { steps, timer: w.minutes, quality: w.why, practice: !!timer && j.practice === true, learn: j.learn === true, note } : null;
   } catch (_) { return null; }
 }
 // the fixed shapes besides the checklist that an engine reply may add: a practice timer, run as the timer's own ask
 // (practice: Clef called the goal a daily practice, and the card says so)
-const timerAsk = (min, practice) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min, practice });
+const timerAsk = (min, practice, quality, goal) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min, practice, quality, goal });
 // and a note to self, run as the sticky's own ask
 const noteAsk = (note) => ({ piece: 'note', ask: 'add a sticky that says ' + note });
-const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
+const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice, got.quality, got.goal)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
 async function run(text, api) {
   const hist = historyAskOf(text);
   if (hist) return historyRun(hist, api);
@@ -292,6 +296,7 @@ async function run(text, api) {
     const open = openPlanOf(text);
     if (!open) return 'none';
     const got = await engineSteps(open.goal), steps = got && got.steps;
+    if (got) got.goal = open.goal;
     if (!steps) { if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute'); return 'intent'; }
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
     if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
@@ -299,6 +304,7 @@ async function run(text, api) {
     plan = { goal: open.goal, who: open.who, deadline: null, steps: steps.map((t) => ({ text: t, date: null })), asks, open: true, learn: got.learn };
   } else if (plan.generic && !OPEN_NOT.test(plan.goal)) { // a dated plan with only the generic steps: the engine's, when it has them
     const got = await engineSteps(plan.goal);
+    if (got) got.goal = plan.goal;
     if (got) { plan = withSteps(plan, got.steps); plan.asks.push(...extras(got)); plan.learn = got.learn; }
   }
   const st = api.stage || {};
@@ -310,6 +316,8 @@ async function run(text, api) {
     // a sticky the plan put up says what it is (Void's ask): a note to keep in mind, or a message not yet sent
     const role = a.piece === 'note' ? 'note' : a.piece === 'draft' ? 'draft' : '';
     if (role) for (const [id, t] of Object.entries(st.things())) if (!had.has(id) && t && t.kind === 'sticky') t.role = role;
+    // a practice timer knows its goal, so at 0:00 it can ask whether the session met it (skills/timer.js, lib/practice.js)
+    if (a.piece === 'timer') for (const [id, t] of Object.entries(st.things())) if (!had.has(id) && t && t.kind === 'timer') t.goal = plan.goal;
   }
   const live = st.things();
   const ids = Object.keys(live).filter((id) => !before.has(id));
@@ -325,7 +333,7 @@ async function run(text, api) {
   if (ids.length) keepPlan({ goal: plan.goal, at: new Date().toISOString(), pieces: ids.map((id) => live[id].kind), things: ids.map((id) => JSON.parse(JSON.stringify(live[id]))) }); // with their places
   // Clef called it a skill to learn (lib/plan.js withLearnStep), so the engine's steps open with finding a teacher
   const taught = plan.learn ? ' · a skill to learn, so it starts with finding a teacher or a course' : '';
-  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? (a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
+  const pieces = plan.asks.map((a) => a.piece === 'draft' ? 'a draft to ' + cap(plan.who) : a.piece === 'timer' ? ((a.practice ? 'a daily practice, so a ' + a.minutes + ' minute timer' : 'a ' + a.minutes + ' minute practice timer') + (a.quality ? ' (' + a.quality + ')' : '')) : a.piece === 'note' ? 'a note to self' : a.piece).join(', ');
   // one "undo" takes the whole plan back (void.html snapshots only the asks the person made), and the card says so
   const undoAll = ids.length > 1 ? ' · say undo to take it all back' : '';
   if (api.say && plan.open) { api.say('planned "' + plan.goal + '" · ' + pieces + (ids.length > 1 ? ' · one group' : '') + (plan.who ? ' · nothing sent' : '') + ' · steps from the answer engine, check them' + taught + undoAll); return 'intent'; }

@@ -15,10 +15,10 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
 await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
 await page.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
-await page.goto('http://127.0.0.1:' + server.address().port + '/'); await page.waitForTimeout(600);
+await page.goto('http://127.0.0.1:' + server.address().port + '/'); await page.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {}); await page.waitForTimeout(600); // the skills are in before the first ask (a loaded machine outran the fixed wait)
 for (const a of asks) {
   errs.length = 0; const before = await page.evaluate(() => document.body.innerText);
-  await page.fill('#input', a); await page.keyboard.press('Enter'); await page.waitForTimeout(1500);
+  await page.fill('#input', a); await page.keyboard.press('Enter'); await page.waitForTimeout(process.env.ASK_WAIT ? +process.env.ASK_WAIT : 1500);
   const said = await page.$eval('#whisper', (e) => e.textContent).catch(() => '');
   const last = (await page.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } })).filter((x) => String(x.ask).trim() === a.trim()).pop();
   const after = await page.evaluate(() => document.body.innerText);

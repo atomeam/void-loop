@@ -172,6 +172,9 @@ export function flavorOf(name, familyName, why, tier, taken = new Set()) {
  *   core      the page's own built-in asks ([{ name, description, examples }], functions/tools.json.js CORE)
  * Returns { chapters, pages, index, totals, unplaced }: every member skill on exactly one page, in the family that holds it.
  */
+/** a skill page glows when families.json says more than 9 in 10 of the benchmark asks routed to it passed (asked by Void: a 'proven' glow on the book page, success_rate > 0.9). Pure. */
+export const GLOW_ABOVE = 0.9;
+export const glows = (rate) => typeof rate === 'number' && rate > GLOW_ABOVE && rate <= 1;
 export function compose({ names = [], read = () => '', families = { families: [] }, games = [], minis = [], readMini = () => '', miniDoc = {}, core = [] }) {
   // a family skill (time, dates, games) opens into its members; each member is a page
   const members = names.flatMap((n) => partsOf(read(n)) || [n]);
@@ -183,7 +186,7 @@ export function compose({ names = [], read = () => '', families = { families: []
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
     const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
     return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of V01D.',
-      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}) });
+      examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
@@ -289,7 +292,7 @@ export function glyphSvg(p, size = 88) {
     const m = motifs[p.chapter] || motifs[p.kind === 'skill' ? 'stage' : 'front'];
     inner = (m || motifs.front)(r);
   }
-  return '<svg class="gglyph" viewBox="0 0 88 88" width="' + size + '" height="' + size + '" role="img" aria-label="' + esc(name) + '" style="color:hsl(' + hue + ' 70% 72%);' + style + '">' + inner + '</svg>';
+  return '<svg class="gglyph" viewBox="0 0 88 88" width="' + size + '" height="' + size + '" role="img" aria-label="' + esc(name) + '" style="color:hsl(' + hue + ' 70% 72%);' + (p.glow ? 'filter:drop-shadow(0 0 7px hsl(' + hue + ' 90% 62%));' : '') + style + '"' + (p.glow ? ' data-glow="' + p.glow + '"' : '') + '>' + inner + '</svg>';
 }
 
 /** a chapter opener's visual: a composition of its pages' glyphs, as many as fit. Pure. */
