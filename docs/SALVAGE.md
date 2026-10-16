@@ -86,7 +86,7 @@ The workflows that only run by hand (`cf-scope.yml`, `model-bench.yml`, `rehears
 
 - **sky-weather, time, dates** (`lib/skill-family.js`): 20 skills folded into 3 routing entries. Nothing retired and nothing lost: every member file stays as a part of its family, with its examples, near misses and tests, and the page still logs each by its own name. Then `sky-weather` folded into `time` (one family for time, weather and sky); its file only grouped imports and is gone. If a family is ever undone, give each member its old order file back (ranks in git history of `void-live-deploy/skills/order/`).
 
-- **The page's own weather page** (`void.html`, `showWeather`, `wantsWeather`, `weatherPlace`, `hereCoords` and the `WX` weather-code table, 57 lines; taken out of the page 2026-10-16 in the performance pass, in git history before that commit): the first weather answer (Open-Meteo, geocoding, the device's own position for "weather here"). Nothing called it any more: `skills/weather.js` answers every weather ask. Its "weather here" branch (`navigator.geolocation`, no place named) is the one piece the skill could still take.
+- **The page's own weather page** (`void.html`, `showWeather`, `wantsWeather`, `weatherPlace`, `hereCoords` and the `WX` weather-code table, 57 lines; taken out of the page 2026-10-16 in the performance pass, in git history before that commit): the first weather answer (Open-Meteo, geocoding, the device's own position for "weather here"). Nothing called it any more: `void-live-deploy/skills/weather.js` answers every weather ask. Its "weather here" branch (`navigator.geolocation`, no place named) is the one piece the skill could still take.
 
 
 ## Built, held back (2026-10-15)
