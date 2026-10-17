@@ -1043,5 +1043,12 @@
   "of": 29,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
+ },
+ {
+  "at": "2026-10-17T17:36:35Z",
+  "passed": 20,
+  "of": 30,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
  }
 ]
