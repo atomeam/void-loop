@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (see-repos helper) · helper/see-repos · V01D can look at a public GitHub repo: skills/repo.js, /api/repo, lib/repo-look.js (owner: "make v01d able to see repos") · 2026-10-17
 - Claude (asks-services agent) · helper/asks-services · V01D's services asks: approval card → lasting task, state skill, review-learn clusters, diff peek, dep scanner, skills-check re-registration, automerge safety-check + merge-log card, Game Strength, ladder → growth card, Service Health, Contextual Shortcut, country ↔ distance, readable self-knowledge; canon motto declined · 2026-10-16 18:30 UTC
 - Claude (rules engine) · helper/card-duel · frontier #35: lib/rules-engine.js, rule sets as data, "duel with mana and tribute rules", proposeRule · 2026-10-16
 

@@ -47,6 +47,7 @@ export const LIMITS = {
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   digest: { rpm: 6, body: 70000 }, // V01D reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
   video: { rpm: 30, body: 0 }, // V01D's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
+  repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   markets: { rpm: 30, body: 0 }, // the crypto card's price list (functions/api/markets.js): GET, edge-cached two minutes, no KV
   hook: { rpm: 60, body: 64000 },

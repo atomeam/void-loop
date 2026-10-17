@@ -12,7 +12,7 @@
  "smoke_at": "2026-10-16",
  "totals": {
   "experiment": 2,
-  "tested": 57,
+  "tested": 58,
   "checked": 29,
   "proven": 85
  },
@@ -956,11 +956,18 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 10,
+    "tested": 11,
     "checked": 2,
     "proven": 8
    },
    "skills": [
+    {
+     "name": "repo",
+     "tier": "tested",
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "digest",
      "tier": "tested",
