@@ -57,7 +57,7 @@ export function readCard(el) {
 /** what the card's picture is drawn from: the frame's own numbers (el._vcard, set by keep) and the card's text. */
 export function imageData(el, d) {
   const c = el._vcard || {}, text = d.b || '';
-  return { title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill };
+  return { art: el._vcForge || '', nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill };
 }
 const download = (blob, name) => { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
 /** the buttons on a card: copy card (text and picture), save card (the picture), save text. Idempotent. */

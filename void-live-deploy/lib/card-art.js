@@ -8,6 +8,7 @@
 // glyph inked. The same idea key always draws the same card (a seeded hash of the key); rarity changes the ink weight and the foil, never the
 // subject. In October (or ?season=halloween) the same art adds fog, bats, a candle-flicker glow, more eyes and a pumpkin-orange rim.
 // Pure: artSvg() returns one SVG string (viewBox set, no script, no link, no image file, no text) that works inline and as a standalone image.
+import { motifsFor, motifSvg } from './card-subject.js';
 import { seedOf, glyphSvg } from './guide.js';
 
 const INK = '#0a0a10';
@@ -298,11 +299,12 @@ function gearAt(X, cx, cy, R, n, rot, fill) {
 // ---- the whole picture ----
 /** the art's body (defs first) for a w x h box: embed it in any <svg viewBox="0 0 w h"> */
 export function artInner(card = {}, { w = 520, h = 170 } = {}) {
+  const mots = motifsFor(card.nouns); // what the answer is about (lib/card-subject.js): drawn instead of the generic plate, and the haunted skin steps aside
   const kind = KINDS.includes(card.kind) ? card.kind : kindWord(card.kind);
   const key = String(card.key || card.name || kind), rk = rarityKey(card.rarity);
   // card.ink (lib/art-meta.js: a film's or song's decade): the line quality of another rarity's look, the foil and stars stay the card's own rating
   const ik = card.ink && card.ink in RARITY_LOOK ? card.ink : '', RL = ik ? { ...RARITY_LOOK[rk], ink: RARITY_LOOK[ik].ink, wob: RARITY_LOOK[ik].wob, dens: RARITY_LOOK[ik].dens, w: RARITY_LOOK[ik].w } : RARITY_LOOK[rk];
-  const hot = card.season === 'halloween';
+  const hot = card.season === 'halloween' && !mots.length;
   const hue = Number.isFinite(+card.hue) ? Math.round(+card.hue) % 360 : seedOf(key) % 360;
   const seed = seedOf(key + '|' + kind), r = rng(seed);
   const id = 'a' + seed.toString(36) + (hot ? 'h' : 'b') + rk[0] + (ik ? 'i' + ik[0] : '') + (kind === 'Game' && card.glyph ? 'g' : '');
@@ -331,7 +333,8 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
   }
   defs += '<filter id="' + id + 'r" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="' + (seed % 50) + '" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="' + RL.wob + '" result="d"/><feDropShadow in="d" dx="3.5" dy="4.5" stdDeviation="0" flood-color="' + INK + '" flood-opacity=".55"/></filter>';
   const plate = '<g filter="url(#' + id + 'r)" style="opacity:calc(0.3 + 0.7 * var(--ink-density,' + RL.dens + '))" stroke="' + RL.ink + '" stroke-width="' + F(2.4 * RL.w) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">' + (PLATES[plateKind] || PLATES.Idea)(X) + '</g>';
-  body += '<g transform="translate(' + F(ox + (flip ? 320 * s : 0)) + ' ' + F(oy) + ')scale(' + F(flip ? -s : s) + ' ' + F(s) + ')">' + plate + '</g>';
+  if (mots.length) body += motifSvg(mots, w, h, { P: X.P, L: X.L, G: '#f3d77a', ink: RL.ink, sw: RL.w });
+  else body += '<g transform="translate(' + F(ox + (flip ? 320 * s : 0)) + ' ' + F(oy) + ')scale(' + F(flip ? -s : s) + ' ' + F(s) + ')">' + plate + '</g>';
   // glitch tears and scanlines
   for (let i = 0, n = hot ? 4 : 3; i < n; i++) {
     const y = r() * h, tw = (0.2 + r() * 0.45) * w, tx = r() * (w - tw), th = (1.2 + r() * 2.6) * unit;
