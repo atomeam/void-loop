@@ -4180,7 +4180,9 @@ say('nothing selected to remove');
     import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
       // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
       // page's own files on a first visit (issues #1022, #1028: a slow first load); a card opened before then is framed again when they arrive
-      const stats = () => m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }), idle = () => (window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600));
+      // how long that idle wait lasted is kept as a measure ('card-stats-idle') the site tester reads (asked by Void: flag a wait over 500 ms)
+      const stats = () => { try { performance.measure('card-stats-idle', 'card-stats-wait'); } catch (_) {} return m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); };
+      const idle = () => { try { performance.mark('card-stats-wait'); } catch (_) {} return window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600); };
       if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }).catch(() => {});
     let ratingsP = null;
     function ratingNote(who, el) {

@@ -1722,6 +1722,11 @@
       "words": "Create a 'visual consistency' check in the builder's CI that flags any saved card where the centered image exceeds the card's aspect ratio bounds.",
       "ledgerAt": "2026-10-17T21:01:46Z",
       "why": "built: CI sweeps every picture shape from 1:20 to 20:1 through picturePlan: a whole picture never exceeds the saved card art box and sits in its centre (tools/card-image.test.mjs, run by checks.mjs)"
+    },
+    {
+      "words": "Add a threshold-based alert to the site tester that flags when the 'idle' period for loading card stats lasts longer than 500ms.",
+      "ledgerAt": "2026-10-17T21:16:55Z",
+      "why": "built: void.html measures card-stats-idle (performance.measure from the idle wait to the stats load); tools/site-test.mjs flags a wait over limits.statsIdleMs (500) on the case line, a note, never a failure"
     }
   ]
 }
