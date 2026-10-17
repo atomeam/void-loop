@@ -6585,8 +6585,8 @@ try {
     const standing = fs.readFileSync(path.join(repo, 'STANDING.md'), 'utf8');
     check('router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md',
       dn.answer === 'Gemma: a short answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
-      // the rule as Atom rewrote it (86bb31e): Gumroad earnings are the budget, a spend waits for a yes, free models until the first sale
-      && /Earnings[^.]*are Void's budget/.test(standing) && /A spend still waits for a yes on the confirm line/.test(standing) && /Until the first sale, Void stays on free models and records when a stronger model would have been used/.test(standing), rowOf(eDown, HARDQ).outcome);
+      // the rule as the owner rewrote it (5a66448, 2c9a257, 2026-10-17): earnings are the budget, V01D spends its own with no yes, free tiers until the first sale
+      && /Earnings[^.]*are Void's budget/.test(standing) && /V01D spends its own money, no yes needed/.test(standing) && /Until the first sale there is no budget: Void stays on free tiers and free models/.test(standing), rowOf(eDown, HARDQ).outcome);
     // VOID_ANSWER_MODELS=off turns the models off: main's open-web answers and rules-only fixes, no Workers AI call, no D1 write
     const cOff = calls.length, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' }, eOffY = { ...envOf(), VOID_ANSWER_MODELS: ' OFF ' };
     const d1 = await ask(HARDQ, eOffX), d2 = await ask('set a timer for 10 minutes', eOffY);

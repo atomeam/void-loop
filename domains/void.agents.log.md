@@ -832,3 +832,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T11:36:41Z | claude | fix | Art Forge retries busy and rate-limited paints, skips loading-state subjects (D1 void_art had 3 rows: incident autopsy, rt, looking)
 2026-10-17T11:39:42Z | claude | build | asked by Void: event countdown says where its date came from and dims a confidence badge for an infobox-only date; skill-confidence visualizer linked as built (08:27:38Z)
 2026-10-17T11:41:53Z | claude | fix | site tester early read (re-landed: it missed #1018's merge); #1029 'test me on that' passes with it
+2026-10-17T11:56:24Z | claude | fix | Main green again: the book's contents page sets tighter past ten chapters, so the thirteenth (What's new) sits above the page number; the router check reads the money rule in the owner's current words (V01D spends its own money, no yes needed; no budget before the first sale)
