@@ -2,13 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T09:50:29.404Z",
-   "sha": "902ecad769620604845c1e8a6f5d8766005887aa",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39021709000",
+   "at": "2026-10-17T09:51:08.444Z",
+   "sha": "95164ec9caef7fdf87f0e19b0bef2aeeb5c8d16b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39022002189",
    "suite": "browser suite on main",
    "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
+    "convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; \"temperature converter\" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, \"a converter for 5 miles to km\" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and \"close the converter\" puts it away"
    ]
   },
   {
