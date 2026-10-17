@@ -6,7 +6,7 @@
  * the clock (lib/event-date.js eventAsk leaves them out).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { eventAsk, searchWords, announcedDate, announcedFrom, left } from '../lib/event-date.js';
+import { eventAsk, searchWords, announcedFrom, confidenceOf, left } from '../lib/event-date.js';
 
 const WIKI = 'https://en.wikipedia.org';
 const UA = { headers: { 'Api-User-Agent': 'V01D/1.0 (https://a-to-mind.com)' } };
@@ -44,7 +44,7 @@ async function run(text, api) {
   const s = await summaryOf(searchWords(ask.event));
   if (!el.isConnected) return 'event-countdown';
   // the summary is the article's first paragraph, which often leaves the date to later in the lead or to the infobox (the live GTA VI card)
-  let when = s && announcedDate(s.extract);
+  let when = s && announcedFrom({ extract: s.extract });
   if (s && !when) {
     const api = (q) => fetch(WIKI + '/w/api.php?' + q + '&format=json&formatversion=2&origin=*&titles=' + encodeURIComponent(s.title), UA).then((r) => r.json()).catch(() => null);
     const sec0 = (t) => fetch(WIKI + '/w/api.php?action=parse&prop=wikitext&section=0&format=json&formatversion=2&origin=*&page=' + encodeURIComponent(t), UA).then((r) => r.json()).catch(() => null);
@@ -57,10 +57,12 @@ async function run(text, api) {
   el.querySelector('h2').textContent = 'Until ' + s.title;
   const src = '<div class="src">Source: <a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title) + ' on Wikipedia</a>, read just now</div>';
   if (!when) { body.innerHTML = '<p>' + esc(s.title) + ' has no announced date still ahead on its Wikipedia page, so there is nothing to count down to yet.</p>' + src; return 'event-countdown'; }
+  const conf = confidenceOf(when.from); el.dataset.dateFrom = when.from; // the card says, and keeps, which part of the page the date came from
   const day = when.date.toLocaleDateString(undefined, { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZone: 'UTC' });
   body.innerHTML = '<p class="ec-big" style="font-size:30px;font-weight:600;margin:6px 0"></p><p class="ec-rest" style="opacity:.8;margin:0 0 10px"></p>'
     + '<p>' + esc(s.title) + ': ' + esc(day) + ' (counted to the start of that day where you are; the hour can differ by region).</p>'
-    + '<blockquote style="margin:8px 0;opacity:.85">' + esc(when.sentence.slice(0, 280)) + '</blockquote>' + src;
+    + '<blockquote style="margin:8px 0;opacity:.85">' + esc(when.sentence.slice(0, 280)) + '</blockquote>'
+    + '<p class="ec-sure" data-from="' + esc(when.from) + '" data-sure="' + esc(conf.sure) + '" style="font-size:12px;margin:4px 0;opacity:' + (conf.sure === 'high' ? '.95' : '.6') + '"><span style="display:inline-block;padding:1px 8px;border-radius:9px;border:1px solid currentColor;margin-right:6px">' + (conf.sure === 'high' ? 'sure' : 'less sure') + '</span>' + esc('Date ' + conf.label) + '</p>' + src;
   const big = body.querySelector('.ec-big'), rest = body.querySelector('.ec-rest');
   const tick = () => {
     if (!el.isConnected) return clearInterval(timer);

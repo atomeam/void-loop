@@ -90,5 +90,14 @@ export function infoboxDates(wikitext) {
 export function announcedFrom({ extract = '', lead = '', wikitext = '' } = {}, now = new Date()) {
   const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
   const box = infoboxDates(wikitext).filter((d) => d.date.getTime() >= today).sort((a, b) => a.date - b.date)[0];
-  return announcedDate(extract, now) || announcedDate(lead, now) || box || null;
+  // which part of the page gave the date rides along (asked by Void: "log when it has to resort to infobox scraping"; "a confidence badge
+  // that dims if the date was pulled from an infobox"): the summary and the lead are prose an editor wrote as a sentence; the infobox is a field
+  const tag = (d, from) => (d ? { ...d, from } : null);
+  return tag(announcedDate(extract, now), 'summary') || tag(announcedDate(lead, now), 'lead') || tag(box, 'infobox') || null;
+}
+
+/** how sure the card is of a date by where it came from: { label, sure } (asked by Void: a confidence badge). Pure. */
+export function confidenceOf(from) {
+  return from === 'summary' ? { label: 'from the article\'s opening lines', sure: 'high' } : from === 'lead' ? { label: 'from the article\'s introduction', sure: 'high' }
+    : from === 'infobox' ? { label: 'from the article\'s infobox only (a field, not a sentence): check it', sure: 'lower' } : { label: 'no date found', sure: 'none' };
 }

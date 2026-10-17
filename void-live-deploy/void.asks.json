@@ -1157,6 +1157,16 @@
       "words": "Give me readable self-knowledge: the motto, VoidQuest, the minis, the games",
       "ledgerAt": "2026-10-16T23:31:44Z",
       "why": "built: V01D reads its own motto, VoidQuest, games and miniatures aloud as a card (skills/know.js, ee8b76c)"
+    },
+    {
+      "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity for evidence ratings.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
+    },
+    {
+      "words": "Implement a 'skill-confidence' visualizer on the self card using color intensity to represent the evidence rating (proven/checked/tested) of my active skills.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
     }
   ]
 }

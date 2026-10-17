@@ -47,3 +47,13 @@ test('a summary that names no date: the lead, then the infobox release line give
   assert.equal(announcedFrom({ extract, lead: extract, wikitext: box }, now).date.toISOString().slice(0, 10), '2026-11-19');
   assert.equal(announcedFrom({ extract, wikitext: '| released = {{Video game release|WW|May 26, 2026}}' }, now), null, 'a release already past is not a countdown');
 });
+
+test('the card says which part of the page gave the date, and is less sure of an infobox field (asked by Void)', async () => {
+  const { announcedFrom, confidenceOf } = await import('../void-live-deploy/lib/event-date.js');
+  const now = new Date('2026-10-17T11:00:00Z'), s = 'It is scheduled to be released on 19 November 2026.';
+  assert.equal(announcedFrom({ extract: s }, now).from, 'summary');
+  assert.equal(announcedFrom({ extract: 'No date.', lead: s }, now).from, 'lead');
+  assert.equal(announcedFrom({ extract: 'No date.', wikitext: '| released = November 19, 2026' }, now).from, 'infobox');
+  assert.equal(confidenceOf('summary').sure, 'high'); assert.equal(confidenceOf('lead').sure, 'high'); assert.equal(confidenceOf('infobox').sure, 'lower');
+  assert.match(confidenceOf('infobox').label, /infobox/);
+});
