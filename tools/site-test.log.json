@@ -1058,5 +1058,12 @@
   "kind": "file",
   "key": "site | console: Access to fetch at 'https://www#thesportsdb#com/api",
   "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
+ },
+ {
+  "at": "2026-10-17T20:35:41Z",
+  "passed": 29,
+  "of": 31,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
  }
 ]

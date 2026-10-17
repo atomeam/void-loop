@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 28,
- "runsTotal": 141,
+ "cases": 29,
+ "runsTotal": 142,
  "kinds": {
-  "grow": 21,
+  "grow": 22,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T20:35:41Z",
+   "passed": 29,
+   "of": 31,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
+  },
   {
    "at": "2026-10-17T19:47:49Z",
    "passed": 29,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T09:43:30Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"bring it to the front\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -284,9 +284,9 @@
   "skill:zoom-figure": "2026-10-17T07:32:11Z",
   "skill:deps": "2026-10-17T08:11:24Z",
   "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
-  "skill:bench": "2026-10-17T01:37:54Z",
-  "skill:collide": "2026-10-17T01:37:54Z",
-  "skill:duel": "2026-10-17T01:37:54Z",
+  "skill:bench": "2026-10-17T20:35:41Z",
+  "skill:collide": "2026-10-17T20:35:41Z",
+  "skill:duel": "2026-10-17T20:35:41Z",
   "skill:friction": "2026-10-17T01:37:54Z",
   "skill:kept": "2026-10-17T02:25:35Z",
   "skill:know": "2026-10-17T02:25:35Z",
