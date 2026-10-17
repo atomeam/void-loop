@@ -1022,5 +1022,12 @@
   "of": 26,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
+ },
+ {
+  "at": "2026-10-17T12:21:39Z",
+  "passed": 19,
+  "of": 27,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"draw a line\" (skill:shape)"
  }
 ]
