@@ -60,6 +60,13 @@ export function wantsCorrection(lower) {
   return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b|made\s+a\s+mistake)/.test(String(lower || '').toLowerCase());
 }
 
+/** the answer a select value names: null for the empty placeholder, a non-number or an index out of range. Pure. */
+export function chosenAnswer(recent, value) {
+  if (value === '' || value == null) return null;
+  const i = Number(value);
+  return Number.isInteger(i) && i >= 0 && Array.isArray(recent) && recent[i] ? recent[i] : null;
+}
+
 /**
  * Put the form into `root` (a DOM element) with the document `doc`. Everything typed or read goes in with textContent. `onSaved(list)` runs
  * after a correction is kept. Returns { select, box, save }. The only thing it writes is CORRECTIONS.key.
@@ -73,7 +80,9 @@ export function mountForm(root, doc, { storage, log, onSaved } = {}) {
   const note = el('div', { className: 'sub' });
   const save = el('button', { type: 'button', className: 'tr-copy', textContent: 'Tell V01D' });
   save.addEventListener('click', () => {
-    const r = recent[+select.value] || {}, res = addCorrection({ ask: r.ask, skill: r.skill, text: box.value }, storage);
+    const r = chosenAnswer(recent, select.value);
+    if (recent.length && !r) { note.textContent = 'Pick which answer was wrong first.'; return; } // the placeholder is not an answer: save nothing
+    const res = addCorrection({ ask: r && r.ask, skill: r && r.skill, text: box.value }, storage);
     note.textContent = res.ok ? 'Kept on this device, apart from how your V01D looks. Thank you.' : 'Write what went wrong first.';
     if (res.ok) { box.value = ''; if (onSaved) onSaved(res.list); }
   });
@@ -106,11 +115,11 @@ export function groupByFamily(list, fam) {
 }
 
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-/** the log's markup; every kept word goes through esc (it is untrusted). An empty log says so and shows no number. Pure. */
-export function logHtml(list, fam, esc = escHtml) {
+/** the log's markup; every kept word goes through esc (it is untrusted). An empty log says so and shows no number. A "Suggest fix" button (lib/correction-fix.js) is drawn only when `owner` is true. Pure. */
+export function logHtml(list, fam, esc = escHtml, { owner = false } = {}) {
   const groups = groupByFamily(list, fam), total = groups.reduce((n, g) => n + g.items.length, 0);
   if (!total) return '<div class="vh">Correction log</div><div class="sub" data-corr-empty="1">No corrections yet. When you tell me what I got wrong, it is listed here by family.</div>';
   return '<div class="vh">Correction log</div><div class="sub">' + esc(total) + ' kept on this device, by the family of the skill that answered.</div>'
     + '<ul class="v-asks" data-corr-log="1">' + groups.map((g) => '<li><details><summary>' + esc(g.name) + ' <span style="color:var(--ink-3)">(' + esc(g.items.length) + ')</span></summary><div class="v-meta">'
-      + g.items.map((c) => '<p>' + (c.ask ? esc(c.ask) + (c.skill ? ' <span style="color:var(--ink-3)">(' + esc(c.skill) + ')</span>' : '') + ': ' : '') + esc(c.text) + '</p>').join('') + '</div></details></li>').join('') + '</ul>';
+      + g.items.map((c) => '<p>' + (c.ask ? esc(c.ask) + (c.skill ? ' <span style="color:var(--ink-3)">(' + esc(c.skill) + ')</span>' : '') + ': ' : '') + esc(c.text) + (owner && c.skill && c.ask ? ' <button type="button" class="tr-copy" data-suggest-fix="' + esc(list.indexOf(c)) + '">Suggest fix</button><span data-fix-out></span>' : '') + '</p>').join('') + '</div></details></li>').join('') + '</ul>';
 }

@@ -11,6 +11,7 @@ import { runPick as pickMovie } from './movie.js';
 const PROMPT = 'Suggest 5 well-loved songs for someone to listen to right now, a mix of eras and genres. Reply with only a numbered list, one per line, exactly like: 1. Song Title - Artist';
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
 const SRC = (esc) => '<div class="src">Source: iTunes Search API · V01D plays only the 30 s official preview; the full song is on Apple Music or wherever you listen</div>';
+const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 
 async function lookup(m) {
@@ -35,7 +36,7 @@ async function runCard(m, api) {
   el.dataset.artKind = 'Song';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'media-pick';
-  el.innerHTML = songCard(f, esc); wire(el, f);
+  artMeta(el, f); el.innerHTML = songCard(f, esc); wire(el, f);
   return 'media-pick';
 }
 async function runMusic(api, chosen) {
@@ -53,6 +54,7 @@ async function runMusic(api, chosen) {
     + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
     + '<div><a href="#" data-ask="' + esc(musicAskText(f.title, f.artist)) + '"><b>' + esc(f.title) + '</b></a> · ' + esc(f.artist) + ' <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid var(--edge,#3a3a44)">' + (f.preview ? 'preview here' : 'links only') + '</span>'
     + '<div class="sub">' + esc([f.album, f.year, f.genre].filter(Boolean).join(' · ')) + '</div></div></div>';
+  artMeta(el, real[0]);
   el.innerHTML = real.length
     ? art(real[0], esc) + '<h2>Something to listen to</h2><div class="sub">' + (chosen ? 'I chose music for you · ' : '') + 'every song below was found in a real source; open one to hear the 30-second preview</div>' + real.map(row).join('')
       + (fake.length ? '<div class="sub">Not verified (no source knows them, so not shown as fact): ' + fake.map((f) => esc(f.title)).join(', ') + '</div>' : '') + SRC(esc)

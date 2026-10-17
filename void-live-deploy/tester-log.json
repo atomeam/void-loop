@@ -1,15 +1,71 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 121,
+ "runsTotal": 129,
  "kinds": {
   "grow": 15,
-  "file": 57,
+  "file": 60,
   "teach": 7,
   "tighten": 7,
-  "none": 35
+  "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:03:56Z",
+   "passed": 13,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+  },
+  {
+   "at": "2026-10-17T10:32:13Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"hide the sky pls\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T10:26:08Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T10:10:51Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T10:04:20Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T09:57:04Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T09:49:14Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T09:43:30Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"bring it to the front\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T09:37:26Z",
    "passed": 0,
@@ -93,62 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:05:32Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T07:56:04Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T07:48:48Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T07:42:31Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T07:32:11Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"zoom in\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T07:26:44Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T07:19:24Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T06:26:48Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -210,26 +210,26 @@
   "skill:appraise": "2026-10-17T09:37:26Z",
   "skill:joke": "2026-10-17T09:37:26Z",
   "skill:label": "2026-10-17T09:37:26Z",
-  "skill:layer": "2026-10-16T13:06:04Z",
-  "skill:light-look": "2026-10-16T13:06:04Z",
-  "skill:link": "2026-10-16T13:06:04Z",
-  "skill:list": "2026-10-16T13:54:16Z",
-  "skill:loan": "2026-10-16T13:54:16Z",
-  "skill:local-inference": "2026-10-16T13:54:16Z",
-  "skill:lock": "2026-10-16T14:38:42Z",
-  "skill:magnetize": "2026-10-16T14:38:42Z",
-  "skill:make": "2026-10-16T14:38:42Z",
-  "skill:markets": "2026-10-16T15:29:50Z",
-  "skill:memory": "2026-10-16T15:29:50Z",
-  "skill:moon": "2026-10-16T15:29:50Z",
-  "skill:motorbody": "2026-10-16T15:54:55Z",
-  "skill:news": "2026-10-16T15:54:55Z",
-  "skill:nightsky": "2026-10-16T15:54:55Z",
-  "skill:notepad": "2026-10-16T16:03:40Z",
-  "skill:nutrition": "2026-10-16T16:03:40Z",
-  "skill:ovulation": "2026-10-16T16:03:40Z",
-  "skill:part": "2026-10-16T16:16:40Z",
-  "skill:pdf-card": "2026-10-16T16:16:40Z",
+  "skill:layer": "2026-10-17T09:43:30Z",
+  "skill:light-look": "2026-10-17T09:43:30Z",
+  "skill:link": "2026-10-17T09:49:14Z",
+  "skill:list": "2026-10-17T09:49:14Z",
+  "skill:loan": "2026-10-17T09:49:14Z",
+  "skill:local-inference": "2026-10-17T09:57:04Z",
+  "skill:lock": "2026-10-17T09:57:04Z",
+  "skill:magnetize": "2026-10-17T10:04:20Z",
+  "skill:make": "2026-10-17T10:04:20Z",
+  "skill:markets": "2026-10-17T10:10:51Z",
+  "skill:memory": "2026-10-17T10:10:51Z",
+  "skill:moon": "2026-10-17T10:10:51Z",
+  "skill:motorbody": "2026-10-17T10:26:08Z",
+  "skill:news": "2026-10-17T10:26:08Z",
+  "skill:nightsky": "2026-10-17T10:32:13Z",
+  "skill:notepad": "2026-10-17T10:32:13Z",
+  "skill:nutrition": "2026-10-17T10:32:13Z",
+  "skill:ovulation": "2026-10-17T11:03:56Z",
+  "skill:part": "2026-10-17T11:03:56Z",
+  "skill:pdf-card": "2026-10-17T11:03:56Z",
   "skill:period": "2026-10-16T16:16:40Z",
   "skill:place": "2026-10-16T16:36:48Z",
   "skill:pong": "2026-10-16T16:36:48Z",
@@ -301,6 +301,10 @@
   "skill:movie": "2026-10-17T08:31:36Z",
   "skill:media-pick": "2026-10-17T08:44:50Z",
   "skill:music": "2026-10-17T08:50:25Z",
-  "skill:pick-for-me": "2026-10-17T09:15:36Z"
+  "skill:pick-for-me": "2026-10-17T09:15:36Z",
+  "skill:vector-field-mind": "2026-10-17T09:43:30Z",
+  "skill:repo": "2026-10-17T09:57:04Z",
+  "skill:incident-autopsy": "2026-10-17T10:04:20Z",
+  "skill:flow-canvas": "2026-10-17T10:26:08Z"
  }
 }

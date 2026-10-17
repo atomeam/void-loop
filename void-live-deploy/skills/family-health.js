@@ -13,7 +13,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { readUsed, usedWords, deadWeight } from '../lib/skill-use.js';
-import { familyDrivers } from '../lib/better.js';
+import { familyDrivers, velocityOf } from '../lib/better.js';
 export const FAMILIES_URL = '/skills/families.json';
 export const TIERS = ['proven', 'checked', 'tested', 'experiment']; // strongest first, the order of the bar
 // what each rating means, in the words of tools/families.mjs
@@ -107,9 +107,16 @@ export function driversHtml(esc, fam, better = null) {
     + '<div class="sub" style="font-size:12px">Points of the score, against the average skill: failing counts 0, barely checked half, the rest 1 (the friction part of the score).</div></div>';
 }
 
+/** one family's velocity in words, from lib/better.js velocityOf: improving, decaying or steady against about a day ago, or "no history yet". Pure. */
+export function velocityWords(v) {
+  if (!v) return 'velocity: no history yet';
+  const d = Math.round(v.delta * 10) / 10;
+  return 'velocity: ' + v.trend + (v.trend === 'steady' ? '' : ' (' + (d > 0 ? '+' : '\u2212') + Math.abs(d) + ' points)') + ' since about a day ago';
+}
+
 /** the whole card's body (below the title). Pure. */
 export function healthHtml(esc, fam, used = null, now = Date.now(), better = null) {
-  const H = healthRows(fam);
+  const H = healthRows(fam), vel = velocityOf(better, fam, now).byFamily;
   if (!H.rows.length) return '<p>The skill families could not be read just now. Ask again in a moment.</p>';
   const tile = (t) => '<div style="flex:1 1 0;min-width:64px"><div class="big" data-total="' + t + '" style="font-size:28px;line-height:1.1">' + H.totals[t] + '</div>'
     + '<div class="sub" style="font-size:12px;display:flex;align-items:center;gap:5px"><span aria-hidden="true" style="width:8px;height:8px;border-radius:2px;background:' + SHADE[t] + '"></span>' + t + '</div></div>';
@@ -121,6 +128,7 @@ export function healthHtml(esc, fam, used = null, now = Date.now(), better = nul
       + '<button type="button" aria-expanded="false" data-open="' + esc(r.id) + '" style="all:unset;box-sizing:border-box;display:block;width:100%;min-height:44px;padding:8px 0;cursor:pointer;border-top:1px solid rgba(255,255,255,.06)">'
       + '<span style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px"><b style="font-weight:600;color:var(--d-ink,#f2f4fb)">' + esc(r.name) + '</b>'
       + '<span class="sub" style="font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap">' + r.count.proven + ' of ' + r.total + ' proven <span aria-hidden="true">›</span></span></span>'
+      + '<span class="fh-velocity sub" data-velocity="' + esc(vel[r.id] ? vel[r.id].trend : 'none') + '" style="display:block;font-size:12px;margin:0 0 6px">' + esc(velocityWords(vel[r.id])) + '</span>'
       + bar(r.count, r.total, esc(r.name + ': ' + words(r.count)))
       + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '') + skillsHtml(esc, r, used, now) + '</div></div>').join('') + '</div>'
     + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The four kinds of evidence: a skill\'s own self-test, the browser suite, real asks in the everyday benchmark, and a live finding (a kept answer from the real outside service the skill wraps, a file in the repo, never a claim). '

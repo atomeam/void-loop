@@ -2334,6 +2334,21 @@ try {
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
+  // V01D sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
+  if (want("V01D sees a repo: a card from the live GitHub facts")) { const R = await fresh();
+    const facts = { name: 'acme/widget', description: 'A widget <img src=x onerror=window.__pwn=1> maker', url: 'https://github.com/acme/widget', language: 'JavaScript', stars: 42, forks: 3, license: 'MIT', branch: 'main', pushed: '2026-10-01', archived: false, topics: [], openIssues: 5, openPulls: 4, langs: [{ name: 'JavaScript', pct: 90 }, { name: 'HTML', pct: 10 }], commits: [{ sha: 'abcdef1', msg: 'fix: <b>bold</b> it', who: 'Ann', date: '2026-10-01' }], tree: [{ name: 'src', dir: true }, { name: 'README.md', dir: false }], treeTotal: 2, readme: 'Widget makes widgets from plain words.' };
+    const seen = [];
+    await R.ctx.route(/\/api\/repo\?/, (r) => { const q = decodeURIComponent(new URL(r.request().url()).searchParams.get('r')); seen.push(q); return r.fulfill(json(q === 'acme/widget' ? { ok: true, repo: facts } : { ok: false, kind: 'missing', say: 'I can only see public repos, and I could not find ' + q + ' on GitHub.' })); });
+    await R.ask('look at acme/widget', 400); await until(async () => /Recent commits/.test(await R.page()), 6000);
+    const card = await R.page(), pwn = await R.p.evaluate(() => window.__pwn === 1), hasImg = await R.p.$('.vpage.on .rp-sub img'), hasB = await R.p.$('.vpage.on .rp-com b');
+    const share = await R.p.$('.vpage.on .vc-share, .vpage.on [data-share], .vpage.on button');
+    await R.ask('what is in github.com/acme/private-thing', 400); await until(async () => /only see public repos/.test(await R.page()), 6000);
+    const miss = await R.page();
+    check('V01D sees a repo: "look at acme/widget" puts a card of the live facts (language mix, README opening, recent commits, top level, issue and PR counts) from /api/repo; the repo\'s own text is escaped, not run; a missing or private repo says it can only see public repos',
+      /acme\/widget/.test(card) && /JavaScript 90%/.test(card) && /Widget makes widgets/.test(card) && /abcdef1/.test(card) && /4 open PRs/.test(card) && /src\//.test(card) && /<img src=x/.test(card) && /<b>bold<\/b>/.test(card) && !pwn && !hasImg && !hasB && !!share
+        && JSON.stringify(seen) === '["acme/widget","acme/private-thing"]' && /only see public repos/.test(miss) && !R.errors.length,
+      JSON.stringify({ card: card.slice(0, 500), pwn, seen, miss: miss.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
@@ -2401,6 +2416,26 @@ try {
     check('field minds: the vector field mind card shows a live ink density that is also its CSS variable, the mind has thought at least once (gen above 0) with and without a Worker, the morph touches the card and not the page, sound stays off, and Seal keeps a record',
       out.length === 2 && good(out[0]) && good(out[1]) && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
   }
+  if (want("flow canvas: F-033 ink rides a paintable field, a mind evolves it in a Worker and on the page when workers are blocked, velocity morphs the ink's CSS shapes")) { // asked by Owner: F-033
+    const flowRun = async (F) => {
+      await F.ask('adaptive flow canvas', 900); await until(async () => !!(await F.p.$('.ff-flow-canvas canvas')), 8000);
+      const card = '.ff-flow-canvas', ds = (k) => F.p.$eval(card, (e, key) => e.dataset[key] || '', k);
+      await until(async () => +(await ds('gen')) >= 1, 12000);
+      const box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 40, box.y + 40); for (let i = 0; i < 12; i++) await F.p.mouse.move(box.x + 40 + i * 14, box.y + 60 + (i % 3) * 20); await F.p.waitForTimeout(300);
+      await F.p.$eval(card + ' .ff-ink-range', (e) => { e.value = '10'; e.dispatchEvent(new Event('input', { bubbles: true })); });
+      await F.p.click(card + ' .ff-edit'); await F.p.mouse.move(box.x + 100, box.y + 100); await F.p.mouse.down();
+      for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + 100 + i * 12, box.y + 100 + i * 4); await F.p.mouse.up(); await F.p.waitForTimeout(200);
+      return F.p.$eval(card, (e) => ({ version: e.dataset.version, sub: e.querySelector('.g-sub').textContent, gen: +e.dataset.gen, mind: e.dataset.mind, ink: e.dataset.ink, shape: e.dataset.inkradius || '', blobs: e.querySelectorAll('.ff-inks i').length,
+        status: e.querySelector('.ff-hud').textContent, sound: e.querySelector('.ff-sound').textContent, soundOff: e.querySelector('.ff-sound').disabled, seals: e.dataset.seal || '', pageFilter: getComputedStyle(document.body).filter }));
+    };
+    const A = await fresh(); const a = await flowRun(A);
+    const B = await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;'); const b = await flowRun(B);
+    check('flow canvas: the card carries its version tag, an ink-density control, ten CSS-shaped ink blobs whose corners follow local velocity, a mind that has run a generation, and paintable cells',
+      a.version === 'f033-1' && a.mind === 'worker' && /F-033/.test(a.sub) && a.gen >= 1 && /^\d+% \d+% \d+% \d+%$/.test(a.shape) && a.blobs === 10 && a.ink === '0.1' && /[1-9]\d* cells painted/.test(a.status) && a.pageFilter === 'none' && !A.errors.length, JSON.stringify({ a, errors: A.errors }));
+    check('flow canvas: with Worker and Web Audio blocked the mind falls back to the page (it still evolves), Sound says it is unavailable, and nothing throws',
+      b.mind === 'main' && b.gen >= 1 && b.soundOff && /unavailable/i.test(b.sound) && /cells painted/.test(b.status) && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
+    await A.ctx.close(); await B.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -3533,6 +3568,20 @@ try {
         && !!card && /On this device: \d+ of \d+ skills have answered here/.test(card.dead) && /kept in this browser only and never sent/.test(card.dead) && card.used.some((u) => u === 'not used here yet') && card.used.some((u) => /^last used here today$/.test(u)) && !F.errors.length,
       JSON.stringify({ written, card: card && { dead: card.dead, used: card.used.slice(0, 4) }, errors: F.errors }));
     await F.ctx.close(); }
+  // incident autopsy (asked by Void): the card reads the site's own incidents.json and says which skill family has the most failing checks recorded
+  if (want('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped')) { const F = await fresh({ phone: true });
+    const real = JSON.parse(fs.readFileSync(path.join(root, 'incidents.json'), 'utf8')).incidents;
+    await F.ask('incident autopsy', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 8000);
+    const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
+    check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
+      !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
+        && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
+    await F.ctx.close(); }
   // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
   // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
@@ -3693,6 +3742,30 @@ try {
     await K.ask('merge a cat and the moon', 900);
     const kept = await until(async () => /keep keys out/.test(await K.page()), 6000);
     check('V01D merge: a refusal from the route is shown kindly, with no card and no page errors', kept && !(await cardOfMerge(K)) && !K.errors.length, JSON.stringify(K.errors)); await K.ctx.close(); }
+  // The Art Forge (lib/card-forge.js, lib/art-rules.js, functions/api/card-art.js; owner, 2026-10-17: "the art should be of the subject of each card"): a cached picture fills a merged
+  // card's art box under the foil frame; an uncached answer card paints once by itself (one POST); a skill card paints by its name; the route down leaves the plate
+  if (want("V01D art forge: a cached picture fills the art box, an uncached answer card paints once by itself, a skill card paints by its name")) {
+    const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const forged = (P) => P.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const a = e && e.querySelector(':scope > .vc-art'); return e && a ? { img: (a.querySelector('.vc-forge-img') || {}).src || '', btn: (a.querySelector('.vc-forge-btn') || {}).textContent || '', plate: !!a.querySelector('svg'), title: (e.querySelector('h2') || {}).textContent || '' } : null; });
+    const mergeBody = JSON.stringify({ name: 'Pizza Singularity', line: 'Every slice bends the light around it.', cached: false, power: 99, resistance: 99, income: 9, cost: 0, depth: 40, tier: 'proven' });
+    const A = await fresh(); const posts = [];
+    await A.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
+    await A.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await A.ask('merge a pizza and a black hole', 900);
+    const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000);
+    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind and rarity only, then the picture fills the art box over the plate', !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'kind,rarity,subject' && !A.errors.length, JSON.stringify({ shown, posts, errors: A.errors }));
+    await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
+    const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
+    check('V01D art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();
+    const C = await fresh(); await C.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
+    await C.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX, cached: true }) }));
+    await C.ask('merge a pizza and a black hole', 900);
+    const hit = await until(async () => { const f = await forged(C); return f && f.title === 'Pizza Singularity' && f.img ? f : null; }, 8000);
+    check('V01D art forge: a picture already in the cache shows straight away, with no button and no page errors', !!hit && hit.img === PX && !hit.btn && !C.errors.length, JSON.stringify({ hit, errors: C.errors })); await C.ctx.close();
+    const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody })); await D.ctx.route(/\/api\/card-art/, (r) => r.abort());
+    await D.ask('merge a pizza and a black hole', 900);
+    const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
+    check('V01D art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
   if (want("V01D cards: a skill that earned a higher rating glows once and says so, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
@@ -6609,6 +6682,23 @@ try {
     check('V01D web4: "are you web4" opens the same card', (await W.p.$$('.vpage.on .w4-step')).length === 4, '');
     check('V01D web4: no page errors', !W.errors.length, W.errors.join(' | ').slice(0, 200));
     await W.ctx.close(); }
+  // owner, 2026-10-17: "nothing showed just now": a tab left open through a deploy keeps old page code; the page compares a hash of skills/index.json and offers a reload (lib/stale-tab.js)
+  if (want("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap")) { const S = await fresh();
+    await S.ask('what time is it in Tokyo', 600); await until(async () => await S.p.evaluate(() => typeof window.__voidStaleCheck === 'function'), 6000); await S.p.waitForTimeout(800);
+    let build = 'commit-one'; const BUILD = /\/build\.json(?:\?|$)/;
+    await S.ctx.route(BUILD, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: build }) }));
+    await S.p.evaluate(() => window.__voidStaleCheck(true)); // record "commit-one" as the loaded build
+    await S.p.evaluate(() => window.__voidStaleCheck()); await S.p.waitForTimeout(400);
+    const same = await S.p.$('#new-version'); // same build: no line
+    build = 'commit-two'; // a deploy lands that changed no page text and no skill list
+    await S.p.evaluate(() => { window.__marker = 'old page'; return window.__voidStaleCheck(); });
+    const shown = await until(async () => !!(await S.p.$('#new-version')), 4000);
+    const text = shown ? await S.p.$eval('#new-version', (b) => b.textContent) : '', still = await S.p.evaluate(() => window.__marker); // not reloaded by itself
+    await S.ctx.unroute(BUILD);
+    await Promise.all([S.p.waitForNavigation({ timeout: 8000 }).catch(() => null), S.p.click('#new-version')]); await S.p.waitForTimeout(800);
+    const after = await S.p.evaluate(() => window.__marker || '');
+    check("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap", !same && shown && /newer V01D is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
+    await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

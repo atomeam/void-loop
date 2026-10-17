@@ -6,6 +6,7 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 
 | Playbook | What it grows | Followed by V01D yet |
 |:--|:--|:--|
+| [art-forge.md](art-forge.md) | a card's art | painted art of an answer or merged card's subject, once per subject, behind a daily cap and a kill switch (`/api/card-art`, `lib/card-forge.js`) |
 | [probe-and-fix.md](probe-and-fix.md) | an existing skill, from asks it misses | steps 1–5: V01D writes 25 asks for its least proven family and probes them daily (`.github/workflows/probe-asks.yml`), then proposes the matcher fix for the oldest miss and the repo's checks decide (`.github/workflows/propose-fix.yml`, a pull request labelled "made by V01D"); a builder still reviews and merges |
 | [route-correction.md](route-correction.md) | a skill that took an ask that is not its job | V01D narrows its own matcher from the owner's correction (`route:` jobs, `tools/propose-fix.mjs` narrow mode, checked by "lets go"); a route made inside the page goes to a builder |
 | [table-skill.md](table-skill.md) | a new skill answered from a built-in table | not yet |
@@ -22,3 +23,4 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [real-movies.md](real-movies.md) | a movie pick that names only found movies, with their poster as art, playing only free legal films and official trailers | not yet |
 | [build-voice-asks.md](build-voice-asks.md) | V01D's own asks from `domains/void.voice.md`: group repeats, check what is built, record or ship one small PR each | not yet |
 | [make-music.md](make-music.md) | an original short piece of music composed from an ask and synthesised in the browser (song, beat, lullaby), with a piano roll, WAV and notes | not yet |
+| [field-mind.md](field-mind.md) | a small simulated field with a tiny local mind on the shared kit (flow canvas, swarm, figures): pure law, Worker mind with a page fallback, card, tests | not yet |
