@@ -11,3 +11,5 @@
 **Mistakes to avoid:** matching on a loose title (a song or a remake passes); trusting an archive item without a licence/collection test; a title in a URL or in HTML unescaped; adding a source that streams copyrighted films.
 
 **Other kinds (2026-10-17):** the same five steps with a per-kind adapter in `functions/api/media.js` and `lib/media.js` (`KINDS`, `pickKind`: a named kind, a verb, or V01D choosing by the day). A new kind adds: its prompt and parser, its adapter (a keyless source, fixed host, exact-title match), its card, a legal player (30 s preview, free film, trailer, a stage game) and a `--only "real <kind>"` test. Music is first (iTunes, 30 s preview).
+
+**Taste (pick for me, 2026-10-17):** `lib/taste.js` holds the pick algorithm (seen list per kind, interests from real signals only, exploit/explore, genre diversity, `whyPick`); `tools/taste.test.mjs` is its test. A new kind needs lookup results with `genre`, `artist` or `director` so it can be scored. Takeout is parsed in the browser only; never add an OAuth link or send the history anywhere.

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 445,
+ "counted": 458,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -81,6 +81,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/better.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 14
+  },
+  {
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
@@ -93,12 +99,6 @@
    "dependants": 14
   },
   {
-   "file": "lib/better.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 13
-  },
-  {
    "file": "lib/inbox-health.js",
    "skills": 3,
    "direct": 1,
@@ -108,13 +108,19 @@
    "file": "lib/guide.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 11
+   "dependants": 12
   },
   {
    "file": "lib/card-art.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8
+   "dependants": 9
+  },
+  {
+   "file": "lib/movies.js",
+   "skills": 3,
+   "direct": 2,
+   "dependants": 7
   },
   {
    "file": "lib/arena-say.js",
@@ -166,6 +172,12 @@
   },
   {
    "file": "lib/card-frame.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 3
+  },
+  {
+   "file": "lib/media.js",
    "skills": 2,
    "direct": 2,
    "dependants": 3
@@ -267,6 +279,12 @@
    "dependants": 6
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -285,13 +303,13 @@
    "dependants": 2
   },
   {
-   "file": "lib/merge-rules.js",
+   "file": "lib/field-vector.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
   },
   {
-   "file": "lib/movies.js",
+   "file": "lib/merge-rules.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -303,6 +321,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/compose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/context-check.js",
    "skills": 1,
    "direct": 1,
@@ -310,6 +334,12 @@
   },
   {
    "file": "lib/duel-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-stage.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -364,6 +394,12 @@
   },
   {
    "file": "lib/success-pulse.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/taste.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -711,6 +747,12 @@
    "dependants": 0
   },
   {
+   "file": "lib/field-vector-worker.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
    "file": "lib/film-share.js",
    "skills": 0,
    "direct": 0,
@@ -766,6 +808,12 @@
   },
   {
    "file": "lib/share-client.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/skill-confidence.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -981,6 +1029,14 @@
    ],
    "importedBy": []
   },
+  "functions/api/media.js": {
+   "imports": [
+    "lib/media.js",
+    "lib/movies.js",
+    "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/memory.js": {
    "imports": [
     "lib/memory-scope.js",
@@ -1028,7 +1084,9 @@
    "imports": [
     "lib/movies.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/media.js"
+   ]
   },
   "functions/api/passkey.js": {
    "imports": [
@@ -1484,6 +1542,7 @@
   "lib/better.js": {
    "imports": [],
    "importedBy": [
+    "skills/family-health.js",
     "skills/growth.js"
    ],
    "reachedBy": [
@@ -1531,6 +1590,7 @@
    "importedBy": [
     "lib/card-frame.js",
     "lib/card-image.js",
+    "lib/skill-confidence.js",
     "lib/tome.js"
    ],
    "reachedBy": [
@@ -1646,6 +1706,12 @@
     "lib/paid-access.js"
    ]
   },
+  "lib/compose.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/music.js"
+   ]
+  },
   "lib/context-check.js": {
    "imports": [],
    "importedBy": [
@@ -1730,6 +1796,40 @@
    "imports": [],
    "importedBy": [
     "functions/api/approval.js"
+   ]
+  },
+  "lib/field-kit.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/field-stage.js",
+    "lib/field-vector.js"
+   ],
+   "reachedBy": [
+    "lib/field-vector-worker.js",
+    "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-stage.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-vector-worker.js": {
+   "imports": [
+    "lib/field-vector.js"
+   ],
+   "importedBy": []
+  },
+  "lib/field-vector.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "lib/field-vector-worker.js",
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -1822,6 +1922,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/skill-confidence.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -1989,6 +2090,16 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/media.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/media.js",
+    "skills/media-pick.js",
+    "skills/pick-for-me.js"
+   ]
+  },
   "lib/memory-core.js": {
    "imports": [],
    "importedBy": [
@@ -2074,8 +2185,15 @@
   "lib/movies.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/media.js",
     "functions/api/movies.js",
-    "skills/movie.js"
+    "lib/media.js",
+    "lib/taste.js",
+    "skills/movie.js",
+    "skills/pick-for-me.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js"
    ]
   },
   "lib/near-miss.js": {
@@ -2611,6 +2729,12 @@
     "skills/time.js"
    ]
   },
+  "lib/skill-confidence.js": {
+   "imports": [
+    "lib/card-art.js"
+   ],
+   "importedBy": []
+  },
   "lib/skill-family.js": {
    "imports": [],
    "importedBy": [
@@ -2785,6 +2909,14 @@
    "imports": [],
    "importedBy": [
     "skills/status.js"
+   ]
+  },
+  "lib/taste.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "skills/pick-for-me.js"
    ]
   },
   "lib/technical-context.js": {
@@ -3311,7 +3443,8 @@
   },
   "skills/family-health.js": {
    "imports": [
-    "lib/skill-use.js"
+    "lib/skill-use.js",
+    "lib/better.js"
    ],
    "importedBy": []
   },
@@ -3826,6 +3959,15 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/media-pick.js": {
+   "imports": [
+    "lib/media.js",
+    "skills/movie.js"
+   ],
+   "importedBy": [
+    "skills/pick-for-me.js"
+   ]
+  },
   "skills/memory.js": {
    "imports": [
     "skills/live.js",
@@ -4136,6 +4278,15 @@
    "imports": [
     "lib/movies.js"
    ],
+   "importedBy": [
+    "skills/media-pick.js",
+    "skills/pick-for-me.js"
+   ]
+  },
+  "skills/music.js": {
+   "imports": [
+    "lib/compose.js"
+   ],
    "importedBy": []
   },
   "skills/news.js": {
@@ -4219,6 +4370,16 @@
    "reachedBy": [
     "skills/period.js"
    ]
+  },
+  "skills/pick-for-me.js": {
+   "imports": [
+    "lib/media.js",
+    "lib/movies.js",
+    "lib/taste.js",
+    "skills/movie.js",
+    "skills/media-pick.js"
+   ],
+   "importedBy": []
   },
   "skills/place.js": {
    "imports": [],
@@ -4877,6 +5038,13 @@
   "skills/v01d-fixes.js": {
    "imports": [
     "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/vector-field-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-vector.js"
    ],
    "importedBy": []
   },

@@ -29,3 +29,7 @@ test('markup is escaped, one square per skill, strongest first, empty for no fam
   assert.ok(h.indexOf('data-tier="proven"') < h.indexOf('data-tier="experiment"'));
   assert.equal(confidenceHtml({ families: [] }, today), ''); assert.equal(confidenceHtml(null, today), '');
 });
+test('without an esc passed, names are still escaped', () => {
+  const h = confidenceHtml({ families: [{ name: '<b>f</b>', skills: [{ name: '<img onerror=x>', tier: 'proven', last_tested: '2026-10-16' }] }] }, today);
+  assert.ok(!h.includes('<img') && !h.includes('<b>f') && h.includes('&lt;img onerror=x&gt;'));
+});

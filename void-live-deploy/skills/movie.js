@@ -24,9 +24,12 @@ const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes
 export function movieCard(f, esc) {
   if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>Not verified: no source I check knows a movie by this name, so I will not state anything about it.</p>';
   const price = [money(f.price, f.currency) && 'buy ' + money(f.price, f.currency), money(f.rentPrice, f.currency) && 'rent ' + money(f.rentPrice, f.currency)].filter(Boolean).join(' · ');
-  const meta = [f.year, f.genre, f.rating, f.director && 'dir. ' + f.director].filter(Boolean).map(esc).join(' · ');
+  // the structured facts (asked by Void, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
+  const facts = [['Year', f.year], ['Genre', f.genre], ['Rated', f.rating], ['Director', f.director], ['Runtime', f.runtime ? f.runtime + ' min' : '']].filter((x) => x[1]);
+  const meta = '<dl class="mv-facts" style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:6px 0">' + facts.map((x) => '<dt style="color:var(--muted,#9a9aa2)">' + x[0] + '</dt><dd style="margin:0">' + esc(x[1]) + '</dd>').join('') + '</dl>'
+    + '<a href="#" class="mv-json" data-ask="film metadata for ' + esc(f.title) + '">Full metadata as JSON</a>';
   return art(f, esc) + '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2>'
-    + '<div class="sub">' + meta + '</div>'
+    + meta
     + (f.overview ? '<p>' + esc(f.overview) + '</p>' : '')
     + '<div class="mv-player" style="margin:8px 0"></div>'
     + '<div class="mv-btns" style="display:flex;gap:8px;flex-wrap:wrap">'
@@ -36,7 +39,7 @@ export function movieCard(f, esc) {
     + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
     + SRC(f, esc);
 }
-function wirePlayers(el, f) {
+export function wirePlayers(el, f) {
   const box = el.querySelector('.mv-player'); if (!box) return;
   const show = (node) => { box.textContent = ''; box.append(node); };
   const vid = (src, poster) => { const v = document.createElement('video'); v.controls = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata'; if (poster && /^https:/.test(poster)) v.poster = poster; v.src = src; v.style.cssText = 'width:100%;max-height:60vh;background:#000;border-radius:8px'; return v; };
@@ -51,6 +54,7 @@ function wirePlayers(el, f) {
 export async function runCard(m, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
+  el.dataset.artKind = 'Film';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'movie';
   el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
@@ -60,6 +64,7 @@ export async function runCard(m, api) {
 export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
+  el.dataset.artKind = 'Film';
   let picks = [];
   try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: PICK_PROMPT }) }); if (r.ok) picks = parseSuggestions((await r.json()).answer); } catch (_) {}
   if (!api._pageStill(el)) return 'movie';

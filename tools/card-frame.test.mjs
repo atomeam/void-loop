@@ -89,3 +89,12 @@ test('type-specific layouts: Film, Place, Person and Song each have their own hi
   assert.equal(cardOf2({ entity: { kind: 'Place', chapter: 'sky', also: [], detail: '' } }).kindName, 'place');
   assert.equal(cardOf2({ skill: { name: 'weather', tier: 'proven' } }).kindName, '');
 });
+
+test('a skill card of a song or a film paints that kind\'s art, not the generic skill art (asked by Owner: music cards had the haunted-door art)', () => {
+  const esc = (x) => String(x);
+  const plain = chromeHtml(cardOf({ skill: { name: 'media-pick', tier: 'experiment' } }), esc).art;
+  const song = cardOf({ skill: { name: 'media-pick', tier: 'experiment' }, artKind: 'Song' }), film = cardOf({ skill: { name: 'movie', tier: 'experiment' }, artKind: 'Film' });
+  assert.equal(song.artKind, 'Song'); assert.equal(film.artKind, 'Film');
+  assert.notEqual(chromeHtml(song, esc).art, plain); assert.notEqual(chromeHtml(song, esc).art, chromeHtml(film, esc).art);
+  for (const bad of ['', 'Skill', 'Answer', 'Nonsense', '<script>']) assert.equal(cardOf({ skill: { name: 'x', tier: 'tested' }, artKind: bad }).artKind, '');
+});
