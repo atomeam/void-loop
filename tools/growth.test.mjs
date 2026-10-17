@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates } from '../void-live-deploy/skills/growth.js';
+import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates, unstableFamilies, heatHtml } from '../void-live-deploy/skills/growth.js';
 import { entryProblem, ledgerProblems, appendTo, LEDGER } from './grow.mjs';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -88,4 +88,20 @@ test('the Site Test card suggests what to test next: the lowest-rated skills, fa
   assert.equal(c[0].ask, 'set a timer for 5 minutes'); assert.equal(c[0].failing, 1); assert.equal(c[1].family, 'Words and the world');
   assert.equal(testCandidates(fam, guide, 1).length, 1);
   assert.deepEqual(testCandidates(null, null), []); assert.deepEqual(testCandidates(fam, null), []);
+});
+
+test('the Site Test heat map ranks families least stable first: failing skills, then unsure ones (tested, experiment or weathered) (asked by Void)', () => {
+  const today = Date.parse('2026-10-17T12:00:00Z');
+  const fam = { families: [
+    { name: 'Body and mind', skills: [{ name: 'heart', tier: 'proven', last_tested: '2026-10-17' }, { name: 'sleep', tier: 'proven', last_tested: '2026-10-16' }] },
+    { name: 'Time', skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'], last_tested: '2026-10-17' }, { name: 'clock', tier: 'proven', last_tested: '2026-10-17' }] },
+    { name: 'Words and the world', skills: [{ name: 'define', tier: 'experiment', last_tested: '2026-10-17' }, { name: 'poster', tier: 'proven', last_tested: '2026-09-01' }, { name: 'book', tier: 'proven', last_tested: '2026-10-17' }] },
+    { name: 'Empty', skills: [] },
+  ] };
+  const r = unstableFamilies(fam, today);
+  assert.deepEqual(r.map((x) => x.name), ['Time', 'Words and the world', 'Body and mind'], 'failing first, then by heat; a family with no skills is left out');
+  assert.deepEqual([r[0].failing, r[0].unsure, r[0].n], [1, 0, 2]); assert.deepEqual([r[1].failing, r[1].unsure], [0, 2], 'an experiment and a skill untested since September are unsure');
+  assert.equal(r[2].heat, 0); assert.ok(r[0].heat > r[1].heat);
+  const esc = (s) => String(s).replace(/</g, '&lt;'), html = heatHtml(esc, [{ name: '<b>x', n: 2, failing: 1, unsure: 0, heat: 1 }]);
+  assert.match(html, /data-family="&lt;b>x"/); assert.match(html, /1 failing · 0 of 2 unsure/); assert.equal(heatHtml(esc, []), '');
 });

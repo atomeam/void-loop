@@ -8,6 +8,7 @@ import { probeHtml } from '../lib/probe-log.js';
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml } from '../lib/better.js';
 import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
+import { confidenceOf } from '../lib/skill-confidence.js'; // weathered: untested for WEATHER_DAYS (the Site Test heat map)
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
@@ -383,6 +384,26 @@ export function testCandidates(fam, guide, show = 5) {
   }).filter((c) => c.ask).slice(0, show);
 }
 
+/** Void asked (2026-10-17): "a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable".
+ *  Per family: its failing skills, and how many of its skills are unsure (rated tested or experiment, or weathered: not tested for two
+ *  weeks); the hottest first (failing before unsure share). [{ name, n, failing, unsure, heat (0..1) }]. Pure. */
+export function unstableFamilies(fam, today = Date.now()) {
+  return ((fam && fam.families) || []).filter((f) => f && Array.isArray(f.skills) && f.skills.length).map((f) => {
+    const sk = f.skills.filter((x) => x && x.name), failing = sk.filter((x) => Array.isArray(x.failing) && x.failing.length).length;
+    const unsure = sk.filter((x) => !(Array.isArray(x.failing) && x.failing.length) && (/^(?:tested|experiment)$/.test(x.tier) || confidenceOf(x, today).weathered)).length;
+    return { name: String(f.name || f.id || ''), n: sk.length, failing, unsure, heat: sk.length ? Math.min(1, (failing * 3 + unsure) / sk.length) : 0 };
+  }).sort((a, b) => b.failing - a.failing || b.heat - a.heat || a.name.localeCompare(b.name));
+}
+/** the heat map's markup: one bar per family, hotter red and longer the less stable. '' with no families. Pure. */
+export function heatHtml(esc, rows) {
+  if (!rows || !rows.length) return '';
+  return '<h3 style="margin:12px 0 4px">Where I am least sure</h3><div class="sub">Each family\'s failing skills, then its unsure ones (rated tested or experiment, or not tested for two weeks).</div><div class="st-heat" style="margin:6px 0">'
+    + rows.map((r) => '<div class="st-heat-row" data-family="' + esc(r.name) + '" data-heat="' + r.heat.toFixed(2) + '" style="display:grid;grid-template-columns:9.5em 1fr;gap:8px;align-items:center;margin:3px 0;font-size:12px">'
+      + '<span>' + esc(r.name) + '</span><span style="position:relative;display:block;height:16px;border-radius:4px;background:rgba(255,255,255,.06)" title="' + esc(r.failing + ' failing, ' + r.unsure + ' unsure of ' + r.n) + '">'
+      + '<span style="position:absolute;inset:0 auto 0 0;width:' + Math.max(2, Math.round(r.heat * 100)) + '%;border-radius:4px;background:hsl(' + Math.round(120 - 120 * r.heat) + ' 70% 45% / .85)"></span>'
+      + '<span style="position:relative;padding-left:6px;line-height:16px">' + esc((r.failing ? r.failing + ' failing · ' : '') + r.unsure + ' of ' + r.n + ' unsure') + '</span></span></div>').join('') + '</div>';
+}
+
 function runTester(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>What my site tester checks</h2><div class="sub">reading the log…</div>'; });
@@ -393,7 +414,7 @@ function runTester(text, api) {
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
       (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
       (C.length ? '<h3 style="margin:12px 0 4px">What to test next</h3><div class="sub">My lowest-rated skills (skills/families.json): failing first, then the least checked. Tap one to test it now.</div><ol class="st-candidates" style="padding-left:20px">'
-        + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '');
+        + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '') + heatHtml(esc, unstableFamilies(fam)); // void-review: ok (heatHtml escapes every name and count)
   });
   return 'growth';
 }
