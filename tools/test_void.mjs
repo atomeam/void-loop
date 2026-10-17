@@ -741,6 +741,25 @@ try {
     check('sticky words are not orders: "add a sticky that says big plans for the top left" makes exactly one sticky with those words (no empty sticky moved or resized first)',
       notes.length === 1 && notes[0].text === 'big plans for the top left' && !W.errors.length, JSON.stringify({ notes: notes.map((n) => ({ text: n.text, size: n.size, x: n.x, y: n.y })), e: W.errors }));
     await W.ctx.close(); }
+  // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
+  // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
+    const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
+        : t === 'Nosferatu' ? { verified: true, title: t, year: 1922, genre: 'Horror', overview: '', poster: 'https://archive.org/services/img/nosferatu', trailer: '', free: true, play: { kind: 'video', src: 'https://archive.org/download/nosferatu/n.mp4', page: 'https://archive.org/details/nosferatu', license: 'public domain' }, links: [], sources: ['Internet Archive'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('pick a movie to watch with me', 1800);
+    const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
+    const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await M.p.click('.vpage.on a[data-ask*="Nosferatu"]'); await M.p.waitForTimeout(1200);
+    await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
+    const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
+    const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    await M.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));

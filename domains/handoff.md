@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (real-movies helper) · helper/real-movies · pick-a-movie finds real movies (iTunes + Internet Archive), poster as card art, free films play in-page, trailers/links otherwise (owner, 2026-10-17) · 2026-10-17 UTC
 - Claude (asks-services agent) · helper/asks-services · V01D's services asks: approval card → lasting task, state skill, review-learn clusters, diff peek, dep scanner, skills-check re-registration, automerge safety-check + merge-log card, Game Strength, ladder → growth card, Service Health, Contextual Shortcut, country ↔ distance, readable self-knowledge; canon motto declined · 2026-10-16 18:30 UTC
 - Claude (rules engine) · helper/card-duel · frontier #35: lib/rules-engine.js, rule sets as data, "duel with mana and tribute rules", proposeRule · 2026-10-16
 

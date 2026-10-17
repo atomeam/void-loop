@@ -19,3 +19,4 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [stage-bridge.md](stage-bridge.md) | a bridge between two kinds of thing on the stage, or a new stage card, from one of V01D's own asks | not yet |
 | [rules-engine.md](rules-engine.md) | a game's rules as a data rule set that stacks with every other (frontier #35) | not yet |
 | [inbox-health.md](inbox-health.md) | a skill-health line, map or job in the growth inbox, from files the repo already writes | not yet |
+| [real-movies.md](real-movies.md) | a movie pick that names only found movies, with their poster as art, playing only free legal films and official trailers | not yet |
