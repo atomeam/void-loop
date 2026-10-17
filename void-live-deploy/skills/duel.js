@@ -136,6 +136,7 @@ function mount(th, stageApi) {
       const a = by('you', mineName), t = by('void', theirName); mode = 'attack'; mine = a && a.id; theirs = t && t.id; paint(); return !!(a && t);
     },
   };
+  el.addEventListener('pointerdown', (e) => { if (e.target && e.target.closest && e.target.closest('button,input')) e.stopImmediatePropagation(); }); // a press on a control plays the game; only the card itself is picked up (else the stage re-draws the card under the click)
   stageApi.bindDrag(el, th); stageApi.stage.appendChild(el);
   paint();
   loadStats().then((s) => { stats = s; seedPool(); paint(); voidPlays(); });
