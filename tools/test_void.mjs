@@ -1034,7 +1034,7 @@ try {
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
     await A.p.click('.vpage.on .ap-make a').catch(() => {}); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
-    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.page();
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length
@@ -1171,9 +1171,9 @@ try {
     await G.p.keyboard.press('Enter'); await G.p.waitForTimeout(1500);
     const talked = await G.page();
     await G.ask('my zap is failing with 401 Unauthorized', 300); await until(async () => /Likely cause/.test(await G.page()), 6000);
-    const real = await G.p.$eval('.vpage.on', (e) => ({ src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const real = await G.p.$eval('.vpage.on', (e) => ({ src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     await G.ask('my zap stopped firing yesterday and nothing in it runs anymore, the trigger looks switched on and the sheet still gets new rows every hour', 300); await until(async () => /Likely cause|Paste what it shows/.test(await G.page()), 6000);
-    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     check('intent gate: a pasted discussion is not a broken automation (no fix card, no fix request); a real error gets its fix with the error quoted as the source; a fix from a description says so and how it was read',
       fixes.filter((b) => /reply channel/.test(b.details || b.ask || '')).length === 0 && !/Likely cause/.test(talked)
         && !!real && /from the error itself: “[^”]*401/.test(real.src) && !real.read
@@ -2104,7 +2104,7 @@ try {
   if (want("V01D's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const body = (c) => "V01D's own model proposed this change. Why, in V01D's words: the matcher only knew ride words. V01D's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
     const prs = [{ number: 900, title: 'V01D fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
-      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', body: body('0.55'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
+      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
@@ -2114,8 +2114,8 @@ try {
     await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Void's review is clean/.test(await O.page()), 4000);
     const after = await O.page();
     const S = await fresh(); await S.ask("V01D's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
-    check("V01D's fixes: the owner previews the fixes V01D opened, the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
-      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · waits for you/.test(card)
+    check("V01D's fixes: the owner previews the fixes V01D opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /High-impact change: it changes a structural line/.test(card)
         && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
         && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
@@ -2133,6 +2133,16 @@ try {
     check('rating note: a card from a skill rated experiment says so on its source line ("rated experiment (…): not checked yet"), a proven skill\'s card says nothing',
       !!thin && thin.inSrc && /^ · rated experiment \(a self-test\): not checked yet$/.test(thin.text) && /evidence only/.test(thin.title) && quiet === 0 && !R.errors.length, JSON.stringify({ thin, quiet, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("arcade ghost: Pong and Snake replay your best run as a faint ghost, and a finished game is kept when it beats it")) { // asked by Void
+    const G = await fresh({ content: 'localStorage.setItem("void-ghost-pong", JSON.stringify({game:"pong",you:7,void:3,dur:40,ys:[130,131,132,133,134]})); localStorage.setItem("void-ghost-snake", JSON.stringify({game:"snake",len:9,path:[[5,4],[6,4],[7,4]],lens:[4,4,4]}));' });
+    await G.ask('pong', 600); await until(async () => !!(await G.p.$('.pong-card')), 6000);
+    const pw = await G.p.$eval('.pong-card .pong-card-why', (e) => e.textContent).catch(() => '');
+    await G.ask('snake', 600); await until(async () => !!(await G.p.$('.snake-card')), 6000);
+    const sw = await G.p.$eval('.snake-card .snake-card-why', (e) => e.textContent).catch(() => '');
+    const stored = await G.p.evaluate(() => ({ pong: JSON.parse(localStorage.getItem('void-ghost-pong')).you, snake: JSON.parse(localStorage.getItem('void-ghost-snake')).len }));
+    check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
+      /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
+    await G.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -2521,7 +2531,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test(saved.page.split('Saved')[1] || '') && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO V01D')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
@@ -3972,8 +3982,8 @@ try {
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
   check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
-  await P.ask('menu', 900); const menuTome = await P.p.evaluate(() => !!document.getElementById('vtome')); await P.ask('close', 900);
-  const menuGone = await P.p.evaluate(() => !document.getElementById('vtome'));
+  await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
+  const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
   check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
   const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];

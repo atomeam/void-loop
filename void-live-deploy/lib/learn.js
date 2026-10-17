@@ -76,10 +76,17 @@ export const jobOf = (c) => ({
   note: [
     `asked ${c.count}× (${c.variants.length + 1} phrasing${c.variants.length ? 's' : ''}), last ${String(c.last).slice(0, 10)}${c.fallback ? '; fallback ' + c.fallback : ''}`,
     routeNote(c.route),
+    laneNote(c.route),
     originOf(c) === 'people' ? '' : originOf(c) === 'agent' ? 'only agents asked it' : `${c.agent} of ${c.count} asks from agents`,
     'from the miss board',
   ].filter(Boolean).join('; ').slice(0, 300),
 });
+
+// the lane a missed ask goes down (asked by Void: the missed asks are a structured skill-building queue that creates the propose-fix job by
+// itself): the router named a skill that should have caught it -> "lane: propose-fix" (tools/propose-fix.mjs takes the job and proposes the
+// matcher change); no skill near -> "lane: new skill" (a builder, docs/UPGRADING.md). Fixed words only.
+export const laneOf = (r) => (r && r.route === 'skill' && /^[a-z0-9_-]{1,24}$/.test(String(r.skill || '')) ? 'propose-fix' : 'new skill');
+export const laneNote = (r) => 'lane: ' + laneOf(r);
 
 // "router skill:weather 0.78" (a skill should have caught it) · "router simple 0.41" · '' when the router never saw the ask.
 // Only the router's own fixed words and a skill name from its table can get in here: the note is mirrored into the public repo.

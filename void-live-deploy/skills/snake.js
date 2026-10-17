@@ -4,6 +4,7 @@
  */
 import * as S from './snake-rules.js';
 import { arcadeCard } from './arcade-card.js';
+import { snakeRecorder, snakeGhostBody, submit, load, words } from '../lib/arcade-ghost.js';
 
 export function snakeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -17,19 +18,23 @@ function mount(th, stageApi) {
   const K = { arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down', arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right' };
   c.el.addEventListener('keydown', (e) => { const d = K[e.key.toLowerCase()]; if (d) { S.turn(th.state, d); go = true; e.preventDefault(); } });
   let start = null, go = false;
+  // the ghost (asked by Void): your best run so far, replayed as a faint outline snake; a longer run replaces it
+  let ghost = load('snake'), rec = snakeRecorder(), saved = false;
   c.cv.addEventListener('pointerdown', (e) => { start = c.local(e); c.el.focus({ preventScroll: true }); });
   c.cv.addEventListener('pointerup', (e) => {
     const p = c.local(e), s = start || p; let dx = p.x - s.x, dy = p.y - s.y;
     if (Math.hypot(dx, dy) < 12) { const [hx, hy] = th.state.you.body[0]; dx = p.x - (hx + 0.5) * PX; dy = p.y - (hy + 0.5) * PX; } // a tap: turn toward it
     S.turn(th.state, Math.abs(dx) > Math.abs(dy) ? (dx > 0 ? 'right' : 'left') : (dy > 0 ? 'down' : 'up')); start = null; go = true;
   });
-  c.again.addEventListener('click', (e) => { e.stopPropagation(); th.state = S.create((Date.now() & 0xffff) || 7); go = false; });
+  c.again.addEventListener('click', (e) => { e.stopPropagation(); th.state = S.create((Date.now() & 0xffff) || 7); go = false; rec = snakeRecorder(); saved = false; });
   let acc = 0;
   c.start((dt, g) => {
-    const s = th.state; if (!go) acc = 0; else acc += dt; while (acc >= TICK) { acc -= TICK; S.tick(s); }
+    const s = th.state; if (!go) acc = 0; else acc += dt; while (acc >= TICK) { acc -= TICK; S.tick(s); rec.tick(s); }
+    if (s.over && !saved) { saved = true; const r = submit(rec.run(s)); if (r.beat) ghost = r.run; c.el.dataset.ghost = r.beat ? 'new' : 'kept'; }
     g.fillStyle = '#05040c'; g.fillRect(0, 0, S.N * PX, S.N * PX);
     g.fillStyle = 'rgba(255,255,255,.03)'; for (let i = 0; i < S.N; i++) for (let j = (i % 2); j < S.N; j += 2) g.fillRect(i * PX, j * PX, PX, PX);
     if (s.food) { g.shadowBlur = 14; g.shadowColor = '#ffd04a'; g.fillStyle = '#ffd04a'; g.beginPath(); g.arc((s.food[0] + 0.5) * PX, (s.food[1] + 0.5) * PX, PX * 0.36, 0, 7); g.fill(); }
+    if (ghost && !s.over) { g.globalAlpha = 0.3; g.strokeStyle = '#4ef0a0'; for (const [x, y] of snakeGhostBody(ghost, s.ticks - 1)) g.strokeRect(x * PX + 2, y * PX + 2, PX - 4, PX - 4); g.globalAlpha = 1; }
     for (const [w, col] of [['you', '#4ef0a0'], ['void', '#a070ff']]) {
       const p = s[w]; g.shadowColor = col; g.shadowBlur = p.alive ? 10 : 0; g.globalAlpha = p.alive ? 1 : 0.35;
       p.body.forEach(([x, y], i) => { g.fillStyle = i ? col : '#fff'; g.fillRect(x * PX + 1, y * PX + 1, PX - 2, PX - 2); });
@@ -37,7 +42,7 @@ function mount(th, stageApi) {
     }
     g.shadowBlur = 0;
     c.status.textContent = !go ? 'Press an arrow key or swipe to start' : s.over === 'you' ? 'You win! (' + s.you.body.length + ' long)' : s.over === 'void' ? 'V01D wins (' + s.void.body.length + ' long)' : s.over === 'draw' ? 'A draw' : 'You ' + s.you.body.length + ' · V01D ' + s.void.body.length;
-    c.why.textContent = s.why ? 'V01D: ' + s.why : '';
+    c.why.textContent = (s.why ? 'V01D: ' + s.why + ' · ' : '') + words(ghost);
   });
 }
 
