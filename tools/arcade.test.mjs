@@ -54,3 +54,41 @@ test('snake: V01D alone survives a long game (it keeps room to move)', () => {
   for (let i = 0; i < 600 && s.void.alive; i++) { s.over = null; S.tick(s); }
   assert.ok(s.void.alive || s.void.body.length > 12, 'length ' + s.void.body.length);
 });
+
+// the ghost (asked by Void): play against your own best Pong game or Snake run
+import * as G from '../void-live-deploy/lib/arcade-ghost.js';
+const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; };
+
+test('ghost pong: a recorded game replays the paddle, and the best game is kept', () => {
+  const s = P.create(5), rec = G.pongRecorder();
+  for (let i = 0; i < 2000 && !s.over; i++) { P.step(s, 1 / 60, { y: 100 + (i % 60) }); rec.tick(1 / 60, s.you.y); }
+  const run = rec.run(s); assert.ok(G.valid(run)); assert.ok(run.ys.length > 20);
+  assert.ok(Math.abs(G.pongGhostY(run, 0.5) - run.ys[10]) < 1e-9);
+  assert.equal(G.pongGhostY(run, 9999), run.ys[run.ys.length - 1]);
+  const st = mem();
+  assert.equal(G.submit(run, st).beat, true);
+  const worse = { ...run, you: run.you - 1 }; assert.equal(G.submit(worse, st).beat, false);
+  assert.equal(G.load('pong', st).you, run.you);
+  const wider = { ...run, you: run.void + 7 }; assert.equal(G.submit(wider, st).beat, true);
+  assert.match(G.words(G.load('pong', st)), /your best game/);
+});
+
+test('ghost snake: the longest run is the ghost and its body follows the recorded head', () => {
+  const s = S.create(3), rec = G.snakeRecorder();
+  for (let i = 0; i < 40 && !s.over; i++) { S.tick(s); rec.tick(s); }
+  const run = rec.run(s); assert.ok(G.valid(run));
+  const b = G.snakeGhostBody(run, 5); assert.deepEqual(b[0], run.path[5]); assert.equal(b.length, run.lens[5]);
+  assert.deepEqual(G.snakeGhostBody(run, 99999)[0], run.path[run.path.length - 1]);
+  const st = mem(); assert.equal(G.submit(run, st).beat, true);
+  assert.equal(G.submit({ ...run, len: run.len - 1 }, st).beat, false);
+  assert.equal(G.submit({ ...run, len: run.len + 1 }, st).beat, true);
+});
+
+test('ghost: junk in storage is ignored, a full or blocked store does not throw', () => {
+  const st = mem(); st.setItem('void-ghost-pong', '{"game":"pong","you":"x"}');
+  assert.equal(G.load('pong', st), null);
+  assert.equal(G.load('snake', null), null);
+  const run = { game: 'snake', len: 4, path: [[1, 1]], lens: [4] };
+  assert.equal(G.submit(run, { getItem: () => null, setItem() { throw new Error('quota'); } }).beat, false);
+  assert.match(G.words(null), /No ghost yet/);
+});
