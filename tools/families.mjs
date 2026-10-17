@@ -46,7 +46,7 @@ export const FAMILIES = [
   { id: 'make', name: 'Making things', for: 'figures, 3D models, prints, drawings and parts', skills: ['forge', 'make', 'figure', 'figures', 'zoom-figure', 'figure-can', 'cartoon', 'part', 'together', 'gears', 'motorbody', 'printedmotor', 'magnetize', 'print-file', 'print-download', 'inventory', 'splat', 'poster', 'draw', 'shape', 'image', 'throw-off', 'swarm', 'rts'] },
   { id: 'games', name: 'Games', for: 'board games, card games and play: one picker ("games"), one V01D strength, one 3D stage', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge', 'pong', 'snake', 'duel'] },
   { id: 'sky', name: 'Sky and earth', for: 'weather, the sky tonight, places and time zones', skills: ['sky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'sky-card', 'suntimes', 'moon', 'night-sky', 'place', 'worldtime', 'distance', 'country'] },
-  { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['timer', 'clock', 'countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine', 'deadlines'] },
+  { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['timer', 'clock', 'countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine', 'deadlines', 'shortcut'] },
   { id: 'numbers', name: 'Numbers and money', for: 'sums, unit conversions, loans, savings, prices and home projects', skills: ['calc', 'convert', 'loan', 'savings', 'fuel', 'tip', 'crypto', 'markets', 'grades', 'util', 'counter', 'room', 'walls', 'home', 'appraise'] },
   { id: 'body', name: 'Body and mind', for: 'sleep, cycles, food, heart and calm', skills: ['sleep', 'ovulation', 'period', 'pregnancy', 'nutrition', 'food', 'heart', 'breath', 'feelings'] },
   { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['digest', 'video', 'video-play', 'define', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes'] },
@@ -54,6 +54,7 @@ export const FAMILIES = [
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['sticky', 'notepad', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase', 'type-filter'] },
   { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health', 'deps', 'fringe-to-skill'] },
 ];
+import { promote, streaksOf } from './streaks.mjs';
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 // what the two per-skill dates and rates mean, written into the file so a reader of the JSON knows (asked by Void)
 export const MEANS = {
@@ -79,7 +80,9 @@ export function ratingOf(ev, today = new Date().toISOString().slice(0, 10)) {
   const kinds = [!!ev.suite, ev.browser > 0, ev.bench > 0, ev.live > 0].filter(Boolean).length;
   const fresh = ev.live > 0 && ev.liveAt && daysOld(ev.liveAt, today) < LIVE_FRESH_DAYS;
   const tier = kinds >= 3 || (kinds === 2 && (ev.bench >= 3 || fresh)) ? 'proven' : kinds === 2 ? 'checked' : kinds === 1 ? 'tested' : 'experiment';
-  return { tier, why: why.length ? why.join(', ') : 'nothing checks it yet' };
+  const lifted = promote(tier, ev.streak); // a long clean run of the daily smoke test lifts 'tested' to 'checked' (tools/streaks.mjs)
+  if (lifted !== tier) why.push(ev.streak + ' clean daily runs in a row');
+  return { tier: lifted, why: why.length ? why.join(', ') : 'nothing checks it yet' };
 }
 
 /** the live findings kept for a skill: { n: ok live artifacts, at: the newest one's day }. list: (skill) => file names; read: path -> text. Pure apart from the reads. */
@@ -102,6 +105,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
   // for the growth card's friction line (Void's ask: "a 'friction' indicator ... which skills are currently failing")
   let missed = []; try { const m = JSON.parse(read('tools/bench.misses.json')); missed = Array.isArray(m && m.misses) ? m.misses.map((x) => String(x).replace(/\s+->\s+[^>]*$/, '').toLowerCase()) : []; } catch (_) {}
   const unitTexts = listTests().map((f) => { try { return read('tools/' + f); } catch (_) { return ''; } });
+  const streaks = streaksOf(read); // consecutive clean daily runs per skill
   const smoke = smokeRun(read), retest = retestRun(read); // the daily smoke test's and re-test's failures: a skill in them has no passing self-test today
   const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const out = {};
@@ -120,8 +124,9 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
     const wants = (b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
     const failing = [...new Set(bench.filter((b) => wants(b) && missed.includes(String(b.ask).toLowerCase())).map((b) => b.ask))];
     const smokedAll = [...(Array.isArray(smoke.failing[n]) ? smoke.failing[n] : []), ...(retest.failing[n] || [])], smoked = smokedAll.length ? smokedAll.slice(0, 3) : null;
+    const streak = streaks[n] || 0;
     const lv = liveFindings(n, listFindings, read); // a kept artifact of a real call to the service it wraps
-    out[n] = { suite: !smoked && (unit || /\bsuite\s*\(\s*\)\s*\{/.test(src)), browser, bench: routed, ...(failing.length ? { failing } : {}), ...(smoked ? { smoke: smoked } : {}), ...(lv.n ? { live: lv.n, liveAt: lv.at } : {}) };
+    out[n] = { suite: !smoked && (unit || /\bsuite\s*\(\s*\)\s*\{/.test(src)), browser, bench: routed, ...(failing.length ? { failing } : {}), ...(smoked ? { smoke: smoked } : {}), ...(lv.n ? { live: lv.n, liveAt: lv.at } : {}), ...(streak ? { streak } : {}) };
   }
   return out;
 }
