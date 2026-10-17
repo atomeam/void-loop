@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 458,
+ "counted": 462,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -42,7 +42,7 @@
    "file": "lib/state.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 18
+   "dependants": 19
   },
   {
    "file": "lib/skyask.js",
@@ -60,7 +60,7 @@
    "file": "lib/ladder.js",
    "skills": 5,
    "direct": 3,
-   "dependants": 15
+   "dependants": 16
   },
   {
    "file": "lib/hero-view.js",
@@ -84,7 +84,7 @@
    "file": "lib/better.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 14
+   "dependants": 15
   },
   {
    "file": "lib/stars.js",
@@ -96,19 +96,25 @@
    "file": "lib/probe-log.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 14
+   "dependants": 15
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 13
+   "dependants": 14
   },
   {
    "file": "lib/guide.js",
    "skills": 3,
    "direct": 1,
    "dependants": 12
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 10
   },
   {
    "file": "lib/card-art.js",
@@ -147,6 +153,24 @@
    "dependants": 3
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 14
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 10
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
    "file": "lib/card-image.js",
    "skills": 2,
    "direct": 0,
@@ -157,6 +181,12 @@
    "skills": 2,
    "direct": 1,
    "dependants": 5
+  },
+  {
+   "file": "lib/card-forge.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 4
   },
   {
    "file": "lib/card-kinds.js",
@@ -216,7 +246,7 @@
    "file": "lib/automation-fix.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 43
+   "dependants": 44
   },
   {
    "file": "lib/gumroad.js",
@@ -237,46 +267,46 @@
    "dependants": 12
   },
   {
+   "file": "lib/alt-pay.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 10
+  },
+  {
+   "file": "lib/pay-share.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 10
+  },
+  {
+   "file": "lib/store-products.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 10
+  },
+  {
    "file": "lib/watch.js",
    "skills": 1,
    "direct": 1,
    "dependants": 10
   },
   {
-   "file": "lib/alt-pay.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9
-  },
-  {
-   "file": "lib/pay-share.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9
-  },
-  {
-   "file": "lib/store-products.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9
-  },
-  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 8
+   "dependants": 9
   },
   {
    "file": "lib/store.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 8
+   "dependants": 9
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 6
+   "dependants": 7
   },
   {
    "file": "lib/field-kit.js",
@@ -304,12 +334,6 @@
   },
   {
    "file": "lib/field-vector.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2
-  },
-  {
-   "file": "lib/merge-rules.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -432,22 +456,28 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 40
+   "dependants": 41
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 31
+   "dependants": 32
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23
+   "dependants": 24
   },
   {
    "file": "lib/webauthn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 23
+  },
+  {
+   "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
    "dependants": 22
@@ -459,40 +489,46 @@
    "dependants": 21
   },
   {
-   "file": "lib/void-me.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 21
-  },
-  {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 18
+   "dependants": 19
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 17
+   "dependants": 18
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 14
+   "dependants": 15
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 13
+   "dependants": 14
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 11
+   "dependants": 12
+  },
+  {
+   "file": "lib/router.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9
+  },
+  {
+   "file": "lib/voice.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 9
   },
   {
    "file": "lib/automations.js",
@@ -501,19 +537,13 @@
    "dependants": 8
   },
   {
-   "file": "lib/router.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8
-  },
-  {
-   "file": "lib/voice.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8
-  },
-  {
    "file": "lib/memory-scope.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
+   "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
    "dependants": 7
@@ -525,19 +555,55 @@
    "dependants": 7
   },
   {
-   "file": "lib/memory-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 6
-  },
-  {
    "file": "lib/privacy.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 6
+   "dependants": 7
   },
   {
    "file": "lib/self-context.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 7
+  },
+  {
+   "file": "lib/cite.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/clef.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/draft.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/near-miss.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/patch-guard.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/pay-honest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
    "dependants": 6
@@ -549,55 +615,7 @@
    "dependants": 5
   },
   {
-   "file": "lib/cite.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/clef.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/draft.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/near-miss.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
    "file": "lib/noise.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/patch-guard.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/pay-honest.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
-   "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5
@@ -872,6 +890,7 @@
    ],
    "importedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -927,6 +946,16 @@
     "functions/api/answer.js",
     "lib/router.js",
     "lib/clef.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/card-art.js": {
+   "imports": [
+    "functions/api/answer.js",
+    "lib/automation-fix.js",
+    "lib/keeper.js",
+    "lib/models.js",
+    "lib/art-rules.js"
    ],
    "importedBy": []
   },
@@ -1329,6 +1358,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js",
@@ -1384,6 +1414,24 @@
     "lib/arena-say.js"
    ],
    "importedBy": []
+  },
+  "lib/art-rules.js": {
+   "imports": [
+    "lib/merge-rules.js",
+    "lib/keeper.js"
+   ],
+   "importedBy": [
+    "functions/api/card-art.js",
+    "lib/card-forge.js",
+    "lib/card-image.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
   },
   "lib/ask-text.js": {
    "imports": [],
@@ -1449,6 +1497,7 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
+    "functions/api/card-art.js",
     "functions/api/figurescript.js",
     "functions/api/handoff.js",
     "functions/api/merge.js",
@@ -1548,6 +1597,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -1585,6 +1635,7 @@
   },
   "lib/card-art.js": {
    "imports": [
+    "lib/card-subject.js",
     "lib/guide.js"
    ],
    "importedBy": [
@@ -1601,12 +1652,27 @@
     "skills/merge.js"
    ]
   },
+  "lib/card-forge.js": {
+   "imports": [
+    "lib/art-rules.js"
+   ],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
+  },
   "lib/card-frame.js": {
    "imports": [
     "lib/guide.js",
     "lib/card-kinds.js",
     "lib/card-share.js",
-    "lib/card-art.js"
+    "lib/card-art.js",
+    "lib/card-forge.js",
+    "lib/card-subject.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -1616,7 +1682,8 @@
   },
   "lib/card-image.js": {
    "imports": [
-    "lib/card-art.js"
+    "lib/card-art.js",
+    "lib/art-rules.js"
    ],
    "importedBy": [
     "lib/card-share.js"
@@ -1652,6 +1719,23 @@
     "skills/merge.js"
    ]
   },
+  "lib/card-subject.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-art.js",
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/card-image.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "lib/skill-confidence.js",
+    "lib/tome.js",
+    "skills/duel.js",
+    "skills/guide.js",
+    "skills/merge.js"
+   ]
+  },
   "lib/cite.js": {
    "imports": [],
    "importedBy": [
@@ -1659,6 +1743,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -1674,6 +1759,7 @@
     "functions/api/bench.js"
    ],
    "reachedBy": [
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -1691,6 +1777,7 @@
    "reachedBy": [
     "functions/api/actions.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -1740,6 +1827,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -1776,6 +1864,7 @@
     "functions/api/answer.js",
     "functions/api/approval.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/routes.js",
@@ -1897,6 +1986,7 @@
    ],
    "reachedBy": [
     "functions/api/answer.js",
+    "functions/api/card-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -1986,6 +2076,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -2021,12 +2112,21 @@
    "imports": [],
    "importedBy": [
     "functions/api/answer.js",
-    "functions/api/merge.js"
+    "functions/api/card-art.js",
+    "functions/api/merge.js",
+    "lib/art-rules.js"
    ],
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/mcp.js",
-    "lib/bench-asks.js"
+    "lib/bench-asks.js",
+    "lib/card-forge.js",
+    "lib/card-frame.js",
+    "lib/card-image.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
    ]
   },
   "lib/ladder.js": {
@@ -2041,6 +2141,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -2108,6 +2209,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2126,6 +2228,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2135,7 +2238,17 @@
    "imports": [],
    "importedBy": [
     "functions/api/merge.js",
+    "lib/art-rules.js",
     "skills/merge.js"
+   ],
+   "reachedBy": [
+    "functions/api/card-art.js",
+    "lib/card-forge.js",
+    "lib/card-frame.js",
+    "lib/card-image.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/duel.js"
    ]
   },
   "lib/misskey.js": {
@@ -2150,6 +2263,7 @@
     "functions/api/answer.js",
     "functions/api/appraise.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/digest.js",
     "functions/api/figurescript.js",
     "functions/api/merge.js",
@@ -2203,6 +2317,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2243,6 +2358,7 @@
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -2298,6 +2414,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2310,6 +2427,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2324,6 +2442,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js",
@@ -2349,6 +2468,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/probe-asks.js",
@@ -2370,6 +2490,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2394,6 +2515,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2422,6 +2544,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2446,6 +2569,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -2496,6 +2620,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/queue.js",
@@ -2558,6 +2683,7 @@
    "reachedBy": [
     "functions/api/actions.js",
     "functions/api/answer.js",
+    "functions/api/card-art.js",
     "functions/api/film-views.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -2580,6 +2706,7 @@
     "lib/clef.js"
    ],
    "reachedBy": [
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2671,6 +2798,7 @@
     "lib/bench-asks.js"
    ],
    "reachedBy": [
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js"
    ]
@@ -2713,6 +2841,7 @@
    ],
    "reachedBy": [
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
    ]
@@ -2830,6 +2959,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -2878,6 +3008,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/store/[[path]].js",
@@ -2900,6 +3031,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -2976,6 +3108,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
@@ -3004,6 +3137,7 @@
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/film-views.js",
     "functions/api/mcp.js",
     "functions/api/memory.js",
@@ -3045,6 +3179,7 @@
     "functions/api/actions.js",
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/film-review.js",
     "functions/api/film-views.js",
     "functions/api/films.js",
@@ -3668,6 +3803,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
@@ -3691,6 +3827,7 @@
    "reachedBy": [
     "functions/api/answer.js",
     "functions/api/bench.js",
+    "functions/api/card-art.js",
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "functions/api/reflect.js",
