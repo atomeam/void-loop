@@ -90,17 +90,24 @@ export function vocabulary(skills) {
   return { own, known, byFirst };
 }
 
+/** the same letters in another order. Pure. */
+export const sameLetters = (a, b) => a.length === b.length && [...a].sort().join('') === [...b].sort().join('');
+
 /** the one trigger word a typed word is a slip of, { to, d }, or null (ties, far words and known words give null) */
 export function nearest(word, vocab) {
   const max = allowed(word.length);
   if (!max || word.length > MAX_LEN || !LETTERS.test(word) || vocab.known.has(word) || COMMON.has(word)) return null;
-  let best = null, bestD = max + 1, ties = 0;
+  let best = null, bestD = max + 1, ties = 0, swaps = [];
   for (const w of vocab.byFirst.get(word[0]) || []) {
     if (Math.abs(w.length - word.length) > max) continue;
     const d = distance(word, w, max);
     if (d <= max && sameStem(word, w)) return null; // "rains" is the word "rain", not a slip of it
-    if (d < bestD) { bestD = d; best = w; ties = 0; } else if (d === bestD) ties++;
+    if (d < bestD) { bestD = d; best = w; ties = 0; swaps = []; } else if (d === bestD) ties++;
+    if (d === bestD && d <= max && sameLetters(word, w)) swaps.push(w);
   }
+  // a tie is settled by the one candidate with exactly the typed letters: two swapped keys ("moive") are the commonest slip, so
+  // "moive" is "movie", not "move" (site-test issue #802). Two such candidates still tie.
+  if (best && ties && swaps.length === 1) return { to: swaps[0], d: bestD };
   return best && !ties ? { to: best, d: bestD } : null;
 }
 
