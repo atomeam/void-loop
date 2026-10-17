@@ -54,6 +54,7 @@ function wirePlayers(el, f) {
 export async function runCard(m, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
+  el.dataset.artKind = 'Film';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'movie';
   el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
@@ -63,6 +64,7 @@ export async function runCard(m, api) {
 export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
+  el.dataset.artKind = 'Film';
   let picks = [];
   try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: PICK_PROMPT }) }); if (r.ok) picks = parseSuggestions((await r.json()).answer); } catch (_) {}
   if (!api._pageStill(el)) return 'movie';
