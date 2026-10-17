@@ -43,6 +43,14 @@ export function judge(c, r, limits = {}) {
 }
 
 /** The asks of a suite, each once (a repeat is dropped, never sent twice in a run). Pure. */
+/** what a page's text gained between two reads: the middle that differs once the shared start and end are trimmed (an answer can replace a
+ * status line in the middle of the page, as "the void is empty · summon something first" does, not only grow its end). Pure. */
+export function changedText(before, after) {
+  const b = String(before || ''), t = String(after || ''); let i = 0, j = 0;
+  while (i < b.length && i < t.length && b[i] === t[i]) i++;
+  while (j < b.length - i && j < t.length - i && b[b.length - 1 - j] === t[t.length - 1 - j]) j++;
+  return t.slice(i, t.length - j).slice(0, 1500);
+}
 export const onceEach = (cases) => { const s = new Set(); return cases.filter((c) => { const k = String(c.ask).trim().toLowerCase(); return !s.has(k) && s.add(k); }); };
 
 /** robots.txt: is this path allowed for any agent? Minimal reader of the User-agent: * group. Pure. */
@@ -164,9 +172,10 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
       const v = judge(c, { text, errors, loadMs }, suite.limits); out.push({ ...v, ...meta(c), loadMs, chars: text.trim().length });
       console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); await cx.close(); await wait(GAP_MS); continue; }
     await p.waitForSelector('#input', { timeout: 15000 }); await p.waitForTimeout(800);
-    const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText.length }));
+    const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText }));
     await p.fill('#input', c.ask); await p.keyboard.press('Enter'); await p.waitForTimeout(c.waitMs || 4000);
-    const seen = await p.evaluate(([b, sel]) => ({ newThings: document.querySelectorAll('.thing').length - b.n, text: document.body.innerText.slice(b.t, b.t + 1500), selector: sel ? !!document.querySelector(sel) : true }), [before, (c.expect || {}).selector]);
+    const seen = await p.evaluate(([b, sel]) => ({ newThings: document.querySelectorAll('.thing').length - b.n, text: document.body.innerText, selector: sel ? !!document.querySelector(sel) : true }), [before, (c.expect || {}).selector]);
+    seen.text = changedText(before.t, seen.text);
     const fps = c.fps ? await fpsOf(p) : undefined;
     const slug = c.ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40); await p.screenshot({ path: resolve(shots, slug + '.png') }).catch(() => {});
     const v = judge(c, { ...seen, errors, fps, loadMs }, suite.limits); out.push({ ...v, ...meta(c), fps, loadMs, chars: seen.text.trim().length });
