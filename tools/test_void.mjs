@@ -3681,9 +3681,20 @@ try {
     // "the book at chess" opens on the chess page; Esc closes the book and not the stage's things
     await B.ask('the book at chess', 900);
     const atChess = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) && /Chess/.test(l.text) ? l : null; }, 8000);
+    // owner, 2026-10-17: "when I close the book it should stay so I can see the cover or back cover": Esc shuts the cover and leaves the book on the
+    // table; the same again puts it away; past the last page the book shuts on its back cover
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(900);
+    const shutNow = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { tome: !!t, shut: !!t && t.classList.contains('shut'), dim: document.documentElement.classList.contains('v-tome') }; });
     await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(1200);
     const closed = await B.p.evaluate(() => ({ tome: !!document.getElementById('vtome'), dim: document.documentElement.classList.contains('v-tome') }));
-    check('the book: "the book at chess" opens on the Chess page, and Esc shuts the cover and takes the book away (the clock stays on the stage)', !!atChess && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, closed, errors: B.errors }));
+    check('the book: "the book at chess" opens on the Chess page, Esc shuts the cover and leaves the book up, and Esc again takes it away (the clock stays on the stage)', !!atChess && shutNow.tome && shutNow.shut && shutNow.dim && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, shutNow, closed, errors: B.errors }));
+    await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened')), 8000);
+    const total = await B.p.evaluate(() => window.__voidBook.totals.pages); await B.p.evaluate((n) => window.__voidBook.go(n), total); await B.p.waitForTimeout(1200);
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(900);
+    const backSide = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); const bc = document.querySelector('#vtome .tome-backcover'); return { shut: t.classList.contains('shut'), back: t.classList.contains('back'), shown: !!bc && getComputedStyle(bc).display !== 'none', words: bc ? bc.textContent : '' }; });
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
+    const reopenedBack = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { open: t.classList.contains('opened'), shut: t.classList.contains('shut') }; });
+    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);
