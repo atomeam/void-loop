@@ -3622,7 +3622,7 @@ try {
     const P = await fresh();
     const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
     const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
-    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG, headers: { 'access-control-allow-origin': '*' } }));
     await P.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'Cat' }] } }));
       if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
@@ -3630,6 +3630,10 @@ try {
     await P.ask('what is a cat', 1500);
     const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
     check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    // owner, 2026-10-17: the poster showed in V01D's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
+    const colour = await P.p.evaluate(() => { const im = document.querySelector('.vpage.on .vc-art-photo'); return im ? getComputedStyle(im).filter : 'none-missing'; });
+    const photoUrl = await P.p.evaluate(async () => { const { photoData } = await import('/lib/card-image.js'); const src = document.querySelector('.vpage.on .vc-art-photo').getAttribute('src'); return { ok: (await photoData(src)).slice(0, 23), http: await photoData('http://x.example/a.png'), bad: await photoData('https://nonexistent.invalid/x.png') }; });
+    check('V01D card art: a subject photo shows in true colour (no grayscale or sepia filter) and the saved card draws it (a JPEG data URL), falling back to \'\' for http or a failed load', colour === 'none' && photoUrl.ok === 'data:image/jpeg;base64,' && photoUrl.http === '' && photoUrl.bad === '' && !P.errors.length, JSON.stringify({ colour, photoUrl, e: P.errors }));
     await P.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
