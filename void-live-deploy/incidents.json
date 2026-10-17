@@ -2,6 +2,16 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T06:36:02.627Z",
+   "sha": "153519074284667ca870179b944b79ee0fc8e0b2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39009581481",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
+   ]
+  },
+  {
    "at": "2026-10-17T06:16:32.752Z",
    "sha": "086c8fb9a2e3b34dde71cd26160044f69771eaf9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39008384586",
@@ -300,16 +310,6 @@
    "suite": "browser suite on main",
    "checks": [
     "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-16T05:31:41.351Z",
-   "sha": "99acc8d047e956c8ebedb6e6d24be0b5ef73cf59",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38855254172",
-   "suite": "browser suite on main",
-   "checks": [
-    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
-    "suite ran to the end"
    ]
   }
  ]
