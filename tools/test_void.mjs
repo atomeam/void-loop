@@ -748,6 +748,29 @@ try {
       /list/.test(during) && /timer/.test(during) && /sticky/.test(during) && after === 'clock' && !U.errors.length, JSON.stringify({ during, after, e: U.errors }));
     await U.ctx.close(); }
 
+  // The preview state for summoned intents and the failed-intent bridge to the miss board (asked by Void, 2026-10-16, skills/intent.js)
+  if (want("intent preview: a plan shown as a card with nothing on the stage, deployed on a tap, a misread one sent to the miss board")) { const P = await fresh();
+    await P.p.evaluate(() => { window.__miss = []; const f = window.fetch; window.fetch = (u, o) => { try { if (String(u).includes('/api/miss')) window.__miss.push(JSON.parse(o.body)); } catch (_) {} return f.call(window, u, o); }; });
+    await P.ask('preview I need to ship the product page by Friday', 900);
+    const card = await P.page(), onStage = (await P.state()).length;
+    await P.p.click('[data-decline]'); await P.p.waitForTimeout(300);
+    const miss = await P.p.evaluate(() => window.__miss);
+    await P.p.click('[data-deploy]'); await P.p.waitForTimeout(1500);
+    const kinds = (await P.state()).map((x) => x.kind).sort();
+    check('intent preview: "preview I need to ship the product page by Friday" shows the goal, the dated steps and the pieces that would come with nothing on the stage, "not what I meant" sends the intent to the miss board tagged intent:misread, and "put it on the stage" then brings the countdown, the list and the calendar entry',
+      /Preview: ship the product page/.test(card) && /nothing is on your stage yet/.test(card) && /outline it/.test(card) && /a countdown to the day/.test(card) && onStage === 0
+        && miss.some((m) => m.fallback === 'intent:misread' && /ship the product page/.test(m.ask)) && kinds.join() === 'calendar,countdown,list' && !P.errors.length,
+      JSON.stringify({ card: card.slice(0, 300), onStage, miss, kinds, e: P.errors }));
+    await P.ctx.close(); }
+  // peek (asked by Void, 2026-10-16): a quoted line of the code review that was shown cut at 160 characters opens to the whole line
+  if (want("review peek: a long quoted line shows its start with a peek button that opens the whole line and closes it again")) { const P = await fresh();
+    await P.ask('review this code:\nlet x = 1;\nconst result = eval("' + 'a'.repeat(220) + '");', 1500);
+    const read = () => P.p.evaluate(() => { const b = document.querySelector('.review-peek'); return b ? { open: b.getAttribute('aria-expanded'), len: b.previousElementSibling.querySelector('code').textContent.length } : null; });
+    const closed = await read(); await P.p.click('.review-peek'); const opened = await read(); await P.p.click('.review-peek'); const again = await read();
+    check('review peek: a finding whose line is longer than 160 characters shows its first 160 and a peek button, the button opens the whole line (over 220 characters) and a second tap closes it',
+      !!closed && closed.open === 'false' && closed.len <= 162 && opened.open === 'true' && opened.len > 220 && again.open === 'false' && again.len === closed.len && !P.errors.length,
+      JSON.stringify({ closed, opened, again, e: P.errors }));
+    await P.ctx.close(); }
   // Plan history (asked by Void, skills/intent.js): a plan is kept in this browser as it was laid out; after "clear" wipes the
   // stage, "plan history" lists it and "restore plan 1" puts it back as new pieces, so a wipe is never total.
   if (want("plan history: a plan survives a clear, plan history lists it, restore puts it back")) { const H = await fresh();
@@ -1034,7 +1057,7 @@ try {
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
     await A.p.click('.vpage.on .ap-make a').catch(() => {}); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
-    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.page();
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length
@@ -1171,9 +1194,9 @@ try {
     await G.p.keyboard.press('Enter'); await G.p.waitForTimeout(1500);
     const talked = await G.page();
     await G.ask('my zap is failing with 401 Unauthorized', 300); await until(async () => /Likely cause/.test(await G.page()), 6000);
-    const real = await G.p.$eval('.vpage.on', (e) => ({ src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const real = await G.p.$eval('.vpage.on', (e) => ({ src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     await G.ask('my zap stopped firing yesterday and nothing in it runs anymore, the trigger looks switched on and the sheet still gets new rows every hour', 300); await until(async () => /Likely cause|Paste what it shows/.test(await G.page()), 6000);
-    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     check('intent gate: a pasted discussion is not a broken automation (no fix card, no fix request); a real error gets its fix with the error quoted as the source; a fix from a description says so and how it was read',
       fixes.filter((b) => /reply channel/.test(b.details || b.ask || '')).length === 0 && !/Likely cause/.test(talked)
         && !!real && /from the error itself: “[^”]*401/.test(real.src) && !real.read
@@ -1364,6 +1387,22 @@ try {
     const second = await note();
     check('look what I made: previewed once: the line about what V01D made shows once for a set of things (even if ignored), a later visit does not repeat it',
       /I made 2 new things while you were away/.test(first) && !/while you were away/.test(second), JSON.stringify({ first, second }));
+    await P.ctx.close();
+  }
+  if (want("look what I made: a small animated icon on the stage starts the walkthrough, no typing")) { // asked by Void
+    const LEDGER = [
+      { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+      { at: '2026-10-14T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+    ];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+    const bellOk = await until(async () => P.p.$eval('#whatsnew-bell', (e) => ({ count: e.dataset.count, label: e.getAttribute('aria-label'), anim: getComputedStyle(e).animationName, fixed: getComputedStyle(e).position })).catch(() => null), 20000);
+    await P.p.click('#whatsnew-bell'); const bar = await until(async () => P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''), 6000);
+    const gone = await P.p.$('#whatsnew-bell');
+    check('look what I made: when something is new a small pulsing icon with the count sits on the stage; tapping it starts the walkthrough (the bar says 1 of 2) and the icon goes, with nothing typed',
+      !!bellOk && bellOk.count === '2' && /2 new things/.test(bellOk.label) && /wn-pulse/.test(bellOk.anim) && bellOk.fixed === 'fixed' && /1 of 2/.test(bar) && !gone && !P.errors.length, JSON.stringify({ bellOk, bar, gone: !!gone, errors: P.errors }));
     await P.ctx.close();
   }
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
@@ -2088,7 +2127,7 @@ try {
   if (want("V01D's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const body = (c) => "V01D's own model proposed this change. Why, in V01D's words: the matcher only knew ride words. V01D's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
     const prs = [{ number: 900, title: 'V01D fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
-      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', body: body('0.55'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
+      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
@@ -2098,8 +2137,8 @@ try {
     await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Void's review is clean/.test(await O.page()), 4000);
     const after = await O.page();
     const S = await fresh(); await S.ask("V01D's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
-    check("V01D's fixes: the owner previews the fixes V01D opened, the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
-      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · waits for you/.test(card)
+    check("V01D's fixes: the owner previews the fixes V01D opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /High-impact change: it changes a structural line/.test(card)
         && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
         && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
@@ -2117,6 +2156,16 @@ try {
     check('rating note: a card from a skill rated experiment says so on its source line ("rated experiment (…): not checked yet"), a proven skill\'s card says nothing',
       !!thin && thin.inSrc && /^ · rated experiment \(a self-test\): not checked yet$/.test(thin.text) && /evidence only/.test(thin.title) && quiet === 0 && !R.errors.length, JSON.stringify({ thin, quiet, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("arcade ghost: Pong and Snake replay your best run as a faint ghost, and a finished game is kept when it beats it")) { // asked by Void
+    const G = await fresh({ content: 'localStorage.setItem("void-ghost-pong", JSON.stringify({game:"pong",you:7,void:3,dur:40,ys:[130,131,132,133,134]})); localStorage.setItem("void-ghost-snake", JSON.stringify({game:"snake",len:9,path:[[5,4],[6,4],[7,4]],lens:[4,4,4]}));' });
+    await G.ask('pong', 600); await until(async () => !!(await G.p.$('.pong-card')), 6000);
+    const pw = await G.p.$eval('.pong-card .pong-card-why', (e) => e.textContent).catch(() => '');
+    await G.ask('snake', 600); await until(async () => !!(await G.p.$('.snake-card')), 6000);
+    const sw = await G.p.$eval('.snake-card .snake-card-why', (e) => e.textContent).catch(() => '');
+    const stored = await G.p.evaluate(() => ({ pong: JSON.parse(localStorage.getItem('void-ghost-pong')).you, snake: JSON.parse(localStorage.getItem('void-ghost-snake')).len }));
+    check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
+      /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
+    await G.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -2130,11 +2179,26 @@ try {
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
-    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
-        && forge.asks.length === 10 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
+        && forge.asks.length >= 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
         && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Void: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
       JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+    await B.ctx.close(); }
+  // V01D's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
+  if (want("V01D's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
+    await B.ask('make me a person', 400); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'person'), 8000);
+    await B.ask('check it before printing', 300); await until(async () => /Geometry checked, not printed/.test(await B.whisper()), 8000).catch(() => {});
+    const checked = await B.whisper();
+    await B.ask('forge iterations', 300); await until(async () => /Forge iterations/.test(await B.page()), 5000);
+    const it = await B.p.$eval('.vpage.on', (e) => ({ n: e.querySelectorAll('[data-iteration]').length, text: e.textContent.replace(/\s+/g, ' ') }));
+    const dl = B.p.waitForEvent('download', { timeout: 15000 }).catch(() => null);
+    await B.ask('print it', 500); const file = await dl;
+    await B.ask('what have i printed', 400); await until(async () => /What I have printed/.test(await B.page()), 5000);
+    const printed = await B.p.$eval('.vpage.on', (e) => e.textContent.replace(/\s+/g, ' '));
+    check('V01D\'s forge asks: "make me a person" forges the figure; "check it before printing" checks it without a download; "forge iterations" keeps the make with its recipe id; after "print it" the inventory\'s "what have i printed" lists the Person file',
+      /Geometry checked, not printed/.test(checked) && it.n === 1 && /person · recipe [0-9a-f]{8}/.test(it.text) && !!file && /void-person-[0-9a-f]{8}\.stl/.test(file ? file.suggestedFilename() : '') && /1 file went to a printer/.test(printed) && /Person/.test(printed) && !B.errors.length,
+      JSON.stringify({ checked: checked.slice(-120), it, file: file && file.suggestedFilename(), printed: printed.slice(0, 160), errors: B.errors }));
     await B.ctx.close(); }
   if (want("the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) a")) { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const recs = [
@@ -2230,6 +2294,34 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  // frontier #31 (owner, 2026-10-16): the stage is an RTS. A camp grounds the scene; a tree is 8 wood; a villager gathers it by itself and
+  // carries each load to the camp, whose label is the resource bar; with the wood in, "build a hut" pays and raises the forge hut
+  if (want("the stage is an RTS: a camp grounds the figures, a tree is wood, a villager gathers it to the camp, a hut is built from it")) { const P = await fresh();
+    await P.ask('start a camp', 700);
+    const camp0 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    const grounded = await P.p.evaluate(() => document.documentElement.classList.contains('v-grounded'));
+    await P.ask('add a tree', 900);
+    const tree = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'tree');
+    await P.ask('summon a villager', 900);
+    const villager = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'villager');
+    // the villager finds the tree, takes a load and walks it to the camp: the bar counts it
+    const bar = await until(async () => { const t = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => ''); return /wood [1-9]/.test(t) ? t : ''; }, 45000);
+    const treeLeft = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const t = s && s.figures.find((f) => f.kindOf === 'tree'); return t ? t.left : null; });
+    const onGround = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const st = document.getElementById('stage').getBoundingClientRect(); return s ? s.figures.every((f) => f.y >= st.bottom * 0.5 - 60) : null; });
+    // a hut needs 6 wood: short, it says what is missing; with the wood put in the camp's stock, it pays and the forge hut stands by the camp
+    await P.ask('build a hut', 500); const short = await P.whisper();
+    // eight more loads arrive (the engine's own event, as a villager reaching the camp fires it): now the camp can pay
+    await P.p.evaluate(() => { for (let i = 0; i < 8; i++) document.dispatchEvent(new CustomEvent('void:rts-deliver', { detail: { res: 'wood' } })); });
+    await P.p.waitForTimeout(600);
+    const wood9 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    await P.ask('build a hut', 700); const raised = await P.whisper();
+    const after = await P.state(); const hut = after.find((t) => t.kind === 'forge' && t.key === 'hut'), campAfter = after.find((t) => t.kind === 'camp');
+    await P.ask('how are we doing', 500); const rep = await P.whisper();
+    check('the stage is an RTS: "start a camp" puts up the camp (wood 0) and grounds the scene; "add a tree" is 8 wood; a summoned villager gathers from it by itself and the camp\'s bar counts the wood as the tree\'s loads fall, every figure on the ground band; "build a hut" short of wood says what is missing, with 9 wood it pays 6 and a forge hut stands by the camp, and "how are we doing" reports the stock',
+      /^wood 0 · stone 0 · food 0/.test(camp0) && grounded && !!tree && tree.res && tree.res.kind === 'wood' && tree.res.left === 8 && !!villager && /wood [1-9]/.test(bar) && treeLeft !== null && treeLeft < 8 && onGround === true
+        && /a hut needs 6 wood: \d wood so far; the villagers are on it/.test(short) && /wood 9|wood 1\d/.test(wood9) && /the villagers raised a hut \(6 wood\)/.test(raised) && !!hut && campAfter && campAfter.stock.wood >= 3 && /^the camp has \d+ wood/.test(rep) && /built: hut/.test(rep) && !P.errors.length,
+      JSON.stringify({ camp0, grounded, tree: tree && tree.res, villager: !!villager, bar, treeLeft, onGround, short, wood9, raised, hut: !!hut, stock: campAfter && campAfter.stock, rep, errors: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
   if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
     await P.ask('what are they doing', 500); const none = await P.whisper();
@@ -2430,6 +2522,37 @@ try {
     check('arena day over day: "how good are you at connect four" says the change since the last day that differed, from the history the daily run keeps (here: ' + arenaDelta(rec.history) + ')',
       Array.isArray(rec.history) && rec.history.length >= 1 && delta === 'Day over day: ' + arenaDelta(rec.history) + '.' && !A.errors.length, JSON.stringify({ delta, history: rec.history, e: A.errors }));
     await A.ctx.close(); }
+  // V01D card game (frontier #33 steps 1 and 2): "duel" puts a table of V01D cards on the stage; a person summons an idea, passes, attacks, and V01D plays the other side.
+  if (want("V01D card game: duel puts a table of V01D cards on the stage, you summon an idea, pass and attack, and V01D plays its side")) {
+    const G = await fresh(); await G.p.setViewportSize({ width: 375, height: 760 }); await G.ask('duel', 900);
+    await G.p.waitForSelector('.duel-card .duel-tile', { timeout: 6000 }).catch(() => {});
+    const bar = () => G.p.evaluate(() => (document.querySelector('.duel-card .d-bar') || {}).textContent || '');
+    const yours = () => G.p.evaluate(() => document.querySelectorAll('.duel-card .d-me .duel-tile').length), theirs = () => G.p.evaluate(() => document.querySelectorAll('.duel-card .d-foe .duel-tile').length);
+    const myTurn = (n) => G.p.waitForFunction((k) => /your move/.test((document.querySelector('.duel-card .d-bar') || {}).textContent || '') && (k == null || new RegExp('Turn ' + k + ' of').test(document.querySelector('.duel-card .d-bar').textContent)), n, { timeout: 8000 }).then(() => true, () => false);
+    const fit = await G.p.evaluate(() => { const r = document.querySelector('.duel-card').getBoundingClientRect(); return { l: r.left, r: r.right, w: innerWidth, sw: document.documentElement.scrollWidth, tiles: document.querySelectorAll('.duel-card .duel-tile').length, arrows: document.querySelectorAll('.duel-card .vc-arrows').length }; });
+    check('V01D card game: "duel" puts a table on the stage with both Roots as V01D cards (with arrows), the Treasury and the turn, and it fits a 375 px phone', fit.tiles === 2 && fit.arrows === 2 && /Turn 1 of 12/.test(await bar()) && /Treasury: you 8/.test(await bar()) && fit.r <= fit.w + 1 && fit.l >= -1 && fit.sw <= fit.w + 1, JSON.stringify({ fit, bar: await bar() }));
+    await G.p.fill('.duel-card .d-idea', 'dragon'); await G.p.click('.duel-card .d-summon'); await G.p.click('.duel-card .duel-open'); await G.p.click('.duel-card .d-confirm');
+    check('V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1', await yours() === 3 && /Treasury: you 7/.test(await bar()) && await G.p.evaluate(() => /dragon/i.test(document.querySelector('.duel-card .d-me').textContent)), await bar());
+    await G.p.click('.duel-card .d-pass'); const back = await myTurn(2);
+    check('V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2', back && await theirs() >= 2 && /Treasury: you 11/.test(await bar()), await bar() + ' foe tiles ' + await theirs());
+    await G.p.click('.duel-card .d-me .duel-tile'); await G.p.click('.duel-card .d-foe .duel-tile'); await G.p.click('.duel-card .d-confirm');
+    const ans = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 1500 }).then(() => true, () => false); if (ans) await G.p.click('.duel-card .d-answer'); // V01D answers by itself when it is the defender
+    await G.p.waitForTimeout(400);
+    check('V01D card game: an attack is played out and written in the log', await G.p.evaluate(() => /fails against|neutralises/.test((document.querySelector('.duel-card .d-log') || {}).textContent || '')), await G.p.evaluate(() => (document.querySelector('.duel-card .d-log') || {}).textContent));
+    await myTurn(); await G.ask('summon a comet', 400);
+    check('V01D card game: "summon <idea>" typed while a duel is on the stage prepares that card on the table (not a new duel)', await G.p.evaluate(() => document.querySelectorAll('.duel-card').length === 1 && document.querySelector('.duel-card .d-idea').value === 'a comet'), await G.p.evaluate(() => document.querySelector('.duel-card .d-idea').value));
+    check('V01D card game: no page errors through a few real turns', !G.errors.length, JSON.stringify(G.errors));
+    await G.ctx.close(); }
+  // V01D rules engine (frontier #35): "duel with mana and tribute rules" loads three rule sets as one stack, plays a few turns and writes every clash in words.
+  if (want("V01D rules engine: \"duel with mana and tribute rules\" puts the three rule sets in force at once, plays turns and writes the clash in plain words")) {
+    const R = await fresh(); await R.ask('duel with mana and tribute rules', 900);
+    await R.p.waitForSelector('.rules-card .r-log li', { timeout: 8000 }).catch(() => {});
+    const got = await R.p.evaluate(() => ({ sets: [...document.querySelectorAll('.rules-card .r-set')].map((e) => e.textContent), clash: [...document.querySelectorAll('.rules-card .r-log li.clash')].map((e) => e.textContent), lines: document.querySelectorAll('.rules-card .r-log li').length, tiles: document.querySelectorAll('.rules-card .duel-tile').length, plain: !/undefined|\[object|NaN/.test((document.querySelector('.rules-card .r-log') || {}).textContent || ''), duel: document.querySelectorAll('.duel-card:not(.rules-card)').length }));
+    check('V01D rules engine: "duel with mana and tribute rules" shows all three rule sets in force at once', got.sets.length === 3 && got.duel === 0, JSON.stringify(got.sets));
+    check('V01D rules engine: the clash between the tribute rule and the duel rule is written in plain words with how it was settled', got.clash.some((l) => /^Clash on the summon: the tribute rules/.test(l) && /layer 1 is settled before layer 2/.test(l)) && got.plain, JSON.stringify(got.clash.slice(0, 1)));
+    check('V01D rules engine: a few turns were played and drawn as V01D cards', got.lines > 10 && got.tiles >= 4, JSON.stringify({ lines: got.lines, tiles: got.tiles }));
+    check('V01D rules engine: no page errors', !R.errors.length, JSON.stringify(R.errors));
+    await R.ctx.close(); }
   // the self-play arena's record (frontier #5): "how good are you at connect four" answers from /arena.json, the games' own ratings, with the curve, and opens no game.
   if (want("the self-play arena's record (frontier #5): \"how good are you at connect four\" answers")) {
     const A = await fresh(); await A.ask('how good are you at connect four', 900); await A.p.waitForFunction(() => /Rated from/.test((document.querySelector('[data-arena-say]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});
@@ -2462,7 +2585,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test(saved.page.split('Saved')[1] || '') && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO V01D')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
@@ -3186,10 +3309,59 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  if (want("V01D cards: a skill that earned a higher rating glows once and says so, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
+    await E.ask('20% tip on 45', 1600);
+    const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
+    const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on.vc-evolving'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
+    await E.p.evaluate((n) => { localStorage.setItem('a2m.void.tiers.v1', JSON.stringify({ [n]: 'experiment' })); }, name);
+    await E.ask('close', 500); await E.ask('20% tip on 45', 1600);
+    const up = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vc-evolving'); return e ? { to: e.dataset.evolved, note: (e.querySelector('.vc-evolved-note') || {}).textContent || '', anim: getComputedStyle(e).animationName } : null; }).catch(() => null), 6000);
+    await E.ask('close', 500); await E.ask('tell me about the ocean', 1800);
+    const an = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { kind: e.dataset.kind || '', type: e.querySelector('.vc-type').innerText.split(/[\s\u2014]/)[0].toLowerCase() } : null; }).catch(() => null), 8000);
+    check('V01D cards: a first sight of a skill does not evolve it, but a skill whose remembered rating was lower glows once ("Evolved: ... -> ...") and is remembered at its new rating; an answer card carries its kind (data-kind) so its layout can differ',
+      !!name && first.evolving === false && !!up && /^(Uncommon|Rare|Mythic)$/.test(up.to) && /^Evolved: Common/.test(up.note) && /vc-evolve/.test(up.anim) && !!an && an.kind === an.type && !E.errors.length,
+      JSON.stringify({ name, first, up, an, errors: E.errors }));
+    await E.ctx.close(); }
+  if (want("type filter: show only one kind of thing on the stage, then all of them again")) { const T = await fresh(); // asked by Void
+    await T.ask('make a clock', 700); await T.ask('make a counter', 700); await T.ask('make a counter', 700);
+    const vis = () => T.p.$$eval('#stage > [data-id]', (l) => l.map((e) => ({ id: e.dataset.id, hidden: getComputedStyle(e).display === 'none' })));
+    const before = await vis(); const kinds = await T.state();
+    await T.ask('show only clocks', 600); await T.p.waitForTimeout(300);
+    const only = await vis(), bar = await T.p.$$eval('#type-filter-bar button[data-kind]', (l) => l.map((b) => b.dataset.kind + ':' + b.getAttribute('aria-pressed')));
+    await T.p.click('#type-filter-bar button[data-kind="counter"]'); await T.p.waitForTimeout(200);
+    const swapped = await vis();
+    await T.ask('make a clock', 700); const afterDraw = await vis(); // a redraw keeps the filter
+    await T.ask('show all cards', 600); await T.p.waitForTimeout(300);
+    const all = await vis(), gone = await T.p.$('#type-filter-bar');
+    const clocks = kinds.filter((x) => x.kind === 'clock').map((x) => x.id);
+    check('type filter: "show only clocks" hides every other kind on the stage (the toggles name each kind and its count, the clock one pressed), a tap on another kind swaps, a redraw keeps the filter, and "show all cards" brings everything back and removes the bar',
+      before.length >= 2 && before.every((e) => !e.hidden) && only.filter((e) => !e.hidden).length === clocks.length && only.some((e) => e.hidden) && bar.includes('clock:true') && bar.some((b) => /^counter:false$/.test(b))
+        && swapped.filter((e) => e.hidden).length === clocks.length && afterDraw.some((e) => e.hidden) && all.every((e) => !e.hidden) && !gone && !T.errors.length,
+      JSON.stringify({ before: before.length, only, bar, swapped, afterDraw: afterDraw.length, all: all.length, gone: !!gone, errors: T.errors }));
+    await T.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
   // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
+  if (want("the book: search the tome from the docked bar, with the cover shut or open, and jump to the page")) { const B = await fresh(); // asked by Void
+    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
+    await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened .tome-search input, #vtome.on .tome.opened')), 8000); await B.p.waitForTimeout(400);
+    const dock = await B.p.$eval('#vtome .tome-search', (e) => { const r = e.getBoundingClientRect(); return { top: r.top, w: r.width, vw: innerWidth }; });
+    await B.p.fill('#vtome .tome-search input', 'weather'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
+    const hits = await B.p.$$eval('#vtome .tome-hits button[data-n]', (l) => l.map((b) => Number(b.dataset.n)));
+    await B.p.keyboard.press('Enter'); await until(async () => (await B.p.evaluate(() => window.__voidBook && window.__voidBook.cur)) === wx.n || (await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page))).includes(wx.n), 5000);
+    await B.p.waitForTimeout(1300);
+    const shown = await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page).filter(Boolean));
+    await B.p.keyboard.press('Escape'); const stillOpen = await B.p.evaluate(() => !!document.getElementById('vtome')); // Escape with the box in use clears it first
+    await B.p.fill('#vtome .tome-search input', 'clock'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
+    await B.p.click('#vtome .tome-hits button[data-n]'); await B.p.waitForTimeout(1200);
+    const shown2 = await B.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((s) => +s.dataset.page).filter(Boolean));
+    await B.p.fill('#vtome .tome-search input', 'zzqqxx wibble'); await B.p.waitForTimeout(300);
+    const none = await B.p.$eval('#vtome .tome-hits', (e) => e.textContent);
+    check('the book: a search bar stays docked at the top of the tome; typing "weather" lists its page first, Enter turns the book to it, a tap on a hit does the same for the clock, and a word the book lacks says so',
+      dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
+      JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
+    await B.ctx.close(); }
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
     const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button, #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });
@@ -3878,8 +4050,8 @@ try {
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
   check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
-  await P.ask('menu', 900); const menuTome = await P.p.evaluate(() => !!document.getElementById('vtome')); await P.ask('close', 900);
-  const menuGone = await P.p.evaluate(() => !document.getElementById('vtome'));
+  await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
+  const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
   check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
   const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];

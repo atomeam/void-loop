@@ -67,3 +67,25 @@ test('an unknown tier word never gives a negative stat', () => {
   const c = cardOf({ skill: { name: 'z', tier: 'mystery' } });
   assert.ok(c.power >= 0 && c.toughness >= 1);
 });
+
+// skill evolution and type-specific layouts (asked by Void)
+import { evolved, noteTier, EVO_KEY, cardOf as cardOf2 } from '../void-live-deploy/lib/card-frame.js';
+test('evolution: only a higher rating than the one this browser last saw evolves a card; a first sight, the same or a lower rating does not', () => {
+  assert.deepEqual(evolved('checked', 'proven'), { from: 'Rare', to: 'Mythic' });
+  assert.deepEqual(evolved('experiment', 'tested'), { from: 'Common', to: 'Uncommon' });
+  assert.equal(evolved(undefined, 'proven'), null); assert.equal(evolved('proven', 'proven'), null); assert.equal(evolved('proven', 'checked'), null); assert.equal(evolved('nonsense', 'proven'), null);
+  const m = {}; const store = { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = v; } };
+  assert.equal(noteTier('weather', 'checked', store), null, 'first sight');
+  assert.equal(noteTier('weather', 'checked', store), null, 'unchanged');
+  assert.deepEqual(noteTier('weather', 'proven', store), { from: 'Rare', to: 'Mythic' });
+  assert.equal(noteTier('weather', 'proven', store), null, 'it evolves once');
+  assert.equal(JSON.parse(m[EVO_KEY]).weather, 'proven');
+  assert.equal(noteTier('x', 'proven', { getItem() { throw new Error('blocked'); }, setItem() {} }), null, 'blocked storage never throws');
+});
+test('type-specific layouts: Film, Place, Person and Song each have their own hierarchy, and an answer card knows its kind', () => {
+  for (const k of ['film', 'place', 'person', 'song']) assert.match(CARD_CSS, new RegExp('data-kind=' + k + '\\]'), k);
+  assert.match(CARD_CSS, /data-kind=place\] \.vc-type\{order:-3/, 'a place leads with its type line');
+  assert.equal(cardOf2({ entity: { kind: 'Film', chapter: 'stage', also: [], detail: '1965' } }).kindName, 'film');
+  assert.equal(cardOf2({ entity: { kind: 'Place', chapter: 'sky', also: [], detail: '' } }).kindName, 'place');
+  assert.equal(cardOf2({ skill: { name: 'weather', tier: 'proven' } }).kindName, '');
+});

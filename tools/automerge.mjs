@@ -13,6 +13,7 @@ import { execFileSync } from 'node:child_process';
 import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readiness, resolveMain } from './pr-ready.mjs';
+import { safety } from './skill-safety.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 const one = process.argv.slice(2).find((a) => /^\d+$/.test(a));
@@ -48,6 +49,10 @@ for (let p of prs) {
     continue;
   }
   if (r.state !== 'merge') continue;
+  // the safety-check (asked by Void): the unit tests of the skills and libs this PR changed, run on its head, before the merge
+  const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
+  console.log(`#${p.number}: safety-check ${sc.state} (${sc.why})`);
+  if (sc.state === 'fail') continue;
   try {
     if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
     const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=merge', '-f', `sha=${r.sha}`]));

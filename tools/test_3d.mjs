@@ -309,7 +309,8 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.evaluate(() => { window.__weekAgo = null; const look = () => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); if (s && s.until && !window.__weekAgo) window.__weekAgo = s; if (!window.__weekAgo) requestAnimationFrame(look); }; requestAnimationFrame(look); });
     await F.ask("what can you do now that you couldn't last week?");
     const seen = { weekAgo: null, today: null };
-    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    // the tree grows while it is on screen and the card above it has grown long: keep it in view while waiting
+    await until(async () => { const s = await F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); return window.__voidMini && window.__voidMini.state('growth-tree'); }); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
     seen.weekAgo = await F.p.evaluate(() => window.__weekAgo);
     const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
     const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);
