@@ -42,6 +42,4 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
 | open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
-| building | 2026-10-16 | roll a die | new idea (Grok, 2026-10-16); helper/dice |
-| open | 2026-10-16 | flip a coin | new idea (Grok, 2026-10-16) |
-| open | 2026-10-16 | generate a strong password | new idea (Grok, 2026-10-16) |
+| building | 2026-10-17 | roll dice: "roll a d20", "roll 2d6" | new idea by grok, empty surface stays empty |
