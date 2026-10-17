@@ -2330,6 +2330,32 @@ try {
     check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
       /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
     await G.ctx.close(); }
+  if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const [kit, fs] = await Promise.all([import('/lib/field-kit.js'), import('/lib/field-stage.js')]);
+      const idea = { id: 'probe', title: 'Probe field', sub: 'test', W: 200, H: 120, warm: 3, create: (seed) => ({ seed, e: 0.1, a: 0.1, n: 0 }),
+        step: (s, dt, inp) => { s.n++; if (inp.over) { s.e = Math.min(1, s.e + 0.2); s.a = Math.min(1, s.a + 0.2); } }, metrics: (s) => ({ entropy: s.e, activity: s.a, consensus: 1 - s.e, cx: 0.5, cy: 0.5 }),
+        draw: (g, s, W, H) => { g.fillStyle = '#123'; g.fillRect(0, 0, W, H); }, params: () => ({ k: 1 }), status: (s) => 'n ' + s.n };
+      const host = document.createElement('div'); document.body.appendChild(host);
+      const m = fs.mountField({ id: 'probe1', x: 10, y: 10 }, { bindDrag() {}, stage: host }, idea);
+      const el = host.querySelector('.field-card'), cv = el.querySelector('canvas'), snap = () => ({ hue: el.dataset.hue, radius: el.dataset.radius, entropy: el.dataset.entropy });
+      const before = snap(), pageFilter = getComputedStyle(document.body).filter, htmlFilter = getComputedStyle(document.documentElement).filter;
+      const rc = cv.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) cv.dispatchEvent(new PointerEvent('pointermove', { clientX: rc.left + 20 + i, clientY: rc.top + 20, bubbles: true }));
+      await new Promise((res) => setTimeout(res, 400));
+      const after = snap(), sound = el.querySelector('.ff-sound'), soundBefore = sound.getAttribute('aria-pressed');
+      el.querySelector('.ff-seal').click(); for (let i = 0; i < 50 && !el.dataset.seal; i++) await new Promise((res) => setTimeout(res, 100));
+      const sealed = el.dataset.seal || '';
+      const rows = await new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const a = q.result.transaction('seals').objectStore('seals').getAll(); a.onsuccess = () => { q.result.close(); res(a.result); }; }; q.onerror = () => res([]); });
+      const expect = await kit.seal('probe', { k: 1 }, { entropy: +el.dataset.entropy, activity: +el.dataset.activity, consensus: +el.dataset.consensus, cx: 0.5, cy: 0.5 }).then((x) => x.short).catch(() => '');
+      const keys = rows[0] ? Object.keys(rows[0]).sort().join(',') : '';
+      return { before, after, soundBefore, soundTag: sound.textContent, sealed, rowsN: rows.length, keys, pageFilter, htmlFilter, cardFilter: el.style.filter, reduced: m.still, loops: !!el.isConnected };
+    });
+    check('field minds: the kit mounts a card; touching it moves the metrics and so the CARD\'s hue and corners (not the page), sound stays off until tapped, and Seal keeps one numbers-only record in IndexedDB',
+      +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
+      && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
+    await F.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },

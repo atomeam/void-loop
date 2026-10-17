@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 448,
+ "counted": 453,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -147,6 +147,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/movies.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -285,13 +291,13 @@
    "dependants": 2
   },
   {
-   "file": "lib/merge-rules.js",
+   "file": "lib/media.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
   },
   {
-   "file": "lib/movies.js",
+   "file": "lib/merge-rules.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -663,6 +669,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1
+  },
+  {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
@@ -712,6 +724,12 @@
   },
   {
    "file": "lib/arena.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/field-stage.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -993,6 +1011,14 @@
    ],
    "importedBy": []
   },
+  "functions/api/media.js": {
+   "imports": [
+    "lib/media.js",
+    "lib/movies.js",
+    "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/memory.js": {
    "imports": [
     "lib/memory-scope.js",
@@ -1040,7 +1066,9 @@
    "imports": [
     "lib/movies.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/media.js"
+   ]
   },
   "functions/api/passkey.js": {
    "imports": [
@@ -1751,6 +1779,18 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/field-kit.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/field-stage.js"
+   ]
+  },
+  "lib/field-stage.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": []
+  },
   "lib/film-reviews.js": {
    "imports": [],
    "importedBy": [
@@ -2009,6 +2049,15 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/media.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/media.js",
+    "skills/media-pick.js"
+   ]
+  },
   "lib/memory-core.js": {
    "imports": [],
    "importedBy": [
@@ -2094,8 +2143,13 @@
   "lib/movies.js": {
    "imports": [],
    "importedBy": [
+    "functions/api/media.js",
     "functions/api/movies.js",
+    "lib/media.js",
     "skills/movie.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js"
    ]
   },
   "lib/near-miss.js": {
@@ -3852,6 +3906,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/media-pick.js": {
+   "imports": [
+    "lib/media.js",
+    "skills/movie.js"
+   ],
+   "importedBy": []
+  },
   "skills/memory.js": {
    "imports": [
     "skills/live.js",
@@ -4162,7 +4223,9 @@
    "imports": [
     "lib/movies.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/media-pick.js"
+   ]
   },
   "skills/music.js": {
    "imports": [
