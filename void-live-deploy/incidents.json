@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T21:08:50.509Z",
+   "sha": "7c66b3b8f12db0a052bcbf22811e77ac2d39e459",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39068791421",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T20:46:06.453Z",
    "sha": "9b1e44e13ab43a10aa9beaf01d26de32171fdf1a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39066819200",
@@ -282,18 +291,6 @@
     "V01D card game: an attack is played out and written in the log",
     "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
     "the growth card shows friction (asked by Void): skills failing on the bench first, then the least checked, each with its reason, right under the velocity"
-   ]
-  },
-  {
-   "at": "2026-10-17T01:24:48.468Z",
-   "sha": "bd7f504510a350c327ec77f894a409063d5942ca",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38990100933",
-   "suite": "browser suite on main",
-   "checks": [
-    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
-    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
-    "V01D card game: an attack is played out and written in the log",
-    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device"
    ]
   }
  ]
