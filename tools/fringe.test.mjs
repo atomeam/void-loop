@@ -87,3 +87,18 @@ const { rows: cardRows, asksFringe } = await import('../void-live-deploy/skills/
 const CR = cardRows(JSON.parse(readFileSync(new URL('../' + LEDGER, import.meta.url), 'utf8')));
 assert.equal(CR.length, ledgerOf(real).length); assert.ok(CR.every((r) => r.drafts.length >= 1) && asksFringe('which skills came from the fringe') && !asksFringe('fringe festival'));
 console.log('fringe-notes: ok');
+
+{ // a novelty or failure is tagged with the near-miss input that set it off (asked by Void)
+  const { inputTag, suggestInputs, check } = await import('./fringe.mjs');
+  const t = inputTag('Weather', 'Will it be   nice tomorrow');
+  assert.ok(/^near-miss:weather:[0-9a-f]{8}$/.test(t));
+  assert.equal(t, inputTag('weather', 'will it be nice tomorrow'), 'case and spacing do not change the tag');
+  assert.equal(inputTag('', 'x'), ''); assert.equal(inputTag('weather', ''), '');
+  const close = { weather: [{ ask: 'will the evening feel nice tomorrow', count: 2, score: 0.4 }, { ask: 'unrelated cats', count: 1, score: 0.4 }] };
+  const run = { behavior: 'a tap says whether tomorrow evening will feel nice', failure_modes: [] };
+  const s = suggestInputs(run, close);
+  assert.equal(s.length, 1); assert.equal(s[0].skill, 'weather'); assert.ok(/^near-miss:weather:/.test(s[0].tag));
+  assert.deepEqual(suggestInputs({ behavior: 'nothing in common here' }, close), []);
+  const bad = check([{ run: 1, family: 'attention', emit: false, draft: 'drafts/fringe/none.html', sources: [{ claim: 'a', source: 'b', confidence: 'open' }], failure_modes: [{ what: 'w', evidence: 'e', input: 'Not A Tag' }] }]);
+  assert.ok(bad.some((b) => /failure_mode's input must be a tag/.test(b)));
+}

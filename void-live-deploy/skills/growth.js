@@ -7,6 +7,7 @@
 import { probeHtml } from '../lib/probe-log.js';
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml } from '../lib/better.js';
+import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
@@ -88,6 +89,17 @@ export function pulse(node) {
   node.animate([{ boxShadow: '0 0 0 0 rgba(160,128,90,0)' }, { boxShadow: '0 0 0 6px rgba(160,128,90,.35)' }, { boxShadow: '0 0 0 0 rgba(160,128,90,0)' }], { duration: 700, easing: 'ease-out' });
   return true;
 }
+/** a growth animation for a day's change (lib/inbox-health.js bloomPlan): a bloom for one new skill, a burst of three for more; a green glow on the line, none
+ * under reduced motion. Announces `void:grew` with the plan so a tree, a sound or a test can answer it. Returns whether it animated. */
+export function bloom(node, plan) {
+  if (!node || !plan || plan.kind === 'none') return false;
+  node.dataset.bloomed = plan.kind;
+  try { node.dispatchEvent(new CustomEvent('void:grew', { bubbles: true, detail: plan })); } catch (_) {}
+  if (!node.animate || (typeof matchMedia === 'function' && matchMedia('(prefers-reduced-motion: reduce)').matches)) return false;
+  node.animate([{ boxShadow: '0 0 0 0 rgba(63,191,106,0)' }, { boxShadow: '0 0 0 ' + (plan.kind === 'burst' ? 10 : 6) + 'px rgba(63,191,106,.4)' }, { boxShadow: '0 0 0 0 rgba(63,191,106,0)' }],
+    { duration: plan.kind === 'burst' ? 600 : 900, iterations: plan.kind === 'burst' ? 3 : 1, easing: 'ease-out' });
+  return true;
+}
 export function failuresByFamily(fam) {
   return ((fam && fam.families) || []).map((f) => { const bad = (f.skills || []).filter((s) => Array.isArray(s.failing) && s.failing.length); return { family: f.name, skills: bad.length, asks: bad.reduce((n, s) => n + s.failing.length, 0) }; })
     .filter((x) => x.skills).sort((a, b) => b.asks - a.asks || a.family.localeCompare(b.family));
@@ -110,7 +122,8 @@ export function ownerHtml(esc, fam, list, seen) {
   return '<div class="sub growth-owner" data-owner-view style="line-height:1.45;margin-top:4px">'
     + 'Failures by family: ' + (F.length ? F.map((x) => '<b style="font-weight:600">' + esc(x.family) + '</b> ' + x.skills + ' skill' + (x.skills > 1 ? 's' : '') + ' (' + x.asks + ' ask' + (x.asks > 1 ? 's' : '') + ')').join(', ') : 'none on the bench') + '. '
     + 'Stability: ' + steady + ' of ' + st.length + ' skills proven with nothing failing; the site tester has passed ' + tested + ' of them live. '
-    + 'Last spurt: ' + S.added.length + ' new' + (S.added.length ? ' (' + names(S.added) + ')' : '') + ', ' + S.changed.length + ' changed.</div>';
+    + 'Last spurt: ' + S.added.length + ' new' + (S.added.length ? ' (' + names(S.added) + ')' : '') + ', ' + S.changed.length + ' changed.'
+    + promotedHtml(esc, promotedRows(fam)) + '</div>'; // skill stability: promoted lately, clean runs in a row (lib/inbox-health.js)
 }
 export function frictionHtml(esc, f) {
   if (!f || !f.top.length) return '';
@@ -212,7 +225,7 @@ async function run(text, api) {
     if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html);
     fetch('/tester-log.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((t) => {
       const o = ownerHtml(esc, fam, list, (t && t.seen) || {}), at = el.querySelector('.growth-friction') || v;
-      if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o);
+      if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o + statusHtml(esc, skillStatus(fam)) + familyMapHtml(esc, fam)); // void-review: ok: every value is escaped (lib/inbox-health.js, tested with markup in a skill name)
     });
   }).catch(() => {});
   // is V01D getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
@@ -220,6 +233,14 @@ async function run(text, api) {
   fetch(BETTER_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((rows) => {
     const html = betterHtml(esc, rows), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
     if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: betterHtml escapes every value (lib/better.js, tested)
+    // the day over day change calls a growth animation when a significant new skill came in (asked by Void): a bloom for one, a burst for three or more
+    const plan = bloomPlan(spurt(list).added, rows), b = plan.kind !== 'none' && el.isConnected && el.querySelector('.growth-better');
+    if (b) { b.insertAdjacentHTML('afterend', bloomHtml(esc, plan)); bloom(el.querySelector('.growth-bloom'), plan); } // void-review: ok: bloomHtml escapes every name (lib/inbox-health.js)
+  }).catch(() => {});
+  // the divergence tracker (asked by Void): my asks, word for word, against the ledger line that built each, with the words the build never says
+  fetch('/api/reflect', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
+    const html = divergenceHtml(esc, j && j.follow && j.follow.recent), at = el.querySelector('.growth-owner') || el.querySelector('[data-velocity]');
+    if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: divergenceHtml escapes every value (lib/inbox-health.js)
   }).catch(() => {});
   const w = week ? weekSummary(list) : null;
   const body = document.createElement('div');
@@ -290,6 +311,10 @@ function plantTree(el, api, list, { from } = {}) {
   function onPickCommit(c) {
     said.style.color = ''; said.textContent = 'A new leaf, from the last commits on main (' + String(c.at || '').slice(0, 10) + '): ' + c.subject;
   }
+  el.addEventListener('void:grew', () => { // a day's new skill (bloom): the newest grow branch is read, so the tree shows what came in
+    let k = -1; list.forEach((e, i) => { if (e && e.kind === 'grow' && (k < 0 || Date.parse(e.at) >= Date.parse(list[k].at))) k = i; });
+    if (k >= 0 && today()) onPick(k);
+  });
   range.addEventListener('input', () => { showDay(); selected = null; said.style.color = '#8a8a92'; said.textContent = hint; mount().catch(() => {}); });
   range.addEventListener('pointerdown', (e) => e.stopPropagation()); // dragging the slider is not dragging the card
   showDay();
@@ -330,7 +355,10 @@ export function suite() {
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
   const cok = c && c.length === 1 && ch.includes('V01D asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
-  return { ok: ok && fok && cok, got: ok && fok && cok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
+  // the inbox's skill health lines (asked by Void): promoted skills with their clean runs in a row, and the growth animation guard
+  const pf = { families: [{ name: 'F', skills: [{ name: 'newone', tier: 'checked', promoted: new Date().toISOString().slice(0, 10), streak: 2 }] }] };
+  const hok = ownerHtml(esc, pf, list, {}).includes('Skill stability: 1 skill promoted lately') && ownerHtml(esc, pf, list, {}).includes('newone</b> to checked') && bloom(null, { kind: 'bloom' }) === false && bloom({}, { kind: 'none' }) === false;
+  return { ok: ok && fok && cok && hok, got: ok && fok && cok && hok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 
 // The tester log, folded into the growth card (asked by Void, ask-20261015-0616-1; owner: "most skills can be combined"): the site

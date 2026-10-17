@@ -1149,6 +1149,8 @@
       log.push({ t: new Date().toISOString(), ...attempt });
       if (log.length > 200) log = log.slice(-200);
       localStorage.setItem(LOOP_KEY, JSON.stringify(log));
+      // the day a skill last answered, on this device only (lib/skill-use.js; asked by Void: a last-used day for every skill): a day, never a word of any ask
+      if (attempt && typeof attempt.note === 'string' && attempt.note.startsWith('skill:')) import('/lib/skill-use.js').then((m) => m.noteUsed(localStorage, attempt.note)).catch(() => {});
     }
     let sayCount = 0;
     function say(msg) {

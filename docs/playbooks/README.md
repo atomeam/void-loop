@@ -17,3 +17,4 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [forge-recipe.md](forge-recipe.md) | a new thing the forge can print (a recipe, a figure as a recipe), and an offered routine forged into a skill | not yet |
 | [perf-pass.md](perf-pass.md) | the page, the 3D or the suite measurably faster, numbers before and after | not yet |
 | [rules-engine.md](rules-engine.md) | a game's rules as a data rule set that stacks with every other (frontier #35) | not yet |
+| [inbox-health.md](inbox-health.md) | a skill-health line, map or job in the growth inbox, from files the repo already writes | not yet |

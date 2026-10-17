@@ -61,8 +61,10 @@ export const MEANS = {
   last_tested: 'the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.',
   success_rate: 'benchmark asks routed to the skill that passed on the bench\'s last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it',
   smoke: 'what the daily smoke test of every skill (tools/skills-check.mjs --write) or the 7-day re-test (tools/retest.mjs, lines starting re-test:) found wrong with this one: its examples not reaching it, a near miss taken, its suite() or unit test failing; while present the skill has no passing self-test, so its rating is lower',
+  promoted: 'the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Void',
+  streak: 'consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Void',
   live: 'a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven',
-  not_here: 'how often people use a skill is never counted: no usage, no popular or unused, no last used (no behaviour tracking)',
+  not_here: 'how often people use a skill is never counted by Void: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person\'s own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device',
 };
 
 export const LIVE_FRESH_DAYS = 8;
@@ -143,7 +145,7 @@ export function benchRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
 
 /** the daily smoke test's last record: { at: 'YYYY-MM-DD' | '', failing: { skill: [what] } }; none written, nothing. Pure apart from the read. */
 export function smokeRun(read = (p) => readFileSync(resolve(root, p), 'utf8')) {
-  try { const j = JSON.parse(read('tools/skills-smoke.json')); return { at: typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '', failing: j && j.failing && typeof j.failing === 'object' ? j.failing : {} }; } catch (_) { return { at: '', failing: {} }; }
+  try { const j = JSON.parse(read('tools/skills-smoke.json')); return { at: typeof j.at === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(j.at) ? j.at : '', failing: j && j.failing && typeof j.failing === 'object' ? j.failing : {}, streak: j && j.streak && typeof j.streak === 'object' ? j.streak : {} }; } catch (_) { return { at: '', failing: {}, streak: {} }; }
 }
 
 /** the daily re-test's last record (tools/retest.json): { at, passed: Set of skills, failing: { skill: [what] } }. Pure apart from the read. */
@@ -203,15 +205,26 @@ export function staleExperiments(fam, now, days = STALE_DAYS) {
   return out.sort((a, b) => b.days - a.days);
 }
 
+export const PROMOTED_KEEP_DAYS = 60;
+/** the day a skill last moved up a rating: today when its tier is higher than the last file's, the last file's day while it is under PROMOTED_KEEP_DAYS old and the tier held, else none. Pure. */
+export function promotedOn(tier, prevRow, today) {
+  if (!prevRow || !TIERS.includes(prevRow.tier)) return null; // first rating: nothing moved
+  if (TIERS.indexOf(tier) > TIERS.indexOf(prevRow.tier)) return today;
+  const p = prevRow.promoted;
+  return /^\d{4}-\d{2}-\d{2}$/.test(String(p || '')) && TIERS.indexOf(tier) >= TIERS.indexOf(prevRow.tier) && daysOld(p, today) <= PROMOTED_KEEP_DAYS ? p : null;
+}
+
 export function build(names, ev, meta = {}) {
   const placed = new Set(FAMILIES.flatMap((f) => f.skills));
   const prevRows = new Map(); for (const f of (meta.prev && meta.prev.families) || []) for (const s of f.skills || []) if (s && s.name) prevRows.set(s.name, s);
-  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10), smoke = meta.smoke || { at: '', failing: {} }, retest = meta.retest || { at: '', passed: new Set(), failing: {} };
+  const bench = meta.bench || { at: '', recorded: false }, today = meta.today || new Date().toISOString().slice(0, 10), smoke = meta.smoke || { at: '', failing: {}, streak: {} }, retest = meta.retest || { at: '', passed: new Set(), failing: {} };
   const families = FAMILIES.map((f) => {
     const skills = f.skills.filter((n) => names.includes(n)).map((n) => { const e = ev[n] || {}, x = { name: n, ...ratingOf(e, today) }; if (e.failing && e.failing.length) x.failing = e.failing.slice(0, 3); // failing: bench asks it got wrong
       if (e.smoke) x.smoke = e.smoke; // the daily smoke test's failures (its self-test does not count while they stand)
       const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
       const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
+      const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Void)
+      if (Number.isFinite(+(smoke.streak || {})[n])) x.streak = +smoke.streak[n]; // clean smoke runs in a row
       return x; });
     const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
     return { id: f.id, name: f.name, for: f.for, count, skills };
@@ -229,7 +242,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), retest: retestRun(), today: new Date().toISOString().slice(0, 10) });
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
   if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
-  const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, totals: b.totals, families: b.families }, null, 1) + '\n';
+  const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, ...(smokeRun().at ? { smoke_at: smokeRun().at } : {}), totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
   if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));
