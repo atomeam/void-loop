@@ -2,12 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:21:09.680Z",
-   "sha": "1c0581db4937e285b161780f86e34d023ffd5f4d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39027227315",
+   "at": "2026-10-17T11:26:11.493Z",
+   "sha": "ed84d9329a7ef56594cae142b1f027c492eb7f8b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39027987161",
    "suite": "browser suite on main",
    "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them"
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+   ]
+  },
+  {
+   "at": "2026-10-17T11:14:39.293Z",
+   "sha": "c99b4cfbef2a0533456e3631e730ad02b7833b32",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39027660826",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
    ]
   },
   {
@@ -293,15 +303,6 @@
    "suite": "browser suite on main",
    "checks": [
     "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
-   ]
-  },
-  {
-   "at": "2026-10-16T18:30:56.887Z",
-   "sha": "f830ac3de0af1925bc1f9884b5ca3eea924863d8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38946233577",
-   "suite": "browser suite on main",
-   "checks": [
     "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
    ]
   }
