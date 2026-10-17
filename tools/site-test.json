@@ -100,6 +100,9 @@
     },
     {
       "ask": "draw a line"
+    },
+    {
+      "ask": "show the days until a date"
     }
   ],
   "candidates": [],
