@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 122,
+ "runsTotal": 123,
  "kinds": {
   "grow": 15,
   "file": 58,
   "teach": 7,
   "tighten": 7,
-  "none": 35
+  "none": 36
  },
  "runs": [
+  {
+   "at": "2026-10-17T09:49:14Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T09:43:30Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T07:19:24Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -212,9 +212,9 @@
   "skill:label": "2026-10-17T09:37:26Z",
   "skill:layer": "2026-10-17T09:43:30Z",
   "skill:light-look": "2026-10-17T09:43:30Z",
-  "skill:link": "2026-10-16T13:06:04Z",
-  "skill:list": "2026-10-16T13:54:16Z",
-  "skill:loan": "2026-10-16T13:54:16Z",
+  "skill:link": "2026-10-17T09:49:14Z",
+  "skill:list": "2026-10-17T09:49:14Z",
+  "skill:loan": "2026-10-17T09:49:14Z",
   "skill:local-inference": "2026-10-16T13:54:16Z",
   "skill:lock": "2026-10-16T14:38:42Z",
   "skill:magnetize": "2026-10-16T14:38:42Z",
