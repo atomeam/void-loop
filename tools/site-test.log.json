@@ -1086,5 +1086,12 @@
   "of": 34,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
+ },
+ {
+  "at": "2026-10-17T22:05:31Z",
+  "passed": 34,
+  "of": 35,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"is unwrap risky in rust\" (skill:technical-context)"
  }
 ]

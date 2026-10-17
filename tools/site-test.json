@@ -122,6 +122,9 @@
     },
     {
       "ask": "what do you get if you merge a pizza and a black hole"
+    },
+    {
+      "ask": "is unwrap risky in rust"
     }
   ],
   "candidates": [],
