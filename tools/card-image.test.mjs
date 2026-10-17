@@ -36,3 +36,11 @@ test('the answer text is never cut while it can shrink to fit the box', () => {
   const f = fitText(t, 172); assert.ok(f.fs < 23 && f.fs >= 11); assert.ok(f.lines.length * f.lh <= 172); assert.ok(!f.lines.at(-1).endsWith('…'));
   assert.equal(fitText("short", 172).fs, 23);
 });
+test('a card photo (a data URL the page drew from its own picture) is the art, in true colour; anything else is ignored and the plate stays', () => {
+  const url = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ==';
+  const s = cardSvg({ ...d, photo: url });
+  assert.match(s, /<image x="40" y="122" width="664" height="440" preserveAspectRatio="xMidYMid slice" href="data:image\/jpeg;base64,/);
+  assert.match(s, /opacity="\.28" style="mix-blend-mode:overlay"/); assert.ok(!/grayscale|sepia/.test(s));
+  for (const bad of ['https://evil.example/x.png', 'javascript:alert(1)', 'data:image/svg+xml;base64,PHN2Zz4=', 'data:image/png;base64,AA"onload="x']) { const t = cardSvg({ ...d, photo: bad }); assert.ok(!/<image/.test(t), bad); }
+  assert.ok(!/<image/.test(cardSvg(d)));
+});

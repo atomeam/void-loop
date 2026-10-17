@@ -64,7 +64,10 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   for (let i = 0; i < cost; i++) { const x = 684 - i * 24; s += '<path d="M' + x + ' 68l9 10-9 10-9-10z" fill="' + soft + '" stroke="' + INK + '" stroke-width="2"/>'; }
   // art
   const aw = 664, ah = 440;
-  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '">' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + '</svg>';
+  // the card's own picture (a poster, a still), already drawn small onto a canvas by photoData(): true colour, the plate over it as a light texture
+  const photo = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(String(d.photo || '')) ? d.photo : '';
+  if (photo) s += '<image x="40" y="122" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice" href="' + photo + '"/>';
+  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '"' + (photo ? ' opacity=".28" style="mix-blend-mode:overlay"' : '') + '>' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + '</svg>';
   s += '<rect x="40" y="122" width="' + aw + '" height="' + ah + '" fill="none" stroke="' + edge + '" stroke-width="4"/>';
   // type line
   const type = String(d.typeLine || d.kind || '').replace(/\s+/g, ' ').trim().toUpperCase().slice(0, 52);
@@ -99,5 +102,28 @@ export function toPng(svg, scale = 1) {
     };
     img.onerror = () => { URL.revokeObjectURL(url); reject(new Error('card image failed')); };
     img.src = url;
+  });
+}
+
+/** the card's picture as a small JPEG data URL for the saved image, or '' (browser only). Only the https image already on the card is loaded, with
+ *  crossOrigin 'anonymous'; when the site refuses (no CORS), the image fails or the canvas is tainted, it resolves '' and the card falls back to its plate. Never throws. */
+export function photoData(url, { w = 664, h = 440 } = {}) {
+  return new Promise((resolve) => {
+    try {
+      if (!/^https:\/\//.test(String(url || ''))) return resolve('');
+      const img = new Image(); img.crossOrigin = 'anonymous'; img.referrerPolicy = 'no-referrer';
+      const t = setTimeout(() => resolve(''), 8000);
+      img.onerror = () => { clearTimeout(t); resolve(''); };
+      img.onload = () => {
+        clearTimeout(t);
+        try {
+          const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
+          const k = Math.max(w / img.naturalWidth, h / img.naturalHeight), dw = img.naturalWidth * k, dh = img.naturalHeight * k; // cover-fit, as the stage does
+          g.drawImage(img, (w - dw) / 2, (h - dh) * 0.35, dw, dh);
+          resolve(c.toDataURL('image/jpeg', 0.88)); // throws on a tainted canvas
+        } catch (_) { resolve(''); }
+      };
+      img.src = url;
+    } catch (_) { resolve(''); }
   });
 }
