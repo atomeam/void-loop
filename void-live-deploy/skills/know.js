@@ -11,7 +11,7 @@ const YOU = '(?:you|void|v01d)';
 const TOPICS = [
   ['motto', new RegExp('^(?:(?:tell|read)\\s+me\\s+(?:' + YOU + '(?:\'s)?|your)\\s+motto|' + YOU + '(?:\'s)?\\s+motto)$')],
   ['voidquest', /^(?:what(?:'s| is)\s+(?:the\s+)?void\s?quest|(?:tell|read)\s+me\s+about\s+void\s?quest|(?:what|how)\s+(?:does|do)\s+void\s?quest\s+(?:work|mean)|explain\s+void\s?quest|void\s?quest\s+(?:rules|story|text))$/],
-  ['games', new RegExp('^(?:(?:which|what)\\s+(?:board\\s+|table\\s+)?games\\s+(?:do|can)\\s+' + YOU + '\\s+(?:know|have|play|run)|list\\s+(?:all\\s+)?(?:your|the)\\s+games|(?:your|the)\\s+games\\s+list)$')],
+  ['games', new RegExp('^(?:(?:which|what)\\s+(?:board\\s+|table\\s+)?games\\s+(?:do|can)\\s+' + YOU + '\\s+know|list\\s+(?:all\\s+)?(?:your|the)\\s+games|(?:your|the)\\s+games\\s+list)$')],
   ['minis', new RegExp('^(?:(?:which|what)\\s+(?:3d\\s+)?(?:miniatures|minis)\\s+(?:do|can)\\s+' + YOU + '\\s+(?:have|show|know|make)|list\\s+(?:all\\s+)?(?:your|the)\\s+(?:3d\\s+)?(?:miniatures|minis)|(?:your|the)\\s+(?:3d\\s+)?(?:miniatures|minis)\\s+list)$')],
   ['canon', new RegExp('^(?:read\\s+me\\s+(?:your|the)\\s+canon|(?:what(?:\'s| is)\\s+)?(?:your|the)\\s+canon|what\\s+do\\s+' + YOU + '\\s+know\\s+about\\s+(?:yourself|' + YOU + 'rself)|show\\s+(?:me\\s+)?(?:your|the)\\s+canon)$')],
 ];

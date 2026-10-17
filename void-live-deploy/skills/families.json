@@ -9,7 +9,7 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 51,
+  "tested": 53,
   "checked": 23,
   "proven": 85
  },
@@ -1203,7 +1203,7 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 6,
     "checked": 7,
     "proven": 14
    },
@@ -1258,6 +1258,20 @@
      "tier": "tested",
      "why": "4 browser-suite mentions",
      "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "know",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "state",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests"
     },
     {
