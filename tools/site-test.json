@@ -112,6 +112,9 @@
     },
     {
       "ask": "bench icon"
+    },
+    {
+      "ask": "drag friction"
     }
   ],
   "candidates": [],

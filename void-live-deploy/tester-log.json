@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 29,
- "runsTotal": 142,
+ "cases": 30,
+ "runsTotal": 143,
  "kinds": {
-  "grow": 22,
+  "grow": 23,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T21:02:03Z",
+   "passed": 21,
+   "of": 32,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
+  },
   {
    "at": "2026-10-17T20:35:41Z",
    "passed": 29,
@@ -138,13 +145,6 @@
   },
   {
    "at": "2026-10-17T09:57:04Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T09:49:14Z",
    "passed": 0,
    "of": 25,
    "kind": "none",
@@ -287,8 +287,8 @@
   "skill:bench": "2026-10-17T20:35:41Z",
   "skill:collide": "2026-10-17T20:35:41Z",
   "skill:duel": "2026-10-17T20:35:41Z",
-  "skill:friction": "2026-10-17T01:37:54Z",
-  "skill:kept": "2026-10-17T02:25:35Z",
+  "skill:friction": "2026-10-17T21:02:03Z",
+  "skill:kept": "2026-10-17T21:02:03Z",
   "skill:know": "2026-10-17T02:25:35Z",
   "skill:pulse": "2026-10-17T02:25:35Z",
   "skill:rts": "2026-10-17T02:25:35Z",
@@ -307,6 +307,7 @@
   "skill:incident-autopsy": "2026-10-17T10:04:20Z",
   "skill:flow-canvas": "2026-10-17T10:26:08Z",
   "skill:event-countdown": "2026-10-17T11:23:07Z",
-  "skill:living-cards-mind": "2026-10-17T14:29:51Z"
+  "skill:living-cards-mind": "2026-10-17T14:29:51Z",
+  "skill:service-health": "2026-10-17T21:02:03Z"
  }
 }

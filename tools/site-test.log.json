@@ -1065,5 +1065,12 @@
   "of": 31,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
+ },
+ {
+  "at": "2026-10-17T21:02:03Z",
+  "passed": 21,
+  "of": 32,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
  }
 ]
