@@ -153,35 +153,24 @@ export function keep(el, esc, stats) {
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   const name = el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
-<<<<<<< HEAD
-  const c = cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
-  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
-=======
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
-  const key = JSON.stringify([c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
->>>>>>> origin/main
+  const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
+  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
   if (el.dataset.cardKey === key && el.querySelector(':scope > .vc-type') && el.querySelector(':scope > .vc-arrows') === el.lastElementChild) return;
   for (const n of el.querySelectorAll(':scope > .vc-art, :scope > .vc-type, :scope > .vc-adds, :scope > .vc-foot, :scope > .vc-arrows')) n.remove();
   el.style.setProperty('--h', String(c.hue));
-<<<<<<< HEAD
   el._vcard = c; el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
-=======
-  el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (c.kindName) el.dataset.kind = c.kindName; else delete el.dataset.kind;
->>>>>>> origin/main
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
   tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   for (const n of [...tpl.content.childNodes]) el.appendChild(n);
-<<<<<<< HEAD
   shareBar(el); // copy card / save card (lib/card-share.js)
-=======
   const up = name && c.rarity ? noteTier(name, (lookup(stats, name).skill || {}).tier) : null; // a rating that rose since this browser last saw the skill
   if (up) {
     el.classList.add('vc-evolving'); el.dataset.evolved = up.to;
@@ -189,7 +178,6 @@ export function keep(el, esc, stats) {
     const at = el.querySelector(':scope > .vc-type'); if (at) at.after(note);
     setTimeout(() => { el.classList.remove('vc-evolving'); note.remove(); }, 4500);
   }
->>>>>>> origin/main
 }
 
 let styled = false;

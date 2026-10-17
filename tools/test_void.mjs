@@ -3491,7 +3491,6 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
-<<<<<<< HEAD
   // A card is easy to copy, save and paste back (lib/card-share.js; owner, 2026-10-16): "copy card" puts readable text ending in a code line on the clipboard,
   // and asking V01D with that text brings the same card back, its numbers earned again, nothing sent to the answer route
   if (want("V01D cards: copy a card, paste it back into V01D and the same card returns")) { const S = await fresh();
@@ -3523,7 +3522,6 @@ try {
     check('V01D card art: "save card" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio',
       !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
     await A.ctx.close(); }
-=======
   // V01D merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so V01D can experiment
   // with card merges"): "merge a pizza and a black hole" makes a card showing both parents, the model's name for the pair, and numbers worked out from the
   // parents by fixed rules; with the route down the card is still made, named by the plain blend
@@ -3580,7 +3578,6 @@ try {
         && swapped.filter((e) => e.hidden).length === clocks.length && afterDraw.some((e) => e.hidden) && all.every((e) => !e.hidden) && !gone && !T.errors.length,
       JSON.stringify({ before: before.length, only, bar, swapped, afterDraw: afterDraw.length, all: all.length, gone: !!gone, errors: T.errors }));
     await T.ctx.close(); }
->>>>>>> origin/main
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
