@@ -2130,11 +2130,26 @@ try {
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
-    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the eleven recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
-        && forge.asks.length === 10 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
+        && forge.asks.length === 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
         && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Void: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
       JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+    await B.ctx.close(); }
+  // V01D's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
+  if (want("V01D's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
+    await B.ask('make me a person', 400); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'person'), 8000);
+    await B.ask('check it before printing', 300); await until(async () => /Geometry checked, not printed/.test(await B.whisper()), 8000).catch(() => {});
+    const checked = await B.whisper();
+    await B.ask('forge iterations', 300); await until(async () => /Forge iterations/.test(await B.page()), 5000);
+    const it = await B.p.$eval('.vpage.on', (e) => ({ n: e.querySelectorAll('[data-iteration]').length, text: e.textContent.replace(/\s+/g, ' ') }));
+    const dl = B.p.waitForEvent('download', { timeout: 15000 }).catch(() => null);
+    await B.ask('print it', 500); const file = await dl;
+    await B.ask('what have i printed', 400); await until(async () => /What I have printed/.test(await B.page()), 5000);
+    const printed = await B.p.$eval('.vpage.on', (e) => e.textContent.replace(/\s+/g, ' '));
+    check('V01D\'s forge asks: "make me a person" forges the figure; "check it before printing" checks it without a download; "forge iterations" keeps the make with its recipe id; after "print it" the inventory\'s "what have i printed" lists the Person file',
+      /Geometry checked, not printed/.test(checked) && it.n === 1 && /person · recipe [0-9a-f]{8}/.test(it.text) && !!file && /void-person-[0-9a-f]{8}\.stl/.test(file ? file.suggestedFilename() : '') && /1 file went to a printer/.test(printed) && /Person/.test(printed) && !B.errors.length,
+      JSON.stringify({ checked: checked.slice(-120), it, file: file && file.suggestedFilename(), printed: printed.slice(0, 160), errors: B.errors }));
     await B.ctx.close(); }
   if (want("the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) a")) { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const recs = [
