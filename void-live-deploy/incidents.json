@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T23:52:53.538Z",
+   "sha": "fd7255a4a6b27c3da752a4407a567958187d4b9c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39079951660",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T23:28:15.555Z",
    "sha": "f129c9b42b46c4068075cdbfe42e2df996e96e61",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39077953199",
@@ -279,16 +288,6 @@
    "suite": "browser suite on main",
    "checks": [
     "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)"
-   ]
-  },
-  {
-   "at": "2026-10-17T07:32:26.155Z",
-   "sha": "220febd3cb4795a266ba154dfe7a6a9c69614a60",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39012867438",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
    ]
   }
  ]
