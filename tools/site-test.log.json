@@ -716,5 +716,13 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T01:37:54Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "file",
+  "key": "any collisions | nothing appeared",
+  "note": "fix: \"any collisions\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
