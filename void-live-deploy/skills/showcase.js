@@ -78,6 +78,22 @@ export function whatsNew(entries, { shown = new Set(), verified = null, n = Infi
   return { steps, waiting };
 }
 
+/** the tray of the walkthrough (asked by Void: "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it
+ *  on the stage to test it"): the steps after the current one, up to `max`, each { j, line } with its line cut to fit a chip. Pure. */
+export const TRAY = 6;
+export function trayOf(steps, i, max = TRAY) {
+  const out = [];
+  for (let j = i + 1; j < (steps || []).length && out.length < max; j++) { const l = String(steps[j].line || ''); out.push({ j, line: l.length > 38 ? l.slice(0, 37).replace(/\s+\S*$/, '') + '…' : l }); }
+  return out;
+}
+/** where a chip dropped at (x, y) puts its things: the delta that brings the first new thing's corner to the drop point, kept inside
+ *  the stage (w × h, with a margin). null when nothing moved there (no thing, or not a drop on the stage). Pure. */
+export function dropDelta(first, x, y, w, h, margin = 8) {
+  if (!first || !Number.isFinite(+first.x) || !Number.isFinite(+first.y) || !Number.isFinite(x) || !Number.isFinite(y)) return null;
+  const tx = Math.max(margin, Math.min(w - 120, x - 40)), ty = Math.max(margin, Math.min(h - 80, y - 20));
+  return { dx: Math.round(tx - first.x), dy: Math.round(ty - first.y) };
+}
+
 /** the newest `at` in the ledger. Pure. */
 export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).reduce((m, e) => (e && typeof e.at === 'string' && e.at > m ? e.at : m), '');
 
@@ -167,6 +183,15 @@ async function step(stageApi) {
     button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
+  const items = trayOf(tour.steps, tour.i);
+  if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)
+    const tray = document.createElement('span');
+    tray.className = 'showcase-tray';
+    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0)';
+    tray.append(document.createTextNode('grab one onto the stage:'));
+    for (const it of items) tray.append(chip(stageApi, it));
+    el.append(tray);
+  }
   const before = new Set(Object.keys(stageApi.things())), pageBefore = document.querySelector('.vpage');
   tour.made = { ids: [], pageBefore };
   await stageApi.ask(s.ask);
@@ -185,6 +210,52 @@ async function step(stageApi) {
     line.dataset.showcaseFailed = '1';
     try { fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(s.ask).slice(0, 200), fallback: 'preview:nothing-shown' }), keepalive: true }).catch(() => {}); } catch (_) {}
   }
+}
+
+// a step chip in the tray: drag it out of the bar and let go over the stage, and that step runs now with its things where it landed;
+// a tap (no drag) runs it in place. Pointer events, so mouse, pen and touch all grab it.
+function chip(stageApi, it) {
+  const b = button(it.line, () => {}); b.dataset.showcaseGrab = String(it.j); b.title = 'drag onto the stage to try it'; b.style.touchAction = 'none'; b.style.cursor = 'grab';
+  let from = null, ghost = null;
+  b.addEventListener('pointerdown', (e) => { if (e.button) return; from = { x: e.clientX, y: e.clientY }; try { b.setPointerCapture(e.pointerId); } catch (_) {} e.preventDefault(); });
+  b.addEventListener('pointermove', (e) => {
+    if (!from) return;
+    if (!ghost && Math.hypot(e.clientX - from.x, e.clientY - from.y) > 6) {
+      ghost = b.cloneNode(true); ghost.removeAttribute('data-showcase-grab'); ghost.className = 'showcase-ghost';
+      ghost.style.cssText += ';position:fixed;z-index:70;pointer-events:none;opacity:.9;transform:translate(-50%,-50%) rotate(-3deg);box-shadow:0 8px 20px rgba(0,0,0,.45)';
+      document.body.appendChild(ghost);
+    }
+    if (ghost) { ghost.style.left = e.clientX + 'px'; ghost.style.top = e.clientY + 'px'; }
+  });
+  const up = (e, cancel) => {
+    if (!from) return; const dragged = !!ghost; from = null; if (ghost) { ghost.remove(); ghost = null; }
+    if (cancel) return;
+    const bar = document.getElementById('showcase-bar'), r = bar && bar.getBoundingClientRect();
+    const onBar = r && e.clientX >= r.left && e.clientX <= r.right && e.clientY >= r.top && e.clientY <= r.bottom;
+    if (dragged && onBar) return; // let go back on the bar: nothing happens
+    jump(stageApi, it.j, dragged ? { x: e.clientX, y: e.clientY } : null);
+  };
+  b.addEventListener('pointerup', (e) => up(e, false));
+  b.addEventListener('pointercancel', (e) => up(e, true));
+  b.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); jump(stageApi, it.j, null); } });
+  return b;
+}
+
+// run step j now (what the current step put up goes, as with Next); dropped at a point, its new things move there
+async function jump(stageApi, j, at) {
+  if (!tour || !(j > tour.i && j < tour.steps.length)) return;
+  clear(stageApi); tour.i = j;
+  const s = tour.steps[j];
+  await step(stageApi);
+  if (!at || !tour || tour.steps[tour.i] !== s || !tour.made || !tour.made.ids.length) return;
+  const st = stageApi.stage, rect = st && st.getBoundingClientRect ? st.getBoundingClientRect() : { left: 0, top: 0, width: innerWidth, height: innerHeight };
+  const things = stageApi.things(), first = things[tour.made.ids[0]];
+  const d = dropDelta(first, at.x - rect.left, at.y - rect.top, rect.width, rect.height);
+  if (!d) return;
+  for (const id of tour.made.ids) { const th = things[id]; if (!th || !Number.isFinite(+th.x)) continue; th.x = +th.x + d.dx; th.y = +th.y + d.dy; if (th.card) th.card = { x: th.card.x + d.dx, y: th.card.y + d.dy }; }
+  stageApi.save(); stageApi.render();
+  if (tour) tour.dropped = { ids: tour.made.ids.slice(), x: Math.round(at.x), y: Math.round(at.y) };
+  document.body.dataset.showcaseDropped = String(j);
 }
 
 // what the page logs when an ask fell through to the encyclopedia or a generic answer, or missed (tools/claims-verify.mjs FALLBACK)

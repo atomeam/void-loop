@@ -115,3 +115,18 @@ test('a preview is proved by a new thing, a new card, or the page log saying a s
   assert.ok(!proved({}));
   assert.ok(!proved({ madeIds: [], pageChanged: false, log: null }));
 });
+
+test('the tray (asked by Void: grab a newly shipped skill from the walkthrough and drop it on the stage): the coming steps, at most six, each cut to fit a chip', async () => {
+  const { trayOf, TRAY } = await import('../void-live-deploy/skills/showcase.js');
+  const steps = Array.from({ length: 10 }, (_, k) => ({ line: 'step ' + k }));
+  assert.deepEqual(trayOf(steps, 0).map((x) => x.j), [1, 2, 3, 4, 5, 6]); assert.equal(TRAY, 6);
+  assert.deepEqual(trayOf(steps, 8), [{ j: 9, line: 'step 9' }]); assert.deepEqual(trayOf(steps, 9), []);
+  const long = trayOf([{ line: 'x' }, { line: 'the coral card reads the Florida Keys reef live, every hour of the day' }], 0)[0].line;
+  assert.ok(long.length <= 38 && long.endsWith('…'), long);
+});
+test('a drop moves the step\'s things to where it landed, kept inside the stage', async () => {
+  const { dropDelta } = await import('../void-live-deploy/skills/showcase.js');
+  assert.deepEqual(dropDelta({ x: 10, y: 10 }, 300, 200, 800, 600), { dx: 250, dy: 170 });
+  assert.deepEqual(dropDelta({ x: 100, y: 100 }, -50, 9999, 800, 600), { dx: -92, dy: 420 }, 'clamped to the stage');
+  assert.equal(dropDelta(null, 1, 1, 800, 600), null); assert.equal(dropDelta({ x: 'a', y: 0 }, 1, 1, 800, 600), null);
+});

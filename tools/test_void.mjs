@@ -1603,6 +1603,38 @@ try {
   // the preview proves itself (owner, 2026-10-16: "the preview is supposed to actually preview what it says it almost never does"): a
   // step whose ask nothing answers says so on its line and files the ask as a miss (preview:nothing-shown); a step that puts a thing
   // on the stage is left alone
+  // asked by Void: "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it on the stage to test it"
+  if (want("look what I made: grab a coming step from the walkthrough's tray and drop it on the stage")) {
+    const LEDGER = [
+      { at: '2026-10-12T01:00:00Z', by: 'claude', kind: 'grow', what: 'the growth page', show: 'the growth page', try: 'growth' },
+      { at: '2026-10-12T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+      { at: '2026-10-12T03:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+    ];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-g')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-11T00:00:00Z'); sessionStorage.setItem('sc-g', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
+    const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
+    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
+    const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
+    const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    const drop = { x: 320, y: 220 };
+    await P.p.mouse.move(chip.x, chip.y); await P.p.mouse.down();
+    for (let i = 1; i <= 8; i++) await P.p.mouse.move(chip.x + (drop.x - chip.x) * i / 8, chip.y + (drop.y - chip.y) * i / 8);
+    const ghost = await P.p.$('.showcase-ghost');
+    await P.p.mouse.up();
+    const after = await until(async () => ((await kinds()) === 'counter' ? await P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')) : ''), 6000).catch(() => '');
+    await P.p.waitForTimeout(400);
+    const placed = await P.p.evaluate(() => { const st = document.getElementById('stage') || document.body, r = st.getBoundingClientRect(); const t = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((x) => x.kind === 'counter'); return t ? { x: t.x + r.left, y: t.y + r.top } : null; });
+    const dropped = await P.p.evaluate(() => document.body.dataset.showcaseDropped || '');
+    // a tap on a chip runs that step in place
+    const tapTray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab));
+    check('look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step\'s thing away, and puts the new thing where it landed (asked by Void)',
+      tray.length === 2 && /^1:a counter you can tap$/.test(tray[0]) && !!ghost && /^2 of 3 .*a counter you can tap/.test(after) && dropped === '1'
+        && !!placed && Math.abs(placed.x - (drop.x - 40)) < 30 && Math.abs(placed.y - (drop.y - 20)) < 30 && tapTray.join() === '2' && !P.errors.length,
+      JSON.stringify({ tray, ghost: !!ghost, after, placed, dropped, tapTray, errors: P.errors }).slice(0, 900));
+    await P.ctx.close();
+  }
   if (want("look what I made: a preview that shows nothing says so and flags it")) {
     const LEDGER = [
       { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'a thing with a wrong try', show: 'a hardcover book with turning pages', try: 'zzqx nothing answers this zzqx' },
