@@ -2,11 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T14:03:00.016Z",
-   "sha": "7e4668f29b5e593b8bac97383c4d14a70a90c0c0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39037915553",
+   "at": "2026-10-17T14:03:53.003Z",
+   "sha": "1e76fbc06270aab044fed964c94fc75631f829c0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39037988055",
    "suite": "browser suite on main",
    "checks": [
+    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
     "check timeout: no check finished within 300 s"
    ]
   },
