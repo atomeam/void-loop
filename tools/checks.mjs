@@ -24,6 +24,7 @@ for (const [name, file] of [
   ['lab-use', 'lab-use.test.mjs'],
   ['site-teach', 'site-teach.test.mjs'],
   ['untested-unit', 'untested.test.mjs'],
+  ['typo-audit', 'typo-audit.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],
@@ -304,6 +305,8 @@ for (const [name, file] of [
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
 { const r = run([resolve(here, 'doc-drift.mjs'), '--check']); results.push(['doc-drift', r.ok, r.out[r.out.length - 1] || '']); }
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
+// letter reversals in the skills' metadata (asked by Void: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
+{ const r = run([resolve(here, 'typo-audit.mjs'), '--check']); results.push(['typos', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'untested.mjs'), '--check']); results.push(['untested', r.ok, r.out[r.out.length - 1] || '']); }
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
