@@ -2,11 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T22:25:09.356Z",
+   "at": "2026-10-17T22:29:07.773Z",
    "sha": "3bf19cdaaf54f18cfe2ec00063efd2416b620d59",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39074012082",
    "suite": "browser suite on main",
    "checks": [
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
    ]
   },
