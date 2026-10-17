@@ -295,9 +295,11 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
 
-    # is Void getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more
+    # is Void getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more.
+    # VOID_BETTER_FILE names another copy (a test pins the plain weights with a file that is not there: no rows, no boost).
     try:
-        better_boost(cands, json.loads((ROOT / "void-live-deploy" / "void.better.json").read_text(encoding="utf-8")))
+        bf = pathlib.Path(os.environ.get("VOID_BETTER_FILE") or (ROOT / "void-live-deploy" / "void.better.json"))
+        better_boost(cands, json.loads(bf.read_text(encoding="utf-8")) if bf.exists() else [])
     except Exception as e:
         print("better:", e, file=sys.stderr)
 

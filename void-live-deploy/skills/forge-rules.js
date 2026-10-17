@@ -7,12 +7,24 @@
  *   build(key)             -> { key, label, positions, normals, indices, size:[x,y,z] mm }   (cached per key)
  *   stl(model)             -> ArrayBuffer, binary STL, Z up, millimetres
  */
-import { field, mesh } from './sdfmesh.js';
+import { field, mesh, PERSON } from './sdfmesh.js';
 
 export const BED_MM = 180; // fits a 180 mm cube: inside the common 220 x 220 and 256 x 256 home beds
 const FLOOR = { type: 'sphere', c: [0, -2000, 0], r: 2000, cut: true, k: 0.01 }; // flattens everything below y = 0
 const cyl = (y0, y1, r, rb) => ({ type: 'capsule', a: [0, y0, 0], b: [0, y1, 0], ra: r, rb: rb ?? r });
 const leg = (x, z, h, r) => ({ type: 'capsule', a: [x, 0, z], b: [x, h, z], ra: r, k: 2 });
+
+/** A figure as a recipe (asked by Void: "expand the forge to include the figures as a recipe, so I can make a person instead of
+ *  just a vase"): the stage's own person body (skills/sdfmesh.js PERSON, the shapes every roaming figure is meshed from) in
+ *  millimetres, lifted so its feet sink 2 mm into a round plinth, with its arms at its sides (the stage swings them as separate
+ *  pieces; a print needs them joined). R is the body radius in mm: a person stands about 3 R tall. Pure. */
+export const PERSON_R = 40; // 120 mm tall, a desk-sized figure
+export function personShapes(R = PERSON_R) {
+  const lift = R * 1.51 + 4, up = (p) => [p[0], p[1] + lift, p[2]];
+  const body = PERSON(R).map((s) => (s.type === 'capsule' ? { ...s, a: up(s.a), b: up(s.b) } : { ...s, c: up(s.c) }));
+  const arm = (side) => ({ type: 'capsule', a: [side * R * 0.56, lift + R * 0.34, 0], b: [side * R * 0.62, lift - R * 0.62, R * 0.04], ra: R * 0.14, rb: R * 0.12, k: R * 0.2 });
+  return [...body, arm(-1), arm(1), cyl(-4, 6, R * 0.8)];
+}
 
 // every recipe: shapes (mm), blend k, a label, the names that summon it, and the grid cell for meshing
 export const THINGS = {
@@ -87,6 +99,10 @@ export const THINGS = {
   lighthouse: { label: 'Lighthouse', names: ['lighthouse', 'light house', 'beacon tower'], k: 6, cell: 1.6, shapes: [
     cyl(-10, 118, 30, 19), { type: 'ellipsoid', c: [0, 120, 0], r: [27, 5, 27] }, cyl(122, 144, 15), { type: 'sphere', c: [0, 146, 0], r: 15 }, cyl(150, 166, 5, 1),
     { type: 'ellipsoid', c: [0, 0, 0], r: [44, 10, 44] },
+    FLOOR] },
+  // the first figure as a recipe (asked by Void): the stage's person body on a plinth; "make me a person" prints what "summon a sprite" roams as
+  person: { label: 'Person', names: ['person', 'human', 'man', 'woman', 'little person', 'human figure', 'person figure', 'figure of a person', 'statue'], k: 3, cell: 1.4, figure: 'person', shapes: [
+    ...personShapes(),
     FLOOR] },
 };
 

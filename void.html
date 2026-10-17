@@ -2177,8 +2177,8 @@ say('nothing selected to remove');
         e.preventDefault(); const ask = a.getAttribute('data-ask'); closePage(); handle(ask);
       });
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
-      stampSources(el); keepTail(el); keepRead(el); keepTell(el);
-      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); }).observe(el, { childList: true, subtree: true });
+      stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el);
+      new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el); }).observe(el, { childList: true, subtree: true });
       el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellV01D(el, t); });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
       requestAnimationFrame(() => el.classList.add('on'));
@@ -2508,6 +2508,9 @@ say('nothing selected to remove');
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el);
+        // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
+        el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); keepCard(el);
+        import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});
         // a living thing ("cat", "fox") gets a facts strip from Wikidata under the summary, not just the dictionary-like lead (Adam, 2026-10-15)
         if (j.wikibase_item && /\b(?:species|genus|family|animal|mammal|bird|fish|reptile|amphibian|insect|plant|tree|flower|breed|subspecies|domesticated)\b/i.test((j.description || '') + ' ' + (j.extract || '').slice(0, 200))) {
           fetch('https://www.wikidata.org/w/api.php?action=wbgetentities&props=claims&format=json&origin=*&ids=' + encodeURIComponent(j.wikibase_item)).then((x) => x.json()).then((w) => {
@@ -4039,6 +4042,11 @@ say('nothing selected to remove');
     // shown to the person), so the learning loop (lib/learn.js) turns a repeated one into a job. window.voidUngrounded keeps the
     // last 20 for the tests and the console.
     // a card from a skill rated "experiment" or "tested" says so on its source line (asked by Void; lib/rating-note.js, ratings from skills/families.json)
+    // every page is a V01D card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
+    // with a rarity gem, an "adds to V01D" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
+    let cardLib = null, cardStats = null;
+    function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
+    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl); m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); }).catch(() => {});
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
@@ -4088,6 +4096,7 @@ say('nothing selected to remove');
           if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + who });
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) ratingNote(who, vpageEl);
+          if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
           if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
@@ -5171,6 +5180,7 @@ say('nothing selected to remove');
       if (pendingConfirm && NO_RE.test(lower0)) { await decideConfirm('reject', 'said no'); return; }
       if (pendingConfirm) await decideConfirm('reject', 'asked something else');
       else if (lastConfirm && lastConfirm.until > Date.now() && (YES_RE.test(lower0) || NO_RE.test(lower0))) { say(lastConfirm.expired && YES_RE.test(lower0) ? 'that one expired, ' + lastConfirm.nothing : 'nothing is waiting for a yes'); return; }
+      if (/^(?:close|close it|close this|close (?:the )?book|shut (?:the )?book|put (?:the )?book (?:down|away|back))$/.test(lower0) && window.__voidBook && window.__voidBook.open) { window.__voidBook.close(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'book closed' }); return; } // the open tome is what "close" closes first (skills/guide.js)
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
@@ -5210,7 +5220,7 @@ say('nothing selected to remove');
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
       if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
-      if (wantsMenu(lower0)) { showSelfPage(true); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return; }
+      if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
       if (/^(why|how|when|where|which|who(?!\s+(?:is|was|are|were)\b)|whom|whose|can|could|should|would|does|do|did|is|are|was|were|will|explain|tell me why|tell me how)\b/.test(lower0)
