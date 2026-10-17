@@ -7,12 +7,24 @@
  *   build(key)             -> { key, label, positions, normals, indices, size:[x,y,z] mm }   (cached per key)
  *   stl(model)             -> ArrayBuffer, binary STL, Z up, millimetres
  */
-import { field, mesh } from './sdfmesh.js';
+import { field, mesh, PERSON } from './sdfmesh.js';
 
 export const BED_MM = 180; // fits a 180 mm cube: inside the common 220 x 220 and 256 x 256 home beds
 const FLOOR = { type: 'sphere', c: [0, -2000, 0], r: 2000, cut: true, k: 0.01 }; // flattens everything below y = 0
 const cyl = (y0, y1, r, rb) => ({ type: 'capsule', a: [0, y0, 0], b: [0, y1, 0], ra: r, rb: rb ?? r });
 const leg = (x, z, h, r) => ({ type: 'capsule', a: [x, 0, z], b: [x, h, z], ra: r, k: 2 });
+
+/** A figure as a recipe (asked by Void: "expand the forge to include the figures as a recipe, so I can make a person instead of
+ *  just a vase"): the stage's own person body (skills/sdfmesh.js PERSON, the shapes every roaming figure is meshed from) in
+ *  millimetres, lifted so its feet sink 2 mm into a round plinth, with its arms at its sides (the stage swings them as separate
+ *  pieces; a print needs them joined). R is the body radius in mm: a person stands about 3 R tall. Pure. */
+export const PERSON_R = 40; // 120 mm tall, a desk-sized figure
+export function personShapes(R = PERSON_R) {
+  const lift = R * 1.51 + 4, up = (p) => [p[0], p[1] + lift, p[2]];
+  const body = PERSON(R).map((s) => (s.type === 'capsule' ? { ...s, a: up(s.a), b: up(s.b) } : { ...s, c: up(s.c) }));
+  const arm = (side) => ({ type: 'capsule', a: [side * R * 0.56, lift + R * 0.34, 0], b: [side * R * 0.62, lift - R * 0.62, R * 0.04], ra: R * 0.14, rb: R * 0.12, k: R * 0.2 });
+  return [...body, arm(-1), arm(1), cyl(-4, 6, R * 0.8)];
+}
 
 // every recipe: shapes (mm), blend k, a label, the names that summon it, and the grid cell for meshing
 export const THINGS = {
@@ -50,6 +62,28 @@ export const THINGS = {
     { type: 'box', c: [0, 18, 36], r: [8, 16, 4], cut: true, k: 0.6 },
     { type: 'box', c: [-28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 }, { type: 'box', c: [28, 38, 36], r: [8, 8, 3], cut: true, k: 0.6 },
     FLOOR] },
+  // the RTS world builds (lib/rts.js BUILDS): what a camp's villagers raise from what they gathered
+  hut: { label: 'Hut', names: ['hut', 'small hut', 'cabin', 'shack'], k: 1.5, cell: 1.2, shapes: [
+    { type: 'box', c: [0, 22, 0], r: [34, 22, 28] },
+    ...[0, 1, 2, 3, 4, 5].map((i) => ({ type: 'box', c: [0, 46 + i * 5, 0], r: [38 - i * 4, 2.6, 32 - i * 4], k: 2.5 })),
+    { type: 'box', c: [0, 14, 28], r: [7, 13, 4], cut: true, k: 0.6 },
+    FLOOR] },
+  wall: { label: 'Wall', names: ['wall', 'rampart', 'palisade'], k: 1.5, cell: 1.2, shapes: [
+    { type: 'box', c: [0, 20, 0], r: [80, 20, 16] }, ...[-60, -20, 20, 60].map((x) => ({ type: 'box', c: [x, 46, 0], r: [12, 8, 16] })),
+    FLOOR] },
+  well: { label: 'Well', names: ['well', 'water well', 'stone well'], k: 2, cell: 1.2, shapes: [
+    cyl(0, 30, 30, 30), { ...cyl(6, 40, 20), cut: true, k: 0.6 }, { type: 'box', c: [-30, 50, 0], r: [4, 24, 4] }, { type: 'box', c: [30, 50, 0], r: [4, 24, 4] },
+    ...[0, 1, 2, 3].map((i) => ({ type: 'box', c: [0, 74 + i * 5, 0], r: [44 - i * 7, 2.4, 30 - i * 6], k: 2 })),
+    FLOOR] },
+  bridge: { label: 'Bridge', names: ['bridge', 'wooden bridge', 'footbridge'], k: 2, cell: 1.3, shapes: [
+    { type: 'box', c: [0, 26, 0], r: [90, 4, 24] }, { type: 'box', c: [0, 10, 0], r: [100, 16, 26], cut: true, k: 1 },
+    ...[-70, -35, 0, 35, 70].flatMap((x) => [{ type: 'box', c: [x, 42, 22], r: [3, 14, 3] }, { type: 'box', c: [x, 42, -22], r: [3, 14, 3] }]),
+    { type: 'box', c: [0, 56, 22], r: [84, 2.5, 2.5] }, { type: 'box', c: [0, 56, -22], r: [84, 2.5, 2.5] },
+    FLOOR] },
+  tower: { label: 'Watchtower', names: ['tower', 'watchtower', 'watch tower', 'lookout'], k: 2, cell: 1.4, shapes: [
+    { type: 'box', c: [0, 50, 0], r: [26, 50, 26] }, { type: 'box', c: [0, 104, 0], r: [34, 6, 34] }, ...[-28, 28].flatMap((x) => [{ type: 'box', c: [x, 118, 0], r: [4, 10, 34] }, { type: 'box', c: [0, 118, x], r: [34, 10, 4] }]),
+    { type: 'box', c: [0, 30, 26], r: [8, 14, 4], cut: true, k: 0.6 },
+    FLOOR] },
   boat: { label: 'Sailboat', names: ['boat', 'sailboat', 'sail boat', 'sailing boat', 'yacht'], k: 3, cell: 1.3, shapes: [
     { type: 'ellipsoid', c: [0, 26, 0], r: [72, 26, 24] },
     { type: 'box', c: [0, 80, 0], r: [100, 34, 40], cut: true, k: 1 }, { type: 'ellipsoid', c: [0, 30, 0], r: [64, 20, 18], cut: true, k: 1 },
@@ -65,6 +99,10 @@ export const THINGS = {
   lighthouse: { label: 'Lighthouse', names: ['lighthouse', 'light house', 'beacon tower'], k: 6, cell: 1.6, shapes: [
     cyl(-10, 118, 30, 19), { type: 'ellipsoid', c: [0, 120, 0], r: [27, 5, 27] }, cyl(122, 144, 15), { type: 'sphere', c: [0, 146, 0], r: 15 }, cyl(150, 166, 5, 1),
     { type: 'ellipsoid', c: [0, 0, 0], r: [44, 10, 44] },
+    FLOOR] },
+  // the first figure as a recipe (asked by Void): the stage's person body on a plinth; "make me a person" prints what "summon a sprite" roams as
+  person: { label: 'Person', names: ['person', 'human', 'man', 'woman', 'little person', 'human figure', 'person figure', 'figure of a person', 'statue'], k: 3, cell: 1.4, figure: 'person', shapes: [
+    ...personShapes(),
     FLOOR] },
 };
 
