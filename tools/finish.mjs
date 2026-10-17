@@ -102,7 +102,8 @@ export function steps(a) {
     ['agent-log line', () => { appendFileSync(LOG, logLine(a) + '\n'); return 0; }],
     ['map covers everything', [process.execPath, ['--test', '--test-reporter=dot', resolve(root, 'tools', 'map-coverage.test.mjs')]]],
     // a new skill file is registered before it is committed (Void's ask: the skills/ manifest registers every new skill; the fast checks then run the router test on it)
-    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
+    // the book's pages and the families they come from are generated: written here so a new skill is in the book's index without a manual step (owner, 2026-10-17: the book shows every update immediately)
+    ['commit', () => (run(process.execPath, [resolve(root, 'tools', 'skills-index.mjs'), '--adopt']) || run(process.execPath, [resolve(root, 'tools', 'families.mjs')]) || run(process.execPath, [resolve(root, 'tools', 'guide.mjs')]) || git('add', '-A') || git('commit', '-q', '-m', a.title, ...(a.body ? ['-m', a.body] : [])))],
     ['bring main in', node('merge-main.mjs')],
     ['fast checks', node('checks.mjs')],
     ['push', node('push.mjs')],

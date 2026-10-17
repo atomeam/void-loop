@@ -2,6 +2,25 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T11:18:25.832Z",
+   "sha": "fcc37df13510109cf8c453a17ee41e64c26fc4d8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39027017406",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+   ]
+  },
+  {
+   "at": "2026-10-17T10:43:04.266Z",
+   "sha": "f3793bbc3dc344680fff6367ee52206aaf978052",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39024814443",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage"
+   ]
+  },
+  {
    "at": "2026-10-17T10:22:13.849Z",
    "sha": "890e850c3da12f57cdf2e6e54fffdc0e204ad0e9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39023626850",
@@ -285,26 +304,6 @@
    "suite": "browser suite on main",
    "checks": [
     "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
-   ]
-  },
-  {
-   "at": "2026-10-16T18:17:21.829Z",
-   "sha": "461a4cce26495a30e700ee299030cfb51d87cb86",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38944793634",
-   "suite": "browser suite on main",
-   "checks": [
-    "\"growth\": touching a branch says what Void asked for that it built (asked by Void: \"link the growth card branches to the growth inbox\"), matched by the entry that built it",
-    "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch",
-    "\"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as new leaves)"
-   ]
-  },
-  {
-   "at": "2026-10-16T17:39:21.456Z",
-   "sha": "b0fde1852504a2b7f03bde7cd24e6b26cfafdd90",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38939468159",
-   "suite": "browser suite on main",
-   "checks": [
-    "router: the will turns routing into wants: a skill near-miss becomes \"learn to handle ...\", a router that keeps falling back is a fix; would-escalate is not counted twice (it reaches the upgrade through void_shortfalls)"
    ]
   }
  ]

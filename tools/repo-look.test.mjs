@@ -82,3 +82,10 @@ test('the route validates, caches a good answer, never caches a failure, and rat
   store.clear(); let last; for (let i = 0; i < route.RL_MAX + 1; i++) last = await get(env, 'acme/widget' + (i % 2 ? '' : ''), '9.9.9.9', github({ status: 404 }));
   assert.equal(last.status, 429);
 });
+
+test('the repo card copies and saves as readable words: facts, languages and files apart, sections on their own lines', async () => {
+  const { repoHtml } = await import('../void-live-deploy/skills/repo.js');
+  const text = repoHtml((s) => String(s), { name: 'acme/widget', language: 'JavaScript', stars: 0, forks: 0, openIssues: 61, openPulls: 6, langs: [{ name: 'JavaScript', pct: 73.2 }, { name: 'HTML', pct: 24.7 }], commits: [{ sha: '890e85', msg: 'Site test' }, { sha: 'd7c97f', msg: 'Merge' }], tree: [{ name: 'docs', dir: true }, { name: 'AGENTS.md' }] }).replace(/<[^>]+>/g, '');
+  for (const glued of ['JavaScript0', 'stars0', 'issues6', 'PRsJavaScript', '%HTML', 'commits890e85', '890e85Site', 'leveldocs', 'docs/AGENTS']) assert.ok(!text.includes(glued), glued + ' in: ' + text);
+  assert.match(text, /JavaScript 0 stars 0 forks 61 open issues 6 open PRs/);
+});
