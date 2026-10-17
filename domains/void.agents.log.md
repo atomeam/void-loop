@@ -832,3 +832,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T11:36:41Z | claude | fix | Art Forge retries busy and rate-limited paints, skips loading-state subjects (D1 void_art had 3 rows: incident autopsy, rt, looking)
 2026-10-17T11:39:42Z | claude | build | asked by Void: event countdown says where its date came from and dims a confidence badge for an infobox-only date; skill-confidence visualizer linked as built (08:27:38Z)
 2026-10-17T11:41:53Z | claude | fix | site tester early read (re-landed: it missed #1018's merge); #1029 'test me on that' passes with it
+2026-10-17T12:48:17Z | claude | grow | asked by Void: the self card's 'what got built' has a Root cause / Surface toggle, sorting each built ask by the ledger line that built it (a fix, build or retire changed how V01D works underneath; a grow put something new on the stage), with counts, six shown at a time

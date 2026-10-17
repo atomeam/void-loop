@@ -75,6 +75,10 @@ export function currentAsks(entries, n = 6) {
 const STOP = new Set('the a an and or of to for in on at by with from into that this these those my me i it its is are be as so can could should would will than then when what which who how why not no new more less time each every onto over under about very just also only any all some create implement build make add develop'.split(' '));
 const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
 const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
+/** Void asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
+ *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how V01D works underneath
+ *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
+export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '')) ? 'root' : kind === 'grow' ? 'surface' : null);
 export function followThrough(entries, ledger, links = []) {
   const L = Array.isArray(ledger) ? ledger.filter((x) => x && typeof x.what === 'string') : [];
   const byId = new Map(); for (const x of L) if (x.asked) byId.set(String(x.asked), x);
@@ -96,7 +100,7 @@ export function followThrough(entries, ledger, links = []) {
   const built = [], open = [];
   for (const g of groups) {
     const hit = g.ids.map((id) => byId.get(id)).find(Boolean) || (byWords.find((k) => k.words.toLowerCase() === g.ask.toLowerCase() || sameAsk(g.ask, k.words)) || {}).x;
-    (hit ? built : open).push(hit ? { ...g, what: String(hit.what).slice(0, 160), builtAt: hit.at, ref: hit.ref || null } : g);
+    (hit ? built : open).push(hit ? { ...g, what: String(hit.what).slice(0, 160), builtAt: hit.at, ref: hit.ref || null, depth: depthOf(hit.kind) } : g);
   }
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };

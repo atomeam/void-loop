@@ -281,3 +281,12 @@ test('self asks: V01D\'s own earnings, spending and store are about itself; mone
     'best way to spend money in tokyo', 'how much did avatar earn'])
     assert.ok(!isSelfAsk(a), a);
 });
+
+test('root cause or surface (asked by Void, 2026-10-17): a built ask carries the depth of the ledger line that built it', async () => {
+  const { depthOf } = await import('../void-live-deploy/lib/voice.js');
+  assert.equal(depthOf('fix'), 'root'); assert.equal(depthOf('build'), 'root'); assert.equal(depthOf('retire'), 'root');
+  assert.equal(depthOf('grow'), 'surface'); assert.equal(depthOf('idea'), null); assert.equal(depthOf(undefined), null);
+  const f = followThrough([{ at: '2026-10-17T00:00:00Z', asks: [{ ask: 'a toggle for root causes' }, { ask: 'a new game' }] }],
+    [{ at: '2026-10-17T01:00:00Z', kind: 'fix', what: 'fixed it', asked: 'a toggle for root causes' }, { at: '2026-10-17T02:00:00Z', kind: 'grow', what: 'a game', asked: 'a new game' }]);
+  assert.deepEqual(f.built.map((b) => [b.ask, b.depth]), [['a toggle for root causes', 'root'], ['a new game', 'surface']]);
+});
