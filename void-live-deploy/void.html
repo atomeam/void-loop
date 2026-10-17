@@ -4165,7 +4165,11 @@ say('nothing selected to remove');
       return el;
     }
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
-    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl); m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); }).catch(() => {});
+    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
+      // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
+      // page's own files on a first visit (issues #1022, #1028: a slow first load); a card opened before then is framed again when they arrive
+      const stats = () => m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }), idle = () => (window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600));
+      if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }).catch(() => {});
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);

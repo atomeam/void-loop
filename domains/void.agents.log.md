@@ -826,3 +826,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T11:08:27Z | claude | grow | V01D's films have sound: each film gets its own short score from ffmpeg (tools/film-sound.mjs), muxed in by record.yml; next on frontier #26: a product shot list and story beats
 2026-10-17T11:13:56Z | claude | grow | event countdown from the event's Wikipedia page (skills/event-countdown.js, lib/event-date.js); the owner's 'how many hours til gta6' card had said there was no release date
 2026-10-17T11:22:17Z | claude | fix | event-countdown given the Time family (families.json, guide.json, deps.json regenerated); main's families and book checks were red from #1025
+2026-10-17T11:31:49Z | claude | fix | card stats load after the page is idle (void.html); site tester samples load and fps twice before filing (#1022 #1024 #1026 #1028); same 1-2 fps locally on this morning's main, so no regression
