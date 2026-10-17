@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 112,
+ "runsTotal": 113,
  "kinds": {
   "grow": 15,
   "file": 54,
   "teach": 7,
   "tighten": 7,
-  "none": 29
+  "none": 30
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:31:36Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T08:24:25Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:10:46Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -187,8 +187,8 @@
   "skill:feelings": "2026-10-17T08:24:25Z",
   "skill:figure": "2026-10-17T08:24:25Z",
   "skill:figure-can": "2026-10-17T08:24:25Z",
-  "skill:figures": "2026-10-16T07:56:26Z",
-  "skill:films": "2026-10-16T07:56:26Z",
+  "skill:figures": "2026-10-17T08:31:36Z",
+  "skill:films": "2026-10-17T08:31:36Z",
   "skill:food": "2026-10-16T08:04:30Z",
   "skill:forge": "2026-10-16T08:04:30Z",
   "skill:fuel": "2026-10-16T08:04:30Z",
@@ -297,6 +297,7 @@
   "skill:state": "2026-10-17T02:48:01Z",
   "skill:technical-context": "2026-10-17T02:48:01Z",
   "skill:type-filter": "2026-10-17T06:04:06Z",
-  "skill:web4": "2026-10-17T06:04:06Z"
+  "skill:web4": "2026-10-17T06:04:06Z",
+  "skill:movie": "2026-10-17T08:31:36Z"
  }
 }
