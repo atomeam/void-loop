@@ -741,6 +741,64 @@ try {
     check('sticky words are not orders: "add a sticky that says big plans for the top left" makes exactly one sticky with those words (no empty sticky moved or resized first)',
       notes.length === 1 && notes[0].text === 'big plans for the top left' && !W.errors.length, JSON.stringify({ notes: notes.map((n) => ({ text: n.text, size: n.size, x: n.x, y: n.y })), e: W.errors }));
     await W.ctx.close(); }
+  // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
+  // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
+    const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', director: 'Danny Philippou', runtime: 95, overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
+        : t === 'Nosferatu' ? { verified: true, title: t, year: 1922, genre: 'Horror', overview: '', poster: 'https://archive.org/services/img/nosferatu', trailer: '', free: true, play: { kind: 'video', src: 'https://archive.org/download/nosferatu/n.mp4', page: 'https://archive.org/details/nosferatu', license: 'public domain' }, links: [], sources: ['Internet Archive'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('pick a movie to watch with me', 1800);
+    const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
+    const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await M.p.click('.vpage.on a[data-ask*="Talk to Me"]'); await M.p.waitForTimeout(1200);
+    const facts = await M.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), jsonAsk = await M.p.$eval('.vpage.on .mv-json', (a) => a.dataset.ask).catch(() => '');
+    await M.p.keyboard.press('Escape'); await M.ask('pick a movie to watch with me', 1800);
+    await M.p.click('.vpage.on a[data-ask*="Nosferatu"]'); await M.p.waitForTimeout(1200);
+    await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
+    const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
+    const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    await M.ctx.close(); }
+  // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
+  // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
+  if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
+    const COVER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x400bb.jpg';
+    await U.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Hey Jude** - The Beatles\n2. Made Up Song Zork - Nobody\n3. Respect by Aretha Franklin' })));
+    await U.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Made Up Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'Album', year: 1968, genre: 'Rock', poster: COVER, preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [{ label: 'Spotify: search', url: 'https://open.spotify.com/search/x' }] })); });
+    await U.ask('pick a song', 1800);
+    const rows = await U.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await U.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Song Zork'));
+    const art1 = await U.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await U.p.click('.vpage.on a[data-ask*="Hey Jude"]'); await U.p.waitForTimeout(1200);
+    await U.p.click('.vpage.on .md-preview'); await U.p.waitForTimeout(200);
+    const au = await U.p.$eval('.vpage.on .mv-player audio', (a) => a.src).catch(() => '');
+    check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
+      rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
+    await U.ctx.close(); }
+  // pick for me (owner, 2026-10-17: Max, but better): one found pick with its why, "something else" never repeats, a mood word is all the server hears, taste stays in the browser
+  if (want("pick for me: one found pick with its why, something else, a mood, forget my taste")) { const K = await fresh();
+    const bodies = [];
+    await K.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { bodies.push(JSON.parse(r.request().postData() || '{}').ask || ''); return r.fulfill(json({ answer: '1. Alpha Song - Band A\n2. Beta Song - Band B\n3. Gamma Song - Band C\n4. Fake Song Zork - Nobody' })); });
+    await K.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Fake Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'A', year: 1999, genre: 'Pop', poster: 'https://is1-ssl.mzstatic.com/x/400x400bb.jpg', preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [] })); });
+    const pg = () => K.p.$eval('.vpage.on .pick-say', (e) => e.textContent).catch(() => '');
+    await K.p.evaluate(() => localStorage.setItem('a2m.void.taste.v1', JSON.stringify({ mood: '', likes: [{ kind: 'music', title: 'Old Fave' }], dislikes: [], seen: [] })));
+    await K.ask('pick for me', 2200); const one = await pg();
+    await K.p.click('.vpage.on .pk-up'); await K.ask('something else', 2200); const two = await pg();
+    await K.ask('funnier', 2200); const three = await pg();
+    const stored = await K.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.taste.v1') || '{}'));
+    const title = (x) => (/How about (.+?) by /.exec(x) || [])[1];
+    const spoken = await K.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.src, .sub, button, [data-nospeak], .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((n) => n.remove()); return c.textContent.trim(); });
+    await K.ask('forget my taste', 800); const gone = await K.p.evaluate(() => localStorage.getItem('a2m.void.taste.v1'));
+    check('pick for me: says one found pick with its honest why (leaning on the thumbs-up kind), "something else" gives a different one, "funnier" sends only the mood word, the thumb is kept in the browser, only the pick line is spoken, "forget my taste" clears it',
+      title(one) && !/Fake Song/.test(one + two + three) && /thumbs-up to Old Fave/.test(one) && title(two) && title(two) !== title(one) && title(three) && title(three) !== title(two) && title(three) !== title(one)
+        && /funny/.test(bodies[2] || '') && !/Old Fave|Alpha|Beta/.test(bodies.join(' ')) && stored.mood === 'funny' && stored.likes.some((l) => l.title === title(one)) && spoken === three && gone === null && !K.errors.length,
+      JSON.stringify({ one, two, three, bodies, stored, spoken, gone, e: K.errors }));
+    await K.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -2310,6 +2368,32 @@ try {
     check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
       /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
     await G.ctx.close(); }
+  if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const [kit, fs] = await Promise.all([import('/lib/field-kit.js'), import('/lib/field-stage.js')]);
+      const idea = { id: 'probe', title: 'Probe field', sub: 'test', W: 200, H: 120, warm: 3, create: (seed) => ({ seed, e: 0.1, a: 0.1, n: 0 }),
+        step: (s, dt, inp) => { s.n++; if (inp.over) { s.e = Math.min(1, s.e + 0.2); s.a = Math.min(1, s.a + 0.2); } }, metrics: (s) => ({ entropy: s.e, activity: s.a, consensus: 1 - s.e, cx: 0.5, cy: 0.5 }),
+        draw: (g, s, W, H) => { g.fillStyle = '#123'; g.fillRect(0, 0, W, H); }, params: () => ({ k: 1 }), status: (s) => 'n ' + s.n };
+      const host = document.createElement('div'); document.body.appendChild(host);
+      const m = fs.mountField({ id: 'probe1', x: 10, y: 10 }, { bindDrag() {}, stage: host }, idea);
+      const el = host.querySelector('.field-card'), cv = el.querySelector('canvas'), snap = () => ({ hue: el.dataset.hue, radius: el.dataset.radius, entropy: el.dataset.entropy });
+      const before = snap(), pageFilter = getComputedStyle(document.body).filter, htmlFilter = getComputedStyle(document.documentElement).filter;
+      const rc = cv.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) cv.dispatchEvent(new PointerEvent('pointermove', { clientX: rc.left + 20 + i, clientY: rc.top + 20, bubbles: true }));
+      await new Promise((res) => setTimeout(res, 400));
+      const after = snap(), sound = el.querySelector('.ff-sound'), soundBefore = sound.getAttribute('aria-pressed');
+      el.querySelector('.ff-seal').click(); for (let i = 0; i < 50 && !el.dataset.seal; i++) await new Promise((res) => setTimeout(res, 100));
+      const sealed = el.dataset.seal || '';
+      const rows = await new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const a = q.result.transaction('seals').objectStore('seals').getAll(); a.onsuccess = () => { q.result.close(); res(a.result); }; }; q.onerror = () => res([]); });
+      const expect = await kit.seal('probe', { k: 1 }, { entropy: +el.dataset.entropy, activity: +el.dataset.activity, consensus: +el.dataset.consensus, cx: 0.5, cy: 0.5 }).then((x) => x.short).catch(() => '');
+      const keys = rows[0] ? Object.keys(rows[0]).sort().join(',') : '';
+      return { before, after, soundBefore, soundTag: sound.textContent, sealed, rowsN: rows.length, keys, pageFilter, htmlFilter, cardFilter: el.style.filter, reduced: m.still, loops: !!el.isConnected };
+    });
+    check('field minds: the kit mounts a card; touching it moves the metrics and so the CARD\'s hue and corners (not the page), sound stays off until tapped, and Seal keeps one numbers-only record in IndexedDB',
+      +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
+      && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
+    await F.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -2322,7 +2406,11 @@ try {
     await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
+    { const V2 = await fresh(); const got = []; for (const q of ['open the self card and tell void what it got wrong', 'tell void what it got wrong', 'open your self card, I want to correct you', 'void got this wrong', 'correct void on its self card']) { await V2.ask(q, 300); got.push(await until(async () => /What I think of myself/.test(await V2.page()), 4000)); await V2.ask('close', 200); }
+      check('voice: asks to correct V01D on its self card (open the self card and tell it what it got wrong, void got this wrong, correct void ...) open the self card, not a lookup or the look skill (extends #968, asked by Void)', got.every(Boolean), JSON.stringify(got)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
+    { const strip = await until(() => B.p.evaluate(() => { const q = [...document.querySelectorAll('.vpage.on .sc-strip .sc-sq')]; return q.length ? { n: q.length, tiers: [...new Set(q.map((x) => x.dataset.tier))], dens: q.map((x) => +x.dataset.density), weathered: q.filter((x) => x.classList.contains('sc-weathered')).length } : null; }), 6000);
+      check('self card: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Void)', !!strip && strip.n > 20 && strip.tiers.includes('proven') && Math.max(...strip.dens) > Math.min(...strip.dens) && strip.weathered >= 0, JSON.stringify(strip)); }
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
     check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
@@ -3352,7 +3440,7 @@ try {
     await G.ask('growth', 1500);
     const b = await until(async () => G.p.$eval('.vpage .growth-better', (e) => ({ score: +e.dataset.better, trend: e.dataset.betterTrend, weakest: e.dataset.weakest, text: e.textContent, afterVelocity: e.previousElementSibling && e.previousElementSibling.hasAttribute('data-velocity') && !!document.querySelector('.vpage .growth-friction') })).catch(() => null), 8000);
     check('the growth card says whether V01D is getting better: a score out of 100, its trend, the facts and the weakest part',
-      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && !b.afterVelocity && !G.errors.length,
+      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && /Sure to within \d+–\d+, from \d+ checks\./.test(b.text) && !b.afterVelocity && !G.errors.length,
       JSON.stringify({ b, errors: G.errors }));
     await G.ctx.close(); }
   // V01D's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
@@ -3470,6 +3558,8 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Void)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
@@ -3523,6 +3613,9 @@ try {
     const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
     check('V01D cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into V01D brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
       !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
+    const text2 = await S.p.evaluate(() => window.__copied);
+    check('V01D cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Void)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));
     await S.ctx.close(); }
   // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
   // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
@@ -6435,8 +6528,31 @@ try {
     await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
     const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    await K.ask('what can i use instead of eggs in baking', 900); await until(async () => /Instead of eggs/.test(await K.page()), 8000);
+    const t0 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent)); await K.p.fill('.vpage.on .swap-mins', '30'); await K.p.waitForTimeout(200);
+    const t1 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
+  // V01D makes music (skills/music.js, lib/compose.js; owner, 2026-10-17: "void should also learn how to make music"): an original piece composed from the ask,
+  // shown as a piano roll with what was made (key, tempo, bars) from the real values, played with Web Audio, saved as a WAV, its notes copied as text.
+  if (want("V01D music: make me a lullaby composes a piece, shows its roll, plays, saves a WAV and copies the notes")) { const M = await fresh();
+    await M.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
+    await M.ask('make me a lullaby', 900); await until(async () => /Save as WAV/.test(await M.page()), 8000);
+    const info = await M.p.evaluate(() => ({ notes: document.querySelectorAll('.vpage.on .mu-note').length, text: document.querySelector('.vpage.on p') ? document.querySelector('.vpage.on p').textContent : '' }));
+    check('music: "make me a lullaby" shows a card with a piano roll and says its key, tempo and bars (an experiment-rated new skill)', info.notes >= 8 && /lullaby piece in [A-G]#? [a-z ]+, \d+ beats a minute, 8 bars/.test(info.text), JSON.stringify(info).slice(0, 220));
+    await M.p.click('.vpage.on .mu-play'); await M.p.waitForTimeout(400);
+    const playing = await M.p.$eval('.vpage.on .mu-play', (b) => b.textContent); await M.p.click('.vpage.on .mu-play'); await M.p.waitForTimeout(200);
+    check('music: Play starts the piece (the button reads Stop) and Stop ends it (reads Play)', playing === 'Stop' && (await M.p.$eval('.vpage.on .mu-play', (b) => b.textContent)) === 'Play', playing);
+    await M.p.click('.vpage.on .mu-copy'); await M.p.waitForTimeout(300); const copied = await M.p.evaluate(() => window.__copied);
+    check('music: "Copy the notes" puts the bar-by-bar notes on the clipboard', /^Lullaby/.test(copied) && (copied.match(/^bar \d/gm) || []).length === 8 && /bpm/.test(copied), copied.slice(0, 120));
+    const dl = M.p.waitForEvent('download', { timeout: 20000 }).catch(() => null); await M.p.click('.vpage.on .mu-wav'); const d = await dl;
+    let riff = false; if (d) { const path = await d.path(); const b = fs.readFileSync(path); riff = b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WAVE' && b.length > 100000; }
+    check('music: "Save as WAV" downloads a rendered .wav (RIFF/WAVE, seconds of audio)', !!d && /\.wav$/.test(d.suggestedFilename()) && riff, d ? d.suggestedFilename() : 'no download');
+    const again = await M.p.evaluate(() => 1); await M.ask('play some music', 900);
+    check('music: "play some music" is not taken (V01D does not play recordings)', !(await M.p.$('.vpage.on .mu-play')) && !!again, '');
+    check('music: no page errors', !M.errors.length, M.errors.join(' | ').slice(0, 200));
+    await M.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web
   // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
   if (want("V01D web4: the four steps of the web as one card, the honest sentence, a tapped link runs its ask")) { const W = await fresh();
