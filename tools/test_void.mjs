@@ -2321,6 +2321,7 @@ try {
     const forge = await B.p.$eval('.vpage.on', (e) => ({ asks: [...e.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: e.textContent.replace(/\s+/g, ' ') }));
     await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
+    { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
     check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
