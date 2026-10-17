@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 12,
-    "checked": 5,
+    "tested": 11,
+    "checked": 6,
     "proven": 11
    },
    "from": 5,
@@ -681,8 +681,8 @@
     "show me the living cards mind",
     "living cards"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 31
   },
   {
