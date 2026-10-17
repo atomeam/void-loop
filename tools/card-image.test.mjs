@@ -1,7 +1,7 @@
 // The whole card as a picture (lib/card-image.js). Run: node --test tools/card-image.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cardSvg, wrap, fitTitle, fitText, CARD_W, CARD_H, BLEED } from '../void-live-deploy/lib/card-image.js';
+import { cardSvg, wrap, fitTitle, fitText, picturePlan, CARD_W, CARD_H, BLEED } from '../void-live-deploy/lib/card-image.js';
 
 const d = { title: 'Casablanca', text: 'A 1942 film. '.repeat(40), typeLine: 'Film · Song — 1942', kind: 'Film', cost: 3, rarity: 'Rare', hue: 190, key: 'Casablanca', adds: 'It adds a fact.', power: 7, toughness: 12, income: 3, number: '012/221' };
 const dims = (s) => { const m = /viewBox="0 0 (\d+) (\d+)"/.exec(s); return [+m[1], +m[2]]; };
@@ -43,4 +43,13 @@ test('a card photo (a data URL the page drew from its own picture) is the art, i
   assert.match(s, /opacity="\.28" style="mix-blend-mode:overlay"/); assert.ok(!/grayscale|sepia/.test(s));
   for (const bad of ['https://evil.example/x.png', 'javascript:alert(1)', 'data:image/svg+xml;base64,PHN2Zz4=', 'data:image/png;base64,AA"onload="x']) { const t = cardSvg({ ...d, photo: bad }); assert.ok(!/<image/.test(t), bad); }
   assert.ok(!/<image/.test(cardSvg(d)));
+});
+test('a picture is centred: a near fit fills the frame, a tall figure is shown whole over a blurred copy of itself (owner, 2026-10-17)', () => {
+  const near = picturePlan(1200, 800, 664, 440); // 3:2 into 664 x 440: almost the frame's shape
+  assert.equal(near.whole, null); assert.ok(Math.abs(near.fill.x + near.fill.w / 2 - 332) < 1); assert.ok(near.fill.w >= 664 && near.fill.h >= 440);
+  const tall = picturePlan(500, 900, 664, 440); // the Sentry card: a standing figure, head at the top
+  assert.ok(tall.whole); assert.ok(Math.abs(tall.whole.x + tall.whole.w / 2 - 332) < 1); assert.ok(Math.abs(tall.whole.y + tall.whole.h / 2 - 220) < 1);
+  assert.ok(tall.whole.y >= 0 && tall.whole.h <= 440 + 1e-9, 'nothing of it is cut off');
+  assert.ok(tall.fill.w >= 664 && tall.fill.h >= 440, 'the blurred copy still fills the frame');
+  const wide = picturePlan(3000, 600, 664, 440); assert.ok(wide.whole); assert.ok(wide.whole.w <= 664 + 1e-9);
 });
