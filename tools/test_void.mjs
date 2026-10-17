@@ -983,7 +983,9 @@ try {
     const two = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
     await L.ask('undo', 600);
     const undone = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
-    await L.p.reload(); await L.p.waitForTimeout(900);
+    // wait for the restored stage itself, not a fixed 900 ms: in the suite the stage was still empty then (red on main since 11:21 on 2026-10-17,
+    // the same as the convert card's reload check); the arrows are drawn once their things are back
+    await L.p.reload(); await until(async () => (await L.p.$$eval('#stage > [data-id]', (es) => es.length)) >= 4 && (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) >= 1, 8000).catch(() => {});
     const kept = (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) === 1 && (await L.p.$$eval('.void-tag', (es) => es.length)) === 2 && (await L.p.$$eval('.void-label', (es) => es.map((e) => e.textContent).join())) === 'to do';
     await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
     const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
