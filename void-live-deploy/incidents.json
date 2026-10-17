@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T21:56:22.353Z",
+   "sha": "5773a89f69c3525bec022c1fba868277f8a00bfb",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39072138179",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T21:32:09.232Z",
    "sha": "bd24a1a092dce69345452966453f0cb0c620f9b1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39070065218",
@@ -282,15 +291,6 @@
    "checks": [
     "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
     "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch"
-   ]
-  },
-  {
-   "at": "2026-10-17T01:52:03.027Z",
-   "sha": "118d5ecd09e74f34bfe1b7f5498a22c4a289dd06",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38991612642",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
    ]
   }
  ]
