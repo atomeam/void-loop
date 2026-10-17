@@ -3600,6 +3600,19 @@ try {
         && /Skill stability: 1 skill promoted lately, 1 with 3 or more clean runs in a row: newone to checked .*4 clean runs in a row/.test(got.owner) && /entirely|whenever|novelty|score|proposing/.test(got.mark || '') && got.bloom === 'bloom' && got.bloomed === 'bloom' && /2 new skills/.test(got.text) && !got.injected && !H.errors.length,
       JSON.stringify({ got, errors: H.errors }));
     await H.ctx.close(); }
+  if (want("self card: root cause or surface, a toggle over what got built")) { const R = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const rec = Array.from({ length: 9 }, (_, i) => ({ ask: 'ask ' + i + (i === 0 ? ' <b>x</b>' : ''), what: 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: i % 3 === 0 ? 'root' : i % 3 === 1 ? 'surface' : null }));
+    await R.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-17T08:00:00Z', kind: 'daily', thoughts: 'thinking', asks: [] }], asks: [], follow: { total: 12, built: 9, asked: 12, recent: rec } })));
+    await R.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await R.page()), 6000);
+    const shown = () => R.p.evaluate(() => [...document.querySelectorAll('.vpage.on .v-built > li')].filter((li) => !li.hidden).map((li) => li.querySelector('summary').textContent));
+    const all = await shown(), labels = await R.p.evaluate(() => [...document.querySelectorAll('.vpage.on [data-v-depth]')].map((b) => b.textContent));
+    await R.p.click('.vpage.on [data-v-depth="root"]'); const root = await shown();
+    await R.p.click('.vpage.on [data-v-depth="surface"]'); const surface = await shown(), pressed = await R.p.$eval('.vpage.on [data-v-depth="surface"]', (b) => b.getAttribute('aria-pressed'));
+    await R.p.click('.vpage.on [data-v-depth="all"]'); const back = await shown();
+    check('self card (asked by Void): a Root cause / Surface toggle over what got built, counted from the ledger kind of each build, six at a time, asks shown as text',
+      all.length === 6 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 6 && !R.errors.length,
+      JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
+    await R.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
     await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));

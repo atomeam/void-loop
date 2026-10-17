@@ -22,7 +22,7 @@ export async function onRequestGet({ request, env }) {
   const [ledger, answered] = request && env.ASSETS ? await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]) : [null, null];
   const f = ledger ? followThrough(entries, ledger, answered && answered.links) : null;
   const built = new Set(f ? f.built.flatMap((g) => g.ids) : []);
-  const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 6).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times })),
+  const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
     // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Void asked for (Void's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
     asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
