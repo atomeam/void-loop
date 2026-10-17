@@ -147,7 +147,7 @@ test('router context: the job note says what the router made of the ask, from th
   const DB = { prepare: (sql) => ({ bind: (...a) => q(sql, a), ...q(sql, []) }) };
   assert.ok(await queueMiss({ DB }, learnable(row('Sunset In Paris', 3, 0))));
   assert.deepEqual(seen, ['sunset in paris']);
-  assert.match(rows[0].note, /; router skill:worldtime 0.73; from the miss board$/);
+  assert.match(rows[0].note, /; router skill:worldtime 0.73; lane: propose-fix; from the miss board$/);
   assert.ok(rows[0].note.length <= 300);
   assert.deepEqual(await routeOf({ DB: { prepare: () => { throw new Error('no table'); } } }, 'x'), null, 'no router log is not an error');
 });
