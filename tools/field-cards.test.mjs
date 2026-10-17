@@ -27,6 +27,17 @@ test('dragging a card seeds the field where it is and raises the ask for rules t
   s.dragging = 4; run(s, 10); assert.ok(F.sample(s.u, 0.5, 0.5) > before, 'more energy under the dragged card'); assert.ok(s.boost > 0);
   assert.equal(c.x, 0.5, 'a held card does not drift'); s.dragging = -1;
 });
+test('family gravity (asked by Void): cards of one family draw together and stop REST apart, a lone family feels nothing, a held card brings its family', () => {
+  const s = F.create(4); assert.deepEqual(s.cards.map((c) => c.family), F.LABELS.map((l) => F.FAMILIES[l]));
+  const [idea, , , mind, you] = s.cards, gap = () => Math.hypot(idea.x - mind.x, idea.y - mind.y), d0 = gap(), y0 = { x: you.x, y: you.y };
+  s.u.fill(0); s.v.fill(1); for (let i = 0; i < 2000; i++) F.driftCards(s.u, s.cards, 1); // a flat field: only gravity moves them
+  assert.ok(d0 > F.REST * 2 && Math.abs(gap() - F.REST) < 0.01, 'idea and mind meet, REST apart: ' + d0 + ' -> ' + gap());
+  assert.deepEqual({ x: you.x, y: you.y }, y0, 'alone in its family, "you" stays where it was');
+  assert.deepEqual(F.familyPull([{ x: 0.1, y: 0.1 }, { x: 0.9, y: 0.9 }], 0), { dx: 0, dy: 0 }, 'no family, no pull');
+  idea.x = 0.9; idea.y = 0.2; const held = { x: idea.x, y: idea.y };
+  for (let i = 0; i < 2000; i++) F.driftCards(s.u, s.cards, 1, 0);
+  assert.deepEqual({ x: idea.x, y: idea.y }, held, 'the held card is not moved'); assert.ok(Math.abs(gap() - F.REST) < 0.01, 'its family followed it: ' + gap());
+});
 test('the mind: a generation is deterministic for its inputs, keeps genomes in range, and never loses its best (elitism)', () => {
   const s = run(F.create(5), 300), arg = { u: Array.from(s.u), v: Array.from(s.v), cards: s.cards, seed: 5, gen: 0 };
   const a = F.evolveCards(arg), b = F.evolveCards(arg);

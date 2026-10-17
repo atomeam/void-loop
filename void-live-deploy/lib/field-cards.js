@@ -11,13 +11,18 @@ import { rng, makeGrid, idx, laplacian4, clamp, entropy, stats, randomGenome, ev
 export const GW = 64, GH = 48, CARDS = 5, POP = 6, TRIAL = 60, MIND_EVERY = 2;
 export const SPEC = { feed: [0.018, 0.062], kill: [0.045, 0.066], diffU: [0.05, 0.11], diffV: [0.16, 0.22], attract: [0, 0.004] };
 export const LABELS = ['idea', 'stage', 'card', 'mind', 'you'];
+// family gravity (asked by Void, 2026-10-17: "cards with matching skill family IDs drift toward a common center"): each card belongs to
+// one of V01D's skill families (skills/families.json names), and cards of one family are pulled toward the centre of the others until
+// they sit REST apart; a card alone in its family feels nothing, and a held card pulls its family to it without being moved.
+export const FAMILIES = { idea: 'Void itself', mind: 'Void itself', stage: 'The stage', card: 'The stage', you: 'Out in the world' };
+export const GRAVITY = 0.0008, REST = 0.14;
 
 const fix = (g) => Object.fromEntries(Object.keys(SPEC).map((k) => [k, clamp(Number(g && g[k]), SPEC[k][0], SPEC[k][1]) || SPEC[k][0]]));
 
 /** a new field and its five cards from a seed. */
 export function create(seed = 1) {
   const r = rng(seed), u = makeGrid(GW, GH), v = makeGrid(GW, GH, 1);
-  const cards = LABELS.map((label, i) => ({ label, x: 0.15 + (i % 3) * 0.35 + r() * 0.05, y: i < 3 ? 0.3 : 0.72, hue: Math.round(i * 72), local: 0 }));
+  const cards = LABELS.map((label, i) => ({ label, family: FAMILIES[label], x: 0.15 + (i % 3) * 0.35 + r() * 0.05, y: i < 3 ? 0.3 : 0.72, hue: Math.round(i * 72), local: 0 }));
   for (let n = 0; n < 10; n++) seedAt(u, r(), r(), 0.5, 2, v);
   for (const c of cards) seedAt(u, c.x, c.y, 0.5, 2, v);
   return { seed, u, v, genome: fix({ feed: 0.037, kill: 0.06, diffU: 0.08, diffV: 0.2, attract: 0.0015, ...(r() < 0.5 ? randomGenome(SPEC, r) : {}) }), cards, act: 0, t: 0, dragging: -1, boost: 0 };
@@ -47,14 +52,24 @@ export function lattice(u, v, g, cards, k = 1) {
   }
   u.set(nu); v.set(nv); return moved / u.length;
 }
-/** the cards drift along the field's gradient (toward more energy), stay inside, and remember the field around them. Pure on its inputs. */
+/** family gravity for card i: the step toward the centre of the other cards of its family, at most GRAVITY * k, stopping REST away;
+ *  { dx, dy } is zero for a card alone in its family or one without a family. Pure. */
+export function familyPull(cards, i, k = 1) {
+  const c = cards[i], kin = c && c.family ? cards.filter((o, j) => j !== i && o.family === c.family) : [];
+  if (!kin.length) return { dx: 0, dy: 0 };
+  const dx = kin.reduce((t, o) => t + o.x, 0) / kin.length - c.x, dy = kin.reduce((t, o) => t + o.y, 0) / kin.length - c.y, d = Math.hypot(dx, dy);
+  if (d <= REST) return { dx: 0, dy: 0 };
+  const m = Math.min(GRAVITY * k, d - REST) / d; return { dx: dx * m, dy: dy * m };
+}
+/** the cards drift along the field's gradient (toward more energy) and toward their family, stay inside, and remember the field around
+ *  them. Pure on its inputs. */
 export function driftCards(u, cards, k = 1, held = -1) {
-  const e = 1 / GW;
+  const e = 1 / GW, pulls = cards.map((_, i) => familyPull(cards, i, k));
   cards.forEach((c, i) => {
     c.local = sample(u, c.x, c.y);
     if (i === held) return;
     const gx = sample(u, c.x + e * 3, c.y, 2) - sample(u, c.x - e * 3, c.y, 2), gy = sample(u, c.x, c.y + e * 3, 2) - sample(u, c.x, c.y - e * 3, 2);
-    c.x = clamp(c.x + gx * 0.004 * k, 0.06, 0.94); c.y = clamp(c.y + gy * 0.004 * k, 0.08, 0.92);
+    c.x = clamp(c.x + gx * 0.004 * k + pulls[i].dx, 0.06, 0.94); c.y = clamp(c.y + gy * 0.004 * k + pulls[i].dy, 0.08, 0.92);
   });
 }
 
