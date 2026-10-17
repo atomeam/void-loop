@@ -1034,7 +1034,7 @@ try {
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
     await A.p.click('.vpage.on .ap-make a').catch(() => {}); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
-    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.page();
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length
@@ -1171,9 +1171,9 @@ try {
     await G.p.keyboard.press('Enter'); await G.p.waitForTimeout(1500);
     const talked = await G.page();
     await G.ask('my zap is failing with 401 Unauthorized', 300); await until(async () => /Likely cause/.test(await G.page()), 6000);
-    const real = await G.p.$eval('.vpage.on', (e) => ({ src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const real = await G.p.$eval('.vpage.on', (e) => ({ src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     await G.ask('my zap stopped firing yesterday and nothing in it runs anymore, the trigger looks switched on and the sheet still gets new rows every hour', 300); await until(async () => /Likely cause|Paste what it shows/.test(await G.page()), 6000);
-    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: (e.querySelector('.src:last-of-type') || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
+    const told = await G.p.$eval('.vpage.on', (e) => ({ text: e.textContent, src: ([...e.querySelectorAll('.src')].pop() || {}).textContent || '', read: !!e.querySelector('.fix-read') })).catch(() => null);
     check('intent gate: a pasted discussion is not a broken automation (no fix card, no fix request); a real error gets its fix with the error quoted as the source; a fix from a description says so and how it was read',
       fixes.filter((b) => /reply channel/.test(b.details || b.ask || '')).length === 0 && !/Likely cause/.test(talked)
         && !!real && /from the error itself: “[^”]*401/.test(real.src) && !real.read
@@ -2505,7 +2505,7 @@ try {
     await R.ask('my routines', 700); const listed = await R.page();
     await R.ask('forget my morning', 700); const gone = await R.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.routines.v1') || '{}'));
     const order = saved.page.indexOf('15% tip on 80') < saved.page.indexOf('flip a coin');
-    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test(saved.page.split('Saved')[1] || '') && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
+    check('routines: "call this my morning" saves the two asks before it in the order they were asked (and not itself); after a reload "my morning" asks them again (the coin card shows, both are asked anew); "my routines" lists it; "forget my morning" drops it', /Saved "my morning"/.test(saved.page) && order && !/call this my morning/.test((saved.page.split('Saved')[1] || '').split('ADDS TO V01D')[0]) /* the card's own adds line quotes the skill's example */ && JSON.stringify(saved.store.morning && saved.store.morning.asks) === JSON.stringify(['15% tip on 80', 'flip a coin'])
       && /Coin/.test(ran.page) && ran.asks[0] === 'flip a coin' && ran.asks[1] === '15% tip on 80' && ran.asks[2] === 'my morning' && /my morning: 15% tip on 80 · flip a coin/.test(listed) && !gone.morning && !R.errors.length, JSON.stringify({ saved, ran, listed: listed.slice(0, 200), gone, errs: R.errors }));
     await R.ctx.close(); }
   // offering a routine (frontier #13's second piece, lib/shared-routines.js): "offer my morning" sends nothing and asks for a display name; "offer my morning as Sam"
@@ -3907,8 +3907,8 @@ try {
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
   check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
-  await P.ask('menu', 900); const menuTome = await P.p.evaluate(() => !!document.getElementById('vtome')); await P.ask('close', 900);
-  const menuGone = await P.p.evaluate(() => !document.getElementById('vtome'));
+  await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
+  const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));
   check('"what can you do" opens the self page, and "menu" opens the book ("close" shuts it)', /Ask, and it appears/.test(selfPg) && menuTome && menuGone, JSON.stringify({ self: selfPg.slice(0, 60), menuTome, menuGone }));
   const OUT_LINE = 'Paid V01D is $49 a month: more model answers, Pro code review, private skills and a higher cap on actions you confirm · say “remember me” first, then ask again to buy';
   const outAsks = ['more answers', 'I want a private skill', 'raise my confirm cap', 'upgrade', 'pay', 'go pro', 'buy paid void', 'void monthly'];
