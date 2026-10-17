@@ -12,7 +12,7 @@
 import { hueOf } from './guide.js';
 import { typeWords, kindOf } from './card-kinds.js';
 import { bar as shareBar, SHARE_CSS } from './card-share.js';
-import { artSvg, kindWord, seasonOf } from './card-art.js';
+import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 
 export const RARITY = {
   proven: { name: 'Mythic', gem: '#f0852d', foil: '#ffb347,#c4561a,#ffd27a,#b8430f' }, checked: { name: 'Rare', gem: '#e3c15a', foil: '#f1dc8a,#a98a2e,#f6e7a6,#8a6d1c' },
@@ -23,7 +23,7 @@ const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
  *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null } = {}) {
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '' } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -34,6 +34,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   const stats = !!(skill || page) && tier !== '', fetched = !stats && typeKind === 'Answer' && sources != null && sources > 0;
   const chapter = page ? page.chapter : entity && entity.chapter ? entity.chapter : 'words';
   return {
+    artKind: ART_KINDS.includes(artKind) && artKind !== 'Skill' && artKind !== 'Answer' ? artKind : '', // a skill card of a song or a film paints that kind's art, not the generic one
     rarity, chapter, hue: hueOf(chapter), fetched, kindName: entity && !page && !skill && entity.kind ? String(entity.kind).toLowerCase().replace(/[^a-z]/g, '') : '',
     cost: words ? Math.min(6, words) : 0,
     typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from V01D') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
@@ -59,7 +60,7 @@ export function ownCard(o = {}) {
 const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color:' + r.gem + '" title="' + r.name + '"></i>' : '');
 /** the art box, the type bar, the adds line and the footer as HTML. Pure. */
 export function chromeHtml(c, esc) {
-  const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: kindWord(c.typeLine), chapter: c.chapter, hue: c.hue, rarity: c.rarity, season: c.season, glyph: c.isSkill }, { w: 520, h: 150 }) + '</div>';
+  const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: c.artKind || kindWord(c.typeLine), chapter: c.chapter, hue: c.hue, rarity: c.rarity, season: c.season, glyph: c.isSkill }, { w: 520, h: 150 }) + '</div>';
   const type = '<div class="vc-type"><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
   const adds = c.adds ? '<div class="vc-adds"><b>Adds to V01D</b> ' + esc(c.adds) + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
@@ -77,9 +78,9 @@ export const CARD_CSS = [
   'box-shadow:0 30px 80px rgba(0,0,0,.65),inset 0 0 0 2px rgba(0,0,0,.5),inset 0 0 0 3px var(--edge)!important}',
   '.vpage.vcard[data-rarity=mythic]{--foil:' + FOIL(RARITY.proven) + '}.vpage.vcard[data-rarity=rare]{--foil:' + FOIL(RARITY.checked) + '}.vpage.vcard[data-rarity=uncommon]{--foil:' + FOIL(RARITY.tested) + '}.vpage.vcard[data-rarity=common]{--foil:' + FOIL(RARITY.experiment) + '}',
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
-  '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px}',
+  '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px;line-height:1.2;overflow-wrap:anywhere;min-width:0}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:grayscale(1) contrast(1.3) brightness(.9) sepia(.65) hue-rotate(calc(var(--h) * 1deg - 38deg)) saturate(1.5)}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.8;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.28;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -154,12 +155,12 @@ export function keep(el, esc, stats) {
   const name = el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
-  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
   const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
   // the art is of the subject (owner, 2026-10-17: the art should be of the subject of each card): when the answer carries a picture of the thing
-  // (its source's thumbnail), the art box shows that picture in V01D's ink, under the same hued plate; with none, the plate of its kind
+  // (its source's thumbnail), the art box shows that picture in its true colour (owner, 2026-10-17: the ink filter stripped a poster's colour), under a light ink texture; with none, the plate of its kind
   const photoImg = [...el.querySelectorAll('img[src]')].find((i) => !i.closest('.vc-art') && /^https:\/\//.test(i.getAttribute('src') || '')), photo = photoImg ? photoImg.getAttribute('src') : '';
-  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue, photo]);
+  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.rarity && c.rarity.name, c.hue, photo]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
   // the page keeps its own lines last (a product line, the Tell V01D link): the arrows sit before them, never after, or the two keep moving past each other forever

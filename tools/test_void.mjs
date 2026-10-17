@@ -780,6 +780,26 @@ try {
     check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
       rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
     await U.ctx.close(); }
+  // pick for me (owner, 2026-10-17: Max, but better): one found pick with its why, "something else" never repeats, a mood word is all the server hears, taste stays in the browser
+  if (want("pick for me: one found pick with its why, something else, a mood, forget my taste")) { const K = await fresh();
+    const bodies = [];
+    await K.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { bodies.push(JSON.parse(r.request().postData() || '{}').ask || ''); return r.fulfill(json({ answer: '1. Alpha Song - Band A\n2. Beta Song - Band B\n3. Gamma Song - Band C\n4. Fake Song Zork - Nobody' })); });
+    await K.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Fake Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'A', year: 1999, genre: 'Pop', poster: 'https://is1-ssl.mzstatic.com/x/400x400bb.jpg', preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [] })); });
+    const pg = () => K.p.$eval('.vpage.on .pick-say', (e) => e.textContent).catch(() => '');
+    await K.p.evaluate(() => localStorage.setItem('a2m.void.taste.v1', JSON.stringify({ mood: '', likes: [{ kind: 'music', title: 'Old Fave' }], dislikes: [], seen: [] })));
+    await K.ask('pick for me', 2200); const one = await pg();
+    await K.p.click('.vpage.on .pk-up'); await K.ask('something else', 2200); const two = await pg();
+    await K.ask('funnier', 2200); const three = await pg();
+    const stored = await K.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.taste.v1') || '{}'));
+    const title = (x) => (/How about (.+?) by /.exec(x) || [])[1];
+    const spoken = await K.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.src, .sub, button, [data-nospeak], .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((n) => n.remove()); return c.textContent.trim(); });
+    await K.ask('forget my taste', 800); const gone = await K.p.evaluate(() => localStorage.getItem('a2m.void.taste.v1'));
+    check('pick for me: says one found pick with its honest why (leaning on the thumbs-up kind), "something else" gives a different one, "funnier" sends only the mood word, the thumb is kept in the browser, only the pick line is spoken, "forget my taste" clears it',
+      title(one) && !/Fake Song/.test(one + two + three) && /thumbs-up to Old Fave/.test(one) && title(two) && title(two) !== title(one) && title(three) && title(three) !== title(two) && title(three) !== title(one)
+        && /funny/.test(bodies[2] || '') && !/Old Fave|Alpha|Beta/.test(bodies.join(' ')) && stored.mood === 'funny' && stored.likes.some((l) => l.title === title(one)) && spoken === three && gone === null && !K.errors.length,
+      JSON.stringify({ one, two, three, bodies, stored, spoken, gone, e: K.errors }));
+    await K.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -3408,7 +3428,7 @@ try {
     await G.ask('growth', 1500);
     const b = await until(async () => G.p.$eval('.vpage .growth-better', (e) => ({ score: +e.dataset.better, trend: e.dataset.betterTrend, weakest: e.dataset.weakest, text: e.textContent, afterVelocity: e.previousElementSibling && e.previousElementSibling.hasAttribute('data-velocity') && !!document.querySelector('.vpage .growth-friction') })).catch(() => null), 8000);
     check('the growth card says whether V01D is getting better: a score out of 100, its trend, the facts and the weakest part',
-      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && !b.afterVelocity && !G.errors.length,
+      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && /Sure to within \d+–\d+, from \d+ checks\./.test(b.text) && !b.afterVelocity && !G.errors.length,
       JSON.stringify({ b, errors: G.errors }));
     await G.ctx.close(); }
   // V01D's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
@@ -3526,6 +3546,8 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Void)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows
@@ -3603,7 +3625,7 @@ try {
     const P = await fresh();
     const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
     const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
-    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG, headers: { 'access-control-allow-origin': '*' } }));
     await P.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'Cat' }] } }));
       if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
@@ -3611,6 +3633,10 @@ try {
     await P.ask('what is a cat', 1500);
     const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
     check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    // owner, 2026-10-17: the poster showed in V01D's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
+    const colour = await P.p.evaluate(() => { const im = document.querySelector('.vpage.on .vc-art-photo'); return im ? getComputedStyle(im).filter : 'none-missing'; });
+    const photoUrl = await P.p.evaluate(async () => { const { photoData } = await import('/lib/card-image.js'); const src = document.querySelector('.vpage.on .vc-art-photo').getAttribute('src'); return { ok: (await photoData(src)).slice(0, 23), http: await photoData('http://x.example/a.png'), bad: await photoData('https://nonexistent.invalid/x.png') }; });
+    check('V01D card art: a subject photo shows in true colour (no grayscale or sepia filter) and the saved card draws it (a JPEG data URL), falling back to \'\' for http or a failed load', colour === 'none' && photoUrl.ok === 'data:image/jpeg;base64,' && photoUrl.http === '' && photoUrl.bad === '' && !P.errors.length, JSON.stringify({ colour, photoUrl, e: P.errors }));
     await P.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.

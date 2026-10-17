@@ -39,7 +39,7 @@ export function movieCard(f, esc) {
     + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
     + SRC(f, esc);
 }
-function wirePlayers(el, f) {
+export function wirePlayers(el, f) {
   const box = el.querySelector('.mv-player'); if (!box) return;
   const show = (node) => { box.textContent = ''; box.append(node); };
   const vid = (src, poster) => { const v = document.createElement('video'); v.controls = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata'; if (poster && /^https:/.test(poster)) v.poster = poster; v.src = src; v.style.cssText = 'width:100%;max-height:60vh;background:#000;border-radius:8px'; return v; };
@@ -54,6 +54,7 @@ function wirePlayers(el, f) {
 export async function runCard(m, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
+  el.dataset.artKind = 'Film';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'movie';
   el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
@@ -63,6 +64,7 @@ export async function runCard(m, api) {
 export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
+  el.dataset.artKind = 'Film';
   let picks = [];
   try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: PICK_PROMPT }) }); if (r.ok) picks = parseSuggestions((await r.json()).answer); } catch (_) {}
   if (!api._pageStill(el)) return 'movie';
