@@ -1107,5 +1107,12 @@
   "of": 37,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"toss it off the screen\" (skill:throw-off)"
+ },
+ {
+  "at": "2026-10-17T22:46:32Z",
+  "passed": 36,
+  "of": 38,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what are the figures doing\" (skill:together)"
  }
 ]

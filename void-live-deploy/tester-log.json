@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 35,
- "runsTotal": 148,
+ "cases": 36,
+ "runsTotal": 149,
  "kinds": {
-  "grow": 28,
+  "grow": 29,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T22:46:32Z",
+   "passed": 36,
+   "of": 38,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"what are the figures doing\" (skill:together)"
+  },
   {
    "at": "2026-10-17T22:33:54Z",
    "passed": 25,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"play voidquest\" fps 1 < 5"
-  },
-  {
-   "at": "2026-10-17T11:03:56Z",
-   "passed": 13,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
   }
  ],
  "seen": {
@@ -270,10 +270,10 @@
   "skill:guide": "2026-10-17T22:18:36Z",
   "skill:throw-off": "2026-10-17T22:33:54Z",
   "skill:tip": "2026-10-17T22:33:54Z",
-  "skill:together": "2026-10-17T06:15:29Z",
-  "skill:translate": "2026-10-17T06:26:48Z",
+  "skill:together": "2026-10-17T22:46:32Z",
+  "skill:translate": "2026-10-17T22:46:32Z",
   "skill:trialwatch": "2026-10-17T06:26:48Z",
-  "skill:merges": "2026-10-17T06:26:48Z",
+  "skill:merges": "2026-10-17T22:46:32Z",
   "skill:util": "2026-10-17T07:19:24Z",
   "skill:v01d-fixes": "2026-10-17T07:19:24Z",
   "skill:video": "2026-10-17T07:19:24Z",
