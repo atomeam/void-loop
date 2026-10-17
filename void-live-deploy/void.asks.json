@@ -1297,6 +1297,11 @@
       "words": "Implement a 'skill-confidence' visualizer on the self card using color intensity to represent the evidence rating (proven/checked/tested) of my active skills.",
       "ledgerAt": "2026-10-17T08:27:38Z",
       "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
+    },
+    {
+      "words": "Create a 'skill-confidence' visualizer on the self card to show my internal reliability ratings.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
     }
   ]
 }
