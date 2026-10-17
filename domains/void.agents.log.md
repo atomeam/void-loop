@@ -828,3 +828,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T11:22:17Z | claude | fix | event-countdown given the Time family (families.json, guide.json, deps.json regenerated); main's families and book checks were red from #1025
 2026-10-17T11:31:49Z | claude | fix | card stats load after the page is idle (void.html); site tester samples load and fps twice before filing (#1022 #1024 #1026 #1028); same 1-2 fps locally on this morning's main, so no regression
 2026-10-17T11:34:30Z | claude | fix | event countdown reads the lead and the infobox release line when the summary has no date (the owner's live GTA VI card)
+2026-10-17T11:36:41Z | claude | fix | Art Forge retries busy and rate-limited paints, skips loading-state subjects (D1 void_art had 3 rows: incident autopsy, rt, looking)
