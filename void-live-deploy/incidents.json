@@ -2,20 +2,18 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T01:22:08.303Z",
-   "sha": "e5688fc9e2919ce00da1cbf24b5111aa87309b32",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38989874463",
+   "at": "2026-10-17T01:22:38.589Z",
+   "sha": "234ea5bb88f830f511f53bba8550518f621f1fdc",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38989616455",
    "suite": "browser suite on main",
    "checks": [
-    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
-    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
-    "V01D card game: an attack is played out and written in the log"
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-17T01:11:48.563Z",
-   "sha": "fdcd6be3155250be8f3660c4d0bf7797a0c37ed6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38988734705",
+   "at": "2026-10-17T01:05:34.323Z",
+   "sha": "f8a5597fa9ccd76134c4485e5b97a9c0671269f8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38988239214",
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
