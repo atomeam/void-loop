@@ -16,7 +16,14 @@ import { APPEND_JSON, APPEND_TEXT, INDEX, keyOf } from './records.mjs'; // the a
 const sh = (c) => execSync(c, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] }).trim();
 
 sh('git fetch -q origin main');
-try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no conflicts)'); process.exit(0); } catch (_) {}
+// the families and the book are generated from the tree: after a merge they are written again, and committed if the text moved (two branches that each added a skill leave both stale without a conflict)
+const GENERATED = ['void-live-deploy/skills/families.json', 'void-live-deploy/skills/guide.json'];
+function regen() {
+  if (!existsSync(resolve(process.cwd(), 'tools', 'guide.mjs'))) return;
+  for (const t of ['families.mjs', 'guide.mjs']) { try { execFileSync(process.execPath, [resolve(process.cwd(), 'tools', t)], { stdio: 'ignore' }); } catch (e) { console.error('tools/' + t + ' failed after the merge (' + (e.status || e.message) + '): the check will say why'); } }
+  try { sh(`git add ${GENERATED.join(' ')}`); if (sh('git diff --cached --name-only')) { sh('git commit -q -m "Regenerate the families and the book after the merge"'); console.log('regenerated families.json and guide.json'); } } catch (_) {}
+}
+try { sh('git merge --no-edit origin/main'); console.log('merged origin/main (no conflicts)'); regen(); process.exit(0); } catch (_) {}
 
 const conflicted = sh('git diff --name-only --diff-filter=U').split('\n').filter(Boolean);
 const sideOf = (n, f) => { try { return execFileSync('git', ['show', `:${n}:${f}`], { encoding: 'utf8' }); } catch (_) { return ''; } };
@@ -33,11 +40,14 @@ if (conflicted.includes(INDEX)) {
       indexMerged = indexText(readOrder(order)); indexHow = 'regenerated from skills/order/' + (made.length ? ' after making ' + made.join(', ') + ' for the names listed by hand' : ' (both sides\' order files are in the tree)');
     } else if (m) { indexMerged = JSON.stringify(m) + (sideOf(3, INDEX).endsWith('\n') ? '\n' : ''); indexHow = "kept main's order and added this branch's new skills after the name before them"; }
   } catch (e) { console.error('skills/index.json: ' + e.message); } }
-const other = conflicted.filter((f) => !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && !(f === INDEX && indexMerged !== null));
+// generated files (families, the book): take main's here, regen() writes them again from the merged tree after the commit
+for (const f of conflicted.filter((x) => GENERATED.includes(x))) { sh(`git checkout --theirs -- ${f}`); sh(`git add ${f}`); }
+const other = conflicted.filter((f) => !GENERATED.includes(f) && !APPEND_JSON.includes(f) && !APPEND_TEXT.includes(f) && !(f === INDEX && indexMerged !== null));
 if (other.length) { console.error('conflicts need a person: ' + other.join(', ') + ' (merge left in progress)'); process.exit(1); }
 
 const side = (n, f) => { try { return execSync(`git show :${n}:${f}`, { encoding: 'utf8' }); } catch (_) { return ''; } };
 for (const f of conflicted) {
+  if (GENERATED.includes(f)) continue; // settled above, written again by regen()
   if (f === INDEX) {
     writeFileSync(f, indexMerged);
     console.log(`${f}: ${indexHow} (${JSON.parse(indexMerged).length} total)`);
@@ -65,4 +75,5 @@ for (const f of conflicted) {
 const marked = sh('git ls-files').split('\n').filter(Boolean).filter((f) => { try { const t = existsSync(f) ? readFileSync(f, 'utf8') : ''; return !t.includes('\0') && conflictMarkers(t).length; } catch (_) { return false; } });
 if (marked.length) { console.error('conflict markers left in: ' + marked.join(', ') + ' (merge left in progress, nothing committed)'); process.exit(1); }
 sh('git commit -q --no-edit');
+regen();
 console.log('merged origin/main; resolved ' + conflicted.join(', '));
