@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T06:16:14.382Z",
+   "sha": "e2e2b7562b98bf7053b3d8b56cf1087b07936197",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39008283567",
+   "suite": "browser suite on main",
+   "checks": [
+    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
+   ]
+  },
+  {
    "at": "2026-10-17T03:10:05.058Z",
    "sha": "3f81b55361e943ed0521432ebec85c8bfef3878c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38996768631",
@@ -300,15 +309,6 @@
    "checks": [
     "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
     "suite ran to the end"
-   ]
-  },
-  {
-   "at": "2026-10-16T04:41:49.647Z",
-   "sha": "60e2e47f458e091b3b25dc138c79ef076924518a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38849503818",
-   "suite": "browser suite on main",
-   "checks": [
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
    ]
   }
  ]
