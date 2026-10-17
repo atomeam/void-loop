@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 419,
+ "counted": 423,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -39,6 +39,12 @@
    "dependants": 8
   },
   {
+   "file": "lib/state.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 17
+  },
+  {
    "file": "lib/skyask.js",
    "skills": 7,
    "direct": 6,
@@ -49,6 +55,12 @@
    "skills": 6,
    "direct": 3,
    "dependants": 8
+  },
+  {
+   "file": "lib/ladder.js",
+   "skills": 5,
+   "direct": 3,
+   "dependants": 14
   },
   {
    "file": "lib/hero-view.js",
@@ -1744,6 +1756,29 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/ladder.js": {
+   "imports": [
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/growth.js",
+    "skills/pong.js",
+    "skills/snake.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
   "lib/learn.js": {
    "imports": [
     "lib/actions.js",
@@ -2431,6 +2466,30 @@
    "reachedBy": [
     "skills/sky.js",
     "skills/time.js"
+   ]
+  },
+  "lib/state.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/ladder.js",
+    "skills/memory.js",
+    "skills/state.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/mini/growthtree.js",
+    "skills/pong.js",
+    "skills/showcase.js",
+    "skills/snake.js"
    ]
   },
   "lib/store-db.js": {
@@ -3216,6 +3275,7 @@
   "skills/growth.js": {
    "imports": [
     "lib/probe-log.js",
+    "lib/ladder.js",
     "lib/better.js",
     "skills/growth-tree.js"
    ],
@@ -3363,6 +3423,10 @@
    ],
    "importedBy": []
   },
+  "skills/know.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/label.js": {
    "imports": [
     "skills/layer.js",
@@ -3486,7 +3550,8 @@
   },
   "skills/memory.js": {
    "imports": [
-    "skills/live.js"
+    "skills/live.js",
+    "lib/state.js"
    ],
    "importedBy": []
   },
@@ -3902,7 +3967,8 @@
    "imports": [
     "skills/pong-rules.js",
     "skills/arcade-card.js",
-    "lib/arcade-ghost.js"
+    "lib/arcade-ghost.js",
+    "lib/ladder.js"
    ],
    "importedBy": []
   },
@@ -4309,7 +4375,8 @@
    "imports": [
     "skills/snake-rules.js",
     "skills/arcade-card.js",
-    "lib/arcade-ghost.js"
+    "lib/arcade-ghost.js",
+    "lib/ladder.js"
    ],
    "importedBy": []
   },
@@ -4354,6 +4421,12 @@
   },
   "skills/sport.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/state.js": {
+   "imports": [
+    "lib/state.js"
+   ],
    "importedBy": []
   },
   "skills/status.js": {
