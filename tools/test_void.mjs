@@ -3548,6 +3548,20 @@ try {
         && !!card && /On this device: \d+ of \d+ skills have answered here/.test(card.dead) && /kept in this browser only and never sent/.test(card.dead) && card.used.some((u) => u === 'not used here yet') && card.used.some((u) => /^last used here today$/.test(u)) && !F.errors.length,
       JSON.stringify({ written, card: card && { dead: card.dead, used: card.used.slice(0, 4) }, errors: F.errors }));
     await F.ctx.close(); }
+  // incident autopsy (asked by Void): the card reads the site's own incidents.json and says which skill family has the most failing checks recorded
+  if (want('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped')) { const F = await fresh({ phone: true });
+    const real = JSON.parse(fs.readFileSync(path.join(root, 'incidents.json'), 'utf8')).incidents;
+    await F.ask('incident autopsy', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 8000);
+    const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
+    check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
+      !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
+        && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
+    await F.ctx.close(); }
   // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
   // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
