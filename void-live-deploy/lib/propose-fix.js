@@ -44,7 +44,11 @@ export function jobAsk(job) {
   if (!m) return null;
   const w = /\(wanted ([^)]+)\)/.exec(String(job.note || ''));
   const skill = w ? skillOf(w[1]) : null;
-  return skill ? { ask: m[1], skill, want: w[1], mode: 'learn' } : null;
+  if (skill) return { ask: m[1], skill, want: w[1], mode: 'learn' };
+  // a missed ask (lib/learn.js, target miss:<slug>) that the router says a skill should have caught: "router skill:rides 0.78" in its note
+  // is a propose-fix job too (asked by Void: the missed asks are a structured queue that creates the propose-fix job by itself)
+  const r = /\brouter skill:([a-z][a-z0-9_-]{1,24})\b/.exec(String(job.note || ''));
+  return r && /^miss:/.test(String(job.target || '')) ? { ask: m[1], skill: r[1], want: 'skill:' + r[1], mode: 'learn' } : null;
 }
 
 /** The skill file a want names: the first alternative that is a skill (skill:<name>), else a bare word that is one. */
@@ -105,6 +109,26 @@ export function evidenceOf(source, edits, skill) {
 }
 /** the evidence in a few words: "void-live-deploy/skills/rides.js lines 42, 57". Pure. */
 export const whereOf = (ev) => (ev && ev.length ? ev[0].file + (ev.length > 1 ? ' lines ' : ' line ') + ev.map((e) => e.line).join(', ') : '');
+
+/** how much a proposal changes (asked by Void: "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of
+ * high-impact structural changes"): { level: 'low'|'medium'|'high', why }. Worked out here from the edits and the source, never from what the
+ * model says about itself. low: only the examples or nearMisses lists, or one short addition to a pattern. medium: several pattern edits, a long
+ * one, or one that removes more than it keeps. high: an edit on a structural line (an export, import, function, run(), stageKinds, the skill's
+ * name, or a bare closing bracket), which is more than a matcher change and wants the owner's eyes. Pure. */
+export const RISK_LEVELS = ['low', 'medium', 'high'];
+const STRUCTURAL = /^\s*(?:export\b|import\b|async\s+function\b|function\b|class\b|run\s*[(:]|async\s+run\b|stageKinds\b|name\s*:|[\]})]+[,;)]*\s*$)/;
+const LISTY = /\b(?:examples|nearMisses)\s*:/;
+export function riskOf(edits) {
+  const list = Array.isArray(edits) ? edits : [];
+  if (!list.length) return { level: 'low', why: 'no line changes' };
+  const hit = list.find((e) => STRUCTURAL.test(String(e.find || '')));
+  if (hit) return { level: 'high', why: 'it changes a structural line (' + String(hit.find).trim().slice(0, 40) + '), not only the matcher' };
+  const pat = list.filter((e) => !LISTY.test(String(e.find || '')));
+  if (!pat.length) return { level: 'low', why: 'only the examples or nearMisses lists change' };
+  const long = pat.some((e) => String(e.replace || '').length > 240), shrinks = pat.some((e) => String(e.replace || '').length < String(e.find || '').length * 0.6);
+  if (pat.length > 1 || long || shrinks) return { level: 'medium', why: pat.length > 1 ? pat.length + ' pattern lines change' : long ? 'a long pattern replacement' : 'a pattern line loses more than it keeps' };
+  return { level: 'low', why: 'one short change to one pattern line' };
+}
 
 const occurrences = (s, sub) => { let n = 0, i = 0; while ((i = s.indexOf(sub, i)) >= 0) { n++; i += sub.length; if (n > 1) break; } return n; };
 
