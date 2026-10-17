@@ -243,6 +243,25 @@ function boxOf(root, t) {
   if (!el) return null;
   return { el, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 };
 }
+// Ghosting on restore (asked by Void, twice: "a 'visual ghosting' effect for labels and arrows during stage restoration to make memory recovery
+// feel intentional"): the first time labels and arrows are drawn in the moments after a page load, they come back as ghosts (faint, blurred,
+// dashed) and settle solid over about a second. Anything labelled later in the visit appears at once. Nothing moves under reduced motion.
+export const GHOST_WINDOW_MS = 6000, GHOST_MS = 1100;
+let ghostAt = null; // when the restore's ghosts began (performance.now()), or -1 once decided there is none
+const GHOST_CSS = '@keyframes void-ghost-in{from{opacity:.12;filter:blur(2px)}to{opacity:1;filter:none}}'
+  + '.void-ghost{animation:void-ghost-in ' + GHOST_MS + 'ms ease-out both}.void-arrows.void-ghost line{stroke-dasharray:4 5}'
+  + '@media (prefers-reduced-motion:reduce){.void-ghost{animation:none}.void-arrows.void-ghost line{stroke-dasharray:none}}';
+/** true while a page is still restoring its stage: the first drawing of annotations within GHOST_WINDOW_MS of load. Pure. */
+export const restoring = (sinceLoadMs, already) => !already && sinceLoadMs >= 0 && sinceLoadMs < GHOST_WINDOW_MS;
+function ghost(root) {
+  const now = typeof performance !== 'undefined' ? performance.now() : Infinity;
+  const nodes = [...root.querySelectorAll('.void-annot, .void-label')]; if (!nodes.length || ghostAt === -1) return;
+  if (ghostAt === null) { if (!restoring(now, false)) { ghostAt = -1; return; } ghostAt = now;
+    if (!document.getElementById('void-ghost-css')) { const st = document.createElement('style'); st.id = 'void-ghost-css'; st.textContent = GHOST_CSS; document.head.appendChild(st); }
+    setTimeout(() => { ghostAt = -1; for (const n of root.querySelectorAll('.void-ghost')) n.classList.remove('void-ghost'); }, GHOST_MS + 150); }
+  // a redraw during the fade (decorate draws the annotations afresh) carries on from where the fade is, never from the start
+  for (const n of nodes) { n.classList.add('void-ghost'); n.style.animationDelay = -Math.round(now - ghostAt) + 'ms'; }
+}
 export function decorate(st) {
   if (st && st.things) lastStage = st;
   const root = st && st.stage;
@@ -290,6 +309,7 @@ export function decorate(st) {
     tag.style.cssText = 'position:absolute;left:' + B.x + 'px;top:' + Math.max(0, B.y - 20) + 'px;font-size:11px;letter-spacing:.04em;color:var(--muted, rgba(255,255,255,0.6));pointer-events:none;white-space:nowrap;max-width:240px;overflow:hidden;text-overflow:ellipsis';
     root.appendChild(tag);
   }
+  ghost(root);
 }
 
 // A free-floating label: just the words on the stage, draggable and throwable like anything else.

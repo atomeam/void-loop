@@ -985,13 +985,19 @@ try {
     const undone = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
     // wait for the restored stage itself, not a fixed 900 ms: in the suite the stage was still empty then (red on main since 11:21 on 2026-10-17,
     // the same as the convert card's reload check); the arrows are drawn once their things are back
+    // asked by Void: the restored labels and arrows come back as ghosts that settle solid; count the most ghosts seen at once during the restore
+    await L.p.addInitScript(() => { window.__ghosts = 0; const look = () => { window.__ghosts = Math.max(window.__ghosts, document.querySelectorAll('.void-ghost').length); };
+      new MutationObserver(look).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] }); });
     await L.p.reload(); await until(async () => (await L.p.$$eval('#stage > [data-id]', (es) => es.length)) >= 4 && (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) >= 1, 8000).catch(() => {});
+    await L.p.waitForTimeout(1500); const ghosts = await L.p.evaluate(() => ({ seen: window.__ghosts, left: document.querySelectorAll('.void-ghost').length }));
     const kept = (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) === 1 && (await L.p.$$eval('.void-tag', (es) => es.length)) === 2 && (await L.p.$$eval('.void-label', (es) => es.map((e) => e.textContent).join())) === 'to do';
     await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
     const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
     check('label: "label the clock kitchen" and "label the note groceries" tag them, "draw an arrow from kitchen to the timer" joins them and the arrow follows the clock when it is dragged, a free label "to do" takes an arrow, "undo" takes the last arrow back, all of it survives a reload, and "remove the arrows" / "remove the labels" clear them',
       tags === 'groceries,kitchen' && /drew an arrow/.test(said) && placed && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
       JSON.stringify({ tags, said, placed, l1, l2, two, undone, kept, clean, e: L.errors }));
+    check('label (asked by Void): after a reload the restored labels and arrows come back as ghosts (faint, then solid) and none is left ghosted a second later',
+      ghosts.seen >= 3 && ghosts.left === 0, JSON.stringify(ghosts));
     await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   if (want("Public Voids: \"publish my void as @name\" puts a paid Void's look and kept cards (as text) ")) { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
