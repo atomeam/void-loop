@@ -9,7 +9,7 @@
  },
  "totals": {
   "experiment": 2,
-  "tested": 52,
+  "tested": 53,
   "checked": 23,
   "proven": 85
  },
@@ -1084,7 +1084,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 6,
     "checked": 3,
     "proven": 7
    },
@@ -1209,6 +1209,13 @@
      "why": "a self-test",
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "type-filter",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -1263,8 +1270,8 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 37 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 13 browser-suite mentions, 37 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1
     },

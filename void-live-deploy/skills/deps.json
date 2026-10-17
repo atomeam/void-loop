@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 413,
+ "counted": 416,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -115,6 +115,12 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3
+  },
+  {
+   "file": "lib/arcade-ghost.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
   },
   {
    "file": "lib/cook-flow.js",
@@ -280,6 +286,12 @@
   },
   {
    "file": "lib/rules-play.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/tome-search.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1167,6 +1179,13 @@
    ],
    "importedBy": [
     "functions/api/approval.js"
+   ]
+  },
+  "lib/arcade-ghost.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pong.js",
+    "skills/snake.js"
    ]
   },
   "lib/arena-say.js": {
@@ -2426,6 +2445,12 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/tome-search.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
+   ]
+  },
   "lib/tome.js": {
    "imports": [
     "lib/guide.js"
@@ -3193,6 +3218,7 @@
   "skills/guide.js": {
    "imports": [
     "lib/guide.js",
+    "lib/tome-search.js",
     "lib/tome.js"
    ],
    "importedBy": []
@@ -3809,7 +3835,8 @@
   "skills/pong.js": {
    "imports": [
     "skills/pong-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
@@ -4211,7 +4238,8 @@
   "skills/snake.js": {
    "imports": [
     "skills/snake-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
@@ -4375,6 +4403,10 @@
    "imports": [
     "lib/ask-text.js"
    ],
+   "importedBy": []
+  },
+  "skills/type-filter.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/util.js": {
