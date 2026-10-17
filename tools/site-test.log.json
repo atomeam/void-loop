@@ -992,5 +992,13 @@
   "kind": "file",
   "key": "what can I buy | load # ms > #",
   "note": "fix: \"what can I buy\" load 1244 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:28:39Z",
+  "passed": 14,
+  "of": 25,
+  "kind": "file",
+  "key": "test me on that | nothing appeared",
+  "note": "fix: \"test me on that\" nothing appeared"
  }
 ]

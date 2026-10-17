@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 132,
+ "runsTotal": 133,
  "kinds": {
   "grow": 15,
-  "file": 63,
+  "file": 64,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:28:39Z",
+   "passed": 14,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"test me on that\" nothing appeared"
+  },
   {
    "at": "2026-10-17T11:23:07Z",
    "passed": 13,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:31:36Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -238,9 +238,9 @@
   "skill:print-download": "2026-10-17T11:17:08Z",
   "skill:print-file": "2026-10-17T11:23:07Z",
   "skill:printedmotor": "2026-10-17T11:23:07Z",
-  "skill:proposal": "2026-10-16T16:59:40Z",
-  "skill:quiz": "2026-10-16T16:59:40Z",
-  "skill:rebuild-map": "2026-10-16T17:30:08Z",
+  "skill:proposal": "2026-10-17T11:28:39Z",
+  "skill:quiz": "2026-10-17T11:28:39Z",
+  "skill:rebuild-map": "2026-10-17T11:28:39Z",
   "skill:recent": "2026-10-16T17:30:08Z",
   "skill:recipe": "2026-10-16T17:30:08Z",
   "skill:releasenotes": "2026-10-16T18:09:42Z",
