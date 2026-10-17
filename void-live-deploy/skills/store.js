@@ -35,7 +35,7 @@ function runPreview(text, api) {
 }
 
 
-const SUPPORT = /^(?:tip|tips?\s+(?:jar|void|v01d)|tip\s+(?:the\s+)?(?:dev|devs|crew|team|builders?)|buy|buy something|pricing|prices|price list|(?:your |the )?pricing|support (?:void|v01d|the crew|you|this)|how (?:can|do) i support (?:you|void|v01d)|donate|back (?:void|v01d)|what can i buy(?: here)?)\s*[?!.]*$/i;
+const SUPPORT = /^(?:tip|tips?\s+(?:jar|void|v01d)|tip\s+(?:the\s+)?(?:dev|devs|crew|team|builders?)|buy|buy something|pricing|prices|price list|(?:your |the )?pricing|support (?:void|v01d|the crew|you|this)|how (?:can|do) i support (?:you|void|v01d)|donate|back (?:void|v01d)|what can i buy(?: here)?|(?:how (?:do|can) i )?join (?:the )?(?:void|v01d)|subscribe to (?:void|v01d)|become a (?:member|subscriber)|sign me up|(?:get|buy) (?:me )?(?:a|my own) (?:custom )?(?:void|v01d))\s*[?!.]*$/i; // "join v01d" answered a Marvel character (owner's pasted card, 2026-10-17)
 const WHEN = /^(?:so\s+)?(?:what|which)\s+(?:things?\s+)?(?:can|could)\s+i\s+(?:buy|purchase|get|order)(?:\s+(?:from|here|on|at)\s+(?:you|void|v01d|here|this site))?(?:\s+(?:here|from you|today|now))?\s*\??$|^(?:open|show|go to|take me to)?\s*(?:the\s+)?(?:v01d|void)?\s*(?:store|shop)\s*$|^(?:do you have|is there)\s+a\s+(?:store|shop)\s*\??$|^(?:what'?s|what is)\s+(?:in|for sale in)\s+(?:the|your)\s+(?:store|shop)\s*\??$/i;
 export const storeAsk = (text) => { const t = String(text || '').trim().replace(/\s+/g, ' '); return SUPPORT.test(t) || WHEN.test(t); };
 
@@ -52,8 +52,8 @@ function run(text, api) {
 
 export default {
   name: 'store',
-  examples: ["what's new in the store", 'store preview', 'new products', 'what can i buy', 'tip', 'buy', 'pricing', 'support void', 'open the store', 'do you have a shop'],
-  nearMisses: ['what can i buy with bitcoin', 'what can i buy for $20 at costco', 'store this note', 'grocery store near me', 'what do you sell', '20% tip on 45', 'buy milk', 'pricing for aws lambda'],
+  examples: ["what's new in the store", 'store preview', 'new products', 'what can i buy', 'tip', 'buy', 'pricing', 'support void', 'open the store', 'do you have a shop', 'join v01d', 'subscribe to v01d', 'get my own void'],
+  nearMisses: ['what can i buy with bitcoin', 'what can i buy for $20 at costco', 'store this note', 'grocery store near me', 'what do you sell', '20% tip on 45', 'buy milk', 'pricing for aws lambda', 'join the avengers', 'subscribe to pewdiepie'],
   match(lower, text) { return storeAsk(text) || previewAsk(text); },
   run,
   suite() { return { ok: previewAsk("what's new in the store") && slides().every((x) => !x.buy || /^https:\/\/moonbeam846\.gumroad\.com\//.test(x.buy)) && storeAsk('what can i buy') && storeAsk('open the store') && !storeAsk('store this note') && !storeAsk('what can i buy with bitcoin') }; },

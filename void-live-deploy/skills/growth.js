@@ -371,14 +371,29 @@ export function testerRows(j) {
   return ((j && j.runs) || []).slice(0, 10).map((r) => ({ when: String(r.at).replace('T', ' ').replace(/:\d\dZ$/, ' UTC'), score: r.passed + ' of ' + r.of, ok: r.passed === r.of, kind: r.kind, note: r.note }));
 }
 
+/** Void asked (2026-10-17): "a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest
+ *  what to test next". The same evidence as the friction line (failing first, then the least checked), each with one of the skill's own
+ *  asks from the book (skills/guide.json) to type, so a tap tests it. [{ name, family, tier, failing, ask }]. Pure. */
+export const GUIDE_URL = '/skills/guide.json';
+export function testCandidates(fam, guide, show = 5) {
+  const pages = new Map(((guide && guide.pages) || []).filter((p) => p && p.kind === 'skill' && p.name).map((p) => [p.name, p]));
+  return friction(fam, 50).top.map((s) => {
+    const ex = (pages.get(s.name) || {}).examples || [];
+    return { name: s.name, family: s.family, tier: s.tier, failing: s.failing ? s.failing.length : 0, ask: String(ex[ex.length - 1] || '') };
+  }).filter((c) => c.ask).slice(0, show);
+}
+
 function runTester(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>What my site tester checks</h2><div class="sub">reading the log…</div>'; });
-  fetch('/tester-log.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((j) => {
+  const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+  Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL)]).then(([j, fam, guide]) => {
     if (!el) return;
-    const R = testerRows(j);
+    const R = testerRows(j), C = testCandidates(fam, guide);
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
-      (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>');
+      (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
+      (C.length ? '<h3 style="margin:12px 0 4px">What to test next</h3><div class="sub">My lowest-rated skills (skills/families.json): failing first, then the least checked. Tap one to test it now.</div><ol class="st-candidates" style="padding-left:20px">'
+        + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '');
   });
   return 'growth';
 }

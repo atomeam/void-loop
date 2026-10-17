@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T12:49:27.629Z",
+   "sha": "bf44047dedeaa256c159c6700e10a6fd8a2c64c3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39032880397",
+   "suite": "browser suite on main",
+   "checks": [
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T12:30:16.619Z",
+   "sha": "d2ffd1eae00e779c478f001e8058d765454159ef",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39031857641",
+   "suite": "browser suite on main",
+   "checks": [
+    "convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; \"temperature converter\" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, \"a converter for 5 miles to km\" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and \"close the converter\" puts it away",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T12:00:48.580Z",
    "sha": "0c58190c01f42d867df8f94e556461e88e60100d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39029816697",
@@ -279,31 +299,6 @@
     "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
     "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
     "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-16T22:18:30.384Z",
-   "sha": "8cd1733bd5a22ef1d874631b1cf9011e30acb50c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38973535170",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-16T21:24:15.042Z",
-   "sha": "da84e17cd479cc40833feebb5458fce37c6c5c5a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38966835942",
-   "suite": "browser suite on main",
-   "checks": [
-    "list: \"how many days until friday\" counts to the next Friday; \"what day is it in Tokyo\" shows the day there; \"time difference between London and Tokyo\" says the gap in words; none reach Wikipedia, the miss board or the calendar",
-    "an open card never buries a stage thing: a sticky in the middle steps aside when \"how good are you at othello\" opens (none of it under the card, on a desktop, on a phone, and on a desktop 20x slower while the card opens), comes back to the same spot when the card closes, and where it was put is never changed or saved over",
-    "\"growth\": touching a branch says what Void asked for that it built (asked by Void: \"link the growth card branches to the growth inbox\"), matched by the entry that built it",
-    "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch",
-    "\"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as new leaves)"
    ]
   }
  ]

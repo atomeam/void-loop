@@ -116,6 +116,18 @@ export function toPng(svg, scale = 1) {
   });
 }
 
+/** where a picture of iw x ih goes in a w x h frame (owner, 2026-10-17: "it needs to center the card pictures better", a Sentry card whose
+ *  tall figure lost its head to the crop). A near fit fills the frame, centred, a little high (faces sit near the top); one whose shape is
+ *  far from the frame's would lose more than a quarter of itself, so it is shown whole and centred over a dimmed, blurred copy of itself
+ *  that fills the frame (as music and photo apps do). { fill: {x,y,w,h}, whole: {x,y,w,h} | null }. Pure. */
+export function picturePlan(iw, ih, w, h) {
+  const cover = Math.max(w / iw, h / ih), contain = Math.min(w / iw, h / ih);
+  const cw = iw * cover, ch = ih * cover, fill = { x: (w - cw) / 2, y: (h - ch) * 0.4, w: cw, h: ch };
+  if ((w * h) / (cw * ch) >= 0.75) return { fill, whole: null }; // at most a quarter cropped away: fill the frame
+  const ww = iw * contain, wh = ih * contain;
+  return { fill: { ...fill, y: (h - ch) / 2 }, whole: { x: (w - ww) / 2, y: (h - wh) / 2, w: ww, h: wh } };
+}
+
 /** the card's picture as a small JPEG data URL for the saved image, or '' (browser only). Only the https image already on the card is loaded, with
  *  crossOrigin 'anonymous'; when the site refuses (no CORS), the image fails or the canvas is tainted, it resolves '' and the card falls back to its plate. Never throws. */
 export function photoData(url, { w = 664, h = 440 } = {}) {
@@ -129,8 +141,9 @@ export function photoData(url, { w = 664, h = 440 } = {}) {
         clearTimeout(t);
         try {
           const c = document.createElement('canvas'); c.width = w; c.height = h; const g = c.getContext('2d');
-          const k = Math.max(w / img.naturalWidth, h / img.naturalHeight), dw = img.naturalWidth * k, dh = img.naturalHeight * k; // cover-fit, as the stage does
-          g.drawImage(img, (w - dw) / 2, (h - dh) * 0.35, dw, dh);
+          const { fill, whole } = picturePlan(img.naturalWidth, img.naturalHeight, w, h);
+          if (whole) { g.fillStyle = '#000'; g.fillRect(0, 0, w, h); g.filter ='blur(14px) brightness(0.45)'; g.drawImage(img, fill.x, fill.y, fill.w, fill.h); g.filter = 'none'; g.fillStyle = 'rgba(0,0,0,.35)'; g.fillRect(0, 0, w, h); g.drawImage(img, whole.x, whole.y, whole.w, whole.h); }
+          else g.drawImage(img, fill.x, fill.y, fill.w, fill.h);
           resolve(c.toDataURL('image/jpeg', 0.88)); // throws on a tainted canvas
         } catch (_) { resolve(''); }
       };
