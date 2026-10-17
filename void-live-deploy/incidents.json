@@ -2,12 +2,11 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:18:18.869Z",
-   "sha": "2d224e6a78b2ebd689df5040e90dd989b27eb120",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39026980689",
+   "at": "2026-10-17T11:18:25.832Z",
+   "sha": "fcc37df13510109cf8c453a17ee41e64c26fc4d8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39027017406",
    "suite": "browser suite on main",
    "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
    ]
