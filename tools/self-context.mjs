@@ -120,6 +120,8 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
   const skills = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/index.json'), 'utf8'));
+  // the games are one family now (skills/families.json), most of them no longer listed on their own in index.json: they count as skills here
+  try { const fam = JSON.parse(readFileSync(resolve(root, 'void-live-deploy/skills/families.json'), 'utf8')); for (const f of fam.families || []) if (f.id === 'games') for (const k of f.skills || []) if (!skills.includes(k.name)) skills.push(k.name); } catch (_) {}
   const minis = readdirSync(resolve(root, 'void-live-deploy/skills/mini')).filter((f) => /^[a-z0-9-]+\.js$/.test(f)).map((f) => f.slice(0, -3));
   const frontier = resolve(root, 'domains/void.frontier.md'), tank = resolve(root, 'domains/forethinkers/index.md');
   const tagteam = resolve(root, 'domains/handoff.md');
