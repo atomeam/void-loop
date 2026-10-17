@@ -9,7 +9,7 @@
 // It uses no key and does not raise the cap: /api/card-art is public by design and bounded on the server.
 import { readFileSync, readdirSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { subjectKey, refusal } from '../void-live-deploy/lib/art-rules.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -36,22 +36,24 @@ export function plan(list) {
 export const daysLeft = (left, cap = DAILY_CAP) => Math.ceil(left / Math.max(1, cap));
 
 const base = () => process.env.VOID_URL || 'https://a-to-mind.com';
-async function painted(k) { try { const j = await (await fetch(base() + '/api/card-art?key=' + encodeURIComponent(k) + '&kind=skill')).json(); return j.state === 'art' ? 1 : j.state === 'none' ? 0 : -1; } catch (_) { return -1; } }
+async function painted(k) { try { const j = await (await fetch(base() + '/api/card-art?key=' + encodeURIComponent(k) + '&kind=skill', { signal: AbortSignal.timeout(30000) })).json(); return j.state === 'art' ? 1 : j.state === 'none' ? 0 : -1; } catch (_) { return -1; } }
 async function main() {
   const a = process.argv.slice(2), has = (f) => a.includes(f), fi = a.indexOf('--file'), mi = a.indexOf('--max');
+  if (fi >= 0 && (!a[fi + 1] || a[fi + 1].startsWith('--'))) { console.error('usage: node tools/prepaint-art.mjs --file subjects.txt (one subject per line)'); process.exitCode = 2; return; }
   const list = known().concat(fi >= 0 ? readFileSync(a[fi + 1], 'utf8').split('\n') : []);
   const { out, dropped } = plan(list), max = mi >= 0 ? Math.max(1, +a[mi + 1] || 10) : 10;
   console.log(out.length + ' cards to paint' + (dropped.length ? ', ' + dropped.length + ' left as they are (' + dropped.map((d) => d.join(': ')).join('; ') + ')' : ''));
   if (has('--dry')) { console.log(out.join('\n')); return; }
   const todo = []; let done = 0, unknown = 0;
-  for (const k of out) { const r = await painted(k); if (r === 1) done++; else if (r === 0) todo.push(k); else { unknown++; todo.push(k); } }
+  for (const k of out) { const r = await painted(k); if (r === 1) done++; else if (r === 0) todo.push(k); else { unknown++; todo.push(k); } } // void-review: ok (sequential on purpose: one painted card per request keeps the daily free-allowance cap)
   console.log(done + ' of ' + out.length + ' cards painted; ' + todo.length + ' left' + (unknown ? ' (' + unknown + ' unreadable, counted as left)' : '') + '; about ' + daysLeft(todo.length) + ' day(s) at the cap of ' + DAILY_CAP + ' a day');
   if (!has('--go')) return;
   let n = 0;
   for (const k of todo) {
     if (n >= max) break;
     for (let tries = 0; tries < 4; tries++) {
-      const r = await fetch(base() + '/api/card-art', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: k, kind: 'skill', rarity: 'common' }) });
+      const r = await fetch(base() + '/api/card-art', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: k, kind: 'skill', rarity: 'common' }), signal: AbortSignal.timeout(30000) }).catch(() => null); // void-review: ok (sequential on purpose: one painted card per request keeps the daily free-allowance cap)
+      if (!r) { console.log('skip  ' + k + ' (unknown: no answer in 30s, retry later)'); break; }
       const j = await r.json().catch(() => ({}));
       if (j.state === 'art') { if (!j.cached) n++; console.log((j.cached ? 'had   ' : 'paint ') + k); break; }
       if (j.why === 'slow') { await new Promise((ok) => setTimeout(ok, 21000)); continue; }
@@ -61,4 +63,4 @@ async function main() {
   }
   console.log('done: ' + n + ' painted this run; rerun tomorrow for the rest');
 }
-if (import.meta.url === 'file://' + process.argv[1]) main();
+if (process.argv[1] && import.meta.url === pathToFileURL(resolve(process.argv[1])).href) main();
