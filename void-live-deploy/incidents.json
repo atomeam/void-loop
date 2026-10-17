@@ -2,9 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T01:38:27.644Z",
-   "sha": "b7e9acb3783348e447453b20497704394a531742",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38990991982",
+   "at": "2026-10-17T01:46:05.148Z",
+   "sha": "118d5ecd09e74f34bfe1b7f5498a22c4a289dd06",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38991612642",
+   "suite": "browser suite on main",
+   "checks": [
+    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
+    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
+    "V01D card game: an attack is played out and written in the log",
+    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
+    "the growth card shows friction (asked by Void): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
+    "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:36:31.627Z",
+   "sha": "0df15c6da0c03acbeca6ee7452b9e7040d2fb2bb",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990834200",
    "suite": "browser suite on main",
    "checks": [
     "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
@@ -15,12 +29,15 @@
    ]
   },
   {
-   "at": "2026-10-17T01:27:28.829Z",
-   "sha": "e5688fc9e2919ce00da1cbf24b5111aa87309b32",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38989874463",
+   "at": "2026-10-17T01:24:48.468Z",
+   "sha": "bd7f504510a350c327ec77f894a409063d5942ca",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990100933",
    "suite": "browser suite on main",
    "checks": [
-    "check timeout: no check finished within 300 s"
+    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
+    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
+    "V01D card game: an attack is played out and written in the log",
+    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device"
    ]
   },
   {
@@ -296,15 +313,6 @@
    "checks": [
     "3d: closed cases and a phone: the clock and stopwatch backs are as wide as their cases and sit on their rear edge; on a touch screen a card with a miniature draws no filter shadow, a drag draws at 1x and sharpens after, and the clock redraws at most 8 times a second",
     "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-15T22:21:41.148Z",
-   "sha": "2f47d5a6ed21f6687f95e2bb3bfe4cccd208e726",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38813260228",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"my calendar\" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card"
    ]
   }
  ]
