@@ -2376,7 +2376,8 @@ say('nothing selected to remove');
     }
     // Void's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
     function wantsVoice(lower) {
-      return /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|void'?s\s+|v01d'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
+      const a = /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|void'?s\s+|v01d'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
+      return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b.*)\s*[?.!]*$/.test(lower);
     }
     async function showVoice() {
       const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
@@ -2415,8 +2416,10 @@ say('nothing selected to remove');
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
         + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div>';
-      el.innerHTML = h + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      el.innerHTML = h + '<div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
       if (owner) talkBack(el, owner, list[0].at);
+      // how sure I am of each skill (asked by Void, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
+      Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.confidenceHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: confidenceHtml escapes every name with esc
     }
     async function talkBack(el, owner, to) {
       const talk = el.querySelector('[data-v-talk]'), box = el.querySelector('[data-v-reply]'), send = el.querySelector('[data-v-send]');
@@ -4096,9 +4099,9 @@ say('nothing selected to remove');
     function showSharedCard(sc) {
       currentAsk = sc.t;
       const el = showPage((p) => {
-        p.dataset.cardKind = 'Answer';
+        p.dataset.cardKind = 'Answer'; p.dataset.cardVersion = String(sc.n || 1);
         p.innerHTML = '<h2>' + esc(sc.t) + '</h2>' + String(sc.b || '').split(/\n{2,}/).filter(Boolean).map((x) => '<p>' + esc(x) + '</p>').join('')
-          + '<div class="src">brought back from a copied V01D card' + (sc.src.length ? ' · Source: ' + sc.src.map((s, i) => (s.u ? '<a href="' + esc(s.u) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.t) + '</a>' : esc(s.t))).join(' · ') : '') + '</div>'; // void-review: ok: every field escaped, links https only
+          + '<div class="src">brought back from a copied V01D card' + (sc.n ? ' (copy ' + sc.n + ')' : '') + (sc.src.length ? ' · Source: ' + sc.src.map((s, i) => (s.u ? '<a href="' + esc(s.u) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.t) + '</a>' : esc(s.t))).join(' · ') : '') + '</div>'; // void-review: ok: every field escaped, links https only
       });
       say('');
       return el;
@@ -5546,7 +5549,7 @@ say('nothing selected to remove');
       let text = sr && sr !== sr0 ? sr.replace(/^added: /, 'Added: ') : whisper.textContent || '';
       if (pg) {
         const c = pg.cloneNode(true);
-        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea').forEach((n) => n.remove());
+        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea, [data-nospeak]').forEach((n) => n.remove());
         const said = (n) => (n.textContent || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
         c.querySelectorAll('h1, h2').forEach((n) => { if (said(n) === said({ textContent: ask })) n.remove(); else n.append('. '); }); // the ask itself is not read back
         c.querySelectorAll('li, tr').forEach((n) => n.append('. ')); c.querySelectorAll('p, div, h3, h4, br').forEach((n) => n.append(' '));

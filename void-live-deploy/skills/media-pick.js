@@ -1,0 +1,77 @@
+/**
+ * media-pick skill — "pick something to listen to", "pick a song", "pick something" (owner, 2026-10-17: the real-movie pick for music, shows, video and
+ * games too; "V01D should pick on its own ... when the ask names no kind or title"). lib/media.js says which kind the ask is for, or V01D chooses
+ * by the day; V01D suggests titles; each is looked up at /api/media (a real source); only a found one is shown as fact, as a card with its own art
+ * (the first https image on the card is the card frame's art). Music plays as the 30 s official preview in an <audio>; the full song links out.
+ * Movies are the movie skill's (skills/movie.js): a pick of kind movie runs that. Titles are untrusted: lib/media.js cleans them.
+ */
+import { pickKind, parseMusic, musicCardAsk, musicAskText, cleanTitle, MUSIC_FALLBACK } from '../lib/media.js';
+import { runPick as pickMovie } from './movie.js';
+
+const PROMPT = 'Suggest 5 well-loved songs for someone to listen to right now, a mix of eras and genres. Reply with only a numbered list, one per line, exactly like: 1. Song Title - Artist';
+const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
+const SRC = (esc) => '<div class="src">Source: iTunes Search API · V01D plays only the 30 s official preview; the full song is on Apple Music or wherever you listen</div>';
+const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
+
+async function lookup(m) {
+  try { const r = await fetch('/api/media?kind=music&title=' + encodeURIComponent(m.title) + '&artist=' + encodeURIComponent(m.artist || '')); if (!r.ok) return { verified: false, ...m }; return await r.json(); } catch (_) { return { verified: false, ...m }; }
+}
+/** the card of one song: art, facts, the 30 s preview, the links. Pure given a lookup result. */
+export function songCard(f, esc) {
+  if (!f.verified) return '<h2>' + esc(f.title) + (f.artist ? ' · ' + esc(f.artist) : '') + '</h2><p>Not verified: no source I check knows a song by this name, so I will not state anything about it.</p>';
+  const meta = [f.artist, f.album, f.year, f.genre].filter(Boolean).map(esc).join(' · ');
+  return art(f, esc) + '<h2>' + esc(f.title) + '</h2><div class="sub">' + meta + '</div>'
+    + '<div class="mv-player" style="margin:8px 0"></div>'
+    + (f.preview ? '<div class="mv-btns"><button class="g-btn md-preview" type="button">Play the 30-second preview</button></div><div class="sub">The official preview, from Apple. The full song is not streamed here.</div>' : '<div class="sub">No preview from the source: listen where it is sold or streamed legally.</div>')
+    + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>' + SRC(esc);
+}
+export function wire(el, f) {
+  const b = el.querySelector('.md-preview'), box = el.querySelector('.mv-player'); if (!b || !box) return;
+  b.addEventListener('click', () => { const a = document.createElement('audio'); a.controls = true; a.autoplay = true; a.src = f.preview; a.style.cssText = 'width:100%'; box.textContent = ''; box.append(a); });
+}
+async function runCard(m, api) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
+  el.dataset.artKind = 'Song';
+  const f = await lookup(m);
+  if (!api._pageStill(el)) return 'media-pick';
+  el.innerHTML = songCard(f, esc); wire(el, f);
+  return 'media-pick';
+}
+async function runMusic(api, chosen) {
+  const { showPage, esc } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>Something to listen to</h2><div class="sub">' + (chosen ? 'I chose music for you · ' : '') + 'picking, then checking each one is real…</div>'; }); // void-review: ok (chosen is a boolean: only fixed text reaches innerHTML)
+  el.dataset.artKind = 'Song';
+  let picks = [];
+  try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: PROMPT }) }); if (r.ok) picks = parseMusic((await r.json()).answer); } catch (_) {}
+  if (!api._pageStill(el)) return 'media-pick';
+  if (picks.length < 3) picks = MUSIC_FALLBACK.slice(0, 5); // the model was away: classics the lookup finds
+  const found = await Promise.all(picks.slice(0, 6).map(lookup));
+  if (!api._pageStill(el)) return 'media-pick';
+  const real = found.filter((f) => f.verified), fake = found.filter((f) => !f.verified);
+  const row = (f) => '<div class="mv-row" style="display:flex;gap:10px;margin:10px 0;align-items:flex-start">'
+    + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
+    + '<div><a href="#" data-ask="' + esc(musicAskText(f.title, f.artist)) + '"><b>' + esc(f.title) + '</b></a> · ' + esc(f.artist) + ' <span style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid var(--edge,#3a3a44)">' + (f.preview ? 'preview here' : 'links only') + '</span>'
+    + '<div class="sub">' + esc([f.album, f.year, f.genre].filter(Boolean).join(' · ')) + '</div></div></div>';
+  el.innerHTML = real.length
+    ? art(real[0], esc) + '<h2>Something to listen to</h2><div class="sub">' + (chosen ? 'I chose music for you · ' : '') + 'every song below was found in a real source; open one to hear the 30-second preview</div>' + real.map(row).join('')
+      + (fake.length ? '<div class="sub">Not verified (no source knows them, so not shown as fact): ' + fake.map((f) => esc(f.title)).join(', ') + '</div>' : '') + SRC(esc)
+    : '<h2>Something to listen to</h2><p>I could not reach the music source just now, so I will not name a song from memory. Ask again in a moment.</p>';
+  return 'media-pick';
+}
+
+export default {
+  name: 'media-pick',
+  examples: ['pick something to listen to with me', 'pick a song', 'pick something to watch', 'music card for Hey Jude by The Beatles'],
+  nearMisses: ['pick a color', 'film metadata for inception', 'what should we play', 'pick a movie to watch with me', 'how do I listen to my heart'],
+  match(lower, text) { return !!pickKind(text) || !!musicCardAsk(text); },
+  run(text, api) {
+    const c = musicCardAsk(text); if (c) return runCard(c, api);
+    const k = pickKind(text);
+    return k && k.kind === 'movie' ? pickMovie(api) : runMusic(api, k && k.chosen);
+  },
+  suite() {
+    const c = musicCardAsk('music card for Hey Jude by The Beatles');
+    return { ok: !!pickKind('pick a song') && !pickKind('pick a color') && c && c.artist === 'The Beatles' && cleanTitle('<b>x</b>') === 'b x b' };
+  },
+};
