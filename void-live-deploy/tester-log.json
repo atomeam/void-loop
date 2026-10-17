@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 117,
+ "runsTotal": 118,
  "kinds": {
   "grow": 15,
   "file": 56,
   "teach": 7,
   "tighten": 7,
-  "none": 32
+  "none": 33
  },
  "runs": [
+  {
+   "at": "2026-10-17T09:09:31Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T09:03:23Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T02:48:01Z",
-   "passed": 0,
-   "of": 26,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -198,10 +198,10 @@
   "skill:grades": "2026-10-17T08:50:25Z",
   "skill:group": "2026-10-17T09:03:23Z",
   "skill:growth": "2026-10-17T09:03:23Z",
-  "skill:heart": "2026-10-16T09:49:37Z",
+  "skill:heart": "2026-10-17T09:09:31Z",
   "skill:deadlines": "2026-10-17T09:03:23Z",
-  "skill:family-health": "2026-10-16T09:49:37Z",
-  "skill:home": "2026-10-16T10:24:46Z",
+  "skill:family-health": "2026-10-17T09:09:31Z",
+  "skill:home": "2026-10-17T09:09:31Z",
   "skill:image": "2026-10-16T10:24:46Z",
   "skill:incident": "2026-10-16T10:24:46Z",
   "skill:intent": "2026-10-16T11:10:19Z",
