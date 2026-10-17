@@ -63,7 +63,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 500)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -444,6 +444,7 @@ async function fresh(...inits) {
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
+  const logs = []; p.on('console', (m) => { if (logs.length < 40 && /error|warn/.test(m.type())) logs.push(m.type() + ': ' + m.text().slice(0, 160)); }); // diagnostics only: what the page said, for a check that fails on a runner
   p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; watch.pageObj = p; } });
   // the stall report below needs the debugger attached BEFORE a page hangs (Chrome cannot answer "enable" from a page that is stuck in a loop)
   ctx.newCDPSession(p).then((cdp) => { cdp.send('Debugger.enable').then(() => { p.__cdp = cdp; }, () => {}); }, () => {});
@@ -452,7 +453,7 @@ async function fresh(...inits) {
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
-  return { ctx, p, ask, state, page, whisper, errors };
+  return { ctx, p, ask, state, page, whisper, errors, logs };
 }
 
 try {
@@ -1169,14 +1170,16 @@ try {
     await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'vase.png', mimeType: 'image/png', buffer: png });
     await until(async () => !!(await A.p.$('.vpage.on .ap-make a[data-ask]')), 5000);
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
-    await A.p.click('.vpage.on .ap-make a').catch(() => {}); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
+    let clickErr = ''; await A.p.click('.vpage.on .ap-make a', { timeout: 8000 }).catch((e) => { clickErr = String(e.message).replace(/\s+/g, ' ').slice(0, 700); }); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
     await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length
         && coinMake === 0 && makeAsk === 'make me a vase' && /^I can make one of these: make me a vase, a model you can turn/.test(makeLine) && made.length === 1,
-      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), you: you.replace(/\s+/g, ' ').slice(0, 120), coinMake, makeLine, makeAsk, made, errors: A.errors }));
+      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), cardTail: card.replace(/\s+/g, ' ').slice(-420), you: you.replace(/\s+/g, ' ').slice(0, 120), coinMake, makeLine, makeAsk, made, errors: A.errors, console: A.logs, clickErr,
+        // which part of the check failed (diagnostics only; the assertion above is unchanged)
+        parts: { two: sent.length === 2, jpeg: !!sent[0] && /^data:image\/jpeg;base64,/.test(sent[0].image), note: !!sent[0] && sent[0].note === 'from my grandfather', price: /\$540/.test(card), expert: /looked at in hand/.test(card), saw: /What I saw: A worn silver coin/.test(card), you: /What you are worth/.test(you), noNumber: !/\$|\d/.test(you.replace(/V01D/g, '')), noErrors: !A.errors.length, noCoinLink: coinMake === 0, vaseAsk: makeAsk === 'make me a vase', vaseLine: /^I can make one of these: make me a vase, a model you can turn/.test(makeLine), one: made.length === 1 } }));
     await A.ctx.close(); }
   // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
   // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
@@ -2394,6 +2397,25 @@ try {
       +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
       && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
     await F.ctx.close(); }
+  if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? () => { window.Worker = undefined; } : () => {});
+      await F.ask('show me a vector field mind', 700); await until(async () => !!(await F.p.$('.ff-vector-field-mind')), 8000);
+      const read = () => F.p.evaluate(() => { const el = document.querySelector('.ff-vector-field-mind'); return { ink: +el.dataset.ink, cssInk: el.style.getPropertyValue('--ink-density'), hue: el.dataset.hue, glow: el.style.getPropertyValue('--ff-glow'), status: el.querySelector('.ff-hud').textContent, filter: el.style.filter, page: getComputedStyle(document.body).filter, sound: el.querySelector('.ff-sound').getAttribute('aria-pressed'), n: document.querySelectorAll('.ff-vector-field-mind').length }; });
+      const a = await read();
+      const box = await F.p.$eval('.ff-vector-field-mind canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+      await F.p.mouse.move(box.x, box.y); for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + i * 3, box.y + i * 2);
+      await until(async () => (await read()).status.startsWith('gen ') && !/gen 0 /.test((await read()).status), 9000).catch(() => {});
+      const b = await read();
+      await F.p.click('.ff-vector-field-mind .ff-seal'); await until(async () => !!(await F.p.$eval('.ff-vector-field-mind', (e) => e.dataset.seal).catch(() => '')), 4000).catch(() => {});
+      const sealed = await F.p.$eval('.ff-vector-field-mind', (e) => e.dataset.seal || '');
+      out.push({ noWorker, a, b, sealed, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.ink >= 0 && o.a.ink <= 1 && o.a.cssInk === String(o.a.ink) && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 div -?[\d.]+ \u00b7 curl -?[\d.]+/.test(o.b.status) && !/gen 0 /.test(o.b.status) && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.sound === 'false' && /^[0-9a-f]{12}$/.test(o.sealed) && o.b.n === 1 && !o.errors.length;
+    check('field minds: the vector field mind card shows a live ink density that is also its CSS variable, the mind has thought at least once (gen above 0) with and without a Worker, the morph touches the card and not the page, sound stays off, and Seal keeps a record',
+      out.length === 2 && good(out[0]) && good(out[1]) && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+  }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -3637,7 +3659,7 @@ try {
     const P = await fresh();
     const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
     const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
-    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG, headers: { 'access-control-allow-origin': '*' } }));
     await P.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
       if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'Cat' }] } }));
       if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
@@ -3645,6 +3667,10 @@ try {
     await P.ask('what is a cat', 1500);
     const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
     check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    // owner, 2026-10-17: the poster showed in V01D's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
+    const colour = await P.p.evaluate(() => { const im = document.querySelector('.vpage.on .vc-art-photo'); return im ? getComputedStyle(im).filter : 'none-missing'; });
+    const photoUrl = await P.p.evaluate(async () => { const { photoData } = await import('/lib/card-image.js'); const src = document.querySelector('.vpage.on .vc-art-photo').getAttribute('src'); return { ok: (await photoData(src)).slice(0, 23), http: await photoData('http://x.example/a.png'), bad: await photoData('https://nonexistent.invalid/x.png') }; });
+    check('V01D card art: a subject photo shows in true colour (no grayscale or sepia filter) and the saved card draws it (a JPEG data URL), falling back to \'\' for http or a failed load', colour === 'none' && photoUrl.ok === 'data:image/jpeg;base64,' && photoUrl.http === '' && photoUrl.bad === '' && !P.errors.length, JSON.stringify({ colour, photoUrl, e: P.errors }));
     await P.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
