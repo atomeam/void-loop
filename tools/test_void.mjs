@@ -2334,6 +2334,21 @@ try {
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
+  // V01D sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
+  if (want("V01D sees a repo: a card from the live GitHub facts")) { const R = await fresh();
+    const facts = { name: 'acme/widget', description: 'A widget <img src=x onerror=window.__pwn=1> maker', url: 'https://github.com/acme/widget', language: 'JavaScript', stars: 42, forks: 3, license: 'MIT', branch: 'main', pushed: '2026-10-01', archived: false, topics: [], openIssues: 5, openPulls: 4, langs: [{ name: 'JavaScript', pct: 90 }, { name: 'HTML', pct: 10 }], commits: [{ sha: 'abcdef1', msg: 'fix: <b>bold</b> it', who: 'Ann', date: '2026-10-01' }], tree: [{ name: 'src', dir: true }, { name: 'README.md', dir: false }], treeTotal: 2, readme: 'Widget makes widgets from plain words.' };
+    const seen = [];
+    await R.ctx.route(/\/api\/repo\?/, (r) => { const q = decodeURIComponent(new URL(r.request().url()).searchParams.get('r')); seen.push(q); return r.fulfill(json(q === 'acme/widget' ? { ok: true, repo: facts } : { ok: false, kind: 'missing', say: 'I can only see public repos, and I could not find ' + q + ' on GitHub.' })); });
+    await R.ask('look at acme/widget', 400); await until(async () => /Recent commits/.test(await R.page()), 6000);
+    const card = await R.page(), pwn = await R.p.evaluate(() => window.__pwn === 1), hasImg = await R.p.$('.vpage.on .rp-sub img'), hasB = await R.p.$('.vpage.on .rp-com b');
+    const share = await R.p.$('.vpage.on .vc-share, .vpage.on [data-share], .vpage.on button');
+    await R.ask('what is in github.com/acme/private-thing', 400); await until(async () => /only see public repos/.test(await R.page()), 6000);
+    const miss = await R.page();
+    check('V01D sees a repo: "look at acme/widget" puts a card of the live facts (language mix, README opening, recent commits, top level, issue and PR counts) from /api/repo; the repo\'s own text is escaped, not run; a missing or private repo says it can only see public repos',
+      /acme\/widget/.test(card) && /JavaScript 90%/.test(card) && /Widget makes widgets/.test(card) && /abcdef1/.test(card) && /4 open PRs/.test(card) && /src\//.test(card) && /<img src=x/.test(card) && /<b>bold<\/b>/.test(card) && !pwn && !hasImg && !hasB && !!share
+        && JSON.stringify(seen) === '["acme/widget","acme/private-thing"]' && /only see public repos/.test(miss) && !R.errors.length,
+      JSON.stringify({ card: card.slice(0, 500), pwn, seen, miss: miss.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
@@ -3532,6 +3547,20 @@ try {
       !!written && Object.keys(written).length >= 1 && Object.values(written).every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)) && JSON.stringify(written).length < 200
         && !!card && /On this device: \d+ of \d+ skills have answered here/.test(card.dead) && /kept in this browser only and never sent/.test(card.dead) && card.used.some((u) => u === 'not used here yet') && card.used.some((u) => /^last used here today$/.test(u)) && !F.errors.length,
       JSON.stringify({ written, card: card && { dead: card.dead, used: card.used.slice(0, 4) }, errors: F.errors }));
+    await F.ctx.close(); }
+  // incident autopsy (asked by Void): the card reads the site's own incidents.json and says which skill family has the most failing checks recorded
+  if (want('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped')) { const F = await fresh({ phone: true });
+    const real = JSON.parse(fs.readFileSync(path.join(root, 'incidents.json'), 'utf8')).incidents;
+    await F.ask('incident autopsy', 1500);
+    const card = await until(async () => F.p.$eval('.vpage', (p) => {
+      if (!p.querySelector('[data-autopsy],[data-autopsy-empty]')) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, empty: !!p.querySelector('[data-autopsy-empty]'), shas: [...p.querySelectorAll('[data-autopsy-recent] > li')].map((l) => l.dataset.sha),
+        counts: [...p.querySelectorAll('[data-autopsy-families] li')].map((l) => Number(l.querySelector('span').textContent)), checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), imgs: p.querySelectorAll('img').length, wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 8000);
+    const quoted = real.slice(0, 8).flatMap((i) => i.checks).filter((c) => c.includes('"'));
+    check('"incident autopsy": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped',
+      !!card && card.title === 'Incident autopsy' && (real.length ? !card.empty && card.shas.length === Math.min(8, real.length) && card.shas[0] === real[0].sha && card.counts.length >= 1 && card.counts.every((n) => n >= 1)
+        && (!quoted.length || card.checks.some((t) => t.includes('"'))) : card.empty) && card.imgs === 0 && !card.wide);
     await F.ctx.close(); }
   // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
