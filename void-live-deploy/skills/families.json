@@ -777,7 +777,7 @@
     {
      "name": "convert",
      "tier": "checked",
-     "why": "3 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "5 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,

@@ -3998,7 +3998,30 @@ say('nothing selected to remove');
       // silent hole: that ask just never gets answered by a skill.
       if (missing.length) console.warn('[V01D] ' + missing.length + ' skill(s) in the index did not load:', missing.join(', '));
       if (Object.values(things).some((t) => stageKinds[t.kind])) render(); // figures kept from last time come back
+      setTimeout(resyncMissing, 2000);
       return learnedSkills;
+    }
+    // A kept card whose skill file did not load comes back with a "re-sync" button where it was (asked by Void: "a 're-sync' button on the
+    // convert-card that appears if the reload check fails to find the restored converter within 2 seconds"); a tap loads the file again and
+    // draws the stage. RESYNC: kept kind -> the skill file that brings it (the convert card first; add a kind here to give it the same).
+    const RESYNC = { convert: { file: 'convert', label: 'converter' } };
+    function resyncMissing() {
+      for (const th of Object.values(things)) {
+        const r = th && RESYNC[th.kind];
+        if (!r || stage.querySelector('[data-id="' + CSS.escape(String(th.id)) + '"]') || stage.querySelector('.resync-chip[data-for="' + CSS.escape(String(th.id)) + '"]')) continue;
+        const b = document.createElement('button'); b.type = 'button'; b.className = 'resync-chip'; b.dataset.for = String(th.id); b.textContent = '\u21bb re-sync ' + r.label;
+        b.style.cssText = 'position:absolute;left:' + (+th.x || 20) + 'px;top:' + (+th.y || 80) + 'px;z-index:5;font:inherit;font-size:12px;padding:6px 12px;border-radius:8px;border:1px dashed rgba(255,255,255,.35);background:rgba(10,10,16,.8);color:#ddd;cursor:pointer';
+        b.title = 'Your ' + r.label + ' is saved, but its file did not load. Tap to load it again.';
+        b.addEventListener('pointerdown', (e) => e.stopPropagation());
+        b.addEventListener('click', (e) => {
+          e.stopPropagation(); b.disabled = true; b.textContent = 're-syncing\u2026';
+          import('/skills/' + r.file + '.js?resync=' + Date.now()).then((m) => {
+            const sk = m && m.default; if (!sk || !sk.stageKinds) throw new Error('no stage kinds');
+            Object.assign(stageKinds, sk.stageKinds); render();
+          }).catch(() => { b.disabled = false; b.textContent = '\u21bb still not loading \u00b7 try again'; });
+        });
+        stage.appendChild(b);
+      }
     }
     const skillsReady = loadLearnedSkills().finally(() => { skillsLoaded = true; document.documentElement.dataset.skills = 'ready'; }); // data-skills="ready": the suite waits on it instead of a guessed delay (tools/test_void.mjs skillsUp)
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
