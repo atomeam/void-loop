@@ -3522,6 +3522,21 @@ try {
     check('V01D card art: "save card" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio',
       !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
     await A.ctx.close(); }
+  // owner, 2026-10-17 (a Cat card with a generic eye): the art is of the subject. An answer that carries its source's picture of the thing shows
+  // that picture in the art box, in V01D's ink; one with none keeps the plate of its kind.
+  if (want("V01D card art: an answer with a picture of its subject shows that picture in the art box")) {
+    const P = await fresh();
+    const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'Cat' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(j(cat)); return rt.fulfill(j({})); });
+    await P.ask('what is a cat', 1500);
+    const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
+    check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    await P.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
   if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
@@ -3681,9 +3696,20 @@ try {
     // "the book at chess" opens on the chess page; Esc closes the book and not the stage's things
     await B.ask('the book at chess', 900);
     const atChess = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) && /Chess/.test(l.text) ? l : null; }, 8000);
+    // owner, 2026-10-17: "when I close the book it should stay so I can see the cover or back cover": Esc shuts the cover and leaves the book on the
+    // table; the same again puts it away; past the last page the book shuts on its back cover
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(900);
+    const shutNow = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { tome: !!t, shut: !!t && t.classList.contains('shut'), dim: document.documentElement.classList.contains('v-tome') }; });
     await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(1200);
     const closed = await B.p.evaluate(() => ({ tome: !!document.getElementById('vtome'), dim: document.documentElement.classList.contains('v-tome') }));
-    check('the book: "the book at chess" opens on the Chess page, and Esc shuts the cover and takes the book away (the clock stays on the stage)', !!atChess && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, closed, errors: B.errors }));
+    check('the book: "the book at chess" opens on the Chess page, Esc shuts the cover and leaves the book up, and Esc again takes it away (the clock stays on the stage)', !!atChess && shutNow.tome && shutNow.shut && shutNow.dim && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, shutNow, closed, errors: B.errors }));
+    await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened')), 8000);
+    const total = await B.p.evaluate(() => window.__voidBook.totals.pages); await B.p.evaluate((n) => window.__voidBook.go(n), total); await B.p.waitForTimeout(1200);
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(900);
+    const backSide = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); const bc = document.querySelector('#vtome .tome-backcover'); return { shut: t.classList.contains('shut'), back: t.classList.contains('back'), shown: !!bc && getComputedStyle(bc).display !== 'none', words: bc ? bc.textContent : '' }; });
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
+    const reopenedBack = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { open: t.classList.contains('opened'), shut: t.classList.contains('shut') }; });
+    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);
