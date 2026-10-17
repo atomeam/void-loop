@@ -35,3 +35,9 @@ test('the mind: a generation is deterministic for its inputs, keeps genomes in r
   let o = a; for (let i = 0; i < 4; i++) { const n = F.evolveCards({ ...arg, pop: o.pop, gen: o.gen }); assert.ok(n.fitness >= o.fitness - 1e-9, 'the best of a generation is kept'); o = n; }
   F.setGenome(s, { feed: 9, kill: -1 }); assert.ok(s.genome.feed <= F.SPEC.feed[1] && s.genome.kill >= F.SPEC.kill[0], 'a bad genome is clamped');
 });
+test('the skill (skills/living-cards-mind.js) takes its asks and leaves the look-alikes', async () => {
+  const skill = (await import('../void-live-deploy/skills/living-cards-mind.js')).default;
+  for (const a of skill.examples) assert.ok(skill.match(a.toLowerCase(), a), a);
+  for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
+  assert.ok(skill.stageKinds['living-cards-mind']);
+});
