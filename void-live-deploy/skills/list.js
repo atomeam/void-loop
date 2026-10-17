@@ -5,7 +5,12 @@
  * place, its title is typed on it, it links what is left to buy to a store's search, and the 3D clipboard beside it keeps the
  * same items (skills/mini/list.js). Moved out of void.html in cleanup step 6, the last of the built-ins. The page asks `ask`
  * at the place its list code always ran (`askAt`), and the shared targeting reaches the list through `ensure`.
+ * Two bridges (asked by Void, 2026-10-16): drop any stage thing onto the list card and its words become a new entry (the page
+ * says 'void:dropped' when a drag sets something down; lib/bridges.js entryFor says what the entry reads); the small "→ note"
+ * on every entry copies it as a line into the notepad (skills/notepad.js append).
  */
+import { append as noteAppend } from './notepad.js';
+import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 
 const uid = (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 9);
 
@@ -176,7 +181,11 @@ function mount(th, stageApi) {
     const remove = quiet(make('button', 'list-remove', { type: 'button', textContent: '×' }));
     remove.setAttribute('aria-label', 'remove ' + (item.text || 'item'));
     remove.addEventListener('click', () => { th.items = th.items.filter((candidate) => candidate.id !== item.id); keep(); });
-    row.append(check, make('span', 'list-item-text', { textContent: item.text || '' }), remove);
+    const toNote = quiet(make('button', 'list-to-note', { type: 'button', textContent: '→ note', title: 'copy this entry into the notepad' }));
+    toNote.setAttribute('aria-label', 'copy ' + (item.text || 'item') + ' to the notepad');
+    toNote.style.cssText = 'font:inherit;font-size:10px;padding:0 5px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;cursor:pointer;opacity:.7';
+    toNote.addEventListener('click', () => { noteAppend(stageApi, itemLine(item)); stageApi.say('in the notepad'); });
+    row.append(check, make('span', 'list-item-text', { textContent: item.text || '' }), toNote, remove);
     el.appendChild(row);
   });
   if (!items.length) el.appendChild(make('div', 'list-empty', { textContent: 'No items yet' }));
@@ -212,8 +221,37 @@ function mount(th, stageApi) {
   stageApi.stage.appendChild(el);
 }
 
+// drag-and-drop into the list: a thing set down over a list card becomes an entry on it (the thing stays; "undo" takes the entry back)
+const boxOf = (root, id) => { const el = root && root.querySelector('[data-id="' + (typeof CSS !== 'undefined' && CSS.escape ? CSS.escape(id) : id) + '"]'); return el ? { x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 } : null; };
+/** the list the dropped thing landed on, or null. Pure given the boxes. */
+export function landedOn(things, boxes, id) {
+  const me = boxes[id]; if (!me) return null;
+  return Object.values(things).find((t) => t && t.kind === 'list' && t.id !== id && boxOverlap(me, boxes[t.id])) || null;
+}
+let lastStage = null;
+export function decorate(st) { if (st && st.things) lastStage = st; } // the page hands its stage here after each draw; the drop below uses it
+function onDropped(e) {
+  const st = lastStage, id = e && e.detail && e.detail.id;
+  if (!st || !id) return;
+  const things = st.things(), th = things[id];
+  if (!th || th.kind === 'list') return;
+  const boxes = {}; for (const t of Object.values(things)) { const b = boxOf(st.stage, t.id); if (b) boxes[t.id] = b; }
+  const list = landedOn(things, boxes, id);
+  if (!list) return;
+  const text = entryFor(th, plainOf(th.html));
+  if (!text) return;
+  list.items = normalizeItems(list.items);
+  if (list.items.some((i) => i.text.toLowerCase() === text.toLowerCase())) { st.say('already on the list'); return; }
+  if (st.snapshot) st.snapshot();
+  list.items.push({ id: uid('item'), text, done: false });
+  st.save(); st.render();
+  st.say('added to the list: ' + text);
+}
+if (typeof document !== 'undefined' && !globalThis.__voidListDrop) { globalThis.__voidListDrop = true; document.addEventListener('void:dropped', onDropped); }
+
 export default {
   name: 'list',
+  decorate,
   examples: ['make a list', 'list', 'todo list'],
   nearMisses: ['list my routines', 'add a clock', 'what is a linked list'],
   match(lower) { return plainList(lower); },
