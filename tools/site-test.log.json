@@ -1072,5 +1072,12 @@
   "of": 32,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
+ },
+ {
+  "at": "2026-10-17T21:21:26Z",
+  "passed": 32,
+  "of": 33,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
  }
 ]

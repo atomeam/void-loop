@@ -115,6 +115,9 @@
     },
     {
       "ask": "drag friction"
+    },
+    {
+      "ask": "which games do you know"
     }
   ],
   "candidates": [],

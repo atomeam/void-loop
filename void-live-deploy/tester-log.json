@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 30,
- "runsTotal": 143,
+ "cases": 31,
+ "runsTotal": 144,
  "kinds": {
-  "grow": 23,
+  "grow": 24,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T21:21:26Z",
+   "passed": 32,
+   "of": 33,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
+  },
   {
    "at": "2026-10-17T21:02:03Z",
    "passed": 21,
@@ -138,13 +145,6 @@
   },
   {
    "at": "2026-10-17T10:04:20Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T09:57:04Z",
    "passed": 0,
    "of": 25,
    "kind": "none",
@@ -289,9 +289,9 @@
   "skill:duel": "2026-10-17T20:35:41Z",
   "skill:friction": "2026-10-17T21:02:03Z",
   "skill:kept": "2026-10-17T21:02:03Z",
-  "skill:know": "2026-10-17T02:25:35Z",
-  "skill:pulse": "2026-10-17T02:25:35Z",
-  "skill:rts": "2026-10-17T02:25:35Z",
+  "skill:know": "2026-10-17T21:21:26Z",
+  "skill:pulse": "2026-10-17T21:21:26Z",
+  "skill:rts": "2026-10-17T21:21:26Z",
   "skill:merge": "2026-10-17T02:48:01Z",
   "skill:shortcut": "2026-10-17T02:48:01Z",
   "skill:state": "2026-10-17T02:48:01Z",
