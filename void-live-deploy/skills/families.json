@@ -1434,8 +1434,8 @@
     {
      "name": "different",
      "tier": "tested",
-     "why": "4 browser-suite mentions",
-     "last_tested": "2026-10-16",
+     "why": "5 browser-suite mentions",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
     },

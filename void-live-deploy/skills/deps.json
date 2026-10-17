@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 439,
+ "counted": 442,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -108,7 +108,7 @@
    "file": "lib/guide.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 8
+   "dependants": 11
   },
   {
    "file": "lib/arena-say.js",
@@ -135,6 +135,18 @@
    "dependants": 3
   },
   {
+   "file": "lib/card-art.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -142,6 +154,12 @@
   },
   {
    "file": "lib/card-kinds.js",
+   "skills": 2,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
+   "file": "lib/card-share.js",
    "skills": 2,
    "direct": 0,
    "dependants": 4
@@ -1494,10 +1512,27 @@
     "skills/othello.js"
    ]
   },
+  "lib/card-art.js": {
+   "imports": [
+    "lib/guide.js"
+   ],
+   "importedBy": [
+    "lib/card-frame.js",
+    "lib/card-image.js"
+   ],
+   "reachedBy": [
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
+  },
   "lib/card-frame.js": {
    "imports": [
     "lib/guide.js",
-    "lib/card-kinds.js"
+    "lib/card-kinds.js",
+    "lib/card-share.js",
+    "lib/card-art.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -1505,8 +1540,35 @@
     "skills/merge.js"
    ]
   },
+  "lib/card-image.js": {
+   "imports": [
+    "lib/card-art.js"
+   ],
+   "importedBy": [
+    "lib/card-share.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
+  },
   "lib/card-kinds.js": {
    "imports": [],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
+  },
+  "lib/card-share.js": {
+   "imports": [
+    "lib/card-image.js"
+   ],
    "importedBy": [
     "lib/card-frame.js"
    ],
@@ -1736,12 +1798,15 @@
    "imports": [],
    "importedBy": [
     "lib/book-face.js",
+    "lib/card-art.js",
     "lib/card-frame.js",
     "lib/tome.js",
     "skills/guide.js",
     "skills/mini/book.js"
    ],
    "reachedBy": [
+    "lib/card-image.js",
+    "lib/card-share.js",
     "lib/duel-rules.js",
     "skills/duel.js",
     "skills/merge.js"

@@ -3491,6 +3491,37 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // A card is easy to copy, save and paste back (lib/card-share.js; owner, 2026-10-16): "copy card" puts readable text ending in a code line on the clipboard,
+  // and asking V01D with that text brings the same card back, its numbers earned again, nothing sent to the answer route
+  if (want("V01D cards: copy a card, paste it back into V01D and the same card returns")) { const S = await fresh();
+    await S.p.addInitScript(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); }).catch(() => {});
+    await S.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
+    let answered = 0; await S.p.route('**/api/answer', (r) => { answered++; r.continue(); });
+    await S.ask('20% tip on 45', 1600);
+    const btn = await until(async () => (await S.p.$('.vpage.vcard .vc-share button')) ? true : null, 6000);
+    await S.p.click('.vpage.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
+    const text = await S.p.evaluate(() => window.__copied);
+    const title = await S.p.evaluate(() => (document.querySelector('.vpage.vcard h2') || {}).textContent);
+    await S.ask('close', 600);
+    await S.ask(text, 1500);
+    const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
+    check('V01D cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into V01D brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
+      !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    await S.ctx.close(); }
+  // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
+  // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
+  if (want("V01D card art: every card has its own ink plate, and save card downloads the whole card as a PNG")) { const A = await fresh();
+    const art = async (ask) => { await A.ask('close', 400); await A.ask(ask, 1800); return until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const v = e && e.querySelector('.vc-art svg'); return v && e.querySelector('.vc-share') ? { svg: v.outerHTML, kids: v.querySelectorAll('path,circle,rect').length, vb: v.getAttribute('viewBox') } : null; }).catch(() => null), 8000); };
+    const got = []; for (const q of ['20% tip on 45', 'tell me about the ocean', 'convert 10 miles to km']) got.push(await art(q));
+    check('V01D card art: three different asks each open a card whose art box holds an SVG with its plate drawn (a viewBox, many shapes), and no two cards\' art are the same',
+      got.every((g) => g && g.kids > 40 && /^0 0 \d+ \d+$/.test(g.vb)) && new Set(got.map((g) => g && g.svg)).size === got.length && !A.errors.length, JSON.stringify({ kids: got.map((g) => g && g.kids), errors: A.errors }));
+    const dl = A.p.waitForEvent('download', { timeout: 8000 }).catch(() => null);
+    await A.p.click('.vpage.on.vcard .vc-share button:nth-child(2)');
+    const d = await dl; let png = null;
+    if (d) { const f = await d.path(); const buf = fs.readFileSync(f); png = { name: d.suggestedFilename(), magic: buf.subarray(0, 8).toString('hex'), w: buf.readUInt32BE(16), h: buf.readUInt32BE(20), n: buf.length }; }
+    check('V01D card art: "save card" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio',
+      !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
+    await A.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
   if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
