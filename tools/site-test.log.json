@@ -1121,5 +1121,12 @@
   "of": 39,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"longevity trial watch\" (skill:trialwatch)"
+ },
+ {
+  "at": "2026-10-17T23:06:05Z",
+  "passed": 33,
+  "of": 40,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
  }
 ]

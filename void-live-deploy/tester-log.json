@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 37,
- "runsTotal": 150,
+ "cases": 38,
+ "runsTotal": 151,
  "kinds": {
-  "grow": 30,
+  "grow": 31,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T23:06:05Z",
+   "passed": 33,
+   "of": 40,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
+  },
   {
    "at": "2026-10-17T22:56:47Z",
    "passed": 37,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"what can I buy\" load 1244 ms > 1200"
-  },
-  {
-   "at": "2026-10-17T11:17:08Z",
-   "passed": 16,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"play chess\" fps 2 < 5"
   }
  ],
  "seen": {
@@ -276,9 +276,9 @@
   "skill:merges": "2026-10-17T22:46:32Z",
   "skill:util": "2026-10-17T22:56:47Z",
   "skill:v01d-fixes": "2026-10-17T22:56:47Z",
-  "skill:video": "2026-10-17T07:19:24Z",
-  "skill:walls": "2026-10-17T07:26:44Z",
-  "skill:watch": "2026-10-17T07:26:44Z",
+  "skill:video": "2026-10-17T23:06:05Z",
+  "skill:walls": "2026-10-17T23:06:05Z",
+  "skill:watch": "2026-10-17T23:06:05Z",
   "skill:words": "2026-10-17T07:26:44Z",
   "skill:work": "2026-10-17T07:32:11Z",
   "skill:zoom-figure": "2026-10-17T07:32:11Z",
