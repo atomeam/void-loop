@@ -110,7 +110,7 @@ function mount(book, api, startAt, text) {
   root.innerHTML = '<style>' + TOME_CSS + SEARCH_CSS + '</style><div class="tome-dim"></div><div class="tome shut" data-pages="' + total + '">'
     + '<div class="tome-boards"></div><div class="tome-stack left"></div><div class="tome-stack right"></div>'
     + '<section class="tome-page left" data-page=""></section><section class="tome-page right" data-page=""></section><div class="tome-spine"></div>'
-    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div></div><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
+    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div></div><button type="button" class="tome-tocover" aria-label="Back to the cover">Cover</button><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
   document.body.appendChild(root);
   document.documentElement.classList.add('v-tome');
   const tome = root.querySelector('.tome'), left = root.querySelector('.tome-page.left'), right = root.querySelector('.tome-page.right'), live = root.querySelector('[aria-live]');
@@ -151,6 +151,10 @@ function mount(book, api, startAt, text) {
   const openCover = () => { if (!tome.classList.contains('shut')) return; tome.classList.remove('shut'); tome.classList.add('open'); rustle(); if (window.__voidBook) window.__voidBook.shut = false; const opened = () => { tome.classList.add('opened'); draw(); }; if (motionless()) opened(); else after(tome.querySelector('.tome-cover'), 'transform', 550, opened); };
   const turn = (d) => { if (tome.classList.contains('shut')) { if (d > 0) openCover(); return; } if (d < 0 && shown().filter(Boolean)[0] === 1) { shutCover(); return; } const vis = shown().filter(Boolean); turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
   const go = (n) => { if (tome.classList.contains('shut')) openCover(); turnTo(n); };
+  // the way back to the cover from any page, however far in (owner, 2026-10-17: "still can't get to the cover of the book"): the Cover button, the Home key
+  const toCover = () => { if (tome.classList.contains('shut')) return; turning = false; cur = 1; shutCover(); };
+  root.querySelector('.tome-tocover').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toCover(); });
+  root.querySelector('.tome-tocover').addEventListener('pointerdown', (e) => e.stopPropagation());
 
   // ---- the search bar docked at the top (asked by Void): type, pick a page, the book turns to it; it stays while you read
   const bar = root.querySelector('.tome-search'), box = bar.querySelector('input'), hits = bar.querySelector('.tome-hits');
@@ -169,6 +173,7 @@ function mount(book, api, startAt, text) {
     if (e.key === '/' && document.activeElement !== box) { e.preventDefault(); e.stopImmediatePropagation(); box.focus(); return; }
     if (e.key === 'Escape' && (box.value || hits.children.length)) { e.preventDefault(); e.stopImmediatePropagation(); box.value = ''; hits.innerHTML = ''; box.blur(); return; }
     if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeTome('esc'); return; }
+    if (e.key === 'Home' && !(document.activeElement && /^(input|textarea)$/i.test(document.activeElement.tagName))) { e.preventDefault(); e.stopImmediatePropagation(); toCover(); return; }
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
     const a = document.activeElement; if (a && /^(input|textarea)$/i.test(a.tagName) && a.value) return;
     e.preventDefault(); e.stopImmediatePropagation(); turn(e.key === 'ArrowRight' || e.key === 'PageDown' ? 1 : -1);

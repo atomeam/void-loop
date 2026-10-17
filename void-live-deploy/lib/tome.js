@@ -6,6 +6,7 @@
 // capital, the asks as lines of italic ink, the folio in the outer corner). skills/guide.js mounts it full screen and turns the
 // leaves. The content is the same skills/guide.json page data the generator writes (lib/guide.js), so nothing is left out.
 import { glyphSvg, openerSvg, TIERS, TIER_MEANING } from './guide.js';
+import { artSvg, seasonOf } from './card-art.js';
 
 export const SERIF = '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", Georgia, "Times New Roman", serif';
 
@@ -47,6 +48,7 @@ export const TOME_CSS = [
   '.tome-say{margin:1.6cqh 0 .4cqh;font-variant:small-caps;letter-spacing:.14em;color:#6d4c2a;font-size:2cqh}',
   '.tome-try{margin:0;padding:0;list-style:none}.tome-try li{margin:.5cqh 0;font-style:italic;padding-left:2.2cqh;text-indent:-2.2cqh}.tome-try li::before{content:"\\2014  ";font-style:normal;color:#7a4a22}',
   '.tome a{color:#3a2412;text-decoration:none;border-bottom:1px dotted rgba(90,50,20,.6);cursor:pointer}.tome a:hover{color:#7a2a12;border-bottom-color:currentColor}',
+  '.tome-art{margin:0 0 1.2cqh;border:1px solid rgba(74,46,22,.5);border-radius:3px;overflow:hidden;background:#150d07;box-shadow:inset 0 0 0 1px rgba(0,0,0,.4)}.tome-art svg{display:block;width:100%;height:auto}',
   '.tome-plate{float:right;margin:0 0 1cqh 2cqh;shape-outside:margin-box}.tome .gglyph{color:#4a2e16!important;filter:sepia(1) saturate(.55) brightness(.72);opacity:.9}',
   '.tome .gopener{display:flex;flex-wrap:wrap;justify-content:center;gap:.6cqh;margin:1.5cqh 0}.tome .gopener a{border:0;display:flex}',
   '.tome-list{margin:0;padding:0;list-style:none;columns:2;column-gap:4cqh;font-size:2cqh}.tome-list li{display:flex;align-items:baseline;margin:.35cqh 0;break-inside:avoid}.tome-list li a{border:0}.tome-list .lead-dots{flex:1;border-bottom:1px dotted rgba(90,50,20,.55);margin:0 .6cqh;transform:translateY(-.5cqh)}.tome-list .n{color:#6d4c2a}',
@@ -66,6 +68,8 @@ export const TOME_CSS = [
   '.tome-cover .face.out::before{content:"";position:absolute;inset:0;background:' + GRAIN + ';opacity:.45;mix-blend-mode:multiply;border-radius:inherit}',
   '.tome-cover .face.in{transform:rotateY(180deg);background:#e2d1a8;background-image:' + MOTTLE + ',' + GRAIN + ';box-shadow:inset 0 0 6cqh rgba(95,58,18,.3)}',
   '.tome-cover .seal{width:11cqh;height:11cqh;border-radius:50%;border:2px solid rgba(214,179,92,.75);box-shadow:inset 0 0 0 5px rgba(0,0,0,.2),inset 0 0 0 6px rgba(214,179,92,.5);display:flex;align-items:center;justify-content:center;font-size:4.4cqh;letter-spacing:.08em;font-weight:700;margin-bottom:3cqh;position:relative}',
+  '.tome-cover .cover-art{width:78%;margin:1.4cqh auto 0;position:relative;border:1px solid rgba(214,179,92,.45);border-radius:4px;overflow:hidden;background:#120b06;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}.tome-cover .cover-art svg{display:block;width:100%;height:auto}',
+  '.tome-tocover{position:absolute;top:max(10px,1.6vh);left:max(10px,1.6vw);z-index:9;font:inherit;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid rgba(214,179,92,.55);background:rgba(36,23,13,.88);color:#f0e3c4;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.5)}.tome-tocover:hover,.tome-tocover:focus-visible{border-color:rgba(240,214,140,.95)}',
   '.tome-cover .title{font-variant:small-caps;letter-spacing:.14em;font-size:4cqh;position:relative}.tome-cover .line{font-style:italic;font-size:2cqh;color:rgba(214,179,92,.8);margin-top:1cqh;position:relative}',
   // the prompt, as a game writes it along the foot of the screen
   '.tome-prompt{position:absolute;left:0;right:0;bottom:2.4vh;text-align:center;color:rgba(232,214,178,.8);font-size:13px;letter-spacing:.16em;text-transform:uppercase;pointer-events:none}',
@@ -87,6 +91,12 @@ export function tocHtml(book, esc) {
 }
 
 /** one page typeset for the tome (without its running head and folio, which the spread adds). Pure. */
+/** the page's own ink art (lib/card-art.js): the plate a card of its kind gets, keyed by the page so it is always the same picture, haunted in October. '' if it cannot draw. */
+const pageArt = (p, h = 120) => {
+  try {
+    return '<div class="tome-art">' + artSvg({ key: 'book:' + (p.name || p.title || p.kind), name: p.title || '', kind: p.kind === 'mini' ? 'Miniature' : p.game ? 'Game' : p.kind === 'skill' ? 'Skill' : 'Idea', chapter: p.chapter, rarity: p.tier || 'common', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h }) + '</div>';
+  } catch (_) { return ''; }
+};
 export function pageHtml(p, book, esc) {
   const t = book.totals || {}, chap = chapterOf(book, p.chapter);
   if (p.kind === 'cover') { // the title page
@@ -95,19 +105,19 @@ export function pageHtml(p, book, esc) {
       + openerSvg({ skills: firsts.map((x) => x.name) }, book, 10) + '<p class="tome-sub">' + t.skills + ' skills · ' + t.games + ' games · ' + t.minis + ' miniatures<br>' + t.pages + ' pages</p></div>';
   }
   if (p.kind === 'how') {
-    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
+    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
       + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>'
       + (p.core || []).map((c) => '<p class="tome-note"><b>' + esc(c.name) + '</b> · ' + esc(c.line) + '</p><ul class="tome-try gb-try">' + c.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>').join('') + '</div>';
   }
   if (p.kind === 'legend') {
-    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><p class="lead">Each page is one thing V01D does: its name, one line on what it does, two or three asks to say, and a rating.</p>'
+    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">Each page is one thing V01D does: its name, one line on what it does, two or three asks to say, and a rating.</p>'
       + '<p>The rating is earned from evidence, never claimed:</p><dl class="tome-legend gb-legend">' + TIERS.slice().reverse().map((k) => '<dt>' + k + '</dt><dd>' + esc(TIER_MEANING[k]) + '</dd>').join('') + '</dl>'
       + '<p class="tome-note">A page with a box drawn on it is a game on the rack; a page headed 3D is a miniature a card carries.</p></div>';
   }
   if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
-    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
+    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
       + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
   if (p.kind === 'index') {
@@ -119,7 +129,7 @@ export function pageHtml(p, book, esc) {
   const sub = p.kind === 'skill' && p.game && p.name !== p.title.toLowerCase() ? '<small>' + esc(p.name) + '</small>' : p.kind === 'mini' ? '<small>a thing a card carries</small>' : '';
   const line = String(p.line || ''), dropCap = /^[A-Za-z]/.test(line); // a line that opens with a quote mark keeps its first letter in the line
   let body = (kicker ? '<div class="tome-kicker">' + esc(kicker) + '</div>' : '<div class="tome-kicker tome-kicker-blank">&nbsp;</div>') + '<h3 class="tome-title">' + esc(p.title) + sub + '</h3><div class="tome-rule"></div><div class="tome-body">'
-    + (p.flavor ? '<p class="tome-epigraph">' + esc(p.flavor) + '</p>' : '') + '<div class="tome-plate">' + glyphSvg(p, 64) + '</div>'
+    + pageArt(p, 150) + (p.flavor ? '<p class="tome-epigraph">' + esc(p.flavor) + '</p>' : '') + '<div class="tome-plate">' + glyphSvg(p, 64) + '</div>'
     + '<p class="' + (dropCap ? 'lead ' : '') + 'gb-line">' + esc(line) + (/[.!?…]$/.test(line) ? '' : '.') + '</p>';
   if (p.kind === 'mini' && p.ownerPage) body += '<p class="tome-note">Carried by the ' + jump(p.ownerPage, (p.card || p.owner) + ' card, page ' + p.ownerPage, esc) + '.</p>';
   else if (p.kind === 'mini' && p.card) body += '<p class="tome-note">Carried by ' + esc(p.card) + '.</p>';
@@ -141,10 +151,12 @@ export function sheetHtml(p, book, side, esc) {
 export function stacks(cur, total) { const t = Math.max(1, total || 1); return { left: Math.min(1, Math.max(0, (cur - 1) / t)), right: Math.min(1, Math.max(0, (t - cur) / t)) }; }
 
 /** the prompt along the foot of the screen. Pure. */
-export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Esc</kbd>Close</span><span class="phone">Swipe to turn · tap the dark to close</span>';
+export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Home</kbd>Cover<kbd>Esc</kbd>Close</span><span class="phone">Swipe to turn · tap the dark to close</span>';
 
 /** the shut cover's face. Pure. */
 export function coverHtml(book, esc) {
   const t = book.totals || {};
-  return '<div class="face out"><div class="seal">V</div><div class="title">' + esc(book.title || 'The V01D Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div></div><div class="face in"></div>';
+  // the cover carries V01D's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
+  let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The V01D Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
+  return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The V01D Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div></div><div class="face in"></div>';
 }
