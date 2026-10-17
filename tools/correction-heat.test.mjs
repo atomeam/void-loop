@@ -21,3 +21,15 @@ test('the markup escapes untrusted text and puts unplaced corrections apart', ()
   assert.match(html, /data-family="words"/); assert.match(html, /1 more is about answers no skill family owns/);
   assert.match(html, /data-heat-level="1"/);
 });
+
+import { hotEntry } from '../void-live-deploy/lib/correction-heat.js';
+import { fixRequest } from '../void-live-deploy/lib/correction-fix.js';
+test('a hot cell is an action for the owner only, and it drafts for the most corrected skill of that family', () => {
+  const list = [{ skill: 'clock', ask: 'make a clock', text: 'a' }, { skill: 'timer', ask: 'make a timer', text: 'b' }, { skill: 'timer', ask: 'start a timer ' + 'ghp_' + 'a1B2c3D4e5F6g7H8i9J0', text: 'my own words' }, { skill: 'poem', text: 'no ask' }]; // secret-scan: ok: made-up key
+  for (const o of [undefined, {}, { owner: false }]) { const h = heatHtml(list, FAM, undefined, o); assert.ok(!/data-heat-fix|Tap to suggest/.test(h)); }
+  const mine = heatHtml(list, FAM, undefined, { owner: true });
+  assert.match(mine, /data-heat-fix="time"/); assert.ok(!/data-heat-fix="words"/.test(mine), 'a family whose corrections name no ask has no action'); assert.ok(!/data-heat-fix="sky"/.test(mine));
+  const e = hotEntry(list, FAM, 'time'); assert.equal(e.skill, 'timer'); assert.match(e.ask, /^start a timer/, 'the newest of the most corrected skill');
+  assert.equal(hotEntry(list, FAM, 'sky'), null); assert.equal(hotEntry(list, FAM, 'unplaced'), null); assert.equal(hotEntry([], FAM, 'time'), null);
+  const req = fixRequest(e, FAM, 'x'.repeat(60)); assert.ok(!JSON.stringify(req).includes('ghp_a1B2') && !JSON.stringify(req).includes('my own words'), 'same redaction, no visitor words');
+});
