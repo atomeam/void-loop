@@ -2379,6 +2379,25 @@ try {
       +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
       && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
     await F.ctx.close(); }
+  if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? () => { window.Worker = undefined; } : () => {});
+      await F.ask('show me a vector field mind', 700); await until(async () => !!(await F.p.$('.ff-vector-field-mind')), 8000);
+      const read = () => F.p.evaluate(() => { const el = document.querySelector('.ff-vector-field-mind'); return { ink: +el.dataset.ink, cssInk: el.style.getPropertyValue('--ink-density'), hue: el.dataset.hue, glow: el.style.getPropertyValue('--ff-glow'), status: el.querySelector('.ff-hud').textContent, filter: el.style.filter, page: getComputedStyle(document.body).filter, sound: el.querySelector('.ff-sound').getAttribute('aria-pressed'), n: document.querySelectorAll('.ff-vector-field-mind').length }; });
+      const a = await read();
+      const box = await F.p.$eval('.ff-vector-field-mind canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+      await F.p.mouse.move(box.x, box.y); for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + i * 3, box.y + i * 2);
+      await until(async () => (await read()).status.startsWith('gen ') && !/gen 0 /.test((await read()).status), 9000).catch(() => {});
+      const b = await read();
+      await F.p.click('.ff-vector-field-mind .ff-seal'); await until(async () => !!(await F.p.$eval('.ff-vector-field-mind', (e) => e.dataset.seal).catch(() => '')), 4000).catch(() => {});
+      const sealed = await F.p.$eval('.ff-vector-field-mind', (e) => e.dataset.seal || '');
+      out.push({ noWorker, a, b, sealed, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.ink >= 0 && o.a.ink <= 1 && o.a.cssInk === String(o.a.ink) && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 div -?[\d.]+ \u00b7 curl -?[\d.]+/.test(o.b.status) && !/gen 0 /.test(o.b.status) && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.sound === 'false' && /^[0-9a-f]{12}$/.test(o.sealed) && o.b.n === 1 && !o.errors.length;
+    check('field minds: the vector field mind card shows a live ink density that is also its CSS variable, the mind has thought at least once (gen above 0) with and without a Worker, the morph touches the card and not the page, sound stays off, and Seal keeps a record',
+      out.length === 2 && good(out[0]) && good(out[1]) && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+  }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
