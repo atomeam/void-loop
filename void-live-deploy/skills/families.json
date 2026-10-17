@@ -348,7 +348,7 @@
     {
      "name": "go",
      "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "why": "a self-test, 4 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test"
     },
