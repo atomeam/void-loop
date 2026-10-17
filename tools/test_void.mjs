@@ -2380,20 +2380,22 @@ try {
     await R.ctx.route(/en\.wikipedia\.org\/w\/api\.php\?action=(parse|query)/, (r) => { const u = r.request().url(), gta = /Grand(%20|_|\+| )Theft/.test(u);
       return r.fulfill(json(/action=parse/.test(u) ? { parse: { wikitext: gta ? '{{Infobox video game\n| released = {{Video game release|WW|November 19, 2099}}\n}}' : '' } } : { query: { pages: [{ extract: gta ? GTA + ' It is in development.' : 'Zorbleflux has no date.' }] } })); });
     await R.ctx.route(/en\.wikipedia\.org\/api\/rest_v1\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]); seen.push(t);
-      return r.fulfill(json(t === 'Grand_Theft_Auto_VI' ? { type: 'standard', title: 'Grand Theft Auto VI', extract: GTA, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI' } } }
+      return r.fulfill(json(t === 'Grand_Theft_Auto_VI' ? { type: 'standard', title: 'Grand Theft Auto VI', extract: GTA, timestamp: '2026-10-15T09:30:00Z', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI' } } }
         : { type: 'standard', title: 'Zorbleflux', extract: 'Zorbleflux is a word with no date at all.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Zorbleflux' } } })); });
     await R.ask('how many hours til gta6?', 400); await until(async () => /hours?\b/.test(await R.page()) && /2099/.test(await R.page()), 6000);
     const card = await R.page(), link = await R.p.$('.vpage.on .src a[href="https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI"]');
     // asked by Void, twice: the badge shows the raw text the date was read from (here the infobox wikitext line) on hover and on a tap
     await R.p.hover('.vpage.on .ec-badge'); const rawHover = await R.p.$eval('.vpage.on .ec-raw', (c) => ({ shown: getComputedStyle(c).display !== 'none', text: c.textContent }));
     await R.p.mouse.move(0, 0); await R.p.click('.vpage.on .ec-badge'); await R.p.mouse.move(0, 0); const rawTap = await R.p.$eval('.vpage.on .ec-raw', (c) => getComputedStyle(c).display !== 'none');
+    const verified = await R.p.$eval('.vpage.on .ec-verified', (v) => ({ at: v.dataset.verified, text: v.textContent })).catch(() => null); // asked by Void: how fresh the source is
     await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
-    check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
+    check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page with when it was last edited and checked; an event whose page names no date ahead says so, no guess',
       /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && /less sure/.test(card) && /infobox/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
         && rawHover.shown && rawHover.text === '| released = {{Video game release|WW|November 19, 2099}}' && rawTap
+        && verified && verified.at === '2026-10-15T09:30:00Z' && /^· page last edited .*2026 · checked \d/.test(verified.text)
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
-      JSON.stringify({ card: card.slice(0, 400), seen, rawHover, rawTap, none: none.slice(0, 200), errors: R.errors }));
+      JSON.stringify({ card: card.slice(0, 400), seen, rawHover, rawTap, verified, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
@@ -3880,10 +3882,12 @@ try {
     const mergeBody = JSON.stringify({ name: 'Pizza Singularity', line: 'Every slice bends the light around it.', cached: false, power: 99, resistance: 99, income: 9, cost: 0, depth: 40, tier: 'proven' });
     const A = await fresh(); const posts = [];
     await A.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
-    await A.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await A.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, posts.length === 1 ? 1500 : 0)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
     await A.ask('merge a pizza and a black hole', 900);
-    const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000);
-    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind and rarity only, then the picture fills the art box over the plate', !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'kind,rarity,subject' && !A.errors.length, JSON.stringify({ shown, posts, errors: A.errors }));
+    const glowing = () => A.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); return !!a && a.classList.contains('vc-painting') && getComputedStyle(a).animationName === 'vc-paint'; });
+    const pending = await until(glowing, 8000).catch(() => false); // asked by Void: a pulsing glow while the painting is pending
+    const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000), glowAfter = await glowing();
+    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind and rarity only, its art box glows while the paint is pending, then the picture fills the art box over the plate and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'kind,rarity,subject' && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
     await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
     const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
     check('V01D art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();

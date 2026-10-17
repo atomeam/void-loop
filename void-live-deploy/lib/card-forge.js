@@ -11,13 +11,18 @@ export const FORGE_CSS = [
   '.vcard .vc-forge-btn{position:absolute;right:6px;bottom:6px;z-index:3;font:inherit;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:6px;border:1px solid var(--edge);background:rgba(10,10,16,.72);color:hsl(var(--h) 55% 80%);cursor:pointer}',
   '.vcard .vc-forge-btn:hover{background:rgba(10,10,16,.9);box-shadow:0 0 10px var(--edge)}.vcard .vc-forge-btn[disabled]{cursor:default;opacity:.8}',
   '@keyframes vc-forge-in{from{opacity:0;filter:blur(8px) brightness(1.6)}to{opacity:1;filter:none}}@media (prefers-reduced-motion:reduce){.vcard .vc-art .vc-forge-img{animation:none}}',
+  // paint status (asked by Void): a subtle glow pulses round the art box while its painting is pending; a still glow when motion is reduced
+  '.vcard .vc-art.vc-painting{animation:vc-paint 1.6s ease-in-out infinite alternate}@keyframes vc-paint{from{box-shadow:inset 0 0 4px hsl(var(--h,260) 70% 70% / .15)}to{box-shadow:inset 0 0 20px hsl(var(--h,260) 75% 70% / .6)}}',
+  '@media (prefers-reduced-motion:reduce){.vcard .vc-art.vc-painting{animation:none;box-shadow:inset 0 0 14px hsl(var(--h,260) 75% 70% / .45)}}',
 ].join('');
 
 const inflight = new Map(); // subject -> its one POST
 const waiting = new Map(); // subject -> the card elements waiting on a read or a paint (a card's frame is rebuilt when its stats arrive)
 const land = (key, img) => { for (const e of waiting.get(key) || []) { if (e.isConnected) { e._vcForge = img; show(e, img); } } waiting.delete(key); };
 /** what to paint: the answer's own nouns (card-subject.js), or the card's key when the answer says too little. */
-const subjectFor = (el, c) => (el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key);
+// kept on the card from its first ask: a frame rebuilt mid-paint (its stats arrive, a merged card gains data-skill="merge") must not become a
+// new subject, or a slow paint is asked for twice and spends two of the day's paintings on one card
+const subjectFor = (el, c) => el._vcArtKey || (el._vcArtKey = (el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key));
 export const RETRY_S = [25, 50, 100]; const tries = new Map(); // a subject's retries after a busy or slow paint
 /** a paint worth trying again later: no answer, a model timeout, a rate limit or an HTTP error; never the cap or the switch. Pure. */
 export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.why);
@@ -40,8 +45,13 @@ export const kindOf = (el, c) => (el.dataset && el.dataset.cardOwn ? 'merge' : e
 const mode = () => { try { const m = typeof location !== 'undefined' && /[?&]art=(off|button)\b/.exec(location.search); return m ? m[1] : 'auto'; } catch (_) { return 'auto'; } };
 const autoOn = () => mode() === 'auto';
 
+/** the paint-status glow on a card's art box: on while its picture is being painted or a retry waits, off when it lands or settles on its plate. */
+function painting(el, on) {
+  const art = el && el.querySelector && el.querySelector(':scope > .vc-art'); if (!art) return;
+  art.classList.toggle('vc-painting', !!on); if (on) el.dataset.painting = '1'; else delete el.dataset.painting;
+}
 function show(el, img) {
-  const art = el.querySelector(':scope > .vc-art'); if (!art) return;
+  const art = el.querySelector(':scope > .vc-art'); if (!art) return; painting(el, false);
   const url = safeImg(img); if (!url) return;
   for (const n of art.querySelectorAll('.vc-forge-btn, .vc-forge-img')) n.remove();
   const im = document.createElement('img'); im.className = 'vc-forge-img'; im.alt = ''; im.decoding = 'async'; im.src = url;
@@ -64,6 +74,7 @@ function button(el, c) {
 }
 async function paint(el, c, b) {
   if (b) { b.disabled = true; b.textContent = 'painting…'; } else seen.set(subjectFor(el, c), 'asking'); // one paint per subject at a time
+  painting(el, true);
   const sk = subjectFor(el, c); let got = null; // one POST per subject, whichever card element asks (a frame is rebuilt as its facts arrive)
   try { if (!inflight.has(sk)) inflight.set(sk, ask('POST', el, c).finally(() => setTimeout(() => inflight.delete(sk), 3000))); got = await inflight.get(sk); } catch (_) {}
   const img = got && got.state === 'art' ? safeImg(got.img) : '';
@@ -72,6 +83,7 @@ async function paint(el, c, b) {
   // the cap and an off switch are final for the page
   if (!img && !b && autoOn() && retryable(got) && (tries.get(sk) || 0) < RETRY_S.length) { const n = tries.get(sk) || 0; tries.set(sk, n + 1); setTimeout(() => { seen.delete(sk); if (el.isConnected) forge(el, el._vcard || c, null); }, RETRY_S[n] * 1000); return; }
   if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a capped, switched-off or thrice-failed paint is not retried this page
+  if (!img) painting(el, false);
   if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
   if (!el.isConnected) return;
   if (b) { b.disabled = false; b.textContent = got && got.why === 'cap' ? 'out of paint today' : 'try again later'; if (got && (got.why === 'cap' || got.why === 'off')) setTimeout(() => b.remove(), 2500); }
@@ -85,7 +97,7 @@ export function forge(el, c, photo) {
     if (!worthy(el, c) || typeof fetch === 'undefined' || mode() === 'off') return;
     const known = seen.get(subjectFor(el, c));
     if (known && known.startsWith('data:')) { el._vcForge = known; show(el, known); return; }
-    if (known === 'asking') { (waiting.get(subjectFor(el, c)) || waiting.set(subjectFor(el, c), new Set()).get(subjectFor(el, c))).add(el); return; }
+    if (known === 'asking') { (waiting.get(subjectFor(el, c)) || waiting.set(subjectFor(el, c), new Set()).get(subjectFor(el, c))).add(el); if (inflight.has(subjectFor(el, c)) || tries.get(subjectFor(el, c))) painting(el, true); return; }
     if (known === 'plate') return;
     if (known === 'none') { if (autoOn()) paint(el, c, null); else button(el, c); return; }
     seen.set(subjectFor(el, c), 'asking'); // one read per subject at a time

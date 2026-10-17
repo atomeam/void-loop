@@ -53,3 +53,16 @@ test('a picture is centred: a near fit fills the frame, a tall figure is shown w
   assert.ok(tall.fill.w >= 664 && tall.fill.h >= 440, 'the blurred copy still fills the frame');
   const wide = picturePlan(3000, 600, 664, 440); assert.ok(wide.whole); assert.ok(wide.whole.w <= 664 + 1e-9);
 });
+test('visual consistency (asked by Void): every picture shape from 1:20 to 20:1 stays inside the saved card\'s art box, centred, and the blur behind it covers the box', () => {
+  const W = 664, H = 440, eps = 1e-6; let filled = 0, whole = 0;
+  for (let k = -60; k <= 60; k++) { // aspect ratios from 1:20 to 20:1, evenly in log scale
+    const r = Math.pow(20, k / 60), iw = Math.round(1000 * Math.sqrt(r)), ih = Math.round(1000 / Math.sqrt(r)), p = picturePlan(iw, ih, W, H), at = iw + 'x' + ih;
+    assert.ok(p.fill.x <= eps && p.fill.y <= eps && p.fill.x + p.fill.w >= W - eps && p.fill.y + p.fill.h >= H - eps, 'the fill covers the art box: ' + at);
+    if (!p.whole) { filled++; assert.ok((W * H) / (p.fill.w * p.fill.h) >= 0.75 - eps, 'a filled picture loses at most a quarter: ' + at); assert.ok(Math.abs(p.fill.x + p.fill.w / 2 - W / 2) < 1, 'centred across: ' + at); continue; }
+    whole++; const b = p.whole;
+    assert.ok(b.x >= -eps && b.y >= -eps && b.x + b.w <= W + eps && b.y + b.h <= H + eps, 'a whole picture never exceeds the art box: ' + at);
+    assert.ok(Math.abs(b.x + b.w / 2 - W / 2) < 1 && Math.abs(b.y + b.h / 2 - H / 2) < 1, 'and sits in its centre: ' + at);
+    assert.ok(Math.abs(b.w / b.h - iw / ih) < 0.01 * (iw / ih), 'with its own shape: ' + at);
+  }
+  assert.ok(filled > 10 && whole > 10, 'both ways are exercised: ' + filled + ' filled, ' + whole + ' whole');
+});

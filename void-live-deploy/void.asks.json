@@ -1702,6 +1702,26 @@
       "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata.",
       "ledgerAt": "2026-10-17T08:35:01Z",
       "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement a 'visual-cache' for Art Forge so that if a card is closed and reopened, the previously painted image is pulled from D1/local cache instead of re-triggering a Worker AI call.",
+      "ledgerAt": "2026-10-17T07:44:32Z",
+      "why": "built: Art Forge keeps each painted picture in D1; a reopened card reads it (GET, cache only, functions/api/card-art.js) and the page's own map (lib/card-forge.js), never a new Workers AI call"
+    },
+    {
+      "words": "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning.",
+      "ledgerAt": "2026-10-09T21:38:06Z",
+      "why": "built: Void learns from its gaps by itself: repeated misses become miss: jobs in the build queue (lib/learn.js), at once and in the daily learn.yml sweep"
+    },
+    {
+      "words": "Add a 'last-verified' timestamp to the confidence badge so users know how fresh the source data is.",
+      "ledgerAt": "2026-10-17T21:01:46Z",
+      "why": "built: the countdown confidence badge says when its Wikipedia page was last edited and when V01D checked it (skills/event-countdown.js verifiedLine, .ec-verified)"
+    },
+    {
+      "words": "Create a 'visual consistency' check in the builder's CI that flags any saved card where the centered image exceeds the card's aspect ratio bounds.",
+      "ledgerAt": "2026-10-17T21:01:46Z",
+      "why": "built: CI sweeps every picture shape from 1:20 to 20:1 through picturePlan: a whole picture never exceeds the saved card art box and sits in its centre (tools/card-image.test.mjs, run by checks.mjs)"
     }
   ]
 }
