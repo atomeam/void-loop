@@ -901,5 +901,13 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T09:37:26Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "label it pasta | nothing appeared",
+  "note": "fix: \"label it pasta\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
