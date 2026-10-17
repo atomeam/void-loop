@@ -58,3 +58,15 @@ test('swaps: IMPACT is one line per swap, in SWAPS order, and the known adjustme
   assert.equal(impactOf(null, 0), ''); assert.equal(impactOf(butter, 99), '');
   for (const s of SWAPS) for (const line of IMPACT[s.name]) assert.ok(line.length <= 140, s.name + ': a line fits under a swap');
 });
+
+import { timeShift, shiftedTime, shiftWords, IMPACT as IMP2 } from '../void-live-deploy/skills/swaps.js';
+test('swaps: the time a swap moves the cook by is read off its own line and applied to the recipe time', () => {
+  assert.deepEqual(timeShift('bake 2–3 minutes longer'), { lo: 2, hi: 3, sign: 1 });
+  assert.deepEqual(timeShift('cook a minute less'), { lo: 1, hi: 1, sign: -1 });
+  assert.equal(timeShift('stand 5 minutes'), null);
+  assert.deepEqual(shiftedTime(30, timeShift('bake 2–3 minutes longer')), { lo: 32, hi: 33 });
+  assert.deepEqual(shiftedTime(30, timeShift('take it out 1–2 minutes sooner')), { lo: 28, hi: 29 });
+  assert.equal(shiftedTime('x', { lo: 1, hi: 1, sign: 1 }), null);
+  assert.equal(shiftWords({ lo: 2, hi: 3, sign: 1 }), '+2–3 min');
+  assert.ok(Object.values(IMP2).flat().some((l) => timeShift(l)), 'some swap changes the time');
+});
