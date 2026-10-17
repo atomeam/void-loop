@@ -63,7 +63,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 500)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 4000)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
@@ -444,6 +444,7 @@ async function fresh(...inits) {
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
+  const logs = []; p.on('console', (m) => { if (logs.length < 40 && /error|warn/.test(m.type())) logs.push(m.type() + ': ' + m.text().slice(0, 160)); }); // diagnostics only: what the page said, for a check that fails on a runner
   p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; watch.pageObj = p; } });
   // the stall report below needs the debugger attached BEFORE a page hangs (Chrome cannot answer "enable" from a page that is stuck in a loop)
   ctx.newCDPSession(p).then((cdp) => { cdp.send('Debugger.enable').then(() => { p.__cdp = cdp; }, () => {}); }, () => {});
@@ -452,7 +453,7 @@ async function fresh(...inits) {
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
-  return { ctx, p, ask, state, page, whisper, errors };
+  return { ctx, p, ask, state, page, whisper, errors, logs };
 }
 
 try {
@@ -1146,14 +1147,16 @@ try {
     await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'vase.png', mimeType: 'image/png', buffer: png });
     await until(async () => !!(await A.p.$('.vpage.on .ap-make a[data-ask]')), 5000);
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
-    await A.p.click('.vpage.on .ap-make a').catch(() => {}); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
+    let clickErr = ''; await A.p.click('.vpage.on .ap-make a', { timeout: 8000 }).catch((e) => { clickErr = String(e.message).replace(/\s+/g, ' ').slice(0, 700); }); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
     await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/V01D/g, '')) && !A.errors.length
         && coinMake === 0 && makeAsk === 'make me a vase' && /^I can make one of these: make me a vase, a model you can turn/.test(makeLine) && made.length === 1,
-      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), you: you.replace(/\s+/g, ' ').slice(0, 120), coinMake, makeLine, makeAsk, made, errors: A.errors }));
+      JSON.stringify({ sent: sent.map((x) => ({ note: x.note, image: String(x.image).slice(0, 30) })), card: card.replace(/\s+/g, ' ').slice(0, 160), cardTail: card.replace(/\s+/g, ' ').slice(-420), you: you.replace(/\s+/g, ' ').slice(0, 120), coinMake, makeLine, makeAsk, made, errors: A.errors, console: A.logs, clickErr,
+        // which part of the check failed (diagnostics only; the assertion above is unchanged)
+        parts: { two: sent.length === 2, jpeg: !!sent[0] && /^data:image\/jpeg;base64,/.test(sent[0].image), note: !!sent[0] && sent[0].note === 'from my grandfather', price: /\$540/.test(card), expert: /looked at in hand/.test(card), saw: /What I saw: A worn silver coin/.test(card), you: /What you are worth/.test(you), noNumber: !/\$|\d/.test(you.replace(/V01D/g, '')), noErrors: !A.errors.length, noCoinLink: coinMake === 0, vaseAsk: makeAsk === 'make me a vase', vaseLine: /^I can make one of these: make me a vase, a model you can turn/.test(makeLine), one: made.length === 1 } }));
     await A.ctx.close(); }
   // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
   // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
