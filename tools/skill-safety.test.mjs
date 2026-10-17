@@ -8,6 +8,7 @@ const TESTS = [['merges.test.mjs', "import m from '../void-live-deploy/skills/me
 test('only the unit tests that import a changed skill or lib are picked, and a changed test runs itself', () => {
   assert.deepEqual(testsFor(['void-live-deploy/skills/status.js', 'README.md'], TESTS).files, ['tools/status-fix.test.mjs']);
   assert.deepEqual(testsFor(['void-live-deploy/lib/keep-going.js', 'tools/new.test.mjs'], TESTS).files, ['tools/keep.test.mjs', 'tools/new.test.mjs']);
+  assert.deepEqual(testsFor(['void-live-deploy/skills/status.js'], [['browser.test.mjs', "import { chromium } from 'playwright-core'; // skills/status.js"]]).files, [], 'a browser script is left to verify.yml');
   assert.deepEqual(testsFor(['void.html', 'docs/MAP.md'], TESTS).files, []);
   assert.equal(testsFor(['void-live-deploy/skills/merges.js'], [['a.test.mjs', "skills/merges.jsx"]]).files.length, 0, 'a longer name is not a match');
 });
