@@ -6671,7 +6671,8 @@ try {
     const swapped = await card();
     await Q.ask('give me a converter for 5 miles to km', 600);
     const miles = await card(), count = await Q.p.$$eval('.convert-card', (e) => e.length);
-    await Q.p.reload(); await Q.p.waitForTimeout(900);
+    // wait for the restored card itself, not a fixed 900 ms: on a loaded runner the restore lands later (failed on main 2026-10-17, and on every commit back to 10-16 here)
+    await Q.p.reload(); await until(async () => !!(await Q.p.$('.convert-card .cv-swap')), 6000);
     const kept = await card();
     await Q.ask('close the converter', 500);
     const gone = !(await Q.p.$('.convert-card'));
