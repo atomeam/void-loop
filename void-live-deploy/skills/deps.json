@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 451,
+ "counted": 453,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -307,6 +307,12 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2
+  },
+  {
+   "file": "lib/compose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
   },
   {
    "file": "lib/context-check.js",
@@ -1679,6 +1685,12 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/compose.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/music.js"
    ]
   },
   "lib/context-check.js": {
@@ -4214,6 +4226,12 @@
    "importedBy": [
     "skills/media-pick.js"
    ]
+  },
+  "skills/music.js": {
+   "imports": [
+    "lib/compose.js"
+   ],
+   "importedBy": []
   },
   "skills/news.js": {
    "imports": [

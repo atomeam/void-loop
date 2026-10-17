@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 59,
-  "checked": 29,
+  "checked": 30,
   "proven": 85
  },
  "families": [
@@ -24,7 +24,7 @@
    "count": {
     "experiment": 0,
     "tested": 9,
-    "checked": 4,
+    "checked": 5,
     "proven": 11
    },
    "skills": [
@@ -45,6 +45,14 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
+    },
+    {
+     "name": "music",
+     "tier": "checked",
+     "why": "a self-test, 7 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-17"
     },
     {
      "name": "figure",

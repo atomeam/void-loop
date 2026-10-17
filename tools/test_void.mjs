@@ -6492,6 +6492,25 @@ try {
     check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
+  // V01D makes music (skills/music.js, lib/compose.js; owner, 2026-10-17: "void should also learn how to make music"): an original piece composed from the ask,
+  // shown as a piano roll with what was made (key, tempo, bars) from the real values, played with Web Audio, saved as a WAV, its notes copied as text.
+  if (want("V01D music: make me a lullaby composes a piece, shows its roll, plays, saves a WAV and copies the notes")) { const M = await fresh();
+    await M.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
+    await M.ask('make me a lullaby', 900); await until(async () => /Save as WAV/.test(await M.page()), 8000);
+    const info = await M.p.evaluate(() => ({ notes: document.querySelectorAll('.vpage.on .mu-note').length, text: document.querySelector('.vpage.on p') ? document.querySelector('.vpage.on p').textContent : '' }));
+    check('music: "make me a lullaby" shows a card with a piano roll and says its key, tempo and bars (an experiment-rated new skill)', info.notes >= 8 && /lullaby piece in [A-G]#? [a-z ]+, \d+ beats a minute, 8 bars/.test(info.text), JSON.stringify(info).slice(0, 220));
+    await M.p.click('.vpage.on .mu-play'); await M.p.waitForTimeout(400);
+    const playing = await M.p.$eval('.vpage.on .mu-play', (b) => b.textContent); await M.p.click('.vpage.on .mu-play'); await M.p.waitForTimeout(200);
+    check('music: Play starts the piece (the button reads Stop) and Stop ends it (reads Play)', playing === 'Stop' && (await M.p.$eval('.vpage.on .mu-play', (b) => b.textContent)) === 'Play', playing);
+    await M.p.click('.vpage.on .mu-copy'); await M.p.waitForTimeout(300); const copied = await M.p.evaluate(() => window.__copied);
+    check('music: "Copy the notes" puts the bar-by-bar notes on the clipboard', /^Lullaby/.test(copied) && (copied.match(/^bar \d/gm) || []).length === 8 && /bpm/.test(copied), copied.slice(0, 120));
+    const dl = M.p.waitForEvent('download', { timeout: 20000 }).catch(() => null); await M.p.click('.vpage.on .mu-wav'); const d = await dl;
+    let riff = false; if (d) { const path = await d.path(); const b = fs.readFileSync(path); riff = b.slice(0, 4).toString() === 'RIFF' && b.slice(8, 12).toString() === 'WAVE' && b.length > 100000; }
+    check('music: "Save as WAV" downloads a rendered .wav (RIFF/WAVE, seconds of audio)', !!d && /\.wav$/.test(d.suggestedFilename()) && riff, d ? d.suggestedFilename() : 'no download');
+    const again = await M.p.evaluate(() => 1); await M.ask('play some music', 900);
+    check('music: "play some music" is not taken (V01D does not play recordings)', !(await M.p.$('.vpage.on .mu-play')) && !!again, '');
+    check('music: no page errors', !M.errors.length, M.errors.join(' | ').slice(0, 200));
+    await M.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web
   // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
   if (want("V01D web4: the four steps of the web as one card, the honest sentence, a tapped link runs its ask")) { const W = await fresh();
