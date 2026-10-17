@@ -28,6 +28,8 @@ const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WO
 const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
 const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
 const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|void|v01d)\s+(?:have|has))?|(?:the\s+)?(?:v01d|void)\s+(?:book|guide|manual|handbook))$/i;
+// the rule registry (asked by Void): "rule registry", "show the router rules", "list all active router rules" open the book at that chapter
+const RE_RULES = /^(?:(?:open|show(?:\s+me)?|read|list|see|browse)\s+)?(?:(?:the|your|all(?:\s+the)?|every)\s+)?(?:(?:v01d|void)\s*'?s?\s+)?(?:active\s+)?(?:rule[- ]?registry|(?:router|routing)\s+rules|rules\s+of\s+the\s+router)(?:\s+(?:in|from)\s+the\s+(?:book|tome|guide))?(?:\s+please)?$/i;
 
 /** { at } for an ask that opens the book (at: a name to open it on, or ''), null otherwise. Pure. */
 export function guideOf(text) {
@@ -36,6 +38,7 @@ export function guideOf(text) {
   const at = RE_AT.exec(t);
   if (at) return { at: at[1].trim() };
   if (RE_NEWS.test(t)) return { at: "what\u2019s new" };
+  if (RE_RULES.test(t)) return { at: 'rule registry' };
   if (RE_BOOK.test(t) || RE_ALL.test(t) || RE_MORE.test(t)) return { at: '' };
   return null;
 }
@@ -257,8 +260,8 @@ function run(text, api) {
 
 export default {
   name: 'guide',
-  examples: ['open the book', 'the guide', 'show me everything you can do', 'the book at chess', 'everything you can do', 'the manual', 'flip through the book', 'what\'s in the book'],
-  nearMisses: ['what can you do', 'books by octavia butler', 'book called dune', 'open a notepad', 'a book about dogs', 'the book thief', 'menu', 'help', 'guide me to the station', 'make a book'],
+  examples: ['open the book', 'the guide', 'show me everything you can do', 'the book at chess', 'everything you can do', 'the manual', 'flip through the book', 'what\'s in the book', 'rule registry', 'show the router rules'],
+  nearMisses: ['what can you do', 'books by octavia butler', 'book called dune', 'open a notepad', 'a book about dogs', 'the book thief', 'menu', 'help', 'guide me to the station', 'make a book', 'the rules of chess', 'house rules'],
   match(lower, text) { return !!guideOf(text || lower); },
   run,
 };

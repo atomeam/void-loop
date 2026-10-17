@@ -7,6 +7,7 @@
 // leaves. The content is the same skills/guide.json page data the generator writes (lib/guide.js), so nothing is left out.
 import { glyphSvg, openerSvg, TIERS, TIER_MEANING } from './guide.js';
 import { artSvg, seasonOf } from './card-art.js';
+import { rulesPageHtml, RULES_CSS } from './rule-registry.js';
 
 export const SERIF = '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", Palatino, "URW Palladio L", Georgia, "Times New Roman", serif';
 
@@ -92,7 +93,7 @@ export const TOME_CSS = [
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
   '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
-].join('');
+].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Void)
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
@@ -148,8 +149,9 @@ export function pageHtml(p, book, esc) {
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
     return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
-      + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
+      + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
+  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Void): lib/rule-registry.js
   if (p.kind === 'index') {
     return '<div class="tome-kicker">Index</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><ul class="tome-list gb-list">' + (p.entries || []).map((e) => '<li>' + jump(e.page, e.name, esc) + '<span class="lead-dots"></span><span class="n">' + e.page + '</span></li>').join('') + '</ul></div>';
   }

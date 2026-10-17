@@ -4025,6 +4025,29 @@ try {
       dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
       JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
     await B.ctx.close(); }
+  // asked by Void: "Create a 'rule-registry' view within the leather tome that lists all active router rules as illuminated manuscript entries"
+  // (lib/rule-registry.js): "show the router rules" opens the book at the Rule registry, every skill in routing order as an entry with a gilded initial
+  if (want('the book: the rule registry lists every active router rule as an illuminated entry')) { const R = await fresh();
+    const order = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+    await R.ask('show the router rules', 900); await until(async () => !!(await R.p.$('#vtome .tome.opened')), 8000); await R.p.waitForTimeout(500);
+    const chap = await R.p.evaluate(() => (window.__voidBook.chapters || []).find((c) => c.id === 'rules') || null);
+    const opened = await R.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((x) => +x.dataset.page));
+    const read = () => R.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].flatMap((pg) => { const folio = pg.querySelector('.tome-folio'), ft = folio ? folio.getBoundingClientRect().top : 1e9;
+      return [...pg.querySelectorAll('li.tome-rx')].map((li) => { const cap = li.querySelector('.tome-rx-cap'), cs = getComputedStyle(cap), b = li.getBoundingClientRect(), a = li.querySelector('a[data-ask]');
+        return { name: li.dataset.rule, rank: +li.dataset.rank, no: li.querySelector('.tome-rx-no').textContent, cap: cap.textContent, ink: cs.backgroundColor, gold: cs.color, ask: a ? a.dataset.ask : '', fits: b.bottom <= ft + 1 && b.height > 0 }; }); }));
+    await R.p.evaluate((n) => window.__voidBook.go(n), chap ? chap.from + 1 : 0); await R.p.waitForTimeout(1300);
+    const first = await read();
+    await R.p.evaluate((n) => window.__voidBook.go(n), chap ? chap.to : 0); await R.p.waitForTimeout(1300);
+    const last = await read();
+    const ask = last.find((e) => e.ask) || {};
+    if (ask.ask) await R.p.click('#vtome li.tome-rx a[data-ask]');
+    const closed = await until(async () => !(await R.p.$('#vtome')), 4000);
+    check('the book (asked by Void): "show the router rules" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it',
+      !!chap && opened.includes(chap.from) && first.length >= 2 && first[0].name === order[0] && first[0].rank === 1 && first[0].no === 'Rule I' && first[0].cap === order[0][0].toUpperCase()
+        && first.every((e) => e.ink !== 'rgba(0, 0, 0, 0)' && e.gold === 'rgb(241, 212, 122)' && e.fits) && last.some((e) => e.name === order[order.length - 1] && e.rank === order.length) && last.every((e) => e.fits)
+        && !!ask.ask && !!closed && !R.errors.length,
+      JSON.stringify({ chap, opened, first: first.slice(0, 3), firstN: first.length, last: last.slice(-2), ask: ask.ask, closed, e: R.errors }));
+    await R.ctx.close(); }
   // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
   // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
   // says how many are new since the book was last opened here (localStorage, never required)

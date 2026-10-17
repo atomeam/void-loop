@@ -229,6 +229,7 @@ for (const [name, file] of [
   ['guide', 'guide.test.mjs'],
   ['web4', 'web4.test.mjs'],
   ['tome', 'tome.test.mjs'],
+  ['rule-registry', 'rule-registry.test.mjs'],
   ['card-frame', 'card-frame.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],

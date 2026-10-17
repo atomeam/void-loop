@@ -62,7 +62,7 @@ const sample = () => {
 test('compose: a family skill opens into its members, each on one page in its family; chapters, numbering and the index', () => {
   const b = sample();
   assert.deepEqual(b.unplaced, []);
-  assert.deepEqual(b.chapters.map((c) => c.id), ['front', 'time', 'games', 'self', 'minis', 'index']);
+  assert.deepEqual(b.chapters.map((c) => c.id), ['front', 'time', 'games', 'self', 'minis', 'rules', 'index']);
   assert.deepEqual(b.pages.map((p) => p.n), b.pages.map((_, i) => i + 1), 'pages are numbered 1.. in order');
   assert.deepEqual(b.pages.slice(0, 4).map((p) => p.kind), ['cover', 'how', 'legend', 'toc']);
   const timer = b.pages.find((p) => p.name === 'timer');
@@ -76,7 +76,7 @@ test('compose: a family skill opens into its members, each on one page in its fa
   assert.deepEqual(minis.map((p) => p.name + ':' + p.owner + ':' + p.line), ['chess:chess:The 3D version of the chess card.', 'clock:clock:A brass desk clock']);
   assert.deepEqual(b.index.map((e) => e.name), ['Chess', 'Chess (3D)', 'Clock', 'Clock (3D)', 'Growing Pains', 'Growth', 'Timer', 'VoidQuest'], 'A to Z, a boxed game under its box name and its own');
   assert.ok(b.index.every((e) => b.pages[e.page - 1] && (b.pages[e.page - 1].title === e.name.replace(' (3D)', '') || b.pages[e.page - 1].name === e.name.toLowerCase())), 'the index points at the right pages');
-  assert.deepEqual(b.totals, { pages: b.pages.length, chapters: 6, skills: 4, games: 3, minis: 2 });
+  assert.deepEqual(b.totals, { pages: b.pages.length, chapters: 7, skills: 4, games: 3, minis: 2 });
   assert.equal(b.pages[b.pages.length - 1].kind, 'index');
 });
 
