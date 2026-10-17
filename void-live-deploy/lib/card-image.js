@@ -4,6 +4,7 @@
 // lines of the text, the Power / Resistance / Income plates, the collector number and the foil by rarity. toPng() renders it in the browser.
 // Pure except toPng(). Every text field is escaped; nothing is fetched, so the picture never taints a canvas.
 import { artInner, rarityKey, RARITY_LOOK } from './card-art.js';
+import { safeImg } from './art-rules.js';
 
 export const CARD_W = 744, CARD_H = 1039, BLEED = 35;
 const INK = '#0a0a10';
@@ -67,7 +68,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   // the card's own picture (a poster, a still), already drawn small onto a canvas by photoData(): true colour, the plate over it as a light texture
   const photo = /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(String(d.photo || '')) ? d.photo : '';
   if (photo) s += '<image x="40" y="122" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice" href="' + photo + '"/>';
-  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '"' + (photo ? ' opacity=".28" style="mix-blend-mode:overlay"' : '') + '>' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + '</svg>';
+  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '"' + (photo ? ' opacity=".28" style="mix-blend-mode:overlay"' : '') + '>' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph, nouns: d.nouns }, { w: aw, h: ah }) + (!photo && safeImg(d.art) ? '<image href="' + safeImg(d.art) + '" x="0" y="0" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice"/>' : '') + '</svg>'; // the Art Forge's painted picture (lib/card-forge.js) over the plate when the card has one and no photo: a data URL only, so the canvas is never tainted
   s += '<rect x="40" y="122" width="' + aw + '" height="' + ah + '" fill="none" stroke="' + edge + '" stroke-width="4"/>';
   // type line
   const type = String(d.typeLine || d.kind || '').replace(/\s+/g, ' ').trim().toUpperCase().slice(0, 52);
