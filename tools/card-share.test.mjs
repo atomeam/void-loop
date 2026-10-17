@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dataOf, codeOf, shareText, parse, fileName, MARK, textOf, tidy } from '../void-live-deploy/lib/card-share.js';
+import { dataOf, codeOf, shareText, parse, fileName, MARK, textOf, tidy, artPicture } from '../void-live-deploy/lib/card-share.js';
 
 const card = { t: "What's New Pussycat? ✦", k: 'FILM · SONG — 1965', b: 'A 1965 film.\n\nIt is also a song by Tom Jones.', src: [{ t: 'Wikipedia', u: 'https://en.wikipedia.org/wiki/What%27s_New_Pussycat%3F' }, { t: 'bad', u: 'javascript:alert(1)' }] };
 test('copy text reads well and ends in one code line', () => {
@@ -49,4 +49,14 @@ test('a saved card reads as words: blocks on their own lines, side-by-side piece
   assert.equal(tidy(textOf(el('P', 'one', el('BR'), 'two'))), 'one\ntwo');
   assert.equal(tidy(textOf(el('P', 'keep ', el('B', 'bold'), ' words'))), 'keep bold words');
   assert.equal(tidy(textOf(el('DIV', el('STYLE', '.x{}'), 'text'))), 'text');
+});
+
+test('a saved card draws the Art Forge painting, then the subject photo, then the plate (owner: "still no art")', async () => {
+  const PAINT = 'data:image/jpeg;base64,/9j/4AAQSkZJRg==';
+  const card = (sel) => ({ querySelector: (q) => (q === '.vc-art img.vc-forge-img' && sel.forge ? { getAttribute: () => sel.forge, src: sel.forge } : q === 'img.vc-art-photo' && sel.photo ? { getAttribute: () => sel.photo } : null) });
+  assert.equal(await artPicture(card({ forge: PAINT })), PAINT);
+  assert.equal(await artPicture(card({ forge: PAINT, photo: 'http://x/p.jpg' })), PAINT);
+  assert.equal(await artPicture(card({ photo: 'http://not-https/p.jpg' })), ''); // photoData only fetches https
+  assert.equal(await artPicture(card({})), '');
+  assert.equal(await artPicture(card({ forge: 'javascript:alert(1)' })), '');
 });

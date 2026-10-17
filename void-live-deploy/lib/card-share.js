@@ -77,12 +77,20 @@ export function imageData(el, d) {
   return { art: el._vcForge || '', nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill };
 }
 const download = (blob, name) => { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
+/** the picture a saved card draws in its art box: the Art Forge's painting first (owner, 2026-10-17: "still no art": the copied card
+ * kept the ink plate because only a subject photo was looked for), else the subject photo, else '' (the plate). A painting kept as a
+ * data URL is drawn as it is; a link goes through photoData. */
+export async function artPicture(el) {
+  const forged = el && el.querySelector('.vc-art img.vc-forge-img'), photo = el && el.querySelector('img.vc-art-photo');
+  if (forged) { const src = forged.getAttribute('src') || ''; if (/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return src; const got = await photoData(forged.src || src); if (got) return got; }
+  return photo ? photoData(photo.getAttribute('src')) : '';
+}
 /** the buttons on a card: copy card (text and picture), save card (the picture), save text. Idempotent. */
 export function bar(el) {
   if (!el || el.querySelector(':scope > .vc-share') || el.classList.contains('skyc')) return;
   const w = document.createElement('div'); w.className = 'vc-share';
   const mk = (label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); w.appendChild(b); };
-  const png = async (d) => { const ph = el.querySelector('img.vc-art-photo'), photo = ph ? await photoData(ph.getAttribute('src')) : ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
+  const png = async (d) => { const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
   mk('copy card', async () => {
     const d = readCard(el), text = shareText(d);
     try { if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) { await navigator.clipboard.write([new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }), 'image/png': png(d) })]); return 'copied'; } } catch (_) { /* the picture could not ride along: text only */ }
