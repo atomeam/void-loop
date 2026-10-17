@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 100,
+ "runsTotal": 101,
  "kinds": {
   "grow": 15,
-  "file": 48,
+  "file": 49,
   "teach": 7,
   "tighten": 7,
   "none": 23
  },
  "runs": [
+  {
+   "at": "2026-10-17T06:15:29Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what can I buy\" missing text /store|buy|\\$/; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T06:09:27Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T15:29:50Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "tighten",
-   "note": "load ceiling 1400 -> 1200 ms"
   }
  ],
  "seen": {
@@ -268,9 +268,9 @@
   "skill:swaps": "2026-10-17T06:09:27Z",
   "skill:swarm": "2026-10-17T06:09:27Z",
   "skill:guide": "2026-10-17T06:09:27Z",
-  "skill:throw-off": "2026-10-16T05:48:40Z",
-  "skill:tip": "2026-10-16T05:48:40Z",
-  "skill:together": "2026-10-16T06:02:43Z",
+  "skill:throw-off": "2026-10-17T06:15:29Z",
+  "skill:tip": "2026-10-17T06:15:29Z",
+  "skill:together": "2026-10-17T06:15:29Z",
   "skill:translate": "2026-10-16T06:02:43Z",
   "skill:trialwatch": "2026-10-16T06:02:43Z",
   "skill:merges": "2026-10-16T06:09:19Z",
