@@ -45,6 +45,13 @@ async function cached(env, key) {
 async function madeToday(env) {
   try { await ensure(env); const r = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_art WHERE day = ?').bind(today()).first(); return Number(r && r.n) || 0; } catch (_) { return Infinity; }
 }
+// why a paint gave the plate, counted by day (owner, 2026-10-17: "still no art": three paintings in a day, and nothing said why). The reason is the model's
+// own error (cut to 80 characters, keys and secrets removed), "timeout" or "not an image"; never a subject or anything typed. Read with D1: void_art_miss.
+export const missWhy = (e) => (e && /^slow$/.test(e.message) ? 'timeout' : redact(String((e && e.message) || e || 'error')).replace(/\s+/g, ' ').slice(0, 80));
+async function noteMiss(env, why) {
+  try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_miss (day TEXT NOT NULL, why TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, why))').run();
+    await env.DB.prepare('INSERT INTO void_art_miss (day, why, n) VALUES (?, ?, 1) ON CONFLICT(day, why) DO UPDATE SET n = n + 1').bind(today(), why).run(); } catch (_) {}
+}
 const hit = (row, key) => ({ state: 'art', key, img: row.img, cached: true, day: row.day });
 const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
 
@@ -81,7 +88,8 @@ export async function onRequestPost({ request, env }) {
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS)),
     ]);
     img = imageOf(r);
-  } catch (_) { return plate('busy'); }
+    if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
+  } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
   if (!img) return plate('busy'); // nothing usable: nothing is kept
   try {
     await ensure(env);

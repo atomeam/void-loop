@@ -40,6 +40,8 @@ export function kindWord(s) {
   return KINDS.find((k) => k.toLowerCase() === w) || KIND_WORD[w] || 'Idea';
 }
 /** 'halloween' in October (month 0-11 === 9) or with ?season=halloween; ?season=off turns it off. Pure. */
+/** a subject the October skin suits. */
+export const SPOOKY = /\b(?:hallowe+n|horror|haunt\w*|ghosts?|ghouls?|witch\w*|vampires?|zombies?|monsters?|spooky|scary|occult|pumpkins?|graves?|graveyard|curse[ds]?|demons?|skeletons?|undead|creepy)\b/i;
 export function seasonOf(month, search = '') {
   const m = /[?&]season=([a-z]+)/i.exec(String(search || ''));
   if (m) return m[1].toLowerCase() === 'halloween' ? 'halloween' : 'off';
@@ -304,7 +306,9 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
   const key = String(card.key || card.name || kind), rk = rarityKey(card.rarity);
   // card.ink (lib/art-meta.js: a film's or song's decade): the line quality of another rarity's look, the foil and stars stay the card's own rating
   const ik = card.ink && card.ink in RARITY_LOOK ? card.ink : '', RL = ik ? { ...RARITY_LOOK[rk], ink: RARITY_LOOK[ik].ink, wob: RARITY_LOOK[ik].wob, dens: RARITY_LOOK[ik].dens, w: RARITY_LOOK[ik].w } : RARITY_LOOK[rk];
-  const hot = card.season === 'halloween' && !mots.length;
+  // the haunted skin (bats, candle, eyes) only on a card about something spooky: on any other subject it hid what the card is about (owner's K-pop
+  // card, 2026-10-17: "it didnt look" like K-pop at all, a candle and bats over a music genre)
+  const hot = card.season === 'halloween' && !mots.length && SPOOKY.test(String(card.key || card.name || '') + ' ' + (card.nouns || []).join(' '));
   const hue = Number.isFinite(+card.hue) ? Math.round(+card.hue) % 360 : seedOf(key) % 360;
   const seed = seedOf(key + '|' + kind), r = rng(seed);
   const id = 'a' + seed.toString(36) + (hot ? 'h' : 'b') + rk[0] + (ik ? 'i' + ik[0] : '') + (kind === 'Game' && card.glyph ? 'g' : '');

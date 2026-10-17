@@ -9,7 +9,9 @@ const STOP = new Set(('about above after again against also always another aroun
   + 'movie movies film films watch watching recommend recommended recommendation pick picks choose answer answers question source sources according based people person '
   + 'tonight friends friend together night pretty quite maybe perhaps rated rating review reviews story stories plot something someone anything everyone mostly start '
   + 'started find finds need needs help idea ideas kind list lists top best better worth see seen look looks sure part parts real very right year years released release '
-  + 'directed director starring stars plays cast known called named long short high low new old big small little').split(' '));
+  + 'directed director starring stars plays cast known called named long short high low new old big small little '
+  // the words about V01D and the search, not the subject (owner's K-pop card, 2026-10-17: "Closest match I found for void kpop" made it paint "match void")
+  + 'void v01d match matches closest search searched').split(' '));
 const MOTIFS = {
   hand: 'hand hands fist palm finger fingers glove', eye: 'eye eyes gaze vision watcher', skull: 'skull skulls bone bones dead death corpse skeleton grave tomb embalmed mummy',
   ghost: 'ghost ghosts spirit spirits haunt haunted haunting soul souls phantom specter possession possessed demon demons', moon: 'moon lunar crescent night midnight',
@@ -17,6 +19,7 @@ const MOTIFS = {
   house: 'house home door castle tower mansion building room cabin village', key: 'key keys lock secret mystery', book: 'book books tome library novel magic spell spells',
   sword: 'sword swords blade knife war battle weapon fight warrior', flame: 'flame fire burn burning ember dragon explosion', crown: 'crown king queen throne royal kingdom',
   wave: 'ocean sea wave waves water ship island river boat', mountain: 'mountain mountains peak climb hill', heart: 'heart love romance hearts', gem: 'crystal gem gems diamond jewel treasure gold',
+  note: 'music musical song songs singer singers band bands album albums melody concert concerts dance dancing idol idols choir orchestra guitar piano jazz rock opera rapper rappers', // the K-pop card had no picture of its own (2026-10-17)
   clock: 'clock time watchmaker hour', mask: 'mask masks mask disguise party carnival theatre',
 };
 const WORD_MOTIF = {}; for (const [m, ws] of Object.entries(MOTIFS)) for (const w of ws.split(' ')) if (!WORD_MOTIF[w]) WORD_MOTIF[w] = m;
@@ -63,6 +66,7 @@ const DRAW = {
   heart: [['M50 90L12 48Q4 26 26 18Q42 14 50 32Q58 14 74 18Q96 26 88 48Z', 'G']],
   gem: [['M24 24H76L94 46L50 94L6 46Z', 'L'], ['M6 46H94M24 24L38 46L50 94L62 46L76 24M38 46L50 24L62 46', 'N']],
   clock: [[circ(50, 50, 40), 'P'], ['M50 20V50L68 62M50 12V16M50 84V88M12 50H16M84 50H88', 'N']],
+  note: [[circ(30, 78, 13), 'G'], [circ(74, 70, 13), 'G'], ['M43 78V22L87 12V70', 'N'], ['M43 22L87 12V26L43 36Z', 'I']],
   mask: [['M10 28Q50 12 90 28Q92 64 70 80Q50 94 30 80Q8 64 10 28Z', 'P'], ['M24 42Q34 36 44 46Q34 54 24 42ZM56 46Q66 36 76 42Q66 54 56 46Z', 'I'], ['M38 70Q50 78 62 70', 'N']],
 };
 /** the motifs as ink drawings for an art box of w x h: a gold halo of sigils behind, the first motif large, the others beside it. `c` = { P, L, D, G, ink, sw }. Pure. */
