@@ -64,3 +64,22 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : '')
     + '</div>';
 }
+
+/** the health pulse (self card): the latest incident, its commit and the families its checks map to; null when none is recorded. Pure. */
+export function pulseOf(a) {
+  const l = a && a.recent && a.recent[0]; if (!l) return null;
+  const fams = [...new Map(l.checks.filter((c) => c.family).map((c) => [c.family, c.family])).keys()];
+  return { sha: l.sha, at: l.at, suite: l.suite, families: fams, unmapped: l.checks.filter((c) => !c.family).length, checks: l.checks };
+}
+/**
+ * The pulse's markup: read-only. Without an owner it has no button; with `owner` each mapped failing check of the latest incident gets a
+ * "Suggest fix" (lib/correction-fix.js, the existing owner-only /api/propose-fix; a draft only, never run by itself). Pure; all text escaped.
+ */
+export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) {
+  const p = pulseOf(a), head = '<div class="vh">Health pulse</div>';
+  if (!p) return head + '<div class="sub" data-pulse-empty="1">No incidents recorded.</div>';
+  return head + '<div data-pulse="1"><div><code>' + esc(p.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(p.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(p.suite) + '</span></div>'
+    + '<div class="sub">' + (p.families.length ? 'Families it maps to: ' + p.families.map((f) => esc(names[f] || f)).join(', ') : 'None of its failing checks map to a family') + (p.unmapped ? ' · ' + esc(p.unmapped) + ' unmapped' : '') + '.</div>'
+    + (owner ? '<ul data-pulse-checks="1">' + p.checks.map((c, i) => c.skill ? '<li>' + esc(c.text.split(':')[0]) + ' <button type="button" class="tr-copy" data-incident-fix="' + esc(i) + '">Suggest fix</button><span data-fix-out></span></li>' : '').join('') + '</ul>' : '')
+    + '</div>';
+}

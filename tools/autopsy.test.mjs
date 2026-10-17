@@ -46,3 +46,30 @@ test('the skill answers its examples and leaves its near misses alone', () => {
   for (const n of skill.nearMisses) assert.ok(!skill.match(n.toLowerCase(), n), n);
   assert.ok(skill.suite().ok);
 });
+
+import { pulseOf, pulseHtml } from '../void-live-deploy/lib/autopsy.js';
+import { incidentRequest, suggestIncidentFix } from '../void-live-deploy/lib/correction-fix.js';
+test('the pulse shows the latest incident, its sha and families, or says none was recorded', () => {
+  const a = autopsy(SAMPLE, FAM, GUIDE), p = pulseOf(a);
+  assert.equal(p.sha, '95164ec9caef7fdf87f0e19b0bef2aeeb5c8d16b'); assert.deepEqual(p.families, ['make']); assert.equal(p.unmapped, 1);
+  const html = pulseHtml(a, undefined, { names: { make: 'Making <things>' } });
+  assert.match(html, /<code>95164ec9<\/code>/); assert.match(html, /Making &lt;things&gt;/); assert.match(html, /1 unmapped/);
+  assert.match(pulseHtml(autopsy({ incidents: [] }, FAM, GUIDE)), /No incidents recorded/); assert.equal(pulseOf(autopsy(undefined, null, null)), null);
+});
+test('a non-owner never sees the Suggest fix action; the owner sees it only on mapped checks', () => {
+  const a = autopsy(SAMPLE, FAM, GUIDE);
+  for (const o of [undefined, {}, { owner: false }]) assert.ok(!/incident-fix|Suggest fix/.test(pulseHtml(a, undefined, o)), JSON.stringify(o));
+  const mine = pulseHtml(a, undefined, { owner: true });
+  assert.equal((mine.match(/data-incident-fix=/g) || []).length, 1, 'one mapped check in the latest incident'); assert.match(mine, /data-incident-fix="0"/);
+});
+test('the incident request carries only the redacted check name, skill and family; it is refused without the owner key', async () => {
+  const KEY = 'ghp_' + 'a1B2c3D4e5F6g7H8i9J0'; // secret-scan: ok: made-up key to test redaction
+  const chk = { text: 'convert card ' + KEY + ': maths and "secret detail" after the colon', skill: 'convert', family: 'make' };
+  const req = incidentRequest(chk, FAM, 'x'.repeat(60));
+  assert.deepEqual(Object.keys(req).sort(), ['ask', 'mode', 'said', 'skill', 'source']); assert.equal(req.skill, 'convert'); assert.match(req.said, /family: make/);
+  assert.ok(!JSON.stringify(req).includes(KEY) && !JSON.stringify(req).includes('secret detail'), 'masked, and only the name before the colon');
+  assert.equal(incidentRequest({ text: 'x: y', skill: null }, FAM, 's'), null);
+  let calls = 0; const f = async () => { calls++; return { ok: true, text: async () => 'x'.repeat(60), json: async () => ({ edits: [], why: '' }) }; };
+  assert.equal((await suggestIncidentFix(chk, FAM, { owner: '', fetchFn: f })).got.ok, false); assert.equal(calls, 0);
+  assert.equal((await suggestIncidentFix(chk, FAM, { owner: 'k', fetchFn: f })).got.ok, true); assert.equal(calls, 2);
+});
