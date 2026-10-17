@@ -2,11 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T12:33:01.351Z",
+   "at": "2026-10-17T12:43:40.237Z",
+   "sha": "431d1a268b0734da9bea1f4d594bfbec45749bed",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39032815248",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T12:30:16.619Z",
    "sha": "d2ffd1eae00e779c478f001e8058d765454159ef",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39031857641",
    "suite": "browser suite on main",
    "checks": [
+    "convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; \"temperature converter\" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, \"a converter for 5 miles to km\" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and \"close the converter\" puts it away",
     "check timeout: no check finished within 300 s"
    ]
   },
@@ -282,18 +292,6 @@
    "at": "2026-10-16T22:52:19.475Z",
    "sha": "2876ee4be3941c73f6a74a8cfc68e70efe582054",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38976984326",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-16T22:18:30.384Z",
-   "sha": "8cd1733bd5a22ef1d874631b1cf9011e30acb50c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38973535170",
    "suite": "browser suite on main",
    "checks": [
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
