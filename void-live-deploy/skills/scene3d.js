@@ -463,6 +463,15 @@ async function mountFresh(host, kind, data, opts, key) {
         if (h.inspecting) { if (o.view || o.pad) h.frame(root, { view: o.view, pad: o.pad, ground: false }); return; }
         h.inspecting = true; h.before = { pos: camera.position.clone(), target: controls ? controls.target.clone() : camera.position.clone(), minD: controls && controls.minDistance, maxD: controls && controls.maxDistance };
         inspectStyle(); document.documentElement.classList.add('v-inspect'); wrap.classList.add('inspecting');
+        // a small miniature (a clock beside its readout) comes up to the middle of the screen at a size worth examining, like a game's
+        // inventory view (owner, 2026-10-17: "zoom failed"); its place in the card is held so it goes back where it was
+        const rc = wrap.getBoundingClientRect();
+        if (o.enlarge !== false && wrap.parentNode && rc.width && Math.min(rc.width, rc.height) < Math.min(innerWidth, innerHeight) * 0.6) {
+          const ph = document.createElement('div'); ph.className = 'mini-ph'; ph.style.cssText = 'width:' + rc.width + 'px;height:' + rc.height + 'px;flex:none';
+          wrap.parentNode.insertBefore(ph, wrap); h.ph = ph; h.prevStyle = wrap.getAttribute('style');
+          document.body.appendChild(wrap); wrap.classList.add('enlarged');
+          if (h.resize) h.resize();
+        }
         h.frame(root, { view: o.view, pad: o.pad, ground: false });
         if (controls) { controls.autoRotate = o.turn !== false && !motionStill(); controls.autoRotateSpeed = 1.1; }
         let bar = wrap.querySelector('.mini-prompt'); if (!bar) { bar = document.createElement('div'); bar.className = 'mini-prompt'; wrap.appendChild(bar); }
@@ -473,6 +482,7 @@ async function mountFresh(host, kind, data, opts, key) {
       } else {
         if (!h.inspecting) return;
         h.inspecting = false; document.documentElement.classList.remove('v-inspect'); wrap.classList.remove('inspecting');
+        if (h.ph) { h.ph.replaceWith(wrap); h.ph = null; wrap.classList.remove('enlarged'); if (h.prevStyle == null) wrap.removeAttribute('style'); else wrap.setAttribute('style', h.prevStyle); h.prevStyle = null; if (h.resize) h.resize(); }
         if (h.onEsc) { document.removeEventListener('keydown', h.onEsc, true); h.onEsc = null; }
         const bar = wrap.querySelector('.mini-prompt'); if (bar) bar.remove();
         if (controls) { controls.autoRotate = false; }
@@ -576,9 +586,10 @@ if (typeof window !== 'undefined') window.__voidMini = { list: liveMiniatures, k
 function inspectStyle() {
   if (typeof document === 'undefined' || document.getElementById('void-mini-inspect')) return;
   const s = document.createElement('style'); s.id = 'void-mini-inspect';
-  s.textContent = 'html.v-inspect #stage{filter:brightness(.5) blur(2px);transition:filter .45s ease}html.v-inspect #void-syn{opacity:.3}'
+  s.textContent = '#stage>*{transition:filter .45s ease}html.v-inspect #stage>:not(:has(.void-mini.inspecting)){filter:brightness(.5) blur(2px)}html.v-inspect #void-syn{opacity:.3}'
+    + '.void-mini.enlarged{position:fixed!important;left:6vw!important;right:6vw!important;top:6vh!important;bottom:14vh!important;width:auto!important;height:auto!important;z-index:60;transition:none}'
     + '.void-mini .mini-prompt{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:5px 13px;border-radius:999px;background:rgba(10,12,20,.74);color:#e9e2cf;font:13px Georgia,"Times New Roman",serif;letter-spacing:.02em;white-space:nowrap;pointer-events:none;border:1px solid rgba(233,226,207,.18);box-shadow:0 4px 14px rgba(0,0,0,.35)}'
-    + '.void-mini .mini-examine{position:absolute;right:8px;top:8px;padding:3px 10px;border-radius:999px;background:rgba(10,12,20,.6);color:#e9e2cf;font:12px Georgia,"Times New Roman",serif;letter-spacing:.03em;border:1px solid rgba(233,226,207,.22);cursor:pointer;opacity:0;transition:opacity .2s}'
+    + '.void-mini .mini-examine{position:absolute;right:8px;bottom:8px;padding:3px 10px;border-radius:999px;background:rgba(10,12,20,.6);color:#e9e2cf;font:12px Georgia,"Times New Roman",serif;letter-spacing:.03em;border:1px solid rgba(233,226,207,.22);cursor:pointer;opacity:0;transition:opacity .2s}'
     + '.void-mini:hover .mini-examine,.void-mini .mini-examine:focus-visible{opacity:1}@media (hover:none){.void-mini .mini-examine{opacity:.85}}.void-mini .mini-examine[hidden]{display:none}';
   document.head.appendChild(s);
 }

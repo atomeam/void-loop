@@ -1,15 +1,99 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 102,
+ "runsTotal": 114,
  "kinds": {
   "grow": 15,
-  "file": 49,
+  "file": 54,
   "teach": 7,
   "tighten": 7,
-  "none": 24
+  "none": 31
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:39:02Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T08:31:36Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T08:24:25Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T08:18:35Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T08:11:24Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T08:05:32Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T07:56:04Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T07:48:48Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T07:42:31Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T07:32:11Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"zoom in\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T07:26:44Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T07:19:24Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T06:26:48Z",
    "passed": 0,
@@ -65,133 +149,49 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T22:51:37Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:10:46Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:04:15Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:24:14Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:17:08Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:09:42Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T17:30:08Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T16:59:40Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"quiz me\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T16:42:11Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"download the print file offline\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T16:36:48Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T16:16:40Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T16:03:40Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
   "page:/films/": "2026-10-15T06:04:21Z",
   "page:/store/": "2026-10-15T06:04:21Z",
-  "skill:actions": "2026-10-16T06:38:50Z",
+  "skill:actions": "2026-10-17T07:32:11Z",
   "skill:aggravation": "2026-10-15T06:04:21Z",
   "skill:air": "2026-10-15T06:20:22Z",
-  "skill:app": "2026-10-16T06:38:50Z",
+  "skill:app": "2026-10-17T07:42:31Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
   "skill:automations": "2026-10-15T16:35:42Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
-  "skill:breath": "2026-10-16T06:38:50Z",
-  "skill:calc": "2026-10-16T06:45:10Z",
+  "skill:breath": "2026-10-17T07:42:31Z",
+  "skill:calc": "2026-10-17T07:42:31Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
-  "skill:challenge": "2026-10-16T06:45:10Z",
+  "skill:challenge": "2026-10-17T07:48:48Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-16T06:45:10Z",
-  "skill:coral": "2026-10-16T06:51:30Z",
-  "skill:counter": "2026-10-16T06:51:30Z",
-  "skill:country": "2026-10-16T06:51:30Z",
-  "skill:crypto": "2026-10-16T07:04:58Z",
-  "skill:dark-look": "2026-10-16T07:04:58Z",
-  "skill:dates": "2026-10-16T07:04:58Z",
-  "skill:dating": "2026-10-16T07:15:33Z",
-  "skill:different": "2026-10-16T07:15:33Z",
-  "skill:dismiss": "2026-10-16T07:37:17Z",
-  "skill:distance": "2026-10-16T07:37:17Z",
-  "skill:draw": "2026-10-16T07:50:13Z",
-  "skill:feelings": "2026-10-16T07:50:13Z",
-  "skill:figure": "2026-10-16T07:50:13Z",
-  "skill:figure-can": "2026-10-16T07:56:26Z",
-  "skill:figures": "2026-10-16T07:56:26Z",
-  "skill:films": "2026-10-16T07:56:26Z",
-  "skill:food": "2026-10-16T08:04:30Z",
-  "skill:forge": "2026-10-16T08:04:30Z",
-  "skill:fuel": "2026-10-16T08:04:30Z",
+  "skill:convert": "2026-10-17T07:48:48Z",
+  "skill:coral": "2026-10-17T07:48:48Z",
+  "skill:counter": "2026-10-17T07:56:04Z",
+  "skill:country": "2026-10-17T07:56:04Z",
+  "skill:crypto": "2026-10-17T07:56:04Z",
+  "skill:dark-look": "2026-10-17T08:05:32Z",
+  "skill:dates": "2026-10-17T08:05:32Z",
+  "skill:dating": "2026-10-17T08:05:32Z",
+  "skill:different": "2026-10-17T08:11:24Z",
+  "skill:dismiss": "2026-10-17T08:11:24Z",
+  "skill:distance": "2026-10-17T08:18:35Z",
+  "skill:draw": "2026-10-17T08:18:35Z",
+  "skill:feelings": "2026-10-17T08:24:25Z",
+  "skill:figure": "2026-10-17T08:24:25Z",
+  "skill:figure-can": "2026-10-17T08:24:25Z",
+  "skill:figures": "2026-10-17T08:31:36Z",
+  "skill:films": "2026-10-17T08:31:36Z",
+  "skill:food": "2026-10-17T08:39:02Z",
+  "skill:forge": "2026-10-17T08:39:02Z",
+  "skill:fuel": "2026-10-17T08:39:02Z",
   "skill:games": "2026-10-16T08:24:59Z",
   "skill:gears": "2026-10-16T08:24:59Z",
   "skill:goal": "2026-10-16T08:24:59Z",
@@ -274,16 +274,16 @@
   "skill:translate": "2026-10-17T06:26:48Z",
   "skill:trialwatch": "2026-10-17T06:26:48Z",
   "skill:merges": "2026-10-17T06:26:48Z",
-  "skill:util": "2026-10-16T06:09:19Z",
-  "skill:v01d-fixes": "2026-10-16T06:09:19Z",
-  "skill:video": "2026-10-16T06:26:11Z",
-  "skill:walls": "2026-10-16T06:26:11Z",
-  "skill:watch": "2026-10-16T06:26:11Z",
-  "skill:words": "2026-10-16T06:31:32Z",
-  "skill:work": "2026-10-16T06:31:32Z",
-  "skill:zoom-figure": "2026-10-16T06:31:32Z",
-  "skill:deps": "2026-10-16T07:15:33Z",
-  "skill:fringe-to-skill": "2026-10-16T07:37:17Z",
+  "skill:util": "2026-10-17T07:19:24Z",
+  "skill:v01d-fixes": "2026-10-17T07:19:24Z",
+  "skill:video": "2026-10-17T07:19:24Z",
+  "skill:walls": "2026-10-17T07:26:44Z",
+  "skill:watch": "2026-10-17T07:26:44Z",
+  "skill:words": "2026-10-17T07:26:44Z",
+  "skill:work": "2026-10-17T07:32:11Z",
+  "skill:zoom-figure": "2026-10-17T07:32:11Z",
+  "skill:deps": "2026-10-17T08:11:24Z",
+  "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
   "skill:bench": "2026-10-17T01:37:54Z",
   "skill:collide": "2026-10-17T01:37:54Z",
   "skill:duel": "2026-10-17T01:37:54Z",
@@ -297,6 +297,7 @@
   "skill:state": "2026-10-17T02:48:01Z",
   "skill:technical-context": "2026-10-17T02:48:01Z",
   "skill:type-filter": "2026-10-17T06:04:06Z",
-  "skill:web4": "2026-10-17T06:04:06Z"
+  "skill:web4": "2026-10-17T06:04:06Z",
+  "skill:movie": "2026-10-17T08:31:36Z"
  }
 }
