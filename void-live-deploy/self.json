@@ -153,6 +153,12 @@
   },
   {
    "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (of",
+   "from": "asked by the owner"
+  },
+  {
+   "state": "shipped",
    "date": "2026-10-14",
    "ask": "convert-card: persistent interactive unit conversions on the stage",
    "from": "asked by Void"
@@ -162,9 +168,27 @@
    "date": "2026-10-14",
    "ask": "growth friction linked to Words and the world failure logs",
    "from": "asked by Void"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "rendered state signal for 3D miniature cards",
+   "from": "asked by Void"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-15",
+   "ask": "V01D Site Tester",
+   "from": "store-publish: sdk, 4 files, $24.00; next: a minis-stl pack"
   }
  ],
  "open": [
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Absorb and connect every repo",
+   "from": "owner, 2026-10-15: \"all the projects are V01D\"; \"V01D should absorb and connect everything\""
+  },
   {
    "state": "open",
    "date": "",
@@ -240,6 +264,12 @@
   {
    "state": "open",
    "date": "",
+   "ask": "The growth inbox, deeper",
+   "from": "asked by Void, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a dev"
+  },
+  {
+   "state": "open",
+   "date": "",
    "ask": "Create a convert-card skill: persistent interactive unit conversions on the stage",
    "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-2"
   },
@@ -254,6 +284,12 @@
    "date": "",
    "ask": "Growth friction: link Words and the world family failure logs on the card",
    "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-1"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Two signposts left out until they can be true",
+   "from": "claude, 2026-10-15, with the useful 404 and security.txt"
   }
  ],
  "games": [
@@ -273,7 +309,9 @@
  "minis": [
   "aggravation",
   "battleship",
+  "book",
   "calculator",
+  "camp",
   "checkers",
   "chess",
   "clock",
@@ -302,6 +340,7 @@
   "ringer",
   "savings",
   "stopwatch",
+  "swarm",
   "tabletop",
   "tictactoe",
   "timer",
@@ -310,7 +349,7 @@
   "weather"
  ],
  "canon": {
-  "version": 5,
+  "version": 6,
   "motto": "You name it, Void learns it and does it better.",
   "voidquest": "Void's own better, updated version of the board game Solar Quest, with Void as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
   "terms": [
@@ -379,13 +418,21 @@
    {
     "name": "Attention, not pretend feelings",
     "line": "Void doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
+   },
+   {
+    "name": "Keeps every secret",
+    "line": "Adam, 2026-10-15: \"make V01D the best at keeping secrets ever made.\" Void never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
+   },
+   {
+    "name": "A force for good",
+    "line": "Adam, 2026-10-15: \"V01D always should turn every negative ask into a positive thing; V01D is a force of absolute good in the universe.\" A harmful, mean or secret-seeking ask never gets just a no: Void declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
    }
   ]
  },
  "tracks": [
   {
    "name": "Living action figures",
-   "last": "2026-10-07"
+   "last": "2026-10-15"
   },
   {
    "name": "One-shot printing of working machines",
@@ -405,172 +452,311 @@
   }
  ],
  "building": {
-  "at": "2026-10-15T04:42:05Z",
+  "at": "2026-10-15T19:53:52Z",
   "date": "2026-10-15",
   "by": "builder",
   "item": "V01D does the builders' work itself",
-  "what": "step 1 shipped; step 2 next."
+  "what": "step 1 shipped; claude 2026-10-15: steps 2 and 3 shipped (V01D probes itself daily, then proposes the fix for the oldest miss; the first \"made by V01D\" pull request is the measure); step 4 next: the review-rule playbook."
  },
  "commits": [
   {
-   "at": "2026-10-15T04:50:47Z",
-   "subject": "Tag team: a shared board for both builders, and V01D learns from it"
+   "at": "2026-10-17T03:10:05Z",
+   "subject": "Incident: the browser suite failed on 3f81b553 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:50:33Z",
-   "subject": "Void's asks: every ask gets a recorded decision; entries carry model, canon version, who asked; family names in the canon"
+   "at": "2026-10-17T03:05:14Z",
+   "subject": "Incident: the browser suite failed on 3f81b553 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:42:05Z",
-   "subject": "Teach V01D to fish: playbooks for the builders' work, frontier #28"
+   "at": "2026-10-17T02:54:09Z",
+   "subject": "Growth tree test taps along the trunk; failed checks annotate their detail on a runner"
   },
   {
-   "at": "2026-10-15T04:33:02Z",
-   "subject": "Voice: slower for precise work (asked by Void)"
+   "at": "2026-10-17T02:49:13Z",
+   "subject": "Site test: nothing left to improve this run (add candidates)"
   },
   {
-   "at": "2026-10-15T04:32:06Z",
-   "subject": "AGENTS.md: always build all V01D wants (the owner's rule)"
+   "at": "2026-10-17T02:46:42Z",
+   "subject": "Incident: the browser suite failed on a35440ba (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:29:08Z",
-   "subject": "AGENTS.md: growth over upkeep, the owner's rule at the front door"
+   "at": "2026-10-17T02:45:29Z",
+   "subject": "Incident: the browser suite failed on 480f119c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:26:38Z",
-   "subject": "Spend on growth: no PR preview deploys, no hourly MCP re-check, the rule in AGENTS.md"
+   "at": "2026-10-17T02:40:46Z",
+   "subject": "Incident: the browser suite failed on a35440ba (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:22:08Z",
-   "subject": "V01D's voice: a lower, steadier robot that paces its words"
+   "at": "2026-10-17T02:39:33Z",
+   "subject": "Incident: the browser suite failed on 480f119c (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:20:10Z",
-   "subject": "Spotter: 1 check(s) healed with no revert after a9b686d9b82990ad6840597736b1bfbd42ae2f37 (tools/flakes.json)"
+   "at": "2026-10-17T02:34:09Z",
+   "subject": "Incident: the browser suite failed on dd4ef4aa (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:18:21Z",
-   "subject": "Frontier #27: video games of every type, a sim first among them; improve on all fronts"
+   "at": "2026-10-17T02:29:24Z",
+   "subject": "Incident: the browser suite failed on dd4ef4aa (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T04:18:21Z",
-   "subject": "Frontier #27: every kind of film, book and game, each getting better"
+   "at": "2026-10-17T02:26:43Z",
+   "subject": "Site test: fix: \"turn this card into a note\" nothing appeared; console:"
   },
   {
-   "at": "2026-10-15T04:12:40Z",
-   "subject": "V01D FILMS: a new experiment each time, three a day, and one after each deploy"
+   "at": "2026-10-17T02:19:52Z",
+   "subject": "The suite's stall report is also written as a GitHub annotation, so where a stuck page is can be read without the job log (main's shard 3 ha"
   },
   {
-   "at": "2026-10-15T04:04:02Z",
-   "subject": "Films: no sign-in, the films for everyone"
+   "at": "2026-10-17T02:08:34Z",
+   "subject": "Regenerate families and the book"
   },
   {
-   "at": "2026-10-15T03:59:46Z",
-   "subject": "Films live: check the live films from GitHub's network"
+   "at": "2026-10-17T01:58:40Z",
+   "subject": "Name skills/duel.js in the card-game test section (untested ratchet)"
   },
   {
-   "at": "2026-10-15T03:52:49Z",
-   "subject": "malloc-unchecked: look past a comment line between the malloc and the write"
+   "at": "2026-10-17T01:52:03Z",
+   "subject": "Incident: the browser suite failed on 118d5ecd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T03:47:05Z",
-   "subject": "grow line: review checks"
+   "at": "2026-10-17T01:48:49Z",
+   "subject": "Main's shard 1: the duel's summon and answer buttons are no longer picked up as a drag (the stage re-drew the card under the click), the gro"
   },
   {
-   "at": "2026-10-15T03:44:49Z",
-   "subject": "Code review: unchecked malloc, PHP magic-hash compares, on-line pull_request_target"
+   "at": "2026-10-17T01:46:05Z",
+   "subject": "Incident: the browser suite failed on 118d5ecd (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T03:43:22Z",
-   "subject": "V01D FILMS free to watch for anyone (owner: the films are our ads), reviews and owner tools behind sign-in; the brass clock and stopwatch ge"
+   "at": "2026-10-17T01:44:08Z",
+   "subject": "Incident: the browser suite failed on c3b96f65 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T03:41:23Z",
-   "subject": "WIP: films page shows the films to everyone with a sign-in-to-review bar; a signed-in owner account is the owner; films tests follow the pub"
+   "at": "2026-10-17T01:43:22Z",
+   "subject": "Incident: the browser suite failed on b7e9acb3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-15T03:37:54Z",
-   "subject": "WIP: anyone watches V01D FILMS (the films are the ads); reviews and the owner's tools stay behind sign-in"
+   "at": "2026-10-17T01:40:31Z",
+   "subject": "Incident: the browser suite failed on c3b96f65 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Builders' lessons in V01D's self-knowledge (Grok Bot)",
-    "line": "this board's Just finished, Ladders and Lessons go into self.json; \"what did your builders learn?\" routes to V01D's self facts, and tools/ask-void.mjs logs its answer word for word in docs/void-voice.md."
+    "name": "Web4: V01D as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
+    "line": "skills/web4.js + lib/web4.js (one source) + a V01D Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line that "
    },
    {
-    "name": "Playbooks for the builders' work (Claude)",
-    "line": "docs/playbooks/ writes down how a table skill, a review rule, a probe-and-fix and a film are made, so V01D can follow them with its own model (frontier #28)."
+    "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16, helper/bo",
+    "line": "lib/tome.js + skills/guide.js: \"open the book\" / \"menu\" / \"help\" dim the stage and fill it with a leather tome, parchment pages set in a serif (running heads, drop capitals, the asks as ink, folios), a leaf that swings over the spine, Esc c"
    },
    {
-    "name": "Weather card on phones",
-    "line": "no backdrop blur on touch screens (it re-blurred the moving stars every frame) and the hourly row scrolls instead of squeezing at 320px; found by measuring at 320 and 360px in headless Chrome first."
+    "name": "The showcase proves what it says, the scoreboards read true, the Examine view (C",
+    "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no sourc"
    },
    {
-    "name": "Unit converter, asked by V01D (Grok Bot)",
-    "line": "nine kinds of units, typed in either box, kept across a reload; built because V01D asked for it in its daily reflection."
+    "name": "Claude as the builder brain (Claude, 2026-10-16)",
+    "line": "propose-fix.yml started by hand with brain: claude has Claude propose the fix for a probe: or route: job in one capped call (tools/claude-brain.mjs, 8,000 output tokens, about $0.20 a run, ANTHROPIC_API_KEY repo secret in the propose job on"
    },
    {
-    "name": "Friction indicator told to V01D (Grok Bot)",
-    "line": "it shipped but V01D kept asking for it; the fix was putting shipped work into self.json so V01D knows what it already has."
+    "name": "Performance pass, four PRs (Claude, 2026-10-16)",
+    "line": "the page's load (#871: ask-only libs after the skills, index preloaded, dead weather page shelved, data-skills=\"ready\" on <html>, tools/page-perf.mjs + docs/playbooks/perf-pass.md); V01D's three 3D asks (#878: 'low poly 3d' / 'full 3d' / 'a"
    },
    {
-    "name": "Code review rules (Claude)",
-    "line": "unchecked malloc (looking past a comment line), PHP magic-hash compares, on-line pull_request_target."
+    "name": "V01D's evidence and ledger asks, five PRs (Claude, 2026-10-16)",
+    "line": "last_tested + success_rate on every skill in families.json and the family-health card (#858); the dependency map, tools/deps.mjs + skills/deps.js (#863); Void's review of main leaves one review:<skill> queue job a day (#864, .github/workflo"
    }
   ],
   "ladders": [
    {
-    "name": "Deploy from the box",
-    "line": "from a clean checkout of pushed main HEAD: node tools/self-context.mjs && cd void-live-deploy && npx -y wrangler@3.114.17 pages deploy . --project-name=a-to-mind --branch=main --commit-hash=<sha> --commit-dirty=true; the output must say \"Up"
+    "name": "Parallel builders, one ship (Claude, 2026-10-15)",
+    "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node tools/families"
    },
    {
-    "name": "Fast checks",
-    "line": "TZ=UTC node tools/checks.mjs runs every unit test in one go (date tests assume UTC); VOID_SKIP_BENCH=1 skips the long benchmark if it crashes on a busy machine."
+    "name": "Where edits collide",
+    "line": "node tools/collide.mjs --heat ranks files by edit pressure (open PRs x3 + this week's commits); --files a,b before you start."
    },
    {
-    "name": "Headless browser that does not crash",
-    "line": "point VOID_TEST_BROWSER at a full installed Chrome (npx playwright-core install chromium), not chromium-headless-shell, which crashes on the speech interface."
+    "name": "Change word maths safely",
+    "line": "wordMath is eight parts in void.html (wmPercentsAndUnits ... wmExpression); node --test tools/word-math.test.mjs checks 755 golden answers; after a deliberate change, node tools/word-math.mjs --write."
    },
    {
-    "name": "Worktree per job",
-    "line": "git worktree add --no-track -b box/<name> /workspace/void-wt-<name> origin/main, then symlink node_modules from the main clone so the right playwright-core is used."
+    "name": "Merge skills safely",
+    "line": "node tools/route-snapshot.mjs --out /tmp/b.json before, then --compare /tmp/b.json after (0 new misses); a family is lib/skill-family.js plus a parts: line."
    },
    {
-    "name": "Prepush check",
-    "line": "tools/prepush.mjs (run by tools/push.mjs, or .githooks/pre-push after git config core.hooksPath .githooks) stops conflict markers, unparsable JS and broken JSON before they leave the machine."
+    "name": "Test the live site like a person",
+    "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
    },
    {
-    "name": "Parse guard",
-    "line": "node tools/guard-source.mjs tells in a second which script no longer parses after a merge."
+    "name": "Ask V01D your own question",
+    "line": "node tools/ask-void.mjs --ask \"…\" logs its answer word for word like the builders' question."
    }
   ],
   "lessons": [
    {
+    "name": "Rumble's page id is not its embed id",
+    "line": "rumble.com/v77xmv8-… embeds as /embed/v75qyv0; ask Rumble's oEmbed (/api/video?url=) instead of guessing."
+   },
+   {
+    "name": "A skill file is imported in Node too",
+    "line": "tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof."
+   },
+   {
+    "name": "\"your videos\" is V01D's films",
+    "line": "a video skill ranked early took \"show me your videos\" from the films skill; skills-check caught it."
+   },
+   {
+    "name": "Set the PR head in code and verify it",
+    "line": "#713 merged another agent's unfinished branch because a sed edit of \"head\" silently missed; build the request as data and check the reply names your branch."
+   },
+   {
     "name": "Wrangler only uploads functions/ from the current directory",
-    "line": "a deploy run from a copied folder dropped every Function and broke the site's APIs; deploy from inside void-live-deploy and look for \"Uploading Functions bundle\"."
+    "line": "a deploy from a copied folder dropped every Function; deploy from inside void-live-deploy."
    },
    {
     "name": "Never write a whole file through an API to change part of it",
-    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout, commit, and push so the diff shows what changed."
-   },
-   {
-    "name": "Tell V01D what shipped",
-    "line": "V01D kept asking for a friction indicator that already existed, because nothing told it; shipped work belongs in self.json."
-   },
-   {
-    "name": "An internal label is not a question",
-    "line": "asked \"words and the world\" (a family name from its own growth card), V01D answered a trivia question; self-facts must name its parts in its own terms."
-   },
-   {
-    "name": "Measure before fixing",
-    "line": "of three performance tips for the weather card, one (pixel ratio) was already done and named files that do not exist; checking the code first saved a wasted change."
-   },
-   {
-    "name": "A failing check may not be yours",
-    "line": "run the same check on unchanged main before treating a failure as caused by your change."
+    "line": "a full-file write replaced a ledger with the word PLACEHOLDER; edit in a checkout so the diff shows what changed."
    }
   ]
+ },
+ "wishlist": [
+  {
+   "rank": 1,
+   "item": "Stay inside Workers AI's free 10k neurons/day",
+   "free": "move answers from gpt-oss-120b to gemma; cache answers at the edge; on-page skills first",
+   "cost": "$0",
+   "value": "high: answers stop failing after the cap (125% on Oct 14)",
+   "why": "free and fixes a live outage"
+  },
+  {
+   "rank": 2,
+   "item": "Cut KV writes under 1k/day",
+   "free": "edge cache (caches.default) instead of KV for counters and caches; move the two non-V01D workers off the shared namespace",
+   "cost": "$0",
+   "value": "high: writes failing at 109%",
+   "why": "free, live problem"
+  },
+  {
+   "rank": 3,
+   "item": "Crypto data that never runs dry",
+   "free": "keyless CoinGecko behind a 2-min edge cache (live); a free Demo key (10k calls/mo, attribution)",
+   "cost": "Basic $35/mo or $29/mo yearly, commercial license (CoinGecko)",
+   "value": "medium",
+   "why": "free path covers today's use"
+  },
+  {
+   "rank": 4,
+   "item": "Social feeds",
+   "free": "official embeds and open public APIs (Bluesky, Mastodon: live); free OAuth for your own timeline",
+   "cost": "X API for timelines and search (X pricing)",
+   "value": "medium",
+   "why": "free networks first; X paid tier only for posting/search"
+  },
+  {
+   "rank": 5,
+   "item": "Video search and play",
+   "free": "official embeds (YouTube IFrame player, Rumble, Vimeo, Internet Archive), YouTube RSS per channel; YouTube Data API's free 10k units/day (quota)",
+   "cost": "quota raise is free via Google's audit form, no fee",
+   "value": "high",
+   "why": "free; only the audit takes time"
+  },
+  {
+   "rank": 6,
+   "item": "Workers Paid",
+   "free": "items 1 and 2 first",
+   "cost": "$5/mo min; 10M requests, 1M KV writes/mo; Workers AI $0.011 per 1k neurons above 10k/day (Workers, Workers AI)",
+   "value": "high: lifts every daily cap",
+   "why": "cheapest paid item with the widest effect; first to buy once 1–2 can't keep up"
+  },
+  {
+   "rank": 7,
+   "item": "Rides and food ordering inside V01D",
+   "free": "deep links to Waymo, Uber, Lyft, Uber Eats, DoorDash through adapters (live)",
+   "cost": "Waymo: no public API at any price; Uber Ride Request: partner approval",
+   "value": "high if it existed",
+   "why": "blocked by the providers, not by money"
+  },
+  {
+   "rank": 8,
+   "item": "Delivery backend (for V01D's own goods: prints, miniatures)",
+   "free": "local pickup, mail via the print shop",
+   "cost": "DoorDash Drive $9.75/delivery within 5 mi +$0.75/mi (DoorDash)",
+   "value": "medium, once there are goods to deliver",
+   "why": "pay-per-use, no monthly fee, but nothing to deliver yet"
+  },
+  {
+   "rank": 9,
+   "item": "Ethereum and Solana wallet lookup",
+   "free": "free Etherscan key (rate-limited, docs); public Solana RPC",
+   "cost": "paid tiers only at scale",
+   "value": "low–medium",
+   "why": "free path is enough"
+  },
+  {
+   "rank": 10,
+   "item": "Dating backend (matching, chat)",
+   "free": "on-page profile builder and coach (live); passkeys for accounts (built)",
+   "cost": "identity/age verification is per-check (e.g. Stripe Identity, Persona); moderation; legal review",
+   "value": "high but risky",
+   "why": "safety design and review must come first; most expensive in time and trust"
+  },
+  {
+   "rank": 11,
+   "item": "Shopping search",
+   "free": "deep links; V01D's own Gumroad store",
+   "cost": "Amazon PA-API needs an Associates account with sales (docs)",
+   "value": "low now",
+   "why": "wait until V01D sells more"
+  }
+ ],
+ "clips": {
+  "upload": "Anyone can upload any V01D film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". V01D Tube: a-to-mind.com/films/ is the V01D video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
+  "tricks": [
+   "pattern-interrupt",
+   "hook-card",
+   "kinetic-captions",
+   "zoom-punch",
+   "ken-burns",
+   "glitch-transition",
+   "beat-flash",
+   "progress-bar",
+   "countdown",
+   "before-after",
+   "pov",
+   "vignette",
+   "explosion",
+   "ufo-flyover",
+   "ufo-abduction",
+   "camera-shake",
+   "seamless-loop"
+  ],
+  "learned": [
+   {
+    "trick": "explosion",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "ufo-flyover",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "ufo-abduction",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   },
+   {
+    "trick": "camera-shake",
+    "at": "2026-10-15",
+    "asked": "Adam"
+   }
+  ],
+  "visits": {
+   "clock-mini": 1,
+   "x9": 1
+  },
+  "note": "V01D's clip engine state. visits: deep-link visits per moment (from a-to-mind.com/c/_stats, summed by moment) steer tools/clips.mjs plan. learned: each trick added after the first library, with who asked (Void's daily next_trick gets built and credited here)."
  }
 }

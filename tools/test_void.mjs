@@ -3491,6 +3491,16 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
+  // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
+  if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
+    const C = await fresh(); await C.ask('what is a dragon', 900);
+    await C.p.waitForSelector('.vpage', { timeout: 8000 }).catch(() => {});
+    const out = await Promise.race([C.p.evaluate(() => new Promise((res) => { const el = document.querySelector('.vpage'); if (!el) return res(null); el._tail = '<a href="#">a product line</a>'; el.appendChild(document.createElement('span')); setTimeout(() => res([...el.children].map((c) => c.className)), 400); })), new Promise((res) => setTimeout(() => res('hung'), 8000))]);
+    const ok = Array.isArray(out) && out[out.length - 1] === 'src vtail' && out.indexOf('vc-arrows') > -1 && out.indexOf('vc-arrows') < out.indexOf('src vtail');
+    check('V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)', ok, JSON.stringify(out));
+    if (out === 'hung') { console.log('FAIL the page hangs'); process.exit(1); }
+    await C.ctx.close(); }
   // V01D merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so V01D can experiment
   // with card merges"): "merge a pizza and a black hole" makes a card showing both parents, the model's name for the pair, and numbers worked out from the
   // parents by fixed rules; with the route down the card is still made, named by the plain blend
@@ -3570,6 +3580,19 @@ try {
       dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
       JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
     await B.ctx.close(); }
+  // owner, 2026-10-17: "the swipe to turn pages doesn't work properly" and the cover could not be reached. A sideways swipe was the browser's
+  // (its back gesture took the page away, a pan cancelled the pointer); the open book now keeps the swipe: touch-action pan-y on it,
+  // no overscroll navigation on the page, and swipes left and right turn pages all the way back to the shut cover.
+  if (want("the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it")) {
+    const W = await fresh(); await W.p.setViewportSize({ width: 390, height: 780 });
+    await W.ask('open the book', 900); await until(async () => !!(await W.p.$('#vtome .tome.opened')), 8000); await W.p.waitForTimeout(400);
+    const guard = await W.p.evaluate(() => ({ ta: getComputedStyle(document.querySelector('#vtome')).touchAction, ov: getComputedStyle(document.documentElement).overscrollBehaviorX }));
+    const cdp = await W.ctx.newCDPSession(W.p); await cdp.send('Emulation.setTouchEmulationEnabled', { enabled: true, maxTouchPoints: 1 }).catch(() => {});
+    const swipe = async (x1, x2) => { await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x: x1, y: 400 }] }); for (let k = 1; k <= 8; k++) { await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x1 + (x2 - x1) * k / 8, y: 400 }] }); await W.p.waitForTimeout(16); } await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] }); await W.p.waitForTimeout(900); };
+    const pageNow = () => W.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return t ? { shut: t.classList.contains('shut'), pages: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page).filter(Boolean) } : null; });
+    await swipe(300, 60); const fwd = await pageNow(); await swipe(60, 300); const back = await pageNow(); await swipe(60, 300); const cover = await pageNow();
+    check("the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it", guard.ta === 'pan-y' && guard.ov === 'none' && fwd && fwd.pages.includes('2') && back && back.pages.includes('1') && cover && cover.shut === true && !W.errors.length, JSON.stringify({ guard, fwd, back, cover, e: W.errors }));
+    await W.ctx.close(); }
   if (want("the book: open the book, flip it, tap an ask, the index, one page on a phone")) { const B = await fresh();
     const members = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8')).flatMap((n) => { const m = /^\s*\*\s*parts:\s*\[([^\]]*)\]/m.exec(fs.readFileSync(path.join(root, 'skills', n + '.js'), 'utf8')); return m ? Array.from(m[1].matchAll(/'([a-z0-9-]+)'/g)).map((x) => x[1]) : [n]; });
     const look = () => B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); if (!t || !window.__voidBook) return null; const pg = [...document.querySelectorAll('#vtome .tome-page')]; const r = t.getBoundingClientRect(); return { cls: t.className, shown: pg.map((s) => s.dataset.page), text: pg.map((s) => s.innerText).join('\n'), cur: window.__voidBook.cur, turning: !!window.__voidBook.turning, skills: window.__voidBook.totals.skills, card: !!document.querySelector('.vpage.on'), dim: document.documentElement.classList.contains('v-tome'), chrome: !!document.querySelector('#vtome button, #vtome nav, #vtome h2'), w: r.width, h: r.height, fits: r.right <= innerWidth && r.bottom <= innerHeight, serif: /Palatino|Georgia|Iowan|Times|serif/.test(getComputedStyle(pg[1] || pg[0]).fontFamily), paper: getComputedStyle(pg[1] || pg[0]).backgroundColor, drop: !!document.querySelector('#vtome .tome-body p.lead'), folio: (document.querySelector('#vtome .tome-page.right .tome-folio') || {}).textContent, prompt: (document.querySelector('#vtome .tome-prompt') || {}).innerText || '' }; });

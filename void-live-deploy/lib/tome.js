@@ -17,7 +17,7 @@ const MOTTLE = "url(\"data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/sv
 export const TOME_CSS = [
   // the screen: the stage dims behind the book (as the world does in Skyrim); nothing of the page's own chrome shows through
   'html.v-tome #stage{filter:brightness(.42) blur(2px);transition:filter .5s ease}html.v-tome #void-syn{opacity:.25}',
-  '#vtome{position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;perspective:2200px;perspective-origin:50% 45%;font-family:' + SERIF + ';color:#2b1b0e;opacity:0;transition:opacity .35s ease}#vtome.on{opacity:1}',
+  'html.vtome-open,html.vtome-open body{overscroll-behavior:none}#vtome{touch-action:pan-y;position:fixed;inset:0;z-index:70;display:flex;align-items:center;justify-content:center;perspective:2200px;perspective-origin:50% 45%;font-family:' + SERIF + ';color:#2b1b0e;opacity:0;transition:opacity .35s ease}#vtome.on{opacity:1}',
   '#vtome .tome-dim{position:absolute;inset:0;background:radial-gradient(ellipse at 50% 45%,rgba(14,10,6,.45),rgba(5,4,2,.9) 78%)}',
   // the book: height-led so two pages always fit; everything inside is sized from the book (cqh), so it reads the same on any screen
   '.tome{position:relative;--th:min(86vh,calc(94vw / 1.46));height:var(--th);width:calc(var(--th) * 1.46);container-type:size;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1)}',
