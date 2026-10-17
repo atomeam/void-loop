@@ -51,6 +51,24 @@
    "dependants": 7
   },
   {
+   "file": "lib/guide.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 27
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 6,
+   "direct": 0,
+   "dependants": 25
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 6,
+   "direct": 0,
+   "dependants": 24
+  },
+  {
    "file": "lib/bridges.js",
    "skills": 6,
    "direct": 3,
@@ -105,22 +123,10 @@
    "dependants": 15
   },
   {
-   "file": "lib/guide.js",
+   "file": "lib/skill-confidence.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 12
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 10
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 9
+   "dependants": 15
   },
   {
    "file": "lib/field-kit.js",
@@ -904,12 +910,6 @@
   },
   {
    "file": "lib/share-client.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0
-  },
-  {
-   "file": "lib/skill-confidence.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -1769,11 +1769,26 @@
     "lib/tome.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
+    "lib/voice.js",
     "skills/duel.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
     "skills/guide.js",
-    "skills/merge.js"
+    "skills/merge.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/card-forge.js": {
@@ -1851,14 +1866,29 @@
     "lib/card-frame.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/tome.js",
+    "lib/voice.js",
     "skills/duel.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
     "skills/guide.js",
-    "skills/merge.js"
+    "skills/merge.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/cite.js": {
@@ -2200,12 +2230,27 @@
     "skills/mini/book.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
     "lib/skill-confidence.js",
+    "lib/voice.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/merge.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/gumroad.js": {
@@ -3093,7 +3138,25 @@
    "imports": [
     "lib/card-art.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
   },
   "lib/skill-family.js": {
    "imports": [],
@@ -4075,6 +4138,7 @@
     "lib/ladder.js",
     "lib/better.js",
     "lib/inbox-health.js",
+    "lib/skill-confidence.js",
     "skills/growth-tree.js"
    ],
    "importedBy": [
