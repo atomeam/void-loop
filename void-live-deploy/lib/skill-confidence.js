@@ -40,7 +40,8 @@ export function confidenceSummary(fam, today = Date.now()) {
 }
 
 /** the strip's markup for the self card: a row per family, a square per skill (strongest first), a legend. '' when there are no families. Pure. */
-export function confidenceHtml(fam, today, esc = (s) => String(s)) {
+const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+export function confidenceHtml(fam, today, esc = escHtml) {
   const fams = ((fam && fam.families) || []).filter((f) => f && Array.isArray(f.skills) && f.skills.length);
   if (!fams.length) return '';
   const sum = confidenceSummary(fam, today);
