@@ -73,3 +73,15 @@ test('the incident request carries only the redacted check name, skill and famil
   assert.equal((await suggestIncidentFix(chk, FAM, { owner: '', fetchFn: f })).got.ok, false); assert.equal(calls, 0);
   assert.equal((await suggestIncidentFix(chk, FAM, { owner: 'k', fetchFn: f })).got.ok, true); assert.equal(calls, 2);
 });
+test('a test case from each recent failure (asked by Void): the ask the check quotes, else the skill\'s own example; newest first, one per skill, unmapped checks skipped', async () => {
+  const { autopsy, incidentCases } = await import('../void-live-deploy/lib/autopsy.js');
+  const fam = { families: [{ id: 'stage', name: 'The stage', skills: [{ name: 'label' }, { name: 'timer' }] }] };
+  const guide = { pages: [{ kind: 'skill', name: 'label', examples: ['label it'] }, { kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }] };
+  const inc = { incidents: [
+    { at: '2026-10-17T22:00:00Z', sha: 'aaaaaaa1', checks: ['timer: the countdown stops at zero', 'label: "label the clock kitchen" tags it', 'check timeout: no check finished within 300 s'] },
+    { at: '2026-10-17T21:00:00Z', sha: 'bbbbbbb2', checks: ['timer: an older failure'] },
+  ] };
+  const c = incidentCases(autopsy(inc, fam, guide), guide);
+  assert.deepEqual(c.map((x) => [x.skill, x.ask, x.sha]), [['timer', 'set a timer for 2 minutes', 'aaaaaaa'], ['label', 'label the clock kitchen', 'aaaaaaa']], 'the quoted ask wins; one case per skill, from its newest failure; the timeout matches no skill');
+  assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
+});

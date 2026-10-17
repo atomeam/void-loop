@@ -3662,10 +3662,12 @@ try {
     await R.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
-    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
+    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
     await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }] })));
+    await S.ctx.route(/\/incidents\.json/, (rt) => rt.fulfill(json({ incidents: [{ at: '2026-10-17T22:00:00Z', sha: 'abcdef12', checks: ['timer: "set a timer for 3 minutes" <b>counts</b>', 'check timeout: no check finished'] }] })));
     await S.ask('tester log', 1500);
     const got = await until(async () => S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); return l ? { names: [...l.children].map((x) => x.dataset.candidate), asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null), 6000);
+    const fromInc = got && await S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-incidents'); return l ? { asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null); // asked by Void: a test case from a recent failure
     const heat = got && await S.p.$eval('.vpage', (p) => [...p.querySelectorAll('.st-heat-row')].map((r) => ({ fam: r.dataset.family, heat: +r.dataset.heat, text: r.textContent, bar: getComputedStyle(r.querySelector('span span')).width }))).catch(() => null); // asked by Void: the heat map
     if (got) await S.p.click('.st-candidates a[data-ask="set a timer for 2 minutes"]');
     const ran = got && await until(async () => (await S.state()).some((x) => x.kind === 'timer'), 6000);
@@ -3673,6 +3675,8 @@ try {
     check('Site Test card (asked by Void): "What to test next" lists the lowest-rated skills from families.json, failing first, each with its own ask from the book; tapping one runs it',
       !!got && got.names.join() === 'timer,define' && got.asks[0] === 'set a timer for 2 minutes' && /1 failing/.test(got.text) && /Words <b>/.test(got.text) && !got.bold && !!ran && !S.errors.length,
       JSON.stringify({ got, ran, after, errors: S.errors }));
+    check('Site Test card (asked by Void): "From recent failures" turns a red check on main into the ask that failed, naming its skill and commit, escaped; an unmapped check gives no case',
+      !!fromInc && fromInc.asks.join('|') === 'set a timer for 3 minutes' && /timer, failed on abcdef1/.test(fromInc.text) && !fromInc.bold, JSON.stringify(fromInc));
     check('Site Test card (asked by Void): a heat map ranks the families least stable first, the failing family hottest with the longest bar, its name escaped',
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));

@@ -99,10 +99,22 @@
    "dependants": 5
   },
   {
+   "file": "lib/corrections.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 19
+  },
+  {
    "file": "lib/better.js",
    "skills": 4,
    "direct": 2,
    "dependants": 17
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 16
   },
   {
    "file": "lib/stars.js",
@@ -345,12 +357,6 @@
    "dependants": 8
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -385,12 +391,6 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
   },
   {
    "file": "lib/book-news.js",
@@ -1689,7 +1689,24 @@
     "lib/corrections.js"
    ],
    "importedBy": [
+    "skills/growth.js",
     "skills/incident-autopsy.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/bench-asks.js": {
@@ -1994,7 +2011,22 @@
     "lib/correction-heat.js"
    ],
    "reachedBy": [
-    "skills/incident-autopsy.js"
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/incident-autopsy.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
    ]
   },
   "lib/digest.js": {
@@ -4140,6 +4172,7 @@
     "lib/better.js",
     "lib/inbox-health.js",
     "lib/skill-confidence.js",
+    "lib/autopsy.js",
     "skills/growth-tree.js"
    ],
    "importedBy": [
