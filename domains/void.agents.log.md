@@ -799,3 +799,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T09:08:57Z | claude | grow | asked by Void: the family-health card shows which families lift the daily growth score and which drag it, in score points against the average skill (failing 0, barely checked half, else 1), from the friction part of the score
 2026-10-17T09:03:11Z | claude | grow | asked by Void: the daily score has a confidence interval: 'Sure to within 72-77, from 3010 checks', a Wilson 95% range over the parts that are counts (changes, skills, bench asks), so a high score on a few checks reads as unsure
 2026-10-17T09:09:01Z | claude | fix | asked by Owner: music and movie cards paint their own kind's art (song, film), not the generic skill door
+2026-10-17T09:32:59Z | claude | grow | Real shows: V01D picks a TV show, finds it in TVMaze, and the card says plainly 'Not available here' or 'Not verified' with official links only when the source says no; asked by Owner

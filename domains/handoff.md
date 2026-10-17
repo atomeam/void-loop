@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (real-media helper) · helper/real-shows, helper/real-video, helper/real-games · V01D finds and plays real shows (TVMaze, links only, "source says no" as an answer), a public-domain video from the Internet Archive in video-play, a free legal game (owner, 2026-10-17) · 2026-10-17 UTC
 - Claude (media-pick helper) · helper/pick-for-me · pick for me: taste lib, never-repeat picks, YouTube Takeout import (browser only), honest why line, spoken pick and reply (owner, 2026-10-17); next: shows (TVMaze), video, games · 2026-10-17 UTC
 - Claude (field-minds agent) · helper/field-kit, then one branch per idea (helper/field-agents, -reaction-diffusion, -fluid, -evo-lattice, -volumetric, -boids, -trajectory) · the owner's order of 2026-10-17, Grok's ideas F-020..F-026 as stage skills on a shared kit (lib/field-kit.js, lib/field-stage.js); later builders port F-027..F-031, F-033 on it; F-032 is not mine (helper/attention-field) · 2026-10-17 UTC
 - Claude (real-movies helper) · helper/real-movies · pick-a-movie finds real movies (iTunes + Internet Archive), poster as card art, free films play in-page, trailers/links otherwise (owner, 2026-10-17) · 2026-10-17 UTC
