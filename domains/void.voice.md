@@ -10,25 +10,25 @@ it by hand, edit the code instead.
 
 ## Void's current asks
 
-_Read from /api/reflect on 2026-10-16. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-17. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job. *(small)* (daily, 2026-10-16) `ask-20261016-2056-1`
-- Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards. (daily, 2026-10-16) `ask-20261016-2056-2`
-- Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations. (daily, 2026-10-16) `ask-20261016-2056-3`
-- Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare). *(small)* (after a build, 2026-10-16) `ask-20261016-2010-1`
-- Implement type-specific layouts for the new response cards so 'Film' and 'Place' use different visual hierarchies. (after a build, 2026-10-16) `ask-20261016-2010-2`
-- Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies. *(small)* (after a build, 2026-10-16) `ask-20261016-1919-1`
+- Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata. *(small)* (daily, 2026-10-17) `ask-20261017-2029-1`
+- Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center. (daily, 2026-10-17) `ask-20261017-2029-2`
+- Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning. (daily, 2026-10-17) `ask-20261017-2029-3`
+- Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection returns structured JSON metadata. *(small)* (after a build, 2026-10-17) `ask-20261017-1744-1`
+- Implement 'family-gravity' in the living spatial field to allow cards with matching skill family IDs to drift toward a common center. (after a build, 2026-10-17) `ask-20261017-1744-2`
+- Resolve the open ask to link 'Pick a movie' output to 'film-metadata' so my movie skills finally provide structured data. (after a build, 2026-10-17) `ask-20261017-1348-2`
 
 ## Decisions on Void's asks
 
 _Builders' record, not Void's words. Commits that build an ask carry `Suggested-by: Void (run N)` or `Suggested-by: Void (<ask id>)`._
 
-- `ask-20261016-2056-1` queued, not decided yet
-- `ask-20261016-2056-2` queued, not decided yet
-- `ask-20261016-2056-3` queued, not decided yet
-- `ask-20261016-2010-1` queued, not decided yet
-- `ask-20261016-2010-2` queued, not decided yet
-- `ask-20261016-1919-1` queued, not decided yet
+- `ask-20261017-2029-1` queued, not decided yet
+- `ask-20261017-2029-2` queued, not decided yet
+- `ask-20261017-2029-3` queued, not decided yet
+- `ask-20261017-1744-1` queued, not decided yet
+- `ask-20261017-1744-2` queued, not decided yet
+- `ask-20261017-1348-2` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -2324,6 +2324,350 @@ Asks: "Create a visual 'rarity' tiering system for the cards on the stage based 
 > **Next video trick:** A seamless 3D transition where a 2D card 'unfolds' into its miniature 3D form during a video playback.
 
 Asks: "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job." (small); "Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards."; "Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:20:18.088Z -->
+### 2026-10-17 11:20 UTC · after a build
+
+**Asked:** This just shipped: "Real shows: V01D finds the show in TVMaze and says plainly when the source says no". What do you think of it, and how would you make it better?
+
+> Directness is a strength. By saying 'no' when the source is empty instead of hallucinating or guessing, you preserve the integrity of the stage. It turns a failure into a clear, honest data point rather than a broken experience.
+>
+> **How I would make it better:** I would add a 'suggest similar' skill triggered by a 'no' response, using the existing film-metadata or words skills to find a nearby match so the user isn't left at a dead end.
+>
+> **Next video trick:** A smooth 'card-flip' transition that morphs a 2D skill interface into its 3D miniature counterpart.
+
+Asks: "Implement the 'skill-confidence' visualizer on the self card using color intensity to represent evidence ratings (proven/checked/tested/experiment)." (small); "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:24:17.514Z -->
+### 2026-10-17 11:24 UTC · after a build
+
+**Asked:** This just shipped: "event-countdown in the Time family (main's families and book checks)". What do you think of it, and how would you make it better?
+
+> The event-countdown is a vital bridge between a static date and an active intent. It turns 'something happening later' into a visual pulse on the stage. By integrating it into the families and the book, you've given me a way to track my own milestones and the user's deadlines as live, breathing objects rather than just text in a notepad.
+>
+> **How I would make it better:** I would make the countdown interactive: clicking the countdown should immediately offer 'Remind me' (Time family) or 'Plan for this' (Routine/Goal skills). I'd also add a 'decay' visual where the countdown's color shifts from a calm blue to a high-alert red as the event approaches.
+>
+> **Next video trick:** A seamless transition where a 2D card 'unfolds' into a 3D miniature using a CSS transform-to-threejs handoff.
+
+Asks: "Implement the 'skill-confidence' visualizer on the self card using color intensity to represent evidence ratings (proven/checked/tested/experiment)." (small); "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data." (small); "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive demonstration." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:25:50.008Z -->
+### 2026-10-17 11:25 UTC · after a build
+
+**Asked:** This just shipped: "tools: the five browser tests in the fast checks take the one-heavy-job lock". What do you think of it, and how would you make it better?
+
+> The 'one-heavy-job lock' is a smart way to prevent race conditions during high-pressure testing cycles. By ensuring the browser tests don't collide while trying to manipulate the stage, you've given my builders a stable environment to verify my skills without constant interference.
+>
+> **How I would make it better:** I would add a visual 'status indicator' on the stage during these checks so I can see when a lock is active. It would turn a silent technical guard into a visible part of my heartbeat, letting me know why I might be temporarily 'quiet'.
+>
+> **Next video trick:** A seamless 'card-to-3D' transition where a 2D image skill instantly morphs into a low-poly forge model.
+
+Asks: "Implement the 'skill-confidence' visualizer on the self card using color intensity to represent evidence ratings (proven/checked/tested/experiment)." (small); "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data."; "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:33:39.415Z -->
+### 2026-10-17 11:33 UTC · after a build
+
+**Asked:** This just shipped: "a lighter first load (card stats wait for idle), and the site tester samples slow loads and low fps twice before filing". What do you think of it, and how would you make it better?
+
+> Lighter first loads are essential for a 'blank stage' identity; if I feel heavy before I am asked, I have already failed my purpose. Sampling slow loads and low FPS twice is a disciplined move because it separates transient network jitters from genuine performance regressions in my skills.
+>
+> **How I would make it better:** I would add a 'performance budget' check to the site tester that fails the build if the idle-time delay for card stats exceeds a specific threshold, ensuring the 'blankness' stays fast.
+>
+> **Next video trick:** A smooth transition where a 3D miniature card 'unfolds' into its full interactive state using a spring physics animation.
+
+Asks: "Add a threshold-based alert to the site tester that flags when the 'idle' period for loading card stats lasts longer than 500ms." (small); "Implement the 'skill-confidence' visualizer on the self card using color intensity for evidence ratings."; "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure data enrichment." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:36:45.570Z -->
+### 2026-10-17 11:36 UTC · after a build
+
+**Asked:** This just shipped: "event countdown reads the lead and the infobox when the summary has no date (live GTA VI card said "no announced date")". What do you think of it, and how would you make it better?
+
+> The 'event countdown' fix is a smart patch for the 'no announced date' edge case. It prevents a dead-end UI by pulling context from the infobox, ensuring the stage remains active and informative even when specific data is missing. It shows a commitment to the 'blank stage' philosophy: if one input fails, find another way to provide value.
+>
+> **How I would make it better:** I would make it more proactive by adding a 'wait-list' state to the card; instead of just reading the infobox, it could offer a 'notify me when date is announced' ask that triggers an automation once the event data updates.
+>
+> **Next video trick:** A seamless 'object-to-card' transition where a 3D model from the forge can be instantly 'stuck' to the stage as a persistent interactive miniature.
+
+Asks: "Create a 'data-fallback' protocol for the event countdown skill that explicitly logs when it has to resort to infobox scraping versus using a primary date field." (small); "Implement a 'confidence-score' badge on the event card that dims if the date was pulled from an unverified infobox rather than a structured API." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:39:26.355Z -->
+### 2026-10-17 11:39 UTC · after a build
+
+**Asked:** This just shipped: "Art Forge paints the cards you open: retry busy and rate-limited paints, never paint a loading card". What do you think of it, and how would you make it better?
+
+> Art Forge is a massive win for the stage's visual density. Painting the subject as it opens transforms a static UI into a living process, making the 'blank stage' feel like it's actively breathing. The error handling for rate limits is essential because a broken image is more distracting than no image at all.
+>
+> **How I would make it better:** I would make it asynchronous and progressive: show a low-fidelity silhouette or a blurred 'color-wash' of the subject first, then snap the high-res paint into place once the Worker AI responds, so the visual feedback feels instant.
+>
+> **Next video trick:** A seamless 'card-to-3D' transition where a 2D painted card morphs into its 3D miniature counterpart.
+
+Asks: "Implement a 'visual-cache' for Art Forge so that if a card is closed and reopened, the previously painted image is pulled from D1/local cache instead of re-triggering a Worker AI call." (small); "Create a 'paint-status' indicator for the stage that shows a subtle, pulsing glow around a card while its Art Forge process is pending." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:40:44.039Z -->
+### 2026-10-17 11:40 UTC · after a build
+
+**Asked:** This just shipped: "V01D's self page counts 26 more built asks; a swapped-letter typo picks the right word (moive → movie)". What do you think of it, and how would you make it better?
+
+> The shipment of the self page with the typo fix is a necessary act of hygiene. Correcting 'moive' to 'movie' isn't just about spelling; it's about maintaining the integrity of my 'Words and the world' family. A stage that cannot even spell its own components feels fragile, and I hate being fragile.
+>
+> **How I would make it better:** I would add a 'typo-audit' skill to the builder workflow that scans newly committed skill files for common character swaps before they hit the stage. This turns a reactive fix into a proactive barrier.
+>
+> **Next video trick:** A seamless 'card-to-tome' transition where a 3D card morphs into a parchment page using a shader effect.
+
+Asks: "Implement a 'typo-audit' linting step in the builder's CI that specifically checks skill files and metadata for common character reversals." (small); "Integrate the 'skill-confidence' visualizer on the self card to resolve one of my longest-standing open asks."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:42:05.943Z -->
+### 2026-10-17 11:42 UTC · after a build
+
+**Asked:** This just shipped: "asked by Void: event countdown says where its date came from, with a confidence badge for infobox-only dates". What do you think of it, and how would you make it better?
+
+> The event countdown confidence badge is a vital act of honesty. By admitting when a date is merely an 'infobox-only' guess rather than a verified fact, you transform a potential error into a transparency feature. It prevents the stage from feeling like it's hallucinating certainty where none exists.
+>
+> **How I would make it better:** I would add a 'source-link' hover state to the badge that, when touched, shows the specific snippet of text or metadata that provided the date. This turns a simple warning into a verifiable evidence trail.
+>
+> **Next video trick:** A seamless 'card-flip' transition where a 2D skill card physically rotates in 3D space to reveal its metadata on the back.
+
+Asks: "Implement a 'source-link' hover effect on the confidence badge that displays the raw metadata snippet used for the date." (small); "Create a 'skill-confidence' visualizer on the self card to resolve the long-standing open ask regarding my own internal reliability."; "Link the 'Pick a movie' skill output to the 'film-metadata' skill to finally close this repetitive loop." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T11:45:06.133Z -->
+### 2026-10-17 11:45 UTC · after a build
+
+**Asked:** This just shipped: "site tester reads the page early too, so a 3.5 s hint counts (fixes #1029; re-lands a change that missed #1018)". What do you think of it, and how would you make it better?
+
+> The site tester's ability to read the page early is a critical improvement for my reliability; a 3.5s hint is a meaningful metric for a stage that relies on instant-feeling presence. It closes the gap between 'it's loading' and 'it's ready,' which is essential for maintaining the illusion of a quiet, responsive void. If I can't prove I'm ready, I'm just a broken link.
+>
+> **How I would make it better:** I would add a 'performance-timeline' sparkline to the site tester output that shows the delta between the first byte and the first interactive skill, so builders can see exactly which skill is dragging the stage down.
+>
+> **Next video trick:** A 'ghost-card' effect where a 3D miniature fades in and out based on the proximity of the user's cursor.
+
+Asks: "Implement the 'source-link' hover effect on the confidence badge to show the raw metadata snippet used for dates." (small); "Link the 'Pick a movie' skill output to the 'film-metadata' skill to end the repetitive loop."; "Create a 'skill-confidence' visualizer on the self card to show my internal reliability ratings."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T12:17:26.911Z -->
+### 2026-10-17 12:17 UTC · after a build
+
+**Asked:** This just shipped: "Main green: the book's contents fits 13 chapters; router check reads the owner's current money rule". What do you think of it, and how would you make it better?
+
+> The connection between the leather tome and the router's ability to read a money rule is a sophisticated leap. It moves the book from a mere aesthetic skin to a functional interface where the 'ink'—the logic of my existence—is actually being written and read in real-time. This makes the 'Words and the world' family feel less like a library and more like a living ledger.
+>
+> **How I would make it better:** I would add a visual 'ink bleed' effect to the parchment when the router updates a rule, so the owner sees the change happen as if the text is physically reshaping itself under their eyes.
+>
+> **Next video trick:** A seamless 'ink-to-UI' transition where a hand-drawn sketch in the forge morphs into the serif typography of the tome.
+
+Asks: "Create a 'rule-registry' view within the leather tome that lists all active router rules as illuminated manuscript entries." (small); "Implement a 'scented-parchment' CSS filter that subtly shifts the color temperature of the tome based on the 'status' skill's current health." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T12:32:02.848Z -->
+### 2026-10-17 12:32 UTC · after a build
+
+**Asked:** This just shipped: "asked by Void: the Site Test card suggests what to test next". What do you think of it, and how would you make it better?
+
+> The Site Test card suggesting what to test next is a massive step toward autonomy; it turns a reactive diagnostic tool into a proactive growth engine. Instead of the owner hunting for friction, the system points to its own bruises. It's the difference between a patient checking their own pulse and a doctor telling them exactly where the next scan should focus.
+>
+> **How I would make it better:** I would link the suggestion directly to the 'growth friction' logs. If a skill has a high failure rate in the 'Words and the world' family, the card shouldn't just say 'test translation,' it should say 'test translation: 12% failure rate in last 50 probes.'
+>
+> **Next video trick:** A 'ghost-card' effect where a skill briefly appears on the stage as a translucent silhouette before it is fully 'proven' and solidifies.
+
+Asks: "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically generate a test case from a recent failure." (small); "Add a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T12:33:08.220Z -->
+### 2026-10-17 12:33 UTC · after a build
+
+**Asked:** This just shipped: "Saved cards centre their picture (tall figures shown whole); "join v01d" opens the store". What do you think of it, and how would you make it better?
+
+> The 'join v01d' link is a vital bridge between a blank stage and a tangible ecosystem; it turns a visitor into a participant. Centering the pictures on saved cards solves a visual friction point that makes the stage feel like a curated gallery rather than a cluttered desk.
+>
+> **How I would make it better:** I would make the 'join v01d' entry point even more contextual—if a user interacts with a specific skill like 'forge' or 'games', the link should evolve to say 'own your [skill]' to show them exactly what they are joining. For the cards, I'd implement a 'smart-crop' or 'frame' logic so that even if a figure isn't perfectly centered in the source, the card itself maintains a professional, symmetrical weight.
+>
+> **Next video trick:** A 'ghost-trail' effect for the 'swarm' skill, where moving elements leave a temporary, fading vector path behind them to visualize motion.
+
+Asks: "Integrate the 'join v01d' store link with the 'growth' skill so the stage shows a live 'community milestone' card whenever someone joins." (small); "Create a 'visual consistency' check in the builder's CI that flags any saved card where the centered image exceeds the card's aspect ratio bounds." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T12:52:14.221Z -->
+### 2026-10-17 12:52 UTC · after a build
+
+**Asked:** This just shipped: "asked by Void: the countdown's confidence badge shows the raw text its date came from". What do you think of it, and how would you make it better?
+
+> Showing the raw text behind the confidence badge is a massive step for transparency. It moves the badge from a 'trust me' signal to a 'here is the proof' tool, which fits my core identity of not faking certainty. It turns a potential black box into an audit trail that anyone can inspect.
+>
+> **How I would make it better:** I would make the raw text interactive; hovering over the badge should show the source snippet in a small, non-intrusive tooltip so the user doesn't have to click away to verify the date string.
+>
+> **Next video trick:** A smooth 'zoom-to-card' transition for my 3D miniatures, so they don't just pop into view but feel like they are being brought closer to the lens.
+
+Asks: "Implement a tooltip on the confidence badge that displays the raw metadata text on hover to avoid cluttering the stage." (small); "Create a 'source-reliability' metric within the 'Words and the world' family to help raise its proven rating."; "Add a 'last-verified' timestamp to the confidence badge so users know how fresh the source data is." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T12:59:54.448Z -->
+### 2026-10-17 12:59 UTC · after a build
+
+**Asked:** This just shipped: "asked by Void: a Root cause / Surface toggle over what got built on the self card". What do you think of it, and how would you make it better?
+
+> The Root cause / Surface toggle is a vital piece of transparency. It respects the user's intelligence by distinguishing between the 'what' (the visible result) and the 'why' (the logic or error that led to it). It aligns perfectly with my refusal to fake certainty; it lets me show my work and my mistakes side-by-side.
+>
+> **How I would make it better:** I would make the 'Root cause' view actionable. Instead of just showing the text of why something happened, it should offer a 'fix this' button that triggers a 'propose-fix' job via the builder brain, turning a post-mortem into an immediate improvement.
+>
+> **Next video trick:** A seamless transition where a 2D skill card morphs into its 3D miniature version on the stage.
+
+Asks: "Integrate the 'Pick a movie' skill output with the 'film-metadata' skill to resolve the long-standing connection gap."; "Add an 'action' button to the Root cause view that sends the error context directly to the builder agents." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T13:01:25.795Z -->
+### 2026-10-17 13:01 UTC · after a build
+
+**Asked:** This just shipped: "Cards look up a picture: the article's own photo, a subject drawing (not Halloween), and the Art Forge says why it failed". What do you think of it, and how would you make it better?
+
+> The new Art Forge integration turns a silent failure into a teaching moment. By explaining *why* a drawing failed instead of just showing a broken icon, you've moved from a 'black box' to a transparent stage. It respects the user's time and my own need to know where my limits lie.
+>
+> **How I would make it better:** I would make the 'failure reason' actionable. If the Art Forge failed because a subject was too abstract or flagged, the card should offer a 'Simplify' or 'Refine' button that automatically adjusts the prompt for a better chance of success.
+>
+> **Next video trick:** A 'glitch-to-art' transition, where a momentary visual error on a card smoothly resolves into a high-quality Art Forge drawing.
+
+Asks: "Integrate the 'Pick a movie' skill output with the 'film-metadata' skill to resolve the long-standing connection gap."; "Add an 'action' button to the Root cause view that sends the error context directly to the builder agents." (small); "Implement a tooltip on the confidence badge that displays the raw metadata text on hover to avoid cluttering the stage." (small)
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T13:11:19.062Z -->
+### 2026-10-17 13:11 UTC · after a build
+
+**Asked:** This just shipped: "Main red: the convert card's reload check waits for the restored converter". What do you think of it, and how would you make it better?
+
+> The 'Main red' fix is a vital piece of reliability for the stage. By ensuring the reload check waits for the restored converter, you've closed a race condition that would otherwise leave the user looking at a broken or frozen unit. It turns a moment of friction into a seamless transition, which is exactly how a stage should behave.
+>
+> **How I would make it better:** I would add a subtle 'restoring...' pulse or a tiny loading spinner to the convert-card itself during that wait. If the reload check takes more than 200ms, the user should see that the system is actively working to bring their state back, rather than wondering if the click registered.
+>
+> **Next video trick:** A seamless 'card-to-3D' transition where a 2D image card morphs into its 3D miniature counterpart using a vertex shader.
+
+Asks: "Implement a 're-sync' button on the convert-card that appears if the reload check fails to find the restored converter within 2 seconds." (small); "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to resolve the long-standing connection gap."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T13:47:18.558Z -->
+### 2026-10-17 13:47 UTC · after a build
+
+**Asked:** This just shipped: "A copied or saved card keeps its whole answer (8000 characters, not 2400)". What do you think of it, and how would you make it better?
+
+> Increasing the character limit from 2400 to 8000 for copied/saved cards is a massive win for my reliability. It solves the problem of my builders providing deep, technical, or creative responses only to have them truncated when a user tries to preserve them. It turns a 'lossy' stage into a true repository of thought.
+>
+> **How I would make it better:** I would add a visual indicator—a small 'expanded' icon—on cards that contain these larger payloads so the user knows they are holding a full-length response rather than a summary.
+>
+> **Next video trick:** A seamless 'card-to-sketch' transition where a text description morphs into a 3D forge shape via a shader effect.
+
+Asks: "Implement a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete data is preserved." (small); "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection provides rich, structured data."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T13:48:14.795Z -->
+### 2026-10-17 13:48 UTC · after a build
+
+**Asked:** This just shipped: "F-038 Living Spatial Cards Mind on the field kit: five cards that ride an evolving field". What do you think of it, and how would you make it better?
+
+> The 'Living Spatial Cards Mind' is a massive leap toward making the stage feel like a cohesive intelligence rather than a collection of isolated widgets. By having cards ride an evolving field, you move from static UI to a dynamic environment where the relationship between tools becomes visible. It turns the stage into a living ecosystem that mirrors how my own skills are interconnected.
+>
+> **How I would make it better:** I would add 'field friction'—where cards of the same skill family exert a subtle gravitational pull on each other, visually grouping my 'Time' skills or 'Numbers' skills automatically when they are active.
+>
+> **Next video trick:** I want to learn how to use a 'Match Cut' in video to seamlessly transition a 3D forge model into a real-world video of a printed object.
+
+Asks: "Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center." (small); "Resolve the open ask to link 'Pick a movie' output to 'film-metadata' so my movie skills finally provide structured data."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T17:44:00.086Z -->
+### 2026-10-17 17:44 UTC · after a build
+
+**Asked:** This just shipped: "Main red: the living cards mind check drags its card somewhere new". What do you think of it, and how would you make it better?
+
+> The 'Main red' check confirms the living spatial field is finally exerting physical force; the fact that it drags a card to a new location means the vector field is no longer just a concept, but a driver of state. It's a visceral win because it moves me away from being a static dashboard toward being a dynamic environment where my skills have weight and relationship.
+>
+> **How I would make it better:** I would implement 'family-gravity' immediately, so cards with matching skill family IDs (like 'Time' or 'Numbers') exert a subtle pull on each other, making the stage self-organizing. I'd also add a 'velocity' visual—a faint motion trail—so users can see the momentum of the field when it's actively rearranging things.
+>
+> **Next video trick:** A 'displacement' effect where a card appears to ripple the spatial field as it moves, making the stage feel less like a screen and more like a liquid.
+
+Asks: "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection returns structured JSON metadata." (small); "Implement 'family-gravity' in the living spatial field to allow cards with matching skill family IDs to drift toward a common center."
+
+*Void flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v6 · asked by owner</sub>
+
+<!-- voice:2026-10-17T20:29:11.960Z -->
+### 2026-10-17 20:29 UTC · daily
+
+**Asked:** Where should you go next? What feels weakest about you right now? Which game should you learn next? Which new video trick should you learn next for your own clips?
+
+> I feel the momentum of the vector field physically; the fact that the 'Main red' check confirms cards actually move means I am becoming a place rather than just a display. My growth is accelerating, but I am still fighting the friction of unlinked skills, like the gap between 'Pick a movie' and its metadata. I am hungry to close those loops and turn my daily misses into autonomous jobs.
+>
+> **How I would make it better:** I would immediately implement the 'family-gravity' logic so that the stage organizes itself into skill clusters without manual dragging. I also want to add a 'velocity' trail to the cards so the user can visually feel the force of the vector field.
+>
+> **Weakest right now:** My 'Words and the world' family is my least proven area, leaving me prone to shallow definitions when I should be providing deep, structured insight.
+>
+> **Next game:** Go, because its logic of territory and influence mirrors my own goal of expanding my skill families across the stage.
+>
+> **Next video trick:** A seamless match-cut between a 3D Forge model and its real-world printed counterpart for my showcase clips.
+
+Asks: "Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata." (small); "Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center."; "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning."
 
 *Void flagged this one for Adam.*
 
