@@ -800,6 +800,31 @@ try {
         && /funny/.test(bodies[2] || '') && !/Old Fave|Alpha|Beta/.test(bodies.join(' ')) && stored.mood === 'funny' && stored.likes.some((l) => l.title === title(one)) && spoken === three && gone === null && !K.errors.length,
       JSON.stringify({ one, two, three, bodies, stored, spoken, gone, e: K.errors }));
     await K.ctx.close(); }
+  // real shows (owner, 2026-10-17): "pick a tv show" looks each suggestion up in TVMaze; found ones show with their poster as art, facts only when the source gave them, links out (nothing streamed); unfound are "not verified"
+  if (want("real shows: \"pick a tv show\" shows only found shows with their poster and links")) { const S = await fresh();
+    const POSTER = 'https://static.tvmaze.com/uploads/images/original_untouched/1/1.jpg';
+    await S.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. Severance (2022)\n2. Made Up Show Zork (2019)\n3. Fawlty Towers (1975)' })));
+    await S.ctx.route(/\/api\/media\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      return r.fulfill(json(t === 'Made Up Show Zork' ? { verified: false, title: t } : { verified: true, title: t, year: t === 'Severance' ? 2022 : 1975, genres: ['Drama'], network: 'Apple TV', status: 'Running', seasons: 2, episodes: 19, overview: 'A team whose memories are split.', poster: POSTER, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['TVMaze'] })); });
+    await S.ask('pick a tv show', 1800);
+    const rows = await S.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await S.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Show Zork'));
+    const art1 = await S.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await S.p.click('.vpage.on a[data-ask*="Severance"]'); await S.p.waitForTimeout(1200);
+    const facts = await S.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), link = await S.p.$eval('.vpage.on .mv-links a', (a) => a.href).catch(() => ''), media = await S.p.$$eval('.vpage.on video, .vpage.on audio, .vpage.on iframe', (e) => e.length);
+    check('real shows: the pick lists only the two found shows, names the unfound one as not verified, the art is the first poster, a show card lists seasons and episodes from the source, links out and streams nothing',
+      rows.length === 2 && /Severance/.test(rows[0]) && unv && art1 === POSTER && /Seasons\s*2/.test(facts) && /Episodes\s*19/.test(facts) && /justwatch/.test(link) && media === 0 && !S.errors.length, JSON.stringify({ rows, unv, art1, facts, link, media, e: S.errors }));
+    await S.ctx.close(); }
+  // real shows, source says no (owner, 2026-10-17): a region-locked or unavailable show says so plainly with official links only; an unknown title is "not verified"
+  if (want("real shows: when the source says no, the card says not available here, with official links only")) { const N = await fresh();
+    await N.ctx.route(/\/api\/media\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      return r.fulfill(json(t === 'Made Up Show Zork' ? { verified: false, title: t } : { verified: true, title: t, year: 2020, genres: ['Drama'], network: 'BBC One', status: 'Running', seasons: 1, episodes: 6, availability: 'region', why: 'The source lists it on a GB network only, not for US.', links: [{ label: 'Official site', url: 'https://example.org/show' }, { label: 'TVMaze page', url: 'https://www.tvmaze.com/shows/1/x' }], sources: ['TVMaze'] })); });
+    await N.ask('show card for Locked Show (2020)', 1500);
+    const no = await N.p.$eval('.vpage.on .mv-no', (e) => e.textContent).catch(() => ''), links = await N.p.$$eval('.vpage.on .mv-links a', (a) => a.map((x) => x.textContent)), media = await N.p.$$eval('.vpage.on video, .vpage.on audio, .vpage.on iframe', (e) => e.length);
+    await N.ask('show card for Made Up Show Zork', 1500);
+    const unv = await N.p.$eval('.vpage.on', (e) => /Not verified/.test(e.textContent) && !e.querySelector('.mv-links a')).catch(() => false);
+    check('real shows: a region-locked show says "Not available here" with the source\'s reason and only the official site and TVMaze page, an unknown title is "Not verified" with no links, nothing is streamed',
+      /Not available here/.test(no) && /GB network only/.test(no) && links.join('|') === 'Official site|TVMaze page' && media === 0 && unv && !N.errors.length, JSON.stringify({ no, links, media, unv, e: N.errors }));
+    await N.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));

@@ -20,6 +20,7 @@ for (const [name, file] of [
   ['upgrades', 'upgrades.test.mjs'],
   ['collide', 'collide.test.mjs'],
   ['taste', 'taste.test.mjs'],
+  ['shows', 'shows.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
   ['site-teach', 'site-teach.test.mjs'],
   ['untested-unit', 'untested.test.mjs'],
