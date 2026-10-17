@@ -2,11 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T21:10:12.400Z",
+   "at": "2026-10-17T21:13:54.211Z",
    "sha": "7c66b3b8f12db0a052bcbf22811e77ac2d39e459",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39068791421",
    "suite": "browser suite on main",
    "checks": [
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "check timeout: no check finished within 300 s"
    ]
   },
