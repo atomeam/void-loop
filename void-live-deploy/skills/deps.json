@@ -111,6 +111,12 @@
    "dependants": 11
   },
   {
+   "file": "lib/card-art.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
@@ -133,12 +139,6 @@
    "skills": 3,
    "direct": 3,
    "dependants": 3
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 6
   },
   {
    "file": "lib/card-image.js",
@@ -1518,12 +1518,14 @@
    ],
    "importedBy": [
     "lib/card-frame.js",
-    "lib/card-image.js"
+    "lib/card-image.js",
+    "lib/tome.js"
    ],
    "reachedBy": [
     "lib/card-share.js",
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/guide.js",
     "skills/merge.js"
    ]
   },
@@ -2780,7 +2782,8 @@
   },
   "lib/tome.js": {
    "imports": [
-    "lib/guide.js"
+    "lib/guide.js",
+    "lib/card-art.js"
    ],
    "importedBy": [
     "skills/guide.js"
