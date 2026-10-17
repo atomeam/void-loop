@@ -73,7 +73,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = th.state, st = D.collectIncome(s); if (st !== s) { th.state = st; save(); return paint(); }
     const mineTurn = s.side === 'you' && !s.over && !pending;
-    bar.innerHTML = '<span>Turn <b>' + Math.min(s.turn + 1, D.TURNS) + '</b> of ' + D.TURNS + '</span><span>Treasury: you <b>' + s.treasury.you + '</b> · V01D <b>' + s.treasury.void + '</b></span><span>Income <b>' + D.incomeOf(s, 'you') + '</b></span><span>' + (s.over ? 'over' : s.side === 'you' ? 'your move · ' + s.actions + ' action' + (s.actions === 1 ? '' : 's') : 'V01D is playing') + '</span>';
+    bar.innerHTML = '<span>Turn <b>' + Math.min(s.turn + 1, D.TURNS) + '</b> of ' + D.TURNS + '</span><span>Treasury: you <b>' + s.treasury.you + '</b> · V01D <b>' + s.treasury.void + '</b></span><span>Income <b>' + D.incomeOf(s, 'you') + '</b></span><span>' + (s.over ? 'over' : s.side === 'you' ? 'your move · ' + s.actions + ' action' + (s.actions === 1 ? '' : 's') : 'V01D is playing') + '</span>'; // void-review: ok: only numbers the game computed (turn, treasury, income) reach the markup
     const sel = (c) => { if (!mineTurn) return; if (c.side === 'you') { if (c.neutralised) return; mine = c.id; if (mode !== 'attack') mode = 'attack'; } else if (mode === 'attack' && !c.neutralised) theirs = c.id; paint(); };
     for (const [row, side] of [[foe, 'void'], [me, 'you']]) {
       row.textContent = '';
@@ -97,7 +97,7 @@ function mount(th, stageApi) {
     } else if (mineTurn && mode === 'attack') {
       const a = s.cards.find((c) => c.id === mine), t = s.cards.find((c) => c.id === theirs);
       panel.hidden = false;
-      if (!a || !t) panel.innerHTML = '<div>' + (a ? 'Now tap one of V01D’s cards.' : 'Tap one of your cards to attack with.') + '</div>';
+      if (!a || !t) panel.innerHTML = '<div>' + (a ? 'Now tap one of V01D’s cards.' : 'Tap one of your cards to attack with.') + '</div>'; // void-review: ok: two fixed strings, no user text
       else {
         pledge = Math.min(pledge, s.treasury.you);
         panel.innerHTML = '<div><b>' + esc(a.name) + '</b> (' + a.power + ' + ' + D.support(s, a) + ' support + <b>' + pledge + '</b> coins = <b>' + (a.power + D.support(s, a) + pledge) + '</b>) against <b>' + esc(t.name) + '</b> (' + t.resistance + ' + ' + D.support(s, t) + ' support = <b>' + (t.resistance + D.support(s, t)) + '</b> + V01D’s answer). It must beat the total.</div>';
