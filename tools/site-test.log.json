@@ -984,5 +984,13 @@
   "kind": "file",
   "key": "play chess | fps # < #",
   "note": "fix: \"play chess\" fps 2 < 5"
+ },
+ {
+  "at": "2026-10-17T11:23:07Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "what can I buy | load # ms > #",
+  "note": "fix: \"what can I buy\" load 1244 ms > 1200"
  }
 ]

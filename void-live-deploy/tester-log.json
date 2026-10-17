@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 131,
+ "runsTotal": 132,
  "kinds": {
   "grow": 15,
-  "file": 62,
+  "file": 63,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:23:07Z",
+   "passed": 13,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what can I buy\" load 1244 ms > 1200"
+  },
   {
    "at": "2026-10-17T11:17:08Z",
    "passed": 16,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:24:25Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -236,8 +236,8 @@
   "skill:poster": "2026-10-17T11:17:08Z",
   "skill:pregnancy": "2026-10-17T11:17:08Z",
   "skill:print-download": "2026-10-17T11:17:08Z",
-  "skill:print-file": "2026-10-16T16:42:11Z",
-  "skill:printedmotor": "2026-10-16T16:59:40Z",
+  "skill:print-file": "2026-10-17T11:23:07Z",
+  "skill:printedmotor": "2026-10-17T11:23:07Z",
   "skill:proposal": "2026-10-16T16:59:40Z",
   "skill:quiz": "2026-10-16T16:59:40Z",
   "skill:rebuild-map": "2026-10-16T17:30:08Z",
@@ -305,6 +305,7 @@
   "skill:vector-field-mind": "2026-10-17T09:43:30Z",
   "skill:repo": "2026-10-17T09:57:04Z",
   "skill:incident-autopsy": "2026-10-17T10:04:20Z",
-  "skill:flow-canvas": "2026-10-17T10:26:08Z"
+  "skill:flow-canvas": "2026-10-17T10:26:08Z",
+  "skill:event-countdown": "2026-10-17T11:23:07Z"
  }
 }
