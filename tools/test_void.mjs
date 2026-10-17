@@ -760,6 +760,22 @@ try {
     check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
       rows.length === 2 && /Talk to Me/.test(rows[0]) && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
+  // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
+  // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
+  if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
+    const COVER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x400bb.jpg';
+    await U.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Hey Jude** - The Beatles\n2. Made Up Song Zork - Nobody\n3. Respect by Aretha Franklin' })));
+    await U.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Made Up Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'Album', year: 1968, genre: 'Rock', poster: COVER, preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [{ label: 'Spotify: search', url: 'https://open.spotify.com/search/x' }] })); });
+    await U.ask('pick a song', 1800);
+    const rows = await U.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await U.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Song Zork'));
+    const art1 = await U.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await U.p.click('.vpage.on a[data-ask*="Hey Jude"]'); await U.p.waitForTimeout(1200);
+    await U.p.click('.vpage.on .md-preview'); await U.p.waitForTimeout(200);
+    const au = await U.p.$eval('.vpage.on .mv-player audio', (a) => a.src).catch(() => '');
+    check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
+      rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
+    await U.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
