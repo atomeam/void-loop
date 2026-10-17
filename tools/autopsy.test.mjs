@@ -1,0 +1,48 @@
+// Incident autopsy: parser, mapping, counts, escaping (lib/autopsy.js). node --test tools/autopsy.test.mjs
+import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
+import { parseIncidents, titleOf, skillOfCheck, autopsy, autopsyHtml } from '../void-live-deploy/lib/autopsy.js';
+import skill from '../void-live-deploy/skills/incident-autopsy.js';
+const FAM = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'clock' }, { name: 'countdown' }, { name: 'family-health' }] }, { id: 'make', name: 'Making <things>', skills: [{ name: 'appraise' }, { name: 'convert' }] }] };
+const GUIDE = { pages: [{ name: 'appraise', examples: ['what is this coin worth'] }, { name: 'clock', examples: ['what time is it'] }, { name: 'convert', examples: ['what time is it'] }] };
+const SAMPLE = { incidents: [
+  { at: '2026-10-17T09:51:08.444Z', sha: '95164ec9caef7fdf87f0e19b0bef2aeeb5c8d16b', suite: 'browser suite on main', checks: ['convert card: maths, "temperature converter" opens it', 'zzz mystery: nothing matches'] },
+  { at: '2026-10-17T09:00:00Z', sha: '4f660b32aa', suite: 'browser suite on main', checks: ['clock: "set it" <img src=x onerror=1>', 'convert card: again', 'the quoted "what is this coin worth" fails without a title'] },
+  { at: 'not a date', sha: 'abcdef1', checks: ['x'] }, { at: '2026-10-17T08:00:00Z', sha: 'NOT-HEX', checks: ['x'] }, null, { at: '2026-10-17T08:00:00Z', sha: 'abcdef1', checks: 'oops' },
+] };
+
+test('the parser keeps only well-formed incidents, in the file\'s order', () => {
+  const p = parseIncidents(SAMPLE); assert.deepEqual(p.map((i) => i.sha), ['95164ec9caef7fdf87f0e19b0bef2aeeb5c8d16b', '4f660b32aa']);
+  assert.deepEqual(parseIncidents(null), []); assert.deepEqual(parseIncidents({}), []); assert.equal(parseIncidents(SAMPLE.incidents)[0].checks.length, 2);
+});
+test('a check is placed by its title or a quoted example ask, else it is unmapped', () => {
+  assert.equal(titleOf('convert card: maths'), 'convert card'); assert.equal(titleOf('suite ran to the end now ok'), 'suite ran to the');
+  const names = ['clock', 'convert', 'appraise', 'family-health', 'ab'];
+  assert.equal(skillOfCheck('convert card: maths', names, GUIDE.pages), 'convert'); assert.equal(skillOfCheck('family health: the card', names, GUIDE.pages), 'family-health');
+  assert.equal(skillOfCheck('big thing: "what is this coin worth" opens', names, GUIDE.pages), 'appraise');
+  assert.equal(skillOfCheck('x: "what time is it"', names, GUIDE.pages), null, 'an example two skills share is not guessed');
+  assert.equal(skillOfCheck('ab: tiny names never match', names, GUIDE.pages), null); assert.equal(skillOfCheck('reconvert: part of a word', names, GUIDE.pages), null);
+  assert.equal(skillOfCheck('', names, null), null);
+});
+test('counts per family, latest incidents with their sha, unmapped listed', () => {
+  const a = autopsy(SAMPLE, FAM, GUIDE);
+  assert.equal(a.total, 2); assert.equal(a.failing, 5);
+  assert.deepEqual(a.families, [{ id: 'make', name: 'Making <things>', count: 3 }, { id: 'time', name: 'Time', count: 1 }]);
+  assert.deepEqual(a.unmapped.map((u) => u.text), ['zzz mystery: nothing matches']); assert.equal(a.recent[0].checks[0].family, 'make');
+  assert.equal(autopsy({ incidents: [] }, FAM, GUIDE).total, 0); assert.equal(autopsy(undefined, null, null).failing, 0);
+});
+test('the markup escapes incident text and names, says the most failing family, and an empty file says so', () => {
+  const html = autopsyHtml(autopsy(SAMPLE, FAM, GUIDE));
+  assert.ok(!html.includes('<img') && !html.includes('Making <things>')); assert.match(html, /&lt;img/); assert.match(html, /Making &lt;things&gt;/);
+  assert.match(html, /Most failing checks recorded: <b>Making/); assert.match(html, /<code>95164ec9<\/code>/); assert.match(html, /Unmapped/); assert.match(html, /&quot;temperature converter&quot;/);
+  const none = autopsyHtml(autopsy({ incidents: [] }, FAM, GUIDE)); assert.match(none, /No incidents recorded/); assert.ok(!/\d/.test(none.replace(/<[^>]*>/g, '')));
+});
+test('the real incidents.json parses and every count adds up', () => {
+  const real = JSON.parse(readFileSync(new URL('../void-live-deploy/incidents.json', import.meta.url), 'utf8')), fam = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')), guide = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/guide.json', import.meta.url), 'utf8'));
+  const a = autopsy(real, fam, guide); assert.equal(a.total, real.incidents.length);
+  assert.equal(a.families.reduce((n, f) => n + f.count, 0) + a.unmapped.reduce((n, u) => n + u.count, 0), a.failing);
+});
+test('the skill answers its examples and leaves its near misses alone', () => {
+  for (const e of skill.examples) assert.ok(skill.match(e.toLowerCase(), e), e);
+  for (const n of skill.nearMisses) assert.ok(!skill.match(n.toLowerCase(), n), n);
+  assert.ok(skill.suite().ok);
+});
