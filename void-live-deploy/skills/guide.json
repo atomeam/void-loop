@@ -28,8 +28,8 @@
    "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
    "kind": "games",
    "count": {
-    "experiment": 1,
-    "tested": 4,
+    "experiment": 0,
+    "tested": 5,
     "checked": 4,
     "proven": 12
    },
@@ -1120,8 +1120,8 @@
     "play cards",
     "card duel"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "1 browser-suite mention",
    "n": 51
   },
   {

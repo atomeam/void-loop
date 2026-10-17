@@ -11,8 +11,8 @@
  },
  "smoke_at": "2026-10-16",
  "totals": {
-  "experiment": 3,
-  "tested": 56,
+  "experiment": 2,
+  "tested": 57,
   "checked": 28,
   "proven": 85
  },
@@ -245,8 +245,8 @@
    "name": "Games",
    "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
    "count": {
-    "experiment": 1,
-    "tested": 4,
+    "experiment": 0,
+    "tested": 5,
     "checked": 4,
     "proven": 12
    },
@@ -409,11 +409,11 @@
     },
     {
      "name": "duel",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
-     "last_tested": "2026-10-16",
-     "last_tested_by": "the daily smoke test",
-     "since": "2026-10-17"
+     "tier": "tested",
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-17"
     }
    ]
   },
