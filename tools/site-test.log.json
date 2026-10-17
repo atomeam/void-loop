@@ -1128,5 +1128,12 @@
   "of": 40,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
+ },
+ {
+  "at": "2026-10-17T23:19:19Z",
+  "passed": 39,
+  "of": 41,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
  }
 ]
