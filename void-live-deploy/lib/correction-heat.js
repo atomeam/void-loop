@@ -17,14 +17,26 @@ export function heatRows(list, fam) {
 }
 
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-/** the heat-map's markup. An honest empty state when nothing is kept (and when the families file could not be read). Pure. */
-export function heatHtml(list, fam, esc = escHtml) {
+/**
+ * The correction to ask a fix for when the owner clicks a family's cell (asked by Void): of the skill with the most corrections in that family
+ * (ties by name), its newest correction that names an ask. null when the family has none. Pure.
+ */
+export function hotEntry(list, fam, familyId) {
+  const g = groupByFamily(list, fam).find((x) => x.id === familyId && x.id !== 'unplaced'); if (!g) return null;
+  const by = new Map(); for (const c of g.items) if (c.skill && c.ask) by.set(c.skill, (by.get(c.skill) || 0) + 1);
+  const top = [...by].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))[0]; if (!top) return null;
+  return g.items.find((c) => c.skill === top[0] && c.ask) || null; // items are newest first
+}
+
+/** the heat-map's markup. An honest empty state when nothing is kept (and when the families file could not be read). With `owner`, a family that has
+ *  corrections is a button: a click drafts a fix for its most corrected skill (lib/correction-fix.js, the existing owner-only route). Pure. */
+export function heatHtml(list, fam, esc = escHtml, { owner = false } = {}) {
   const h = heatRows(list, fam), head = '<div class="vh">Where I get things wrong</div>';
   if (!h.total) return head + '<div class="sub" data-heat-empty="1">No corrections yet. When you tell me what I got wrong, the families it falls in light up here.</div>';
   if (!h.rows.length) return head + '<div class="sub" data-heat-empty="1">The skill families could not be read just now, so I cannot place ' + esc(h.total) + ' kept correction' + (h.total === 1 ? '' : 's') + ' by family.</div>';
   return head + '<div class="sub">Corrections kept on this device per skill in each family; the brightest cell is the hottest family. Nothing here is estimated.</div>'
     + '<div class="ch-grid" data-heat="1" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:6px;margin:6px 0">'
-    + h.rows.map((r) => '<div class="ch-cell" data-family="' + esc(r.id) + '" data-heat-level="' + esc(r.heat) + '" title="' + esc(r.name + ': ' + r.errors + ' correction' + (r.errors === 1 ? '' : 's') + ' over ' + r.skills + ' skills') + '" style="padding:8px;border-radius:8px;background:rgba(255,120,90,' + (0.06 + 0.5 * r.heat).toFixed(2) + ');border:1px solid rgba(255,255,255,.1)">'
-      + '<b style="font-weight:600">' + esc(r.name) + '</b><br><span style="font-variant-numeric:tabular-nums">' + esc(r.errors) + '</span> <span class="sub">of ' + esc(r.skills) + ' skills · ' + esc(r.density.toFixed(2)) + ' each</span></div>').join('') + '</div>'
+    + h.rows.map((r) => '<div class="ch-cell" ' + (owner && hotEntry(list, fam, r.id) ? 'role="button" tabindex="0" data-heat-fix="' + esc(r.id) + '" aria-label="' + esc('Suggest a fix for ' + r.name) + '" ' : '') + 'data-family="' + esc(r.id) + '" data-heat-level="' + esc(r.heat) + '" title="' + esc(r.name + ': ' + r.errors + ' correction' + (r.errors === 1 ? '' : 's') + ' over ' + r.skills + ' skills') + '" style="padding:8px;border-radius:8px;background:rgba(255,120,90,' + (0.06 + 0.5 * r.heat).toFixed(2) + ');border:1px solid rgba(255,255,255,.1)">'
+      + '<b style="font-weight:600">' + esc(r.name) + '</b><br><span style="font-variant-numeric:tabular-nums">' + esc(r.errors) + '</span> <span class="sub">of ' + esc(r.skills) + ' skills · ' + esc(r.density.toFixed(2)) + ' each</span>' + (owner && hotEntry(list, fam, r.id) ? '<div class="sub">Tap to suggest a fix</div><div data-fix-out></div>' : '') + '</div>').join('') + '</div>'
     + (h.unplaced ? '<div class="sub">' + esc(h.unplaced) + ' more ' + (h.unplaced === 1 ? 'is' : 'are') + ' about answers no skill family owns, so ' + (h.unplaced === 1 ? 'it is' : 'they are') + ' not in the map.</div>' : '');
 }
