@@ -39,20 +39,33 @@ export function resultHtml(sent, got, esc = escHtml) {
     + '<div class="sub">A draft only: nothing was changed. A builder opens it as a pull request, and Void\'s review decides.</div>';
 }
 
-/**
- * Ask the existing route for a proposal for one correction. `owner` is the owner key (refused when empty), `fetchFn` is fetch. Resolves
- * { sent, got } with got = { ok, json } or { ok: false, error }; never throws.
- */
-export async function suggestFix(entry, fam, { owner, fetchFn }) {
+async function callRoute(skillName, build, { owner, fetchFn }) {
   if (!ownerOnly(owner)) return { sent: '', got: { ok: false, error: 'only the owner can ask for a fix' } };
   try {
-    const sk = await fetchFn('/skills/' + encodeURIComponent(String((entry && entry.skill) || '')) + '.js');
+    const sk = await fetchFn('/skills/' + encodeURIComponent(String(skillName || '')) + '.js');
     if (!sk.ok) return { sent: '', got: { ok: false, error: 'this skill has no file of its own (it is answered inside the page), so there is nothing to fix here' } };
-    const req = fixRequest(entry, fam, await sk.text());
-    if (!req) return { sent: '', got: { ok: false, error: 'this correction names no skill or ask' } };
+    const req = build(await sk.text());
+    if (!req) return { sent: '', got: { ok: false, error: 'this names no skill or ask' } };
     const r = await fetchFn(FIX_ROUTE, { method: 'POST', headers: { authorization: 'Bearer ' + owner.trim(), 'content-type': 'application/json' }, body: JSON.stringify(req) });
     const sent = sentWords(req);
     if (!r.ok) return { sent, got: { ok: false, error: r.status === 401 ? 'the owner key was not accepted' : (await r.text().catch(() => '')).slice(0, 160) || 'HTTP ' + r.status } };
     return { sent, got: { ok: true, json: await r.json() } };
   } catch (e) { return { sent: '', got: { ok: false, error: 'the request failed' } }; }
 }
+
+/**
+ * Ask the existing route for a proposal for one correction. `owner` is the owner key (refused when empty), `fetchFn` is fetch. Resolves
+ * { sent, got } with got = { ok, json } or { ok: false, error }; never throws.
+ */
+export function suggestFix(entry, fam, opts) { return callRoute(entry && entry.skill, (src) => fixRequest(entry, fam, src), opts); }
+
+/** the request for a failing check of the incident autopsy (lib/autopsy.js): the mapped skill, its family and the check's name (redact()ed), nothing else. Pure. */
+export function incidentRequest(check, fam, source) {
+  const skill = check && /^[a-z][a-z0-9-]{1,40}$/.test(String(check.skill || '')) ? check.skill : '';
+  const name = redact(String((check && check.text) || '').split(':')[0]).replace(/\s+/g, ' ').trim().slice(0, ASK_MAX);
+  if (!skill || name.length < 3) return null;
+  const f = familyMap(fam).get(skill);
+  return { ask: name, skill, mode: 'learn', source: String(source || ''), said: 'Failing browser-suite check recorded in incidents.json' + (f ? ' (family: ' + f.id + ')' : '') + '.' };
+}
+/** the owner's "Suggest fix" for a failing check: the same existing route, a draft only. Never throws. */
+export function suggestIncidentFix(check, fam, opts) { return callRoute(check && check.skill, (src) => incidentRequest(check, fam, src), opts); }
