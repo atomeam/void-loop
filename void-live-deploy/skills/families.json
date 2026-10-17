@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 55,
-  "checked": 24,
+  "checked": 25,
   "proven": 85
  },
  "families": [
@@ -576,8 +576,8 @@
     {
      "name": "country",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 56 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 4 browser-suite mentions, 56 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
@@ -950,7 +950,7 @@
    "count": {
     "experiment": 1,
     "tested": 10,
-    "checked": 1,
+    "checked": 2,
     "proven": 8
    },
    "skills": [
@@ -987,6 +987,13 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
+    },
+    {
+     "name": "technical-context",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     },
     {
      "name": "words",

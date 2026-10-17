@@ -735,6 +735,45 @@ try {
         && await T.p.$eval('.thing.sticky[data-role="note"]', (e) => getComputedStyle(e, '::before').content.includes('note to self')).catch(() => false),
       JSON.stringify({ said, stickies: st.filter((x) => x.kind === "sticky").map((x) => x.text), kinds: st.map((x) => x.kind), e: T.errors }));
     await T.ctx.close(); }
+  // asked by Void: the practice timer logs whether the session met the goal (success_rate, last_tested), and Clef's yes/no is weighed against it
+  if (want("practice timer: success_rate (asks-175)")) { const T = await fresh();
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 16, practice: true, note: 'Little and often.', model: 'gemma' })));
+    await T.ask('make a plan to learn spanish', 3000);
+    // the session ends: the saved timer reads 0:00 and the page is opened again, as it would be after the minutes
+    await T.ctx.addInitScript(() => { try { const k = 'a2m.void.state.v1', s = JSON.parse(localStorage.getItem(k) || 'null'); if (!s) return; for (const t of Object.values(s)) if (t.kind === 'timer') { t.running = false; t.remaining = 0; t.startedAt = 0; } localStorage.setItem(k, JSON.stringify(s)); } catch (_) {} });
+    await T.p.reload(); await skillsUp(T.p, 100); await T.p.waitForSelector('.practice-met', { timeout: 10000 }).catch(() => {});
+    const asked = await T.p.$eval('.practice-met', (e) => e.innerText).catch(() => '');
+    let dbg = asked ? '' : JSON.stringify((await T.state()).filter((x) => x.kind === 'timer'));
+    await T.p.click('.practice-met button[data-met="yes"]', { timeout: 3000 }).catch((e) => { dbg = String(e.message).slice(0, 600); }); await T.p.waitForTimeout(300);
+    const log = await T.p.evaluate(() => JSON.parse(localStorage.getItem('void.practice') || '{}'));
+    const logged = await T.p.$eval('.practice-met', (e) => e.innerText).catch(() => '');
+    const e1 = log['make a plan to learn spanish'] || log['learn spanish'] || Object.values(log)[0] || {};
+    check('practice timer: success_rate: a plan\'s practice timer that reaches 0:00 asks "Met the goal?", and yes logs one attempt, one met, success_rate 1 and today as last_tested for that goal',
+      /Met the goal\?/.test(asked) && e1.attempts === 1 && e1.met === 1 && e1.success_rate === 1 && /^\d{4}-\d\d-\d\d$/.test(e1.last_tested) && /Logged: 1 of 1 session met the goal/.test(logged) && !T.errors.length,
+      JSON.stringify({ asked, dbg, log, logged, e: T.errors }));
+    await T.ctx.close(); }
+  if (want("practice timer: success_rate weighs Clef (asks-175)")) { const T = await fresh(() => { try { localStorage.setItem('void.practice', JSON.stringify({ 'learn spanish': { attempts: 4, met: 1, success_rate: 0.25, last_tested: '2026-10-01' } })); } catch (_) {} });
+    await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 16, practice: true, model: 'gemma' })));
+    await T.ask('make a plan to learn spanish', 1800);
+    const said = await T.whisper(), timer = (await T.state()).find((x) => x.kind === 'timer');
+    check('practice timer: success_rate weighs Clef\'s yes/no against how the goal\'s sessions went: a goal that met 1 of 4 sessions gets half the engine\'s 16 minutes, and the card says so',
+      !!timer && timer.duration === 8 * 60000 && /1 of 4 sessions met the goal \(25%\), so a shorter timer/.test(said) && !T.errors.length, JSON.stringify({ said, d: timer && timer.duration, e: T.errors }));
+    await T.ctx.close(); }
+  // asked by Void: Rust unwrap is a risk -> the technical-context skill puts a caution shape on the stage
+  if (want("technical-context: why is rust unwrap a risk (asks-175)")) { const T = await fresh();
+    await T.ask('why is rust unwrap a risk', 1200);
+    const said = await T.page(), shape = (await T.state()).find((x) => x.kind === 'shape');
+    check('technical-context: "why is rust unwrap a risk" explains the panic with the safer line and puts an amber caution triangle on the stage',
+      /panics/.test(said) && /unwrap_or\(8080\)/.test(said) && !!shape && shape.shapeType === 'triangle' && !!(await T.p.$('.thing.shape .shape-rect[style*="clip-path"]')) && !T.errors.length, JSON.stringify({ said: said.slice(0, 160), shape, e: T.errors }));
+    await T.ctx.close(); }
+  // asked by Void: comparing two countries brings the distance skill's travel metrics onto the card by itself
+  if (want("country compare: travel-metric card (asks-175)")) { const T = await fresh();
+    await T.ctx.route(/geocoding-api\.open-meteo\.com/, (r) => { const par = /name=paris/i.test(r.request().url()); return r.fulfill(json({ results: [par ? { name: 'Paris', country: 'France', latitude: 48.85, longitude: 2.35, population: 2e6 } : { name: 'Madrid', country: 'Spain', latitude: 40.42, longitude: -3.7, population: 3e6 }] })); });
+    await T.ask('france vs spain', 1800);
+    const said = await T.page(), tm = await T.p.$eval('.vpage.on .travel-metric', (e) => e.innerText).catch(() => '');
+    check('country compare: "france vs spain" shows the distance and flight time between the two capitals on the card by itself (about 1,053 km Paris to Madrid), with the follow-up links kept',
+      /1,05\d km/.test(tm) && /in the air/.test(tm) && /How far apart/.test(said) && !T.errors.length, JSON.stringify({ tm, said: said.slice(0, 200), e: T.errors }));
+    await T.ctx.close(); }
   // one undo takes back a whole plan: its pieces are asks the plan skill makes, and each used to take its own undo snapshot, so
   // "undo" after a plan removed only the last piece (the note) and left the checklist and the timer
   if (want("undo after a plan takes back the whole plan, not its last piece")) { const U = await fresh();

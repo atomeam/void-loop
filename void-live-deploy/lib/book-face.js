@@ -27,7 +27,7 @@ export function wrap(text, font, width, measure, maxLines = 99) {
 
 /**
  * One face: { ops, hits, n, gutter }. ops are { k: 'text', s, x, y, font, fill, align } | { k: 'rect', x, y, w, h, fill, r } |
- * { k: 'glyph', name, chapter, x, y, size } | { k: 'rule', x1, y1, x2, y2, stroke }; hits are { x, y, w, h, ask } or { x, y, w, h, page }
+ * { k: 'glyph', name, chapter, x, y, size } | { k: 'glow', x, y, r, hue } | { k: 'rule', x1, y1, x2, y2, stroke }; hits are { x, y, w, h, ask } or { x, y, w, h, page }
  * (a tap inside runs the ask on the stage, or jumps to the page). `side` is 'left' or 'right': which way the gutter is.
  * page is null for a blank sheet (no page on that side of the spread).
  */
@@ -118,6 +118,7 @@ export function layoutFace(page, book, side, measure) {
   // a skill, a boxed game, a miniature
   const kicker = page.kind === 'mini' ? '3D miniature' : page.game ? 'On the rack' : (chap.name || '');
   t(kicker, x0, y, '13px ' + SANS, SOFT); y += 8;
+  if (page.glow) ops.push({ k: 'glow', x: x0 + 37, y: y + 37, r: 62, hue: hueOf(page.chapter) }); // a proven skill's glyph glows (success_rate > 0.9)
   ops.push({ k: 'glyph', name: page.name || page.title, chapter: page.chapter, x: x0, y: y, size: 74 });
   const tx = x0 + 88;
   const head = wrap(page.title, '700 26px ' + SERIF, w - 88, measure, 2); let hy = y + 32;
@@ -127,7 +128,7 @@ export function layoutFace(page, book, side, measure) {
   if (page.kind === 'mini' && page.card) { for (const l of wrap('Carried by ' + page.card + '.', '13px ' + SERIF, w, measure, 2)) { t(l, x0, y, '13px ' + SERIF, SOFT); y += 17; } y += 6; }
   asks(page.examples);
   if (page.tier) {
-    const label = page.tier + (page.why ? ' · ' + page.why : ''), col = { proven: 'hsl(150,45%,32%)', checked: 'hsl(225,50%,42%)', tested: 'hsl(40,60%,36%)', experiment: 'hsl(0,0%,40%)' }[page.tier] || SOFT;
+    const label = (page.glow ? 'proven glow · ' + page.glow + '% of its benchmark asks pass · ' : '') + page.tier + (page.why ? ' · ' + page.why : ''), col = { proven: 'hsl(150,45%,32%)', checked: 'hsl(225,50%,42%)', tested: 'hsl(40,60%,36%)', experiment: 'hsl(0,0%,40%)' }[page.tier] || SOFT;
     const ls = wrap(label, '12px ' + SANS, w - 8, measure, 2), top = PAGE_H - 66 - ls.length * 16;
     ls.forEach((l, i) => t(l, x0, top + 14 + i * 16, '12px ' + SANS, col));
   }
@@ -155,6 +156,11 @@ export function paint(g, layout, k, w = PAGE_W, h = PAGE_H) {
     if (o.k === 'rect') { g.fillStyle = o.fill; if (g.roundRect && o.r) { g.beginPath(); g.roundRect(o.x * k, o.y * k, o.w * k, o.h * k, o.r * k); g.fill(); } else g.fillRect(o.x * k, o.y * k, o.w * k, o.h * k); }
     else if (o.k === 'rule') { g.strokeStyle = o.stroke; g.lineWidth = k; g.beginPath(); g.moveTo(o.x1 * k, o.y1 * k); g.lineTo(o.x2 * k, o.y2 * k); g.stroke(); }
     else if (o.k === 'text') { g.font = o.font.replace(/(\d+(?:\.\d+)?)px/, (m, s) => (parseFloat(s) * k) + 'px'); g.fillStyle = o.fill; g.textAlign = o.align; g.textBaseline = 'alphabetic'; g.fillText(o.s, o.x * k, o.y * k); }
+    else if (o.k === 'glow') {
+      const gr = g.createRadialGradient(o.x * k, o.y * k, 0, o.x * k, o.y * k, o.r * k);
+      gr.addColorStop(0, 'hsla(' + o.hue + ',90%,62%,.55)'); gr.addColorStop(1, 'hsla(' + o.hue + ',90%,62%,0)');
+      g.fillStyle = gr; g.fillRect((o.x - o.r) * k, (o.y - o.r) * k, o.r * 2 * k, o.r * 2 * k);
+    }
     else if (o.k === 'glyph') {
       const s = o.size * k, x = o.x * k, y = o.y * k;
       g.save(); g.lineCap = 'round';
