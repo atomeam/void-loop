@@ -3297,6 +3297,39 @@ try {
       !!real && Number(real.n) === least && /^Friction: /.test(real.text) && !!stub && /^Friction: 1 failing, 1 barely checked\. weather failing \(the bench got 2 of its asks wrong: “weather in oslo”, “rain <later>”\); tide unchecked \(nothing checks it yet\)\.$/.test(stub.text)
       && !/<later>/.test(stub.html) && !/clock/.test(stub.text) && under && !G.errors.length && !H.errors.length, JSON.stringify({ real, least, stub, under, errors: G.errors.concat(H.errors) }));
     await G.ctx.close(); }
+  // The growth inbox's skill health (lib/inbox-health.js; asked by Void): a skill registered but failing its router test is flagged, the health file
+  // is drawn as a map of the families, newly promoted skills show their clean runs in a row, a built ask whose build leaves out its words is
+  // marked, and a new skill since yesterday plays a growth animation. Stubbed health file, better rows and reflections, so every line is exercised.
+  if (want("The growth card shows skill health: failing router tests, the family map, stability, divergence, a bloom")) { const H = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const today = new Date().toISOString().slice(0, 10);
+    await H.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ smoke_at: today, families: [
+      { id: 'a', name: 'Alpha <b>', skills: [{ name: 'weather', tier: 'proven', why: 'x', smoke: ['"rain later" -> place', 'suite got x'] }, { name: 'newone', tier: 'checked', why: 'y', promoted: today, streak: 4 }] },
+      { id: 'b', name: 'Beta', skills: [{ name: 'clock', tier: 'tested', why: 'z' }] }] })));
+    await H.ctx.route(/\/void\.better\.json/, (rt) => rt.fulfill(json([{ at: '2026-10-15T10:00:00Z', score: 70, parts: { self: 70, asks: 70, friction: 70, bench: 70, probes: 70 }, facts: { skills: 150, failing: 1, unsure: 1, week: 10, owner: 1 } }, { at: today + 'T10:00:00Z', score: 72, parts: { self: 70, asks: 70, friction: 70, bench: 70, probes: 70 }, facts: { skills: 152, failing: 1, unsure: 1, week: 10, owner: 1 } }])));
+    await H.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [], asks: [], follow: { total: 2, built: 2, asked: 2, recent: [{ ask: 'Create a novelty score proposing growth inbox rows <b>whenever</b> ledger behavior unmatched', what: 'something else entirely', at: today }] } })));
+    await H.ask('growth', 1500);
+    const got = await until(async () => H.p.$eval('.vpage', (p) => { const g = (q) => p.querySelector(q);
+      if (!g('.growth-skill-health') || !g('.growth-fam-map') || !g('.growth-diverge') || !g('.growth-bloom')) return null;
+      return { health: g('.growth-skill-health').textContent, map: [...p.querySelectorAll('.gi-fam')].map((r) => r.dataset.fam), owner: g('.growth-owner').textContent, mark: (g('.growth-diverge mark') || {}).textContent, bloom: g('.growth-bloom').dataset.bloom, bloomed: g('.growth-bloom').dataset.bloomed, injected: !!g('.growth-diverge b') || !!g('.growth-fam-map b'), text: g('.growth-bloom').textContent }; }).catch(() => null), 9000);
+    check("The growth card shows skill health (asked by Void): a registered skill failing its router test flagged, the families mapped from the health file, promoted skills with their clean runs, divergence marked, a bloom for a new skill",
+      !!got && /1 of 3 registered skills failing the daily test.*weather.*registered but failing its router test: "rain later" -> place/.test(got.health) && got.map.join() === 'a,b'
+        && /Skill stability: 1 skill promoted lately, 1 with 3 or more clean runs in a row: newone to checked .*4 clean runs in a row/.test(got.owner) && /entirely|whenever|novelty|score|proposing/.test(got.mark || '') && got.bloom === 'bloom' && got.bloomed === 'bloom' && /2 new skills/.test(got.text) && !got.injected && !H.errors.length,
+      JSON.stringify({ got, errors: H.errors }));
+    await H.ctx.close(); }
+  // family-health on this device (lib/skill-use.js; asked by Void: a last-used day for every skill): the card shows the day each skill last answered
+  // in this browser, "not used here yet" for the rest, and a dead-weight line; the day is written when a skill answers and holds no words
+  if (want("family-health: last used on this device")) { const F = await fresh();
+    await F.ask('show me your skill families', 1500);
+    const written = await until(async () => F.p.evaluate(() => { try { const u = JSON.parse(localStorage.getItem('a2m.void.used.v1') || '{}'); return Object.keys(u).length ? u : null; } catch (_) { return null; } }), 12000);
+    await F.ask('how healthy are your skills', 1200);
+    await until(async () => F.p.$eval('.vpage .fh-dead', (e) => !/^On this device: 0 of/.test(e.textContent)).catch(() => false), 12000);
+    await F.p.evaluate(() => { document.querySelectorAll('.vpage .fh-open').forEach((o) => { o.hidden = false; }); });
+    const card = await F.p.$eval('.vpage', (p) => ({ dead: (p.querySelector('.fh-dead') || {}).textContent || '', used: [...p.querySelectorAll('.fh-used')].map((e) => e.textContent), text: p.textContent })).catch(() => null);
+    check('family-health on this device: a skill that answered is dated in this browser only (a day, no words), the card says when each skill was last used here, "not used here yet" for the rest, and counts the dead weight',
+      !!written && Object.keys(written).length >= 1 && Object.values(written).every((d) => /^\d{4}-\d{2}-\d{2}$/.test(d)) && JSON.stringify(written).length < 200
+        && !!card && /On this device: \d+ of \d+ skills have answered here/.test(card.dead) && /kept in this browser only and never sent/.test(card.dead) && card.used.some((u) => u === 'not used here yet') && card.used.some((u) => /^last used here today$/.test(u)) && !F.errors.length,
+      JSON.stringify({ written, card: card && { dead: card.dead, used: card.used.slice(0, 4) }, errors: F.errors }));
+    await F.ctx.close(); }
   // family-health: the skill families card (asked by Void, its reflection of 2026-10-15: "Implement the 'family-health' dashboard
   // card to visualize evidence ratings (proven, checked, tested, experiment) for all 9 families"). Asked as a person would, on a
   // phone: the totals match skills/families.json, every family is a row with a stacked bar, and a tap lists its skills with the why.
@@ -3323,7 +3356,7 @@ try {
       && opened.skills.every((s) => truth[s.name] && truth[s.name].tier === s.tier && s.why.startsWith(truth[s.name].why))
       // asked by Void (ask-20261013-1823-1): each skill says when it was last tested and its benchmark success rate, from families.json; nothing about usage
       && opened.skills.every((s) => (truth[s.name].last_tested ? s.meta.includes('last tested ' + truth[s.name].last_tested) : s.meta.startsWith('never tested'))
-        && (typeof truth[s.name].success_rate === 'number' ? s.meta.includes('success rate ' + Math.round(truth[s.name].success_rate * 1000) / 10 + '%') : !/success rate \d/.test(s.meta)) && !/usage|popular|last used/i.test(s.meta))
+        && (typeof truth[s.name].success_rate === 'number' ? s.meta.includes('success rate ' + Math.round(truth[s.name].success_rate * 1000) / 10 + '%') : !/success rate \d/.test(s.meta)) && !/usage|popular/i.test(s.meta) && !/last used here \d/.test(s.meta))
       && !F.errors.length,
       JSON.stringify({ card: card && { ...card, text: card.text.slice(0, 300) }, want4, opened: opened && { ...opened, skills: opened.skills.slice(0, 3) }, errors: F.errors }));
     await F.ask('how healthy are your skills', 1200);

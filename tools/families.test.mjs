@@ -107,8 +107,8 @@ test('the daily smoke test (asked by Void, ask-20261013-1823-2): a failing skill
     'void-live-deploy/skills/weather.js': 'export default { suite() { return { ok: true }; } }', 'void-live-deploy/skills/clock.js': 'export default { suite() { return { ok: true }; } }',
   };
   const read = (p) => { if (p in files) return files[p]; throw new Error('no ' + p); };
-  assert.deepEqual(smokeRun(read), { at: '2026-10-17', failing: { weather: ['"rain later" -> place', 'suite got x'] } });
-  assert.deepEqual(smokeRun(() => { throw new Error('none'); }), { at: '', failing: {} });
+  assert.deepEqual(smokeRun(read), { at: '2026-10-17', failing: { weather: ['"rain later" -> place', 'suite got x'] }, streak: {} });
+  assert.deepEqual(smokeRun(() => { throw new Error('none'); }), { at: '', failing: {}, streak: {} });
   const e = ev2(['weather', 'clock'], read, () => []);
   assert.deepEqual(e.weather, { suite: false, browser: 0, bench: 0, smoke: ['"rain later" -> place', 'suite got x'] }, 'its own test does not count while the smoke test fails it');
   assert.deepEqual(e.clock, { suite: true, browser: 0, bench: 0 });
@@ -173,3 +173,18 @@ test('the 7-day re-test (asked by Void): a pass dates the skill, a failure joins
   assert.deepEqual([row('clock').last_tested, b2.families.flatMap((f) => f.skills).find((s) => s.name === 'clock').last_tested_by], ['2026-10-21', 'a re-test'], 'a week on, the re-test is its newest test');
   assert.equal(row('timer').tier, 'experiment'); assert.equal(row('timer').last_tested, undefined);
 });
+
+// promotion and clean-run streaks (asked by Void: "a 'skill-stability' metric ... consecutive successful runs for all newly promoted skills")
+{
+  const { promotedOn, build, smokeRun } = await import('./families.mjs');
+  assert.equal(promotedOn('checked', { tier: 'tested' }, '2026-10-16'), '2026-10-16', 'a higher rating than the last file is a promotion today');
+  assert.equal(promotedOn('checked', { tier: 'checked', promoted: '2026-10-10' }, '2026-10-16'), '2026-10-10', 'the day is carried while the rating holds');
+  assert.equal(promotedOn('tested', { tier: 'checked', promoted: '2026-10-10' }, '2026-10-16'), null, 'a demotion keeps no promotion');
+  assert.equal(promotedOn('checked', { tier: 'checked', promoted: '2026-07-01' }, '2026-10-16'), null, 'old promotions fall away after 60 days');
+  assert.equal(promotedOn('tested', null, '2026-10-16'), null, 'a first rating is not a promotion');
+  const prev = { families: [{ skills: [{ name: 'timer', tier: 'tested' }] }] };
+  const b = build(['timer'], { timer: { suite: true, browser: 1, bench: 0 } }, { prev, smoke: { at: '2026-10-16', failing: {}, streak: { timer: 4 } }, today: '2026-10-16' });
+  const row = b.families.flatMap((f) => f.skills).find((x) => x.name === 'timer');
+  assert.ok(row && (row.tier === 'checked' && row.promoted === '2026-10-16' && row.streak === 4), JSON.stringify(row));
+  assert.deepEqual(smokeRun(() => JSON.stringify({ at: '2026-10-16', streak: { x: 3 } })).streak, { x: 3 });
+}

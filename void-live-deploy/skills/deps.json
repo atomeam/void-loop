@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 426,
+ "counted": 428,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -94,6 +94,12 @@
   },
   {
    "file": "lib/better.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 12
+  },
+  {
+   "file": "lib/inbox-health.js",
    "skills": 3,
    "direct": 1,
    "dependants": 12
@@ -310,6 +316,12 @@
   },
   {
    "file": "lib/rules-play.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/skill-use.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1738,6 +1750,25 @@
     "functions/api/will.js"
    ]
   },
+  "lib/inbox-health.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/growth.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/self-context.js",
+    "lib/voice.js",
+    "skills/growth-tree.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
   "lib/job-draft.js": {
    "imports": [
     "lib/proposal.js",
@@ -2419,6 +2450,12 @@
     "skills/time.js"
    ]
   },
+  "lib/skill-use.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/family-health.js"
+   ]
+  },
   "lib/sky-math.js": {
    "imports": [],
    "importedBy": [
@@ -3077,7 +3114,9 @@
    ]
   },
   "skills/family-health.js": {
-   "imports": [],
+   "imports": [
+    "lib/skill-use.js"
+   ],
    "importedBy": []
   },
   "skills/feelings.js": {
@@ -3309,6 +3348,7 @@
     "lib/probe-log.js",
     "lib/ladder.js",
     "lib/better.js",
+    "lib/inbox-health.js",
     "skills/growth-tree.js"
    ],
    "importedBy": [
