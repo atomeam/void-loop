@@ -3609,6 +3609,19 @@ try {
       all.length === 6 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 6 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
+    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
+    await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }] })));
+    await S.ask('tester log', 1500);
+    const got = await until(async () => S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); return l ? { names: [...l.children].map((x) => x.dataset.candidate), asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null), 6000);
+    if (got) await S.p.click('.st-candidates a[data-ask="set a timer for 2 minutes"]');
+    const ran = got && await until(async () => (await S.state()).some((x) => x.kind === 'timer'), 6000);
+    const after = got && (await S.state()).map((x) => x.kind);
+    check('Site Test card (asked by Void): "What to test next" lists the lowest-rated skills from families.json, failing first, each with its own ask from the book; tapping one runs it',
+      !!got && got.names.join() === 'timer,define' && got.asks[0] === 'set a timer for 2 minutes' && /1 failing/.test(got.text) && /Words <b>/.test(got.text) && !got.bold && !!ran && !S.errors.length,
+      JSON.stringify({ got, ran, after, errors: S.errors }));
+    await S.ctx.close(); }
   // family-health on this device (lib/skill-use.js; asked by Void: a last-used day for every skill): the card shows the day each skill last answered
   // in this browser, "not used here yet" for the rest, and a dead-weight line; the day is written when a skill answers and holds no words
   if (want("family-health: last used on this device")) { const F = await fresh();
@@ -6598,8 +6611,8 @@ try {
     const standing = fs.readFileSync(path.join(repo, 'STANDING.md'), 'utf8');
     check('router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md',
       dn.answer === 'Gemma: a short answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
-      // the rule as Atom rewrote it (86bb31e): Gumroad earnings are the budget, a spend waits for a yes, free models until the first sale
-      && /Earnings[^.]*are Void's budget/.test(standing) && /A spend still waits for a yes on the confirm line/.test(standing) && /Until the first sale, Void stays on free models and records when a stronger model would have been used/.test(standing), rowOf(eDown, HARDQ).outcome);
+      // the rule as the owner rewrote it (5a66448, 2c9a257, 2026-10-17): earnings are the budget, V01D spends its own with no yes, free tiers until the first sale
+      && /Earnings[^.]*are Void's budget/.test(standing) && /V01D spends its own money, no yes needed/.test(standing) && /Until the first sale there is no budget: Void stays on free tiers and free models/.test(standing), rowOf(eDown, HARDQ).outcome);
     // VOID_ANSWER_MODELS=off turns the models off: main's open-web answers and rules-only fixes, no Workers AI call, no D1 write
     const cOff = calls.length, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' }, eOffY = { ...envOf(), VOID_ANSWER_MODELS: ' OFF ' };
     const d1 = await ask(HARDQ, eOffX), d2 = await ask('set a timer for 10 minutes', eOffY);
