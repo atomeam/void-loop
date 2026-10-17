@@ -6,7 +6,7 @@
  * the clock (lib/event-date.js eventAsk leaves them out).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { eventAsk, searchWords, announcedDate, left } from '../lib/event-date.js';
+import { eventAsk, searchWords, announcedDate, announcedFrom, left } from '../lib/event-date.js';
 
 const WIKI = 'https://en.wikipedia.org';
 const UA = { headers: { 'Api-User-Agent': 'V01D/1.0 (https://a-to-mind.com)' } };
@@ -43,7 +43,16 @@ async function run(text, api) {
   const el = showPage((p) => { p.innerHTML = '<h2></h2><div class="ec-body"><p>Looking up when ' + esc(ask.event) + ' is…</p></div>'; p.querySelector('h2').textContent = 'Until ' + ask.event; body = p.querySelector('.ec-body'); });
   const s = await summaryOf(searchWords(ask.event));
   if (!el.isConnected) return 'event-countdown';
-  const when = s && announcedDate(s.extract);
+  // the summary is the article's first paragraph, which often leaves the date to later in the lead or to the infobox (the live GTA VI card)
+  let when = s && announcedDate(s.extract);
+  if (s && !when) {
+    const api = (q) => fetch(WIKI + '/w/api.php?' + q + '&format=json&formatversion=2&origin=*&titles=' + encodeURIComponent(s.title), UA).then((r) => r.json()).catch(() => null);
+    const sec0 = (t) => fetch(WIKI + '/w/api.php?action=parse&prop=wikitext&section=0&format=json&formatversion=2&origin=*&page=' + encodeURIComponent(t), UA).then((r) => r.json()).catch(() => null);
+    const [lead, wiki] = await Promise.all([api('action=query&prop=extracts&exintro=1&explaintext=1'), sec0(s.title)]);
+    const leadText = (lead && lead.query && lead.query.pages && lead.query.pages[0] && lead.query.pages[0].extract) || '';
+    when = announcedFrom({ extract: s.extract, lead: leadText, wikitext: (wiki && wiki.parse && wiki.parse.wikitext) || '' });
+    if (!el.isConnected) return 'event-countdown';
+  }
   if (!s) { body.innerHTML = '<p>I could not find ' + esc(ask.event) + ' to look up its date. Try its full name.</p>'; return 'event-countdown'; }
   el.querySelector('h2').textContent = 'Until ' + s.title;
   const src = '<div class="src">Source: <a href="' + esc(s.url) + '" target="_blank" rel="noopener noreferrer">' + esc(s.title) + ' on Wikipedia</a>, read just now</div>';
