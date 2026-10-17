@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 98,
+ "runsTotal": 99,
  "kinds": {
   "grow": 15,
   "file": 48,
   "teach": 7,
   "tighten": 7,
-  "none": 21
+  "none": 22
  },
  "runs": [
+  {
+   "at": "2026-10-17T06:04:06Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T02:48:01Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T13:54:16Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -264,7 +264,7 @@
   "skill:sport": "2026-10-17T00:06:20Z",
   "skill:status": "2026-10-17T00:06:20Z",
   "skill:sticky": "2026-10-17T00:06:20Z",
-  "skill:store": "2026-10-16T05:25:04Z",
+  "skill:store": "2026-10-17T06:04:06Z",
   "skill:swaps": "2026-10-16T05:25:04Z",
   "skill:swarm": "2026-10-16T05:25:04Z",
   "skill:guide": "2026-10-16T05:48:40Z",
@@ -295,6 +295,8 @@
   "skill:merge": "2026-10-17T02:48:01Z",
   "skill:shortcut": "2026-10-17T02:48:01Z",
   "skill:state": "2026-10-17T02:48:01Z",
-  "skill:technical-context": "2026-10-17T02:48:01Z"
+  "skill:technical-context": "2026-10-17T02:48:01Z",
+  "skill:type-filter": "2026-10-17T06:04:06Z",
+  "skill:web4": "2026-10-17T06:04:06Z"
  }
 }
