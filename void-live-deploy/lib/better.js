@@ -73,6 +73,25 @@ export function parts(f) {
   return { ...p, score: have.length ? Math.round(have.reduce((a, b) => a + b, 0) / have.length) : null };
 }
 
+/** how sure the day's score is (asked by Void: "a Confidence Interval on the daily score so the owner knows if a high score is based on 1,000 tests or just one
+ *  lucky successful run"): the Wilson 95% interval of each part that is a count out of a total (self: changes not driven by the owner of this week's;
+ *  friction: skills not failing or unsure of all skills; bench: asks answered of asked), the others held at their value, then averaged like the score.
+ *  { lo, hi, n } with n the checks behind it (changes + skills + bench asks), or null with no score. Pure. */
+export function interval(f) {
+  const z = 1.96, wil = (k, n) => { if (!n) return null; const p = k / n, d = 1 + z * z / n, c = p + z * z / (2 * n), m = z * Math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)); return [Math.max(0, (c - m) / d), Math.min(1, (c + m) / d)]; };
+  const p = parts(f);
+  if (p.score === null) return null;
+  const range = {
+    self: f.week ? wil(f.week - f.owner, f.week) : null,
+    friction: f.skills ? wil(Math.max(0, f.skills - f.failing - f.unsure / 2), f.skills) : null,
+    bench: f.benchTotal ? wil(f.benchScore, f.benchTotal) : null,
+  };
+  const lo = [], hi = [];
+  for (const k of PARTS) { if (p[k] === null || p[k] === undefined) continue; const r = range[k]; lo.push(r ? 100 * r[0] : p[k]); hi.push(r ? 100 * r[1] : p[k]); }
+  const mean = (a) => Math.round(a.reduce((x, y) => x + y, 0) / a.length);
+  return { lo: Math.min(mean(lo), p.score), hi: Math.max(mean(hi), p.score), n: (f.week || 0) + (f.skills || 0) + (f.benchTotal || 0) };
+}
+
 /** one day's row for void.better.json */
 export function rowOf(facts, at = new Date().toISOString()) {
   const p = parts(facts);
@@ -105,7 +124,7 @@ const trendWord = (n, what) => (n === null ? '' : (n > 0 ? 'up ' + n : n < 0 ? '
 export function betterHtml(esc, rows) {
   const c = compare(rows);
   if (!c) return '';
-  const last = rows[rows.length - 1], f = last.facts || {}, p = last.parts || {};
+  const last = rows[rows.length - 1], f = last.facts || {}, p = last.parts || {}, iv = interval(f);
   const pct = (n) => (n === null || n === undefined ? '—' : n + '%');
   const trend = c.week !== null ? (c.week > 0 ? 'up' : c.week < 0 ? 'down' : 'flat') : c.day !== null ? (c.day > 0 ? 'up' : c.day < 0 ? 'down' : 'flat') : 'first';
   const bits = [trendWord(c.day, 'since yesterday'), trendWord(c.week, 'on the week')].filter(Boolean).join(', ');
@@ -119,5 +138,6 @@ export function betterHtml(esc, rows) {
   ].filter(Boolean);
   return '<div class="sub growth-better" data-better="' + esc(c.score) + '" data-better-trend="' + trend + '"' + (c.weakest ? ' data-weakest="' + esc(c.weakest) + '"' : '')
     + ' style="line-height:1.45">Better: <b>' + esc(c.score) + '</b> of 100' + (bits ? ' (' + bits + ')' : ' (first measure)') + '. ' + facts.join('; ') + '.'
+    + (iv ? ' <span class="growth-interval" data-lo="' + esc(iv.lo) + '" data-hi="' + esc(iv.hi) + '">Sure to within ' + esc(iv.lo) + '–' + esc(iv.hi) + ', from ' + esc(iv.n) + ' checks.</span>' : '')
     + (c.weakest ? ' Weakest: ' + esc(WORDS[c.weakest]) + ' (' + esc(p[c.weakest]) + ').' : '') + '</div>';
 }
