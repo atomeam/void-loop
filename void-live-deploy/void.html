@@ -5682,6 +5682,25 @@ say('nothing selected to remove');
       };
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
+    // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of
+    // skills/index.json it loaded with (lib/stale-tab.js) and looks again when it comes back into view and about every ten minutes, one small GET each.
+    // A different id shows one non-blocking line that reloads on tap; the page never reloads by itself, so nobody loses what they were typing.
+    import('/lib/stale-tab.js').then((S) => {
+      let base = '', last = Date.now(), shown = false;
+      const getId = () => fetch('/skills/index.json?v=' + Date.now(), { cache: 'no-store' }).then((r) => (r.ok ? r.text() : '')).then(S.buildId).catch(() => '');
+      const pill = () => {
+        if (shown) return; shown = true;
+        const b = document.createElement('button'); b.type = 'button'; b.id = 'new-version'; b.textContent = S.NOTICE;
+        b.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:80;max-width:92vw;font:inherit;font-size:13px;color:#e9ebf2;background:rgba(20,22,30,.92);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 14px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.4)';
+        b.addEventListener('click', () => location.reload()); document.body.appendChild(b);
+      };
+      const check = async () => { last = Date.now(); if (!base) { base = await getId(); return; } if (S.isStale(base, await getId())) pill(); };
+      window.__voidStaleCheck = check; // the browser suite drives a check by hand instead of waiting ten minutes
+      getId().then((id) => { base = id; });
+      setInterval(() => { if (!document.hidden && S.checkDue(last, Date.now())) check(); }, 60 * 1000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && S.checkDue(last, Date.now())) check(); });
+      window.addEventListener('focus', () => { if (S.checkDue(last, Date.now())) check(); });
+    }).catch(() => {});
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
       const figs = Object.values(things).filter((t) => t && ((t.kind === 'figure' && t.kindOf) || t.kind === 'camp')); // the RTS camp goes too: the villagers carry to it (lib/rts.js)
       if (!figs.length || awayMs < m.AWAY_MIN_MS) return;

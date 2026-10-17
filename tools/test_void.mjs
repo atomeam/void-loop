@@ -2334,6 +2334,21 @@ try {
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
+  // V01D sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
+  if (want("V01D sees a repo: a card from the live GitHub facts")) { const R = await fresh();
+    const facts = { name: 'acme/widget', description: 'A widget <img src=x onerror=window.__pwn=1> maker', url: 'https://github.com/acme/widget', language: 'JavaScript', stars: 42, forks: 3, license: 'MIT', branch: 'main', pushed: '2026-10-01', archived: false, topics: [], openIssues: 5, openPulls: 4, langs: [{ name: 'JavaScript', pct: 90 }, { name: 'HTML', pct: 10 }], commits: [{ sha: 'abcdef1', msg: 'fix: <b>bold</b> it', who: 'Ann', date: '2026-10-01' }], tree: [{ name: 'src', dir: true }, { name: 'README.md', dir: false }], treeTotal: 2, readme: 'Widget makes widgets from plain words.' };
+    const seen = [];
+    await R.ctx.route(/\/api\/repo\?/, (r) => { const q = decodeURIComponent(new URL(r.request().url()).searchParams.get('r')); seen.push(q); return r.fulfill(json(q === 'acme/widget' ? { ok: true, repo: facts } : { ok: false, kind: 'missing', say: 'I can only see public repos, and I could not find ' + q + ' on GitHub.' })); });
+    await R.ask('look at acme/widget', 400); await until(async () => /Recent commits/.test(await R.page()), 6000);
+    const card = await R.page(), pwn = await R.p.evaluate(() => window.__pwn === 1), hasImg = await R.p.$('.vpage.on .rp-sub img'), hasB = await R.p.$('.vpage.on .rp-com b');
+    const share = await R.p.$('.vpage.on .vc-share, .vpage.on [data-share], .vpage.on button');
+    await R.ask('what is in github.com/acme/private-thing', 400); await until(async () => /only see public repos/.test(await R.page()), 6000);
+    const miss = await R.page();
+    check('V01D sees a repo: "look at acme/widget" puts a card of the live facts (language mix, README opening, recent commits, top level, issue and PR counts) from /api/repo; the repo\'s own text is escaped, not run; a missing or private repo says it can only see public repos',
+      /acme\/widget/.test(card) && /JavaScript 90%/.test(card) && /Widget makes widgets/.test(card) && /abcdef1/.test(card) && /4 open PRs/.test(card) && /src\//.test(card) && /<img src=x/.test(card) && /<b>bold<\/b>/.test(card) && !pwn && !hasImg && !hasB && !!share
+        && JSON.stringify(seen) === '["acme/widget","acme/private-thing"]' && /only see public repos/.test(miss) && !R.errors.length,
+      JSON.stringify({ card: card.slice(0, 500), pwn, seen, miss: miss.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
@@ -6599,6 +6614,20 @@ try {
     check('V01D web4: "are you web4" opens the same card', (await W.p.$$('.vpage.on .w4-step')).length === 4, '');
     check('V01D web4: no page errors', !W.errors.length, W.errors.join(' | ').slice(0, 200));
     await W.ctx.close(); }
+  // owner, 2026-10-17: "nothing showed just now": a tab left open through a deploy keeps old page code; the page compares a hash of skills/index.json and offers a reload (lib/stale-tab.js)
+  if (want("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap")) { const S = await fresh();
+    await S.ask('what time is it in Tokyo', 600); await until(async () => await S.p.evaluate(() => typeof window.__voidStaleCheck === 'function'), 6000); await S.p.waitForTimeout(800);
+    await S.p.evaluate(() => window.__voidStaleCheck()); await S.p.waitForTimeout(500);
+    const same = await S.p.$('#new-version'); // nothing changed yet: no line
+    await S.ctx.route(/\/skills\/index\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '["a-newer-build"]' }));
+    await S.p.evaluate(() => { window.__marker = 'old page'; return window.__voidStaleCheck(); });
+    const shown = await until(async () => !!(await S.p.$('#new-version')), 4000);
+    const text = shown ? await S.p.$eval('#new-version', (b) => b.textContent) : '', still = await S.p.evaluate(() => window.__marker); // not reloaded by itself
+    await S.ctx.unroute(/\/skills\/index\.json(?:\?|$)/);
+    await Promise.all([S.p.waitForNavigation({ timeout: 8000 }).catch(() => null), S.p.click('#new-version')]); await S.p.waitForTimeout(800);
+    const after = await S.p.evaluate(() => window.__marker || '');
+    check("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap", !same && shown && /newer V01D is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
+    await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

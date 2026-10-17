@@ -16,6 +16,7 @@ async function lookup(m) {
   try { const r = await fetch('/api/movies?title=' + encodeURIComponent(m.title) + (m.year ? '&year=' + m.year : '')); if (!r.ok) return { verified: false, title: m.title, year: m.year }; return await r.json(); } catch (_) { return { verified: false, title: m.title, year: m.year }; }
 }
 const badge = (f, esc) => '<span class="mv-badge" style="font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:2px 7px;border-radius:5px;border:1px solid var(--edge,#3a3a44)">' + esc(f.free ? 'plays here' : f.trailer ? 'trailer here' : 'links only') + '</span>';
+const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
 const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · V01D plays only free, legal films and official trailers</div>';
@@ -57,7 +58,7 @@ export async function runCard(m, api) {
   el.dataset.artKind = 'Film';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'movie';
-  el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
+  artMeta(el, f); el.innerHTML = movieCard(f, esc); wirePlayers(el, f);
   return 'movie';
 }
 
@@ -77,6 +78,7 @@ export async function runPick(api) {
     + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
     + '<div><a href="#" data-ask="' + esc(cardAskText(f.title, f.year)) + '"><b>' + esc(f.title) + '</b>' + (f.year ? ' (' + f.year + ')' : '') + '</a> ' + badge(f, esc)
     + '<div class="sub">' + esc([f.genre, f.rating].filter(Boolean).join(' · ')) + '</div>' + (f.overview ? '<div>' + esc(f.overview) + '</div>' : '') + '</div></div>';
+  artMeta(el, real[0]);
   el.innerHTML = real.length
     ? (real[0].poster ? '<img src="' + esc(real[0].poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '')
       + '<h2>A movie to watch</h2><div class="sub">every title below was found in a real source; open one to watch or see the trailer</div>' + real.map(row).join('')
