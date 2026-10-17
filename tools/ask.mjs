@@ -15,7 +15,7 @@ const browser = await chromium.launch({ executablePath: exe, headless: true });
 const page = await browser.newPage(); const errs = []; page.on('pageerror', (e) => errs.push(e.message));
 await page.route(/^https?:\/\/(?!127\.0\.0\.1)/, (r) => r.fulfill({ status: 204, body: '' }));
 await page.route(/127\.0\.0\.1:\d+\/api\//, (r) => r.fulfill({ status: 204, body: '' }));
-await page.goto('http://127.0.0.1:' + server.address().port + '/'); await page.waitForTimeout(600);
+await page.goto('http://127.0.0.1:' + server.address().port + '/'); await page.waitForTimeout(2500);
 for (const a of asks) {
   errs.length = 0; const before = await page.evaluate(() => document.body.innerText);
   await page.fill('#input', a); await page.keyboard.press('Enter'); await page.waitForTimeout(1500);
