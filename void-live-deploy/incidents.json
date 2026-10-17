@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:55:03.861Z",
-   "sha": "5fb68c728c5f39a3516c9a820d523248bb9fdd63",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39029457703",
+   "at": "2026-10-17T12:00:48.580Z",
+   "sha": "0c58190c01f42d867df8f94e556461e88e60100d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39029816697",
    "suite": "browser suite on main",
    "checks": [
     "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
@@ -12,11 +12,12 @@
    ]
   },
   {
-   "at": "2026-10-17T11:37:56.747Z",
+   "at": "2026-10-17T11:42:48.037Z",
    "sha": "d2f04c2535207bbd1e494fcdba3a97ddc662fe7d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39028594328",
    "suite": "browser suite on main",
    "checks": [
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
     "check timeout: no check finished within 300 s"
    ]
   },
