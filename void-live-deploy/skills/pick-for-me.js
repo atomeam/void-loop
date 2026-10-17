@@ -74,7 +74,7 @@ async function pickOne(api, { kind: forced = '', mood = '', reroll = false } = {
   let taste = load(store()); if (mood) taste = { ...taste, mood }; save(store(), taste);
   const liked = !forced && likedKind(taste, Object.keys(KINDS)), kind = forced || (reroll && last && last.kind) || liked || Object.keys(KINDS)[Math.floor(Date.now() / 864e5) % Object.keys(KINDS).length];
   const kindBy = forced || (reroll && last) ? 'asked' : liked ? 'liked' : 'day';
-  const el = showPage((p) => { p.innerHTML = '<h2>Picking for you</h2><div class="sub">finding a real ' + kindWord(kind) + '…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Picking for you</h2><div class="sub">finding a real ' + kindWord(kind) + '…</div>'; }); // void-review: ok (kindWord returns one of two fixed words)
   const r = await findOne(kind, taste), f = r && r.pick;
   if (!api._pageStill(el)) return 'pick-for-me';
   if (!f) { el.innerHTML = '<h2>Picking for you</h2><p class="pick-say">I could not reach my sources just now, so I will not name anything from memory. Ask again in a moment.</p>'; return 'pick-for-me'; }
