@@ -53,3 +53,13 @@ test('a glyph is the same on every visit and different for different names', () 
   assert.notDeepEqual(glyphShapes('forge', 'make'), glyphShapes('chess', 'games'));
   const r = rng(7), r2 = rng(7); assert.equal(r(), r2()); assert.ok(r() < 1);
 });
+
+// asked by Void: a proven skill (success_rate > 0.9) wears a glow behind its glyph, and says so in its footer
+test('a page with a glow draws a glow op before its glyph and says the percentage; one without does not', () => {
+  const lit = book.pages.find((p) => p.kind === 'skill' && p.glow), plain = book.pages.find((p) => p.kind === 'skill' && !p.glow);
+  assert.ok(lit, 'some skill in the real book glows');
+  const l = layoutFace(lit, book, 'right', measure), gi = l.ops.findIndex((o) => o.k === 'glow'), yi = l.ops.findIndex((o) => o.k === 'glyph');
+  assert.ok(gi >= 0 && gi < yi, 'glow is drawn first');
+  assert.ok(l.ops.some((o) => o.k === 'text' && /proven glow/.test(o.s)));
+  if (plain) assert.ok(!layoutFace(plain, book, 'right', measure).ops.some((o) => o.k === 'glow'));
+});

@@ -5,6 +5,7 @@
 
 import { PAID_MODEL } from './models.js';
 
+import { keepAsk, keepLine } from './keep-going.js';
 export const POLICY_VERSION = 'void-confirm-v0.1';
 export const EVENT_REQUESTED = 'a2m.approval.requested';
 export const EVENT_DECISION = 'a2m.approval.decision';
@@ -36,6 +37,8 @@ export const GATED = {
   'reminder.ping': { rule: 'send.reminder', kind: 'send', service: 'reminders', board: 'remind me' },
   // Build-queue handoff to a2m-bridge (tools/dispatcher.mjs). Not a spend: hands a task title to the bridge after the owner yes.
   // Execution layer 2026-10-16: without this gate, approval mode always got 400 'not a gated action'.
+  // An approval that starts a task which keeps running after the person leaves (lib/keep-going.js): the yes switches an automation on the clock; nothing runs at request time.
+  'automation.keep': { rule: 'send.automation-keep', kind: 'send', service: 'automations', board: 'keep an automation running by itself' },
   'bridge.task': { rule: 'send.bridge-task', kind: 'send', service: 'build queue', board: 'hand a build task to the bridge' },
 };
 export const isGated = (toolName) => Object.prototype.hasOwnProperty.call(GATED, toolName);
@@ -85,6 +88,7 @@ export function confirmLine(toolName, args) {
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
     case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
     case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;
+    case 'automation.keep': return keepLine(a);
     case 'bridge.task': return a.title ? `Hand build task “${a.title}” to the bridge?` : 'Hand this build task to the bridge?';
     default: return '';
   }
@@ -163,6 +167,7 @@ export function parseGatedAsk(text) {
     const cost = m[2] ? parseCost(m[2]) : null;
     return { toolName: 'order.place', args: cost ? { item: clip(m[1], 160), cost } : { item: clip(m[1], 160) } };
   }
+  { const k = keepAsk(s); if (k) return k; }
   // "remind me at 5" — behind the confirm line. No executor, so a yes does not push.
   // "remind me to call mom at 6pm" (the task first) is the calendar's: it saves on this device (skills/remind.js).
   if ((m = s.match(/^remind me\s+at\s+(\d{1,2}(?::\d{2})?\s*(?:am|pm|a\.m\.|p\.m\.)?|noon|midnight)(?:\s+to\s+(.{1,80}))?$/i))) {

@@ -206,6 +206,7 @@ function lastLog(ask) {
 export function start(stageApi, steps, { label = 'Built while you were away' } = {}) {
   if (tour) end(stageApi);
   if (!steps.length) return false;
+  const bl = typeof document !== 'undefined' && document.getElementById('whatsnew-bell'); if (bl) bl.remove(); // the walkthrough has begun, the icon has done its job
   tour = { steps, i: 0, made: null, label, esc: (e) => { if (e.key === 'Escape' && tour && !document.querySelector('.vpage.on')) end(stageApi); } };
   addEventListener('keydown', tour.esc, true);
   step(stageApi);
@@ -230,7 +231,28 @@ export async function nudge(stageApi, note) {
   go.href = '#'; go.className = 'away-see'; go.textContent = 'show me'; go.dataset.showcase = 'show';
   go.addEventListener('click', (e) => { e.preventDefault(); note.textContent = ''; start(stageApi, steps); });
   note.textContent = ''; note.append(lead, go);
+  bell(stageApi, steps);
   return n;
+}
+
+/** a small animated icon on the stage for what is new (asked by Void: "Link the 'whats new' showcase trigger to a small, animated
+ * notification icon on the stage to prevent users from having to type it"): a bell-less sparkle with the count, pulsing quietly; a tap
+ * starts the same walkthrough as typing "what's new", and the icon and the quiet line both go. It appears only when something is new
+ * (so a first visit and an empty page stay empty) and never moves anything. Pure DOM, nothing sent anywhere. */
+export function bell(stageApi, steps) {
+  if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
+  const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell';
+  const n = steps.length; b.dataset.count = String(n);
+  b.setAttribute('aria-label', (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' V01D made while you were away: show me');
+  b.title = 'What\'s new: tap to see what V01D made';
+  b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
+    + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
+    + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
+    + '@media (prefers-reduced-motion:reduce){.whatsnew-bell,.whatsnew-bell svg{animation:none}}</style>'
+    + '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2l2.2 6.6L21 11l-6.8 2.4L12 20l-2.2-6.6L3 11l6.8-2.4z" fill="currentColor"/></svg><b aria-hidden="true">' + (n > 99 ? '99+' : n) + '</b>'; // void-review: ok: static markup, the count is a number
+  b.addEventListener('click', (e) => { e.preventDefault(); const note = document.getElementById('away-note'); if (note) note.textContent = ''; b.remove(); start(stageApi, steps); });
+  document.body.appendChild(b);
+  return b;
 }
 
 /** "show me everything you made": the whole walkthrough, previewed before or not, asked for by name. Pure. */

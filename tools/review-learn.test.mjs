@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA, closerReadOf, phantomsIn, lessonsIn, hunkRanges, lessonSummary, slugFor, addedLines, symbolsIn, placeBySymbol, isEmptyClaim } from './review-learn.mjs';
+import { parseExtra, caughtBy, learnFromPr, summary, langOfPath, EXTRA, closerReadOf, phantomsIn, lessonsIn, hunkRanges, lessonSummary, slugFor, addedLines, symbolsIn, placeBySymbol, isEmptyClaim, unquotedSymbols, placeByCluster } from './review-learn.mjs';
 
 test('the extra reviewer\'s severity and title are read from both of its formats', () => {
   assert.deepEqual(parseExtra('**🗄️ Data Integrity & Integration** | **🟡 Minor** | **⚡ Quick win**\n\n**Reject invalid estimates instead of changing them.**\n\nIf a participant…'),
@@ -109,4 +109,18 @@ test("no claim, no count: 'I have reviewed', 'Bugs: None' and 'the provided diff
     [[true, false, 0, 'I have reviewed the diff.'], [false, true, 2, '`frob` doubles without a guard.'], [false, true, 3, 'The return could be inline.'], [true, false, 0, 'Bugs: None.']]);
   const sum = lessonSummary(rows);
   assert.deepEqual([sum.closerFound, sum.unplaced, sum.empty], [2, 0, 2]);
+});
+
+test('unquoted symbols in a tight cluster place a finding (asked by Void)', () => {
+  const files = [
+    { filename: 'a.js', patch: '@@ -1 +1,6 @@\n x();\n+function loadRows(n) {\n+  const row_count = n;\n+  return saveAll(row_count);\n+}\n+let other = 1;' },
+    { filename: 'b.js', patch: '@@ -1 +1,2 @@\n y();\n+const loadRows = 2;' },
+  ];
+  const added = addedLines(files), fs = ['a.js', 'b.js'];
+  assert.deepEqual(unquotedSymbols('loadRows reads row_count and calls saveAll() without a guard; `quoted_one` ignored'), ['loadRows', 'row_count', 'saveAll']);
+  const hit = placeByCluster('loadRows reads row_count and passes it to saveAll() unchecked.', added, fs);
+  assert.equal(hit.path, 'a.js'); assert.equal(hit.line, 2); assert.deepEqual(hit.cluster, ['loadRows', 'row_count', 'saveAll']);
+  assert.equal(placeByCluster('loadRows alone is odd.', added, fs), null, 'one name is not a cluster');
+  assert.equal(placeByCluster('row_count and saveAll() are far apart.', { 'a.js': [[1, 'row_count'], [90, 'saveAll()']] }, ['a.js']), null, 'a wide spread is not a cluster');
+  assert.equal(placeByCluster('loadRows and row_count again.', { 'a.js': [[1, 'loadRows row_count']], 'b.js': [[5, 'loadRows row_count']] }, fs), null, 'a cluster in two files decides nothing');
 });

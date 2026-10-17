@@ -23,11 +23,11 @@ export function flightTime(d) {
   const mins = Math.round((d / 800 + 0.5) * 60 / 5) * 5;
   return 'About ' + (mins >= 60 ? Math.floor(mins / 60) + ' h' + (mins % 60 ? ' ' + (mins % 60) + ' min' : '') : mins + ' min');
 }
-async function geo(name) {
+export async function geo(name) {
   const g = await fetch('https://geocoding-api.open-meteo.com/v1/search?count=5&language=en&name=' + encodeURIComponent(name.split(',')[0])).then((r) => r.json());
   return ((g && g.results) || []).sort((x, y) => (y.population || 0) - (x.population || 0))[0] || null;
 }
-function km(a, b) {
+export function km(a, b) {
   const R = 6371.0088, rad = (d) => d * Math.PI / 180;
   const dl = rad(b.latitude - a.latitude), dn = rad(b.longitude - a.longitude);
   const h = Math.sin(dl / 2) ** 2 + Math.cos(rad(a.latitude)) * Math.cos(rad(b.latitude)) * Math.sin(dn / 2) ** 2;

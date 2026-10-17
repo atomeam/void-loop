@@ -134,6 +134,39 @@ export function placeBySymbol(paragraph, added, files) {
   }
   return null;
 }
+// Unquoted symbols in high-density clusters (asked by Void: "Modify the 'review-learn' logic so it can trigger on unquoted symbols that
+// appear in high-density clusters"): a finding often names its code without backticks (initQueue, row_count, saveAll()). Two or more
+// such names that each sit in one file's added lines and land within CLUSTER lines of each other are a cluster; the finding is placed at
+// the cluster's first line. Only when the quoted symbols (placeBySymbol) found nothing, so a backticked name still decides first.
+export const CLUSTER = 12;
+export function unquotedSymbols(paragraph) {
+  const out = [];
+  for (const m of String(paragraph || '').replace(/`[^`]*`/g, ' ').matchAll(/(?<![\w$.\/])([a-z][a-z0-9]*[A-Z][\w$]*|[a-z][a-z0-9]*(?:_[a-z0-9]+)+|[A-Za-z_$][\w$]*(?=\(\)))(?![\w$])/g)) {
+    const s = m[1]; if (s.length < 4 || SYMBOL_STOP.has(s.toLowerCase()) || FILE_EXT.test(s) || out.includes(s)) continue; out.push(s);
+  }
+  return out;
+}
+export function placeByCluster(paragraph, added, files, window = CLUSTER) {
+  const syms = unquotedSymbols(paragraph); if (syms.length < 2) return null;
+  const res = syms.map((sym) => [sym, new RegExp('(?<![\\w$.])' + sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\w$])')]);
+  let best = null;
+  for (const f of files) {
+    const hits = []; // [line, symbol] for each symbol's lines in this file
+    for (const [sym, re] of res) for (const [n, t] of added[f] || []) if (re.test(t)) hits.push([n, sym]);
+    hits.sort((a, b) => a[0] - b[0]);
+    for (let i = 0; i < hits.length; i++) {
+      const inWin = hits.filter(([n]) => n >= hits[i][0] && n <= hits[i][0] + window), distinct = [...new Set(inWin.map((h) => h[1]))];
+      if (distinct.length >= 2 && (!best || distinct.length > best.symbols.length || (distinct.length === best.symbols.length && f === best.path && hits[i][0] < best.line))) best = { path: f, line: hits[i][0], symbols: distinct };
+    }
+  }
+  if (!best) return null;
+  const others = files.filter((f) => f !== best.path && placeByClusterIn(syms, added[f], window)); // a cluster in two files decides nothing
+  return others.length ? null : { path: best.path, line: best.line, symbol: best.symbols[0], cluster: best.symbols };
+}
+function placeByClusterIn(syms, rows, window) {
+  const hits = []; for (const sym of syms) { const re = new RegExp('(?<![\\w$.])' + sym.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?![\\w$])'); for (const [n, t] of rows || []) if (re.test(t)) hits.push([n, sym]); }
+  return hits.some(([n, s]) => hits.some(([m, o]) => o !== s && Math.abs(m - n) <= window));
+}
 const PRAISE = /\b(?:correctly|is fine|looks fine|is sound|is good|good practice|well handled|no bug|no issue|not a bug|is acceptable|is correct)\b/i;
 // a paragraph with no claim in it: the closer read saying it has read, that there is nothing, or what kind of file this is. Neither placed
 // nor unplaced: listed under `empty`, out of every count (2026-10-10)
@@ -150,13 +183,13 @@ export function lessonsIn(pr, body, fileNames, sha, fileAt, ranges = {}, added =
     const lm = shaped ? [null, String(shaped.line)] : p.match(/\bLine\s+(\d{1,5})\b/i) || p.match(/\.[a-z]{1,5}:(\d{1,5})\b/i);
     // no line named: the symbol it quotes places it, when exactly one added hunk carries that symbol (2026-10-10); a paragraph
     // that quotes symbols but none of them lands in one file is counted as unplaced, one with neither line nor symbol is not a finding
-    const bySym = placeBySymbol(p, added, files);
+    const bySym = placeBySymbol(p, added, files) || placeByCluster(p, added, files);
     // the finding's own sentence: the first line that is not a heading, without the "Line N (file):" lead
     const body0 = p.split('\n').map((l) => l.trim()).filter((l) => l && !/^#{1,6}\s/.test(l) && !/^\*\*[^*]{2,40}\*\*:?$/.test(l))[0] || '';
     const sentence = shaped ? shaped.sentence.split(/(?<=[.!?])\s/)[0].slice(0, 160)
       : body0.replace(/\*\*/g, '').replace(/^[\s*-]+/, '').replace(/^(?:bug|security|performance|readability|risk)\b[^:]*:\s*/i, '').replace(/^Line\s+\d+\s*(?:\([^)]*\))?\s*[:,]?\s*/i, '').trim().split(/(?<=[.!?])\s/)[0].slice(0, 160);
     if (isEmptyClaim(sentence)) { if (sentence) out.push({ pr, sentence, empty: true }); continue; } // no claim: not a lesson, counted apart
-    if (!lm && !bySym && !symbolsIn(p).length) continue;
+    if (!lm && !bySym && !symbolsIn(p).length && unquotedSymbols(p).length < 2) continue;
     if (!lm && !bySym) { out.push({ pr, line: 0, sentence, placed: false }); continue; }
     let line = lm ? +lm[1] : bySym.line;
     const named = files.filter((f) => (shaped && shaped.file && (f === shaped.file || f.endsWith('/' + shaped.file) || f.split('/').pop() === shaped.file.split('/').pop())) || p.includes(f) || p.includes(f.split('/').pop()));
