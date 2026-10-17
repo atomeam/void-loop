@@ -17,7 +17,7 @@ const VERB = { watch: 'movie', listen: 'music' };
 export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   const tail = '(?:\\s+(?:with\\s+(?:me|us)|tonight|today|now|right\\s+now))?';
-  let m = t.match(new RegExp('^(?:please\\s+)?(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?(?:a\\s+|an\\s+|some\\s+|the\\s+)?(?:good\\s+|great\\s+|nice\\s+)?(\\w+)(?:\\s+to\\s+(?:listen\\s+to|hear))?' + tail + '$'));
+  let m = t.match(new RegExp('^(?:please\\s+)?(?:pick|choose|suggest|recommend|find)\\s+(?:me\\s+|us\\s+)?(?:a\\s+|an\\s+|some\\s+|the\\s+)?(?:good\\s+|great\\s+|nice\\s+)?(\\w+)(?:\\s+to\\s+(?:listen\\s+to|hear))?' + tail + '$'));
   if (m) for (const k of Object.keys(NOUN)) if (NOUN[k].test(m[1])) return { kind: k, chosen: false };
   m = t.match(new RegExp('^(?:please\\s+)?(?:(?:pick|choose|suggest|recommend|find|give)\\s+(?:me\\s+|us\\s+)?|what\\s+(?:should|shall)\\s+(?:i|we)\\s+(?:do\\s+)?)?(?:something|anything)?\\s*(?:to\\s+)?(watch|listen\\s+to|hear)' + tail + '$'));
   if (m && /^(?:pick|choose|suggest|recommend|find|give)|something|anything|^what/.test(t)) return { kind: VERB[m[1].replace(/\s+to$/, '').replace('hear', 'listen')] || null, chosen: false };
