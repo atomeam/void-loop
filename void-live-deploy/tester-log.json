@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 108,
+ "runsTotal": 109,
  "kinds": {
   "grow": 15,
-  "file": 51,
+  "file": 52,
   "teach": 7,
   "tighten": 7,
   "none": 28
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:05:32Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T07:56:04Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:09:42Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -177,9 +177,9 @@
   "skill:counter": "2026-10-17T07:56:04Z",
   "skill:country": "2026-10-17T07:56:04Z",
   "skill:crypto": "2026-10-17T07:56:04Z",
-  "skill:dark-look": "2026-10-16T07:04:58Z",
-  "skill:dates": "2026-10-16T07:04:58Z",
-  "skill:dating": "2026-10-16T07:15:33Z",
+  "skill:dark-look": "2026-10-17T08:05:32Z",
+  "skill:dates": "2026-10-17T08:05:32Z",
+  "skill:dating": "2026-10-17T08:05:32Z",
   "skill:different": "2026-10-16T07:15:33Z",
   "skill:dismiss": "2026-10-16T07:37:17Z",
   "skill:distance": "2026-10-16T07:37:17Z",
