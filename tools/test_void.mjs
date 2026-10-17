@@ -2376,7 +2376,9 @@ try {
     await R.ctx.close(); }
   // countdown to a named event from its Wikipedia summary, never a model's memory (owner's card 2026-10-17: "how many hours til gta6?" said "no release date")
   if (want("event countdown: hours until a named event, from the event's own Wikipedia page")) { const R = await fresh();
-    const seen = [], GTA = 'Grand Theft Auto VI is an upcoming action-adventure game developed by Rockstar Games. It is scheduled to be released on 19 November 2099 for the PlayStation 5 and Xbox Series X/S. It was announced on November 8, 2023.';
+    const seen = [], GTA = 'Grand Theft Auto VI is an upcoming action-adventure game developed and published by Rockstar Games. It was announced on November 8, 2023.'; // like the live summary: the date is not in it
+    await R.ctx.route(/en\.wikipedia\.org\/w\/api\.php\?action=(parse|query)/, (r) => { const u = r.request().url(), gta = /Grand(%20|_|\+| )Theft/.test(u);
+      return r.fulfill(json(/action=parse/.test(u) ? { parse: { wikitext: gta ? '{{Infobox video game\n| released = {{Video game release|WW|November 19, 2099}}\n}}' : '' } } : { query: { pages: [{ extract: gta ? GTA + ' It is in development.' : 'Zorbleflux has no date.' }] } })); });
     await R.ctx.route(/en\.wikipedia\.org\/api\/rest_v1\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]); seen.push(t);
       return r.fulfill(json(t === 'Grand_Theft_Auto_VI' ? { type: 'standard', title: 'Grand Theft Auto VI', extract: GTA, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI' } } }
         : { type: 'standard', title: 'Zorbleflux', extract: 'Zorbleflux is a word with no date at all.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Zorbleflux' } } })); });
@@ -2384,8 +2386,8 @@ try {
     const card = await R.page(), link = await R.p.$('.vpage.on .src a[href="https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI"]');
     await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
-    check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia summary and counts the hours to its announced release day, quoting the sentence and linking the source; an event whose page names no date ahead says so, no guess',
-      /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /scheduled to be released/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
+    check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
+      /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
       JSON.stringify({ card: card.slice(0, 400), seen, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }

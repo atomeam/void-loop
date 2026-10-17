@@ -33,3 +33,17 @@ test('time left is days, hours and minutes to the start of the day where you are
   assert.ok(l.days === 32 || l.days === 33); assert.ok(l.hours >= 0 && l.hours < 24 && l.minutes >= 0 && l.minutes < 60);
   assert.equal(left(day, new Date(2027, 0, 1)).ms, 0, 'past: zero, never negative');
 });
+
+test('a summary that names no date: the lead, then the infobox release line give it (the live GTA VI card said "no announced date")', async () => {
+  const { infoboxDates, announcedFrom } = await import('../void-live-deploy/lib/event-date.js');
+  const now = new Date('2026-10-17T11:00:00Z');
+  const box = '{{Infobox video game\n| title = Grand Theft Auto VI\n| developer = [[Rockstar Games]]\n| released = {{Video game release|WW|November 19, 2026}}\n| genre = [[Action-adventure game|Action-adventure]]\n}}';
+  assert.equal(infoboxDates(box)[0].date.toISOString().slice(0, 10), '2026-11-19');
+  assert.equal(infoboxDates('| release_date = {{Start date|2027|5|26}}')[0].date.toISOString().slice(0, 10), '2027-05-26');
+  assert.equal(infoboxDates('| developer = Rockstar North, founded 1 January 2030').length, 0, 'only release-like fields');
+  const extract = 'Grand Theft Auto VI is an upcoming action-adventure game developed and published by Rockstar Games.';
+  assert.equal(announcedFrom({ extract }, now), null);
+  assert.equal(announcedFrom({ extract, lead: extract + ' Following two delays, it is scheduled for release on 19 November 2026 for the PlayStation 5 and Xbox Series X/S.' }, now).date.toISOString().slice(0, 10), '2026-11-19');
+  assert.equal(announcedFrom({ extract, lead: extract, wikitext: box }, now).date.toISOString().slice(0, 10), '2026-11-19');
+  assert.equal(announcedFrom({ extract, wikitext: '| released = {{Video game release|WW|May 26, 2026}}' }, now), null, 'a release already past is not a countdown');
+});

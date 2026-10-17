@@ -67,3 +67,28 @@ export function left(date, now = new Date()) {
   const ms = Math.max(0, local - now), totalMinutes = Math.floor(ms / 60000);
   return { ms, days: Math.floor(totalMinutes / 1440), hours: Math.floor((totalMinutes % 1440) / 60), minutes: totalMinutes % 60, totalHours: Math.floor(totalMinutes / 60) };
 }
+
+// an infobox's own fields for when a thing happens: a video game's release, a film's released, a tournament's dates, a show's first aired
+const FIELDS = /^\s*\|\s*(?:release[sd]?(?:_?date)?|released|date|dates|start_?date|first_?aired|premiere|opening(?:_?date)?|launch(?:_?date)?|event_?date|scheduled)\s*=(.*)$/i;
+/** the dates in an infobox's release-like lines, from plain dates and from templates ({{Start date|2026|11|19}}, {{Video game release|WW|November 19, 2026}}):
+ *  [{ date, sentence }] where the sentence is the field's own text. Pure. */
+export function infoboxDates(wikitext) {
+  const out = [];
+  for (const line of String(wikitext || '').split('\n')) {
+    const m = FIELDS.exec(line); if (!m) continue;
+    const val = m[1];
+    for (const t of val.matchAll(/\{\{\s*(?:start[ _]date|release[ _]date|film[ _]date|dts|date)\s*(?:\|[a-z]+=[^|}]*)*\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})/gi)) {
+      const d = new Date(Date.UTC(+t[1], +t[2] - 1, +t[3]));
+      if (d.getUTCMonth() === +t[2] - 1) out.push({ date: d, sentence: 'release: ' + d.toISOString().slice(0, 10) });
+    }
+    const plain = val.replace(/\{\{[^{}|]*\|/g, ' ').replace(/[{}[\]|]/g, ' ').replace(/<[^>]*>/g, ' ');
+    for (const d of datesIn(plain)) out.push({ date: d.date, sentence: 'release: ' + plain.replace(/\s+/g, ' ').trim().slice(0, 120) });
+  }
+  return out;
+}
+/** the announced date from every source a page offers, best first: the summary, the whole lead, the infobox. Pure. */
+export function announcedFrom({ extract = '', lead = '', wikitext = '' } = {}, now = new Date()) {
+  const today = Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
+  const box = infoboxDates(wikitext).filter((d) => d.date.getTime() >= today).sort((a, b) => a.date - b.date)[0];
+  return announcedDate(extract, now) || announcedDate(lead, now) || box || null;
+}
