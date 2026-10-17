@@ -2117,6 +2117,16 @@ try {
     check('rating note: a card from a skill rated experiment says so on its source line ("rated experiment (…): not checked yet"), a proven skill\'s card says nothing',
       !!thin && thin.inSrc && /^ · rated experiment \(a self-test\): not checked yet$/.test(thin.text) && /evidence only/.test(thin.title) && quiet === 0 && !R.errors.length, JSON.stringify({ thin, quiet, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("arcade ghost: Pong and Snake replay your best run as a faint ghost, and a finished game is kept when it beats it")) { // asked by Void
+    const G = await fresh({ content: 'localStorage.setItem("void-ghost-pong", JSON.stringify({game:"pong",you:7,void:3,dur:40,ys:[130,131,132,133,134]})); localStorage.setItem("void-ghost-snake", JSON.stringify({game:"snake",len:9,path:[[5,4],[6,4],[7,4]],lens:[4,4,4]}));' });
+    await G.ask('pong', 600); await until(async () => !!(await G.p.$('.pong-card')), 6000);
+    const pw = await G.p.$eval('.pong-card .pong-card-why', (e) => e.textContent).catch(() => '');
+    await G.ask('snake', 600); await until(async () => !!(await G.p.$('.snake-card')), 6000);
+    const sw = await G.p.$eval('.snake-card .snake-card-why', (e) => e.textContent).catch(() => '');
+    const stored = await G.p.evaluate(() => ({ pong: JSON.parse(localStorage.getItem('void-ghost-pong')).you, snake: JSON.parse(localStorage.getItem('void-ghost-snake')).len }));
+    check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
+      /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
+    await G.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },

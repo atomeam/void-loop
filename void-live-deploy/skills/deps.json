@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 408,
+ "counted": 409,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -109,6 +109,12 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3
+  },
+  {
+   "file": "lib/arcade-ghost.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
   },
   {
    "file": "lib/cook-flow.js",
@@ -1143,6 +1149,13 @@
    ],
    "importedBy": [
     "functions/api/approval.js"
+   ]
+  },
+  "lib/arcade-ghost.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pong.js",
+    "skills/snake.js"
    ]
   },
   "lib/arena-say.js": {
@@ -3734,7 +3747,8 @@
   "skills/pong.js": {
    "imports": [
     "skills/pong-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
@@ -4136,7 +4150,8 @@
   "skills/snake.js": {
    "imports": [
     "skills/snake-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
