@@ -148,4 +148,7 @@ export default {
   nearMisses: ['what is a poster', 'poster sizes', 'share this card', 'how do I hang a poster', 'order this as a poster'],
   match(lower, text) { return posterOf(text) || !!filmPosterOf(text); },
   run,
+  suite() {
+    return { ok: filmPosterOf('make a poster for the newest film') !== null && filmPosterOf('what is a poster') === null && filmPosterOf('film poster') !== null };
+  },
 };
