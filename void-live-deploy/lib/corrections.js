@@ -60,6 +60,13 @@ export function wantsCorrection(lower) {
   return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b|made\s+a\s+mistake)/.test(String(lower || '').toLowerCase());
 }
 
+/** the answer a select value names: null for the empty placeholder, a non-number or an index out of range. Pure. */
+export function chosenAnswer(recent, value) {
+  if (value === '' || value == null) return null;
+  const i = Number(value);
+  return Number.isInteger(i) && i >= 0 && Array.isArray(recent) && recent[i] ? recent[i] : null;
+}
+
 /**
  * Put the form into `root` (a DOM element) with the document `doc`. Everything typed or read goes in with textContent. `onSaved(list)` runs
  * after a correction is kept. Returns { select, box, save }. The only thing it writes is CORRECTIONS.key.
@@ -73,7 +80,9 @@ export function mountForm(root, doc, { storage, log, onSaved } = {}) {
   const note = el('div', { className: 'sub' });
   const save = el('button', { type: 'button', className: 'tr-copy', textContent: 'Tell V01D' });
   save.addEventListener('click', () => {
-    const r = recent[+select.value] || {}, res = addCorrection({ ask: r.ask, skill: r.skill, text: box.value }, storage);
+    const r = chosenAnswer(recent, select.value);
+    if (recent.length && !r) { note.textContent = 'Pick which answer was wrong first.'; return; } // the placeholder is not an answer: save nothing
+    const res = addCorrection({ ask: r && r.ask, skill: r && r.skill, text: box.value }, storage);
     note.textContent = res.ok ? 'Kept on this device, apart from how your V01D looks. Thank you.' : 'Write what went wrong first.';
     if (res.ok) { box.value = ''; if (onSaved) onSaved(res.list); }
   });
