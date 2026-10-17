@@ -44,6 +44,10 @@ if (w > 0 && process.argv[w + 1]) {
   const streak = Object.fromEntries(mods.map((m) => [m.name, failing[m.name] ? 0 : (Number.isFinite(+prevStreak[m.name]) ? +prevStreak[m.name] : 0) + 1]).sort((a, b) => (a[0] < b[0] ? -1 : 1)));
   const rec = { note: 'the daily smoke test of every skill (tools/skills-check.mjs --write; asked by Void): each loaded, each of its examples reaching it first, none of its near misses, its suite() passing. failing: the skills that did not, with what failed. Read by tools/families.mjs.', at: new Date().toISOString().slice(0, 10), checked: mods.length, streak, failing: Object.fromEntries(Object.keys(failing).sort().map((k) => [k, failing[k]])) };
   writeFileSync(process.argv[w + 1], JSON.stringify(rec, null, 1) + '\n');
+  // each run is one more execution of every skill: a pass adds to its streak, a failure is its error trace and resets it (tools/streaks.mjs)
+  const { bump } = await import('./streaks.mjs'), sf = resolve(dirname(process.argv[w + 1]), 'skills-streak.json');
+  let prevStreak = null; try { prevStreak = JSON.parse(readFileSync(sf, 'utf8')); } catch (_) {}
+  writeFileSync(sf, JSON.stringify(bump(prevStreak, { names: mods.map((m) => m.name), failing, at: rec.at }), null, 1) + '\n');
   console.log(`smoke: ${mods.length} skills checked, ${Object.keys(failing).length} failing; wrote ${process.argv[w + 1]}`);
   process.exit(0);
 }

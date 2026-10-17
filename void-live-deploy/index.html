@@ -1570,6 +1570,7 @@ Object.values(things).forEach((th) => {
             if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
+            try { document.dispatchEvent(new CustomEvent('void:dropped', { detail: { id: th.id } })); } catch (_) {} // skills react to a thing set down (skills/list.js: a drop on a list adds an entry)
             save();
             if (share) { shareMoved(th, true); for (const m of mates) shareMoved(m.t, true); } // where it was set down, exactly
             return;
@@ -4814,7 +4815,7 @@ say('nothing selected to remove');
       const title = (ask || 'Code review').split('\n')[0].slice(0, 140), named = cr.langNamed(title), res = cr.ruleReview(code, named ? { lang: named } : {}), safe = cr.redact ? cr.redact(code) : code;
       const list = res.findings.length
         ? '<ol style="padding-left:20px;margin:8px 0">' + res.findings.map((f) => '<li style="margin:0 0 10px"><span style="color:' + REVIEW_KIND[f.kind][1] + ';font-weight:600">' + REVIEW_KIND[f.kind][0] + '</span> · line ' + f.line
-          + (f.also ? ' (and ' + f.also + ' more like it)' : '') + '<br>' + esc(f.message) + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:8px;margin:6px 0 0;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace"><code>' + esc(f.text) + '</code></pre></li>').join('') + '</ol>'
+          + (f.also ? ' (and ' + f.also + ' more like it)' : '') + '<br>' + esc(f.message) + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:6px 10px;border-radius:8px;margin:6px 0 0;font:12.5px/1.4 ui-monospace,Menlo,Consolas,monospace"><code>' + esc(f.text) + (f.more ? '\u2026' : '') + '</code></pre>' + (f.more ? '<button type="button" class="review-peek" data-peek="' + (+f.line) + '" aria-expanded="false" style="font:inherit;font-size:12px;margin-top:4px">peek: show the whole line</button>' : '') + '</li>').join('') + '</ol>'
         : '<p>The quick checks found nothing wrong.</p>';
       const head = '<h2>' + esc(title) + '</h2><div class="sub">' + esc(res.lang === 'code' ? 'code' : res.lang) + ' · ' + res.lines + ' line' + (res.lines === 1 ? '' : 's') + ' · ' + (res.findings.length ? res.findings.length + ' thing' + (res.findings.length === 1 ? '' : 's') + ' to look at' : 'nothing flagged') + '</div>';
       // the fixes that never change what correct code means are made here, in the browser; the rest stay findings
@@ -4822,6 +4823,14 @@ say('nothing selected to remove');
       const fixed = fx.changes.length ? '<h3 style="margin:16px 0 6px;font-weight:500">Fixed version</h3><div class="sub">' + fx.changes.length + ' change' + (fx.changes.length === 1 ? '' : 's') + ' made here: ' + esc(Array.from(new Set(fx.changes.map((c) => c.what))).join('; ')) + '</div>'
         + '<pre style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:10px 12px;border-radius:8px;font:13px/1.45 ui-monospace,Menlo,Consolas,monospace;overflow-x:auto"><code data-fixed>' + esc(fx.code) + '</code></pre><button type="button" data-copy style="font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:6px 12px;cursor:pointer">copy the fixed code</button>' : '';
       const el = showPage((p) => { p.innerHTML = head + list + fixed + '<div class="sub" data-deep>reading it more closely…</div>';
+        // peek (asked by Void): a quoted line shown cut at 160 characters opens to the whole line (still masked) and closes again
+        p.querySelectorAll('[data-peek]').forEach((pk) => pk.addEventListener('click', () => {
+          const code = pk.previousElementSibling && pk.previousElementSibling.querySelector('code'); if (!code) return;
+          const open = pk.getAttribute('aria-expanded') === 'true';
+          if (!code.dataset.short) code.dataset.short = code.textContent;
+          code.textContent = open ? code.dataset.short : String(safe.split('\n')[(+pk.dataset.peek || 1) - 1] || '').trim().slice(0, 2000);
+          pk.setAttribute('aria-expanded', String(!open)); pk.textContent = open ? 'peek: show the whole line' : 'close the peek';
+        }));
         const b = p.querySelector('[data-copy]'); if (b) b.addEventListener('click', () => { try { navigator.clipboard.writeText(fx.code).then(() => { b.textContent = 'copied'; }, () => { b.textContent = 'select the code above to copy it'; }); } catch (_) { b.textContent = 'select the code above to copy it'; } }); });
       say(res.findings.length ? res.findings.length + ' to look at' : 'looks clean so far');
       loopLog({ domain: 'void.review', ask: currentAsk || title, score: 'pass', note: 'review ' + res.lang + ' ' + res.findings.length });

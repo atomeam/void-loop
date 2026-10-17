@@ -128,6 +128,8 @@ for (const [name, file] of [
   ['poker', 'poker.test.mjs'],
   ['fireworks', 'fireworks.test.mjs'],
   ['connect4', 'connect4.test.mjs'],
+  ['duel-rules', 'duel-rules.test.mjs'],
+  ['rules-engine', 'rules-engine.test.mjs'],
   ['arcade', 'arcade.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['explainers', 'explainers.test.mjs'],

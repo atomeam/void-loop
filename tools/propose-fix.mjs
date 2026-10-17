@@ -19,18 +19,18 @@ import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
 import { spawnSync } from 'node:child_process';
 import os from 'node:os';
-import { jobAsk, applyEdits, evidenceOf, whereOf } from '../void-live-deploy/lib/propose-fix.js';
+import { jobAsk, applyEdits, evidenceOf, whereOf, riskOf } from '../void-live-deploy/lib/propose-fix.js';
 
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 export const STEPS = ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']; // 'lets go' runs for a routing correction only
 export const stepsFor = (mode) => STEPS.filter((s) => mode === 'narrow' || s !== 'lets go');
 
-/** The job to work on: the oldest open probe: job, or the one named; null when there is none. */
+/** The job to work on: the oldest open probe: job (or a miss: job the router says a skill should have caught: its lane is propose-fix), or the one named; null when there is none. */
 export function pickJob(queue, id = '', hasSkill = (name) => existsSync(join(root, 'void-live-deploy', 'skills', name + '.js'))) {
   // a job whose skill has no file of its own (a route the page makes inline, like the automation fix) is a builder's, never V01D's:
   // skipping it keeps one such job from blocking every probe behind it
-  const items = ((queue && queue.items) || []).filter((i) => /^(probe|route):/.test(i.target) && /^(queued|building)$/.test(i.state) && jobAsk(i) && hasSkill(jobAsk(i).skill));
+  const items = ((queue && queue.items) || []).filter((i) => (/^(probe|route):/.test(i.target) || (/^miss:/.test(i.target) && /\brouter skill:/.test(String(i.note || '')))) && /^(queued|building)$/.test(i.state) && jobAsk(i) && hasSkill(jobAsk(i).skill));
   if (id) return items.find((i) => i.id === id) || null;
   return items.sort((a, b) => String(a.at).localeCompare(String(b.at)))[0] || null;
 }
@@ -87,7 +87,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   } catch (e) { console.error('propose-fix: ' + (brain === 'claude' ? 'Claude' : 'V01D') + ' proposed nothing: ' + String(e.message).replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').slice(0, 200)); process.exit(3); }
   const next = applyEdits(source, proposal.edits);
   if (!next) { console.error('propose-fix: the edits do not apply to the file as it stands'); process.exit(3); }
-  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
+  const result = { at: new Date().toISOString(), job: job ? job.id : null, skill: miss.skill, ask: miss.ask, want: miss.want, edits: proposal.edits.length, why: proposal.why, confidence: proposal.confidence ?? null, evidence: evidenceOf(source, proposal.edits, miss.skill), risk: riskOf(proposal.edits), model: proposal.model, brain, cost: proposal.cost ?? null, mode: miss.mode || 'learn',
     title: miss.mode === 'narrow' ? 'V01D\'s ' + miss.skill + ' skill lets go of "' + miss.ask + '" (a correction)' : 'V01D fixes its ' + miss.skill + ' skill: learn to handle "' + miss.ask + '"', passed: false, failed: '', detail: '' };
   let committed = false;
   writeFileSync(file, next);
@@ -125,6 +125,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
   // one record in V01D's probe ledger (lib/probe-log.js): the skill, the line changes, V01D's confidence and what came of it, never the ask
   if (job && !dry) { try { await api('/api/probe-log', 'POST', { kind: 'fix', skill: result.skill, edits: result.edits, confidence: result.confidence, passed: result.passed, failed: result.failed }); } catch (e) { console.error('propose-fix: the probe ledger was not written: ' + e.message); } }
-  console.log('### V01D proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| V01D\'s confidence | ' + (result.confidence ?? '—') + ' |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| why, in V01D\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
+  console.log('### V01D proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| V01D\'s confidence | ' + (result.confidence ?? '—') + ' |\n| risk | ' + result.risk.level + ' (' + result.risk.why + ') |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| why, in V01D\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');
   process.exit(0);
 }

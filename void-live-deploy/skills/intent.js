@@ -284,7 +284,44 @@ const timerAsk = (min, practice) => ({ piece: 'timer', ask: 'set a timer for ' +
 // and a note to self, run as the sticky's own ask
 const noteAsk = (note) => ({ piece: 'note', ask: 'add a sticky that says ' + note });
 const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
+// A preview state (asked by Void, 2026-10-16: "a 'preview' state for summoned intents so users can see the proposed plan as a
+// lightweight card before it fully deploys"). "preview I need to ship the product page by Friday" (also "sketch ...") plans the same
+// way but puts nothing on the stage: one card shows the goal, the day, the steps and the pieces that would come, with "put it on the
+// stage" (the same ask, typed for you) and "not what I meant" (which Void notes as an intent it misread, for its growth inbox).
+const PREVIEW_RE = /^(?:preview|sketch)\s*(?:the\s+plan\s*)?[:,-]?\s+(.{6,200})$/i;
+/** the intent inside a "preview ..." ask, or '' (also '' when the rest is not a plan Void can make). Pure. */
+export function previewOf(text) {
+  const m = PREVIEW_RE.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
+  if (!m) return '';
+  const inner = m[1].trim();
+  return planOf(inner) || openPlanOf(inner) ? inner : '';
+}
+const PIECE_WORD = { countdown: 'a countdown to the day', checklist: 'a checklist', calendar: 'the day on your calendar', draft: 'a draft note (not sent)', timer: 'a practice timer', note: 'a note to yourself' };
+/** the preview card's markup for a plan (a dated or undated plan, or an open one { goal, who }). Pure; every value is escaped. */
+export function previewHtml(esc, plan) {
+  const open = !plan.asks, steps = plan.steps || [], pieces = open ? ['a checklist (its steps come from the answer engine)'].concat(plan.who ? [PIECE_WORD.draft] : []) : [...new Set(plan.asks.map((a) => PIECE_WORD[a.piece] || a.piece))];
+  return '<h2>Preview: ' + esc(plan.goal) + '</h2><div class="sub">nothing is on your stage yet' + (plan.deadline ? ' · for ' + esc(LONG_DAY(plan.deadline)) : '') + '</div>'
+    + (steps.length ? '<ol class="intent-steps">' + steps.map((st) => '<li>' + esc(st.text) + (st.date ? ' <span class="sub">' + esc(SHORT_DAY(st.date)) + '</span>' : '') + '</li>').join('') + '</ol>' : '')
+    + '<div class="sub">would put up: ' + pieces.map(esc).join(' · ') + (plan.who ? ' · nothing is sent to ' + esc(cap(plan.who)) : '') + '</div>'
+    + '<p><button type="button" data-deploy>put it on the stage</button> <button type="button" data-decline>not what I meant</button></p>';
+}
+function previewRun(inner, text, api) {
+  const plan = planOf(inner) || openPlanOf(inner);
+  if (!plan) return 'none';
+  const { showPage, esc } = api;
+  showPage((el) => {
+    el.innerHTML = previewHtml(esc, plan); // void-review: ok: previewHtml escapes every value (tested with markup in a goal)
+    el.querySelector('[data-deploy]').addEventListener('click', () => { if (api.stage && api.stage.ask) api.stage.ask(inner); });
+    el.querySelector('[data-decline]').addEventListener('click', (e) => {
+      e.currentTarget.disabled = true; e.currentTarget.textContent = 'noted';
+      if (api.reportMiss) api.reportMiss(inner, 'intent:misread'); // a misread intent is a possible new skill (the miss board, then the build queue)
+    });
+  });
+  return 'intent';
+}
 async function run(text, api) {
+  const pv = previewOf(text);
+  if (pv) return previewRun(pv, text, api);
   const hist = historyAskOf(text);
   if (hist) return historyRun(hist, api);
   let plan = planOf(text);
@@ -292,7 +329,11 @@ async function run(text, api) {
     const open = openPlanOf(text);
     if (!open) return 'none';
     const got = await engineSteps(open.goal), steps = got && got.steps;
-    if (!steps) { if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute'); return 'intent'; }
+    if (!steps) {
+      if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute');
+      if (api.reportMiss) api.reportMiss(text, 'intent:no-steps'); // a failed intent goes to the miss board as a possible new skill (asked by Void)
+      return 'intent';
+    }
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
     if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
     asks.push(...extras(got));
@@ -338,16 +379,18 @@ export default {
   name: 'intent',
   examples: ['I need to ship the product page by Friday', 'I have to finish my essay by October 20', 'I need to prepare a talk by next week and tell Sam',
     'help me launch the newsletter by the end of the month', 'we need to move house in 2 weeks',
-    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move', 'plan my garden', 'make a plan to learn Spanish', 'plan history', 'restore the last plan'],
+    'the product page launch on Friday', 'my essay is due October 20', 'make a plan to ship the product page', 'plan my move', 'plan my garden', 'make a plan to learn Spanish', 'plan history', 'restore the last plan', 'preview I need to ship the product page by Friday', 'preview make a plan to learn Spanish'],
   nearMisses: ['I need to wake up at 6 am, what time should I go to bed?', 'remind me at 5 to call home', 'days until friday', 'what do i need to get a 90',
     'I need to ship', 'call Sam next Tuesday at 4', 'i need a timer for 5 minutes', 'I need to finish my essay', 'how do I ship a product by friday',
-    'my birthday on Friday', 'the exam was on Friday', 'plan my day', 'make a plan to lose weight', 'meal plan for the week'],
+    'my birthday on Friday', 'the exam was on Friday', 'plan my day', 'make a plan to lose weight', 'meal plan for the week', 'preview of the movie', 'preview my essay formatting'],
   intentOf,
+  previewOf,
+  previewHtml,
   deadlineOf,
   withSteps,
   stepsFor,
   planOf,
   openPlanOf,
-  match(lower, text) { return !!planOf(text) || !!openPlanOf(text) || !!historyAskOf(text); },
+  match(lower, text) { return !!planOf(text) || !!openPlanOf(text) || !!historyAskOf(text) || !!previewOf(text); },
   run,
 };
