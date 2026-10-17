@@ -3405,7 +3405,7 @@ try {
     await G.ask('growth', 1500);
     const b = await until(async () => G.p.$eval('.vpage .growth-better', (e) => ({ score: +e.dataset.better, trend: e.dataset.betterTrend, weakest: e.dataset.weakest, text: e.textContent, afterVelocity: e.previousElementSibling && e.previousElementSibling.hasAttribute('data-velocity') && !!document.querySelector('.vpage .growth-friction') })).catch(() => null), 8000);
     check('the growth card says whether V01D is getting better: a score out of 100, its trend, the facts and the weakest part',
-      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && !b.afterVelocity && !G.errors.length,
+      !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && /Sure to within \d+–\d+, from \d+ checks\./.test(b.text) && !b.afterVelocity && !G.errors.length,
       JSON.stringify({ b, errors: G.errors }));
     await G.ctx.close(); }
   // V01D's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
