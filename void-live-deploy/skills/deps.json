@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 418,
+ "counted": 419,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -43,6 +43,12 @@
    "skills": 7,
    "direct": 6,
    "dependants": 7
+  },
+  {
+   "file": "lib/bridges.js",
+   "skills": 6,
+   "direct": 3,
+   "dependants": 8
   },
   {
    "file": "lib/hero-view.js",
@@ -1198,7 +1204,10 @@
    ]
   },
   "lib/arena-say.js": {
-   "imports": [],
+   "imports": [
+    "skills/notepad.js",
+    "lib/bridges.js"
+   ],
    "importedBy": [
     "lib/arena.js",
     "skills/connect4.js",
@@ -1393,6 +1402,21 @@
    ],
    "importedBy": [
     "skills/mini/book.js"
+   ]
+  },
+  "lib/bridges.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/arena-say.js",
+    "skills/kept.js",
+    "skills/list.js",
+    "skills/together.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/connect4.js",
+    "skills/games.js",
+    "skills/othello.js"
    ]
   },
   "lib/card-frame.js": {
@@ -3333,7 +3357,10 @@
    "importedBy": []
   },
   "skills/kept.js": {
-   "imports": [],
+   "imports": [
+    "skills/notepad.js",
+    "lib/bridges.js"
+   ],
    "importedBy": []
   },
   "skills/label.js": {
@@ -3389,7 +3416,10 @@
    "importedBy": []
   },
   "skills/list.js": {
-   "imports": [],
+   "imports": [
+    "skills/notepad.js",
+    "lib/bridges.js"
+   ],
    "importedBy": []
   },
   "skills/live.js": {
@@ -3768,7 +3798,18 @@
   },
   "skills/notepad.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/arena-say.js",
+    "skills/kept.js",
+    "skills/list.js",
+    "skills/together.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/connect4.js",
+    "skills/games.js",
+    "skills/othello.js"
+   ]
   },
   "skills/nutrition.js": {
    "imports": [],
@@ -4420,6 +4461,8 @@
   "skills/together.js": {
    "imports": [
     "skills/scripts.js",
+    "skills/notepad.js",
+    "lib/bridges.js",
     "skills/figures3d.js"
    ],
    "importedBy": []

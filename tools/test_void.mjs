@@ -2334,6 +2334,24 @@ try {
       /summon two figures first/.test(none) && /no one to be with yet/.test(one) && /^the zombie and the dog spar: the (zombie|dog) offers a scuffle and the (zombie|dog) wants one$/.test(two) && !!met && !P.errors.length,
       JSON.stringify({ none, one, two, met, figs: await P.p.evaluate(() => window.__void3d && window.__void3d.state().figures.map((x) => ({ mode: x.mode, x: x.x, y: x.y }))), e: P.errors }));
     await P.ctx.close(); }
+  // bridges between kept, list, notepad, figures, self-play and the stage (asked by Void, 2026-10-16)
+  if (want("bridges: a kept card, a list entry, a dropped sticky, two figures and a self-play note reach the notepad and the list")) { const P = await fresh();
+    const pad = async () => ((await P.state()).find((x) => x.kind === 'notepad') || {}).text || '';
+    await P.ask('make a list', 500); await P.ask('add milk', 400);
+    await P.ask('15% of 240', 500); await P.ask('keep this', 500);
+    await P.ask('turn this card into a note', 500); const afterKept = await pad();
+    await P.p.click('.list-to-note'); await P.p.waitForTimeout(300); const afterEntry = await pad();
+    await P.ask('add a sticky that says call mom', 600);
+    const sb = await (await P.p.$('.thing.sticky')).boundingBox(), lb = await (await P.p.$('.thing.list-card')).boundingBox();
+    await P.p.mouse.move(sb.x + 4, sb.y + 4); await P.p.mouse.down(); await P.p.mouse.move(lb.x + lb.width / 2, lb.y + lb.height / 2, { steps: 8 }); await P.p.mouse.up(); await P.p.waitForTimeout(400);
+    const items = ((await P.state()).find((x) => x.kind === 'list') || {}).items || [];
+    await P.ask('summon a zombie', 900); await P.ask('bring a dog', 900); await P.ask('what are they doing', 500); const afterFigs = await pad();
+    await P.ask('how good are you at connect four', 800);
+    await P.p.fill('[data-arena-note] input', 'depth 4 never blundered'); await P.p.click('[data-arena-note] button'); await P.p.waitForTimeout(500); const afterArena = await pad();
+    check('bridges: "turn this card into a note" copies the kept card (its ask and answer) as a notepad line, the list entry\'s "-> note" copies "milk" with its tick, a sticky dropped on the list becomes a list entry, "what are they doing" writes the zombie and the dog\'s argument in the notepad, and the self-play card\'s note box writes "self-play connect four ... Why: ..."',
+      /15% of 240/.test(afterKept) && /\u2610 milk/.test(afterEntry) && items.some((i) => /call mom/.test(i.text)) && /zombie and the dog spar/.test(afterFigs) && /self-play connect four[^]*Why: depth 4 never blundered/.test(afterArena) && !P.errors.length,
+      JSON.stringify({ afterKept, afterEntry, items, afterFigs, afterArena, e: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // frontier #11's next step: things moved live between the tabs of a shared Void. Each tab gives its own ids to what a summon
   // makes, so the summon carries a token and a move names it; the spot is a share of the stage, so different sizes agree
   if (want("shared Void moves: a clock dragged in one tab moves in the other, both ways")) {
