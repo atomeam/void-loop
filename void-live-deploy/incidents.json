@@ -2,11 +2,13 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:37:56.747Z",
+   "at": "2026-10-17T11:38:23.047Z",
    "sha": "d2f04c2535207bbd1e494fcdba3a97ddc662fe7d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39028594328",
    "suite": "browser suite on main",
    "checks": [
+    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
+    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
     "check timeout: no check finished within 300 s"
    ]
   },
