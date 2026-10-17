@@ -1,17 +1,22 @@
 {
-  "at": "2026-10-16T17:22:27.704Z",
+  "at": "2026-10-17T11:12:31.410Z",
   "mode": "dry-run",
   "max_per_run": 3,
   "selected": [
     {
-      "id": "ask-20261015-2116-2",
-      "ask": "Create a 'probe-success-rate' card in the growth inbox to track how many self-generated probes result in new skills or improved ratings.",
-      "target": "voice:ask-20261015-2116-2"
+      "id": "ask-20261016-2056-1",
+      "ask": "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job.",
+      "target": "voice:ask-20261016-2056-1"
     },
     {
-      "id": "ask-20261015-2045-2",
-      "ask": "Link the 'probe-ask' output to the 'frontier #14' tracker so that every time I probe a 'make me a...' request, it updates the status of that item in the forge.",
-      "target": "voice:ask-20261015-2045-2"
+      "id": "ask-20261016-2010-1",
+      "ask": "Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare).",
+      "target": "voice:ask-20261016-2010-1"
+    },
+    {
+      "id": "ask-20261016-1919-1",
+      "ask": "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies.",
+      "target": "voice:ask-20261016-1919-1"
     }
   ],
   "note": "Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery."

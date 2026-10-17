@@ -968,5 +968,13 @@
   "kind": "file",
   "key": "show me the night sky | load # ms > #",
   "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:11:24Z",
+  "passed": 20,
+  "of": 25,
+  "kind": "file",
+  "key": "play voidquest | fps # < #",
+  "note": "fix: \"play voidquest\" fps 1 < 5"
  }
 ]
