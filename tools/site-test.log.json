@@ -732,5 +732,12 @@
   "kind": "file",
   "key": "turn this card into a note | nothing appeared",
   "note": "fix: \"turn this card into a note\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 (); load 1208 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T02:48:01Z",
+  "passed": 0,
+  "of": 26,
+  "kind": "none",
+  "note": "nothing left to improve this run (add candidates)"
  }
 ]

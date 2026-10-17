@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 97,
+ "runsTotal": 98,
  "kinds": {
   "grow": 15,
   "file": 48,
   "teach": 7,
   "tighten": 7,
-  "none": 20
+  "none": 21
  },
  "runs": [
+  {
+   "at": "2026-10-17T02:48:01Z",
+   "passed": 0,
+   "of": 26,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T02:25:35Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T13:06:04Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"play voidquest\" nothing appeared; no .voidquest-card; console: Failed to load resource: the server responded with a status of 404 (); fps 3 < 5"
   }
  ],
  "seen": {
@@ -291,6 +291,10 @@
   "skill:kept": "2026-10-17T02:25:35Z",
   "skill:know": "2026-10-17T02:25:35Z",
   "skill:pulse": "2026-10-17T02:25:35Z",
-  "skill:rts": "2026-10-17T02:25:35Z"
+  "skill:rts": "2026-10-17T02:25:35Z",
+  "skill:merge": "2026-10-17T02:48:01Z",
+  "skill:shortcut": "2026-10-17T02:48:01Z",
+  "skill:state": "2026-10-17T02:48:01Z",
+  "skill:technical-context": "2026-10-17T02:48:01Z"
  }
 }
