@@ -2,6 +2,25 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T13:27:53.710Z",
+   "sha": "c1ad05a96a257abe9a91eec2ef16ff37d95a6173",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39035452339",
+   "suite": "browser suite on main",
+   "checks": [
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T13:07:54.537Z",
+   "sha": "d88b94f8eed1a954a1e98d9f41206e8786830c76",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39034174431",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T12:49:27.629Z",
    "sha": "bf44047dedeaa256c159c6700e10a6fd8a2c64c3",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39032880397",
@@ -269,30 +288,6 @@
    "at": "2026-10-17T00:17:00.432Z",
    "sha": "ad9d990869963c691c5346f1853692017d942eda",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38984586845",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-16T23:25:46.949Z",
-   "sha": "af2edc303ca4879cc7e90ce8652791fcee6d2694",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38980055910",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
-    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-16T22:52:19.475Z",
-   "sha": "2876ee4be3941c73f6a74a8cfc68e70efe582054",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38976984326",
    "suite": "browser suite on main",
    "checks": [
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
