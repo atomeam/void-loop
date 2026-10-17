@@ -2,12 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:19:46.448Z",
-   "sha": "8586210a46483901511329ca2dea3252bd87984f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39027147314",
+   "at": "2026-10-17T11:21:09.680Z",
+   "sha": "1c0581db4937e285b161780f86e34d023ffd5f4d",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39027227315",
    "suite": "browser suite on main",
    "checks": [
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them"
    ]
   },
   {
