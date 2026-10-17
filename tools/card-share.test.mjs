@@ -60,3 +60,7 @@ test('a saved card draws the Art Forge painting, then the subject photo, then th
   assert.equal(await artPicture(card({})), '');
   assert.equal(await artPicture(card({ forge: 'javascript:alert(1)' })), '');
 });
+test('"V01D\'s take" keeps its own line above the take (the Sentry card read "V01D\'s takeWhat most readers miss")', () => {
+  const take = el('DIV', el('DIV', 'V01D’s take'), el('P', 'What most readers miss is the memory.'), el('DIV', el('A', 'Ask more →')));
+  assert.equal(tidy(textOf(take)), 'V01D’s take\nWhat most readers miss is the memory.\nAsk more →');
+});

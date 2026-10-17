@@ -2384,12 +2384,16 @@ try {
         : { type: 'standard', title: 'Zorbleflux', extract: 'Zorbleflux is a word with no date at all.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Zorbleflux' } } })); });
     await R.ask('how many hours til gta6?', 400); await until(async () => /hours?\b/.test(await R.page()) && /2099/.test(await R.page()), 6000);
     const card = await R.page(), link = await R.p.$('.vpage.on .src a[href="https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI"]');
+    // asked by Void, twice: the badge shows the raw text the date was read from (here the infobox wikitext line) on hover and on a tap
+    await R.p.hover('.vpage.on .ec-badge'); const rawHover = await R.p.$eval('.vpage.on .ec-raw', (c) => ({ shown: getComputedStyle(c).display !== 'none', text: c.textContent }));
+    await R.p.mouse.move(0, 0); await R.p.click('.vpage.on .ec-badge'); await R.p.mouse.move(0, 0); const rawTap = await R.p.$eval('.vpage.on .ec-raw', (c) => getComputedStyle(c).display !== 'none');
     await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
     check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
       /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && /less sure/.test(card) && /infobox/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
+        && rawHover.shown && rawHover.text === '| released = {{Video game release|WW|November 19, 2099}}' && rawTap
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
-      JSON.stringify({ card: card.slice(0, 400), seen, none: none.slice(0, 200), errors: R.errors }));
+      JSON.stringify({ card: card.slice(0, 400), seen, rawHover, rawTap, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
@@ -3596,6 +3600,19 @@ try {
         && /Skill stability: 1 skill promoted lately, 1 with 3 or more clean runs in a row: newone to checked .*4 clean runs in a row/.test(got.owner) && /entirely|whenever|novelty|score|proposing/.test(got.mark || '') && got.bloom === 'bloom' && got.bloomed === 'bloom' && /2 new skills/.test(got.text) && !got.injected && !H.errors.length,
       JSON.stringify({ got, errors: H.errors }));
     await H.ctx.close(); }
+  if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
+    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
+    await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }] })));
+    await S.ask('tester log', 1500);
+    const got = await until(async () => S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); return l ? { names: [...l.children].map((x) => x.dataset.candidate), asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null), 6000);
+    if (got) await S.p.click('.st-candidates a[data-ask="set a timer for 2 minutes"]');
+    const ran = got && await until(async () => (await S.state()).some((x) => x.kind === 'timer'), 6000);
+    const after = got && (await S.state()).map((x) => x.kind);
+    check('Site Test card (asked by Void): "What to test next" lists the lowest-rated skills from families.json, failing first, each with its own ask from the book; tapping one runs it',
+      !!got && got.names.join() === 'timer,define' && got.asks[0] === 'set a timer for 2 minutes' && /1 failing/.test(got.text) && /Words <b>/.test(got.text) && !got.bold && !!ran && !S.errors.length,
+      JSON.stringify({ got, ran, after, errors: S.errors }));
+    await S.ctx.close(); }
   // family-health on this device (lib/skill-use.js; asked by Void: a last-used day for every skill): the card shows the day each skill last answered
   // in this browser, "not used here yet" for the rest, and a dead-weight line; the day is written when a skill answers and holds no words
   if (want("family-health: last used on this device")) { const F = await fresh();
