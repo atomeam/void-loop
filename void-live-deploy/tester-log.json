@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 110,
+ "runsTotal": 111,
  "kinds": {
   "grow": 15,
   "file": 53,
   "teach": 7,
   "tighten": 7,
-  "none": 28
+  "none": 29
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:18:35Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T08:11:24Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:24:14Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -182,8 +182,8 @@
   "skill:dating": "2026-10-17T08:05:32Z",
   "skill:different": "2026-10-17T08:11:24Z",
   "skill:dismiss": "2026-10-17T08:11:24Z",
-  "skill:distance": "2026-10-16T07:37:17Z",
-  "skill:draw": "2026-10-16T07:50:13Z",
+  "skill:distance": "2026-10-17T08:18:35Z",
+  "skill:draw": "2026-10-17T08:18:35Z",
   "skill:feelings": "2026-10-16T07:50:13Z",
   "skill:figure": "2026-10-16T07:50:13Z",
   "skill:figure-can": "2026-10-16T07:56:26Z",
@@ -283,7 +283,7 @@
   "skill:work": "2026-10-17T07:32:11Z",
   "skill:zoom-figure": "2026-10-17T07:32:11Z",
   "skill:deps": "2026-10-17T08:11:24Z",
-  "skill:fringe-to-skill": "2026-10-16T07:37:17Z",
+  "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
   "skill:bench": "2026-10-17T01:37:54Z",
   "skill:collide": "2026-10-17T01:37:54Z",
   "skill:duel": "2026-10-17T01:37:54Z",
