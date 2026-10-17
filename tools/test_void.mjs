@@ -2379,6 +2379,26 @@ try {
       +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
       && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
     await F.ctx.close(); }
+  if (want("flow canvas: F-033 ink rides a paintable field, a mind evolves it in a Worker and on the page when workers are blocked, velocity morphs the ink's CSS shapes")) { // asked by Owner: F-033
+    const flowRun = async (F) => {
+      await F.ask('adaptive flow canvas', 900); await until(async () => !!(await F.p.$('.ff-flow-canvas canvas')), 8000);
+      const card = '.ff-flow-canvas', ds = (k) => F.p.$eval(card, (e, key) => e.dataset[key] || '', k);
+      await until(async () => +(await ds('gen')) >= 1, 12000);
+      const box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 40, box.y + 40); for (let i = 0; i < 12; i++) await F.p.mouse.move(box.x + 40 + i * 14, box.y + 60 + (i % 3) * 20); await F.p.waitForTimeout(300);
+      await F.p.$eval(card + ' .ff-ink-range', (e) => { e.value = '10'; e.dispatchEvent(new Event('input', { bubbles: true })); });
+      await F.p.click(card + ' .ff-edit'); await F.p.mouse.move(box.x + 100, box.y + 100); await F.p.mouse.down();
+      for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + 100 + i * 12, box.y + 100 + i * 4); await F.p.mouse.up(); await F.p.waitForTimeout(200);
+      return F.p.$eval(card, (e) => ({ version: e.dataset.version, sub: e.querySelector('.g-sub').textContent, gen: +e.dataset.gen, mind: e.dataset.mind, ink: e.dataset.ink, shape: e.dataset.inkradius || '', blobs: e.querySelectorAll('.ff-inks i').length,
+        status: e.querySelector('.ff-hud').textContent, sound: e.querySelector('.ff-sound').textContent, soundOff: e.querySelector('.ff-sound').disabled, seals: e.dataset.seal || '', pageFilter: getComputedStyle(document.body).filter }));
+    };
+    const A = await fresh(); const a = await flowRun(A);
+    const B = await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;'); const b = await flowRun(B);
+    check('flow canvas: the card carries its version tag, an ink-density control, ten CSS-shaped ink blobs whose corners follow local velocity, a mind that has run a generation, and paintable cells',
+      a.version === 'f033-1' && a.mind === 'worker' && /F-033/.test(a.sub) && a.gen >= 1 && /^\d+% \d+% \d+% \d+%$/.test(a.shape) && a.blobs === 10 && a.ink === '0.1' && /[1-9]\d* cells painted/.test(a.status) && a.pageFilter === 'none' && !A.errors.length, JSON.stringify({ a, errors: A.errors }));
+    check('flow canvas: with Worker and Web Audio blocked the mind falls back to the page (it still evolves), Sound says it is unavailable, and nothing throws',
+      b.mind === 'main' && b.gen >= 1 && b.soundOff && /unavailable/i.test(b.sound) && /cells painted/.test(b.status) && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
+    await A.ctx.close(); await B.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
