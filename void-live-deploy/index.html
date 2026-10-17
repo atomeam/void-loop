@@ -2454,8 +2454,20 @@ say('nothing selected to remove');
         let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
         if (vpageEl !== el) return;
         const owner = ownerKey(); // the "Suggest fix" buttons are drawn for the owner only (lib/correction-fix.js); the route checks the key again
-        const draw = () => { import('/lib/correction-heat.js').then((h) => { if (vpageEl === el) heatEl.innerHTML = h.heatHtml(m.readCorrections(localStorage), fam, esc); }).catch(() => {}); /* void-review: ok: heatHtml escapes every word with esc */ logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
+        const draw = () => { import('/lib/correction-heat.js').then((h) => { if (vpageEl === el) heatEl.innerHTML = h.heatHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }).catch(() => {}); /* void-review: ok: heatHtml escapes every word with esc */ logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
         draw();
+        // a hot cell, clicked by the owner: a draft fix for the family's most corrected skill, the same route and redaction as Suggest fix (never without a click)
+        const heatFix = async (e) => {
+          if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+          const c = e.target && e.target.closest && e.target.closest('[data-heat-fix]'); if (!c || c.dataset.busy) return;
+          const out = c.querySelector('[data-fix-out]'); if (!out) return;
+          try { const h = await import('/lib/correction-heat.js'), entry = h.hotEntry(m.readCorrections(localStorage), fam, c.dataset.heatFix); if (!entry) return;
+            c.dataset.busy = '1'; out.textContent = 'drafting…';
+            const cf = await import('/lib/correction-fix.js'), r = await cf.suggestFix(entry, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); // void-review: ok: resultHtml escapes every word with esc
+          } catch (_) { out.textContent = 'that did not work just now'; }
+          delete c.dataset.busy;
+        };
+        if (owner) { heatEl.addEventListener('click', heatFix); heatEl.addEventListener('keydown', heatFix); }
         if (owner) logEl.addEventListener('click', async (e) => {
           const b = e.target && e.target.closest && e.target.closest('button[data-suggest-fix]'); if (!b || b.disabled) return;
           const entry = m.readCorrections(localStorage)[+b.dataset.suggestFix], out = b.parentNode.querySelector('[data-fix-out]'); if (!entry || !out) return;
@@ -4153,7 +4165,11 @@ say('nothing selected to remove');
       return el;
     }
     function keepCard(el) { try { if (cardLib && el) cardLib.keep(el, esc, cardStats); } catch (_) {} }
-    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl); m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }); }).catch(() => {});
+    import('/lib/card-frame.js').then((m) => { cardLib = m; m.style(); keepCard(vpageEl);
+      // the cards' stats (guide.json, families.json, deps.json: 275 KB) wait until the page has loaded and is idle, so they never compete with the
+      // page's own files on a first visit (issues #1022, #1028: a slow first load); a card opened before then is framed again when they arrive
+      const stats = () => m.loadStats().then((st) => { cardStats = st; keepCard(vpageEl); }), idle = () => (window.requestIdleCallback ? requestIdleCallback(stats, { timeout: 3000 }) : setTimeout(stats, 600));
+      if (document.readyState === 'complete') idle(); else addEventListener('load', idle, { once: true }); }).catch(() => {});
     let ratingsP = null;
     function ratingNote(who, el) {
       ratingsP = ratingsP || fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);

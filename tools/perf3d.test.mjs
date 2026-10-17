@@ -9,6 +9,8 @@ import path from 'node:path';
 import http from 'node:http';
 import { chromium } from 'playwright-core';
 import { routeOutside, voidApiReply } from './fixtures/outside.mjs';
+import { acquire as acquireHeavy } from './heavy.mjs';
+await acquireHeavy('3D frame budget (perf3d.test.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
 
 export const BUDGET = { calls: 60, triangles: 120000, shadowPassesPerOrbitFrame: 0.1, maxDpr: 1.5 };
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');

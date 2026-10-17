@@ -800,6 +800,31 @@ try {
         && /funny/.test(bodies[2] || '') && !/Old Fave|Alpha|Beta/.test(bodies.join(' ')) && stored.mood === 'funny' && stored.likes.some((l) => l.title === title(one)) && spoken === three && gone === null && !K.errors.length,
       JSON.stringify({ one, two, three, bodies, stored, spoken, gone, e: K.errors }));
     await K.ctx.close(); }
+  // real shows (owner, 2026-10-17): "pick a tv show" looks each suggestion up in TVMaze; found ones show with their poster as art, facts only when the source gave them, links out (nothing streamed); unfound are "not verified"
+  if (want("real shows: \"pick a tv show\" shows only found shows with their poster and links")) { const S = await fresh();
+    const POSTER = 'https://static.tvmaze.com/uploads/images/original_untouched/1/1.jpg';
+    await S.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. Severance (2022)\n2. Made Up Show Zork (2019)\n3. Fawlty Towers (1975)' })));
+    await S.ctx.route(/\/api\/media\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      return r.fulfill(json(t === 'Made Up Show Zork' ? { verified: false, title: t } : { verified: true, title: t, year: t === 'Severance' ? 2022 : 1975, genres: ['Drama'], network: 'Apple TV', status: 'Running', seasons: 2, episodes: 19, overview: 'A team whose memories are split.', poster: POSTER, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['TVMaze'] })); });
+    await S.ask('pick a tv show', 1800);
+    const rows = await S.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await S.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Show Zork'));
+    const art1 = await S.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await S.p.click('.vpage.on a[data-ask*="Severance"]'); await S.p.waitForTimeout(1200);
+    const facts = await S.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), link = await S.p.$eval('.vpage.on .mv-links a', (a) => a.href).catch(() => ''), media = await S.p.$$eval('.vpage.on video, .vpage.on audio, .vpage.on iframe', (e) => e.length);
+    check('real shows: the pick lists only the two found shows, names the unfound one as not verified, the art is the first poster, a show card lists seasons and episodes from the source, links out and streams nothing',
+      rows.length === 2 && /Severance/.test(rows[0]) && unv && art1 === POSTER && /Seasons\s*2/.test(facts) && /Episodes\s*19/.test(facts) && /justwatch/.test(link) && media === 0 && !S.errors.length, JSON.stringify({ rows, unv, art1, facts, link, media, e: S.errors }));
+    await S.ctx.close(); }
+  // real shows, source says no (owner, 2026-10-17): a region-locked or unavailable show says so plainly with official links only; an unknown title is "not verified"
+  if (want("real shows: when the source says no, the card says not available here, with official links only")) { const N = await fresh();
+    await N.ctx.route(/\/api\/media\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      return r.fulfill(json(t === 'Made Up Show Zork' ? { verified: false, title: t } : { verified: true, title: t, year: 2020, genres: ['Drama'], network: 'BBC One', status: 'Running', seasons: 1, episodes: 6, availability: 'region', why: 'The source lists it on a GB network only, not for US.', links: [{ label: 'Official site', url: 'https://example.org/show' }, { label: 'TVMaze page', url: 'https://www.tvmaze.com/shows/1/x' }], sources: ['TVMaze'] })); });
+    await N.ask('show card for Locked Show (2020)', 1500);
+    const no = await N.p.$eval('.vpage.on .mv-no', (e) => e.textContent).catch(() => ''), links = await N.p.$$eval('.vpage.on .mv-links a', (a) => a.map((x) => x.textContent)), media = await N.p.$$eval('.vpage.on video, .vpage.on audio, .vpage.on iframe', (e) => e.length);
+    await N.ask('show card for Made Up Show Zork', 1500);
+    const unv = await N.p.$eval('.vpage.on', (e) => /Not verified/.test(e.textContent) && !e.querySelector('.mv-links a')).catch(() => false);
+    check('real shows: a region-locked show says "Not available here" with the source\'s reason and only the official site and TVMaze page, an unknown title is "Not verified" with no links, nothing is streamed',
+      /Not available here/.test(no) && /GB network only/.test(no) && links.join('|') === 'Official site|TVMaze page' && media === 0 && unv && !N.errors.length, JSON.stringify({ no, links, media, unv, e: N.errors }));
+    await N.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -2349,6 +2374,23 @@ try {
         && JSON.stringify(seen) === '["acme/widget","acme/private-thing"]' && /only see public repos/.test(miss) && !R.errors.length,
       JSON.stringify({ card: card.slice(0, 500), pwn, seen, miss: miss.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
+  // countdown to a named event from its Wikipedia summary, never a model's memory (owner's card 2026-10-17: "how many hours til gta6?" said "no release date")
+  if (want("event countdown: hours until a named event, from the event's own Wikipedia page")) { const R = await fresh();
+    const seen = [], GTA = 'Grand Theft Auto VI is an upcoming action-adventure game developed and published by Rockstar Games. It was announced on November 8, 2023.'; // like the live summary: the date is not in it
+    await R.ctx.route(/en\.wikipedia\.org\/w\/api\.php\?action=(parse|query)/, (r) => { const u = r.request().url(), gta = /Grand(%20|_|\+| )Theft/.test(u);
+      return r.fulfill(json(/action=parse/.test(u) ? { parse: { wikitext: gta ? '{{Infobox video game\n| released = {{Video game release|WW|November 19, 2099}}\n}}' : '' } } : { query: { pages: [{ extract: gta ? GTA + ' It is in development.' : 'Zorbleflux has no date.' }] } })); });
+    await R.ctx.route(/en\.wikipedia\.org\/api\/rest_v1\/page\/summary\//, (r) => { const t = decodeURIComponent(r.request().url().split('/summary/')[1]); seen.push(t);
+      return r.fulfill(json(t === 'Grand_Theft_Auto_VI' ? { type: 'standard', title: 'Grand Theft Auto VI', extract: GTA, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI' } } }
+        : { type: 'standard', title: 'Zorbleflux', extract: 'Zorbleflux is a word with no date at all.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Zorbleflux' } } })); });
+    await R.ask('how many hours til gta6?', 400); await until(async () => /hours?\b/.test(await R.page()) && /2099/.test(await R.page()), 6000);
+    const card = await R.page(), link = await R.p.$('.vpage.on .src a[href="https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI"]');
+    await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
+    const none = await R.page();
+    check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
+      /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
+        && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
+      JSON.stringify({ card: card.slice(0, 400), seen, none: none.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
@@ -3801,8 +3843,9 @@ try {
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
   // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
   if (want("the book: search the tome from the docked bar, with the cover shut or open, and jump to the page")) { const B = await fresh(); // asked by Void
-    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
+    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
     await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened .tome-search input, #vtome.on .tome.opened')), 8000); await B.p.waitForTimeout(400);
+    const added = await B.p.evaluate(() => { const nw = window.__voidBook.news; return nw ? nw.to - nw.from + 1 : 0; }), wx = { n: wx0.n + added }, cl = { n: cl0.n + added }; // the What's new chapter (live from the ledger) moves later pages up
     const dock = await B.p.$eval('#vtome .tome-search', (e) => { const r = e.getBoundingClientRect(); return { top: r.top, w: r.width, vw: innerWidth }; });
     await B.p.fill('#vtome .tome-search input', 'weather'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
     const hits = await B.p.$$eval('#vtome .tome-hits button[data-n]', (l) => l.map((b) => Number(b.dataset.n)));
@@ -3819,6 +3862,35 @@ try {
       dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
       JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
     await B.ctx.close(); }
+  // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
+  // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
+  // says how many are new since the book was last opened here (localStorage, never required)
+  if (want("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge")) {
+    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js');
+    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36), withTry = top.find((e) => e.try);
+    const N = await fresh();
+    await N.p.evaluate(() => { try { localStorage.setItem('a2m.void.book.seen.v1', '2026-01-01T00:00:00Z'); } catch (_) {} });
+    await N.ask('open the book', 900); await until(async () => !!(await N.p.$('#vtome .tome.shut .newbadge')) || !!(await N.p.$('#vtome .tome.opened')), 8000);
+    const badge = await N.p.evaluate(() => (document.querySelector('#vtome .newbadge') || {}).textContent || '');
+    await until(async () => !!(await N.p.$('#vtome .tome.opened')), 8000); await N.p.waitForTimeout(400);
+    const info = await N.p.evaluate(() => window.__voidBook && window.__voidBook.news);
+    await N.p.evaluate(() => window.__voidBook.go(4)); await N.p.waitForTimeout(1500);
+    const tocText = await N.p.evaluate(() => { const a = [...document.querySelectorAll('#vtome .gb-toc li')].find((l) => /new/i.test(l.textContent) && /What/.test(l.textContent)); return a ? a.textContent : ''; });
+    const tocFits = await N.p.evaluate(() => { const l = document.querySelector('#vtome .gb-toc'), pg = l && l.closest('.tome-page'); if (!pg) return false; const folio = pg.querySelector('.tome-folio').getBoundingClientRect(), last = l.lastElementChild.getBoundingClientRect(); return { ok: last.bottom <= folio.top + 2, last: Math.round(last.bottom), folio: Math.round(folio.top), n: l.children.length }; }); // the longer contents still fits its page
+    await N.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await N.p.waitForTimeout(1500);
+    const pg = await N.p.evaluate(() => { const r = document.querySelector('#vtome .tome-page.right') || document.querySelector('#vtome .tome-page'); return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: r ? r.querySelectorAll('.tome-art svg').length : 0, folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) }; });
+    const seen = await N.p.evaluate(() => { try { return localStorage.getItem('a2m.void.book.seen.v1'); } catch (_) { return null; } });
+    const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
+    let ranOk = true;
+    if (withTry) { // a try-it ask closes the book and runs
+      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
+      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit'); await until(async () => !(await N.p.$('#vtome')), 4000);
+      ranOk = !!ask && !(await N.p.$('#vtome'));
+    }
+    check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art >= 1 && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
+      JSON.stringify({ info, badge, tocText, tocFits, pg: { ...pg, text: pg.text.slice(0, 200) }, seen, top0: top[0].at, ranOk, e: N.errors }));
+    await N.ctx.close(); }
   // owner, 2026-10-17: "the swipe to turn pages doesn't work properly" and the cover could not be reached. A sideways swipe was the browser's
   // (its back gesture took the page away, a pan cancelled the pointer); the open book now keeps the swipe: touch-action pan-y on it,
   // no overscroll navigation on the page, and swipes left and right turn pages all the way back to the shut cover.
@@ -3902,7 +3974,7 @@ try {
     const backSide = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); const bc = document.querySelector('#vtome .tome-backcover'); return { shut: t.classList.contains('shut'), back: t.classList.contains('back'), shown: !!bc && getComputedStyle(bc).display !== 'none', words: bc ? bc.textContent : '' }; });
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
     const reopenedBack = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { open: t.classList.contains('opened'), shut: t.classList.contains('shut') }; });
-    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, errors: B.errors }));
+    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, at: await B.p.evaluate(() => ({ cur: window.__voidBook.cur, turning: window.__voidBook.turning, shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) })), errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);

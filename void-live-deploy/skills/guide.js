@@ -12,6 +12,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
+import { withNews, newSince } from '../lib/book-news.js';
 import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
 import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml } from '../lib/tome.js';
 
@@ -23,6 +24,7 @@ const WHOSE = '(?:the\\s+|your\\s+|v01d\\s*\'?s?\\s+|void\\s*\'?s?\\s+|a-to-mind
 const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '|(?:v01d|void)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|v01d|void)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
 const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
 const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
+const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
 const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|void|v01d)\s+(?:have|has))?|(?:the\s+)?(?:v01d|void)\s+(?:book|guide|manual|handbook))$/i;
 
 /** { at } for an ask that opens the book (at: a name to open it on, or ''), null otherwise. Pure. */
@@ -31,6 +33,7 @@ export function guideOf(text) {
   if (!t) return null;
   const at = RE_AT.exec(t);
   if (at) return { at: at[1].trim() };
+  if (RE_NEWS.test(t)) return { at: "what\u2019s new" };
   if (RE_BOOK.test(t) || RE_ALL.test(t) || RE_MORE.test(t)) return { at: '' };
   return null;
 }
@@ -49,24 +52,29 @@ export function rustle() {
   } catch (_) { return false; }
 }
 
-let BOOK = null;
+// The book's pages are written at build time (skills/guide.json), but "what's new" is read live: the growth ledger is fetched each time
+// the book opens, revalidated (no-cache: a deploy shows at once, an unchanged file costs a 304), and its newest entries become the
+// chapter after the contents (lib/book-news.js). If the ledger cannot be read the book opens without that chapter.
 async function load() {
-  if (BOOK) return BOOK;
-  const r = await fetch('/skills/guide.json', { cache: 'force-cache' });
+  const [r, led] = await Promise.all([fetch('/skills/guide.json', { cache: 'no-cache' }), fetch('/void.growth.json', { cache: 'no-cache' }).then((x) => (x.ok ? x.json() : null)).catch(() => null)]);
   if (!r.ok) throw new Error('guide.json ' + r.status);
-  BOOK = await r.json();
-  return BOOK;
+  const base = await r.json(), book = withNews(base, led);
+  if (book.news) { const seen = readSeen(); book.news.unseen = newSince(book.news.entries, seen); if (!seen) keepSeen(book.news.latest); } // a first visit has no "since": it just starts counting
+  return book;
 }
 
 const KEY = 'a2m.void.book.v1'; // the page you were on, this browser only
+const SEEN = 'a2m.void.book.seen.v1'; // the newest ledger time shown to you in the book, this browser only (never required)
+const readSeen = () => { try { return localStorage.getItem(SEEN) || ''; } catch (_) { return ''; } };
+const keepSeen = (at) => { try { if (at && at > readSeen()) localStorage.setItem(SEEN, at); } catch (_) {} };
 const readKept = () => { try { return Number(localStorage.getItem(KEY)) || 0; } catch (_) { return 0; } };
 const keep = (n) => { try { localStorage.setItem(KEY, String(n)); } catch (_) {} };
 
 /** the page a name opens the book on: a skill, a game box, a chapter or a miniature; 0 when nothing matches. Pure. */
 export function pageFor(book, name) {
-  const q = String(name || '').trim().toLowerCase().replace(/\s+/g, ' ');
+  const q = String(name || '').trim().toLowerCase().replace(/\s+/g, ' ').replace(/\u2019/g, "'");
   if (!q) return 0;
-  const c = (book.chapters || []).find((x) => x.name.toLowerCase() === q || x.id === q); if (c) return c.from;
+  const c = (book.chapters || []).find((x) => x.name.toLowerCase().replace(/\u2019/g, "'") === q || x.id === q); if (c) return c.from;
   const hit = (f) => (book.pages || []).find(f);
   const p = hit((x) => x.kind === 'skill' && (x.name === q || x.title.toLowerCase() === q || x.name === q.replace(/ /g, '-')))
     || hit((x) => x.game && x.game.title.toLowerCase() === q) || hit((x) => x.kind === 'game' && x.name === q)
@@ -127,7 +135,7 @@ function mount(book, api, startAt, text) {
     const s = stacks(cur, total); stackL.style.setProperty('--k', s.left.toFixed(3)); stackR.style.setProperty('--k', s.right.toFixed(3));
     live.textContent = (l && r ? 'pages ' + l + ' and ' + r : 'page ' + (r || l)) + ' of ' + total;
   };
-  const draw = () => { lay(shown()); keep(cur); if (window.__voidBook) window.__voidBook.cur = cur; };
+  const draw = () => { lay(shown()); keep(cur); if (book.news && shown().some((n) => n >= book.news.from && n <= book.news.to)) keepSeen(book.news.latest); if (window.__voidBook) window.__voidBook.cur = cur; };
 
   // a leaf swings over the spine: forward carries the right page across and lands as the new left page; backward the reverse
   const turnTo = (n) => {
@@ -211,7 +219,7 @@ function mount(book, api, startAt, text) {
   document.documentElement.classList.add('vtome-open');
   root._cleanup = () => { document.documentElement.classList.remove('vtome-open'); document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', onResize); };
 
-  window.__voidBook = { open: true, totals: book.totals, index: book.index, chapters: book.chapters, go, turn, close: () => closeTome('api'), get cur() { return cur; }, set cur(v) {}, get turning() { return turning; }, ask: text }; // tools/test_void.mjs reads it
+  window.__voidBook = { open: true, totals: book.totals, index: book.index, chapters: book.chapters, go, turn, close: () => closeTome('api'), get cur() { return cur; }, set cur(v) {}, get turning() { return turning; }, ask: text, news: book.news ? { from: book.news.from, to: book.news.to, count: book.news.count, unseen: book.news.unseen } : null }; // tools/test_void.mjs reads it
   // ---- the opening: the shut tome comes up, the cover swings open on the spine, the pages are there
   draw();
   requestAnimationFrame(() => {

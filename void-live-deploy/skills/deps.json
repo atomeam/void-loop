@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 475,
+ "counted": 478,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -375,6 +375,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/book-news.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
@@ -388,6 +394,12 @@
   },
   {
    "file": "lib/duel-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/event-date.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1706,6 +1718,12 @@
     "skills/mini/book.js"
    ]
   },
+  "lib/book-news.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
+   ]
+  },
   "lib/bridges.js": {
    "imports": [],
    "importedBy": [
@@ -2004,6 +2022,12 @@
    "imports": [],
    "importedBy": [
     "functions/api/approval.js"
+   ]
+  },
+  "lib/event-date.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/event-countdown.js"
    ]
   },
   "lib/field-flow.js": {
@@ -3753,6 +3777,12 @@
     "skills/games.js"
    ]
   },
+  "skills/event-countdown.js": {
+   "imports": [
+    "lib/event-date.js"
+   ],
+   "importedBy": []
+  },
   "skills/family-health.js": {
    "imports": [
     "lib/skill-use.js",
@@ -4058,6 +4088,7 @@
   "skills/guide.js": {
    "imports": [
     "lib/guide.js",
+    "lib/book-news.js",
     "lib/tome-search.js",
     "lib/tome.js"
    ],

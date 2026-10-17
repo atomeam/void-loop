@@ -1,15 +1,50 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 128,
+ "runsTotal": 133,
  "kinds": {
   "grow": 15,
-  "file": 59,
+  "file": 64,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:28:39Z",
+   "passed": 14,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"test me on that\" nothing appeared"
+  },
+  {
+   "at": "2026-10-17T11:23:07Z",
+   "passed": 13,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what can I buy\" load 1244 ms > 1200"
+  },
+  {
+   "at": "2026-10-17T11:17:08Z",
+   "passed": 16,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"play chess\" fps 2 < 5"
+  },
+  {
+   "at": "2026-10-17T11:11:24Z",
+   "passed": 20,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"play voidquest\" fps 1 < 5"
+  },
+  {
+   "at": "2026-10-17T11:03:56Z",
+   "passed": 13,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+  },
   {
    "at": "2026-10-17T10:32:13Z",
    "passed": 0,
@@ -114,41 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:31:36Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:24:25Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:18:35Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:11:24Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:05:32Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -227,20 +227,20 @@
   "skill:nightsky": "2026-10-17T10:32:13Z",
   "skill:notepad": "2026-10-17T10:32:13Z",
   "skill:nutrition": "2026-10-17T10:32:13Z",
-  "skill:ovulation": "2026-10-16T16:03:40Z",
-  "skill:part": "2026-10-16T16:16:40Z",
-  "skill:pdf-card": "2026-10-16T16:16:40Z",
-  "skill:period": "2026-10-16T16:16:40Z",
-  "skill:place": "2026-10-16T16:36:48Z",
-  "skill:pong": "2026-10-16T16:36:48Z",
-  "skill:poster": "2026-10-16T16:36:48Z",
-  "skill:pregnancy": "2026-10-16T16:42:11Z",
-  "skill:print-download": "2026-10-16T16:42:11Z",
-  "skill:print-file": "2026-10-16T16:42:11Z",
-  "skill:printedmotor": "2026-10-16T16:59:40Z",
-  "skill:proposal": "2026-10-16T16:59:40Z",
-  "skill:quiz": "2026-10-16T16:59:40Z",
-  "skill:rebuild-map": "2026-10-16T17:30:08Z",
+  "skill:ovulation": "2026-10-17T11:03:56Z",
+  "skill:part": "2026-10-17T11:03:56Z",
+  "skill:pdf-card": "2026-10-17T11:03:56Z",
+  "skill:period": "2026-10-17T11:11:24Z",
+  "skill:place": "2026-10-17T11:11:24Z",
+  "skill:pong": "2026-10-17T11:11:24Z",
+  "skill:poster": "2026-10-17T11:17:08Z",
+  "skill:pregnancy": "2026-10-17T11:17:08Z",
+  "skill:print-download": "2026-10-17T11:17:08Z",
+  "skill:print-file": "2026-10-17T11:23:07Z",
+  "skill:printedmotor": "2026-10-17T11:23:07Z",
+  "skill:proposal": "2026-10-17T11:28:39Z",
+  "skill:quiz": "2026-10-17T11:28:39Z",
+  "skill:rebuild-map": "2026-10-17T11:28:39Z",
   "skill:recent": "2026-10-16T17:30:08Z",
   "skill:recipe": "2026-10-16T17:30:08Z",
   "skill:releasenotes": "2026-10-16T18:09:42Z",
@@ -305,6 +305,7 @@
   "skill:vector-field-mind": "2026-10-17T09:43:30Z",
   "skill:repo": "2026-10-17T09:57:04Z",
   "skill:incident-autopsy": "2026-10-17T10:04:20Z",
-  "skill:flow-canvas": "2026-10-17T10:26:08Z"
+  "skill:flow-canvas": "2026-10-17T10:26:08Z",
+  "skill:event-countdown": "2026-10-17T11:23:07Z"
  }
 }

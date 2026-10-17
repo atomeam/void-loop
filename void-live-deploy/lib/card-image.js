@@ -36,6 +36,15 @@ export function fitTitle(title, avail) {
   const l = wrap(t, Math.floor(avail / (12 * W)), 99); return { lines: l.slice(0, 2), fs: 12 };
 }
 
+export const LONG_MIN_FS = 16;
+/** a long answer's card (owner, 2026-10-17: "copy card should show the rest of the info, either make a long card or multiple"): the text at the
+ * largest size from 23 down to LONG_MIN_FS that fits `h`; when even that is too long, every line at LONG_MIN_FS and `extra` px more card
+ * below the art to hold them, so nothing is cut and nothing is too small to read. { lines, fs, lh, extra }. Pure. */
+export function fitLong(text, h, w = 624) {
+  for (let fs = 23; fs >= LONG_MIN_FS; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999); if (l.length * lh <= h) return { lines: l, fs, lh, extra: 0 }; }
+  const fs = LONG_MIN_FS, lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999);
+  return { lines: l, fs, lh, extra: l.length * lh - h };
+}
 /** the text at the largest size (23 down to 11 px) whose wrapped lines fit `h` px of the text box: { lines, fs, lh }. Only text beyond even the smallest size is cut. Pure. */
 export function fitText(text, h, w = 624) {
   for (let fs = 23; fs >= 11; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 999); if (l.length * lh <= h) return { lines: l, fs, lh }; }
@@ -45,7 +54,8 @@ export function fitText(text, h, w = 624) {
 /** the card as a standalone SVG string. data: { title, cost, typeLine, kind, rarity, hue, chapter, key, text, adds, power, toughness, income, number, tested, season, glyph, fetched }.
  *  bleed: true adds the 3 mm print bleed on every side. */
 export function cardSvg(data = {}, { bleed = false } = {}) {
-  const d = data || {}, rk = rarityKey(d.rarity), RL = RARITY_LOOK[rk], foil = FOIL[rk], b = bleed ? BLEED : 0, W = CARD_W + b * 2, H = CARD_H + b * 2;
+  const d = data || {}, rk = rarityKey(d.rarity), RL = RARITY_LOOK[rk], foil = FOIL[rk], b = bleed ? BLEED : 0;
+  const box = fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + b * 2; // X: a long card's extra height below the art
   const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const title = String(d.title || d.name || 'V01D').replace(/\s+/g, ' ').trim();
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
@@ -57,7 +67,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   s += '<linearGradient id="' + id + 's" x1="0" y1="0" x2="1" y2="1"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (rk === 'common' ? 0 : RL.a * 0.9) + '"/><stop offset=".7" stop-color="#fff" stop-opacity="0"/></linearGradient>';
   s += '<clipPath id="' + id + 'k"><rect width="' + W + '" height="' + H + '" rx="' + (bleed ? 0 : 34) + '"/></clipPath></defs>';
   s += '<g clip-path="url(#' + id + 'k)"><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'f)"/><g transform="translate(' + b + ' ' + b + ')">';
-  s += '<rect x="22" y="22" width="700" height="995" rx="20" fill="url(#' + id + 'p)" stroke="' + INK + '" stroke-width="4"/><rect x="26" y="26" width="692" height="987" rx="17" fill="none" stroke="' + edge + '" stroke-width="3"/>';
+  s += '<rect x="22" y="22" width="700" height="' + (995 + X) + '" rx="20" fill="url(#' + id + 'p)" stroke="' + INK + '" stroke-width="4"/><rect x="26" y="26" width="692" height="' + (987 + X) + '" rx="17" fill="none" stroke="' + edge + '" stroke-width="3"/>';
   // title bar
   s += '<rect x="40" y="44" width="664" height="66" rx="14" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/>';
   // the whole title shows (owner, 2026-10-17: long titles were cut off with "..."): one line at the largest size that fits, else two lines that shrink
@@ -75,16 +85,16 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   s += '<rect x="40" y="574" width="664" height="48" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="60" y="606" font-family="Georgia,serif" font-size="22" letter-spacing="2" fill="' + soft + '">' + esc(type) + '</text>';
   s += '<path d="M676 598l11 11-11 11-11-11z" fill="' + GEM[rk] + '" stroke="' + INK + '" stroke-width="2.5"/>';
   // text box
-  s += '<rect x="40" y="636" width="664" height="262" rx="10" fill="hsl(' + hue + ' 22% 12%)" stroke="' + edge + '" stroke-width="2"/>';
-  // the whole answer shows (owner, 2026-10-17: the last line drew over the box border and was cut): the text shrinks until it fits the box
-  const box = fitText(d.text, d.adds ? 172 : 246), lines = box.lines;
+  s += '<rect x="40" y="636" width="664" height="' + (262 + X) + '" rx="10" fill="hsl(' + hue + ' 22% 12%)" stroke="' + edge + '" stroke-width="2"/>';
+  // the whole answer shows (owner, 2026-10-17: the last line drew over the box border and was cut): the text shrinks to fit, and a long one makes a long card
+  const lines = box.lines;
   lines.forEach((l, i) => { s += '<text x="60" y="' + (644 + box.fs + i * box.lh) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + box.fs + '" fill="#e6e1d3">' + esc(l) + '</text>'; });
-  if (d.adds) { const a = wrap('Adds to V01D: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 828h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
+  if (d.adds) { const a = wrap('Adds to V01D: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
   // footer: collector number and the three plates
   const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'V01D', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
-  s += '<text x="44" y="990" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
+  s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
-  stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="926" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="952" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="980" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
+  stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
   s += '</g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;
 }

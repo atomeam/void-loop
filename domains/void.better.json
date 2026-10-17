@@ -1,36 +1,78 @@
 {
- "at": "2026-10-16T17:22:27.491Z",
+ "at": "2026-10-17T11:12:31.355Z",
  "score": 75,
  "parts": {
-  "self": 80,
-  "asks": 88,
-  "friction": 78,
+  "self": 77,
+  "asks": 90,
+  "friction": 77,
   "bench": 99,
   "probes": 30
  },
+ "families": [
+  {
+   "id": "body",
+   "health": 94
+  },
+  {
+   "id": "games",
+   "health": 89
+  },
+  {
+   "id": "life",
+   "health": 67
+  },
+  {
+   "id": "make",
+   "health": 72
+  },
+  {
+   "id": "numbers",
+   "health": 83
+  },
+  {
+   "id": "self",
+   "health": 81
+  },
+  {
+   "id": "sky",
+   "health": 74
+  },
+  {
+   "id": "stage",
+   "health": 73
+  },
+  {
+   "id": "time",
+   "health": 63
+  },
+  {
+   "id": "words",
+   "health": 72
+  }
+ ],
  "facts": {
-  "week": 451,
-  "owner": 91,
+  "week": 446,
+  "owner": 101,
   "askedBuilt": 41,
   "medianLagDays": 0.3,
-  "open": 4,
-  "oldestOpenDays": 0.9,
-  "skills": 160,
+  "open": 6,
+  "oldestOpenDays": 0.7,
+  "skills": 181,
   "failing": 9,
-  "unsure": 52,
+  "unsure": 65,
   "benchScore": 2343,
   "benchTotal": 2368,
   "probeFixes": 3
  },
  "trend": {
   "score": 75,
-  "day": null,
+  "day": 0,
   "week": null,
   "weakest": "probes",
-  "at": "2026-10-16T17:22:27.491Z",
+  "at": "2026-10-17T11:12:31.355Z",
   "frictionWeek": null
  },
- "summary": "better: 75 of 100; weakest: probes",
+ "summary": "better: 75 of 100 (level since yesterday); weakest: probes",
  "means": {
   "self": "the share of this week's ledger lines that do not cite the owner (V01D driving its own changes)",
   "asks": "how fast V01D's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",

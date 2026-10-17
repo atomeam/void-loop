@@ -6,6 +6,8 @@ import http from 'node:http';
 import fs from 'node:fs';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
+import { acquire as acquireHeavy } from './heavy.mjs';
+await acquireHeavy('sky test (test_sky.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
 
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), root = path.resolve(here, '..', 'void-live-deploy');
 const shots = process.argv.includes('--shots');

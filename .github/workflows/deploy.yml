@@ -97,6 +97,8 @@ jobs:
           printf '{"id":"%s"}' "$(git rev-parse HEAD)" > void-live-deploy/build.json # this deploy's id: an open tab compares it and offers a reload (lib/stale-tab.js)
           node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
           node tools/bench-alarms.mjs # the Bench icon's count of checked false alarms (skills/bench.js)
+          node tools/families.mjs > /dev/null || true # the book's pages are generated: a merge that left them stale still deploys a current book
+          node tools/guide.mjs > /dev/null || true
           node tools/public-ledger.mjs # the served ledger leaves out what Void studies (tools/private.mjs); the repo's stays append-only
 
       # Void's review of the PR runs in its own fast workflow and is a merge gate there (.github/workflows/void-review.yml).

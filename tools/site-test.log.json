@@ -960,5 +960,45 @@
   "kind": "file",
   "key": "hide the sky pls | nothing appeared",
   "note": "fix: \"hide the sky pls\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T11:03:56Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "show me the night sky | load # ms > #",
+  "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:11:24Z",
+  "passed": 20,
+  "of": 25,
+  "kind": "file",
+  "key": "play voidquest | fps # < #",
+  "note": "fix: \"play voidquest\" fps 1 < 5"
+ },
+ {
+  "at": "2026-10-17T11:17:08Z",
+  "passed": 16,
+  "of": 25,
+  "kind": "file",
+  "key": "play chess | fps # < #",
+  "note": "fix: \"play chess\" fps 2 < 5"
+ },
+ {
+  "at": "2026-10-17T11:23:07Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "what can I buy | load # ms > #",
+  "note": "fix: \"what can I buy\" load 1244 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:28:39Z",
+  "passed": 14,
+  "of": 25,
+  "kind": "file",
+  "key": "test me on that | nothing appeared",
+  "note": "fix: \"test me on that\" nothing appeared"
  }
 ]

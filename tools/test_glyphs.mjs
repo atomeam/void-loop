@@ -6,6 +6,8 @@ import { chromium } from 'playwright-core';
 import { existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { acquire as acquireHeavy } from './heavy.mjs';
+await acquireHeavy('glyph test (test_glyphs.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const url = pathToFileURL(resolve(root, 'drafts/fringe/sensory-substitution.html')).href;
