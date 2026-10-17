@@ -6420,6 +6420,10 @@ try {
     await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
     const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    await K.ask('what can i use instead of eggs in baking', 900); await until(async () => /Instead of eggs/.test(await K.page()), 8000);
+    const t0 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent)); await K.p.fill('.vpage.on .swap-mins', '30'); await K.p.waitForTimeout(200);
+    const t1 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web
