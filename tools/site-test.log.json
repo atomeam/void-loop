@@ -960,5 +960,13 @@
   "kind": "file",
   "key": "hide the sky pls | nothing appeared",
   "note": "fix: \"hide the sky pls\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T11:03:56Z",
+  "passed": 13,
+  "of": 25,
+  "kind": "file",
+  "key": "show me the night sky | load # ms > #",
+  "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
  }
 ]

@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 128,
+ "runsTotal": 129,
  "kinds": {
   "grow": 15,
-  "file": 59,
+  "file": 60,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:03:56Z",
+   "passed": 13,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"show me the night sky\" load 1426 ms > 1200"
+  },
   {
    "at": "2026-10-17T10:32:13Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:05:32Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -227,9 +227,9 @@
   "skill:nightsky": "2026-10-17T10:32:13Z",
   "skill:notepad": "2026-10-17T10:32:13Z",
   "skill:nutrition": "2026-10-17T10:32:13Z",
-  "skill:ovulation": "2026-10-16T16:03:40Z",
-  "skill:part": "2026-10-16T16:16:40Z",
-  "skill:pdf-card": "2026-10-16T16:16:40Z",
+  "skill:ovulation": "2026-10-17T11:03:56Z",
+  "skill:part": "2026-10-17T11:03:56Z",
+  "skill:pdf-card": "2026-10-17T11:03:56Z",
   "skill:period": "2026-10-16T16:16:40Z",
   "skill:place": "2026-10-16T16:36:48Z",
   "skill:pong": "2026-10-16T16:36:48Z",
