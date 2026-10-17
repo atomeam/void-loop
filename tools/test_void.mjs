@@ -71,8 +71,22 @@ const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r
 // process.exit dropped the end of the results, the FAIL lines and the summary with it (verify on fd2677f stopped
 // mid-list and could only say "outside the named checks")
 function exitFlushed(code) { process.exitCode = code; process.stdout.write('', () => process.exit(code)); }
-function stopLoudly(why) {
+// a page whose script never returns answers no Playwright call at all, so the report above cannot say where it is stuck: on a stall, ask Chrome
+// to pause that page and print the top of its call stack (a few seconds; only when the suite is already failing with a timeout)
+async function stuckAt(p) {
+  const cdp = p && p.__cdp; if (!cdp) return '(no debugger was attached to that page)';
+  try {
+    const seen = new Promise((res) => cdp.on('Debugger.paused', (e) => res(e.callFrames.slice(0, 8).map((f) => (f.functionName || '(anonymous)') + ' ' + String(f.url).split('/').pop() + ':' + (f.location.lineNumber + 1)).join(' < '))));
+    cdp.send('Debugger.pause').catch(() => {});
+    return await Promise.race([seen, new Promise((res) => setTimeout(() => res('(the page did not pause: its script is not running, so the wait is on the test\'s side)'), 4000))]);
+  } catch (e) { return '(could not look: ' + String(e && e.message).slice(0, 80) + ')'; }
+}
+let stopping = false;
+async function stopLoudly(why) {
+  if (stopping) return; stopping = true;
+  let stack = ''; if (/^check timeout/.test(why) && watch.pageObj) stack = await Promise.race([stuckAt(watch.pageObj), new Promise((res) => setTimeout(() => res(''), 8000))]);
   for (const r of results) console.log(line(r));
+  if (stack) console.log('STUCK AT ' + stack);
   console.log('FAIL ' + why + '  -> last page opened: ' + watch.page + (watch.ask ? '; last ask: ' + JSON.stringify(watch.ask) : '') + '; last check finished: ' + watch.lastCheck + '; ' + Math.round((Date.now() - watch.t0) / 1000) + ' s in');
   console.log(`${results.filter((r) => r.ok).length}/${results.length + 1} passed`);
   exitFlushed(1);
@@ -429,7 +443,9 @@ async function fresh(...inits) {
   const p = await ctx.newPage();
   const errors = [];
   p.on('pageerror', (e) => errors.push(e.message));
-  p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; } });
+  p.on('framenavigated', (f) => { if (f === p.mainFrame()) { watch.page = f.url(); watch.ask = ''; watch.pageObj = p; } });
+  // the stall report below needs the debugger attached BEFORE a page hangs (Chrome cannot answer "enable" from a page that is stuck in a loop)
+  ctx.newCDPSession(p).then((cdp) => { cdp.send('Debugger.enable').then(() => { p.__cdp = cdp; }, () => {}); }, () => {});
   await p.goto(at); await skillsUp(p, 100); // the skills are in before the first ask (it used to be a 700 ms guess, which the skills outran on a slow machine: the first ask then raced them)
   const ask = async (t, w = 450) => { watch.ask = t; await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
