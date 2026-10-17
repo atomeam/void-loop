@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 445,
+ "counted": 448,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -108,13 +108,13 @@
    "file": "lib/guide.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 11
+   "dependants": 12
   },
   {
    "file": "lib/card-art.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8
+   "dependants": 9
   },
   {
    "file": "lib/arena-say.js",
@@ -301,6 +301,12 @@
    "skills": 1,
    "direct": 1,
    "dependants": 2
+  },
+  {
+   "file": "lib/compose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
   },
   {
    "file": "lib/context-check.js",
@@ -766,6 +772,12 @@
   },
   {
    "file": "lib/share-client.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/skill-confidence.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -1531,6 +1543,7 @@
    "importedBy": [
     "lib/card-frame.js",
     "lib/card-image.js",
+    "lib/skill-confidence.js",
     "lib/tome.js"
    ],
    "reachedBy": [
@@ -1644,6 +1657,12 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/compose.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/music.js"
    ]
   },
   "lib/context-check.js": {
@@ -1822,6 +1841,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/skill-confidence.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -2610,6 +2630,12 @@
     "functions/tools.json.js",
     "skills/time.js"
    ]
+  },
+  "lib/skill-confidence.js": {
+   "imports": [
+    "lib/card-art.js"
+   ],
+   "importedBy": []
   },
   "lib/skill-family.js": {
    "imports": [],
@@ -4135,6 +4161,12 @@
   "skills/movie.js": {
    "imports": [
     "lib/movies.js"
+   ],
+   "importedBy": []
+  },
+  "skills/music.js": {
+   "imports": [
+    "lib/compose.js"
    ],
    "importedBy": []
   },
