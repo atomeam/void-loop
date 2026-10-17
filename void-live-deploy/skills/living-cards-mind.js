@@ -21,7 +21,8 @@ function mount({ el, q, th, still }) {
   if (!document.getElementById('lc-css')) { const st = document.createElement('style'); st.id = 'lc-css'; st.textContent = CSS; document.head.appendChild(st); }
   const chips = s.cards.map((c, i) => {
     const b = document.createElement('div'); b.className = 'lc-chip'; b.textContent = c.label; b.tabIndex = 0; b.dataset.card = String(i);
-    b.setAttribute('role', 'button'); b.setAttribute('aria-label', 'card ' + c.label + ': drag it, or use the arrow keys, to seed the field');
+    b.dataset.family = c.family || ''; b.title = c.family ? 'family: ' + c.family : '';
+    b.setAttribute('role', 'button'); b.setAttribute('aria-label', 'card ' + c.label + (c.family ? ', family ' + c.family : '') + ': drag it, or use the arrow keys, to seed the field');
     const to = (e) => { const r = frame.getBoundingClientRect(); c.x = Math.min(0.94, Math.max(0.06, (e.clientX - r.left) / r.width)); c.y = Math.min(0.92, Math.max(0.08, (e.clientY - r.top) / r.height)); };
     b.addEventListener('pointerdown', (e) => { e.stopPropagation(); e.preventDefault(); s.dragging = i; try { b.setPointerCapture(e.pointerId); } catch (_) { /* fine */ } to(e); });
     b.addEventListener('pointermove', (e) => { if (s.dragging === i) { to(e); if (still()) { F.step(s, 1 / 60, {}); paint(); } } });
@@ -38,7 +39,7 @@ function mount({ el, q, th, still }) {
   say(); s.gen = 0; s.fit = 0; let pop = null, busy = false, raf = 0;
   const think = () => {
     if (busy || still() || document.hidden || !el.isConnected) return; busy = true;
-    mind.call({ pop, u: Array.from(s.u), v: Array.from(s.v), cards: s.cards.map(({ x, y, hue, label }) => ({ x, y, hue, label })), seed: s.seed, gen: s.gen, boost: s.boost })
+    mind.call({ pop, u: Array.from(s.u), v: Array.from(s.v), cards: s.cards.map(({ x, y, hue, label, family }) => ({ x, y, hue, label, family })), seed: s.seed, gen: s.gen, boost: s.boost })
       .then((o) => { if (o && o.best) { pop = o.pop; F.setGenome(s, o.best); s.gen = o.gen; s.fit = o.fitness; el.dataset.gen = String(s.gen); } say(); })
       .catch(() => {}).finally(() => { busy = false; });
   };
@@ -51,7 +52,7 @@ function mount({ el, q, th, still }) {
 
 const idea = {
   id: 'living-cards-mind', title: 'Living cards mind', sub: 'cards that live in an evolving field', W: 360, H: 270, warm: 120, perFrame: 4,
-  how: 'Five cards live in a reaction-diffusion field: each pulls the field toward itself and takes its size and colour from it. Drag a card to seed the field; the mind keeps the rules that answer the cards.',
+  how: 'Five cards live in a reaction-diffusion field: each pulls the field toward itself and takes its size and colour from it, and cards of one skill family drift toward each other. Drag a card to seed the field and its family follows; the mind keeps the rules that answer the cards.',
   create(seed) { return F.create(seed); },
   step(s, dt, input) { F.step(s, dt, input); },
   metrics: (s) => F.metrics(s),
