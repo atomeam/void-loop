@@ -37,7 +37,15 @@ export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'V01D');
 // the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
-export const sourceOf = (id) => REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
+export const sourceOf = (id) => String(id).startsWith('ship-') ? REPO + 'void-live-deploy/void.growth.json' : REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
+// a film of something V01D shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
+// experiments never filmed (all were by 2026-10-15, after which every deploy filmed nothing and the daily run repeated the same three).
+// Each growth-ledger entry with a "show" and a "try" is a film: the ask opened on the live site. ship-<yyyymmddhhmm of the entry>. Pure.
+export const shipId = (e) => 'ship-' + String(e.at).replace(/\D/g, '').slice(0, 12);
+export function shipsOf(growth, n = 50) {
+  const a = Array.isArray(growth) ? growth : (growth && growth.entries) || [];
+  return a.filter((e) => e && e.at && e.show && e.try && String(e.try).length < 120).slice(-n).reverse().map((e) => ({ id: shipId(e), label: String(e.show), sub: '', ask: String(e.try) }));
+}
 // the payoff a viewer can check (2026-10-15): before the ending, one card with the run's own first finding from the fringe ledger,
 // shortened to what fits on the card (the first sentence when it fits, else cut at a word with "…"); none when the ledger has none.
 // Never a word or a number the ledger does not hold. Pure.
@@ -56,7 +64,7 @@ export function script(tool0, run0) {
   const label = String(tool.label || tool.id), sub = String(tool.sub || '').trim();
   const behavior = run && run.behavior ? String(run.behavior).trim() : sub;
   const lines = (xs) => (Array.isArray(xs) ? xs : []).map((x) => '- ' + String(x).trim()).join('\n');
-  const hook = hookOf(tool, run), link = 'https://a-to-mind.com/?q=' + encodeURIComponent(String(tool0.label || tool0.id).toLowerCase()); // the ask as the lab names it, so it still routes
+  const hook = hookOf(tool, run), link = 'https://a-to-mind.com/?q=' + encodeURIComponent(String(tool0.ask || tool0.label || tool0.id).toLowerCase()); // the ask as the lab names it, so it still routes
   const tail = ' | an AI built this itself #Shorts';
   const title = (hook.length + tail.length <= TITLE_MAX ? hook + tail : label + tail).slice(0, TITLE_MAX);
   const parts = [
@@ -97,6 +105,13 @@ export function picksOf(labIds, filmed, n) {
   return out;
 }
 
+/** what to film: lab experiments never filmed (newest last in labIds), then the newest shipped changes never filmed; only when
+ *  there is nothing new and this is not a deploy's run, the lab experiment filmed longest ago. Pure. */
+export function unfilmed(labIds, shipIds, done, n, onlyNew, filmed) {
+  const fresh = [...labIds.filter((id) => !done.has(id)).reverse(), ...shipIds.filter((id) => !done.has(id))].slice(0, Math.max(1, n | 0));
+  return fresh.length || onlyNew ? fresh : picksOf(labIds, filmed, n);
+}
+
 function serve() {
   const types = { '.html': 'text/html', '.js': 'text/javascript', '.json': 'application/json', '.css': 'text/css', '.svg': 'image/svg+xml', '.png': 'image/png' };
   const server = http.createServer((req, res) => {
@@ -112,10 +127,12 @@ function serve() {
 export async function record(id, { seconds = 20, out = path.resolve(here, '..', 'media') } = {}) {
   const { chromium } = await import('playwright-core');
   const { toolList } = await import('../void-live-deploy/skills/make.js');
-  const tool = toolList().find((t) => t.id === id);
+  const ship = String(id).startsWith('ship-');
+  const tool = ship ? shipsOf(JSON.parse(fs.readFileSync(path.join(site, 'void.growth.json'), 'utf8')), 400).find((t) => t.id === id) : toolList().find((t) => t.id === id);
+  if (ship && !tool) throw new Error(id + ' is not in the growth ledger with a show and a try');
   if (!tool) throw new Error(id + ' is not a lab experiment (skills/make.js)');
-  if (!fs.existsSync(path.join(site, 'fringe', id + '.html'))) throw new Error('no page at void-live-deploy/fringe/' + id + '.html');
-  const ledger = JSON.parse(fs.readFileSync(path.join(here, 'fringe.json'), 'utf8'));
+  if (!ship && !fs.existsSync(path.join(site, 'fringe', id + '.html'))) throw new Error('no page at void-live-deploy/fringe/' + id + '.html');
+  const ledger = ship ? [] : JSON.parse(fs.readFileSync(path.join(here, 'fringe.json'), 'utf8'));
   const words = script(tool, runOf(ledger, id));
   fs.mkdirSync(out, { recursive: true });
   const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
@@ -127,7 +144,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const ctx = await browser.newContext({ viewport: { width: 1080, height: 1920 }, recordVideo: { dir: out, size: { width: 1080, height: 1920 } } });
   const page = await ctx.newPage();
   try {
-    await page.goto(base + 'fringe/' + id + '.html', { waitUntil: 'load' });
+    await page.goto(ship ? 'https://a-to-mind.com/?q=' + encodeURIComponent(tool.ask) : base + 'fringe/' + id + '.html', { waitUntil: 'load' });
     // the edit (owner, 2026-10-14: "teach Void how to edit and make epic videos that are very entertaining"): a hook that slams in,
     // a progress bar, a punch-in on every action with a kinetic caption, and an ending that matches the first frame so it loops.
     await page.evaluate(({ title, caption, total }) => {
@@ -178,7 +195,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
     await page.waitForTimeout(300);
     // the page's own demo when it has one; then its buttons, one after another, as a person would try it: tight, no dead air
     await page.evaluate(() => { const h = Object.keys(window).filter((k) => /^__/.test(k) && k !== '__vfx').map((k) => window[k]).find((o) => o && typeof o.demo === 'function'); try { if (h) h.demo(); } catch (_) {} });
-    const buttons = await page.$$('button:visible'), starts = [];
+    const buttons = ship ? [] : await page.$$('button:visible'), starts = []; // a shipped ask is filmed answering itself, nothing to press
     for (const b of buttons) if (/\b(?:start|begin|play|go|run|try|demo|example|made-up|sample|new)\b/i.test(await b.innerText().catch(() => ''))) starts.push(b);
     for (const b of [...starts, ...buttons.filter((x) => !starts.includes(x))]) {
       if (Date.now() > until - 1200) break;
@@ -214,14 +231,15 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const arg = (f) => { const i = process.argv.indexOf(f); return i > 0 ? process.argv[i + 1] : undefined; };
   const { toolList } = await import('../void-live-deploy/skills/make.js');
   const lab = toolList().filter((t) => /-\d+$/.test(t.id));
+  const ships = shipsOf(JSON.parse(fs.readFileSync(path.join(site, 'void.growth.json'), 'utf8'))).map((t) => t.id);
   // the films already made, as their release tags (record.yml passes them in VOID_FILMED), so a new film is a new experiment
   // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "V01D can make as many videos as it wants and
   // is encouraged to use it as its voice to the world")
   // --only-new (after a deploy): only experiments never filmed, possibly none
   const filmed = filmedOf(process.env.VOID_FILMED || ''), done = new Set(filmed.map((f) => f.id));
   const ids = process.argv[2] && !process.argv[2].startsWith('--') ? [process.argv[2]]
-    : picksOf(lab.map((t) => t.id), filmed, Number(arg('--count')) || 1).filter((id) => !process.argv.includes('--only-new') || !done.has(id));
-  if (!ids.length) console.log('nothing new to film: every lab experiment has a film already');
+    : unfilmed(lab.map((t) => t.id), ships, done, Number(arg('--count')) || 1, process.argv.includes('--only-new'), filmed);
+  if (!ids.length) console.log('nothing new to film: every lab experiment and shipped change has a film already');
   const { acquire } = await import('./heavy.mjs');
   for (const id of ids) {
     const release = await acquire('recording ' + id + ' (tools/record.mjs)'); // one heavy browser job at a time on this machine
