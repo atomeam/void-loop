@@ -232,6 +232,7 @@ for (const [name, file] of [
   ['card-art-route', 'card-art-route.test.mjs'],
   ['card-subject', 'card-subject.test.mjs'],
   ['repo-look', 'repo-look.test.mjs'],
+  ['event-date', 'event-date.test.mjs'],
   ['paste-rule', 'paste-rule.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
   ['card-art', 'card-art.test.mjs'],
