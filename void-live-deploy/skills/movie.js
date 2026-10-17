@@ -36,7 +36,7 @@ export function movieCard(f, esc) {
     + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
     + SRC(f, esc);
 }
-function wirePlayers(el, f) {
+export function wirePlayers(el, f) {
   const box = el.querySelector('.mv-player'); if (!box) return;
   const show = (node) => { box.textContent = ''; box.append(node); };
   const vid = (src, poster) => { const v = document.createElement('video'); v.controls = true; v.autoplay = true; v.playsInline = true; v.preload = 'metadata'; if (poster && /^https:/.test(poster)) v.poster = poster; v.src = src; v.style.cssText = 'width:100%;max-height:60vh;background:#000;border-radius:8px'; return v; };

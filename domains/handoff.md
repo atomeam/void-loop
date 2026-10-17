@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (media-pick helper) · helper/pick-for-me · pick for me: taste lib, never-repeat picks, YouTube Takeout import (browser only), honest why line, spoken pick and reply (owner, 2026-10-17); next: shows (TVMaze), video, games · 2026-10-17 UTC
 - Claude (real-movies helper) · helper/real-movies · pick-a-movie finds real movies (iTunes + Internet Archive), poster as card art, free films play in-page, trailers/links otherwise (owner, 2026-10-17) · 2026-10-17 UTC
 - Claude (asks-self-card agent) · helper/void-asks-self-card · V01D's self-page asks one PR each: open-the-self-card routing, swaps time change, version tag on pasted cards, card art ink by evidence; Family Health card, Skill Discovery and flavor text recorded as already built · 2026-10-17 UTC
 - Claude (asks-services agent) · helper/asks-services · V01D's services asks: approval card → lasting task, state skill, review-learn clusters, diff peek, dep scanner, skills-check re-registration, automerge safety-check + merge-log card, Game Strength, ladder → growth card, Service Health, Contextual Shortcut, country ↔ distance, readable self-knowledge; canon motto declined · 2026-10-16 18:30 UTC
