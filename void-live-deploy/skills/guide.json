@@ -127,8 +127,8 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 6,
-    "checked": 6,
+    "tested": 5,
+    "checked": 7,
     "proven": 7
    },
    "from": 149,
@@ -3062,8 +3062,8 @@
     "what's new",
     "what did you make for me"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 browser-suite mention",
    "n": 168
   },
   {

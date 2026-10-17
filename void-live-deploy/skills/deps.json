@@ -27,6 +27,12 @@
    "dependants": 9
   },
   {
+   "file": "lib/state.js",
+   "skills": 8,
+   "direct": 2,
+   "dependants": 21
+  },
+  {
    "file": "lib/rts.js",
    "skills": 8,
    "direct": 3,
@@ -37,12 +43,6 @@
    "skills": 8,
    "direct": 7,
    "dependants": 8
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 20
   },
   {
    "file": "lib/skyask.js",
@@ -69,15 +69,33 @@
    "dependants": 24
   },
   {
+   "file": "lib/ladder.js",
+   "skills": 6,
+   "direct": 3,
+   "dependants": 18
+  },
+  {
    "file": "lib/bridges.js",
    "skills": 6,
    "direct": 3,
    "dependants": 8
   },
   {
-   "file": "lib/ladder.js",
+   "file": "lib/corrections.js",
    "skills": 5,
-   "direct": 3,
+   "direct": 0,
+   "dependants": 20
+  },
+  {
+   "file": "lib/better.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 18
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 5,
+   "direct": 2,
    "dependants": 17
   },
   {
@@ -99,21 +117,21 @@
    "dependants": 5
   },
   {
-   "file": "lib/corrections.js",
+   "file": "lib/probe-log.js",
    "skills": 4,
-   "direct": 0,
-   "dependants": 19
-  },
-  {
-   "file": "lib/better.js",
-   "skills": 4,
-   "direct": 2,
+   "direct": 1,
    "dependants": 17
   },
   {
-   "file": "lib/autopsy.js",
+   "file": "lib/inbox-health.js",
    "skills": 4,
-   "direct": 2,
+   "direct": 1,
+   "dependants": 16
+  },
+  {
+   "file": "lib/skill-confidence.js",
+   "skills": 4,
+   "direct": 1,
    "dependants": 16
   },
   {
@@ -121,24 +139,6 @@
    "skills": 4,
    "direct": 2,
    "dependants": 4
-  },
-  {
-   "file": "lib/probe-log.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 16
-  },
-  {
-   "file": "lib/inbox-health.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 15
-  },
-  {
-   "file": "lib/skill-confidence.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 15
   },
   {
    "file": "lib/field-kit.js",
@@ -1705,6 +1705,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -1741,6 +1742,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -2024,6 +2026,7 @@
     "lib/voice.js",
     "skills/growth-tree.js",
     "skills/growth.js",
+    "skills/guide.js",
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
@@ -2354,6 +2357,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -2421,6 +2425,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -2866,6 +2871,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -3186,6 +3192,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth-tree.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -3300,6 +3307,7 @@
     "lib/voice.js",
     "skills/growth-tree.js",
     "skills/growth.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/pong.js",
     "skills/showcase.js",
@@ -4162,7 +4170,8 @@
     "functions/api/voice-reply.js",
     "lib/bench-asks.js",
     "lib/self-context.js",
-    "skills/growth-tree.js"
+    "skills/growth-tree.js",
+    "skills/guide.js"
    ]
   },
   "skills/growth.js": {
@@ -4191,6 +4200,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/growth.js",
+    "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
    ]
@@ -4227,6 +4237,7 @@
    "imports": [
     "lib/guide.js",
     "lib/book-news.js",
+    "skills/showcase.js",
     "lib/tome-search.js",
     "lib/tome.js",
     "lib/success-pulse.js"
@@ -5251,7 +5262,9 @@
    "imports": [
     "skills/growth-tree.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/guide.js"
+   ]
   },
   "skills/side-card.js": {
    "imports": [

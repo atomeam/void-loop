@@ -16,12 +16,13 @@ const LINE_MAX = 150;
 const cut = (s, n) => { s = String(s || '').replace(/\s+/g, ' ').trim(); if (s.length <= n) return s; const t = s.slice(0, n - 1); return t.slice(0, Math.max(t.lastIndexOf(' '), n * 0.6)).replace(/[\s,;:.—-]+$/, '') + '…'; };
 
 /** the ledger entries worth a line: the newest NEWS_MAX with a date and some text, newest first, as { at, day, kind, line, try }. Pure. */
-export function newsEntries(ledger, max = NEWS_MAX) {
+export function newsEntries(ledger, max = NEWS_MAX, tryOf = null) { // tryOf(entry): an ask for an entry with no `try` of its own (skills/showcase.js playable)
   const out = [];
   for (const e of Array.isArray(ledger) ? ledger : []) {
     if (!e || typeof e.at !== 'string' || !/^\d{4}-\d\d-\d\d/.test(e.at)) continue;
     const line = cut(e.show || e.what, LINE_MAX); if (!line) continue;
-    out.push({ at: e.at, day: e.at.slice(0, 10), kind: String(e.kind || 'grow'), line, try: e.try ? cut(e.try, 90) : '' });
+    let t = e.try || ''; if (!t && tryOf) { try { t = tryOf(e) || ''; } catch (_) { t = ''; } }
+    out.push({ at: e.at, day: e.at.slice(0, 10), kind: String(e.kind || 'grow'), line, try: t ? cut(t, 90) : '' });
   }
   // a stable sort, newest first (ledger order breaks ties: later lines are newer)
   return out.map((e, i) => [e, i]).sort((a, b) => (a[0].at < b[0].at ? 1 : a[0].at > b[0].at ? -1 : b[1] - a[1])).slice(0, max).map((x) => x[0]);
@@ -58,7 +59,7 @@ export function newSince(entries, seenAt) {
 /** the book with the What's new chapter after the contents: later pages, chapter ranges, the index, miniature owner links and totals move up
  *  by the chapter's pages. The input book is not changed. With no entries the book is returned as it is. Pure. */
 export function withNews(book, ledger, opts = {}) {
-  const entries = newsEntries(ledger, opts.max), np = newsPages(entries, opts.per);
+  const entries = newsEntries(ledger, opts.max, opts.tryOf), np = newsPages(entries, opts.per);
   if (!book || !Array.isArray(book.pages) || !np.length) return book;
   const at = book.pages.findIndex((p) => p.kind === 'toc'); if (at < 0) return book;
   const k = np.length, first = at + 2; // the page number the chapter starts on

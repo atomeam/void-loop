@@ -12,8 +12,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 2,
-  "tested": 63,
-  "checked": 34,
+  "tested": 62,
+  "checked": 35,
   "proven": 85
  },
  "families": [
@@ -1276,8 +1276,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 1,
-    "tested": 6,
-    "checked": 6,
+    "tested": 5,
+    "checked": 7,
     "proven": 7
    },
    "skills": [
@@ -1437,10 +1437,11 @@
     },
     {
      "name": "showcase",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-17",
      "streak": 1
     },
     {
