@@ -32,7 +32,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   const stats = !!(skill || page) && tier !== '', fetched = !stats && typeKind === 'Answer' && sources != null && sources > 0;
   const chapter = page ? page.chapter : entity && entity.chapter ? entity.chapter : 'words';
   return {
-    rarity, chapter, hue: hueOf(chapter), fetched,
+    rarity, chapter, hue: hueOf(chapter), fetched, kindName: entity && !page && !skill && entity.kind ? String(entity.kind).toLowerCase().replace(/[^a-z]/g, '') : '',
     cost: words ? Math.min(6, words) : 0,
     typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from V01D') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
     power: stats ? (sr == null ? ti * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
@@ -85,8 +85,40 @@ export const CARD_CSS = [
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:linear-gradient(180deg,hsl(var(--h) 28% 26%),hsl(var(--h) 26% 14%));border:2px solid var(--edge);border-radius:9px 4px 9px 4px;font-size:17px;font-weight:700;letter-spacing:.05em;color:#f3efe2;box-shadow:0 2px 6px rgba(0,0,0,.5)}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 30% 70%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:16px;color:#f3efe2;letter-spacing:.02em}',
   '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:-1px;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:-1px;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
+  // type-specific layouts (asked by Void: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
+  // visual hierarchies"): the answer card's kind (card-kinds.js) decides what leads. A Film is a cinema screen: a tall letterboxed art box and an
+  // italic centred title. A Place leads with where it is: its type line first, in large caps, then the title, over a shallow horizon. A Person is a
+  // portrait: a round art box centred above the name. A Song is a record sleeve: a thin strip, the title with a note before it.
+  '.vpage.vcard[data-kind=film] .vc-art{height:112px;box-shadow:inset 0 16px 0 #000,inset 0 -16px 0 #000}.vpage.vcard[data-kind=film] .vc-title{justify-content:center;font-style:italic;font-family:Georgia,serif;letter-spacing:.06em}.vpage.vcard[data-kind=film] .vc-title::after{content:none}',
+  '.vpage.vcard[data-kind=place]{display:flex!important;flex-direction:column}.vpage.vcard[data-kind=place] .vc-type{order:-3;margin-top:12px;margin-bottom:0;font-size:15px;letter-spacing:.2em;border-radius:6px 6px 0 0}.vpage.vcard[data-kind=place] .vc-title{order:-2;margin-top:0!important;border-radius:0 0 12px 12px/0 0 16px 16px}.vpage.vcard[data-kind=place] .vc-art{order:-1;height:44px;background:linear-gradient(180deg,hsl(var(--h) 55% 62%) 0 52%,hsl(var(--h) 40% 24%) 52%)}.vpage.vcard[data-kind=place] .vc-arrows{order:99}',
+  '.vpage.vcard[data-kind=person] .vc-art{width:84px;height:84px;margin:10px auto 0;border-radius:50%;border-width:3px}.vpage.vcard[data-kind=person] .vc-title{justify-content:center;text-align:center}.vpage.vcard[data-kind=person] .vc-title::after{content:none}.vpage.vcard[data-kind=person] .vc-type{justify-content:center;gap:10px}',
+  '.vpage.vcard[data-kind=song] .vc-art{height:40px}.vpage.vcard[data-kind=song] .vc-title::before{content:"\\266A";margin-right:8px;color:hsl(var(--h) 60% 74%)}',
+  // a card whose skill just earned a higher rating glows once (asked by Void, skill evolution): lib/card-frame.js evolved()
+  '@keyframes vc-evolve{0%{box-shadow:0 0 0 0 var(--edge),0 30px 80px rgba(0,0,0,.65)}30%{box-shadow:0 0 36px 12px #ffd27a,0 0 90px 30px rgba(255,140,40,.55),0 30px 80px rgba(0,0,0,.65);filter:brightness(1.25)}100%{box-shadow:0 30px 80px rgba(0,0,0,.65);filter:none}}',
+  '.vpage.vcard.vc-evolving{animation:vc-evolve 2.6s ease-out 1}.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffd27a}',
+  '@media (prefers-reduced-motion:reduce){.vpage.vcard.vc-evolving{animation:none;outline:3px solid #ffd27a}}',
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
 ].join('');
+
+// Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
+// test passes"): a skill's rating only rises when new evidence arrives (tools/families.mjs). This browser remembers the rating it last showed
+// for each skill; when a card appears with a higher one the card glows once and says what it became. The first sight of a skill only
+// remembers it, so nothing evolves on a first visit. Stored on this device only.
+export const EVO_KEY = 'a2m.void.tiers.v1';
+/** { from, to } when `tier` is higher than the `prev` rating word, else null. Pure. */
+export function evolved(prev, tier) {
+  const a = TIERS.indexOf(prev), b = TIERS.indexOf(tier);
+  return a >= 0 && b > a ? { from: RARITY[prev].name, to: RARITY[tier].name } : null;
+}
+/** read the remembered ratings, note this one, and say whether the skill just evolved. Never throws (storage may be blocked). */
+export function noteTier(name, tier, store = typeof localStorage === 'undefined' ? null : localStorage) {
+  if (!name || !TIERS.includes(tier)) return null;
+  try {
+    const m = JSON.parse(store.getItem(EVO_KEY) || '{}') || {}, up = evolved(m[name], tier);
+    if (m[name] !== tier) { m[name] = tier; store.setItem(EVO_KEY, JSON.stringify(m)); }
+    return up;
+  } catch (e) { return null; }
+}
 
 let cache = null;
 /** the site's own files, once: guide.json (the pages) and families.json (the ratings); nulls where they cannot be read */
@@ -128,12 +160,20 @@ export function keep(el, esc, stats) {
   for (const n of el.querySelectorAll(':scope > .vc-art, :scope > .vc-type, :scope > .vc-adds, :scope > .vc-foot, :scope > .vc-arrows')) n.remove();
   el.style.setProperty('--h', String(c.hue));
   el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
+  if (c.kindName) el.dataset.kind = c.kindName; else delete el.dataset.kind;
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
   tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   for (const n of [...tpl.content.childNodes]) el.appendChild(n);
+  const up = name && c.rarity ? noteTier(name, (lookup(stats, name).skill || {}).tier) : null; // a rating that rose since this browser last saw the skill
+  if (up) {
+    el.classList.add('vc-evolving'); el.dataset.evolved = up.to;
+    const note = document.createElement('div'); note.className = 'vc-evolved-note'; note.textContent = 'Evolved: ' + up.from + ' \u2192 ' + up.to;
+    const at = el.querySelector(':scope > .vc-type'); if (at) at.after(note);
+    setTimeout(() => { el.classList.remove('vc-evolving'); note.remove(); }, 4500);
+  }
 }
 
 let styled = false;

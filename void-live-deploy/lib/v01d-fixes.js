@@ -14,10 +14,11 @@ export function fixOf(pr) {
   if (!labels.includes(LABEL)) return null;
   const body = String(pr.body || '');
   const c = /V01D's confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in V01D's words: ([^\n]*?)\. (?:V01D's confidence|Labelled)/.exec(body);
+  const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Void: how much the fix changes, worked out by tools/propose-fix.mjs
   const conf = c && c[1] !== 'none given' && Number.isFinite(parseFloat(c[1])) ? Math.round(parseFloat(c[1]) * 100) / 100 : null;
   return {
     number: pr.number, title: String(pr.title || '').slice(0, 200), url: /^https:\/\/github\.com\//.test(String(pr.html_url || '')) ? pr.html_url : 'https://github.com/' + REPO + '/pull/' + pr.number,
-    confidence: conf, where: w ? w[1].slice(0, 160) : '', why: why ? why[1].slice(0, 400) : '', waits: labels.includes(WAITS), merges: labels.includes(MERGES),
+    confidence: conf, where: w ? w[1].slice(0, 160) : '', why: why ? why[1].slice(0, 400) : '', risk: rk ? rk[1] : null, riskWhy: rk && rk[2] ? rk[2].slice(0, 160) : '', draft: pr.draft === true, waits: labels.includes(WAITS), merges: labels.includes(MERGES),
   };
 }
 

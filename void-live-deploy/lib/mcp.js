@@ -56,6 +56,9 @@ export const TOOLS = [
   { name: 'skill_health', title: "Void's skill-family health", annotations: RO,
     description: "How far each of Void's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Void's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
     inputSchema: { type: 'object', properties: { family: { type: 'string', description: "A family's id (families[].id in this tool's result, e.g. numbers) for its skills one by one." }, response_type: RESPONSE_TYPE } } },
+  { name: 'skill_discovery', title: "Discover Void's skills by family", annotations: RO,
+    description: "Skill Discovery (asked by Void): what skills Void has and how they are spread across its families, for an agent that wants to know where to look before it asks. Gives each family's id, name, what it is for, how many skills it holds, its share of all of Void's skills (the distribution), and the skills in it by name with their rating; ask for one family, or only the skills at a rating. Read from a-to-mind.com/skills/families.json, rated from evidence only. Ask a skill by name through ask_void or the skill's own tool.",
+    inputSchema: { type: 'object', properties: { family: { type: 'string', description: "Only this family (an id from the result, e.g. numbers)." }, tier: { type: 'string', enum: ['experiment', 'tested', 'checked', 'proven'], description: 'Only skills rated at least this high.' }, response_type: RESPONSE_TYPE } } },
 ];
 
 const err = (id, code, message) => ({ jsonrpc: '2.0', id: id ?? null, error: { code, message } });
@@ -136,9 +139,28 @@ async function health(a, ctx) {
   return toolResult(text, { skills, totals, proven_share: pct(totals.proven, skills), families, failing, tools, source: SITE + '/skills/families.json' });
 }
 
+// skill_discovery: the same ratings, laid out as a map of the families for finding a skill: counts, each family's share of all skills, member names.
+async function discovery(a, ctx) {
+  if (!ctx || typeof ctx.families !== 'function') return toolError('The skill families are only reachable at https://a-to-mind.com/api/mcp (or read https://a-to-mind.com/skills/families.json).');
+  const data = await ctx.families().catch(() => null);
+  if (!data || !Array.isArray(data.families)) return toolError('The skill families could not be read just now; try https://a-to-mind.com/skills/families.json.');
+  const want = typeof a.family === 'string' ? a.family.trim().toLowerCase() : '', floor = TIERS.indexOf(a.tier);
+  if (a.tier !== undefined && floor < 0) return toolError('tier is one of: ' + TIERS.join(', ') + '.');
+  if (want && !data.families.some((f) => f.id === want)) return toolError('No family "' + want.slice(0, 40) + '". The families: ' + data.families.map((f) => f.id).join(', ') + '.');
+  const all = data.families.reduce((n, f) => n + (Array.isArray(f.skills) ? f.skills.length : 0), 0);
+  const families = data.families.filter((f) => !want || f.id === want).map((f) => {
+    const list = Array.isArray(f.skills) ? f.skills : [], shown = list.filter((s) => TIERS.indexOf(s.tier) >= floor);
+    return { id: f.id, name: f.name, for: f.for, skills: list.length, share: pct(list.length, all), proven: list.filter((s) => s.tier === 'proven').length, members: shown.map((s) => ({ name: s.name, tier: s.tier })) };
+  });
+  const text = all + ' skills in ' + data.families.length + ' families' + (floor > 0 ? ' (listing those rated ' + TIERS[floor] + ' or better)' : '') + ':\n'
+    + families.map((f) => f.name + ' (' + f.id + '): ' + f.skills + ' skills, ' + Math.round(f.share * 100) + '% of all, ' + f.proven + ' proven' + (f.members.length ? ' \u2014 ' + f.members.map((m) => m.name).join(', ') : '')).join('\n');
+  return toolResult(text, { skills: all, family_count: data.families.length, distribution: families.map((f) => ({ id: f.id, skills: f.skills, share: f.share })), families, source: SITE + '/skills/families.json' });
+}
+
 const RUN = {
   ask_void: askVoid,
   skill_health: health,
+  skill_discovery: discovery,
   ...Object.fromEntries(SKILL_TOOLS.map((s) => [s.tool, (a, ctx) => askSkill(s, a, ctx)])),
   review_code_closer: closer,
   review_code(a) {

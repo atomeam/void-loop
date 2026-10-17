@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 405,
+ "counted": 414,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -27,6 +27,12 @@
    "dependants": 9
   },
   {
+   "file": "lib/rts.js",
+   "skills": 8,
+   "direct": 3,
+   "dependants": 10
+  },
+  {
    "file": "lib/where.js",
    "skills": 8,
    "direct": 7,
@@ -42,6 +48,12 @@
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/prints.js",
+   "skills": 5,
+   "direct": 3,
    "dependants": 6
   },
   {
@@ -105,6 +117,12 @@
    "dependants": 3
   },
   {
+   "file": "lib/arcade-ghost.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/cook-flow.js",
    "skills": 2,
    "direct": 1,
@@ -120,7 +138,7 @@
    "file": "lib/automation-fix.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 42
+   "dependants": 43
   },
   {
    "file": "lib/gumroad.js",
@@ -183,6 +201,12 @@
    "dependants": 6
   },
   {
+   "file": "lib/shared-routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
@@ -196,12 +220,6 @@
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 2
-  },
-  {
-   "file": "lib/shared-routines.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -225,6 +243,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/forge-makes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
@@ -243,7 +267,19 @@
    "dependants": 1
   },
   {
+   "file": "lib/routine-skill.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/tome-search.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1139,6 +1175,13 @@
     "functions/api/approval.js"
    ]
   },
+  "lib/arcade-ghost.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/pong.js",
+    "skills/snake.js"
+   ]
+  },
   "lib/arena-say.js": {
    "imports": [],
    "importedBy": [
@@ -1262,6 +1305,7 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js",
+    "lib/routine-skill.js",
     "lib/self-context.js",
     "skills/routine.js"
    ]
@@ -1498,6 +1542,12 @@
   "lib/film-share.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/forge-makes.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge.js"
+   ]
   },
   "lib/fuzzy.js": {
    "imports": [],
@@ -1952,6 +2002,19 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/prints.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge.js",
+    "skills/inventory.js",
+    "skills/print-file.js"
+   ],
+   "reachedBy": [
+    "skills/mini/pentamote.js",
+    "skills/motorbody.js",
+    "skills/print-download.js"
+   ]
+  },
   "lib/privacy.js": {
    "imports": [
     "lib/automation-fix.js"
@@ -2118,10 +2181,35 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/routine-skill.js": {
+   "imports": [
+    "lib/shared-routines.js"
+   ],
+   "importedBy": [
+    "skills/routine.js"
+   ]
+  },
   "lib/routines.js": {
    "imports": [],
    "importedBy": [
     "skills/routine.js"
+   ]
+  },
+  "lib/rts.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/figures.js",
+    "skills/rts.js",
+    "skills/scripts.js"
+   ],
+   "reachedBy": [
+    "functions/api/figurescript.js",
+    "skills/figures3d.js",
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js",
+    "skills/together.js",
+    "skills/zoom-figure.js"
    ]
   },
   "lib/sale-jobs.js": {
@@ -2179,6 +2267,7 @@
    ],
    "importedBy": [
     "functions/api/routines.js",
+    "lib/routine-skill.js",
     "skills/routine.js"
    ]
   },
@@ -2349,6 +2438,12 @@
     "functions/api/mcp.js",
     "functions/api/merge.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/tome-search.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
    ]
   },
   "lib/tome.js": {
@@ -2863,6 +2958,8 @@
   "skills/figures.js": {
    "imports": [
     "skills/scripts.js",
+    "skills/forge-rules.js",
+    "lib/rts.js",
     "skills/scene3d.js"
    ],
    "importedBy": [
@@ -2924,14 +3021,22 @@
    "importedBy": [
     "skills/appraise.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/forge.js",
     "skills/inventory.js",
     "skills/mini/forge.js"
+   ],
+   "reachedBy": [
+    "skills/games.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js"
    ]
   },
   "skills/forge.js": {
    "imports": [
-    "skills/forge-rules.js"
+    "skills/forge-rules.js",
+    "lib/prints.js",
+    "lib/forge-makes.js"
    ],
    "importedBy": []
   },
@@ -3105,6 +3210,7 @@
   "skills/guide.js": {
    "imports": [
     "lib/guide.js",
+    "lib/tome-search.js",
     "lib/tome.js"
    ],
    "importedBy": []
@@ -3180,7 +3286,8 @@
     "skills/index.json",
     "skills/families.json",
     "lib/ask-text.js",
-    "skills/forge-rules.js"
+    "skills/forge-rules.js",
+    "lib/prints.js"
    ],
    "importedBy": []
   },
@@ -3364,6 +3471,10 @@
    "importedBy": []
   },
   "skills/mini/calculator.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/mini/camp.js": {
    "imports": [],
    "importedBy": []
   },
@@ -3723,7 +3834,8 @@
   "skills/pong.js": {
    "imports": [
     "skills/pong-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
@@ -3750,7 +3862,8 @@
   "skills/print-file.js": {
    "imports": [
     "skills/figure.js",
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "lib/prints.js"
    ],
    "importedBy": [
     "skills/motorbody.js",
@@ -3879,7 +3992,15 @@
   "skills/routine.js": {
    "imports": [
     "lib/routines.js",
+    "lib/routine-skill.js",
     "lib/shared-routines.js"
+   ],
+   "importedBy": []
+  },
+  "skills/rts.js": {
+   "imports": [
+    "lib/rts.js",
+    "skills/scripts.js"
    ],
    "importedBy": []
   },
@@ -3903,11 +4024,14 @@
    ]
   },
   "skills/scripts.js": {
-   "imports": [],
+   "imports": [
+    "lib/rts.js"
+   ],
    "importedBy": [
     "functions/api/figurescript.js",
     "skills/figures.js",
     "skills/figures3d.js",
+    "skills/rts.js",
     "skills/together.js"
    ],
    "reachedBy": [
@@ -3926,9 +4050,13 @@
    "reachedBy": [
     "skills/appraise.js",
     "skills/draw.js",
+    "skills/figures.js",
     "skills/forge.js",
+    "skills/games.js",
     "skills/inventory.js",
     "skills/mini/forge.js",
+    "skills/mini/ringer.js",
+    "skills/ringer.js",
     "skills/together.js",
     "skills/zoom-figure.js"
    ]
@@ -4109,7 +4237,8 @@
   "skills/snake.js": {
    "imports": [
     "skills/snake-rules.js",
-    "skills/arcade-card.js"
+    "skills/arcade-card.js",
+    "lib/arcade-ghost.js"
    ],
    "importedBy": []
   },
@@ -4273,6 +4402,10 @@
    "imports": [
     "lib/ask-text.js"
    ],
+   "importedBy": []
+  },
+  "skills/type-filter.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/util.js": {

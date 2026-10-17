@@ -6,6 +6,8 @@
  * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
 import { fallbackScript, natureOf } from './scripts.js';
+import { thingOf } from './forge-rules.js';
+import { yieldOf } from '../lib/rts.js';
 export const MOTION_KEY = 'a2m.void.motion.v1';
 export const DETAIL_KEY = 'a2m.void.3d.v1'; // the same key skills/scene3d.js reads
 
@@ -38,7 +40,9 @@ export function detailAsk(text) {
 const NATURE_LOOK = { zombie: ['person', '#7d9a5a'], brain: ['object', '#e9a3b4'], cat: ['animal', '#e39a4f'], mouse: ['animal', '#b9b3ad'],
   dog: ['animal', '#a8784c'], bone: ['object', '#efe8da'], fish: ['animal', '#5fa8d8'], cheese: ['object', '#f2c94c'], rabbit: ['animal', '#e8e1d8'],
   carrot: ['object', '#ef8a2c'], monkey: ['animal', '#8a5a3a'], horse: ['animal', '#6e3f22', 1.4], donkey: ['animal', '#8e8780', 0.9], /* third: walking pace (a horse's trot, a donkey's plod) */ banana: ['object', '#f5d84a'], shark: ['animal', '#7c8fa3'], bee: ['animal', '#f2c230'], flower: ['object', '#ef6fa0'],
-  cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05] }; // third: walking pace (clouds drift, a fire stays put)
+  cloud: ['object', '#eef1f4', 0.3], sun: ['object', '#ffc23a', 0.05], fire: ['object', '#ff6a1a', 0.05], ice: ['object', '#cfeaff', 0.05], water: ['place', '#2e6d96', 0.05],
+  // the RTS world (lib/rts.js): a tree and a rock stand where they are put (places), a villager is a person who gathers them
+  tree: ['place', '#3f7a3a', 0.05], rock: ['place', '#8a8f96', 0.05], villager: ['person', '#c9a06a'] }; // third: walking pace (clouds drift, a fire stays put)
 const NATURE_SUMMON = /^(?:please\s+)?(?:summon|bring(?:\s+(?:out|in))?|add|spawn|make|drop|put|release|let\s+loose|give\s+me|show\s+me)\s+(?:me\s+)?(?:(?:an|a|some|another|one\s+more|the)\s+)?([a-z]+(?:\s[a-z]+)?)(?:\s+(?:on\s+the\s+stage|here|in))?(?:\s+please)?$/;
 // Every summon is an individual: a random seed picks its shade, size and build, so no two zombies match; "clone it"
 // copies the seed, so a clone is identical. Pure: the same seed always gives the same look (tests rely on it).
@@ -77,6 +81,8 @@ export function natureSummon(t) {
   const noun = m[1], last = noun.split(' ').pop(), find = (w) => natureOf(w).tags.find((x) => NATURE_LOOK[x]);
   // the last word is the thing ("a dog picture" is not a dog); a two-word name ("ice cube", "storm cloud") counts whole
   const kind = find(last) || (/^(?:pictures?|photos?|images?|drawings?|videos?|movies?|films?|songs?|facts?|names?|recipes?|emojis?|costumes?|toys?|games?)$/.test(last) ? null : find(noun));
+  // "make a tree" is the forge's (a printable model); "add a tree" / "summon a tree" is a tree on the stage, a node the villagers gather (lib/rts.js)
+  if (kind && thingOf(noun) && /^(?:please\s+)?(?:make|build|forge|print|model|create)\b/.test(t)) return null;
   return kind ? { act: 'summon', kind, title: noun } : null;
 }
 
@@ -119,7 +125,9 @@ async function run(text, api) {
   if (q.act === 'summon' && q.kind) {
     const [body, , pace] = NATURE_LOOK[q.kind], seed = (Math.random() * 4294967296) >>> 0, look = lookFor(q.kind, seed);
     if (pace) look.pace = +(look.pace * pace).toFixed(3);
-    const th = api.summon && api.summon('figure', { body, ...look, seed, kindOf: q.kind, title: q.title, script: fallbackScript(body, q.title) });
+    // a node of the RTS world (lib/rts.js) carries its loads from the start: a tree is 8 wood wherever it stands, so the 3D layer's brain knows what is left
+    const y = yieldOf(natureOf(q.kind).tags);
+    const th = api.summon && api.summon('figure', { body, ...look, seed, kindOf: q.kind, title: q.title, script: fallbackScript(body, q.title), ...(y ? { res: { kind: y.res, left: y.units } } : {}) });
     if (!th) { say('the stage is full'); return 'figures'; }
     say('a ' + q.title + ' is here, one of a kind');
     return 'figures';
