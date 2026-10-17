@@ -94,6 +94,7 @@ jobs:
         run: |
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
+          printf '{"id":"%s"}' "$(git rev-parse HEAD)" > void-live-deploy/build.json # this deploy's id: an open tab compares it and offers a reload (lib/stale-tab.js)
           node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
           node tools/bench-alarms.mjs # the Bench icon's count of checked false alarms (skills/bench.js)
           node tools/public-ledger.mjs # the served ledger leaves out what Void studies (tools/private.mjs); the repo's stays append-only
