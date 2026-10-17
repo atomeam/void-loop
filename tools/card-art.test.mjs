@@ -24,7 +24,9 @@ test('every kind draws a valid, safe SVG under 12 KB with its own plate', () => 
   assert.ok(seen.size >= 12, 'plates differ by kind');
 });
 test('the Halloween skin adds bats, fog and the orange rim; off does not; the query overrides the date', () => {
-  const on = artSvg(card({ season: 'halloween' })), off = artSvg(card({ season: 'off' }));
+  const on = artSvg(card({ key: 'Haunted house', season: 'halloween' })), off = artSvg(card({ key: 'Haunted house', season: 'off' }));
+  // only a spooky subject wears it (owner's K-pop card, 2026-10-17: bats and a candle over a music genre)
+  const kpop = artSvg(card({ key: 'K-pop', kind: 'Idea', season: 'halloween' })); assert.ok(!/#ff7a1a/.test(kpop) && !/<animate /.test(kpop), 'no haunted skin on K-pop in October');
   assert.match(on, /#ff7a1a/); assert.match(on, /<animate /); assert.ok(!/#ff7a1a/.test(off) && !/<animate /.test(off));
   assert.equal(seasonOf(9, ''), 'halloween'); assert.equal(seasonOf(2, ''), 'off');
   assert.equal(seasonOf(2, '?season=halloween'), 'halloween'); assert.equal(seasonOf(9, '?x=1&season=off'), 'off');

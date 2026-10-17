@@ -18,10 +18,16 @@ test('too little answer falls back to the title\'s content words; nothing gives 
   assert.deepEqual(subjectOf('', '').nouns, []); assert.equal(nounsOf(null).length, 0);
 });
 test('the plate draws the subject: a hand and a ghost instead of the generic plate, and the haunted skin steps aside', () => {
-  const card = { key: 'pick a movie to watch with me', kind: 'Answer', hue: 20, season: 'halloween' };
+  const card = { key: 'a ghost story to watch with me', kind: 'Answer', hue: 20, season: 'halloween' };
   const generic = artInner(card), drawn = artInner({ ...card, nouns: ['hand', 'spirits', 'teens'] });
   assert.notEqual(generic, drawn); assert.ok(drawn.includes('M28 92L26 62'), 'the hand'); assert.ok(drawn.includes('M18 94L18 44'), 'the ghost');
   assert.ok(!/ff7a1a/.test(drawn) && /ff7a1a/.test(generic), 'no pumpkin rim on a subject plate');
   assert.equal(artInner({ ...card, nouns: ['teens'] }), generic, 'a word with no drawing keeps the plate');
   assert.equal(motifSvg([], 100, 100, {}), '');
+});
+
+test('the K-pop card draws music, not the search: "void" and "match" are not its subject, and music words draw a note (owner, 2026-10-17)', () => {
+  const s = subjectOf('K-pop', 'South Korean popular music genre. K-pop is a form of popular music originating in South Korea, from idol acts, girl groups and boy bands.');
+  assert.ok(!s.nouns.includes('void') && !s.nouns.includes('match')); assert.equal(s.nouns[0], 'music'); assert.deepEqual(motifsFor(s.nouns), ['note']);
+  const thin = nounsOf('Closest match I found for void kpop'); for (const w of ['closest', 'match', 'void']) assert.ok(!thin.includes(w), w);
 });

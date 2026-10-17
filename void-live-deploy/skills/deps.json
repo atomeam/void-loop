@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 478,
+ "counted": 479,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -850,6 +850,12 @@
   },
   {
    "file": "lib/md.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/page-picture.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -2514,6 +2520,10 @@
     "skills/goal.js",
     "skills/quiz.js"
    ]
+  },
+  "lib/page-picture.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/pages.js": {
    "imports": [],
