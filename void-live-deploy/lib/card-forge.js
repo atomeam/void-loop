@@ -15,12 +15,19 @@ export const FORGE_CSS = [
 
 const waiting = new Map(); // subject -> the card elements waiting on a read or a paint (a card's frame is rebuilt when its stats arrive)
 const land = (key, img) => { for (const e of waiting.get(key) || []) { if (e.isConnected) { e._vcForge = img; show(e, img); } } waiting.delete(key); };
+/** what to paint: the answer's own nouns (card-subject.js), or the card's key when the answer says too little. */
+const subjectFor = (el, c) => el._vcSubject || c.key;
 const seen = new Map(); // folded-or-typed subject + kind -> 'art' | 'none' | 'plate' with the picture, so a card shown twice asks once
 /** is this card one the forge paints: an answer or a merged card, never a skill, a game or a miniature, a person, or a sky card. Pure. */
 export function worthy(el, c) {
   if (!el || !c || (c.isSkill && !(el.dataset && el.dataset.cardOwn)) || (el.dataset && el.dataset.skill) || (el.classList && el.classList.contains('skyc'))) return false;
   const kind = String(c.kindName || '').toLowerCase();
   return kind !== 'person' && !!String(c.key || '').trim();
+}
+/** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar or the title. */
+export function answerText(el) {
+  let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.src,.vtail,.vtell,.vtell-box,.vc-share,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
+  return t.replace(/\s+/g, ' ').trim().slice(0, 1500);
 }
 export const kindOf = (el, c) => (el.dataset && el.dataset.cardOwn ? 'merge' : (c && c.kindName) || 'answer');
 const mode = () => { try { const m = typeof location !== 'undefined' && /[?&]art=(off|button)\b/.exec(location.search); return m ? m[1] : 'auto'; } catch (_) { return 'auto'; } };
@@ -35,8 +42,8 @@ function show(el, img) {
 }
 async function ask(method, el, c) {
   const kind = kindOf(el, c), rarity = c.rarity ? c.rarity.name.toLowerCase() : 'common';
-  const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(c.key) + '&kind=' + encodeURIComponent(kind) : '');
-  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: c.key, kind, rarity }) });
+  const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(subjectFor(el, c)) + '&kind=' + encodeURIComponent(kind) : '');
+  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity }) });
   return r.ok ? r.json() : { state: 'plate' };
 }
 function button(el, c) {
@@ -49,31 +56,32 @@ function button(el, c) {
   art.appendChild(b);
 }
 async function paint(el, c, b) {
-  if (b) { b.disabled = true; b.textContent = 'painting…'; } else seen.set(c.key, 'asking'); // one paint per subject at a time
+  if (b) { b.disabled = true; b.textContent = 'painting…'; } else seen.set(subjectFor(el, c), 'asking'); // one paint per subject at a time
   let got = null; try { got = await ask('POST', el, c); } catch (_) {}
   const img = got && got.state === 'art' ? safeImg(got.img) : '';
-  if (!img && !b) seen.set(c.key, 'plate'); // a failed or capped paint is not retried this page
-  if (img) { seen.set(c.key, img); land(c.key, img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
+  if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a failed or capped paint is not retried this page
+  if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
   if (!el.isConnected) return;
   if (b) { b.disabled = false; b.textContent = got && got.why === 'cap' ? 'out of paint today' : 'try again later'; if (got && (got.why === 'cap' || got.why === 'off')) setTimeout(() => b.remove(), 2500); }
 }
 
 /** the forge's turn for a card whose frame was just built: show the art it has, look for cached art, or offer the button. Never throws. */
-export function forge(el, c) {
+export function forge(el, c, photo) {
   try {
     if (el._vcForge) { show(el, el._vcForge); return; } // a rebuilt frame shows the picture it already has, whatever the card turned out to be
+    if (photo) return; // a real picture of the thing (a poster, a still) is the art: never paint over it
     if (!worthy(el, c) || typeof fetch === 'undefined' || mode() === 'off') return;
-    const known = seen.get(c.key);
+    const known = seen.get(subjectFor(el, c));
     if (known && known.startsWith('data:')) { el._vcForge = known; show(el, known); return; }
-    if (known === 'asking') { (waiting.get(c.key) || waiting.set(c.key, new Set()).get(c.key)).add(el); return; }
+    if (known === 'asking') { (waiting.get(subjectFor(el, c)) || waiting.set(subjectFor(el, c), new Set()).get(subjectFor(el, c))).add(el); return; }
     if (known === 'plate') return;
     if (known === 'none') { if (autoOn()) paint(el, c, null); else button(el, c); return; }
-    seen.set(c.key, 'asking'); // one read per subject at a time
+    seen.set(subjectFor(el, c), 'asking'); // one read per subject at a time
     ask('GET', el, c).then((got) => {
       const img = got && got.state === 'art' ? safeImg(got.img) : '';
-      if (img) { seen.set(c.key, img); land(c.key, img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
-      seen.set(c.key, got && got.state === 'none' ? 'none' : 'plate');
+      if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
+      seen.set(subjectFor(el, c), got && got.state === 'none' ? 'none' : 'plate');
       if (got && got.state === 'none' && worthy(el, el._vcard || c)) { if (autoOn()) paint(el, c, null); else button(el, c); }
-    }).catch(() => seen.set(c.key, 'plate'));
+    }).catch(() => seen.set(subjectFor(el, c), 'plate'));
   } catch (_) {}
 }

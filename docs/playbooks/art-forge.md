@@ -8,6 +8,8 @@
 
 **Prompt rules:** a fixed template (`ART_STYLE` in `lib/art-rules.js`) plus the folded key, the kind and the rarity, each from an allow-list. No artist, franchise, game, company or character is named by us; a subject that is one, a person, sexual or hateful, secret-shaped or refused by the keeper gets no model call.
 
+**The subject is the answer's, not the ask's** (owner, 2026-10-17: the "pick a movie" card showed a generic door): `lib/card-subject.js` reads the answer text for its most repeated concrete words (no names), the paint prompt is those words, and until a painting lands the plate draws their motifs. A card with a real photo or poster is never painted over.
+
 **Commands:**
 1. `node --test tools/card-art-route.test.mjs tools/models.test.mjs` (route with a fake model and fake D1, the rules).
 2. `node tools/heavy.mjs node tools/test_void.mjs --only "V01D art forge"` (the page, route stubbed).
