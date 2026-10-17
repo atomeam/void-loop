@@ -2088,7 +2088,7 @@ try {
   if (want("V01D's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const body = (c) => "V01D's own model proposed this change. Why, in V01D's words: the matcher only knew ride words. V01D's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
     const prs = [{ number: 900, title: 'V01D fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
-      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', body: body('0.55'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
+      { number: 901, title: 'V01D fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
@@ -2098,8 +2098,8 @@ try {
     await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Void's review is clean/.test(await O.page()), 4000);
     const after = await O.page();
     const S = await fresh(); await S.ask("V01D's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
-    check("V01D's fixes: the owner previews the fixes V01D opened, the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
-      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · waits for you/.test(card)
+    check("V01D's fixes: the owner previews the fixes V01D opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
+      JSON.stringify(order) === '["901","900"]' && JSON.stringify(buttons) === '["901"]' && /2 open · 1 waiting for you/.test(card) && /confidence 0\.55 · void-live-deploy\/skills\/rides\.js line 42 · a draft on the board, not asking to merge/.test(card) && /High-impact change: it changes a structural line/.test(card)
         && /confidence 0\.92 .* merges itself on review/.test(card) && /<b>x<\/b>/.test(card) && /\+  return \/\^\(\?:ride\|how to get from\)/.test(card) && !/someone else/.test(card)
         && approvals.length === 1 && approvals[0].b.pr === 901 && approvals[0].b.op === 'approve' && approvals[0].auth === 'Bearer owner-k' && /Approved/.test(after)
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,

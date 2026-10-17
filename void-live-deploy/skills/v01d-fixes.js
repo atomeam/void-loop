@@ -37,7 +37,8 @@ async function run(text, api) {
   el.innerHTML = '<h2>V01D\'s fixes</h2><div class="sub">' + (fixes.length ? fixes.length + ' open · ' + fixes.filter((f) => f.waits).length + ' waiting for you (V01D was under 0.8 sure)' : 'None open: every fix I proposed has merged or been closed.') + '</div>'
     + fixes.map((f) => '<div class="vfix" data-pr="' + esc(f.number) + '" style="margin:12px 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)">'
       + '<div><a href="' + esc(f.url) + '" target="_blank" rel="noopener">#' + esc(f.number) + '</a> ' + esc(f.title) + '</div>'
-      + '<div class="sub">' + esc(pct(f.confidence)) + (f.where ? ' · ' + esc(f.where) : '') + ' · ' + (f.waits ? 'waits for you' : f.merges ? 'merges itself on review' : 'open') + '</div>'
+      + '<div class="sub">' + esc(pct(f.confidence)) + (f.where ? ' · ' + esc(f.where) : '') + ' · ' + (f.draft ? 'a draft on the board, not asking to merge' : f.waits ? 'waits for you' : f.merges ? 'merges itself on review' : 'open') + '</div>'
+      + (f.risk ? '<div class="sub vfix-risk" data-risk="' + esc(f.risk) + '"' + (f.risk === 'high' ? ' style="color:#ffb347"' : '') + '>' + (f.risk === 'high' ? 'High-impact change: ' : 'Risk ' + esc(f.risk) + ': ') + esc(f.riskWhy || '') + '</div>' : '')
       + (f.why ? '<p style="margin:6px 0">' + esc(f.why) + '</p>' : '')
       + '<pre class="vfix-diff" style="white-space:pre-wrap;word-break:break-word;background:rgba(255,255,255,.06);padding:8px 10px;border-radius:8px;font:12px/1.4 ui-monospace,Menlo,Consolas,monospace">…</pre>'
       + (f.waits ? '<p><button type="button" class="tr-copy" data-approve="' + esc(f.number) + '">Approve</button> <span class="vfix-said sub"></span></p>' : '')

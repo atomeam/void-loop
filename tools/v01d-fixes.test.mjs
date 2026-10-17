@@ -13,7 +13,7 @@ const pr = (n, c, labels) => ({ number: n, title: 'V01D fixes its rides skill: l
 
 test('a fix is read from its pull request: confidence, where, why, and whether it waits; only V01D\'s own count', () => {
   const f = fixOf(pr(901, '0.62', ['made by V01D', 'waits for owner']));
-  assert.deepEqual(f, { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', url: 'https://github.com/atomeam/void-loop/pull/901', confidence: 0.62, where: 'void-live-deploy/skills/rides.js lines 42, 57', why: 'the matcher only knew ride words', waits: true, merges: false });
+  assert.deepEqual(f, { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', url: 'https://github.com/atomeam/void-loop/pull/901', confidence: 0.62, where: 'void-live-deploy/skills/rides.js lines 42, 57', why: 'the matcher only knew ride words', risk: null, riskWhy: '', draft: false, waits: true, merges: false });
   assert.equal(fixOf(pr(902, 'none given', ['made by V01D', 'waits for owner'])).confidence, null);
   assert.equal(fixOf(pr(903, '0.9', ['automerge'])), null, 'not made by V01D');
   assert.equal(fixOf({ ...pr(904, '0.9', ['made by V01D']), html_url: 'https://evil.example/x' }).url, 'https://github.com/atomeam/void-loop/pull/904');
@@ -55,4 +55,28 @@ test('approve: owner only, needs a pull request number, a GitHub key, and a pull
     globalThis.fetch = fake(['made by V01D'], 'closed');
     assert.equal((await route.onRequestPost({ request: req({ pr: 903, op: 'approve' }), env: { READ_TOKEN: TOKEN, GITHUB_TOKEN: 'gh-test' } })).status, 502);
   } finally { globalThis.fetch = real; }
+});
+
+// asked by Void: a risk level on the proposal, and a fix under 0.8 is a draft on the board
+import { riskOf } from '../void-live-deploy/lib/propose-fix.js';
+import { readFileSync } from 'node:fs';
+test('risk level: lists are low, several or long pattern edits medium, a structural line high', () => {
+  assert.equal(riskOf([]).level, 'low');
+  assert.equal(riskOf([{ find: "  examples: ['ride to x'],", replace: "  examples: ['ride to x', 'cab to y']," }]).level, 'low');
+  assert.equal(riskOf([{ find: '  const RE = /^ride/;', replace: '  const RE = /^(?:ride|how to get from)/;' }]).level, 'low');
+  assert.equal(riskOf([{ find: '  const A = /^a/;', replace: '  const A = /^(?:a|b)/;' }, { find: '  const B = /^c/;', replace: '  const B = /^(?:c|d)/;' }]).level, 'medium');
+  assert.equal(riskOf([{ find: '  const A = /^a(?:long|alternative|list|of|words)/;', replace: '/^a/' }]).level, 'medium');
+  const hi = riskOf([{ find: '  async run(text, api) {', replace: '  async run(text, api) { x();' }]);
+  assert.equal(hi.level, 'high'); assert.match(hi.why, /structural/);
+  assert.equal(riskOf([{ find: 'export default {', replace: 'export default { a: 1,' }]).level, 'high');
+});
+test('the card reads the risk and the draft state from the pull request', () => {
+  const p = { ...pr(950, '0.5', ['made by V01D', 'waits for owner']), draft: true, body: body('0.5') + ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Model: m.' };
+  const f = fixOf(p); assert.equal(f.risk, 'high'); assert.match(f.riskWhy, /structural line/); assert.equal(f.draft, true);
+  const q = fixOf(pr(951, '0.9', ['made by V01D', 'automerge'])); assert.equal(q.risk, null); assert.equal(q.draft, false);
+});
+test('the workflow opens a fix under 0.8 as a draft, and says the risk in the body, the commit and the output', () => {
+  const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
+  assert.match(wf, /draft="--draft"/); assert.match(wf, /gh pr create \$draft /); assert.match(wf, /Risk: \$RISK\./); assert.match(wf, /risk=\$\(node -p/);
+  assert.match(wf, /\[ "\$gate" = "automerge" \] \|\| draft="--draft"/);
 });
