@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 23,
- "runsTotal": 135,
+ "cases": 24,
+ "runsTotal": 136,
  "kinds": {
-  "grow": 16,
+  "grow": 17,
   "file": 65,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:53:29Z",
+   "passed": 24,
+   "of": 26,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
+  },
   {
    "at": "2026-10-17T11:42:36Z",
    "passed": 16,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"group everything\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:50:25Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"set me a challenge with the gears\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -247,9 +247,9 @@
   "skill:rides": "2026-10-17T11:42:36Z",
   "skill:room": "2026-10-17T11:42:36Z",
   "skill:routine": "2026-10-17T11:42:36Z",
-  "skill:savings": "2026-10-16T18:17:08Z",
-  "skill:senolytic": "2026-10-16T18:17:08Z",
-  "skill:services": "2026-10-16T18:24:14Z",
+  "skill:savings": "2026-10-17T11:53:29Z",
+  "skill:senolytic": "2026-10-17T11:53:29Z",
+  "skill:services": "2026-10-17T11:53:29Z",
   "skill:shape": "2026-10-16T18:24:14Z",
   "skill:share": "2026-10-16T18:24:14Z",
   "skill:show": "2026-10-16T19:04:15Z",
