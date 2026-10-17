@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 402,
+ "counted": 405,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -78,6 +78,12 @@
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
+   "dependants": 3
+  },
+  {
+   "file": "lib/practice.js",
+   "skills": 3,
+   "direct": 2,
    "dependants": 3
   },
   {
@@ -226,6 +232,12 @@
   },
   {
    "file": "lib/routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/technical-context.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1886,6 +1898,16 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/practice.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/intent.js",
+    "skills/timer.js"
+   ],
+   "reachedBy": [
+    "skills/time.js"
+   ]
+  },
   "lib/price-lock.js": {
    "imports": [
     "lib/store.js"
@@ -2289,6 +2311,12 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/technical-context.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/technical-context.js"
+   ]
+  },
   "lib/tome.js": {
    "imports": [
     "lib/guide.js"
@@ -2676,7 +2704,9 @@
    "importedBy": []
   },
   "skills/country.js": {
-   "imports": [],
+   "imports": [
+    "skills/distance.js"
+   ],
    "importedBy": []
   },
   "skills/crypto.js": {
@@ -2733,7 +2763,9 @@
   },
   "skills/distance.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/country.js"
+   ]
   },
   "skills/draw.js": {
    "imports": [
@@ -3104,7 +3136,8 @@
   },
   "skills/intent.js": {
    "imports": [
-    "lib/plan.js"
+    "lib/plan.js",
+    "lib/practice.js"
    ],
    "importedBy": []
   },
@@ -3908,7 +3941,9 @@
    "imports": [
     "skills/void-ring.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/technical-context.js"
+   ]
   },
   "skills/share.js": {
    "imports": [],
@@ -4131,6 +4166,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/technical-context.js": {
+   "imports": [
+    "lib/technical-context.js",
+    "skills/shape.js"
+   ],
+   "importedBy": []
+  },
   "skills/throw-off.js": {
    "imports": [],
    "importedBy": []
@@ -4167,7 +4209,9 @@
    "importedBy": []
   },
   "skills/timer.js": {
-   "imports": [],
+   "imports": [
+    "lib/practice.js"
+   ],
    "importedBy": [
     "skills/time.js"
    ]
@@ -4236,6 +4280,9 @@
    "imports": [],
    "importedBy": [
     "skills/shape.js"
+   ],
+   "reachedBy": [
+    "skills/technical-context.js"
    ]
   },
   "skills/walls.js": {
