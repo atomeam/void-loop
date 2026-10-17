@@ -25,7 +25,7 @@ export function songCard(f, esc) {
     + (f.preview ? '<div class="mv-btns"><button class="g-btn md-preview" type="button">Play the 30-second preview</button></div><div class="sub">The official preview, from Apple. The full song is not streamed here.</div>' : '<div class="sub">No preview from the source: listen where it is sold or streamed legally.</div>')
     + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>' + SRC(esc);
 }
-function wire(el, f) {
+export function wire(el, f) {
   const b = el.querySelector('.md-preview'), box = el.querySelector('.mv-player'); if (!b || !box) return;
   b.addEventListener('click', () => { const a = document.createElement('audio'); a.controls = true; a.autoplay = true; a.src = f.preview; a.style.cssText = 'width:100%'; box.textContent = ''; box.append(a); });
 }

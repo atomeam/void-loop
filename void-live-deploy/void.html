@@ -5549,7 +5549,7 @@ say('nothing selected to remove');
       let text = sr && sr !== sr0 ? sr.replace(/^added: /, 'Added: ') : whisper.textContent || '';
       if (pg) {
         const c = pg.cloneNode(true);
-        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea').forEach((n) => n.remove());
+        c.querySelectorAll('.src, .sub, script, style, iframe, button, pre, code, input, textarea, [data-nospeak]').forEach((n) => n.remove());
         const said = (n) => (n.textContent || '').toLowerCase().replace(/[^\p{L}\p{N}]+/gu, ' ').trim();
         c.querySelectorAll('h1, h2').forEach((n) => { if (said(n) === said({ textContent: ask })) n.remove(); else n.append('. '); }); // the ask itself is not read back
         c.querySelectorAll('li, tr').forEach((n) => n.append('. ')); c.querySelectorAll('p, div, h3, h4, br').forEach((n) => n.append(' '));

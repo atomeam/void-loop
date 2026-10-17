@@ -779,6 +779,26 @@ try {
     check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
       rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
     await U.ctx.close(); }
+  // pick for me (owner, 2026-10-17: Max, but better): one found pick with its why, "something else" never repeats, a mood word is all the server hears, taste stays in the browser
+  if (want("pick for me: one found pick with its why, something else, a mood, forget my taste")) { const K = await fresh();
+    const bodies = [];
+    await K.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { bodies.push(JSON.parse(r.request().postData() || '{}').ask || ''); return r.fulfill(json({ answer: '1. Alpha Song - Band A\n2. Beta Song - Band B\n3. Gamma Song - Band C\n4. Fake Song Zork - Nobody' })); });
+    await K.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Fake Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'A', year: 1999, genre: 'Pop', poster: 'https://is1-ssl.mzstatic.com/x/400x400bb.jpg', preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [] })); });
+    const pg = () => K.p.$eval('.vpage.on .pick-say', (e) => e.textContent).catch(() => '');
+    await K.p.evaluate(() => localStorage.setItem('a2m.void.taste.v1', JSON.stringify({ mood: '', likes: [{ kind: 'music', title: 'Old Fave' }], dislikes: [], seen: [] })));
+    await K.ask('pick for me', 2200); const one = await pg();
+    await K.p.click('.vpage.on .pk-up'); await K.ask('something else', 2200); const two = await pg();
+    await K.ask('funnier', 2200); const three = await pg();
+    const stored = await K.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.taste.v1') || '{}'));
+    const title = (x) => (/How about (.+?) by /.exec(x) || [])[1];
+    const spoken = await K.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.src, .sub, button, [data-nospeak], .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((n) => n.remove()); return c.textContent.trim(); });
+    await K.ask('forget my taste', 800); const gone = await K.p.evaluate(() => localStorage.getItem('a2m.void.taste.v1'));
+    check('pick for me: says one found pick with its honest why (leaning on the thumbs-up kind), "something else" gives a different one, "funnier" sends only the mood word, the thumb is kept in the browser, only the pick line is spoken, "forget my taste" clears it',
+      title(one) && !/Fake Song/.test(one + two + three) && /thumbs-up to Old Fave/.test(one) && title(two) && title(two) !== title(one) && title(three) && title(three) !== title(two) && title(three) !== title(one)
+        && /funny/.test(bodies[2] || '') && !/Old Fave|Alpha|Beta/.test(bodies.join(' ')) && stored.mood === 'funny' && stored.likes.some((l) => l.title === title(one)) && spoken === three && gone === null && !K.errors.length,
+      JSON.stringify({ one, two, three, bodies, stored, spoken, gone, e: K.errors }));
+    await K.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -3523,6 +3543,8 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
+      check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Void)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
     await F.ctx.close(); }
   // deps: the dependency map card (asked by Void, its reflection of 2026-10-12, ask-20261012-1942-2: "Create a 'dependency map'
   // visualization that shows which skills (like 'forge') are most impacted by changes in core code imports"). On a phone: the rows

@@ -73,6 +73,21 @@ export function parts(f) {
   return { ...p, score: have.length ? Math.round(have.reduce((a, b) => a + b, 0) / have.length) : null };
 }
 
+/** which families push the day's score up or down (asked by Void: "link the daily growth score directly to the Family Health dashboard so I can see which
+ *  specific families are driving my score up or dragging it down"). The friction part is the mean health of all skills (failing 0, barely checked 0.5, else 1);
+ *  a family's lift is how far its skills sit above or below that mean, in friction points, and a fifth of that (one of the score's parts) in score points.
+ *  Sums to zero by construction: it says who pulls, relative to the average skill, not who is bad. [{ id, name, skills, health (0..100), lift, points }] by lift, or []. Pure. */
+export function familyDrivers(fam, nParts = PARTS.length) {
+  const fs = ((fam && fam.families) || []).filter((f) => f && Array.isArray(f.skills));
+  const hs = (f) => f.skills.filter((s) => s && s.name).map((s) => (Array.isArray(s.failing) && s.failing.length ? 0 : s.tier === 'experiment' || s.tier === 'tested' ? 0.5 : 1));
+  const all = fs.flatMap(hs), N = all.length;
+  if (!N) return [];
+  const mean = all.reduce((a, b) => a + b, 0) / N, k = Math.max(1, Math.min(PARTS.length, Math.round(nParts) || PARTS.length));
+  return fs.map((f) => { const h = hs(f), sum = h.reduce((a, b) => a + b, 0), lift = 100 * (sum - h.length * mean) / N;
+    return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), skills: h.length, health: h.length ? Math.round(100 * sum / h.length) : null, lift: r1(lift), points: Math.round(lift / k * 100) / 100 }; })
+    .filter((d) => d.skills).sort((a, b) => b.lift - a.lift || a.id.localeCompare(b.id));
+}
+
 /** how sure the day's score is (asked by Void: "a Confidence Interval on the daily score so the owner knows if a high score is based on 1,000 tests or just one
  *  lucky successful run"): the Wilson 95% interval of each part that is a count out of a total (self: changes not driven by the owner of this week's;
  *  friction: skills not failing or unsure of all skills; bench: asks answered of asked), the others held at their value, then averaged like the score.
