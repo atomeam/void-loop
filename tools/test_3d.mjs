@@ -279,9 +279,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     if (drawn) { await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-tree canvas'); if (c) c.scrollIntoView({ block: 'center' }); }); await F.p.waitForTimeout(300); }
     const at = drawn && await F.p.evaluate(async () => {
       const T = await import('/skills/growth-tree.js'); const list = await (await fetch('/void.growth.json')).json(); const t = T.layout(list);
-      return { pt: window.__voidMini.project('growth-tree', T.midpoint(t.branches[0])), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
+      const b0 = t.branches[0], along = (f) => b0.start.map((v, i) => v + b0.dir[i] * b0.length * f);
+      return { pts: [0.5, 0.15, 0.85, 0.3, 0.7].map((f) => window.__voidMini.project('growth-tree', along(f))), pt: window.__voidMini.project('growth-tree', T.midpoint(b0)), oldest: list[t.branches[0].index].what.slice(0, 40), trunk: t.branches[0].index, n: t.branches.length, inCard: !!document.querySelector('.vpage .growth-tree canvas'), state: window.__voidMini.state('growth-tree') };
     });
-    if (at && at.pt) await F.p.mouse.click(at.pt.x, at.pt.y);
+    // the trunk is one thing to touch: with hundreds of branches, leaves of its neighbours cover some of its length, so try along it until it takes the tap
+    if (at && at.pt) for (const pt of [at.pt, ...(at.pts || [])]) { if (!pt) continue; await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); if (await F.p.evaluate((i) => { const s = window.__voidMini.state('growth-tree'); return s && s.selected === i; }, at.trunk)) break; }
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
@@ -309,7 +311,8 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.evaluate(() => { window.__weekAgo = null; const look = () => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); if (s && s.until && !window.__weekAgo) window.__weekAgo = s; if (!window.__weekAgo) requestAnimationFrame(look); }; requestAnimationFrame(look); });
     await F.ask("what can you do now that you couldn't last week?");
     const seen = { weekAgo: null, today: null };
-    await until(async () => { const s = await F.p.evaluate(() => window.__voidMini && window.__voidMini.state('growth-tree')); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
+    // the tree grows while it is on screen and the card above it has grown long: keep it in view while waiting
+    await until(async () => { const s = await F.p.evaluate(() => { const cv = document.querySelector('.vpage .growth-tree canvas'); if (cv) cv.scrollIntoView({ block: 'center' }); return window.__voidMini && window.__voidMini.state('growth-tree'); }); if (s && s.until === null && !s.growing) seen.today = s; return seen.today; }, 60000);
     seen.weekAgo = await F.p.evaluate(() => window.__weekAgo);
     const day = await F.p.evaluate(() => { const d = document.querySelector('.vpage .growth-day'); return d && d.textContent; });
     const n = await F.p.evaluate(async () => (await import('/skills/growth-tree.js')).layout(await (await fetch('/void.growth.json')).json()).branches.length);

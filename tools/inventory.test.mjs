@@ -26,7 +26,7 @@ test('inventory: every printable thing is one whose file passed the print check 
   }
   const esc = (s) => String(s).replace(/</g, '&lt;');
   const html = printableHtml(esc, p);
-  assert.match(html, /Printable now · 10 of 10 checked/); assert.match(html, /Rocket/); assert.match(html, /export a print file/);
+  assert.match(html, /Printable now · (\d+) of \1 checked/); assert.match(html, /Rocket/); assert.match(html, /export a print file/);
 });
 
 test('inventory: a thing whose file fails the check is held back, with the reason', async () => {

@@ -61,12 +61,13 @@ function fromWeb(src) {
   return src.slice(0, 2).map((s) => s.text.replace(/\s+/g, ' ').trim()).filter(Boolean).join(' ').slice(0, 900);
 }
 
-async function rateLimited(request, env) {
+// bucket: another route (functions/api/merge.js) counts its own asks apart from answers, with its own cap, through this same helper
+export async function rateLimited(request, env, bucket = 'answer', max = RL_MAX) {
   try {
     const conn = await sha((request.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));
-    const cache = caches.default, rlReq = new Request(new URL(request.url).origin + '/__void-answer/rl/' + conn);
+    const cache = caches.default, rlReq = new Request(new URL(request.url).origin + '/__void-' + bucket + '/rl/' + conn);
     const n = parseInt((await (await cache.match(rlReq))?.text()) || '0', 10);
-    if (n >= RL_MAX) return true;
+    if (n >= max) return true;
     await cache.put(rlReq, new Response(String(n + 1), { headers: { 'cache-control': 'max-age=60' } }));
   } catch (_) {}
   return false;
@@ -352,7 +353,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
-  if (!self && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
+  if (!self && !isPaste(ask) && route.kind === 'skill' && route.skill === 'self') { self = true; selfP = readSelf(env, origin); src = []; }
   const facts = self ? selfFacts(await selfP) : '';
   let pub = src.map(({ title, url, edited }) => ({ title, url, edited }));
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';

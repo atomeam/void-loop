@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { oneLine, listOf, partsOf, gamesOf, miniDocOf, miniOwners, asksInHeader, compose, spreadOf, pagesOfSpread, glyphSvg, openerSvg, seedOf, TIERS, TIER_MEANING } from '../void-live-deploy/lib/guide.js';
+import { oneLine, listOf, partsOf, gamesOf, miniDocOf, miniOwners, asksInHeader, compose, glows, GLOW_ABOVE, spreadOf, pagesOfSpread, glyphSvg, openerSvg, seedOf, TIERS, TIER_MEANING } from '../void-live-deploy/lib/guide.js';
 import { bookFromRepo, textOf, OUT } from './guide.mjs';
 import guideSkill, { guideOf, pageHtml, tocHtml } from '../void-live-deploy/skills/guide.js';
 
@@ -132,4 +132,15 @@ test('completeness: the real book has every skill in skills/index.json (families
   for (const n of members) assert.ok(b.index.some((e) => e.page === b.pages.find((p) => p.kind === 'skill' && p.name === n).n), n + ' is in the index');
   for (const p of b.pages) if (p.kind === 'skill') { assert.ok(p.line && p.line.length > 3, p.name + ' has a line'); assert.ok(TIERS.includes(p.tier)); }
   assert.equal(readFileSync(OUT, 'utf8'), textOf(b), 'void-live-deploy/skills/guide.json is stale: node tools/guide.mjs');
+});
+
+// asked by Void: a 'proven' glow on a skill's book page when its success_rate in families.json is above 0.9
+test('a skill page glows only when its success_rate is above 0.9, and the glow is drawn', () => {
+  assert.equal(GLOW_ABOVE, 0.9);
+  for (const [r, want] of [[1, true], [0.999, true], [0.91, true], [0.9, false], [0.882, false], [0, false], [undefined, false], ['1', false], [1.2, false]]) assert.equal(glows(r), want, String(r));
+  const fam = { families: [{ id: 'stage', name: 'S', skills: [{ name: 'a', tier: 'proven', why: 'w', success_rate: 0.97 }, { name: 'b', tier: 'proven', why: 'w', success_rate: 0.8 }, { name: 'c', tier: 'tested', why: 'w' }] }] };
+  const b = compose({ names: ['a', 'b', 'c'], read: (n) => '/**\n * ' + n + ' skill: it does a thing.\n */', families: fam });
+  const by = (n) => b.pages.find((p) => p.kind === 'skill' && p.name === n);
+  assert.equal(by('a').glow, 97); assert.equal(by('b').glow, undefined); assert.equal(by('c').glow, undefined);
+  assert.match(glyphSvg(by('a')), /drop-shadow.*data-glow="97"/); assert.doesNotMatch(glyphSvg(by('b')), /drop-shadow|data-glow/);
 });

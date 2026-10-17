@@ -2,6 +2,123 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T03:10:05.058Z",
+   "sha": "3f81b55361e943ed0521432ebec85c8bfef3878c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38996768631",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T02:46:42.267Z",
+   "sha": "a35440baaf0f3e51b63e22d1c6975bfec94e3f24",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38995248704",
+   "suite": "browser suite on main",
+   "checks": [
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T02:29:23.535Z",
+   "sha": "dd4ef4aa76215615ea060916d616955469df1c0b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38994492083",
+   "suite": "browser suite on main",
+   "checks": [
+    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
+    "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:52:03.027Z",
+   "sha": "118d5ecd09e74f34bfe1b7f5498a22c4a289dd06",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38991612642",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:36:31.627Z",
+   "sha": "0df15c6da0c03acbeca6ee7452b9e7040d2fb2bb",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990834200",
+   "suite": "browser suite on main",
+   "checks": [
+    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
+    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
+    "V01D card game: an attack is played out and written in the log",
+    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
+    "the growth card shows friction (asked by Void): skills failing on the bench first, then the least checked, each with its reason, right under the velocity"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:24:48.468Z",
+   "sha": "bd7f504510a350c327ec77f894a409063d5942ca",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990100933",
+   "suite": "browser suite on main",
+   "checks": [
+    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
+    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
+    "V01D card game: an attack is played out and written in the log",
+    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:11:48.563Z",
+   "sha": "fdcd6be3155250be8f3660c4d0bf7797a0c37ed6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38988734705",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T00:49:37.246Z",
+   "sha": "c1a502f4090a7ef26095124b1527845f6872ea55",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38987030478",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T00:17:00.432Z",
+   "sha": "ad9d990869963c691c5346f1853692017d942eda",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38984586845",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-16T23:25:46.949Z",
+   "sha": "af2edc303ca4879cc7e90ce8652791fcee6d2694",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38980055910",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-16T22:52:19.475Z",
+   "sha": "2876ee4be3941c73f6a74a8cfc68e70efe582054",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38976984326",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-16T22:18:30.384Z",
    "sha": "8cd1733bd5a22ef1d874631b1cf9011e30acb50c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38973535170",
@@ -192,74 +309,6 @@
    "suite": "browser suite on main",
    "checks": [
     "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-16T04:06:16.511Z",
-   "sha": "24a139ac3d6a3b714defdd134f09e09bc91af4d1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38846458407",
-   "suite": "browser suite on main",
-   "checks": [
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-16T03:34:06.997Z",
-   "sha": "493a8ac2fb23250dd9af66cfa8ce94b6f27cfcfb",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38843781216",
-   "suite": "browser suite on main",
-   "checks": [
-    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides"
-   ]
-  },
-  {
-   "at": "2026-10-15T23:08:22.981Z",
-   "sha": "ad536f331f01ca03454917ce2032bf917977db9e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38819178020",
-   "suite": "browser suite on main",
-   "checks": [
-    "3d: closed cases and a phone: the clock and stopwatch backs are as wide as their cases and sit on their rear edge; on a touch screen a card with a miniature draws no filter shadow, a drag draws at 1x and sharpens after, and the clock redraws at most 8 times a second",
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-15T22:21:41.148Z",
-   "sha": "2f47d5a6ed21f6687f95e2bb3bfe4cccd208e726",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38813260228",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"my calendar\" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card"
-   ]
-  },
-  {
-   "at": "2026-10-15T21:10:57.535Z",
-   "sha": "d705b03ecffab92ab1e0ecd1b398d3021cd84323",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38804423754",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: \"my calendar\" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card",
-    "rebuild-map: show the map lists the 13 rows as they stand now"
-   ]
-  },
-  {
-   "at": "2026-10-15T20:31:42.711Z",
-   "sha": "e464d0f4a5c4925a5b741101e499556ba33f10ca",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38798751178",
-   "suite": "browser suite on main",
-   "checks": [
-    "404 page: a missing path answers 404 (not the homepage), noindex, V01D's dark stage, the path shown as text, the ask box focused, fits a 390 px phone",
-    "rebuild-map: show the map lists the 13 rows as they stand now",
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-15T20:02:20.199Z",
-   "sha": "70a90cae53d4dc7b698435f54ff9f1a2e78933b8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38795111476",
-   "suite": "browser suite on main",
-   "checks": [
-    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
-    "rebuild-map: show the map lists the 13 rows as they stand now"
    ]
   }
  ]

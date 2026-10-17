@@ -216,6 +216,7 @@ function pulse(root, fromId, toId) {
   const a = dot.animate([{ transform: 'translate(' + x1 + 'px,' + y1 + 'px)', opacity: 0.2 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 1, offset: 0.85 }, { transform: 'translate(' + x2 + 'px,' + y2 + 'px)', opacity: 0 }], { duration: 900, easing: 'ease-in-out' });
   a.onfinish = () => dot.remove();
 }
+import { note as notePulse } from '../lib/pulse.js';
 let lastStage = null; // the page's stageApi, kept from the last decorate(); outputs arrive as 'void:output' events
 function onOutput(e) {
   const st = lastStage, d = e && e.detail;
@@ -224,6 +225,7 @@ function onOutput(e) {
   if (!took.length) return;
   if (st.save) st.save();
   if (st.render) st.render();
+  for (const id of took) notePulse(d.id, id); // the pulse is recorded the moment it is added, not when a poll looks (lib/pulse.js; asked by Void)
   requestAnimationFrame(() => { for (const id of took) pulse(st.stage, d.id, id); });
 }
 if (typeof document !== 'undefined' && !globalThis.__voidLivingArrows) { globalThis.__voidLivingArrows = true; document.addEventListener('void:output', onOutput); }

@@ -9,6 +9,7 @@
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
+import { recovered, loadFailed, keepFailed, successPulse } from '../lib/success-pulse.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -117,6 +118,39 @@ export function causesOf(rows, incidents) {
     return hit && Array.isArray(hit.checks) && hit.checks.length ? { ...r, checks: hit.checks.map((c) => String(c).slice(0, 160)).slice(0, 5), suite: hit.suite || '' } : r;
   });
 }
+// the suggested fix and the recovery (asked by Void: "a 'suggested fix' snippet directly in the owner's status card failure trigger",
+// and twice "a 'recovery' button that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family"). A red
+// check names its own section ("appraise: ..."); the fix snippet is the two commands that find and then ship the repair, for that
+// section only. The recovery queues one job for the builder naming the check and the Void-itself skill that fits it best.
+export const SELF_SKILLS = ['v01d-fixes', 'rebuild-map', 'guide', 'growth', 'merges', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'family-health', 'deps', 'fringe-to-skill'];
+const sectionOf = (check) => String(check || '').split(/[:;]/)[0].replace(/["'`\u201c\u201d]/g, '').replace(/\s+/g, ' ').trim().split(' ').slice(0, 4).join(' ');
+/** { words, cmd, ship }: the commands that reproduce and then ship the repair of one failed check. Pure. */
+export function fixOf(check) {
+  const t = String(check || ''), timeout = /^check timeout/i.test(t), words = timeout ? '' : sectionOf(t);
+  if (!words) return { words: '', cmd: 'VOID_TRACE=1 node tools/heavy.mjs node tools/test_void.mjs --only core', ship: 'node tools/finish.mjs fix "what the timeout was" --test "core"', note: 'a stall: the trace names the check that hung' };
+  return { words, cmd: 'node tools/heavy.mjs node tools/test_void.mjs --only "' + words + '"', ship: 'node tools/finish.mjs fix "repair ' + words + '" --test "' + words + '"', note: '' };
+}
+/** the skill of V01D's own family that fits these failed checks best: the most name words found in them; v01d-fixes when none. Pure. */
+export function recoverSkill(checks, pool = SELF_SKILLS) {
+  const t = (Array.isArray(checks) ? checks.join(' ') : String(checks || '')).toLowerCase();
+  let best = 'v01d-fixes', top = 0;
+  for (const n of pool) { const hits = n.split('-').filter((w) => w.length > 2 && new RegExp('\\b' + w.replace(/s$/, '')).test(t)).length; if (hits > top) { best = n; top = hits; } }
+  return best;
+}
+/** the job the recovery button queues (the queue keeps 200 characters of the ask). Pure. */
+export function recoverJob(row) {
+  const checks = (row && row.checks) || [], skill = recoverSkill(checks), f = fixOf(checks[0] || '');
+  return { skill, ask: ('recover main (status card): rebuild with the ' + skill + ' skill; failing ' + (f.words || 'a stall') + (row && row.sha ? ' on ' + row.sha : '')).slice(0, 200), target: 'next' };
+}
+/** POST the recovery job to the owner's build queue. Owner key only; returns { ok, why, skill }. */
+export async function recover(row, fetchFn = (u, o) => fetch(u, o), key = ownerKey()) {
+  if (!key) return { ok: false, why: 'only the owner can start a rebuild' };
+  const job = recoverJob(row);
+  try {
+    const r = await fetchFn('/api/queue', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json' }, body: JSON.stringify({ ask: job.ask, target: job.target }) });
+    return r.ok ? { ok: true, skill: job.skill, why: 'queued for the builder with the ' + job.skill + ' skill' } : { ok: false, skill: job.skill, why: 'the queue answered HTTP ' + r.status };
+  } catch (_) { return { ok: false, skill: job.skill, why: 'the queue could not be reached' }; }
+}
 export async function withCauses(rows, fetchFn = (u, o) => fetch(u, o)) {
   if (!buildFailed(rows)) return rows;
   try { const r = await fetchFn('/incidents.json', { cache: 'no-cache' }); return r.ok ? causesOf(rows, await r.json()) : rows; } catch (_) { return rows; }
@@ -172,7 +206,9 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">V01D’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
       + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>'
-        + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span></td></tr>' : '')).join('') + '</table>' : '')
+        + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span>'
+          + '<div class="status-fix" style="margin-top:6px"><b>Suggested fix:</b> <code style="user-select:all">' + esc(fixOf(b.checks[0]).cmd) + '</code><br><span style="color:#8a8a92">then</span> <code style="user-select:all">' + esc(fixOf(b.checks[0]).ship) + '</code>' + (fixOf(b.checks[0]).note ? ' <span style="color:#8a8a92">(' + esc(fixOf(b.checks[0]).note) + ')</span>' : '')
+          + '<div style="margin-top:6px"><button type="button" data-recover="' + esc(b.sha || '') + '">Recover: queue a rebuild with ' + esc(recoverSkill(b.checks)) + '</button> <span data-recover-said style="color:#8a8a92"></span></div></div></td></tr>' : '')).join('') + '</table>' : '')
     + (support ? '<h3 style="margin:12px 0 4px;font-size:15px">Paying users who said it broke · ' + (support.open ? '<span style="color:#e0584a">' + support.open + ' waiting on you</span>' : 'none waiting') + '</h3>'
       + support.tickets.map((t) => '<p style="margin:4px 0"><b>' + esc(t.id) + '</b> · ' + esc(t.where) + ' · ' + esc(String(t.at).slice(0, 16).replace('T', ' ')) + '<br>' + esc(t.what) + '</p>').join('')
       + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
@@ -195,6 +231,16 @@ async function run(text, api) {
   const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions);
+  // a Success Pulse (asked by Void): something that failed at the last check and is fine now (a skill that did not load and does)
+  const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
+  const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
+  const back = recovered(loadFailed(), failing, [...checked, ...(skills.error ? [] : (loadFailed().filter((n) => n.startsWith('skill:'))))]);
+  keepFailed(failing);
+  if (back.length) { successPulse(); api.say('working again: ' + back.map((n) => n.replace(/^[a-z]+:/, '')).slice(0, 3).join(', ')); }
+  el.querySelectorAll('[data-recover]').forEach((btn) => btn.addEventListener('click', async () => {
+    const row = (build || []).find((b) => b.state === 'failed' && (b.sha || '') === btn.getAttribute('data-recover')) || { checks: [] }, said = el.querySelector('[data-recover-said]');
+    btn.disabled = true; const r = await recover(row); if (said) said.textContent = r.why; btn.disabled = false;
+  }));
   return 'status';
 }
 
