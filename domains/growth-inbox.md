@@ -1,3 +1,47 @@
+# Growth inbox
+
+**This is not the build list, and "no open rows here" never means there is nothing to do.** Since 2026-10-11 (cleanup step 2) every open item lives in `domains/void.frontier.md`; `node tools/next.mjs` lists them (12 open on 2026-10-12). Build from there. This file only collects new ideas (`tools/grow-ideas.mjs`) and is what Void reads about itself (`tools/self-context.mjs`); an idea that lands here is carried onto the frontier before anyone builds it.
+
+Shipped rows stay, with the main SHA. Rows are not deleted.
+
+| status | date | ask | source |
+| --- | --- | --- | --- |
+| shipped 2e52327 | 2026-10-02 | share this card | plan item 10, shared Voids |
+| shipped 8642810 | 2026-10-02 | answer me in Spanish | plan item 9, Void in other languages |
+| shipped d972baf | 2026-10-02 | remind me at 5 | plan item 7, connector behind the confirm line |
+| shipped 2e67f4b | 2026-10-03 | recent asks on an empty box | board Next #15 (Grok idea F001) |
+| shipped c5d99e8 | 2026-10-03 | show the magnetize step | board Next, magnetize-step card |
+| shipped ee370b3 | 2026-10-02 | what's already built | assimilate row 6, plan item 8 |
+| shipped d421518 | 2026-10-03 | throw it off the screen | figures-first dismiss (skill + stageKinds flick; main already throwable) |
+| shipped 1633dbd | 2026-10-03 | export a print file | void-stage, slicer 3MF (correction: row stayed "building" after this landed) |
+| shipped 952cb99 | 2026-10-03 | summon a figure | figures-first, living 3D |
+| shipped 3b6bbea | 2026-10-03 | spin the figure | figures-first, see the back |
+| shipped dbd08d3 | 2026-10-03 | days until new year | board later, date countdown (correction: row stayed "building" after this landed; outcome-card follow-up on helper/outcome-card-countdown) |
+| shipped ce74ceb | 2026-10-03 | read it aloud | plan item 4, voice (correction: row was stuck "open"; speechSynthesis read-aloud already shipped, listed in the self-page menu) |
+| shipped 6a04b90 | 2026-10-03 | make my void light | board later, light look (checked: no light-theme preset exists; LOOK_DEFAULT is dark-only. genuinely open, not stale) |
+| shipped d40bd25 | 2026-10-03 | what did you do today | plan item 8, ledger as a skill (correction: row was stuck "open"; wantsToday/showToday already shipped) |
+| shipped 4ee2383 | 2026-10-03 | dismiss this | figures-first, send it away (skill on main at 4ee2383) |
+| shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |
+| shipped 7293ca7 | 2026-10-04 | download the print file | export-to-print, file stays valid offline (print-download on main at 7293ca7; empty stage stays empty) |
+| shipped f249d1a | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim (cartoon on main at f249d1a) |
+| shipped 6af476e | 2026-10-04 | zoom in on the figure | collector detail, progressive (zoom-figure on main at 6af476e) |
+| shipped 231840b | 2026-10-04 | what can this figure do | figure stays on brand (figure-can on main at 231840b) |
+| shipped 4f5f122 | 2026-10-04 | show the countdown | days until a date (show-countdown on main at 4f5f122) |
+| shipped 6139fda | 2026-10-07 | bring the clock to the front | board Next #3, grouped objects / layers (z-order half: "send the note to the back", "send it to the back", "bring all the notes to the front"; grouping still open) |
+| shipped ef995a7 | 2026-10-07 | group the clock and the note | board Next #3, grouping half: drag one and they all move, "move the group to the top left", "make the group bigger", "bring the group to the front", "ungroup" (Next #3 complete) |
+| shipped 7ea644b | 2026-10-07 | label the clock kitchen | board Later, text annotation / labels: tags that ride with a thing, free labels ("add a label that says to do"), arrows that follow a drag ("draw an arrow from the clock to the note", "connect the timer to the counter", by label name too), "remove the arrows", "remove the labels" |
+| shipped check | 2026-10-10 | before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran a minute later (domains/void.voice.md); check `gh run list --workflow void-voice.yml --limit 3` and learn.yml and void-tick.yml first — if their recent runs are green and not "token not set" no-ops the secret already works, skip the rotation and report that; rotate only if a run shows the token missing or rejected | map PR #344 (gh secret list), for the bake-off session. Checked: void-voice.yml recent runs green (token set, 503 model busy on latest); void-tick.yml green but 401 (token set yet rejected by Pages READ_TOKEN); learn.yml no runs. Secret is set but does not match; do not rotate, rematch the Pages secret. |
+| shipped | 2026-10-15 | video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (official embeds), search with cards, platform switcher, queue, skip to a time, speed, captions, recently watched | asked by the owner (2026-10-15) |
+| shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Void (ask-20261014-1820-2, daily) |
+| building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Void (ask-20261014-1820-3, daily) |
+| shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Void (ask-20261014-1820-1, daily; base friction already shipped) |
+| building | 2026-10-17 | phone-cut films skill auto-generates promotional posters | asked by Void (ask-20261014-2134-3, daily); helper/phone-poster |
+| shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
+| open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
+| shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
+| building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
+| open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
+| open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
 | open | 2026-10-17 | UV index for any city from Open-Meteo | new idea: sun protection, no key |
 | open | 2026-10-17 | random void fact of the day | new idea: curiosity, pure client, no API |
 | open | 2026-10-17 | how many skills do you have | new idea: self-awareness from index.json |
