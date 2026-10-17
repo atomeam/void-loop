@@ -2,7 +2,7 @@
 // Copy gives readable text that ends in one code line; save downloads the same text as a file; pasting that text (or only the code line)
 // into V01D reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
-import { cardSvg, toPng } from './card-image.js';
+import { cardSvg, toPng, photoData } from './card-image.js';
 export const MARK = 'V01D-CARD:';
 const CODE_RE = /V01D-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
@@ -65,7 +65,7 @@ export function bar(el) {
   if (!el || el.querySelector(':scope > .vc-share') || el.classList.contains('skyc')) return;
   const w = document.createElement('div'); w.className = 'vc-share';
   const mk = (label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); w.appendChild(b); };
-  const png = (d) => toPng(cardSvg(imageData(el, d), { bleed: false }), 1);
+  const png = async (d) => { const ph = el.querySelector('img.vc-art-photo'), photo = ph ? await photoData(ph.getAttribute('src')) : ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
   mk('copy card', async () => {
     const d = readCard(el), text = shareText(d);
     try { if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) { await navigator.clipboard.write([new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }), 'image/png': png(d) })]); return 'copied'; } } catch (_) { /* the picture could not ride along: text only */ }
