@@ -1,14 +1,14 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { buildId, isStale, checkDue, CHECK_MS, NOTICE } from '../void-live-deploy/lib/stale-tab.js';
+import { idOf, isStale, checkDue, CHECK_MS, NOTICE } from '../void-live-deploy/lib/stale-tab.js';
 
-test('the build id follows the text and is empty for none', () => {
-  assert.equal(buildId('["a","b"]'), buildId('["a","b"]'));
-  assert.notEqual(buildId('["a","b"]'), buildId('["a","b","c"]'));
-  assert.match(buildId('x'), /^[0-9a-f]{8}$/);
-  assert.equal(buildId(''), ''); assert.equal(buildId(null), '');
+test('the id is the deploy commit, else the page ETag, else empty', () => {
+  assert.equal(idOf({ id: 'abc123' }, '"x"'), 'b:abc123');
+  assert.equal(idOf(null, '"x"'), 'e:"x"');
+  assert.equal(idOf({}, ''), ''); assert.equal(idOf(null, null), ''); assert.equal(idOf({ id: 5 }, undefined), '');
+  assert.notEqual(idOf({ id: 'a' }), idOf({ id: 'b' }));
 });
-test('only two known, different ids are stale', () => {
+test('only two known, different ids are stale: a changed ETag or commit is stale, the same is fresh, a missing header says nothing', () => {
   assert.equal(isStale('aa', 'bb'), true);
   assert.equal(isStale('aa', 'aa'), false);
   assert.equal(isStale('', 'bb'), false); assert.equal(isStale('aa', ''), false); // an unreadable check says nothing
