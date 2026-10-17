@@ -40,6 +40,8 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
-| building | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers; skill better-score on helper/better-score |
+| building | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers; dedicated better-score skill on helper/better-score |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
-| open | 2026-10-17 | link pick a movie output to film-metadata JSON | asked by Void (ask-20261017-2029-1, daily); new idea to keep open |
+| open | 2026-10-17 | show today's better score as its own card | invented to keep the inbox open; better-score skill |
+| open | 2026-10-17 | family-gravity so same-family cards drift toward a common center | asked by Void (ask-20261017-2029-2, daily) |
+| open | 2026-10-17 | turn daily miss list into queued autonomous skill jobs | asked by Void (ask-20261017-2029-3, daily) |
