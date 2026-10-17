@@ -208,12 +208,9 @@
      "name": "shape",
      "tier": "checked",
      "why": "2 browser-suite mentions, 1 real ask in the benchmark",
-     "failing": [
-      "summon a square"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0,
+     "success_rate": 1,
      "streak": 1
     },
     {
@@ -642,33 +639,29 @@
      "name": "timer",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 34 real asks in the benchmark",
-     "failing": [
-      "set a timer for 10 minutes",
-      "make a 5 minute timer",
-      "set a 5 minute timer"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.706
+     "success_rate": 1
     },
     {
      "name": "clock",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
-     "failing": [
-      "show me a clock"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0
+     "success_rate": 1
     },
     {
      "name": "countdown",
      "tier": "proven",
      "why": "a self-test, 8 browser-suite mentions, 18 real asks in the benchmark",
+     "failing": [
+      "how many days until summer",
+      "how many days until spring"
+     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "success_rate": 1
+     "success_rate": 0.889
     },
     {
      "name": "event-countdown",
@@ -714,9 +707,12 @@
      "name": "holidays",
      "tier": "tested",
      "why": "19 real asks in the benchmark",
+     "failing": [
+      "how many days until summer"
+     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1
+     "success_rate": 0.947
     },
     {
      "name": "work",
@@ -770,11 +766,12 @@
      "tier": "proven",
      "why": "a self-test, 829 real asks in the benchmark",
      "failing": [
-      "open the calculator"
+      "how many days until summer",
+      "how many days until spring"
      ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.999,
+     "success_rate": 0.998,
      "streak": 1
     },
     {
@@ -1060,9 +1057,12 @@
      "name": "define",
      "tier": "proven",
      "why": "a self-test, 41 real asks in the benchmark",
+     "failing": [
+      "what language does the word kindergarten come from"
+     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.976,
      "streak": 1
     },
     {
@@ -1287,12 +1287,9 @@
      "name": "notepad",
      "tier": "proven",
      "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
-     "failing": [
-      "open a notepad"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "success_rate": 0.8,
+     "success_rate": 1,
      "streak": 1
     },
     {
@@ -1348,13 +1345,9 @@
      "name": "list",
      "tier": "proven",
      "why": "a self-test, 7 browser-suite mentions, 17 real asks in the benchmark",
-     "failing": [
-      "make a list",
-      "make a todo list"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.882,
+     "success_rate": 1,
      "streak": 1
     },
     {
@@ -1510,9 +1503,14 @@
      "name": "intent",
      "tier": "proven",
      "why": "a self-test, 13 browser-suite mentions, 37 real asks in the benchmark",
+     "failing": [
+      "plan my garden",
+      "make a plan to learn Spanish",
+      "can you make me a plan to learn guitar"
+     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "success_rate": 1,
+     "success_rate": 0.514,
      "streak": 1
     },
     {
@@ -1561,13 +1559,9 @@
      "name": "status",
      "tier": "proven",
      "why": "a self-test, 6 browser-suite mentions, 5 real asks in the benchmark",
-     "failing": [
-      "void status",
-      "are the sources up"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "success_rate": 0.6,
+     "success_rate": 1,
      "streak": 1
     },
     {
@@ -1610,14 +1604,9 @@
      "name": "services",
      "tier": "proven",
      "why": "a self-test, 9 real asks in the benchmark",
-     "failing": [
-      "pricing",
-      "price list",
-      "what does void cost"
-     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.556,
+     "success_rate": 1,
      "streak": 1
     },
     {
