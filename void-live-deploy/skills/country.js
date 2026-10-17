@@ -3,6 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "capital of Australia", "population of Japan", "what currency does Brazil use", "languages spoken in Switzerland".
  */
+import { geo, km, flightTime } from './distance.js';
 const FIELDS = { capital: 'capital', population: 'population', currency: 'currencies', currencies: 'currencies', language: 'languages', languages: 'languages', area: 'area', flag: 'flags', size: 'area' };
 export function countryOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -107,8 +108,20 @@ async function run(text, api) {
   const { showPage, esc } = api;
   const cq = compareOf(text);
   if (cq) {
-    showPage((p) => { p.innerHTML = '<h2>' + esc(cq.a + ' and ' + cq.b) + '</h2><ul style="padding-left:18px"><li><b>' + esc(cq.a) + '</b> capital ' + esc(cq.capA) + '</li><li><b>' + esc(cq.b) + '</b> capital ' + esc(cq.capB) + '</li></ul>'
+    const shownEl = showPage((p) => { p.innerHTML = '<h2>' + esc(cq.a + ' and ' + cq.b) + '</h2><ul style="padding-left:18px"><li><b>' + esc(cq.a) + '</b> capital ' + esc(cq.capA) + '</li><li><b>' + esc(cq.b) + '</b> capital ' + esc(cq.capB) + '</li></ul>'
       + '<p><a href="#" data-ask="' + esc(cq.distance) + '">How far apart</a> · <a href="#" data-ask="' + esc(cq.flight) + '">Flight time</a> · <a href="#" data-ask="' + esc('population of ' + cq.a) + '">' + esc(cq.a) + ' facts</a> · <a href="#" data-ask="' + esc('population of ' + cq.b) + '">' + esc(cq.b) + ' facts</a></p>'; });
+    // linked to the distance skill (asked by Void): the travel metrics come up on the card by themselves, from the same place
+    // lookup and great-circle sum as "distance from X to Y"; the links above stay if the place service does not answer
+    try {
+      const [ga, gb] = await Promise.all([geo(cq.capA.replace(/ DC$/, '')), geo(cq.capB.replace(/ DC$/, ''))]);
+      if (shownEl && ga && gb && api._pageStill(shownEl)) {
+        const d = km(ga, gb), line = document.createElement('div');
+        line.className = 'travel-metric';
+        line.style.cssText = 'margin:8px 0;padding:8px 12px;border-left:3px solid #7aa2ff';
+        line.innerHTML = '<b>' + esc(Math.round(d).toLocaleString()) + ' km</b> (' + esc(Math.round(d * 0.621371).toLocaleString()) + ' miles) between ' + esc(cq.capA) + ' and ' + esc(cq.capB) + ' in a straight line · ' + esc(flightTime(d)) + ' in the air, roughly';
+        shownEl.insertBefore(line, shownEl.querySelector('p'));
+      }
+    } catch (_) {}
     return 'country';
   }
   const q = countryOf(text);

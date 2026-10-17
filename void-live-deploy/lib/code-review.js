@@ -818,7 +818,8 @@ export function ruleReview(code, opts = {}) {
       // filters to added lines afterwards, so a first hit on an old line must not hide the new ones)
       const same = opts.collapse !== false && found.find((f) => f.rule === id && (kind === 'style' || kind === 'note'));
       if (same) { same.also = (same.also || 0) + 1; continue; }
-      found.push({ line: i + 1, kind, rule: id, message, text: redact(r.trim()).slice(0, 160) });
+      const whole = redact(r.trim()); // a line longer than 160 shows its start and says so: `more`, and the page's peek button shows the rest (asked by Void)
+      found.push({ line: i + 1, kind, rule: id, message, text: whole.slice(0, 160), ...(whole.length > 160 ? { more: true } : {}) });
     }
   }
   found.sort((a, b) => ORDER[a.kind] - ORDER[b.kind] || a.line - b.line);

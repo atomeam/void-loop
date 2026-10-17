@@ -2,12 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T00:38:26.192Z",
-   "sha": "04b71c086962d53f78d845f7336a6b5f402a9452",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38986652190",
+   "at": "2026-10-17T01:23:40.090Z",
+   "sha": "94ec3bad7401e4f9e21c2298a996e16be0f2f4d2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38989981148",
    "suite": "browser suite on main",
    "checks": [
-    "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the eleven recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built"
+    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
+    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
+    "V01D card game: an attack is played out and written in the log"
+   ]
+  },
+  {
+   "at": "2026-10-17T01:11:48.563Z",
+   "sha": "fdcd6be3155250be8f3660c4d0bf7797a0c37ed6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38988734705",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T00:49:37.246Z",
+   "sha": "c1a502f4090a7ef26095124b1527845f6872ea55",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38987030478",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
@@ -283,27 +303,6 @@
    "suite": "browser suite on main",
    "checks": [
     "calendar: \"my calendar\" opens the 3D wall calendar; tap a day, add an event and rename it in place; saved here, written on the day, on the stage card",
-    "rebuild-map: show the map lists the 13 rows as they stand now"
-   ]
-  },
-  {
-   "at": "2026-10-15T20:31:42.711Z",
-   "sha": "e464d0f4a5c4925a5b741101e499556ba33f10ca",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38798751178",
-   "suite": "browser suite on main",
-   "checks": [
-    "404 page: a missing path answers 404 (not the homepage), noindex, V01D's dark stage, the path shown as text, the ask box focused, fits a 390 px phone",
-    "rebuild-map: show the map lists the 13 rows as they stand now",
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
-   ]
-  },
-  {
-   "at": "2026-10-15T20:02:20.199Z",
-   "sha": "70a90cae53d4dc7b698435f54ff9f1a2e78933b8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38795111476",
-   "suite": "browser suite on main",
-   "checks": [
-    "actions card: a running record settles to done by itself one keepLive tick later (clock faked), the caption says when; a page is 30 and Show more brings the rest, then hides",
     "rebuild-map: show the map lists the 13 rows as they stand now"
    ]
   }
