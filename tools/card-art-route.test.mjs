@@ -65,7 +65,7 @@ test('the daily cap: over it, the card keeps its plate and the model is not aske
   const over = await (await post(env, 'owl')).json(); assert.deepEqual([over.state, over.why], ['plate', 'cap']); assert.equal(calls.length, 2);
   assert.deepEqual((await (await get(env, 'owl')).json()).why, 'cap');
   assert.equal((await (await post(env, 'cat')).json()).state, 'art', 'a cached picture is still served at the cap');
-  assert.equal(route.capOf({}), 30); assert.equal(route.capOf({ ART_DAILY_CAP: 'x' }), 30); assert.equal(route.capOf({ ART_DAILY_CAP: '0' }), 0);
+  assert.equal(route.capOf({}), 30); assert.equal(route.capOf({ ART_DAILY_CAP: 'x' }), 30); assert.equal(route.capOf({ ART_DAILY_CAP: '0' }), 0); assert.equal(route.capOf({ ART_DAILY_CAP: '500' }), 30, 'no setting spends past the free allowance: the budget is earnings only');
   const zero = world({ extra: { ART_DAILY_CAP: '0' } }); assert.equal((await (await post(zero.env, 'cat')).json()).why, 'cap');
 });
 
@@ -118,9 +118,11 @@ test('the Art Forge names a model only through lib/models.js, and the card frame
   assert.ok(!/@cf\//.test(readFileSync(new URL('../void-live-deploy/functions/api/card-art.js', import.meta.url), 'utf8')));
 });
 
-test('the pre-paint plan folds, de-duplicates and drops what the route would refuse', async () => {
-  const { plan, STARTER } = await import('./prepaint-art.mjs');
-  const p = plan(['A Cat', 'cats', 'Mickey Mouse', '', 'dragon']);
-  assert.ok(p.out.includes('cat') && p.out.includes('dragon') && p.out.length === 2 && p.dropped.length === 1, JSON.stringify(p));
-  assert.equal(plan(STARTER).dropped.length, 0);
+test('the backfill plan walks the skills and miniatures, leaves real-art kinds, and counts the days at the cap', async () => {
+  const { plan, known, daysLeft } = await import('./prepaint-art.mjs');
+  const p = plan(['tip-calculator', 'tip calculator', 'film', 'songs', 'dragon', '']);
+  assert.deepEqual(p.out, ['tip calculator', 'dragon']); assert.equal(p.dropped.length, 2);
+  const all = known(); assert.ok(all.length > 140 && all.includes('tip') && plan(all).out.length > 100, String(all.length));
+  assert.equal(daysLeft(61), 3); assert.equal(daysLeft(0), 0);
+  assert.equal(route.capOf({}), 30, 'the backfill does not move the cap');
 });

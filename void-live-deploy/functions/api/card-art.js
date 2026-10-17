@@ -24,8 +24,11 @@ import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, image
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30;
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
 const on = (env) => !!(env && env.AI) && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
-/** the daily cap: ART_DAILY_CAP when it is a whole number from 0 up, else 30. Pure. */
-export const capOf = (env) => { const n = Math.floor(Number(env && env.ART_DAILY_CAP)); return Number.isFinite(n) && n >= 0 && String(env.ART_DAILY_CAP).trim() !== '' ? Math.min(n, 1000) : DEFAULT_CAP; };
+/** the daily cap (owner, 2026-10-17: V01D spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
+ *  and NEVER above FREE_CAP, the free allowance's share this route may use. There is deliberately no path past it: raising it later means reading /api/earnings
+ *  (owner-only, net of refunds) for money that covers it and logging each paid painting publicly, and that code does not exist yet. Pure. */
+export const FREE_CAP = 30;
+export const capOf = (env) => { const n = Math.floor(Number(env && env.ART_DAILY_CAP)); return Number.isFinite(n) && n >= 0 && String(env.ART_DAILY_CAP).trim() !== '' ? Math.min(n, FREE_CAP) : DEFAULT_CAP; };
 const today = () => new Date().toISOString().slice(0, 10);
 const isSecret = (t) => redact(t) !== t || scrubOut(t) !== t;
 
