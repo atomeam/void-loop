@@ -2,18 +2,18 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T01:43:22.121Z",
-   "sha": "b7e9acb3783348e447453b20497704394a531742",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38990991982",
+   "at": "2026-10-17T01:44:07.612Z",
+   "sha": "c3b96f65e4d2d6e26cf9d3447e872c05cc97b70e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38991122592",
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-17T01:27:28.829Z",
-   "sha": "e5688fc9e2919ce00da1cbf24b5111aa87309b32",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38989874463",
+   "at": "2026-10-17T01:29:39.536Z",
+   "sha": "bd7f504510a350c327ec77f894a409063d5942ca",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990100933",
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
