@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 412,
+ "counted": 418,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -105,6 +105,12 @@
    "dependants": 3
   },
   {
+   "file": "lib/guide.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 7
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -159,6 +165,12 @@
    "dependants": 12
   },
   {
+   "file": "lib/watch.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 10
+  },
+  {
    "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
@@ -189,22 +201,22 @@
    "dependants": 7
   },
   {
-   "file": "lib/watch.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 7
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 5
-  },
-  {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
    "dependants": 5
+  },
+  {
+   "file": "lib/card-kinds.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3
+  },
+  {
+   "file": "lib/rules-engine.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 3
   },
   {
    "file": "lib/shared-routines.js",
@@ -219,6 +231,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/card-frame.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
    "file": "lib/v01d-fixes.js",
    "skills": 1,
    "direct": 1,
@@ -226,6 +244,12 @@
   },
   {
    "file": "lib/context-check.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/duel-rules.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -262,6 +286,12 @@
   },
   {
    "file": "lib/routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/rules-play.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -345,6 +375,12 @@
    "dependants": 10
   },
   {
+   "file": "lib/automations.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -369,7 +405,7 @@
    "dependants": 6
   },
   {
-   "file": "lib/automations.js",
+   "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5
@@ -397,12 +433,6 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5
-  },
-  {
-   "file": "lib/automations-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 4
   },
   {
    "file": "lib/cite.js",
@@ -477,6 +507,12 @@
    "dependants": 3
   },
   {
+   "file": "lib/keep-going.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
+  },
+  {
    "file": "lib/learn.js",
    "skills": 0,
    "direct": 0,
@@ -520,12 +556,6 @@
   },
   {
    "file": "lib/book-face.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1
-  },
-  {
-   "file": "lib/card-kinds.js",
    "skills": 0,
    "direct": 0,
    "dependants": 1
@@ -597,12 +627,6 @@
    "dependants": 0
   },
   {
-   "file": "lib/card-frame.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0
-  },
-  {
    "file": "lib/film-share.js",
    "skills": 0,
    "direct": 0,
@@ -646,6 +670,12 @@
   },
   {
    "file": "lib/reinvest.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/rule-propose.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -727,6 +757,8 @@
     "lib/router.js",
     "lib/actions.js",
     "lib/email-send.js",
+    "lib/keep-going.js",
+    "lib/automations-run.js",
     "lib/approval-core.js"
    ],
    "importedBy": []
@@ -1157,7 +1189,8 @@
   },
   "lib/approval-core.js": {
    "imports": [
-    "lib/models.js"
+    "lib/models.js",
+    "lib/keep-going.js"
    ],
    "importedBy": [
     "functions/api/approval.js"
@@ -1308,6 +1341,7 @@
     "lib/guard.js"
    ],
    "importedBy": [
+    "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
@@ -1321,11 +1355,14 @@
    "importedBy": [
     "functions/api/automations.js",
     "functions/api/watch.js",
-    "lib/automations-run.js"
+    "lib/automations-run.js",
+    "lib/keep-going.js"
    ],
    "reachedBy": [
+    "functions/api/approval.js",
     "functions/api/automations/tick.js",
-    "functions/api/hook/[id].js"
+    "functions/api/hook/[id].js",
+    "lib/approval-core.js"
    ]
   },
   "lib/bench-asks.js": {
@@ -1387,12 +1424,19 @@
     "lib/guide.js",
     "lib/card-kinds.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js"
+   ]
   },
   "lib/card-kinds.js": {
    "imports": [],
    "importedBy": [
     "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js"
    ]
   },
   "lib/cite.js": {
@@ -1486,6 +1530,14 @@
    "reachedBy": [
     "functions/api/mcp.js",
     "functions/tools.json.js"
+   ]
+  },
+  "lib/duel-rules.js": {
+   "imports": [
+    "lib/card-frame.js"
+   ],
+   "importedBy": [
+    "skills/duel.js"
    ]
   },
   "lib/earnings.js": {
@@ -1605,6 +1657,10 @@
     "lib/tome.js",
     "skills/guide.js",
     "skills/mini/book.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js"
    ]
   },
   "lib/gumroad.js": {
@@ -1666,6 +1722,15 @@
    ],
    "importedBy": [
     "functions/api/queue.js"
+   ]
+  },
+  "lib/keep-going.js": {
+   "imports": [
+    "lib/automations.js"
+   ],
+   "importedBy": [
+    "functions/api/approval.js",
+    "lib/approval-core.js"
    ]
   },
   "lib/keeper.js": {
@@ -2178,6 +2243,30 @@
     "skills/zoom-figure.js"
    ]
   },
+  "lib/rule-propose.js": {
+   "imports": [
+    "lib/rules-engine.js"
+   ],
+   "importedBy": []
+  },
+  "lib/rules-engine.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/rule-propose.js",
+    "lib/rules-play.js"
+   ],
+   "reachedBy": [
+    "skills/duel.js"
+   ]
+  },
+  "lib/rules-play.js": {
+   "imports": [
+    "lib/rules-engine.js"
+   ],
+   "importedBy": [
+    "skills/duel.js"
+   ]
+  },
   "lib/sale-jobs.js": {
    "imports": [
     "lib/products.js",
@@ -2495,9 +2584,12 @@
     "skills/watch.js"
    ],
    "reachedBy": [
+    "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/hook/[id].js"
+    "functions/api/hook/[id].js",
+    "lib/approval-core.js",
+    "lib/keep-going.js"
    ]
   },
   "lib/webauthn.js": {
@@ -2863,6 +2955,14 @@
   },
   "skills/drone.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/duel.js": {
+   "imports": [
+    "lib/duel-rules.js",
+    "lib/card-frame.js",
+    "lib/rules-play.js"
+   ],
    "importedBy": []
   },
   "skills/eclipse.js": {

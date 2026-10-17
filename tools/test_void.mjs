@@ -2540,6 +2540,37 @@ try {
     check('arena day over day: "how good are you at connect four" says the change since the last day that differed, from the history the daily run keeps (here: ' + arenaDelta(rec.history) + ')',
       Array.isArray(rec.history) && rec.history.length >= 1 && delta === 'Day over day: ' + arenaDelta(rec.history) + '.' && !A.errors.length, JSON.stringify({ delta, history: rec.history, e: A.errors }));
     await A.ctx.close(); }
+  // V01D card game (frontier #33 steps 1 and 2): "duel" puts a table of V01D cards on the stage; a person summons an idea, passes, attacks, and V01D plays the other side.
+  if (want("V01D card game: duel puts a table of V01D cards on the stage, you summon an idea, pass and attack, and V01D plays its side")) {
+    const G = await fresh(); await G.p.setViewportSize({ width: 375, height: 760 }); await G.ask('duel', 900);
+    await G.p.waitForSelector('.duel-card .duel-tile', { timeout: 6000 }).catch(() => {});
+    const bar = () => G.p.evaluate(() => (document.querySelector('.duel-card .d-bar') || {}).textContent || '');
+    const yours = () => G.p.evaluate(() => document.querySelectorAll('.duel-card .d-me .duel-tile').length), theirs = () => G.p.evaluate(() => document.querySelectorAll('.duel-card .d-foe .duel-tile').length);
+    const myTurn = (n) => G.p.waitForFunction((k) => /your move/.test((document.querySelector('.duel-card .d-bar') || {}).textContent || '') && (k == null || new RegExp('Turn ' + k + ' of').test(document.querySelector('.duel-card .d-bar').textContent)), n, { timeout: 8000 }).then(() => true, () => false);
+    const fit = await G.p.evaluate(() => { const r = document.querySelector('.duel-card').getBoundingClientRect(); return { l: r.left, r: r.right, w: innerWidth, sw: document.documentElement.scrollWidth, tiles: document.querySelectorAll('.duel-card .duel-tile').length, arrows: document.querySelectorAll('.duel-card .vc-arrows').length }; });
+    check('V01D card game: "duel" puts a table on the stage with both Roots as V01D cards (with arrows), the Treasury and the turn, and it fits a 375 px phone', fit.tiles === 2 && fit.arrows === 2 && /Turn 1 of 12/.test(await bar()) && /Treasury: you 8/.test(await bar()) && fit.r <= fit.w + 1 && fit.l >= -1 && fit.sw <= fit.w + 1, JSON.stringify({ fit, bar: await bar() }));
+    await G.p.fill('.duel-card .d-idea', 'dragon'); await G.p.click('.duel-card .d-summon'); await G.p.click('.duel-card .duel-open'); await G.p.click('.duel-card .d-confirm');
+    check('V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1', await yours() === 3 && /Treasury: you 7/.test(await bar()) && await G.p.evaluate(() => /dragon/i.test(document.querySelector('.duel-card .d-me').textContent)), await bar());
+    await G.p.click('.duel-card .d-pass'); const back = await myTurn(2);
+    check('V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2', back && await theirs() >= 2 && /Treasury: you 11/.test(await bar()), await bar() + ' foe tiles ' + await theirs());
+    await G.p.click('.duel-card .d-me .duel-tile'); await G.p.click('.duel-card .d-foe .duel-tile'); await G.p.click('.duel-card .d-confirm');
+    const ans = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 1500 }).then(() => true, () => false); if (ans) await G.p.click('.duel-card .d-answer'); // V01D answers by itself when it is the defender
+    await G.p.waitForTimeout(400);
+    check('V01D card game: an attack is played out and written in the log', await G.p.evaluate(() => /fails against|neutralises/.test((document.querySelector('.duel-card .d-log') || {}).textContent || '')), await G.p.evaluate(() => (document.querySelector('.duel-card .d-log') || {}).textContent));
+    await myTurn(); await G.ask('summon a comet', 400);
+    check('V01D card game: "summon <idea>" typed while a duel is on the stage prepares that card on the table (not a new duel)', await G.p.evaluate(() => document.querySelectorAll('.duel-card').length === 1 && document.querySelector('.duel-card .d-idea').value === 'a comet'), await G.p.evaluate(() => document.querySelector('.duel-card .d-idea').value));
+    check('V01D card game: no page errors through a few real turns', !G.errors.length, JSON.stringify(G.errors));
+    await G.ctx.close(); }
+  // V01D rules engine (frontier #35): "duel with mana and tribute rules" loads three rule sets as one stack, plays a few turns and writes every clash in words.
+  if (want("V01D rules engine: \"duel with mana and tribute rules\" puts the three rule sets in force at once, plays turns and writes the clash in plain words")) {
+    const R = await fresh(); await R.ask('duel with mana and tribute rules', 900);
+    await R.p.waitForSelector('.rules-card .r-log li', { timeout: 8000 }).catch(() => {});
+    const got = await R.p.evaluate(() => ({ sets: [...document.querySelectorAll('.rules-card .r-set')].map((e) => e.textContent), clash: [...document.querySelectorAll('.rules-card .r-log li.clash')].map((e) => e.textContent), lines: document.querySelectorAll('.rules-card .r-log li').length, tiles: document.querySelectorAll('.rules-card .duel-tile').length, plain: !/undefined|\[object|NaN/.test((document.querySelector('.rules-card .r-log') || {}).textContent || ''), duel: document.querySelectorAll('.duel-card:not(.rules-card)').length }));
+    check('V01D rules engine: "duel with mana and tribute rules" shows all three rule sets in force at once', got.sets.length === 3 && got.duel === 0, JSON.stringify(got.sets));
+    check('V01D rules engine: the clash between the tribute rule and the duel rule is written in plain words with how it was settled', got.clash.some((l) => /^Clash on the summon: the tribute rules/.test(l) && /layer 1 is settled before layer 2/.test(l)) && got.plain, JSON.stringify(got.clash.slice(0, 1)));
+    check('V01D rules engine: a few turns were played and drawn as V01D cards', got.lines > 10 && got.tiles >= 4, JSON.stringify({ lines: got.lines, tiles: got.tiles }));
+    check('V01D rules engine: no page errors', !R.errors.length, JSON.stringify(R.errors));
+    await R.ctx.close(); }
   // the self-play arena's record (frontier #5): "how good are you at connect four" answers from /arena.json, the games' own ratings, with the curve, and opens no game.
   if (want("the self-play arena's record (frontier #5): \"how good are you at connect four\" answers")) {
     const A = await fresh(); await A.ask('how good are you at connect four', 900); await A.p.waitForFunction(() => /Rated from/.test((document.querySelector('[data-arena-say]') || {}).textContent || ''), null, { timeout: 5000 }).catch(() => {});

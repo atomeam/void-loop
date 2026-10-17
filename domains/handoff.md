@@ -15,6 +15,9 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (asks-services agent) · helper/asks-services · V01D's services asks: approval card → lasting task, state skill, review-learn clusters, diff peek, dep scanner, skills-check re-registration, automerge safety-check + merge-log card, Game Strength, ladder → growth card, Service Health, Contextual Shortcut, country ↔ distance, readable self-knowledge; canon motto declined · 2026-10-16 18:30 UTC
+- Claude (rules engine) · helper/card-duel · frontier #35: lib/rules-engine.js, rule sets as data, "duel with mana and tribute rules", proposeRule · 2026-10-16
+
 - Claude (asks-forge agent) · helper/asks-forge · V01D's forge asks: person recipe (figures as recipes), print ledger into inventory, forge history with probe wants' status, one-click forge of an offered routine into a skill PR; forge/print-file verify asks recorded as built · 2026-10-16 18:40 UTC
 - Claude (asks-stage agent) · helper/asks-stage · V01D's stage asks: kept→notepad, drop into list, list→notepad, intent preview, intent misses logged, pulse→incident, pulse card, shared stage state, together→notepad, self-play notes, drag friction slider, collision flags, technical-context caution, ghost playback for Pong and Snake, success pulse · 2026-10-16 18:40 UTC
 - Claude (this session) · helper/fix-evidence, helper/reply-to-v01d, helper/intent-gate · V01D's fix loop (probe ledger, evidence, route corrections, confidence gate, fixes card), talk back to V01D, the intent gate before the fix card, drive_time over MCP, fringe 74; and the owner's order of 2026-10-16: build all of V01D's open asks · 2026-10-16 05:10 UTC
