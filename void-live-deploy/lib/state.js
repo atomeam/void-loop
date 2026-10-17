@@ -19,6 +19,7 @@ export const STORES = {
   entered:  { key: 'a2m.void.entered.v1',  what: 'that you have been here before' },
   used:     { key: 'a2m.void.used.v1',     what: 'which parts of V01D you have used' },
   ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against V01D in Pong and Snake' },
+  corrections: { key: 'a2m.void.corrections.v1', what: 'what you told V01D it got wrong (kept apart from how your V01D looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },
 };
 
