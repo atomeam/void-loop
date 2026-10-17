@@ -173,9 +173,11 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
       console.log((v.ok ? 'ok   ' : 'FAIL ') + c.path + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; '))); await cx.close(); await wait(GAP_MS); continue; }
     await p.waitForSelector('#input', { timeout: 15000 }); await p.waitForTimeout(800);
     const before = await p.evaluate(() => ({ n: document.querySelectorAll('.thing').length, t: document.body.innerText }));
-    await p.fill('#input', c.ask); await p.keyboard.press('Enter'); await p.waitForTimeout(c.waitMs || 4000);
+    await p.fill('#input', c.ask); await p.keyboard.press('Enter');
+    // a hint ("the void is empty · summon something first") is said for 3.5 s, so the page is read early as well as at the end
+    const SOON = 1200; await p.waitForTimeout(SOON); const early = await p.evaluate(() => document.body.innerText); await p.waitForTimeout(Math.max(0, (c.waitMs || 4000) - SOON));
     const seen = await p.evaluate(([b, sel]) => ({ newThings: document.querySelectorAll('.thing').length - b.n, text: document.body.innerText, selector: sel ? !!document.querySelector(sel) : true }), [before, (c.expect || {}).selector]);
-    seen.text = changedText(before.t, seen.text);
+    seen.text = [changedText(before.t, early), changedText(before.t, seen.text)].filter((x) => x.trim()).join('\n').slice(0, 1500);
     const fps = c.fps ? await fpsOf(p) : undefined;
     const slug = c.ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40); await p.screenshot({ path: resolve(shots, slug + '.png') }).catch(() => {});
     const v = judge(c, { ...seen, errors, fps, loadMs }, suite.limits); out.push({ ...v, ...meta(c), fps, loadMs, chars: seen.text.trim().length });
