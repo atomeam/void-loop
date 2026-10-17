@@ -54,7 +54,7 @@ export const TOME_CSS = [
   '.tome .gopener{display:flex;flex-wrap:wrap;justify-content:center;gap:.6cqh;margin:1.5cqh 0}.tome .gopener a{border:0;display:flex}',
   '.tome-list{margin:0;padding:0;list-style:none;columns:2;column-gap:4cqh;font-size:2cqh}.tome-list li{display:flex;align-items:baseline;margin:.35cqh 0;break-inside:avoid}.tome-list li a{border:0}.tome-list .lead-dots{flex:1;border-bottom:1px dotted rgba(90,50,20,.55);margin:0 .6cqh;transform:translateY(-.5cqh)}.tome-list .n{color:#6d4c2a}',
   '.tome-day{font-weight:700;font-size:2cqh;margin:1.2cqh 0 .1cqh;color:#4a2c12;border-bottom:1px solid rgba(122,74,34,.35)}.tome-newsl li{font-size:1.85cqh;line-height:1.3}.tome-tryit{font-size:1.6cqh;white-space:nowrap}.tome-new{font-style:normal;font-size:1.5cqh;color:#fff;background:#8f2d1c;border-radius:1cqh;padding:.1cqh .8cqh;vertical-align:middle}',
-  '.tome-toc li{font-size:2.2cqh;margin:.75cqh 0}.tome-toc .tome-for{display:block;font-size:1.8cqh;font-style:italic;color:#6d4c2a;margin:.1cqh 0 0 2.2cqh}',
+  '.tome-toc li{font-size:2.2cqh;margin:.75cqh 0}.tome-toc .tome-for{display:block;font-size:1.8cqh;font-style:italic;color:#6d4c2a;margin:.1cqh 0 0 2.2cqh}.tome-toc-dense li{font-size:1.9cqh;margin:.35cqh 0}.tome-toc-dense .tome-for{font-size:1.5cqh;margin:0 0 0 2.2cqh}',
   '.tome-legend dt{font-variant:small-caps;letter-spacing:.1em;color:#2b1b0e;margin-top:1cqh}.tome-legend dd{margin:0;font-style:italic;color:#4f3418}',
   '.tome-tier{position:absolute;bottom:2.6cqh;left:16%;right:16%;text-align:center;font-size:1.6cqh;line-height:1.35;color:#6d4c2a}.tome-tier b{display:block;font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:1.75cqh;color:#4a2e16}.tome-tier span{font-style:italic;display:block;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}',
   // the leaf in the air: a sheet with a face on each side that swings about the spine
@@ -97,9 +97,11 @@ const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) |
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
 const asks = (list, esc) => (list && list.length ? '<div class="tome-say">Say</div><ul class="tome-try gb-try">' + list.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>' : '');
 
-/** the contents page's list: every chapter with its first page. Pure. */
+/** the contents page's list: every chapter with its first page; past ten chapters it sets tighter so the last still sits above the
+ *  page number (the What's new chapter made it thirteen). Pure. */
 export function tocHtml(book, esc) {
-  return '<ul class="tome-toc tome-try gb-toc">' + (book.chapters || []).filter((c) => c.id !== 'front').map((c) => '<li>' + jump(c.from, c.name, esc) + ' <span class="n">· ' + c.from + '</span>' + (c.id === 'news' && book.news && book.news.unseen ? ' <b class="tome-new">' + book.news.unseen + ' new</b>' : '') + (c.for ? '<span class="tome-for">' + esc(c.for) + '</span>' : '') + '</li>').join('') + '</ul>';
+  const list = (book.chapters || []).filter((c) => c.id !== 'front');
+  return '<ul class="tome-toc tome-try gb-toc' + (list.length > 10 ? ' tome-toc-dense' : '') + '">' + list.map((c) => '<li>' + jump(c.from, c.name, esc) + ' <span class="n">· ' + c.from + '</span>' + (c.id === 'news' && book.news && book.news.unseen ? ' <b class="tome-new">' + book.news.unseen + ' new</b>' : '') + (c.for ? '<span class="tome-for">' + esc(c.for) + '</span>' : '') + '</li>').join('') + '</ul>';
 }
 
 /** one page typeset for the tome (without its running head and folio, which the spread adds). Pure. */

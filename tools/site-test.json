@@ -97,6 +97,9 @@
     },
     {
       "ask": "how much do i need to save a month to have 1 million in 30 years at 7%"
+    },
+    {
+      "ask": "draw a line"
     }
   ],
   "candidates": [],
