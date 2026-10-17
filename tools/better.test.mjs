@@ -95,3 +95,15 @@ test('the tool measures the real repo: every part present, a row shaped for the 
   assert.equal(out.length, 6); assert.match(out[0], /^better: \d+ of 100/);
   assert.ok(!JSON.stringify(t.row).includes('"what"'), 'a row carries counts, never ledger text');
 });
+
+import { interval } from '../void-live-deploy/lib/better.js';
+test('the score has an interval: wide on one lucky run, narrow on a thousand checks, and always around the score', () => {
+  const small = { week: 3, owner: 0, askedBuilt: 1, medianLagDays: 0, open: 0, oldestOpenDays: 0, skills: 3, failing: 0, unsure: 0, benchScore: 5, benchTotal: 5, probeFixes: 1 };
+  const big = { ...small, week: 450, owner: 0, skills: 160, benchScore: 2400, benchTotal: 2400 };
+  const a = interval(small), b = interval(big), s = parts(small).score;
+  assert.ok(a.lo <= s && s <= a.hi && b.lo <= parts(big).score && parts(big).score <= b.hi);
+  assert.ok(a.hi - a.lo > b.hi - b.lo, 'a few checks leave a wider range than hundreds: ' + JSON.stringify([a, b]));
+  assert.equal(b.n, 450 + 160 + 2400); assert.equal(interval({ week: 0, skills: 0, benchTotal: 0 }), null);
+  const html = betterHtml((x) => String(x), [{ at: '2026-10-16T00:00:00Z', ...rowOf(big), score: parts(big).score }]);
+  assert.match(html, /Sure to within \d+–\d+, from 3010 checks\./);
+});
