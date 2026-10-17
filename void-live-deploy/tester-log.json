@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 130,
+ "runsTotal": 131,
  "kinds": {
   "grow": 15,
-  "file": 61,
+  "file": 62,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:17:08Z",
+   "passed": 16,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"play chess\" fps 2 < 5"
+  },
   {
    "at": "2026-10-17T11:11:24Z",
    "passed": 20,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:18:35Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -233,9 +233,9 @@
   "skill:period": "2026-10-17T11:11:24Z",
   "skill:place": "2026-10-17T11:11:24Z",
   "skill:pong": "2026-10-17T11:11:24Z",
-  "skill:poster": "2026-10-16T16:36:48Z",
-  "skill:pregnancy": "2026-10-16T16:42:11Z",
-  "skill:print-download": "2026-10-16T16:42:11Z",
+  "skill:poster": "2026-10-17T11:17:08Z",
+  "skill:pregnancy": "2026-10-17T11:17:08Z",
+  "skill:print-download": "2026-10-17T11:17:08Z",
   "skill:print-file": "2026-10-16T16:42:11Z",
   "skill:printedmotor": "2026-10-16T16:59:40Z",
   "skill:proposal": "2026-10-16T16:59:40Z",

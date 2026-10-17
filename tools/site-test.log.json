@@ -976,5 +976,13 @@
   "kind": "file",
   "key": "play voidquest | fps # < #",
   "note": "fix: \"play voidquest\" fps 1 < 5"
+ },
+ {
+  "at": "2026-10-17T11:17:08Z",
+  "passed": 16,
+  "of": 25,
+  "kind": "file",
+  "key": "play chess | fps # < #",
+  "note": "fix: \"play chess\" fps 2 < 5"
  }
 ]
