@@ -34,6 +34,11 @@ test('swirl: tangential, zero at the centre, decays; edits are clamped; compose 
   const tot = F.composeField(F.makeField(), F.baseField(F.START), ed, sw, [0.01, 0]); assert.ok(Math.abs(tot.u[a] - (F.baseField(F.START).u[a] + ed.u[a] + sw.u[a] + 0.01)) < 1e-6);
 });
 
+test('composeField: an empty or broken wind adds nothing and never makes NaN', () => {
+  for (const wind of [[], [NaN], [undefined, Infinity], [0.5], null]) { const t = F.composeField(F.makeField(), F.baseField(F.START), F.makeField(), F.makeField(), wind); assert.ok(Array.from(t.u).every(Number.isFinite) && Array.from(t.v).every(Number.isFinite)); }
+  assert.ok(Math.abs(F.composeField(F.makeField(), F.makeField(), F.makeField(), F.makeField(), [0.5]).u[0] - 0.5) < 1e-6);
+});
+
 test('scoreFlow: seeded, a field that goes nowhere scores low, the pointer bonus appears only with a pointer', () => {
   const a = F.scoreFlow(F.START, null, 5), b = F.scoreFlow(F.START, null, 5);
   assert.deepEqual(a, b);

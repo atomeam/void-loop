@@ -78,7 +78,7 @@ export function paintEdit(ed, x, y, dx, dy, radius = 0.1, k = 0.5, limit = 0.7) 
 export const editedCells = (ed) => { let n = 0; for (let i = 0; i < ed.u.length; i++) if (Math.abs(ed.u[i]) + Math.abs(ed.v[i]) > 0.01) n++; return n; };
 /** total = base + edits + swirl (+ a steady push, the tilt). */
 export function composeField(tot, base, ed, sw, wind = null) {
-  const wx = wind ? wind[0] : 0, wy = wind ? wind[1] : 0;
+  const wx = Number.isFinite(wind && wind[0]) ? wind[0] : 0, wy = Number.isFinite(wind && wind[1]) ? wind[1] : 0; // a missing or non-finite component is 0, never NaN
   for (let i = 0; i < tot.u.length; i++) { tot.u[i] = base.u[i] + ed.u[i] + sw.u[i] + wx; tot.v[i] = base.v[i] + ed.v[i] + sw.v[i] + wy; }
   return tot;
 }
