@@ -2967,7 +2967,7 @@
     "label it pasta"
    ],
    "tier": "proven",
-   "why": "a self-test, 3 browser-suite mentions, 15 real asks in the benchmark",
+   "why": "a self-test, 4 browser-suite mentions, 15 real asks in the benchmark",
    "flavor": "Of the stage; set down here after it answered true 15 times. Say the words below and it answers.",
    "glow": 100,
    "n": 162
