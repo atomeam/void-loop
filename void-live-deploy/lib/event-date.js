@@ -79,10 +79,10 @@ export function infoboxDates(wikitext) {
     const val = m[1];
     for (const t of val.matchAll(/\{\{\s*(?:start[ _]date|release[ _]date|film[ _]date|dts|date)\s*(?:\|[a-z]+=[^|}]*)*\|\s*(\d{4})\s*\|\s*(\d{1,2})\s*\|\s*(\d{1,2})/gi)) {
       const d = new Date(Date.UTC(+t[1], +t[2] - 1, +t[3]));
-      if (d.getUTCMonth() === +t[2] - 1) out.push({ date: d, sentence: 'release: ' + d.toISOString().slice(0, 10) });
+      if (d.getUTCMonth() === +t[2] - 1) out.push({ date: d, sentence: 'release: ' + d.toISOString().slice(0, 10), raw: line.trim().slice(0, 200) });
     }
     const plain = val.replace(/\{\{[^{}|]*\|/g, ' ').replace(/[{}[\]|]/g, ' ').replace(/<[^>]*>/g, ' ');
-    for (const d of datesIn(plain)) out.push({ date: d.date, sentence: 'release: ' + plain.replace(/\s+/g, ' ').trim().slice(0, 120) });
+    for (const d of datesIn(plain)) out.push({ date: d.date, sentence: 'release: ' + plain.replace(/\s+/g, ' ').trim().slice(0, 120), raw: line.trim().slice(0, 200) });
   }
   return out;
 }
@@ -96,6 +96,9 @@ export function announcedFrom({ extract = '', lead = '', wikitext = '' } = {}, n
   return tag(announcedDate(extract, now), 'summary') || tag(announcedDate(lead, now), 'lead') || tag(box, 'infobox') || null;
 }
 
+/** the page's own text the date was read from, as it is on the page (asked by Void, twice: "a 'source-link' hover effect on the confidence badge
+ *  that displays the raw metadata snippet used for the date"): the infobox field's wikitext line, or the sentence. Pure. */
+export const rawSnippet = (when) => String((when && (when.raw || when.sentence)) || '').replace(/\s+/g, ' ').trim().slice(0, 200);
 /** how sure the card is of a date by where it came from: { label, sure } (asked by Void: a confidence badge). Pure. */
 export function confidenceOf(from) {
   return from === 'summary' ? { label: 'from the article\'s opening lines', sure: 'high' } : from === 'lead' ? { label: 'from the article\'s introduction', sure: 'high' }
