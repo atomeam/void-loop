@@ -4096,9 +4096,9 @@ say('nothing selected to remove');
     function showSharedCard(sc) {
       currentAsk = sc.t;
       const el = showPage((p) => {
-        p.dataset.cardKind = 'Answer';
+        p.dataset.cardKind = 'Answer'; p.dataset.cardVersion = String(sc.n || 1);
         p.innerHTML = '<h2>' + esc(sc.t) + '</h2>' + String(sc.b || '').split(/\n{2,}/).filter(Boolean).map((x) => '<p>' + esc(x) + '</p>').join('')
-          + '<div class="src">brought back from a copied V01D card' + (sc.src.length ? ' · Source: ' + sc.src.map((s, i) => (s.u ? '<a href="' + esc(s.u) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.t) + '</a>' : esc(s.t))).join(' · ') : '') + '</div>'; // void-review: ok: every field escaped, links https only
+          + '<div class="src">brought back from a copied V01D card' + (sc.n ? ' (copy ' + sc.n + ')' : '') + (sc.src.length ? ' · Source: ' + sc.src.map((s, i) => (s.u ? '<a href="' + esc(s.u) + '" target="_blank" rel="noopener">[' + (i + 1) + '] ' + esc(s.t) + '</a>' : esc(s.t))).join(' · ') : '') + '</div>'; // void-review: ok: every field escaped, links https only
       });
       say('');
       return el;
