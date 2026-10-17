@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T08:43:52.358Z",
-   "sha": "2f7fef3cdf2624fa3827be1b75921eca2a5b5693",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39017747226",
+   "at": "2026-10-17T08:47:28.543Z",
+   "sha": "933374dd648e027a10a8087918d7c9ac0410134f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39018007820",
    "suite": "browser suite on main",
    "checks": [
     "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
