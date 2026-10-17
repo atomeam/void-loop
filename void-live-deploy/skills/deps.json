@@ -1706,6 +1706,12 @@
     "skills/mini/book.js"
    ]
   },
+  "lib/book-news.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/guide.js"
+   ]
+  },
   "lib/bridges.js": {
    "imports": [],
    "importedBy": [
@@ -4058,6 +4064,7 @@
   "skills/guide.js": {
    "imports": [
     "lib/guide.js",
+    "lib/book-news.js",
     "lib/tome-search.js",
     "lib/tome.js"
    ],

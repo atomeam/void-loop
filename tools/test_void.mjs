@@ -3816,8 +3816,9 @@ try {
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
   // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
   if (want("the book: search the tome from the docked bar, with the cover shut or open, and jump to the page")) { const B = await fresh(); // asked by Void
-    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
+    const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
     await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened .tome-search input, #vtome.on .tome.opened')), 8000); await B.p.waitForTimeout(400);
+    const added = await B.p.evaluate(() => { const nw = window.__voidBook.news; return nw ? nw.to - nw.from + 1 : 0; }), wx = { n: wx0.n + added }, cl = { n: cl0.n + added }; // the What's new chapter (live from the ledger) moves later pages up
     const dock = await B.p.$eval('#vtome .tome-search', (e) => { const r = e.getBoundingClientRect(); return { top: r.top, w: r.width, vw: innerWidth }; });
     await B.p.fill('#vtome .tome-search input', 'weather'); await until(async () => (await B.p.$$('#vtome .tome-hits button[data-n]')).length > 0, 3000);
     const hits = await B.p.$$eval('#vtome .tome-hits button[data-n]', (l) => l.map((b) => Number(b.dataset.n)));
@@ -3834,6 +3835,35 @@ try {
       dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
       JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
     await B.ctx.close(); }
+  // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
+  // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
+  // says how many are new since the book was last opened here (localStorage, never required)
+  if (want("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge")) {
+    const { newsEntries, groupNews } = await import('../void-live-deploy/lib/book-news.js');
+    const ledger = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')), top = newsEntries(ledger, 36), withTry = top.find((e) => e.try);
+    const N = await fresh();
+    await N.p.evaluate(() => { try { localStorage.setItem('a2m.void.book.seen.v1', '2026-01-01T00:00:00Z'); } catch (_) {} });
+    await N.ask('open the book', 900); await until(async () => !!(await N.p.$('#vtome .tome.shut .newbadge')) || !!(await N.p.$('#vtome .tome.opened')), 8000);
+    const badge = await N.p.evaluate(() => (document.querySelector('#vtome .newbadge') || {}).textContent || '');
+    await until(async () => !!(await N.p.$('#vtome .tome.opened')), 8000); await N.p.waitForTimeout(400);
+    const info = await N.p.evaluate(() => window.__voidBook && window.__voidBook.news);
+    await N.p.evaluate(() => window.__voidBook.go(4)); await N.p.waitForTimeout(1500);
+    const tocText = await N.p.evaluate(() => { const a = [...document.querySelectorAll('#vtome .gb-toc li')].find((l) => /new/i.test(l.textContent) && /What/.test(l.textContent)); return a ? a.textContent : ''; });
+    const tocFits = await N.p.evaluate(() => { const l = document.querySelector('#vtome .gb-toc'), pg = l && l.closest('.tome-page'); if (!pg) return false; const folio = pg.querySelector('.tome-folio').getBoundingClientRect(), last = l.lastElementChild.getBoundingClientRect(); return { ok: last.bottom <= folio.top + 2, last: Math.round(last.bottom), folio: Math.round(folio.top), n: l.children.length }; }); // the longer contents still fits its page
+    await N.p.evaluate(() => window.__voidBook.go(window.__voidBook.news.from)); await N.p.waitForTimeout(1500);
+    const pg = await N.p.evaluate(() => { const r = document.querySelector('#vtome .tome-page.right') || document.querySelector('#vtome .tome-page'); return { text: r ? r.innerText : '', days: r ? r.querySelectorAll('.tome-day').length : 0, tries: r ? r.querySelectorAll('a.tome-tryit').length : 0, art: r ? r.querySelectorAll('.tome-art svg').length : 0, folio: r && r.querySelector('.tome-folio') ? r.querySelector('.tome-folio').textContent : '', shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) }; });
+    const seen = await N.p.evaluate(() => { try { return localStorage.getItem('a2m.void.book.seen.v1'); } catch (_) { return null; } });
+    const first = groupNews(top)[0].groups[0].items[0].line.slice(0, 30); // the day's first kind, its newest line
+    let ranOk = true;
+    if (withTry) { // a try-it ask closes the book and runs
+      for (let i = 0; i < 8 && !(await N.p.$('#vtome .tome-page a.tome-tryit')); i++) { await N.p.evaluate(() => window.__voidBook.turn(1)); await N.p.waitForTimeout(900); }
+      const ask = await N.p.$eval('#vtome .tome-page a.tome-tryit', (a) => a.dataset.ask); await N.p.click('#vtome .tome-page a.tome-tryit'); await until(async () => !(await N.p.$('#vtome')), 4000);
+      ranOk = !!ask && !(await N.p.$('#vtome'));
+    }
+    check("the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+      info && info.count === top.length && /\d+ new since you last opened the book/.test(badge) && /\d+ new/.test(tocText) && tocFits && tocFits.ok && pg.text.includes(first) && pg.days >= 1 && pg.tries >= 0 && pg.art >= 1 && Number(pg.folio) >= info.from && seen === top[0].at && ranOk && !N.errors.length,
+      JSON.stringify({ info, badge, tocText, tocFits, pg: { ...pg, text: pg.text.slice(0, 200) }, seen, top0: top[0].at, ranOk, e: N.errors }));
+    await N.ctx.close(); }
   // owner, 2026-10-17: "the swipe to turn pages doesn't work properly" and the cover could not be reached. A sideways swipe was the browser's
   // (its back gesture took the page away, a pan cancelled the pointer); the open book now keeps the swipe: touch-action pan-y on it,
   // no overscroll navigation on the page, and swipes left and right turn pages all the way back to the shut cover.
@@ -3917,7 +3947,7 @@ try {
     const backSide = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); const bc = document.querySelector('#vtome .tome-backcover'); return { shut: t.classList.contains('shut'), back: t.classList.contains('back'), shown: !!bc && getComputedStyle(bc).display !== 'none', words: bc ? bc.textContent : '' }; });
     await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
     const reopenedBack = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { open: t.classList.contains('opened'), shut: t.classList.contains('shut') }; });
-    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, errors: B.errors }));
+    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, at: await B.p.evaluate(() => ({ cur: window.__voidBook.cur, turning: window.__voidBook.turning, shown: [...document.querySelectorAll('#vtome .tome-page')].map((x) => x.dataset.page) })), errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);

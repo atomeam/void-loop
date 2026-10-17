@@ -1,0 +1,80 @@
+// What's new in the book (lib/book-news.js): the ledger's newest entries grouped by day then kind, cut into pages, and the chapter
+// slotted after the contents with every later page number moved. Run: node --test tools/book-news.test.mjs
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { newsEntries, groupNews, newsPages, newSince, withNews } from '../void-live-deploy/lib/book-news.js';
+import { bookFromRepo } from './guide.mjs';
+import { guideOf, pageFor } from '../void-live-deploy/skills/guide.js';
+
+const L = [
+  { at: '2026-10-15T09:00:00Z', kind: 'fix', what: 'old fix' },
+  { at: '2026-10-16T10:00:00Z', kind: 'fix', what: 'fixed a thing', show: 'a thing works again' },
+  { at: '2026-10-16T11:00:00Z', kind: 'grow', what: 'grew a skill', show: 'it grew', try: 'make a clock' },
+  { at: '2026-10-16T12:00:00Z', kind: 'build', what: 'built a board' },
+  { at: '2026-10-16T13:00:00Z', kind: 'grow', what: 'grew again', show: 'it grew again' },
+  { at: 'nope', kind: 'grow', what: 'no date' }, { at: '2026-10-16T14:00:00Z', kind: 'grow' }, null,
+];
+
+test('entries: newest first, only real dated entries with text, show before what, try kept', () => {
+  const e = newsEntries(L);
+  assert.deepEqual(e.map((x) => x.line), ['it grew again', 'built a board', 'it grew', 'a thing works again', 'old fix']);
+  assert.equal(e[2].try, 'make a clock'); assert.equal(e[0].try, '');
+  assert.equal(newsEntries(L, 2).length, 2);
+  assert.deepEqual(newsEntries(null), []);
+  assert.ok(newsEntries([{ at: '2026-10-16T10:00:00Z', what: 'word '.repeat(80) }])[0].line.length <= 150, 'a long line is cut at a word');
+});
+
+test('grouping: newest day first, then grow, build, fix inside a day; nothing lost or invented', () => {
+  const days = groupNews(newsEntries(L));
+  assert.deepEqual(days.map((d) => d.day), ['2026-10-16', '2026-10-15']);
+  assert.deepEqual(days[0].groups.map((g) => g.kind), ['grow', 'build', 'fix']);
+  assert.deepEqual(days[0].groups[0].items.map((i) => i.line), ['it grew again', 'it grew']);
+  assert.equal(days.flatMap((d) => d.groups.flatMap((g) => g.items)).length, 5);
+  assert.equal(groupNews([{ at: '2026-10-16T10:00:00Z', day: '2026-10-16', kind: 'idea', line: 'x', try: '' }])[0].groups[0].name, 'Ideas');
+});
+
+test('pages: at most the per-page lines, every page regrouped on its own, all entries kept', () => {
+  const e = newsEntries(L), pg = newsPages(e, 2);
+  assert.equal(pg.length, 3);
+  assert.ok(pg.every((p) => p.kind === 'news' && p.days.flatMap((d) => d.groups.flatMap((g) => g.items)).length <= 2));
+  assert.equal(pg.flatMap((p) => p.days.flatMap((d) => d.groups.flatMap((g) => g.items))).length, 5);
+});
+
+test('since: counts entries newer than the kept time; a first visit counts none', () => {
+  const e = newsEntries(L);
+  assert.equal(newSince(e, "2026-10-16T11:30:00Z"), 2);
+  assert.equal(newSince(e, '2026-10-16T13:00:00Z'), 0);
+  assert.equal(newSince(e, ''), 0); assert.equal(newSince(e, null), 0);
+});
+
+test('withNews: the chapter follows the contents and every later page, chapter, index entry and link moves up', () => {
+  const book = bookFromRepo(), before = structuredClone(book);
+  const nb = withNews(book, L, { per: 2 });
+  assert.deepEqual(book, before, 'the input book is not changed');
+  assert.equal(nb.pages.length, book.pages.length + 3);
+  nb.pages.forEach((p, i) => assert.equal(p.n, i + 1, 'page numbers run 1..N with no gap'));
+  const toc = nb.pages.find((p) => p.kind === 'toc');
+  assert.deepEqual(nb.pages.slice(toc.n, toc.n + 3).map((p) => p.kind), ['news', 'news', 'news']);
+  assert.equal(nb.chapters[1].id, 'news'); assert.equal(nb.chapters[1].from, toc.n + 1); assert.equal(nb.chapters[1].to, toc.n + 3);
+  assert.equal(nb.chapters[2].from, nb.chapters[1].to + 1, 'the next chapter starts right after');
+  for (const c of nb.chapters) assert.ok(nb.pages[c.from - 1] && nb.pages[c.to - 1] && nb.pages[c.from - 1].chapter === c.id && nb.pages[c.to - 1].chapter === c.id, c.id + ' range lands on its own pages');
+  for (const e of nb.index) { const p = nb.pages[e.page - 1]; assert.ok(p && (p.kind === 'skill' || p.kind === 'game' || p.kind === 'mini'), e.name + ' still lands on a skill page'); }
+  for (const p of nb.pages.filter((x) => x.kind === 'index')) for (const e of p.entries) { const t = nb.pages[e.page - 1]; assert.ok(t && (t.kind === 'skill' || t.kind === 'game' || t.kind === 'mini'), e.name + ' on the index page lands on a skill page'); }
+  for (const p of nb.pages.filter((x) => x.ownerPage)) assert.equal(nb.pages[p.ownerPage - 1].name, p.owner);
+  assert.equal(nb.totals.pages, nb.pages.length); assert.equal(nb.news.count, 5);
+  assert.equal(withNews(book, []), book, 'no entries: the book as it is');
+  assert.equal(withNews(book, null), book);
+});
+
+test('withNews on the real ledger: a new entry shows with no regeneration, and the book still opens by name', () => {
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const base = bookFromRepo();
+  const plus = ledger.concat([{ at: '2999-01-01T00:00:00Z', kind: 'grow', what: 'tomorrow', show: 'a change shipped after the book was built', try: 'make a clock' }]);
+  const nb = withNews(base, plus);
+  assert.equal(nb.pages.find((p) => p.kind === 'news').days[0].groups[0].items[0].line, 'a change shipped after the book was built');
+  assert.equal(pageFor(nb, 'what’s new'), nb.news.from); assert.equal(pageFor(nb, "what's new"), nb.news.from);
+  assert.ok(nb.news.count <= 36 && nb.news.count > 0);
+  assert.deepEqual(guideOf("what's new in the book"), { at: 'what’s new' });
+  assert.equal(guideOf("what's new"), null, 'a bare what\'s new stays the growth skill\'s');
+});
