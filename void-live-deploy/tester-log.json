@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 22,
- "runsTotal": 134,
+ "cases": 23,
+ "runsTotal": 135,
  "kinds": {
-  "grow": 15,
+  "grow": 16,
   "file": 65,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:42:36Z",
+   "passed": 16,
+   "of": 25,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
+  },
   {
    "at": "2026-10-17T11:36:13Z",
    "passed": 19,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"set me a challenge with the gears\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T08:44:50Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -244,9 +244,9 @@
   "skill:recent": "2026-10-17T11:36:13Z",
   "skill:recipe": "2026-10-17T11:36:13Z",
   "skill:releasenotes": "2026-10-17T11:36:13Z",
-  "skill:rides": "2026-10-16T18:09:42Z",
-  "skill:room": "2026-10-16T18:09:42Z",
-  "skill:routine": "2026-10-16T18:17:08Z",
+  "skill:rides": "2026-10-17T11:42:36Z",
+  "skill:room": "2026-10-17T11:42:36Z",
+  "skill:routine": "2026-10-17T11:42:36Z",
   "skill:savings": "2026-10-16T18:17:08Z",
   "skill:senolytic": "2026-10-16T18:17:08Z",
   "skill:services": "2026-10-16T18:24:14Z",

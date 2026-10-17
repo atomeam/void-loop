@@ -1008,5 +1008,12 @@
   "kind": "file",
   "key": "my actions | load # ms > #",
   "note": "fix: \"my actions\" load 1251 ms > 1200"
+ },
+ {
+  "at": "2026-10-17T11:42:36Z",
+  "passed": 16,
+  "of": 25,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
  }
 ]

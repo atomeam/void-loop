@@ -91,6 +91,9 @@
     },
     {
       "ask": "show me the night sky"
+    },
+    {
+      "ask": "is waymo in austin"
     }
   ],
   "candidates": [],
