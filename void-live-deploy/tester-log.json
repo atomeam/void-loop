@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 104,
+ "runsTotal": 105,
  "kinds": {
   "grow": 15,
-  "file": 49,
+  "file": 50,
   "teach": 7,
   "tighten": 7,
   "none": 26
  },
  "runs": [
+  {
+   "at": "2026-10-17T07:32:11Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"zoom in\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T07:26:44Z",
    "passed": 0,
@@ -142,19 +149,12 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"download the print file offline\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-16T16:36:48Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
   "page:/films/": "2026-10-15T06:04:21Z",
   "page:/store/": "2026-10-15T06:04:21Z",
-  "skill:actions": "2026-10-16T06:38:50Z",
+  "skill:actions": "2026-10-17T07:32:11Z",
   "skill:aggravation": "2026-10-15T06:04:21Z",
   "skill:air": "2026-10-15T06:20:22Z",
   "skill:app": "2026-10-16T06:38:50Z",
@@ -280,8 +280,8 @@
   "skill:walls": "2026-10-17T07:26:44Z",
   "skill:watch": "2026-10-17T07:26:44Z",
   "skill:words": "2026-10-17T07:26:44Z",
-  "skill:work": "2026-10-16T06:31:32Z",
-  "skill:zoom-figure": "2026-10-16T06:31:32Z",
+  "skill:work": "2026-10-17T07:32:11Z",
+  "skill:zoom-figure": "2026-10-17T07:32:11Z",
   "skill:deps": "2026-10-16T07:15:33Z",
   "skill:fringe-to-skill": "2026-10-16T07:37:17Z",
   "skill:bench": "2026-10-17T01:37:54Z",
