@@ -1248,8 +1248,8 @@
     {
      "name": "intent",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 37 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 13 browser-suite mentions, 37 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1
     },
