@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 126,
+ "runsTotal": 127,
  "kinds": {
   "grow": 15,
   "file": 58,
   "teach": 7,
   "tighten": 7,
-  "none": 39
+  "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T10:26:08Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T10:10:51Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T07:48:48Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -222,8 +222,8 @@
   "skill:markets": "2026-10-17T10:10:51Z",
   "skill:memory": "2026-10-17T10:10:51Z",
   "skill:moon": "2026-10-17T10:10:51Z",
-  "skill:motorbody": "2026-10-16T15:54:55Z",
-  "skill:news": "2026-10-16T15:54:55Z",
+  "skill:motorbody": "2026-10-17T10:26:08Z",
+  "skill:news": "2026-10-17T10:26:08Z",
   "skill:nightsky": "2026-10-16T15:54:55Z",
   "skill:notepad": "2026-10-16T16:03:40Z",
   "skill:nutrition": "2026-10-16T16:03:40Z",
@@ -304,6 +304,7 @@
   "skill:pick-for-me": "2026-10-17T09:15:36Z",
   "skill:vector-field-mind": "2026-10-17T09:43:30Z",
   "skill:repo": "2026-10-17T09:57:04Z",
-  "skill:incident-autopsy": "2026-10-17T10:04:20Z"
+  "skill:incident-autopsy": "2026-10-17T10:04:20Z",
+  "skill:flow-canvas": "2026-10-17T10:26:08Z"
  }
 }
