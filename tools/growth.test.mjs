@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { growthOf, ordered, summary, growthHtml, loadLedger, suite } from '../void-live-deploy/skills/growth.js';
+import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates } from '../void-live-deploy/skills/growth.js';
 import { entryProblem, ledgerProblems, appendTo, LEDGER } from './grow.mjs';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -75,4 +75,17 @@ test('velocity (asked by Void, 2026-10-12): new or better changes this week agai
   assert.equal(velocity([d(8), d(9)], now).trend, 'stalled');
   assert.equal(velocity([d(1, 'fix'), d(2, 'idea'), d(8)], now).week, 0, 'fixes and ideas are not new skills');
   assert.match(growthHead(esc, [d(1), d(9)], now), /This week 1 new or better, the week before 1: steady/);
+});
+
+test('the Site Test card suggests what to test next: the lowest-rated skills, failing first, each with its own ask (asked by Void, 2026-10-17)', () => {
+  const fam = { families: [
+    { name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] },
+    { name: 'Words and the world', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }, { name: 'poster', tier: 'tested' }, { name: 'quiet', tier: 'experiment' }] },
+  ] };
+  const guide = { pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 5 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }, { kind: 'skill', name: 'poster', examples: ['make a poster'] }, { kind: 'chapter', name: 'quiet' }] };
+  const c = testCandidates(fam, guide);
+  assert.deepEqual(c.map((x) => x.name), ['timer', 'define', 'poster'], 'failing first, then experiment before tested; a skill with no ask in the book is left out (quiet), proven and passing ones never appear (clock)');
+  assert.equal(c[0].ask, 'set a timer for 5 minutes'); assert.equal(c[0].failing, 1); assert.equal(c[1].family, 'Words and the world');
+  assert.equal(testCandidates(fam, guide, 1).length, 1);
+  assert.deepEqual(testCandidates(null, null), []); assert.deepEqual(testCandidates(fam, null), []);
 });
