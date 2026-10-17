@@ -2,13 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T07:56:49.441Z",
-   "sha": "2f424b7bb11a3296804cf50f80400de8c180ad5b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39014395934",
+   "at": "2026-10-17T07:58:09.896Z",
+   "sha": "9787099bfccae748aacd1adb1140433b838b99e6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39014425376",
    "suite": "browser suite on main",
    "checks": [
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
-    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\""
    ]
   },
   {
