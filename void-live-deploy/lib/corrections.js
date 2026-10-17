@@ -106,11 +106,11 @@ export function groupByFamily(list, fam) {
 }
 
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
-/** the log's markup; every kept word goes through esc (it is untrusted). An empty log says so and shows no number. Pure. */
-export function logHtml(list, fam, esc = escHtml) {
+/** the log's markup; every kept word goes through esc (it is untrusted). An empty log says so and shows no number. A "Suggest fix" button (lib/correction-fix.js) is drawn only when `owner` is true. Pure. */
+export function logHtml(list, fam, esc = escHtml, { owner = false } = {}) {
   const groups = groupByFamily(list, fam), total = groups.reduce((n, g) => n + g.items.length, 0);
   if (!total) return '<div class="vh">Correction log</div><div class="sub" data-corr-empty="1">No corrections yet. When you tell me what I got wrong, it is listed here by family.</div>';
   return '<div class="vh">Correction log</div><div class="sub">' + esc(total) + ' kept on this device, by the family of the skill that answered.</div>'
     + '<ul class="v-asks" data-corr-log="1">' + groups.map((g) => '<li><details><summary>' + esc(g.name) + ' <span style="color:var(--ink-3)">(' + esc(g.items.length) + ')</span></summary><div class="v-meta">'
-      + g.items.map((c) => '<p>' + (c.ask ? esc(c.ask) + (c.skill ? ' <span style="color:var(--ink-3)">(' + esc(c.skill) + ')</span>' : '') + ': ' : '') + esc(c.text) + '</p>').join('') + '</div></details></li>').join('') + '</ul>';
+      + g.items.map((c) => '<p>' + (c.ask ? esc(c.ask) + (c.skill ? ' <span style="color:var(--ink-3)">(' + esc(c.skill) + ')</span>' : '') + ': ' : '') + esc(c.text) + (owner && c.skill && c.ask ? ' <button type="button" class="tr-copy" data-suggest-fix="' + esc(list.indexOf(c)) + '">Suggest fix</button><span data-fix-out></span>' : '') + '</p>').join('') + '</div></details></li>').join('') + '</ul>';
 }

@@ -2433,8 +2433,16 @@ say('nothing selected to remove');
         const formEl = document.createElement('div'), logEl = document.createElement('div'); slot.replaceChildren(formEl, logEl);
         let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
         if (vpageEl !== el) return;
-        const draw = () => { logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc); }; // void-review: ok: logHtml escapes every kept word with esc
+        const owner = ownerKey(); // the "Suggest fix" buttons are drawn for the owner only (lib/correction-fix.js); the route checks the key again
+        const draw = () => { logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
         draw();
+        if (owner) logEl.addEventListener('click', async (e) => {
+          const b = e.target && e.target.closest && e.target.closest('button[data-suggest-fix]'); if (!b || b.disabled) return;
+          const entry = m.readCorrections(localStorage)[+b.dataset.suggestFix], out = b.parentNode.querySelector('[data-fix-out]'); if (!entry || !out) return;
+          b.disabled = true; out.textContent = ' drafting…';
+          try { const cf = await import('/lib/correction-fix.js'), r = await cf.suggestFix(entry, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); } catch (_) { out.textContent = ' that did not work just now'; } // void-review: ok: resultHtml escapes every word with esc
+          b.disabled = false;
+        });
         const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw });
         if (said && m.wantsCorrection(said)) { if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
       } catch (_) {}
