@@ -52,3 +52,9 @@ test('the skill (skills/living-cards-mind.js) takes its asks and leaves the look
   for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
   assert.ok(skill.stageKinds['living-cards-mind']);
 });
+test('the velocity trail (asked by Void): a card keeps its last TRAIL positions, and a moving card has speed where a still one has none', () => {
+  const t = []; for (let i = 0; i < F.TRAIL + 10; i++) F.trailPush(t, { x: 0.1 + i * 0.01, y: 0.5 });
+  assert.equal(t.length, F.TRAIL); assert.ok(Math.abs(F.trailSpeed(t) - 0.01) < 1e-9, 'one hundredth of the field a frame');
+  const still = []; for (let i = 0; i < 5; i++) F.trailPush(still, { x: 0.3, y: 0.3 });
+  assert.equal(F.trailSpeed(still), 0); assert.equal(F.trailSpeed([]), 0);
+});

@@ -44,7 +44,7 @@ function mount({ el, q, th, still }) {
       .catch(() => {}).finally(() => { busy = false; });
   };
   const timer = setInterval(() => { if (!el.isConnected) { dispose(); return; } think(); }, F.MIND_EVERY * 1000);
-  const frameLoop = () => { raf = 0; if (!el.isConnected) return; paint(); raf = requestAnimationFrame(frameLoop); };
+  const frameLoop = () => { raf = 0; if (!el.isConnected) return; paint(); el.dataset.trails = String(s.trailShown || 0); el.dataset.trailMax = String(Math.max(+el.dataset.trailMax || 0, s.trailShown || 0)); raf = requestAnimationFrame(frameLoop); };
   paint(); if (!still()) raf = requestAnimationFrame(frameLoop);
   function dispose() { clearInterval(timer); if (raf) cancelAnimationFrame(raf); try { mind.close(); } catch (_) { /* gone */ } }
   return { dispose };
@@ -64,6 +64,17 @@ const idea = {
     if (!og) return; const img = og.createImageData(F.GW, F.GH), d = img.data;
     for (let i = 0; i < s.u.length; i++) { const a = s.u[i], b = s.v[i]; d[i * 4] = 20 + a * 235; d[i * 4 + 1] = 10 + a * 120 + (1 - b) * 60; d[i * 4 + 2] = 40 + (1 - a) * 120 + a * 60; d[i * 4 + 3] = 255; }
     og.putImageData(img, 0, 0); g.imageSmoothingEnabled = true; g.drawImage(off, 0, 0, W, H);
+    // the velocity trail (asked by Void): each card's recent path, fading toward its tail, as bright as the card is fast; none when it is still
+    s.trails = s.trails || s.cards.map(() => []);
+    const tnow = typeof performance !== 'undefined' ? performance.now() : 0; // one position every TRAIL_EVERY ms, however often the stage draws
+    if (!(tnow - (s.trailAt || -1e9) < F.TRAIL_EVERY)) { s.trailAt = tnow; s.cards.forEach((c, i) => F.trailPush(s.trails[i], c)); }
+    s.trails.forEach((t, i) => {
+      const sp = F.trailSpeed(t), c = s.cards[i]; if (!c || sp < F.TRAIL_MIN || t.length < 2) return;
+      const a = Math.min(1, 0.45 + sp * 60); g.lineCap = 'round';
+      for (const [w, col] of [[9, (x) => 'rgba(0,0,0,' + (x * 0.5).toFixed(3) + ')'], [4.5, (x) => 'rgba(255,255,255,' + x.toFixed(3) + ')']]) { // a dark halo under a bright core: it reads on any part of the field
+        g.lineWidth = w; for (let j = 1; j < t.length; j++) { g.strokeStyle = col(a * (0.35 + 0.65 * j / t.length)); g.beginPath(); g.moveTo(t[j - 1].x * W, t[j - 1].y * H); g.lineTo(t[j].x * W, t[j].y * H); g.stroke(); } }
+    });
+    s.trailShown = s.trails.filter((t) => F.trailSpeed(t) >= F.TRAIL_MIN).length;
   }
 };
 
