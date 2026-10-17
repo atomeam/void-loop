@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 63,
-  "checked": 31,
+  "checked": 32,
   "proven": 85
  },
  "families": [
@@ -619,7 +619,7 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 6,
     "checked": 1,
     "proven": 6
    },
@@ -651,10 +651,17 @@
     {
      "name": "countdown",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 18 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 8 browser-suite mentions, 18 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1
+    },
+    {
+     "name": "event-countdown",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     },
     {
      "name": "show-countdown",
@@ -978,17 +985,18 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 13,
-    "checked": 3,
+    "tested": 12,
+    "checked": 4,
     "proven": 8
    },
    "skills": [
     {
      "name": "repo",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-17",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-17"
     },
     {
      "name": "digest",
