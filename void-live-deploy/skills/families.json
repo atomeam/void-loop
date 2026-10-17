@@ -9,7 +9,7 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 52,
+  "tested": 53,
   "checked": 23,
   "proven": 85
  },
@@ -1076,7 +1076,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 5,
+    "tested": 6,
     "checked": 3,
     "proven": 7
    },
@@ -1200,6 +1200,13 @@
      "tier": "tested",
      "why": "a self-test",
      "last_tested": "2026-10-16",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "type-filter",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests"
     }
    ]
