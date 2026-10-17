@@ -2490,8 +2490,8 @@ try {
       const b = await read();
       out.push({ noWorker, a, b, errors: F.errors.slice() }); await F.ctx.close();
     }
-    const gap = (r) => Math.hypot(parseFloat(r.left[0]) - parseFloat(r.left[3]), parseFloat(r.top[0]) - parseFloat(r.top[3])); // idea and mind, one family
-    const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.families === 'Void itself,The stage,The stage,Void itself,Out in the world' && gap(o.b) < gap(o.a) && o.b.trailMax >= 1 && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
+    const gap = (r) => Math.hypot(parseFloat(r.left[0]) - parseFloat(r.left[3]), parseFloat(r.top[0]) - parseFloat(r.top[3])); // idea and mind, one family: they close in, or already sit at their 0.14 target (lib/field-cards.js familyPull)
+    const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.families === 'Void itself,The stage,The stage,Void itself,Out in the world' && (gap(o.b) < gap(o.a) || gap(o.b) <= 14.5) && o.b.trailMax >= 1 && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
       && o.b.left[4] !== o.a.left[4] && Math.abs(parseFloat(o.b.left[4]) - 25) < 8 && o.b.gen > 0 && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 entropy [\d.]+ \u00b7 cards answered [\d.]+/.test(o.b.status) && o.b.page === 'none' && !o.errors.length;
     check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), a moving card leaves a fading trail (asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
       out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
