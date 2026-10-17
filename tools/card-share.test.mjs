@@ -64,3 +64,11 @@ test('"V01D\'s take" keeps its own line above the take (the Sentry card read "V0
   const take = el('DIV', el('DIV', 'V01D’s take'), el('P', 'What most readers miss is the memory.'), el('DIV', el('A', 'Ask more →')));
   assert.equal(tidy(textOf(take)), 'V01D’s take\nWhat most readers miss is the memory.\nAsk more →');
 });
+
+test('a long card keeps its whole answer, up to 8000 characters (the self card stopped mid-word at "rath", 2026-10-17)', async () => {
+  const { BODY_MAX } = await import('../void-live-deploy/lib/card-share.js');
+  const long = ('What got built. ').repeat(300).trim(); // 4,799 characters, past the old 2,400 cut
+  const d = dataOf({ title: 'What I think of myself', kind: 'Answer', body: long });
+  assert.equal(d.b, long); assert.equal(BODY_MAX, 8000);
+  const back = parse(shareText(d)); assert.equal(back.b, long, 'a pasted copy restores all of it'); assert.ok(codeOf(d).length < 600, 'the code line stays short');
+});
