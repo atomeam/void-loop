@@ -511,7 +511,7 @@
     {
      "name": "constellation",
      "tier": "proven",
-     "why": "2 browser-suite mentions, 8 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 8 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -865,7 +865,7 @@
     {
      "name": "room",
      "tier": "proven",
-     "why": "7 browser-suite mentions, 14 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 14 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -874,7 +874,7 @@
     {
      "name": "walls",
      "tier": "proven",
-     "why": "10 browser-suite mentions, 16 real asks in the benchmark",
+     "why": "a self-test, 10 browser-suite mentions, 16 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -883,7 +883,7 @@
     {
      "name": "home",
      "tier": "proven",
-     "why": "11 browser-suite mentions, 19 real asks in the benchmark",
+     "why": "a self-test, 11 browser-suite mentions, 19 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -922,7 +922,7 @@
     {
      "name": "ovulation",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 18 real asks in the benchmark",
+     "why": "a self-test, 4 browser-suite mentions, 18 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -931,7 +931,7 @@
     {
      "name": "period",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 21 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 21 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -940,7 +940,7 @@
     {
      "name": "pregnancy",
      "tier": "proven",
-     "why": "4 browser-suite mentions, 14 real asks in the benchmark",
+     "why": "a self-test, 4 browser-suite mentions, 14 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
