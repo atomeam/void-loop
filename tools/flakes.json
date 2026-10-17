@@ -72,5 +72,7 @@
   {"check": "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS a", "sha": "739e1f83237f173c42da6d7ff7ebf1fae4fafb1e", "at": "2026-10-17T08:44:08Z"},
   {"check": "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock w", "sha": "1c0581db4937e285b161780f86e34d023ffd5f4d", "at": "2026-10-17T11:21:34Z"},
   {"check": "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"", "sha": "996815c8ed4006a7491b113064a0b71545ea6a61", "at": "2026-10-17T13:17:00Z"},
-  {"check": "check timeout: no check finished within 300 s", "sha": "996815c8ed4006a7491b113064a0b71545ea6a61", "at": "2026-10-17T13:17:00Z"}
+  {"check": "check timeout: no check finished within 300 s", "sha": "996815c8ed4006a7491b113064a0b71545ea6a61", "at": "2026-10-17T13:17:00Z"},
+  {"check": "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, a", "sha": "1e76fbc06270aab044fed964c94fc75631f829c0", "at": "2026-10-17T14:04:09Z"},
+  {"check": "check timeout: no check finished within 300 s", "sha": "1e76fbc06270aab044fed964c94fc75631f829c0", "at": "2026-10-17T14:04:09Z"}
 ]
