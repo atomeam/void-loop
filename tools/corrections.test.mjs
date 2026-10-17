@@ -55,6 +55,7 @@ test('the log is empty with no number when nothing is kept, and escapes untruste
   const html = logHtml([{ skill: 'clock', ask: '<img src=x onerror=alert(1)>', text: '"><script>alert(1)</script>' }], FAM);
   assert.ok(!html.includes('<script') && !html.includes('<img'), 'escaped'); assert.match(html, /&lt;script&gt;/); assert.match(html, /Time <span[^>]*>\(1\)/);
 
+});
 test('the placeholder is not an answer: nothing is chosen and nothing is saved', () => {
   const recent = [{ ask: 'make a clock', skill: 'clock' }, { ask: 'make a timer', skill: 'timer' }];
   assert.equal(chosenAnswer(recent, ''), null); assert.equal(chosenAnswer(recent, undefined), null); assert.equal(chosenAnswer(recent, 'x'), null); assert.equal(chosenAnswer(recent, '5'), null); assert.equal(chosenAnswer(recent, '-1'), null);
