@@ -51,7 +51,7 @@ function wirePlayers(el, f) {
   if (t) t.addEventListener('click', () => show(vid(f.trailer, f.poster)));
 }
 
-async function runCard(m, api) {
+export async function runCard(m, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
   const f = await lookup(m);
@@ -60,7 +60,7 @@ async function runCard(m, api) {
   return 'movie';
 }
 
-async function runPick(api) {
+export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
   let picks = [];
