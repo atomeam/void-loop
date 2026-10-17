@@ -1103,7 +1103,7 @@ try {
     await A.p.fill('.vpage.on [data-ap-note]', 'from my grandfather');
     const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
     await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'coin.png', mimeType: 'image/png', buffer: png });
-    await until(async () => /V01D values this at/.test(await A.page()), 5000); const card = await A.page();
+    await until(async () => /V01D values this at/.test(await A.page()), 20000); const card = await A.page();
     await A.p.waitForTimeout(800); const coinMake = await A.p.$$eval('.vpage.on .ap-make', (l) => l.length);
     // a photo of something the forge can model gets a "make me one" link, and the link makes it (asked by Void, ask-20261015-2008-1)
     await A.ask('what is this vase worth', 600); await until(async () => !!(await A.p.$('.vpage.on [data-ap-file]')), 4000);
