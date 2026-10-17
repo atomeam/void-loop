@@ -4,6 +4,7 @@
 // lines of the text, the Power / Resistance / Income plates, the collector number and the foil by rarity. toPng() renders it in the browser.
 // Pure except toPng(). Every text field is escaped; nothing is fetched, so the picture never taints a canvas.
 import { artInner, rarityKey, RARITY_LOOK } from './card-art.js';
+import { safeImg } from './art-rules.js';
 
 export const CARD_W = 744, CARD_H = 1039, BLEED = 35;
 const INK = '#0a0a10';
@@ -49,7 +50,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   for (let i = 0; i < cost; i++) { const x = 684 - i * 24; s += '<path d="M' + x + ' 68l9 10-9 10-9-10z" fill="' + soft + '" stroke="' + INK + '" stroke-width="2"/>'; }
   // art
   const aw = 664, ah = 440;
-  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '">' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + '</svg>';
+  s += '<svg x="40" y="122" width="' + aw + '" height="' + ah + '" viewBox="0 0 ' + aw + ' ' + ah + '">' + artInner({ key: d.key || d.title || d.name, name: d.name || d.title, kind: d.kind || d.typeLine, chapter: d.chapter, hue, rarity: d.rarity, season: d.season, glyph: d.glyph }, { w: aw, h: ah }) + (safeImg(d.art) ? '<image href="' + safeImg(d.art) + '" x="0" y="0" width="' + aw + '" height="' + ah + '" preserveAspectRatio="xMidYMid slice"/>' : '') + '</svg>'; // the Art Forge's painted picture (lib/card-forge.js) over the plate, when the card has one: a data URL only, so the canvas is never tainted
   s += '<rect x="40" y="122" width="' + aw + '" height="' + ah + '" fill="none" stroke="' + edge + '" stroke-width="4"/>';
   // type line
   const type = String(d.typeLine || d.kind || '').replace(/\s+/g, ' ').trim().toUpperCase().slice(0, 52);
