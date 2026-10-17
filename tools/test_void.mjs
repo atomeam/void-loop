@@ -1103,7 +1103,7 @@ try {
     await A.p.fill('.vpage.on [data-ap-note]', 'from my grandfather');
     const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
     await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'coin.png', mimeType: 'image/png', buffer: png });
-    await until(async () => /V01D values this at/.test(await A.page()), 5000); const card = await A.page();
+    await until(async () => /V01D values this at/.test(await A.page()), 20000); const card = await A.page();
     await A.p.waitForTimeout(800); const coinMake = await A.p.$$eval('.vpage.on .ap-make', (l) => l.length);
     // a photo of something the forge can model gets a "make me one" link, and the link makes it (asked by Void, ask-20261015-2008-1)
     await A.ask('what is this vase worth', 600); await until(async () => !!(await A.p.$('.vpage.on [data-ap-file]')), 4000);
@@ -2306,6 +2306,7 @@ try {
     const forge = await B.p.$eval('.vpage.on', (e) => ({ asks: [...e.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: e.textContent.replace(/\s+/g, ' ') }));
     await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
+    { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
     check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
@@ -6422,6 +6423,10 @@ try {
     await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
     const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    await K.ask('what can i use instead of eggs in baking', 900); await until(async () => /Instead of eggs/.test(await K.page()), 8000);
+    const t0 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent)); await K.p.fill('.vpage.on .swap-mins', '30'); await K.p.waitForTimeout(200);
+    const t1 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web

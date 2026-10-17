@@ -76,6 +76,29 @@ export const IMPACT = {
 /** what else to adjust for swap `i` of `item` ('' when nothing). Pure. */
 export function impactOf(item, i) { const r = IMPACT[item && item.name]; return (r && r[i]) || ''; }
 
+/** the time a swap's "then" line moves the cook by, read off the line itself (no number is made up here): { lo, hi, sign: 1 longer | -1 sooner }, or null.
+ *  "bake 2–3 minutes longer" -> 2..3 longer; "take it out 1–2 minutes sooner" -> 1..2 sooner; "cook a minute less" -> 1 sooner. Pure.
+ *  Asked by Void: "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitution." */
+export function timeShift(line) {
+  const t = String(line || '').toLowerCase().replace(/\s+/g, ' ');
+  const m = t.match(/\b(?:(\d+)(?:\s?[–-]\s?(\d+))?|a)\s+minutes?\s+(longer|more|sooner|earlier|less)\b/);
+  if (!m) return null;
+  const lo = m[1] ? +m[1] : 1, hi = m[2] ? +m[2] : lo;
+  if (!(lo >= 1) || hi < lo || hi > 60) return null;
+  return { lo, hi, sign: /longer|more/.test(m[3]) ? 1 : -1 };
+}
+/** the recipe's own time (minutes) moved by a swap's shift: { lo, hi } minutes to cook now, or null. Pure. */
+export function shiftedTime(minutes, shift) {
+  const n = +minutes;
+  if (!shift || !(n >= 1) || n > 600) return null;
+  const lo = Math.max(1, n + shift.sign * shift.lo), hi = Math.max(1, n + shift.sign * shift.hi);
+  return { lo: Math.min(lo, hi), hi: Math.max(lo, hi) };
+}
+/** "+2–3 min" / "−1–2 min" for a shift, or ''. Pure. */
+export function shiftWords(shift) {
+  return shift ? (shift.sign > 0 ? '+' : '\u2212') + (shift.lo === shift.hi ? shift.lo : shift.lo + '\u2013' + shift.hi) + ' min' : '';
+}
+
 const TAIL = /\s+(?:to\s+thicken(?:\s+\w+)?|for\s+thickening|(?:in|for)\s+(?:gravy|soup|stew|a\s+stew|baking|a\s+cake|cakes?|cookies|muffins|brownies|bread|pancakes|a\s+recipe|recipes?|cooking|a\s+sauce))$/;
 const of = (s) => {
   s = s.trim().replace(TAIL, '').replace(/^(?:some|the|any)\s+/, '');
@@ -113,16 +136,23 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = '<h2>Instead of ' + esc(s.name) + '</h2><div class="sub">for ' + esc(s.amount) + '</div>'
       + (lead ? '<p style="font-size:20px;margin:8px 0">' + esc(lead) + '</p>' : '')
-      + '<ol style="padding-left:20px;line-height:1.6">' + s.swaps.map((w, i) => '<li>' + esc(w) + (impactOf(s, i) ? '<div class="swap-then" style="color:#8a8a8a;font-size:14px;line-height:1.4">then: ' + esc(impactOf(s, i)) + '</div>' : '') + '</li>').join('') + '</ol>'
+      + '<ol style="padding-left:20px;line-height:1.6">' + s.swaps.map((w, i) => '<li>' + esc(w) + (impactOf(s, i) ? '<div class="swap-then" style="color:#8a8a8a;font-size:14px;line-height:1.4">then: ' + esc(impactOf(s, i)) + (timeShift(impactOf(s, i)) ? ' <b class="swap-time" data-lo="' + timeShift(impactOf(s, i)).lo + '" data-hi="' + timeShift(impactOf(s, i)).hi + '" data-sign="' + timeShift(impactOf(s, i)).sign + '">' + shiftWords(timeShift(impactOf(s, i))) + '</b>' : '') + '</div>' : '') + '</li>').join('') + '</ol>'
+      + (s.swaps.some((w, i) => timeShift(impactOf(s, i))) ? '<p class="swap-clock" style="color:#8a8a8a;font-size:14px">The recipe says <input class="swap-mins" type="number" min="1" max="600" inputmode="numeric" placeholder="30" aria-label="the recipe\'s time in minutes" style="width:4em;font:inherit;background:transparent;color:inherit;border:1px solid #444;border-radius:4px;padding:2px 4px"> minutes: the swaps that change the time say the new one.</p>' : '')
       + (s.note ? '<p style="color:#8a8a8a">' + esc(s.note) + '</p>' : '')
       + '<div class="src">The usual kitchen equivalents. Any swap changes the taste or texture a little; the first one listed is the closest.</div>'
       + cookChip('substitute for ' + s.name, esc);
+    const inp = el.querySelector && el.querySelector('.swap-mins');
+    if (inp) inp.addEventListener('input', () => el.querySelectorAll('.swap-time').forEach((b) => {
+      const t = shiftedTime(inp.value, { lo: +b.dataset.lo, hi: +b.dataset.hi, sign: +b.dataset.sign });
+      b.textContent = (t ? (t.lo === t.hi ? t.lo : t.lo + '\u2013' + t.hi) + ' min now' : shiftWords({ lo: +b.dataset.lo, hi: +b.dataset.hi, sign: +b.dataset.sign }));
+    }));
   });
   return 'swaps';
 }
 
 export default {
   name: 'swaps',
+  meta: { version: 2 }, // 2: the time a swap moves the cook by (version history, owner's note 2026-10-17)
   examples: ['substitute for buttermilk', 'what can i use instead of eggs in baking', 'baking powder substitute', 'out of brown sugar', 'how to make self rising flour', 'can i use greek yogurt instead of sour cream'],
   nearMisses: ['substitute teacher', 'what can i use instead of google', 'substitution method', 'how to make bread', 'egg timer', 'replacement windows'],
   match(lower, text) { return !!swapAsk(text || lower); },
