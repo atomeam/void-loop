@@ -239,7 +239,7 @@ async function run(text, api) {
   }).catch(() => {});
   // the divergence tracker (asked by Void): my asks, word for word, against the ledger line that built each, with the words the build never says
   fetch('/api/reflect', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
-    const html = divergenceHtml(esc, j && j.follow && j.follow.recent), at = el.querySelector('.growth-owner') || el.querySelector('[data-velocity]');
+    const html = divergenceHtml(esc, j && j.follow && j.follow.recent), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
     if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: divergenceHtml escapes every value (lib/inbox-health.js)
   }).catch(() => {});
   const w = week ? weekSummary(list) : null;
