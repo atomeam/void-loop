@@ -1,0 +1,64 @@
+{
+ "name": "tribute",
+ "title": "Tribute",
+ "about": "A strong card cannot simply be summoned: it needs one of your own cards given up as material, and the material lends it strength.",
+ "rules": [
+  {
+   "id": "tribute-strong-needs-material",
+   "source": "tribute set",
+   "layer": 1,
+   "when": "summon",
+   "if": [
+    {
+     "fact": "cardPower",
+     "cmp": "gte",
+     "value": 6
+    },
+    {
+     "fact": "materials",
+     "cmp": "lt",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "deny",
+     "reason": "a card of Power 6 or more needs one of your cards given up as material"
+    }
+   ]
+  },
+  {
+   "id": "tribute-material-lends-power",
+   "source": "tribute set",
+   "layer": 2,
+   "when": "summon",
+   "then": [
+    {
+     "do": "modify",
+     "stat": "power",
+     "add": {
+      "fact": "materials"
+     }
+    }
+   ]
+  },
+  {
+   "id": "tribute-material-is-spent",
+   "source": "tribute set",
+   "layer": 3,
+   "when": "summon",
+   "if": [
+    {
+     "fact": "materials",
+     "cmp": "gte",
+     "value": 1
+    }
+   ],
+   "then": [
+    {
+     "do": "consume"
+    }
+   ]
+  }
+ ]
+}

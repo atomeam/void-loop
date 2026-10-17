@@ -4439,9 +4439,18 @@
   "what": "status card failure now shows a suggested fix and a Recover button that queues a rebuild with the best-fitting Void-itself skill; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges, asked by Void"
  },
  {
-  "at": "2026-10-16T23:38:07Z",
+  "at": "2026-10-16T23:27:35Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D rules engine (asked by the owner): rules as data in layers (replace/deny, values, triggers), six rule sets stacked at once, clashes settled and written in plain words, proposeRule, \"duel with mana and tribute rules\"",
+  "show": "Stack rule sets: duel with mana and tribute rules",
+  "try": "play cards"
+ },
+ {
+  "at": "2026-10-16T23:28:18Z",
   "by": "claude",
   "kind": "build",
-  "what": "contextual shortcut: 'what should I do now' reads the clock and suggests one food, ride, sleep, breathing or timer ask from the time, body and mind and out-in-the-world families; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked, asked by Void"
- }
+  "what": "approval card now starts a task that keeps running after you leave: 'keep <automation> running every 2 hours' on the confirm line puts the rule on the clock and every step is an action record, asked by Void"
+ },
+  {"at":"2026-10-16T23:38:07Z","by":"claude","kind":"build","what":"contextual shortcut: 'what should I do now' reads the clock and suggests one food, ride, sleep, breathing or timer ask from the time, body and mind and out-in-the-world families; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked, asked by Void"}
 ]
