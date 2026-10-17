@@ -2,7 +2,7 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T21:56:22.353Z",
+   "at": "2026-10-17T21:57:26.998Z",
    "sha": "5773a89f69c3525bec022c1fba868277f8a00bfb",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39072138179",
    "suite": "browser suite on main",
