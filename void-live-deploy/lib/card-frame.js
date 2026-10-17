@@ -45,6 +45,15 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
   };
 }
 
+/** a card whose numbers were worked out elsewhere (a merged card, lib/merge-rules.js): { tier, chapter, typeLine, cost, power, resistance, income, adds, name } -> what cardOf returns. Pure. */
+export function ownCard(o = {}) {
+  const n = (v, hi) => Math.max(0, Math.min(hi, Math.floor(Number(v)) || 0));
+  const chapter = String(o.chapter || 'games').slice(0, 20);
+  return { rarity: RARITY[o.tier] || null, chapter, hue: hueOf(chapter), fetched: false, cost: n(o.cost, 9), typeLine: String(o.typeLine || '').slice(0, 80),
+    power: n(o.power, 99), toughness: n(o.resistance, 99), income: n(o.income, 9), arrowsOut: 0, arrowIn: false, number: '', tested: '',
+    adds: String(o.adds || '').replace(/\s+/g, ' ').slice(0, 120), name: String(o.name || '').slice(0, 40) };
+}
+
 const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color:' + r.gem + '" title="' + r.name + '"></i>' : '');
 /** the art box, the type bar, the adds line and the footer as HTML. Pure. */
 export function chromeHtml(c, esc) {
@@ -142,7 +151,8 @@ export function keep(el, esc, stats) {
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   const name = el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
-  const c = cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
+  let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
+  const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
   const key = JSON.stringify([c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');

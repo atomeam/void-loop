@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 57,
-  "checked": 28,
+  "checked": 29,
   "proven": 85
  },
  "families": [
@@ -247,7 +247,7 @@
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 4,
+    "checked": 5,
     "proven": 12
    },
    "skills": [
@@ -414,6 +414,13 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "promoted": "2026-10-17"
+    },
+    {
+     "name": "merge",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     }
    ]
   },
