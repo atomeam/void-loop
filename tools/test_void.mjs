@@ -6768,6 +6768,20 @@ try {
       JSON.stringify({ maths, routes, first, boiled, back, swapped: swapped && swapped.a + '|' + swapped.b, miles, count, kept: kept && kept.b, gone, errs: Q.errors }));
     await Q.ctx.close(); }
 
+  // asked by Void: a kept converter whose file failed to load shows a "re-sync" button within 2 s, and a tap brings the converter back
+  if (want("convert card: when its file fails to load after a reload, a re-sync button brings it back")) { const Q = await fresh();
+    await Q.ask('give me a converter for 5 miles to km', 900); await until(async () => !!(await Q.p.$('.convert-card .cv-swap')), 6000);
+    let blocked = 0; await Q.ctx.route(/\/skills\/convert\.js(?:$|\?(?!resync))/, (r) => { blocked++; return r.abort('failed'); });
+    await Q.p.evaluate(async () => { for (const g of await (navigator.serviceWorker ? navigator.serviceWorker.getRegistrations() : [])) await g.unregister(); }); // the service worker would serve the file from its cache, past the block
+    await Q.p.reload(); await Q.p.waitForTimeout(800); const early = !!(await Q.p.$('.convert-card'));
+    const chip = await until(() => Q.p.$('.resync-chip'), 6000).catch(() => null), label = chip ? await chip.textContent() : '';
+    if (chip) await chip.click();
+    const back = await until(async () => Q.p.evaluate(() => { const c = document.querySelector('.convert-card'); return c ? { b: (c.querySelector('.cv-to-val') || {}).value, chips: document.querySelectorAll('.resync-chip').length } : null; }), 6000).catch(() => null);
+    const errs = Q.errors.filter((e) => !/convert\.js|Failed to fetch dynamically imported module|skill\(s\) in the index did not load/i.test(e));
+    check('convert card: with its file failing to load after a reload, the kept converter is missing at first, a "re-sync converter" button stands in its place within 2 s, and a tap loads it again: the converter returns with its 5 miles = 8.04672 km and the button goes',
+      blocked >= 1 && !early && /re-sync converter/.test(label) && !!back && back.b === '8.04672' && back.chips === 0 && !errs.length, JSON.stringify({ blocked, early, label, back, errs }));
+    await Q.ctx.close(); }
+
   // cook-flow (asked by Void, lib/cook-flow.js): a kitchen conversion and a kitchen swap end with one tap that starts a timer;
   // a distance conversion gets no chip; a swap says what else to adjust ("then:" under the swap, skills/swaps.js IMPACT).
   if (want("cook-flow: a kitchen conversion and a swap offer a timer in one tap, the swap says what else to adjust, a distance gets no chip")) { const K = await fresh();
