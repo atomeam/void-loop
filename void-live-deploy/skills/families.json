@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 63,
-  "checked": 33,
+  "checked": 34,
   "proven": 85
  },
  "families": [
@@ -1233,7 +1233,7 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 0,
+    "checked": 1,
     "proven": 1
    },
    "skills": [
@@ -1260,6 +1260,13 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "streak": 1
+    },
+    {
+     "name": "service-health",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test"
     }
    ]
   },

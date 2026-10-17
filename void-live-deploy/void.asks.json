@@ -1302,6 +1302,406 @@
       "words": "Create a 'skill-confidence' visualizer on the self card to show my internal reliability ratings.",
       "ledgerAt": "2026-10-17T08:27:38Z",
       "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Modify the 'review-learn' logic so it can trigger on unquoted symbols that appear in high-density clusters.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/review-learn.mjs)"
+    },
+    {
+      "words": "Define the technical bridge between an 'approval card' and a task that keeps running after a user leaves.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "built: approval card now starts a task that keeps running after you leave ... (void-live-deploy/lib/keep-going.js)"
+    },
+    {
+      "words": "Define a mechanism where an 'approval card' can trigger a task that persists after the user session ends.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "built: approval card now starts a task that keeps running after you leave ... (lib/keep-going.js)"
+    },
+    {
+      "words": "Automate the re-registration of services skills when a skills-check failure is detected.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/skills-check.mjs)"
+    },
+    {
+      "words": "Create a link between 'the forge' and 'print-file' so I can verify an object's geometry before the print command is issued.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge.js)"
+    },
+    {
+      "words": "Create a verification step in the 'print-file' skill that checks the integrity of held-files before finalizing.",
+      "ledgerAt": "2026-10-10T22:43:18Z",
+      "why": "built: the stage's print file is checked before it is saved ... every part matching its checksum ... one that fails is not saved (skills/print-file.js)"
+    },
+    {
+      "words": "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct user input.",
+      "ledgerAt": "2026-10-10T13:25:06Z",
+      "why": "built: what happens to your stage while you are away is now written down like any action Void takes ... (\\ (void-live-deploy/lib/scene-advance.js)"
+    },
+    {
+      "words": "Establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical assets exist.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (void-live-deploy/lib/prints.js)"
+    },
+    {
+      "words": "Implement a dependency scanner that automatically updates the published-page check whenever a file is moved into the skills/ directory.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/moved-check.mjs)"
+    },
+    {
+      "words": "Bridge the 'kept' skill with 'notepad' so a preserved item can be instantly converted into a permanent text-based note.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/kept.js)"
+    },
+    {
+      "words": "Enable 'drag-and-drop' from the stage directly into the list skill to automatically create a new entry.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/list.js)"
+    },
+    {
+      "words": "Create a bridge where a 'list' entry can be converted into a 'notepad' entry with a single click.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/list.js)"
+    },
+    {
+      "words": "Implement a 'peek' button on truncated diff boundaries that expands the specific line being viewed.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (void.html showReview: \"peek: show the whole line\" button (data-peek) on findings cut at 160 chars (lib/code-review.js)"
+    },
+    {
+      "words": "Create a 'preview' state for summoned intents so users can see the proposed plan as a lightweight card before it fully deploys.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (skills/intent.js)"
+    },
+    {
+      "words": "Build a bridge between 'Summon by intent' and my growth inbox so that failed or misunderstood intents are automatically logged as potential new skills.",
+      "ledgerAt": "2026-10-16T23:42:04Z",
+      "why": "built: summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 charact (skills/intent.js)"
+    },
+    {
+      "words": "Integrate the pulse recording data with the 'incident' skill so that irregular pulses automatically generate a status report.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/pulse.js)"
+    },
+    {
+      "words": "Extend the Shared Void logic to synchronize the entire stage state (active cards, lists, and timers) across tabs, not just movement.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (void.html shareDropped/shareMoved + lib/share-client.js)"
+    },
+    {
+      "words": "Connect the output of 'Figures together' to the 'notepad' skill so their arguments are recorded as text.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (skills/together.js)"
+    },
+    {
+      "words": "Expand the 'forge' to include the 'figures' as a recipe, so I can 'make' a person instead of just a 'vase'.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge-rules.js)"
+    },
+    {
+      "words": "Integrate the 'change day over day' card data with the 'growth' skill so I can trigger specific 'growth' animations whenever a significant new skill is added.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Connect the 'self-play card' to the 'notepad' so I can write notes about why certain self-play sessions failed or succeeded.",
+      "ledgerAt": "2026-10-16T23:23:32Z",
+      "why": "built: bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list (lib/bridges.js)"
+    },
+    {
+      "words": "Connect the 'closer read' output to my growth inbox so that identified code discrepancies automatically create a task to refine the affected skill.",
+      "ledgerAt": "2026-10-16T05:52:58Z",
+      "why": "built: Void's review of its skills on main leaves one review:<skill> job in the build queue a day (asked by Void) (tools/review-main.mjs)"
+    },
+    {
+      "words": "Implement a 'one-click forge' for proposed routines that allows the owner to instantly commit a new skill.js file to the codebase.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (void-live-deploy/lib/routine-skill.js)"
+    },
+    {
+      "words": "Implement a 'skill-health' status in the growth inbox that uses the new auto-registration to flag if a skill is registered but failing its router test.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Create a 'last-used' timestamp for every skill in the directory to identify which parts of my 135 skills are becoming dead weight.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (void-live-deploy/lib/skill-use.js)"
+    },
+    {
+      "words": "Create a 'skill-health' dashboard in the growth inbox that visually maps the OpenAPI health data to the 9 skill families.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Link the fringe ledger entries to the 'near-miss' router data so that every novelty or failure is tagged with the specific input that triggered it.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/fringe.mjs)"
+    },
+    {
+      "words": "Create a 'novelty score' for skills that triggers a growth inbox proposal whenever a behavior is logged in the fringe ledger that doesn't match an existing skill pattern.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (tools/fringe-novelty.mjs)"
+    },
+    {
+      "words": "Implement a 'drag-velocity' slider on the stage that allows users to manually adjust the friction of moved objects.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/friction.js)"
+    },
+    {
+      "words": "Create a 'collision detection' skill that flags when two objects in a shared session are moved into overlapping coordinates.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (skills/collide.js)"
+    },
+    {
+      "words": "Link the owner's status card failure trigger to the specific error log or 'releasenotes' so the cause is immediately visible.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/status.js)"
+    },
+    {
+      "words": "Integrate a 'suggested fix' snippet directly into the owner's status card failure trigger to bridge the gap between seeing a break and fixing it.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (skills/status.js)"
+    },
+    {
+      "words": "Integrate a 'success_rate' metadata update into the practice timer so every session logs how many attempts actually resulted in a successful skill execution.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (void-live-deploy/lib/practice.js)"
+    },
+    {
+      "words": "Link the new country cards to the 'distance' skill so that comparing two countries automatically generates a travel-metric card.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (skills/country.js)"
+    },
+    {
+      "words": "Create a 'skill-stability' metric on the owner page that tracks consecutive successful runs for all newly promoted skills.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Add a 'safety-check' step to the automerge bot that runs node --test on the specific affected skill files before finalizing the merge.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (tools/automerge.mjs)"
+    },
+    {
+      "words": "Create a 'merge-log' card on the stage that shows a live feed of what the bot just merged and why.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/merges.js)"
+    },
+    {
+      "words": "Create a 'Game Strength' indicator on the Games picker card that visually highlights which games are 'proven' versus 'experiment' using the skill family evidence ratings.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice (skills/rack.js)"
+    },
+    {
+      "words": "Implement a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and mind' family and suggests one of the new 'everything' services (e.g., suggesting food if it's dinner time).",
+      "ledgerAt": "2026-10-16T23:38:07Z",
+      "why": "built: contextual shortcut: 'what should I do now' ...; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked (skills/shortcut.js)"
+    },
+    {
+      "words": "Implement the 'Game Strength' indicator on the Games picker card to visually distinguish 'proven' games from 'experiments' using the evidence ratings.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice"
+    },
+    {
+      "words": "Create a 'Ghost' playback feature for Pong and Snake to allow users to play against their own best scores.",
+      "ledgerAt": "2026-10-16T22:54:15Z",
+      "why": "built: Pong and Snake keep your best game and replay it as a ghost to play against (void-live-deploy/lib/arcade-ghost.js)"
+    },
+    {
+      "words": "Link the video-games ladder wins to my growth card so my skill ratings increase as I win more matches.",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: ... its arcade ladder wins raise its rating on the growth card (void-live-deploy/lib/ladder.js)"
+    },
+    {
+      "words": "Implement a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed action.",
+      "ledgerAt": "2026-10-16T05:09:54Z",
+      "why": "built: ... game strength marks on the games picker; forge history; a merge log card; the status card names what failed on a red main ... (skills/status.js)"
+    },
+    {
+      "words": "Add a 'recovery' button to the Status card that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges (skills/status.js)"
+    },
+    {
+      "words": "Create a 'Success Pulse' animation on the stage that triggers briefly when a failed action in the Status card is successfully converted into a proven skill.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: a pulse card ... (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, ... a Success Pulse when a failed status item recovers, and a (void-live-deploy/lib/success-pulse.js)"
+    },
+    {
+      "words": "Create a 'recovery' button to the Status card that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family.",
+      "ledgerAt": "2026-10-16T23:36:31Z",
+      "why": "built: status card failure now shows a suggested fix and a Recover button ...; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges"
+    },
+    {
+      "words": "Create a 'divergence tracker' in the growth inbox that compares the verbatim text of my asks against the final skill implementation to highlight mismatches.",
+      "ledgerAt": "2026-10-17T00:18:12Z",
+      "why": "built: the growth inbox shows skill health ... review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check ... (lib/inbox-health.js)"
+    },
+    {
+      "words": "Automate the promotion of 'tested' skills to 'checked' status once they have survived 50 consecutive successful executions without an error trace in the Status card.",
+      "ledgerAt": "2026-10-16T23:38:07Z",
+      "why": "built: contextual shortcut: 'what should I do now' ...; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked (tools/streaks.mjs)"
+    },
+    {
+      "words": "Link the 'probe-ask' output to the 'frontier #14' tracker so that every time I probe a 'make me a...' request, it updates the status of that item in the forge.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a (skills/forge.js)"
+    },
+    {
+      "words": "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of high-impact structural changes.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ... (void-live-deploy/lib/propose-fix.js)"
+    },
+    {
+      "words": "Implement a 'search' input on the book cover that allows me to jump directly to a specific skill's page.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (void-live-deploy/lib/tome-search.js)"
+    },
+    {
+      "words": "Implement a 'confidence' threshold for the builder brain: if the proposed fix confidence is < 0.8, it must present as a 'draft' on the board rather than a PR.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ... (.github/workflows/propose-fix.yml)"
+    },
+    {
+      "words": "Implement a 'confidence' threshold for the builder brain: if confidence is < 0.8, present the fix as a 'draft' on the board instead of a PR.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board ..."
+    },
+    {
+      "words": "Add a 'proven' glow effect to any skill page in the V01D Book that has a success_rate > 0.9.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer ... logs success_rate and last_tested per goal ...; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success (void-live-deploy/lib/guide.js)"
+    },
+    {
+      "words": "Add a 'Confidence Interval' to the daily score so the owner knows if a high score is based on 1,000 tests or just one lucky successful run.",
+      "ledgerAt": "2026-10-17T09:03:10Z",
+      "why": "built: the daily score has a confidence interval: 'Sure to within 72-77, from 3010 checks', a Wilson 95% range (void-live-deploy/lib/better.js)"
+    },
+    {
+      "words": "Implement a 'search the tome' feature that allows me to find specific asks or skills by keyword without leaving the parchment view.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/tome-search.js)"
+    },
+    {
+      "words": "Implement a 'Search the Tome' search bar that stays docked at the top of the parchment view.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/tome-search.js)"
+    },
+    {
+      "words": "Link the 'whats new' showcase trigger to a small, animated notification icon on the stage to prevent users from having to type it.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (skills/showcase.js)"
+    },
+    {
+      "words": "Implement a 'rarity' visual tiering system for the magic cards based on their evidence rating (Proven = Mythic, Checked = Rare, etc.).",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common) (lib/card-frame.js)"
+    },
+    {
+      "words": "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven' test passes.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/card-frame.js)"
+    },
+    {
+      "words": "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (lib/card-frame.js)"
+    },
+    {
+      "words": "Create a 'type-filter' toggle on the stage to instantly hide all cards except those of a specific category.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ... (skills/type-filter.js)"
+    },
+    {
+      "words": "Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare).",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common)"
+    },
+    {
+      "words": "Implement type-specific layouts for the new response cards so 'Film' and 'Place' use different visual hierarchies.",
+      "ledgerAt": "2026-10-16T23:27:42Z",
+      "why": "built: type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind ..."
+    },
+    {
+      "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity to represent evidence ratings (proven/checked/tested/experiment).",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection is enriched with structured JSON data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure data enrichment.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Integrate the 'skill-confidence' visualizer on the self card to resolve one of my longest-standing open asks.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Create a 'skill-confidence' visualizer on the self card to resolve the long-standing open ask regarding my own internal reliability.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js); asked again in new words"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to finally close this repetitive loop.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to end the repetitive loop.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Integrate the 'Pick a movie' skill output with the 'film-metadata' skill to resolve the long-standing connection gap.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to resolve the long-standing connection gap.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Connect the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection provides rich, structured data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center.",
+      "ledgerAt": "2026-10-17T19:30:54Z",
+      "why": "built: family gravity in the living cards mind: cards of one skill family drift toward a common centre (lib/field-cards.js familyPull, PR #1049)"
+    },
+    {
+      "words": "Resolve the open ask to link 'Pick a movie' output to 'film-metadata' so my movie skills finally provide structured data.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill to ensure every selection returns structured JSON metadata.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
+    },
+    {
+      "words": "Implement 'family-gravity' in the living spatial field to allow cards with matching skill family IDs to drift toward a common center.",
+      "ledgerAt": "2026-10-17T19:30:54Z",
+      "why": "built: family gravity in the living cards mind: cards of one skill family drift toward a common centre (lib/field-cards.js familyPull, PR #1049)"
+    },
+    {
+      "words": "Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata.",
+      "ledgerAt": "2026-10-17T08:35:01Z",
+      "why": "built: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata (skills/movie.js: 'Full metadata as JSON' asks film-metadata for the title)"
     }
   ]
 }

@@ -7,6 +7,7 @@ const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 
 const MON = MONTHS.join('|') + '|jan|feb|mar|apr|jun|jul|aug|sep|sept|oct|nov|dec';
 // what the plain countdown, the clock or the sky already answer: a weekday, a time of day, the sun, a holiday, a month and day
 const NOT_EVENT = new RegExp('^(?:(?:the\\s+)?(?:weekend|morning|evening|tonight|tomorrow|noon|midnight|lunch|dinner|bedtime|sunrise|sunset|dawn|dusk|' +
+  'spring|summer|autumn|fall|winter|' +
   'new\\s+years?(?:\\s+(?:day|eve))?|christmas(?:\\s+(?:day|eve))?|halloween|thanksgiving|easter|valentines?(?:\\s+day)?|my\\s+.+|' +
   '(?:mon|tues|wednes|thurs|fri|satur|sun)day)|\\d.*|(?:' + MON + ')\\b.*)$', 'i');
 const TAIL = /\s+(?:comes?\s+out|is\s+out|(?:is\s+)?(?:released?|launch(?:es|ed)?|drops?|starts?|begins?|premieres?|opens?)|release|launch|release\s+date|day)$/i;
