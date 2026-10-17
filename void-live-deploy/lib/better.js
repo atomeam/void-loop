@@ -107,10 +107,39 @@ export function interval(f) {
   return { lo: Math.min(mean(lo), p.score), hi: Math.max(mean(hi), p.score), n: (f.week || 0) + (f.skills || 0) + (f.benchTotal || 0) };
 }
 
-/** one day's row for void.better.json */
-export function rowOf(facts, at = new Date().toISOString()) {
-  const p = parts(facts);
-  return { at, score: p.score, parts: Object.fromEntries(PARTS.map((k) => [k, p[k]])), facts };
+/** each family's health today as recorded in a row: [{ id, health }] (health 0 to 100, from familyDrivers), [] without families. Pure. */
+export function familySnapshot(fam) {
+  return familyDrivers(fam).filter((d) => d.id && d.health !== null).map((d) => ({ id: d.id, health: d.health })).sort((a, b) => a.id.localeCompare(b.id));
+}
+
+/** one day's row for void.better.json; with the families file the row also keeps each family's health, so a later day can say which way a family moved */
+export function rowOf(facts, at = new Date().toISOString(), fam = null) {
+  const p = parts(facts), families = familySnapshot(fam);
+  return { at, score: p.score, parts: Object.fromEntries(PARTS.map((k) => [k, p[k]])), ...(families.length ? { families } : {}), facts };
+}
+
+export const VELOCITY_MIN_H = 12, VELOCITY_MAX_H = 48, VELOCITY_STEP = 1; // the row used is the one nearest a day old, between 12 and 48 hours; under 1 point is "steady"
+
+/**
+ * Family velocity (asked by Void): for each family, whether it is improving or decaying against about a day ago. Only recorded data: the
+ * daily rows of void.better.json that carry a family snapshot (rowOf), against the families file as it is now. The reference row is the one
+ * nearest 24 hours old within [VELOCITY_MIN_H, VELOCITY_MAX_H]; with none (or none that knew the family) the family has no velocity.
+ * Returns { since: ISO time of the row or null, byFamily: { id: { now, then, delta, trend } } } where trend is 'improving' | 'decaying' | 'steady'. Pure.
+ */
+export function velocityOf(rows, fam, now = Date.now()) {
+  const cur = new Map(familySnapshot(fam).map((f) => [f.id, f.health]));
+  let ref = null, best = Infinity;
+  for (const r of Array.isArray(rows) ? rows : []) {
+    const t = r && Date.parse(r.at), h = (now - t) / 36e5;
+    if (!Array.isArray(r && r.families) || !r.families.length || !Number.isFinite(h) || h < VELOCITY_MIN_H || h > VELOCITY_MAX_H) continue;
+    if (Math.abs(h - 24) < best) { best = Math.abs(h - 24); ref = r; }
+  }
+  const byFamily = {};
+  if (ref) {
+    const then = new Map(ref.families.filter((f) => f && Number.isFinite(+f.health)).map((f) => [String(f.id), +f.health]));
+    for (const [id, health] of cur) if (then.has(id)) { const delta = health - then.get(id); byFamily[id] = { now: health, then: then.get(id), delta, trend: delta >= VELOCITY_STEP ? 'improving' : delta <= -VELOCITY_STEP ? 'decaying' : 'steady' }; }
+  }
+  return { since: ref ? ref.at : null, byFamily };
 }
 
 /** rows with a new one on the end: a row a day (the same UTC day is replaced by the newer measure), KEEP at most. Pure. */
