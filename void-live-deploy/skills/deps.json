@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 428,
+ "counted": 430,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -340,6 +340,12 @@
   },
   {
    "file": "lib/tome.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2716,6 +2722,12 @@
     "lib/keep-going.js"
    ]
   },
+  "lib/web4.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/web4.js"
+   ]
+  },
   "lib/webauthn.js": {
    "imports": [],
    "importedBy": [
@@ -4700,6 +4712,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/web4.js": {
+   "imports": [
+    "lib/web4.js"
+   ],
+   "importedBy": []
   },
   "skills/words.js": {
    "imports": [],

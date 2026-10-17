@@ -6209,6 +6209,21 @@ try {
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
+  // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web
+  // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
+  if (want("V01D web4: the four steps of the web as one card, the honest sentence, a tapped link runs its ask")) { const W = await fresh();
+    await W.ask('what is web4', 900); await until(async () => /Web 4/.test(await W.page()), 8000); const wp = await W.page();
+    const steps = await W.p.$$eval('.vpage.on .w4-step', (d) => d.map((x) => x.textContent));
+    const links = await W.p.$$eval('.vpage.on .w4-step a[data-ask]', (d) => d.map((x) => x.dataset.ask));
+    check('V01D web4: "what is web4" shows one card with four steps (read, write and share, own, ask and it appears) and the honest sentence', steps.length === 4 && /Web 1 \u00b7 Read/.test(steps[3]) && /Web 4 \u00b7 Ask, and it appears/.test(steps[0]) && /Web4 is our name for it; nobody has defined it\./.test(wp) && !/blockchain|token|coin|crypto|wallet/i.test(wp) && !!(await W.p.$('.vpage.on .vc-type')), wp.slice(0, 120));
+    check('V01D web4: each step has a tappable ask into something that exists', links.length === 4 && links.includes('open the book') && links.includes('share this card'), JSON.stringify(links));
+    await W.p.click('.vpage.on .w4-step a[data-ask="open the book"]'); const tome = await until(() => W.p.$('#vtome .tome'), 6000);
+    check('V01D web4: tapping "open the book" runs it (the book opens)', !!tome, '');
+    await W.p.keyboard.press('Escape'); await W.p.waitForTimeout(300);
+    await W.ask('are you web4', 900); await until(async () => /Web 3/.test(await W.page()), 8000);
+    check('V01D web4: "are you web4" opens the same card', (await W.p.$$('.vpage.on .w4-step')).length === 4, '');
+    check('V01D web4: no page errors', !W.errors.length, W.errors.join(' | ').slice(0, 200));
+    await W.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

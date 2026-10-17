@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 55,
-  "checked": 25,
+  "checked": 26,
   "proven": 85
  },
  "families": [
@@ -1340,7 +1340,7 @@
    "count": {
     "experiment": 0,
     "tested": 6,
-    "checked": 7,
+    "checked": 8,
     "proven": 14
    },
    "skills": [
@@ -1513,6 +1513,13 @@
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "web4",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     },
     {
      "name": "invite",
