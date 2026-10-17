@@ -1050,5 +1050,13 @@
   "of": 30,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
+ },
+ {
+  "at": "2026-10-17T19:47:49Z",
+  "passed": 29,
+  "of": 31,
+  "kind": "file",
+  "key": "site | console: Access to fetch at 'https://www#thesportsdb#com/api",
+  "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
  }
 ]

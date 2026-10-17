@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 28,
- "runsTotal": 140,
+ "runsTotal": 141,
  "kinds": {
   "grow": 21,
-  "file": 65,
+  "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T19:47:49Z",
+   "passed": 29,
+   "of": 31,
+   "kind": "file",
+   "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
+  },
   {
    "at": "2026-10-17T17:36:35Z",
    "passed": 20,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"bring it to the front\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T09:37:26Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"label it pasta\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -261,9 +261,9 @@
   "skill:social": "2026-10-17T17:36:35Z",
   "skill:spanish": "2026-10-17T17:36:35Z",
   "skill:splat": "2026-10-17T17:36:35Z",
-  "skill:sport": "2026-10-17T00:06:20Z",
-  "skill:status": "2026-10-17T00:06:20Z",
-  "skill:sticky": "2026-10-17T00:06:20Z",
+  "skill:sport": "2026-10-17T19:47:49Z",
+  "skill:status": "2026-10-17T19:47:49Z",
+  "skill:sticky": "2026-10-17T19:47:49Z",
   "skill:store": "2026-10-17T06:04:06Z",
   "skill:swaps": "2026-10-17T06:09:27Z",
   "skill:swarm": "2026-10-17T06:09:27Z",
