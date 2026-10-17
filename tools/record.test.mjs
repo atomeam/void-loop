@@ -1,7 +1,7 @@
 // tools/record.mjs: what Void's own video of an experiment says comes from the lab entry and the run's ledger notes.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { runOf, script, hookOf, filmedOf, pickFilm, picksOf, sourceOf } from './record.mjs';
+import { runOf, script, hookOf, filmedOf, pickFilm, picksOf, sourceOf, shipsOf, shipId, unfilmed } from './record.mjs';
 import { toolList } from '../void-live-deploy/skills/make.js';
 
 const ledger = [{ run: 1, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board' }, { run: 2, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board', behavior: 'Estimate how much of what people ask Void has already seen.', hypothesis: 'Good-Turing says it', findings: ['about 40% unseen'], failure_modes: [{ what: 'small samples swing', evidence: 'n<30' }] }];
@@ -78,3 +78,17 @@ console.log('record: ok');
   // zero-lie: nothing on the card that the ledger does not hold, and no card for a run with no findings
   for (const [card, src] of [[s.finding, 'about 40% unseen'], [f.slice(0, -1), one]]) assert.ok(src.startsWith(card), card);
 }
+
+// a film of a shipped change (2026-10-17): the lab ran out of experiments never filmed, so deploys filmed nothing
+const g = [{ at: '2026-10-17T08:01:21Z', show: 'swaps show the minutes they add', try: 'what can i use instead of eggs in baking' }, { at: '2026-10-17T07:00:00Z', what: 'no show' }, { at: '2026-10-17T08:06:37Z', show: 'a pasted-back card says copy 2', try: 'open the book' }];
+const sh = shipsOf(g);
+assert.deepEqual(sh.map((x) => x.id), ['ship-202610170806', 'ship-202610170801'], 'newest first, only entries with a show and a try');
+assert.equal(shipId(g[0]), 'ship-202610170801');
+assert.equal(filmedOf('film-20261017-ship-202610170806-r9')[0].id, 'ship-202610170806', 'the release tag names the ship');
+const ss = script(sh[1], null);
+assert.match(ss.description, /\?q=what%20can%20i%20use%20instead%20of%20eggs/, 'the film links the ask, not the caption');
+assert.match(ss.source, /void\.growth\.json$/);
+assert.deepEqual(unfilmed(['a-1', 'b-2'], ['ship-2', 'ship-1'], new Set(['a-1', 'b-2']), 1, true, []), ['ship-2'], 'all lab filmed: a deploy films what shipped');
+assert.deepEqual(unfilmed(['a-1'], ['ship-1'], new Set(['a-1', 'ship-1']), 1, true, []), [], 'a deploy with nothing new films nothing');
+assert.deepEqual(unfilmed(['a-1'], [], new Set(['a-1']), 1, false, [{ id: 'a-1', day: '1' }]), ['a-1'], 'the daily run still falls back to the oldest film');
+console.log('record: shipped-change films ok');
