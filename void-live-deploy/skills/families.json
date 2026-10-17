@@ -9,8 +9,8 @@
  },
  "totals": {
   "experiment": 1,
-  "tested": 51,
-  "checked": 23,
+  "tested": 50,
+  "checked": 24,
   "proven": 85
  },
  "families": [
@@ -52,8 +52,8 @@
     {
      "name": "figures",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 13 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1
     },
@@ -1069,27 +1069,27 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 3,
+    "tested": 4,
+    "checked": 4,
     "proven": 7
    },
    "skills": [
     {
      "name": "sticky",
      "tier": "proven",
-     "why": "a self-test, 10 browser-suite mentions, 4 real asks in the benchmark",
-     "last_tested": "2026-10-16",
+     "why": "a self-test, 11 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
      "name": "notepad",
      "tier": "proven",
-     "why": "5 browser-suite mentions, 5 real asks in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
      "failing": [
       "open a notepad"
      ],
-     "last_tested": "2026-10-16",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 0.8
     },
@@ -1102,9 +1102,9 @@
     },
     {
      "name": "kept",
-     "tier": "tested",
-     "why": "8 browser-suite mentions",
-     "last_tested": "2026-10-16",
+     "tier": "checked",
+     "why": "a self-test, 8 browser-suite mentions",
+     "last_tested": "2026-10-17",
      "last_tested_by": "its tests"
     },
     {

@@ -127,8 +127,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 5,
-    "checked": 3,
+    "tested": 4,
+    "checked": 4,
     "proven": 7
    },
    "from": 134,
@@ -329,7 +329,7 @@
     "show me a 3D buddy"
    ],
    "tier": "proven",
-   "why": "a self-test, 12 browser-suite mentions, 3 real asks in the benchmark",
+   "why": "a self-test, 13 browser-suite mentions, 3 real asks in the benchmark",
    "flavor": "Asked 3 times in earnest, and never once left unanswered. Say the words below and it answers.",
    "n": 9
   },
@@ -2449,7 +2449,7 @@
     "note: call mom"
    ],
    "tier": "proven",
-   "why": "a self-test, 10 browser-suite mentions, 4 real asks in the benchmark",
+   "why": "a self-test, 11 browser-suite mentions, 4 real asks in the benchmark",
    "flavor": "An old art of the stage, tested each day before the sun is up.",
    "n": 135
   },
@@ -2465,7 +2465,7 @@
     "write in the notepad call the vet"
    ],
    "tier": "proven",
-   "why": "5 browser-suite mentions, 5 real asks in the benchmark",
+   "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
    "flavor": "5 who came with a need went away with an answer. The page is theirs. Turn the page when you are done.",
    "n": 136
   },
@@ -2490,12 +2490,12 @@
    "title": "Kept",
    "line": "An answer you kept on the stage: \"keep this\" puts the open answer up as a card, \"call this my tip\" names it, \"refresh this\" asks it again",
    "examples": [
-    "keep this",
-    "call this my tip",
-    "refresh this"
+    "turn this card into a note",
+    "copy the card to the notepad",
+    "note this card"
    ],
-   "tier": "tested",
-   "why": "8 browser-suite mentions",
+   "tier": "checked",
+   "why": "a self-test, 8 browser-suite mentions",
    "n": 138
   },
   {
