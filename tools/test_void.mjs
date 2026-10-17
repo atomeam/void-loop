@@ -2334,6 +2334,21 @@ try {
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
+  // V01D sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
+  if (want("V01D sees a repo: a card from the live GitHub facts")) { const R = await fresh();
+    const facts = { name: 'acme/widget', description: 'A widget <img src=x onerror=window.__pwn=1> maker', url: 'https://github.com/acme/widget', language: 'JavaScript', stars: 42, forks: 3, license: 'MIT', branch: 'main', pushed: '2026-10-01', archived: false, topics: [], openIssues: 5, openPulls: 4, langs: [{ name: 'JavaScript', pct: 90 }, { name: 'HTML', pct: 10 }], commits: [{ sha: 'abcdef1', msg: 'fix: <b>bold</b> it', who: 'Ann', date: '2026-10-01' }], tree: [{ name: 'src', dir: true }, { name: 'README.md', dir: false }], treeTotal: 2, readme: 'Widget makes widgets from plain words.' };
+    const seen = [];
+    await R.ctx.route(/\/api\/repo\?/, (r) => { const q = decodeURIComponent(new URL(r.request().url()).searchParams.get('r')); seen.push(q); return r.fulfill(json(q === 'acme/widget' ? { ok: true, repo: facts } : { ok: false, kind: 'missing', say: 'I can only see public repos, and I could not find ' + q + ' on GitHub.' })); });
+    await R.ask('look at acme/widget', 400); await until(async () => /Recent commits/.test(await R.page()), 6000);
+    const card = await R.page(), pwn = await R.p.evaluate(() => window.__pwn === 1), hasImg = await R.p.$('.vpage.on .rp-sub img'), hasB = await R.p.$('.vpage.on .rp-com b');
+    const share = await R.p.$('.vpage.on .vc-share, .vpage.on [data-share], .vpage.on button');
+    await R.ask('what is in github.com/acme/private-thing', 400); await until(async () => /only see public repos/.test(await R.page()), 6000);
+    const miss = await R.page();
+    check('V01D sees a repo: "look at acme/widget" puts a card of the live facts (language mix, README opening, recent commits, top level, issue and PR counts) from /api/repo; the repo\'s own text is escaped, not run; a missing or private repo says it can only see public repos',
+      /acme\/widget/.test(card) && /JavaScript 90%/.test(card) && /Widget makes widgets/.test(card) && /abcdef1/.test(card) && /4 open PRs/.test(card) && /src\//.test(card) && /<img src=x/.test(card) && /<b>bold<\/b>/.test(card) && !pwn && !hasImg && !hasB && !!share
+        && JSON.stringify(seen) === '["acme/widget","acme/private-thing"]' && /only see public repos/.test(miss) && !R.errors.length,
+      JSON.stringify({ card: card.slice(0, 500), pwn, seen, miss: miss.slice(0, 200), errors: R.errors }));
+    await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
