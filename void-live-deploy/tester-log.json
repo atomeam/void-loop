@@ -1,15 +1,50 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 108,
+ "runsTotal": 113,
  "kinds": {
   "grow": 15,
-  "file": 51,
+  "file": 54,
   "teach": 7,
   "tighten": 7,
-  "none": 28
+  "none": 30
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:31:36Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T08:24:25Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T08:18:35Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T08:11:24Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-17T08:05:32Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T07:56:04Z",
    "passed": 0,
@@ -114,41 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:10:46Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:04:15Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:24:14Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:17:08Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T18:09:42Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -177,18 +177,18 @@
   "skill:counter": "2026-10-17T07:56:04Z",
   "skill:country": "2026-10-17T07:56:04Z",
   "skill:crypto": "2026-10-17T07:56:04Z",
-  "skill:dark-look": "2026-10-16T07:04:58Z",
-  "skill:dates": "2026-10-16T07:04:58Z",
-  "skill:dating": "2026-10-16T07:15:33Z",
-  "skill:different": "2026-10-16T07:15:33Z",
-  "skill:dismiss": "2026-10-16T07:37:17Z",
-  "skill:distance": "2026-10-16T07:37:17Z",
-  "skill:draw": "2026-10-16T07:50:13Z",
-  "skill:feelings": "2026-10-16T07:50:13Z",
-  "skill:figure": "2026-10-16T07:50:13Z",
-  "skill:figure-can": "2026-10-16T07:56:26Z",
-  "skill:figures": "2026-10-16T07:56:26Z",
-  "skill:films": "2026-10-16T07:56:26Z",
+  "skill:dark-look": "2026-10-17T08:05:32Z",
+  "skill:dates": "2026-10-17T08:05:32Z",
+  "skill:dating": "2026-10-17T08:05:32Z",
+  "skill:different": "2026-10-17T08:11:24Z",
+  "skill:dismiss": "2026-10-17T08:11:24Z",
+  "skill:distance": "2026-10-17T08:18:35Z",
+  "skill:draw": "2026-10-17T08:18:35Z",
+  "skill:feelings": "2026-10-17T08:24:25Z",
+  "skill:figure": "2026-10-17T08:24:25Z",
+  "skill:figure-can": "2026-10-17T08:24:25Z",
+  "skill:figures": "2026-10-17T08:31:36Z",
+  "skill:films": "2026-10-17T08:31:36Z",
   "skill:food": "2026-10-16T08:04:30Z",
   "skill:forge": "2026-10-16T08:04:30Z",
   "skill:fuel": "2026-10-16T08:04:30Z",
@@ -282,8 +282,8 @@
   "skill:words": "2026-10-17T07:26:44Z",
   "skill:work": "2026-10-17T07:32:11Z",
   "skill:zoom-figure": "2026-10-17T07:32:11Z",
-  "skill:deps": "2026-10-16T07:15:33Z",
-  "skill:fringe-to-skill": "2026-10-16T07:37:17Z",
+  "skill:deps": "2026-10-17T08:11:24Z",
+  "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
   "skill:bench": "2026-10-17T01:37:54Z",
   "skill:collide": "2026-10-17T01:37:54Z",
   "skill:duel": "2026-10-17T01:37:54Z",
@@ -297,6 +297,7 @@
   "skill:state": "2026-10-17T02:48:01Z",
   "skill:technical-context": "2026-10-17T02:48:01Z",
   "skill:type-filter": "2026-10-17T06:04:06Z",
-  "skill:web4": "2026-10-17T06:04:06Z"
+  "skill:web4": "2026-10-17T06:04:06Z",
+  "skill:movie": "2026-10-17T08:31:36Z"
  }
 }

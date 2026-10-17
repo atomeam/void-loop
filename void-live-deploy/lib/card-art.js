@@ -15,12 +15,15 @@ const F = (x) => String(Math.abs(x) < 10 ? Math.round(x * 10) / 10 : Math.round(
 const esc = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
-/** the rarity's ink weight and foil: only these change between rarities, never the subject */
+/** the rarity's ink: weight, colour, how much the line wobbles and its default density, plus the foil; only these change between rarities, never the subject.
+ *  Asked by Void: the ink follows the evidence rating, a proven skill (Mythic) is sharp and high-contrast, an experiment (Common) a light charcoal sketch.
+ *  The plate's opacity reads the CSS custom property --ink-density (0..1) from the svg or any ancestor, so a mini can drive it live (field divergence, curl);
+ *  with none set, `dens` is the rarity's own. */
 export const RARITY_LOOK = {
-  mythic: { name: 'Mythic', w: 1.4, foil: ['#ffb347', '#ff9ad5', '#ffd27a', '#7affd9'], a: 0.17, stars: 7 },
-  rare: { name: 'Rare', w: 1.25, foil: ['#f1dc8a', '#f6e7a6', '#fff4c4'], a: 0.18, stars: 3 },
-  uncommon: { name: 'Uncommon', w: 1.12, foil: ['#e8edf4', '#cfd8e6', '#f2f5fa'], a: 0.1, stars: 0 },
-  common: { name: 'Common', w: 1, foil: null, a: 0, stars: 0 },
+  mythic: { name: 'Mythic', ink: '#000000', wob: 0.6, dens: 1, w: 1.4, foil: ['#ffb347', '#ff9ad5', '#ffd27a', '#7affd9'], a: 0.17, stars: 7 },
+  rare: { name: 'Rare', ink: '#05050b', wob: 2, dens: 0.88, w: 1.25, foil: ['#f1dc8a', '#f6e7a6', '#fff4c4'], a: 0.18, stars: 3 },
+  uncommon: { name: 'Uncommon', ink: '#1b1b24', wob: 3, dens: 0.72, w: 1.12, foil: ['#e8edf4', '#cfd8e6', '#f2f5fa'], a: 0.1, stars: 0 },
+  common: { name: 'Common', ink: '#44444f', wob: 5.5, dens: 0.5, w: 0.8, foil: null, a: 0, stars: 0 },
 };
 /** 'mythic' | 'rare' | 'uncommon' | 'common' from a rarity name, an evidence tier word or the frame's rarity object */
 export function rarityKey(r) {
@@ -324,8 +327,8 @@ export function artInner(card = {}, { w = 520, h = 170 } = {}) {
     body += '<rect y="' + F(h * 0.55) + '" width="' + w + '" height="' + F(h * 0.45) + '" fill="url(#' + id + 'm)"/>';
     for (let i = 0; i < 4; i++) body += '<ellipse cx="' + F(r() * w) + '" cy="' + F(h * (0.72 + r() * 0.25)) + '" rx="' + F(w * (0.18 + r() * 0.2)) + '" ry="' + F(h * (0.07 + r() * 0.08)) + '" fill="#f3e9d8" opacity="' + F(0.2 + r() * 0.2) + '"/>';
   }
-  defs += '<filter id="' + id + 'r" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="' + (seed % 50) + '" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="3" result="d"/><feDropShadow in="d" dx="3.5" dy="4.5" stdDeviation="0" flood-color="' + INK + '" flood-opacity=".55"/></filter>';
-  const plate = '<g filter="url(#' + id + 'r)" stroke="' + INK + '" stroke-width="' + F(2.4 * RL.w) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">' + (PLATES[plateKind] || PLATES.Idea)(X) + '</g>';
+  defs += '<filter id="' + id + 'r" x="-5%" y="-5%" width="110%" height="110%"><feTurbulence type="fractalNoise" baseFrequency=".05" numOctaves="2" seed="' + (seed % 50) + '" result="t"/><feDisplacementMap in="SourceGraphic" in2="t" scale="' + RL.wob + '" result="d"/><feDropShadow in="d" dx="3.5" dy="4.5" stdDeviation="0" flood-color="' + INK + '" flood-opacity=".55"/></filter>';
+  const plate = '<g filter="url(#' + id + 'r)" style="opacity:calc(0.3 + 0.7 * var(--ink-density,' + RL.dens + '))" stroke="' + RL.ink + '" stroke-width="' + F(2.4 * RL.w) + '" stroke-linejoin="round" stroke-linecap="round" fill="none">' + (PLATES[plateKind] || PLATES.Idea)(X) + '</g>';
   body += '<g transform="translate(' + F(ox + (flip ? 320 * s : 0)) + ' ' + F(oy) + ')scale(' + F(flip ? -s : s) + ' ' + F(s) + ')">' + plate + '</g>';
   // glitch tears and scanlines
   for (let i = 0, n = hot ? 4 : 3; i < n; i++) {

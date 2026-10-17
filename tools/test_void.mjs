@@ -741,6 +741,41 @@ try {
     check('sticky words are not orders: "add a sticky that says big plans for the top left" makes exactly one sticky with those words (no empty sticky moved or resized first)',
       notes.length === 1 && notes[0].text === 'big plans for the top left' && !W.errors.length, JSON.stringify({ notes: notes.map((n) => ({ text: n.text, size: n.size, x: n.x, y: n.y })), e: W.errors }));
     await W.ctx.close(); }
+  // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
+  // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
+    const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
+        : t === 'Nosferatu' ? { verified: true, title: t, year: 1922, genre: 'Horror', overview: '', poster: 'https://archive.org/services/img/nosferatu', trailer: '', free: true, play: { kind: 'video', src: 'https://archive.org/download/nosferatu/n.mp4', page: 'https://archive.org/details/nosferatu', license: 'public domain' }, links: [], sources: ['Internet Archive'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('pick a movie to watch with me', 1800);
+    const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
+    const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await M.p.click('.vpage.on a[data-ask*="Nosferatu"]'); await M.p.waitForTimeout(1200);
+    await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
+    const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
+    const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    await M.ctx.close(); }
+  // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
+  // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
+  if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
+    const COVER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x400bb.jpg';
+    await U.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Hey Jude** - The Beatles\n2. Made Up Song Zork - Nobody\n3. Respect by Aretha Franklin' })));
+    await U.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Made Up Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'Album', year: 1968, genre: 'Rock', poster: COVER, preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [{ label: 'Spotify: search', url: 'https://open.spotify.com/search/x' }] })); });
+    await U.ask('pick a song', 1800);
+    const rows = await U.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await U.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Song Zork'));
+    const art1 = await U.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await U.p.click('.vpage.on a[data-ask*="Hey Jude"]'); await U.p.waitForTimeout(1200);
+    await U.p.click('.vpage.on .md-preview'); await U.p.waitForTimeout(200);
+    const au = await U.p.$eval('.vpage.on .mv-player audio', (a) => a.src).catch(() => '');
+    check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
+      rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
+    await U.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -2308,6 +2343,8 @@ try {
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
+    { const strip = await until(() => B.p.evaluate(() => { const q = [...document.querySelectorAll('.vpage.on .sc-strip .sc-sq')]; return q.length ? { n: q.length, tiers: [...new Set(q.map((x) => x.dataset.tier))], dens: q.map((x) => +x.dataset.density), weathered: q.filter((x) => x.classList.contains('sc-weathered')).length } : null; }), 6000);
+      check('self card: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Void)', !!strip && strip.n > 20 && strip.tiers.includes('proven') && Math.max(...strip.dens) > Math.min(...strip.dens) && strip.weathered >= 0, JSON.stringify(strip)); }
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
     check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
@@ -3508,6 +3545,9 @@ try {
     const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
     check('V01D cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into V01D brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
       !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
+    const text2 = await S.p.evaluate(() => window.__copied);
+    check('V01D cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Void)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));
     await S.ctx.close(); }
   // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
   // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
@@ -6424,6 +6464,10 @@ try {
     await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
     const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    await K.ask('what can i use instead of eggs in baking', 900); await until(async () => /Instead of eggs/.test(await K.page()), 8000);
+    const t0 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent)); await K.p.fill('.vpage.on .swap-mins', '30'); await K.p.waitForTimeout(200);
+    const t1 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web

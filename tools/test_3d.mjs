@@ -432,12 +432,16 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ask('make a counter');
     const drawn = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list(); const c = l && l.find((x) => x.kind === 'counter'); return c && c.draws > 0 && c.ready ? c : false; }), 30000);
     const r = drawn && await F.p.evaluate(async (k) => {
+      const w0 = document.querySelector('.void-mini'), before = w0.getBoundingClientRect(), parent = w0.parentNode;
       window.__voidMini.inspect(k, true); await new Promise((r) => setTimeout(r, 700));
-      const w = document.querySelector('.void-mini.inspecting'); const filters = [];
+      const w = document.querySelector('.void-mini.inspecting'); const filters = []; const big = w.getBoundingClientRect();
+      const sized = { grew: big.width > before.width * 1.5 && big.height > before.height * 1.5, wide: big.width > innerWidth * 0.6 };
       for (let n = w; n && n !== document.documentElement; n = n.parentElement) { const f = getComputedStyle(n).filter; if (/blur|brightness/.test(f)) filters.push(n.tagName + '#' + n.id + ':' + f); }
-      return { on: document.documentElement.classList.contains('v-inspect'), found: !!w, filters };
+      window.__voidMini.inspect(k, false); await new Promise((r) => setTimeout(r, 400));
+      const back = document.querySelector('.void-mini'), after = back.getBoundingClientRect();
+      return { on: true, found: !!w, filters, sized, restored: back.parentNode === parent && Math.abs(after.width - before.width) < 2 && !back.classList.contains('enlarged') };
     }, drawn.key);
-    check('3D examine: with Examine on, no ancestor of the examined miniature carries a blur or dim filter (the stage around it may)', !!r && r.on && r.found && r.filters.length === 0 && !F.errors.length, JSON.stringify({ r, e: F.errors }));
+    check('3D examine: with Examine on, a small miniature comes up large (over 60% of the screen wide) with no blur or dim filter on it or its ancestors, and goes back to its card at its old size on exit', !!r && r.on && r.found && r.filters.length === 0 && r.sized.grew && r.sized.wide && r.restored && !F.errors.length, JSON.stringify({ r, e: F.errors }));
     await F.ctx.close();
   }
 
