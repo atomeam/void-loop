@@ -51,6 +51,22 @@ export function autopsy(incidentsJson, fam, guide) {
   };
 }
 
+/** a test case from each recent failure (asked by Void: "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically
+ *  generate a test case from a recent failure"): for every failing check of a recent incident that maps to a skill, newest first and one per skill,
+ *  the ask to try: the check's own double-quoted ask when it has one (what failed, word for word), else the skill's last example from the book.
+ *  [{ skill, family, ask, sha, check (its title) }]. Pure. */
+export function incidentCases(a, guide, show = 5) {
+  const pages = new Map((((guide && guide.pages) || [])).filter((p) => p && p.name && Array.isArray(p.examples)).map((p) => [p.name, p.examples]));
+  const out = [], seen = new Set();
+  for (const i of (a && a.recent) || []) for (const c of i.checks || []) {
+    if (!c.skill || seen.has(c.skill)) continue;
+    const quoted = (/"([^"]{3,80})"/.exec(c.text) || [])[1], ex = pages.get(c.skill) || [], ask = String(quoted || ex[ex.length - 1] || '').trim();
+    if (!ask) continue;
+    seen.add(c.skill); out.push({ skill: c.skill, family: c.family, ask, sha: i.sha.slice(0, 7), check: titleOf(c.text) });
+  }
+  return out.slice(0, show);
+}
+
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 /** the card's body (below the title). An empty file says "no incidents recorded". Pure; every word from the file goes through esc. */
 export function autopsyHtml(a, esc = escHtml) {

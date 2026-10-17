@@ -8,7 +8,8 @@ import { probeHtml } from '../lib/probe-log.js';
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml } from '../lib/better.js';
 import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
-import { confidenceOf } from '../lib/skill-confidence.js'; // weathered: untested for WEATHER_DAYS (the Site Test heat map)
+import { confidenceOf } from '../lib/skill-confidence.js';
+import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
 export const LEDGER_URL = '/void.growth.json';
@@ -408,11 +409,14 @@ function runTester(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>What my site tester checks</h2><div class="sub">reading the log…</div>'; });
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL)]).then(([j, fam, guide]) => {
+  Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL), get('/incidents.json')]).then(([j, fam, guide, inc]) => {
     if (!el) return;
-    const R = testerRows(j), C = testCandidates(fam, guide);
+    const R = testerRows(j), C = testCandidates(fam, guide), I = inc ? incidentCases(autopsy(inc, fam, guide), guide) : [];
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
       (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
+      // asked by Void: a test case from each recent failure on main (lib/autopsy.js incidentCases), the ask that failed when the check quotes it
+      (I.length ? '<h3 style="margin:12px 0 4px">From recent failures</h3><div class="sub">Checks that went red on main lately, each turned into an ask to try now. Tap one to test it.</div><ol class="st-incidents" style="padding-left:20px">'
+        + I.map((c) => '<li style="margin:5px 0" data-incident="' + esc(c.skill) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">\u00b7 ' + esc(c.skill) + ', failed on ' + esc(c.sha) + ' (' + esc(c.check) + ')</span></li>').join('') + '</ol>' : '') + // void-review: ok (every field through esc)
       (C.length ? '<h3 style="margin:12px 0 4px">What to test next</h3><div class="sub">My lowest-rated skills (skills/families.json): failing first, then the least checked. Tap one to test it now.</div><ol class="st-candidates" style="padding-left:20px">'
         + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '') + heatHtml(esc, unstableFamilies(fam)); // void-review: ok (heatHtml escapes every name and count)
   });
