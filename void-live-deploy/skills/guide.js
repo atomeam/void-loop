@@ -196,7 +196,8 @@ function mount(book, api, startAt, text) {
   tome.addEventListener('pointerup', (e) => { if (e.pointerType !== 'touch') end(e.clientX); });
   const onResize = () => { if (current()) draw(); };
   window.addEventListener('resize', onResize);
-  root._cleanup = () => { document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', onResize); };
+  document.documentElement.classList.add('vtome-open');
+  root._cleanup = () => { document.documentElement.classList.remove('vtome-open'); document.removeEventListener('keydown', onKey, true); window.removeEventListener('resize', onResize); };
 
   window.__voidBook = { open: true, totals: book.totals, index: book.index, chapters: book.chapters, go, turn, close: () => closeTome('api'), get cur() { return cur; }, set cur(v) {}, get turning() { return turning; }, ask: text }; // tools/test_void.mjs reads it
   // ---- the opening: the shut tome comes up, the cover swings open on the spine, the pages are there
