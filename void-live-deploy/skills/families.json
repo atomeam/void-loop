@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 60,
-  "checked": 30,
+  "checked": 31,
   "proven": 85
  },
  "families": [
@@ -972,7 +972,7 @@
    "count": {
     "experiment": 1,
     "tested": 12,
-    "checked": 2,
+    "checked": 3,
     "proven": 8
    },
    "skills": [
@@ -988,6 +988,13 @@
      "name": "movie",
      "tier": "tested",
      "why": "a self-test",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "pick-for-me",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests"
     },
@@ -1633,7 +1640,7 @@
     {
      "name": "family-health",
      "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
