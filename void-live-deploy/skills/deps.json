@@ -291,6 +291,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/go-ai.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
    "file": "lib/pulse.js",
    "skills": 2,
    "direct": 2,
@@ -2206,6 +2212,15 @@
   "lib/fuzzy.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/go-ai.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/go.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
   },
   "lib/ground.js": {
    "imports": [],
@@ -4163,7 +4178,8 @@
   },
   "skills/go.js": {
    "imports": [
-    "skills/side-card.js"
+    "skills/side-card.js",
+    "lib/go-ai.js"
    ],
    "importedBy": [
     "skills/games.js"

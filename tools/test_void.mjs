@@ -6968,6 +6968,30 @@ try {
     const after = await S.p.evaluate(() => window.__marker || '');
     check("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap", !same && shown && /newer V01D is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
     await S.ctx.close(); }
+  // go against V01D (asked by Void: "Next game I want to learn: Go"; lib/go-ai.js): you are Black, V01D answers each stone as White;
+  // plain "play go" stays two people on one device with no opponent
+  if (want("go against v01d: \"play go against void\" seats you as black and v01d answers your stone; \"play go\" stays two people")) {
+    const goOn = (X) => X.state().then((s) => s.find((x) => x.kind === 'go'));
+    const tapPoint = async (X, i) => { await X.p.waitForSelector('.go-flat rect.go-pt[data-i="' + i + '"]', { timeout: 5000 }).catch(() => {}); await X.p.click('.go-flat rect.go-pt[data-i="' + i + '"]').catch(() => {}); };
+    const G = await fresh();
+    await G.ask('play go against void', 600);
+    const sub = await G.p.$eval('.go-card .g-sub', (e) => e.textContent).catch(() => '');
+    await tapPoint(G, 40); // E5, the centre
+    const thinking = await G.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    const replied = await until(async () => { const g = await goOn(G); return !!g && g.state.board.filter((v) => v === 2).length === 1 && g.state.board[40] === 1 && g.state.turn === 1; }, 5000);
+    const after = await G.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    const H = await fresh();
+    await H.ask('play go', 600);
+    const sub2 = await H.p.$eval('.go-card .g-sub', (e) => e.textContent).catch(() => '');
+    await tapPoint(H, 40); await H.p.waitForTimeout(1500);
+    const two = await goOn(H), status2 = await H.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    check('go against v01d: "play go against void" seats you as Black, the card says V01D is thinking, a White stone answers your stone within seconds; "play go" stays two people with no reply; no page errors',
+      /against V01D/.test(sub) && /V01D.s turn/.test(thinking) && replied && /V01D played [A-HJ]\d/.test(after) && /Your move/.test(after)
+        && /two players/.test(sub2) && !!two && two.state.board[40] === 1 && !two.state.board.includes(2) && !two.state.vs && /White to play/.test(status2)
+        && !G.errors.length && !H.errors.length,
+      JSON.stringify({ sub, thinking, replied, after, sub2, status2, errs: G.errors.concat(H.errors) }));
+    await G.ctx.close(); await H.ctx.close(); }
+
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
