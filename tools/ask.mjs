@@ -20,7 +20,7 @@ for (const a of asks) {
   errs.length = 0; const before = await page.evaluate(() => document.body.innerText);
   await page.fill('#input', a); await page.keyboard.press('Enter'); await page.waitForTimeout(1500);
   // a busy machine (several builders share it) loads the skills slowly: wait up to 12 s more for the page to log the ask before reading it
-  for (let i = 0; i < 24 && !(await page.evaluate((q) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((e) => e && e.ask === q); } catch (_) { return true; } }, a)); i++) await page.waitForTimeout(500);
+  for (let i = 0; i < 24 && !(await page.evaluate((q) => { try { const v = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(v) && v.some((e) => e && e.ask === q); } catch (_) { return true; } }, a)); i++) await page.waitForTimeout(500);
   const said = await page.$eval('#whisper', (e) => e.textContent).catch(() => '');
   const last = (await page.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } })).filter((x) => String(x.ask).trim() === a.trim()).pop();
   const after = await page.evaluate(() => document.body.innerText);

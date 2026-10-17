@@ -36,7 +36,7 @@ const LOOK = [
 export function lookups(text) {
   const out = [];
   String(text || '').split('\n').forEach((t, i) => {
-    for (const re of LOOK) for (const m of t.matchAll(new RegExp(re.source, re.flags))) out.push({ line: i + 1, name: re === LOOK[0] ? m[1] : m[2], text: t });
+    for (const re of LOOK) for (const m of t.matchAll(new RegExp(re.source, re.flags))) out.push({ line: i + 1, name: re === LOOK[0] ? m[1] : m[2], text: t }); // void-review: ok: LOOK is a fixed list of regex literals in this file, never user input
   });
   return out;
 }
