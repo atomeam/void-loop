@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 119,
+ "runsTotal": 120,
  "kinds": {
   "grow": 15,
   "file": 56,
   "teach": 7,
   "tighten": 7,
-  "none": 34
+  "none": 35
  },
  "runs": [
+  {
+   "at": "2026-10-17T09:22:52Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T09:15:36Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"what can I buy\" missing text /store|buy|\\$/; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T06:09:27Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -204,9 +204,9 @@
   "skill:home": "2026-10-17T09:09:31Z",
   "skill:image": "2026-10-17T09:15:36Z",
   "skill:incident": "2026-10-17T09:15:36Z",
-  "skill:intent": "2026-10-16T11:10:19Z",
-  "skill:inventory": "2026-10-16T11:10:19Z",
-  "skill:invite": "2026-10-16T11:10:19Z",
+  "skill:intent": "2026-10-17T09:22:52Z",
+  "skill:inventory": "2026-10-17T09:22:52Z",
+  "skill:invite": "2026-10-17T09:22:52Z",
   "skill:appraise": "2026-10-16T11:56:52Z",
   "skill:joke": "2026-10-16T11:56:52Z",
   "skill:label": "2026-10-16T11:56:52Z",
