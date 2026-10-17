@@ -87,6 +87,7 @@ export default {
   ],
   nearMisses: [
     'how many days until christmas',
+    'how many days until summer',
     'how long until sunset',
     'how long to boil an egg',
     'what is gta 6',

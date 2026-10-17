@@ -2443,6 +2443,26 @@ try {
       +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
       && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
     await F.ctx.close(); }
+  if (want("service health: every adapter and API gets a row graded up, slow or down with its time, and Check again checks again")) { // asked by Void: the Service Health card
+    const S = await fresh(); let hits = 0;
+    await S.ctx.route(/^https:\/\/(?:api\.coingecko\.com|public\.api\.bsky\.app|waymo\.com|m\.uber\.com|www\.ubereats\.com|www\.doordash\.com|www\.lyft\.com)\//, async (r) => {
+      const u = r.request().url(); hits++;
+      if (u.includes('coingecko')) return r.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: '{"gecko_says":"(V3) To the Moon!"}' });
+      if (u.includes('bsky')) return r.fulfill({ status: 503, headers: { 'access-control-allow-origin': '*' }, body: '' });
+      if (u.includes('waymo')) return r.abort('connectionrefused');
+      if (u.includes('uber.com/') && !u.includes('ubereats')) { await new Promise((ok) => setTimeout(ok, 1800)); }
+      return r.fulfill({ status: 200, body: 'ok' });
+    });
+    await S.ask('is uber down', 600);
+    await until(async () => (await S.p.$$eval('.vpage.on .sh-row[data-state="checking"]', (e) => e.length).catch(() => 1)) === 0 && (await S.p.$$('.vpage.on .sh-row')).length > 0, 10000).catch(() => {});
+    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0) }));
+    const a = await read(), hitsA = hits;
+    await S.p.click('.vpage.on [data-sh-again]'); await until(async () => (await read()).checked >= 2, 10000).catch(() => {});
+    const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
+    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, and Check again checks every one again',
+      a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+    await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
     for (const noWorker of [false, true]) {

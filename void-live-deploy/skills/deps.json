@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 481,
+ "counted": 483,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -460,6 +460,12 @@
   },
   {
    "file": "lib/rules-play.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/service-health.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -3021,6 +3027,12 @@
     "functions/api/repo.js"
    ]
   },
+  "lib/service-health.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/service-health.js"
+   ]
+  },
   "lib/share-client.js": {
    "imports": [
     "lib/share.js"
@@ -4870,7 +4882,8 @@
   "skills/providers.js": {
    "imports": [],
    "importedBy": [
-    "skills/rides.js"
+    "skills/rides.js",
+    "skills/service-health.js"
    ]
   },
   "skills/pulse.js": {
@@ -5059,6 +5072,13 @@
   "skills/senolytic.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/service-health.js": {
+   "imports": [
+    "skills/providers.js",
+    "lib/service-health.js"
    ],
    "importedBy": []
   },

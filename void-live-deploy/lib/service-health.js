@@ -1,0 +1,51 @@
+// service-health — is each outside service V01D hands you to reachable, and how fast (asked by Void, 2026-10-16: "Create a 'Service
+// Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.)").
+// Laid out the way status pages do it (Uptime Kuma, Statuspage): one row per service, a dot for up / slow / down, and its response
+// time. Checked from the visitor's own browser only when the card opens or "Check again" is tapped: no timer, no server call, nothing
+// kept. A link-only adapter (skills/providers.js: Waymo, Uber, Lyft, Uber Eats, DoorDash) has no API V01D calls, so its row times
+// reaching the provider's site; a public API (CoinGecko for crypto, Bluesky's AppView for social) is asked for its health answer.
+// Pure apart from `check`, which takes its fetch and clock as arguments.
+
+export const SLOW_MS = 1500, TIMEOUT_MS = 8000;
+/** the public APIs the stage's cards call, beside the link-only adapters of skills/providers.js. */
+export const APIS = [
+  { id: 'coingecko', name: 'CoinGecko', kind: 'crypto', url: 'https://api.coingecko.com/api/v3/ping', how: 'api' },
+  { id: 'bluesky', name: 'Bluesky', kind: 'social', url: 'https://public.api.bsky.app/xrpc/_health', how: 'api' },
+];
+/** the provider adapters' sites, for a reachability check. providers: the PROVIDERS map of skills/providers.js. Pure. */
+export function servicesOf(providers = {}) {
+  const site = (p) => { try { const u = new URL(p.web({})); return u.origin + '/'; } catch (_) { return ''; } };
+  return Object.values(providers).map((p) => ({ id: p.id, name: p.name, kind: p.kind, url: site(p), how: 'link' })).filter((s) => s.url).concat(APIS);
+}
+/** up, slow or down from one check { ok, ms }. Pure. */
+export const grade = (r) => (!r || !r.ok ? 'down' : r.ms > SLOW_MS ? 'slow' : 'up');
+/** how a time reads: 312 ms, 2.4 s. Pure. */
+export const msText = (ms) => (ms < 1000 ? Math.round(ms) + ' ms' : (ms / 1000).toFixed(1) + ' s');
+
+/** one check: a link-only site is fetched no-cors (any answer means it is reachable); an API must answer 2xx. -> { ok, ms, error? } */
+export async function check(svc, { fetch: f = globalThis.fetch, now = () => performance.now(), timeout = TIMEOUT_MS } = {}) {
+  const ac = typeof AbortController === 'function' ? new AbortController() : null, t0 = now();
+  const timer = setTimeout(() => ac && ac.abort(), timeout);
+  try {
+    const r = await f(svc.url, { mode: svc.how === 'api' ? 'cors' : 'no-cors', cache: 'no-store', credentials: 'omit', signal: ac ? ac.signal : undefined });
+    const ms = now() - t0;
+    return svc.how === 'api' && !(r && r.ok) ? { ok: false, ms, error: 'answered ' + (r ? r.status : 'nothing') } : { ok: true, ms };
+  } catch (e) {
+    const ms = now() - t0;
+    return { ok: false, ms, error: ms >= timeout - 50 ? 'no answer in ' + msText(timeout) : 'could not be reached' };
+  } finally { clearTimeout(timer); }
+}
+
+/** the card's rows and summary from services and their results (same order; a missing result is "checking"). Pure. */
+export function healthHtml(esc, services, results = []) {
+  const done = results.filter(Boolean), up = done.filter((r) => grade(r) === 'up').length, slow = done.filter((r) => grade(r) === 'slow').length;
+  const head = done.length < services.length ? 'checking ' + services.length + ' services…'
+    : up + ' of ' + services.length + ' up' + (slow ? ', ' + slow + ' slow' : '') + (services.length - up - slow ? ', ' + (services.length - up - slow) + ' down' : '');
+  const rows = services.map((s, i) => {
+    const r = results[i], g = r ? grade(r) : 'checking';
+    const said = !r ? 'checking…' : g === 'down' ? 'down · ' + (r.error || 'no answer') : g + ' · ' + msText(r.ms);
+    return '<li class="sh-row" data-service="' + esc(s.id) + '" data-state="' + g + '"><span class="sh-dot" aria-hidden="true"></span><b>' + esc(s.name) + '</b>'
+      + ' <span class="sh-kind">' + esc(s.kind) + ' · ' + (s.how === 'api' ? 'public API' : 'link into their app') + '</span> <span class="sh-said">' + esc(said) + '</span></li>';
+  }).join('');
+  return '<p class="sh-sum" aria-live="polite">' + esc(head) + '</p><ul class="sh-list">' + rows + '</ul>';
+}

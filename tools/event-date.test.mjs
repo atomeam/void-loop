@@ -8,7 +8,7 @@ test('it takes countdowns to a named event and leaves dates, holidays and times 
   assert.deepEqual(eventAsk("how many days 'til GTA 6 comes out"), { event: 'GTA 6', unit: 'days' });
   assert.deepEqual(eventAsk('how long until the world cup starts'), { event: 'world cup', unit: 'hours' });
   assert.deepEqual(eventAsk('countdown to the olympics'), { event: 'olympics', unit: 'hours' });
-  for (const no of ['how many days until christmas', 'days until new year', 'how long until sunset', 'how many hours until friday', 'how long until 5pm',
+  for (const no of ['how many days until christmas', 'how many days until summer', 'how long until spring', 'countdown to winter', 'days until new year', 'how long until sunset', 'how many hours until friday', 'how long until 5pm',
     'how many days until december 25', 'countdown to my birthday', 'how long to boil an egg', 'what is gta 6', 'how many hours in a day']) assert.equal(eventAsk(no), null, no);
 });
 
