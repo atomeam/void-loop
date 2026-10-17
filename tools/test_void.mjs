@@ -6611,13 +6611,16 @@ try {
   // owner, 2026-10-17: "nothing showed just now": a tab left open through a deploy keeps old page code; the page compares a hash of skills/index.json and offers a reload (lib/stale-tab.js)
   if (want("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap")) { const S = await fresh();
     await S.ask('what time is it in Tokyo', 600); await until(async () => await S.p.evaluate(() => typeof window.__voidStaleCheck === 'function'), 6000); await S.p.waitForTimeout(800);
-    await S.p.evaluate(() => window.__voidStaleCheck()); await S.p.waitForTimeout(500);
-    const same = await S.p.$('#new-version'); // nothing changed yet: no line
-    await S.ctx.route(/\/skills\/index\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: '["a-newer-build"]' }));
+    let build = 'commit-one'; const BUILD = /\/build\.json(?:\?|$)/;
+    await S.ctx.route(BUILD, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ id: build }) }));
+    await S.p.evaluate(() => window.__voidStaleCheck(true)); // record "commit-one" as the loaded build
+    await S.p.evaluate(() => window.__voidStaleCheck()); await S.p.waitForTimeout(400);
+    const same = await S.p.$('#new-version'); // same build: no line
+    build = 'commit-two'; // a deploy lands that changed no page text and no skill list
     await S.p.evaluate(() => { window.__marker = 'old page'; return window.__voidStaleCheck(); });
     const shown = await until(async () => !!(await S.p.$('#new-version')), 4000);
     const text = shown ? await S.p.$eval('#new-version', (b) => b.textContent) : '', still = await S.p.evaluate(() => window.__marker); // not reloaded by itself
-    await S.ctx.unroute(/\/skills\/index\.json(?:\?|$)/);
+    await S.ctx.unroute(BUILD);
     await Promise.all([S.p.waitForNavigation({ timeout: 8000 }).catch(() => null), S.p.click('#new-version')]); await S.p.waitForTimeout(800);
     const after = await S.p.evaluate(() => window.__marker || '');
     check("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap", !same && shown && /newer V01D is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));

@@ -2,6 +2,16 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T10:19:12.038Z",
+   "sha": "890e850c3da12f57cdf2e6e54fffdc0e204ad0e9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39023626850",
+   "suite": "browser suite on main",
+   "checks": [
+    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
+    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
+   ]
+  },
+  {
    "at": "2026-10-17T10:01:47.418Z",
    "sha": "1d4144bc9c81d050fb7605cc4ff88b47a0c27b6a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39022433851",
@@ -296,15 +306,6 @@
    "suite": "browser suite on main",
    "checks": [
     "router: the will turns routing into wants: a skill near-miss becomes \"learn to handle ...\", a router that keeps falling back is a fix; would-escalate is not counted twice (it reaches the upgrade through void_shortfalls)"
-   ]
-  },
-  {
-   "at": "2026-10-16T13:16:04.490Z",
-   "sha": "8265f4062e267792fb61123cafaadff10f5a27db",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38904636940",
-   "suite": "browser suite on main",
-   "checks": [
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
    ]
   }
  ]
