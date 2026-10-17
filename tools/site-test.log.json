@@ -820,5 +820,13 @@
   "kind": "file",
   "key": "switch my void to dark | nothing appeared",
   "note": "fix: \"switch my void to dark\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-17T08:11:24Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "dismiss the selected thing | nothing appeared",
+  "note": "fix: \"dismiss the selected thing\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
