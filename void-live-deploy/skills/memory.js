@@ -10,11 +10,11 @@
  * about python". "remember me", "memory game" and "how much memory does chrome use" are not this.
  */
 import { keepLive } from './live.js';
+import { sessionToken } from '../lib/state.js'; // the session lives in one place (lib/state.js, asked by Void)
 
-const OWNER_KEY = 'a2m.void.owner.v1', ME_KEY = 'a2m.void.me.v1';
 export const EVERY = 5 * 60e3;
 // the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
-const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || (JSON.parse(localStorage.getItem(ME_KEY) || 'null') || {}).token || ''; } catch (_) { return ''; } };
+const ownerToken = () => sessionToken();
 // a topic that is a person or a pronoun is not a project ("what do you remember about me")
 const NO_KEY = 'What V01D remembers is for the owner and paid members. Unlock V01D first (unlock <key>, or sign in with your passkey), then ask again.';
 const failText = (status) => (status === 401 ? 'Only the owner can use memory.' : status === 403 ? 'What V01D remembers is for paid members.' : status === 503 ? 'There is no database behind this copy of V01D.' : 'Memory answered ' + status + '.');

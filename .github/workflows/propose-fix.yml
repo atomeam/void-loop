@@ -53,6 +53,7 @@ jobs:
       title: ${{ steps.result.outputs.title }}
       where: ${{ steps.result.outputs.where }}
       model: ${{ steps.result.outputs.model }}
+      risk: ${{ steps.result.outputs.risk }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -134,6 +135,7 @@ jobs:
             # the evidence (asked by Void): V01D's confidence and the file and lines each edit changes
             echo "title=$(node -p "require(process.argv[1]).title.replace(/[^\w ,.'?!:\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "confidence=$(node -p "String(require(process.argv[1]).confidence ?? 'none given').replace(/[^\w .-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
+            echo "risk=$(node -p "const k = require(process.argv[1]).risk || { level: 'unknown', why: '' }; (k.level + ' (' + k.why + ')').replace(/[^\\w .,()'-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "model=$(node -p "String(require(process.argv[1]).model || 'V01D\'s own model').replace(/[^\w .\/@:-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "where=$(node -p "const e = require(process.argv[1]).evidence || []; (e.length ? e[0].file + (e.length > 1 ? ' lines ' : ' line ') + e.map((x) => x.line).join(', ') : 'not found').replace(/[^\w ./,-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
           fi
@@ -175,6 +177,7 @@ jobs:
           TITLE: ${{ needs.propose.outputs.title }}
           WHERE: ${{ needs.propose.outputs.where }}
           MODEL: ${{ needs.propose.outputs.model }}
+          RISK: ${{ needs.propose.outputs.risk }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           patch="$RUNNER_TEMP/fix/propose-fix.patch"
@@ -188,15 +191,17 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "void-live-deploy/skills/$SKILL.js"
-          git commit -q -m "$TITLE" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "V01D's confidence: $CONFIDENCE. Where: $WHERE. Model: $MODEL." -m "Suggested-by: Void (probe)"
+          git commit -q -m "$TITLE" -m "Proposed by V01D's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY" -m "V01D's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Void (probe)"
           git push -q origin "$branch"
           gh label create "made by V01D" --color 5c5cff --description "a change V01D's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
           # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"): sure enough, it
           # merges itself once Void's review is clean; otherwise it waits for the owner on the "V01D's fixes" card (or here on GitHub)
           gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
           gh label create "waits for owner" --color d4a72c --description "V01D was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
-          url=$(gh pr create --base main --head "$branch" --label "made by V01D" --label "$gate" --title "$TITLE" \
-            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. V01D's confidence: $CONFIDENCE. Where: $WHERE. Model: $MODEL. Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-16), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"V01D's fixes\" card on the site). The ask is V01D's own words, not a visitor's.")
+          # under 0.8 the fix is a draft on the board, not a pull request asking to merge (asked by Void); Approve on the card, or the automerge label, makes it ready
+          draft=""; [ "$gate" = "automerge" ] || draft="--draft"
+          url=$(gh pr create $draft --base main --head "$branch" --label "made by V01D" --label "$gate" --title "$TITLE" \
+            --body "V01D's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in V01D's words: $WHY. V01D's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL. Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-16), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"V01D's fixes\" card on the site). The ask is V01D's own words, not a visitor's.")
           echo "### V01D's fix is up: $url" >> "$GITHUB_STEP_SUMMARY"
           # the merge gate: Void's review on this head, then the bot that merges labelled PRs once it is clean
           gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Void's review on ${url} by hand"

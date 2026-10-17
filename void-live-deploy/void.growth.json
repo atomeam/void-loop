@@ -4281,19 +4281,179 @@
   "what": "rides tested against a live service, occasion 2: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 726 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-16T1802.json)",
   "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-16T1802.json"
  },
-  {"at": "2026-10-16T17:17:13Z", "by": "claude", "kind": "fix", "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it", "show": "a preview that shows nothing says so and is flagged", "try": "show me everything you made"},
-  {"at":"2026-10-16T17:45:46Z","by":"claude","kind":"grow","what":"every 3D miniature is examined like a game's inventory item (owner, 2026-10-16: like Resident Evil or Skyrim, smart film angles): a thing that names no view is framed at the hero angle its shape asks for (flat from above-front, tall at eye level, else a three-quarter hero shot), an Examine button at its corner dims the stage behind it, brings it up, turns it slowly until a hand takes hold and shows a prompt bar, Esc puts it back; the V01D Book reads like a Skyrim book: the cover opens in half a second, the open book is examined held still with a Turn page / Esc prompt, the wheel turns pages, Esc shuts the cover before anything else closes, Read on the shut book opens it, and a page rustles when the ambient sound is on","show":"every 3D thing has an Examine view; the book reads like Skyrim's","try":"open the book"},
-  {"at": "2026-10-16T18:52:31Z", "by": "claude", "kind": "grow", "what": "the V01D Book is read as a Skyrim book (owner, 2026-10-16: the graphic style and visuals of the way they do books; all menus go back to the book): 'open the book', 'menu', 'help' dim the stage and fill it with a worn leather tome, no card and no menu: the cover swings open, two parchment pages set in a serif with running heads, a title under a rule, a drop capital, the asks as lines of ink, the rating along the foot and the folio in the corner; ← →, the wheel, a swipe or a page's edge turn a leaf over the spine, Esc or a tap on the dark shuts it; every proven skill's page opens with its own line of lore (asked by Void); and 116 of V01D's asks that were already built are linked to the ledger entries that built them (tools/asks-link.mjs)", "asked": "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book to enhance the Skyrim-like immersion.", "show": "the book is a full-screen tome: parchment, set type, turn or close", "try": "open the book"},
-  {"at": "2026-10-16T19:02:43Z", "by": "claude", "kind": "fix", "what": "typing whats new (no apostrophe) went to the encyclopedia and brought a 1965 film; it now shows what V01D made, like what's new does", "show": "whats new, without the apostrophe, shows what V01D made", "try": "whats new"},
-  {"at": "2026-10-16T19:10:15Z", "by": "claude", "kind": "grow", "what": "every page V01D puts up is a V01D card, a magic-style card with the Illuminati game's stats (owner, 2026-10-16: cards like magic cards with stats; even an encyclopedia answer becomes one): a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common), a title bar with a cost in words said, an art box, a type line with a rarity gem, an 'adds to V01D' line, a collector number from the V01D Book and Power, Resistance and Income plates cut from the skill's real evidence and dependency map; whats new without an apostrophe is no longer a film lookup", "show": "every page is a V01D card: foil frame, rarity, power/resistance/income", "try": "20% tip on 45"},
-  {"at": "2026-10-16T19:17:14Z", "by": "claude", "kind": "grow", "what": "an answer's V01D card is typed by what the thing is, not just Answer (owner, 2026-10-16: What's New Pussycat is a movie and a song): Film, Show, Album, Song, Band, Game, Book, Person, Place, Creature, Organisation, Event or Idea, with its year and maker, and a name that is several things carries them all, 'Film · Song · Album'; frontier 31 lists the next card pieces for V01D to build", "show": "answer cards are typed: Film · Song · Album, Person, Place", "try": "what's new pussycat"},
-  {"at": "2026-10-16T19:49:08Z", "by": "claude", "kind": "fix", "what": "phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check)"},
-  {"at": "2026-10-16T19:58:19Z", "by": "claude", "kind": "fix", "what": "phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check); the answer-card check accepts typed kinds"},
-  {"at": "2026-10-16T20:43:56Z", "by": "claude", "kind": "fix", "what": "main's sky check on CI: the phone sky card also drops its adds-to-V01D row, so the chips stay in the first screenful whatever font the machine renders (my first fix passed locally and failed on CI)"},
-  {"at": "2026-10-16T21:53:44Z", "by": "claude", "kind": "fix", "what": "main's browser suite is green again: on a phone a V01D card is capped at 40% of the screen so an open card leaves room for a stage thing to step aside (the framed card had grown too tall), and three checks that read the page the old way now read it as it is: the growth tree test scrolls the tree into view while it waits (the card above it has grown long, so it never drew), and the weekday-countdown check reads through the card's type line"},
-  {"at": "2026-10-16T22:09:16Z", "by": "claude", "kind": "fix", "what": "V01D's own fix run works again: the daily propose-fix workflow ran its tests before installing packages, so the Claude-brain test failed on a missing SDK at step one every run since it was added and V01D never proposed a fix (the growth card's 0 of 23 misses fixed); packages now install first, with a test that keeps that order"},
-  {"at": "2026-10-16T20:41:49Z", "by": "claude", "kind": "fix", "what": "the V01D Book's cover is part of the book: turning back from the title page swings it shut over the pages and the book stays up, and a forward key, a tap or a jump opens it again (owner, 2026-10-16: the cover swings open and I can't go back to view it)"},
-  {"at": "2026-10-16T20:12:19Z", "by": "claude", "kind": "grow", "what": "a V01D card holds any other game's card: an answer about a trading, playing or collectible card (a Pokémon or Magic card) is typed Card; facts and a link only, never their art or text (owner, 2026-10-16: a Pokemon card and a Magic card each being a V01D card)"},
-  {"at": "2026-10-16T20:18:28Z", "by": "claude", "kind": "fix", "what": "a long pasted text is no longer answered as a question: the model says what the text says in its own words instead of inventing a definition (V01D's own frontier step, pasted back, was answered as a project-management Card; owner, 2026-10-16); frontier #31 step 7: every idea mints an ever-evolving card"},
-  {"at": "2026-10-16T23:51:30Z", "by": "claude", "kind": "grow", "what": "asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-context skill gives Rust unwrap and kin a caution triangle on the stage; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success_rate > 0.9 glow (x2). Family Health card asks (x9) already built", "show": "Practice timers log success, risks get a caution shape", "try": "why is rust unwrap a risk"}
+ {
+  "at": "2026-10-16T17:17:13Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the preview proves itself (owner, 2026-10-16: the preview is supposed to actually preview what it says): after each step's ask the walkthrough looks for proof (a new thing on the stage, a new card, or the page's own log saying a skill answered, never the encyclopedia or a miss) and without it the line says 'but nothing showed just now: I flagged it for the builders' and files the ask as a preview:nothing-shown miss; 'what's new' with nothing new says so with the count instead of replaying the last five; 'show me everything you made' walks everything by name; the 3D book's host is visible while its miniature loads wherever WebGL runs and a failed mount says why on the card and files a miss; and finish.mjs types the --try ask into the page before anything is written, stopping when nothing answers it",
+  "show": "a preview that shows nothing says so and is flagged",
+  "try": "show me everything you made"
+ },
+ {
+  "at": "2026-10-16T17:45:46Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "every 3D miniature is examined like a game's inventory item (owner, 2026-10-16: like Resident Evil or Skyrim, smart film angles): a thing that names no view is framed at the hero angle its shape asks for (flat from above-front, tall at eye level, else a three-quarter hero shot), an Examine button at its corner dims the stage behind it, brings it up, turns it slowly until a hand takes hold and shows a prompt bar, Esc puts it back; the V01D Book reads like a Skyrim book: the cover opens in half a second, the open book is examined held still with a Turn page / Esc prompt, the wheel turns pages, Esc shuts the cover before anything else closes, Read on the shut book opens it, and a page rustles when the ambient sound is on",
+  "show": "every 3D thing has an Examine view; the book reads like Skyrim's",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-16T18:52:31Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the V01D Book is read as a Skyrim book (owner, 2026-10-16: the graphic style and visuals of the way they do books; all menus go back to the book): 'open the book', 'menu', 'help' dim the stage and fill it with a worn leather tome, no card and no menu: the cover swings open, two parchment pages set in a serif with running heads, a title under a rule, a drop capital, the asks as lines of ink, the rating along the foot and the folio in the corner; ← →, the wheel, a swipe or a page's edge turn a leaf over the spine, Esc or a tap on the dark shuts it; every proven skill's page opens with its own line of lore (asked by Void); and 116 of V01D's asks that were already built are linked to the ledger entries that built them (tools/asks-link.mjs)",
+  "asked": "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book to enhance the Skyrim-like immersion.",
+  "show": "the book is a full-screen tome: parchment, set type, turn or close",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-16T19:02:43Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "typing whats new (no apostrophe) went to the encyclopedia and brought a 1965 film; it now shows what V01D made, like what's new does",
+  "show": "whats new, without the apostrophe, shows what V01D made",
+  "try": "whats new"
+ },
+ {
+  "at": "2026-10-16T19:10:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "every page V01D puts up is a V01D card, a magic-style card with the Illuminati game's stats (owner, 2026-10-16: cards like magic cards with stats; even an encyclopedia answer becomes one): a foil frame coloured by family and rarity (proven mythic, checked rare, tested uncommon, experiment common), a title bar with a cost in words said, an art box, a type line with a rarity gem, an 'adds to V01D' line, a collector number from the V01D Book and Power, Resistance and Income plates cut from the skill's real evidence and dependency map; whats new without an apostrophe is no longer a film lookup",
+  "show": "every page is a V01D card: foil frame, rarity, power/resistance/income",
+  "try": "20% tip on 45"
+ },
+ {
+  "at": "2026-10-16T19:17:14Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "an answer's V01D card is typed by what the thing is, not just Answer (owner, 2026-10-16: What's New Pussycat is a movie and a song): Film, Show, Album, Song, Band, Game, Book, Person, Place, Creature, Organisation, Event or Idea, with its year and maker, and a name that is several things carries them all, 'Film · Song · Album'; frontier 31 lists the next card pieces for V01D to build",
+  "show": "answer cards are typed: Film · Song · Album, Person, Place",
+  "try": "what's new pussycat"
+ },
+ {
+  "at": "2026-10-16T19:49:08Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check)"
+ },
+ {
+  "at": "2026-10-16T19:58:19Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "phone cards: the frame's art box collapses and the sky card drops its title/type rows so the chips stay in the first screenful (main's test_sky 375 px check); the answer-card check accepts typed kinds"
+ },
+ {
+  "at": "2026-10-16T20:43:56Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main's sky check on CI: the phone sky card also drops its adds-to-V01D row, so the chips stay in the first screenful whatever font the machine renders (my first fix passed locally and failed on CI)"
+ },
+ {
+  "at": "2026-10-16T21:53:44Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main's browser suite is green again: on a phone a V01D card is capped at 40% of the screen so an open card leaves room for a stage thing to step aside (the framed card had grown too tall), and three checks that read the page the old way now read it as it is: the growth tree test scrolls the tree into view while it waits (the card above it has grown long, so it never drew), and the weekday-countdown check reads through the card's type line"
+ },
+ {
+  "at": "2026-10-16T22:09:16Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "V01D's own fix run works again: the daily propose-fix workflow ran its tests before installing packages, so the Claude-brain test failed on a missing SDK at step one every run since it was added and V01D never proposed a fix (the growth card's 0 of 23 misses fixed); packages now install first, with a test that keeps that order"
+ },
+ {
+  "at": "2026-10-16T20:41:49Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the V01D Book's cover is part of the book: turning back from the title page swings it shut over the pages and the book stays up, and a forward key, a tap or a jump opens it again (owner, 2026-10-16: the cover swings open and I can't go back to view it)"
+ },
+ {
+  "at": "2026-10-16T20:12:19Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "a V01D card holds any other game's card: an answer about a trading, playing or collectible card (a Pokémon or Magic card) is typed Card; facts and a link only, never their art or text (owner, 2026-10-16: a Pokemon card and a Magic card each being a V01D card)"
+ },
+ {
+  "at": "2026-10-16T20:18:28Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "a long pasted text is no longer answered as a question: the model says what the text says in its own words instead of inventing a definition (V01D's own frontier step, pasted back, was answered as a project-management Card; owner, 2026-10-16); frontier #31 step 7: every idea mints an ever-evolving card"
+ },
+ {
+  "at": "2026-10-16T23:04:04Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "forge asks of V01D: a person as a recipe, check before printing, forge iterations, the print ledger in the inventory, probe wants marked made in forge history, one-click forge of a routine into a skill, asked by Void",
+  "show": "forge a person, check it, see what you printed",
+  "try": "check it before printing"
+ },
+ {
+  "at": "2026-10-16T18:09:31Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D's world is a working RTS (owner, 2026-10-16: the world of V01D itself should become a working RTS game): what you summon is the resource (a tree is 8 wood, a rock 6 stone, food is food), a villager gathers it by itself and carries each load to the camp, the camp's label is the resource bar and its 3D log pile, cairn and basket grow with the stock, 'build a hut|wall|well|bridge|tower' pays from it and raises the forge model, a camp, backdrop or world grounds the figures, and the camp keeps filling while you are away",
+  "show": "a tree, a villager and a camp: the stage is a small RTS now",
+  "try": "start a camp"
+ },
+ {
+  "at": "2026-10-16T22:36:22Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main's browser suite, shards 2 and 3: five checks read the page as it was before V01D cards (a source line found as the last div, a no-digits check over a card that now carries a collector number, a text that now has a type line and an adds line that quotes the skill's example) now read the answer itself; the week-ago tree test keeps the tree in view while it waits (it only grows on screen); and the menu-opens-the-book check waits for the book instead of 900 ms"
+ },
+ {
+  "at": "2026-10-16T23:08:17Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "V01D's fixes get a risk level, a fix under 0.8 confidence opens as a draft on the board, and missed asks a skill should have caught become propose-fix jobs, asked by Void",
+  "show": "V01D's fixes show a risk level; low-confidence ones are drafts",
+  "try": "V01D's fixes"
+ },
+ {
+  "at": "2026-10-16T22:54:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Pong and Snake keep your best game and replay it as a ghost to play against, asked by Void",
+  "show": "Pong and Snake replay your best run as a ghost",
+  "try": "void pong"
+ },
+ {
+  "at": "2026-10-16T23:27:42Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "type filter on the stage, a search bar docked in the tome, a what-is-new icon, cards that evolve and lay out by kind, and an MCP skill discovery tool, asked by Void",
+  "show": "show only clocks; search the tome; what's new icon",
+  "try": "show only clocks"
+ },
+ {
+  "at": "2026-10-16T23:42:04Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "summoned intents can be previewed as a card before they deploy, a failed or misread intent goes to the miss board as a possible new skill, and a code-review line cut at 160 characters has a peek button that opens it, asked by Void",
+  "show": "preview a plan before it lands; peek at cut-off code",
+  "try": "preview I need to ship the product page by Friday"
+ },
+ {
+  "at": "2026-10-16T23:36:31Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "status card failure now shows a suggested fix and a Recover button that queues a rebuild with the best-fitting Void-itself skill; the automerge bot runs node --test on the unit tests of the skills a PR changed before it merges, asked by Void"
+ },
+ {
+  "at": "2026-10-16T23:27:35Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D rules engine (asked by the owner): rules as data in layers (replace/deny, values, triggers), six rule sets stacked at once, clashes settled and written in plain words, proposeRule, \"duel with mana and tribute rules\"",
+  "show": "Stack rule sets: duel with mana and tribute rules",
+  "try": "play cards"
+ },
+ {
+  "at": "2026-10-16T23:28:18Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "approval card now starts a task that keeps running after you leave: 'keep <automation> running every 2 hours' on the confirm line puts the rule on the clock and every step is an action record, asked by Void"
+ },
+  {"at":"2026-10-16T23:23:32Z","by":"claude","kind":"grow","what":"bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list, asked by Void","show":"kept, list, notepad and self-play write to each other","try":"how good are you at othello"},
+  {"at":"2026-10-16T23:38:07Z","by":"claude","kind":"build","what":"contextual shortcut: 'what should I do now' reads the clock and suggests one food, ride, sleep, breathing or timer ask from the time, body and mind and out-in-the-world families; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked, asked by Void"},
+  {"at":"2026-10-16T23:31:44Z","by":"claude","kind":"grow","what":"V01D can read its own motto, VoidQuest, games and miniatures aloud as a card, lists what it keeps on this device in one state skill (the memory card reads its session from it), and its arcade ladder wins raise its rating on the growth card, asked by Void","show":"ask V01D for its canon, its state, its arcade rating","try":"which games do you know"},
+  {"at":"2026-10-16T23:51:30Z","by":"claude","kind":"grow","what":"asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-context skill gives Rust unwrap and kin a caution triangle on the stage; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success_rate > 0.9 glow (x2). Family Health card asks (x9) already built","show":"Practice timers log success, risks get a caution shape","try":"why is rust unwrap a risk"}
 ]

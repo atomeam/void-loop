@@ -5,6 +5,7 @@
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
+import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml } from '../lib/better.js';
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
@@ -198,7 +199,7 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How V01D has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list) + '<div data-probes></div>';
+  el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Void: the arcade ladder)
   // V01D's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
