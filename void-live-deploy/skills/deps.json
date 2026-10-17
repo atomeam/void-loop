@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 442,
+ "counted": 445,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -286,6 +286,12 @@
   },
   {
    "file": "lib/merge-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/movies.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -1015,6 +1021,12 @@
     "lib/guard.js",
     "lib/misskey.js",
     "lib/used.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/movies.js": {
+   "imports": [
+    "lib/movies.js"
    ],
    "importedBy": []
   },
@@ -2057,6 +2069,13 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/movies.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/movies.js",
+    "skills/movie.js"
    ]
   },
   "lib/near-miss.js": {
@@ -4112,6 +4131,12 @@
    "importedBy": [
     "skills/mini/pentamote.js"
    ]
+  },
+  "skills/movie.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": []
   },
   "skills/news.js": {
    "imports": [
