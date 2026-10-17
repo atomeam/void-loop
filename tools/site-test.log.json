@@ -1036,5 +1036,12 @@
   "of": 28,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
+ },
+ {
+  "at": "2026-10-17T14:29:51Z",
+  "passed": 19,
+  "of": 29,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
  }
 ]

@@ -103,6 +103,9 @@
     },
     {
       "ask": "show the days until a date"
+    },
+    {
+      "ask": "living spatial cards mind"
     }
   ],
   "candidates": [],
