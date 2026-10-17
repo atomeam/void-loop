@@ -23,7 +23,7 @@ export async function lookup(title, year) {
   const one = (v) => String(Array.isArray(v) ? v[0] : v || '');
   const name = (it && it.title) || cleanTitle(one(ar.title)), yr = (it && it.year) || cleanYear(one(ar && ar.year).slice(0, 4)) || year;
   return {
-    verified: true, title: name, year: yr, genre: it ? it.genre : '', rating: it ? it.rating : '', director: it ? it.director : '', overview: it ? it.overview : '',
+    verified: true, title: name, year: yr, genre: it ? it.genre : '', rating: it ? it.rating : '', director: it ? it.director : '', runtime: it ? it.runtime : null, overview: it ? it.overview : '',
     poster: it ? it.poster : ar ? 'https://archive.org/services/img/' + encodeURIComponent(ar.identifier) : '', trailer: it ? it.trailer : '',
     price: it ? it.price : null, rentPrice: it ? it.rentPrice : null, currency: it ? it.currency : '',
     play, free: !!play, links: watchLinks(name, yr, it ? it.store : ''), sources: [it && 'iTunes Search API', ar && 'Internet Archive'].filter(Boolean),

@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (field-minds agent) · helper/field-kit, then one branch per idea (helper/field-agents, -reaction-diffusion, -fluid, -evo-lattice, -volumetric, -boids, -trajectory) · the owner's order of 2026-10-17, Grok's ideas F-020..F-026 as stage skills on a shared kit (lib/field-kit.js, lib/field-stage.js); later builders port F-027..F-031, F-033 on it; F-032 is not mine (helper/attention-field) · 2026-10-17 UTC
 - Claude (real-movies helper) · helper/real-movies · pick-a-movie finds real movies (iTunes + Internet Archive), poster as card art, free films play in-page, trailers/links otherwise (owner, 2026-10-17) · 2026-10-17 UTC
 - Claude (asks-self-card agent) · helper/void-asks-self-card · V01D's self-page asks one PR each: open-the-self-card routing, swaps time change, version tag on pasted cards, card art ink by evidence; Family Health card, Skill Discovery and flavor text recorded as already built · 2026-10-17 UTC
 - Claude (asks-services agent) · helper/asks-services · V01D's services asks: approval card → lasting task, state skill, review-learn clusters, diff peek, dep scanner, skills-check re-registration, automerge safety-check + merge-log card, Game Strength, ladder → growth card, Service Health, Contextual Shortcut, country ↔ distance, readable self-knowledge; canon motto declined · 2026-10-16 18:30 UTC

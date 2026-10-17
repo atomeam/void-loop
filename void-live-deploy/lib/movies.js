@@ -59,7 +59,7 @@ export function pickItunes(results, title, year) {
   const r = (results || []).find(ok); if (!r) return null;
   return {
     title: cleanTitle(r.trackName), year: cleanYear(String(r.releaseDate || '').slice(0, 4)), genre: cleanTitle(r.primaryGenreName), rating: cleanTitle(r.contentAdvisoryRating),
-    overview: firstSentences(r.shortDescription || r.longDescription), director: cleanTitle(r.artistName),
+    overview: firstSentences(r.shortDescription || r.longDescription), director: cleanTitle(r.artistName), runtime: r.trackTimeMillis > 0 ? Math.round(r.trackTimeMillis / 60000) : null,
     poster: onHost(String(r.artworkUrl100 || '').replace(/\/\d+x\d+bb\./, '/400x600bb.'), APPLE_MEDIA),
     trailer: onHost(r.previewUrl, [...APPLE_MEDIA, ...APPLE_PAGES]), store: onHost(r.trackViewUrl, APPLE_PAGES),
     price: r.trackPrice > 0 ? Number(r.trackPrice) : null, rentPrice: r.trackRentalPrice > 0 ? Number(r.trackRentalPrice) : null, currency: /^[A-Z]{3}$/.test(r.currency || '') ? r.currency : '',

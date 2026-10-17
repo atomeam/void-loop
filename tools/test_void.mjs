@@ -748,18 +748,21 @@ try {
     const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
     await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
     await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
-      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
+      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', director: 'Danny Philippou', runtime: 95, overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
         : t === 'Nosferatu' ? { verified: true, title: t, year: 1922, genre: 'Horror', overview: '', poster: 'https://archive.org/services/img/nosferatu', trailer: '', free: true, play: { kind: 'video', src: 'https://archive.org/download/nosferatu/n.mp4', page: 'https://archive.org/details/nosferatu', license: 'public domain' }, links: [], sources: ['Internet Archive'] }
         : { verified: false, title: t }; return r.fulfill(json(f)); });
     await M.ask('pick a movie to watch with me', 1800);
     const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
     const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await M.p.click('.vpage.on a[data-ask*="Talk to Me"]'); await M.p.waitForTimeout(1200);
+    const facts = await M.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), jsonAsk = await M.p.$eval('.vpage.on .mv-json', (a) => a.dataset.ask).catch(() => '');
+    await M.p.keyboard.press('Escape'); await M.ask('pick a movie to watch with me', 1800);
     await M.p.click('.vpage.on a[data-ask*="Nosferatu"]'); await M.p.waitForTimeout(1200);
     await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
     const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
     const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
     check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
-      rows.length === 2 && /Talk to Me/.test(rows[0]) && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
   // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
   // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
@@ -2333,6 +2336,32 @@ try {
     check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
       /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
     await G.ctx.close(); }
+  if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
+    const F = await fresh();
+    const r = await F.p.evaluate(async () => {
+      const [kit, fs] = await Promise.all([import('/lib/field-kit.js'), import('/lib/field-stage.js')]);
+      const idea = { id: 'probe', title: 'Probe field', sub: 'test', W: 200, H: 120, warm: 3, create: (seed) => ({ seed, e: 0.1, a: 0.1, n: 0 }),
+        step: (s, dt, inp) => { s.n++; if (inp.over) { s.e = Math.min(1, s.e + 0.2); s.a = Math.min(1, s.a + 0.2); } }, metrics: (s) => ({ entropy: s.e, activity: s.a, consensus: 1 - s.e, cx: 0.5, cy: 0.5 }),
+        draw: (g, s, W, H) => { g.fillStyle = '#123'; g.fillRect(0, 0, W, H); }, params: () => ({ k: 1 }), status: (s) => 'n ' + s.n };
+      const host = document.createElement('div'); document.body.appendChild(host);
+      const m = fs.mountField({ id: 'probe1', x: 10, y: 10 }, { bindDrag() {}, stage: host }, idea);
+      const el = host.querySelector('.field-card'), cv = el.querySelector('canvas'), snap = () => ({ hue: el.dataset.hue, radius: el.dataset.radius, entropy: el.dataset.entropy });
+      const before = snap(), pageFilter = getComputedStyle(document.body).filter, htmlFilter = getComputedStyle(document.documentElement).filter;
+      const rc = cv.getBoundingClientRect();
+      for (let i = 0; i < 6; i++) cv.dispatchEvent(new PointerEvent('pointermove', { clientX: rc.left + 20 + i, clientY: rc.top + 20, bubbles: true }));
+      await new Promise((res) => setTimeout(res, 400));
+      const after = snap(), sound = el.querySelector('.ff-sound'), soundBefore = sound.getAttribute('aria-pressed');
+      el.querySelector('.ff-seal').click(); for (let i = 0; i < 50 && !el.dataset.seal; i++) await new Promise((res) => setTimeout(res, 100));
+      const sealed = el.dataset.seal || '';
+      const rows = await new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const a = q.result.transaction('seals').objectStore('seals').getAll(); a.onsuccess = () => { q.result.close(); res(a.result); }; }; q.onerror = () => res([]); });
+      const expect = await kit.seal('probe', { k: 1 }, { entropy: +el.dataset.entropy, activity: +el.dataset.activity, consensus: +el.dataset.consensus, cx: 0.5, cy: 0.5 }).then((x) => x.short).catch(() => '');
+      const keys = rows[0] ? Object.keys(rows[0]).sort().join(',') : '';
+      return { before, after, soundBefore, soundTag: sound.textContent, sealed, rowsN: rows.length, keys, pageFilter, htmlFilter, cardFilter: el.style.filter, reduced: m.still, loops: !!el.isConnected };
+    });
+    check('field minds: the kit mounts a card; touching it moves the metrics and so the CARD\'s hue and corners (not the page), sound stays off until tapped, and Seal keeps one numbers-only record in IndexedDB',
+      +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
+      && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
+    await F.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
@@ -2345,6 +2374,8 @@ try {
     await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
+    { const V2 = await fresh(); const got = []; for (const q of ['open the self card and tell void what it got wrong', 'tell void what it got wrong', 'open your self card, I want to correct you', 'void got this wrong', 'correct void on its self card']) { await V2.ask(q, 300); got.push(await until(async () => /What I think of myself/.test(await V2.page()), 4000)); await V2.ask('close', 200); }
+      check('voice: asks to correct V01D on its self card (open the self card and tell it what it got wrong, void got this wrong, correct void ...) open the self card, not a lookup or the look skill (extends #968, asked by Void)', got.every(Boolean), JSON.stringify(got)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     { const strip = await until(() => B.p.evaluate(() => { const q = [...document.querySelectorAll('.vpage.on .sc-strip .sc-sq')]; return q.length ? { n: q.length, tiers: [...new Set(q.map((x) => x.dataset.tier))], dens: q.map((x) => +x.dataset.density), weathered: q.filter((x) => x.classList.contains('sc-weathered')).length } : null; }), 6000);
       check('self card: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Void)', !!strip && strip.n > 20 && strip.tiers.includes('proven') && Math.max(...strip.dens) > Math.min(...strip.dens) && strip.weathered >= 0, JSON.stringify(strip)); }
