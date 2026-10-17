@@ -1090,7 +1090,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
-    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const presences = new Map(), shareKeyOf = new Map(), shareIdOf = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const shareSent = new Map(); let shareSyncT = 0; const presences = new Map(), shareKeyOf = new Map(), shareIdOf = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -1137,6 +1137,7 @@
       if (Object.keys(things).length && !localStorage.getItem('a2m.void.entered.v1')) { localStorage.setItem('a2m.void.entered.v1', new Date().toISOString()); document.body.classList.add('void-entered'); }
       mineChanged();
       shareNoticeNew();
+      shareSyncState();
       // live takers (frontier #18: a goal card takes its source's observations live) re-read their source on every change;
       // snapshot takers (the quiz, the challenge) took one copy and never listen
       try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
@@ -1519,6 +1520,9 @@ Object.values(things).forEach((th) => {
       return { thrown, gone: thrown };
     }
 
+    // the friction slider (skills/friction.js, asked by Void): 0 to 100 is kept on this device; a throw loses that many thousandths of its speed every step
+    function tossFriction() { try { const v = parseFloat(localStorage.getItem('a2m.void.friction.v1')); return Number.isFinite(v) ? 1 - Math.min(100, Math.max(0, v)) / 1000 : 0.995; } catch (_) { return 0.995; } }
+    window.voidTossFriction = tossFriction;
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
@@ -1580,15 +1584,17 @@ Object.values(things).forEach((th) => {
           // the throw is decided on release: the thing leaves the stage's record now, so "undo" during the flight brings it back
           // (2026-10-11: it used to be deleted only once off-screen, so undo mid-flight said "nothing to undo" and a later undo's
           // restored copy was deleted by the old flight: the labels flake). Only its picture flies, and the picture touches nothing.
+          shareDropped(th); // a shared Void loses it too (asked by Void: the whole stage, not only movement)
           delete things[th.id];
           if (selectedId === th.id) selectedId = null;
           save();
           let px = th.x, py = th.y, tvx = vx || (th.x < 0 ? -1.2 : 1.2), tvy = vy || -0.4, spin = tvx * 40;
+          const fr = tossFriction(); // how slippery a thrown thing is: the friction slider's setting (skills/friction.js), 0.995 by default
           let prev = performance.now();
           const step = (t) => {
             if (!cur.isConnected) return; // the stage was drawn again (an undo, a reload of things): this picture is gone
             const dt = Math.min(32, t - prev); prev = t;
-            tvx *= 0.995; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
+            tvx *= fr; tvy += 0.0016 * dt; spin += tvx * dt * 0.4; // a real toss: carried by its own speed, gravity pulls it down
             px += tvx * dt; py += tvy * dt;
             cur.style.left = px + 'px'; cur.style.top = py + 'px';
             cur.style.transform = 'rotate(' + spin + 'deg)';
@@ -3989,14 +3995,51 @@ say('nothing selected to remove');
       th.x = Math.round(x * stage.clientWidth); th.y = Math.round(y * stage.clientHeight); th.pinned = true;
       const el = stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]');
       if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; decorate(); } else render();
+      try { document.dispatchEvent(new CustomEvent('void:moved', { detail: { id: th.id, remote: true } })); } catch (_) {} // a shared Void moved it: the collision skill looks again
       clearTimeout(shareSaveT); shareSaveT = setTimeout(save, 300); // kept once it stops moving, not on every step
+    }
+    // The whole stage across tabs (asked by Void, 2026-10-16: "synchronize the entire stage state (active cards, lists, and timers) across
+    // tabs, not just movement"): a card thrown away here is gone there too (drop), and a list's entries, a timer's state and a counter's
+    // number follow (sync), for the things a shared summon made. Sent at most every 150 ms, only when changed; what arrives is not sent back.
+    function shareData(th) {
+      if (!th) return null;
+      if (th.kind === 'list') return { items: (th.items || []).slice(0, 8).map((i) => [String(i.text || ''), i.done ? 1 : 0]) };
+      if (th.kind === 'timer') return { timer: { run: th.running ? 1 : 0, left: Math.round(th.running ? Math.max(0, (th.remaining || 0) - (Date.now() - (th.startedAt || 0))) : (th.remaining || 0)) } };
+      if (th.kind === 'counter') return { value: th.value || 0 };
+      return null;
+    }
+    const shareStamp = (th) => (th.kind === 'timer' ? (th.running ? 1 : 0) + ':' + Math.round(th.remaining || 0) : JSON.stringify(shareData(th)));
+    function shareSyncState() {
+      if (!share || !share.synced) return;
+      clearTimeout(shareSyncT);
+      shareSyncT = setTimeout(() => {
+        if (share.mode !== 'tabs' && share.mode !== 'live') { shareSyncState(); return; } // not joined yet: try again, never count it as sent
+        for (const th of Object.values(things)) {
+          const key = shareKeyOf.get(th.id), d = key && shareData(th); if (!d) continue;
+          const st = shareStamp(th); if (shareSent.get(th.id) === st) continue;
+          shareSent.set(th.id, st); share.synced(key, d);
+        }
+      }, 150);
+    }
+    function shareDropped(th) { const key = share && share.dropped && th && shareKeyOf.get(th.id); if (key) share.dropped(key); }
+    function shareDrop(key) {
+      const id = shareIdOf.get(key); if (!id || !things[id]) return;
+      delete things[id]; if (selectedId === id) selectedId = null; shareKeyOf.delete(id); shareIdOf.delete(key); render(); save();
+    }
+    function shareSync(key, d) {
+      const th = things[shareIdOf.get(key)]; if (!th || !d) return;
+      if (d.items && th.kind === 'list') th.items = d.items.map(([text, done], i) => ({ id: (th.items && th.items[i] && th.items[i].id) || uid('item'), text, done: !!done }));
+      else if (d.timer && th.kind === 'timer') { th.remaining = d.timer.left; th.running = !!d.timer.run; th.startedAt = Date.now(); }
+      else if (typeof d.value === 'number' && th.kind === 'counter') th.value = d.value;
+      else return;
+      shareSent.set(th.id, shareStamp(th)); render(); clearTimeout(shareSaveT); shareSaveT = setTimeout(save, 300);
     }
     function shareJoin(room) {
       if (share || typeof room !== 'string') return;
       shareKnown = new Set(Object.keys(things));
-      share = { summoned() {}, moved() {}, edited() {}, cursor() {}, leave() {} };
+      share = { summoned() {}, moved() {}, edited() {}, dropped() {}, synced() {}, cursor() {}, leave() {} };
       import('/lib/share-client.js').then((m) => {
-        share = m.join(room, { summon: shareRun, move: shareMove, text: shareText, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
+        share = m.join(room, { summon: shareRun, move: shareMove, text: shareText, drop: shareDrop, sync: shareSync, presence: sharePresence, gone: shareGone, note: (t) => say(t) });
         let last = 0;
         addEventListener('pointermove', (e) => { const now = Date.now(); if (now - last < 50) return; last = now; share.cursor(e.clientX / innerWidth, e.clientY / innerHeight); }, { passive: true });
         addEventListener('pagehide', () => share.leave());
