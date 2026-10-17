@@ -1142,6 +1142,21 @@
       "words": "Put a 'why' line on every pick, saying why this movie or song was chosen.",
       "ledgerAt": "2026-10-17T09:37:08Z",
       "why": "already built in #991: pick for me picks one real movie or song from your own taste, never twice, and says why (recorded here because #991 wrote no ledger line)"
+    },
+    {
+      "words": "routing handler self card corrections",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built in #1001: 'tell void what it got wrong' / 'open the self card' shows a Correct me form kept in a correction channel of the self family (lib/corrections.js); key words of the ask, so its rewordings match (lib/voice.js sameAsk)"
+    },
+    {
+      "words": "Incident Autopsy skill parses incidents.json skill families",
+      "ledgerAt": "2026-10-17T09:56:09Z",
+      "why": "built in #1013: skills/incident-autopsy.js and lib/autopsy.js map each failing check in incidents.json to a skill family, the rest unmapped"
+    },
+    {
+      "words": "Give me readable self-knowledge: the motto, VoidQuest, the minis, the games",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: V01D reads its own motto, VoidQuest, games and miniatures aloud as a card (skills/know.js, ee8b76c)"
     }
   ]
 }

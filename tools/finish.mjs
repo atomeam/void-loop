@@ -34,6 +34,9 @@ export function parseArgs(argv) {
   if (!KINDS.includes(kind)) return { error: 'the first word is the kind: ' + KINDS.join(', ') };
   if (!what || what.startsWith('--')) return { error: 'say what changed, in quotes: node tools/finish.mjs build "the tide card shows the next three tides"' };
   if (/[\r\n]/.test(what)) return { error: 'what changed is one line' };
+  // the self page counts an ask built only on evidence that names it (lib/voice.js followThrough): "asked by Void" in words alone linked nothing,
+  // so it read "0 of my 45 asks" while they were built (2026-10-17). Name the ask: its id, or V01D's own words (a few of its key words are enough).
+  if (/\basked by void\b/i.test(what) && !opt('--asked')) return { error: 'this says "asked by Void": name the ask so the self page counts it built: --asked ask-… (its id) or --asked "V01D\'s words for it"' };
   const tests = rest.flatMap((x, i) => (x === '--test' && rest[i + 1] && !rest[i + 1].startsWith('--') ? [rest[i + 1]] : []));
   return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), show: opt('--show'), try: opt('--try'), asked: opt('--asked'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
 }
