@@ -12,7 +12,7 @@
  "smoke_at": "2026-10-16",
  "totals": {
   "experiment": 2,
-  "tested": 61,
+  "tested": 63,
   "checked": 31,
   "proven": 85
  },
@@ -23,7 +23,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 10,
+    "tested": 11,
     "checked": 5,
     "proven": 11
    },
@@ -243,6 +243,13 @@
      "name": "vector-field-mind",
      "tier": "tested",
      "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "flow-canvas",
+     "tier": "tested",
+     "why": "3 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests"
     },
@@ -1418,7 +1425,7 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 7,
     "checked": 8,
     "proven": 14
    },
@@ -1651,6 +1658,13 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "incident-autopsy",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     },
     {
      "name": "deps",
