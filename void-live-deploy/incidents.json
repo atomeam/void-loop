@@ -2,21 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T23:00:40.257Z",
-   "sha": "bcc1091d38adff422c5382e339856fd390788f54",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39076150933",
+   "at": "2026-10-17T23:06:52.751Z",
+   "sha": "bbd10f6203521a8197fb0967c1c2f1f75c71ed7f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39076966184",
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-17T22:41:19.023Z",
+   "at": "2026-10-17T22:45:05.077Z",
    "sha": "c6a6b80021ec7d203f1cf148d03fe472193a112a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39075109496",
    "suite": "browser suite on main",
    "checks": [
-    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
    ]
   },
