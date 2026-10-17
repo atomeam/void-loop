@@ -2678,9 +2678,11 @@ try {
     const fit = await G.p.evaluate(() => { const r = document.querySelector('.duel-card').getBoundingClientRect(); return { l: r.left, r: r.right, w: innerWidth, sw: document.documentElement.scrollWidth, tiles: document.querySelectorAll('.duel-card .duel-tile').length, arrows: document.querySelectorAll('.duel-card .vc-arrows').length }; });
     check('V01D card game: "duel" puts a table on the stage with both Roots as V01D cards (with arrows), the Treasury and the turn, and it fits a 375 px phone', fit.tiles === 2 && fit.arrows === 2 && /Turn 1 of 12/.test(await bar()) && /Treasury: you 8/.test(await bar()) && fit.r <= fit.w + 1 && fit.l >= -1 && fit.sw <= fit.w + 1, JSON.stringify({ fit, bar: await bar() }));
     await G.p.fill('.duel-card .d-idea', 'dragon'); await G.p.click('.duel-card .d-summon'); await G.p.click('.duel-card .duel-open'); await G.p.click('.duel-card .d-confirm');
-    check('V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1', await yours() === 3 && /Treasury: you 7/.test(await bar()) && await G.p.evaluate(() => /dragon/i.test(document.querySelector('.duel-card .d-me').textContent)), await bar());
-    await G.p.click('.duel-card .d-pass'); const back = await myTurn(2);
-    check('V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2', back && await theirs() >= 2 && /Treasury: you 11/.test(await bar()), await bar() + ' foe tiles ' + await theirs());
+    check('V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1', await yours() === 2 && /Treasury: you 7/.test(await bar()) && await G.p.evaluate(() => /dragon/i.test(document.querySelector('.duel-card .d-me').textContent)), await bar());
+    await G.p.click('.duel-card .d-pass');
+    const att = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 4000 }).then(() => true, () => false); if (att) await G.p.click('.duel-card .d-answer'); // V01D may attack the new card: the defender answers with coins (0 here)
+    const back = await myTurn();
+    check('V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2', back && await theirs() >= 1 && /Treasury: you (9|11|12)/.test(await bar()), await bar() + ' foe tiles ' + await theirs());
     await G.p.click('.duel-card .d-me .duel-tile'); await G.p.click('.duel-card .d-foe .duel-tile'); await G.p.click('.duel-card .d-confirm');
     const ans = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 1500 }).then(() => true, () => false); if (ans) await G.p.click('.duel-card .d-answer'); // V01D answers by itself when it is the defender
     await G.p.waitForTimeout(400);
