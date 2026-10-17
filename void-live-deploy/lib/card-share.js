@@ -16,7 +16,10 @@ export function dataOf({ title, kind, body, sources } = {}) {
   return { v: 1, t: clip(title, 120), k: clip(kind, 80), b: clip(body, 2400), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.t || s.u) };
 }
 /** the code line for a card. Pure. */
-export const codeOf = (d) => MARK + b64(JSON.stringify(dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src })));
+// short on purpose (owner, 2026-10-17: "are the letters necessary to copy along with the card?"): the readable text above it already holds the
+// whole card, so the code carries only enough to reopen it by itself (title, kind, the start of the body, two sources); a paste of the whole copied
+// text gets the full body back from the readable part
+export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src }); return MARK + b64(JSON.stringify({ ...x, b: x.b.slice(0, 200), src: x.src.slice(0, 2) })); };
 /** the text a person copies or saves: readable, then the code. Pure. */
 export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src });
@@ -25,7 +28,15 @@ export function shareText(d) {
 /** the card inside a pasted text, or null: any text holding a code line, or a bare code. Pure. */
 export function parse(text) {
   const m = CODE_RE.exec(String(text || '')); if (!m) return null;
-  try { const j = JSON.parse(unb64(m[1])); if (!j || j.v !== 1 || !clip(j.t, 120)) return null; return dataOf({ title: j.t, kind: j.k, body: j.b, sources: j.src }); } catch (_) { return null; }
+  try {
+    const j = JSON.parse(unb64(m[1])); if (!j || j.v !== 1 || !clip(j.t, 120)) return null;
+    // the readable part (title, kind, blank line, the body, then "V01D card from a-to-mind.com") restores the whole body and every source
+    const pre = String(text).slice(0, m.index).split(/\n?V01D card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
+    let body = j.b, src = j.src;
+    if (at >= 0) { const rest = lines.slice(at + 1).join('\n'), cut = rest.search(/\n?Sources:\n/); const full = (cut >= 0 ? rest.slice(0, cut) : rest).trim(); if (full.length > String(j.b || '').length && full.startsWith(String(j.b || '').slice(0, 40))) body = full;
+      if (cut >= 0) { const found = [...rest.slice(cut).matchAll(/^\[\d+\] (.*?)(?: (https:\/\/\S+))?$/gm)].map((x) => ({ t: x[1], u: x[2] || '' })); if (found.length > (src || []).length) src = found; } }
+    return dataOf({ title: j.t, kind: j.k, body, sources: src });
+  } catch (_) { return null; }
 }
 /** a file name for a saved card. Pure. */
 export const fileName = (d, ext = 'txt') => (String(d.t || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'card') + '.v01d-card.' + ext;
