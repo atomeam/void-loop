@@ -87,6 +87,7 @@ async function stopLoudly(why) {
   let stack = ''; if (/^check timeout/.test(why) && watch.pageObj) stack = await Promise.race([stuckAt(watch.pageObj), new Promise((res) => setTimeout(() => res(''), 8000))]);
   for (const r of results) console.log(line(r));
   if (stack) console.log('STUCK AT ' + stack);
+  if (process.env.GITHUB_ACTIONS) console.log('::error title=Suite stalled::' + String(why).slice(0, 80) + ' | page ' + watch.page + ' | ask ' + JSON.stringify(watch.ask || '') + (stack ? ' | STUCK AT ' + stack.replace(/\s+/g, ' ').slice(0, 700) : '')); // an annotation, so the reason can be read without the job log
   console.log('FAIL ' + why + '  -> last page opened: ' + watch.page + (watch.ask ? '; last ask: ' + JSON.stringify(watch.ask) : '') + '; last check finished: ' + watch.lastCheck + '; ' + Math.round((Date.now() - watch.t0) / 1000) + ' s in');
   console.log(`${results.filter((r) => r.ok).length}/${results.length + 1} passed`);
   exitFlushed(1);
