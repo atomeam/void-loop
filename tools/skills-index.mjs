@@ -105,6 +105,19 @@ export function registerNew(dir = ORDER_DIR, sdir = skillsDir) {
   return made;
 }
 
+/** order files at the end of the routing order for these named skills (a skills-check failure found them loaded by no one); returns the files made.
+ * Asked by Void: "Automate the re-registration of services skills when a skills-check failure is detected." */
+export function registerNames(names, dir = ORDER_DIR) {
+  const ranks = ranksOf(dir), made = [];
+  let last = Math.max(0, ...Object.values(ranks));
+  for (const name of names) {
+    if (name in ranks) continue; // already has its place: only the index was stale
+    last += 10; const f = String(last).padStart(4, '0') + '-' + name;
+    writeFileSync(resolve(dir, f), ''); made.push(f);
+  }
+  return made;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const mode = process.argv[2] || '';
   if (mode === '--write') { const n = writeIndex(); console.log('wrote skills/index.json: ' + n.length + ' skills'); }
