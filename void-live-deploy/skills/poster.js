@@ -148,4 +148,8 @@ export default {
   nearMisses: ['what is a poster', 'poster sizes', 'share this card', 'how do I hang a poster', 'order this as a poster'],
   match(lower, text) { return posterOf(text) || !!filmPosterOf(text); },
   run,
+  suite() {
+    const ok = !!filmPosterOf('film poster') && filmPosterOf('film poster').which === 'newest' && !filmPosterOf('order a poster') && !!STORY;
+    return { ok, got: ok ? 'film promotional poster matcher and phone-story size' : 'failed' };
+  }
 };
