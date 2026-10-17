@@ -69,6 +69,13 @@ export function briefMarkdown(s) {
 
 const blank = (title) => ({ title: title || '', status: 'investigating', severity: '', started: '', detected: '', mitigated: '', resolved: '', impact: '', cause: '', timeline: [{ at: '', what: '' }], next: [{ what: '', owner: '', due: '' }] });
 function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); return s && typeof s === 'object' && Array.isArray(s.timeline) && Array.isArray(s.next) ? s : null; } catch (_) { return null; } }
+/** keep a drafted brief (the pulse card drafts one when the arrows' rhythm turns irregular, asked by Void) unless the person already has one with real content in it; true when kept. */
+export function keepDraft(s) {
+  const have = load();
+  if (have && (have.impact || have.cause || (have.title && have.title !== s.title))) return false;
+  save({ ...blank(s.title), ...s });
+  return load() != null;
+}
 function save(s) { try { if (JSON.stringify(s) === JSON.stringify(blank(''))) localStorage.removeItem(KEY); else localStorage.setItem(KEY, JSON.stringify(s)); } catch (_) {} } // an empty form leaves nothing behind
 
 const IN = 'font:inherit;color:inherit;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:5px 8px;box-sizing:border-box';
