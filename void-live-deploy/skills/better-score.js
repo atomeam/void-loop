@@ -1,42 +1,40 @@
 /**
- * better-score skill — show the void better score as its own card.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "void better score", "show the void score", "what's my better score".
- * Reads /void.better.json (appended daily by tools/better.mjs). Empty surface stays empty.
+ * better-score skill — surface void.better.json as a one-line trend.
+ * "how am I doing", "what's my better score", "am I getting better", "growth trend".
+ * Empty surface stays empty. Uses existing betterHtml from lib/better.js.
  */
-import { betterHtml } from '../lib/better.js';
+import { betterHtml, compare } from '../lib/better.js';
 
-export function wantsScore(text) {
+export function betterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:show|give|what(?:'s| is))\s+(?:the\s+|my\s+)?)?(?:void\s+)?(?:better\s+)?score(?:\s+card)?$|^(?:void\s+)?better\s+score$/.test(t);
+  return /^(?:how am i doing|what's my better score|am i getting better|growth trend|void better|show the better score|my score)$/.test(t);
 }
 
 async function run(text, api) {
-  const { showPage, esc } = api;
-  if (!wantsScore(text)) return 'none';
-  const el = showPage((p) => { p.innerHTML = '<h2>Void better score</h2><div class="sub">reading the score…</div>'; });
+  if (!betterOf(text)) return 'none';
+  const { showPage, esc, _pageStill } = api;
+  const el = showPage((p) => { p.innerHTML = '<h2>How V01D is doing</h2><div class="sub">reading the score…</div>'; });
   try {
     const r = await fetch('/void.better.json', { cache: 'no-cache' });
-    if (!api._pageStill || !api._pageStill(el)) return 'better-score';
+    if (!_pageStill || !_pageStill(el)) return 'better-score';
     if (!r.ok) throw new Error('HTTP ' + r.status);
     const rows = await r.json();
     const html = betterHtml(esc, rows);
-    el.innerHTML = '<h2>Void better score</h2>' + (html || '<p>No score recorded yet.</p>') + '<div class="src">From <a href="/void.better.json">void.better.json</a></div>';
+    el.innerHTML = html || '<h2>How V01D is doing</h2><p>No score yet. The daily measure has not run.</p>';
     return 'better-score';
-  } catch (_) {
-    if (!api._pageStill || !api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Void better score</h2><p>The score could not be read just now. Ask again in a moment.</p>';
+  } catch (e) {
+    if (_pageStill && _pageStill(el)) el.innerHTML = '<h2>How V01D is doing</h2><p>The score could not be read just now. Ask again in a moment.</p>';
     return 'none';
   }
 }
 
 export default {
   name: 'better-score',
-  examples: ['void better score', 'show the void score', "what's my better score", 'void score'],
-  nearMisses: ['growth', 'how have you grown', 'what did you do today'],
-  match(lower, text) { return wantsScore(text); },
+  examples: ['how am I doing', "what's my better score", 'am I getting better', 'growth trend'],
+  nearMisses: ['how are you', 'what is better', 'score a goal', 'better weather'],
+  match(lower, text) { return betterOf(text); },
   run,
   suite() {
-    return { ok: wantsScore('void better score') && wantsScore('show the void score') && !wantsScore('growth') };
+    return { ok: betterOf('how am I doing') && !betterOf('hello world') };
   },
 };
