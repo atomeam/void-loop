@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { dataOf, codeOf, shareText, parse, fileName, MARK } from '../void-live-deploy/lib/card-share.js';
+import { dataOf, codeOf, shareText, parse, fileName, MARK, textOf, tidy } from '../void-live-deploy/lib/card-share.js';
 
 const card = { t: "What's New Pussycat? ✦", k: 'FILM · SONG — 1965', b: 'A 1965 film.\n\nIt is also a song by Tom Jones.', src: [{ t: 'Wikipedia', u: 'https://en.wikipedia.org/wiki/What%27s_New_Pussycat%3F' }, { t: 'bad', u: 'javascript:alert(1)' }] };
 test('copy text reads well and ends in one code line', () => {
@@ -37,4 +37,16 @@ test('version history: a copy of a pasted card carries a short iteration number,
   assert.match(t, /a-to-mind\.com · v2\n/); assert.equal(parse(t).n, 2); assert.equal(parse(codeOf(two)).n, 2); assert.equal(parse(t).b, card.b);
   assert.ok(codeOf(two).length - codeOf(card).length <= 8, 'the tag adds a few characters');
   assert.equal(dataOf({ ...card, n: 'x' }).n, undefined); assert.equal(dataOf({ ...card, n: 1 }).n, undefined); assert.equal(dataOf({ ...card, n: 500 }).n, undefined);
+});
+
+// a tiny stand-in for a detached DOM: element(tag, ...children), text nodes are strings
+const el = (tag, ...kids) => ({ nodeType: 1, tagName: tag, childNodes: kids.map((k) => (typeof k === 'string' ? { nodeType: 3, nodeValue: k } : k)) });
+test('a saved card reads as words: blocks on their own lines, side-by-side pieces apart (the Films and repo cards glued them)', () => {
+  const films = el('DIV', el('P', 'Now showing · a new one daily'), el('P', 'Every day V01D films one of its own experiments.'), el('DIV', el('BUTTON', '▶'), el('B', 'Watch now'), el('SPAN', 'Watch the newest film')), el('P', 'Free for everyone.'));
+  assert.equal(tidy(textOf(films)), 'Now showing · a new one daily\nEvery day V01D films one of its own experiments.\n▶ Watch now Watch the newest film\nFree for everyone.');
+  const facts = el('DIV', el('SPAN', 'JavaScript'), el('SPAN', el('B', '0'), ' stars'), el('SPAN', el('B', '0'), ' forks'));
+  assert.equal(tidy(textOf(facts)), 'JavaScript 0 stars 0 forks');
+  assert.equal(tidy(textOf(el('P', 'one', el('BR'), 'two'))), 'one\ntwo');
+  assert.equal(tidy(textOf(el('P', 'keep ', el('B', 'bold'), ' words'))), 'keep bold words');
+  assert.equal(tidy(textOf(el('DIV', el('STYLE', '.x{}'), 'text'))), 'text');
 });

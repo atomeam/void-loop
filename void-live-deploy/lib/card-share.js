@@ -42,13 +42,30 @@ export function parse(text) {
 /** a file name for a saved card. Pure. */
 export const fileName = (d, ext = 'txt') => (String(d.t || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'card') + '.v01d-card.' + ext;
 
+const BLOCK = /^(P|DIV|LI|UL|OL|H[1-6]|TR|TABLE|SECTION|ARTICLE|HEADER|FOOTER|BLOCKQUOTE|PRE|FIGURE|FIGCAPTION|DL|DT|DD|DETAILS|SUMMARY|NAV|FORM|FIELDSET)$/;
+/** a node's words as a reader sees them: a line per block (paragraph, list item, row), a space between side-by-side pieces (facts in a
+ * flex row, tags, a label and its number). A detached copy of the card has no layout, so innerText there is textContent and glued
+ * "a new one dailyEvery day" and "JavaScript0 stars0 forks" (owner's pasted cards, 2026-10-17). Works on any DOM-like node. */
+export function textOf(n) {
+  if (!n) return '';
+  if (n.nodeType === 3) return n.nodeValue || '';
+  if (n.nodeType !== 1) return '';
+  const tag = String(n.tagName || '').toUpperCase();
+  if (tag === 'BR') return '\n';
+  if (tag === 'STYLE' || tag === 'SCRIPT') return '';
+  let out = '';
+  for (const k of n.childNodes || []) { const t = textOf(k); if (k.nodeType === 1 && out && t && !/\s$/.test(out) && !/^\s/.test(t)) out += ' '; out += t; }
+  return BLOCK.test(tag) ? '\n' + out + '\n' : out;
+}
+/** textOf tidied: spaces collapsed inside a line, no empty lines but one between blocks that were apart. Pure. */
+export const tidy = (s) => String(s || '').split('\n').map((l) => l.replace(/[ \t\u00a0]+/g, ' ').trim()).filter(Boolean).join('\n');
 /** what a card on the page holds, from its elements (the frame's own chrome and buttons left out). */
 export function readCard(el) {
   const c = el.cloneNode(true);
   c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent').forEach((x) => x.remove());
   const h2 = c.querySelector('h2'), title = h2 ? h2.textContent : '';
   if (h2) h2.remove();
-  const body = Array.from(c.children).map((x) => (x.innerText || x.textContent || '').trim()).filter(Boolean).join('\n\n');
+  const body = Array.from(c.children).map((x) => tidy(textOf(x))).filter(Boolean).join('\n\n');
   const kind = (el.querySelector(':scope > .vc-type') || {}).textContent || '';
   const sources = [...el.querySelectorAll('.src a')].map((a) => ({ title: a.textContent.replace(/^\[\d+\]\s*/, ''), url: a.href }));
   const was = Math.floor(+(el.dataset && el.dataset.cardVersion)); // a card brought back from a paste is at version `was`; copying it again makes the next
