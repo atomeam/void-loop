@@ -1079,5 +1079,12 @@
   "of": 33,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
+ },
+ {
+  "at": "2026-10-17T21:51:18Z",
+  "passed": 32,
+  "of": 34,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
  }
 ]

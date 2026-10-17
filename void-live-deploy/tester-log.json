@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 31,
- "runsTotal": 144,
+ "cases": 32,
+ "runsTotal": 145,
  "kinds": {
-  "grow": 24,
+  "grow": 25,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T21:51:18Z",
+   "passed": 32,
+   "of": 34,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
+  },
   {
    "at": "2026-10-17T21:21:26Z",
    "passed": 32,
@@ -138,13 +145,6 @@
   },
   {
    "at": "2026-10-17T10:10:51Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T10:04:20Z",
    "passed": 0,
    "of": 25,
    "kind": "none",
@@ -292,9 +292,9 @@
   "skill:know": "2026-10-17T21:21:26Z",
   "skill:pulse": "2026-10-17T21:21:26Z",
   "skill:rts": "2026-10-17T21:21:26Z",
-  "skill:merge": "2026-10-17T02:48:01Z",
-  "skill:shortcut": "2026-10-17T02:48:01Z",
-  "skill:state": "2026-10-17T02:48:01Z",
+  "skill:merge": "2026-10-17T21:51:18Z",
+  "skill:shortcut": "2026-10-17T21:51:18Z",
+  "skill:state": "2026-10-17T21:51:18Z",
   "skill:technical-context": "2026-10-17T02:48:01Z",
   "skill:type-filter": "2026-10-17T06:04:06Z",
   "skill:web4": "2026-10-17T06:04:06Z",
