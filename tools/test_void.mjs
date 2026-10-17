@@ -985,13 +985,19 @@ try {
     const undone = await L.p.$$eval('.void-arrows line', (ls) => ls.length);
     // wait for the restored stage itself, not a fixed 900 ms: in the suite the stage was still empty then (red on main since 11:21 on 2026-10-17,
     // the same as the convert card's reload check); the arrows are drawn once their things are back
+    // asked by Void: the restored labels and arrows come back as ghosts that settle solid; count the most ghosts seen at once during the restore
+    await L.p.addInitScript(() => { window.__ghosts = 0; const look = () => { window.__ghosts = Math.max(window.__ghosts, document.querySelectorAll('.void-ghost').length); };
+      new MutationObserver(look).observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['class'] }); });
     await L.p.reload(); await until(async () => (await L.p.$$eval('#stage > [data-id]', (es) => es.length)) >= 4 && (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) >= 1, 8000).catch(() => {});
+    await L.p.waitForTimeout(1500); const ghosts = await L.p.evaluate(() => ({ seen: window.__ghosts, left: document.querySelectorAll('.void-ghost').length }));
     const kept = (await L.p.$$eval('.void-arrows line', (ls) => ls.length)) === 1 && (await L.p.$$eval('.void-tag', (es) => es.length)) === 2 && (await L.p.$$eval('.void-label', (es) => es.map((e) => e.textContent).join())) === 'to do';
     await L.ask('remove the arrows', 600); await L.ask('remove the labels', 600);
     const clean = (await L.p.$$eval('.void-arrows line, .void-tag, .void-label', (es) => es.length)) === 0 && (await L.state()).length === 3;
     check('label: "label the clock kitchen" and "label the note groceries" tag them, "draw an arrow from kitchen to the timer" joins them and the arrow follows the clock when it is dragged, a free label "to do" takes an arrow, "undo" takes the last arrow back, all of it survives a reload, and "remove the arrows" / "remove the labels" clear them',
       tags === 'groceries,kitchen' && /drew an arrow/.test(said) && placed && follows && two === 2 && undone === 1 && kept && clean && !L.errors.length,
       JSON.stringify({ tags, said, placed, l1, l2, two, undone, kept, clean, e: L.errors }));
+    check('label (asked by Void): after a reload the restored labels and arrows come back as ghosts (faint, then solid) and none is left ghosted a second later',
+      ghosts.seen >= 3 && ghosts.left === 0, JSON.stringify(ghosts));
     await L.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   if (want("Public Voids: \"publish my void as @name\" puts a paid Void's look and kept cards (as text) ")) { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
@@ -2473,7 +2479,7 @@ try {
       const F = await fresh(noWorker ? () => { window.Worker = undefined; } : () => {});
       await F.ask('show me the living cards mind', 700); await until(async () => (await F.p.$$('.ff-living-cards-mind .lc-chip')).length === 5, 8000);
       const read = () => F.p.evaluate(() => { const el = document.querySelector('.ff-living-cards-mind'), chips = [...el.querySelectorAll('.lc-chip')];
-        return { labels: chips.map((c) => c.textContent).join(','), families: chips.map((c) => c.dataset.family).join(','), left: chips.map((c) => c.style.left), top: chips.map((c) => c.style.top), hue: chips.map((c) => c.dataset.hue), scale: chips.map((c) => +c.dataset.scale), status: el.querySelector('.ff-hud').textContent, mind: el.dataset.mind, gen: +(el.dataset.gen || 0), page: getComputedStyle(document.body).filter }; });
+        return { trailMax: +(el.dataset.trailMax || 0), labels: chips.map((c) => c.textContent).join(','), families: chips.map((c) => c.dataset.family).join(','), left: chips.map((c) => c.style.left), top: chips.map((c) => c.style.top), hue: chips.map((c) => c.dataset.hue), scale: chips.map((c) => +c.dataset.scale), status: el.querySelector('.ff-hud').textContent, mind: el.dataset.mind, gen: +(el.dataset.gen || 0), page: getComputedStyle(document.body).filter }; });
       const a = await read();
       const chip = await F.p.$eval('.ff-living-cards-mind .lc-chip[data-card="4"]', (c) => { const r = c.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
       const box = await F.p.$eval('.ff-living-cards-mind canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
@@ -2484,10 +2490,10 @@ try {
       const b = await read();
       out.push({ noWorker, a, b, errors: F.errors.slice() }); await F.ctx.close();
     }
-    const gap = (r) => Math.hypot(parseFloat(r.left[0]) - parseFloat(r.left[3]), parseFloat(r.top[0]) - parseFloat(r.top[3])); // idea and mind, one family
-    const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.families === 'Void itself,The stage,The stage,Void itself,Out in the world' && gap(o.b) < gap(o.a) && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
+    const gap = (r) => Math.hypot(parseFloat(r.left[0]) - parseFloat(r.left[3]), parseFloat(r.top[0]) - parseFloat(r.top[3])); // idea and mind, one family: they close in, or already sit at their 0.14 target (lib/field-cards.js familyPull)
+    const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.families === 'Void itself,The stage,The stage,Void itself,Out in the world' && (gap(o.b) < gap(o.a) || gap(o.b) <= 14.5) && o.b.trailMax >= 1 && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
       && o.b.left[4] !== o.a.left[4] && Math.abs(parseFloat(o.b.left[4]) - 25) < 8 && o.b.gen > 0 && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 entropy [\d.]+ \u00b7 cards answered [\d.]+/.test(o.b.status) && o.b.page === 'none' && !o.errors.length;
-    check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
+    check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), a moving card leaves a fading trail (asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
       out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
   }
   if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
@@ -3664,10 +3670,13 @@ try {
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
     await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
     await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }, { kind: 'skill', name: 'define', examples: ['define hubris'] }] })));
-    await S.ctx.route(/\/incidents\.json/, (rt) => rt.fulfill(json({ incidents: [{ at: '2026-10-17T22:00:00Z', sha: 'abcdef12', checks: ['timer: "set a timer for 3 minutes" <b>counts</b>', 'check timeout: no check finished'] }] })));
+    const nowIso = new Date().toISOString(), dayAgo = (n) => new Date(Date.now() - n * 864e5).toISOString();
+    await S.ctx.route(/\/incidents\.json/, (rt) => rt.fulfill(json({ incidents: [{ at: nowIso, sha: 'abcdef12', checks: ['timer: "set a timer for 3 minutes" <b>counts</b>', 'check timeout: no check finished'] }] })));
+    await S.ctx.route(/\/void\.better\.json/, (rt) => rt.fulfill(json([{ at: dayAgo(2), families: [{ id: 'time', health: 40 }] }, { at: dayAgo(1), families: [{ id: 'time', health: 30 }] }])));
     await S.ask('tester log', 1500);
     const got = await until(async () => S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-candidates'); return l ? { names: [...l.children].map((x) => x.dataset.candidate), asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null), 6000);
     const fromInc = got && await S.p.$eval('.vpage', (p) => { const l = p.querySelector('.st-incidents'); return l ? { asks: [...l.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: l.textContent, bold: !!l.querySelector('b') } : null; }).catch(() => null); // asked by Void: a test case from a recent failure
+    const stab = got && await S.p.$eval('.vpage', (p) => [...p.querySelectorAll('.st-stab-row')].map((r) => ({ fam: r.dataset.family, health: +r.dataset.health, drop: +r.dataset.drop, pts: (r.querySelector('polyline') || { getAttribute: () => '' }).getAttribute('points').split(' ').filter(Boolean).length, text: r.textContent }))).catch(() => null); // asked by Void: stability sparklines
     const heat = got && await S.p.$eval('.vpage', (p) => [...p.querySelectorAll('.st-heat-row')].map((r) => ({ fam: r.dataset.family, heat: +r.dataset.heat, text: r.textContent, bar: getComputedStyle(r.querySelector('span span')).width }))).catch(() => null); // asked by Void: the heat map
     if (got) await S.p.click('.st-candidates a[data-ask="set a timer for 2 minutes"]');
     const ran = got && await until(async () => (await S.state()).some((x) => x.kind === 'timer'), 6000);
@@ -3677,6 +3686,8 @@ try {
       JSON.stringify({ got, ran, after, errors: S.errors }));
     check('Site Test card (asked by Void): "From recent failures" turns a red check on main into the ask that failed, naming its skill and commit, escaped; an unmapped check gives no case',
       !!fromInc && fromInc.asks.join('|') === 'set a timer for 3 minutes' && /timer, failed on abcdef1/.test(fromInc.text) && !fromInc.bold, JSON.stringify(fromInc));
+    check('Site Test card (asked by Void): a stability sparkline per family, a point a day from void.better.json, today lowered by the recent red check (timer: one failure, 5 off)',
+      !!stab && stab[0] && stab[0].fam === 'time' && stab[0].pts === 3 && stab[0].drop === 5 && /−5 from 1 recent failure/.test(stab[0].text) && /\+/.test(stab[0].text), JSON.stringify(stab));
     check('Site Test card (asked by Void): a heat map ranks the families least stable first, the failing family hottest with the longest bar, its name escaped',
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));

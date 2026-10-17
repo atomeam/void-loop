@@ -6,7 +6,7 @@
  */
 import { probeHtml } from '../lib/probe-log.js';
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
-import { betterHtml } from '../lib/better.js';
+import { betterHtml, familySnapshot } from '../lib/better.js';
 import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
 import { confidenceOf } from '../lib/skill-confidence.js';
 import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
@@ -405,11 +405,50 @@ export function heatHtml(esc, rows) {
       + '<span style="position:relative;padding-left:6px;line-height:16px">' + esc((r.failing ? r.failing + ' failing · ' : '') + r.unsure + ' of ' + r.n + ' unsure') + '</span></span></div>').join('') + '</div>';
 }
 
+/** Void asked (2026-10-17): "the 'stability trend' sparkline for each skill family on the Site Test card" and "integrate the Site Test failure
+ *  cases with the stability trend sparklines to automate health score degradation". Per family: its health on each day void.better.json kept
+ *  (its last reading that day), then today's health from families.json, lowered by DEGRADE for every check of that family that went red on main in
+ *  the last RECENT_H hours (lib/autopsy.js places them), at most DEGRADE_MAX. [{ id, name, points: [{ day, health }], drop, fails }]. Pure. */
+export const DEGRADE = 5, DEGRADE_MAX = 30, RECENT_H = 48;
+export function stabilitySeries(rows, fam, a, now = Date.now()) {
+  const byDay = new Map(); // day -> family id -> its last health that day (rows are oldest first)
+  for (const r of Array.isArray(rows) ? rows : []) if (r && typeof r.at === 'string' && Array.isArray(r.families)) {
+    const d = byDay.get(r.at.slice(0, 10)) || new Map(); for (const f of r.families) if (f && Number.isFinite(+f.health)) d.set(String(f.id), +f.health); byDay.set(r.at.slice(0, 10), d);
+  }
+  const today = new Date(now).toISOString().slice(0, 10), fails = new Map();
+  for (const i of (a && a.recent) || []) if (now - Date.parse(i.at) <= RECENT_H * 36e5) for (const c of i.checks || []) if (c.family) fails.set(c.family, (fails.get(c.family) || 0) + 1);
+  const names = new Map(((fam && fam.families) || []).map((f) => [String(f.id), String(f.name || f.id)]));
+  return familySnapshot(fam).map(({ id, health }) => {
+    const points = [...byDay.entries()].filter(([d]) => d < today).sort(([x], [y]) => x.localeCompare(y)).filter(([, d]) => d.has(id)).map(([day, d]) => ({ day, health: d.get(id) }));
+    const n = fails.get(id) || 0, drop = Math.min(DEGRADE_MAX, n * DEGRADE);
+    points.push({ day: today, health: Math.max(0, health - drop) });
+    return { id, name: names.get(id) || id, points, drop, fails: n };
+  });
+}
+/** a sparkline of a family's points: an SVG polyline, 0..100 bottom to top, the last point marked. '' with no points. Pure. */
+export function sparkSvg(points, w = 72, h = 18) {
+  if (!points || !points.length) return '';
+  const xs = (i) => (points.length === 1 ? w - 3 : 3 + (i * (w - 6)) / (points.length - 1)), ys = (v) => (h - 2 - (Math.max(0, Math.min(100, v)) * (h - 4)) / 100).toFixed(1);
+  const last = points[points.length - 1], pts = points.map((p, i) => xs(i).toFixed(1) + ',' + ys(p.health)).join(' ');
+  return '<svg class="st-spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'
+    + '<circle cx="' + xs(points.length - 1).toFixed(1) + '" cy="' + ys(last.health) + '" r="2" fill="currentColor"/></svg>';
+}
+/** the stability section: one row per family, its sparkline, today's health, and the drop recent failures took. '' with no families. Pure. */
+export function stabilityHtml(esc, series) {
+  if (!series || !series.length) return '';
+  return '<h3 style="margin:12px 0 4px">Stability trend</h3><div class="sub">Each family\'s health, one point a day; today\'s point drops ' + DEGRADE + ' for every check of the family that went red on main in the last ' + RECENT_H + ' hours.</div><div class="st-stability" style="margin:6px 0">'
+    + series.map((s) => { const now = s.points[s.points.length - 1].health, prev = s.points.length > 1 ? s.points[s.points.length - 2].health : null;
+      return '<div class="st-stab-row" data-family="' + esc(s.id) + '" data-health="' + now + '" data-drop="' + s.drop + '" style="display:grid;grid-template-columns:9.5em 76px 1fr;gap:8px;align-items:center;margin:2px 0;font-size:12px">'
+        + '<span>' + esc(s.name) + '</span><span style="color:hsl(' + Math.round(1.2 * now) + ' 70% 55%)">' + sparkSvg(s.points) + '</span><span>' + now
+        + (prev !== null ? ' <span class="sub">(' + (now - prev >= 0 ? '+' : '') + (now - prev) + ')</span>' : ' <span class="sub">(first day)</span>')
+        + (s.drop ? ' <span class="sub">\u00b7 \u2212' + s.drop + ' from ' + s.fails + ' recent failure' + (s.fails === 1 ? '' : 's') + '</span>' : '') + '</span></div>'; }).join('') + '</div>';
+}
+
 function runTester(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>What my site tester checks</h2><div class="sub">reading the log…</div>'; });
   const get = (u) => fetch(u, { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL), get('/incidents.json')]).then(([j, fam, guide, inc]) => {
+  Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL), get('/incidents.json'), get(BETTER_URL)]).then(([j, fam, guide, inc, rows]) => {
     if (!el) return;
     const R = testerRows(j), C = testCandidates(fam, guide), I = inc ? incidentCases(autopsy(inc, fam, guide), guide) : [];
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
@@ -418,7 +457,7 @@ function runTester(text, api) {
       (I.length ? '<h3 style="margin:12px 0 4px">From recent failures</h3><div class="sub">Checks that went red on main lately, each turned into an ask to try now. Tap one to test it.</div><ol class="st-incidents" style="padding-left:20px">'
         + I.map((c) => '<li style="margin:5px 0" data-incident="' + esc(c.skill) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">\u00b7 ' + esc(c.skill) + ', failed on ' + esc(c.sha) + ' (' + esc(c.check) + ')</span></li>').join('') + '</ol>' : '') + // void-review: ok (every field through esc)
       (C.length ? '<h3 style="margin:12px 0 4px">What to test next</h3><div class="sub">My lowest-rated skills (skills/families.json): failing first, then the least checked. Tap one to test it now.</div><ol class="st-candidates" style="padding-left:20px">'
-        + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '') + heatHtml(esc, unstableFamilies(fam)); // void-review: ok (heatHtml escapes every name and count)
+        + C.map((c) => '<li style="margin:5px 0" data-candidate="' + esc(c.name) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">· ' + esc(c.name) + ', ' + esc(c.failing ? c.failing + ' failing' : c.tier) + (c.family ? ' · ' + esc(c.family) : '') + '</span></li>').join('') + '</ol>' : '') + heatHtml(esc, unstableFamilies(fam)) + stabilityHtml(esc, stabilitySeries(rows, fam, inc ? autopsy(inc, fam, guide) : null)); // void-review: ok (names through esc; numbers only otherwise) // void-review: ok (heatHtml escapes every name and count)
   });
   return 'growth';
 }

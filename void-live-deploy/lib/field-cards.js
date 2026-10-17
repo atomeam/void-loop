@@ -73,6 +73,18 @@ export function driftCards(u, cards, k = 1, held = -1) {
   });
 }
 
+// velocity trail (asked by Void: "a 'velocity' visual, a faint motion trail, so users can see the momentum of the field when it's actively
+// rearranging things"): each card's last TRAIL positions, newest last; the card draws them as a fading line, brighter the faster it moves
+export const TRAIL = 20, TRAIL_EVERY = 25; // positions, one every 25 ms (the card's draw records them): half a second of path
+export const TRAIL_MIN = 0.004; // the speed (field widths per position) below which a card leaves no trail: drifting is not moving
+/** add a card's position to its trail, keeping the last `max`. Pure on its inputs. */
+export function trailPush(trail, c, max = TRAIL) { trail.push({ x: c.x, y: c.y }); if (trail.length > max) trail.splice(0, trail.length - max); return trail; }
+/** how fast a trail moved, in field widths per step over its length (0 when it is too short). Pure. */
+export function trailSpeed(trail) {
+  if (!trail || trail.length < 2) return 0; let d = 0;
+  for (let i = 1; i < trail.length; i++) d += Math.hypot(trail[i].x - trail[i - 1].x, trail[i].y - trail[i - 1].y);
+  return d / (trail.length - 1);
+}
 /** a step: dt in seconds; input { x, y, down } from the pointer seeds energy. */
 export function step(s, dt = 1 / 60, input = {}) {
   const k = clamp(dt * 60, 0.25, 3);
