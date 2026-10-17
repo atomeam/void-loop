@@ -1,15 +1,29 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 106,
+ "runsTotal": 108,
  "kinds": {
   "grow": 15,
-  "file": 50,
+  "file": 51,
   "teach": 7,
   "tighten": 7,
-  "none": 27
+  "none": 28
  },
  "runs": [
+  {
+   "at": "2026-10-17T07:56:04Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
+  {
+   "at": "2026-10-17T07:48:48Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T07:42:31Z",
    "passed": 0,
@@ -135,20 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T17:30:08Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T16:59:40Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"quiz me\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
   }
  ],
  "seen": {
@@ -169,14 +169,14 @@
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
-  "skill:challenge": "2026-10-16T06:45:10Z",
+  "skill:challenge": "2026-10-17T07:48:48Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-16T06:45:10Z",
-  "skill:coral": "2026-10-16T06:51:30Z",
-  "skill:counter": "2026-10-16T06:51:30Z",
-  "skill:country": "2026-10-16T06:51:30Z",
-  "skill:crypto": "2026-10-16T07:04:58Z",
+  "skill:convert": "2026-10-17T07:48:48Z",
+  "skill:coral": "2026-10-17T07:48:48Z",
+  "skill:counter": "2026-10-17T07:56:04Z",
+  "skill:country": "2026-10-17T07:56:04Z",
+  "skill:crypto": "2026-10-17T07:56:04Z",
   "skill:dark-look": "2026-10-16T07:04:58Z",
   "skill:dates": "2026-10-16T07:04:58Z",
   "skill:dating": "2026-10-16T07:15:33Z",

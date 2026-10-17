@@ -64,5 +64,8 @@
   {"check": "suite ran to the end", "sha": "5a5479cb5f985fd122713efba06aa05a2488916d", "at": "2026-10-16T07:30:44Z"},
   {"check": "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others ", "sha": "ee6e307706e5340dddfe59edf67ca7a89944c4c2", "at": "2026-10-16T09:01:23Z"},
   {"check": "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one ", "sha": "086c8fb9a2e3b34dde71cd26160044f69771eaf9", "at": "2026-10-17T06:16:52Z"},
-  {"check": "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the ", "sha": "086c8fb9a2e3b34dde71cd26160044f69771eaf9", "at": "2026-10-17T06:16:52Z"}
+  {"check": "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the ", "sha": "086c8fb9a2e3b34dde71cd26160044f69771eaf9", "at": "2026-10-17T06:16:52Z"},
+  {"check": "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock w", "sha": "9787099bfccae748aacd1adb1140433b838b99e6", "at": "2026-10-17T07:58:30Z"},
+  {"check": "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one ", "sha": "9787099bfccae748aacd1adb1140433b838b99e6", "at": "2026-10-17T07:58:30Z"},
+  {"check": "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"", "sha": "9787099bfccae748aacd1adb1140433b838b99e6", "at": "2026-10-17T07:58:30Z"}
 ]
