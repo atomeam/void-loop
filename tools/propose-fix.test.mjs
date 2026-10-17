@@ -162,3 +162,13 @@ test('the workflow installs packages before its checks (the Claude brain test im
   const wf = (await import('node:fs')).readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   assert.ok(wf.indexOf('npm ci --no-audit') > 0 && wf.indexOf('npm ci --no-audit') < wf.indexOf('node --test tools/propose-fix.test.mjs'));
 });
+
+test('a missed ask the router says a skill should have caught is a propose-fix job (lane), one with no skill near is a builder\'s (asked by Void)', () => {
+  const q = { items: [
+    { id: 'm1', at: '2026-10-16T09:00:00Z', target: 'miss:cab-to-oakland', state: 'queued', ask: 'learn to handle "cab to oakland"', note: 'asked 3× (1 phrasing), last 2026-10-15; router skill:rides 0.71; lane: propose-fix; from the miss board' },
+    { id: 'm2', at: '2026-10-16T08:00:00Z', target: 'miss:sunset-on-mars', state: 'queued', ask: 'learn to handle "sunset on mars"', note: 'asked 3× (1 phrasing), last 2026-10-15; router simple 0.30; lane: new skill; from the miss board' },
+  ] };
+  assert.deepEqual(jobAsk(q.items[0]), { ask: 'cab to oakland', skill: 'rides', want: 'skill:rides', mode: 'learn' });
+  assert.equal(jobAsk(q.items[1]), null);
+  assert.equal(pickJob(q, '', () => true).id, 'm1'); assert.equal(pickJob({ items: [q.items[1]] }, '', () => true), null);
+});

@@ -1,0 +1,41 @@
+{
+ "name": "initiative",
+ "title": "Initiative",
+ "about": "The faster side acts first. Every round the sides are put in order by their total Speed, and the faster side also gets one more action.",
+ "rules": [
+  {
+   "id": "initiative-order",
+   "source": "initiative set",
+   "layer": 3,
+   "when": "roundStart",
+   "then": [
+    {
+     "do": "sortOrder",
+     "by": "speed"
+    }
+   ]
+  },
+  {
+   "id": "initiative-extra-action",
+   "source": "initiative set",
+   "layer": 2,
+   "when": "turnStart",
+   "if": [
+    {
+     "fact": "mySpeed",
+     "cmp": "gt",
+     "value": {
+      "fact": "foeSpeed"
+     }
+    }
+   ],
+   "then": [
+    {
+     "do": "modify",
+     "stat": "actions",
+     "add": 1
+    }
+   ]
+  }
+ ]
+}

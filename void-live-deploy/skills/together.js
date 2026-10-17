@@ -8,6 +8,8 @@
  * walk to each other and do the kind's own move for a few seconds (skills/figures3d.js meet).
  */
 import { fallbackScript } from './scripts.js';
+import { append } from './notepad.js';
+import { togetherLine } from '../lib/bridges.js';
 
 export const KINDS = ['trade', 'spar', 'inspect', 'argue'];
 
@@ -77,6 +79,7 @@ async function run(text, api) {
   if (figs.length < 2) { api.say(figs.length ? 'one figure has no one to be with yet: summon another, "bring a dog"' : 'summon two figures first: "summon a zombie", then "bring a dog"'); return 'together'; }
   const [a, b] = figs.slice(-2); // the two that came last
   const c = choose(a, b);
+  if (c) append(api.stage, togetherLine(c)); // their argument is also written down (asked by Void, 2026-10-16: figures together -> the notepad)
   api.say(c ? c.why : 'the ' + nameOf(a) + ' and the ' + nameOf(b) + ' have nothing the other wants, so each keeps to itself');
   // and they act it out on the stage: walk to each other, then the kind's own move (skills/figures3d.js meet; no 3D, no harm)
   if (c && typeof document !== 'undefined') import('./figures3d.js').then((m) => m.meet && m.meet(a.id, b.id, c.kind)).catch(() => {});

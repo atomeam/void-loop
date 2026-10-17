@@ -52,6 +52,7 @@ for (const [name, file] of [
   ['rebuild-map', 'rebuild-map.test.mjs'],
   ['record', 'record.test.mjs'],
   ['hero-view', 'hero-view.test.mjs'],
+  ['rts', 'rts.test.mjs'],
   ['routed', 'routed.test.mjs'],
   ['better', 'better.test.mjs'],
   ['youtube', 'youtube.test.mjs'],
@@ -127,6 +128,8 @@ for (const [name, file] of [
   ['poker', 'poker.test.mjs'],
   ['fireworks', 'fireworks.test.mjs'],
   ['connect4', 'connect4.test.mjs'],
+  ['duel-rules', 'duel-rules.test.mjs'],
+  ['rules-engine', 'rules-engine.test.mjs'],
   ['arcade', 'arcade.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
@@ -204,6 +207,11 @@ for (const [name, file] of [
   ['extension', 'test_extension.mjs'],
   ['placement', 'placement.test.mjs'],
   ['skills-index', 'skills-index.test.mjs'],
+  ['moved-check', 'moved-check.test.mjs'],
+  ['inbox-health', 'inbox-health.test.mjs'],
+  ['skill-use', 'skill-use.test.mjs'],
+  ['fringe-novelty', 'fringe-novelty.test.mjs'],
+  ['skills-unlisted', 'skills-unlisted.test.mjs'],
   ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
@@ -268,6 +276,8 @@ for (const [name, file] of [
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
 { const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
 // the dependency map (skills/deps.json, tools/deps.mjs; asked by Void) is read off the import lines and kept current like families.json
+// a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Void)
+{ const r = run([resolve(here, 'moved-check.mjs')]); results.push(['moved-check', r.ok, r.out[r.out.length - 1] || '']); }
 { const r = run([resolve(here, 'deps.mjs'), '--check']); results.push(['deps-json', r.ok, r.out[r.out.length - 1] || '']); }
 // the book (skills/guide.json) names every skill, game and miniature on one page each; stale or a skill on no page fails (tools/guide.mjs)
 { const r = run([resolve(here, 'guide.mjs'), '--check']); results.push(['guide-json', r.ok, r.out[r.out.length - 1] || '']); }

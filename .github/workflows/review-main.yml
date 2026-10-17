@@ -36,7 +36,7 @@ jobs:
         with:
           node-version: 22
       - name: Checks
-        run: node --test tools/review-main.test.mjs
+        run: node --test tools/review-main.test.mjs tools/fringe-novelty.test.mjs
       - name: Review the skills on main, queue the first new finding
         shell: bash
         env:
@@ -50,3 +50,13 @@ jobs:
           node tools/review-main.mjs $DRY > review.txt || { cat review.txt; exit 1; }
           cat review.txt
           sed -n '/^### Void reviewed/,$p' review.txt >> "$GITHUB_STEP_SUMMARY" || true
+      # a behavior just logged in the fringe ledger that no skill's pattern holds becomes one `novelty:<family>-<run>` job
+      # (tools/fringe-novelty.mjs; asked by Void: "a 'novelty score' ... triggers a growth inbox proposal")
+      - name: Score the fringe ledger's newest behaviors, queue a novel one
+        shell: bash
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+          DRY: ${{ inputs.dry && '--dry' || '' }}
+        run: |
+          if [ -z "$VOID_OWNER_TOKEN" ] && [ -z "$DRY" ]; then exit 0; fi
+          node tools/fringe-novelty.mjs $DRY | tee -a "$GITHUB_STEP_SUMMARY"

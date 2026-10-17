@@ -55,7 +55,9 @@ export function makeBrain(spec = {}, rng = Math.random) {
   return { id: spec.id || 'fig_' + Math.random().toString(36).slice(2, 8), x: spec.x ?? 200, y: spec.y ?? 200, vx: 0, vy: 0,
     tx: spec.x ?? 200, ty: spec.y ?? 200, mode: 'idle', modeT: 0.6 + rng() * 1.2, act: 'look', yaw: 0, lookX: 0, lookY: 0,
     blinkT: 0, nextBlink: 1.5 + rng() * 3, bob: rng() * 6.28, hop: 0, spin: 0, noticed: false, wave: 0, slide: 0, t: 0,
-    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1 }; // pace: this individual's walking speed
+    script, body, react: null, reactId: null, reactT: 0, chasedOff: false, pace: +spec.pace || 1, // pace: this individual's walking speed
+    // the RTS world (lib/rts.js): a node's loads left and what it yields; a villager's load on its back
+    left: spec.res && Number.isFinite(+spec.res.left) ? Math.max(0, Math.floor(+spec.res.left)) : null, res: (spec.res && spec.res.kind) || null, carry: typeof spec.carry === 'string' ? spec.carry : null, delivered: 0 };
 }
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 export function insideAny(x, y, rects, pad = 0) {
@@ -136,13 +138,26 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         }
       }
     }
+    // the RTS world (lib/rts.js): a villager with a load on its back carries it to the camp before anything else
+    if (f.carry && world.camp && f.mode !== 'deliver' && !f.together) { f.mode = 'deliver'; f.modeT = 60; f.react = null; f.reactId = null; }
     // Next #20: react to a nearby figure when the script says so (cursor notice still wins above).
-    const near = f.together ? null : pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
+    const near = f.together || f.mode === 'deliver' ? null : pickNearbyReaction(f, world.others || [], NOTICE * 1.15);
     if (near && (!f.react || f.reactId !== near.other.id || f.react !== near.react)) {
       f.react = near.react; f.reactId = near.other.id; f.reactT = 2.4 + rng() * 1.6;
       if (near.react === 'greet' || near.react === 'argue') { f.mode = near.react; f.hop = 1; f.wave = 1; f.act = 'wave'; }
-      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat') {
+      else if (near.react === 'chase' || near.react === 'follow' || near.react === 'flee' || near.react === 'team' || near.react === 'eat' || near.react === 'gather') {
         f.mode = near.react; f.modeT = 3;
+      }
+    }
+    if (f.mode === 'deliver') { // walk the load to the camp; there it goes into the stock (skills/rts.js hears void:rts-deliver)
+      const c = world.camp;
+      if (!c || !f.carry) { f.mode = 'idle'; f.modeT = 0.6; }
+      else {
+        const dx0 = c.x - f.x, dy0 = c.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
+        if (dist < R * 1.8) {
+          f.delivered = (f.delivered || 0) + 1; f.lastDelivered = f.carry; f.carry = null; f.mode = 'idle'; f.modeT = 0.8; f.hop = 1; f.act = 'look';
+          if (world.onDeliver) world.onDeliver(f, f.lastDelivered);
+        } else { f.tx = c.x; f.ty = c.y; f.vx = dx0 / dist * SPEED; f.vy = dy0 / dist * SPEED; wantYaw = clamp(dx0 / 180, -0.7, 0.7); }
       }
     }
     if (f.react && f.reactT > 0) f.reactT -= dt;
@@ -155,16 +170,16 @@ export function stepFigure(f, dt, world, rng = Math.random) {
         f.vx *= Math.pow(0.05, dt); f.vy *= Math.pow(0.05, dt);
         if (f.act === 'wave') f.wave = Math.max(f.wave, 0.6);
       }
-    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat') {
+    } else if (f.mode === 'chase' || f.mode === 'follow' || f.mode === 'flee' || f.mode === 'team' || f.mode === 'eat' || f.mode === 'gather') {
       const o = (world.others || []).find((x) => x && x.id === f.reactId && !x.chasedOff && !x.eaten);
-      if (f.mode === 'eat' && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see
+      if ((f.mode === 'eat' || f.mode === 'gather') && o) f.reactT = Math.max(f.reactT, 0.5); // a hunter does not give up on food it can see; nor a villager on work
       if (!o || f.reactT <= 0) { f.mode = 'idle'; f.modeT = 0.8 + rng() * 1.2; f.react = null; f.reactId = null; }
       else {
         const dx0 = o.x - f.x, dy0 = o.y - f.y, dist = Math.hypot(dx0, dy0) || 1;
         let tx = o.x, ty = o.y, spd = SPEED;
         if (f.mode === 'flee') { tx = f.x - dx0; ty = f.y - dy0; spd = SPEED * 1.25; }
         else if (f.mode === 'chase') { spd = SPEED * 1.45; }
-        else if (f.mode === 'eat') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food
+        else if (f.mode === 'eat' || f.mode === 'gather') { spd = SPEED * 1.15; } // a steady, single-minded walk to the food, or the work
         else if (f.mode === 'team') { // stick near, not on top
           if (dist < R * 2.2) { tx = f.x; ty = f.y; }
           else { tx = o.x - (dx0 / dist) * R * 2; ty = o.y - (dy0 / dist) * R * 2; }
@@ -175,6 +190,11 @@ export function stepFigure(f, dt, world, rng = Math.random) {
           o.chasedOff = true; f.mode = 'idle'; f.modeT = 1.2; f.react = null; f.reactId = null; f.hop = 1; f.wave = 1;
         } else if (f.mode === 'eat' && dist < R * 1.3) { // reached the food: eat it (it shrinks away where it lies)
           o.eaten = true; o.chasedOff = true; f.ate = (f.ate || 0) + 1; f.mode = 'idle'; f.modeT = 1.6; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
+        } else if (f.mode === 'gather' && dist < R * 1.6) { // reached the node: one load on the back (lib/rts.js); an empty node is gone
+          if (o.left == null) o.left = 8; // a node built before its loads were known (an older saved tree): a full one
+          o.left -= 1; f.carry = o.res || 'wood'; f.gathered = (f.gathered || 0) + 1;
+          if (o.left <= 0) { o.eaten = true; o.chasedOff = true; }
+          f.mode = 'idle'; f.modeT = 0.4; f.react = null; f.reactId = null; f.hop = 1; f.act = 'look';
         } else {
           f.tx = tx; f.ty = ty;
           const gx = f.tx - f.x, gy = f.ty - f.y, gd = Math.hypot(gx, gy) || 1;
@@ -259,7 +279,14 @@ function worldNow() {
   }
   const st = document.getElementById('stage'), sr = st ? st.getBoundingClientRect() : { bottom: innerHeight - 72 };
   const m = R + 16;
-  return { bounds: { l: m, t: R * 2.2, r: Math.max(m + 1, innerWidth - m), b: Math.max(R * 2.2 + 1, sr.bottom - m - 10) }, rects: ui.rects };
+  // a grounded scene (the RTS world: a backdrop, a world or a camp; skills/rts.js sets v-grounded): the figures keep to the ground band, the
+  // lower part of the stage, like units on a map; the camp is where a carried load goes
+  const grounded = document.documentElement.classList.contains('v-grounded'), bottom = Math.max(R * 2.2 + 1, sr.bottom - m - 10);
+  const top = grounded ? Math.max(R * 2.2, Math.min(bottom - R * 3, sr.bottom * 0.55)) : R * 2.2;
+  const campEl = grounded ? document.querySelector('#stage .thing.camp') : null, cr = campEl && campEl.getBoundingClientRect();
+  const camp = cr && cr.width ? { x: cr.left + cr.width / 2, y: cr.top + cr.height / 2, id: campEl.dataset.id } : null;
+  return { bounds: { l: m, t: top, r: Math.max(m + 1, innerWidth - m), b: bottom }, rects: ui.rects.filter((r) => !(camp && r.l <= camp.x && r.r >= camp.x && r.t <= camp.y && r.b >= camp.y)), camp,
+    onDeliver: (f, res) => { try { document.dispatchEvent(new CustomEvent('void:rts-deliver', { detail: { id: f.id, res, camp: camp && camp.id } })); } catch (_) {} } };
 }
 // screen px -> world units (world z = 0 plane maps 1:1 to CSS px at zoom 1; y up)
 const toWorld = (x, y) => ({ x: x - innerWidth / 2, y: innerHeight / 2 - y });
@@ -321,7 +348,7 @@ export function mountStage3D() {
 
 function debugState() {
   return { mounted: !!stage, canvas: !!document.getElementById('void-3d'), animating: !!(stage && stage.raf), still: motionStill(), zoom: ui.zoom, zoomTo: ui.zoomTo,
-    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, together: f.brain.together ? f.brain.together.kind + ' ' + f.brain.together.t.toFixed(1) : null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
+    figures: [...figures.values()].filter((f) => !f.leaving).map((f) => ({ id: f.brain.id, carry: f.brain.carry || null, left: f.brain.left ?? null, delivered: f.brain.delivered || 0, body: f.spec.body || 'sprite', prop: f.spec.prop || null, line: f.spec.line || null, script: f.spec.script || f.brain.script || null, together: f.brain.together ? f.brain.together.kind + ' ' + f.brain.together.t.toFixed(1) : null, x: Math.round(f.brain.x), y: Math.round(f.brain.y), mode: f.brain.mode, act: f.brain.act, react: f.brain.react || null, blink: f.brain.blinkT > 0, color: f.spec.color || null, kindOf: f.spec.kindOf || null, detail: f.spec.detail | 0, tris: trisOf(f), seed: f.spec.seed ?? null, nature: f.nature || null, climate: f.climate || null, held: !!f.brain.held, flying: !!f.toss })), grab: ui.grab ? { id: ui.grab.f.brain.id, moved: ui.grab.moved } : null };
 }
 
 // --- the void sprite: a soft, glossy little blob with big shiny eyes, rosy cheeks, a glowing antenna bulb and a wispy tail ---
@@ -958,7 +985,7 @@ export function meet(idA, idB, kind, secs) {
   return true;
 }
 /** Where every figure is and the live conditions it has ({ id: { x, y, nature, adv } }), so the page can keep them for the next visit (and advance() can carry on from there). */
-export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null }; return out; }
+export function world() { const out = {}; for (const [id, f] of figures) if (!f.leaving) out[id] = { x: Math.round(f.brain.x), y: Math.round(f.brain.y), nature: f.nature ? { ...f.nature } : null, adv: f.advSeen || null, left: f.brain.left ?? null, carry: f.brain.carry || null }; return out; }
 /** Write a world snapshot onto the stage things ({ id: thing }): each figure's own place (`at`) and live conditions. A thing advance() has just moved
  *  (its `adv` stamp) keeps advance's place until the 3D layer has taken it (w.adv matches). Returns how many places were written. */
 export function foldWorld(things, snap) {
@@ -968,6 +995,8 @@ export function foldWorld(things, snap) {
     if (t.adv && w.adv !== t.adv) continue;
     if (Number.isFinite(w.x) && Number.isFinite(w.y)) { t.at = { x: w.x, y: w.y }; n += 1; }
     if (w.nature) t.nature = w.nature;
+    if (w.left != null && t.res) t.res = { ...t.res, left: w.left }; // a node's loads left (lib/rts.js)
+    if ('carry' in w) { if (w.carry) t.carry = w.carry; else delete t.carry; }
   }
   return n;
 }
@@ -1142,6 +1171,8 @@ function frame(ts) {
   for (const [id, f] of figures) {
     if (f.leaving && now - f.leaving > 300) { disposeFigure(f); figures.delete(id); continue; }
     if (f.brain.chasedOff && !f.leaving) { // Next #20: a chase that caught this figure sends them off
+      // eaten food and an emptied node leave the stage for good (they came back on the next render before: the page only deleted a thrown figure)
+      if (f.brain.eaten) { try { document.dispatchEvent(new CustomEvent('void:figure-thrown', { detail: { id } })); } catch (_) {} }
       if (still) { disposeFigure(f); figures.delete(id); continue; }
       f.leaving = now; f.brain.chasedOff = false;
     }
