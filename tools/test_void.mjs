@@ -3491,6 +3491,16 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
+  // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
+  if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
+    const C = await fresh(); await C.ask('what is a dragon', 900);
+    await C.p.waitForSelector('.vpage', { timeout: 8000 }).catch(() => {});
+    const out = await Promise.race([C.p.evaluate(() => new Promise((res) => { const el = document.querySelector('.vpage'); if (!el) return res(null); el._tail = '<a href="#">a product line</a>'; el.appendChild(document.createElement('span')); setTimeout(() => res([...el.children].map((c) => c.className)), 400); })), new Promise((res) => setTimeout(() => res('hung'), 8000))]);
+    const ok = Array.isArray(out) && out[out.length - 1] === 'src vtail' && out.indexOf('vc-arrows') > -1 && out.indexOf('vc-arrows') < out.indexOf('src vtail');
+    check('V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)', ok, JSON.stringify(out));
+    if (out === 'hung') { console.log('FAIL the page hangs'); process.exit(1); }
+    await C.ctx.close(); }
   // V01D merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so V01D can experiment
   // with card merges"): "merge a pizza and a black hole" makes a card showing both parents, the model's name for the pair, and numbers worked out from the
   // parents by fixed rules; with the route down the card is still made, named by the plain blend
