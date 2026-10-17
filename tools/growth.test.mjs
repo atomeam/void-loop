@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates, unstableFamilies, heatHtml } from '../void-live-deploy/skills/growth.js';
+import { growthOf, ordered, summary, growthHtml, loadLedger, suite, testCandidates, unstableFamilies, heatHtml, stabilitySeries, sparkSvg, stabilityHtml, DEGRADE } from '../void-live-deploy/skills/growth.js';
 import { entryProblem, ledgerProblems, appendTo, LEDGER } from './grow.mjs';
 
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -104,4 +104,17 @@ test('the Site Test heat map ranks families least stable first: failing skills, 
   assert.equal(r[2].heat, 0); assert.ok(r[0].heat > r[1].heat);
   const esc = (s) => String(s).replace(/</g, '&lt;'), html = heatHtml(esc, [{ name: '<b>x', n: 2, failing: 1, unsure: 0, heat: 1 }]);
   assert.match(html, /data-family="&lt;b>x"/); assert.match(html, /1 failing · 0 of 2 unsure/); assert.equal(heatHtml(esc, []), '');
+});
+
+test('the stability trend: a point a day per family from void.better.json, today from families.json lowered by recent failures on main (asked by Void)', () => {
+  const now = Date.parse('2026-10-17T20:00:00Z');
+  const fam = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'timer', tier: 'proven' }, { name: 'clock', tier: 'proven' }] }, { id: 'words', name: 'Words <b>', skills: [{ name: 'define', tier: 'proven' }] }] };
+  const rows = [{ at: '2026-10-15T09:00:00Z', families: [{ id: 'time', health: 70 }] }, { at: '2026-10-16T09:00:00Z', families: [{ id: 'time', health: 60 }, { id: 'words', health: 90 }] }, { at: '2026-10-16T18:00:00Z', families: [{ id: 'time', health: 80 }] }, { at: '2026-10-17T09:00:00Z', families: [{ id: 'time', health: 1 }] }];
+  const a = { recent: [{ at: '2026-10-17T19:00:00Z', checks: [{ family: 'time' }, { family: 'time' }] }, { at: '2026-10-10T00:00:00Z', checks: [{ family: 'words' }] }] };
+  const s = stabilitySeries(rows, fam, a, now), time = s.find((x) => x.id === 'time'), words = s.find((x) => x.id === 'words');
+  assert.deepEqual(time.points.map((p) => p.day + ':' + p.health), ['2026-10-15:70', '2026-10-16:80', '2026-10-17:' + (100 - 2 * DEGRADE)], 'a day keeps its last row; today comes from families.json, two recent failures off');
+  assert.equal(time.drop, 2 * DEGRADE); assert.equal(words.drop, 0, 'a failure a week old costs nothing'); assert.equal(words.points.length, 2);
+  assert.equal(stabilitySeries(rows, fam, { recent: [{ at: '2026-10-17T19:00:00Z', checks: Array(20).fill({ family: 'time' }) }] }, now).find((x) => x.id === 'time').drop, 30, 'capped');
+  assert.match(sparkSvg(time.points), /<polyline points="3\.0,[\d.]+ 36\.0,[\d.]+ 69\.0,[\d.]+"/); assert.equal(sparkSvg([]), '');
+  const html = stabilityHtml((x) => String(x).replace(/</g, '&lt;'), s); assert.match(html, /Words &lt;b>/); assert.match(html, /−10 from 2 recent failures/); assert.match(html, /\(\+10\)/);
 });
