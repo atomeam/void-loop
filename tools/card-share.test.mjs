@@ -30,3 +30,11 @@ test('the code line is short; the whole copied text restores the full body, a ba
   const whole = parse(text); assert.equal(whole.t, d.t); assert.ok(whole.b.length > 2000, 'a paste of the whole text keeps the full body'); assert.equal(whole.src.length, 3);
   const bare = parse(code); assert.equal(bare.t, d.t); assert.ok(bare.b.length <= 200 && bare.b.length > 20); assert.ok(bare.src.length <= 2);
 });
+
+test('version history: a copy of a pasted card carries a short iteration number, the first copy carries none', () => {
+  assert.equal(parse(codeOf(card)).n, undefined); assert.ok(!shareText(card).includes(' · v'));
+  const two = { ...card, n: 2 }, t = shareText(two);
+  assert.match(t, /a-to-mind\.com · v2\n/); assert.equal(parse(t).n, 2); assert.equal(parse(codeOf(two)).n, 2); assert.equal(parse(t).b, card.b);
+  assert.ok(codeOf(two).length - codeOf(card).length <= 8, 'the tag adds a few characters');
+  assert.equal(dataOf({ ...card, n: 'x' }).n, undefined); assert.equal(dataOf({ ...card, n: 1 }).n, undefined); assert.equal(dataOf({ ...card, n: 500 }).n, undefined);
+});
