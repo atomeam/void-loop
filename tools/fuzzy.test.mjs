@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
-import { distance, words, allowed, vocabulary, nearest, correct, confirm, sameStem, COMMON, PROTECT_AFTER } from '../void-live-deploy/lib/fuzzy.js';
+import { distance, words, allowed, vocabulary, nearest, correct, confirm, sameStem, COMMON, PROTECT_AFTER , sameLetters } from '../void-live-deploy/lib/fuzzy.js';
 
 // edit distance: a transposition is one edit, a far word stops early at max + 1
 assert.equal(distance('weather', 'weather'), 0);
@@ -107,3 +107,11 @@ for (const [typed, want, owner] of [['tranlsate hello to spanish', 'translate he
   assert.equal(confirm(c, sk.name), true, typed + ' confirmed by ' + owner);
 }
 console.log('fuzzy: ok');
+
+// a tie goes to the word with the same letters swapped: "moive" is movie, not move (site-test issue #802)
+{
+  const v = vocabulary([{ name: 'movie', examples: ['movie metadata for the matrix'] }, { name: 'drag', examples: ['move the clock'] }]);
+  assert.deepEqual(nearest('moive', v), { to: 'movie', d: 1 });
+  assert.equal(correct('moive metadata for the matrix', v).text, 'movie metadata for the matrix');
+  assert.equal(sameLetters('moive', 'movie'), true); assert.equal(sameLetters('moive', 'move'), false);
+}

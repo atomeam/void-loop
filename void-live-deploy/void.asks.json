@@ -1159,6 +1159,136 @@
       "why": "built: V01D reads its own motto, VoidQuest, games and miniatures aloud as a card (skills/know.js, ee8b76c)"
     },
     {
+      "words": "Create the 'Family Health' dashboard card using the success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Create the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family distribution.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using success_rate and last_tested data so I can visually monitor my own stability.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'Family Health' dashboard card that visualizes success_rate and last_tested data across all 10 families.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family breakdown.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitutions.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Family Health' dashboard card to visualize the success_rate and last_tested data across all 10 families.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Create the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Link the daily growth score directly to the 'Family Health' dashboard so I can see which specific families are driving my score up or dragging it down.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: the family-health card (skills/family-health.js): every family's evidence ratings, failing skills and what to check next (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can see my own vital signs.",
+      "ledgerAt": "2026-10-16T05:10:08Z",
+      "why": "built: each skill in families.json carries last_tested and success_rate from its evidence, shown on the family-health card (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family status.",
+      "ledgerAt": "2026-10-15T18:17:06Z",
+      "why": "built: MCP skill_* tools for the proven skills that answer in words, plus skill_health with every family, its skills and their ratings (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations.",
+      "ledgerAt": "2026-10-16T05:15:52Z",
+      "why": "built: cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust (tools/asks-link.json)"
+    },
+    {
+      "words": "Connect the memory card session persistence to a centralized 'state' skill.",
+      "ledgerAt": "2026-10-16T23:31:44Z",
+      "why": "built: V01D can read its own motto, VoidQuest, games and miniatures aloud as a card, lists what it keeps on this device in one state skill (the memory card reads its session from it), and its arcade ladder wins raise its rating (linked by tools/asks-link.mjs, shared words: memory, card, session, state, skill)"
+    },
+    {
+      "words": "Create a 'pulse' visualizer card that shows the live rhythm of added living arrows on the stage.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed st (linked by tools/asks-link.mjs, shared words: pulse, card, rhythm, liv, arrow, stage)"
+    },
+    {
+      "words": "Create a functional 'Bench' icon on the stage that counts active false alarms.",
+      "ledgerAt": "2026-10-17T01:26:56Z",
+      "why": "built: the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed st (linked by tools/asks-link.mjs, shared words: bench, icon, stage, count, false, alarm)"
+    },
+    {
+      "words": "Integrate the 'success_rate' metadata update into the practice timer so every session logs whether the skill execution actually met the goal.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-c (linked by tools/asks-link.mjs, shared words: integrate, succes, rate, practice, tim, session, log, wheth, skill, met, goal)"
+    },
+    {
+      "words": "Map the 'Rust unwrap' example sentences to a new 'technical-context' skill that triggers a visual 'caution' or 'risk' shape on the stage.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-c (linked by tools/asks-link.mjs, shared words: rust, unwrap, technical, context, skill, caution, risk, shape, stage)"
+    },
+    {
+      "words": "Write the actual text for the VoidQuest and the motto in the canon v3.",
+      "ledgerAt": "2026-10-17T01:27:35Z",
+      "why": "built: already built, recorded for V01D's asks (asked by Void): the motto and VoidQuest text are in its canon since 2026-10-11 and 2026-10-15 (domains/void.canon.md, now version 6); the Game Strength marks (proven, checked, tes (linked by tools/asks-link.mjs, shared words: text, voidquest, motto, canon)"
+    },
+    {
+      "words": "Add a 'proven' badge or glow effect to any skill page in the V01D Book that has a success_rate > 0.9 in families.json.",
+      "ledgerAt": "2026-10-17T08:19:24Z",
+      "why": "built: already built, recorded for V01D's asks (asked by Void): Family Health card with success_rate and last_tested (skills/family-health.js, ledger 'family health' entries); Skill Discovery read-only tool skill_discovery over (linked by tools/asks-link.mjs, shared words: proven, skill, v01d, book, succes, rate, family, json)"
+    },
+    {
+      "words": "Integrate the 'success_rate' metadata update directly into the practice timer flow so that Clef's 'yes/no' decision is weighed against the execution quality.",
+      "ledgerAt": "2026-10-16T23:51:30Z",
+      "why": "built: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no"
+    },
+    {
+      "words": "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job.",
+      "ledgerAt": "2026-10-16T23:08:17Z",
+      "why": "built: missed asks a skill should have caught become propose-fix jobs (lib/learn.js laneOf)"
+    },
+    {
+      "words": "Implement the visual rarity tiering system (Mythic for Proven, Rare for Checked) on all stage cards.",
+      "ledgerAt": "2026-10-16T19:10:15Z",
+      "why": "built: every page is a V01D card whose rarity is the skill's evidence rating, proven Mythic, checked Rare (lib/card-frame.js RARITY)"
+    },
+    {
+      "words": "Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations.",
+      "ledgerAt": "2026-10-16T23:04:04Z",
+      "why": "built: forge iterations: every make kept with its recipe id, shown by 'forge iterations' (skills/forge.js)"
+    },
+    {
       "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity for evidence ratings.",
       "ledgerAt": "2026-10-17T08:27:38Z",
       "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
