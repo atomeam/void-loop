@@ -2245,6 +2245,34 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  // frontier #31 (owner, 2026-10-16): the stage is an RTS. A camp grounds the scene; a tree is 8 wood; a villager gathers it by itself and
+  // carries each load to the camp, whose label is the resource bar; with the wood in, "build a hut" pays and raises the forge hut
+  if (want("the stage is an RTS: a camp grounds the figures, a tree is wood, a villager gathers it to the camp, a hut is built from it")) { const P = await fresh();
+    await P.ask('start a camp', 700);
+    const camp0 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    const grounded = await P.p.evaluate(() => document.documentElement.classList.contains('v-grounded'));
+    await P.ask('add a tree', 900);
+    const tree = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'tree');
+    await P.ask('summon a villager', 900);
+    const villager = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'villager');
+    // the villager finds the tree, takes a load and walks it to the camp: the bar counts it
+    const bar = await until(async () => { const t = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => ''); return /wood [1-9]/.test(t) ? t : ''; }, 45000);
+    const treeLeft = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const t = s && s.figures.find((f) => f.kindOf === 'tree'); return t ? t.left : null; });
+    const onGround = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const st = document.getElementById('stage').getBoundingClientRect(); return s ? s.figures.every((f) => f.y >= st.bottom * 0.5 - 60) : null; });
+    // a hut needs 6 wood: short, it says what is missing; with the wood put in the camp's stock, it pays and the forge hut stands by the camp
+    await P.ask('build a hut', 500); const short = await P.whisper();
+    // eight more loads arrive (the engine's own event, as a villager reaching the camp fires it): now the camp can pay
+    await P.p.evaluate(() => { for (let i = 0; i < 8; i++) document.dispatchEvent(new CustomEvent('void:rts-deliver', { detail: { res: 'wood' } })); });
+    await P.p.waitForTimeout(600);
+    const wood9 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    await P.ask('build a hut', 700); const raised = await P.whisper();
+    const after = await P.state(); const hut = after.find((t) => t.kind === 'forge' && t.key === 'hut'), campAfter = after.find((t) => t.kind === 'camp');
+    await P.ask('how are we doing', 500); const rep = await P.whisper();
+    check('the stage is an RTS: "start a camp" puts up the camp (wood 0) and grounds the scene; "add a tree" is 8 wood; a summoned villager gathers from it by itself and the camp\'s bar counts the wood as the tree\'s loads fall, every figure on the ground band; "build a hut" short of wood says what is missing, with 9 wood it pays 6 and a forge hut stands by the camp, and "how are we doing" reports the stock',
+      /^wood 0 · stone 0 · food 0/.test(camp0) && grounded && !!tree && tree.res && tree.res.kind === 'wood' && tree.res.left === 8 && !!villager && /wood [1-9]/.test(bar) && treeLeft !== null && treeLeft < 8 && onGround === true
+        && /a hut needs 6 wood: \d wood so far; the villagers are on it/.test(short) && /wood 9|wood 1\d/.test(wood9) && /the villagers raised a hut \(6 wood\)/.test(raised) && !!hut && campAfter && campAfter.stock.wood >= 3 && /^the camp has \d+ wood/.test(rep) && /built: hut/.test(rep) && !P.errors.length,
+      JSON.stringify({ camp0, grounded, tree: tree && tree.res, villager: !!villager, bar, treeLeft, onGround, short, wood9, raised, hut: !!hut, stock: campAfter && campAfter.stock, rep, errors: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
   if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
     await P.ask('what are they doing', 500); const none = await P.whisper();

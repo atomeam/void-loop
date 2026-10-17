@@ -117,7 +117,7 @@ test('forge: the second four read as themselves (teapot spout and handle, house 
   const T = F.build('tree').positions; let wide = 0, trunk = 0;
   for (let i = 0; i < T.length; i += 3) { const r = Math.hypot(T[i], T[i + 2]); if (T[i + 1] > 90 && r > 40) wide++; if (T[i + 1] > 20 && T[i + 1] < 45 && r < 13) trunk++; }
   assert.ok(wide > 100 && trunk > 50, 'a wide canopy over a narrow trunk (' + wide + ', ' + trunk + ')');
-  assert.equal(Object.keys(F.THINGS).length, 11, 'ten things the number #14 asks for, and the person (a figure as a recipe)');
+  assert.equal(Object.keys(F.THINGS).length, 16, 'the ten things #14 asks for, the person (a figure as a recipe), and the five a camp can raise (hut, wall, well, bridge, tower; lib/rts.js BUILDS)');
 });
 
 // Void's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
