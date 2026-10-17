@@ -992,6 +992,13 @@
      "last_tested_by": "its tests"
     },
     {
+     "name": "pick-for-me",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "video",
      "tier": "tested",
      "why": "a self-test",

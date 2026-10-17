@@ -2189,6 +2189,7 @@
    "skills": [
     "digest",
     "movie",
+    "pick-for-me",
     "video",
     "video-play",
     "define",
@@ -2202,7 +2203,6 @@
     "swaps",
     "film-metadata",
     "media-pick",
-    "pick-for-me",
     "book",
     "show",
     "sport",
@@ -2247,6 +2247,21 @@
   {
    "kind": "skill",
    "chapter": "words",
+   "name": "pick-for-me",
+   "title": "Pick for me",
+   "line": "\"pick for me\", \"surprise me\"",
+   "examples": [
+    "pick for me",
+    "surprise me",
+    "pick something cozy"
+   ],
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
+   "n": 118
+  },
+  {
+   "kind": "skill",
+   "chapter": "words",
    "name": "video",
    "title": "Video",
    "line": "V01D plays any video from YouTube, Rumble, Vimeo, Dailymotion, the Internet Archive, PeerTube, Odysee and Twitch right on the stage",
@@ -2257,7 +2272,7 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 118
+   "n": 119
   },
   {
    "kind": "skill",
@@ -2272,7 +2287,7 @@
    ],
    "tier": "experiment",
    "why": "nothing checks it yet",
-   "n": 119
+   "n": 120
   },
   {
    "kind": "skill",
@@ -2289,7 +2304,7 @@
    "why": "a self-test, 41 real asks in the benchmark",
    "flavor": "41 who came with a need went away with an answer. The page is theirs. It has not failed a reader yet.",
    "glow": 100,
-   "n": 120
+   "n": 121
   },
   {
    "kind": "skill",
@@ -2304,7 +2319,7 @@
    ],
    "tier": "checked",
    "why": "a self-test, 2 browser-suite mentions",
-   "n": 121
+   "n": 122
   },
   {
    "kind": "skill",
@@ -2321,7 +2336,7 @@
    "why": "a self-test, 60 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 60 real askings. Ask, and see.",
    "glow": 100,
-   "n": 122
+   "n": 123
   },
   {
    "kind": "skill",
@@ -2337,7 +2352,7 @@
    "tier": "checked",
    "why": "1 browser-suite mention, 1 real ask in the benchmark",
    "glow": 100,
-   "n": 123
+   "n": 124
   },
   {
    "kind": "skill",
@@ -2354,7 +2369,7 @@
    "why": "3 browser-suite mentions, 33 real asks in the benchmark",
    "flavor": "Of the words and the world; set down here after it answered true 33 times. Say the words below and it answers.",
    "glow": 100,
-   "n": 124
+   "n": 125
   },
   {
    "kind": "skill",
@@ -2370,7 +2385,7 @@
    "tier": "tested",
    "why": "9 real asks in the benchmark",
    "glow": 100,
-   "n": 125
+   "n": 126
   },
   {
    "kind": "skill",
@@ -2386,7 +2401,7 @@
    "tier": "tested",
    "why": "9 real asks in the benchmark",
    "glow": 100,
-   "n": 126
+   "n": 127
   },
   {
    "kind": "skill",
@@ -2402,7 +2417,7 @@
    "tier": "tested",
    "why": "9 real asks in the benchmark",
    "glow": 100,
-   "n": 127
+   "n": 128
   },
   {
    "kind": "skill",
@@ -2419,7 +2434,7 @@
    "why": "a self-test, 1 browser-suite mention, 12 real asks in the benchmark",
    "flavor": "An old art of the words and the world, tested each day before the sun is up. It has not failed a reader yet.",
    "glow": 100,
-   "n": 128
+   "n": 129
   },
   {
    "kind": "skill",
@@ -2434,7 +2449,7 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 129
+   "n": 130
   },
   {
    "kind": "skill",
@@ -2449,21 +2464,6 @@
    ],
    "tier": "tested",
    "why": "a self-test",
-   "n": 130
-  },
-  {
-   "kind": "skill",
-   "chapter": "words",
-   "name": "pick-for-me",
-   "title": "Pick for me",
-   "line": "\"pick for me\", \"surprise me\"",
-   "examples": [
-    "pick for me",
-    "surprise me",
-    "pick something cozy"
-   ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
    "n": 131
   },
   {
@@ -4295,7 +4295,7 @@
     },
     {
      "name": "Define",
-     "page": 120
+     "page": 121
     },
     {
      "name": "Deps",
@@ -4359,7 +4359,7 @@
     },
     {
      "name": "Film metadata",
-     "page": 129
+     "page": 130
     },
     {
      "name": "Films",
@@ -4487,7 +4487,7 @@
     },
     {
      "name": "Joke",
-     "page": 126
+     "page": 127
     },
     {
      "name": "Kept",
@@ -4575,7 +4575,7 @@
    "entries": [
     {
      "name": "Media pick",
-     "page": 130
+     "page": 131
     },
     {
      "name": "Memory",
@@ -4627,7 +4627,7 @@
     },
     {
      "name": "News",
-     "page": 125
+     "page": 126
     },
     {
      "name": "Night sky",
@@ -4679,7 +4679,7 @@
     },
     {
      "name": "Pick for me",
-     "page": 131
+     "page": 118
     },
     {
      "name": "Piggybank (3D)",
@@ -4763,7 +4763,7 @@
     },
     {
      "name": "Recipe",
-     "page": 127
+     "page": 128
     },
     {
      "name": "Releasenotes",
@@ -4879,7 +4879,7 @@
    "entries": [
     {
      "name": "Spanish",
-     "page": 123
+     "page": 124
     },
     {
      "name": "Splat",
@@ -4919,7 +4919,7 @@
     },
     {
      "name": "Swaps",
-     "page": 128
+     "page": 129
     },
     {
      "name": "Swarm",
@@ -4939,7 +4939,7 @@
     },
     {
      "name": "Technical context",
-     "page": 121
+     "page": 122
     },
     {
      "name": "The Landlord’s Game",
@@ -4987,7 +4987,7 @@
     },
     {
      "name": "Translate",
-     "page": 124
+     "page": 125
     },
     {
      "name": "Trialwatch",
@@ -5015,11 +5015,11 @@
     },
     {
      "name": "Video",
-     "page": 118
+     "page": 119
     },
     {
      "name": "Video play",
-     "page": 119
+     "page": 120
     }
    ],
    "n": 240
@@ -5059,7 +5059,7 @@
     },
     {
      "name": "Words",
-     "page": 122
+     "page": 123
     },
     {
      "name": "Work",
@@ -5248,7 +5248,7 @@
   },
   {
    "name": "Define",
-   "page": 120
+   "page": 121
   },
   {
    "name": "Deps",
@@ -5312,7 +5312,7 @@
   },
   {
    "name": "Film metadata",
-   "page": 129
+   "page": 130
   },
   {
    "name": "Films",
@@ -5432,7 +5432,7 @@
   },
   {
    "name": "Joke",
-   "page": 126
+   "page": 127
   },
   {
    "name": "Kept",
@@ -5512,7 +5512,7 @@
   },
   {
    "name": "Media pick",
-   "page": 130
+   "page": 131
   },
   {
    "name": "Memory",
@@ -5564,7 +5564,7 @@
   },
   {
    "name": "News",
-   "page": 125
+   "page": 126
   },
   {
    "name": "Night sky",
@@ -5616,7 +5616,7 @@
   },
   {
    "name": "Pick for me",
-   "page": 131
+   "page": 118
   },
   {
    "name": "Piggybank (3D)",
@@ -5692,7 +5692,7 @@
   },
   {
    "name": "Recipe",
-   "page": 127
+   "page": 128
   },
   {
    "name": "Releasenotes",
@@ -5800,7 +5800,7 @@
   },
   {
    "name": "Spanish",
-   "page": 123
+   "page": 124
   },
   {
    "name": "Splat",
@@ -5840,7 +5840,7 @@
   },
   {
    "name": "Swaps",
-   "page": 128
+   "page": 129
   },
   {
    "name": "Swarm",
@@ -5860,7 +5860,7 @@
   },
   {
    "name": "Technical context",
-   "page": 121
+   "page": 122
   },
   {
    "name": "The Landlord’s Game",
@@ -5908,7 +5908,7 @@
   },
   {
    "name": "Translate",
-   "page": 124
+   "page": 125
   },
   {
    "name": "Trialwatch",
@@ -5936,11 +5936,11 @@
   },
   {
    "name": "Video",
-   "page": 118
+   "page": 119
   },
   {
    "name": "Video play",
-   "page": 119
+   "page": 120
   },
   {
    "name": "Void (3D)",
@@ -5972,7 +5972,7 @@
   },
   {
    "name": "Words",
-   "page": 122
+   "page": 123
   },
   {
    "name": "Work",
