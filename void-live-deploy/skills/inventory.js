@@ -84,6 +84,8 @@ export function inventoryOf(text) {
   if (!t) return null;
   if (/^(?:what\s+(?:can|could)\s+(?:you|i|void|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
     && !/^what\s+can\s+(?:you|i|void)\s+make$/i.test(t)) return { kind: 'printable' };
+  // the print ledger (asked by Void: a feedback loop between print-file and inventory): what has actually left for a printer
+  if (/^(?:what\s+(?:have\s+(?:i|we|you)\s+printed|(?:physical\s+)?(?:things|assets|objects)\s+(?:do\s+(?:i|we|you)\s+have|exist)|physical\s+assets\s+exist)|(?:show\s+(?:me\s+)?)?(?:my|the)\s+(?:print\s+ledger|printed\s+things|physical\s+inventory)|physical\s+inventory)$/i.test(t)) return { kind: 'printed' };
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
     const q = m[1].replace(/^(?:a|an|the)\s+/i, '').trim();
@@ -170,6 +172,12 @@ async function run(text, api) {
   const { showPage, esc, loopLog } = api;
   const hit = inventoryOf(text);
   if (!hit) return 'none';
+  if (hit.kind === 'printed') {
+    const P = await import('../lib/prints.js'), ls = P.storeOf();
+    showPage((page) => { page.innerHTML = P.printsHtml(esc, P.load(ls)); }); // void-review: ok: printsHtml escapes every value
+    if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: 'printed' });
+    return 'inventory';
+  }
   const p = hit.kind === 'printable' ? await printable() : null;
   const el = showPage((page) => { page.innerHTML = p ? printableHtml(esc, p) : pageHtml(esc, hit); });
   if (loopLog) loopLog({ domain: 'void.inventory', ask: text, score: 'pass', note: hit.kind === 'query' ? 'query:' + hit.q : hit.kind });
@@ -188,6 +196,8 @@ export default {
     'what can i reuse',
     'what can you print',
     'what can the forge make',
+    'what have i printed',
+    'what physical assets exist',
   ],
   nearMisses: [
     'build inventory',

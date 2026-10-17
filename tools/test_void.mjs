@@ -2140,11 +2140,26 @@ try {
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
-    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
+    check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the eleven recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
-        && forge.asks.length === 10 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
+        && forge.asks.length === 11 && forge.asks.includes('make me a vase') && /Nothing forged on this stage yet/.test(forge.text) && /Vase .* on the stage.*asked "make me a vase"/.test(again) && /1 on the stage now/.test(again)
         && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Void: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
       JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
+    await B.ctx.close(); }
+  // V01D's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
+  if (want("V01D's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
+    await B.ask('make me a person', 400); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'person'), 8000);
+    await B.ask('check it before printing', 300); await until(async () => /Geometry checked, not printed/.test(await B.whisper()), 8000).catch(() => {});
+    const checked = await B.whisper();
+    await B.ask('forge iterations', 300); await until(async () => /Forge iterations/.test(await B.page()), 5000);
+    const it = await B.p.$eval('.vpage.on', (e) => ({ n: e.querySelectorAll('[data-iteration]').length, text: e.textContent.replace(/\s+/g, ' ') }));
+    const dl = B.p.waitForEvent('download', { timeout: 15000 }).catch(() => null);
+    await B.ask('print it', 500); const file = await dl;
+    await B.ask('what have i printed', 400); await until(async () => /What I have printed/.test(await B.page()), 5000);
+    const printed = await B.p.$eval('.vpage.on', (e) => e.textContent.replace(/\s+/g, ' '));
+    check('V01D\'s forge asks: "make me a person" forges the figure; "check it before printing" checks it without a download; "forge iterations" keeps the make with its recipe id; after "print it" the inventory\'s "what have i printed" lists the Person file',
+      /Geometry checked, not printed/.test(checked) && it.n === 1 && /person · recipe [0-9a-f]{8}/.test(it.text) && !!file && /void-person-[0-9a-f]{8}\.stl/.test(file ? file.suggestedFilename() : '') && /1 file went to a printer/.test(printed) && /Person/.test(printed) && !B.errors.length,
+      JSON.stringify({ checked: checked.slice(-120), it, file: file && file.suggestedFilename(), printed: printed.slice(0, 160), errors: B.errors }));
     await B.ctx.close(); }
   if (want("the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) a")) { const A = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const recs = [
@@ -2240,6 +2255,34 @@ try {
     await back.reload(); await back.waitForTimeout(800);
     check('away: a reload a moment later says nothing', await back.evaluate(() => !window.__voidAway && !(document.getElementById('away-note') || {}).textContent), '');
     await W.ctx.close(); }
+  // frontier #31 (owner, 2026-10-16): the stage is an RTS. A camp grounds the scene; a tree is 8 wood; a villager gathers it by itself and
+  // carries each load to the camp, whose label is the resource bar; with the wood in, "build a hut" pays and raises the forge hut
+  if (want("the stage is an RTS: a camp grounds the figures, a tree is wood, a villager gathers it to the camp, a hut is built from it")) { const P = await fresh();
+    await P.ask('start a camp', 700);
+    const camp0 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    const grounded = await P.p.evaluate(() => document.documentElement.classList.contains('v-grounded'));
+    await P.ask('add a tree', 900);
+    const tree = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'tree');
+    await P.ask('summon a villager', 900);
+    const villager = (await P.state()).find((t) => t.kind === 'figure' && t.kindOf === 'villager');
+    // the villager finds the tree, takes a load and walks it to the camp: the bar counts it
+    const bar = await until(async () => { const t = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => ''); return /wood [1-9]/.test(t) ? t : ''; }, 45000);
+    const treeLeft = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const t = s && s.figures.find((f) => f.kindOf === 'tree'); return t ? t.left : null; });
+    const onGround = await P.p.evaluate(() => { const s = window.__void3d && window.__void3d.state(); const st = document.getElementById('stage').getBoundingClientRect(); return s ? s.figures.every((f) => f.y >= st.bottom * 0.5 - 60) : null; });
+    // a hut needs 6 wood: short, it says what is missing; with the wood put in the camp's stock, it pays and the forge hut stands by the camp
+    await P.ask('build a hut', 500); const short = await P.whisper();
+    // eight more loads arrive (the engine's own event, as a villager reaching the camp fires it): now the camp can pay
+    await P.p.evaluate(() => { for (let i = 0; i < 8; i++) document.dispatchEvent(new CustomEvent('void:rts-deliver', { detail: { res: 'wood' } })); });
+    await P.p.waitForTimeout(600);
+    const wood9 = await P.p.$eval('#stage .thing.camp .camp-label', (e) => e.textContent).catch(() => '');
+    await P.ask('build a hut', 700); const raised = await P.whisper();
+    const after = await P.state(); const hut = after.find((t) => t.kind === 'forge' && t.key === 'hut'), campAfter = after.find((t) => t.kind === 'camp');
+    await P.ask('how are we doing', 500); const rep = await P.whisper();
+    check('the stage is an RTS: "start a camp" puts up the camp (wood 0) and grounds the scene; "add a tree" is 8 wood; a summoned villager gathers from it by itself and the camp\'s bar counts the wood as the tree\'s loads fall, every figure on the ground band; "build a hut" short of wood says what is missing, with 9 wood it pays 6 and a forge hut stands by the camp, and "how are we doing" reports the stock',
+      /^wood 0 · stone 0 · food 0/.test(camp0) && grounded && !!tree && tree.res && tree.res.kind === 'wood' && tree.res.left === 8 && !!villager && /wood [1-9]/.test(bar) && treeLeft !== null && treeLeft < 8 && onGround === true
+        && /a hut needs 6 wood: \d wood so far; the villagers are on it/.test(short) && /wood 9|wood 1\d/.test(wood9) && /the villagers raised a hut \(6 wood\)/.test(raised) && !!hut && campAfter && campAfter.stock.wood >= 3 && /^the camp has \d+ wood/.test(rep) && /built: hut/.test(rep) && !P.errors.length,
+      JSON.stringify({ camp0, grounded, tree: tree && tree.res, villager: !!villager, bar, treeLeft, onGround, short, wood9, raised, hut: !!hut, stock: campAfter && campAfter.stock, rep, errors: P.errors }).slice(0, 900));
+    await P.ctx.close(); }
   // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
   if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
     await P.ask('what are they doing', 500); const none = await P.whisper();

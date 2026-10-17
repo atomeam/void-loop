@@ -26,6 +26,7 @@
   "convert~weather",
   "digest~video",
   "fireworks~video-play",
+  "forge~rts",
   "go~video-play",
   "growth~make",
   "home~room",
@@ -39,7 +40,6 @@
   "room~walls",
   "services~store",
   "spanish~translate",
-  "suntimes~worldtime",
   "tictactoe~video-play",
   "video~video-play"
  ]
