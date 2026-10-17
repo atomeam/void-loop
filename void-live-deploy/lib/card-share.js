@@ -62,13 +62,17 @@ export function textOf(n) {
 }
 /** textOf tidied: spaces collapsed inside a line, no empty lines but one between blocks that were apart. Pure. */
 export const tidy = (s) => String(s || '').split('\n').map((l) => l.replace(/[ \t\u00a0]+/g, ' ').trim()).filter(Boolean).join('\n');
-/** what a card on the page holds, from its elements (the frame's own chrome and buttons left out). */
-export function readCard(el) {
+/** a card's title and its whole body text, before any cap (the frame's own chrome and buttons left out). */
+function bodyOf(el) {
   const c = el.cloneNode(true);
   c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent').forEach((x) => x.remove());
   const h2 = c.querySelector('h2'), title = h2 ? h2.textContent : '';
   if (h2) h2.remove();
-  const body = Array.from(c.children).map((x) => tidy(textOf(x))).filter(Boolean).join('\n\n');
+  return { title, body: Array.from(c.children).map((x) => tidy(textOf(x))).filter(Boolean).join('\n\n') };
+}
+/** what a card on the page holds, from its elements (the frame's own chrome and buttons left out). */
+export function readCard(el) {
+  const { title, body } = bodyOf(el);
   const kind = (el.querySelector(':scope > .vc-type') || {}).textContent || '';
   const sources = [...el.querySelectorAll('.src a')].map((a) => ({ title: a.textContent.replace(/^\[\d+\]\s*/, ''), url: a.href }));
   const was = Math.floor(+(el.dataset && el.dataset.cardVersion)); // a card brought back from a paste is at version `was`; copying it again makes the next
@@ -88,9 +92,24 @@ export async function artPicture(el) {
   if (forged) { const src = forged.getAttribute('src') || ''; if (/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return src; const got = await photoData(forged.src || src); if (got) return got; }
   return photo ? photoData(photo.getAttribute('src')) : '';
 }
+/** the full-content badge (asked by Void: "a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete
+ *  data is preserved"): '' for a short card, 'whole text kept' up to BODY_MAX, and past it only what is true. Pure. */
+export function fullNote(n) {
+  const len = Math.max(0, Math.floor(+n) || 0);
+  return len <= 2400 ? '' : len <= BODY_MAX ? 'whole text kept' : 'first ' + BODY_MAX + ' of ' + len + ' characters kept';
+}
+/** puts, updates or removes the badge in a card's share bar from the card's text now (an answer can grow after its bar is built). */
+function fullMark(el, w) {
+  let raw = 0; try { raw = clip(bodyOf(el).body, 1e9).length; } catch (_) { return; }
+  const note = fullNote(raw); let chip = w.querySelector('.vc-full');
+  if (!note) { if (chip) chip.remove(); return; }
+  if (!chip) { chip = document.createElement('span'); chip.className = 'vc-full'; w.appendChild(chip); }
+  chip.textContent = note; chip.title = raw + ' characters: copy card, save card and save text ' + (raw > BODY_MAX ? 'keep the first ' + BODY_MAX : 'keep all of them'); chip.dataset.chars = String(raw);
+}
 /** the buttons on a card: copy card (text and picture), save card (the picture), save text. Idempotent. */
 export function bar(el) {
-  if (!el || el.querySelector(':scope > .vc-share') || el.classList.contains('skyc')) return;
+  const had = el && el.querySelector && el.querySelector(':scope > .vc-share'); if (had) fullMark(el, had);
+  if (!el || had || el.classList.contains('skyc')) return;
   const w = document.createElement('div'); w.className = 'vc-share';
   const mk = (label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); w.appendChild(b); };
   const png = async (d) => { const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
@@ -102,5 +121,6 @@ export function bar(el) {
   mk('save card', async () => { const d = readCard(el); try { download(await png(d), fileName({ t: d.t }, 'png')); return 'saved'; } catch (_) { try { download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved text'; } catch (_2) { return 'could not save'; } } });
   mk('save text', async () => { try { const d = readCard(el); download(new Blob([shareText(d)], { type: 'text/plain' }), fileName({ t: d.t })); return 'saved'; } catch (_) { return 'could not save'; } });
   const foot = el.querySelector(':scope > .vc-foot'); if (foot) el.insertBefore(w, foot); else el.appendChild(w);
+  fullMark(el, w);
 }
-export const SHARE_CSS = '.vcard .vc-share{display:flex;gap:8px;margin:8px 12px 0}.vcard .vc-share button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--edge);background:rgba(255,255,255,.04);color:hsl(var(--h) 40% 78%);cursor:pointer}.vcard .vc-share button:hover,.vcard .vc-share button:focus-visible{background:rgba(255,255,255,.12);outline:none}@media (max-width:520px){.vcard .vc-share{margin:6px 6px 0}}';
+export const SHARE_CSS = '.vcard .vc-share .vc-full{align-self:center;margin-left:auto;font-size:10.5px;letter-spacing:.08em;padding:2px 8px;border-radius:9px;border:1px solid var(--edge);color:hsl(var(--h) 45% 80%);opacity:.85;white-space:nowrap}.vcard .vc-share{display:flex;flex-wrap:wrap;gap:8px;margin:8px 12px 0}.vcard .vc-share button{font:inherit;font-size:11px;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;border:1px solid var(--edge);background:rgba(255,255,255,.04);color:hsl(var(--h) 40% 78%);cursor:pointer}.vcard .vc-share button:hover,.vcard .vc-share button:focus-visible{background:rgba(255,255,255,.12);outline:none}@media (max-width:520px){.vcard .vc-share{margin:6px 6px 0}}';

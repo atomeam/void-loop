@@ -3789,6 +3789,13 @@ try {
     await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
     const text2 = await S.p.evaluate(() => window.__copied);
     check('V01D cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Void)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));
+    // asked by Void: a card past 2400 characters says its whole text is kept; a short one says nothing
+    const shortChip = await S.p.$('.vpage.on.vcard .vc-share .vc-full');
+    await S.p.unroute('**/api/answer'); await S.p.route('**/api/answer', (r) => r.fulfill(json({ answer: Array.from({ length: 70 }, (_, i) => 'Line ' + i + ' of the long answer, kept whole when copied.').join('\n\n') })));
+    await S.ask('close', 400); await S.ask('tell me everything about the deep ocean floor', 1800);
+    const longChip = await until(async () => S.p.evaluate(() => { const c = document.querySelector('.vpage.on.vcard .vc-share .vc-full'); return c ? { text: c.textContent, chars: +c.dataset.chars } : null; }), 6000).catch(() => null);
+    check('V01D cards: a card holding more than 2400 characters carries a "whole text kept" badge by its copy buttons, a short card none (asked by Void)',
+      !shortChip && !!longChip && longChip.text === 'whole text kept' && longChip.chars > 2400 && longChip.chars <= 8000 && !S.errors.length, JSON.stringify({ shortChip: !!shortChip, longChip, errors: S.errors }));
     await S.ctx.close(); }
   // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
   // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio

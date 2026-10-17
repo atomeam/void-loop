@@ -37,9 +37,12 @@ export function judge(c, r, limits = {}) {
   const fpsMin = ex.fpsMin ?? (c.fps ? limits.fpsMin : undefined);
   if (fpsMin && typeof r.fps === 'number' && r.fps < fpsMin) why.push('fps ' + r.fps + ' < ' + fpsMin);
   if (limits.loadMs && r.loadMs > limits.loadMs) why.push('load ' + r.loadMs + ' ms > ' + limits.loadMs);
+  // flags are noted, never failed (asked by Void: flag a card-stats idle wait over 500 ms): a busy runner's slow idle is not a broken site
+  const flags = [];
+  if (limits.statsIdleMs && Number.isFinite(r.statsIdleMs) && r.statsIdleMs > limits.statsIdleMs) flags.push('stats idle ' + r.statsIdleMs + ' ms > ' + limits.statsIdleMs);
   // a console error or a broken file is the page's, not the ask's: one key for all asks, so it is filed once, not once per ask
   const site = why.length && /^console: /.test(why[0]);
-  return { ask: c.ask, ok: !why.length, why, key: (site ? 'site' : c.ask) + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
+  return { ask: c.ask, ok: !why.length, why, flags, key: (site ? 'site' : c.ask) + ' | ' + (why[0] || '').replace(/[\d.]+/g, '#').slice(0, 60) };
 }
 
 /** The asks of a suite, each once (a repeat is dropped, never sent twice in a run). Pure. */
@@ -185,8 +188,9 @@ export async function runVoid(suite, { site = process.env.VOID_SITE || 'https://
     // the same for frames: under the floor, a second sample after a breath, and the better one counts (issues #1024, #1026: 1 and 2 fps once)
     if (c.fps && suite.limits && suite.limits.fpsMin && fps < suite.limits.fpsMin) { await p.waitForTimeout(1500); fps = Math.max(fps, await fpsOf(p)); }
     const slug = c.ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40); await p.screenshot({ path: resolve(shots, slug + '.png') }).catch(() => {});
-    const v = judge(c, { ...seen, errors, fps, loadMs }, suite.limits); out.push({ ...v, ...meta(c), fps, loadMs, chars: seen.text.trim().length });
-    console.log((v.ok ? 'ok   ' : 'FAIL ') + c.ask + (fps ? ' · ' + fps + ' fps' : '') + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; ')));
+    const statsIdleMs = await p.evaluate(() => { const e = performance.getEntriesByName('card-stats-idle').pop(); return e ? Math.round(e.duration) : null; }).catch(() => null);
+    const v = judge(c, { ...seen, errors, fps, loadMs, statsIdleMs }, suite.limits); out.push({ ...v, ...meta(c), fps, loadMs, statsIdleMs, chars: seen.text.trim().length });
+    console.log((v.ok ? 'ok   ' : 'FAIL ') + c.ask + (fps ? ' · ' + fps + ' fps' : '') + ' · ' + loadMs + ' ms' + (v.ok ? '' : ' · ' + v.why.join('; ')) + (v.flags.length ? ' · flag: ' + v.flags.join('; ') : ''));
     await cx.close(); await wait(GAP_MS);
   } } finally { await b.close(); }
   return out;
