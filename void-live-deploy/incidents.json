@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T02:45:29.047Z",
-   "sha": "480f119c5b4c3dcd53cb4d7260e07cf03af42202",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38995172583",
+   "at": "2026-10-17T02:46:42.267Z",
+   "sha": "a35440baaf0f3e51b63e22d1c6975bfec94e3f24",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38995248704",
    "suite": "browser suite on main",
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
