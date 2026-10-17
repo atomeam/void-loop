@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 402,
+ "counted": 408,
  "libs": [
   {
    "file": "lib/ask-text.js",
-   "skills": 24,
+   "skills": 25,
    "direct": 23,
-   "dependants": 25
+   "dependants": 26
   },
   {
    "file": "lib/sky-math.js",
@@ -108,6 +108,12 @@
    "file": "lib/eclipses.js",
    "skills": 2,
    "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/pulse.js",
+   "skills": 2,
+   "direct": 2,
    "dependants": 2
   },
   {
@@ -226,6 +232,12 @@
   },
   {
    "file": "lib/routines.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/success-pulse.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1169,7 +1181,8 @@
    ],
    "reachedBy": [
     "skills/dates.js",
-    "skills/mini/pentamote.js"
+    "skills/mini/pentamote.js",
+    "skills/pulse.js"
    ]
   },
   "lib/astro.js": {
@@ -1995,6 +2008,13 @@
     "functions/api/propose-fix.js"
    ]
   },
+  "lib/pulse.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/label.js",
+    "skills/pulse.js"
+   ]
+  },
   "lib/rating-note.js": {
    "imports": [],
    "importedBy": []
@@ -2289,6 +2309,12 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/success-pulse.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/status.js"
+   ]
+  },
   "lib/tome.js": {
    "imports": [
     "lib/guide.js"
@@ -2505,6 +2531,10 @@
     "skills/games.js"
    ]
   },
+  "skills/bench.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/bodies.js": {
    "imports": [],
    "importedBy": [
@@ -2617,6 +2647,10 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/collide.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/connect4-rules.js": {
    "imports": [],
@@ -2870,6 +2904,10 @@
    ],
    "importedBy": []
   },
+  "skills/friction.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/fringe-to-skill.js": {
    "imports": [],
    "importedBy": []
@@ -3100,7 +3138,9 @@
    "imports": [
     "lib/ask-text.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/pulse.js"
+   ]
   },
   "skills/intent.js": {
    "imports": [
@@ -3132,7 +3172,8 @@
   "skills/label.js": {
    "imports": [
     "skills/layer.js",
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "lib/pulse.js"
    ],
    "importedBy": []
   },
@@ -3704,6 +3745,13 @@
     "skills/rides.js"
    ]
   },
+  "skills/pulse.js": {
+   "imports": [
+    "lib/pulse.js",
+    "skills/incident.js"
+   ],
+   "importedBy": []
+  },
   "skills/quake.js": {
    "imports": [],
    "importedBy": [
@@ -4084,7 +4132,8 @@
   },
   "skills/status.js": {
    "imports": [
-    "lib/ask-text.js"
+    "lib/ask-text.js",
+    "lib/success-pulse.js"
    ],
    "importedBy": []
   },

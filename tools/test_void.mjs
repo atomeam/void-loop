@@ -1540,6 +1540,79 @@ try {
         && !/ONCE MORE/.test(whileLocked || '') && /AND AGAIN$/.test(after || '') && !P.errors.length,
       JSON.stringify({ said, heard, pulse, lockedSaid, whileLocked, after, e: P.errors }).slice(0, 800));
     await P.ctx.close(); }
+  // stage extras (asked by Void, 2026-10-16): the pulse card and its incident report, the friction slider, collision flags, the Bench icon,
+  // the Success Pulse and the whole stage across the tabs of a shared Void
+  if (want("stage extras pulse: the card draws the arrows' rhythm and an irregular one drafts an incident brief")) { const P = await fresh();
+    await P.ask('sticky note pasta', 600); await P.ask('make a 3 second timer', 600); await P.ask('connect the timer to the note in capitals', 700);
+    await until(async () => (await P.state()).some((t) => t.kind === 'sticky' && /THE TIMER IS DONE/.test(t.text)), 9000);
+    await P.ask('show the pulse', 700);
+    const one = await P.p.$eval('.pulse-line', (e) => ({ k: e.dataset.pulse, t: e.textContent })).catch(() => null);
+    await P.p.evaluate(() => { const n = Date.now(); window.__voidPulses = [0, 1, 2, 3, 4, 5].map((i) => ({ at: n - 55000 + i * 5000, from: 'timer', to: 'note' })); });
+    const stall = await until(() => P.p.$eval('.pulse-line', (e) => (e.dataset.pulse === 'stall' ? e.textContent : null)).catch(() => null), 6000);
+    const link = await P.p.$('.pulse-report a'), draft = await P.p.evaluate(() => (JSON.parse(localStorage.getItem('a2m.void.incident.v1') || 'null') || {}).title || '');
+    await P.ask('write an incident brief', 300); const brief = (await until(async () => { const t = await P.page(); return /Incident brief: Irregular pulse on the stage/.test(t) ? t : null; }, 10000)) || (await P.page());
+    check('stage extras pulse: after a timer hands its words to a note the card counts it in the last minute, steady pulses that stop for longer than usual read as a stall, the card drafts an incident brief by itself and "write an incident brief" opens it',
+      !!one && /^\d+ in the last minute/.test(one.t) && /stall/.test(stall || '') && !!link && /^Irregular pulse on the stage: stall/.test(draft) && /Incident brief: Irregular pulse on the stage/.test(brief) && !P.errors.length,
+      JSON.stringify({ one, stall, link: !!link, draft, brief: brief.slice(0, 200), e: P.errors }));
+    await P.ctx.close(); }
+  if (want("stage extras friction: the slider sets how slippery a throw is and keeps it")) { const P = await fresh();
+    await P.ask('add a friction slider', 700);
+    await P.p.$eval('.friction-card input', (e) => { e.value = '80'; e.dispatchEvent(new Event('input', { bubbles: true })); });
+    const f80 = await P.p.evaluate(() => ({ f: window.voidTossFriction(), k: localStorage.getItem('a2m.void.friction.v1') }));
+    await P.ask('set the friction to 0', 700);
+    const f0 = await P.p.evaluate(() => ({ f: window.voidTossFriction(), v: document.querySelector('.friction-card input').value }));
+    check('stage extras friction: "add a friction slider" puts one card up, the slider at 80 makes a throw keep 92% of its speed a step (kept on the device), and "set the friction to 0" moves the slider to 0 and the factor to 1',
+      Math.abs(f80.f - 0.92) < 1e-9 && f80.k === '80' && f0.f === 1 && f0.v === '0' && !P.errors.length, JSON.stringify({ f80, f0, e: P.errors }));
+    await P.ctx.close(); }
+  if (want("stage extras collision: two things set down on each other are flagged and unflagged when apart")) { const P = await fresh();
+    await P.ask('clock', 700); await P.ask('add a sticky that says hi', 700);
+    const box = (sel) => P.p.$eval(sel, (e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+    // a slow drag by pointer events 10 px apart (~0.6 px/ms: a set-down, never a flick); a real mouse in many steps took minutes on a loaded machine
+    const drag = async (sel, to) => { const b = await box(sel); await P.p.evaluate(([sel, x0, y0, x1, y1]) => { const el = document.querySelector(sel), ev = (type, x, y) => new PointerEvent(type, { clientX: x, clientY: y, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+        const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 10)); el.dispatchEvent(ev('pointerdown', x0, y0));
+        for (let i = 1; i <= n; i++) window.dispatchEvent(ev('pointermove', x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n)); window.dispatchEvent(ev('pointerup', x1, y1)); }, [sel, b.x + 12, b.y + 10, to.x + 12, to.y + 10]); await P.p.waitForTimeout(400); };
+    const flagged = () => P.p.$$eval('[data-collision]', (d) => d.length);
+    const before = await flagged(); const sb = await box('.thing.sticky'); await drag('.thing.clock', { x: sb.x + 5, y: sb.y + 5 });
+    const on = await flagged(), said = await P.whisper(); await P.ask('any collisions', 500); const asked = await flagged();
+    await drag('.thing.clock', { x: 20, y: 500 }); const off = await flagged();
+    check('stage extras collision: a clock set down on a sticky outlines both and says they overlap, "any collisions" says it again, and moved apart the flags go',
+      before === 0 && on === 2 && /(clock and the sticky|sticky and the clock) overlap/.test(said) && asked === 2 && off === 0 && !P.errors.length, JSON.stringify({ before, on, said, asked, off, e: P.errors }));
+    await P.ctx.close(); }
+  if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
+    await P.ask('show the bench', 800);
+    const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);
+    const want_ = await P.p.evaluate(() => fetch('/bench-alarms.json').then((r) => r.json()).then((j) => j.falseAlarms));
+    await P.p.click('.bench-icon'); const open = await P.p.$eval('.bench-list', (e) => ({ hidden: e.hidden, t: e.textContent }));
+    check('stage extras bench: "show the bench" puts a bench icon on the stage whose number is the false alarms on record (/bench-alarms.json), and a tap lists each with its file and why',
+      n !== null && n === want_ && !open.hidden && (n === 0 || /\.\w+:\d+ — /.test(open.t)) && !P.errors.length, JSON.stringify({ n, want_, open, e: P.errors }));
+    await P.ctx.close(); }
+  if (want("stage extras success pulse: a failure the status card showed last time that is fine now pulses green")) { const P = await fresh(() => localStorage.setItem('a2m.void.status.failed.v1', JSON.stringify(['skill:ghost-skill'])));
+    await P.p.evaluate(() => { window.__succ = false; new MutationObserver((ms) => { if (ms.some((m) => [...m.addedNodes].some((n) => n.classList && n.classList.contains('success-pulse')))) window.__succ = true; }).observe(document.body, { childList: true }); });
+    await P.ask('void status', 1500);
+    const seen = await until(() => P.p.evaluate(() => window.__succ), 8000), said = await P.whisper();
+    const kept = await P.p.evaluate(() => localStorage.getItem('a2m.void.status.failed.v1'));
+    check('stage extras success pulse: a skill the last status check could not load and this one can makes a green pulse on the stage; the failure list is then empty',
+      !!seen && kept === '[]' && !P.errors.length, JSON.stringify({ seen, said, kept, e: P.errors }));
+    await P.ctx.close(); }
+  if (want("stage extras shared Void: a list ticked and added to in one tab follows in the other, and a thrown clock goes in both")) {
+    const room = 'gggggggggggggggg.hhhhhhhhhhhhhhhh', S = await fresh({ base: base + '?with=' + room });
+    const B = await S.ctx.newPage(); const errsB = []; B.on('pageerror', (e) => errsB.push(String(e && e.message || e)));
+    await B.goto(base + '?with=' + room);
+    await until(() => B.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000);
+    await until(() => S.p.$eval('#whisper', (e) => /tabs in this browser/.test(e.textContent)).catch(() => false), 8000); // both tabs joined before anything is summoned
+    await S.ask('make a list', 700); await S.ask('add milk', 900); await S.ask('clock', 900);
+    const items = (pg) => pg.$$eval('.list-entry', (d) => d.map((e) => e.querySelector('.list-item-text').textContent + (e.classList.contains('done') ? '*' : ''))).catch(() => null);
+    await S.p.click('.list-entry input[type=checkbox], .list-entry button'); await S.p.click('.list-card input[type=text]'); await S.p.keyboard.type('eggs'); await S.p.keyboard.press('Enter');
+    const synced = await until(async () => { const v = await items(B); return v && v.join() === 'milk*,eggs' ? v : null; }, 15000);
+    const clocks = (pg) => pg.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).filter((t) => t.kind === 'clock').length);
+    const had = await until(async () => (await clocks(B)) === 1 || null, 8000);
+    await S.p.evaluate(() => { const el = document.querySelector('.clock'), b = el.getBoundingClientRect(), x = b.left + 10, y = b.top + 10;
+      const ev = (type, cx, cy) => new PointerEvent(type, { clientX: cx, clientY: cy, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+      el.dispatchEvent(ev('pointerdown', x, y)); window.dispatchEvent(ev('pointermove', x + 240, y - 120)); window.dispatchEvent(ev('pointermove', x + 300, y - 150)); window.dispatchEvent(ev('pointerup', x + 300, y - 150)); }); // far and fast: over the throw speed however slow the machine
+    const gone = await until(async () => (await clocks(B)) === 0 || null, 15000);
+    check('stage extras shared Void: a list made in one tab, its entry ticked and "eggs" added there, reads "milk*, eggs" in the other, and a clock thrown off the stage in one tab is gone from the other too',
+      !!synced && !!had && !!gone && !errsB.length && !S.errors.length, JSON.stringify({ synced, had, gone, a: await items(S.p), b: await items(B), errsB, errs: S.errors }));
+    await S.ctx.close(); }
   // step 6 (one shape for skills): the counter, pinned before it moves out of void.html; the same asks must keep working after
   if (want("built-in counter: make, count up and down, set, reset, size, buttons, a reload, remove; only ever one counter")) { const P = await fresh();
     const one = async () => (await P.state()).filter((t) => t.kind === 'counter');
