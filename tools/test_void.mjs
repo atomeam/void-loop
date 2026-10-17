@@ -2454,14 +2454,14 @@ try {
       const chip = await F.p.$eval('.ff-living-cards-mind .lc-chip[data-card="4"]', (c) => { const r = c.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
       const box = await F.p.$eval('.ff-living-cards-mind canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
       await F.p.mouse.move(chip.x, chip.y); await F.p.mouse.down();
-      for (let i = 1; i <= 10; i++) await F.p.mouse.move(chip.x + ((box.x + box.w * 0.5) - chip.x) * i / 10, chip.y + ((box.y + box.h * 0.5) - chip.y) * i / 10);
+      for (let i = 1; i <= 10; i++) await F.p.mouse.move(chip.x + ((box.x + box.w * 0.25) - chip.x) * i / 10, chip.y + ((box.y + box.h * 0.3) - chip.y) * i / 10); // "you" starts at the middle: drag it to a quarter across
       await F.p.mouse.up();
       await until(async () => (await read()).gen > 0, 12000).catch(() => {});
       const b = await read();
       out.push({ noWorker, a, b, errors: F.errors.slice() }); await F.ctx.close();
     }
     const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
-      && o.b.left[4] !== o.a.left[4] && Math.abs(parseFloat(o.b.left[4]) - 50) < 8 && o.b.gen > 0 && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 entropy [\d.]+ \u00b7 cards answered [\d.]+/.test(o.b.status) && o.b.page === 'none' && !o.errors.length;
+      && o.b.left[4] !== o.a.left[4] && Math.abs(parseFloat(o.b.left[4]) - 25) < 8 && o.b.gen > 0 && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 entropy [\d.]+ \u00b7 cards answered [\d.]+/.test(o.b.status) && o.b.page === 'none' && !o.errors.length;
     check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
       out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
   }
