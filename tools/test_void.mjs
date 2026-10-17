@@ -2443,6 +2443,28 @@ try {
       +r.after.entropy > +r.before.entropy && r.after.hue !== r.before.hue && +r.after.radius > +r.before.radius && /^hue-rotate\(/.test(r.cardFilter) && r.pageFilter === 'none' && r.htmlFilter === 'none'
       && r.soundBefore === 'false' && /^[0-9a-f]{12}$/.test(r.sealed) && r.rowsN === 1 && r.keys === 'hash,idea,metrics,params,ts' && !F.errors.length, JSON.stringify({ r, errors: F.errors }));
     await F.ctx.close(); }
+  if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? () => { window.Worker = undefined; } : () => {});
+      await F.ask('show me the living cards mind', 700); await until(async () => (await F.p.$$('.ff-living-cards-mind .lc-chip')).length === 5, 8000);
+      const read = () => F.p.evaluate(() => { const el = document.querySelector('.ff-living-cards-mind'), chips = [...el.querySelectorAll('.lc-chip')];
+        return { labels: chips.map((c) => c.textContent).join(','), left: chips.map((c) => c.style.left), hue: chips.map((c) => c.dataset.hue), scale: chips.map((c) => +c.dataset.scale), status: el.querySelector('.ff-hud').textContent, mind: el.dataset.mind, gen: +(el.dataset.gen || 0), page: getComputedStyle(document.body).filter }; });
+      const a = await read();
+      const chip = await F.p.$eval('.ff-living-cards-mind .lc-chip[data-card="4"]', (c) => { const r = c.getBoundingClientRect(); return { x: r.left + r.width / 2, y: r.top + r.height / 2 }; });
+      const box = await F.p.$eval('.ff-living-cards-mind canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+      await F.p.mouse.move(chip.x, chip.y); await F.p.mouse.down();
+      for (let i = 1; i <= 10; i++) await F.p.mouse.move(chip.x + ((box.x + box.w * 0.5) - chip.x) * i / 10, chip.y + ((box.y + box.h * 0.5) - chip.y) * i / 10);
+      await F.p.mouse.up();
+      await until(async () => (await read()).gen > 0, 12000).catch(() => {});
+      const b = await read();
+      out.push({ noWorker, a, b, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.labels === 'idea,stage,card,mind,you' && o.a.left.every((x) => /%$/.test(x)) && o.a.scale.every((x) => x >= 0.82 && x <= 1.27)
+      && o.b.left[4] !== o.a.left[4] && Math.abs(parseFloat(o.b.left[4]) - 50) < 8 && o.b.gen > 0 && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 entropy [\d.]+ \u00b7 cards answered [\d.]+/.test(o.b.status) && o.b.page === 'none' && !o.errors.length;
+    check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
+      out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
+  }
   if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
     const out = [];
     for (const noWorker of [false, true]) {

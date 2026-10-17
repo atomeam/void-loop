@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 479,
+ "counted": 481,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -123,6 +123,12 @@
    "dependants": 9
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
    "file": "lib/movies.js",
    "skills": 3,
    "direct": 2,
@@ -133,6 +139,12 @@
    "skills": 3,
    "direct": 2,
    "dependants": 4
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3
   },
   {
    "file": "lib/parody.js",
@@ -175,12 +187,6 @@
    "skills": 2,
    "direct": 0,
    "dependants": 8
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 6
   },
   {
    "file": "lib/card-image.js",
@@ -255,7 +261,7 @@
    "dependants": 2
   },
   {
-   "file": "lib/field-stage.js",
+   "file": "lib/field-worker.js",
    "skills": 2,
    "direct": 2,
    "dependants": 2
@@ -405,13 +411,13 @@
    "dependants": 1
   },
   {
-   "file": "lib/field-flow.js",
+   "file": "lib/field-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
   },
   {
-   "file": "lib/field-worker.js",
+   "file": "lib/field-flow.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2036,6 +2042,14 @@
     "skills/event-countdown.js"
    ]
   },
+  "lib/field-cards.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/living-cards-mind.js"
+   ]
+  },
   "lib/field-flow.js": {
    "imports": [
     "lib/field-kit.js"
@@ -2047,6 +2061,7 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/field-cards.js",
     "lib/field-flow.js",
     "lib/field-stage.js",
     "lib/field-vector.js"
@@ -2054,6 +2069,7 @@
    "reachedBy": [
     "lib/field-vector-worker.js",
     "skills/flow-canvas.js",
+    "skills/living-cards-mind.js",
     "skills/vector-field-mind.js"
    ]
   },
@@ -2063,6 +2079,7 @@
    ],
    "importedBy": [
     "skills/flow-canvas.js",
+    "skills/living-cards-mind.js",
     "skills/vector-field-mind.js"
    ]
   },
@@ -2084,7 +2101,8 @@
   "lib/field-worker.js": {
    "imports": [],
    "importedBy": [
-    "skills/flow-canvas.js"
+    "skills/flow-canvas.js",
+    "skills/living-cards-mind.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -4282,6 +4300,14 @@
    "reachedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/living-cards-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-cards.js"
+   ],
+   "importedBy": []
   },
   "skills/loan.js": {
    "imports": [],

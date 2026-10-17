@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (this session) · helper/f-living-cards · F-038 Living Spatial Cards Mind (delivered to atomeam/a-to-mind.com 85651746) on the field kit: an evolving excitable lattice with five draggable DOM cards that ride it and reshape it (lib/field-cards.js, skills/living-cards-mind.js); F-036 and F-037 next if nobody holds them · 2026-10-17 13:10 UTC
 - Claude (see-repos helper) · helper/see-repos · V01D can look at a public GitHub repo: skills/repo.js, /api/repo, lib/repo-look.js (owner: "make v01d able to see repos") · 2026-10-17
 - Claude (fix-list helper) · helper/fix-list-1..4 · owner's "fix everything": long card titles whole (card image), the "I made this" bell shows again, stale-tab refresh notice, black hole without stars behind its disc · 2026-10-17 UTC
 - Claude (f-ports helper) · helper/f-ports (F-033), helper/f-swarm (F-035), helper/f-figure-minds · the F-series minds on the field kit, asked by Owner: Adaptive Flow-Canvas, Local Evolutionary Neural Swarm Controller, tiny minds inside the tiny figures (lib/field-flow.js, lib/field-swarm.js, lib/field-worker.js) · 2026-10-17 UTC

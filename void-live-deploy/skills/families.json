@@ -13,7 +13,7 @@
  "totals": {
   "experiment": 2,
   "tested": 63,
-  "checked": 32,
+  "checked": 33,
   "proven": 85
  },
  "families": [
@@ -24,7 +24,7 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 5,
+    "checked": 6,
     "proven": 11
    },
    "skills": [
@@ -247,6 +247,14 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "living-cards-mind",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-17"
     },
     {
      "name": "flow-canvas",
