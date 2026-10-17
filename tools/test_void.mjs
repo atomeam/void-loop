@@ -63,7 +63,7 @@ const chromeMajor = parseInt(browser.version(), 10) || 0; // what this machine's
 const STALL_MS = Number(process.env.VOID_CHECK_TIMEOUT_MS) || 300000;
 const BUDGET_MS = Number(process.env.VOID_SUITE_BUDGET_MS) || (process.env.VOID_SKIP_BENCH ? 28 : 38) * 60000;
 const watch = { t0: Date.now(), lastAt: Date.now(), lastCheck: '(none yet)', page: '(none yet)', ask: '', gaps: [] };
-const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); };
+const check = (name, ok, got) => { const now = Date.now(); if (process.env.VOID_TRACE) console.error(Math.round((now - watch.t0) / 1000) + 's ' + (ok ? 'ok ' : 'FAIL ') + name.slice(0, 90)); watch.gaps.push([now - watch.lastAt, name]); watch.lastAt = now; watch.lastCheck = name; results.push({ name, ok: !!ok, got }); if (!ok && process.env.GITHUB_ACTIONS) console.log('::warning title=Check failed::' + name.slice(0, 70) + ' -> ' + String(typeof got === 'string' ? got : JSON.stringify(got)).replace(/[\r\n]+/g, ' ').slice(0, 500)); }; // on a runner, a failed check's detail is also an annotation: readable without the job log
 // a check this machine cannot run (no <microphone> element in its Chromium, no passkey authenticator): skipped with the reason, never red
 const skip = (name, why) => { watch.lastAt = Date.now(); watch.lastCheck = name; results.push({ name, ok: true, skipped: why }); };
 const line = (r) => (r.skipped ? 'skip ' + r.name + '  (' + r.skipped + ')' : (r.ok ? 'pass ' : 'FAIL ') + r.name + (r.ok ? '' : '  -> ' + (r.got || '')));
