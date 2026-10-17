@@ -2345,7 +2345,7 @@ try {
       for (let i = 0; i < 6; i++) cv.dispatchEvent(new PointerEvent('pointermove', { clientX: rc.left + 20 + i, clientY: rc.top + 20, bubbles: true }));
       await new Promise((res) => setTimeout(res, 400));
       const after = snap(), sound = el.querySelector('.ff-sound'), soundBefore = sound.getAttribute('aria-pressed');
-      el.querySelector('.ff-seal').click(); await new Promise((res) => setTimeout(res, 600));
+      el.querySelector('.ff-seal').click(); for (let i = 0; i < 50 && !el.dataset.seal; i++) await new Promise((res) => setTimeout(res, 100));
       const sealed = el.dataset.seal || '';
       const rows = await new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const a = q.result.transaction('seals').objectStore('seals').getAll(); a.onsuccess = () => { q.result.close(); res(a.result); }; }; q.onerror = () => res([]); });
       const expect = await kit.seal('probe', { k: 1 }, { entropy: +el.dataset.entropy, activity: +el.dataset.activity, consensus: +el.dataset.consensus, cx: 0.5, cy: 0.5 }).then((x) => x.short).catch(() => '');
