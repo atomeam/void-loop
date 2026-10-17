@@ -832,3 +832,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-17T11:36:41Z | claude | fix | Art Forge retries busy and rate-limited paints, skips loading-state subjects (D1 void_art had 3 rows: incident autopsy, rt, looking)
 2026-10-17T11:39:42Z | claude | build | asked by Void: event countdown says where its date came from and dims a confidence badge for an infobox-only date; skill-confidence visualizer linked as built (08:27:38Z)
 2026-10-17T11:41:53Z | claude | fix | site tester early read (re-landed: it missed #1018's merge); #1029 'test me on that' passes with it
+2026-10-17T12:15:57Z | claude | grow | asked by Void: the Site Test card lists what to test next, its lowest-rated skills from families.json (failing first, then the least checked), each with one of its own asks from the book; a tap tests it
