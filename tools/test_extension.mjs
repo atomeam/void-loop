@@ -7,6 +7,8 @@ import { chromium } from 'playwright-core';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
+import { acquire as acquireHeavy } from './heavy.mjs';
+await acquireHeavy('extension test (test_extension.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
 const answerFn = await import(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url).href);
 
 const repo = path.resolve(path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1')), '..');
