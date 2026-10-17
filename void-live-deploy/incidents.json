@@ -2,23 +2,18 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T01:33:09.207Z",
-   "sha": "14a9e7694ab2ee8db4469958487bbee964417219",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38990670681",
+   "at": "2026-10-17T01:35:52.892Z",
+   "sha": "df2ef3234836c188d926c916bdca95fb234895b8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38990537090",
    "suite": "browser suite on main",
    "checks": [
-    "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
-    "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
-    "V01D card game: an attack is played out and written in the log",
-    "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device",
-    "the growth card shows friction (asked by Void): skills failing on the bench first, then the least checked, each with its reason, right under the velocity",
-    "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch"
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-17T01:23:40.090Z",
-   "sha": "94ec3bad7401e4f9e21c2298a996e16be0f2f4d2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38989981148",
+   "at": "2026-10-17T01:21:12.203Z",
+   "sha": "2dddc2bf8668f81032415c1afaca7ff6c7868c93",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38989796010",
    "suite": "browser suite on main",
    "checks": [
     "V01D card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1",
@@ -27,9 +22,9 @@
    ]
   },
   {
-   "at": "2026-10-17T01:11:48.563Z",
-   "sha": "fdcd6be3155250be8f3660c4d0bf7797a0c37ed6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38988734705",
+   "at": "2026-10-17T01:05:34.323Z",
+   "sha": "f8a5597fa9ccd76134c4485e5b97a9c0671269f8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38988239214",
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
