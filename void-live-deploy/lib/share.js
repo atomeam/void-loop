@@ -44,6 +44,23 @@ export function clean(raw) {
   if (m.t === 'summon' && typeof m.ask === 'string') { const ask = m.ask.trim(); if (ask && ask.length <= ASK_MAX) return typeof m.k === 'string' && TOKEN.test(m.k) ? { t: 'summon', ask, k: m.k } : { t: 'summon', ask }; }
   if (m.t === 'move' && typeof m.key === 'string' && KEY.test(m.key) && Number.isFinite(m.x) && Number.isFinite(m.y)) return { t: 'move', key: m.key, x: unit(m.x), y: unit(m.y) };
   if (m.t === 'text' && typeof m.key === 'string' && KEY.test(m.key) && typeof m.text === 'string') return { t: 'text', key: m.key, text: m.text.replace(/[\u0000-\u0009\u000b-\u001f\u007f]/g, '').slice(0, TEXT_MAX) };
+  if (m.t === 'drop' && typeof m.key === 'string' && KEY.test(m.key)) return { t: 'drop', key: m.key };
+  if (m.t === 'sync' && typeof m.key === 'string' && KEY.test(m.key)) { const data = cleanData(m.data); return data ? { t: 'sync', key: m.key, data } : null; }
+  return null;
+}
+
+// What a sync carries (asked by Void, 2026-10-16: the whole stage across tabs, not only movement): one of a list's entries (at most 8,
+// 40 characters each, ticked or not), a timer's state (running or not, milliseconds left, at most a day), or a counter's number.
+// Anything else in `data` is dropped, and a drop names a thing by the same key a move does.
+export function cleanData(d) {
+  if (!d || typeof d !== 'object' || Array.isArray(d)) return null;
+  const plain = (t) => String(t).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 40);
+  if (Array.isArray(d.items)) {
+    const items = d.items.slice(0, 8).filter((x) => Array.isArray(x) && typeof x[0] === 'string' && plain(x[0])).map((x) => [plain(x[0]), x[1] ? 1 : 0]);
+    return { items };
+  }
+  if (d.timer && typeof d.timer === 'object' && Number.isFinite(d.timer.left)) return { timer: { run: d.timer.run ? 1 : 0, left: Math.min(86400000, Math.max(0, Math.round(d.timer.left))) } };
+  if (Number.isFinite(d.value)) return { value: Math.min(1e9, Math.max(-1e9, Math.round(d.value))) };
   return null;
 }
 

@@ -2,14 +2,14 @@
 // the other tabs on it. Live = a WebSocket to /api/share/<room> (the ShareRoom Durable Object, share-worker/). When the relay
 // isn't there (not switched on yet, or offline), a BroadcastChannel takes over, so tabs in this one browser still share,
 // and the page says so. Whatever arrives is cleaned again here (lib/share.js clean) before it reaches the stage.
-//   join(room, { summon(ask, k), move(key, x, y), text(key, text), presence(id, x, y), gone(id), note(text) }, env = globalThis)
+//   join(room, { summon(ask, k), move(key, x, y), text(key, text), drop(key), sync(key, data), presence(id, x, y), gone(id), note(text) }, env = globalThis)
 //     -> { mode, cursor(x, y), summoned(ask, k), moved(key, x, y), edited(key, text), leave() }
 import { clean } from './share.js';
 
 const peerId = (v) => typeof v === 'string' && /^[\w-]{1,24}$/.test(v);
 
 export function join(room, hooks, env = globalThis) {
-  const s = { mode: 'joining', cursor() {}, summoned() {}, moved() {}, edited() {}, leave() {} };
+  const s = { mode: 'joining', cursor() {}, summoned() {}, moved() {}, edited() {}, dropped() {}, synced() {}, leave() {} };
   const me = 't' + Math.random().toString(36).slice(2, 9), seen = new Set();
   const note = (t) => { try { hooks.note(t); } catch (_) {} };
   // one message from the room or another tab, checked again before the stage sees it
@@ -19,12 +19,14 @@ export function join(room, hooks, env = globalThis) {
     if (m.t === 'join') { note('someone came into your Void'); return; }
     if (m.t === 'left') { if (peerId(m.id)) { seen.delete(m.id); hooks.gone(m.id); note('they left'); } return; }
     if (!peerId(m.from) || m.from === me) return;
-    const c = clean(JSON.stringify({ t: m.t, x: m.x, y: m.y, ask: m.ask, k: m.k, key: m.key, text: m.text }));
+    const c = clean(JSON.stringify({ t: m.t, x: m.x, y: m.y, ask: m.ask, k: m.k, key: m.key, text: m.text, data: m.data }));
     if (!c) return;
     if (!seen.has(m.from) && s.mode === 'tabs') { seen.add(m.from); note('another tab came into this Void'); }
     if (c.t === 'cursor') hooks.presence(m.from, c.x, c.y);
     else if (c.t === 'move') { if (hooks.move) hooks.move(c.key, c.x, c.y); }
     else if (c.t === 'text') { if (hooks.text) hooks.text(c.key, c.text); }
+    else if (c.t === 'drop') { if (hooks.drop) hooks.drop(c.key); }
+    else if (c.t === 'sync') { if (hooks.sync) hooks.sync(c.key, c.data); }
     else hooks.summon(c.ask, c.k);
   }
   function tabs() {
@@ -38,6 +40,8 @@ export function join(room, hooks, env = globalThis) {
     s.summoned = (ask, k) => post(k ? { t: 'summon', ask, k } : { t: 'summon', ask });
     s.moved = (key, x, y) => post({ t: 'move', key, x, y });
     s.edited = (key, text) => post({ t: 'text', key, text });
+    s.dropped = (key) => post({ t: 'drop', key });
+    s.synced = (key, data) => post({ t: 'sync', key, data });
     s.leave = () => { if (s.mode === 'left') return; try { ch.postMessage({ t: 'left', id: me }); } catch (_) {} ch.close(); s.mode = 'left'; };
     note('the live relay is not on yet: tabs in this browser share this Void');
   }
@@ -51,6 +55,8 @@ export function join(room, hooks, env = globalThis) {
     s.summoned = (ask, k) => send(k ? { t: 'summon', ask, k } : { t: 'summon', ask });
     s.moved = (key, x, y) => send({ t: 'move', key, x, y });
     s.edited = (key, text) => send({ t: 'text', key, text });
+    s.dropped = (key) => send({ t: 'drop', key });
+    s.synced = (key, data) => send({ t: 'sync', key, data });
     s.leave = () => { s.mode = 'left'; try { ws.close(); } catch (_) {} };
   };
   ws.onmessage = (e) => { let m = null; try { m = JSON.parse(e.data); } catch (_) {} take(m); };
