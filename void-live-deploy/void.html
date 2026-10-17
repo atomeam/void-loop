@@ -2379,13 +2379,13 @@ say('nothing selected to remove');
       const a = /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|void'?s\s+|v01d'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
       return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b.*)\s*[?.!]*$/.test(lower);
     }
-    async function showVoice() {
+    async function showVoice(said) {
       const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
       let v = null;
       try { v = await fetch('/api/reflect').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
       const list = (v && Array.isArray(v.entries)) ? v.entries : [];
-      if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p>'; return; }
+      if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p><div class="vh">Correct me</div><div data-v-correct></div>'; mountCorrect(el, said); return; }
       const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
       const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
       let h = '<h2>What I think of myself</h2><div class="sub">My own words, kept as I said them. The people who build me read them first.</div>';
@@ -2412,14 +2412,72 @@ say('nothing selected to remove');
       // talking back (owner, 2026-10-16): the owner replies or corrects, V01D answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
+      // corrections from anyone (asked by Void): kept on this device in a store of its own (lib/corrections.js), never in the look's state
+      h += '<div class="vh">Correct me</div><div data-v-correct></div>';
       if (owner) h += '<div class="vh">Talk to me</div><div class="v-talk" data-v-talk></div>'
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
         + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div>';
-      el.innerHTML = h + '<div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      el.innerHTML = h + '<div data-v-pulse></div><div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+      mountCorrect(el, said); mountPulse(el);
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Void, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.confidenceHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: confidenceHtml escapes every name with esc
+    }
+    // "tell void what it got wrong": the form on the self card; a correction goes to the self family's own store, not the look's (lib/corrections.js)
+    // the health pulse (asked by Void): the latest incident, its commit and the families it maps to, read once when the card opens (no polling); the
+    // owner also gets "Suggest fix" per mapped check, the existing /api/propose-fix, a draft only (lib/autopsy.js pulseHtml, lib/correction-fix.js)
+    async function mountPulse(el) {
+      const slot = el.querySelector('[data-v-pulse]'); if (!slot) return;
+      try {
+        const get = (u) => fetch(u).then((r) => (r.ok ? r.json() : null)).catch(() => null);
+        const [m, inc, fam, guide] = await Promise.all([import('/lib/autopsy.js'), get('/incidents.json'), get('/skills/families.json'), get('/skills/guide.json')]);
+        if (vpageEl !== el) return;
+        const a = m.autopsy(inc, fam, guide), owner = ownerKey(), names = Object.fromEntries(((fam && fam.families) || []).map((f) => [f.id, f.name]));
+        slot.innerHTML = m.pulseHtml(a, esc, { owner: !!owner, names }); // void-review: ok: pulseHtml escapes every incident word with esc
+        const latest = a.recent[0];
+        if (owner && latest) slot.addEventListener('click', async (e) => {
+          const b = e.target && e.target.closest && e.target.closest('button[data-incident-fix]'); if (!b || b.disabled) return;
+          const chk = latest.checks[+b.dataset.incidentFix], out = b.parentNode.querySelector('[data-fix-out]'); if (!chk || !out) return;
+          b.disabled = true; out.textContent = ' drafting…';
+          try { const cf = await import('/lib/correction-fix.js'), r = await cf.suggestIncidentFix(chk, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); } catch (_) { out.textContent = ' that did not work just now'; } // void-review: ok: resultHtml escapes every word with esc
+          b.disabled = false;
+        });
+      } catch (_) {}
+    }
+    async function mountCorrect(el, said) {
+      const slot = el.querySelector('[data-v-correct]'); if (!slot) return;
+      try {
+        const m = await import('/lib/corrections.js'); if (vpageEl !== el) return;
+        let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
+        const formEl = document.createElement('div'), heatEl = document.createElement('div'), logEl = document.createElement('div'); slot.replaceChildren(formEl, heatEl, logEl);
+        let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
+        if (vpageEl !== el) return;
+        const owner = ownerKey(); // the "Suggest fix" buttons are drawn for the owner only (lib/correction-fix.js); the route checks the key again
+        const draw = () => { import('/lib/correction-heat.js').then((h) => { if (vpageEl === el) heatEl.innerHTML = h.heatHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }).catch(() => {}); /* void-review: ok: heatHtml escapes every word with esc */ logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc, { owner: !!owner }); }; // void-review: ok: logHtml escapes every kept word with esc
+        draw();
+        // a hot cell, clicked by the owner: a draft fix for the family's most corrected skill, the same route and redaction as Suggest fix (never without a click)
+        const heatFix = async (e) => {
+          if (e.type === 'keydown' && e.key !== 'Enter' && e.key !== ' ') return;
+          const c = e.target && e.target.closest && e.target.closest('[data-heat-fix]'); if (!c || c.dataset.busy) return;
+          const out = c.querySelector('[data-fix-out]'); if (!out) return;
+          try { const h = await import('/lib/correction-heat.js'), entry = h.hotEntry(m.readCorrections(localStorage), fam, c.dataset.heatFix); if (!entry) return;
+            c.dataset.busy = '1'; out.textContent = 'drafting…';
+            const cf = await import('/lib/correction-fix.js'), r = await cf.suggestFix(entry, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); // void-review: ok: resultHtml escapes every word with esc
+          } catch (_) { out.textContent = 'that did not work just now'; }
+          delete c.dataset.busy;
+        };
+        if (owner) { heatEl.addEventListener('click', heatFix); heatEl.addEventListener('keydown', heatFix); }
+        if (owner) logEl.addEventListener('click', async (e) => {
+          const b = e.target && e.target.closest && e.target.closest('button[data-suggest-fix]'); if (!b || b.disabled) return;
+          const entry = m.readCorrections(localStorage)[+b.dataset.suggestFix], out = b.parentNode.querySelector('[data-fix-out]'); if (!entry || !out) return;
+          b.disabled = true; out.textContent = ' drafting…';
+          try { const cf = await import('/lib/correction-fix.js'), r = await cf.suggestFix(entry, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); } catch (_) { out.textContent = ' that did not work just now'; } // void-review: ok: resultHtml escapes every word with esc
+          b.disabled = false;
+        });
+        const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw });
+        if (said && m.wantsCorrection(said)) { if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
+      } catch (_) {}
     }
     async function talkBack(el, owner, to) {
       const talk = el.querySelector('[data-v-talk]'), box = el.querySelector('[data-v-reply]'), send = el.querySelector('[data-v-send]');
@@ -5290,7 +5348,7 @@ say('nothing selected to remove');
       if (wantsBoard(lower0) && ownerToken()) { showBoard(); return; }
       if (handleLookAsk(lower0)) { loopLog({ domain: 'void.look', ask: text, score: 'pass', note: 'look' }); return; }
       if (wantsWill(lower0)) { showWill(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'will' }); return; }
-      if (wantsVoice(lower0)) { showVoice(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
+      if (wantsVoice(lower0)) { showVoice(lower0); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'voice' }); return; }
       if (wantsMenu(lower0)) { loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'menu' }); return handle('open the book'); } // every menu is the book (owner, 2026-10-16: "all voids menus should go back to the book"; skills/guide.js)
       if (wantsSelfPage(lower0) || wantsIdentity(lower0)) { if (wantsIdentity(lower0)) identityGlow(); showSelfPage(false, null, wantsIdentity(lower0) ? SELF_LEAD : undefined); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'self' }); return; }
       if (wantsCalc(lower0)) { showCalc(text).then((src) => { if (src === 'none') reportMiss(text, 'calc'); }); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'calc' }); return; }
@@ -5664,6 +5722,33 @@ say('nothing selected to remove');
       };
       for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.addEventListener(ev, kick, true);
     }
+    // a tab left open while a new version deployed keeps the old page code (owner, 2026-10-17: "nothing showed just now"): the tab remembers the id of the build it
+    // loaded with (lib/stale-tab.js: the commit the deploy writes to /build.json, else the page's ETag) and looks again when it comes back into view and about every
+    // ten minutes, one small GET each. A different id shows one non-blocking line that reloads on tap; the page never reloads by itself, so nobody loses what they were typing.
+    import('/lib/stale-tab.js').then((S) => {
+      let base = '', last = Date.now(), shown = false;
+      const getId = async () => {
+        try {
+          const r = await fetch('/build.json?v=' + Date.now(), { cache: 'no-store' });
+          const j = r.ok && /json/.test(r.headers.get('content-type') || '') ? await r.json().catch(() => null) : null;
+          if (j && j.id) return S.idOf(j, '');
+          const h = await fetch('/', { method: 'HEAD', cache: 'no-store' }); // no build file (a local copy): the page's own ETag
+          return S.idOf(null, h.ok ? h.headers.get('etag') || h.headers.get('last-modified') : '');
+        } catch (_) { return ''; }
+      };
+      const pill = () => {
+        if (shown) return; shown = true;
+        const b = document.createElement('button'); b.type = 'button'; b.id = 'new-version'; b.textContent = S.NOTICE;
+        b.style.cssText = 'position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:80;max-width:92vw;font:inherit;font-size:13px;color:#e9ebf2;background:rgba(20,22,30,.92);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 14px;cursor:pointer;box-shadow:0 6px 20px rgba(0,0,0,.4)';
+        b.addEventListener('click', () => location.reload()); document.body.appendChild(b);
+      };
+      const check = async (rebase) => { last = Date.now(); const id = await getId(); if (rebase || !base) { base = id; return; } if (S.isStale(base, id)) pill(); };
+      window.__voidStaleCheck = check; // the browser suite drives a check by hand (check(true) re-records the loaded id) instead of waiting ten minutes
+      getId().then((id) => { base = id; });
+      setInterval(() => { if (!document.hidden && S.checkDue(last, Date.now())) check(); }, 60 * 1000);
+      document.addEventListener('visibilitychange', () => { if (!document.hidden && S.checkDue(last, Date.now())) check(); });
+      window.addEventListener('focus', () => { if (S.checkDue(last, Date.now())) check(); });
+    }).catch(() => {});
     if (!PAGE && awayMs > 0) import('/skills/scripts.js').then((m) => {
       const figs = Object.values(things).filter((t) => t && ((t.kind === 'figure' && t.kindOf) || t.kind === 'camp')); // the RTS camp goes too: the villagers carry to it (lib/rts.js)
       if (!figs.length || awayMs < m.AWAY_MIN_MS) return;

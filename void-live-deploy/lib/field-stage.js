@@ -8,7 +8,10 @@
 //   - "Tilt" asks for the device orientation only on a tap (iOS asks permission, others just start); no sensor: the button says so;
 //   - "Seal" keeps a SHA-256 of the idea's params + metrics in IndexedDB (try/catch; in memory when the store is blocked). It keeps
 //     facts and counts only, never the pointer's path: the same privacy shape as the card mint store.
-// An idea is { id, title, sub, W, H, warm, create(seed), step(s, dt, input), metrics(s), draw(g, s, W, H), params(s), status(s, m) }.
+// An idea is { id, title, sub, W, H, warm, create(seed), step(s, dt, input), metrics(s), draw(g, s, W, H), params(s), status(s, m) }, and may add
+// trails (keep the last frame instead of clearing it), morph(s, m) (its own morph numbers instead of morphOf), vars(s, m) (more CSS custom properties
+// on the card, such as --ink-density), and dispose(s) (called once when the card leaves the page, e.g. to end a Worker).
+// mount?(ctx) is also allowed: it adds the idea's own controls and background thinking (a Worker mind) and returns { dispose() }.
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
 
@@ -53,7 +56,9 @@ function makeSound() {
 /** mount a field card for an idea on the stage; returns { el, state, tick(n) }. */
 export function mountField(th, stageApi, idea) {
   const W = idea.W || 320, H = idea.H || 240, cls = 'field-card ff-' + idea.id;
-  th.state = idea.create((Date.now() & 0xffff) || 1);
+  // the state is not enumerable: the stage saves its things with JSON.stringify, and a field's typed arrays must not be written out with them
+  const setState = (v) => { Object.defineProperty(th, 'state', { value: v, writable: true, enumerable: false, configurable: true }); return v; };
+  setState(idea.create((Date.now() & 0xffff) || 1));
   const el = document.createElement('div');
   el.className = 'thing kept-card game-card ' + cls; el.dataset.id = th.id; el.tabIndex = 0; el.dataset.field = idea.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(' + (W + 24) + 'px, calc(100vw - 20px))';
@@ -70,6 +75,7 @@ export function mountField(th, stageApi, idea) {
   const cv = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr; cv.className = 'ff-canvas'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', idea.title + ' (a live field; move over it)');
   cv.style.cssText = 'display:block;width:100%;aspect-ratio:' + W + '/' + H + ';background:#05040c;touch-action:none;cursor:crosshair';
+  if (idea.vars) cv.style.filter = 'contrast(calc(0.9 + var(--ink-density, 0) * 0.6)) blur(calc((1 - var(--ink-density, 0)) * 0.7px))'; // --ink-density: sharp and high-contrast when high, soft charcoal when low
   const g = cv.getContext('2d'); if (g) g.scale(dpr, dpr);
   q('.ff-frame').appendChild(cv);
   const body = q('.ff-body'), hud = q('.ff-hud'), why = q('.ff-why'), sealed = q('.ff-sealed');
@@ -87,17 +93,18 @@ export function mountField(th, stageApi, idea) {
 
   let metrics = idea.metrics(th.state), frames = 0;
   const morph = () => {
-    metrics = idea.metrics(th.state); const mo = morphOf(metrics), css = morphCss(mo);
+    metrics = idea.metrics(th.state); const mo = idea.morph ? idea.morph(th.state, metrics) : morphOf(metrics), css = morphCss(mo), extra = idea.vars ? idea.vars(th.state, metrics) : {};
     el.style.filter = css.filter; el.style.borderRadius = css.radius; el.style.boxShadow = css.glow;
     body.style.transform = css.transform; hud.style.transform = css.hud; q('.ff-frame').style.filter = css.canvasFilter;
-    for (const [k, v] of Object.entries(css.vars)) el.style.setProperty(k, v);
+    for (const [k, v] of Object.entries({ ...css.vars, ...extra })) el.style.setProperty(k, v);
+    if (extra['--ink-density'] != null) el.dataset.ink = extra['--ink-density'];
     el.dataset.hue = String(mo.hue); el.dataset.entropy = metrics.entropy.toFixed(3); el.dataset.activity = metrics.activity.toFixed(3); el.dataset.consensus = metrics.consensus.toFixed(3); el.dataset.radius = String(mo.radius); el.dataset.frames = String(frames);
     hud.textContent = idea.status ? idea.status(th.state, metrics) : '';
     if (sound) sound.update(metrics);
   };
-  const draw = () => { if (g) { g.save(); g.clearRect(0, 0, W, H); idea.draw(g, th.state, W, H, input); g.restore(); } };
+  const draw = () => { if (g) { g.save(); if (!idea.trails) g.clearRect(0, 0, W, H); idea.draw(g, th.state, W, H, input); g.restore(); } };
   const tick = (n = 1, dt = 1 / 60) => { for (let i = 0; i < n; i++) { idea.step(th.state, dt, input); frames++; } morph(); draw(); };
-  const fresh = () => { th.state = idea.create((Date.now() & 0xffff) || 1); frames = 0; tick(idea.warm || 0); tick(1); };
+  const fresh = () => { setState(idea.create((Date.now() & 0xffff) || 1)); frames = 0; tick(idea.warm || 0); tick(1); };
 
   // sound: off until a tap
   const sound = (() => { try { return makeSound(); } catch (_) { return null; } })();
@@ -126,10 +133,15 @@ export function mountField(th, stageApi, idea) {
     } catch (_) { sealed.textContent = 'Could not seal here.'; }
   });
 
+  // an idea may add its own controls and think in the background: idea.mount({ el, q, th, input, cv, W, H, tick, redraw, still }) -> { dispose() }
+  let hook = null;
+  if (typeof idea.mount === 'function') { try { hook = idea.mount({ el, q, th, input, cv, W, H, tick, redraw: () => { morph(); draw(); }, still: () => still }) || null; } catch (_) { hook = null; } }
+  const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; };
+
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
   let raf = 0, last = 0;
-  const loop = (t) => { raf = 0; if (!el.isConnected) { if (sound) sound.close(); window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt); raf = requestAnimationFrame(loop); };
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt); raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
   return { el, state: th.state, tick, input, get still() { return still; } };

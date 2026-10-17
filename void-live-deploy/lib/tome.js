@@ -53,7 +53,8 @@ export const TOME_CSS = [
   '.tome-plate{float:right;margin:0 0 1cqh 2cqh;shape-outside:margin-box}.tome .gglyph{color:#4a2e16!important;filter:sepia(1) saturate(.55) brightness(.72);opacity:.9}',
   '.tome .gopener{display:flex;flex-wrap:wrap;justify-content:center;gap:.6cqh;margin:1.5cqh 0}.tome .gopener a{border:0;display:flex}',
   '.tome-list{margin:0;padding:0;list-style:none;columns:2;column-gap:4cqh;font-size:2cqh}.tome-list li{display:flex;align-items:baseline;margin:.35cqh 0;break-inside:avoid}.tome-list li a{border:0}.tome-list .lead-dots{flex:1;border-bottom:1px dotted rgba(90,50,20,.55);margin:0 .6cqh;transform:translateY(-.5cqh)}.tome-list .n{color:#6d4c2a}',
-  '.tome-toc li{font-size:2.3cqh;margin:.9cqh 0}.tome-toc .tome-for{display:block;font-size:1.8cqh;font-style:italic;color:#6d4c2a;margin:.1cqh 0 0 2.2cqh}',
+  '.tome-day{font-weight:700;font-size:2cqh;margin:1.2cqh 0 .1cqh;color:#4a2c12;border-bottom:1px solid rgba(122,74,34,.35)}.tome-newsl li{font-size:1.85cqh;line-height:1.3}.tome-tryit{font-size:1.6cqh;white-space:nowrap}.tome-new{font-style:normal;font-size:1.5cqh;color:#fff;background:#8f2d1c;border-radius:1cqh;padding:.1cqh .8cqh;vertical-align:middle}',
+  '.tome-toc li{font-size:2.2cqh;margin:.75cqh 0}.tome-toc .tome-for{display:block;font-size:1.8cqh;font-style:italic;color:#6d4c2a;margin:.1cqh 0 0 2.2cqh}',
   '.tome-legend dt{font-variant:small-caps;letter-spacing:.1em;color:#2b1b0e;margin-top:1cqh}.tome-legend dd{margin:0;font-style:italic;color:#4f3418}',
   '.tome-tier{position:absolute;bottom:2.6cqh;left:16%;right:16%;text-align:center;font-size:1.6cqh;line-height:1.35;color:#6d4c2a}.tome-tier b{display:block;font-weight:600;letter-spacing:.22em;text-transform:uppercase;font-size:1.75cqh;color:#4a2e16}.tome-tier span{font-style:italic;display:block;text-overflow:ellipsis;overflow:hidden;white-space:nowrap}',
   // the leaf in the air: a sheet with a face on each side that swings about the spine
@@ -80,6 +81,7 @@ export const TOME_CSS = [
   '.tome.shut.back{transform:translateX(25%) scale(.96)}.tome.shut.back .tome-backcover{display:flex}.tome.shut.back .tome-cover{visibility:hidden}',
   '.tome-cover .cover-art{width:78%;margin:1.4cqh auto 0;position:relative;border:1px solid rgba(214,179,92,.45);border-radius:4px;overflow:hidden;background:#120b06;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}.tome-cover .cover-art svg{display:block;width:100%;height:auto}',
   '.tome-tocover{position:absolute;top:max(10px,1.6vh);left:max(10px,1.6vw);z-index:9;font:inherit;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid rgba(214,179,92,.55);background:rgba(36,23,13,.88);color:#f0e3c4;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.5)}.tome-tocover:hover,.tome-tocover:focus-visible{border-color:rgba(240,214,140,.95)}',
+  '.tome-cover .newbadge{position:relative;display:inline-block;margin-top:1.6cqh;padding:.5cqh 1.6cqh;border-radius:2cqh;background:#8f2d1c;color:#fff4dc;font-size:1.8cqh;letter-spacing:.04em;box-shadow:0 .3cqh 1cqh rgba(0,0,0,.5)}',
   '.tome-cover .title{font-variant:small-caps;letter-spacing:.14em;font-size:4cqh;position:relative}.tome-cover .line{font-style:italic;font-size:2cqh;color:rgba(214,179,92,.8);margin-top:1cqh;position:relative}',
   // the prompt, as a game writes it along the foot of the screen
   '.tome-prompt{position:absolute;left:0;right:0;bottom:2.4vh;text-align:center;color:rgba(232,214,178,.8);font-size:13px;letter-spacing:.16em;text-transform:uppercase;pointer-events:none}',
@@ -97,7 +99,7 @@ const asks = (list, esc) => (list && list.length ? '<div class="tome-say">Say</d
 
 /** the contents page's list: every chapter with its first page. Pure. */
 export function tocHtml(book, esc) {
-  return '<ul class="tome-toc tome-try gb-toc">' + (book.chapters || []).filter((c) => c.id !== 'front').map((c) => '<li>' + jump(c.from, c.name, esc) + ' <span class="n">· ' + c.from + '</span>' + (c.for ? '<span class="tome-for">' + esc(c.for) + '</span>' : '') + '</li>').join('') + '</ul>';
+  return '<ul class="tome-toc tome-try gb-toc">' + (book.chapters || []).filter((c) => c.id !== 'front').map((c) => '<li>' + jump(c.from, c.name, esc) + ' <span class="n">· ' + c.from + '</span>' + (c.id === 'news' && book.news && book.news.unseen ? ' <b class="tome-new">' + book.news.unseen + ' new</b>' : '') + (c.for ? '<span class="tome-for">' + esc(c.for) + '</span>' : '') + '</li>').join('') + '</ul>';
 }
 
 /** one page typeset for the tome (without its running head and folio, which the spread adds). Pure. */
@@ -125,6 +127,11 @@ export function pageHtml(p, book, esc) {
       + '<p class="tome-note">A page with a box drawn on it is a game on the rack; a page headed 3D is a miniature a card carries.</p></div>';
   }
   if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
+  if (p.kind === 'news') { // a page of the newest ledger entries (lib/book-news.js): by day, then by kind, each line its own words and an ask to try it
+    const when = (d) => { const t = new Date(d + 'T12:00:00Z'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
+    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 80)
+      + (p.days || []).map((d) => '<div class="tome-day">' + esc(when(d.day)) + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? ' <a href="#" class="tome-tryit" data-ask="' + esc(e.try) + '">try it</a>' : '') + '</li>').join('') + '</ul>').join('')).join('') + '</div>';
+  }
   if (p.kind === 'opener') {
     const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
     return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
@@ -173,5 +180,5 @@ export function coverHtml(book, esc) {
   const t = book.totals || {};
   // the cover carries V01D's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
   let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The V01D Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
-  return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The V01D Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div></div><div class="face in"></div>';
+  return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The V01D Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }

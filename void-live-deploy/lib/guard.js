@@ -45,8 +45,12 @@ export const LIMITS = {
   'probe-asks': { rpm: 6, body: 8000 }, // owner-only: V01D writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
+  'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
   digest: { rpm: 6, body: 70000 }, // V01D reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
   video: { rpm: 30, body: 0 }, // V01D's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
+  repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
+  media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
+  movies: { rpm: 30, body: 0 }, // real movies (functions/api/movies.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   where: { rpm: 20, body: 0 }, // the connection's own coarse place (functions/api/where.js): GET, no input, never cached
   markets: { rpm: 30, body: 0 }, // the crypto card's price list (functions/api/markets.js): GET, edge-cached two minutes, no KV
   hook: { rpm: 60, body: 64000 },
