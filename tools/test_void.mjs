@@ -748,6 +748,29 @@ try {
       /list/.test(during) && /timer/.test(during) && /sticky/.test(during) && after === 'clock' && !U.errors.length, JSON.stringify({ during, after, e: U.errors }));
     await U.ctx.close(); }
 
+  // The preview state for summoned intents and the failed-intent bridge to the miss board (asked by Void, 2026-10-16, skills/intent.js)
+  if (want("intent preview: a plan shown as a card with nothing on the stage, deployed on a tap, a misread one sent to the miss board")) { const P = await fresh();
+    await P.p.evaluate(() => { window.__miss = []; const f = window.fetch; window.fetch = (u, o) => { try { if (String(u).includes('/api/miss')) window.__miss.push(JSON.parse(o.body)); } catch (_) {} return f.call(window, u, o); }; });
+    await P.ask('preview I need to ship the product page by Friday', 900);
+    const card = await P.page(), onStage = (await P.state()).length;
+    await P.p.click('[data-decline]'); await P.p.waitForTimeout(300);
+    const miss = await P.p.evaluate(() => window.__miss);
+    await P.p.click('[data-deploy]'); await P.p.waitForTimeout(1500);
+    const kinds = (await P.state()).map((x) => x.kind).sort();
+    check('intent preview: "preview I need to ship the product page by Friday" shows the goal, the dated steps and the pieces that would come with nothing on the stage, "not what I meant" sends the intent to the miss board tagged intent:misread, and "put it on the stage" then brings the countdown, the list and the calendar entry',
+      /Preview: ship the product page/.test(card) && /nothing is on your stage yet/.test(card) && /outline it/.test(card) && /a countdown to the day/.test(card) && onStage === 0
+        && miss.some((m) => m.fallback === 'intent:misread' && /ship the product page/.test(m.ask)) && kinds.join() === 'calendar,countdown,list' && !P.errors.length,
+      JSON.stringify({ card: card.slice(0, 300), onStage, miss, kinds, e: P.errors }));
+    await P.ctx.close(); }
+  // peek (asked by Void, 2026-10-16): a quoted line of the code review that was shown cut at 160 characters opens to the whole line
+  if (want("review peek: a long quoted line shows its start with a peek button that opens the whole line and closes it again")) { const P = await fresh();
+    await P.ask('review this code:\nlet x = 1;\nconst result = eval("' + 'a'.repeat(220) + '");', 1500);
+    const read = () => P.p.evaluate(() => { const b = document.querySelector('.review-peek'); return b ? { open: b.getAttribute('aria-expanded'), len: b.previousElementSibling.querySelector('code').textContent.length } : null; });
+    const closed = await read(); await P.p.click('.review-peek'); const opened = await read(); await P.p.click('.review-peek'); const again = await read();
+    check('review peek: a finding whose line is longer than 160 characters shows its first 160 and a peek button, the button opens the whole line (over 220 characters) and a second tap closes it',
+      !!closed && closed.open === 'false' && closed.len <= 162 && opened.open === 'true' && opened.len > 220 && again.open === 'false' && again.len === closed.len && !P.errors.length,
+      JSON.stringify({ closed, opened, again, e: P.errors }));
+    await P.ctx.close(); }
   // Plan history (asked by Void, skills/intent.js): a plan is kept in this browser as it was laid out; after "clear" wipes the
   // stage, "plan history" lists it and "restore plan 1" puts it back as new pieces, so a wipe is never total.
   if (want("plan history: a plan survives a clear, plan history lists it, restore puts it back")) { const H = await fresh();
