@@ -12,7 +12,7 @@ export const KIND = 'scene.advance';
 export const MAX_CHANGES = 20;
 export const MIN_GAP_MS = 60e3;
 export const MEMBER_KEEP = 50;
-export const WHAT = ['rained', 'snowed', 'grew', 'melted', 'melted away', 'found', 'caught'];
+export const WHAT = ['rained', 'snowed', 'grew', 'melted', 'melted away', 'found', 'caught', 'gathered', 'built'];
 const THINGS = /^[a-z]{2,20}$/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u001f]+/g, ' ').slice(0, n);
 

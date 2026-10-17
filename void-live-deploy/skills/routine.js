@@ -9,6 +9,7 @@
  * says "offered routines" to see what waits and approve or reject each one.
  */
 import { routineAsk, pick, load, save, remove, recentAsks, MAX_ASKS } from '../lib/routines.js';
+import { skillOf } from '../lib/routine-skill.js';
 import { offerAsk, othersAsk, cleanOffer, takeAsk, findShared, takeName, pendingAsk } from '../lib/shared-routines.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
@@ -74,7 +75,7 @@ async function pending(api, log) {
   showPage((p) => {
     p.innerHTML = '<h2>' + esc(list.length ? 'Offered routines (' + list.length + ')' : 'No offered routines waiting') + '</h2>' // void-review: ok: every value goes through esc()
       + list.map((r, i) => '<div class="routine-offer" data-i="' + i + '"><b>' + esc(r.name) + '</b> by ' + esc(r.author) + '<ol>' + r.asks.map((a) => '<li>' + esc(a) + '</li>').join('') + '</ol>'
-        + '<button type="button" data-yes>Approve</button> <button type="button" data-no>Reject</button> <span class="sub" data-said></span></div>').join('')
+        + '<button type="button" data-yes>Approve</button> <button type="button" data-no>Reject</button> <button type="button" data-forge>Forge into a skill</button> <span class="sub" data-said></span></div>').join('')
       + '<div class="sub" data-routine-foot>' + esc(list.length ? 'Approved ones show to everyone under "routines from others", with the author\'s name.' : 'When someone offers a routine, it waits here.') + '</div>';
     p.querySelectorAll('.routine-offer').forEach((row) => {
       const r = list[+row.dataset.i], said = row.querySelector('[data-said]');
@@ -87,6 +88,15 @@ async function pending(api, log) {
       };
       row.querySelector('[data-yes]').addEventListener('click', () => decide(true));
       row.querySelector('[data-no]').addEventListener('click', () => decide(false));
+      // one click (asked by Void): the offer becomes a skill file to commit; the file is made here, from the offer, and downloaded
+      row.querySelector('[data-forge]').addEventListener('click', () => {
+        const k = skillOf(r);
+        if (k.error) { said.textContent = 'not forged: ' + k.error; return; }
+        const a = document.createElement('a');
+        a.href = URL.createObjectURL(new Blob([k.source], { type: 'text/javascript' })); a.download = k.name + '.js';
+        document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        said.textContent = 'forged ' + k.name + '.js · approve it first, then in the repo: node tools/routine-skill.mjs ' + r.id + ' (says "' + k.phrase + '")';
+      });
     });
   });
   log('pending'); return 'routine';
