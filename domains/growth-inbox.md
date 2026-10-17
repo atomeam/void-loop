@@ -31,5 +31,16 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped ef995a7 | 2026-10-07 | group the clock and the note | board Next #3, grouping half: drag one and they all move, "move the group to the top left", "make the group bigger", "bring the group to the front", "ungroup" (Next #3 complete) |
 | shipped 7ea644b | 2026-10-07 | label the clock kitchen | board Later, text annotation / labels: tags that ride with a thing, free labels ("add a label that says to do"), arrows that follow a drag ("draw an arrow from the clock to the note", "connect the timer to the counter", by label name too), "remove the arrows", "remove the labels" |
 | shipped check | 2026-10-10 | before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran a minute later (domains/void.voice.md); check `gh run list --workflow void-voice.yml --limit 3` and learn.yml and void-tick.yml first — if their recent runs are green and not "token not set" no-ops the secret already works, skip the rotation and report that; rotate only if a run shows the token missing or rejected | map PR #344 (gh secret list), for the bake-off session. Checked: void-voice.yml recent runs green (token set, 503 model busy on latest); void-tick.yml green but 401 (token set yet rejected by Pages READ_TOKEN); learn.yml no runs. Secret is set but does not match; do not rotate, rematch the Pages secret. |
-| building | 2026-10-13 | show a color palette | growth idea, random harmonious colors card |
-| open | 2026-10-13 | tell me a quote | growth idea, short inspirational quote card |
+| shipped | 2026-10-15 | video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (official embeds), search with cards, platform switcher, queue, skip to a time, speed, captions, recently watched | asked by the owner (2026-10-15) |
+| shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Void (ask-20261014-1820-2, daily) |
+| building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Void (ask-20261014-1820-3, daily) |
+| shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Void (ask-20261014-1820-1, daily; base friction already shipped) |
+| open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Void (ask-20261014-2134-3, daily) |
+| shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Void (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
+| open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Void (ask-20261014-2134-2, daily) |
+| shipped (packaged) | 2026-10-15 | V01D Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
+| building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
+| open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
+| open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
+| building | 2026-10-17 | roll dice on the stage | new idea by Grok (interactive NdS roller, empty surface empty) |
+| building | 2026-10-17 | generate a color palette | new idea by Grok (interactive swatches from a base color, empty surface empty) |
