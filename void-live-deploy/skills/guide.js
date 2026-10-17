@@ -12,6 +12,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
+import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
 import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, pageHtml, tocHtml } from '../lib/tome.js';
 
 export { pageHtml, tocHtml };
@@ -106,10 +107,10 @@ function mount(book, api, startAt, text) {
   const total = book.pages.length;
   let cur = Math.min(Math.max(startAt || readKept() || 1, 1), total), turning = false;
   const root = document.createElement('div'); root.id = 'vtome'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-label', book.title); root.setAttribute('aria-modal', 'true');
-  root.innerHTML = '<style>' + TOME_CSS + '</style><div class="tome-dim"></div><div class="tome shut" data-pages="' + total + '">'
+  root.innerHTML = '<style>' + TOME_CSS + SEARCH_CSS + '</style><div class="tome-dim"></div><div class="tome shut" data-pages="' + total + '">'
     + '<div class="tome-boards"></div><div class="tome-stack left"></div><div class="tome-stack right"></div>'
     + '<section class="tome-page left" data-page=""></section><section class="tome-page right" data-page=""></section><div class="tome-spine"></div>'
-    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div></div><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
+    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div></div><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
   document.body.appendChild(root);
   document.documentElement.classList.add('v-tome');
   const tome = root.querySelector('.tome'), left = root.querySelector('.tome-page.left'), right = root.querySelector('.tome-page.right'), live = root.querySelector('[aria-live]');
@@ -151,9 +152,22 @@ function mount(book, api, startAt, text) {
   const turn = (d) => { if (tome.classList.contains('shut')) { if (d > 0) openCover(); return; } if (d < 0 && shown().filter(Boolean)[0] === 1) { shutCover(); return; } const vis = shown().filter(Boolean); turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
   const go = (n) => { if (tome.classList.contains('shut')) openCover(); turnTo(n); };
 
+  // ---- the search bar docked at the top (asked by Void): type, pick a page, the book turns to it; it stays while you read
+  const bar = root.querySelector('.tome-search'), box = bar.querySelector('input'), hits = bar.querySelector('.tome-hits');
+  const find = () => {
+    const list = searchBook(book, box.value);
+    hits.innerHTML = list.map((h) => '<li role="option"><button type="button" data-n="' + esc(h.n) + '">' + esc(h.title) + '<em>p. ' + esc(h.n) + '</em>' + (h.hint ? '<small>' + esc(h.hint) + '</small>' : '') + '</button></li>').join('')
+      + (box.value.trim().length >= 2 && !list.length ? '<li role="option"><button type="button" disabled>Nothing in the book by that name</button></li>' : '');
+    return list;
+  };
+  box.addEventListener('input', find);
+  bar.addEventListener('submit', (e) => { e.preventDefault(); const first = find()[0]; if (first) { go(first.n); hits.innerHTML = ''; box.blur(); } });
+  hits.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('button[data-n]'); if (b) { go(b.dataset.n); hits.innerHTML = ''; box.value = ''; box.blur(); } });
   // ---- the controls, Skyrim's: turn or close, nothing else
   const onKey = (e) => {
     if (!current()) { document.removeEventListener('keydown', onKey, true); return; }
+    if (e.key === '/' && document.activeElement !== box) { e.preventDefault(); e.stopImmediatePropagation(); box.focus(); return; }
+    if (e.key === 'Escape' && (box.value || hits.children.length)) { e.preventDefault(); e.stopImmediatePropagation(); box.value = ''; hits.innerHTML = ''; box.blur(); return; }
     if (e.key === 'Escape') { e.preventDefault(); e.stopImmediatePropagation(); closeTome('esc'); return; }
     if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight' && e.key !== 'PageDown' && e.key !== 'PageUp') return;
     const a = document.activeElement; if (a && /^(input|textarea)$/i.test(a.tagName) && a.value) return;

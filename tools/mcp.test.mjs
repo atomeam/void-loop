@@ -14,7 +14,7 @@ test('mcp: initialize names Void and its tools capability; tools/list gives its 
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
-  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'skill_health']);
+  assert.deepEqual(list.result.tools.map((t) => t.name), ['ask_void', 'review_code', 'review_code_closer', 'moon_phase', 'meteor_showers', 'drive_time', ...SKILL_TOOLS.map((s) => s.tool), 'skill_health', 'skill_discovery']);
   for (const t of list.result.tools) { assert.equal(t.inputSchema.type, 'object'); assert.ok(t.description.length > 20); assert.equal(t.annotations.readOnlyHint, true); }
   assert.equal(await rpc({ jsonrpc: '2.0', method: 'notifications/initialized' }), null, 'a notification gets no reply');
   assert.deepEqual((await rpc({ jsonrpc: '2.0', id: 3, method: 'ping' })).result, {});
@@ -258,4 +258,18 @@ test('mcp skills: through the real route, skill_health reads skills/families.jso
   assert.equal(j.result.isError, false); assert.deepEqual(asked, [['GET', '/skills/families.json']]);
   assert.deepEqual(j.result.structuredContent.totals, FAMILIES.totals);
   assert.ok(j.result.structuredContent.families.find((f) => f.id === 'words').members.length > 0);
+});
+
+test('mcp skill_discovery (asked by Void): the families as a distribution with their skills by name, one family or a rating floor, errors plainly', async () => {
+  const ctx = { families: async () => FAMILIES };
+  const call = (args, c = ctx) => rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_discovery', arguments: args } }, c);
+  const r = (await call({})).result; assert.equal(r.isError, false);
+  const d = r.structuredContent, all = FAMILIES.families.reduce((n, f) => n + f.skills.length, 0);
+  assert.equal(d.skills, all); assert.equal(d.family_count, FAMILIES.families.length);
+  assert.ok(Math.abs(d.distribution.reduce((n, x) => n + x.share, 0) - 1) < 0.01, 'the shares add up to the whole');
+  assert.deepEqual(d.families[0].members.map((m) => m.name), FAMILIES.families[0].skills.map((s) => s.name));
+  const one = (await call({ family: FAMILIES.families[0].id })).result.structuredContent; assert.equal(one.families.length, 1);
+  const top = (await call({ tier: 'proven' })).result.structuredContent; assert.ok(top.families.every((f) => f.members.every((m) => m.tier === 'proven')));
+  assert.equal((await call({ tier: 'shiny' })).result.isError, true); assert.match((await call({ family: 'nope' })).result.content[0].text, /No family "nope"/);
+  assert.equal((await call({}, null)).result.isError, true); assert.equal((await call({}, { families: async () => null })).result.isError, true);
 });
