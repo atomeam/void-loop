@@ -2430,7 +2430,12 @@ say('nothing selected to remove');
       try {
         const m = await import('/lib/corrections.js'); if (vpageEl !== el) return;
         let log = []; try { log = JSON.parse(localStorage.getItem(LOOP_KEY) || '[]'); } catch (_) {}
-        const f = m.mountForm(slot, document, { storage: localStorage, log });
+        const formEl = document.createElement('div'), logEl = document.createElement('div'); slot.replaceChildren(formEl, logEl);
+        let fam = null; try { fam = await fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)); } catch (_) {}
+        if (vpageEl !== el) return;
+        const draw = () => { logEl.innerHTML = m.logHtml(m.readCorrections(localStorage), fam, esc); }; // void-review: ok: logHtml escapes every kept word with esc
+        draw();
+        const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw });
         if (said && m.wantsCorrection(said)) { if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
       } catch (_) {}
     }

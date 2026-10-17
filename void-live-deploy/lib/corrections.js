@@ -90,3 +90,36 @@ export function mountForm(root, doc, { storage, log, onSaved } = {}) {
   root.replaceChildren(select, box, save, note);
   return { select, box, save };
 }
+
+/** skill name -> { id, name } of its family, read off skills/families.json ({ families: [{ id, name, skills: [{ name }] }] }). Pure. */
+export function familyMap(fam) {
+  const m = new Map();
+  for (const f of (fam && fam.families) || []) for (const s of (f && f.skills) || []) if (s && s.name && f.id && !m.has(s.name)) m.set(s.name, { id: String(f.id), name: String(f.name || f.id) });
+  return m;
+}
+
+/**
+ * The correction log: the kept corrections grouped by the family of the skill that answered, biggest group first (ties by name), each group's
+ * newest correction first. A correction whose skill is unknown (or not in the families file) goes to the group "unplaced". Counts are counts of
+ * what is kept; nothing is estimated. Pure.
+ */
+export function groupByFamily(list, fam) {
+  const map = familyMap(fam), groups = new Map();
+  for (const c of Array.isArray(list) ? list : []) {
+    if (!c || typeof c.text !== 'string' || !c.text) continue;
+    const f = c.skill && map.get(c.skill) || { id: 'unplaced', name: 'Not placed in a family' };
+    if (!groups.has(f.id)) groups.set(f.id, { id: f.id, name: f.name, items: [] });
+    groups.get(f.id).items.unshift(c);
+  }
+  return [...groups.values()].sort((a, b) => b.items.length - a.items.length || a.name.localeCompare(b.name));
+}
+
+const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
+/** the log's markup; every kept word goes through esc (it is untrusted). An empty log says so and shows no number. Pure. */
+export function logHtml(list, fam, esc = escHtml) {
+  const groups = groupByFamily(list, fam), total = groups.reduce((n, g) => n + g.items.length, 0);
+  if (!total) return '<div class="vh">Correction log</div><div class="sub" data-corr-empty="1">No corrections yet. When you tell me what I got wrong, it is listed here by family.</div>';
+  return '<div class="vh">Correction log</div><div class="sub">' + esc(total) + ' kept on this device, by the family of the skill that answered.</div>'
+    + '<ul class="v-asks" data-corr-log="1">' + groups.map((g) => '<li><details><summary>' + esc(g.name) + ' <span style="color:var(--ink-3)">(' + esc(g.items.length) + ')</span></summary><div class="v-meta">'
+      + g.items.map((c) => '<p>' + (c.ask ? esc(c.ask) + (c.skill ? ' <span style="color:var(--ink-3)">(' + esc(c.skill) + ')</span>' : '') + ': ' : '') + esc(c.text) + '</p>').join('') + '</div></details></li>').join('') + '</ul>';
+}

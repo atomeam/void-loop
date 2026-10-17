@@ -40,6 +40,22 @@ test('the correction intents', () => {
   for (const q of ['make my void deep blue', 'what is a clock', 'open the self card']) assert.ok(!wantsCorrection(q), q);
 });
 
+import { familyMap, groupByFamily, logHtml } from '../void-live-deploy/lib/corrections.js';
+const FAM = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'clock' }, { name: 'timer' }] }, { id: 'words', name: 'Words', skills: [{ name: 'poem' }] }] };
+test('the log groups corrections by the family of the skill that answered', () => {
+  assert.equal(familyMap(FAM).get('timer').id, 'time'); assert.equal(familyMap(null).size, 0);
+  const list = [{ skill: 'clock', text: 'a' }, { skill: 'poem', text: 'b' }, { skill: 'timer', text: 'c' }, { skill: 'mystery', text: 'd' }, { skill: '', text: 'e' }, { text: '' }, null];
+  const g = groupByFamily(list, FAM);
+  assert.deepEqual(g.map((x) => [x.id, x.items.length]), [['unplaced', 2], ['time', 2], ['words', 1]]); // biggest first, ties by name
+  assert.deepEqual(g.find((x) => x.id === 'time').items.map((c) => c.text), ['c', 'a'], 'newest first');
+  assert.deepEqual(groupByFamily([], FAM), []); assert.deepEqual(groupByFamily(undefined, FAM), []);
+});
+test('the log is empty with no number when nothing is kept, and escapes untrusted text', () => {
+  const empty = logHtml([], FAM); assert.match(empty, /No corrections yet/); assert.ok(!/\d/.test(empty.replace(/<[^>]*>/g, '')), 'no invented number');
+  const html = logHtml([{ skill: 'clock', ask: '<img src=x onerror=alert(1)>', text: '"><script>alert(1)</script>' }], FAM);
+  assert.ok(!html.includes('<script') && !html.includes('<img'), 'escaped'); assert.match(html, /&lt;script&gt;/); assert.match(html, /Time <span[^>]*>\(1\)/);
+});
+
 test('the placeholder is not an answer: nothing is chosen and nothing is saved', () => {
   const recent = [{ ask: 'make a clock', skill: 'clock' }, { ask: 'make a timer', skill: 'timer' }];
   assert.equal(chosenAnswer(recent, ''), null); assert.equal(chosenAnswer(recent, undefined), null); assert.equal(chosenAnswer(recent, 'x'), null); assert.equal(chosenAnswer(recent, '5'), null); assert.equal(chosenAnswer(recent, '-1'), null);
