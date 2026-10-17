@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 125,
+ "runsTotal": 126,
  "kinds": {
   "grow": 15,
   "file": 58,
   "teach": 7,
   "tighten": 7,
-  "none": 38
+  "none": 39
  },
  "runs": [
+  {
+   "at": "2026-10-17T10:10:51Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T10:04:20Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"five minute challenge\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
-  },
-  {
-   "at": "2026-10-17T07:42:31Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -219,9 +219,9 @@
   "skill:lock": "2026-10-17T09:57:04Z",
   "skill:magnetize": "2026-10-17T10:04:20Z",
   "skill:make": "2026-10-17T10:04:20Z",
-  "skill:markets": "2026-10-16T15:29:50Z",
-  "skill:memory": "2026-10-16T15:29:50Z",
-  "skill:moon": "2026-10-16T15:29:50Z",
+  "skill:markets": "2026-10-17T10:10:51Z",
+  "skill:memory": "2026-10-17T10:10:51Z",
+  "skill:moon": "2026-10-17T10:10:51Z",
   "skill:motorbody": "2026-10-16T15:54:55Z",
   "skill:news": "2026-10-16T15:54:55Z",
   "skill:nightsky": "2026-10-16T15:54:55Z",
