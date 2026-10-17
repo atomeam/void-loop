@@ -136,6 +136,7 @@ for (const [name, file] of [
   ['arcade', 'arcade.test.mjs'],
   ['field-kit', 'field-kit.test.mjs'],
   ['vector-field', 'vector-field.test.mjs'],
+  ['field-cards', 'field-cards.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
