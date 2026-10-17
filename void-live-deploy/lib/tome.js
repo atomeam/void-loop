@@ -63,6 +63,11 @@ export const TOME_CSS = [
   '.tome-leaf::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(0,0,0,.35),rgba(0,0,0,0) 40%);opacity:0;transition:opacity .36s ease;pointer-events:none}.tome-leaf.going::after{opacity:1}',
   // the cover: shut it is all you see; it swings open on the spine in half a second (Skyrim's fBookOpenTime), then lies under the left page
   '.tome-cover{position:absolute;top:-1.6%;bottom:-1.6%;left:50%;width:calc(50% + 1.4%);transform-origin:left center;transform-style:preserve-3d;z-index:6;transition:transform .55s cubic-bezier(.4,.1,.2,1);transform:rotateY(0deg)}',
+  // shutting the book does not swing the cover across the pages (owner, 2026-10-17: "the cover is popping up in the middle of the book when closed"):
+  // the cover would appear at once, lying on the left page, and cross the spine; instead it fades in where it belongs while the book slides to the middle
+  // a shut book is one board: the cover alone (or the back cover alone), not the cover beside an empty board
+  '@media (min-width:701px){.tome.shut .tome-boards{clip-path:inset(-4% -4% -4% 50%)}.tome.shut.back .tome-boards{clip-path:inset(-4% 50% -4% -4%)}.tome-boards{transition:clip-path .35s ease}}',
+  '.tome.shut .tome-cover{transition:none;animation:tome-cover-in .45s ease both}@keyframes tome-cover-in{from{opacity:0}to{opacity:1}}',
   '.tome.open .tome-cover{transform:rotateY(-180deg)}.tome.opened .tome-cover{visibility:hidden}',
   '.tome-cover .face{position:absolute;inset:0;backface-visibility:hidden;border-radius:0 1.4% 1.4% 0/0 2% 2% 0}',
   '.tome-cover .face.out{background:linear-gradient(135deg,#3f2a18,#25170d 50%,#1a110a);box-shadow:inset 0 0 0 1px rgba(205,165,95,.3),inset 0 0 0 6px rgba(0,0,0,.25),inset 0 0 0 7px rgba(205,165,95,.18),8px 0 30px rgba(0,0,0,.5);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#d6b35c}',

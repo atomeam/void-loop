@@ -93,10 +93,10 @@ export function closeTome(why = 'esc') {
   const t0 = root.querySelector('.tome');
   if ((why === 'esc' || why === 'tap') && t0 && !t0.classList.contains('shut') && root._toCover) { root._toCover(); return true; }
   root._closing = true;
-  const tome = root.querySelector('.tome');
+  const tome = root.querySelector('.tome'), wasShut = tome.classList.contains('shut'); // a shut book has no cover to swing: it goes at once
   tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.add('shut');
   const gone = () => { root.classList.remove('on'); after(root, 'opacity', 350, () => { root.remove(); document.documentElement.classList.remove('v-tome'); }); };
-  if (motionless()) gone(); else after(tome.querySelector('.tome-cover'), 'transform', 550, gone);
+  if (motionless() || wasShut) gone(); else after(tome.querySelector('.tome-cover'), 'transform', 550, gone);
   if (root._cleanup) root._cleanup();
   if (window.__voidBook) window.__voidBook.open = false;
   try { document.dispatchEvent(new CustomEvent('void:book', { detail: { open: false, why } })); } catch (_) {}
