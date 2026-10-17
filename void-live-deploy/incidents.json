@@ -2,6 +2,16 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T07:29:56.315Z",
+   "sha": "5136f262b21faf0c7ca5c3eee5f68063babdf1b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39012916911",
+   "suite": "browser suite on main",
+   "checks": [
+    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
+    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
+   ]
+  },
+  {
    "at": "2026-10-17T06:36:02.627Z",
    "sha": "153519074284667ca870179b944b79ee0fc8e0b2",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39009581481",
@@ -301,15 +311,6 @@
     "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the ten recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
     "cook-flow: \"3 cups in ml\" is calculated and ends with the 10 minute timer chip (5 and 20 beside it)",
     "suite ran to the end"
-   ]
-  },
-  {
-   "at": "2026-10-16T06:09:45.130Z",
-   "sha": "8146df3d7d7fd927783264b2e6b9c3d32e72a6e0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38857322305",
-   "suite": "browser suite on main",
-   "checks": [
-    "Four in a Row on a phone: the 3D frame fits a 390 px screen, the card sits off the board and stops above the ask bar, the winning four are lit while the others dim, and the log leads with the latest reason (earlier moves folded)"
    ]
   }
  ]
