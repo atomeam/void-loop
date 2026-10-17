@@ -499,7 +499,6 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
      - **Not built here:** prices, checkout, a marketplace (money is the owner's call, `STANDING.md`), a trademark search of the name before anything physical ships.
 - **Done when:** any ask ends in a card whose type is what the thing is, whose art is its own, that prints at card size, and whose numbers are earned from evidence, never claimed.
 
-<<<<<<< HEAD
 ## 37. Web4: V01D is the fourth step of the web (owner's name, 2026-10-16)
 
 - **Why (owner, 2026-10-16, word for word):** "South Park did it, Ready Player One. Let's make the real Web 1, 2 and 3 version of it and let's call it: now V01D is Web4." The works are inspiration only (a fiction imagined the land; V01D is the real one); no characters, names or text are used.
@@ -509,7 +508,7 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
 - **A gap the card states plainly:** exporting cards as plain files to copy, print and paste back (Web 3 "portable") is not built on main; the card says "not built yet". It is the first next step, and it belongs with #31's card export.
 - **Next steps, smallest first:** 1. Card export and import as plain files (the Own layer made true in full). 2. A `/web4` front page the owner may choose to make the homepage story. 3. Per-subscriber lands and doors between lands (#36), which turn layer 4's "your own universe" from a plan into a thing. 4. Re-read the card when each lands, so it never claims ahead of main.
 - **Not here:** the homepage, the motto ("Ask, and it appears" stays unless the owner changes it), prices, any trademark filing: those are the owner's.
-=======
+
 ## 33. The V01D card game: summon any card, the strategy is all in your decisions
 
 - **Why (owner, 2026-10-16):** "focus on making the card system the best card system ever, and since anyone can summon any card, strategy is all in the decisions"; "the book and the cards are a hit, proving we are over complicating things: go back to the basics and make all things great again: kids' books, games, media, handhelds, board games, phone-line games, D&D, you name it, V01D is the answer"; the Illuminati card game "suits and fits V01D's vibe" (Power, Resistance, Income, control arrows).
@@ -525,7 +524,6 @@ Declined: an offline "smart-cache" that pre-downloads videos (embed only: never 
 - **What exists:** `lib/rules-engine.js` (pure `step(state, event, stack)`, `validateRule` with exact messages, three layers, timestamps, "can't beats can", `dependsOn`, cycles dropped and logged, `explain` in plain words, no eval); six rule sets as JSON in `lib/rulesets/` (duel, mana, tribute, initiative, merge, lines); `lib/rule-propose.js` (`proposeRule`: three sentence shapes, anything else is refused with a reason, never guessed); `lib/rules-play.js` (deterministic player, `gamesOf`); the ask "duel with mana and tribute rules" / "play cards with initiative" (`skills/duel.js`) stacks the sets, plays turns and shows every clash; tests `tools/rules-engine.test.mjs` (the data duel reproduces `lib/duel-rules.js` on scripted games) and the browser section "V01D rules engine". Playbook: `docs/playbooks/rules-engine.md`.
 - **Next, smallest first:** 1. The model-assisted `proposeRule`: V01D's model turns any sentence into a rule object, and the same `validateRule` decides (a model never returns code that runs; anything outside the vocabulary is refused with a reason). 2. Per-subscriber rule stacks stored as data on their own V01D, with the owner able to offer a rule many subscribers propose as a global one. 3. Chess and D&D rule sets (board moves, hit points, initiative), written from the mechanics in our own words. 4. The merge skill from `helper/merge-cards` reads `rulesets/merge.json` instead of its own table. 5. Play a stack interactively (the card duel's table on the engine, two devices). 6. Cards earned from evidence (`statsFor`) as the pool instead of the demo cards.
 - **Not here:** prices, packs, a marketplace (the owner's call); another game's wording, names or art.
->>>>>>> origin/main
 
 ## Candidate capability map (2026-10-09)
 

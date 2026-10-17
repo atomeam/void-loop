@@ -11,15 +11,9 @@
  },
  "smoke_at": "2026-10-16",
  "totals": {
-<<<<<<< HEAD
-  "experiment": 1,
-  "tested": 52,
-  "checked": 24,
-=======
   "experiment": 2,
   "tested": 55,
-  "checked": 25,
->>>>>>> origin/main
+  "checked": 26,
   "proven": 85
  },
  "families": [
@@ -1345,13 +1339,8 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-<<<<<<< HEAD
-    "tested": 4,
-    "checked": 8,
-=======
     "tested": 6,
-    "checked": 7,
->>>>>>> origin/main
+    "checked": 8,
     "proven": 14
    },
    "skills": [
