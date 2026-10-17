@@ -578,7 +578,7 @@ function inspectStyle() {
   const s = document.createElement('style'); s.id = 'void-mini-inspect';
   s.textContent = 'html.v-inspect #stage{filter:brightness(.5) blur(2px);transition:filter .45s ease}html.v-inspect #void-syn{opacity:.3}'
     + '.void-mini .mini-prompt{position:absolute;left:50%;bottom:10px;transform:translateX(-50%);padding:5px 13px;border-radius:999px;background:rgba(10,12,20,.74);color:#e9e2cf;font:13px Georgia,"Times New Roman",serif;letter-spacing:.02em;white-space:nowrap;pointer-events:none;border:1px solid rgba(233,226,207,.18);box-shadow:0 4px 14px rgba(0,0,0,.35)}'
-    + '.void-mini .mini-examine{position:absolute;right:8px;top:8px;padding:3px 10px;border-radius:999px;background:rgba(10,12,20,.6);color:#e9e2cf;font:12px Georgia,"Times New Roman",serif;letter-spacing:.03em;border:1px solid rgba(233,226,207,.22);cursor:pointer;opacity:0;transition:opacity .2s}'
+    + '.void-mini .mini-examine{position:absolute;right:8px;bottom:8px;padding:3px 10px;border-radius:999px;background:rgba(10,12,20,.6);color:#e9e2cf;font:12px Georgia,"Times New Roman",serif;letter-spacing:.03em;border:1px solid rgba(233,226,207,.22);cursor:pointer;opacity:0;transition:opacity .2s}'
     + '.void-mini:hover .mini-examine,.void-mini .mini-examine:focus-visible{opacity:1}@media (hover:none){.void-mini .mini-examine{opacity:.85}}.void-mini .mini-examine[hidden]{display:none}';
   document.head.appendChild(s);
 }
