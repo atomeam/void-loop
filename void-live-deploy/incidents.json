@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T20:40:47.689Z",
+   "sha": "9b1e44e13ab43a10aa9beaf01d26de32171fdf1a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39066819200",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
    "at": "2026-10-17T17:59:26.762Z",
    "sha": "1e053b8295693e98a943c0d8162e692e34c6bfa8",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39054961820",
@@ -283,15 +292,6 @@
     "V01D card game: passing banks two coins, then V01D plays its own side and the move comes back to you on turn 2",
     "V01D card game: an attack is played out and written in the log",
     "self-knowledge and state: \"what is voidquest\" reads the canon's words, \"which games do you know\" lists the games with a play link each, \"show my state\" lists what the device keeps and never shows the owner key's value, and the growth card shows V01D's arcade ladder (Pong 1032, Snake 968) from the wins and losses on this device"
-   ]
-  },
-  {
-   "at": "2026-10-17T01:11:48.563Z",
-   "sha": "fdcd6be3155250be8f3660c4d0bf7797a0c37ed6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38988734705",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
    ]
   }
  ]
