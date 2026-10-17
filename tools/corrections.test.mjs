@@ -1,6 +1,6 @@
 // The correction channel on the self card (asked by Void). node --test tools/corrections.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
-import { CORRECTIONS, clean, makeCorrection, addCorrection, readCorrections, recentAnswered, wantsCorrection, skillName } from '../void-live-deploy/lib/corrections.js';
+import { CORRECTIONS, clean, makeCorrection, addCorrection, readCorrections, recentAnswered, wantsCorrection, skillName, chosenAnswer, mountForm } from '../void-live-deploy/lib/corrections.js';
 import { STORES } from '../void-live-deploy/lib/state.js';
 const mem = () => { const m = new Map(); return { getItem: (k) => (m.has(k) ? m.get(k) : null), setItem: (k, v) => m.set(k, String(v)), removeItem: (k) => m.delete(k), keys: () => [...m.keys()] }; };
 
@@ -38,4 +38,16 @@ test('recent answers come from the loop log: skills only, newest first, one per 
 test('the correction intents', () => {
   for (const q of ['tell void what it got wrong', 'void got this wrong', 'correct void on its self card', 'open your self card, I want to correct you']) assert.ok(wantsCorrection(q), q);
   for (const q of ['make my void deep blue', 'what is a clock', 'open the self card']) assert.ok(!wantsCorrection(q), q);
+});
+
+test('the placeholder is not an answer: nothing is chosen and nothing is saved', () => {
+  const recent = [{ ask: 'make a clock', skill: 'clock' }, { ask: 'make a timer', skill: 'timer' }];
+  assert.equal(chosenAnswer(recent, ''), null); assert.equal(chosenAnswer(recent, undefined), null); assert.equal(chosenAnswer(recent, 'x'), null); assert.equal(chosenAnswer(recent, '5'), null); assert.equal(chosenAnswer(recent, '-1'), null);
+  assert.equal(chosenAnswer(recent, '0').skill, 'clock'); assert.equal(chosenAnswer(recent, '1').skill, 'timer');
+  const mk = () => { const n = { children: [], listeners: {}, value: '', append(...k) { this.children.push(...k); }, replaceChildren() {}, addEventListener(e, f) { this.listeners[e] = f; } }; return n; };
+  const doc = { createElement: () => mk() }; const s = mem(), f = mountForm(mk(), doc, { storage: s, log: [{ ask: 'make a clock', note: 'skill:clock' }] });
+  f.select.value = ''; f.box.value = 'wrong'; f.save.listeners.click();
+  assert.deepEqual(readCorrections(s), [], 'placeholder selected: nothing stored');
+  f.select.value = '0'; f.save.listeners.click();
+  assert.equal(readCorrections(s)[0].skill, 'clock');
 });
