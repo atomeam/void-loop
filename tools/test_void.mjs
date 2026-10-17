@@ -2384,12 +2384,16 @@ try {
         : { type: 'standard', title: 'Zorbleflux', extract: 'Zorbleflux is a word with no date at all.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Zorbleflux' } } })); });
     await R.ask('how many hours til gta6?', 400); await until(async () => /hours?\b/.test(await R.page()) && /2099/.test(await R.page()), 6000);
     const card = await R.page(), link = await R.p.$('.vpage.on .src a[href="https://en.wikipedia.org/wiki/Grand_Theft_Auto_VI"]');
+    // asked by Void, twice: the badge shows the raw text the date was read from (here the infobox wikitext line) on hover and on a tap
+    await R.p.hover('.vpage.on .ec-badge'); const rawHover = await R.p.$eval('.vpage.on .ec-raw', (c) => ({ shown: getComputedStyle(c).display !== 'none', text: c.textContent }));
+    await R.p.mouse.move(0, 0); await R.p.click('.vpage.on .ec-badge'); await R.p.mouse.move(0, 0); const rawTap = await R.p.$eval('.vpage.on .ec-raw', (c) => getComputedStyle(c).display !== 'none');
     await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
     check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
       /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && /less sure/.test(card) && /infobox/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
+        && rawHover.shown && rawHover.text === '| released = {{Video game release|WW|November 19, 2099}}' && rawTap
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
-      JSON.stringify({ card: card.slice(0, 400), seen, none: none.slice(0, 200), errors: R.errors }));
+      JSON.stringify({ card: card.slice(0, 400), seen, rawHover, rawTap, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
   // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)

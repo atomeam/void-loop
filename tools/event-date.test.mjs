@@ -57,3 +57,13 @@ test('the card says which part of the page gave the date, and is less sure of an
   assert.equal(confidenceOf('summary').sure, 'high'); assert.equal(confidenceOf('lead').sure, 'high'); assert.equal(confidenceOf('infobox').sure, 'lower');
   assert.match(confidenceOf('infobox').label, /infobox/);
 });
+
+test('the badge shows the raw text the date was read from: the infobox wikitext line, or the sentence (asked by Void, twice)', async () => {
+  const { announcedFrom, rawSnippet } = await import('../void-live-deploy/lib/event-date.js');
+  const now = new Date('2026-10-17T00:00:00Z');
+  const box = announcedFrom({ extract: 'A game.', lead: 'A game by a studio.', wikitext: '| released = {{Video game release|WW|{{Start date|2026|11|19}}}}' }, now);
+  assert.equal(box.from, 'infobox'); assert.equal(rawSnippet(box), '| released = {{Video game release|WW|{{Start date|2026|11|19}}}}');
+  const prose = announcedFrom({ extract: 'It is scheduled for release on 19 November 2026.' }, now);
+  assert.equal(rawSnippet(prose), 'It is scheduled for release on 19 November 2026.');
+  assert.equal(rawSnippet(null), '');
+});
