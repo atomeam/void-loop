@@ -2668,7 +2668,7 @@ try {
     check('arena day over day: "how good are you at connect four" says the change since the last day that differed, from the history the daily run keeps (here: ' + arenaDelta(rec.history) + ')',
       Array.isArray(rec.history) && rec.history.length >= 1 && delta === 'Day over day: ' + arenaDelta(rec.history) + '.' && !A.errors.length, JSON.stringify({ delta, history: rec.history, e: A.errors }));
     await A.ctx.close(); }
-  // V01D card game (frontier #33 steps 1 and 2): "duel" puts a table of V01D cards on the stage; a person summons an idea, passes, attacks, and V01D plays the other side.
+  // V01D card game (skills/duel.js, frontier #33 steps 1 and 2): "duel" puts a table of V01D cards on the stage; a person summons an idea, passes, attacks, and V01D plays the other side.
   if (want("V01D card game: duel puts a table of V01D cards on the stage, you summon an idea, pass and attack, and V01D plays its side")) {
     const G = await fresh(); await G.p.setViewportSize({ width: 375, height: 760 }); await G.ask('duel', 900);
     await G.p.waitForSelector('.duel-card .duel-tile', { timeout: 6000 }).catch(() => {});
