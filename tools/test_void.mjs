@@ -3945,6 +3945,17 @@ try {
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,
   // Esc or a tap on the dark closes it; an ask on a page closes the book and runs; every skill has a page; one page on a phone.
+  // asked by Void: the parchment's tone follows the site's health at the Status card's last check on this device; no reading, no tint
+  if (want("the book: the parchment warms or cools with the Status card's last reading")) {
+    const tone = async (reading) => { const B = await fresh({ content: reading ? 'localStorage.setItem("a2m.void.status.health.v1", JSON.stringify(Object.assign(' + JSON.stringify(reading) + ', { at: Date.now() })))' : '' });
+      await B.ask('open the book', 900); await until(() => B.p.$('#vtome .tome-page.left'), 6000);
+      const got = await B.p.$eval('#vtome .tome-page.left', (pg) => ({ filter: getComputedStyle(pg).filter, tone: document.getElementById('vtome').dataset.tone || '' }));
+      const errs = B.errors.slice(); await B.ctx.close(); return { ...got, errs }; };
+    const cold = await tone({ failing: 3, checked: 9 }), warm = await tone({ failing: 0, checked: 9 }), none = await tone(null);
+    check('the book (asked by Void): with 3 of 9 failing at the last status check the parchment is cooled (hue turned back, colour drained), with none failing it is warm sepia, and with no reading it is untouched',
+      /hue-rotate\(-12deg\)/.test(cold.filter) && /saturate\(0\.75\)/.test(cold.filter) && /^sepia\(0\.18\) saturate\(1\.08\)$/.test(warm.filter) && none.filter === 'none' && none.tone === '' && ![cold, warm, none].some((x) => x.errs.length),
+      JSON.stringify({ cold, warm, none }));
+  }
   if (want("the book: search the tome from the docked bar, with the cover shut or open, and jump to the page")) { const B = await fresh(); // asked by Void
     const guide = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'guide.json'), 'utf8')), wx0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'weather'), cl0 = guide.pages.find((x) => x.kind === 'skill' && x.name === 'clock');
     await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened .tome-search input, #vtome.on .tome.opened')), 8000); await B.p.waitForTimeout(400);

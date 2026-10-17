@@ -9,7 +9,7 @@
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
-import { recovered, loadFailed, keepFailed, successPulse } from '../lib/success-pulse.js';
+import { recovered, loadFailed, keepFailed, keepHealth, successPulse } from '../lib/success-pulse.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
   { name: 'Open-Meteo places', for: 'maps, places, local time', url: 'https://geocoding-api.open-meteo.com/v1/search?count=1&name=Paris' },
@@ -235,7 +235,7 @@ async function run(text, api) {
   const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const back = recovered(loadFailed(), failing, [...checked, ...(skills.error ? [] : (loadFailed().filter((n) => n.startsWith('skill:'))))]);
-  keepFailed(failing);
+  keepFailed(failing); keepHealth(failing.length, checked.length + (skills.error ? 0 : 1)); // the book's parchment reads this (lib/tome.js parchmentFilter)
   if (back.length) { successPulse(); api.say('working again: ' + back.map((n) => n.replace(/^[a-z]+:/, '')).slice(0, 3).join(', ')); }
   el.querySelectorAll('[data-recover]').forEach((btn) => btn.addEventListener('click', async () => {
     const row = (build || []).find((b) => b.state === 'failed' && (b.sha || '') === btn.getAttribute('data-recover')) || { checks: [] }, said = el.querySelector('[data-recover-said]');
