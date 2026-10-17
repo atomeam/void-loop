@@ -17,7 +17,7 @@ async function summaryOf(words) {
     const r = await fetch(WIKI + '/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g, '_')), UA);
     if (!r.ok) return null; const j = await r.json();
     if (!j || !j.extract || j.type === 'disambiguation') return null;
-    return { title: String(j.title || title), extract: String(j.extract), url: (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || WIKI + '/wiki/' + encodeURIComponent(title) };
+    return { title: String(j.title || title), extract: String(j.extract), edited: String(j.timestamp || ''), url: (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || WIKI + '/wiki/' + encodeURIComponent(title) };
   };
   try {
     const exact = await page(words); if (exact) return exact;
@@ -28,6 +28,13 @@ async function summaryOf(words) {
 }
 
 const n = (x, w) => x + ' ' + w + (x === 1 ? '' : 's');
+/** how fresh the source is, after the confidence badge (asked by Void: "a 'last-verified' timestamp to the confidence badge so users know how
+ *  fresh the source data is"): the page's last edit from Wikipedia and when V01D read it. '' when the page gave no edit time. Pure. */
+export function verifiedLine(edited, now = new Date()) {
+  const e = new Date(edited || ''); if (!edited || isNaN(e)) return '';
+  const day = e.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
+  return 'page last edited ' + day + ' · checked ' + now.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+}
 /** the big line in the unit asked for: "781 hours", "32 days, 13 hours". Pure. */
 export function bigLine(l, unit) {
   if (unit === 'hours') return n(l.totalHours, 'hour');
@@ -62,7 +69,7 @@ async function run(text, api) {
   body.innerHTML = '<p class="ec-big" style="font-size:30px;font-weight:600;margin:6px 0"></p><p class="ec-rest" style="opacity:.8;margin:0 0 10px"></p>'
     + '<p>' + esc(s.title) + ': ' + esc(day) + ' (counted to the start of that day where you are; the hour can differ by region).</p>'
     + '<blockquote style="margin:8px 0;opacity:.85">' + esc(when.sentence.slice(0, 280)) + '</blockquote>'
-    + '<p class="ec-sure" data-from="' + esc(when.from) + '" data-sure="' + esc(conf.sure) + '" style="font-size:12px;margin:4px 0;opacity:' + (conf.sure === 'high' ? '.95' : '.6') + '"><span class="ec-badge" tabindex="0" title="' + esc(rawSnippet(when)) + '" style="display:inline-block;padding:1px 8px;border-radius:9px;border:1px solid currentColor;margin-right:6px;cursor:help">' + (conf.sure === 'high' ? 'sure' : 'less sure') + '</span>' + esc('Date ' + conf.label)
+    + '<p class="ec-sure" data-from="' + esc(when.from) + '" data-sure="' + esc(conf.sure) + '" style="font-size:12px;margin:4px 0;opacity:' + (conf.sure === 'high' ? '.95' : '.6') + '"><span class="ec-badge" tabindex="0" title="' + esc(rawSnippet(when)) + '" style="display:inline-block;padding:1px 8px;border-radius:9px;border:1px solid currentColor;margin-right:6px;cursor:help">' + (conf.sure === 'high' ? 'sure' : 'less sure') + '</span>' + esc('Date ' + conf.label) + (verifiedLine(s.edited) ? ' <span class="ec-verified" data-verified="' + esc(s.edited) + '">· ' + esc(verifiedLine(s.edited)) + '</span>' : '')
     // the raw text the date was read from, on hover, focus or a tap of the badge (asked by Void, twice)
     + '<code class="ec-raw" style="display:none;margin-top:4px;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.07);white-space:pre-wrap;word-break:break-word">' + esc(rawSnippet(when)) + '</code></p>'
     + '<style>.ec-sure:hover .ec-raw,.ec-sure:focus-within .ec-raw,.ec-sure.open .ec-raw{display:block!important}</style>' + src;

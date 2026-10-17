@@ -12,7 +12,7 @@
     { "match": "rendered.? state signal", "ledgerAt": "2026-10-15T06:48:16Z", "why": "window.voidStageReadiness() gathers every 3D mini's rendered state into one object" },
     { "match": "skill velocity", "ledgerAt": "2026-10-15T16:53:41Z", "why": "the growth card's velocity line, this week against the week before" },
     { "match": "growth card branches|branches .*growth inbox|growth tree to the growth inbox|clicking a growth event", "ledgerAt": "2026-10-13T16:49:13Z", "why": "touching a branch of the growth tree says what Void asked for that it built, matched by the ledger entry that built it" },
-    { "match": "convert-card", "ledgerAt": "2026-10-14T19:54:54Z", "why": "the unit converter card stays on the stage and converts as you type" },
+    { "match": "^Create a 'convert-card' skill", "ledgerAt": "2026-10-14T19:54:54Z", "why": "the unit converter card stays on the stage and converts as you type" },
     { "match": "fringe experiment.*(permanent skill|growth inbox)|fringe-to-skill|success metric.*fringe", "ledgerAt": "2026-10-16T06:06:20Z", "why": "the fringe-to-skill card: every published fringe family, its draft, findings and whether a skill came of it" },
     { "match": "near-miss.*(proposal|suggestion)|'near-miss' skill proposal", "ledgerAt": "2026-10-16T06:28:29Z", "why": "a near miss becomes a visible proposal under 'I don't know this yet' when the router's closest skill scored near its bar" },
     { "match": "response-type|raw_data", "ledgerAt": "2026-10-15T06:48:14Z", "why": "Void's MCP tools take response_type text or raw_data" },
