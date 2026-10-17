@@ -1,0 +1,9 @@
+{
+  "about": "Words the typo audit (tools/typo-audit.mjs) would otherwise flag, each with why it is right as written: a real word one letter-swap from a commoner one, or a slip kept on purpose.",
+  "allow": {
+    "dose": "a real word: the coral skill's heat dose, not 'does'",
+    "flies": "a real word: 'how far a crow flies', not 'files'",
+    "form": "a real word: a web form, not 'from'",
+    "menaing": "kept on purpose: the misspelling from issue #792 that the define skill learned to read (tools/define-typo.test.mjs)"
+  }
+}
