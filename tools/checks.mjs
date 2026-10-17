@@ -52,6 +52,7 @@ for (const [name, file] of [
   ['automations-seed', 'automations-seed.test.mjs'],
   ['rebuild-map', 'rebuild-map.test.mjs'],
   ['record', 'record.test.mjs'],
+  ['film-sound', 'film-sound.test.mjs'],
   ['hero-view', 'hero-view.test.mjs'],
   ['rts', 'rts.test.mjs'],
   ['routed', 'routed.test.mjs'],
