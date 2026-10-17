@@ -1,7 +1,7 @@
 // The whole card as a picture (lib/card-image.js). Run: node --test tools/card-image.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { cardSvg, wrap, CARD_W, CARD_H, BLEED } from '../void-live-deploy/lib/card-image.js';
+import { cardSvg, wrap, fitTitle, fitText, CARD_W, CARD_H, BLEED } from '../void-live-deploy/lib/card-image.js';
 
 const d = { title: 'Casablanca', text: 'A 1942 film. '.repeat(40), typeLine: 'Film · Song — 1942', kind: 'Film', cost: 3, rarity: 'Rare', hue: 190, key: 'Casablanca', adds: 'It adds a fact.', power: 7, toughness: 12, income: 3, number: '012/221' };
 const dims = (s) => { const m = /viewBox="0 0 (\d+) (\d+)"/.exec(s); return [+m[1], +m[2]]; };
@@ -23,4 +23,16 @@ test('every text field is escaped', () => {
 test('long text is wrapped and cut with an ellipsis', () => {
   const l = wrap(d.text, 50, 5); assert.equal(l.length, 5); assert.ok(l.every((x) => x.length <= 50)); assert.ok(l[4].endsWith('…'));
   assert.deepEqual(wrap('', 50, 5), []);
+});
+test('a long title is never cut: it shrinks or takes two lines, whole', () => {
+  const t = "I've widened the movies agent's job to find real films and play the free ones in V01D";
+  const svg = cardSvg({ ...d, title: t, cost: 3 });
+  const shown = [...svg.matchAll(/font-weight="700" font-size="(\d+)" fill="#f3efe2">([^<]*)</g)].filter((m) => +m[1] !== 34).map((m) => m[2]).join(' ');
+  assert.ok(!shown.includes('…')); assert.equal(shown.replace(/&#39;/g, "'"), t);
+  assert.equal(fitTitle('Casablanca', 600).lines.length, 1); assert.equal(fitTitle(t, 560).lines.length, 2);
+});
+test('the answer text is never cut while it can shrink to fit the box', () => {
+  const t = 'the GitHub token the last token rotation showed that '.repeat(14);
+  const f = fitText(t, 172); assert.ok(f.fs < 23 && f.fs >= 11); assert.ok(f.lines.length * f.lh <= 172); assert.ok(!f.lines.at(-1).endsWith('…'));
+  assert.equal(fitText("short", 172).fs, 23);
 });
