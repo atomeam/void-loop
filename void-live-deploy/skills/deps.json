@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 416,
+ "counted": 417,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -159,6 +159,12 @@
    "dependants": 12
   },
   {
+   "file": "lib/watch.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 10
+  },
+  {
    "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
@@ -184,12 +190,6 @@
   },
   {
    "file": "lib/store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 7
-  },
-  {
-   "file": "lib/watch.js",
    "skills": 1,
    "direct": 1,
    "dependants": 7
@@ -369,6 +369,12 @@
    "dependants": 10
   },
   {
+   "file": "lib/automations.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 8
+  },
+  {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
@@ -393,7 +399,7 @@
    "dependants": 6
   },
   {
-   "file": "lib/automations.js",
+   "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
    "dependants": 5
@@ -421,12 +427,6 @@
    "skills": 0,
    "direct": 0,
    "dependants": 5
-  },
-  {
-   "file": "lib/automations-run.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 4
   },
   {
    "file": "lib/cite.js",
@@ -499,6 +499,12 @@
    "skills": 0,
    "direct": 0,
    "dependants": 3
+  },
+  {
+   "file": "lib/keep-going.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2
   },
   {
    "file": "lib/learn.js",
@@ -745,6 +751,8 @@
     "lib/router.js",
     "lib/actions.js",
     "lib/email-send.js",
+    "lib/keep-going.js",
+    "lib/automations-run.js",
     "lib/approval-core.js"
    ],
    "importedBy": []
@@ -1175,7 +1183,8 @@
   },
   "lib/approval-core.js": {
    "imports": [
-    "lib/models.js"
+    "lib/models.js",
+    "lib/keep-going.js"
    ],
    "importedBy": [
     "functions/api/approval.js"
@@ -1323,6 +1332,7 @@
     "lib/guard.js"
    ],
    "importedBy": [
+    "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
@@ -1336,11 +1346,14 @@
    "importedBy": [
     "functions/api/automations.js",
     "functions/api/watch.js",
-    "lib/automations-run.js"
+    "lib/automations-run.js",
+    "lib/keep-going.js"
    ],
    "reachedBy": [
+    "functions/api/approval.js",
     "functions/api/automations/tick.js",
-    "functions/api/hook/[id].js"
+    "functions/api/hook/[id].js",
+    "lib/approval-core.js"
    ]
   },
   "lib/bench-asks.js": {
@@ -1685,6 +1698,15 @@
    ],
    "importedBy": [
     "functions/api/queue.js"
+   ]
+  },
+  "lib/keep-going.js": {
+   "imports": [
+    "lib/automations.js"
+   ],
+   "importedBy": [
+    "functions/api/approval.js",
+    "lib/approval-core.js"
    ]
   },
   "lib/keeper.js": {
@@ -2538,9 +2560,12 @@
     "skills/watch.js"
    ],
    "reachedBy": [
+    "functions/api/approval.js",
     "functions/api/automations.js",
     "functions/api/automations/tick.js",
-    "functions/api/hook/[id].js"
+    "functions/api/hook/[id].js",
+    "lib/approval-core.js",
+    "lib/keep-going.js"
    ]
   },
   "lib/webauthn.js": {
