@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-17T00:38:26.192Z",
+   "sha": "04b71c086962d53f78d845f7336a6b5f402a9452",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/38986652190",
+   "suite": "browser suite on main",
+   "checks": [
+    "V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists the eleven recipes with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built"
+   ]
+  },
+  {
    "at": "2026-10-17T00:17:00.432Z",
    "sha": "ad9d990869963c691c5346f1853692017d942eda",
    "run": "https://github.com/atomeam/void-loop/actions/runs/38984586845",
