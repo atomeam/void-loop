@@ -1015,5 +1015,12 @@
   "of": 25,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
+ },
+ {
+  "at": "2026-10-17T11:53:29Z",
+  "passed": 24,
+  "of": 26,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
  }
 ]

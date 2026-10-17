@@ -2,12 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T11:42:48.037Z",
+   "at": "2026-10-17T11:55:03.861Z",
+   "sha": "5fb68c728c5f39a3516c9a820d523248bb9fdd63",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39029457703",
+   "suite": "browser suite on main",
+   "checks": [
+    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T11:37:56.747Z",
    "sha": "d2f04c2535207bbd1e494fcdba3a97ddc662fe7d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39028594328",
    "suite": "browser suite on main",
    "checks": [
-    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
     "check timeout: no check finished within 300 s"
    ]
   },
@@ -294,16 +303,6 @@
     "\"growth\": touching a branch says what Void asked for that it built (asked by Void: \"link the growth card branches to the growth inbox\"), matched by the entry that built it",
     "\"growth\": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch",
     "\"growth\": the time slider under the tree goes back to the first change (one branch, the readout names that day and 1 change) and forward to today (every branch, the shoots not grown yet among them, one of them the claim being built, at least one bud for the will's open want, the last commits as new leaves)"
-   ]
-  },
-  {
-   "at": "2026-10-16T19:18:47.575Z",
-   "sha": "fdaad939b8d55fd37e894faa0dc4e62b099be06a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/38952061647",
-   "suite": "browser suite on main",
-   "checks": [
-    "\"what can you do\" opens the self page, and \"menu\" opens the book (\"close\" shuts it)",
-    "3D counter: \"make a counter\" puts a chrome tally counter beside it; wheelDigits pads to four (1234, 0007, 0012, 3456); tapping its plunger counts one up on the card"
    ]
   }
  ]
