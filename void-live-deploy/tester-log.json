@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 133,
+ "runsTotal": 134,
  "kinds": {
   "grow": 15,
-  "file": 64,
+  "file": 65,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T11:36:13Z",
+   "passed": 19,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"my actions\" load 1251 ms > 1200"
+  },
   {
    "at": "2026-10-17T11:28:39Z",
    "passed": 14,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-17T08:39:02Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -241,9 +241,9 @@
   "skill:proposal": "2026-10-17T11:28:39Z",
   "skill:quiz": "2026-10-17T11:28:39Z",
   "skill:rebuild-map": "2026-10-17T11:28:39Z",
-  "skill:recent": "2026-10-16T17:30:08Z",
-  "skill:recipe": "2026-10-16T17:30:08Z",
-  "skill:releasenotes": "2026-10-16T18:09:42Z",
+  "skill:recent": "2026-10-17T11:36:13Z",
+  "skill:recipe": "2026-10-17T11:36:13Z",
+  "skill:releasenotes": "2026-10-17T11:36:13Z",
   "skill:rides": "2026-10-16T18:09:42Z",
   "skill:room": "2026-10-16T18:09:42Z",
   "skill:routine": "2026-10-16T18:17:08Z",

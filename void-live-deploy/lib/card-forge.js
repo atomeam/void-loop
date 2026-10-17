@@ -18,11 +18,17 @@ const waiting = new Map(); // subject -> the card elements waiting on a read or 
 const land = (key, img) => { for (const e of waiting.get(key) || []) { if (e.isConnected) { e._vcForge = img; show(e, img); } } waiting.delete(key); };
 /** what to paint: the answer's own nouns (card-subject.js), or the card's key when the answer says too little. */
 const subjectFor = (el, c) => (el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key);
+export const RETRY_S = [25, 50, 100]; const tries = new Map(); // a subject's retries after a busy or slow paint
+/** a paint worth trying again later: no answer, a model timeout, a rate limit or an HTTP error; never the cap or the switch. Pure. */
+export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.why);
 const seen = new Map(); // folded-or-typed subject + kind -> 'art' | 'none' | 'plate' with the picture, so a card shown twice asks once
 /** is this card one the forge paints: an answer or a merged card, never a skill, a game or a miniature, a person, or a sky card. Pure. */
 export function worthy(el, c) {
   if (!el || !c || (el.classList && el.classList.contains('skyc'))) return false; // a skill's card is painted too (backfill, tools/prepaint-art.mjs): its subject is its name
   const kind = String(c.kindName || '').toLowerCase();
+  // a card still loading is never painted ("Repository — looking" painted the word "looking"), nor a fragment of a word ("rt")
+  const sk = String(subjectFor(el, c) || '').trim();
+  if (sk.replace(/[^a-z0-9]/gi, '').length < 3 || /^(?:looking|loading|thinking|searching)\b/i.test(sk) || /\b(?:looking|loading)\b|…$/i.test(String(c.typeLine || ''))) return false;
   return kind !== 'person' && !!String(c.key || '').trim();
 }
 /** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar or the title. */
@@ -45,7 +51,7 @@ async function ask(method, el, c) {
   const kind = kindOf(el, c), rarity = c.rarity ? c.rarity.name.toLowerCase() : 'common';
   const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(subjectFor(el, c)) + '&kind=' + encodeURIComponent(kind) : '');
   const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity }) });
-  return r.ok ? r.json() : { state: 'plate' };
+  return r.ok ? r.json() : { state: 'plate', why: r.status === 429 ? 'slow' : 'http' };
 }
 function button(el, c) {
   if (mode() === 'off') return;
@@ -61,7 +67,11 @@ async function paint(el, c, b) {
   const sk = subjectFor(el, c); let got = null; // one POST per subject, whichever card element asks (a frame is rebuilt as its facts arrive)
   try { if (!inflight.has(sk)) inflight.set(sk, ask('POST', el, c).finally(() => setTimeout(() => inflight.delete(sk), 3000))); got = await inflight.get(sk); } catch (_) {}
   const img = got && got.state === 'art' ? safeImg(got.img) : '';
-  if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a failed or capped paint is not retried this page
+  // busy (the model timed out) or slow (more than three paints a minute from one place): try again later, three times at most, so a
+  // person opening cards quickly still gets their paintings (owner, 2026-10-17: "still no art": three paintings in all, the rest 429s)
+  // the cap and an off switch are final for the page
+  if (!img && !b && autoOn() && retryable(got) && (tries.get(sk) || 0) < RETRY_S.length) { const n = tries.get(sk) || 0; tries.set(sk, n + 1); setTimeout(() => { seen.delete(sk); if (el.isConnected) forge(el, el._vcard || c, null); }, RETRY_S[n] * 1000); return; }
+  if (!img && !b) seen.set(subjectFor(el, c), 'plate'); // a capped, switched-off or thrice-failed paint is not retried this page
   if (img) { seen.set(subjectFor(el, c), img); land(subjectFor(el, c), img); if (el.isConnected) { el._vcForge = img; show(el, img); } return; }
   if (!el.isConnected) return;
   if (b) { b.disabled = false; b.textContent = got && got.why === 'cap' ? 'out of paint today' : 'try again later'; if (got && (got.why === 'cap' || got.why === 'off')) setTimeout(() => b.remove(), 2500); }
