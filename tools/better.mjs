@@ -35,7 +35,7 @@ export function today(now = Date.now()) {
     bench: json('tools/bench.misses.json', null),
     now,
   });
-  const row = rowOf(facts, new Date(now).toISOString());
+  const row = rowOf(facts, new Date(now).toISOString(), json('void-live-deploy/skills/families.json', null)); // the row keeps each family's health, for the family velocity
   const rows = withRow(json('void-live-deploy/void.better.json', []), row);
   return { row, rows, trend: compare(rows) };
 }

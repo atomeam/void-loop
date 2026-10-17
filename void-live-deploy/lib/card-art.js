@@ -301,11 +301,13 @@ function gearAt(X, cx, cy, R, n, rot, fill) {
 export function artInner(card = {}, { w = 520, h = 170 } = {}) {
   const mots = motifsFor(card.nouns); // what the answer is about (lib/card-subject.js): drawn instead of the generic plate, and the haunted skin steps aside
   const kind = KINDS.includes(card.kind) ? card.kind : kindWord(card.kind);
-  const key = String(card.key || card.name || kind), rk = rarityKey(card.rarity), RL = RARITY_LOOK[rk];
+  const key = String(card.key || card.name || kind), rk = rarityKey(card.rarity);
+  // card.ink (lib/art-meta.js: a film's or song's decade): the line quality of another rarity's look, the foil and stars stay the card's own rating
+  const ik = card.ink && card.ink in RARITY_LOOK ? card.ink : '', RL = ik ? { ...RARITY_LOOK[rk], ink: RARITY_LOOK[ik].ink, wob: RARITY_LOOK[ik].wob, dens: RARITY_LOOK[ik].dens, w: RARITY_LOOK[ik].w } : RARITY_LOOK[rk];
   const hot = card.season === 'halloween' && !mots.length;
   const hue = Number.isFinite(+card.hue) ? Math.round(+card.hue) % 360 : seedOf(key) % 360;
   const seed = seedOf(key + '|' + kind), r = rng(seed);
-  const id = 'a' + seed.toString(36) + (hot ? 'h' : 'b') + rk[0] + (kind === 'Game' && card.glyph ? 'g' : '');
+  const id = 'a' + seed.toString(36) + (hot ? 'h' : 'b') + rk[0] + (ik ? 'i' + ik[0] : '') + (kind === 'Game' && card.glyph ? 'g' : '');
   const X = {
     defs: [], r, id, h: hue, hot, sw: RL.w, chapter: card.chapter, name: card.name, key,
     R: (a, b) => a + r() * (b - a), I: (a, b) => Math.floor(a + r() * (b - a + 1)),

@@ -230,6 +230,7 @@ for (const [name, file] of [
   ['merge-route', 'merge-route.test.mjs'],
   ['card-art-route', 'card-art-route.test.mjs'],
   ['card-subject', 'card-subject.test.mjs'],
+  ['repo-look', 'repo-look.test.mjs'],
   ['paste-rule', 'paste-rule.test.mjs'],
   ['card-share', 'card-share.test.mjs'],
   ['card-art', 'card-art.test.mjs'],

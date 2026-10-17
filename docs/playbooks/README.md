@@ -23,3 +23,4 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [real-movies.md](real-movies.md) | a movie pick that names only found movies, with their poster as art, playing only free legal films and official trailers | not yet |
 | [build-voice-asks.md](build-voice-asks.md) | V01D's own asks from `domains/void.voice.md`: group repeats, check what is built, record or ship one small PR each | not yet |
 | [make-music.md](make-music.md) | an original short piece of music composed from an ask and synthesised in the browser (song, beat, lullaby), with a piano roll, WAV and notes | not yet |
+| [field-mind.md](field-mind.md) | a small simulated field with a tiny local mind on the shared kit (flow canvas, swarm, figures): pure law, Worker mind with a page fallback, card, tests | not yet |
