@@ -741,6 +741,41 @@ try {
     check('sticky words are not orders: "add a sticky that says big plans for the top left" makes exactly one sticky with those words (no empty sticky moved or resized first)',
       notes.length === 1 && notes[0].text === 'big plans for the top left' && !W.errors.length, JSON.stringify({ notes: notes.map((n) => ({ text: n.text, size: n.size, x: n.x, y: n.y })), e: W.errors }));
     await W.ctx.close(); }
+  // real movies (owner, 2026-10-17): "pick a movie to watch with me" looks each suggestion up; a found one is a card with its own poster as art,
+  // an unfound one is "not verified"; a free film plays in a <video>, a film in copyright shows its trailer and links. Sources are stood in for here.
+  if (want("real movies: \"pick a movie to watch with me\" shows only found movies with their poster")) { const M = await fresh();
+    const POSTER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x600bb.jpg';
+    await M.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Talk to Me** (2022)\n2. **Made Up Movie Zork** (2019)\n3. **Nosferatu** (1922)\n4. <script>x</script> (2001)' })));
+    await M.ctx.route(/\/api\/movies\?/, (r) => { const t = new URL(r.request().url()).searchParams.get('title');
+      const f = t === 'Talk to Me' ? { verified: true, title: t, year: 2022, genre: 'Horror', overview: 'A group of friends use an embalmed hand.', poster: POSTER, trailer: 'https://video-ssl.itunes.apple.com/a.m4v', free: false, play: null, links: [{ label: 'JustWatch: where it streams', url: 'https://www.justwatch.com/us/search?q=x' }], sources: ['iTunes Search API'] }
+        : t === 'Nosferatu' ? { verified: true, title: t, year: 1922, genre: 'Horror', overview: '', poster: 'https://archive.org/services/img/nosferatu', trailer: '', free: true, play: { kind: 'video', src: 'https://archive.org/download/nosferatu/n.mp4', page: 'https://archive.org/details/nosferatu', license: 'public domain' }, links: [], sources: ['Internet Archive'] }
+        : { verified: false, title: t }; return r.fulfill(json(f)); });
+    await M.ask('pick a movie to watch with me', 1800);
+    const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
+    const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await M.p.click('.vpage.on a[data-ask*="Nosferatu"]'); await M.p.waitForTimeout(1200);
+    await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
+    const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
+    const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    await M.ctx.close(); }
+  // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
+  // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
+  if (want("real music: \"pick a song\" shows only found songs with their cover and a preview")) { const U = await fresh();
+    const COVER = 'https://is1-ssl.mzstatic.com/image/thumb/x/400x400bb.jpg';
+    await U.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ answer: '1. **Hey Jude** - The Beatles\n2. Made Up Song Zork - Nobody\n3. Respect by Aretha Franklin' })));
+    await U.ctx.route(/\/api\/media\?/, (r) => { const q = new URL(r.request().url()).searchParams, t = q.get('title');
+      return r.fulfill(json(t === 'Made Up Song Zork' ? { verified: false, title: t } : { verified: true, title: t, artist: q.get('artist'), album: 'Album', year: 1968, genre: 'Rock', poster: COVER, preview: 'https://audio-ssl.itunes.apple.com/p.m4a', links: [{ label: 'Spotify: search', url: 'https://open.spotify.com/search/x' }] })); });
+    await U.ask('pick a song', 1800);
+    const rows = await U.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await U.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Song Zork'));
+    const art1 = await U.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    await U.p.click('.vpage.on a[data-ask*="Hey Jude"]'); await U.p.waitForTimeout(1200);
+    await U.p.click('.vpage.on .md-preview'); await U.p.waitForTimeout(200);
+    const au = await U.p.$eval('.vpage.on .mv-player audio', (a) => a.src).catch(() => '');
+    check('real music: the pick lists only the two found songs, names the unfound one as not verified, the art is the first cover, a song opens its card and plays the 30 s official preview in an <audio>',
+      rows.length === 2 && /Hey Jude/.test(rows[0]) && unv && art1 === COVER && /audio-ssl\.itunes\.apple\.com\/p\.m4a/.test(au) && !U.errors.length, JSON.stringify({ rows, unv, art1, au, e: U.errors }));
+    await U.ctx.close(); }
   // the engine's one other shape: a practice timer ({"steps": [...], "timer": 15}) becomes the timer's own ask beside the checklist
   if (want("open plan timer: \"make a plan to learn spanish\" adds the engine's practice timer")) { const T = await fresh();
     await T.ctx.route(/\/api\/answer(?:\?|$)/, (r) => r.fulfill(json({ steps: ['Learn 20 words a day', 'Do one lesson a day', 'Talk with a tutor'], timer: 15, practice: true, note: 'Little and often beats one long session.', model: 'gemma' })));
@@ -1103,7 +1138,7 @@ try {
     await A.p.fill('.vpage.on [data-ap-note]', 'from my grandfather');
     const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
     await A.p.setInputFiles('.vpage.on [data-ap-file]', { name: 'coin.png', mimeType: 'image/png', buffer: png });
-    await until(async () => /V01D values this at/.test(await A.page()), 5000); const card = await A.page();
+    await until(async () => /V01D values this at/.test(await A.page()), 20000); const card = await A.page();
     await A.p.waitForTimeout(800); const coinMake = await A.p.$$eval('.vpage.on .ap-make', (l) => l.length);
     // a photo of something the forge can model gets a "make me one" link, and the link makes it (asked by Void, ask-20261015-2008-1)
     await A.ask('what is this vase worth', 600); await until(async () => !!(await A.p.$('.vpage.on [data-ap-file]')), 4000);
@@ -2332,7 +2367,10 @@ try {
     const forge = await B.p.$eval('.vpage.on', (e) => ({ asks: [...e.querySelectorAll('a[data-ask]')].map((a) => a.dataset.ask), text: e.textContent.replace(/\s+/g, ' ') }));
     await B.p.click('.vpage.on a[data-ask="make me a vase"]'); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'vase'), 6000);
     await B.ask('forge history', 300); await until(async () => /on the stage/.test(await B.page()), 5000); const again = await B.page();
+    { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
     await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
+    { const strip = await until(() => B.p.evaluate(() => { const q = [...document.querySelectorAll('.vpage.on .sc-strip .sc-sq')]; return q.length ? { n: q.length, tiers: [...new Set(q.map((x) => x.dataset.tier))], dens: q.map((x) => +x.dataset.density), weathered: q.filter((x) => x.classList.contains('sc-weathered')).length } : null; }), 6000);
+      check('self card: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Void)', !!strip && strip.n > 20 && strip.tiers.includes('proven') && Math.max(...strip.dens) > Math.min(...strip.dens) && strip.weathered >= 0, JSON.stringify(strip)); }
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
     check("V01D's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to V01D's words beside what was built",
       /#901 .* made by V01D, merged itself/.test(log.text) && /#899 A photo <b>appraised<\/b>/.test(log.text) && !/Closed, not merged/.test(log.text) && log.bolds === 0 && log.links.every((h) => /^https:\/\/github\.com\/atomeam\/void-loop\/pull\/\d+$/.test(h))
@@ -3533,6 +3571,9 @@ try {
     const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
     check('V01D cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into V01D brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
       !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
+    const text2 = await S.p.evaluate(() => window.__copied);
+    check('V01D cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Void)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));
     await S.ctx.close(); }
   // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
   // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
@@ -3548,6 +3589,21 @@ try {
     check('V01D card art: "save card" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio',
       !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
     await A.ctx.close(); }
+  // owner, 2026-10-17 (a Cat card with a generic eye): the art is of the subject. An answer that carries its source's picture of the thing shows
+  // that picture in the art box, in V01D's ink; one with none keeps the plate of its kind.
+  if (want("V01D card art: an answer with a picture of its subject shows that picture in the art box")) {
+    const P = await fresh();
+    const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await P.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG }));
+    await P.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'Cat' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(j(cat)); return rt.fulfill(j({})); });
+    await P.ask('what is a cat', 1500);
+    const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
+    check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    await P.ctx.close(); }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
   if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
@@ -3707,9 +3763,20 @@ try {
     // "the book at chess" opens on the chess page; Esc closes the book and not the stage's things
     await B.ask('the book at chess', 900);
     const atChess = await until(async () => { const l = await look(); return l && /opened/.test(l.cls) && /Chess/.test(l.text) ? l : null; }, 8000);
+    // owner, 2026-10-17: "when I close the book it should stay so I can see the cover or back cover": Esc shuts the cover and leaves the book on the
+    // table; the same again puts it away; past the last page the book shuts on its back cover
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(900);
+    const shutNow = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { tome: !!t, shut: !!t && t.classList.contains('shut'), dim: document.documentElement.classList.contains('v-tome') }; });
     await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(1200);
     const closed = await B.p.evaluate(() => ({ tome: !!document.getElementById('vtome'), dim: document.documentElement.classList.contains('v-tome') }));
-    check('the book: "the book at chess" opens on the Chess page, and Esc shuts the cover and takes the book away (the clock stays on the stage)', !!atChess && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, closed, errors: B.errors }));
+    check('the book: "the book at chess" opens on the Chess page, Esc shuts the cover and leaves the book up, and Esc again takes it away (the clock stays on the stage)', !!atChess && shutNow.tome && shutNow.shut && shutNow.dim && !closed.tome && !closed.dim && (await B.state()).some((x) => x.kind === 'clock') && !B.errors.length, JSON.stringify({ atChess: !!atChess, shutNow, closed, errors: B.errors }));
+    await B.ask('open the book', 900); await until(async () => !!(await B.p.$('#vtome .tome.opened')), 8000);
+    const total = await B.p.evaluate(() => window.__voidBook.totals.pages); await B.p.evaluate((n) => window.__voidBook.go(n), total); await B.p.waitForTimeout(1200);
+    await B.p.keyboard.press('ArrowRight'); await B.p.waitForTimeout(900);
+    const backSide = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); const bc = document.querySelector('#vtome .tome-backcover'); return { shut: t.classList.contains('shut'), back: t.classList.contains('back'), shown: !!bc && getComputedStyle(bc).display !== 'none', words: bc ? bc.textContent : '' }; });
+    await B.p.keyboard.press('ArrowLeft'); await B.p.waitForTimeout(900);
+    const reopenedBack = await B.p.evaluate(() => { const t = document.querySelector('#vtome .tome'); return { open: t.classList.contains('opened'), shut: t.classList.contains('shut') }; });
+    check('the book: past the last page the book shuts on its back cover and stays up, and turning back reopens it at the last page', backSide.shut && backSide.back && backSide.shown && /The End/.test(backSide.words) && reopenedBack.open && !reopenedBack.shut && !B.errors.length, JSON.stringify({ total, backSide, reopenedBack, errors: B.errors }));
     await B.ctx.close();
     const P = await fresh({ phone: true });
     await P.ask('open the book', 900);
@@ -6419,6 +6486,10 @@ try {
     await K.ask('what can i use instead of butter in cookies', 900); await until(async () => /Instead of butter/.test(await K.page()), 8000); const swapPg = await K.page();
     const thens = await K.p.$$eval('.vpage.on .swap-then', (d) => d.map((x) => x.textContent));
     check('cook-flow: the butter swap says what else to adjust under each swap (oil: add liquid) and ends with the timer chip', /Instead of butter/.test(swapPg) && thens.length === 3 && /liquid|water/i.test(thens[0]) && !!(await K.p.$('.vpage.on .cook-flow a[data-ask="set a 10 minute timer"]')), JSON.stringify(thens).slice(0, 200));
+    await K.ask('what can i use instead of eggs in baking', 900); await until(async () => /Instead of eggs/.test(await K.page()), 8000);
+    const t0 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent)); await K.p.fill('.vpage.on .swap-mins', '30'); await K.p.waitForTimeout(200);
+    const t1 = await K.p.$$eval('.vpage.on .swap-time', (d) => d.map((x) => x.textContent));
+    check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
   // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web

@@ -79,7 +79,7 @@ export const CARD_CSS = [
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
   '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.skyc .vc-art{height:72px}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:grayscale(1) contrast(1.3) brightness(.9) sepia(.65) hue-rotate(calc(var(--h) * 1deg - 38deg)) saturate(1.5)}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.8;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -156,7 +156,10 @@ export function keep(el, esc, stats) {
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });
   const h2t = el.querySelector('h2'); c.key = name || (h2t ? h2t.textContent.trim() : '') || c.typeLine; c.season = seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '');
-  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue]);
+  // the art is of the subject (owner, 2026-10-17: the art should be of the subject of each card): when the answer carries a picture of the thing
+  // (its source's thumbnail), the art box shows that picture in V01D's ink, under the same hued plate; with none, the plate of its kind
+  const photoImg = [...el.querySelectorAll('img[src]')].find((i) => !i.closest('.vc-art') && /^https:\/\//.test(i.getAttribute('src') || '')), photo = photoImg ? photoImg.getAttribute('src') : '';
+  const key = JSON.stringify([c.key, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.rarity && c.rarity.name, c.hue, photo]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
   // the page keeps its own lines last (a product line, the Tell V01D link): the arrows sit before them, never after, or the two keep moving past each other forever
@@ -171,6 +174,7 @@ export function keep(el, esc, stats) {
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
+  if (photo) { const box = el.querySelector(':scope > .vc-art'); if (box) { box.classList.add('has-photo'); const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = ''; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = photo; box.appendChild(im); } }
   tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   let anchor = null; for (let n = el.lastElementChild; n && trailing(n); n = n.previousElementSibling) anchor = n;
   for (const n of [...tpl.content.childNodes]) el.insertBefore(n, anchor);

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 444,
+ "counted": 451,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -108,13 +108,13 @@
    "file": "lib/guide.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 11
+   "dependants": 12
   },
   {
    "file": "lib/card-art.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8
+   "dependants": 9
   },
   {
    "file": "lib/arena-say.js",
@@ -144,6 +144,12 @@
    "file": "lib/card-image.js",
    "skills": 2,
    "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/movies.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 5
   },
   {
@@ -280,6 +286,12 @@
   },
   {
    "file": "lib/appraise-photo.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/media.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -777,6 +789,12 @@
    "dependants": 0
   },
   {
+   "file": "lib/skill-confidence.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
    "file": "lib/speak.js",
    "skills": 0,
    "direct": 0,
@@ -987,6 +1005,14 @@
    ],
    "importedBy": []
   },
+  "functions/api/media.js": {
+   "imports": [
+    "lib/media.js",
+    "lib/movies.js",
+    "functions/api/movies.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/memory.js": {
    "imports": [
     "lib/memory-scope.js",
@@ -1029,6 +1055,14 @@
     "lib/used.js"
    ],
    "importedBy": []
+  },
+  "functions/api/movies.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/media.js"
+   ]
   },
   "functions/api/passkey.js": {
    "imports": [
@@ -1531,6 +1565,7 @@
    "importedBy": [
     "lib/card-frame.js",
     "lib/card-image.js",
+    "lib/skill-confidence.js",
     "lib/tome.js"
    ],
    "reachedBy": [
@@ -1834,6 +1869,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/skill-confidence.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -2001,6 +2037,15 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/media.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/media.js",
+    "skills/media-pick.js"
+   ]
+  },
   "lib/memory-core.js": {
    "imports": [],
    "importedBy": [
@@ -2081,6 +2126,18 @@
     "lib/mcp.js",
     "lib/memory-scope.js",
     "lib/paid-access.js"
+   ]
+  },
+  "lib/movies.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/media.js",
+    "functions/api/movies.js",
+    "lib/media.js",
+    "skills/movie.js"
+   ],
+   "reachedBy": [
+    "skills/media-pick.js"
    ]
   },
   "lib/near-miss.js": {
@@ -2615,6 +2672,12 @@
     "functions/tools.json.js",
     "skills/time.js"
    ]
+  },
+  "lib/skill-confidence.js": {
+   "imports": [
+    "lib/card-art.js"
+   ],
+   "importedBy": []
   },
   "lib/skill-family.js": {
    "imports": [],
@@ -3831,6 +3894,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/media-pick.js": {
+   "imports": [
+    "lib/media.js",
+    "skills/movie.js"
+   ],
+   "importedBy": []
+  },
   "skills/memory.js": {
    "imports": [
     "skills/live.js",
@@ -4135,6 +4205,14 @@
    ],
    "importedBy": [
     "skills/mini/pentamote.js"
+   ]
+  },
+  "skills/movie.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "skills/media-pick.js"
    ]
   },
   "skills/news.js": {

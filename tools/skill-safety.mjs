@@ -13,7 +13,8 @@ export function testsFor(changed, tests) {
   const names = [...new Set((changed || []).map((f) => (/^void-live-deploy\/(?:skills|lib)\/([\w-]+)\.js$/.exec(f) || [])[1]).filter(Boolean))];
   const own = (changed || []).filter((f) => /^tools\/[\w.-]+\.test\.mjs$/.test(f)); // a test the PR itself changed
   const hit = new Set(own.map((f) => f.slice(6)));
-  for (const [file, text] of tests || []) for (const n of names) if (new RegExp('(?:skills|lib)/' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\.js[\'"`]').test(text)) hit.add(file);
+  // browser scripts need Chrome and node_modules, which the bot's checkout lacks: verify.yml runs them (owner, 2026-10-17)
+  for (const [file, text] of tests || []) if (!/from 'playwright-core'/.test(text)) for (const n of names) if (new RegExp('(?:skills|lib)/' + n.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\.js[\'"`]').test(text)) hit.add(file);
   return { names, files: [...hit].sort().slice(0, MAX_TESTS).map((f) => 'tools/' + f), more: Math.max(0, hit.size - MAX_TESTS) };
 }
 export const readTests = (dir) => readdirSync(dir + '/tools').filter((f) => f.endsWith('.test.mjs')).map((f) => [f, readFileSync(dir + '/tools/' + f, 'utf8')]);

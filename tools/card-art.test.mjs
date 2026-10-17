@@ -32,10 +32,19 @@ test('the Halloween skin adds bats, fog and the orange rim; off does not; the qu
 test('rarity changes ink weight and foil, not the subject', () => {
   const c = artSvg(card({ rarity: 'Common' })), m = artSvg(card({ rarity: 'Mythic' }));
   assert.notEqual(c, m); assert.equal(rarityKey('proven'), 'mythic'); assert.equal(rarityKey({ name: 'Rare' }), 'rare'); assert.equal(rarityKey(null), 'common');
-  assert.ok(/stroke-width="3\.4"/.test(m) && /stroke-width="2\.4"/.test(c));
+  assert.ok(/stroke-width="3\.4"/.test(m) && /stroke-width="1\.9"/.test(c));
 });
 test('only the card\'s own words appear (an escaped label), never text from outside', () => {
   const s = artSvg(card({ name: '<img src=x onerror=1>"&' }));
   assert.ok(!/<img/.test(s)); assert.match(s, /aria-label="&lt;img src=x onerror=1&gt;&quot;&amp;"/);
   assert.equal(kindWord('Film · Song — 1965'), 'Film'); assert.equal(kindWord('Skill — Making things'), 'Skill'); assert.equal(kindWord('???'), 'Idea');
+});
+
+test('the ink follows the evidence rating: proven is sharp and black, an experiment a light charcoal sketch; --ink-density can drive it', () => {
+  const m = artSvg(card({ rarity: 'proven' })), c = artSvg(card({ rarity: 'experiment' })), k = artSvg(card({ rarity: 'checked' }));
+  assert.match(m, /stroke="#000000"/); assert.match(m, /scale="0\.6"/); assert.match(c, /stroke="#44444f"/); assert.match(c, /scale="5\.5"/);
+  assert.notEqual(m, c); assert.notEqual(m, k);
+  assert.match(m, /opacity:calc\(0\.3 \+ 0\.7 \* var\(--ink-density,1\)\)/); assert.match(c, /var\(--ink-density,0\.5\)/);
+  assert.equal(artSvg(card({ rarity: 'proven' })), m); // still the same picture every time
+  assert.ok(!/<style|<script/.test(m));
 });
