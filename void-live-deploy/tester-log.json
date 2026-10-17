@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 99,
+ "runsTotal": 100,
  "kinds": {
   "grow": 15,
   "file": 48,
   "teach": 7,
   "tighten": 7,
-  "none": 22
+  "none": 23
  },
  "runs": [
+  {
+   "at": "2026-10-17T06:09:27Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "none",
+   "note": "nothing left to improve this run (add candidates)"
+  },
   {
    "at": "2026-10-17T06:04:06Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "tighten",
    "note": "load ceiling 1400 -> 1200 ms"
-  },
-  {
-   "at": "2026-10-16T14:38:42Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -265,9 +265,9 @@
   "skill:status": "2026-10-17T00:06:20Z",
   "skill:sticky": "2026-10-17T00:06:20Z",
   "skill:store": "2026-10-17T06:04:06Z",
-  "skill:swaps": "2026-10-16T05:25:04Z",
-  "skill:swarm": "2026-10-16T05:25:04Z",
-  "skill:guide": "2026-10-16T05:48:40Z",
+  "skill:swaps": "2026-10-17T06:09:27Z",
+  "skill:swarm": "2026-10-17T06:09:27Z",
+  "skill:guide": "2026-10-17T06:09:27Z",
   "skill:throw-off": "2026-10-16T05:48:40Z",
   "skill:tip": "2026-10-16T05:48:40Z",
   "skill:together": "2026-10-16T06:02:43Z",
