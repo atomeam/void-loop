@@ -45,7 +45,8 @@ export function healthRows(fam) {
   const rows = families.map((f) => {
     const count = Object.fromEntries(TIERS.map((t) => [t, f.skills.filter((s) => s && s.tier === t).length]));
     const skills = f.skills.filter((s) => s && s.name).slice().sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || String(a.name).localeCompare(String(b.name)));
-    return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), for: String(f.for || ''), total: skills.length, count, skills };
+    const sources = f.sources && typeof f.sources.words === 'string' ? f.sources : null; // source reliability (asked by Void; tools/source-reliability.mjs)
+    return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), for: String(f.for || ''), total: skills.length, count, skills, ...(sources ? { sources } : {}) };
   });
   const totals = Object.fromEntries(TIERS.map((t) => [t, rows.reduce((n, r) => n + r.count[t], 0)]));
   return { rows, totals, skills: rows.reduce((n, r) => n + r.total, 0) };
@@ -79,7 +80,9 @@ export function skillsHtml(esc, row, used = null, now = Date.now()) {
       + '<br><span class="fh-why" style="font-size:13px;color:var(--d-ink-3,#8e94a8)">' + esc(s.why || '')
       + (fail ? '; the everyday benchmark got ' + s.failing.length + ' of its asks wrong on its last run' : '')
       + (Array.isArray(s.smoke) && s.smoke.length ? '; <span class="fh-smoke">its daily test failed: ' + esc(s.smoke[0]) + (s.smoke.length > 1 ? ' (and ' + (s.smoke.length - 1) + ' more)' : '') + '</span>' : '') + '</span>'
-      + '<br><span class="fh-meta" style="font-size:12px;color:var(--d-ink-3,#8e94a8);font-variant-numeric:tabular-nums">' + esc(metaWords(s)) + (used ? ' · <span class="fh-used">' + esc(usedWords(used, s.name, now)) + '</span>' : '') + '</span></span></li>';
+      + '<br><span class="fh-meta" style="font-size:12px;color:var(--d-ink-3,#8e94a8);font-variant-numeric:tabular-nums">' + esc(metaWords(s)) + (used ? ' · <span class="fh-used">' + esc(usedWords(used, s.name, now)) + '</span>' : '') + '</span>'
+      + (s.source && typeof s.source.words === 'string' && s.source.words ? '<br><span class="fh-source" data-points="' + esc(+s.source.points || 0) + '"' + (s.source.next ? ' data-next="' + esc(s.source.next) + '"' : '') + ' style="font-size:12px;color:var(--d-ink-3,#8e94a8)">' + esc(s.source.words) + '</span>' : '')
+      + '</span></li>';
   }).join('') + '</ul>';
 }
 
@@ -130,7 +133,9 @@ export function healthHtml(esc, fam, used = null, now = Date.now(), better = nul
       + '<span class="sub" style="font-size:12px;font-variant-numeric:tabular-nums;white-space:nowrap">' + r.count.proven + ' of ' + r.total + ' proven <span aria-hidden="true">›</span></span></span>'
       + '<span class="fh-velocity sub" data-velocity="' + esc(vel[r.id] ? vel[r.id].trend : 'none') + '" style="display:block;font-size:12px;margin:0 0 6px">' + esc(velocityWords(vel[r.id])) + '</span>'
       + bar(r.count, r.total, esc(r.name + ': ' + words(r.count)))
-      + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '') + skillsHtml(esc, r, used, now) + '</div></div>').join('') + '</div>'
+      + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '')
+      + (r.sources ? '<div class="sub fh-sources" data-read="' + esc(+r.sources.read || 0) + '" style="font-size:13px;margin:4px 0 0">' + esc(r.sources.words) + '</div>' : '')
+      + skillsHtml(esc, r, used, now) + '</div></div>').join('') + '</div>'
     + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The four kinds of evidence: a skill\'s own self-test, the browser suite, real asks in the everyday benchmark, and a live finding (a kept answer from the real outside service the skill wraps, a file in the repo, never a claim). '
     + TIERS.map((t) => '<b style="font-weight:600">' + t + '</b>: ' + MEANS[t]).join('; ') + '. Tap a family to see each skill and why. '
     + 'Last tested is the newest date a skill\'s evidence has (its own tests and the browser suite as last seen in the repo, or the benchmark\'s last run on main); '
@@ -172,6 +177,8 @@ export function suite() {
     && metaWords(fam.families[0].skills[2]) === 'never tested · success rate not measured yet' && metaWords({ last_tested: 'yesterday', success_rate: 7 }) === 'never tested'
     && h.includes('class="fh-meta"') && !/usage|popular|unused|last used/i.test(h.replace(/never counted/, '')) && healthHtml(esc, fam, { p: '2026-10-16' }, Date.parse('2026-10-16T12:00:00Z')).includes('last used here today') && healthHtml(esc, fam, { p: '2026-09-01' }, Date.parse('2026-10-16T12:00:00Z')).includes('dead weight on this device') && healthHtml(esc, fam, {}, Date.now()).includes('0 of 4 skills have answered here')
     && h.includes('its daily test failed: suite &lt;x&gt; failed (and 1 more)') && !h.includes('suite <x>')
+    && (() => { const s = { families: [{ id: 'w', name: 'W', sources: { read: 1, words: 'Source reliability: <1>' }, skills: [{ name: 'q', tier: 'tested', why: 'a self-test', source: { points: 2, next: 'live', words: 'source 2 of 3: x.org <b>' } }, { name: 'r', tier: 'tested', why: 'one' }] }] }, sh = healthHtml(esc, s);
+      return sh.includes('class="sub fh-sources" data-read="1"') && sh.includes('Source reliability: &lt;1&gt;') && sh.includes('data-next="live"') && sh.includes('source 2 of 3: x.org &lt;b&gt;') && !sh.includes('<b>') && (sh.match(/class="fh-source"/g) || []).length === 1 && !h.includes('fh-source'); })()
     && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals');
   return { ok, got: ok ? '' : JSON.stringify(H) };
 }

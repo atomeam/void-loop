@@ -7,6 +7,7 @@
   "promoted": "the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Void",
   "streak": "consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Void",
   "live": "a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven",
+  "source": "source reliability (asked by Void, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating",
   "not_here": "how often people use a skill is never counted by Void: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-10-17",
@@ -1002,6 +1003,31 @@
     "checked": 4,
     "proven": 8
    },
+   "sources": {
+    "read": 21,
+    "named": 19,
+    "second": 10,
+    "answered": 0,
+    "points": 1.38,
+    "one_live_from_proven": [
+     "repo",
+     "digest",
+     "movie",
+     "pick-for-me",
+     "video",
+     "spanish",
+     "news",
+     "joke",
+     "recipe",
+     "film-metadata",
+     "media-pick",
+     "book",
+     "show",
+     "sport",
+     "senolytic"
+    ],
+    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.38 of 3 on average). One kept live answer each would make 15 more proven: repo, digest, movie, pick-for-me, video, spanish and 9 more."
+   },
    "skills": [
     {
      "name": "repo",
@@ -1010,7 +1036,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "promoted": "2026-10-17",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "github.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: github.com; named on the card; no second source; no kept live answer yet. One kept live answer from github.com would make it proven"
+     }
     },
     {
      "name": "digest",
@@ -1018,7 +1055,20 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "archive.org",
+       "makertube.net",
+       "tilvids.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
+     }
     },
     {
      "name": "movie",
@@ -1026,7 +1076,19 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "apple.com",
+       "archive.org"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: apple.com, archive.org; named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+     }
     },
     {
      "name": "pick-for-me",
@@ -1034,7 +1096,19 @@
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "apple.com",
+       "tvmaze.com"
+      ],
+      "named": false,
+      "second": true,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: apple.com, tvmaze.com; not named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+     }
     },
     {
      "name": "video",
@@ -1042,7 +1116,23 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "archive.org",
+       "dailymotion.com",
+       "ducks.party",
+       "f5.si",
+       "googleapis.com",
+       "kavin.rocks"
+      ],
+      "named": false,
+      "second": true,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: archive.org, dailymotion.com, ducks.party and 3 more; not named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
+     }
     },
     {
      "name": "video-play",
@@ -1063,7 +1153,17 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 0.976,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "wiktionary.org"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: wiktionary.org; named on the card; no second source; no kept live answer yet"
+     }
     },
     {
      "name": "technical-context",
@@ -1080,7 +1180,17 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "datamuse.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: datamuse.com; named on the card; no second source; no kept live answer yet"
+     }
     },
     {
      "name": "spanish",
@@ -1089,7 +1199,19 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "googleapis.com",
+       "translated.net"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: googleapis.com, translated.net; named on the card; a second source; no kept live answer yet. One kept live answer from googleapis.com would make it proven"
+     }
     },
     {
      "name": "translate",
@@ -1098,7 +1220,19 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "google.com",
+       "googleapis.com",
+       "translated.net"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "words": "source 2 of 3: google.com, googleapis.com, translated.net; named on the card; a second source; no kept live answer yet"
+     }
     },
     {
      "name": "news",
@@ -1107,7 +1241,20 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "algolia.com",
+       "wikipedia.org",
+       "ycombinator.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: algolia.com, wikipedia.org, ycombinator.com; named on the card; a second source; no kept live answer yet. One kept live answer from algolia.com would make it proven"
+     }
     },
     {
      "name": "joke",
@@ -1116,7 +1263,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "icanhazdadjoke.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: icanhazdadjoke.com; named on the card; no second source; no kept live answer yet. One kept live answer from icanhazdadjoke.com would make it proven"
+     }
     },
     {
      "name": "recipe",
@@ -1125,7 +1283,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "themealdb.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: themealdb.com; named on the card; no second source; no kept live answer yet. One kept live answer from themealdb.com would make it proven"
+     }
     },
     {
      "name": "swaps",
@@ -1142,7 +1311,18 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "apple.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: apple.com; named on the card; no second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+     }
     },
     {
      "name": "media-pick",
@@ -1150,7 +1330,19 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "apple.com",
+       "tvmaze.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "next": "live",
+      "words": "source 2 of 3: apple.com, tvmaze.com; named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+     }
     },
     {
      "name": "book",
@@ -1159,7 +1351,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "openlibrary.org"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: openlibrary.org; named on the card; no second source; no kept live answer yet. One kept live answer from openlibrary.org would make it proven"
+     }
     },
     {
      "name": "show",
@@ -1168,7 +1371,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "tvmaze.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: tvmaze.com; named on the card; no second source; no kept live answer yet. One kept live answer from tvmaze.com would make it proven"
+     }
     },
     {
      "name": "sport",
@@ -1177,7 +1391,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "thesportsdb.com"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: thesportsdb.com; named on the card; no second source; no kept live answer yet. One kept live answer from thesportsdb.com would make it proven"
+     }
     },
     {
      "name": "pdf-card",
@@ -1195,7 +1420,19 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "doi.org",
+       "mote.org",
+       "open-meteo.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "words": "source 2 of 3: doi.org, mote.org, open-meteo.com; named on the card; a second source; no kept live answer yet"
+     }
     },
     {
      "name": "senolytic",
@@ -1204,7 +1441,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "clinicaltrials.gov"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "next": "live",
+      "words": "source 1 of 3: clinicaltrials.gov; named on the card; no second source; no kept live answer yet. One kept live answer from clinicaltrials.gov would make it proven"
+     }
     },
     {
      "name": "trialwatch",
@@ -1213,7 +1461,17 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "clinicaltrials.gov"
+      ],
+      "named": true,
+      "second": false,
+      "answered": false,
+      "points": 1,
+      "words": "source 1 of 3: clinicaltrials.gov; named on the card; no second source; no kept live answer yet"
+     }
     },
     {
      "name": "releasenotes",
@@ -1222,7 +1480,18 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "streak": 1
+     "streak": 1,
+     "source": {
+      "sites": [
+       "conventionalcommits.org",
+       "keepachangelog.com"
+      ],
+      "named": true,
+      "second": true,
+      "answered": false,
+      "points": 2,
+      "words": "source 2 of 3: conventionalcommits.org, keepachangelog.com; named on the card; a second source; no kept live answer yet"
+     }
     }
    ]
   },
@@ -1688,7 +1957,7 @@
     {
      "name": "family-health",
      "tier": "checked",
-     "why": "a self-test, 6 browser-suite mentions",
+     "why": "a self-test, 7 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1

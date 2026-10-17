@@ -3784,6 +3784,18 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    // source reliability (asked by Void: "Create a 'source-reliability' metric within the 'Words and the world' family to help raise its
+    // proven rating"): tapping Words and the world shows the family's line and each sourced skill's points, straight from families.json
+    { const wf = fam.families.find((f) => f.id === 'words');
+      await F.p.tap('.vpage .fh-family[data-family="words"] button').catch(() => {});
+      const src = await F.p.$eval('.vpage .fh-family[data-family="words"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, line: (r.querySelector('.fh-sources') || {}).textContent || '',
+        rows: [...r.querySelectorAll('[data-skill]')].map((li) => { const s = li.querySelector('.fh-source'); return { name: li.dataset.skill, text: s ? s.textContent : null, next: s ? s.dataset.next || '' : '' }; }), wide: r.closest('.vpage').scrollWidth > r.closest('.vpage').clientWidth + 1 })).catch(() => null);
+      const truthW = Object.fromEntries(wf.skills.map((s) => [s.name, s]));
+      check('family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Void)',
+        !!src && src.open && !!wf.sources && src.line === wf.sources.words && /^Source reliability: \d+ skills answer from outside sources/.test(src.line)
+        && src.rows.length === wf.skills.length && src.rows.every((x) => (truthW[x.name].source ? x.text === truthW[x.name].source.words && x.next === (truthW[x.name].source.next || '') : x.text === null))
+        && src.rows.some((x) => x.next === 'live') && !src.wide && !F.errors.length,
+        JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
     { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
       check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Void)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
     await F.ctx.close(); }
