@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 22,
- "runsTotal": 111,
+ "runsTotal": 112,
  "kinds": {
   "grow": 15,
-  "file": 53,
+  "file": 54,
   "teach": 7,
   "tighten": 7,
   "none": 29
  },
  "runs": [
+  {
+   "at": "2026-10-17T08:24:25Z",
+   "passed": 0,
+   "of": 25,
+   "kind": "file",
+   "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-17T08:18:35Z",
    "passed": 0,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "none",
    "note": "nothing left to improve this run (add candidates)"
-  },
-  {
-   "at": "2026-10-16T19:04:15Z",
-   "passed": 0,
-   "of": 25,
-   "kind": "none",
-   "note": "nothing left to improve this run (add candidates)"
   }
  ],
  "seen": {
@@ -184,9 +184,9 @@
   "skill:dismiss": "2026-10-17T08:11:24Z",
   "skill:distance": "2026-10-17T08:18:35Z",
   "skill:draw": "2026-10-17T08:18:35Z",
-  "skill:feelings": "2026-10-16T07:50:13Z",
-  "skill:figure": "2026-10-16T07:50:13Z",
-  "skill:figure-can": "2026-10-16T07:56:26Z",
+  "skill:feelings": "2026-10-17T08:24:25Z",
+  "skill:figure": "2026-10-17T08:24:25Z",
+  "skill:figure-can": "2026-10-17T08:24:25Z",
   "skill:figures": "2026-10-16T07:56:26Z",
   "skill:films": "2026-10-16T07:56:26Z",
   "skill:food": "2026-10-16T08:04:30Z",

@@ -835,5 +835,13 @@
   "of": 25,
   "kind": "none",
   "note": "nothing left to improve this run (add candidates)"
+ },
+ {
+  "at": "2026-10-17T08:24:25Z",
+  "passed": 0,
+  "of": 25,
+  "kind": "file",
+  "key": "what does this figure do | nothing appeared",
+  "note": "fix: \"what does this figure do\" nothing appeared; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]
