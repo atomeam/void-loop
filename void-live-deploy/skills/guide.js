@@ -13,7 +13,7 @@
  */
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
 import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
-import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, pageHtml, tocHtml } from '../lib/tome.js';
+import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml } from '../lib/tome.js';
 
 export { pageHtml, tocHtml };
 
@@ -89,6 +89,9 @@ export const current = () => document.getElementById('vtome');
 /** shut and take down the tome: the cover swings shut, then the screen clears */
 export function closeTome(why = 'esc') {
   const root = current(); if (!root || root._closing) return false;
+  // Esc or a tap on the dark shuts an open book and leaves it there, cover showing; once it is shut, the same again puts it away
+  const t0 = root.querySelector('.tome');
+  if ((why === 'esc' || why === 'tap') && t0 && !t0.classList.contains('shut') && root._toCover) { root._toCover(); return true; }
   root._closing = true;
   const tome = root.querySelector('.tome');
   tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.add('shut');
@@ -110,7 +113,7 @@ function mount(book, api, startAt, text) {
   root.innerHTML = '<style>' + TOME_CSS + SEARCH_CSS + '</style><div class="tome-dim"></div><div class="tome shut" data-pages="' + total + '">'
     + '<div class="tome-boards"></div><div class="tome-stack left"></div><div class="tome-stack right"></div>'
     + '<section class="tome-page left" data-page=""></section><section class="tome-page right" data-page=""></section><div class="tome-spine"></div>'
-    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div></div><button type="button" class="tome-tocover" aria-label="Back to the cover">Cover</button><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
+    + '<div class="tome-cover">' + coverHtml(book, esc) + '</div><div class="tome-backcover">' + backCoverHtml(book, esc) + '</div></div><button type="button" class="tome-tocover" aria-label="Back to the cover">Cover</button><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
   document.body.appendChild(root);
   document.documentElement.classList.add('v-tome');
   const tome = root.querySelector('.tome'), left = root.querySelector('.tome-page.left'), right = root.querySelector('.tome-page.right'), live = root.querySelector('[aria-live]');
@@ -147,12 +150,16 @@ function mount(book, api, startAt, text) {
   };
   // the cover is part of the book (owner, 2026-10-16: "the cover swings open and I can't go back to view it ever"): turning back from
   // the title page swings it shut over the pages; turning forward, a tap or a key opens it again
-  const shutCover = () => { if (tome.classList.contains('shut') || turning) return; tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.add('shut'); rustle(); live.textContent = 'the cover'; if (window.__voidBook) window.__voidBook.shut = true; };
-  const openCover = () => { if (!tome.classList.contains('shut')) return; tome.classList.remove('shut'); tome.classList.add('open'); rustle(); if (window.__voidBook) window.__voidBook.shut = false; const opened = () => { tome.classList.add('opened'); draw(); }; if (motionless()) opened(); else after(tome.querySelector('.tome-cover'), 'transform', 550, opened); };
-  const turn = (d) => { if (tome.classList.contains('shut')) { if (d > 0) openCover(); return; } if (d < 0 && shown().filter(Boolean)[0] === 1) { shutCover(); return; } const vis = shown().filter(Boolean); turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
+  const shutCover = () => { if (tome.classList.contains('shut') || turning) return; tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.remove('back'); tome.classList.add('shut'); rustle(); live.textContent = 'the cover'; if (window.__voidBook) { window.__voidBook.shut = true; window.__voidBook.side = 'front'; } };
+  // closing the book leaves it on the table, shut: the front cover, or the back cover after the last page (owner, 2026-10-17: when I close the book it should stay so I can see the cover or back cover)
+  const shutBack = () => { if (tome.classList.contains('shut') || turning) return; tome.classList.remove('opened'); tome.classList.remove('open'); tome.classList.add('shut'); tome.classList.add('back'); rustle(); live.textContent = 'the back cover'; if (window.__voidBook) { window.__voidBook.shut = true; window.__voidBook.side = 'back'; } };
+  const openBack = () => { cur = total; tome.classList.remove('back'); tome.classList.remove('shut'); tome.classList.add('open'); tome.classList.add('opened'); rustle(); if (window.__voidBook) { window.__voidBook.shut = false; window.__voidBook.side = 'front'; } draw(); };
+  const openCover = () => { if (!tome.classList.contains('shut')) return; if (tome.classList.contains('back')) { openBack(); return; } tome.classList.remove('shut'); tome.classList.add('open'); rustle(); if (window.__voidBook) window.__voidBook.shut = false; const opened = () => { tome.classList.add('opened'); draw(); }; if (motionless()) opened(); else after(tome.querySelector('.tome-cover'), 'transform', 550, opened); };
+  const turn = (d) => { if (tome.classList.contains('shut')) { if (tome.classList.contains('back')) { if (d < 0) openBack(); } else if (d > 0) openCover(); return; } if (d < 0 && shown().filter(Boolean)[0] === 1) { shutCover(); return; } const vis = shown().filter(Boolean); if (d > 0 && vis[vis.length - 1] >= total) { shutBack(); return; } turnTo(d > 0 ? vis[vis.length - 1] + 1 : (onePage() ? cur - 1 : Math.max(1, vis[0] - 2))); };
   const go = (n) => { if (tome.classList.contains('shut')) openCover(); turnTo(n); };
   // the way back to the cover from any page, however far in (owner, 2026-10-17: "still can't get to the cover of the book"): the Cover button, the Home key
-  const toCover = () => { if (tome.classList.contains('shut')) return; turning = false; cur = 1; shutCover(); };
+  const toCover = () => { if (tome.classList.contains('shut') && !tome.classList.contains('back')) return; turning = false; cur = 1; tome.classList.remove('shut'); shutCover(); };
+  root._toCover = toCover;
   root.querySelector('.tome-tocover').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toCover(); });
   root.querySelector('.tome-tocover').addEventListener('pointerdown', (e) => e.stopPropagation());
 

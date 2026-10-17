@@ -23,6 +23,7 @@ export const TOME_CSS = [
   // the book: height-led so two pages always fit; everything inside is sized from the book (cqh), so it reads the same on any screen
   '.tome{position:relative;--th:min(86vh,calc(94vw / 1.46));height:var(--th);width:calc(var(--th) * 1.46);container-type:size;transform-style:preserve-3d;transition:transform .55s cubic-bezier(.4,.1,.2,1)}',
   '.tome.shut{transform:translateX(-25%) scale(.96)}',
+  '.tome.shut .tome-page,.tome.shut .tome-stack{opacity:0;transition:opacity .25s ease}.tome-page,.tome-stack{transition:opacity .25s ease}',
   // boards and spine: dark worn leather with a blind-tooled double border
   '.tome-boards{position:absolute;inset:-1.6% -1.4%;border-radius:.6% 1.4% 1.4% .6%/.9% 2% 2% .9%;background:linear-gradient(135deg,#3a2616,#24170d 45%,#1b110a);box-shadow:0 40px 90px rgba(0,0,0,.75),0 6px 18px rgba(0,0,0,.6),inset 0 0 0 1px rgba(205,165,95,.22),inset 0 0 0 5px rgba(0,0,0,.25),inset 0 0 0 6px rgba(205,165,95,.14)}',
   '.tome-boards::after{content:"";position:absolute;inset:0;background:' + GRAIN + ';opacity:.5;border-radius:inherit;mix-blend-mode:multiply}',
@@ -68,6 +69,10 @@ export const TOME_CSS = [
   '.tome-cover .face.out::before{content:"";position:absolute;inset:0;background:' + GRAIN + ';opacity:.45;mix-blend-mode:multiply;border-radius:inherit}',
   '.tome-cover .face.in{transform:rotateY(180deg);background:#e2d1a8;background-image:' + MOTTLE + ',' + GRAIN + ';box-shadow:inset 0 0 6cqh rgba(95,58,18,.3)}',
   '.tome-cover .seal{width:11cqh;height:11cqh;border-radius:50%;border:2px solid rgba(214,179,92,.75);box-shadow:inset 0 0 0 5px rgba(0,0,0,.2),inset 0 0 0 6px rgba(214,179,92,.5);display:flex;align-items:center;justify-content:center;font-size:4.4cqh;letter-spacing:.08em;font-weight:700;margin-bottom:3cqh;position:relative}',
+  // the back cover: shown when the book is shut after its last page; the book slides the other way so this board is the one in the middle
+  '.tome-backcover{position:absolute;top:-1.6%;bottom:-1.6%;left:-1.4%;width:calc(50% + 1.4%);z-index:6;display:none;flex-direction:column;align-items:center;text-align:center;color:rgba(214,179,92,.9);border-radius:1.4% 0 0 1.4%/2% 0 0 2%;background:linear-gradient(225deg,#3f2a18,#25170d 50%,#1a110a);box-shadow:inset 0 0 0 1px rgba(205,165,95,.3),inset 0 0 0 6px rgba(0,0,0,.25),inset 0 0 0 7px rgba(205,165,95,.18),-8px 0 30px rgba(0,0,0,.5);padding-top:6cqh;box-sizing:border-box}',
+  '.tome-backcover .seal{width:9cqh;height:9cqh;border-radius:50%;border:2px solid rgba(214,179,92,.75);display:flex;align-items:center;justify-content:center;font-size:5cqh}.tome-backcover .cover-art{width:78%;margin:1.4cqh auto 0;border:1px solid rgba(214,179,92,.45);border-radius:4px;overflow:hidden;background:#120b06}.tome-backcover .cover-art svg{display:block;width:100%;height:auto}.tome-backcover .title{font-variant:small-caps;letter-spacing:.14em;font-size:4cqh;margin-top:2cqh}.tome-backcover .line{font-style:italic;font-size:2cqh;color:rgba(214,179,92,.8);margin-top:1cqh}',
+  '.tome.shut.back{transform:translateX(25%) scale(.96)}.tome.shut.back .tome-backcover{display:flex}.tome.shut.back .tome-cover{visibility:hidden}',
   '.tome-cover .cover-art{width:78%;margin:1.4cqh auto 0;position:relative;border:1px solid rgba(214,179,92,.45);border-radius:4px;overflow:hidden;background:#120b06;box-shadow:inset 0 0 0 2px rgba(0,0,0,.35)}.tome-cover .cover-art svg{display:block;width:100%;height:auto}',
   '.tome-tocover{position:absolute;top:max(10px,1.6vh);left:max(10px,1.6vw);z-index:9;font:inherit;font-size:13px;letter-spacing:.12em;text-transform:uppercase;padding:8px 14px;border-radius:999px;border:1px solid rgba(214,179,92,.55);background:rgba(36,23,13,.88);color:#f0e3c4;cursor:pointer;box-shadow:0 6px 24px rgba(0,0,0,.5)}.tome-tocover:hover,.tome-tocover:focus-visible{border-color:rgba(240,214,140,.95)}',
   '.tome-cover .title{font-variant:small-caps;letter-spacing:.14em;font-size:4cqh;position:relative}.tome-cover .line{font-style:italic;font-size:2cqh;color:rgba(214,179,92,.8);margin-top:1cqh;position:relative}',
@@ -76,7 +81,7 @@ export const TOME_CSS = [
   '.tome-prompt kbd{font:inherit;border:1px solid rgba(232,214,178,.55);border-radius:3px;padding:1px 7px;margin:0 6px 0 14px;color:rgba(232,214,178,.95)}.tome-prompt kbd:first-child{margin-left:0}',
   '.tome-prompt .phone{display:none}',
   // one page at a time on a phone: the book is a single sheet, the cover the same width
-  '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut{transform:scale(.96)}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
+  '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
   '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
 ].join('');
@@ -154,6 +159,11 @@ export function stacks(cur, total) { const t = Math.max(1, total || 1); return {
 export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Home</kbd>Cover<kbd>Esc</kbd>Close</span><span class="phone">Swipe to turn · tap the dark to close</span>';
 
 /** the shut cover's face. Pure. */
+/** the back cover: the same worn leather, the ink plate again, and the last words. Pure. */
+export function backCoverHtml(book, esc) {
+  let art = ''; try { art = artSvg({ key: 'the-v01d-book-back', name: 'The end', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
+  return '<div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">The End</div><div class="line">' + esc(book.title || 'The V01D Book') + '</div><div class="line">a-to-mind.com</div>';
+}
 export function coverHtml(book, esc) {
   const t = book.totals || {};
   // the cover carries V01D's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
