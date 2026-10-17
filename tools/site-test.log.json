@@ -1135,5 +1135,12 @@
   "of": 41,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
+ },
+ {
+  "at": "2026-10-17T23:49:12Z",
+  "passed": 41,
+  "of": 42,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
  }
 ]

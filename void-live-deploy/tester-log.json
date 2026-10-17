@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 39,
- "runsTotal": 152,
+ "cases": 40,
+ "runsTotal": 153,
  "kinds": {
-  "grow": 32,
+  "grow": 33,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-17T23:49:12Z",
+   "passed": 41,
+   "of": 42,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
+  },
   {
    "at": "2026-10-17T23:19:19Z",
    "passed": 39,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "file",
    "note": "fix: \"my actions\" load 1251 ms > 1200"
-  },
-  {
-   "at": "2026-10-17T11:28:39Z",
-   "passed": 14,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"test me on that\" nothing appeared"
   }
  ],
  "seen": {
@@ -157,12 +157,12 @@
   "skill:actions": "2026-10-17T23:19:19Z",
   "skill:aggravation": "2026-10-15T06:04:21Z",
   "skill:air": "2026-10-15T06:20:22Z",
-  "skill:app": "2026-10-17T07:42:31Z",
+  "skill:app": "2026-10-17T23:49:12Z",
   "skill:aurora-tonight": "2026-10-15T06:20:22Z",
   "skill:automations": "2026-10-15T16:35:42Z",
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
-  "skill:breath": "2026-10-17T07:42:31Z",
+  "skill:breath": "2026-10-17T23:49:12Z",
   "skill:calc": "2026-10-17T07:42:31Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
@@ -281,7 +281,7 @@
   "skill:watch": "2026-10-17T23:06:05Z",
   "skill:words": "2026-10-17T23:19:19Z",
   "skill:work": "2026-10-17T23:19:19Z",
-  "skill:zoom-figure": "2026-10-17T07:32:11Z",
+  "skill:zoom-figure": "2026-10-17T23:49:12Z",
   "skill:deps": "2026-10-17T08:11:24Z",
   "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
   "skill:bench": "2026-10-17T20:35:41Z",
