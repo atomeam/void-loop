@@ -3742,6 +3742,30 @@ try {
     await K.ask('merge a cat and the moon', 900);
     const kept = await until(async () => /keep keys out/.test(await K.page()), 6000);
     check('V01D merge: a refusal from the route is shown kindly, with no card and no page errors', kept && !(await cardOfMerge(K)) && !K.errors.length, JSON.stringify(K.errors)); await K.ctx.close(); }
+  // The Art Forge (lib/card-forge.js, lib/art-rules.js, functions/api/card-art.js; owner, 2026-10-17: "the art should be of the subject of each card"): a cached picture fills a merged
+  // card's art box under the foil frame; an uncached answer card paints once by itself (one POST); a skill card paints by its name; the route down leaves the plate
+  if (want("V01D art forge: a cached picture fills the art box, an uncached answer card paints once by itself, a skill card paints by its name")) {
+    const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const forged = (P) => P.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const a = e && e.querySelector(':scope > .vc-art'); return e && a ? { img: (a.querySelector('.vc-forge-img') || {}).src || '', btn: (a.querySelector('.vc-forge-btn') || {}).textContent || '', plate: !!a.querySelector('svg'), title: (e.querySelector('h2') || {}).textContent || '' } : null; });
+    const mergeBody = JSON.stringify({ name: 'Pizza Singularity', line: 'Every slice bends the light around it.', cached: false, power: 99, resistance: 99, income: 9, cost: 0, depth: 40, tier: 'proven' });
+    const A = await fresh(); const posts = [];
+    await A.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
+    await A.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX }) }); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await A.ask('merge a pizza and a black hole', 900);
+    const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000);
+    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind and rarity only, then the picture fills the art box over the plate', !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'kind,rarity,subject' && !A.errors.length, JSON.stringify({ shown, posts, errors: A.errors }));
+    await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
+    const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
+    check('V01D art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();
+    const C = await fresh(); await C.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody }));
+    await C.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: PX, cached: true }) }));
+    await C.ask('merge a pizza and a black hole', 900);
+    const hit = await until(async () => { const f = await forged(C); return f && f.title === 'Pizza Singularity' && f.img ? f : null; }, 8000);
+    check('V01D art forge: a picture already in the cache shows straight away, with no button and no page errors', !!hit && hit.img === PX && !hit.btn && !C.errors.length, JSON.stringify({ hit, errors: C.errors })); await C.ctx.close();
+    const D = await fresh(); await D.ctx.route(/\/api\/merge/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: mergeBody })); await D.ctx.route(/\/api\/card-art/, (r) => r.abort());
+    await D.ask('merge a pizza and a black hole', 900);
+    const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
+    check('V01D art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
   if (want("V01D cards: a skill that earned a higher rating glows once and says so, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
