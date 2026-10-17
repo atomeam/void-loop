@@ -32,6 +32,7 @@ export function wire(el, f) {
 async function runCard(m, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>' + esc(m.title) + '</h2><div class="sub">looking it up…</div>'; });
+  el.dataset.artKind = 'Song';
   const f = await lookup(m);
   if (!api._pageStill(el)) return 'media-pick';
   el.innerHTML = songCard(f, esc); wire(el, f);
@@ -40,6 +41,7 @@ async function runCard(m, api) {
 async function runMusic(api, chosen) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>Something to listen to</h2><div class="sub">' + (chosen ? 'I chose music for you · ' : '') + 'picking, then checking each one is real…</div>'; }); // void-review: ok (chosen is a boolean: only fixed text reaches innerHTML)
+  el.dataset.artKind = 'Song';
   let picks = [];
   try { const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: PROMPT }) }); if (r.ok) picks = parseMusic((await r.json()).answer); } catch (_) {}
   if (!api._pageStill(el)) return 'media-pick';

@@ -13,6 +13,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { readUsed, usedWords, deadWeight } from '../lib/skill-use.js';
+import { familyDrivers } from '../lib/better.js';
 export const FAMILIES_URL = '/skills/families.json';
 export const TIERS = ['proven', 'checked', 'tested', 'experiment']; // strongest first, the order of the bar
 // what each rating means, in the words of tools/families.mjs
@@ -90,8 +91,24 @@ export function deadHtml(esc, H, used, now = Date.now()) {
     + (dw.idle.length ? '; ' + dw.idle.length + ' idle for 30 days or more (' + dw.idle.slice(0, 5).map(esc).join(', ') + (dw.idle.length > 5 ? ', and ' + (dw.idle.length - 5) + ' more' : '') + ')' : '') + '. It is kept in this browser only and never sent.</div>';
 }
 
+/** which families lift the daily growth score and which drag it (asked by Void), above the families: the three each way, in score points, from lib/better.js familyDrivers.
+ *  better = the rows of void.better.json (the newest sets the score and how many parts it has). '' without families. Pure. */
+export function driversHtml(esc, fam, better = null) {
+  const last = Array.isArray(better) ? better.filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0] : null;
+  const parts = last && last.parts ? Object.values(last.parts).filter((v) => v !== null && v !== undefined).length : 5;
+  const d = familyDrivers(fam, parts || 5);
+  if (!d.length) return '';
+  const pts = (n) => (n > 0 ? '+' : n < 0 ? '\u2212' : '') + Math.abs(n).toFixed(1);
+  const li = (x) => '<li data-driver="' + esc(x.id) + '" data-points="' + x.points + '"><b style="font-weight:600">' + esc(x.name) + '</b> <span class="fh-pts" style="font-variant-numeric:tabular-nums">' + pts(x.points) + '</span> <span class="sub" style="font-size:12px">(' + esc(x.health) + '% healthy, ' + esc(x.skills) + ' skills)</span></li>';
+  const up = d.filter((x) => x.points > 0.04).slice(0, 3), down = d.filter((x) => x.points < -0.04).slice(-3).reverse();
+  return '<div class="fh-drivers" style="margin:12px 0 0"><div class="vh">What moves my growth score' + (last ? ' (' + esc(last.score) + ' of 100)' : '') + '</div>'
+    + (up.length ? '<div class="sub" style="font-size:12px">Lifting it</div><ul style="margin:2px 0 6px;padding-left:18px">' + up.map(li).join('') + '</ul>' : '')
+    + (down.length ? '<div class="sub" style="font-size:12px">Dragging it</div><ul style="margin:2px 0 6px;padding-left:18px">' + down.map(li).join('') + '</ul>' : '')
+    + '<div class="sub" style="font-size:12px">Points of the score, against the average skill: failing counts 0, barely checked half, the rest 1 (the friction part of the score).</div></div>';
+}
+
 /** the whole card's body (below the title). Pure. */
-export function healthHtml(esc, fam, used = null, now = Date.now()) {
+export function healthHtml(esc, fam, used = null, now = Date.now(), better = null) {
   const H = healthRows(fam);
   if (!H.rows.length) return '<p>The skill families could not be read just now. Ask again in a moment.</p>';
   const tile = (t) => '<div style="flex:1 1 0;min-width:64px"><div class="big" data-total="' + t + '" style="font-size:28px;line-height:1.1">' + H.totals[t] + '</div>'
@@ -99,7 +116,7 @@ export function healthHtml(esc, fam, used = null, now = Date.now()) {
   return '<div class="sub" style="font-size:13px;margin:2px 0 10px">' + H.skills + ' skills in ' + H.rows.length + ' families, rated from evidence alone.</div>'
     + '<div class="fh-totals" style="display:flex;gap:12px;margin:0 0 6px">' + TIERS.map(tile).join('') + '</div>'
     + bar(H.totals, H.skills, esc('all skills: ' + words(H.totals)))
-    + deadHtml(esc, H, used, now)
+    + deadHtml(esc, H, used, now) + driversHtml(esc, fam, better)
     + '<div class="fh-rows" style="margin-top:14px">' + H.rows.map((r) => '<div class="fh-family" data-family="' + esc(r.id) + '">'
       + '<button type="button" aria-expanded="false" data-open="' + esc(r.id) + '" style="all:unset;box-sizing:border-box;display:block;width:100%;min-height:44px;padding:8px 0;cursor:pointer;border-top:1px solid rgba(255,255,255,.06)">'
       + '<span style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px"><b style="font-weight:600;color:var(--d-ink,#f2f4fb)">' + esc(r.name) + '</b>'
@@ -121,7 +138,9 @@ async function run(text, api) {
   try { const r = await fetch(FAMILIES_URL, { cache: 'no-cache' }); fam = r.ok ? await r.json() : null; } catch (_) { fam = null; }
   if (!el || (_pageStill && !_pageStill(el))) return 'family-health';
   let used = null; try { used = readUsed(localStorage); } catch (_) { used = null; }
-  el.innerHTML = head + healthHtml(esc, fam, used);
+  let better = null; try { const r = await fetch('/void.better.json', { cache: 'no-cache' }); better = r.ok ? await r.json() : null; } catch (_) { better = null; }
+  if (_pageStill && !_pageStill(el)) return 'family-health';
+  el.innerHTML = head + healthHtml(esc, fam, used, Date.now(), better);
   el.addEventListener('click', (e) => {
     const b = e.target && e.target.closest && e.target.closest('button[data-open]'); if (!b) return;
     const box = b.parentNode && b.parentNode.querySelector('.fh-open'); if (!box) return;

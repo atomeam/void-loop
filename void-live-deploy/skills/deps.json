@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 455,
+ "counted": 458,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -81,6 +81,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/better.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 14
+  },
+  {
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
@@ -91,12 +97,6 @@
    "skills": 3,
    "direct": 1,
    "dependants": 14
-  },
-  {
-   "file": "lib/better.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 13
   },
   {
    "file": "lib/inbox-health.js",
@@ -279,6 +279,12 @@
    "dependants": 6
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 4
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -292,6 +298,12 @@
   },
   {
    "file": "lib/appraise-photo.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/field-vector.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -322,6 +334,12 @@
   },
   {
    "file": "lib/duel-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-stage.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -675,12 +693,6 @@
    "dependants": 1
   },
   {
-   "file": "lib/field-kit.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1
-  },
-  {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
@@ -735,7 +747,7 @@
    "dependants": 0
   },
   {
-   "file": "lib/field-stage.js",
+   "file": "lib/field-vector-worker.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -1530,6 +1542,7 @@
   "lib/better.js": {
    "imports": [],
    "importedBy": [
+    "skills/family-health.js",
     "skills/growth.js"
    ],
    "reachedBy": [
@@ -1788,14 +1801,36 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
-    "lib/field-stage.js"
+    "lib/field-stage.js",
+    "lib/field-vector.js"
+   ],
+   "reachedBy": [
+    "lib/field-vector-worker.js",
+    "skills/vector-field-mind.js"
    ]
   },
   "lib/field-stage.js": {
    "imports": [
     "lib/field-kit.js"
    ],
+   "importedBy": [
+    "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-vector-worker.js": {
+   "imports": [
+    "lib/field-vector.js"
+   ],
    "importedBy": []
+  },
+  "lib/field-vector.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "lib/field-vector-worker.js",
+    "skills/vector-field-mind.js"
+   ]
   },
   "lib/film-reviews.js": {
    "imports": [],
@@ -3408,7 +3443,8 @@
   },
   "skills/family-health.js": {
    "imports": [
-    "lib/skill-use.js"
+    "lib/skill-use.js",
+    "lib/better.js"
    ],
    "importedBy": []
   },
@@ -5002,6 +5038,13 @@
   "skills/v01d-fixes.js": {
    "imports": [
     "lib/v01d-fixes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/vector-field-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-vector.js"
    ],
    "importedBy": []
   },

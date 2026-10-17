@@ -12,7 +12,7 @@
  "smoke_at": "2026-10-16",
  "totals": {
   "experiment": 2,
-  "tested": 59,
+  "tested": 60,
   "checked": 31,
   "proven": 85
  },
@@ -23,7 +23,7 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 10,
     "checked": 5,
     "proven": 11
    },
@@ -238,6 +238,13 @@
      "last_tested": "2026-10-16",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "vector-field-mind",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rts",
@@ -1633,7 +1640,7 @@
     {
      "name": "family-health",
      "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
