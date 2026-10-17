@@ -2,12 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T23:54:39.439Z",
+   "at": "2026-10-17T23:58:42.652Z",
    "sha": "fd7255a4a6b27c3da752a4407a567958187d4b9c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39079951660",
    "suite": "browser suite on main",
    "checks": [
-    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
+    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
     "check timeout: no check finished within 300 s"
    ]
   },
