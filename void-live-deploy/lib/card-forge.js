@@ -31,9 +31,9 @@ export function worthy(el, c) {
   if (sk.replace(/[^a-z0-9]/gi, '').length < 3 || /^(?:looking|loading|thinking|searching)\b/i.test(sk) || /\b(?:looking|loading)\b|…$/i.test(String(c.typeLine || ''))) return false;
   return kind !== 'person' && !!String(c.key || '').trim();
 }
-/** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar or the title. */
+/** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar, the title or the .thin "Closest match I found for ..." line (the search, not the subject). */
 export function answerText(el) {
-  let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.src,.vtail,.vtell,.vtell-box,.vc-share,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
+  let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.src,.vtail,.vtell,.vtell-box,.vc-share,.thin,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
   return t.replace(/\s+/g, ' ').trim().slice(0, 1500);
 }
 export const kindOf = (el, c) => (el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill ? 'skill' : (c && c.kindName) || 'answer');

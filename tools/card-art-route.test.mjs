@@ -126,3 +126,14 @@ test('the backfill plan walks the skills and miniatures, leaves real-art kinds, 
   assert.equal(daysLeft(61), 3); assert.equal(daysLeft(0), 0);
   assert.equal(route.capOf({}), 30, 'the backfill does not move the cap');
 });
+
+test('a failed paint is counted by its reason, with no subject (owner, 2026-10-17: "still no art" and nothing said why)', async () => {
+  const w = world({ fail: true });
+  const r = await (await post(w.env, 'k pop music')).json(); assert.equal(r.state, 'plate'); assert.equal(r.why, 'busy');
+  await post(w.env, 'jazz music', 'answer', 'common', '2.2.2.2');
+  const misses = w.env.DB.raw.prepare('SELECT * FROM void_art_miss').all();
+  assert.equal(misses.length, 1); assert.equal(misses[0].why, '3040: capacity'); assert.equal(misses[0].n, 2); assert.ok(!JSON.stringify(misses).includes('music'));
+  const w2 = world({ reply: { nope: 1 } }); await post(w2.env, 'k pop music');
+  assert.equal(w2.env.DB.raw.prepare('SELECT why FROM void_art_miss').get().why, 'not an image: nope');
+  assert.equal(route.missWhy(new Error('slow')), 'timeout');
+});

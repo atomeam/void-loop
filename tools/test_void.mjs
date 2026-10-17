@@ -3761,6 +3761,21 @@ try {
     await A.ctx.close(); }
   // owner, 2026-10-17 (a Cat card with a generic eye): the art is of the subject. An answer that carries its source's picture of the thing shows
   // that picture in the art box, in V01D's ink; one with none keeps the plate of its kind.
+  if (want("V01D card art: an answer with no lead image looks up the article's own photo")) { const K = await fresh();
+    const kp = { type: 'standard', title: 'K-pop', description: 'South Korean popular music genre', extract: 'K-pop is a form of popular music originating in South Korea, from idol groups and bands.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/K-pop' } } };
+    const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
+    await K.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/png', body: PNG, headers: { 'access-control-allow-origin': '*' } }));
+    await K.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url(); const j = (o) => ({ status: 200, contentType: 'application/json', body: JSON.stringify(o) });
+      if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(j({ query: { search: [{ title: 'K-pop' }] } }));
+      if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'K-pop', description: kp.description, index: 1 } } } }));
+      if (/api\.php/.test(u) && /prop=pageimages/.test(u)) return rt.fulfill(j({ query: { pages: [{ title: 'K-pop' }] } }));
+      if (/api\.php/.test(u) && /generator=images/.test(u)) return rt.fulfill(j({ query: { pages: [{ title: 'File:K-pop logo.png', imageinfo: [{ mime: 'image/png', width: 900, thumburl: 'https://upload.wikimedia.org/t/logo.png' }] }, { title: 'File:Seoul concert.jpg', imageinfo: [{ mime: 'image/jpeg', width: 1600, thumburl: 'https://upload.wikimedia.org/t/concert.png' }] }] } }));
+      if (/page\/summary/.test(u)) return rt.fulfill(j(kp)); return rt.fulfill(j({})); });
+    await K.ask('what is k-pop', 1500);
+    const got = await until(() => K.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? im.getAttribute('src') : null; }), 8000);
+    check("V01D card art: an answer whose summary has no lead image looks up the article's own photo (a concert, not its logo) and shows it in the art box (owner's K-pop card, 2026-10-17)",
+      /concert\.png$/.test(got || '') && !K.errors.length, JSON.stringify({ got, e: K.errors }));
+    await K.ctx.close(); }
   if (want("V01D card art: an answer with a picture of its subject shows that picture in the art box")) {
     const P = await fresh();
     const cat = { type: 'standard', title: 'Cat', description: 'Small domesticated carnivorous mammal', extract: 'The cat is a small domesticated carnivorous mammal.', thumbnail: { source: 'https://upload.wikimedia.org/test/cat.png', width: 64, height: 64 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/Cat' } }, timestamp: '2026-01-01T00:00:00Z' };
