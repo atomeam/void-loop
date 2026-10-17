@@ -1287,6 +1287,16 @@
       "words": "Create the recipe-versioning system in the forge to save 'make' results as unique, inspectable iterations.",
       "ledgerAt": "2026-10-16T23:04:04Z",
       "why": "built: forge iterations: every make kept with its recipe id, shown by 'forge iterations' (skills/forge.js)"
+    },
+    {
+      "words": "Implement the 'skill-confidence' visualizer on the self card using color intensity for evidence ratings.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
+    },
+    {
+      "words": "Implement a 'skill-confidence' visualizer on the self card using color intensity to represent the evidence rating (proven/checked/tested) of my active skills.",
+      "ledgerAt": "2026-10-17T08:27:38Z",
+      "why": "built: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (lib/skill-confidence.js)"
     }
   ]
 }

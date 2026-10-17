@@ -2387,7 +2387,7 @@ try {
     await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
     check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page; an event whose page names no date ahead says so, no guess',
-      /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
+      /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && /less sure/.test(card) && /infobox/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
       JSON.stringify({ card: card.slice(0, 400), seen, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
