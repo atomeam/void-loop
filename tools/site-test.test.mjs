@@ -1,6 +1,6 @@
 // tools/site-test.mjs: the verdicts, the never-twice rules and the one-improvement-per-run choice, on fakes (no browser).
 import assert from 'node:assert/strict';
-import { judge, onceEach, robotsAllows, checkSteps, improve, inventory, variants, plan, remember } from './site-test.mjs';
+import { judge, changedText, onceEach, robotsAllows, checkSteps, improve, inventory, variants, plan, remember } from './site-test.mjs';
 
 let n = 0; const t = (name, f) => { f(); n++; };
 t('a refusal fails', () => assert.equal(judge({ ask: 'x' }, { text: "I don't know this yet" }).ok, false));
@@ -43,4 +43,8 @@ t('a console error on two asks is one failure', () => assert.equal(judge({ ask: 
 t('a wording keeps the example it came from', () => { const inv3 = inventory([{ name: 'v', examples: ['play despacito', 'watch the moon landing'] }], []);
   const p = plan(inv3, { asks: ['play despacito', 'watch the moon landing'] }, 1)[0]; assert.equal(p.base, 'play despacito');
   const all = variants('play despacito'); const q = plan(inv3, { asks: ['play despacito', 'watch the moon landing', ...all] }, 1)[0]; assert.equal(q.base, 'watch the moon landing'); });
+t('an answer that replaces a status line in the middle of the page counts as something appearing', () => {
+  const before = 'V01D\n↵\ntype anything\nsupport V01D', after = 'V01D\n↵\nthe void is empty · summon something first\nsupport V01D';
+  assert.match(changedText(before, after), /void is empty/); assert.equal(judge({ ask: 'bring it to the front' }, { text: changedText(before, after) }).ok, true);
+  assert.equal(changedText(before, before), ''); assert.equal(changedText('a', 'a then more'), ' then more'); });
 console.log('site-test: ' + n + ' checks passed');
