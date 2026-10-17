@@ -279,6 +279,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/success-pulse.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/gumroad.js",
    "skills": 1,
    "direct": 1,
@@ -478,12 +484,6 @@
   },
   {
    "file": "lib/skill-use.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/success-pulse.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -3341,6 +3341,7 @@
   "lib/success-pulse.js": {
    "imports": [],
    "importedBy": [
+    "skills/guide.js",
     "skills/status.js"
    ]
   },
@@ -4194,7 +4195,8 @@
     "lib/guide.js",
     "lib/book-news.js",
     "lib/tome-search.js",
-    "lib/tome.js"
+    "lib/tome.js",
+    "lib/success-pulse.js"
    ],
    "importedBy": []
   },

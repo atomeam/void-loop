@@ -66,3 +66,16 @@ test('flavor text (asked by Void): one line of lore for a proven skill, cut from
   assert.equal(new Set(lines).size, lines.length, 'no two alike');
   assert.ok(lines.every((l) => l.length <= 150), 'short enough for one or two lines under a title: ' + Math.max(...lines.map((l) => l.length)));
 });
+test('scented parchment (asked by Void): the tome is warm when the last status check was clean, cooler the more failed, untouched with no fresh reading', async () => {
+  const { parchmentFilter } = await import('../void-live-deploy/lib/tome.js');
+  const { keepHealth, loadHealth } = await import('../void-live-deploy/lib/success-pulse.js');
+  const now = Date.parse('2026-10-17T22:00:00Z');
+  assert.equal(parchmentFilter(null, now), ''); assert.equal(parchmentFilter({ failing: 0, checked: 9, at: now - 2 * 864e5 }, now), '', 'a reading two days old is not used');
+  assert.equal(parchmentFilter({ failing: 0, checked: 0, at: now }, now), '', 'nothing checked is no reading');
+  assert.equal(parchmentFilter({ failing: 0, checked: 9, at: now }, now), 'sepia(.18) saturate(1.08)');
+  const one = parchmentFilter({ failing: 1, checked: 9, at: now }, now), three = parchmentFilter({ failing: 3, checked: 9, at: now }, now);
+  const deg = (f) => +(/hue-rotate\((-?\d+)deg\)/.exec(f) || [0, 0])[1], sat = (f) => +(/saturate\(([\d.]+)\)/.exec(f) || [0, 1])[1];
+  assert.ok(deg(three) < deg(one) && deg(one) < 0, 'cooler with more failing'); assert.ok(sat(three) < sat(one) && sat(one) < 1, 'greyer too');
+  const mem = new Map(), store = { getItem: (k) => mem.get(k) ?? null, setItem: (k, v) => mem.set(k, String(v)) };
+  keepHealth(2, 9, store, now); assert.deepEqual(loadHealth(store), { failing: 2, checked: 9, at: now }); store.setItem('a2m.void.status.health.v1', '{bad'); assert.equal(loadHealth(store), null);
+});

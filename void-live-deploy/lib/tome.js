@@ -29,6 +29,7 @@ export const TOME_CSS = [
   '.tome-boards::after{content:"";position:absolute;inset:0;background:' + GRAIN + ';opacity:.5;border-radius:inherit;mix-blend-mode:multiply}',
   '.tome-spine{position:absolute;top:-1.6%;bottom:-1.6%;left:50%;width:4%;transform:translateX(-50%);background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.55) 42%,rgba(0,0,0,.62) 58%,rgba(0,0,0,0));z-index:3;pointer-events:none}',
   // the pages: parchment, darker at the edges and in the gutter, grained and foxed
+  '.tome-page,.tome-face{filter:var(--tome-tone,none);transition:filter .6s ease}', // the site's health tints the parchment (parchmentFilter)
   '.tome-page,.tome-face{position:absolute;top:0;bottom:0;width:50%;box-sizing:border-box;padding:6.2cqh 6cqh 7.4cqh;overflow:hidden;background-color:#e6d5ae;'
     + 'background-image:radial-gradient(ellipse at 18% 12%,rgba(255,250,236,.5),rgba(255,250,236,0) 55%),radial-gradient(ellipse at 85% 90%,rgba(110,70,25,.16),rgba(110,70,25,0) 55%),' + MOTTLE + ',' + GRAIN + ';'
     + 'background-size:auto,auto,420px 420px,160px 160px;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26);color:#2b1b0e;line-height:1.46;font-size:2.35cqh}',
@@ -99,6 +100,16 @@ const asks = (list, esc) => (list && list.length ? '<div class="tome-say">Say</d
 
 /** the contents page's list: every chapter with its first page; past ten chapters it sets tighter so the last still sits above the
  *  page number (the What's new chapter made it thirteen). Pure. */
+/** the parchment's tone from the Status card's last reading on this device (asked by Void: "a 'scented-parchment' CSS filter that subtly
+ *  shifts the color temperature of the tome based on the 'status' skill's current health"): warm sepia when all is well, cooler and greyer
+ *  the more fails; '' (the parchment as drawn) with no reading or one over a day old. health: { failing, checked, at }. Pure. */
+export function parchmentFilter(health, now = Date.now()) {
+  if (!health || !Number.isFinite(health.at) || now - health.at > 864e5 || !(health.checked > 0)) return '';
+  const bad = Math.min(1, Math.max(0, health.failing) / Math.max(1, Math.min(health.checked, 10)) * 2.5); // two failing of ten is already half cold
+  if (!bad) return 'sepia(.18) saturate(1.08)';
+  return 'sepia(' + (0.18 * (1 - bad)).toFixed(2) + ') saturate(' + (1 - 0.3 * bad).toFixed(2) + ') hue-rotate(' + Math.round(-14 * bad) + 'deg) brightness(' + (1 - 0.05 * bad).toFixed(2) + ')';
+}
+
 export function tocHtml(book, esc) {
   const list = (book.chapters || []).filter((c) => c.id !== 'front');
   return '<ul class="tome-toc tome-try gb-toc' + (list.length > 10 ? ' tome-toc-dense' : '') + '">' + list.map((c) => '<li>' + jump(c.from, c.name, esc) + ' <span class="n">· ' + c.from + '</span>' + (c.id === 'news' && book.news && book.news.unseen ? ' <b class="tome-new">' + book.news.unseen + ' new</b>' : '') + (c.for ? '<span class="tome-for">' + esc(c.for) + '</span>' : '') + '</li>').join('') + '</ul>';

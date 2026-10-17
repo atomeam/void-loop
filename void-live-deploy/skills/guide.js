@@ -14,7 +14,8 @@
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
 import { withNews, newSince } from '../lib/book-news.js';
 import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
-import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml } from '../lib/tome.js';
+import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml, parchmentFilter } from '../lib/tome.js';
+import { loadHealth } from '../lib/success-pulse.js';
 
 export { pageHtml, tocHtml };
 
@@ -122,6 +123,8 @@ function mount(book, api, startAt, text) {
     + '<div class="tome-boards"></div><div class="tome-stack left"></div><div class="tome-stack right"></div>'
     + '<section class="tome-page left" data-page=""></section><section class="tome-page right" data-page=""></section><div class="tome-spine"></div>'
     + '<div class="tome-cover">' + coverHtml(book, esc) + '</div><div class="tome-backcover">' + backCoverHtml(book, esc) + '</div></div><button type="button" class="tome-tocover" aria-label="Back to the cover">Cover</button><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
+  // the parchment's tone follows the site's health at the Status card's last check (asked by Void); untouched with no reading
+  const tone = parchmentFilter(loadHealth()); if (tone) { root.dataset.tone = tone; root.querySelector('.tome').style.setProperty('--tome-tone', tone); }
   document.body.appendChild(root);
   document.documentElement.classList.add('v-tome');
   const tome = root.querySelector('.tome'), left = root.querySelector('.tome-page.left'), right = root.querySelector('.tome-page.right'), live = root.querySelector('[aria-live]');
