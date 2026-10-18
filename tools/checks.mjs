@@ -301,6 +301,7 @@ for (const [name, file] of [
   ['card-look', 'card-look.test.mjs'],
   ['autopsy-asks', 'autopsy-asks.test.mjs'],
   ['game-health', 'game-health.test.mjs'],
+  ['ics', 'ics.test.mjs'],
   ['backlog-digest', 'backlog-digest.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],

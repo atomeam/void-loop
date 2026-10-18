@@ -2,6 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T08:38:29.082Z",
+   "sha": "51a1558a2dadc923f71e71f468bca70609ae7a8f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111918629",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/backlog-digest.test.mjs",
+    "void-live-deploy/skills/backlog-digest.js",
+    "void-live-deploy/void.growth.json",
+    "tools/bench.json"
+   ]
+  },
+  {
    "at": "2026-10-18T08:31:51.736Z",
    "sha": "ecde9c7a12fc5ee423d0bd1ba98798037ab7ae6c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39111158116",
@@ -716,34 +732,6 @@
     "tools/site-test.json",
     "tools/site-test.log.json",
     "tools/site-test.seen.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:32:09.232Z",
-   "sha": "bd24a1a092dce69345452966453f0cb0c620f9b1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39070065218",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/asks-link.json",
-    "tools/card-image.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/card-forge.js",
-    "void-live-deploy/skills/event-countdown.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
    ]
   }
  ]
