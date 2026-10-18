@@ -2,13 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T04:06:28.633Z",
+   "at": "2026-10-18T04:06:51.845Z",
+   "sha": "3a8217ea9415f1a22b58f1532e873903e72d9485",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39095746718",
+   "suite": "browser suite on main",
+   "checks": [
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "suite ran to the end"
+   ]
+  },
+  {
+   "at": "2026-10-18T03:56:19.377Z",
    "sha": "9e29a06db436bae99f4e0e43dfe39ad2be3dd002",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39095142987",
    "suite": "browser suite on main",
    "checks": [
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "suite ran to the end"
    ]
   },
   {
@@ -280,15 +290,6 @@
    "checks": [
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage",
     "defences: every /api route has an explicit limit and passes the middleware; the site sends CSP (no plugins, no framing, no base or form hijack), nosniff, HSTS and a permissions policy"
-   ]
-  },
-  {
-   "at": "2026-10-17T09:15:56.153Z",
-   "sha": "b8290ec1dea263eaef6efd1663182f47634ab160",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39020177884",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
    ]
   }
  ]
