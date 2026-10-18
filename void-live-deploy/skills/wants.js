@@ -30,6 +30,11 @@ const RULES = [
   new RegExp('^(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each)?(?: of)? (?:the )?(?:things|stuff|asks|wants|items)(?: ' + YOU + ' (?:want|wants|wanted|asked for|asked|have not built|haven\'t built|havent built|still want|want built))?(?: not built| unbuilt| still open| left| yet)?$'),
   // bare noun phrases that can only mean this list ("asks not built?" once reached the open web and answered with Daisy Bell);
   // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not Verse's
+  // "name your next 10 upgrades you want" (owner, 2026-10-18: it went to the model, which listed generic AI features): upgrades,
+  // improvements, features or wishes it wants, always tied to it ("you want", "your"), never "10 upgrades for my laptop"
+  new RegExp('^(?:name|list|give me|tell me|show me|show|what are)(?: me)? (?:' + YOUR + '|you|ur) (?:next |top |first )?(?:(?:\\d+|ten|five|three) )?(?:upgrades|improvements|features|wishes)(?: ' + YOU + ' (?:want|would like|wish for|need))?$'),
+  new RegExp('^(?:name|list|give me|tell me|show me)(?: me)? (?:the |' + YOUR + ' )?(?:next |top |first )?(?:\\d+|ten|five|three) (?:upgrades|improvements|features|things) ' + YOU + ' (?:want|would like|wish for|need)$'),
+  new RegExp('^what (?:upgrades|improvements|features) do ' + YOU + ' want(?: next| most| built)?$'),
   new RegExp('^(?:the |' + YOUR + ' )?(?:(?:open|unbuilt) (?:asks|wants)|asks not built(?: yet)?|unbuilt list|growth inbox)$'),
   new RegExp('^what (?:do|would) ' + YOU + ' (?:like|want) (?:built|to build|to be built|me to build|us to build)(?: next| now| first)?$'),
   new RegExp('^what (?:should|could|can) (?:i|we) build for ' + YOU + '(?: next| now)?$'),
@@ -125,8 +130,8 @@ async function run(text, api) {
 export default {
   name: 'wants',
   about: "What I want built: my will, the asks of mine nobody has built, and my growth inbox, from my own records, never a model.",
-  examples: ['what do you want built now', 'name all your unbuilt asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn'],
-  nearMisses: ['what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself'],
+  examples: ['what do you want built now', 'name all your unbuilt asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want'],
+  nearMisses: ['what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,
   wantsOf, clauses, moreLine, cardModel, cardHtml, countLine,

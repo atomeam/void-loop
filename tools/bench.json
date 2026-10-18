@@ -6072,5 +6072,8 @@
   {"ask": "keep a converter for miles and km", "want": "skill:convert"},
   {"ask": "keep 5 miles to km as a card", "want": "skill:convert"},
   {"ask": "convert card for 72 f to c", "want": "skill:convert"},
-  {"ask": "72 f to c as a converter card", "want": "skill:convert"}
+  {"ask": "72 f to c as a converter card", "want": "skill:convert"},
+  {"ask": "name you next 10 upgrades you want", "want": "skill:wants"},
+  {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
+  {"ask": "what upgrades do you want", "want": "skill:wants"}
 ]
