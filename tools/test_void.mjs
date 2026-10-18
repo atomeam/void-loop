@@ -969,6 +969,15 @@ try {
       /planned "move"/.test(said) && /no day yet/.test(said) && list && JSON.stringify(list.items.map((i) => i.text)) === JSON.stringify(['sort out what to give away', 'get boxes', 'pack', 'last checks', 'move'])
         && !st.some((x) => x.kind === 'countdown') && agenda === 0 && !U.errors.length, JSON.stringify({ said, items: list && list.items.map((i) => i.text), kinds: st.map((x) => x.kind), agenda, e: U.errors }));
     await U.ctx.close(); }
+  // a greeting is a greeting (owner, 2026-10-18: "whats good?" came back as philosophy and a 1969 film): it is said back, nothing is looked up
+  if (want("greetings: whats good and hi verse are said back, nothing looked up")) { const G = await fresh();
+    let looked = 0; await G.ctx.route(/\/api\/(answer|article|search)/, (r) => { looked++; return r.fulfill(json({})); });
+    const said = [];
+    for (const q of ['whats good?', "what's good", 'hi verse', 'howdy']) { await G.ask(q, 400); said.push(await G.whisper()); }
+    const st = await G.state();
+    check('greetings: "whats good?", "what\'s good", "hi verse" and "howdy" are each said back, nothing is looked up and no card goes up',
+      said.every((x) => /ask for anything/.test(x)) && looked === 0 && st.length === 0 && !G.errors.length, JSON.stringify({ said, looked, kinds: st.map((x) => x.kind), e: G.errors }));
+    await G.ctx.close(); }
   // an open plan (frontier #10, next step): a plan of a kind with no steps of its own asks the answer engine (mode 'plan') for
   // the steps; the only ask that runs is the checklist. The engine is stood in for here (the suite reaches no model).
   if (want("open plan: \"plan my garden\" asks the answer engine for steps")) { const O = await fresh();

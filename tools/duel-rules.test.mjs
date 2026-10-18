@@ -121,3 +121,41 @@ test('the opponent never makes an illegal move over 200 simulated turns, and alw
   }
   assert.ok(turns >= 200, 'simulated ' + turns);
 });
+
+test('abilities come from real facts and change the table: Proven, Fresh, Linked, and Kin for every card (owner, 2026-10-18)', () => {
+  // Proven: not neutralised the turn it arrives, fair game the turn after
+  let s = D.newState();
+  s = D.apply(s, { type: 'summon', card: D.card({ name: 'Calc', power: 1, resistance: 1, abilities: ['proven'] }), parent: 'y1', slot: 0 });
+  const calc = s.cards.find((c) => c.name === 'Calc');
+  assert.match(D.whyIllegal({ ...s, side: 'void', actions: 2, due: false }, { type: 'attack', from: 'v2', target: calc.id, pledge: 0 }), /Proven/);
+  s = D.apply(s, { type: 'pass' }); // the turn moves on: the shield is gone
+  assert.equal(D.whyIllegal(s, { type: 'attack', from: 'v2', target: calc.id, pledge: 0 }), null);
+  assert.ok(!D.shielded(s, calc));
+  // Linked: one more coin a turn for each arrow a friendly card stands on
+  let l = D.newState();
+  l = D.apply(l, { type: 'summon', card: D.card({ name: 'Hub', power: 1, resistance: 1, arrows: 2, abilities: ['linked'] }), parent: 'y1', slot: 0 });
+  const hub = l.cards.find((c) => c.name === 'Hub');
+  const before = D.incomeOf(l, 'you');
+  l = D.apply(l, { type: 'summon', card: D.card({ name: 'Leaf' }), parent: hub.id, slot: 0 });
+  assert.equal(D.incomeOf(l, 'you'), before + 1);
+  // Kin: +1 Power while a family-mate is in play
+  let k = D.newState();
+  k = D.apply(k, { type: 'summon', card: D.card({ name: 'Sun', power: 3, family: 'sky' }), parent: 'y1', slot: 0 });
+  const sun = k.cards.find((c) => c.name === 'Sun');
+  assert.equal(D.powerOf(k, sun), 3);
+  k = D.apply(k, { type: 'summon', card: D.card({ name: 'Moon', power: 2, family: 'sky' }), parent: 'y1', slot: 1 });
+  assert.equal(D.powerOf(k, k.cards.find((c) => c.name === 'Sun')), 4);
+  // an ability no fact gives is never taken
+  assert.deepEqual(D.card({ abilities: ['flying', 'proven', 'proven'] }).abilities, ['proven']);
+  // Fresh and the rest, from the real files: a skill tested this week is Fresh (+1 R), a proven skill is Proven, every card stays on 0-9
+  const fam = j('families.json'), deps = j('deps.json');
+  const named = fam.families.flatMap((f) => f.skills.map((x) => ({ ...x, fam: f.id })));
+  const t = named.find((x) => x.last_tested), today = t.last_tested;
+  const c = D.statsFor(t.name, fam, deps, { today });
+  assert.ok(c.abilities.includes('fresh'), t.name + ' was tested ' + today);
+  assert.equal(c.family, t.fam);
+  assert.ok(!D.statsFor(t.name, fam, deps, { today: '2099-01-01' }).abilities.includes('fresh'), 'long untested is not Fresh');
+  const p = named.find((x) => x.tier === 'proven');
+  assert.ok(D.statsFor(p.name, fam, deps, { today }).abilities.includes('proven'));
+  for (const x of named) { const d = D.statsFor(x.name, fam, deps, { today }); assert.ok(d.power <= 9 && d.resistance <= 9 && D.cost(d) <= D.START_TREASURY, x.name + ' ' + d.power + '/' + d.resistance); }
+});

@@ -5721,7 +5721,8 @@ say('nothing selected to remove');
       if (vpageEl && /^(close|close it|close this|go away|dismiss|hide it|done|ok)\s*[.!]?$/.test(lower0)) { closePage(); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'closed' }); return; }
       // quiet one-liners: nothing to close, a greeting, a probe. No page, no Wikipedia, nothing on the miss board.
       if (!vpageEl && /^(close|close it|close this|go away|dismiss|hide it)\s*[.!]?$/.test(lower0)) { say('nothing open'); return; }
-      if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
+      // "whats good?" is a greeting, not a question about ethics (owner, 2026-10-18: it came back as philosophy and a 1969 film)
+      if (/^(hi|hello|hey|hiya|howdy|yo|sup|wassup|wazzup|wsg|what'?s\s+up|whats\s+up|what'?s\s+good|whats\s+good|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void|verse|v01d))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
       // small talk: short, warm, and no encyclopedia page about the word "thanks"
       { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
       // a bare probe or ping is someone checking Void is alive: say so (no page, no miss)

@@ -33,20 +33,22 @@ const CSS = [
   '.duel-tile .d-on{font-size:9px;color:var(--muted,#8a8a8a);margin:1px 5px 0}.duel-tile[data-neutral]{opacity:.45;filter:grayscale(.8)}.duel-tile[data-neutral] .vc-title::after{content:" ✕"}',
   '.duel-tile.sel{outline:2px solid #ffd27a;outline-offset:2px}.duel-tile.tgt{outline:2px solid #e0303e;outline-offset:2px}.duel-open{width:104px;min-height:70px;border:1px dashed rgba(255,255,255,.28);border-radius:12px;background:none;color:var(--muted,#aaa);font:inherit;font-size:11px;cursor:pointer}.duel-open.sel{border-color:#ffd27a;color:#ffd27a}',
   '.duel-card .d-ctl{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:8px 0}.duel-card .d-ctl input{flex:1 1 140px;min-width:0;font:inherit;font-size:14px;padding:7px 9px;color:var(--ink,#ddd);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.16);border-radius:8px}',
-  '.duel-card .d-panel{margin:8px 0;padding:8px;border:1px solid rgba(255,210,122,.4);border-radius:10px;font-size:13px}.duel-card .d-panel .g-btn{margin:3px 3px 0 0}.duel-card .d-log{font-size:12px;color:var(--muted,#9a9a9a);margin-top:6px}.duel-card .d-win{font-size:15px;color:#ffd27a;margin:6px 0}',
+  '.duel-card .d-panel{margin:8px 0;padding:8px;border:1px solid rgba(255,210,122,.4);border-radius:10px;font-size:13px}.duel-card .d-panel .g-btn{margin:3px 3px 0 0}.duel-card .d-log{font-size:12px;color:var(--muted,#9a9a9a);margin-top:6px}.duel-card .d-win{font-size:15px;color:#ffd27a;margin:6px 0}.duel-card .d-kws{display:flex;flex-wrap:wrap;gap:3px;margin:2px 6px}.duel-card .d-kw{font-size:10px;letter-spacing:.04em;padding:1px 6px;border-radius:999px;border:1px solid rgba(255,210,122,.45);color:#ffd27a}.duel-card .d-shield{border-color:#9fe08a;color:#9fe08a}',
 ].join('');
 
 function tile(c, s, stats, pick) {
   const l = lookup(stats, c.name), base = cardOf({ skill: l.skill, page: l.page, book: l.book, deps: l.deps });
-  const n = { ...base, name: c.name, cost: 0, power: c.power, toughness: c.resistance, income: c.income, arrowsOut: Math.min(3, c.arrows), arrowIn: !!c.parent, fetched: false, number: '', adds: '',
+  const n = { ...base, name: c.name, cost: 0, power: D.powerOf(s, c), toughness: c.resistance, income: c.income, arrowsOut: Math.min(3, c.arrows), arrowIn: !!c.parent, fetched: false, number: '', adds: '',
     typeLine: c.root ? 'Root' : l.skill || l.page ? base.typeLine : 'Idea' };
   const h = chromeHtml(n, esc), cost = c.root ? '' : '<i>' + '◆'.repeat(Math.min(6, D.cost(c))) + '</i>';
   const parent = c.parent ? s.cards.find((x) => x.id === c.parent) : null;
   const b = document.createElement('button'); b.type = 'button'; b.className = 'duel-tile vcard'; b.dataset.id = c.id; b.dataset.side = c.side; b.style.setProperty('--h', String(n.hue));
   if (n.rarity) b.style.setProperty('--foil', 'linear-gradient(135deg,' + n.rarity.foil + ')');
   if (c.neutralised) b.dataset.neutral = '1';
-  b.setAttribute('aria-label', c.name + ', power ' + c.power + ', resistance ' + c.resistance + ', income ' + c.income + (c.neutralised ? ', neutralised' : ''));
-  b.innerHTML = '<div class="vc-title"><span>' + esc(c.name) + '</span>' + cost + '</div>' + h.type + (parent ? '<div class="d-on">on ' + esc(parent.name) + '</div>' : '') + h.foot + h.arrows; // void-review: ok: chromeHtml escapes, names go through esc
+  b.setAttribute('aria-label', c.name + ', power ' + D.powerOf(s, c) + (D.kin(s, c) ? ' (kin +1)' : '') + ', resistance ' + c.resistance + ', income ' + c.income + (c.abilities && c.abilities.length ? ', ' + c.abilities.join(', ') : '') + (D.shielded(s, c) ? ', shielded this turn' : '') + (c.neutralised ? ', neutralised' : ''));
+  // its abilities as keywords under the type line, the way Magic prints them; a Proven card just summoned says it is shielded
+  const kw = (c.abilities || []).map((a) => '<span class="d-kw" title="' + esc(D.ABILITIES[a]) + '">' + esc(a[0].toUpperCase() + a.slice(1)) + '</span>').join('') + (D.kin(s, c) ? '<span class="d-kw" title="Kin: another card of its family is in play, +1 Power">Kin +1</span>' : '') + (D.shielded(s, c) ? '<span class="d-kw d-shield" title="Proven: cannot be neutralised this turn">Shielded</span>' : '');
+  b.innerHTML = '<div class="vc-title"><span>' + esc(c.name) + '</span>' + cost + '</div>' + h.type + (kw ? '<div class="d-kws">' + kw + '</div>' : '') + (parent ? '<div class="d-on">on ' + esc(parent.name) + '</div>' : '') + h.foot + h.arrows; // void-review: ok: chromeHtml escapes, names go through esc
   b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', (e) => { e.stopPropagation(); pick(c); });
   return b;
 }
@@ -92,7 +94,7 @@ function mount(th, stageApi) {
       for (let n = 0; n <= cap; n++) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn d-answer'; b.textContent = 'Answer ' + n; b.dataset.n = n; b.addEventListener('click', (e) => { e.stopPropagation(); const p = pending; pending = null; step({ ...p, answer: n }); }); panel.appendChild(b); }
     } else if (mineTurn && mode === 'summon') {
       const def = defOf(input.value.trim() || 'Idea'), why = slot ? D.whyIllegal(s, { type: 'summon', card: def, parent: slot.parent, slot: slot.slot }) : 'tap an open arrow';
-      panel.hidden = false; panel.innerHTML = '<div>Summon <b>' + esc(def.name) + '</b>: Power ' + def.power + ', Resistance ' + def.resistance + ', Income ' + def.income + ', ' + def.arrows + ' arrow' + (def.arrows === 1 ? '' : 's') + ', costs <b>' + D.cost(def) + '</b>. ' + (why ? esc(why) + '.' : 'Ready.') + '</div>';
+      panel.hidden = false; panel.innerHTML = '<div>Summon <b>' + esc(def.name) + '</b>: Power ' + def.power + ', Resistance ' + def.resistance + ', Income ' + def.income + ', ' + def.arrows + ' arrow' + (def.arrows === 1 ? '' : 's') + ', costs <b>' + D.cost(def) + '</b>. ' + (def.abilities && def.abilities.length ? esc(def.abilities.map((a) => D.ABILITIES[a]).join('. ')) + '. ' : '') + (why ? esc(why) + '.' : 'Ready.') + '</div>';
       const go = document.createElement('button'); go.type = 'button'; go.className = 'g-btn d-confirm'; go.textContent = 'Summon ' + def.name; go.disabled = !!why; go.addEventListener('click', (e) => { e.stopPropagation(); doSummon(def); }); panel.appendChild(go);
     } else if (mineTurn && mode === 'attack') {
       const a = s.cards.find((c) => c.id === mine), t = s.cards.find((c) => c.id === theirs);
@@ -100,7 +102,7 @@ function mount(th, stageApi) {
       if (!a || !t) panel.innerHTML = '<div>' + (a ? 'Now tap one of Verse’s cards.' : 'Tap one of your cards to attack with.') + '</div>'; // void-review: ok: two fixed strings, no user text
       else {
         pledge = Math.min(pledge, s.treasury.you);
-        panel.innerHTML = '<div><b>' + esc(a.name) + '</b> (' + a.power + ' + ' + D.support(s, a) + ' support + <b>' + pledge + '</b> coins = <b>' + (a.power + D.support(s, a) + pledge) + '</b>) against <b>' + esc(t.name) + '</b> (' + t.resistance + ' + ' + D.support(s, t) + ' support = <b>' + (t.resistance + D.support(s, t)) + '</b> + Verse’s answer). It must beat the total.</div>';
+        panel.innerHTML = '<div><b>' + esc(a.name) + '</b> (' + D.powerOf(s, a) + (D.kin(s, a) ? ' with kin' : '') + ' + ' + D.support(s, a) + ' support + <b>' + pledge + '</b> coins = <b>' + (D.powerOf(s, a) + D.support(s, a) + pledge) + '</b>) against <b>' + esc(t.name) + '</b> (' + t.resistance + ' + ' + D.support(s, t) + ' support = <b>' + (t.resistance + D.support(s, t)) + '</b> + Verse’s answer). It must beat the total.</div>';
         for (const [txt, d] of [['− coin', -1], ['+ coin', 1]]) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn d-pledge'; b.textContent = txt; b.addEventListener('click', (e) => { e.stopPropagation(); pledge = Math.max(0, Math.min(s.treasury.you, pledge + d)); paint(); }); panel.appendChild(b); }
         const go = document.createElement('button'); go.type = 'button'; go.className = 'g-btn d-confirm'; go.textContent = 'Attack'; go.addEventListener('click', (e) => { e.stopPropagation(); step({ type: 'attack', from: a.id, target: t.id, pledge }); }); panel.appendChild(go);
       }

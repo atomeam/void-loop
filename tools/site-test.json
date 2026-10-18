@@ -9,7 +9,7 @@
     {
       "ask": "what are you?",
       "expect": {
-        "text": "V01D"
+        "text": "Verse"
       }
     },
     {

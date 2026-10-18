@@ -7,6 +7,12 @@
 //   a beaten card is neutralised: its arrows stay, it gives no Income, cannot attack, supports nobody, counts no Power.
 // First to neutralise the other Root wins; after 12 turns (both sides together) the side with more total Power in play wins.
 // Stats of real skills come from lib/card-frame.js cardOf (statsFor); a name with no evidence is a fresh card (1 / 1 / 0, cost 1).
+// Abilities (owner, 2026-10-18: "lets start thinking about the stats and card game rules to make the cards better"), each earned from a
+// real fact, never invented, the way Magic's keywords sit on a card's text box:
+//   Proven  (the skill's evidence rating is proven, a mythic card): it cannot be neutralised on the turn it is summoned.
+//   Fresh   (tested in the last 7 days, families.json last_tested): +1 Resistance (at most 9).
+//   Linked  (it has arrows: it imports other skills, deps.json): +1 Income for each of its arrows a friendly card stands on.
+//   Kin, a table rule for every card: +1 Power while another of your cards from the same family is in play and not neutralised.
 import { cardOf } from './card-frame.js';
 
 export const TURNS = 12, ACTIONS = 2, START_TREASURY = 6, BASE_INCOME = 2, MAX_ARROWS = 3;
@@ -14,22 +20,31 @@ export const other = (side) => (side === 'you' ? 'void' : 'you');
 const int = (n, lo, hi, d) => (Number.isFinite(+n) ? Math.max(lo, Math.min(hi, Math.round(+n))) : d);
 
 /** a card definition: { name, power, resistance, income, arrows }; no stats gives the fresh card (1 / 1 / 0). Pure. */
-export function card({ name = 'Idea', power = 1, resistance = 1, income = 0, arrows = 1 } = {}) {
-  return { name: String(name).trim().slice(0, 40) || 'Idea', power: int(power, 0, 99, 1), resistance: int(resistance, 0, 99, 1), income: int(income, 0, 99, 0), arrows: int(arrows, 0, MAX_ARROWS, 1) };
+export const ABILITIES = { proven: 'Proven: cannot be neutralised the turn it is summoned', fresh: 'Fresh: tested this week, +1 Resistance', linked: 'Linked: +1 Income for each arrow a friendly card stands on' };
+export const FRESH_DAYS = 7;
+export function card({ name = 'Idea', power = 1, resistance = 1, income = 0, arrows = 1, abilities = [], family = '' } = {}) {
+  const ab = [...new Set((Array.isArray(abilities) ? abilities : []).filter((a) => Object.hasOwn(ABILITIES, a)))];
+  return { name: String(name).trim().slice(0, 40) || 'Idea', power: int(power, 0, 99, 1), resistance: int(resistance, 0, 99, 1), income: int(income, 0, 99, 0), arrows: int(arrows, 0, MAX_ARROWS, 1),
+    abilities: ab, family: /^[a-z][a-z0-9-]{0,30}$/.test(family) ? family : '' };
 }
 export const cost = (c) => Math.max(1, Math.ceil((int(c.power, 0, 99, 1) + int(c.resistance, 0, 99, 1)) / 4));
 
 /** the stats a real skill has earned, as a card definition: cardOf over its families.json entry and deps.json entry, else a fresh card. Pure. */
-export function statsFor(name, families, deps) {
-  let skill = null;
-  for (const f of (families && families.families) || []) for (const s of f.skills || []) if (s.name === name) skill = s;
+export function statsFor(name, families, deps, { today = new Date().toISOString().slice(0, 10) } = {}) {
+  let skill = null, family = '';
+  for (const f of (families && families.families) || []) for (const s of f.skills || []) if (s.name === name) { skill = s; family = f.id || ''; }
   const f = deps && deps.files, d = f && f['skills/' + name + '.js'];
   const c = skill ? cardOf({ skill, deps: d ? { imports: (d.imports || []).filter((x) => !/\/mini\//.test(x)), importedBy: d.importedBy || [] } : null }) : null;
   if (!c || c.power == null) return card({ name });
-  return card({ name, power: c.power, resistance: c.toughness, income: c.income || 0, arrows: c.arrowsOut || 0 });
+  const days = skill.last_tested ? (Date.parse(today) - Date.parse(skill.last_tested)) / 864e5 : Infinity;
+  const fresh = days >= 0 && days <= FRESH_DAYS, arrows = c.arrowsOut || 0;
+  const abilities = [skill.tier === 'proven' && 'proven', fresh && 'fresh', arrows > 0 && 'linked'].filter(Boolean);
+  return card({ name, power: c.power, resistance: Math.min(9, c.toughness + (fresh ? 1 : 0)), income: c.income || 0, arrows, abilities, family });
 }
 
-const mk = (id, side, def, parent, slot, root) => ({ id, side, name: def.name, power: def.power, resistance: def.resistance, income: def.income, arrows: def.arrows, parent, slot, root: !!root, neutralised: false });
+const mk = (id, side, def, parent, slot, root, turn = 0) => ({ id, side, name: def.name, power: def.power, resistance: def.resistance, income: def.income, arrows: def.arrows,
+  abilities: def.abilities || [], family: def.family || '', summoned: turn, parent, slot, root: !!root, neutralised: false });
+const has = (c, a) => !!(c && c.abilities && c.abilities.includes(a));
 
 /** a new duel. pool: the cards V01D may summon, e.g. { void: [card(...)] }; with none it summons fresh ideas. Pure. */
 export function newState({ pool = null } = {}) {
@@ -43,8 +58,15 @@ const byId = (s, id) => s.cards.find((c) => c.id === id) || null;
 const touching = (s, c) => s.cards.filter((o) => o.side === c.side && !o.neutralised && (o.parent === c.id || o.id === c.parent));
 /** how many friendly cards stand against the card's arrows, parent or children, that are not neutralised */
 export const support = (s, c) => touching(s, c).length;
-export const incomeOf = (s, side) => BASE_INCOME + s.cards.filter((c) => c.side === side && !c.neutralised).reduce((n, c) => n + c.income, 0);
-export const powerIn = (s, side) => s.cards.filter((c) => c.side === side && !c.neutralised).reduce((n, c) => n + c.power, 0);
+/** Kin: +1 Power while another of the side's cards from the same family is in play and not neutralised */
+export const kin = (s, c) => (c.family && s.cards.some((o) => o.id !== c.id && o.side === c.side && !o.neutralised && o.family === c.family) ? 1 : 0);
+export const powerOf = (s, c) => c.power + kin(s, c);
+/** Linked: one more coin for each of the card's arrows a friendly card stands on */
+const linked = (s, c) => (has(c, 'linked') ? s.cards.filter((o) => o.parent === c.id && o.side === c.side).length : 0);
+export const incomeOf = (s, side) => BASE_INCOME + s.cards.filter((c) => c.side === side && !c.neutralised).reduce((n, c) => n + c.income + linked(s, c), 0);
+export const powerIn = (s, side) => s.cards.filter((c) => c.side === side && !c.neutralised).reduce((n, c) => n + powerOf(s, c), 0);
+/** Proven: a card cannot be neutralised on the turn it was summoned */
+export const shielded = (s, t) => has(t, 'proven') && !t.root && t.summoned === s.turn;
 /** the open arrows of a side: [{ parent, slot }] over its cards in table order (neutralised cards keep their arrows) */
 export function openArrows(s, side) {
   const out = [];
@@ -59,7 +81,7 @@ export function collectIncome(s) {
   n.treasury[n.side] += g; n.due = false; n.log.push(n.side + ' collects ' + g);
   return n;
 }
-const atkTotal = (s, a, pledge) => a.power + support(s, a) + pledge;
+const atkTotal = (s, a, pledge) => powerOf(s, a) + support(s, a) + pledge;
 const defBase = (s, t) => t.resistance + support(s, t);
 /** the coins the defender puts in answer when it is not told: the least that holds, if it can pay for it (a Root pays whatever it can) */
 export function defenderAnswer(s, action) {
@@ -89,6 +111,7 @@ export function whyIllegal(s0, action) {
     if (a.neutralised) return 'a neutralised card cannot attack';
     if (!t || t.side === side) return 'attack an enemy card';
     if (t.neutralised) return 'that card is already neutralised';
+    if (shielded(s, t)) return t.name + ' is Proven: it cannot be neutralised the turn it is summoned';
     if (!Number.isInteger(pl) || pl < 0 || pl > s.treasury[side]) return 'pledge between 0 and your Treasury';
     if (action.answer != null && (!Number.isInteger(action.answer) || action.answer < 0 || action.answer > s.treasury[t.side])) return 'the answer is between 0 and the defender\'s Treasury';
     return null;
@@ -103,7 +126,7 @@ export function legalActions(s0, pool = null) {
   const own = pool || s.pool[side], defs = (own && own.length ? own : [card()]).map((c) => card(c));
   const arrows = openArrows(s, side);
   for (const d of defs) if (cost(d) <= s.treasury[side]) for (const ar of arrows) out.push({ type: 'summon', card: d, parent: ar.parent, slot: ar.slot });
-  for (const a of s.cards) if (a.side === side && !a.neutralised) for (const t of s.cards) if (t.side !== side && !t.neutralised) for (let p = 0; p <= s.treasury[side]; p++) out.push({ type: 'attack', from: a.id, target: t.id, pledge: p });
+  for (const a of s.cards) if (a.side === side && !a.neutralised) for (const t of s.cards) if (t.side !== side && !t.neutralised) if (!shielded(s, t)) for (let p = 0; p <= s.treasury[side]; p++) out.push({ type: 'attack', from: a.id, target: t.id, pledge: p });
   return out;
 }
 
@@ -129,7 +152,7 @@ export function apply(s0, action) {
   s.actions -= 1;
   if (action.type === 'summon') {
     const c = card(action.card); s.treasury[side] -= cost(c);
-    const id = (side === 'you' ? 'y' : 'v') + s.nextId++; s.cards.push(mk(id, side, c, action.parent, action.slot, false));
+    const id = (side === 'you' ? 'y' : 'v') + s.nextId++; s.cards.push(mk(id, side, c, action.parent, action.slot, false, s.turn));
     s.log.push(side + ' summons ' + c.name + ' (' + c.power + '/' + c.resistance + ')');
   } else {
     const a = byId(s, action.from), t = byId(s, action.target), pl = action.pledge || 0;
@@ -150,7 +173,7 @@ export function opponentMove(s0) {
   if (s.actions < 1) return { type: 'pass' };
   const have = s.treasury[side], held = s.treasury[foe];
   let best = null;
-  for (const a of s.cards) if (a.side === side && !a.neutralised) for (const t of s.cards) if (t.side === foe && !t.neutralised) {
+  for (const a of s.cards) if (a.side === side && !a.neutralised) for (const t of s.cards) if (t.side === foe && !t.neutralised && !shielded(s, t)) {
     const base = defBase(s, t), room = Math.min(held, 2);
     for (let p = 0; p <= Math.min(have, Math.floor(have / 2)); p++) if (atkTotal(s, a, p) > base + room) {
       const key = [t.root ? 1 : 0, t.power, -p]; // the Root first, then the strongest card, then the fewest coins

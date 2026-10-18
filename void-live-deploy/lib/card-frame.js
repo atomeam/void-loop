@@ -4,9 +4,9 @@
 // with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to V01D" line, and a footer with a collector
 // number and a power/toughness plate. Nothing is invented: the rarity is the skill's evidence rating (proven mythic, checked rare, tested
 // uncommon, experiment common); the cost is how many words you say to play it; power is its success rate out of nine and toughness the
-// real asks that proved it; the collector number is its page in the V01D Book; "adds" is the one line the book says it does. An answer
-// fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how many days old the
-// source is. The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
+// real asks that proved it (on 0-9, asksResistance); the collector number is its page in the V01D Book; "adds" is the one line the book says it does. An answer
+// fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how fresh the
+// source is (freshness). The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
 // (what it imports), an arrow in at the top when other skills lean on it, Income being how many do. Pure: cardOf(), chromeHtml(); the page calls keep() and style().
 import { hueOf } from './guide.js';
@@ -27,11 +27,24 @@ export const RARITY = {
 };
 const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 
+// every stat sits on 0-9 (owner, 2026-10-18: "lets start thinking about the stats and card game rules to make the cards better"):
+// resistance counted every proving ask, so calc read 9/99 and cost 27 in a duel; now it grows about 3 for each tenfold rise in asks
+// (1 ask 1, 10 asks 4, 100 asks 7, 1000 or more 9). An answer's resistance is its freshness, not its age: a source edited today is 9,
+// a week ago 6, a month ago 5, a year ago 1, so a stale fact no longer outlasts a fresh one.
+export const asksResistance = (n) => (Number.isFinite(n) && n > 0 ? Math.max(1, Math.min(9, 1 + Math.round(3 * Math.log10(n)))) : 0);
+export const freshness = (days) => (days == null || !Number.isFinite(+days) ? 1 : Math.max(1, Math.min(9, 9 - Math.floor(Math.log2(Math.max(0, +days) + 1)))));
+// a card's abilities as printed keywords, each from a fact the site already has (the duel plays them: lib/duel-rules.js ABILITIES):
+// Proven (a proven skill, a mythic), Fresh (tested in the last 7 days), Linked (it leans on other skills), Sourced (an answer standing on 2+ sources)
+export const KEYWORDS = { Proven: 'cannot be neutralised the turn it is summoned', Fresh: 'tested this week: +1 Resistance', Linked: '+1 Income for each arrow a card stands on', Sourced: 'stands on two or more sources' };
+export function keywordsOf({ tier = '', tested = '', arrows = 0, fetched = false, sources = null, today = null } = {}) {
+  const now = Date.parse(today || new Date().toISOString().slice(0, 10)), days = tested ? (now - Date.parse(tested)) / 864e5 : Infinity;
+  return [tier === 'proven' && 'Proven', days >= 0 && days <= 7 && 'Fresh', arrows > 0 && 'Linked', fetched && sources >= 2 && 'Sourced'].filter(Boolean);
+}
 const artLookOf = (m) => { const l = artLook(m); return { artHue: l.hue, artInk: l.ink, artWhy: l.why }; };
 /** what a card shows, from what the site already knows: { rarity, hue, chapter, cost, typeLine, power, toughness, number, tested, adds, name, fetched }. Pure.
  *  skill: a families.json skill ({ name, tier, why, last_tested, success_rate }) or null; page: its guide.json page or null; book: guide.json;
  *  kind: 'Answer' | 'Skill' | 'Game' | 'Miniature'; sources / ageDays: for a fetched answer, how many sources and how old the newest is */
-export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null } = {}) {
+export function cardOf({ skill = null, page = null, book = null, kind = '', sources = null, ageDays = null, deps = null, entity = null, artKind = '', artMeta = null, today = null } = {}) {
   const chap = page && book ? (book.chapters || []).find((c) => c.id === page.chapter) : null;
   const tier = (skill && skill.tier) || (page && page.tier) || '';
   const rarity = RARITY[tier] || null, ti = Math.max(0, TIERS.indexOf(tier)); // an unknown tier word counts as the lowest, never negative
@@ -48,12 +61,13 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     cost: words ? Math.min(6, words) : 0,
     typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from Verse') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
     power: stats ? (sr == null ? ti * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
-    toughness: stats ? (asks ? Math.min(99, +asks) : ti + 1) : fetched ? (ageDays == null ? 1 : Math.max(0, Math.min(99, Math.round(ageDays)))) : null,
+    toughness: stats ? (asks ? asksResistance(+asks) : ti + 1) : fetched ? freshness(ageDays) : null,
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
     number: page && book ? String(page.n).padStart(3, '0') + '/' + String((book.pages || []).length || '').padStart(3, '0') : '',
     tested: (skill && skill.last_tested) || '',
     adds: page && page.line ? String(page.line).replace(/\s+/g, ' ').slice(0, 120) : fetched ? 'A fact it did not have to be taught: fetched, sourced and dated.' : '',
     name: (skill && skill.name) || (page && page.name) || '', isSkill: !!(skill || page),
+    keywords: keywordsOf({ tier, tested: skill && skill.last_tested, arrows: stats && deps ? (deps.imports || []).length : 0, fetched, sources, today }),
   };
 }
 
@@ -71,10 +85,11 @@ const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color
 export function chromeHtml(c, esc) {
   const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: c.artKind || kindWord(c.typeLine), chapter: c.chapter, hue: c.artHue != null ? c.artHue : c.hue, ink: c.artInk || undefined, rarity: c.rarity, season: c.season, glyph: c.isSkill, nouns: c.nouns }, { w: 520, h: 150 }) + '</div>';
   const type = '<div class="vc-type"><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
-  const adds = c.adds ? '<div class="vc-adds"><b>Adds to Verse</b> ' + esc(c.adds) + '</div>' : '';
+  const kws = (c.keywords || []).filter((k) => KEYWORDS[k]).map((k) => '<span class="vc-kw" title="' + esc(k + ': ' + KEYWORDS[k]) + '">' + esc(k) + '</span>').join('');
+  const adds = c.adds || kws ? '<div class="vc-adds">' + (kws ? '<div class="vc-kws">' + kws + '</div>' : '') + (c.adds ? '<b>Adds to Verse</b> ' + esc(c.adds) : '') + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
-  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: days since the source was edited')
-    : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: real asks that proved it') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
+  const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: how fresh the source is, 9 if edited today, 1 if a year or more')
+    : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: the real asks that proved it, about 3 more for each tenfold') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
   const arrows = '<div class="vc-arrows" aria-hidden="true">' + (c.arrowIn ? '<i class="in">\u25bc</i>' : '') + ['r', 'b', 'l'].slice(0, c.arrowsOut).map((d) => '<i class="' + d + '">\u25b6</i>').join('') + '</div>';
   const foot = '<div class="vc-foot"><div class="vc-num">' + (c.rarity ? esc(c.rarity.name) + ' · ' : '') + (c.number ? esc(c.number) + ' · ' : '') + 'Verse' + (c.tested ? ' · tested ' + esc(c.tested) : '') + '</div>' + plate + '</div>';
   return { art, type, adds, foot, arrows };
@@ -92,7 +107,7 @@ export const CARD_CSS = [
   '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/9;max-height:min(300px,38vh);margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo::before{content:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
-  '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
+  '.vcard .vc-kws{display:flex;flex-wrap:wrap;gap:4px;margin:0 0 6px;font-style:normal}.vcard .vc-kw{font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;padding:1px 7px;border-radius:999px;border:1px solid hsl(var(--h) 40% 60% / .55);color:hsl(var(--h) 50% 80%)}.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
   '.vcard{scroll-padding-bottom:84px}.vcard .vc-foot a,.vcard .vc-foot button,.vcard .vc-foot [role=button],.vcard .vc-foot input{pointer-events:auto}.vcard .vc-arrows{pointer-events:none}.vcard .vc-foot{pointer-events:none;position:sticky;bottom:-12px;padding:8px 0 12px;background:linear-gradient(180deg,transparent,hsl(var(--h) 22% 8%) 38%);z-index:2;display:flex;align-items:flex-end;justify-content:space-between;margin:8px 12px 0;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 15% 62%)}',
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:linear-gradient(180deg,hsl(var(--h) 28% 26%),hsl(var(--h) 26% 14%));border:2px solid var(--edge);border-radius:9px 4px 9px 4px;font-size:17px;font-weight:700;letter-spacing:.05em;color:#f3efe2;box-shadow:0 2px 6px rgba(0,0,0,.5)}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 30% 70%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:16px;color:#f3efe2;letter-spacing:.02em}',
