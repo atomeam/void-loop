@@ -1,4 +1,4 @@
-// Bring someone into your Void (frontier #11, plan item 10 the live half): the room one invite opens.
+// Bring someone into your Verse (frontier #11, plan item 10 the live half): the room one invite opens.
 // An invite is a room name nobody can guess (random, signed with the site's SALT), so a stranger cannot wake a Durable
 // Object for a name they made up. In the room only two things pass: where your cursor is (a faint presence on the other
 // screens) and a summon (the words that put something on your stage, run again on theirs). Nothing else rides along, and

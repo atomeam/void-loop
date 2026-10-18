@@ -3,7 +3,7 @@
 //   { model, from, to, file? }  -> { model, total, results: [{ i, text, ms } | { i, error, ms }] }
 //                                  the built-in asks from..to-1 (lib/bench-asks.js), at most CHUNK a call, with the messages
 //                                  /api/answer sends, run with its options (ANSWER_RUN: thinking off, its token budget) and its
-//                                  think-stripping (Void's live facts for self asks, pages masked); scoring stays in the tool
+//                                  think-stripping (Verse's live facts for self asks, pages masked); scoring stays in the tool
 //   { probe: true }             -> { ok, asks, chunk, catalog, clef }  the route is there and the key works; the text models the
 //                                  binding lists, with prices when it gives them (for the tool's spend plan); and what the
 //                                  binding knows of Clef and Clef-flash (frontier #9: tools/clef-probe.mjs prints it, so the

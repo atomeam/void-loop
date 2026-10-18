@@ -65,7 +65,7 @@ function boardSvg() {
     const [sx, sy] = startCentre(c); svgEl('circle', { cx: r1(sx), cy: r1(sy), r: 19, fill: '#fff', stroke: HEX[col], 'stroke-width': 3 }, s);
     svgEl('text', { x: r1(sx), y: r1(sy - 21.5), 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 700, fill: HEX[col], 'font-family': 'system-ui, sans-serif' }, s).textContent = 'START';
   });
-  // the middle: Void's own name for it, set across the board like a vintage box lid (Void brand, not the original's logo)
+  // the middle: Verse's own name for it, set across the board like a vintage box lid (Verse brand, not the original's logo)
   const lid = svgEl('g', { transform: 'rotate(-28)' }, s);
   svgEl('text', { x: 0, y: -4, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, 'letter-spacing': 3, fill: '#1d2a52', 'font-family': 'Georgia, serif' }, lid).textContent = 'BACK TO';
   svgEl('text', { x: 0, y: 26, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 800, 'letter-spacing': 2, fill: '#c8202c', 'font-family': 'Georgia, serif' }, lid).textContent = 'START';

@@ -1,5 +1,5 @@
 /**
- * figures3d — Void's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
+ * figures3d — Verse's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
  * so the empty page loads no 3D code at all. On first use it loads the bundled three.js (/vendor/three-r180, shared with scene3d.js) and puts one transparent
  * WebGL canvas behind the cards, over the black stage. Pointer events pass through to the cards; the page asks this layer
  * whether a figure is under the pointer, and only then does a click, wheel or pinch go to the figure.

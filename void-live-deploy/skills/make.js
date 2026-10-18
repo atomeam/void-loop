@@ -2,7 +2,7 @@
  * make skill — things that materialize: a playable Connect 4, and 3D objects
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "play connect 4", "make a 3d torus", "a gold 3d diamond".
- * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Void's data)
+ * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Verse's data)
  * and arrives with a materialize animation. Everything is drawn here: no libraries, no downloads.
  * Tools: the fringe drafts wired live (tools/fringe.mjs --publish writes void-live-deploy/fringe/<family>.html);
  * "timing game", "what did void get wrong", "idea vault", "uap timeline"… open the page in a frame.

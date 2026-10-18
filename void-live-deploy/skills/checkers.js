@@ -1,5 +1,5 @@
 /**
- * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Void.
+ * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Verse.
  * "play checkers", "checkers", "lets play draughts" summons it; it stays until thrown off. You are the dark (rosewood) men
  * and move first. Tap a man, then where it lands; for a multi-jump tap each landing in turn.
  * The rules live in skills/checkers-rules.js (forced captures, multi-jumps, crowning, a king moves both ways).
@@ -80,7 +80,7 @@ function mount(th, stageApi) {
   function voidTurn() {
     const s = st().s;
     if (s.turn !== 'l' || K.status(s) !== 'playing' || thinking.has(th.id)) return;
-    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Void thinks on this thread
+    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Verse thinks on this thread
       .then((m) => new Promise((res) => setTimeout(() => res(m), 150))).then((m) => {
         thinking.delete(th.id);
         if (st().s !== s || !m) { paint(); return; }

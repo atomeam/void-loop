@@ -1,6 +1,6 @@
 /**
- * growth skill — "growth" / "how have you grown": Void's growth ledger (void.growth.json, BASE.md), newest first.
- * The ledger is append-only: every session that changes what Void can do adds one line with `node tools/grow.mjs`, and the
+ * growth skill — "growth" / "how have you grown": Verse's growth ledger (void.growth.json, BASE.md), newest first.
+ * The ledger is append-only: every session that changes what Verse can do adds one line with `node tools/grow.mjs`, and the
  * next deploy makes it summonable here. Kinds: grow (a new thing), build (better at one), fix, retire, idea and finding
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
@@ -35,7 +35,7 @@ export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 export function ordered(list, kind) {
   const t = (e) => { const n = Date.parse(e && e.at); return isNaN(n) ? -Infinity : n; };
   return (Array.isArray(list) ? list : []).filter((e) => e && typeof e.what === 'string' && (!kind || e.kind === kind))
-    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })).filter((e) => e.what); // shown without quotes of the owner's messages or what Void studies
+    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })).filter((e) => e.what); // shown without quotes of the owner's messages or what Verse studies
 }
 
 /** { total, since, byKind: { grow: n, … } } */
@@ -353,7 +353,7 @@ function plantTree(el, api, list, { from } = {}) {
     setTimeout(() => { if (!el.isConnected) return; range.value = range.max; showDay(); mount().then(() => pulse(slot)).catch(() => {}); }, still ? 0 : 1200);
   }).catch(() => { slot.remove(); when.remove(); said.remove(); });
   fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && (j.tracks || j.building || j.commits)) { self = j; if (today()) mount().catch(() => {}); } }).catch(() => {});
-  // Void's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once
+  // Verse's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once
   const json = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   Promise.all([json('/api/will'), json('/api/reflect')]).then(([will, voice]) => {
     asked = (voice && voice.follow && voice.follow.asked) || null;

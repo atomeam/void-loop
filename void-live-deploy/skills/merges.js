@@ -21,7 +21,7 @@ export function mergedOf(prs, n = SHOW) {
     .sort((a, b) => String(b.merged_at).localeCompare(String(a.merged_at))).slice(0, n)
     .map((p) => { const labels = (p.labels || []).map((l) => (l && l.name) || '');
       return { number: p.number, title: String(p.title || '').slice(0, 160), at: String(p.merged_at).slice(0, 16).replace('T', ' '), url: /^https:\/\/github\.com\//.test(String(p.html_url || '')) ? p.html_url : 'https://github.com/' + REPO + '/pull/' + p.number,
-        how: labels.includes('made by Verse') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Void\'s review' : 'merged by hand' }; });
+        how: labels.includes('made by Verse') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Verse\'s review' : 'merged by hand' }; });
 }
 
 /** the card's list. Pure. */
@@ -39,7 +39,7 @@ async function run(text, api) {
       const rows = mergedOf(await r.json());
       if (!el.isConnected) return;
       el.querySelector('.sub').textContent = 'the newest pull requests merged into ' + REPO + ', and how each got in';
-      body.innerHTML = mergesHtml(esc, rows) + '<div class="src">Source: <a href="https://github.com/' + REPO + '/pulls?q=is%3Apr+is%3Amerged" target="_blank" rel="noopener">GitHub</a> · a bot merges a labelled pull request once the suite and Void\'s review pass; verify.yml takes back what breaks main.</div>';
+      body.innerHTML = mergesHtml(esc, rows) + '<div class="src">Source: <a href="https://github.com/' + REPO + '/pulls?q=is%3Apr+is%3Amerged" target="_blank" rel="noopener">GitHub</a> · a bot merges a labelled pull request once the suite and Verse\'s review pass; verify.yml takes back what breaks main.</div>';
     } catch (_) { if (el.isConnected) body.innerHTML = '<p>GitHub did not answer just now. Ask again in a moment.</p>'; }
   };
   await read();

@@ -1,9 +1,9 @@
 /**
- * figures skill — a small 3D friend that roams your own Void, notices your cursor, and leaves when you send it away
+ * figures skill — a small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Board Next #17. "summon a sprite", "bring a friend", "show me a 3D buddy"; "send them away" / "dismiss figures" (undo brings
  * them back); "less motion" holds them still. Figures are stage items in this browser (the personal layer), so the next
- * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
+ * visitor still arrives at a blank Verse. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
 import { fallbackScript, natureOf } from './scripts.js';
 import { thingOf } from './forge-rules.js';
@@ -88,7 +88,7 @@ export function natureSummon(t) {
 
 // An article's figure is the thing itself (Adam, 2026-10-09): a page about cats brings a real cat, about a banana a real
 // banana. Matched on the title's last word, then the whole title ("Honey bee" is a bee, "Great white shark" a shark);
-// null when Void has no real model of it yet, so the page brings no stand-in.
+// null when Verse has no real model of it yet, so the page brings no stand-in.
 export function realFigureFor(card, seed = (Math.random() * 4294967296) >>> 0) {
   const title = String((card && card.title) || '').replace(/\s*\(.*\)$/, '').trim().toLowerCase();
   if (!title || title.split(/\s+/).length > 4) return null;

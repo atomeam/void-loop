@@ -3,7 +3,7 @@
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
  * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.
- * Asked by Void (ask-20261014-1523-1, "link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger
+ * Asked by Verse (ask-20261014-1523-1, "link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger
  * actionable prompts"): when rain, snow, frost or heat is in the next hours, the card offers one ask the timer skill takes
  * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
  * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).

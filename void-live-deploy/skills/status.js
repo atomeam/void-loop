@@ -1,11 +1,11 @@
 /**
- * status skill — "void status" / "system status" / "is void working": each part of Void checked on the spot, in this
+ * status skill — "void status" / "system status" / "is void working": each part of Verse checked on the spot, in this
  * browser (domains/void.assimilate.md, ask "status": each component). Skills: the page's own load check run again
  * (index entries whose module is missing or misshapen are named). This browser: storage (a throwaway value written and
- * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Void reads,
+ * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Verse reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
- * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
- * public API), and the actions Void took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
+ * service is not pinged: a ping would spend its small daily quota. Verse's own build: the newest checks and deploy on main (GitHub's
+ * public API), and the actions Verse took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
@@ -167,12 +167,12 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   if (buildFailed(rows)) { await open(); return true; }
   const sup = await supportState(fetchFn); // a paying user waiting on an answer opens the card too
   if (sup && sup.open) { await open(); return true; }
-  const acts = await failedActions(fetchFn, undefined, now); // an action Void took for the owner that failed (the other half of Void's ask)
+  const acts = await failedActions(fetchFn, undefined, now); // an action Verse took for the owner that failed (the other half of Verse's ask)
   if (acts && acts.length) { await open(); return true; }
   return false;
 }
 
-// Actions Void took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
+// Actions Verse took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
 // owner-only). Void asked five times for "a blocked deployment or failed action" to open a status card by itself: the build half
 // is buildState above, this is the action half. A visitor has no key and gets null; so does a browser that is offline.
 export const ACTION_WINDOW_MS = 86400000;

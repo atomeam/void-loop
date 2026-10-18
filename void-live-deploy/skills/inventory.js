@@ -1,8 +1,8 @@
 /**
- * inventory skill — assimilate row 6 (Inventory orchestrator → Void)
+ * inventory skill — assimilate row 6 (Inventory orchestrator → Verse)
  * Feeds agents and anyone who asks with "already built" rows so they reuse before rebuilding.
  * Skill ids come from skills/index.json so the list cannot drift from the registry.
- * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
+ * No network. Tessl / BoardKit exist outside Verse; this is Verse's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
 import familyList from './families.json' with { type: 'json' };
@@ -97,7 +97,7 @@ export function inventoryOf(text) {
   return null;
 }
 
-/** What Void can make in the world right now: every forge thing whose file passes the same check "print it" runs
+/** What Verse can make in the world right now: every forge thing whose file passes the same check "print it" runs
  *  (forge-rules.js verifyStl, the file read back and held to its model), with its size and solid-PLA weight; one that
  *  fails is held back with the reason. Computed from the recipes on each ask: nothing about anyone is kept. */
 export async function printable(verify) {

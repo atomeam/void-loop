@@ -13,7 +13,7 @@
  * (synced through /api/mine, cleaned by void.html's cleanThings) and the tables that already exist.
  * "approve later: keep morning-digest running every 2 hours", "approve later: keep the nightly-check automation running every day".
  * A card pending, approved or running for more than 48 hours (createdAt, else seenAt) shows an amber "waiting 3 days — still want this?" line (staleOf; asked by
- * Void) beside its Approve or Abort, and "Keep waiting" starts the 48 hours again.
+ * Verse) beside its Approve or Abort, and "Keep waiting" starts the 48 hours again.
  */
 import { keepAsk, keepLine } from '../lib/keep-going.js';
 import { cardEl, keepOut } from '../lib/stage-pack.js';

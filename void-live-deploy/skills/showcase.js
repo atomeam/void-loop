@@ -1,5 +1,5 @@
 /**
- * showcase skill: "look what I made". Void puts what it built since you were last here on the real stage, one thing at a
+ * showcase skill: "look what I made". Verse puts what it built since you were last here on the real stage, one thing at a
  * time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
@@ -35,7 +35,7 @@ export const KNOWN = [
   { match: /^sticky notes look like real paper/i, show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
   { match: /^do you love me\?: answered/i, show: 'Verse answers "do you love me?" in its own words', try: 'do you love me?' },
   { match: /^Four in a Row looks finished/i, show: 'Four in a Row: the winning four light up', try: 'four in a row' },
-  { match: /^Void played Othello against itself/i, show: 'Verse knows how good it is at Othello', try: 'how good are you at othello' },
+  { match: /^Verse played Othello against itself/i, show: 'Verse knows how good it is at Othello', try: 'how good are you at othello' },
   { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'Verse learns Connect Four a little every day', try: 'how good are you at connect four' },
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
@@ -54,7 +54,7 @@ const RETIRED = [/real suggestions on the empty stage/i];
 export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
-  if (!lineOf(e.what)) return null; // a line about what Void studies is never shown
+  if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
   if (e.try) return showcaseOf(e.try) ? null : { line: e.show || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
@@ -173,7 +173,7 @@ function bar() {
     el = document.createElement('div');
     el.id = 'showcase-bar';
     el.setAttribute('role', 'region');
-    el.setAttribute('aria-label', 'What Void made');
+    el.setAttribute('aria-label', 'What Verse made');
     el.style.cssText = 'position:fixed;box-sizing:border-box;z-index:60;padding:8px 12px;border-radius:12px;overflow:auto;overscroll-behavior:contain;'
       + 'background:rgba(20,22,30,.9);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.4);'
       + 'color:var(--ink-2,#b9bdcb);font-size:13px;line-height:1.35;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px';

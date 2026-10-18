@@ -1,5 +1,5 @@
 // field-cards — F-038 Living Spatial Cards Mind (Grok's frontier idea, delivered to atomeam/a-to-mind.com 85651746; asked by the owner,
-// 2026-10-17: "all of Grok's ideas are to be added to Void"). A 64x48 Gray-Scott reaction-diffusion lattice (u: the activator that
+// 2026-10-17: "all of Grok's ideas are to be added to Verse"). A 64x48 Gray-Scott reaction-diffusion lattice (u: the activator that
 // is drawn and sampled, v: the substrate it feeds on; a logistic rule settled into a flat sheet, this keeps spots and stripes moving)
 // whose feed, kill and diffusion are a genome, and five cards that live in it: each card pulls energy
 // toward itself, drifts along the field's gradient, and takes its size, hue, blur and opacity from the field around it. Dragging a

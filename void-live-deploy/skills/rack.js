@@ -33,7 +33,7 @@ function parodyCard(q, api) {
 }
 
 
-// one entry per board game Void plays; `ask` is what opening it types
+// one entry per board game Verse plays; `ask` is what opening it types
 export const GAMES = [
   { id: 'chess', title: 'Chess', ask: 'play chess', color: '#2c2f38', ink: '#f4e9d2', motif: 'chess' },
   { id: 'checkers', title: 'Checkers', ask: 'play checkers', color: '#8f2d22', ink: '#fff3e0', motif: 'checkers' },
@@ -58,14 +58,14 @@ export function rackOf(text) {
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+)?(?:games?\s+(?:card|picker|menu|list)|board\s+games?\s+card)$|^(?:pick|choose)\s+a\s+(?:board\s+)?game$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
-  // a board game Void can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
+  // a board game Verse can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.
   const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
   const name = m && (m[1] || m[2]);
   if (name && SOON[name]) return { kind: 'rack', wanted: SOON[name] };
   return null;
 }
-// board games people ask for that Void doesn't play yet; each ask is recorded
+// board games people ask for that Verse doesn't play yet; each ask is recorded
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
@@ -111,7 +111,7 @@ function mount(th, stageApi) {
       m.textContent = { proven: '●●●', checked: '●●○', tested: '●○○', experiment: '○○○' }[s.tier] || ''; m.setAttribute('aria-label', s.tier); b.appendChild(m);
     }
   }).catch(() => {});
-  // one Void strength for every game (skills/game-level.js): the games read it before Void moves
+  // one Verse strength for every game (skills/game-level.js): the games read it before Verse moves
   const lv = document.createElement('div'); lv.className = 'rack-level'; lv.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)';
   lv.append('Verse plays:');
   const paintLv = () => lv.querySelectorAll('button').forEach((x) => { x.style.opacity = x.dataset.level === getLevel() ? '1' : '.5'; x.setAttribute('aria-pressed', String(x.dataset.level === getLevel())); });

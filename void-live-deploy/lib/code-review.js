@@ -1,5 +1,5 @@
 // void-review: skip-file (its rules contain the very patterns they look for)
-// Void reviews code. Shared by the page (instant checks) and /api/answer mode 'review' (the deeper read by the model).
+// Verse reviews code. Shared by the page (instant checks) and /api/answer mode 'review' (the deeper read by the model).
 // Someone pastes code and asks for a review: the quick checks below run in the browser at once (bugs, security holes, risky
 // habits, with line numbers), then the model reads the whole thing. Keys and passwords in the paste are masked before
 // anything is shown, logged or sent (redact, lib/automation-fix.js). The checks are tuned to say nothing rather than
@@ -703,7 +703,7 @@ const RULES = [
     'a key, token or password is written into the code. Anyone who sees the code (or the repo history) has it. Move it to an environment variable or a secret store, and change the key if this code was ever shared.'],
   ['plain-http', 'risk', ['*'], (m, r) => /(?<!xmlns(?::[\w-]+)?=)['"`]http:\/\/(?!localhost\b|127\.0\.0\.1|0\.0\.0\.0|\[::1\]|[\w-]+\.local\b|[\w.-]*example\.(?:com|org|net)\b|(?:www\.)?w3\.org\b|schemas\.(?:microsoft\.com|openxmlformats\.org)\/)[\w-]+\.[\w.-]+/.test(r), // XML namespace and package-type names are identifiers, never fetched
     'an http:// address sends data unencrypted, so it can be read or changed on the way. Use https:// if the server supports it.'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #273): a query awaited inside a loop runs once per item (N+1); the
   // same PR's DB.batch(list.map((r) => DB.prepare(…))) is the shape to keep, so .map and batches are not loops here
   ['query-in-loop', 'risk', JS, (m, r, x) => {
     // the SQL literal is read as written (the masked line hides string contents); the loop shape on the masked line
@@ -725,10 +725,10 @@ const RULES = [
     }
     return false; },
     'a query runs once per loop turn (one for every item): slow, and a cap on the loop becomes a cap on the database. Collect what you need and run one query (WHERE id IN (…)), or build the statements and run them as one batch (DB.batch(list.map(…)), Promise.all) and await once.'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #273): a WHERE pasted from a joined list breaks when the list is empty
   ['where-join-empty', 'risk', JS, (m, r) => /\bWHERE\s*(?:['"`]\s*\+\s*|\$\{\s*)[\w$.]+\.join\s*\(/i.test(r) && !/\?\s*['"`]\s*WHERE\b|\.length\s*\?|\bwhere\s*\?|\?\s*\(?\s*['"`]\s*WHERE/i.test(r),
     'the WHERE is built from a list that can be empty: then the SQL ends in WHERE with nothing after it (a syntax error), or the query runs without the filter you meant. Guard it: (clauses.length ? " WHERE " + clauses.join(" AND ") : "").'],
-  // taught by Void's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
+  // taught by Verse's closer read (tools/review-learn.mjs, PR #258): splitting a string only to count the pieces builds an array for nothing
   ['split-to-count', 'style', JS, (m) => /\.split\(\s*(['"`])(?:\\n|\\t|[^'"`\\]{1,2})\1\s*\)\s*\.length\b/.test(m) && !/\.length\s*(?:[=!]==?|[<>]=?)\s*\d/.test(m),
     'splitting just to count makes a whole array of pieces. Count the separators instead: (s.match(/\\n/g) || []).length, plus one if you counted pieces.'],
   ['todo', 'note', ['*'], (m, r) => /\b(?:TODO|FIXME|HACK|XXX)\b/.test(r),
@@ -777,7 +777,7 @@ export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
 // The rules Verse's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
-// reviewing this repo on 2026-10-10: under 10 stars), then from Void's own closer read, which is the lesson source now. The weekly
+// reviewing this repo on 2026-10-10: under 10 stars), then from Verse's own closer read, which is the lesson source now. The weekly
 // stats (review-stats.json, shown on /code-review/) count them; a new learned rule adds a line here.
 export const LEARNED = [
   { rule: 'json-array-shape', from: 'extras', pr: 142 },
@@ -826,7 +826,7 @@ export function ruleReview(code, opts = {}) {
   return { lang, findings: found.slice(0, opts.max || 25), lines: rawLines.length };
 }
 
-// Fixes Void can make by itself because they never change what correct code means. Each works on the masked line (strings and
+// Fixes Verse can make by itself because they never change what correct code means. Each works on the masked line (strings and
 // comments blanked, same length), so a match inside a string is never touched, and edits the raw line at the same position.
 // Returns { code, changes: [{ line, rule, what }] }; code is unchanged when nothing applied.
 export function autoFix(code, opts = {}) {

@@ -1,4 +1,4 @@
-// Void learns skills by itself (its own want, domains/void.will.md #1; frontier item 2): an ask people typed that Void
+// Verse learns skills by itself (its own want, domains/void.will.md #1; frontier item 2): an ask people typed that Verse
 // could not answer becomes a job for the builders, with no one in between. Two doors into the same brain:
 //   - at miss time: functions/api/miss.js calls learnFromMiss() after it records a miss; once the same ask has been
 //     missed MIN_COUNT times across at least two different days, it is queued at once. Only what the server counted
@@ -15,7 +15,7 @@ import { isNoise } from './noise.js';
 export const OPEN_MAX = 3; // open miss jobs at once
 export const DAYS = 7; // how far back a sweep reads the board
 export const MIN_COUNT = 3; // misses before an ask is queued at miss time, spread over two days at least
-const MAX_WORDS = 12, MAX_CHARS = 80; // what a person types in Void's input; longer is pasted text, not an ask
+const MAX_WORDS = 12, MAX_CHARS = 80; // what a person types in Verse's input; longer is pasted text, not an ask
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/; // same as tools/misses.mjs
 
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34);

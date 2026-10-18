@@ -35,10 +35,10 @@
   <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"A-to-Mind","url":"https://a-to-mind.com/","description":"Verse by A-to-Mind: one quiet input. Ask for anything and it appears: a clock, notes, a street map, the weather, a translation, a calculation, or a page about any topic. No account.","potentialAction":{"@type":"SearchAction","target":"https://a-to-mind.com/?q={query}","query-input":"required name=query"}}</script>
   <script>
     // WebMCP origin trial (plan item 5): paste the token for a-to-mind.com here (developer.chrome.com/origintrials -> WebMCP).
-    // Empty = off; browsers with WebMCP turned on (flag or trial) still get Void's tools, everyone else uses /tools.json.
+    // Empty = off; browsers with WebMCP turned on (flag or trial) still get Verse's tools, everyone else uses /tools.json.
     var WEBMCP_TRIAL_TOKEN = '';
     if (WEBMCP_TRIAL_TOKEN) { var ot = document.createElement('meta'); ot.httpEquiv = 'origin-trial'; ot.content = WEBMCP_TRIAL_TOKEN; document.head.appendChild(ot); }
-    // Paid Void (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = the ask links to /store/ instead (owner, 2026-10-15: buy and tip links shown where relevant).
+    // Paid Verse (plan item 12): the paid membership's checkout on Atom's Gumroad store (https only). Empty = the ask links to /store/ instead (owner, 2026-10-15: buy and tip links shown where relevant).
     // Only ever shown when someone asks, signed in; never on the surface.
     var GUMROAD_URL = 'https://moonbeam846.gumroad.com/l/yinmj';
   </script>
@@ -85,7 +85,7 @@
     .thing.aside-glide { transition: translate .35s cubic-bezier(.2,.7,.2,1); } /* stepping aside for an open card (clearUnderPage) */
     @media (prefers-reduced-motion: reduce) { .thing.aside-glide { transition: none; } }
     /* the tab card (skills/tab.js) shows the page it read as it looked: the title on a browser tab, the address in a bar with its
-       lock, the selection Void read in yellow highlighter */
+       lock, the selection Verse read in yellow highlighter */
     .tab-card .tab-title { display: inline-block; max-width: 100%; box-sizing: border-box; padding: 6px 12px 5px; border-radius: 8px 8px 0 0; background: rgba(255,255,255,0.09);
       border: 1px solid rgba(255,255,255,0.12); border-bottom: 0; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .tab-card .tab-host { display: flex; align-items: center; gap: 6px; margin: 0 0 8px; padding: 5px 10px; border-radius: 999px; background: rgba(255,255,255,0.06);
@@ -106,7 +106,7 @@
     .calendar-card .cal-day { color: #b3261e; font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; margin: 10px 0 2px; padding-bottom: 2px; border-bottom: 1px solid rgba(179,38,30,0.3); }
     .calendar-card .cal-event { display: flex; gap: 8px; align-items: baseline; padding: 3px 0; border-bottom: 1px dashed rgba(0,0,0,0.07); }
     .calendar-card .cal-when { color: #6b6b72; min-width: 62px; font: 12px ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; font-variant-numeric: tabular-nums; }
-    .calendar-card .cal-what { flex: 1; color: #1f2a5a; font: 19px/1.15 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; }
+    .calendar-card .cal-what { flex: 1; color: #1f2a5a; font: 19px/1.15 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; }
     .calendar-card .cal-x { background: none; border: 0; color: #8a8a90; cursor: pointer; font-size: 14px; padding: 0 2px; }
     /* an LED bedside clock (skills/clock.js): a dark recessed panel, the digits glowing in the clock's colour, the unlit
        segments (every digit as an 8) faintly behind the lit ones */
@@ -122,7 +122,7 @@
     .clock > span { position: relative; display: inline-block; text-shadow: 0 0 0.12em currentColor, 0 0 0.45em currentColor; }
     .clock > span::before { content: attr(data-ghost); position: absolute; left: 0; top: 0; opacity: 0.1; text-shadow: none; pointer-events: none; }
     /* Caveat (SIL OFL 1.1, fonts/caveat-5.0.13/LICENSE), served from this site: the browser fetches it only once a note is up */
-    @font-face { font-family: 'Void Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
+    @font-face { font-family: 'Verse Hand'; src: url('/fonts/caveat-5.0.13/caveat-latin-500-normal.woff2') format('woff2'); font-weight: 400 700; font-display: swap; }
     /* a real 3x3 in sticky note: square paper, sharp corners, the glue strip a shade darker along the top, the bottom edge
        lifting off the stage (the shadow sits low), a slight tilt per note (skills/sticky.js), written in a felt-tip hand */
     .thing.sticky {
@@ -137,7 +137,7 @@
         linear-gradient(to top, rgba(0,0,0,0.08), rgba(0,0,0,0) 12%),
         linear-gradient(135deg, rgba(255,255,255,0) 60%, rgba(255,255,255,0.16));
       color: #23252b;
-      font-family: 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font-family: 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
       font-size: 21px;
       line-height: 1.2;
       box-shadow: 0 1px 1px rgba(0,0,0,0.18), 0 14px 12px -10px rgba(0,0,0,0.55), 0 6px 18px rgba(0,0,0,0.22);
@@ -167,13 +167,13 @@
       border-top: 14px solid #a8231f;
       box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.25), 0 2px 0 -1px #efd862, 0 4px 0 -2px #e3cc58, 0 6px 0 -3px #d8c052, 0 12px 22px rgba(0, 0, 0, 0.45);
       color: #121c52;
-      font: 21px/28px 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font: 21px/28px 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
     }
     .notepad-title {
       min-height: 28px;
       margin: 0 0 0 52px;
       color: #121c52;
-      font: 700 24px/28px 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font: 700 24px/28px 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
       outline: 0;
     }
     .notepad-title:empty::before {
@@ -272,7 +272,7 @@
       min-height: 44px;
       padding: 8px 4px 6px;
       color: #282830;
-      font: 22px/1.25 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font: 22px/1.25 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
       text-align: center;
       outline: 0;
       word-break: break-word;
@@ -287,7 +287,7 @@
       background-image: radial-gradient(circle at 35% 30%, rgb(255, 214, 206) 0, rgb(226, 58, 44) 30%, rgb(150, 22, 16) 78%, rgb(98, 12, 8) 100%);
       box-shadow: 2px 5px 5px -1px rgba(0, 0, 0, 0.55), inset -1px -2px 2px rgba(0, 0, 0, 0.3);
     }
-    .thing.kept-card.pinned .kept-head { font: 21px/1.15 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; color: var(--ink); margin: 2px 0 6px; cursor: grab; }
+    .thing.kept-card.pinned .kept-head { font: 21px/1.15 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; color: var(--ink); margin: 2px 0 6px; cursor: grab; }
     .thing.kept-card.pinned .kept-body { max-height: 330px; overflow: auto; }
     /* a kraft shipping tag you keep a link on: tan card stock with a little fibre, the rounded tag end on the left with a
        punched hole and its reinforcing ring, the title written in the felt-tip hand, the host stamped in red; a colour
@@ -306,7 +306,7 @@
       border: 1px solid rgba(90, 60, 25, 0.45);
       box-shadow: 0 1px 1px rgba(0, 0, 0, 0.25), 0 12px 20px -8px rgba(0, 0, 0, 0.55);
       color: #3a2a17;
-      font: 22px/1.15 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
+      font: 22px/1.15 'Verse Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
       overflow: hidden;
     }
     .thing.link-card::before { /* the punched hole and its ring */
@@ -572,7 +572,7 @@
     #void-stars { position: fixed; inset: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0;
       opacity: 0; transition: opacity 1.5s ease; }
     #void-stars.on { opacity: 1; }
-    /* your drawing behind your Void (skills/draw.js, "make it my backdrop"): kept in the look, synced with the passkey */
+    /* your drawing behind your Verse (skills/draw.js, "make it my backdrop"): kept in the look, synced with the passkey */
     #void-backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; background: center / contain no-repeat; opacity: 0; transition: opacity 1.2s ease; }
     #void-backdrop.on { opacity: 1; }
     #stage, #dock { z-index: 1; }
@@ -778,7 +778,7 @@
     .vpage .sub { font-size: var(--fs-s); color: var(--ink-3); margin-bottom: 14px; }
     .vpage p, .vpage ul { color: #d5d8e2; }
     .vpage .src { font-size: var(--fs-xs); color: var(--ink-2); } /* "written by Verse, from what it knows": ink-2 on the card, ~9:1 (it was ink-3, 5.7:1 and read as too dark; owner, 2026-10-18); the answer stays brighter and larger */
-    /* Void's reflection card (showVoice): section heads in the one accent, the built-of-asked bar, asks that open */
+    /* Verse's reflection card (showVoice): section heads in the one accent, the built-of-asked bar, asks that open */
     .vpage .vh { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--d-key, 158 178 255)); margin: 18px 0 6px; }
     .vpage .v-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin: 6px 0 8px; }
     .vpage .v-bar > i { display: block; height: 100%; border-radius: inherit; background: linear-gradient(90deg, rgb(var(--d-key, 158 178 255) / .55), rgb(var(--d-key, 158 178 255))); }
@@ -863,7 +863,7 @@
     /* the status line under the ask bar: a quiet, centred caption that fades, never a stray left-aligned word */
     #whisper { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; margin-top: 8px; transition: opacity .25s ease; }
     #whisper:empty { opacity: 0; }
-    /* someone else in your Void (frontier #11): their cursor, a faint glow that follows them */
+    /* someone else in your Verse (frontier #11): their cursor, a faint glow that follows them */
     .void-presence { position: fixed; z-index: 40; width: 18px; height: 18px; margin: -9px 0 0 -9px; border-radius: 50%; pointer-events: none; background: radial-gradient(circle, color-mix(in srgb, var(--fg) 45%, transparent) 0%, transparent 70%); box-shadow: 0 0 14px color-mix(in srgb, var(--fg) 25%, transparent); transition: left .08s linear, top .08s linear; }
     #away-note { text-align: center; font-size: var(--fs-xs); color: var(--ink-3); letter-spacing: .01em; min-height: 18px; transition: opacity .25s ease; }
     #away-note:empty { opacity: 0; }
@@ -1019,7 +1019,7 @@
       --d-lift: 0 1px 0 rgba(255,255,255,.10) inset, 0 -1px 0 rgba(0,0,0,.5) inset, 0 2px 6px rgba(0,0,0,.30), 0 18px 40px rgba(0,0,0,.42), 0 60px 120px rgba(0,0,0,.55);
       --d-ease-out: cubic-bezier(.16,1,.3,1); --d-spring: cubic-bezier(.34,1.56,.64,1);
     }
-    /* the default void (Adam 2026-10-15: "a beautiful Void by default ... puts people in awe"; no grids, no synthwave floor ever):
+    /* the default void (Adam 2026-10-15: "a beautiful Verse by default ... puts people in awe"; no grids, no synthwave floor ever):
        deep space, a slowly breathing event-horizon glow at the centre, a soft oval pool of light where cards arrive, star dust from the
        two star canvases. Transforms and opacity only (GPU-composited, no layout, no per-frame JS); CSS animations pause with the tab. */
     /* celestial-sync: the nebula and ring tint follow the visitor's local hour (set on <html> by the script below, on the device only, no
@@ -1172,9 +1172,9 @@
     const LOOP_KEY = 'a2m.void.loop.v1';
     const STATE_KEY = 'a2m.void.state.v1';
     const AWAY_KEY = 'a2m.void.away.v1'; // when this stage was last left or saved: the world lives on from then (advance in skills/scripts.js)
-    // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Void follows you" below
+    // plan item 6: the passkey session on this device ({ token, userId, rev, sig, synced }); see "Your Verse follows you" below
     const ME_KEY = 'a2m.void.me.v1';
-    const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Void (functions/[handle].js), shown, never saved over yours
+    const PAGE = window.__VOID_PAGE__ || null; // a-to-mind.com/@name: someone's published Verse (functions/[handle].js), shown, never saved over yours
     let me = null; try { me = JSON.parse(localStorage.getItem(ME_KEY) || 'null'); } catch (_) {}
     let minePushT = 0, minePulled = 0, mineQuiet = false, pendingForget = null, pkRetryFn = null;
 
@@ -1233,7 +1233,7 @@
 
     /** @type {Record<string, any>} */
     let things = {};
-    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const shareSent = new Map(); let shareSyncT = 0; const presences = new Map(), shareKeyOf = new Map(), shareIdOf = new Map(); // a shared Void (frontier #11, shareJoin): declared before the first save()
+    let share = null, relayAsk = null, relayingIn = false, shareKnown = null; const shareSent = new Map(); let shareSyncT = 0; const presences = new Map(), shareKeyOf = new Map(), shareIdOf = new Map(); // a shared Verse (frontier #11, shareJoin): declared before the first save()
     let selectedId = null;
     // stage kinds a skill file brings (3D figures and objects): { kind: { mount(th, S), dropped?(th, S), thrown?(th, S), throwable } }
     const stageKinds = {};
@@ -1626,7 +1626,7 @@ Object.values(things).forEach((th) => {
       el.style.left = th.x + 'px'; el.style.top = th.y + 'px';
       save();
     }
-    // --- The Void extension's side panel (extension/): Void reads the tab you point it at (Alt+Shift+V or the right-click menu)
+    // --- The Verse extension's side panel (extension/): Verse reads the tab you point it at (Alt+Shift+V or the right-click menu)
     // and drafts into the box you were typing in. Messages are taken only from the panel of this extension (its id is pinned by
     // the key in extension/manifest.json). Page text stays in this browser: it lives in memory here, never in the saved stage
     // (which syncs to /api/mine when you're signed in), and no ask, log or lookup carries it.
@@ -1643,7 +1643,7 @@ Object.values(things).forEach((th) => {
         extSend({ type: 'void-ext:draft', id, text: String(text) });
       });
     }
-    // "draft for me: proposal": the panel reads the thread text of the tab you pointed Void at, now, once (extension/page.js voidReadThread)
+    // "draft for me: proposal": the panel reads the thread text of the tab you pointed Verse at, now, once (extension/page.js voidReadThread)
     function extThread() {
       return new Promise((resolve) => {
         if (!ext.on) return resolve({ ok: false, why: 'no-panel' });
@@ -1677,12 +1677,12 @@ Object.values(things).forEach((th) => {
         selectedId = th.id; save(); render();
         say('read the tab · it stays in this browser');
       } else if ((m.type === 'void-ext:drafted' || m.type === 'void-ext:threaded') && ext.waiting[m.id]) { const r = ext.waiting[m.id]; delete ext.waiting[m.id]; r(m); }
-      else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Void to write the step's execution record
-      else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Void made itself, off the list, stays silent
+      else if (m.type === 'void-ext:record') extRecord(m); // B3: the panel asks Verse to write the step's execution record
+      else if (m.type === 'void-ext:acted' && !(m.auto && m.why === 'not-allowed')) { const t = actSaid(m); say(t); const sp = document.querySelector('.tab-act-said'); if (sp) sp.textContent = t; } // a proposal Verse made itself, off the list, stays silent
     });
     extSend({ type: 'void-ext:ready' });
-    // B3: Void proposes one step for the page (fill a field, or click a button, by its visible label); the extension's own
-    // panel shows it with Yes / No and acts only on a site on the allow list kept there. Void only writes the execution record
+    // B3: Verse proposes one step for the page (fill a field, or click a button, by its visible label); the extension's own
+    // panel shows it with Yes / No and acts only on a site on the allow list kept there. Verse only writes the execution record
     // (/api/actions, kind extension.act, with the owner's key): running before the step, done or failed after, stubbed on a No.
     function stepOf(text) {
       const t = String(text || '').trim(); // the text to fill goes in exactly as typed, its full stop too
@@ -1724,7 +1724,7 @@ Object.values(things).forEach((th) => {
       } catch (_) { reply({ ok: false, why: 'offline' }); }
     }
     // A customer email becomes a proposal in your reply box, after your yes: the thread you are reading (read now, sent once to
-    // /api/answer mode proposal, not kept) drafts the proposal card (skills/proposal.js), and on a site on your allow list Void
+    // /api/answer mode proposal, not kept) drafts the proposal card (skills/proposal.js), and on a site on your allow list Verse
     // proposes "fill <the box you were in> with <the proposal as plain text>" as the same B3 card, Yes / No and record. You send.
     // Off the list the proposal stays in its card (copy, download), and nothing is said about acting.
     async function proposalFromTab(tab, said, footLine) {
@@ -1812,7 +1812,7 @@ Object.values(things).forEach((th) => {
           cur.style.top = th.y + 'px';
           moveMates(th.x - origX, th.y - origY);
           decorate(); // labels and arrows follow the thing in the hand
-          if (share) { shareMoved(th, false); for (const m of mates) shareMoved(m.t, false); } // a shared Void sees it move (frontier #11)
+          if (share) { shareMoved(th, false); for (const m of mates) shareMoved(m.t, false); } // a shared Verse sees it move (frontier #11)
         };
         const up = () => {
           window.removeEventListener('pointermove', move);
@@ -2404,7 +2404,7 @@ say('nothing selected to remove');
       const old = el.querySelector('.vtail'); if (old) old.remove();
       const d = document.createElement('div'); d.className = 'src vtail'; d.innerHTML = el._tail; el.appendChild(d);
     }
-    // Small talk lines (no network, nothing on the miss board). Facts are well-established ones; the encouragements are Void's own.
+    // Small talk lines (no network, nothing on the miss board). Facts are well-established ones; the encouragements are Verse's own.
     const FUN_FACTS = ['Octopuses have three hearts and blue blood.', 'Honey found in ancient Egyptian tombs was still edible.', 'A day on Venus is longer than its year.',
       'Bananas are berries; strawberries are not.', 'Wombat droppings are cube-shaped.', 'There are more trees on Earth than stars in the Milky Way, by most estimates.',
       'The Eiffel Tower grows about 15 cm taller in summer heat.', 'Sharks existed before trees did.', 'A group of flamingos is called a flamboyance.',
@@ -2494,7 +2494,7 @@ say('nothing selected to remove');
       });
       el.appendChild(b);
       }
-      if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Void at
+      if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Verse at
       const p = document.createElement('button'); p.type = 'button'; p.className = 'tr-copy vcopy vput'; p.textContent = 'into the page'; p.style.cssText = 'margin-top:10px;margin-left:8px';
       p.addEventListener('pointerdown', (e) => e.stopPropagation()); // on a stage card a press starts a drag, which redraws the card before the click lands
       p.addEventListener('click', async () => {
@@ -2578,7 +2578,7 @@ say('nothing selected to remove');
       if (focus && el && el.querySelector) { const f = el.querySelector('li.focus'); if (f && f.scrollIntoView) f.scrollIntoView({ block: 'center' }); }
       // Next #16: 3D slogan beside the self card (not the menu, not a how-to focus). Closes with the card.
       if (!asMenu && !focus && el) {
-        // Void's own body (skills/mini/void.js): angular, fractured, faceless, the same entity every visit; tap it to break it
+        // Verse's own body (skills/mini/void.js): angular, fractured, faceless, the same entity every visit; tap it to break it
         const self = document.createElement('div'); self.className = 'void-self'; self.style.cssText = 'height:220px;margin:4px 0 8px';
         const h = el.querySelector('h2'); if (h) h.after(self); else el.prepend(self);
         stageApi.miniature(self, 'void', {}, { key: 'void-self', place: 'inside', label: 'Verse, as itself: a fractured angular form; tap it' }).catch(() => self.remove());
@@ -2605,7 +2605,7 @@ say('nothing selected to remove');
     }
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
     const pageHost = (u) => { try { return /^https?:\/\//i.test(String(u)) ? new URL(u).hostname : ''; } catch (_) { return ''; } };
-    // page: the tab the Void extension read for this ask (title, url, selection, field, text); answered about that page, not the web
+    // page: the tab the Verse extension read for this ask (title, url, selection, field, text); answered about that page, not the web
     async function showAnswer(text, page) {
       // a page sent for an answer left the browser: say so on the card (Adam, 2026-10-09: local by default, flag what leaves)
       const about = page ? (page.title ? '<div class="sub">about: ' + esc(page.title) + '</div>' : '') + '<div class="sub page-sent">this page was sent to a-to-mind.com for this answer · not kept</div>' : '';
@@ -2631,7 +2631,7 @@ say('nothing selected to remove');
       say('');
       return 'answer';
     }
-    // Will engine: Void says what it wants to become next (chosen by Void from everything that exists).
+    // Will engine: Verse says what it wants to become next (chosen by Verse from everything that exists).
     function wantsWill(lower) {
       return /^(what\s+do\s+you\s+want(\s+to\s+(be|become|do))?|what\s+(is|'s)\s+your\s+will|what\s+are\s+you\s+becoming|what\s+do\s+you\s+wish\s+for|your\s+will)\s*[?.!]?$/.test(lower);
     }
@@ -2641,7 +2641,7 @@ say('nothing selected to remove');
       try { w = await fetch('/api/will').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
       if (!w || !w.wants || !w.wants.length) { el.innerHTML = '<h2>What I want to become</h2><p>I haven\'t decided yet. I look at everything that exists every few hours and choose.</p>'; return; }
-      // zero lies (the owner, 2026-10-12): a reason that ranks or counts what Void cannot back shows the recorded fact instead
+      // zero lies (the owner, 2026-10-12): a reason that ranks or counts what Verse cannot back shows the recorded fact instead
       // (lib/honest.js, the same check /api/will runs), and the fact itself sits under each want
       const honest = await import('/lib/honest.js').catch(() => null);
       if (vpageEl !== el) return;
@@ -2651,7 +2651,7 @@ say('nothing selected to remove');
           + (x.evidence && String(x.evidence).trim() !== String(why(x)).trim() ? '<div class="will-fact" style="color:#8a8a8a;font-size:12px">' + esc(x.evidence) + '</div>' : '') + '</li>').join('') + '</ul>'
         + '<div class="src">Source: my will · chosen ' + esc(new Date(w.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' })) + '</div>';
     }
-    // Void's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
+    // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
     function wantsVoice(lower) {
       const a = /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|void'?s\s+|v01d'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
       return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d|verse)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d|verse)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d|verse)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b.*)\s*[?.!]*$/.test(lower);
@@ -2834,7 +2834,7 @@ say('nothing selected to remove');
           el.innerHTML = '<h2>Which ' + esc(topic) + '?</h2><div class="sub">' + esc(j.title || hit.title) + ' can mean several things. Pick one.</div>'
             + (opts.length ? '<ul class="choices">' + opts.map((o) => '<li><a href="#" data-ask="' + esc('tell me about ' + o.title) + '">' + esc(o.title) + (o.note ? ' <small>· ' + esc(o.note) + '…</small>' : '') + '</a></li>').join('') + '</ul>' : '<p>' + esc(j.extract || '') + '</p>')
             + '<div class="src">Source: <a href="' + esc(page) + '" target="_blank" rel="noopener">Wikipedia</a> (all the meanings)</div>';
-          // Void's own input here too (skills/take.js): a meaning Void can act on comes first, with the action beside it
+          // Verse's own input here too (skills/take.js): a meaning Verse can act on comes first, with the action beside it
           import('/skills/take.js').then((T) => {
             if (vpageEl !== el) return;
             const ul = el.querySelector('ul.choices'); if (!ul) return;
@@ -2877,7 +2877,7 @@ say('nothing selected to remove');
             p.insertAdjacentHTML('afterend', '<div class="facts" style="display:grid;grid-template-columns:auto 1fr;gap:4px 14px;margin:8px 0">' + rows.map((r) => '<div class="sub">' + esc(r[0]) + '</div><div><i>' + esc(r[1]) + '</i></div>').join('') + '</div>');
           }).catch(() => {});
         }
-        // Void's own input on top of the summary (skills/take.js): what Void can do about it at once, then its take (/api/answer, mode 'take')
+        // Verse's own input on top of the summary (skills/take.js): what Verse can do about it at once, then its take (/api/answer, mode 'take')
         import('/skills/take.js').then((T) => {
           const slot = el.querySelector('.take-slot'); if (!slot) return;
           const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '' }, asks = T.relatedAsks(card);
@@ -2892,12 +2892,12 @@ say('nothing selected to remove');
             if (vpageEl !== el) return;
             const card = { title: j.title || hit.title, description: j.description || '', extract: j.extract || '', type: j.type || '' };
             // the figure is the thing itself (Adam, 2026-10-09): a real cat for a page about cats; a person gets the human body;
-            // anything Void cannot build for real yet brings no stand-in (domains/void.frontier.md #14, the forge, is how it will)
+            // anything Verse cannot build for real yet brings no stand-in (domains/void.frontier.md #14, the forge, is how it will)
             const real = F.realFigureFor(card);
             if (real) { summonThing('figure', real); return; }
             const dressed = m.dressFromCard(card);
-            // a thing Void cannot make for real yet goes on the miss board as a figure to learn ('figure' misses), so the
-            // most-wanted things get built first and Void keeps getting better at making them (frontier #14)
+            // a thing Verse cannot make for real yet goes on the miss board as a figure to learn ('figure' misses), so the
+            // most-wanted things get built first and Verse keeps getting better at making them (frontier #14)
             if (dressed.body === 'animal' || dressed.body === 'object' || /\b(?:game|toy|instrument|tool|vehicle|device|machine|plant|fruit|vegetable|dish|food|building|ship|aircraft|car|weapon|furniture)\b/i.test(card.description)) reportMiss('make a real ' + card.title.replace(/\s*\(.*\)$/, ''), 'figure');
             if (dressed.body !== 'person') return;
             dressed.script = S.fallbackScript(dressed.body, card.title); // acts at once; /api/figurescript may upgrade later
@@ -2937,7 +2937,7 @@ say('nothing selected to remove');
         }
       }
     }
-    let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Void's learning can tell
+    let agentRuns = 0; // > 0 while a visiting agent's WebMCP call is being answered: a miss then is tagged, so Verse's learning can tell
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Void): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
     const refusalReady = import('/lib/refusal.js').catch(() => null);
@@ -4064,7 +4064,7 @@ say('nothing selected to remove');
       return 'calc';
     }
 
-    // owner board: what visitors asked that Void couldn't answer yet (reads /api/misses)
+    // owner board: what visitors asked that Verse couldn't answer yet (reads /api/misses)
     const OWNER_KEY = 'a2m.void.owner.v1';
     // Owner sign-in (2026-10-03). The server is the lock: /api/passkey 'owner' checks the key or an owner session in constant time and
     // lib/guard.js stops a connection after 10 wrong keys a minute. Nothing public names it: no hint, menu line, tool or message.
@@ -4116,7 +4116,7 @@ say('nothing selected to remove');
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
     }
 
-    // row 13: entering your own Void (silent, first time something is kept) + personal look
+    // row 13: entering your own Verse (silent, first time something is kept) + personal look
     const ENTRY_KEY = 'a2m.void.entered.v1', LOOK_KEY = 'a2m.void.look.v1';
     const LOOK_DEFAULT = { bg: '#050505', glow: '#0b0b10', stars: 'on', quiet: false, scale: 1, fx: 'off', backdrop: '' };
     // a backdrop is a picture you drew (skills/draw.js), as a data URL: image only, and small enough to sync
@@ -4137,7 +4137,7 @@ say('nothing selected to remove');
       document.body.classList.add('void-entered');
     }
     function seedStars() {
-      // the default Void (2026-10-15): DPR capped at 2 (phones stay light), denser on big screens, a few stars twinkle
+      // the default Verse (2026-10-15): DPR capped at 2 (phones stay light), denser on big screens, a few stars twinkle
       const dpr = Math.min(2, window.devicePixelRatio || 1), W = innerWidth, H = innerHeight, area = Math.min(1.6, (W * H) / (1280 * 800));
       for (const c of [starCv, starFar]) { if (!c) continue; c.width = Math.round(W * dpr); c.height = Math.round(H * dpr); c.getContext('2d').setTransform(dpr, 0, 0, dpr, 0, 0); }
       const tint = () => ['255,255,255', '200,215,255', '255,228,205', '215,235,255'][Math.random() * 4 | 0];
@@ -4222,7 +4222,7 @@ say('nothing selected to remove');
       starCtx.globalAlpha = 1;
       if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
     }
-    // celestial-sync + thinking state for the default Void (coarse, on the device only: the local hour; nothing sent or stored)
+    // celestial-sync + thinking state for the default Verse (coarse, on the device only: the local hour; nothing sent or stored)
     (function () {
       const d = document.documentElement;
       const phase = () => { const h = new Date().getHours(); d.dataset.phase = h >= 5 && h < 8 ? 'dawn' : h >= 8 && h < 17 ? 'day' : h >= 17 && h < 20 ? 'dusk' : 'night'; };
@@ -4360,7 +4360,7 @@ say('nothing selected to remove');
     // A summon from code, not the box (BASE.md: the old void-proxy command bar's route): document.dispatchEvent(new CustomEvent('void:summon', { detail: 'growth' }))
     // runs that ask exactly as if it were typed. Only a short line of text is taken.
     document.addEventListener('void:summon', (e) => { const d = e && e.detail; if (typeof d === 'string' && d.trim() && d.length <= 120) handle(d); });
-    // --- Bring someone into your Void (frontier #11): "invite someone" (skills/invite.js) or a link with ?with=<room> joins the
+    // --- Bring someone into your Verse (frontier #11): "invite someone" (skills/invite.js) or a link with ?with=<room> joins the
     // invite's room (lib/share-client.js). The others' cursors are faint presences; a summon that put something on your stage
     // runs again on theirs, and theirs on yours. Only those two pass (lib/share.js). Closing the tab ends it.
     function sharePresence(id, x, y) {
@@ -4424,7 +4424,7 @@ say('nothing selected to remove');
       th.x = Math.round(x * stage.clientWidth); th.y = Math.round(y * stage.clientHeight); th.pinned = true;
       const el = stage.querySelector('[data-id="' + CSS.escape(th.id) + '"]');
       if (el) { el.style.left = th.x + 'px'; el.style.top = th.y + 'px'; decorate(); } else render();
-      try { document.dispatchEvent(new CustomEvent('void:moved', { detail: { id: th.id, remote: true } })); } catch (_) {} // a shared Void moved it: the collision skill looks again
+      try { document.dispatchEvent(new CustomEvent('void:moved', { detail: { id: th.id, remote: true } })); } catch (_) {} // a shared Verse moved it: the collision skill looks again
       clearTimeout(shareSaveT); shareSaveT = setTimeout(save, 300); // kept once it stops moving, not on every step
     }
     // The whole stage across tabs (asked by Void, 2026-10-16: "synchronize the entire stage state (active cards, lists, and timers) across
@@ -4697,7 +4697,7 @@ say('nothing selected to remove');
       return false;
     }
 
-    // --- Self-update handoff (owner only): Void queues a build; the laptop builder takes it. ---
+    // --- Self-update handoff (owner only): Verse queues a build; the laptop builder takes it. ---
     const BUILD_STATES = { queued: 'queued', building: 'building', live: 'live', 'needs-you': 'needs you' };
     let buildPoll = 0;
     function ownerToken() { try { return localStorage.getItem(OWNER_KEY) || ''; } catch (_) { return ''; } }
@@ -4814,9 +4814,9 @@ say('nothing selected to remove');
     whisper.addEventListener('click', (e) => confirmBy(e, e.target.closest && e.target.closest('[data-vc]')));
     whisper.addEventListener('keydown', (e) => { const v = e.target.closest && e.target.closest('[data-vc]'); if (v && (e.key === 'Enter' || e.key === ' ')) { e.preventDefault(); confirmBy(e, v); } });
 
-    // --- Your Void follows you (plan item 6): passkeys (WebAuthn Level 3), no passwords, no email, nothing on the surface. ---
+    // --- Your Verse follows you (plan item 6): passkeys (WebAuthn Level 3), no passwords, no email, nothing on the surface. ---
     // Ask: "remember me" (makes a passkey; on Chrome 149+ signs in instead if this device already has one), "sign in"
-    // (another device: a synced passkey or your phone), "add a passkey", "am I signed in", "sign out" (your Void leaves
+    // (another device: a synced passkey or your phone), "add a passkey", "am I signed in", "sign out" (your Verse leaves
     // this device with you), "forget me" (asks first, then deletes every passkey and synced byte on the server).
     // Signed in, the stage, look and kept cards go to /api/mine (debounced, only when changed) and come back on every device.
     // Anything that comes back from the server is cleaned before it's shown (kept-card HTML, links, colors, look values).
@@ -4980,7 +4980,7 @@ say('nothing selected to remove');
       if (!pkOK()) { say("this browser can't make passkeys"); return; }
       if (me && me.token && !add) { say('already remembered · say “sign in” on your other devices'); minePull(); return; }
       if (add && !(me && me.token)) add = false;
-      if (!add) { // Chrome 149+ immediate UI: if this device already has your passkey, sign in instead of making a second Void
+      if (!add) { // Chrome 149+ immediate UI: if this device already has your passkey, sign in instead of making a second Verse
         const caps = PublicKeyCredential.getClientCapabilities ? await PublicKeyCredential.getClientCapabilities().catch(() => ({})) : {};
         // only 'none' (no passkey here, or one the server has forgotten) goes on to make a new one
         if (caps && caps.immediateGet && (await signIn({ immediate: true })) !== 'none') return;
@@ -5046,7 +5046,7 @@ say('nothing selected to remove');
     async function forgetMe() {
       const r = await pkCall('forget').catch(() => null);
       if (!r || r.status !== 200) { if (r && r.status === 401) { meSet(null); say('already forgotten'); } else say("couldn't reach the server, nothing forgotten yet"); return; }
-      // Level 3 signal API: tell the passkey provider none of this Void's passkeys are valid any more, so it can drop them
+      // Level 3 signal API: tell the passkey provider none of this Verse's passkeys are valid any more, so it can drop them
       try { if (PublicKeyCredential.signalAllAcceptedCredentials) await PublicKeyCredential.signalAllAcceptedCredentials({ rpId: r.body.rpId, userId: r.body.userId, allAcceptedCredentialIds: [] }); } catch (_) {}
       clearTimeout(minePushT); meSet(null);
       say('forgotten everywhere · this device keeps its stage');
@@ -5069,7 +5069,7 @@ say('nothing selected to remove');
       if (NO_RE.test(lower)) { say('ok, kept'); return true; }
       return false;
     }
-    // "publish my void as @sam": your look and kept cards (as text) at a-to-mind.com/@sam, after your own yes. Paid Voids; the server checks.
+    // "publish my void as @sam": your look and kept cards (as text) at a-to-mind.com/@sam, after your own yes. Paid Verses; the server checks.
     const PUBLISH_RE = /^publish\s+my\s+void(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
     const UNPUBLISH_RE = /^(unpublish(\s+my\s+void)?|take\s+(down\s+my\s+(void|page)|my\s+(void|page)\s+down))\s*[.!]?$/;
     let pendingPublish = null;
@@ -5139,11 +5139,11 @@ say('nothing selected to remove');
     document.addEventListener('visibilitychange', () => { if (!document.hidden && me && me.token && Date.now() - minePulled > 15000) minePull(); });
     if (me && me.token) minePull();
 
-    // --- Paid Void and Atom's store (plan item 12). ---
-    // Free Void stays whole, and sync on every device stays free with a passkey. After a passkey, paid Void (the membership
+    // --- Paid Verse and Atom's store (plan item 12). ---
+    // Free Verse stays whole, and sync on every device stays free with a passkey. After a passkey, paid Verse (the membership
     // lib/gumroad.js UNLOCKS names by id) adds only more model answers, private skills and a higher cap on actions that pass the
     // confirm line (the confirm itself never goes away). Products are never named or priced in this file: names, prices and what
-    // each covers come from the live store (/api/catalog), so Void follows when Atom renames or reprices.
+    // each covers come from the live store (/api/catalog), so Verse follows when Atom renames or reprices.
     const storeReady = lazyLib('/lib/gumroad.js');
     let catalogAt = 0, catalogP = null;
     async function storeCatalog() { // -> { g, products }; products from /api/catalog (fetched on the first ask that needs it, never on arrival)
@@ -5170,7 +5170,7 @@ say('nothing selected to remove');
     ];
     const PAID_RE = new RegExp('^' + PAID_LEAD + '(?:' + PAID_CORE.join('|') + ')$');
     function isPaidAsk(lower) { return PAID_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
-    function paidUrl() { // the paid membership's checkout, carrying this Void's account id (Gumroad hands url_params to the Ping); '' = not open
+    function paidUrl() { // the paid membership's checkout, carrying this Verse's account id (Gumroad hands url_params to the Ping); '' = not open
       const g = typeof GUMROAD_URL === 'string' ? GUMROAD_URL.trim() : '';
       if (!/^https:\/\//i.test(g) || !me || !me.userId) return '';
       try { const u = new URL(g); u.searchParams.set('void', me.userId); return u.href; } catch (_) { return ''; }
@@ -5179,18 +5179,18 @@ say('nothing selected to remove');
       if (!me || !me.token) return 'free';
       try { const r = await pkCall('tier'); return r.status === 200 && r.body && r.body.tier === 'paid' ? 'paid' : 'free'; } catch (_) { return 'free'; }
     }
-    async function paidLine() { // what paid Void costs and adds, from the live store
+    async function paidLine() { // what paid Verse costs and adds, from the live store
       const { g, products } = await storeCatalog(); const vm = g ? products.find((p) => g.isUnlock(p)) : null;
       return vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
     }
     async function handlePaidAsk(lower, logIt = true) { // logIt false: a price question logs once, as the services card (alsoShowPricedServices)
       if (!isPaidAsk(lower)) return false;
-      if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Void's passkey)
+      if (!me || !me.token) { // signed out: the price and what it adds, then how to buy (the purchase attaches to your Verse's passkey)
         say((await paidLine()) + ' · say “remember me” first, then ask again to buy');
         if (logIt) loopLog({ domain: 'void.paid', ask: lower, score: 'pass', note: 'signed out' }); return true; }
       if ((await meTier()) === 'paid') { say('your Verse is paid: ' + PAID_ADDS); return true; }
       const { g, products } = await storeCatalog();
-      const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Void, as the store has it now
+      const vm = g ? products.find((p) => g.isUnlock(p)) : null; // the membership that unlocks paid Verse, as the store has it now
       const url = !vm || vm.available !== false ? paidUrl() : '';
       const line = vm && vm.available !== false ? 'Paid Verse is ' + g.priceText(vm) + ': ' + PAID_ADDS : 'Paid Verse adds ' + PAID_ADDS;
       if (!url) { whisper.innerHTML = esc(line) + ' · <a class="vc" href="/store/">see the Verse store</a>'; }
@@ -5215,7 +5215,7 @@ say('nothing selected to remove');
         if (src !== 'none') loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'skill:' + svc.name });
       } catch (_) {}
     }
-    // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Void's own answer (or fix). Never on self/menu/identity asks; at most one line.
+    // The optional product line: only when the ask clearly matches a live product (lib/gumroad.js productFor), after Verse's own answer (or fix). Never on self/menu/identity asks; at most one line.
     function productLine(g, p) {
       const link = String(p.url || '').replace(/^https:\/\//, '');
       return 'From A-to-Mind: <b>' + esc(p.name) + '</b> · ' + esc(g.priceText(p)) + ' · <a href="' + esc(p.url) + '" target="_blank" rel="noopener">' + esc(link) + '</a>';
@@ -5233,9 +5233,9 @@ say('nothing selected to remove');
     }
 
     // --- Any broken automation, fixed as it is (Atom: "fix as is, the void is constantly evolving"). ---
-    // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Void reads what was pasted
+    // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, a script, a webhook, anything: Verse reads what was pasted
     // (error, config, steps), names the likely cause and gives the concrete fix or corrected config (/api/answer mode 'fix',
-    // lib/automation-fix.js). If nothing was pasted yet, Void asks for it. The fix is the answer; a product line may follow it.
+    // lib/automation-fix.js). If nothing was pasted yet, Verse asks for it. The fix is the answer; a product line may follow it.
     const fixReady = lazyLib('/lib/automation-fix.js');
     let pendingFix = null, pasteRaw = null, pasteFlat = null;
     input.addEventListener('paste', (e) => { // keep a pasted config/log with its line breaks (a one-line input would flatten it)
@@ -5328,7 +5328,7 @@ say('nothing selected to remove');
 
     // --- Code review (lib/code-review.js, /api/answer mode 'review'). "review my code" + the code: the quick checks show at once
     // (bugs, security holes, risky habits, with line numbers), then the model's closer read is added under them. Without code yet,
-    // Void asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
+    // Verse asks for it and the next paste is reviewed. Keys and passwords are masked before anything is shown or sent.
     const reviewReady = lazyLib('/lib/code-review.js');
     const warmLibs = () => { approvalReady(); storeReady(); fixReady(); reviewReady(); for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.removeEventListener(ev, warmLibs, true); };
     for (const ev of ['keydown', 'pointerdown', 'touchstart']) document.addEventListener(ev, warmLibs, { capture: true, passive: true });
@@ -5390,7 +5390,7 @@ say('nothing selected to remove');
       return true;
     }
 
-    // Asks real visitors made that Void couldn't answer, now answered (tools/grown.json lists each one; the tests replay them all).
+    // Asks real visitors made that Verse couldn't answer, now answered (tools/grown.json lists each one; the tests replay them all).
     // Other languages: "do you speak …" and "what are you" in Portuguese, Hungarian, Spanish, French, German, Italian get a
     // reply in that language, honestly (the answer engine replies in the asker's language; some pages are still English).
     const SPEAKS = [
@@ -5505,7 +5505,7 @@ say('nothing selected to remove');
       for (const k of Object.keys(SHORT_ASKS)) { const dd = editDistance(w, k); if (dd < bd && dd <= 2) { bd = dd; best = SHORT_ASKS[k]; } }
       return best;
     }
-    // "make me an app": Void builds small apps from its stage parts. It asks what the app should do (or reads it from the ask),
+    // "make me an app": Verse builds small apps from its stage parts. It asks what the app should do (or reads it from the ask),
     // then builds it. What it can't build yet goes on the board as that real want, not as "make me an app".
     const APP_PARTS = [
       [/\b(to-?do|todo|tasks?|checklist|list|groceries|grocery|shopping|packing|habits?)\b/, 'make a list', 'a list'],
@@ -5697,10 +5697,10 @@ say('nothing selected to remove');
     async function handle(raw) {
       const typed = (raw || '').trim();
       if (!typed) return;
-      relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
+      relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
       // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
-      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
+      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Verse' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
@@ -5724,7 +5724,7 @@ say('nothing selected to remove');
       if (/^(hi|hello|hey|hiya|yo|sup|wassup|wazzup|what'?s\s+up|whats\s+up|ola|olá|oi|hola|szia|hallo|bonjour|salut|ciao|hej|good\s+(morning|afternoon|evening))(\s+(there|void))?\s*[.!?]*$/.test(lower0)) { say('hi. ask for anything'); return; }
       // small talk: short, warm, and no encyclopedia page about the word "thanks"
       { const st = smallTalk(lower0.replace(/[.!?]+$/, '').replace(/\s+/g, ' ').trim()); if (st) { say(st); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; } }
-      // a bare probe or ping is someone checking Void is alive: say so (no page, no miss)
+      // a bare probe or ping is someone checking Verse is alive: say so (no page, no miss)
       if (/^(probe|ping)\s*[.!?]*$/.test(lower0)) { say('here. ask for anything'); loopLog({ domain: 'void.page', ask: text, score: 'pass', note: 'said' }); return; }
       if (/^(test|testing|probe|ping|ping-test|research probe|test miss from research|asdf+|qwerty|zz+q*x*)\s*[.!?]*$/.test(lower0) || /^[bcdfghjklmnpqrstvwxz]{4,8}$/.test(lower0)
           || /^\/[\w-]+$/.test(lower0) || /^zz+\b.*\bprobe\b/.test(lower0)) { say(''); return; }
@@ -5867,7 +5867,7 @@ say('nothing selected to remove');
       }
     });
     // A link (?q=) runs its ask, except a send, booking or spend: that one is only typed into the box for the person to ask.
-    // From the Void extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
+    // From the Verse extension (?q=…&ctx=1 in its side panel): the page you were on arrives by postMessage from the panel, only from
     // our own parent and only when that parent is an extension; then the ask is answered about that page. No page in 4 s = the plain ask.
     { const sp0 = new URLSearchParams(location.search), q0 = sp0.get('q'), ctx0 = sp0.get('ctx') === '1' && window.parent !== window;
       if (q0) { history.replaceState(null, '', location.pathname); skillsReady.then(async () => { const core = await approvalReady(); if (!core || core.parseGatedAsk(String(q0).trim())) { input.value = String(q0).slice(0, 500); return; }
@@ -5884,7 +5884,7 @@ say('nothing selected to remove');
         setTimeout(() => { if (!done) { done = true; removeEventListener('message', onCtx); handle(q0); } }, 4000);
       }); } }
 
-    // --- Void everywhere (plan item 4): share to Void, installable app, address bar (opensearch.xml), voice ---
+    // --- Verse everywhere (plan item 4): share to Verse, installable app, address bar (opensearch.xml), voice ---
     // Share target (manifest share_target -> /?share_title=&share_text=&share_url=): a link becomes a link card, words become an ask.
     {
       const sp = new URLSearchParams(location.search);
@@ -5906,7 +5906,7 @@ say('nothing selected to remove');
     // Voice: tap and talk. A plain mic button on arrival; on Chrome 153+ the <microphone> element (browser-owned permission
     // + stream) replaces it after the first tap. No recognition -> no mic at all.
     // Frontier #16: or hold Space (not while typing) and let go to ask; an ask that came by voice is answered out loud in
-    // Void's one low voice, sentence by sentence (lib/speak.js), spoken in this browser.
+    // Verse's one low voice, sentence by sentence (lib/speak.js), spoken in this browser.
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     let voiceRec = null, voiceStream = null, speak = null;
     import('/lib/speak.js').then((m) => { speak = m; }).catch(() => {});
@@ -5923,7 +5923,7 @@ say('nothing selected to remove');
     }
     function voiceListen(track, opts = {}) {
       if (voiceRec) { try { voiceRec.stop(); } catch (_) {} return; }
-      if ('speechSynthesis' in window) speechSynthesis.cancel(); // talking over Void stops it
+      if ('speechSynthesis' in window) speechSynthesis.cancel(); // talking over Verse stops it
       const rec = new SpeechRec();
       rec.lang = navigator.language || 'en-US';
       rec.interimResults = true; rec.continuous = !!opts.hold; rec.maxAlternatives = 1; // held: listens until the key is let go
@@ -5989,7 +5989,7 @@ say('nothing selected to remove');
         if (holding) { holding = false; e.preventDefault(); if (voiceRec) { try { voiceRec.stop(); } catch (_) {} } }
       });
     }
-    // Void's voice: say a card's text in the one low robot voice, phrase by phrase (a beat between each), all queued at once
+    // Verse's voice: say a card's text in the one low robot voice, phrase by phrase (a beat between each), all queued at once
     function sayAloud(text) {
       if (!speak || !('speechSynthesis' in window)) return false;
       const parts = (speak.phrases || speak.chunks)(text); if (!parts.length) return false;
@@ -6051,7 +6051,7 @@ say('nothing selected to remove');
       return false;
     }
 
-    // --- WebMCP (plan item 5): browser agents call Void's tools directly, from the same list as /tools.json. ---
+    // --- WebMCP (plan item 5): browser agents call Verse's tools directly, from the same list as /tools.json. ---
     // Each tool takes one plain-words ask, runs it like a typed ask, and returns what appeared. Owner-only asks never run from an agent.
     async function agentAsk(ask) { agentRuns++; try { return await agentAskRun(ask); } finally { agentRuns--; } }
     async function agentAskRun(ask) {
@@ -6123,9 +6123,9 @@ say('nothing selected to remove');
       if (!awayNote || !text) return;
       awayNote.textContent = text;
       if (recorded) { const a = document.createElement('a'); a.href = '#'; a.className = 'away-see'; a.textContent = ' · see what happened'; a.addEventListener('click', (e) => { e.preventDefault(); document.dispatchEvent(new CustomEvent('void:summon', { detail: 'my actions' })); }); awayNote.append(a); }
-      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { if (awayNote.textContent.startsWith(text)) awayNote.textContent = ''; }, 9000); // a line added since (what Void made) stays
+      clearTimeout(tellAway.t); tellAway.t = setTimeout(() => { if (awayNote.textContent.startsWith(text)) awayNote.textContent = ''; }, 9000); // a line added since (what Verse made) stays
     }
-    // what Void made while you were away (skills/showcase.js): on a returning visitor's first touch, move or key, one quiet line
+    // what Verse made while you were away (skills/showcase.js): on a returning visitor's first touch, move or key, one quiet line
     // with "show me"; a first visit only remembers when it was (the empty page loads nothing for it). Gone with the first ask.
     if (!PAGE) {
       const kick = () => {
@@ -6307,7 +6307,7 @@ say('nothing selected to remove');
       }
     }
     };
-    // particle swarm: thousands of points on the GPU, drifting in a slow orbit, parting around the cursor (your Void only)
+    // particle swarm: thousands of points on the GPU, drifting in a slow orbit, parting around the cursor (your Verse only)
     let swarmStarted = false;
     const startSwarm = () => {
       if (swarmStarted) return; swarmStarted = true;
@@ -6461,7 +6461,7 @@ say('nothing selected to remove');
           ctx.strokeStyle = 'rgba(' + u.hue + ',' + (.07 * head).toFixed(4) + ')'; ctx.lineWidth = 1; ctx.stroke(); }
         return true; });
     };
-    // ~30 fps while a pulse is alive, and it stops drawing completely once the Void has been left alone for 40 seconds
+    // ~30 fps while a pulse is alive, and it stops drawing completely once the Verse has been left alone for 40 seconds
     const draw = (now) => {
       raf = 0;
       if (!cv || !on()) { if (ctx) ctx.clearRect(0, 0, cv.width, cv.height); return; }

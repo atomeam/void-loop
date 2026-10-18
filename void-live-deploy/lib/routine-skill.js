@@ -1,5 +1,5 @@
 // One-click forge for an approved routine (asked by Void: "implement a 'one-click forge' for proposed routines that allows the owner
-// to instantly commit a new skill.js file to the codebase"). A routine is only asks Void already answers (lib/shared-routines.js),
+// to instantly commit a new skill.js file to the codebase"). A routine is only asks Verse already answers (lib/shared-routines.js),
 // so the skill made from one does nothing typing them could not: its source holds the asks as JSON string literals (never as code),
 // answers one exact phrase ("run <author>'s <name>") and sends each ask through the same path as typing it. The owner reviews the
 // offer first (/api/routines); this turns the approved one into a file. Pure: tools/routine-skill.mjs writes and registers it.

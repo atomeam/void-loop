@@ -98,7 +98,7 @@ const wrap = (s, n = 72, indent = '  ') => {
 /** the stage as plain text for an email: a heading, then one wrapped line or block per thing. ASCII bullets, no markup. Pure. */
 export function stageTextDump(things, now = Date.now()) {
   const list = Object.values(things || {}).filter((t) => t && t.kind).sort((a, b) => (+a.y || 0) - (+b.y || 0) || (+a.x || 0) - (+b.x || 0));
-  const lines = ['My Void stage, ' + new Date(now).toISOString().slice(0, 10) + ' (' + list.length + ' thing' + (list.length === 1 ? '' : 's') + ')', ''];
+  const lines = ['My Verse stage, ' + new Date(now).toISOString().slice(0, 10) + ' (' + list.length + ' thing' + (list.length === 1 ? '' : 's') + ')', ''];
   if (!list.length) lines.push('(nothing on the stage)');
   for (const th of list) {
     const label = thingLabel(th), all = thingText(th);

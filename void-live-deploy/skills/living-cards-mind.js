@@ -1,6 +1,6 @@
 /**
  * living-cards-mind skill — F-038 Living Spatial Cards Mind, Grok's frontier idea (delivered to atomeam/a-to-mind.com 85651746; asked by
- * the owner, 2026-10-17: "all of Grok's ideas are to be added to Void"): a Gray-Scott field whose feed, kill and diffusion a small
+ * the owner, 2026-10-17: "all of Grok's ideas are to be added to Verse"): a Gray-Scott field whose feed, kill and diffusion a small
  * evolutionary mind keeps choosing (6 genomes, one generation every 2 s, in a Worker or on the page when Workers are blocked), and five
  * real cards that live in it. Each card pulls energy toward itself, drifts along the field, and takes its size, hue, blur and opacity
  * from the field around it; drag one and it seeds the field where it is and asks the mind for rules that answer it. The law is

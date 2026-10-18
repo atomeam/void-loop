@@ -78,7 +78,7 @@ export function impactOf(item, i) { const r = IMPACT[item && item.name]; return 
 
 /** the time a swap's "then" line moves the cook by, read off the line itself (no number is made up here): { lo, hi, sign: 1 longer | -1 sooner }, or null.
  *  "bake 2–3 minutes longer" -> 2..3 longer; "take it out 1–2 minutes sooner" -> 1..2 sooner; "cook a minute less" -> 1 sooner. Pure.
- *  Asked by Void: "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitution." */
+ *  Asked by Verse: "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitution." */
 export function timeShift(line) {
   const t = String(line || '').toLowerCase().replace(/\s+/g, ' ');
   const m = t.match(/\b(?:(\d+)(?:\s?[–-]\s?(\d+))?|a)\s+minutes?\s+(longer|more|sooner|earlier|less)\b/);

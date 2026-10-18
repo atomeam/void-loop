@@ -1,4 +1,4 @@
-// Void's router (the will's "tiered model stack" want, 2026-09-28). A tiny classifier in front of the answer engine.
+// Verse's router (the will's "tiered model stack" want, 2026-09-28). A tiny classifier in front of the answer engine.
 // It runs whenever Workers AI is bound, unless the Pages env var VOID_ANSWER_MODELS=off (then /api/answer answers from the open web).
 //
 // Workers AI has no general intent classifier (its Text Classification models are sentiment, relevance and safety), so the
@@ -11,7 +11,7 @@
 //   skill  - a skill should have caught it (the page's parsers missed this phrasing). Gemma still answers; the miss log gets
 //            "the <skill> skill didn't catch this", which the will turns into "learn to handle ..." (never runs anything).
 //   simple - Gemma 4 26B (the default), as before.
-//   hard   - Atom's rule (STANDING.md): Void may pay for a stronger model, but only from money it has already earned (the
+//   hard   - Atom's rule (STANDING.md): Verse may pay for a stronger model, but only from money it has already earned (the
 //            Gumroad earnings, lib/earnings.js) and only under a standing spend someone said yes to on the confirm line
 //            (/api/approval, tool models.spend). So: earned budget > 0 AND an approved standing spend with room left = the paid
 //            model (DeepSeek V4 Flash), each call's cost recorded against both. Otherwise Gemma answers (the one free model;
@@ -200,7 +200,7 @@ export function ensureRouteTables(env) {
   return p;
 }
 
-// --- paying for a stronger model: only from what Void earned, only under a standing spend said yes to on the confirm line ---
+// --- paying for a stronger model: only from what Verse earned, only under a standing spend said yes to on the confirm line ---
 export const PAID_MODELS = [PAID_MODEL]; // a standing spend can only name these
 export const PAID_PRICE = { [PAID_MODEL]: { in: 0.44, out: 1.32 } }; // $ per M tokens (developers.cloudflare.com/workers-ai/platform/pricing)
 export const PAID_MIN_CENTS = 1; // never start a paid call with less than this left (one call costs well under half a cent)
@@ -211,7 +211,7 @@ async function kvNum(env, k) { const r = await env.DB.prepare('SELECT v FROM voi
 // fingerprint still matches, once. Records the standing spend; the newest one wins, so "$0 a month" stops paying.
 export async function grantStandingSpend(args, env, rec) {
   const model = String((args && args.model) || '');
-  if (!PAID_MODELS.includes(model)) throw new Error('not a model Void may pay for');
+  if (!PAID_MODELS.includes(model)) throw new Error('not a model Verse may pay for');
   const c = args.cost || {};
   if (c.currency !== 'USD' || !(c.amount >= 0) || c.amount > 1000) throw new Error('cap must be 0-1000 USD');
   const per = ['day', 'week', 'month'].includes(args.per) ? args.per : 'month';
@@ -221,7 +221,7 @@ export async function grantStandingSpend(args, env, rec) {
   return { standing: id, model, cap_cents: cap, per };
 }
 
-// { model, spend, left } = Void may pay for this call; { why } = it may not (then Gemma, and a 'would escalate' shortfall).
+// { model, spend, left } = Verse may pay for this call; { why } = it may not (then Gemma, and a 'would escalate' shortfall).
 export async function paidAccess(env, now = new Date()) {
   let budget = 0;
   try { budget = (await readEarnings(env)).budget_cents; } catch (_) { return { why: 'no earned budget (no sales recorded)' }; }
@@ -274,7 +274,7 @@ export async function readRoutes(env, limit = 500) {
   const pct = (p) => (waits.length ? waits[Math.min(waits.length - 1, Math.floor(p * waits.length))] : null);
   const skills = {};
   for (const r of rows.filter((x) => x.route === 'skill')) (skills[r.skill] = skills[r.skill] || []).push({ ask: r.ask, count: r.count, score: r.score });
-  // Void's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask the
+  // Verse's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask the
   // router answered as a question while within CLOSE of a skill's bar, by the skill it nearly was: the will proposes teaching that skill.
   const close = {};
   for (const r of rows.filter((x) => x.route === 'simple' || x.route === 'hard')) {

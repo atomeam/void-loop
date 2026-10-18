@@ -1,4 +1,4 @@
-// Void as an MCP server (frontier #6): POST one JSON-RPC message, get its reply as JSON (the streamable HTTP transport without a
+// Verse as an MCP server (frontier #6): POST one JSON-RPC message, get its reply as JSON (the streamable HTTP transport without a
 // stream). Read-only tools (lib/mcp.js), and the guard's own limit for the route covers it (lib/guard.js LIMITS.mcp). Public: an MCP
 // client needs no key. review_code_closer is /api/review's own handler, given the caller's Authorization: the closer read (a model)
 // comes only with the key that endpoint takes, on its terms (who, the daily cap, the count). skill_health reads the static
@@ -38,7 +38,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
 }
 
 export function onRequestGet() {
-  return new Response('Void speaks MCP here: POST JSON-RPC (initialize, tools/list, tools/call). The tools: https://a-to-mind.com/tools.json\n', { status: 405, headers: { allow: 'POST', 'content-type': 'text/plain; charset=utf-8' } });
+  return new Response('Verse speaks MCP here: POST JSON-RPC (initialize, tools/list, tools/call). The tools: https://a-to-mind.com/tools.json\n', { status: 405, headers: { allow: 'POST', 'content-type': 'text/plain; charset=utf-8' } });
 }
 
 /** the shortfall place for a failed tools/call ('mcp <tool>', 20 characters at most), else null. Pure. */

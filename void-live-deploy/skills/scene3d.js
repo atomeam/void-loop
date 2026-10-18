@@ -1,5 +1,5 @@
 /**
- * scene3d — Void's shared realistic 3D: one WebGL renderer for every miniature on the page, and the mount API cards use
+ * scene3d — Verse's shared realistic 3D: one WebGL renderer for every miniature on the page, and the mount API cards use
  * to show a small, detailed 3D version of themselves. Not a skill: nothing imports this file until a card asks for a
  * miniature, so the empty page loads zero 3D bytes. API and how-to for builders: docs/miniatures.md.
  *
@@ -179,7 +179,7 @@ const live = new Map(); // key -> handle
 // with the same key; it waits for that load and takes it over instead of building a second one (verify flake: two boards
 // under one key, and the first one, freed off the page, took the key with it, so the board on screen was not in the list)
 const loading = new Map();
-/** Teach Void a miniature: build(ctx, data) sets up ctx.root and returns { update(data), tick(dt, t), dispose() }. */
+/** Teach Verse a miniature: build(ctx, data) sets up ctx.root and returns { update(data), tick(dt, t), dispose() }. */
 export function registerMiniature(kind, build) {
   if (!KIND_RE.test(String(kind))) throw new Error('miniature kind must be lowercase letters, digits and dashes: ' + kind);
   if (typeof build !== 'function') throw new Error('registerMiniature(' + kind + '): build must be a function');
@@ -374,7 +374,7 @@ function failCard(host, wrap, kind, key, err) {
  * Show a miniature of `kind` in host. Re-mounting the same key (a card that re-rendered) moves the live miniature into the
  * new host and hands it the new data, so nothing is rebuilt. Rejects where WebGL is unavailable.
  */
-// a miniature beside its card stays on the screen (owner, 2026-10-11: "things should smartly try to autofit in Void"): to the
+// a miniature beside its card stays on the screen (owner, 2026-10-11: "things should smartly try to autofit in Verse"): to the
 // right when it fits, else to the left, else under the card
 function fitBeside(wrap) {
   if (typeof innerWidth !== 'number' || !wrap.isConnected) return;

@@ -1,5 +1,5 @@
 // chess-replay — step through a finished game from your match history, move by move, with the engine's read of each move (asked by
-// Void: "Implement a 'match-replay' button on the chess history table that lets the user step through the moves with engine
+// Verse: "Implement a 'match-replay' button on the chess history table that lets the user step through the moves with engine
 // annotations"). The game's moves come from the history (lib/match-history.js keeps a chess game's line as coordinates); the
 // positions are rebuilt with the rules (skills/chess-rules.js play), and each move is graded on demand by moveVerdict (a shallow
 // search: best move, good, inaccuracy, mistake, blunder, checkmate), cached, so stepping back costs nothing.

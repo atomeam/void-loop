@@ -1,5 +1,5 @@
 /**
- * pong skill — Void Pong against Verse (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
+ * pong skill — Verse Pong against Verse (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
  * Move your paddle with the mouse or a finger on the court, or W/S and the arrow keys with the card focused. First to 7.
  */
 import * as P from './pong-rules.js';
@@ -14,7 +14,7 @@ export function pongOf(text) {
 
 function mount(th, stageApi) {
   th.state = P.create((Date.now() & 0xffff) || 1);
-  const c = arcadeCard(th, stageApi, { cls: 'pong-card', title: 'Void Pong', sub: 'you are left · first to 7', w: P.W, h: P.H });
+  const c = arcadeCard(th, stageApi, { cls: 'pong-card', title: 'Verse Pong', sub: 'you are left · first to 7', w: P.W, h: P.H });
   let input = {}; const keys = new Set();
   // the ghost (asked by Void): your best game so far, replayed as a faint paddle; a better game replaces it
   let ghost = load('pong'), rec = pongRecorder(), saved = false, clock = 0;
@@ -48,7 +48,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'pong');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'pong'; }
   api.summon('pong', { x: Math.max(10, Math.round(innerWidth / 2 - 220)), y: 50 });
-  api.say('Void Pong (plays like the arcade classic) · you are left, Verse is right · move on the court or use W/S');
+  api.say('Verse Pong (plays like the arcade classic) · you are left, Verse is right · move on the court or use W/S');
   return 'pong';
 }
 

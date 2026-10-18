@@ -1,6 +1,6 @@
 // GET /api/share/<room> (WebSocket) -> the invite's room, one Durable Object per invite (share-worker/, binding SHARE).
-// Only a room this site signed (lib/share.js roomOk) wakes a Durable Object, only Void's own pages may open one (another
-// site's page can't put a tab into your Void), and without the binding the page is told the relay is not switched on.
+// Only a room this site signed (lib/share.js roomOk) wakes a Durable Object, only Verse's own pages may open one (another
+// site's page can't put a tab into your Verse), and without the binding the page is told the relay is not switched on.
 import { roomOk } from '../../../lib/share.js';
 
 const json = (status, body) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json', 'cache-control': 'no-store' } });

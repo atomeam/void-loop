@@ -26,7 +26,7 @@ export function askTime(id) {
 
 /** Verse's current asks from domains/void.voice.md: [{ id, words, small }], in the file's order */
 export function asksOf(md) {
-  const sec = String(md || '').split(/^## Void's current asks\s*$/m)[1];
+  const sec = String(md || '').split(/^## Verse's current asks\s*$/m)[1];
   if (!sec) return [];
   const out = [];
   for (const line of sec.split(/^## /m)[0].split('\n')) {

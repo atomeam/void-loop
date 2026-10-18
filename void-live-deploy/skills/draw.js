@@ -1,5 +1,5 @@
 /**
- * draw skill - a drawing card where you describe a brush in words and Void makes it.
+ * draw skill - a drawing card where you describe a brush in words and Verse makes it.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "let me draw", "open a canvas", "sketch pad", "make a brush like dry charcoal", "new brush: soft watercolor".
  * Not a shelf of fixed brushes with sliders: say what you want ("dry charcoal that
@@ -298,7 +298,7 @@ function run(text, api) {
       layers = layers.filter((x) => x !== L); for (const x of layers) if (x.clipTo === L) x.clipTo = T; if (A === L) A = T; return named(L) + ' is merged into ' + named(T) + '.'; }
     return '';
   };
-  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Void's one WebGL renderer
+  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Verse's one WebGL renderer
   // (skills/scene3d.js, loaded only when a 3D layer is made) into the layer's own canvas, so it stacks, hides, fades,
   // clips and blends like any other layer. A drag paints on the plane through the middle of the scene, facing you; Turn spins it.
   let E3 = null, turning = false, spin = null;
@@ -353,7 +353,7 @@ function run(text, api) {
     const a = document.createElement('a'); a.download = 'void-' + L.name.replace(/[^a-z0-9]+/gi, '-') + '.stl'; a.href = URL.createObjectURL(new Blob([buf], { type: 'model/stl' })); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
     return named(L) + ' is saved as an STL, ' + model.size.map((v) => Math.round(v)).join(' × ') + ' mm: ' + (check.closed ? 'watertight' : 'not watertight') + (check.supports ? ', it needs supports' : '') + ', about ' + check.grams + ' g of PLA.';
   };
-  // Enter VR (frontier 25, the owner: "we are working towards a fully working VR Void"): the 3D layer's scene goes into a headset
+  // Enter VR (frontier 25, the owner: "we are working towards a fully working VR Verse"): the 3D layer's scene goes into a headset
   // session of its own renderer (so the page's miniatures keep theirs), standing in front of you at chest height, about a metre
   // and a half across; holding a controller's trigger paints a tube where the controller is, in the brush and colour on the
   // card; leaving VR brings the layer back to the card as it was turned. The button shows only where the browser offers VR.
@@ -408,8 +408,8 @@ function run(text, api) {
     S.live = tubeOf(S, S.pts); S.group.add(S.live); renderSpace(L); compose();
   };
   // "make it my backdrop" (frontier 25, step 3): the picture as it shows now, every visible layer, 3D ones as they are turned,
-  // goes behind your Void (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
-  // float on your Void's own colour. Too big to sync, it is drawn smaller until it fits.
+  // goes behind your Verse (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
+  // float on your Verse's own colour. Too big to sync, it is drawn smaller until it fits.
   const backdropSrc = () => {
     compose();
     for (let w = cv.width; w >= 240; w = Math.round(w * 0.75)) {

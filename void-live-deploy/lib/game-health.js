@@ -9,7 +9,7 @@ import { summary, GAMES as BOARD, TITLES as BOARD_TITLES, START as BOARD_START }
 import { rating, played, GAMES as ARCADE, START as ARCADE_START } from './ladder.js';
 
 export const MIN = 5, BAND = 16;
-const ARCADE_TITLES = { pong: 'Void Pong', snake: 'Void Snake' };
+const ARCADE_TITLES = { pong: 'Verse Pong', snake: 'Verse Snake' };
 const read = (delta, n) => (n < MIN ? 'too few matches to say' : delta >= BAND ? 'climbing' : delta <= -BAND ? 'slipping' : 'level');
 
 /** [{ game, title, rating, delta, played, read }] for every game with at least one match. Pure. */

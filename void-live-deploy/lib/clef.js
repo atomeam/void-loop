@@ -19,7 +19,7 @@ export function skillQuestion(skills = SKILLS) {
   const criteria = {};
   for (const [k, s] of Object.entries(skills)) criteria[k] = ABOUT[k] || 'Puts or does this on the screen, e.g. ' + (s.examples || []).slice(0, 3).map((e) => '"' + e + '"').join(', ');
   criteria[NONE] = 'A question to answer in words (facts, explanations, advice, history), or anything none of the others does';
-  return { skill: { type: 'choice', instructions: 'Void is a blank screen that answers asks. Which of its skills should handle this ask? Pick none when the person wants an answer in words rather than a thing made or done.', criteria } };
+  return { skill: { type: 'choice', instructions: 'Verse is a blank screen that answers asks. Which of its skills should handle this ask? Pick none when the person wants an answer in words rather than a thing made or done.', criteria } };
 }
 
 // the chosen option and its probability, from whatever shape the answer carries (choice + a probability per option + confidence)

@@ -1,13 +1,13 @@
 /**
  * family-health skill - "show me your skill families", "family health", "how healthy are your skills": every skill family and how
  * far its skills are checked, from skills/families.json (tools/families.mjs; ratings from evidence only, never self-described).
- * Asked by Void (its reflection of 2026-10-15): "Implement the 'family-health' dashboard card to visualize evidence ratings
+ * Asked by Verse (its reflection of 2026-10-15): "Implement the 'family-health' dashboard card to visualize evidence ratings
  * (proven, checked, tested, experiment) for all 9 families."
  * The card: the totals on top, one row per family with a stacked bar of its proven / checked / tested / experiment counts; tap a
  * family to list its skills with their rating and the reason (the `why` the evidence gave). One accent (--d-key) at four strengths.
  * Each skill also shows when it was last tested and its benchmark success rate (asked by Void, ask-20261013-1823-1), straight from
  * families.json's `last_tested`, `last_tested_by` and `success_rate`. Nothing about how often people use a skill is shown or
- * known to Void: no usage, no popular or unused (the owner's rule: no behaviour tracking). Asked by Void twice ("a 'last-used' timestamp for every
+ * known to Verse: no usage, no popular or unused (the owner's rule: no behaviour tracking). Asked by Verse twice ("a 'last-used' timestamp for every
  * skill ... to identify which parts of my skills are becoming dead weight"): each skill's last-used day is shown for THIS DEVICE only, read from
  * this browser's own storage (lib/skill-use.js, written when a skill answers: a day, never a word of any ask); nothing is sent or counted anywhere.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }

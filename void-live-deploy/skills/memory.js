@@ -1,5 +1,5 @@
 /**
- * memory skill — Void answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
+ * memory skill — Verse answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
  * /api/memory; GET /api/memory?ask=<question> answers in plain words from them, no model). The card shows the answer as
  * the API wrote it: each match with its tech, summary, last change, and whether a copy exists elsewhere, or the
  * "nothing matches" sentence as is. It keeps itself live (skills/live.js, every 5 minutes) so a project pushed while the

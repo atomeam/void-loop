@@ -13,14 +13,14 @@ export function countryOf(text) {
   m = t.match(/^(?:what|which)\s+(currency|languages?)\s+(?:does|do|is|are)\s+(?:used\s+in|spoken\s+in)?\s*(?:the\s+)?([A-Za-zÀ-ÿ' .-]{2,40}?)(?:\s+(?:use|speak|have))?$/i);
   // "what language does the word kindergarten come from" asks where a word comes from, not about a country
   if (m && !/\b(?:words?|come|comes|came|from|originate)\b/i.test(m[2]) && !NOT_COUNTRY.test(m[2].trim())) return { want: FIELDS[m[1].toLowerCase()], name: m[2].trim() };
-  // "how big is france": only a country Void knows by name, so "how big is the sun" stays with what knows it
+  // "how big is france": only a country Verse knows by name, so "how big is the sun" stays with what knows it
   m = t.match(/^how\s+(?:big|large)\s+is\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{2,40})$/i);
   if (m && CAPITALS[m[1].trim().toLowerCase()]) return { want: 'area', name: m[1].trim() };
   m = t.match(/^how\s+many\s+people\s+live\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'population', name: m[1].trim() };
   m = t.match(/^(?:what\s+)?languages?\s+(?:are\s+|is\s+)?spoken\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'languages', name: m[1].trim() };
-  // more ways to ask, each only for a country Void knows by name (so "what do they speak in the movie" stays out):
+  // more ways to ask, each only for a country Verse knows by name (so "what do they speak in the movie" stays out):
   // "what do they speak in brazil", "what money do they use in japan", "what continent is egypt in", "what countries border germany",
   // "the calling code for france", "what side of the road do they drive on in japan"
   const known = (n) => { const k = String(n || '').trim().toLowerCase().replace(/^the\s+/, ''); return CAPITALS[k] ? k : null; };
@@ -64,7 +64,7 @@ export function offsetOf(zone, now = new Date()) {
     return Math.round((Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute) - Math.floor(now.getTime() / 60000) * 60000) / 60000);
   } catch (_) { return null; }
 }
-// the time row: "2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)" when Void knows the capital's zone (live source or not);
+// the time row: "2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)" when Verse knows the capital's zone (live source or not);
 // a country with several zones keeps its span after the capital's time; else the offsets alone (tzLine). Pure given now.
 export function timeLine(key, zones, mine, now = new Date()) {
   const z = CAPITAL_ZONES[key], off = z ? offsetOf(z, now) : null;
@@ -130,7 +130,7 @@ async function run(text, api) {
   // the built-in answer (capital, or currency for currency asks): shown at once while the live source loads, and kept if it never answers
   const key = q.name.toLowerCase().replace(/^the\s+/, '');
   const known = q.want === 'currencies' ? CURRENCIES[key] : CAPITALS[key];
-  // returns 'answered' (the asked field is shown), 'shown' (only the capital is shown) or '' (nothing Void knows)
+  // returns 'answered' (the asked field is shown), 'shown' (only the capital is shown) or '' (nothing Verse knows)
   const builtIn = (waiting) => { const cap = CAPITALS[key]; const big = known || cap; if (!big || !api._pageStill(el)) return '';
     const answers = !!known && (q.want === 'capital' || q.want === 'currencies');
     el.innerHTML = '<h2>' + esc(q.name.replace(/\b\w/g, (x) => x.toUpperCase())) + '</h2><div class="sub">' + (known && q.want === 'currencies' ? 'Currency' : 'Capital') + '</div><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(big) + '</div>'
@@ -144,8 +144,8 @@ async function run(text, api) {
     const all = r.ok ? await r.json() : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();
-    // the exact name first; else the result whose capital is the one Void knows for that name ("uk" -> the country with London);
-    // never just the first result when Void knows the country, since a loose search can put another country first
+    // the exact name first; else the result whose capital is the one Verse knows for that name ("uk" -> the country with London);
+    // never just the first result when Verse knows the country, since a loose search can put another country first
     const flat = (v) => String(v || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
     const c = (all || []).find((x) => x.name && (x.name.common.toLowerCase() === lc || x.name.official.toLowerCase() === lc))
       || (CAPITALS[key] ? (all || []).find((x) => (x.capital || []).some((cc) => flat(cc) === flat(CAPITALS[key]))) : (all || [])[0]);
@@ -168,7 +168,7 @@ async function run(text, api) {
     return 'country';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    // keep what Void knows on the page (the capital, with a note that the asked field is not available) rather than an error
+    // keep what Verse knows on the page (the capital, with a note that the asked field is not available) rather than an error
     const b = builtIn(false); if (b === 'answered') return 'country'; if (b) return 'none';
     el.innerHTML = '<h2>' + esc(q.name) + '</h2><p>The country service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';

@@ -1,5 +1,5 @@
 /**
- * today skill — "what did you do today": Void's own recent actions from this device's loop log
+ * today skill — "what did you do today": Verse's own recent actions from this device's loop log
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Reads localStorage a2m.void.loop.v1 only. No Wikipedia, no network.
  * Near-misses: "what day is it today" / "what's the date today" stay with wantsToday; "what did I do today", "history of today", "today's weather" stay out.
@@ -9,7 +9,7 @@ const CLEAN = clean; // shared: lib/ask-text.js
 
 export function isTodayLog(text) {
   const t = CLEAN(text);
-  // Void's actions on this device (you / void / your log), never the visitor's day or the calendar date
+  // Verse's actions on this device (you / void / your log), never the visitor's day or the calendar date
   return /^(?:please\s+)?(?:what\s+(?:did|have)\s+(?:you|void)\s+(?:do(?:ne)?|been\s+doing)(?:\s+today)?|what\s+(?:did|have)\s+you\s+been\s+up\s+to(?:\s+today)?|show\s+(?:me\s+)?(?:your\s+)?(?:the\s+)?(?:loop\s+)?log|your\s+recent\s+actions|show\s+(?:me\s+)?your\s+recent\s+actions|what\s+have\s+you\s+been\s+doing(?:\s+today)?)$/i.test(t);
 }
 

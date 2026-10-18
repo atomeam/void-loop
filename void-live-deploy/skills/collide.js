@@ -1,7 +1,7 @@
 /**
  * collide skill - flags two things that sit on the same spot (asked by Void, 2026-10-16: "a 'collision detection' skill that flags
  * when two objects in a shared session are moved into overlapping coordinates"). Whenever a thing is set down here (void:dropped)
- * or a shared Void moves one (void:dropped from shareMove), every pair of things whose boxes overlap gets a red dashed outline,
+ * or a shared Verse moves one (void:dropped from shareMove), every pair of things whose boxes overlap gets a red dashed outline,
  * data-collision, and one line saying who overlaps whom; moved apart, the flags go. "any collisions" / "are things overlapping" /
  * "check for collisions" asks the same on demand. Pure geometry; the stage is only read and outlined, never moved.
  * "collision course", "car collisions near me" are not this.

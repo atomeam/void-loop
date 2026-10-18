@@ -1,12 +1,12 @@
 /**
  * actions skill — the execution record as a card (frontier build order step 2; lib/actions.js keeps one record per action
- * Void takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
+ * Verse takes or stubs: owner, kind, ref, state running → done | failed | stubbed, result or error; /api/actions serves
  * them to the owner). The card lists the newest 30 records with a mark per state, a tally line, a switch to see only what
  * failed, Show more for the next 30, and Refresh; it keeps itself live (skills/live.js, every minute) so a record that
- * is running settles on screen by itself. Nothing here takes an action; it only shows what Void did. Owner-only: without
+ * is running settles on screen by itself. Nothing here takes an action; it only shows what Verse did. Owner-only: without
  * the owner's key or session the card says so and fetches nothing.
  * "my actions", "show my actions", "action log", "the execution record", "what actions did you take". "what did you do today" stays
- * with the today skill (Void's recent actions from this device's loop log); this card is the server-side record.
+ * with the today skill (Verse's recent actions from this device's loop log); this card is the server-side record.
  */
 import { keepLive } from './live.js';
 

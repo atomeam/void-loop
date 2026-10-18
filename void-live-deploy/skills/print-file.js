@@ -119,7 +119,7 @@ export function stage3mf(things) {
   ]);
 }
 
-/** Before the stage's print file is handed over (Void's ask: check the held file's integrity before finalizing): open the
+/** Before the stage's print file is handed over (Verse's ask: check the held file's integrity before finalizing): open the
  *  package just built and hold it to the triangles it came from. A whole zip (its end record, every local header where the
  *  directory says), each part's bytes matching their CRC-32 and size, the three parts a slicer needs, and a model with one
  *  triangle per stage triangle, every coordinate a number, every corner a vertex that exists, no triangle collapsed to a

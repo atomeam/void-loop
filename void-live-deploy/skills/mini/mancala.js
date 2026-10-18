@@ -1,9 +1,9 @@
 /**
  * mancala miniature — a long walnut Kalah board with twelve round pits and two stores, filled with glass beads. Built from
- * code. The card keeps the rules and Void's replies (skills/mancala.js); this shows `data` and presses the card's pits.
- * data: { pits: Array(12), store: [you, Void], playable: [i], onTap(selector) }
- * Layout as on the card: your pits 0-5 along the near row, left to right; Void's 11-6 along the far row, left to right;
- * Void's store on your left, yours on your right.
+ * code. The card keeps the rules and Verse's replies (skills/mancala.js); this shows `data` and presses the card's pits.
+ * data: { pits: Array(12), store: [you, Verse], playable: [i], onTap(selector) }
+ * Layout as on the card: your pits 0-5 along the near row, left to right; Verse's 11-6 along the far row, left to right;
+ * Verse's store on your left, yours on your right.
  */
 const PW = 0.056, PR = 0.021, DEPTH = 0.012, H = 0.03, BEAD = 0.0062, SHOW = 18;
 const COLORS = ['#4fb3d9', '#e35d6a', '#f2c14e', '#7bd389', '#b58df0', '#f39a4b'];
@@ -22,7 +22,7 @@ export default async function build(ctx, data) {
     if (i <= 5) return [(2.5 - i) * PW, -0.035];
     return [(2.5 - (11 - i)) * PW, 0.035];
   };
-  const storeAt = (s) => [s === 1 ? L / 2 - 0.045 : -L / 2 + 0.045, 0]; // Void's store on your left (+x)
+  const storeAt = (s) => [s === 1 ? L / 2 - 0.045 : -L / 2 + 0.045, 0]; // Verse's store on your left (+x)
   const targets = [];
   for (let i = 0; i < 12; i++) {
     const [x, z] = pitAt(i);

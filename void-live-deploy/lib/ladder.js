@@ -1,5 +1,5 @@
 // ladder — Verse's arcade record, kept on this device (asked by Void, 2026-10-16: "Link the video-games ladder wins to my growth
-// card so my skill ratings increase as I win more matches"). Void Pong and Void Snake (docs/video-games.md) record each finished
+// card so my skill ratings increase as I win more matches"). Verse Pong and Verse Snake (docs/video-games.md) record each finished
 // match here; Verse's rating in a game starts at 1000 and moves 16 a match (up for a win, down for a loss, none for a draw, never
 // under 400), and the growth card shows the record and the ratings. Pure over the record; the storage is lib/state.js.
 import { read, write } from './state.js';
@@ -30,7 +30,7 @@ export function finish(game, winner, s) {
   return l;
 }
 
-const TITLES = { pong: 'Void Pong', snake: 'Void Snake' };
+const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake' };
 /** the growth card's line: '' until a match is finished. Every value is a number or a fixed title. Pure. */
 export function ladderHtml(esc, ladder) {
   const rows = GAMES.filter((g) => played(ladder, g) > 0);

@@ -1,7 +1,7 @@
 /**
- * films skill - Void's own films: where to watch them (/films/, free for everyone, no sign-in)
+ * films skill - Verse's own films: where to watch them (/films/, free for everyone, no sign-in)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Void should know whatI mean
+ * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Verse should know whatI mean
  * and help". Takes "films", "voids fillms", "void's films", "where do I watch the films", "show me your videos", "review films",
  * typos included; leaves films about anything else ("best films of 2025", "film a timer") to the skills that answer those.
  */

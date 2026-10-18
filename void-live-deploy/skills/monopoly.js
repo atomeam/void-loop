@@ -1,9 +1,9 @@
 /**
- * monopoly skill — a property-trading board game with Monopoly's rules (skills/monopoly-rules.js), you against 1-3 Void
+ * monopoly skill — a property-trading board game with Monopoly's rules (skills/monopoly-rules.js), you against 1-3 Verse
  * seats. "play monopoly", "monopoly board game", "a property game". The board stands in the void in 3D (mini/monopoly.js,
  * lifted by skills/lift3d.js) with this card beside it; the flat board here is the fallback.
  * Every act is named for what it is: buying is your choice (Buy / Don't buy, never automatic), rent, tax, cards and Jail
- * are forced and the log says so, a trade is an offer Void accepts or declines, and each choice Void makes shows its reason.
+ * are forced and the log says so, a trade is an offer Verse accepts or declines, and each choice Verse makes shows its reason.
  */
 import * as M from './monopoly-rules.js';
 import { lift3d } from './lift3d.js';
@@ -29,7 +29,7 @@ export const VOIDQUEST_NAMES = [
   'Ganymede Rim', 'Orbit Brig', 'Titan Shore', 'Solar Array', 'Enceladus Vent', 'Rhea Crater', 'Venus Gate', 'Phobos Ridge',
   'Deep Signal', 'Deimos Port', 'Mars Canyon', 'Drift Zone', 'Triton Spire', 'Nebula Drift', 'Oberon Fields', 'Miranda Cliffs',
   'Earth Gate', 'Luna Base', 'Kuiper Reach', 'Ion Works', 'Pluto Station', 'To the Brig', 'Sirius Ring', 'Vega Halo',
-  'Deep Signal', 'Altair Forge', 'Jupiter Gate', 'Nebula Drift', 'Orion Spire', 'Void Tax', 'The Void Core',
+  'Deep Signal', 'Altair Forge', 'Jupiter Gate', 'Nebula Drift', 'Orion Spire', 'Verse Tax', 'The Verse Core',
 ];
 export const THEMES = {
   monopoly: { kind: 'monopoly', title: 'The Landlord’s Game', mid: 'THE LANDLORD’S GAME', sub: 'you against Verse', names: null, sky: '#e9f1e2', ground: '#1d2a22', centre: '#cfe2c8', ink: '#2b4a33' },
@@ -79,7 +79,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   const mid = document.createElement('div'); mid.style.cssText = 'grid-row:2/11;grid-column:2/11;background:' + theme.centre + ';display:flex;align-items:center;justify-content:center;color:' + theme.ink + ';font:700 18px Georgia,serif;letter-spacing:.08em';
   mid.textContent = theme.mid; board.appendChild(mid);
   wrap.appendChild(board);
-  // the card: whose turn, money, what you can do now, your property, an offer to Void, the log with Void's reasons
+  // the card: whose turn, money, what you can do now, your property, an offer to Verse, the log with Verse's reasons
   const status = document.createElement('div'); status.className = 'g-status mono-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';
   const money = document.createElement('div'); money.className = 'mono-money'; money.style.cssText = 'display:flex;gap:10px;flex-wrap:wrap;font-variant-numeric:tabular-nums;margin:4px 0';
   const acts = document.createElement('div'); acts.className = 'mono-acts'; acts.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;margin:6px 0';
@@ -91,7 +91,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   const endB = btn('End turn', 'mono-end', () => act(M.endTurn(th.state)));
   const newB = btn('New game', 'mono-new', () => { th.state = M.create({ voids: th.state.players.length - 1 }); picked = -1; offerOut.textContent = ''; save(); paint(); });
   acts.append(rollB, buyB, skipB, jailB, endB, newB);
-  // an offer Void made you: it waits, with Void's reason, until you answer; nothing moves before that
+  // an offer Verse made you: it waits, with Verse's reason, until you answer; nothing moves before that
   const prop = document.createElement('div'); prop.className = 'mono-proposal'; prop.style.cssText = 'display:none;font-size:12px;margin:6px 0;padding:6px 8px;border-radius:10px;background:rgba(123,108,255,.12)';
   const propText = document.createElement('div');
   const acceptB = btn('Accept', 'mono-accept', () => act(M.answer(th.state, true))), declineB = btn('Decline', 'mono-decline', () => act(M.answer(th.state, false)));
@@ -112,7 +112,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   const save = () => stageApi.save && stageApi.save();
   function act(next) { if (next !== th.state) { th.state = next; save(); } paint(); voidPlays(); }
   function pick(i) { picked = picked === i ? -1 : i; offerOut.textContent = ''; paint(); }
-  function voidPlays() { // Void seats take their turns one at a time, a beat apart, so you can watch each one
+  function voidPlays() { // Verse seats take their turns one at a time, a beat apart, so you can watch each one
     clearTimeout(timers.get(th));
     const s = th.state;
     if (s.phase === 'over' || s.players[s.turn].seat !== 'void') return;
@@ -167,7 +167,7 @@ const makeMount = (theme) => function mount(th, stageApi) {
   paint();
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
-  voidPlays(); // a reloaded game on a Void turn carries on
+  voidPlays(); // a reloaded game on a Verse turn carries on
   // the board stands in the void in 3D (skills/mini/monopoly.js), the card beside it; this flat board stays the fallback
   lift3d(th, stageApi, el, { kind: 'monopoly', board, title: theme.title, W: 520, H: 440,
     snapshot: () => ({ owner: { ...th.state.owner }, houses: { ...th.state.houses }, players: th.state.players.map((p) => ({ pos: p.pos, out: p.out })), picked, dice: th.state.dice, names: theme.names, lid: theme.names ? theme.mid : null }) });

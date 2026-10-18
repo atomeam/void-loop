@@ -15,7 +15,7 @@
  *   pregnancy, breastfeeding and children, plus more for each hour of sweaty exercise.
  * Leaves food lookups ("calories in a banana": skills/food.js), exercise burns ("calories burned running"), BMI (calc) and
  * "how many calories to lose a pound" (calc: 3,500) to the skills that already answer them.
- * Asked by Void (2026-10-14): the BMI card keeps a weight trend, but only when the person taps "save this" (dated entries in
+ * Asked by Verse (2026-10-14): the BMI card keeps a weight trend, but only when the person taps "save this" (dated entries in
  * this browser's localStorage, nothing saved otherwise: no behaviour tracking), and links its band to the calorie card with the
  * same height and weight ("daily calories for overweight"). "plan my meals" (ask-20261014-1453-1) splits the day's target
  * into breakfast, lunch, dinner and snacks the way dietitians do (25 / 30 / 35 / 10 %) and puts the list on the stage; the

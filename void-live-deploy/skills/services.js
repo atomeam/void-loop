@@ -1,5 +1,5 @@
 /**
- * services skill — what Void sells, with prices, and a Buy link for what is on sale.
+ * services skill — what Verse sells, with prices, and a Buy link for what is on sale.
  * "pricing", "what do you sell", "hire you", "fix my automation", "what does void cost".
  * The rows come from lib/products.js (the ones with a price: the hands-on services). The card reads the live store
  * (/api/catalog) for each row it can match by slug, so the shown price and link are Gumroad's own and never drift;

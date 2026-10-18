@@ -190,7 +190,7 @@ export function printCheck(model) {
   return { fits, stands, brim: !stands, closed, outward, baseCm2, volumeCm3, grams, overhangPct, supports, triangles: n, ok: fits && closed && outward, notes };
 }
 
-/** Before a file goes to print (Void's ask: verify the geometry before the print command): read the STL back and hold it to
+/** Before a file goes to print (Verse's ask: verify the geometry before the print command): read the STL back and hold it to
  *  its model. The facet count in the header matches the model and the file's length, every number is finite, the file's
  *  extent is the model's size (Z up), and the mesh is one a slicer takes as it is (printCheck: fits, watertight, outward).
  *  { ok, problems: [why, in words], triangles } — pure, from the bytes and the model alone. */

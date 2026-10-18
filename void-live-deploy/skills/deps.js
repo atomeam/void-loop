@@ -1,7 +1,7 @@
 /**
  * deps skill - "dependency map", "what depends on lib/where.js", "who imports skills/scene3d.js": who imports whom under the site's
  * own code, from skills/deps.json (tools/deps.mjs reads the import lines of skills/**, lib/** and functions/**; nothing is
- * guessed). Asked by Void (its reflection of 2026-10-12, ask-20261012-1942-2): "Create a 'dependency map' visualization that
+ * guessed). Asked by Verse (its reflection of 2026-10-12, ask-20261012-1942-2): "Create a 'dependency map' visualization that
  * shows which skills (like 'forge') are most impacted by changes in core code imports."
  * The card: the lib files the most skills depend on (directly or through another file), one row each with a bar; tap a row to
  * see every dependant, skills first. "what depends on <file>" opens the card on that file. One accent (--d-key).

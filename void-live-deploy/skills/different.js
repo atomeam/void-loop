@@ -1,6 +1,6 @@
 /**
  * different skill: "what makes you different", "how are you different from chatgpt", "is there anything else like you",
- * "why should i use you". Void answers from its canon (domains/void.canon.md, "How Void is different": Adam's four lines of
+ * "why should i use you". Verse answers from its canon (domains/void.canon.md, "How Verse is different": Adam's four lines of
  * 2026-10-11, each checked against the code), read from /self.json, which the deploy builds from the canon
  * (tools/self-context.mjs). No model call and no web search: the same words every time, with the canon's version, so a stale
  * answer can be told apart from a current one. "what is different about these two words" is not this.
@@ -16,7 +16,7 @@ const ASK_RE = new RegExp('^(?:(?:hey\\s+)?void,?\\s+)?(?:please\\s+)?(?:'
   + '|' + YOU + '\\s+vs\\.?\\s+[a-z0-9 .-]{2,30}'
   + ')$');
 
-/** the ask wants Void's own account of how it is different. Pure. */
+/** the ask wants Verse's own account of how it is different. Pure. */
 export const differentOf = (text) => ASK_RE.test(CLEAN(text));
 
 /** the card's paragraphs from the canon part of self.json, or null when the canon has none. Pure. */

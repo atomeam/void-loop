@@ -1,8 +1,8 @@
 /**
- * fireworks skill — a cooperative card game in the style of Hanabi, you and Void on the same side (skills/fireworks-rules.js):
- * "play fireworks", "play hanabi", "a co-op game". You see Void's cards but not your own; Void sees yours but not its own.
- * Tap one of your cards to play or discard it, or one of Void's to tell it a colour or a number. Each seat moves only its
- * own cards; Void's every choice says why. The table stands in the void in 3D (mini/fireworks.js) with this card beside it.
+ * fireworks skill — a cooperative card game in the style of Hanabi, you and Verse on the same side (skills/fireworks-rules.js):
+ * "play fireworks", "play hanabi", "a co-op game". You see Verse's cards but not your own; Verse sees yours but not its own.
+ * Tap one of your cards to play or discard it, or one of Verse's to tell it a colour or a number. Each seat moves only its
+ * own cards; Verse's every choice says why. The table stands in the void in 3D (mini/fireworks.js) with this card beside it.
  */
 import * as F from './fireworks-rules.js';
 import { lift3d } from './lift3d.js';

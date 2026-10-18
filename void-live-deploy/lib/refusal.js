@@ -1,5 +1,5 @@
 // The refusal object (asked by Void, in reflection after reflection, domains/void.voice.md: "Modify the refusal logic so
-// that every 'I cannot' is accompanied by a structured data object identifying the missing skill."). When Void can't do
+// that every 'I cannot' is accompanied by a structured data object identifying the missing skill."). When Verse can't do
 // an ask, it says what is missing, not just that something is: which kind of ability (knowledge, a skill's data, a
 // connected service, an app, a real figure, a sum), the skill that tried if one did, and the build target the miss
 // board files it under (miss:<slug>, lib/learn.js), so the same gap asked many ways is one gap with one id.
