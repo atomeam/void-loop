@@ -1319,5 +1319,12 @@
   "of": 66,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T12:35:31Z",
+  "passed": 64,
+  "of": 67,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s pls\" (skill:film-metadata)"
  }
 ]
