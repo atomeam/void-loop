@@ -49,6 +49,8 @@
       if (L && L.bg) { d.style.setProperty('--void-bg', L.bg); d.style.backgroundColor = L.bg; }
       if (L && L.glow) d.style.setProperty('--void-glow', L.glow);
       if (localStorage.getItem('a2m.void.entered.v1')) d.classList.add('void-entered');
+      var A = JSON.parse(localStorage.getItem('a2m.void.a11y.v1') || 'null'), AC = { keys: 'a11y-keys', trap: 'a11y-trap', motion: 'a11y-motion', dyslexia: 'a11y-dyslexia', colorblind: 'a11y-cb', targets: 'a11y-targets', outline: 'a11y-outline' }; // accessibility switches (skills/accessibility-modes.js): their classes are on before the first paint (the look is in the style block below)
+      if (A) for (var ak in AC) if (A[ak] === true) d.classList.add(AC[ak]);
       var K = JSON.parse(localStorage.getItem('a2m.void.sky.v1') || 'null'); // the last sky this device saw, so the first frame is already tinted; void-review: ok (inside the try above, like the look)
       if (K && K.glow && K.bg) { d.style.setProperty('--sky-glow', K.glow); d.style.setProperty('--sky-bg', K.bg); if (!(L && L.glow)) d.classList.add('sky-on'); }
       d.classList.add('void-first');
@@ -580,6 +582,46 @@
     #stage { perspective: 1400px; }
     #stage > .shrunk, #stage > .shrunk * { cursor: zoom-in; } /* a board shrunk beside a newer one: a tap brings it back */
     .thing:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 3px; } /* a card the keyboard reached shows it */
+    /* Accessibility modes (tools pack 7, owner 2026-10-18; skills/accessibility-modes.js). Each switch is a class on <html>, put on by the first-frame script above
+       before the first paint and by the skill. Nothing here changes the look unless a class is on. */
+
+    /* reduced motion, the hard switch: nothing animates or eases; the worlds and figures also read the same switch (a2m.void.motion.v1) */
+    html.a11y-motion *, html.a11y-motion *::before, html.a11y-motion *::after {
+      animation-duration: 0.001ms !important; animation-delay: 0s !important; animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important; transition-delay: 0s !important; scroll-behavior: auto !important;
+    }
+
+    /* dyslexia-friendly: a clearer face and wider spacing; code stays monospace */
+    html.a11y-dyslexia body, html.a11y-dyslexia body *:not(pre):not(code):not(kbd):not(samp):not(.mono) {
+      font-family: "OpenDyslexic", "Atkinson Hyperlegible", "Lexend", "Verdana", "Trebuchet MS", sans-serif !important;
+      letter-spacing: 0.04em; word-spacing: 0.1em;
+    }
+    html.a11y-dyslexia body { line-height: 1.6; }
+
+    /* colorblind-safe: the Okabe-Ito blue and orange for ok / not ok, and a mark as well as a colour */
+    html.a11y-cb { --a11y-ok: #56b4e9; --a11y-bad: #e69f00; --a11y-warn: #f0e442; --a11y-accent: #0072b2; }
+    html.a11y-cb .sc-result[data-ok="1"]::before { content: "\2713\00a0"; }
+    html.a11y-cb .sc-result[data-ok="0"]::before, html.a11y-cb .dt-err::before { content: "\2717\00a0"; }
+
+    /* click targets of at least 44 by 44 pixels */
+    html.a11y-targets button, html.a11y-targets [role="button"], html.a11y-targets select, html.a11y-targets summary,
+    html.a11y-targets input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), html.a11y-targets textarea { min-height: 44px !important; min-width: 44px !important; } /* !important: cards set a smaller inline size */
+    html.a11y-targets input[type="checkbox"], html.a11y-targets input[type="radio"] { width: 24px; height: 24px; margin: 10px; }
+    html.a11y-targets .vc[role="button"], html.a11y-targets a[href] { display: inline-block; padding: 10px 6px; }
+
+    /* a focus outline that stays, however focus arrived (mouse, touch or keyboard) */
+    html.a11y-outline :focus, html.a11y-outline :focus-visible, html.a11y-outline .thing:focus-within {
+      outline: 3px solid #ffd166 !important; outline-offset: 3px !important; box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.85) !important;
+    }
+
+    /* a card the keyboard can move says so */
+    html.a11y-keys .thing:focus { cursor: move; }
+
+    /* captions for system speech */
+    #a11y-caption {
+      position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%); max-width: min(92vw, 720px); z-index: 2147483000;
+      background: rgba(0, 0, 0, 0.9); color: #fff; font: 18px/1.4 system-ui, sans-serif; padding: 10px 16px; border-radius: 12px; pointer-events: none;
+    }
     #stage > .thing.shrunk:focus-visible { outline: calc(3px / var(--sc, 1)) solid #ffe2a1; outline-offset: calc(4px / var(--sc, 1)); } /* the outline shrinks with the board: divided by its scale, it shows at 3px */
     .thing { transform-style: preserve-3d; transform: perspective(900px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)) translateZ(var(--tz, 0px));
       transition: transform .35s cubic-bezier(.2,.7,.2,1), filter .35s ease; filter: drop-shadow(0 14px 28px rgba(0,0,0,.45)) drop-shadow(0 0 1px rgba(160,190,255,.25)); }

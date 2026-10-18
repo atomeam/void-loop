@@ -2156,6 +2156,93 @@ try {
     const afterOff = (await E.state()).filter((x) => x.kind === 'sticky').length;
     check('tools pack 8: "ephemeral mode" forgets what was done in the tab (a reload puts the stage back to how it was), and "turn off ephemeral mode" keeps things again', during === 2 && afterTexts.length === 1 && /keep me/.test(afterTexts[0]) && stillOn && afterOff === 2 && !E.errors.length, JSON.stringify({ during, afterTexts, stillOn, afterOff, errors: E.errors }));
     await E.ctx.close(); }
+  // tools pack 7 (owner, 2026-10-18): study cards, dev tools and accessibility modes, played the way a person uses them
+  if (want("tools pack 7: study cards keep their schedule and grade typed answers, dev tools answer on the card, accessibility switches apply, persist and act")) { const S = await fresh();
+    const txt = (sel) => S.p.$eval(sel, (e) => e.textContent).catch(() => '');
+    await S.ask('flashcards: hola = hello, gato = cat', 700);
+    const first = await txt('.study-card[data-mode="flash"] .sc-front');
+    await S.p.click('.study-card .sc-show'); const back = await txt('.study-card .sc-back');
+    await S.p.click('.study-card .sc-good'); const second = await txt('.study-card .sc-front');
+    await S.p.click('.study-card .sc-show'); await S.p.click('.study-card .sc-good');
+    const done = await txt('.study-card .sc-done'); const count = await txt('.study-card .sc-count');
+    await S.p.reload(); await S.p.waitForSelector('.study-card', { timeout: 8000 }).catch(() => {});
+    const doneAfter = await txt('.study-card .sc-done'); const deck = (await S.state()).find((x) => x.kind === 'study');
+    check('study: flashcards show a card, reveal the answer, move on after "Good", end on "All caught up" and a reload keeps the schedule (both cards in box 2, due tomorrow)',
+      first === 'hola' && back === 'hello' && second === 'gato' && /All caught up/.test(done) && /0 due today/.test(count) && /All caught up/.test(doneAfter) && deck && deck.cards.every((c) => c.box === 2 && c.due > new Date(Date.now() - 864e5).toISOString().slice(0, 10)) && !S.errors.length,
+      JSON.stringify({ first, back, second, done, count, doneAfter, deck, errors: S.errors }));
+    await S.ask('language drill: casa = house', 700);
+    await S.p.fill('.study-card[data-mode="drill"] .sc-type', 'HOUSE'); await S.p.keyboard.press('Enter');
+    const res = await S.p.$eval('.study-card[data-mode="drill"] .sc-result', (e) => e.dataset.ok + ' ' + e.textContent).catch(() => '');
+    await S.p.click('.study-card[data-mode="drill"] .sc-next'); const drillDone = await txt('.study-card[data-mode="drill"] .sc-done');
+    await S.ask('glossary: entropy = disorder', 600); await S.ask('add to glossary: heat = energy moved', 600);
+    const terms = await S.p.$$eval('.study-card[data-mode="glossary"] .sc-term', (e) => e.map((x) => x.textContent));
+    await S.ask('cite as apa: The Origin by Charles Darwin, 1859', 600);
+    const apa = await txt('.study-card[data-mode="cite"] .sc-cite'); await S.p.click('.study-card[data-mode="cite"] .sc-style[data-style="mla"]'); const mla = await txt('.study-card[data-mode="cite"] .sc-cite');
+    check('study: a typed drill answer is marked right ignoring case, a glossary keeps its terms A to Z across two asks, and a citation switches style',
+      /^1 /.test(res) && /Correct/.test(res) && /All caught up/.test(drillDone) && terms.join() === 'entropy,heat' && apa === 'Darwin, C. (1859). The Origin.' && /^Darwin, Charles\. “The Origin\.” 1859/.test(mla) && !S.errors.length,
+      JSON.stringify({ res, drillDone, terms, apa, mla, errors: S.errors }));
+    await S.ask('formula card for energy: E = mc^2 where E energy, m mass', 600); await S.ask('algorithm steps card for search: 1. sort 2. halve', 600);
+    const sup = await S.p.$eval('.study-card[data-mode="formula"] .sc-expr sup', (e) => e.textContent).catch(() => '');
+    await S.p.check('.study-card[data-mode="algo"] input[type=checkbox] >> nth=0'); const nowStep = await S.p.$eval('.study-card[data-mode="algo"] li[data-now="1"]', (e) => e.dataset.step).catch(() => '');
+    check('study: a formula shows its power as a superscript and an algorithm card moves its highlight to the next unchecked step', sup === '2' && nowStep === '1' && !S.errors.length, JSON.stringify({ sup, nowStep, errors: S.errors }));
+
+    await S.ask('format json {"a":[1,2]}', 700);
+    const json = await txt('.dev-tools[data-mode="json"] .dt-result');
+    await S.p.fill('.dev-tools[data-mode="json"] .dt-in', '{a:1}'); const jerr = await txt('.dev-tools[data-mode="json"] .dt-err');
+    await S.ask('explain cron 0 9 * * 1-5', 600); const cron = await txt('.dev-tools[data-mode="cron"] .dt-explain');
+    await S.ask('http status 404', 600); const http = await txt('.dev-tools[data-mode="http"] .dt-hit');
+    await S.ask('base64 encode hello', 600); const b64 = await txt('.dev-tools[data-mode="base64"] .dt-result');
+    await S.ask('regex tester /\\d+/g on call 555 or 911', 600); const nMatch = await txt('.dev-tools[data-mode="regex"] .dt-count'); const marks = await S.p.$$eval('.dev-tools[data-mode="regex"] mark', (m) => m.map((x) => x.textContent));
+    await S.ask('polish my commit message: fixed the login bug.', 600); const plain = await txt('.dev-tools[data-mode="commit"] .dt-plain'); const conv = await txt('.dev-tools[data-mode="commit"] .dt-conv');
+    await S.ask('generate 3 rows of dummy data with name email', 600); const dummy = await txt('.dev-tools[data-mode="dummy"] .dt-result');
+    check('dev tools: JSON pretty-prints and then shows the parse error, cron/HTTP/Base64 answer in words, the regex box marks 2 matches, the commit message is made imperative, dummy rows come as CSV',
+      /"a": \[/.test(json) && /JSON/.test(jerr) && cron === 'At 09:00 on Monday through Friday.' && /^404 Not Found/.test(http) && b64 === 'aGVsbG8=' && /2 matches/.test(nMatch) && marks.join() === '555,911'
+      && plain === 'Fix the login bug' && conv === 'fix: fix the login bug' && /^name,email\n/.test(dummy) && dummy.split('\n').length === 4 && !S.errors.length,
+      JSON.stringify({ json: json.slice(0, 40), jerr, cron, http, b64, nMatch, marks, plain, conv, dummy: dummy.slice(0, 80), errors: S.errors }));
+    await S.ask('#ff8800 to rgb', 900); const colour = await S.page();
+    check('hex to rgb: "#ff8800 to rgb" opens the colour card with 255, 136, 0', /RGB/.test(colour) && /255, 136, 0/.test(colour) && !S.errors.length, JSON.stringify({ colour: colour.slice(0, 120), errors: S.errors }));
+
+    await S.ask('dyslexia friendly font', 600); await S.ask('turn on reduced motion', 500); await S.ask('colorblind safe palette', 500); await S.ask('sticky focus outline', 500);
+    const on = await S.p.evaluate(() => ({ cls: [...document.documentElement.classList].filter((c) => c.startsWith('a11y-')).sort().join(),
+      ok: getComputedStyle(document.documentElement).getPropertyValue('--a11y-ok').trim(), motion: localStorage.getItem('a2m.void.motion.v1'), saved: localStorage.getItem('a2m.void.a11y.v1') }));
+    await S.p.reload({ waitUntil: 'domcontentloaded' });
+    const early = await S.p.evaluate(() => [...document.documentElement.classList].filter((c) => c.startsWith('a11y-')).sort().join()); // before any skill has loaded
+    await S.p.waitForSelector('.study-card', { timeout: 8000 }).catch(() => {});
+    await S.ask('dyslexia friendly font off', 500); await S.ask('turn off reduced motion', 500);
+    const off = await S.p.evaluate(() => ({ cls: [...document.documentElement.classList].filter((c) => c.startsWith('a11y-')).sort().join(), motion: localStorage.getItem('a2m.void.motion.v1') }));
+    check('accessibility: four switches put their classes and the stylesheet on (and the worlds\' motion key), a reload has the classes before any skill loads, and "off" takes two of them away',
+      on.cls === 'a11y-cb,a11y-dyslexia,a11y-motion,a11y-outline' && on.ok === '#56b4e9' && on.motion === 'still' && early === on.cls && off.cls === 'a11y-cb,a11y-outline' && off.motion === null && !S.errors.length, JSON.stringify({ on, early, off, errors: S.errors }));
+    await S.ask('44px click targets', 500);
+    const hts = await S.p.$$eval('.study-card button, .dev-tools button', (b) => b.filter((x) => x.offsetHeight > 0).map((x) => x.offsetHeight)); const minH = hts.length ? Math.min(...hts) : 0;
+    await S.ask('accessibility settings', 600);
+    const panel = await S.p.$$eval('.a11y-panel input[type=checkbox]', (c) => c.map((x) => x.getAttribute('aria-label') + ':' + x.checked));
+    await S.ask('screen reader labels', 400);
+    const label = await S.p.$eval('.study-card[data-mode="define"], .study-card[data-mode="cite"]', (e) => e.getAttribute('aria-label')).catch(() => '');
+    check('accessibility: 44px targets make every button at least 44px tall, the panel lists all ten switches with their state, and cards carry a spoken name made from what is on them',
+      minH >= 44 && panel.length === 10 && panel.includes('Click targets of at least 44px:true') && panel.includes('Colorblind-safe palette:true') && panel.includes('Dyslexia-friendly font:false') && /^Study card: /.test(label) && !S.errors.length,
+      JSON.stringify({ hts: hts.slice(0, 6), minH, panel, label, errors: S.errors }));
+    await S.ask('focus trap', 400);
+    await S.p.focus('.a11y-panel input[type=checkbox] >> nth=9'); await S.p.keyboard.press('Tab');
+    const wrapped = await S.p.evaluate(() => (document.activeElement && document.activeElement.getAttribute('aria-label')) || '');
+    await S.ask('keyboard only stage move', 400);
+    await S.ask('definition card for entropy: a measure of disorder', 600);
+    const before = (await S.state()).find((x) => x.kind === 'study' && x.mode === 'define');
+    await S.p.evaluate(() => { const e = document.querySelector('.study-card[data-mode="define"]'); e.setAttribute('tabindex', '-1'); e.focus(); });
+    await S.p.keyboard.press('ArrowRight'); await S.p.keyboard.press('Shift+ArrowDown');
+    const after = (await S.state()).find((x) => x.kind === 'study' && x.mode === 'define');
+    check('accessibility: with the focus trap on, Tab from the last control of a card wraps to its first; with keyboard-only move, arrows move a focused card 10px and Shift-arrows 40px',
+      /^Screen-reader labels on objects/.test(wrapped) && after && before && after.x === before.x + 10 && after.y === before.y + 40 && !S.errors.length, JSON.stringify({ wrapped, before: before && [before.x, before.y], after: after && [after.x, after.y], errors: S.errors }));
+    await S.ask('captions for system speech', 400);
+    await S.p.evaluate(() => { window.__vib = 0; navigator.vibrate = () => { window.__vib++; return true; };
+      window.__caps = []; new MutationObserver(() => { const c = document.getElementById('a11y-caption'); if (c && c.textContent) window.__caps.push(c.textContent); }).observe(document.body, { childList: true, subtree: true, characterData: true }); }); // a headless voice may fail at once and clear the caption, so every caption that appeared is kept
+    await S.p.evaluate(() => { try { speechSynthesis.speak(new SpeechSynthesisUtterance('hello there from void')); } catch (_) {} });
+    const cap = await until(async () => (await S.p.evaluate(() => window.__caps)).includes('hello there from void'), 3000);
+    await S.p.evaluate(() => { try { speechSynthesis.cancel(); } catch (_) {} });
+    await S.ask('haptic tick on keep', 400);
+    await S.ask('generate a password', 700); await S.ask('keep this', 700);
+    const vib = await S.p.evaluate(() => window.__vib);
+    check('accessibility: spoken words appear as a caption while captions are on, and keeping an answer ticks the phone once when haptic is on', cap && vib === 1 && (await S.state()).some((x) => x.kind === 'kept') && !S.errors.length, JSON.stringify({ cap, vib, errors: S.errors }));
+    await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);

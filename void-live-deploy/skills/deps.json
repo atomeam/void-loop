@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 625,
+ "counted": 631,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 41,
-   "direct": 41,
-   "dependants": 41
+   "skills": 44,
+   "direct": 44,
+   "dependants": 44
   },
   {
    "file": "lib/ask-text.js",
@@ -573,6 +573,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/a11y-modes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
@@ -616,6 +622,12 @@
   },
   {
    "file": "lib/decide-cards.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/dev-tools.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -754,6 +766,12 @@
   },
   {
    "file": "lib/stigmergy-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/study-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1714,6 +1732,12 @@
    ],
    "importedBy": []
   },
+  "lib/a11y-modes.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/accessibility-modes.js"
+   ]
+  },
   "lib/actions.js": {
    "imports": [],
    "importedBy": [
@@ -2506,6 +2530,12 @@
    "imports": [],
    "importedBy": [
     "skills/decide-cards.js"
+   ]
+  },
+  "lib/dev-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/dev-tools.js"
    ]
   },
   "lib/digest.js": {
@@ -4077,6 +4107,7 @@
   "lib/stage-pack.js": {
    "imports": [],
    "importedBy": [
+    "skills/accessibility-modes.js",
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
     "skills/ask-immune.js",
@@ -4088,6 +4119,7 @@
     "skills/date-grid.js",
     "skills/decide-cards.js",
     "skills/decision-matrix.js",
+    "skills/dev-tools.js",
     "skills/eigenwork.js",
     "skills/error-garden.js",
     "skills/four-channels.js",
@@ -4112,6 +4144,7 @@
     "skills/stage-fx.js",
     "skills/stakes-phase.js",
     "skills/stale-work.js",
+    "skills/study-cards.js",
     "skills/task-board.js",
     "skills/task-diagram.js",
     "skills/template-list.js",
@@ -4269,6 +4302,12 @@
     "functions/api/merge.js",
     "functions/api/repo.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/study-cards.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/study-cards.js"
    ]
   },
   "lib/success-pulse.js": {
@@ -4527,6 +4566,13 @@
    "importedBy": [
     "skills/zorbleflux.js"
    ]
+  },
+  "skills/accessibility-modes.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/a11y-modes.js"
+   ],
+   "importedBy": []
   },
   "skills/actions.js": {
    "imports": [
@@ -4979,6 +5025,13 @@
   },
   "skills/deps.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/dev-tools.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/dev-tools.js"
+   ],
    "importedBy": []
   },
   "skills/different.js": {
@@ -6953,6 +7006,13 @@
   "skills/store.js": {
    "imports": [
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "skills/study-cards.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/study-cards.js"
    ],
    "importedBy": []
   },
