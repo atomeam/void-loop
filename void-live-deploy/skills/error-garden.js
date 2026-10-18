@@ -2,22 +2,26 @@
  * error-garden skill — "plant my mistake: <text>" puts a mistake in a garden on the stage as a sprout; planting the same
  * mistake again (same content words) turns it into a weed that grows with each repeat; writing a rule next to it ("write a rule
  * for my mistake: <words> => <rule>", or the box on the card) turns it into compost and shows the rule. "show my error garden"
- * brings the card back. Kept with the stage on this device; nothing is sent anywhere. Asked for by the owner (2026-10-18).
+ * brings the card back; "plant my test failures" plants every distinct failing check of incidents.json (a check that failed in two incidents is a weed). Kept with the stage on this device; nothing is sent anywhere. Asked for by the owner (2026-10-18).
  */
 import { escHtml, addThing, cardEl, keepOut, firstOf, tidy } from '../lib/stage-pack.js';
 import { words, sameThing } from '../lib/stage-words.js';
+import { failurePlants } from '../lib/autopsy.js';
 
 const MAX_PLANTS = 40;
 const PLANT = /^(?:please\s+)?plant\s+(?:my|a|this|another)\s+(?:mistake|error)\s*[:\-]\s*(.+)$/i;
 const SHOW = /^(?:please\s+)?(?:show|open|water|see|bring\s+up)\s+(?:me\s+)?(?:my\s+|the\s+)?error\s+garden(?:\s+please)?$/i;
 const RULE = /^(?:please\s+)?(?:write|add|put)\s+(?:a\s+)?rule\s+(?:for|next\s+to|beside)\s+(?:my\s+)?(?:the\s+)?mistake\s*[:\-]?\s*(.+?)\s*(?:=>|->)\s*(.+)$/i;
 
-/** what an ask wants of the garden: { act:'plant', text } | { act:'show' } | { act:'rule', about, rule } | null. Pure. */
+const FAILURES = /^(?:please\s+)?(?:(?:plant|grow|garden|sow)\s+(?:all\s+)?(?:my\s+|the\s+|your\s+)?(?:recent\s+)?(?:test\s+|check\s+|suite\s+)?(?:failures|errors|incidents|red\s+checks)(?:\s+(?:from|of)\s+(?:the\s+)?(?:incident\s+autopsy|site\s+test|browser\s+suite))?(?:\s+(?:in|into|to|in\s+to)\s+(?:my\s+|the\s+)?error\s+garden)?|visuali[sz]e\s+(?:your\s+|the\s+|my\s+)?(?:own\s+)?(?:test\s+|check\s+|suite\s+)(?:failures|errors))(?:\s+please)?$/i;
+
+/** what an ask wants of the garden: { act:'plant', text } | { act:'show' } | { act:'rule', about, rule } | { act:'failures' } | null. Pure. */
 export function gardenIntent(text) {
   const t = tidy(text);
   let m;
   if ((m = PLANT.exec(t))) { const x = m[1].trim().slice(0, 200); return words(x).length ? { act: 'plant', text: x } : null; }
   if (SHOW.test(t)) return { act: 'show' };
+  if (FAILURES.test(t)) return { act: 'failures' };
   if ((m = RULE.exec(t))) { const about = m[1].trim(), rule = m[2].trim().slice(0, 200); return words(about).length && rule.length >= 3 ? { act: 'rule', about, rule } : null; }
   return null;
 }
@@ -36,6 +40,17 @@ export function plant(plants, text, now = Date.now()) {
   list.push({ text: String(text).slice(0, 200), count: 1, first: now, last: now, rule: '' });
   const kept = list.slice(-MAX_PLANTS);
   return { plants: kept, index: kept.length - 1, stage: 'sprout' };
+}
+
+/** plant a list of { text, count } (the incidents' failing checks): one already there keeps the larger count, the rest are new; the newest 40 stay. Pure. */
+export function plantMany(plants, items, now = Date.now()) {
+  let list = (plants || []).map((p) => ({ ...p }));
+  for (const it of items || []) {
+    const i = list.findIndex((p) => sameThing(p.text, it.text));
+    if (i >= 0) { list[i].count = Math.max(list[i].count || 1, it.count || 1); list[i].last = now; }
+    else list.push({ text: String(it.text).slice(0, 200), count: Math.max(1, it.count | 0), first: now, last: now, rule: '' });
+  }
+  return list.slice(-MAX_PLANTS);
 }
 
 /** write the rule next to the mistake it is about (best word match); a short rule or no match leaves the garden as it was. Pure. */
@@ -105,10 +120,22 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'error-garden',
-  examples: ['plant my mistake: I sent the email before checking it', 'show my error garden'],
-  nearMisses: ['how do I garden', 'what is an error budget', 'plant tomatoes in spring'],
+  examples: ['plant my mistake: I sent the email before checking it', 'show my error garden', 'plant my test failures in my error garden', 'visualize your test failures'],
+  nearMisses: ['how do I garden', 'plant tomato failures', 'what are test failures', 'what is an error budget', 'plant tomatoes in spring'],
   gardenIntent,
   match(lower, text) { return !!gardenIntent(text || lower); },
-  async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'error-garden' : 'none'; },
+  async run(text, api) {
+    if (gardenIntent(text)?.act === 'failures') {
+      let j = null; try { const r = await fetch('/incidents.json', { cache: 'no-cache' }); j = r.ok ? await r.json() : null; } catch (_) { /* no incidents file: say so below */ }
+      const items = failurePlants(j);
+      if (!items.length) { api.stage.say('no failed checks on record: the garden stays as it is'); return 'error-garden-none'; }
+      const st = api.stage; let th = firstOf(st, 'errgarden'); if (!th) th = addThing(st, 'errgarden', { plants: [] });
+      th.plants = plantMany(th.plants, items);
+      const weeds = th.plants.filter((p) => stageOf(p) === 'weed').length;
+      st.say('planted ' + items.length + ' failed checks from the incident autopsy' + (weeds ? ': ' + weeds + ' came back and are weeds' : ''));
+      st.select(th.id); st.save(); st.render(); return 'error-garden';
+    }
+    return ask(String(text || '').toLowerCase(), text, api.stage) ? 'error-garden' : 'none';
+  },
   stageKinds: { errgarden: { mount, ask } },
 };

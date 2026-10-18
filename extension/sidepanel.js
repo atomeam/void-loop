@@ -27,10 +27,7 @@ window.addEventListener('message', (e) => {
   const m = e.data;
   if (m.type === 'void-ext:ready') { toVoid({ type: 'void-ext:hello', version: chrome.runtime.getManifest().version }); send(); }
   else if (m.type === 'void.ctx.ready' && pending) { toVoid({ type: 'void.ctx', q: pending.q, page: pending.page }); pending = null; }
-  else if (m.type === 'void-ext:thread') { // "draft for me: proposal": the thread text, read now, for Void to send once
-    chrome.runtime.sendMessage({ type: 'thread' }).then((r) => toVoid({ type: 'void-ext:threaded', id: m.id, ...(r || { ok: false, why: 'no-reply' }) }))
-      .catch(() => toVoid({ type: 'void-ext:threaded', id: m.id, ok: false, why: 'no-reply' }));
-  }
+  else if (m.type === 'void-ext:thread') askToSend(m.id); // "draft for me: proposal": the thread text, only after your Yes in this panel
   else if (m.type === 'void-ext:draft' && typeof m.text === 'string') {
     chrome.runtime.sendMessage({ type: 'draft', text: m.text }).then((r) => toVoid({ type: 'void-ext:drafted', id: m.id, ...(r || { ok: false, why: 'no-reply' }) }))
       .catch(() => toVoid({ type: 'void-ext:drafted', id: m.id, ok: false, why: 'no-reply' }));
@@ -94,7 +91,7 @@ async function propose(raws, auto) {
   if (steps.some((s) => !s.action || !s.label)) return tell({ ok: false, why: 'bad-step' });
   if (!host) return tell({ ok: false, why: 'no-tab' });
   if (!(await getAllow()).includes(host)) return tell({ ok: false, why: 'not-allowed', host }); // no card at all
-  if (open) return tell({ ok: false, why: 'busy' });
+  if (open || sendOpen) return tell({ ok: false, why: 'busy' });
   open = { steps, host };
   $('.act-site').textContent = host;
   const what = (s) => (s.action === 'fill' ? 'fill the field “' : 'click the button “') + s.label + '”';
@@ -129,4 +126,31 @@ async function propose(raws, auto) {
   }
   $('#act').classList.remove('on'); open = null;
   tell({ ...r, host, ...(of > 1 ? { of, at: Math.min(i + 1, of), done: r.ok ? of : i } : {}) });
+}
+
+// --- Gap 1 (2026-10-18): reading the page for Void needs your Yes here, in the extension's own panel, not in the frame. The frame
+// (a-to-mind.com) can only ask; a page there that went wrong could ask, but it can't answer this card, so it can't read your tab.
+// One card at a time (a second ask while any card is open is refused as busy), a click in its first moments doesn't count (the card
+// opens over the frame, so a double-click on the frame's button could land on Yes), and an unanswered card closes by itself.
+const SEND_ARM_MS = 400, SEND_WAIT_MS = 110000;
+let sendOpen = false;
+async function askToSend(id) {
+  const reply = (r) => toVoid({ type: 'void-ext:threaded', id, ...r });
+  const host = tab ? hostOf(tab.url) : '';
+  if (!host) return reply({ ok: false, why: 'no-tab' });
+  if (sendOpen || open) return reply({ ok: false, why: 'busy' });
+  sendOpen = true;
+  $('.send-site').textContent = host;
+  $('#send').classList.add('on');
+  const armed = Date.now() + SEND_ARM_MS;
+  const answer = await new Promise((resolve) => {
+    const t = setTimeout(() => resolve('timed-out'), SEND_WAIT_MS);
+    $('.send-yes').onclick = () => { if (Date.now() >= armed) { clearTimeout(t); resolve('yes'); } };
+    $('.send-no').onclick = () => { if (Date.now() >= armed) { clearTimeout(t); resolve('no'); } };
+  });
+  $('.send-yes').onclick = $('.send-no').onclick = null;
+  $('#send').classList.remove('on'); sendOpen = false;
+  if (answer !== 'yes') return reply({ ok: false, why: answer === 'no' ? 'said-no' : 'timed-out' });
+  const r = await chrome.runtime.sendMessage({ type: 'thread' }).catch(() => null);
+  reply(r || { ok: false, why: 'no-reply' });
 }
