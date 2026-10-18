@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 43,
- "runsTotal": 157,
+ "cases": 44,
+ "runsTotal": 158,
  "kinds": {
-  "grow": 36,
+  "grow": 37,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T02:53:48Z",
+   "passed": 44,
+   "of": 46,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
+  },
   {
    "at": "2026-10-18T00:52:54Z",
    "passed": 35,
@@ -142,13 +149,6 @@
    "of": 29,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
-  },
-  {
-   "at": "2026-10-17T13:52:50Z",
-   "passed": 26,
-   "of": 28,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
   }
  ],
  "seen": {
@@ -181,9 +181,9 @@
   "skill:dates": "2026-10-18T00:31:24Z",
   "skill:dating": "2026-10-18T00:52:54Z",
   "skill:different": "2026-10-18T00:52:54Z",
-  "skill:dismiss": "2026-10-17T08:11:24Z",
-  "skill:distance": "2026-10-17T08:18:35Z",
-  "skill:draw": "2026-10-17T08:18:35Z",
+  "skill:dismiss": "2026-10-18T02:53:48Z",
+  "skill:distance": "2026-10-18T02:53:48Z",
+  "skill:draw": "2026-10-18T02:53:48Z",
   "skill:feelings": "2026-10-17T08:24:25Z",
   "skill:figure": "2026-10-17T08:24:25Z",
   "skill:figure-can": "2026-10-17T08:24:25Z",

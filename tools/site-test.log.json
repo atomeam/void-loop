@@ -1171,5 +1171,12 @@
   "of": 45,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
+ },
+ {
+  "at": "2026-10-18T02:53:48Z",
+  "passed": 44,
+  "of": 46,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
  }
 ]
