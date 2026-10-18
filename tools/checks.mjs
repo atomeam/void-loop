@@ -28,7 +28,9 @@ const last = (r) => r.out[r.out.length - 1] || '';
 // every check is a job: [name, browser?, async () => [ok, line, ms?]]; the report keeps the order they were added in
 const jobs = [];
 const add = (name, fn, browser = false) => { jobs.push({ name, fn, browser }); };
-const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); return [r.ok, last(r), r.ms]; }, browser);
+// a failed script says which cases failed (its first FAIL lines), not only its last line: a flaky browser case was "36/37 passed" with no way to tell which (2026-10-18)
+const failLines = (r) => (r.ok ? '' : r.out.filter((l) => /^FAIL /.test(l)).slice(0, 2).map((l) => l.slice(0, 300)).join(' || '));
+const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); const f = failLines(r); return [r.ok, f ? f + ' || ' + last(r) : last(r), r.ms]; }, browser);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
@@ -206,6 +208,7 @@ for (const [name, file] of [
   ['public-quotes', 'public-quotes.test.mjs'],
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
+  ['will-guard', 'will-guard.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],

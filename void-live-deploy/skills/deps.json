@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 674,
+ "counted": 675,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -1473,6 +1473,13 @@
    "tests": 2
   },
   {
+   "file": "lib/will-guard.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/anchor-density.js",
    "skills": 0,
    "direct": 0,
@@ -2097,7 +2104,8 @@
     "lib/automation-fix.js",
     "lib/shortfall.js",
     "lib/models.js",
-    "lib/honest.js"
+    "lib/honest.js",
+    "lib/will-guard.js"
    ],
    "importedBy": []
   },
@@ -5427,6 +5435,12 @@
    ],
    "reachedBy": [
     "skills/time.js"
+   ]
+  },
+  "lib/will-guard.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/will.js"
    ]
   },
   "lib/writing-aids.js": {
