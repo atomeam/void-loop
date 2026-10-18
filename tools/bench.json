@@ -6068,18 +6068,15 @@
   {"ask": "name all your unbuilt asks", "want": "skill:wants"},
   {"ask": "your backlog", "want": "skill:wants"},
   {"ask": "what have you not built yet", "want": "skill:wants"},
-<<<<<<< HEAD
   {"ask": "find me a sci-fi film from the 80s", "want": "skill:film-metadata"},
   {"ask": "films by Kurosawa", "want": "skill:film-metadata"},
   {"ask": "movies directed by Hitchcock", "want": "skill:film-metadata"},
   {"ask": "90s horror movies", "want": "skill:film-metadata"},
   {"ask": "film metadata for Ikiru", "want": "skill:film-metadata"},
-  {"ask": "show me comedies from 1994", "want": "skill:film-metadata"}
-=======
+  {"ask": "show me comedies from 1994", "want": "skill:film-metadata"},
   {"ask": "asks not built?", "want": "skill:wants"},
   {"ask": "keep a converter for miles and km", "want": "skill:convert"},
   {"ask": "keep 5 miles to km as a card", "want": "skill:convert"},
   {"ask": "convert card for 72 f to c", "want": "skill:convert"},
   {"ask": "72 f to c as a converter card", "want": "skill:convert"}
->>>>>>> origin/main
 ]
