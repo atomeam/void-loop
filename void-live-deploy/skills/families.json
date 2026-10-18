@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 4,
-  "tested": 81,
+  "tested": 85,
   "checked": 65,
   "proven": 109
  },
@@ -987,9 +987,9 @@
     {
      "name": "constellation",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 8 real asks in the benchmark",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 3 browser-suite mentions, 8 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -2019,7 +2019,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 3,
-    "tested": 8,
+    "tested": 12,
     "checked": 22,
     "proven": 7
    },
@@ -2335,6 +2335,34 @@
      "name": "recipe-stack",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "constellation-weaver",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "forge-table",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "night-ritual",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "archive-of-one",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     }

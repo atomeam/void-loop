@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 520,
+ "counted": 524,
  "libs": [
   {
    "file": "lib/ask-text.js",
-   "skills": 25,
+   "skills": 27,
    "direct": 23,
-   "dependants": 26
+   "dependants": 28
   },
   {
    "file": "lib/field-kit.js",
@@ -16,45 +16,45 @@
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 12,
+   "skills": 13,
    "direct": 2,
-   "dependants": 17
+   "dependants": 18
   },
   {
    "file": "lib/astro.js",
+   "skills": 10,
+   "direct": 9,
+   "dependants": 11
+  },
+  {
+   "file": "lib/rule-registry.js",
    "skills": 9,
-   "direct": 8,
-   "dependants": 10
+   "direct": 0,
+   "dependants": 31
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 30
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 29
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 27
   },
   {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
    "dependants": 9
-  },
-  {
-   "file": "lib/rule-registry.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 30
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 8,
-   "direct": 1,
-   "dependants": 29
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 28
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 26
   },
   {
    "file": "lib/state.js",
@@ -67,6 +67,12 @@
    "skills": 8,
    "direct": 3,
    "dependants": 10
+  },
+  {
+   "file": "lib/skyask.js",
+   "skills": 8,
+   "direct": 7,
+   "dependants": 8
   },
   {
    "file": "lib/where.js",
@@ -84,12 +90,6 @@
    "file": "lib/field-stage.js",
    "skills": 7,
    "direct": 7,
-   "dependants": 7
-  },
-  {
-   "file": "lib/skyask.js",
-   "skills": 7,
-   "direct": 6,
    "dependants": 7
   },
   {
@@ -117,10 +117,40 @@
    "dependants": 18
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 5,
+   "direct": 0,
+   "dependants": 18
+  },
+  {
    "file": "lib/autopsy.js",
    "skills": 5,
    "direct": 2,
    "dependants": 17
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 13
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 5,
+   "direct": 0,
+   "dependants": 11
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 8
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 7
   },
   {
    "file": "lib/hero-view.js",
@@ -153,12 +183,6 @@
    "dependants": 5
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 17
-  },
-  {
    "file": "lib/probe-log.js",
    "skills": 4,
    "direct": 1,
@@ -177,28 +201,16 @@
    "dependants": 16
   },
   {
-   "file": "lib/merge-rules.js",
+   "file": "lib/card-forge.js",
    "skills": 4,
    "direct": 1,
-   "dependants": 12
+   "dependants": 6
   },
   {
-   "file": "lib/art-rules.js",
-   "skills": 4,
-   "direct": 0,
-   "dependants": 10
-  },
-  {
-   "file": "lib/card-image.js",
-   "skills": 4,
-   "direct": 1,
-   "dependants": 7
-  },
-  {
-   "file": "lib/card-share.js",
+   "file": "lib/pulse.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 6
+   "dependants": 4
   },
   {
    "file": "lib/stars.js",
@@ -213,15 +225,33 @@
    "dependants": 7
   },
   {
-   "file": "lib/card-forge.js",
+   "file": "lib/art-meta.js",
    "skills": 3,
-   "direct": 1,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/card-kinds.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/void-seal.js",
+   "skills": 3,
+   "direct": 0,
    "dependants": 5
   },
   {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
+   "dependants": 4
+  },
+  {
+   "file": "lib/card-frame.js",
+   "skills": 3,
+   "direct": 3,
    "dependants": 4
   },
   {
@@ -261,30 +291,6 @@
    "dependants": 5
   },
   {
-   "file": "lib/art-meta.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/card-kinds.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/void-seal.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/card-frame.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 3
-  },
-  {
    "file": "lib/media.js",
    "skills": 2,
    "direct": 2,
@@ -318,12 +324,6 @@
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2
-  },
-  {
-   "file": "lib/pulse.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 2
   },
   {
@@ -1588,6 +1588,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1607,6 +1608,7 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js",
     "skills/oracle.js"
    ]
@@ -1639,7 +1641,9 @@
     "skills/zoom-figure.js"
    ],
    "reachedBy": [
+    "skills/constellation-weaver.js",
     "skills/dates.js",
+    "skills/forge-table.js",
     "skills/mini/pentamote.js",
     "skills/pulse.js"
    ]
@@ -1655,6 +1659,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/sky-world.js",
     "skills/sky.js",
     "skills/suntimes.js"
@@ -1878,6 +1883,7 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -1898,6 +1904,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1915,6 +1922,7 @@
    "importedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1931,6 +1939,7 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js",
     "skills/oracle.js"
    ]
@@ -1943,6 +1952,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1958,6 +1968,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1987,6 +1998,7 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -2437,6 +2449,7 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/merge.js",
@@ -2558,6 +2571,7 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js",
     "skills/oracle.js"
    ]
@@ -2687,6 +2701,7 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/oracle.js"
    ]
   },
@@ -3109,6 +3124,10 @@
    "importedBy": [
     "skills/label.js",
     "skills/pulse.js"
+   ],
+   "reachedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js"
    ]
   },
   "lib/rating-note.js": {
@@ -3255,6 +3274,7 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -3438,6 +3458,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
@@ -3453,6 +3474,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/suntimes.js"
    ],
    "reachedBy": [
@@ -3735,6 +3757,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -3853,6 +3876,12 @@
     "skills/pong.js",
     "skills/snake.js",
     "skills/zorbleflux.js"
+   ]
+  },
+  "skills/archive-of-one.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge-table.js"
    ]
   },
   "skills/ask-clipboard.js": {
@@ -4061,6 +4090,12 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/constellation-weaver.js": {
+   "imports": [
+    "skills/label.js"
+   ],
+   "importedBy": []
   },
   "skills/constellation.js": {
    "imports": [
@@ -4359,6 +4394,15 @@
     "skills/mini/ringer.js",
     "skills/ringer.js"
    ]
+  },
+  "skills/forge-table.js": {
+   "imports": [
+    "skills/label.js",
+    "skills/merge.js",
+    "lib/card-frame.js",
+    "skills/archive-of-one.js"
+   ],
+   "importedBy": []
   },
   "skills/forge.js": {
    "imports": [
@@ -4677,7 +4721,10 @@
     "lib/ask-text.js",
     "lib/pulse.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js"
+   ]
   },
   "skills/layer.js": {
    "imports": [
@@ -4686,6 +4733,10 @@
    "importedBy": [
     "skills/group.js",
     "skills/label.js"
+   ],
+   "reachedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js"
    ]
   },
   "skills/lift3d.js": {
@@ -4822,7 +4873,9 @@
     "lib/merge-rules.js",
     "lib/card-frame.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/forge-table.js"
+   ]
   },
   "skills/merges.js": {
    "imports": [
@@ -5166,6 +5219,13 @@
   "skills/news.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/night-ritual.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyask.js"
    ],
    "importedBy": []
   },

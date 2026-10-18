@@ -999,6 +999,41 @@ try {
     check('label (asked by Void): after a reload the restored labels and arrows come back as ghosts (faint, then solid) and none is left ghosted a second later',
       ghosts.seen >= 3 && ghosts.left === 0, JSON.stringify(ghosts));
     await L.ctx.close(); }
+  // Stage pack D (owner, 2026-10-18): the Constellation Weaver, Forge Table, Night Mode Ritual and Archive of One. /api/merge is stubbed.
+  if (want("stage pack d: weave a constellation and summon it, forge two kept things into one card on a tap, the night ritual dims and restores, the archive walk opens, steps and closes on Escape")) { const D = await fresh();
+    await D.p.emulateMedia({ reducedMotion: 'reduce' });
+    await D.ctx.route(/\/api\/merge/, (r) => r.fulfill(json({ name: 'Tick Note', line: 'a timer that remembers', cached: true, since: '2026-10-18' })));
+    await D.ask('add a sticky that says milk', 400); await D.ask('make a 5 minute timer', 400);
+    const quiet = (await D.p.$$eval('.void-weave-lines, .void-archive, #void-night-ritual', (es) => es.length)) === 0; // nothing appears until asked
+    await D.ask('weave a constellation called night ops', 900);
+    const woven = await D.p.evaluate(() => ({ lines: document.querySelectorAll('.void-weave-lines line').length, label: (document.querySelector('.void-weave') || {}).textContent || '' }));
+    const weaveThings = (await D.state()).filter((t) => t.kind === 'weave').length;
+    await D.ask('summon night ops', 700); const summoned = /night ops/.test(await D.whisper());
+    await D.p.reload(); await until(async () => (await D.p.$$eval('.void-weave-lines line', (ls) => ls.length)) >= 1, 8000).catch(() => {});
+    const afterReload = (await D.state()).filter((t) => t.kind === 'weave').length === 1;
+    await D.ask('forge the timer and the note', 1200);
+    const proposal = await D.p.evaluate(() => ({ h2: (document.querySelector('.vpage h2') || {}).textContent, btn: !!document.querySelector('.vpage .ft-accept') }));
+    const before = (await D.state()).filter((t) => t.kind === 'kept').length;
+    await D.p.click('.vpage .ft-accept'); await D.p.waitForTimeout(500);
+    const forged = (await D.state()).filter((t) => t.kind === 'kept' && t.name === 'Tick Note').length === 1 && before === 0;
+    await D.ask('begin the night ritual', 1200);
+    const night = await D.p.evaluate(() => ({ style: !!document.getElementById('void-night-ritual'), cls: document.body.classList.contains('void-night'), card: [...document.querySelectorAll('.kept-card')].some((e) => /% lit/.test(e.textContent)), bg: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() }));
+    await D.ask('end the ritual', 800);
+    const ended = await D.p.evaluate(() => ({ style: !!document.getElementById('void-night-ritual'), cls: document.body.classList.contains('void-night'), bg: getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() }));
+    const nightCards = (await D.state()).filter((t) => t.nightRitual).length;
+    await D.ask('walk the archive', 700);
+    const walk1 = await D.p.evaluate(() => ({ open: !!document.querySelector('.void-archive[role=dialog]'), calm: !!document.querySelector('.void-archive.calm'), of: ((document.querySelector('.void-archive .ao-kind') || {}).textContent || '') }));
+    await D.p.click('.void-archive .ao-next', { timeout: 3000 }).catch(() => {}); await D.p.waitForTimeout(200);
+    const walk2 = await D.p.$eval('.void-archive .ao-kind', (e) => e.textContent).catch(() => '');
+    const kinds = (await D.state()).map((t) => t.kind + ':' + (t.name || t.text || '')).join(',');
+    await D.p.keyboard.press('Escape'); await D.p.waitForTimeout(200);
+    const closed = (await D.p.$$eval('.void-archive', (es) => es.length)) === 0;
+    check('stage pack d: nothing appears until asked; "weave a constellation called night ops" joins the stage things with glowing lines under one saved label, "summon night ops" finds it and it survives a reload; "forge the timer and the note" proposes a hybrid through /api/merge and one tap puts the card on the stage; the night ritual swaps the palette, lays one night card and "end the ritual" puts everything back; "walk the archive" opens a dialog, Next steps, Escape closes',
+      quiet && woven.lines >= 1 && /night ops/.test(woven.label) && weaveThings === 1 && summoned && afterReload && proposal.h2 === 'Tick Note' && proposal.btn && forged
+      && night.style && night.cls && night.card && night.bg === '#02020a' && !ended.style && !ended.cls && ended.bg !== '#02020a' && nightCards === 0
+      && walk1.open && walk1.calm && /^\w.* · 1 of \d+$/.test(walk1.of) && / · 2 of \d+$/.test(walk2) && closed && !D.errors.length,
+      JSON.stringify({ quiet, woven, weaveThings, summoned, afterReload, proposal, forged, night, ended, nightCards, walk1, walk2, kinds, closed, e: D.errors }));
+    await D.ctx.close(); }
   // Public Voids: "publish my void as @name" puts a paid Void's look and kept cards (as text) at /@name, after the person's own yes.
   if (want("Public Voids: \"publish my void as @name\" puts a paid Void's look and kept cards (as text) ")) { const DB = sqliteD1(), env = { DB, ASSETS: { fetch: async () => new Response(fs.readFileSync(path.join(root, 'index.html'), 'utf8')) } };
     await voidMe.ensureTables(env);

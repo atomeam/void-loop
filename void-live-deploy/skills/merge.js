@@ -52,13 +52,13 @@ export function mergedCard(pa, pb, words = {}) {
   return { name, line, kinds, ...st, typeLine: kinds.join(' · ') + ' — merged, depth ' + st.depth };
 }
 
-const SRC = {
+export const SRC = {
   pending: 'Naming it… the plain blend shows until V01D has a name.',
   fresh: "Named once by V01D's model; everyone who merges this pair gets this name.",
   cached: "Named by V01D's model and kept: everyone who merges this pair gets this name.",
   offline: 'Named offline, the plain blend of the two names: the model could not be reached, so this name is not kept.',
 };
-const CSS = '.mg-parents{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 8px}.mg-p{flex:1 1 130px;min-width:0;padding:6px 10px;border:1px solid var(--edge,#556);border-radius:8px;background:rgba(255,255,255,.04)}.mg-p b{display:block;overflow-wrap:anywhere}.mg-p span{font-size:11.5px;opacity:.8}.mg-plus{font-size:18px;opacity:.7}.mg-rule{font-size:12px;opacity:.8;margin:4px 0}';
+export const CSS = '.mg-parents{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 8px}.mg-p{flex:1 1 130px;min-width:0;padding:6px 10px;border:1px solid var(--edge,#556);border-radius:8px;background:rgba(255,255,255,.04)}.mg-p b{display:block;overflow-wrap:anywhere}.mg-p span{font-size:11.5px;opacity:.8}.mg-plus{font-size:18px;opacity:.7}.mg-rule{font-size:12px;opacity:.8;margin:4px 0}';
 const stat = (c) => 'P ' + c.power + ' · R ' + c.resistance + ' · I ' + c.income;
 
 /** the card's inside for a state. Pure but for esc. */
@@ -69,11 +69,20 @@ export function bodyHtml(esc, pa, pb, card, state, since = '') {
     + '<div class="src">' + esc(SRC[state] || '') + (state === 'cached' && since ? esc(' First merged ' + since + '.') : '') + '</div>';
 }
 
-const ownOf = (c) => ({ tier: c.tier, chapter: 'games', typeLine: c.typeLine, cost: c.cost, power: c.power, resistance: c.resistance, income: c.income, adds: c.line, name: c.name });
+export const ownOf = (c) => ({ tier: c.tier, chapter: 'games', typeLine: c.typeLine, cost: c.cost, power: c.power, resistance: c.resistance, income: c.income, adds: c.line, name: c.name });
 
 async function ask(url, init) {
   const ctl = typeof AbortController === 'function' ? new AbortController() : null, timer = ctl ? setTimeout(() => ctl.abort(), 20000) : 0;
   try { const r = await fetch(url, { ...init, signal: ctl ? ctl.signal : undefined }); return r.ok || r.status === 429 ? await r.json() : null; } catch (_) { return null; } finally { clearTimeout(timer); }
+}
+
+/** the model's name and line for a pair through the existing /api/merge route (GET the kept answer, else POST once); null when the route is down. Shared by the Forge Table. */
+export async function fetchWords(pair) {
+  const q = 'a=' + encodeURIComponent(pair.a) + '&b=' + encodeURIComponent(pair.b);
+  let got = await ask('/api/merge?' + q);
+  if (got && got.kept) return got;
+  if (!got || !got.cached) got = await ask('/api/merge', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(pair) });
+  return got;
 }
 
 async function run(text, api) {
@@ -93,10 +102,7 @@ async function run(text, api) {
     card = mergedCard(pa, pb, words);
     el.dataset.cardOwn = JSON.stringify(ownOf(card)); h2.textContent = card.name; body.innerHTML = bodyHtml(esc, pa, pb, card, state, since);
   };
-  const q = 'a=' + encodeURIComponent(pair.a) + '&b=' + encodeURIComponent(pair.b);
-  let got = await ask('/api/merge?' + q);
-  if (got && got.kept) { if (el.isConnected) { el.dataset.cardOwn = ''; body.innerHTML = '<p>' + esc(String(got.answer || '')) + '</p>'; h2.textContent = 'Not merged'; } return 'merge'; }
-  if (!got || !got.cached) got = await ask('/api/merge', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(pair) });
+  let got = await fetchWords(pair);
   if (got && got.kept) { if (el.isConnected) { el.dataset.cardOwn = ''; body.innerHTML = '<p>' + esc(String(got.answer || '')) + '</p>'; h2.textContent = 'Not merged'; } return 'merge'; }
   if (got && got.name && !got.fallback && !got.error) paint(got, got.cached ? 'cached' : 'fresh', got.since || '');
   else paint({}, 'offline');
