@@ -1662,6 +1662,7 @@ try {
     const gone = await until(async () => (await S.p.$$eval('.hunting-question', (e) => e.length)) === 0, 4000);
     check('hunting question: it comes back at the margin after a reload, is never answered, a one-word reason does not release it and a written reason does',
       line === 'should I quit my job' && stays === 1 && gone && !S.errors.length, JSON.stringify({ line, stays, gone, errors: S.errors }));
+  }
   // tools pack 1 (owner, 2026-10-18): note tools (export, find, replace, counts, pin, collapse, duplicate), nested bullets, csv tables, dropped files, code scanning
   if (want("tools pack 1: note tools, nested bullets, csv table, dropped file cards and the code scanner, played the way a person uses them")) { const S = await fresh();
     const saved = () => S.state();
@@ -1750,6 +1751,7 @@ try {
     const scanned = await until(async () => (await saved()).find((x) => x.kind === 'sticky' && /example\.com\/menu/.test(x.text || '')), 6000);
     check('code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)',
       (unsupported.native || (/no BarcodeDetector/.test(unsupported.msg) && !unsupported.file)) && scanned && /web address: check it/.test(scanned.text) && !S.errors.length, JSON.stringify({ unsupported, scanned, errors: S.errors }));
+  }
   // tools pack 9 (owner, 2026-10-18): the text tools skill, played the way a person asks for it
   if (want("tools pack 9: text tools sort, de-duplicate, extract and cipher pasted text into a result card with a copy button, and leave look-alike asks alone")) { const S = await fresh();
     const card = async () => S.p.$eval('.vpage.on .tt-out', (e) => e.textContent).catch(() => '');
@@ -2793,6 +2795,7 @@ try {
     await M.ctx.close(); }
   if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
+  }
   // the list card in V01D's own look (owner, 2026-10-18: no wooden clipboard, no phantom second clipboard beside it)
   if (want("list card look: a dark panel with a title bar, one card and no 3D clipboard after the ask and after a reload, the add row and the shop group apart")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400);
@@ -8251,6 +8254,7 @@ try {
       fast: document.querySelector('.health-habits[data-type="fasting"]')?.dataset.fast }));
     check('a reload keeps every card as it was: the writing mode, the packing tick, today\'s cups, the habit streak and the running fast',
       kept.mode === 'steps' && kept.packed === '1 of 18 packed' && /^3 of 8 cups today/.test(kept.water || '') && kept.streak === '1 day' && kept.fast === 'running' && !S.errors.length, JSON.stringify({ kept, errors: S.errors }));
+  }
   // tools pack 3 (owner, 2026-10-18, list items 41 to 60): the answers that were missing (pixels at a DPI, a currency at a typed rate, tip with tax,
   // an "84 dollar bill" split) and the seven decision cards, played the way a person uses them
   if (want("tools pack 3: pixels and a typed-rate currency answer, tip with tax, and the decision cards (rank, pros and cons, votes, eliminate, pairwise, 2x2, must/should/could) on the stage")) { const S = await fresh();

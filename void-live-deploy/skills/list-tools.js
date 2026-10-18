@@ -168,7 +168,7 @@ function mount(th, stageApi) {
 
 export default {
   name: 'list-tools',
-  examples: ['check all on the list', 'remove checked items from the list', 'sort the list', 'csv to table: name,age // Ann,31', 'sum of column 2', 'transpose the table', 'turn the list into a table'],
+  examples: ['check all on the list', 'remove checked items from the list', 'sort the list', 'sum of column 2', 'transpose the table', 'turn the list into a table'],
   nearMisses: ['sort my photos by date', 'move the clock up', 'what is a hash table', 'how to merge two lists in python', 'make a table'],
   match(lower, text) { const t = text || lower; return !!(parseTableCreate(t) || parseOp(t)); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'list-tools' : 'none'; },

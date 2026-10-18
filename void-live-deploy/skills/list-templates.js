@@ -23,7 +23,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'list-templates',
-  examples: ['shopping list template', 'packing list template for a beach trip', 'meeting agenda template', 'bug list template', 'contacts template'],
+  examples: ['shopping list template', 'meeting agenda template', 'bug list template', 'contacts template'],
   nearMisses: ['make a grocery list', 'what should I pack for a trip', 'email template for a meeting agenda', 'list my routines'],
   match(lower, text) { return !!parseTemplate(text || lower); },
   async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'list-templates' : 'none'; },
