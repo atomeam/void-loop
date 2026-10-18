@@ -3166,6 +3166,18 @@ try {
       !!again && /from 6 asks/.test(again.t) && again.chips.length === 3 && !!gone && /Nothing yet/.test(gone.t) && gone.chips.length === 0 && keptAfter.asks === 0 && Object.keys(keptAfter.nodes || {}).length === 0
         && !!off && off.start && !off.stop && /Off: I am not keeping/.test(off.t) && whileOff.on === false && whileOff.asks === 1 && back.on === true && back.asks === 2 && !G.errors.length,
       JSON.stringify({ again: again && again.t.slice(0, 120), gone: gone && gone.t.slice(0, 120), keptAfter, off: off && off.t.slice(0, 80), whileOff, back, errors: G.errors }));
+    // a confidence on each node (asked by Void): a fact told on two seeded days is surer than one told once, the card draws the thin bar, and "still true" raises it
+    const dayIso = (d) => new Date(Date.now() - d * 864e5).toISOString();
+    await G.p.evaluate(({ a, b }) => { const g = JSON.parse(localStorage.getItem('a2m.void.graph.v1')); g.on = true; g.nodes = { 'fact:i like green tea': { kind: 'fact', label: 'I like green tea', n: 2, days: 2, first: a, last: b }, 'fact:my cat is called pixel': { kind: 'fact', label: 'my cat is called Pixel', n: 1, days: 1, first: b, last: b } }; g.edges = {}; localStorage.setItem('a2m.void.graph.v1', JSON.stringify(g)); }, { a: dayIso(2), b: dayIso(0) });
+    await G.ask('what do you know about me', 1200);
+    const facts = async () => G.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return pg ? [...pg.querySelectorAll('.mg-facts li')].map((l) => ({ t: l.firstChild.textContent, conf: +l.dataset.conf, bar: l.querySelector('.mg-conf i') ? l.querySelector('.mg-conf i').style.width : '', title: l.title })) : null; });
+    const before = await facts();
+    await G.p.evaluate(() => { const b = [...document.querySelectorAll('.vpage.on .mg-still')].find((x) => x.dataset.fact === 'my cat is called Pixel'); if (b) b.click(); }); await G.p.waitForTimeout(900);
+    const after = await facts(), stored = await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.graph.v1')).nodes);
+    const tea = (l) => l && l.find((f) => /green tea/.test(f.t)), cat = (l) => l && l.find((f) => /Pixel/.test(f.t));
+    check('memory graph: a fact told on two seeded days has a higher confidence than one told once, the card draws a thin bar and a % for each, and "still true" raises the single one',
+      !!before && before.length === 2 && tea(before).conf > cat(before).conf && cat(before).conf > 0 && tea(before).bar === tea(before).conf + '%' && /% sure/.test(tea(before).title)
+        && !!after && cat(after).conf > cat(before).conf && stored['fact:my cat is called pixel'].n === 2 && !G.errors.length, JSON.stringify({ before, after, errors: G.errors }));
     await G.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
@@ -4998,7 +5010,18 @@ try {
     const yourMove = await until(() => AC.p.$eval('.chess-status', (s) => (!s.classList.contains('vc-working') && !s.hasAttribute('aria-busy') && /Your move/.test(s.textContent) ? s.textContent : false)).catch(() => false), 30000);
     check('chess thinking shares the working look: while V01D thinks the status line carries .vc-working[aria-busy=true] with its thinking line, and "Your move" takes both off',
       !!thought && /^V01D is thinking/.test(thought) && !!yourMove && !AC.errors.length, JSON.stringify({ thought, yourMove, errs: AC.errors }));
-    await AC.ctx.close(); }
+    await AC.ctx.close();
+    // the stale warning (asked by Void: "a stale-warning ... more than 48 hours"): a card seeded three days old says so in amber; "Keep waiting" clears it and starts the 48 hours again
+    const old3 = new Date(Date.now() - 3 * 864e5).toISOString();
+    const SC = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '"); if (!localStorage.getItem("a2m.void.state.v1")) localStorage.setItem("a2m.void.state.v1", JSON.stringify({ ap3: { id: "ap3", kind: "approve", ask: "keep morning-digest running every 2 hours", tool: "automation.keep", args: { id: "morning-digest", every: 120, on: true }, rule: "morning-digest", status: "pending", approvedAt: null, seenAt: "' + old3 + '", createdAt: "' + old3 + '", times: 0, title: "Keep morning-digest running", what: "Keep morning-digest running by itself every 2 hours?", x: 60, y: 120 } }));' });
+    const staleNow = await until(() => SC.p.$eval('.approve-card', (c) => { const s = c.querySelector('.approve-stale'); return s && !s.hidden ? { t: s.textContent, cls: s.className, border: getComputedStyle(s).borderLeftColor, w: getComputedStyle(s).borderLeftWidth, keep: getComputedStyle(c.querySelector('.approve-keep')).display !== 'none', approve: getComputedStyle(c.querySelector('.approve-yes')).display !== 'none' } : false; }).catch(() => false), 8000);
+    await SC.p.$eval('.approve-card .approve-keep', (b) => b.click());
+    const cleared = await until(() => SC.p.$eval('.approve-card', (c) => (c.querySelector('.approve-stale').hidden && getComputedStyle(c.querySelector('.approve-keep')).display === 'none' ? true : false)).catch(() => false), 4000);
+    const reset = (await SC.state()).find((t) => t.kind === 'approve');
+    check('approve card: a card seeded three days old shows the amber "waiting 3 days — still want this?" line (.vc-stale, amber left border) beside Approve and Keep waiting; "Keep waiting" clears it and resets createdAt',
+      !!staleNow && staleNow.t === 'waiting 3 days — still want this?' && /vc-stale/.test(staleNow.cls) && staleNow.border === 'rgb(224, 160, 48)' && staleNow.w === '3px' && staleNow.keep && staleNow.approve
+        && cleared === true && !!reset && Date.now() - Date.parse(reset.createdAt) < 120000 && !SC.errors.length, JSON.stringify({ staleNow, cleared, createdAt: reset && reset.createdAt, errs: SC.errors }));
+    await SC.ctx.close(); }
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
   if (want("the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the aske")) { const V = await fresh();
