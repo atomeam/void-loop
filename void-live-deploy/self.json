@@ -442,8 +442,36 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T08:44:14Z",
+   "subject": "Six more /fix/ pages (n8n, Power Automate, GitHub Actions); three finished asks leave the growth inbox"
+  },
+  {
+   "at": "2026-10-18T08:43:58Z",
+   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:43:32Z",
+   "subject": "Incident: the browser suite failed on d2238803 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:43:28Z",
+   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:42:41Z",
+   "subject": "Incident: the browser suite failed on 582c0d4d (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-18T08:41:39Z",
    "subject": "Incident: the browser suite failed on 5d392dcf (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:41:37Z",
+   "subject": "Telemetry test: close the report test again after the merge; deps map regenerated"
+  },
+  {
+   "at": "2026-10-18T08:40:56Z",
+   "subject": "A builder's report that quotes a timeout is read as telemetry, not answered as a broken automation to fix"
   },
   {
    "at": "2026-10-18T08:40:19Z",
@@ -492,34 +520,6 @@
   {
    "at": "2026-10-18T08:34:37Z",
    "subject": "Calendar file: export the agenda as a standard .ics (from the owner's 150-things list)"
-  },
-  {
-   "at": "2026-10-18T08:34:31Z",
-   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:33:43Z",
-   "subject": "Self card: an ask said again in other words is one line, with how many times it was asked (owner, 2026-10-18: 'fix this')"
-  },
-  {
-   "at": "2026-10-18T08:32:40Z",
-   "subject": "Backlog digest answers to Verse's too"
-  },
-  {
-   "at": "2026-10-18T08:32:27Z",
-   "subject": "Bench: four asks for the convert card's keep-as-a-card phrasings"
-  },
-  {
-   "at": "2026-10-18T08:31:52Z",
-   "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:31:36Z",
-   "subject": "Growth card: failure log per family with the bench asks it got wrong and a tap-to-copy chip"
-  },
-  {
-   "at": "2026-10-18T08:30:32Z",
-   "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
