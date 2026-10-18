@@ -185,6 +185,9 @@
     },
     {
       "ask": "favorite this"
+    },
+    {
+      "ask": "echo this"
     }
   ],
   "candidates": [],
