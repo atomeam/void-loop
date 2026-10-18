@@ -1199,5 +1199,12 @@
   "of": 50,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
+ },
+ {
+  "at": "2026-10-18T04:27:19Z",
+  "passed": 41,
+  "of": 51,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
  }
 ]

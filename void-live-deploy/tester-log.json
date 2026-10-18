@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 47,
- "runsTotal": 161,
+ "cases": 48,
+ "runsTotal": 162,
  "kinds": {
-  "grow": 40,
+  "grow": 41,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T04:27:19Z",
+   "passed": 41,
+   "of": 51,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
+  },
   {
    "at": "2026-10-18T04:16:45Z",
    "passed": 48,
@@ -142,13 +149,6 @@
    "of": 32,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
-  },
-  {
-   "at": "2026-10-17T20:35:41Z",
-   "passed": 29,
-   "of": 31,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
   }
  ],
  "seen": {
@@ -317,6 +317,10 @@
   "skill:anneal-ambition": "2026-10-18T04:16:45Z",
   "skill:archive-of-one": "2026-10-18T04:16:45Z",
   "skill:ask-clipboard": "2026-10-18T04:16:45Z",
-  "skill:ask-diff": "2026-10-18T04:16:45Z"
+  "skill:ask-diff": "2026-10-18T04:16:45Z",
+  "skill:accessibility-modes": "2026-10-18T04:27:19Z",
+  "skill:ask-immune": "2026-10-18T04:27:19Z",
+  "skill:busy-blocks": "2026-10-18T04:27:19Z",
+  "skill:calc-more": "2026-10-18T04:27:19Z"
  }
 }
