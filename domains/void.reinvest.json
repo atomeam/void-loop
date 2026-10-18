@@ -136,7 +136,7 @@
   ],
   "proposed": [],
   "plan": {
-    "at": "2026-10-17T14:24:34.847Z",
+    "at": "2026-10-18T14:48:20.339Z",
     "wishlist_rows": 11,
     "learned": {
       "revenue": 1,
@@ -255,7 +255,7 @@
           "account": null,
           "metric": "sales",
           "status": "queued",
-          "how": "needs Adam: no account V01D may use yet (none is opened for it)"
+          "how": "needs Adam: no account Verse may use yet (none is opened for it)"
         }
       ],
       "saving": null,
