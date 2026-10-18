@@ -7,7 +7,7 @@
 import { digestOf, digestHtml } from '../lib/backlog-digest.js';
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[\u2019']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const BY = '(?: by (?:skill )?family(?: and evidence(?: rating)?)?| by evidence(?: rating)?)?';
-const WHEN = new RegExp('^(?:(?:please )?(?:digest|summari[sz]e|sum up|group|break down) (?:your|v01d\'s|void\'s) (?:backlog|unbuilt asks|open asks|asks not built)' + BY + '|(?:your |the )?backlog digest|(?:backlog|asks) by (?:skill )?family(?: and evidence(?: rating)?)?)$');
+const WHEN = new RegExp('^(?:(?:please )?(?:digest|summari[sz]e|sum up|group|break down) (?:your|v01d\'s|void\'s|verse\'s) (?:backlog|unbuilt asks|open asks|asks not built)' + BY + '|(?:your |the )?backlog digest|(?:backlog|asks) by (?:skill )?family(?: and evidence(?: rating)?)?)$');
 const get = async (u) => { try { const r = await fetch(u, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
 
 async function run(text, api) {

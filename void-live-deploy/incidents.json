@@ -2,28 +2,52 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:31:51.736Z",
-   "sha": "ecde9c7a12fc5ee423d0bd1ba98798037ab7ae6c",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111158116",
+   "at": "2026-10-18T08:34:30.546Z",
+   "sha": "994a8a087f4fdc385826d64a7bc1196f76d2e5b4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111366534",
    "suite": "browser suite on main",
    "checks": [
     "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
     "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
     "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
     "suite ran to the end"
    ],
    "touched": [
+    "automations/hourly.json",
     "domains/void.agents.log.md",
-    "tools/telemetry-route.test.mjs",
-    "void-live-deploy/lib/telemetry.js",
+    "extension/manifest.json",
+    "extension/sidepanel.html",
+    "extension/void-extension.zip",
+    "tools/about-skill.test.mjs",
+    "tools/actions-card.test.mjs",
+    "tools/anchor-density.test.mjs",
+    "tools/appraise-live.mjs",
+    "tools/appraise-live.test.mjs",
+    "tools/appraise-photo.test.mjs",
+    "tools/arcade.test.mjs",
+    "tools/ask-void.mjs",
+    "tools/autopsy-asks.test.mjs",
+    "tools/battleship.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:24:47.396Z",
+   "sha": "419a1261859017c962aad3d7b057abc09b7e45ce",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111047602",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/bench.json",
+    "tools/wants.test.mjs",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/wants.js",
     "void-live-deploy/void.growth.json",
-    "docs/MAP.md",
-    "domains/void.frontier.md",
-    "tools/checks.mjs",
-    "tools/convert-math.test.mjs",
-    "void-live-deploy/lib/convert-math.js",
-    "void-live-deploy/skills/convert.js",
-    "void-live-deploy/skills/deps.json"
+    "void-live-deploy/incidents.json"
    ]
   },
   {
@@ -716,34 +740,6 @@
     "tools/site-test.json",
     "tools/site-test.log.json",
     "tools/site-test.seen.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:32:09.232Z",
-   "sha": "bd24a1a092dce69345452966453f0cb0c620f9b1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39070065218",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/asks-link.json",
-    "tools/card-image.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/card-forge.js",
-    "void-live-deploy/skills/event-countdown.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
    ]
   }
  ]
