@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 64,
- "runsTotal": 180,
+ "cases": 65,
+ "runsTotal": 181,
  "kinds": {
-  "grow": 57,
+  "grow": 58,
   "file": 69,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T14:06:18Z",
+   "passed": 67,
+   "of": 68,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T13:46:58Z",
    "passed": 57,
@@ -142,13 +149,6 @@
    "of": 51,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
-  },
-  {
-   "at": "2026-10-18T04:16:45Z",
-   "passed": 48,
-   "of": 50,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T13:46:58Z",
+  "skill:film-metadata": "2026-10-18T14:06:18Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -387,6 +387,9 @@
   "skill:riot": "2026-10-18T12:35:31Z",
   "skill:safety-kit": "2026-10-18T13:46:58Z",
   "skill:sheaf-check": "2026-10-18T13:46:58Z",
-  "skill:skill-eclipse": "2026-10-18T13:46:58Z"
+  "skill:skill-eclipse": "2026-10-18T13:46:58Z",
+  "skill:dependency-health": "2026-10-18T14:06:18Z",
+  "skill:soundscape": "2026-10-18T14:06:18Z",
+  "skill:spectators": "2026-10-18T14:06:18Z"
  }
 }

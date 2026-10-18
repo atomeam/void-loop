@@ -1334,5 +1334,12 @@
   "kind": "file",
   "key": "find me a sc-ifi film from the 80s | refused: don't know this yet",
   "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-18T14:06:18Z",
+  "passed": 67,
+  "of": 68,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
  }
 ]
