@@ -4015,6 +4015,29 @@ try {
         && heldW && rMoved.y > 40 && rHome && !P.errors.length && !R.errors.length,
       JSON.stringify({ emptyHud: !!emptyHud, hud, said, flying, heldD, heldDown, moved, tf, rest, zoomed, panned, kept, landed, before, after, ground, heldW, rMoved, rHome, e: P.errors, re: R.errors }).slice(0, 1200));
     await R.ctx.close(); await P.ctx.close(); }
+  // asked by Owner, 2026-10-18: "you cant tell you are flying rhe stars dont move": the two star layers follow the camera with parallax (lib/star-parallax.js)
+  if (want("fly stars move: flying slides the near star layer more than the far one, the near stars streak, reduced motion only drifts, landing puts them back")) { const P = await fresh();
+    const stars = (page) => page.evaluate(() => window.__voidStars());
+    const atRest = (v) => v.near.ox === 0 && v.near.oy === 0 && v.near.s === 1 && v.far.ox === 0 && v.far.oy === 0 && v.far.s === 1;
+    // D is held at least half a second and until the eye has gone the given way (a slow headless frame never fails it); the streak is sampled while held
+    const holdD = async (page, far) => { let streak = 0; const t0 = Date.now(); await page.keyboard.down('d');
+      const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
+      const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
+    await P.ask('fly around', 500);
+    const rest0 = await stars(P.p);
+    const { ok: heldD, v: mid, streak } = await holdD(P.p, -120);
+    await P.p.keyboard.press('Escape');
+    const back = await until(async () => atRest(await stars(P.p)) && !(await P.p.evaluate(() => window.__voidFly.state().landing)), 6000);
+    const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' });
+    await R.ask('fly around', 500);
+    const { ok: heldR, v: rMid, streak: rStreak } = await holdD(R.p, -300);
+    await R.p.keyboard.press('Escape');
+    const rBack = await until(async () => atRest(await stars(R.p)), 3000);
+    check('fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too',
+      atRest(rest0) && heldD && mid.far.ox < -5 && mid.near.ox < mid.far.ox && Math.abs(mid.near.ox) > Math.abs(mid.far.ox) * 2 && streak > 1.5 && back
+        && heldR && Math.abs(rMid.near.ox) <= 6 && Math.abs(rMid.far.ox) <= 6 && rMid.near.ox < 0 && rStreak === 0 && rBack && !P.errors.length && !R.errors.length,
+      JSON.stringify({ rest0, heldD, mid, streak, back, heldR, rMid, rStreak, rBack, e: P.errors, re: R.errors }).slice(0, 900));
+    await R.ctx.close(); await P.ctx.close(); }
   // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
   if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
     await P.ask('what are they doing', 500); const none = await P.whisper();

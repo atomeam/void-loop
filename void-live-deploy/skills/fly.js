@@ -6,6 +6,8 @@
  * HUD chip says so. Esc, "land" or "stop flying" eases back to the normal view (a snap under reduced motion). The camera is kept
  * on this device (a2m.void.camera.v1, lib/state.js) so a reload takes off where you were; nothing appears until asked, and
  * "fly to tokyo", "flights to paris", "look around the room" and "fly me to the moon" are other skills' asks, not this one.
+ * The stars move with the eye (owner, 2026-10-18: "you cant tell you are flying rhe stars dont move"): each camera move is told
+ * to the page as a 'void-camera' event and void.html's sky slides its two star layers with parallax (lib/star-parallax.js).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { HOME, camera, zoomAt, pan, fly, ease, atHome, transformOf, wheelFactor, toStored, fromStored } from '../lib/stage-camera.js';
@@ -36,7 +38,11 @@ function apply() {
   const st = stageEl(); if (!st) return;
   st.style.transformOrigin = '0 0';
   st.style.transform = transformOf(S.cam);
+  tell();
 }
+// the stars behind the stage follow the eye at a fraction of its pace (void.html's sky, lib/star-parallax.js; owner, 2026-10-18:
+// "you cant tell you are flying rhe stars dont move"): every move of the camera is told to the page as 'void-camera'
+function tell() { try { window.dispatchEvent(new CustomEvent('void-camera', { detail: { x: S.cam.x, y: S.cam.y, z: S.cam.z, flying: S.flying } })); } catch (_) {} }
 function loop(t) {
   S.raf = 0;
   const dt = S.last ? (t - S.last) / 1000 : 1 / 60; S.last = t;
@@ -44,7 +50,7 @@ function loop(t) {
   if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still() }));
   if (S.landing) S.cam = ease(S.cam, HOME, dt, { still: still() });
   apply();
-  if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; } keep(); return; }
+  if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; } tell(); keep(); return; }
   if (S.landing || (S.flying && !idle)) S.raf = requestAnimationFrame(loop); else { S.last = 0; keep(); }
 }
 const kick = () => { if (!S.raf) { S.last = 0; S.raf = requestAnimationFrame(loop); } };

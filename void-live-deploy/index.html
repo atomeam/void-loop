@@ -3945,27 +3945,75 @@ say('nothing selected to remove');
     // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
     // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
     let starLast = 0;
+    // the stars follow the flying eye (asked by Owner, 2026-10-18: "you cant tell you are flying rhe stars dont move"): skills/fly.js
+    // tells every camera move ('void-camera'); each layer slides and swells a fraction of it (lib/star-parallax.js: the far layer
+    // 0.15, the near 0.4), wrapping like a tile so no edge is ever empty, and the near stars streak when the eye moves fast (a soft
+    // warp when zooming in fast). Reduced motion: a few pixels of drift, no streaks. At home the layers are exactly as they were.
+    // While the eye moves the layers redraw every frame (a few hundred dots: well under a millisecond), else at the usual ~24 fps.
+    const SKY = { lib: null, cam: null, near: { ox: 0, oy: 0, s: 1 }, far: { ox: 0, oy: 0, s: 1 }, vx: 0, vy: 0, zr: 0, at: 0, fresh: false, drawAt: 0, streak: { dx: 0, dy: 0, warp: 0 } };
+    let skyLibP = null;
+    function skyView() {
+      const L = SKY.lib; if (!L || !SKY.cam) return;
+      const still = reduceMotion.matches;
+      SKY.near = L.layerView(SKY.cam, L.NEAR, innerWidth, innerHeight, { still }); SKY.far = L.layerView(SKY.cam, L.FAR, innerWidth, innerHeight, { still });
+    }
+    const kickStars = () => { if (voidLook.stars !== 'off' && !starRAF && !document.hidden) starRAF = requestAnimationFrame(drawStars); };
+    window.addEventListener('void-camera', (e) => {
+      const d = e && e.detail; if (!d) return;
+      const now = performance.now(), prev = SKY.cam, was = SKY.near, dt = SKY.at ? (now - SKY.at) / 1000 : 0;
+      SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
+      if (!SKY.lib) { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); return; }
+      skyView();
+      if (prev && dt > 0.004 && dt < 1) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it)
+        const t = Math.min(0.25, dt);
+        SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
+        SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
+      }
+      SKY.at = now; SKY.fresh = true; kickStars();
+    });
+    try { window.__voidStars = () => ({ near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
+    function skyTick(now) { // the streak fades once the camera stops telling (a drag let go, the keys up): a frame with no move since the last one
+      const dt = SKY.drawAt ? Math.min(0.25, (now - SKY.drawAt) / 1000) : 0; SKY.drawAt = now;
+      if (SKY.fresh) SKY.fresh = false; else { const k = Math.exp(-9 * dt); SKY.vx *= k; SKY.vy *= k; SKY.zr *= k; if (Math.hypot(SKY.vx, SKY.vy) < 2) SKY.vx = SKY.vy = 0; if (Math.abs(SKY.zr) < 0.05) SKY.zr = 0; }
+      SKY.streak = SKY.lib.streakOf(SKY.vx, SKY.vy, SKY.zr, { still: reduceMotion.matches });
+      return now - SKY.at < 200 || !!(SKY.vx || SKY.vy || SKY.zr); // still moving: draw every frame
+    }
     function drawStars(now) {
-      if (typeof now === 'number' && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
+      const live = SKY.lib ? skyTick(performance.now()) : false;
+      if (typeof now === 'number' && !live && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
       if (typeof now === 'number') starLast = now;
       const W = innerWidth, H = innerHeight, t = performance.now() / 1000;
       starCtx.clearRect(0, 0, W, H);
       if (starFarCtx) starFarCtx.clearRect(0, 0, W, H);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
+      const fv = SKY.far, nv = SKY.near, fOff = !!(fv.ox || fv.oy || fv.s !== 1), nOff = !!(nv.ox || nv.oy || nv.s !== 1), sk = SKY.streak, streak = !!(sk.dx || sk.dy || sk.warp);
+      const each = (st, v, f) => { if (!(v.ox || v.oy || v.s !== 1)) return f(st.x, st.y, 1); const xs = SKY.lib.placeAxis(st.x, v.ox, v.s, W, 4); if (!xs.length) return; for (const py of SKY.lib.placeAxis(st.y, v.oy, v.s, H, 4)) for (const px of xs) f(px, py, v.s); };
       if (starFarCtx) {
+        starFarCtx.fillStyle = 'rgb(210,220,255)';
         for (const st of farStars) {
           if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-          starFarCtx.globalAlpha = st.a || .35; starFarCtx.fillStyle = 'rgb(210,220,255)';
-          starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill();
+          starFarCtx.globalAlpha = st.a || .35;
+          if (!fOff) { starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill(); continue; }
+          each(st, fv, (x, y, s) => { starFarCtx.beginPath(); starFarCtx.arc(x, y, st.r * s, 0, Math.PI * 2); starFarCtx.fill(); });
         }
       }
       if (starFarCtx) starFarCtx.globalAlpha = 1;
+      if (streak) starCtx.lineCap = 'round';
       for (const st of stars) {
         if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1;
-        starCtx.globalAlpha = (st.a || .7) * tw; starCtx.fillStyle = 'rgb(' + (st.c || '255,255,255') + ')';
-        starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
-        if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha *= .18; starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
+        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1, a = (st.a || .7) * tw, col = 'rgb(' + (st.c || '255,255,255') + ')';
+        starCtx.fillStyle = col;
+        const one = (x, y, s) => {
+          const r = st.r * (1 + (s - 1) * 0.6);
+          starCtx.globalAlpha = a; starCtx.beginPath(); starCtx.arc(x, y, r, 0, Math.PI * 2); starCtx.fill();
+          if (streak) { // a short line back to where the star was a moment ago, plus the warp's pull from the middle
+            const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
+            starCtx.strokeStyle = col; starCtx.lineWidth = Math.max(0.8, r * 1.3); starCtx.globalAlpha = a * 0.55;
+            starCtx.beginPath(); starCtx.moveTo(x, y); starCtx.lineTo(ex, ey); starCtx.stroke();
+          }
+          if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha = a * .18; starCtx.beginPath(); starCtx.arc(x, y, r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
+        };
+        if (!nOff && !streak) one(st.x, st.y, 1); else each(st, nv, one);
       }
       starCtx.globalAlpha = 1;
       if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
@@ -3994,7 +4042,7 @@ say('nothing selected to remove');
       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
-    window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
+    window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); skyView(); });
     function handleLookAsk(lower) {
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;
