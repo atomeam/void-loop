@@ -2,6 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T06:42:46.402Z",
+   "sha": "8e7cd1fb87ce9df1012e68aa518ada956ee98ed6",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39104788774",
+   "suite": "browser suite on main",
+   "checks": [
+    "intent as a noun: \"the product page launch on Friday\" plans \"launch the product page\": a countdown, a launch's own dated steps ending on the day, the day on the calendar, one group, and no draft (nobody was named)",
+    "open plan: \"plan my garden\" asks the answer engine (mode plan) for the steps and puts them up as one checklist, says they came from the engine; \"plan my day\" adds nothing",
+    "practice timer: success_rate weighs Clef's yes/no against how the goal's sessions went: a goal that met 1 of 4 sessions gets half the engine's 16 minutes, and the card says so",
+    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
+    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
+    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
+    "suite ran to the end"
+   ]
+  },
+  {
    "at": "2026-10-18T06:38:58.071Z",
    "sha": "d139d79e5b5ffee950b2ea79c49e586ea355f51b",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39104498469",
@@ -291,16 +306,6 @@
    "suite": "browser suite on main",
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-17T12:30:16.619Z",
-   "sha": "d2ffd1eae00e779c478f001e8058d765454159ef",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39031857641",
-   "suite": "browser suite on main",
-   "checks": [
-    "convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; \"temperature converter\" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, \"a converter for 5 miles to km\" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and \"close the converter\" puts it away",
     "check timeout: no check finished within 300 s"
    ]
   }
