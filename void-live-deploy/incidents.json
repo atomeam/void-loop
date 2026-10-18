@@ -2,13 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T03:01:52.225Z",
+   "at": "2026-10-18T03:03:35.419Z",
    "sha": "24db7ae2f8d293c566e9b77ecb73d4892b4c3fa1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39091223061",
    "suite": "browser suite on main",
    "checks": [
-    "list: \"how many days until friday\" counts to the next Friday; \"what day is it in Tokyo\" shows the day there; \"time difference between London and Tokyo\" says the gap in words; none reach Wikipedia, the miss board or the calendar",
-    "bridges: \"turn this card into a note\" copies the kept card (its ask and answer) as a notepad line, the list entry's \"-> note\" copies \"milk\" with its tick, a sticky dropped on the list becomes a list entry, \"what are they doing\" writes the zombie and the dog's argument in the notepad, and the self-play card's note box writes \"self-play connect four ... Why: ...\"",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
    ]
   },
