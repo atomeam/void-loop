@@ -2,14 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:21:02.656Z",
+   "at": "2026-10-18T07:21:38.455Z",
+   "sha": "9fc1a05edddfb1c1a4e6e88a35bd4cd983788897",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39106737911",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
+   ]
+  },
+  {
+   "at": "2026-10-18T07:06:54.535Z",
    "sha": "a823219cec2e64a8edd9beb76f1d2a3ff291d06e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39106213834",
    "suite": "browser suite on main",
    "checks": [
-    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "check timeout: no check finished within 300 s"
+    "suite ran to the end"
    ]
   },
   {
@@ -297,15 +309,6 @@
    "suite": "browser suite on main",
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-17T13:07:54.537Z",
-   "sha": "d88b94f8eed1a954a1e98d9f41206e8786830c76",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39034174431",
-   "suite": "browser suite on main",
-   "checks": [
     "check timeout: no check finished within 300 s"
    ]
   }
