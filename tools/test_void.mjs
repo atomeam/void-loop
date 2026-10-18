@@ -757,6 +757,17 @@ try {
   // The empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js, tools/empty-state.test.mjs): offline is calm and locks nothing, the bar sits above an
   // on-screen keyboard, the halo suggests a real ask and stops for typing or a card, the round keys say their state, the ask input opts out of
   // writing assistants, the bar is legible over a white backdrop, the support link is readable, and a mouse gets the bar focused while touch does not.
+  // Accessibility settings (owner, 2026-10-18: "the descriptive subtext ... wraps all the way to the left edge, sitting directly underneath the checkbox"):
+  // every switch's description hangs under its title, never under the checkbox, at desktop and phone widths
+  if (want("accessibility settings hanging indent")) {
+    for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 800 }]) {
+      const A = await fresh(); await A.p.setViewportSize(vp); await A.ask('accessibility settings', 1200);
+      const rows = await A.p.evaluate(() => [...document.querySelectorAll('[data-mode]')].map((r) => { const cb = r.querySelector('input').getBoundingClientRect(), sp = r.querySelectorAll('span span'), t1 = sp[0].getBoundingClientRect(), t2 = sp[1].getBoundingClientRect(); return { id: r.dataset.mode, cb: Math.round(cb.right), t1: Math.round(t1.left), t2: Math.round(t2.left), t2w: Math.round(t2.right) }; }));
+      await A.ctx.close();
+      check('accessibility settings (' + vp.width + ' wide): every description lines up under its title, right of the checkbox (a hanging indent), and none runs out of its row',
+        rows.length >= 5 && rows.every((r) => r.t1 > r.cb && Math.abs(r.t2 - r.t1) <= 1), JSON.stringify(rows.slice(0, 4)));
+    }
+  }
   if (want("empty state and input bar")) {
     const px = async (pg, x, y) => { const png = await pg.screenshot({ clip: { x: Math.floor(x), y: Math.floor(y), width: 1, height: 1 } }); let o = 8; const idat = []; while (o < png.length) { const n = png.readUInt32BE(o), t = png.toString('ascii', o + 4, o + 8); if (t === 'IDAT') idat.push(png.subarray(o + 8, o + 8 + n)); o += 12 + n; } const raw = zlib.inflateSync(Buffer.concat(idat)); return [raw[1], raw[2], raw[3]]; }; // a 1x1 clip: the filter byte never changes the first pixel
     const lumOf = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
@@ -793,10 +804,10 @@ try {
     check('empty state: the speaker is aria-pressed with a label that says what a tap does, the return key has a title, every round key is at least 44 px, and the mic shows a listening state (the listening rule used to be dropped by an invalid selector)',
       sound.pressed === 'false' && /Turn on ambient sound/.test(sound.label) && sound.title === sound.label && sound.w >= 44 && sound.h >= 44 && go.title === 'Ask' && go.w >= 44 && go.h >= 44 && (mic.none || (mic.w >= 44 && mic.h >= 44 && mic.pressed === 'false')) && /255, 205, 110/.test(lit), JSON.stringify({ keys, lit }));
     // 5) writing assistants: the ask input carries the standard opt-outs and keeps its accessible name; other inputs are not touched
-    const at = await E.p.evaluate(() => { const i = document.getElementById('input'); return ['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck', 'data-gramm', 'data-gramm_editor', 'data-enable-grammarly', 'data-lpignore', 'data-form-type'].map((a) => a + '=' + i.getAttribute(a)).concat(['data-1p-ignore=' + i.hasAttribute('data-1p-ignore'), 'name=' + i.getAttribute('aria-label')]); });
+    const at = await E.p.evaluate(() => { const i = document.getElementById('input'); return ['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck', 'writingsuggestions', 'data-gramm', 'data-gramm_editor', 'data-enable-grammarly', 'data-lpignore', 'data-form-type'].map((a) => a + '=' + i.getAttribute(a)).concat(['data-1p-ignore=' + i.hasAttribute('data-1p-ignore'), 'name=' + i.getAttribute('aria-label')]); });
     await E.ask('open a notepad', 700); await until(() => E.p.evaluate(() => !!document.querySelector('.notepad-textarea')), 6000); const padSpell = await E.p.evaluate(() => { const t = document.querySelector('.notepad-textarea'); return t ? String(t.hasAttribute('data-gramm') || t.hasAttribute('data-1p-ignore')) : 'none'; }); // the first ask on a cold stage loads its skill: wait for the notepad
-    check('empty state: the ask input opts out of writing assistants (autocomplete, autocorrect, autocapitalize, spellcheck, grammarly, lastpass, 1password) and keeps its name; the notepad (its own spellcheck setting) gets none of them',
-      at.join(' ') === 'autocomplete=off autocorrect=off autocapitalize=off spellcheck=false data-gramm=false data-gramm_editor=false data-enable-grammarly=false data-lpignore=true data-form-type=other data-1p-ignore=true name=Ask Void' && padSpell === 'false', JSON.stringify({ at, padSpell }));
+    check('empty state: the ask input opts out of writing assistants (autocomplete, autocorrect, autocapitalize, spellcheck, Chrome writing suggestions, grammarly, lastpass, 1password) and keeps its name; the notepad (its own spellcheck setting) gets none of them',
+      at.join(' ') === 'autocomplete=off autocorrect=off autocapitalize=off spellcheck=false writingsuggestions=false data-gramm=false data-gramm_editor=false data-enable-grammarly=false data-lpignore=true data-form-type=other data-1p-ignore=true name=Ask Void' && padSpell === 'false', JSON.stringify({ at, padSpell }));
     await E.ctx.close();
     // 6) legibility over a white backdrop (the worst case), measured in the page: the bar's own pixels against its placeholder and typed text
     const C = await fresh(); await C.p.waitForTimeout(2000);

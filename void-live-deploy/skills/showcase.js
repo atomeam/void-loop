@@ -48,8 +48,12 @@ export function lineOf(what) {
 }
 
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */
+// shipped lines a later change undid: never previewed again (owner, 2026-10-18: the "try:" suggestions were removed, so "real suggestions on the empty stage" is no longer true)
+const RETIRED = [/real suggestions on the empty stage/i];
+
 export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
+  if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
   if (!lineOf(e.what)) return null; // a line about what Void studies is never shown
   if (e.try) return showcaseOf(e.try) ? null : { line: e.show || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));

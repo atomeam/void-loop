@@ -16,6 +16,7 @@ test('the asks it answers, and the look-alikes it leaves', () => {
 test('a step comes from the ledger line\'s try, or a known recent build; never from a quoted ask in the line', () => {
   assert.deepEqual(playable(e('2026-10-12T00:00:00Z', 'grow', 'x', { show: 'tide clocks', try: 'make a tide clock' })), { line: 'tide clocks', ask: 'make a tide clock' });
   assert.deepEqual(playable(e('2026-10-12T00:00:00Z', 'build', 'a long line about it', { try: 'make a tide clock' })).line, 'a long line about it');
+  assert.equal(playable(e('2026-10-18T04:11:15Z', 'grow', 'batch 4', { show: 'a calmer ask bar; real suggestions on the empty stage', try: 'what is 15% of 240' })), null); // a line a later change undid is never previewed
   assert.equal(playable(e('2026-10-12T00:00:00Z', 'grow', 'Routines: say "call this my morning" after a few asks')), null, 'a quoted ask that saves something is never run');
   assert.equal(playable(e('2026-10-12T00:00:00Z', 'idea', 'x', { try: 'y' })), null, 'ideas and findings are not things to show');
   assert.equal(playable(e('2026-10-12T00:00:00Z', 'grow', 'the walkthrough', { try: "what's new" })), null, 'a step is never the walkthrough itself');
