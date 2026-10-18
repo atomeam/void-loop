@@ -8,6 +8,12 @@
     body{display:flex;flex-direction:column}
     iframe{border:0;width:100%;flex:1;display:block}
     /* B3: the card and the allow list belong to the extension, not to the page in the frame: only your click here says yes */
+    /* a page read is the extension's to allow, like an act: the frame can ask, only your Yes here reads the page (gap 1, 2026-10-18) */
+    #send{display:none;position:fixed;left:10px;right:10px;bottom:52px;padding:12px;border:1px solid #6b4a2f;border-radius:12px;background:#111;box-shadow:0 8px 30px rgba(0,0,0,.6)}
+    #send.on{display:block}
+    #send .k{color:#9a9aa2;font-size:12px}
+    #send .v{margin:2px 0 8px;word-break:break-word}
+    #send .row{display:flex;gap:8px}
     #act{display:none;position:fixed;left:10px;right:10px;bottom:52px;padding:12px;border:1px solid #444;border-radius:12px;background:#111;box-shadow:0 8px 30px rgba(0,0,0,.6)}
     #act.on{display:block}
     #act .k{color:#9a9aa2;font-size:12px}
@@ -37,6 +43,12 @@
     <div class="k act-text-k">text</div><div class="v act-text"></div>
     <div class="row"><button type="button" class="yes act-yes">Yes, do it</button><button type="button" class="act-no">No</button></div>
     <div class="k" style="margin-top:8px">One step at a time, a yes for each. It never submits a form or presses Enter; you do that.</div>
+  </div>
+  <div id="send" role="dialog" aria-label="V01D wants to send this page">
+    <div class="k">V01D wants to send this page to a-to-mind.com</div><div class="v send-site"></div>
+    <div class="k">what goes</div><div class="v send-what">its visible text, up to 8,000 characters, once, for a proposal draft · not kept there</div>
+    <div class="row"><button type="button" class="yes send-yes">Yes, send it</button><button type="button" class="send-no">No</button></div>
+    <div class="k" style="margin-top:8px">Nothing is read from the page until you press Yes here.</div>
   </div>
   <details id="sites">
     <summary>sites V01D may act on (<span class="n">0</span>)</summary>
