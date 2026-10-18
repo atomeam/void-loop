@@ -66,6 +66,7 @@ for (const [name, file] of [
   ['youtube', 'youtube.test.mjs'],
   ['skills', 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
+  ['stage-pack-h', 'stage-pack-h.test.mjs'],
   ['frontier', 'frontier.test.mjs'],
   ['map-sync', 'map-sync.test.mjs'],
   ['map-coverage', 'map-coverage.test.mjs'],

@@ -7310,6 +7310,78 @@ try {
       /\?spectate=[A-Za-z0-9_-]{8,}/.test(link) && view && view.kinds.length >= 1 && JSON.stringify(view.kinds) === JSON.stringify(nowKinds) && /read-only/.test(view.text) && viewerState === ownerState && left && /closed to spectators/.test(closed) && Q.errors.length === 0,
       JSON.stringify({ link: link.slice(0, 80), view: view && { kinds: view.kinds, text: view.text.slice(0, 160) }, nowKinds, same: viewerState === ownerState, left, closed, errs: Q.errors }));
     await Q.ctx.close(); }
+  // stage pack H (owner, 2026-10-18): "summon everything except urgency", "what would the echo say ...", "what almost answered that"
+  if (want("stage pack h: negative summons, the echo that disagrees, the near choir")) {
+    // negative summons: calm things come, a clear button takes back exactly what it summoned
+    const N = await fresh();
+    await N.ask('summon everything except urgency', 300);
+    const nsUp = await until(() => N.p.$eval('.sph-card[data-sph="negative-summons"]', (e) => e.innerText).then((t) => /without urgency/i.test(t) && /sticky/.test(t)).catch(() => false), 20000);
+    const nsText = await N.p.$eval('.sph-card[data-sph="negative-summons"]', (e) => e.innerText).catch(() => '');
+    const nsList = await N.p.$$eval('.sph-card[data-sph="negative-summons"] li', (l) => l.map((x) => x.innerText)).catch(() => []), nsItems = nsList.length;
+    const nsStickies = (await N.state()).filter((x) => x.kind === 'sticky').length;
+    await N.p.click('.sph-card[data-sph="negative-summons"] .ns-clear').catch(() => {});
+    await N.p.waitForTimeout(300);
+    const nsGone = (await N.p.$$('.sph-card[data-sph="negative-summons"]')).length === 0, nsStickiesAfter = (await N.state()).filter((x) => x.kind === 'sticky').length;
+    check('stage pack h: "summon everything except urgency" summons up to 4 calm things (a sticky, breathing...) in a "without urgency" card, none about urgency; clear takes them back; "summon the ancient ones" summons nothing',
+      nsUp && nsItems >= 2 && nsItems <= 4 && !/urgen/i.test(nsList.join(' ')) && nsStickies >= 1 && nsGone && nsStickiesAfter === 0 && !N.errors.length, JSON.stringify({ nsUp, nsItems, nsText: nsText.slice(0, 160), nsStickies, nsGone, nsStickiesAfter, errs: N.errors }));
+    await N.ask('summon the ancient ones', 600);
+    check('stage pack h: a look-alike ask ("summon the ancient ones") raises no summons card', (await N.p.$$('.sph-card')).length === 0);
+    await N.ctx.close();
+
+    // the echo: nothing before the explicit ask; then the first answer, the framed counter-view through /api/answer, Keep / Keep first; unavailable says so
+    const E = await fresh();
+    const eBodies = []; let eMode = 'ok';
+    await E.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const a = JSON.parse(r.request().postData() || '{}').ask || ''; eBodies.push(a);
+      if (/counter-view/.test(a)) return eMode === 'limit' ? r.fulfill({ status: 429, contentType: 'application/json', body: JSON.stringify({ answer: null, sources: [], note: 'slow down' }) }) : r.fulfill(json({ answer: 'The other side. A second point. A third point. A fourth point.', sources: [] }));
+      return r.fulfill(json({ answer: 'First answer here.', sources: [] })); });
+    await E.p.evaluate(() => { window.__a2mEchoDelay = 300; });
+    await E.ask('why is the sky blue zork', 1200);
+    const quietBefore = eBodies.filter((b) => /counter-view/.test(b)).length === 0 && (await E.p.$$('.sph-card[data-sph="echo"]')).length === 0;
+    await E.ask('what would the echo say why is the sea salty', 400);
+    const eUp = await until(() => E.p.$eval('.sph-card[data-sph="echo"] .ec-text', (e) => e.textContent.length > 0).catch(() => false), 15000);
+    const eCard = await E.p.$eval('.sph-card[data-sph="echo"]', (e) => e.innerText).catch(() => '');
+    const eCalls = eBodies.filter((b) => /counter-view/.test(b)).length, firstCalls = eBodies.filter((b) => /sea salty/.test(b) && !/counter-view/.test(b)).length;
+    const pageBefore = await E.page();
+    await E.p.click('.sph-card[data-sph="echo"] .ec-keep').catch(() => {});
+    await E.p.waitForTimeout(300);
+    const keptEcho = (await E.p.$$('.sph-card[data-sph="echo"]')).length === 1 && !(await E.page());
+    check('stage pack h: nothing echoes until asked; "what would the echo say ..." answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled "echo: a second view, not a correction"; Keep keeps the echo and dismisses the first',
+      quietBefore && eUp && /echo: a second view, not a correction/.test(eCard) && /A third point\./.test(eCard) && !/fourth/.test(eCard) && eCalls === 1 && firstCalls === 1 && /First answer/.test(pageBefore) && keptEcho && !E.errors.length,
+      JSON.stringify({ quietBefore, eUp, eCard: eCard.slice(0, 200), eCalls, firstCalls, pageBefore: pageBefore.slice(0, 60), keptEcho, errs: E.errors }));
+    await E.ask('why is grass green', 800);
+    eMode = 'limit';
+    await E.ask('echo this', 300);
+    const lim = await until(() => E.p.$eval('.sph-card[data-sph="echo"]', (e) => /slow down/.test(e.innerText)).catch(() => false), 10000);
+    await E.p.click('.sph-card[data-sph="echo"] .ec-x').catch(() => {});
+    eMode = 'ok';
+    await E.ask('echo this', 300);
+    await until(() => E.p.$eval('.sph-card[data-sph="echo"] .ec-first', () => true).catch(() => false), 10000);
+    const firstStill = /./.test(await E.page());
+    await E.p.click('.sph-card[data-sph="echo"] .ec-first').catch(() => {});
+    await E.p.waitForTimeout(200);
+    check('stage pack h: when the answer path asks us to slow down the echo card says so and spends nothing; "echo this" echoes the last question and Keep first removes the echo and leaves the first answer',
+      lim && firstStill && (await E.p.$$('.sph-card[data-sph="echo"]')).length === 0 && !E.errors.length, JSON.stringify({ lim, firstStill, errs: E.errors }));
+    await E.ctx.close();
+
+    // the near choir: the last ask's other matches as one tap each, no network
+    const C = await fresh();
+    let choirNet = 0;
+    await C.ask('make a clock', 500);
+    await C.ctx.route(/\/api\//, (r) => { choirNet++; return r.fulfill({ status: 204, body: '' }); });
+    await C.ask('what almost answered that', 800);
+    const cUp = await until(() => C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => /you might have meant/.test(e.innerText)).catch(() => false), 20000);
+    const cCard = await C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => e.innerText).catch(() => '');
+    const cBtns = await C.p.$$eval('.sph-card[data-sph="near-choir"] .nc-go', (b) => b.map((x) => x.getAttribute('data-ask'))).catch(() => []);
+    await C.p.click('.sph-card[data-sph="near-choir"] .nc-go').catch(() => {});
+    await C.p.waitForTimeout(500);
+    const recent = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]);
+    check('stage pack h: "what almost answered that" lists up to 3 other skills for the last ask ("make a clock") as "you might have meant", one tap each runs that skill\'s first example; no network call; "choir practice near me" does not open it',
+      cUp && /for: make a clock/.test(cCard) && cBtns.length >= 1 && cBtns.length <= 3 && recent === cBtns[0] && choirNet === 0 && (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0 && !C.errors.length,
+      JSON.stringify({ cUp, cCard: cCard.slice(0, 200), cBtns, recent, choirNet, errs: C.errors }));
+    await C.ask('choir practice near me', 800);
+    check('stage pack h: "choir practice near me" goes where it went (no near-choir card)', (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0);
+    await C.ctx.close();
+  }
 
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;

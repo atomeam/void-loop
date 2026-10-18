@@ -12,8 +12,8 @@
  },
  "smoke_at": "2026-10-17",
  "totals": {
-  "experiment": 2,
-  "tested": 82,
+  "experiment": 4,
+  "tested": 83,
   "checked": 59,
   "proven": 108
  },
@@ -2019,8 +2019,8 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 1,
-    "tested": 8,
+    "experiment": 3,
+    "tested": 9,
     "checked": 16,
     "proven": 7
    },
@@ -2279,6 +2279,29 @@
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "negative-summons",
+     "tier": "tested",
+     "why": "1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "echo-disagrees",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-18"
+    },
+    {
+     "name": "near-choir",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-18"
     }
    ]
   },

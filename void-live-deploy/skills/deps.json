@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 510,
+ "counted": 514,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -232,6 +232,12 @@
   },
   {
    "file": "lib/skill-family.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3
+  },
+  {
+   "file": "lib/stage-pack-h.js",
    "skills": 3,
    "direct": 3,
    "dependants": 3
@@ -3475,6 +3481,14 @@
     "skills/fly.js"
    ]
   },
+  "lib/stage-pack-h.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/echo-disagrees.js",
+    "skills/near-choir.js",
+    "skills/negative-summons.js"
+   ]
+  },
   "lib/stale-tab.js": {
    "imports": [],
    "importedBy": []
@@ -4147,6 +4161,12 @@
     "lib/duel-rules.js",
     "lib/card-frame.js",
     "lib/rules-play.js"
+   ],
+   "importedBy": []
+  },
+  "skills/echo-disagrees.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
@@ -5087,6 +5107,18 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-nca.js"
+   ],
+   "importedBy": []
+  },
+  "skills/near-choir.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
+  "skills/negative-summons.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
