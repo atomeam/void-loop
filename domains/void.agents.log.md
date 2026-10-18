@@ -883,3 +883,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-18T07:10:30Z | claude | grow | the error garden grows from the incident autopsy: 'plant my test failures' (or 'visualize your test failures') plants every distinct failing check of the site's own red suites, and a check that failed in more than one incident is a weed
 2026-10-18T07:27:02Z | claude | grow | asked by Void: stability gauge on the Status card, driven by how often the browser suite went red in the last 7 days (incidents.json)
 2026-10-18T07:43:22Z | claude | grow | asked by Void: backlog-digest skill, unbuilt asks grouped by skill family and the weakest evidence rating of the skills they name (own records, no model)
+2026-10-18T07:42:39Z | claude | grow | the incident autopsy tells the runner stalling from a skill failing: 'check timeout' and 'suite ran to the end' lines are counted on their own line ('the suite itself') and no longer pad the unmapped list, the family counts or the error garden

@@ -105,3 +105,18 @@ test('culprit pointer: a changed skill file whose skill has a failing check is t
   h = autopsyHtml(autopsy(inc(['domains/x.md']), FAM, GUIDE)); assert.match(h, /data-culprit="none"/); assert.match(h, /No skill file changed/);
   h = autopsyHtml(autopsy(inc(undefined), FAM, GUIDE)); assert.ok(!h.includes('data-culprit'), 'paths never recorded say nothing');
 });
+
+test('the suite\'s own stalls and end-of-run flags are counted apart, never unmapped, never in a family or the garden', async () => {
+  const { isSuiteMeta, failurePlants } = await import('../void-live-deploy/lib/autopsy.js');
+  const J = { incidents: [
+    { at: '2026-10-17T09:00:00Z', sha: 'aaaaaaa1', suite: 's', checks: ['check timeout: no check finished within 300 s', 'clock: "set it" fails', 'suite ran to the end'] },
+    { at: '2026-10-17T08:00:00Z', sha: 'bbbbbbb2', suite: 's', checks: ['check timeout: no check finished within 300 s'] },
+  ] };
+  assert.ok(isSuiteMeta('check timeout: no check finished within 300 s') && isSuiteMeta('suite ran to the end') && !isSuiteMeta('clock: check timeout') && !isSuiteMeta(''));
+  const a = autopsy(J, FAM, GUIDE);
+  assert.deepEqual(a.suite, { timeouts: 2, ended: 1, incidents: 2 }); assert.equal(a.failing, 1); assert.deepEqual(a.unmapped, []);
+  assert.equal(a.recent[0].checks.filter((c) => c.meta).length, 2);
+  const h = autopsyHtml(a, (s) => String(s)); assert.ok(h.includes('data-autopsy-suite') && h.includes('2 stalled checks') && h.includes('(the suite itself)'));
+  assert.deepEqual(failurePlants(J).map((x) => x.text), ['clock']);
+  assert.ok(!autopsyHtml(autopsy(SAMPLE, FAM, GUIDE), (s) => String(s)).includes('data-autopsy-suite'));
+});
