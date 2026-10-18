@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 483,
+ "counted": 485,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -49,6 +49,12 @@
    "skills": 7,
    "direct": 6,
    "dependants": 7
+  },
+  {
+   "file": "lib/rule-registry.js",
+   "skills": 6,
+   "direct": 0,
+   "dependants": 28
   },
   {
    "file": "lib/guide.js",
@@ -282,6 +288,12 @@
    "file": "lib/field-worker.js",
    "skills": 2,
    "direct": 2,
+   "dependants": 2
+  },
+  {
+   "file": "lib/go-ai.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 2
   },
   {
@@ -2201,6 +2213,15 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/go-ai.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/go.js"
+   ],
+   "reachedBy": [
+    "skills/games.js"
+   ]
+  },
   "lib/ground.js": {
    "imports": [],
    "importedBy": []
@@ -2255,7 +2276,9 @@
    ]
   },
   "lib/guide.js": {
-   "imports": [],
+   "imports": [
+    "lib/rule-registry.js"
+   ],
    "importedBy": [
     "lib/book-face.js",
     "lib/card-art.js",
@@ -3055,6 +3078,41 @@
    ],
    "importedBy": []
   },
+  "lib/rule-registry.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/guide.js",
+    "lib/tome.js"
+   ],
+   "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
+    "lib/book-face.js",
+    "lib/card-art.js",
+    "lib/card-frame.js",
+    "lib/card-image.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "lib/self-context.js",
+    "lib/skill-confidence.js",
+    "lib/voice.js",
+    "skills/duel.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/guide.js",
+    "skills/merge.js",
+    "skills/mini/book.js",
+    "skills/mini/growthtree.js",
+    "skills/showcase.js"
+   ]
+  },
   "lib/rules-engine.js": {
    "imports": [],
    "importedBy": [
@@ -3408,7 +3466,8 @@
   "lib/tome.js": {
    "imports": [
     "lib/guide.js",
-    "lib/card-art.js"
+    "lib/card-art.js",
+    "lib/rule-registry.js"
    ],
    "importedBy": [
     "skills/guide.js"
@@ -4119,7 +4178,8 @@
   },
   "skills/go.js": {
    "imports": [
-    "skills/side-card.js"
+    "skills/side-card.js",
+    "lib/go-ai.js"
    ],
    "importedBy": [
     "skills/games.js"

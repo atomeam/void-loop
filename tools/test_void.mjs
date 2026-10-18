@@ -1603,6 +1603,38 @@ try {
   // the preview proves itself (owner, 2026-10-16: "the preview is supposed to actually preview what it says it almost never does"): a
   // step whose ask nothing answers says so on its line and files the ask as a miss (preview:nothing-shown); a step that puts a thing
   // on the stage is left alone
+  // asked by Void: "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it on the stage to test it"
+  if (want("look what I made: grab a coming step from the walkthrough's tray and drop it on the stage")) {
+    const LEDGER = [
+      { at: '2026-10-12T01:00:00Z', by: 'claude', kind: 'grow', what: 'the growth page', show: 'the growth page', try: 'growth' },
+      { at: '2026-10-12T02:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+      { at: '2026-10-12T03:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+    ];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-g')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-11T00:00:00Z'); sessionStorage.setItem('sc-g', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(220, 220);
+    const kinds = async () => (await P.state()).map((t) => t.kind).sort().join(',');
+    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    await until(async () => (await kinds()) === 'sticky', 6000).catch(() => {});
+    const tray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab + ':' + e.textContent));
+    const chip = await P.p.$eval('[data-showcase-grab="1"]', (e) => { const r = e.getBoundingClientRect(); return { x: r.x + r.width / 2, y: r.y + r.height / 2 }; });
+    const drop = { x: 320, y: 220 };
+    await P.p.mouse.move(chip.x, chip.y); await P.p.mouse.down();
+    for (let i = 1; i <= 8; i++) await P.p.mouse.move(chip.x + (drop.x - chip.x) * i / 8, chip.y + (drop.y - chip.y) * i / 8);
+    const ghost = await P.p.$('.showcase-ghost');
+    await P.p.mouse.up();
+    const after = await until(async () => ((await kinds()) === 'counter' ? await P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')) : ''), 6000).catch(() => '');
+    await P.p.waitForTimeout(400);
+    const placed = await P.p.evaluate(() => { const st = document.getElementById('stage') || document.body, r = st.getBoundingClientRect(); const t = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')).find((x) => x.kind === 'counter'); return t ? { x: t.x + r.left, y: t.y + r.top } : null; });
+    const dropped = await P.p.evaluate(() => document.body.dataset.showcaseDropped || '');
+    // a tap on a chip runs that step in place
+    const tapTray = await P.p.$$eval('[data-showcase-grab]', (els) => els.map((e) => e.dataset.showcaseGrab));
+    check('look what I made: the walkthrough bar carries a tray of the coming steps; dragging one (a ghost chip follows the pointer) and letting go over the stage runs that step now, takes the current step\'s thing away, and puts the new thing where it landed (asked by Void)',
+      tray.length === 2 && /^1:a counter you can tap$/.test(tray[0]) && !!ghost && /^2 of 3 .*a counter you can tap/.test(after) && dropped === '1'
+        && !!placed && Math.abs(placed.x - (drop.x - 40)) < 30 && Math.abs(placed.y - (drop.y - 20)) < 30 && tapTray.join() === '2' && !P.errors.length,
+      JSON.stringify({ tray, ghost: !!ghost, after, placed, dropped, tapTray, errors: P.errors }).slice(0, 900));
+    await P.ctx.close();
+  }
   if (want("look what I made: a preview that shows nothing says so and flags it")) {
     const LEDGER = [
       { at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'a thing with a wrong try', show: 'a hardcover book with turning pages', try: 'zzqx nothing answers this zzqx' },
@@ -3752,6 +3784,18 @@ try {
     await F.ask('how healthy are your skills', 1200);
     const again = await until(async () => F.p.$eval('.vpage h2', (e) => e.textContent).catch(() => ''), 4000);
     check('family-health: "how healthy are your skills" opens the same card', again === 'How healthy my skills are', again);
+    // source reliability (asked by Void: "Create a 'source-reliability' metric within the 'Words and the world' family to help raise its
+    // proven rating"): tapping Words and the world shows the family's line and each sourced skill's points, straight from families.json
+    { const wf = fam.families.find((f) => f.id === 'words');
+      await F.p.tap('.vpage .fh-family[data-family="words"] button').catch(() => {});
+      const src = await F.p.$eval('.vpage .fh-family[data-family="words"]', (r) => ({ open: !r.querySelector('.fh-open').hidden, line: (r.querySelector('.fh-sources') || {}).textContent || '',
+        rows: [...r.querySelectorAll('[data-skill]')].map((li) => { const s = li.querySelector('.fh-source'); return { name: li.dataset.skill, text: s ? s.textContent : null, next: s ? s.dataset.next || '' : '' }; }), wide: r.closest('.vpage').scrollWidth > r.closest('.vpage').clientWidth + 1 })).catch(() => null);
+      const truthW = Object.fromEntries(wf.skills.map((s) => [s.name, s]));
+      check('family-health: Words and the world shows its source reliability: the family line and, for each skill that reads an outside source, its points and whether one kept live answer would make it proven (asked by Void)',
+        !!src && src.open && !!wf.sources && src.line === wf.sources.words && /^Source reliability: \d+ skills answer from outside sources/.test(src.line)
+        && src.rows.length === wf.skills.length && src.rows.every((x) => (truthW[x.name].source ? x.text === truthW[x.name].source.words && x.next === (truthW[x.name].source.next || '') : x.text === null))
+        && src.rows.some((x) => x.next === 'live') && !src.wide && !F.errors.length,
+        JSON.stringify({ src: src && { ...src, rows: src.rows.slice(0, 4) }, errors: F.errors })); }
     { const dr = await F.p.$$eval('.vpage .fh-drivers li[data-driver]', (l) => l.map((x) => ({ id: x.dataset.driver, pts: +x.dataset.points }))); const head = await F.p.$eval('.vpage .fh-drivers .vh', (e) => e.textContent).catch(() => '');
       check('family-health: "What moves my growth score" names the families that lift it and the ones that drag it, in score points (asked by Void)', /What moves my growth score/.test(head) && dr.length >= 2 && dr.some((x) => x.pts > 0) && dr.some((x) => x.pts < 0) && dr.every((x) => fam.families.some((f) => f.id === x.id)), JSON.stringify({ head, dr })); }
     await F.ctx.close(); }
@@ -3993,6 +4037,29 @@ try {
       dock.top < 60 && dock.w > 280 && hits[0] === wx.n && shown.includes(wx.n) && stillOpen && shown2.includes(cl.n) && /Nothing in the book/.test(none) && !B.errors.length,
       JSON.stringify({ dock, hits: hits.slice(0, 4), wx: wx.n, shown, stillOpen, shown2, cl: cl.n, none, errors: B.errors }));
     await B.ctx.close(); }
+  // asked by Void: "Create a 'rule-registry' view within the leather tome that lists all active router rules as illuminated manuscript entries"
+  // (lib/rule-registry.js): "show the router rules" opens the book at the Rule registry, every skill in routing order as an entry with a gilded initial
+  if (want('the book: the rule registry lists every active router rule as an illuminated entry')) { const R = await fresh();
+    const order = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'index.json'), 'utf8'));
+    await R.ask('show the router rules', 900); await until(async () => !!(await R.p.$('#vtome .tome.opened')), 8000); await R.p.waitForTimeout(500);
+    const chap = await R.p.evaluate(() => (window.__voidBook.chapters || []).find((c) => c.id === 'rules') || null);
+    const opened = await R.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].map((x) => +x.dataset.page));
+    const read = () => R.p.evaluate(() => [...document.querySelectorAll('#vtome .tome-page')].flatMap((pg) => { const folio = pg.querySelector('.tome-folio'), ft = folio ? folio.getBoundingClientRect().top : 1e9;
+      return [...pg.querySelectorAll('li.tome-rx')].map((li) => { const cap = li.querySelector('.tome-rx-cap'), cs = getComputedStyle(cap), b = li.getBoundingClientRect(), a = li.querySelector('a[data-ask]');
+        return { name: li.dataset.rule, rank: +li.dataset.rank, no: li.querySelector('.tome-rx-no').textContent, cap: cap.textContent, ink: cs.backgroundColor, gold: cs.color, ask: a ? a.dataset.ask : '', fits: b.bottom <= ft + 1 && b.height > 0 }; }); }));
+    await R.p.evaluate((n) => window.__voidBook.go(n), chap ? chap.from + 1 : 0); await R.p.waitForTimeout(1300);
+    const first = await read();
+    await R.p.evaluate((n) => window.__voidBook.go(n), chap ? chap.to : 0); await R.p.waitForTimeout(1300);
+    const last = await read();
+    const ask = last.find((e) => e.ask) || {};
+    if (ask.ask) await R.p.click('#vtome li.tome-rx a[data-ask]');
+    const closed = await until(async () => !(await R.p.$('#vtome')), 4000);
+    check('the book (asked by Void): "show the router rules" opens the tome at the Rule registry; its pages list every skill in routing order as Rule I, II, ... each with a gilded initial on a coloured ink and the ask it catches, all inside the page; touching an ask closes the book to run it',
+      !!chap && opened.includes(chap.from) && first.length >= 2 && first[0].name === order[0] && first[0].rank === 1 && first[0].no === 'Rule I' && first[0].cap === order[0][0].toUpperCase()
+        && first.every((e) => e.ink !== 'rgba(0, 0, 0, 0)' && e.gold === 'rgb(241, 212, 122)' && e.fits) && last.some((e) => e.name === order[order.length - 1] && e.rank === order.length) && last.every((e) => e.fits)
+        && !!ask.ask && !!closed && !R.errors.length,
+      JSON.stringify({ chap, opened, first: first.slice(0, 3), firstN: first.length, last: last.slice(-2), ask: ask.ask, closed, e: R.errors }));
+    await R.ctx.close(); }
   // owner, 2026-10-17: "make sure the book shows every update immediately in an organized way": the chapter after the contents is read off the
   // growth ledger when the book opens (lib/book-news.js), newest first by day and kind, each line its own words and a "try it" ask; a badge on the cover
   // says how many are new since the book was last opened here (localStorage, never required)
@@ -6901,6 +6968,30 @@ try {
     const after = await S.p.evaluate(() => window.__marker || '');
     check("a tab left open shows 'a newer V01D is ready' when the build changes, and reloads only on tap", !same && shown && /newer V01D is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
     await S.ctx.close(); }
+  // go against V01D (asked by Void: "Next game I want to learn: Go"; lib/go-ai.js): you are Black, V01D answers each stone as White;
+  // plain "play go" stays two people on one device with no opponent
+  if (want("go against v01d: \"play go against void\" seats you as black and v01d answers your stone; \"play go\" stays two people")) {
+    const goOn = (X) => X.state().then((s) => s.find((x) => x.kind === 'go'));
+    const tapPoint = async (X, i) => { await X.p.waitForSelector('.go-flat rect.go-pt[data-i="' + i + '"]', { timeout: 5000 }).catch(() => {}); await X.p.click('.go-flat rect.go-pt[data-i="' + i + '"]').catch(() => {}); };
+    const G = await fresh();
+    await G.ask('play go against void', 600);
+    const sub = await G.p.$eval('.go-card .g-sub', (e) => e.textContent).catch(() => '');
+    await tapPoint(G, 40); // E5, the centre
+    const thinking = await G.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    const replied = await until(async () => { const g = await goOn(G); return !!g && g.state.board.filter((v) => v === 2).length === 1 && g.state.board[40] === 1 && g.state.turn === 1; }, 5000);
+    const after = await G.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    const H = await fresh();
+    await H.ask('play go', 600);
+    const sub2 = await H.p.$eval('.go-card .g-sub', (e) => e.textContent).catch(() => '');
+    await tapPoint(H, 40); await H.p.waitForTimeout(1500);
+    const two = await goOn(H), status2 = await H.p.$eval('.go-card .go-status', (e) => e.textContent).catch(() => '');
+    check('go against v01d: "play go against void" seats you as Black, the card says V01D is thinking, a White stone answers your stone within seconds; "play go" stays two people with no reply; no page errors',
+      /against V01D/.test(sub) && /V01D.s turn/.test(thinking) && replied && /V01D played [A-HJ]\d/.test(after) && /Your move/.test(after)
+        && /two players/.test(sub2) && !!two && two.state.board[40] === 1 && !two.state.board.includes(2) && !two.state.vs && /White to play/.test(status2)
+        && !G.errors.length && !H.errors.length,
+      JSON.stringify({ sub, thinking, replied, after, sub2, status2, errs: G.errors.concat(H.errors) }));
+    await G.ctx.close(); await H.ctx.close(); }
+
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

@@ -157,11 +157,19 @@
    "to": 240
   },
   {
+   "id": "rules",
+   "name": "Rule registry",
+   "for": "every active router rule, in the order an ask meets them: the first that catches it answers",
+   "kind": "rules",
+   "from": 241,
+   "to": 260
+  },
+  {
    "id": "index",
    "name": "Index",
    "kind": "index",
-   "from": 241,
-   "to": 247
+   "from": 261,
+   "to": 267
   }
  ],
  "pages": [
@@ -947,7 +955,7 @@
     "let's play go"
    ],
    "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "why": "a self-test, 4 browser-suite mentions",
    "n": 43,
    "game": {
     "title": "Go",
@@ -3534,7 +3542,7 @@
     "how healthy are your skills"
    ],
    "tier": "checked",
-   "why": "a self-test, 6 browser-suite mentions",
+   "why": "a self-test, 7 browser-suite mentions",
    "n": 196
   },
   {
@@ -4214,6 +4222,1073 @@
    "n": 240
   },
   {
+   "kind": "opener",
+   "chapter": "rules",
+   "title": "Rule registry",
+   "line": "every active router rule, in the order an ask meets them: the first that catches it answers",
+   "skills": [
+    "routine",
+    "counter",
+    "shape",
+    "sticky",
+    "digest",
+    "notepad",
+    "repo",
+    "video",
+    "link",
+    "games",
+    "image",
+    "calc",
+    "guide",
+    "tab",
+    "kept",
+    "list",
+    "convert",
+    "markets",
+    "rides",
+    "social",
+    "dating",
+    "part",
+    "figure",
+    "together",
+    "pong",
+    "snake",
+    "growth",
+    "quiz",
+    "challenge",
+    "goal",
+    "intent",
+    "rts",
+    "forge",
+    "make",
+    "time",
+    "spanish",
+    "translate",
+    "rebuild-map",
+    "deps",
+    "sky-card",
+    "place",
+    "define",
+    "news",
+    "words",
+    "country",
+    "grades",
+    "distance",
+    "joke",
+    "recipe",
+    "crypto",
+    "loan",
+    "savings",
+    "fuel",
+    "tip",
+    "room",
+    "walls",
+    "home",
+    "sleep",
+    "ovulation",
+    "period",
+    "pregnancy",
+    "nutrition",
+    "food",
+    "swaps",
+    "heart",
+    "util",
+    "memory",
+    "deadlines",
+    "watch",
+    "dates",
+    "book",
+    "show",
+    "sport",
+    "work",
+    "invite",
+    "share",
+    "poster",
+    "recent",
+    "coral",
+    "senolytic",
+    "trialwatch",
+    "incident",
+    "releasenotes",
+    "status",
+    "motorbody",
+    "printedmotor",
+    "magnetize",
+    "inventory",
+    "throw-off",
+    "print-file",
+    "figures",
+    "dismiss",
+    "group",
+    "layer",
+    "label",
+    "light-look",
+    "dark-look",
+    "local-inference",
+    "print-download",
+    "cartoon",
+    "zoom-figure",
+    "figure-can",
+    "show-countdown",
+    "gears",
+    "moon",
+    "night-sky",
+    "splat",
+    "pdf-card",
+    "lock",
+    "automations",
+    "actions",
+    "proposal",
+    "store",
+    "services",
+    "feelings",
+    "showcase",
+    "different",
+    "breath",
+    "draw",
+    "films",
+    "app",
+    "film-metadata",
+    "video-play",
+    "swarm",
+    "appraise",
+    "family-health",
+    "v01d-fixes",
+    "merges",
+    "fringe-to-skill",
+    "duel",
+    "know",
+    "merge",
+    "service-health",
+    "shortcut",
+    "technical-context",
+    "type-filter",
+    "web4",
+    "state",
+    "pulse",
+    "friction",
+    "collide",
+    "bench",
+    "movie",
+    "vector-field-mind",
+    "media-pick",
+    "music",
+    "pick-for-me",
+    "flow-canvas",
+    "incident-autopsy",
+    "event-countdown",
+    "living-cards-mind"
+   ],
+   "n": 241
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules I–VIII",
+   "rules": [
+    {
+     "rank": 1,
+     "name": "routine",
+     "catches": "call this my morning"
+    },
+    {
+     "rank": 2,
+     "name": "counter",
+     "catches": "make a counter"
+    },
+    {
+     "rank": 3,
+     "name": "shape",
+     "catches": "draw a circle"
+    },
+    {
+     "rank": 4,
+     "name": "sticky",
+     "catches": "sticky note buy milk"
+    },
+    {
+     "rank": 5,
+     "name": "digest",
+     "catches": "summarize this transcript: black holes form when massive stars collapse and noth"
+    },
+    {
+     "rank": 6,
+     "name": "notepad",
+     "catches": "open a notepad"
+    },
+    {
+     "rank": 7,
+     "name": "repo",
+     "catches": "look at atomeam/void-loop"
+    },
+    {
+     "rank": 8,
+     "name": "video",
+     "catches": "play the moon landing video"
+    }
+   ],
+   "n": 242
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules IX–XVI",
+   "rules": [
+    {
+     "rank": 9,
+     "name": "link",
+     "catches": "add a link https://github.com/atomeam"
+    },
+    {
+     "rank": 10,
+     "name": "games",
+     "catches": "board games can all be combined"
+    },
+    {
+     "rank": 11,
+     "name": "image",
+     "catches": "show this image https://example.org/cat.png"
+    },
+    {
+     "rank": 12,
+     "name": "calc",
+     "catches": "open a calculator"
+    },
+    {
+     "rank": 13,
+     "name": "guide",
+     "catches": "open the book"
+    },
+    {
+     "rank": 14,
+     "name": "tab",
+     "catches": "put in the page"
+    },
+    {
+     "rank": 15,
+     "name": "kept",
+     "catches": "turn this card into a note"
+    },
+    {
+     "rank": 16,
+     "name": "list",
+     "catches": "make a list"
+    }
+   ],
+   "n": 243
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XVII–XXIV",
+   "rules": [
+    {
+     "rank": 17,
+     "name": "convert",
+     "catches": "unit converter"
+    },
+    {
+     "rank": 18,
+     "name": "markets",
+     "catches": "crypto prices"
+    },
+    {
+     "rank": 19,
+     "name": "rides",
+     "catches": "food and rides"
+    },
+    {
+     "rank": 20,
+     "name": "social",
+     "catches": "social feed"
+    },
+    {
+     "rank": 21,
+     "name": "dating",
+     "catches": "dating profile"
+    },
+    {
+     "rank": 22,
+     "name": "part",
+     "catches": "summon linemote-1"
+    },
+    {
+     "rank": 23,
+     "name": "figure",
+     "catches": "summon motelet"
+    },
+    {
+     "rank": 24,
+     "name": "together",
+     "catches": "what are they doing"
+    }
+   ],
+   "n": 244
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XXV–XXXII",
+   "rules": [
+    {
+     "rank": 25,
+     "name": "pong",
+     "catches": "pong"
+    },
+    {
+     "rank": 26,
+     "name": "snake",
+     "catches": "snake"
+    },
+    {
+     "rank": 27,
+     "name": "growth",
+     "catches": "tester log"
+    },
+    {
+     "rank": 28,
+     "name": "quiz",
+     "catches": "quiz me on this"
+    },
+    {
+     "rank": 29,
+     "name": "challenge",
+     "catches": "give me five minutes with this"
+    },
+    {
+     "rank": 30,
+     "name": "goal",
+     "catches": "give me a challenge with this"
+    },
+    {
+     "rank": 31,
+     "name": "intent",
+     "catches": "I need to ship the product page by Friday"
+    },
+    {
+     "rank": 32,
+     "name": "rts",
+     "catches": "start a camp"
+    }
+   ],
+   "n": 245
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XXXIII–XL",
+   "rules": [
+    {
+     "rank": 33,
+     "name": "forge",
+     "catches": "forge history"
+    },
+    {
+     "rank": 34,
+     "name": "make",
+     "catches": "make a 3d torus"
+    },
+    {
+     "rank": 35,
+     "name": "time",
+     "catches": "existing skills should merge"
+    },
+    {
+     "rank": 36,
+     "name": "spanish",
+     "catches": "answer me in Spanish"
+    },
+    {
+     "rank": 37,
+     "name": "translate",
+     "catches": "translate hello to Spanish"
+    },
+    {
+     "rank": 38,
+     "name": "rebuild-map",
+     "catches": "show the map"
+    },
+    {
+     "rank": 39,
+     "name": "deps",
+     "catches": "dependency map"
+    },
+    {
+     "rank": 40,
+     "name": "sky-card",
+     "catches": "where is jupiter"
+    }
+   ],
+   "n": 246
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XLI–XLVIII",
+   "rules": [
+    {
+     "rank": 41,
+     "name": "place",
+     "catches": "map of Lisbon"
+    },
+    {
+     "rank": 42,
+     "name": "define",
+     "catches": "define serendipity"
+    },
+    {
+     "rank": 43,
+     "name": "news",
+     "catches": "news today"
+    },
+    {
+     "rank": 44,
+     "name": "words",
+     "catches": "synonym for happy"
+    },
+    {
+     "rank": 45,
+     "name": "country",
+     "catches": "france vs spain"
+    },
+    {
+     "rank": 46,
+     "name": "grades",
+     "catches": "what is my gpa A B B+ A-"
+    },
+    {
+     "rank": 47,
+     "name": "distance",
+     "catches": "distance from London to Paris"
+    },
+    {
+     "rank": 48,
+     "name": "joke",
+     "catches": "tell me a joke"
+    }
+   ],
+   "n": 247
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XLIX–LVI",
+   "rules": [
+    {
+     "rank": 49,
+     "name": "recipe",
+     "catches": "recipe for pancakes"
+    },
+    {
+     "rank": 50,
+     "name": "crypto",
+     "catches": "bitcoin price"
+    },
+    {
+     "rank": 51,
+     "name": "loan",
+     "catches": "monthly payment on a $250000 mortgage at 6.5% for 30 years"
+    },
+    {
+     "rank": 52,
+     "name": "savings",
+     "catches": "how much will i have if i save 200 a month for 20 years at 7%"
+    },
+    {
+     "rank": 53,
+     "name": "fuel",
+     "catches": "gas cost for 320 miles at 28 mpg $3.59 a gallon"
+    },
+    {
+     "rank": 54,
+     "name": "tip",
+     "catches": "20% tip on 45"
+    },
+    {
+     "rank": 55,
+     "name": "room",
+     "catches": "redo a 12x14 room"
+    },
+    {
+     "rank": 56,
+     "name": "walls",
+     "catches": "how many rolls of wallpaper for a 12x14 room"
+    }
+   ],
+   "n": 248
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules LVII–LXIV",
+   "rules": [
+    {
+     "rank": 57,
+     "name": "home",
+     "catches": "how much paint do i need for a 12x14 room"
+    },
+    {
+     "rank": 58,
+     "name": "sleep",
+     "catches": "if i wake up at 7am when should i go to sleep"
+    },
+    {
+     "rank": 59,
+     "name": "ovulation",
+     "catches": "when am i ovulating if my last period was march 1"
+    },
+    {
+     "rank": 60,
+     "name": "period",
+     "catches": "my period started today"
+    },
+    {
+     "rank": 61,
+     "name": "pregnancy",
+     "catches": "due date if my last period was march 1"
+    },
+    {
+     "rank": 62,
+     "name": "nutrition",
+     "catches": "how many calories should i eat a day"
+    },
+    {
+     "rank": 63,
+     "name": "food",
+     "catches": "calories in a banana"
+    },
+    {
+     "rank": 64,
+     "name": "swaps",
+     "catches": "substitute for buttermilk"
+    }
+   ],
+   "n": 249
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules LXV–LXXII",
+   "rules": [
+    {
+     "rank": 65,
+     "name": "heart",
+     "catches": "what is my target heart rate"
+    },
+    {
+     "rank": 66,
+     "name": "util",
+     "catches": "generate a password"
+    },
+    {
+     "rank": 67,
+     "name": "memory",
+     "catches": "what did I build with react"
+    },
+    {
+     "rank": 68,
+     "name": "deadlines",
+     "catches": "deadline chain from today: 24 hours, 72 hours, 14 days"
+    },
+    {
+     "rank": 69,
+     "name": "watch",
+     "catches": "tell me when it's below 0 in Oslo"
+    },
+    {
+     "rank": 70,
+     "name": "dates",
+     "catches": "existing skills should merge"
+    },
+    {
+     "rank": 71,
+     "name": "book",
+     "catches": "books by octavia butler"
+    },
+    {
+     "rank": 72,
+     "name": "show",
+     "catches": "tv show severance"
+    }
+   ],
+   "n": 250
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules LXXIII–LXXX",
+   "rules": [
+    {
+     "rank": 73,
+     "name": "sport",
+     "catches": "nba team celtics"
+    },
+    {
+     "rank": 74,
+     "name": "work",
+     "catches": "find me work as a designer"
+    },
+    {
+     "rank": 75,
+     "name": "invite",
+     "catches": "invite someone"
+    },
+    {
+     "rank": 76,
+     "name": "share",
+     "catches": "share this card"
+    },
+    {
+     "rank": 77,
+     "name": "poster",
+     "catches": "make this a poster"
+    },
+    {
+     "rank": 78,
+     "name": "recent",
+     "catches": "recent asks"
+    },
+    {
+     "rank": 79,
+     "name": "coral",
+     "catches": "coral restoration florida keys"
+    },
+    {
+     "rank": 80,
+     "name": "senolytic",
+     "catches": "senolytics for fatty liver"
+    }
+   ],
+   "n": 251
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules LXXXI–LXXXVIII",
+   "rules": [
+    {
+     "rank": 81,
+     "name": "trialwatch",
+     "catches": "trial watch"
+    },
+    {
+     "rank": 82,
+     "name": "incident",
+     "catches": "write an incident brief"
+    },
+    {
+     "rank": 83,
+     "name": "releasenotes",
+     "catches": "write release notes for my repo"
+    },
+    {
+     "rank": 84,
+     "name": "status",
+     "catches": "void status"
+    },
+    {
+     "rank": 85,
+     "name": "motorbody",
+     "catches": "download the printed motor as 3mf"
+    },
+    {
+     "rank": 86,
+     "name": "printedmotor",
+     "catches": "can you 3d print a motor"
+    },
+    {
+     "rank": 87,
+     "name": "magnetize",
+     "catches": "show the magnetize step"
+    },
+    {
+     "rank": 88,
+     "name": "inventory",
+     "catches": "what's already built"
+    }
+   ],
+   "n": 252
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules LXXXIX–XCVI",
+   "rules": [
+    {
+     "rank": 89,
+     "name": "throw-off",
+     "catches": "throw it off the screen"
+    },
+    {
+     "rank": 90,
+     "name": "print-file",
+     "catches": "export a print file"
+    },
+    {
+     "rank": 91,
+     "name": "figures",
+     "catches": "summon a sprite"
+    },
+    {
+     "rank": 92,
+     "name": "dismiss",
+     "catches": "dismiss this"
+    },
+    {
+     "rank": 93,
+     "name": "group",
+     "catches": "group the clock and the note"
+    },
+    {
+     "rank": 94,
+     "name": "layer",
+     "catches": "bring the clock to the front"
+    },
+    {
+     "rank": 95,
+     "name": "label",
+     "catches": "label the clock kitchen"
+    },
+    {
+     "rank": 96,
+     "name": "light-look",
+     "catches": "make my void light"
+    }
+   ],
+   "n": 253
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules XCVII–CIV",
+   "rules": [
+    {
+     "rank": 97,
+     "name": "dark-look",
+     "catches": "dark"
+    },
+    {
+     "rank": 98,
+     "name": "local-inference",
+     "catches": "validate this diff"
+    },
+    {
+     "rank": 99,
+     "name": "print-download",
+     "catches": "download the print file"
+    },
+    {
+     "rank": 100,
+     "name": "cartoon",
+     "catches": "cartoon version of a plague"
+    },
+    {
+     "rank": 101,
+     "name": "zoom-figure",
+     "catches": "zoom in on the figure"
+    },
+    {
+     "rank": 102,
+     "name": "figure-can",
+     "catches": "what can this figure do"
+    },
+    {
+     "rank": 103,
+     "name": "show-countdown",
+     "catches": "show the countdown"
+    },
+    {
+     "rank": 104,
+     "name": "gears",
+     "catches": "find the rule"
+    }
+   ],
+   "n": 254
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CV–CXII",
+   "rules": [
+    {
+     "rank": 105,
+     "name": "moon",
+     "catches": "explain moon phases"
+    },
+    {
+     "rank": 106,
+     "name": "night-sky",
+     "catches": "hide the sky"
+    },
+    {
+     "rank": 107,
+     "name": "splat",
+     "catches": "view a gaussian splat"
+    },
+    {
+     "rank": 108,
+     "name": "pdf-card",
+     "catches": "ask questions about a document"
+    },
+    {
+     "rank": 109,
+     "name": "lock",
+     "catches": "show me how a key opens a lock"
+    },
+    {
+     "rank": 110,
+     "name": "automations",
+     "catches": "my automations"
+    },
+    {
+     "rank": 111,
+     "name": "actions",
+     "catches": "my actions"
+    },
+    {
+     "rank": 112,
+     "name": "proposal",
+     "catches": "turn this into a proposal"
+    }
+   ],
+   "n": 255
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CXIII–CXX",
+   "rules": [
+    {
+     "rank": 113,
+     "name": "store",
+     "catches": "what's new in the store"
+    },
+    {
+     "rank": 114,
+     "name": "services",
+     "catches": "what do you sell"
+    },
+    {
+     "rank": 115,
+     "name": "feelings",
+     "catches": "do you love me"
+    },
+    {
+     "rank": 116,
+     "name": "showcase",
+     "catches": "show me what you made"
+    },
+    {
+     "rank": 117,
+     "name": "different",
+     "catches": "what makes you different"
+    },
+    {
+     "rank": 118,
+     "name": "breath",
+     "catches": "box breathing"
+    },
+    {
+     "rank": 119,
+     "name": "draw",
+     "catches": "let me draw"
+    },
+    {
+     "rank": 120,
+     "name": "films",
+     "catches": "films"
+    }
+   ],
+   "n": 256
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CXXI–CXXVIII",
+   "rules": [
+    {
+     "rank": 121,
+     "name": "app",
+     "catches": "get the app"
+    },
+    {
+     "rank": 122,
+     "name": "film-metadata",
+     "catches": "film discovery for inception"
+    },
+    {
+     "rank": 123,
+     "name": "video-play",
+     "catches": "play despacito"
+    },
+    {
+     "rank": 124,
+     "name": "swarm",
+     "catches": "swarm"
+    },
+    {
+     "rank": 125,
+     "name": "appraise",
+     "catches": "what is this worth"
+    },
+    {
+     "rank": 126,
+     "name": "family-health",
+     "catches": "show me your skill families"
+    },
+    {
+     "rank": 127,
+     "name": "v01d-fixes",
+     "catches": "V01D's fixes"
+    },
+    {
+     "rank": 128,
+     "name": "merges",
+     "catches": "what did you merge"
+    }
+   ],
+   "n": 257
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CXXIX–CXXXVI",
+   "rules": [
+    {
+     "rank": 129,
+     "name": "fringe-to-skill",
+     "catches": "fringe to skill"
+    },
+    {
+     "rank": 130,
+     "name": "duel",
+     "catches": "duel"
+    },
+    {
+     "rank": 131,
+     "name": "know",
+     "catches": "what is voidquest"
+    },
+    {
+     "rank": 132,
+     "name": "merge",
+     "catches": "merge a pizza and a black hole"
+    },
+    {
+     "rank": 133,
+     "name": "service-health",
+     "catches": "service health"
+    },
+    {
+     "rank": 134,
+     "name": "shortcut",
+     "catches": "what should I do now"
+    },
+    {
+     "rank": 135,
+     "name": "technical-context",
+     "catches": "why is rust unwrap a risk"
+    },
+    {
+     "rank": 136,
+     "name": "type-filter",
+     "catches": "show only clocks"
+    }
+   ],
+   "n": 258
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CXXXVII–CXLIV",
+   "rules": [
+    {
+     "rank": 137,
+     "name": "web4",
+     "catches": "what is web4"
+    },
+    {
+     "rank": 138,
+     "name": "state",
+     "catches": "what do you keep on this device"
+    },
+    {
+     "rank": 139,
+     "name": "pulse",
+     "catches": "show the pulse"
+    },
+    {
+     "rank": 140,
+     "name": "friction",
+     "catches": "add a friction slider"
+    },
+    {
+     "rank": 141,
+     "name": "collide",
+     "catches": "any collisions"
+    },
+    {
+     "rank": 142,
+     "name": "bench",
+     "catches": "show the bench"
+    },
+    {
+     "rank": 143,
+     "name": "movie",
+     "catches": "pick a movie to watch with me"
+    },
+    {
+     "rank": 144,
+     "name": "vector-field-mind",
+     "catches": "show me a vector field mind"
+    }
+   ],
+   "n": 259
+  },
+  {
+   "kind": "rules",
+   "chapter": "rules",
+   "title": "Rules CXLV–CLI",
+   "rules": [
+    {
+     "rank": 145,
+     "name": "media-pick",
+     "catches": "pick something to listen to with me"
+    },
+    {
+     "rank": 146,
+     "name": "music",
+     "catches": "make me a song"
+    },
+    {
+     "rank": 147,
+     "name": "pick-for-me",
+     "catches": "pick for me"
+    },
+    {
+     "rank": 148,
+     "name": "flow-canvas",
+     "catches": "flow canvas"
+    },
+    {
+     "rank": 149,
+     "name": "incident-autopsy",
+     "catches": "incident autopsy"
+    },
+    {
+     "rank": 150,
+     "name": "event-countdown",
+     "catches": "how many hours til gta6"
+    },
+    {
+     "rank": 151,
+     "name": "living-cards-mind",
+     "catches": "living spatial cards mind"
+    }
+   ],
+   "n": 260
+  },
+  {
    "kind": "index",
    "chapter": "index",
    "title": "Index A–C",
@@ -4363,7 +5438,7 @@
      "page": 103
     }
    ],
-   "n": 241
+   "n": 261
   },
   {
    "kind": "index",
@@ -4515,7 +5590,7 @@
      "page": 16
     }
    ],
-   "n": 242
+   "n": 262
   },
   {
    "kind": "index",
@@ -4667,7 +5742,7 @@
      "page": 7
     }
    ],
-   "n": 243
+   "n": 263
   },
   {
    "kind": "index",
@@ -4819,7 +5894,7 @@
      "page": 53
     }
    ],
-   "n": 244
+   "n": 264
   },
   {
    "kind": "index",
@@ -4971,7 +6046,7 @@
      "page": 168
     }
    ],
-   "n": 245
+   "n": 265
   },
   {
    "kind": "index",
@@ -5123,7 +6198,7 @@
      "page": 169
     }
    ],
-   "n": 246
+   "n": 266
   },
   {
    "kind": "index",
@@ -5199,7 +6274,7 @@
      "page": 11
     }
    ],
-   "n": 247
+   "n": 267
   }
  ],
  "index": [
@@ -6137,8 +7212,8 @@
   }
  ],
  "totals": {
-  "pages": 247,
-  "chapters": 13,
+  "pages": 267,
+  "chapters": 14,
   "skills": 184,
   "games": 16,
   "minis": 40

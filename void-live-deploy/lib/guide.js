@@ -6,6 +6,8 @@
 // the files in skills/mini/, and each page's one line is the first sentence of its skill's own header comment.
 // tools/guide.test.mjs checks each piece; tools/checks.mjs fails when guide.json is stale, so a new skill can never be missing.
 
+import { rulesOf, rulePages, RULES_ID, RULES_NAME, RULES_FOR } from './rule-registry.js';
+
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
 /** what each rating word means, in plain words (tools/families.mjs: ratings are earned from evidence, never claimed) */
 export const TIER_MEANING = {
@@ -225,6 +227,12 @@ export function compose({ names = [], read = () => '', families = { families: []
       card: owner ? title(owner === 'place' ? 'map' : owner) : (d.card ? d.card.replace(/\s*\(.*$/, '') : ''), examples: ex, owner: owner || undefined, ownerPage: ownerPage ? ownerPage.n : undefined });
   }
   mchap.to = pages.length;
+  // the rule registry (asked by Void): every active router rule, each skill in routing order (index.json), as an illuminated entry
+  const rchap = chapter({ id: RULES_ID, name: RULES_NAME, for: RULES_FOR, kind: 'rules' });
+  const rules = rulesOf(names, (n) => { const src = read(n); return listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src); });
+  page({ kind: 'opener', chapter: RULES_ID, title: RULES_NAME, line: RULES_FOR, skills: names.slice() });
+  for (const rp of rulePages(rules)) page(rp);
+  rchap.to = pages.length;
   // the index at the back: every skill page and game page, A to Z, 36 to a page
   // a boxed game is listed under its box name and under its skill's own name (Back to Start, and Sorry), so either finds it
   const entries = pages.filter((p) => p.kind === 'skill' || p.kind === 'game' || p.kind === 'mini').flatMap((p) => [{ name: p.kind === 'mini' ? p.title + ' (3D)' : p.title, page: p.n }, ...(p.kind === 'skill' && p.game && p.title !== title(p.name) ? [{ name: title(p.name), page: p.n }] : [])]).sort((a, b) => a.name.localeCompare(b.name));
