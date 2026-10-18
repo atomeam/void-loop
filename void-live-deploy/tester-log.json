@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 49,
- "runsTotal": 163,
+ "cases": 50,
+ "runsTotal": 164,
  "kinds": {
-  "grow": 42,
+  "grow": 43,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T05:01:15Z",
+   "passed": 52,
+   "of": 53,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
+  },
   {
    "at": "2026-10-18T04:39:06Z",
    "passed": 42,
@@ -142,13 +149,6 @@
    "of": 34,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
-  },
-  {
-   "at": "2026-10-17T21:21:26Z",
-   "passed": 32,
-   "of": 33,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
   }
  ],
  "seen": {
@@ -325,6 +325,10 @@
   "skill:card-play": "2026-10-18T04:39:06Z",
   "skill:causal-scars": "2026-10-18T04:39:06Z",
   "skill:certainty-budget": "2026-10-18T04:39:06Z",
-  "skill:codex": "2026-10-18T04:39:06Z"
+  "skill:codex": "2026-10-18T04:39:06Z",
+  "skill:constellation-weaver": "2026-10-18T05:01:15Z",
+  "skill:contradiction-lamp": "2026-10-18T05:01:15Z",
+  "skill:counterfactual-draft": "2026-10-18T05:01:15Z",
+  "skill:crowd": "2026-10-18T05:01:15Z"
  }
 }

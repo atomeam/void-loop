@@ -173,6 +173,9 @@
     },
     {
       "ask": "flip this card"
+    },
+    {
+      "ask": "weave a constellation called night ops"
     }
   ],
   "candidates": [],
