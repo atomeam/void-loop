@@ -1142,5 +1142,12 @@
   "of": 42,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
+ },
+ {
+  "at": "2026-10-18T00:02:54Z",
+  "passed": 32,
+  "of": 43,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
  }
 ]

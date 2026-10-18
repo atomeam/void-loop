@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 40,
- "runsTotal": 153,
+ "cases": 41,
+ "runsTotal": 154,
  "kinds": {
-  "grow": 33,
+  "grow": 34,
   "file": 66,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T00:02:54Z",
+   "passed": 32,
+   "of": 43,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
+  },
   {
    "at": "2026-10-17T23:49:12Z",
    "passed": 41,
@@ -142,13 +149,6 @@
    "of": 25,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
-  },
-  {
-   "at": "2026-10-17T11:36:13Z",
-   "passed": 19,
-   "of": 25,
-   "kind": "file",
-   "note": "fix: \"my actions\" load 1251 ms > 1200"
   }
  ],
  "seen": {
@@ -163,16 +163,16 @@
   "skill:battleship": "2026-10-15T06:23:11Z",
   "skill:book": "2026-10-15T07:20:54Z",
   "skill:breath": "2026-10-17T23:49:12Z",
-  "skill:calc": "2026-10-17T07:42:31Z",
+  "skill:calc": "2026-10-18T00:02:54Z",
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
   "skill:film-metadata": "2026-10-15T08:17:23Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
-  "skill:challenge": "2026-10-17T07:48:48Z",
+  "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
-  "skill:convert": "2026-10-17T07:48:48Z",
+  "skill:convert": "2026-10-18T00:02:54Z",
   "skill:coral": "2026-10-17T07:48:48Z",
   "skill:counter": "2026-10-17T07:56:04Z",
   "skill:country": "2026-10-17T07:56:04Z",
