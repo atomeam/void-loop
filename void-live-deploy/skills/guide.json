@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 2,
-    "tested": 13,
-    "checked": 9,
+    "tested": 12,
+    "checked": 10,
     "proven": 11
    },
    "from": 5,
@@ -604,8 +604,8 @@
     "print this card as a poster",
     "turn this into a poster"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 14 browser-suite mentions",
    "n": 24
   },
   {
@@ -4318,8 +4318,8 @@
    "line": "Starter lists: ask for a",
    "examples": [
     "shopping list template",
-    "packing list template for a beach trip",
-    "meeting agenda template"
+    "meeting agenda template",
+    "bug list template"
    ],
    "tier": "checked",
    "why": "a self-test, 1 browser-suite mention",

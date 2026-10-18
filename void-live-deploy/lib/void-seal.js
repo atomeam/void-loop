@@ -203,7 +203,7 @@ export function sealArt(box, { key = '', kind = 'Idea', hue = null, rarity = nul
     if (!box || box.classList.contains('has-photo') || box.querySelector(':scope > .vc-seal') || typeof document === 'undefined') return;
     let tries = 0;
     const go = () => {
-      if (!box.isConnected || box.querySelector(':scope > .vc-seal')) return;
+      if (!box.isConnected || box.classList.contains('has-photo') || box.classList.contains('vc-forged') || box.querySelector(':scope > .vc-seal')) return; // a real picture or a painting arrived while this waited: it is the art
       if ((box.clientWidth || 0) < 120 && tries++ < 10) { setTimeout(go, 120); return; } // the card is still laying out
       const w = Math.max(160, Math.min(720, Math.round(box.clientWidth || 520))), h = Math.max(60, Math.min(400, Math.round(box.clientHeight || 150)));
       const url = sealUrl(sealPlan(key, { kind, hue, rarity, nouns }), w, h); if (!url) return;

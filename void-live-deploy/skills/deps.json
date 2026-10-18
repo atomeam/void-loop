@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 610,
+ "counted": 612,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -171,6 +171,12 @@
    "dependants": 17
   },
   {
+   "file": "lib/art-source.js",
+   "skills": 5,
+   "direct": 0,
+   "dependants": 10
+  },
+  {
    "file": "lib/card-image.js",
    "skills": 5,
    "direct": 1,
@@ -280,6 +286,12 @@
   },
   {
    "file": "lib/card-look.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/card-sections.js",
    "skills": 3,
    "direct": 0,
    "dependants": 5
@@ -1814,6 +1826,23 @@
     "skills/showcase.js"
    ]
   },
+  "lib/art-source.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-forge.js",
+    "lib/card-frame.js",
+    "lib/card-image.js"
+   ],
+   "reachedBy": [
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
+   ]
+  },
   "lib/ask-text.js": {
    "imports": [],
    "importedBy": [
@@ -2116,7 +2145,8 @@
   },
   "lib/card-forge.js": {
    "imports": [
-    "lib/art-rules.js"
+    "lib/art-rules.js",
+    "lib/art-source.js"
    ],
    "importedBy": [
     "lib/card-frame.js",
@@ -2139,7 +2169,9 @@
     "lib/card-forge.js",
     "lib/void-seal.js",
     "lib/card-subject.js",
-    "lib/card-look.js"
+    "lib/card-look.js",
+    "lib/art-source.js",
+    "lib/card-sections.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -2150,6 +2182,7 @@
   },
   "lib/card-image.js": {
    "imports": [
+    "lib/art-source.js",
     "lib/card-art.js",
     "lib/art-rules.js"
    ],
@@ -2182,6 +2215,18 @@
    "imports": [
     "lib/art-rules.js"
    ],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js"
+   ]
+  },
+  "lib/card-sections.js": {
+   "imports": [],
    "importedBy": [
     "lib/card-frame.js"
    ],

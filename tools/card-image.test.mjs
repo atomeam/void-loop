@@ -40,7 +40,7 @@ test('a card photo (a data URL the page drew from its own picture) is the art, i
   const url = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ==';
   const s = cardSvg({ ...d, photo: url });
   assert.match(s, /<image x="40" y="122" width="664" height="440" preserveAspectRatio="xMidYMid slice" href="data:image\/jpeg;base64,/);
-  assert.match(s, /opacity="\.28" style="mix-blend-mode:overlay"/); assert.ok(!/grayscale|sepia/.test(s));
+  assert.ok(!/opacity="\.28"|mix-blend-mode/.test(s), "no plate over the photo"); assert.ok(!/grayscale|sepia/.test(s));
   for (const bad of ['https://evil.example/x.png', 'javascript:alert(1)', 'data:image/svg+xml;base64,PHN2Zz4=', 'data:image/png;base64,AA"onload="x']) { const t = cardSvg({ ...d, photo: bad }); assert.ok(!/<image/.test(t), bad); }
   assert.ok(!/<image/.test(cardSvg(d)));
 });

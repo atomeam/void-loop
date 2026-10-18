@@ -48,7 +48,7 @@ export function takeHtml(esc, take, asks) {
   const t = String(take || '').trim(), a = Array.isArray(asks) ? asks : [];
   if (!t && !a.length) return '';
   return '<div class="take" style="border-left:2px solid var(--accent, #8ea2ff);padding:2px 0 2px 10px;margin:4px 0 12px">'
-    + '<div style="font-size:12px;color:var(--muted, #8a8a92);margin-bottom:2px">V01D’s take</div>'
+    + '<div class="take-label" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c7d2ff;margin-bottom:3px">V01D’s take</div>'
     + (t ? '<p style="margin:0 0 4px">' + esc(t) + '</p>' : '')
     + (a.length ? '<div>' + a.map((x) => '<a href="#" data-ask="' + esc(x.ask) + '" style="display:inline-block;margin:2px 10px 2px 0">' + esc(x.label) + ' →</a>').join('') + '</div>' : '')
     + '</div>';
