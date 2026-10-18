@@ -1,5 +1,5 @@
-# The clock for Void's own automations (lib/automations.js, functions/api/automations/tick.js): every 15 minutes it asks
-# a-to-mind.com to run the scheduled rules that are due. Void decides what is due; this only knocks. A Cloudflare cron
+# The clock for Verse's own automations (lib/automations.js, functions/api/automations/tick.js): every 15 minutes it asks
+# a-to-mind.com to run the scheduled rules that are due. Verse decides what is due; this only knocks. A Cloudflare cron
 # Worker is the long-term home for the knock (no GitHub in the loop); the route stays the same, so that swap only changes
 # who calls it. Needs the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
 #
@@ -8,7 +8,7 @@
 # starts the next run (a workflow_dispatch from GITHUB_TOKEN does start a run). The schedule stays as the restart if a chain
 # ever breaks; the concurrency group keeps it to one running clock and at most one waiting. Actions minutes are free for a
 # public repo.
-name: Void's clock
+name: Verse's clock
 
 on:
   schedule:

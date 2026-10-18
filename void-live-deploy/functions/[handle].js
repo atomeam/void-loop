@@ -1,4 +1,4 @@
-// a-to-mind.com/@name: the homepage, with that Void's look set in the HTML itself (so it is there on the first paint)
+// a-to-mind.com/@name: the homepage, with that Verse's look set in the HTML itself (so it is there on the first paint)
 // and its public cards handed to the page as data. Anything that is not /@name falls through to the site as usual.
 import { pageOf, HANDLE_RE } from '../lib/pages.js';
 

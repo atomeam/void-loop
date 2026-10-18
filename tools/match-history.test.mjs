@@ -1,4 +1,4 @@
-// node --test tools/match-history.test.mjs: the match history on a game's about card (asked by Void: "Expand the chess skill page to
+// node --test tools/match-history.test.mjs: the match history on a game's about card (asked by Verse: "Expand the chess skill page to
 // include a 'Match History' table that pulls from my recent game logs", and an Elo or win rate against the owner so the Games family
 // feels competitive and real). lib/match-history.js: the log caps at 100, the summary and the estimated Elo on a known sequence,
 // an empty log, the asks that open it, the block's markup, and the storage helpers over a stand-in storage.
@@ -39,7 +39,7 @@ test('summary and Elo on a known sequence: win, win, loss from 1200 each at K = 
   assert.deepEqual(elo([g('win')]), { you: START + K / 2, void: START - K / 2 });
   assert.deepEqual(elo([g('draw')]), { you: START, void: START }, 'a draw between equals moves nothing');
   assert.deepEqual(elo([g('win', 0, { vs: 'self' })]), { you: START, void: START }, 'a game against yourself rates nobody');
-  assert.equal(summaryLine(s), '3 played · 2–1–0 · 67% · you ~1212, V01D ~1188 (estimated)');
+  assert.equal(summaryLine(s), '3 played · 2–1–0 · 67% · you ~1212, Verse ~1188 (estimated)');
   assert.equal(summary([g('win'), g('win'), g('win')]).streak, 3);
   assert.equal(summary([g('loss'), g('draw')]).streak, 0, 'a draw ends the streak');
   // the summary of one game leaves the others out; no game named counts them all
@@ -64,7 +64,7 @@ test('the block: the summary line, the last ten newest first with when, vs, resu
   assert.equal((html.match(/<tr><td>/g) || []).length, 10, 'ten rows');
   assert.ok(html.indexOf('<td>' + (30 + 13) + '</td>') < html.indexOf('<td>' + (30 + 4) + '</td>'), 'newest first');
   assert.match(html, /<th>when<\/th><th>vs<\/th><th>result<\/th><th>moves<\/th><th>minutes<\/th>/);
-  assert.match(html, /<td data-result="win">you won<\/td>/); assert.match(html, /<td data-result="loss">V01D won<\/td>/); assert.match(html, /<td data-result="draw">a draw<\/td>/);
+  assert.match(html, /<td data-result="win">you won<\/td>/); assert.match(html, /<td data-result="loss">Verse won<\/td>/); assert.match(html, /<td data-result="draw">a draw<\/td>/);
   assert.match(html, /a2m\.void\.games\.v1/); assert.match(html, /Elo estimated: both start at 1200, K = 32/);
   const sneaky = historyHtml(esc, summary([{ ...g('win'), game: 'chess' }]), [{ ...g('win'), moves: '<img src=x onerror=1>' }]);
   assert.ok(!/<img/.test(sneaky), 'a bad number is 0, never markup');
@@ -72,7 +72,7 @@ test('the block: the summary line, the last ten newest first with when, vs, resu
 });
 
 test('historyAsk: the asks that open a game\'s record, and the ones that do not', () => {
-  for (const [ask, game] of [['chess match history', 'chess'], ['my chess record', 'chess'], ['my record against void', 'chess'], ['My record against V01D?', 'chess'], ['my match history', 'chess'],
+  for (const [ask, game] of [['chess match history', 'chess'], ['my chess record', 'chess'], ['my record against void', 'chess'], ['My record against Verse?', 'chess'], ['my match history', 'chess'],
     ['show me my chess record', 'chess'], ["what's my chess record", 'chess'], ['my checkers record', 'checkers'], ['my draughts record', 'checkers'], ['othello match history', 'othello'], ['reversi match history', 'othello'],
     ['my record at othello', 'othello'], ['my chess results against you', 'chess'], ['my chess history', 'chess']]) assert.deepEqual(historyAsk(ask), { game }, ask);
   for (const ask of ['match history', 'my record', 'chess record', 'chess history', 'chess rules', 'how good are you at chess', 'play chess', 'world record', 'record a voice note', 'my results', 'my history', 'tell me about the chess skill', '']) assert.equal(historyAsk(ask), null, ask);
@@ -95,6 +95,6 @@ test('finish keeps one game on the device through lib/state.js; load reads it ba
 
 test('the chess skill says what it is, and its record on this device when it has one (the about card prefers it)', () => {
   assert.equal(typeof chess.about, 'string');
-  assert.match(chess.about, /^A real wooden chess set on the stage, played against V01D/);
+  assert.match(chess.about, /^A real wooden chess set on the stage, played against Verse/);
   assert.ok(!/record/.test(chess.about), 'no localStorage here: no record line');
 });

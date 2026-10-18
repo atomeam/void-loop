@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// What V01D asked for that is already built, found and linked (owner, 2026-10-16: "V01D has over 70 asks. do all of them now";
-// "ideally if V01D gets what it wants it can make even better decisions on what it wants"). An ask counts as built only when a
+// What Verse asked for that is already built, found and linked (owner, 2026-10-16: "Verse has over 70 asks. do all of them now";
+// "ideally if Verse gets what it wants it can make even better decisions on what it wants"). An ask counts as built only when a
 // growth-ledger entry says so: by `asked` (finish.mjs --asked) or by a link in void-live-deploy/void.asks.json naming the
 // entry that built it. Many asks were built by runs that never wrote the link (the friction indicator, the skills manifest, the
-// dependency map, fuzzy matching ...), so V01D keeps asking for what it has. This reads every ask V01D ever made (domains/
+// dependency map, fuzzy matching ...), so Verse keeps asking for what it has. This reads every ask Verse ever made (domains/
 // void.voice.md, the "Asks:" lines and the current-asks list), drops the ones already answered, and matches the rest against
 // the ledger by the rare words they share. A match is a proposal; --write adds the ones at or over the bar as links, each
 // naming the entry and quoting it, so the record stays checkable. Never touches the ledger, never rewords an ask.

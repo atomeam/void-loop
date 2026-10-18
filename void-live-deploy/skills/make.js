@@ -2,7 +2,7 @@
  * make skill — things that materialize: a playable Connect 4, and 3D objects
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "play connect 4", "make a 3d torus", "a gold 3d diamond".
- * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Void's data)
+ * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Verse's data)
  * and arrives with a materialize animation. Everything is drawn here: no libraries, no downloads.
  * Tools: the fringe drafts wired live (tools/fringe.mjs --publish writes void-live-deploy/fringe/<family>.html);
  * "timing game", "what did void get wrong", "idea vault", "uap timeline"… open the page in a frame.
@@ -20,24 +20,24 @@ const COLORS = { red: [235, 70, 70], orange: [245, 150, 60], gold: [235, 190, 80
 const OPEN = '(?:(?:show|open|play|start|launch|give)\\s+(?:me\\s+)?)?(?:the\\s+|my\\s+|a\\s+)?';
 const TOOLS = [
   ['(?:timing game|interval timing|time sense game|test my (?:sense of time|timing))', 'interval-timing', 'Timing game', 'How well do you feel time pass? Stop the clock by feel.'],
-  ['(?:miss board|what did void get wrong|what has void (?:missed|got wrong))', 'miss-board', 'Miss board', 'Asks V01D could not answer yet, and what it learned from them.'],
+  ['(?:miss board|what did (?:verse|void) get wrong|what has void (?:missed|got wrong))', 'miss-board', 'Miss board', 'Asks Verse could not answer yet, and what it learned from them.'],
   ['(?:quiet(?:[\\s-]signal)? filter|headline filter|news without the noise)', 'quiet-signal-filter', 'Quiet filter', 'Paste headlines; the loud ones fade, the quiet signal stays.'],
   ['(?:idea vault|incubation log|incubate an idea|seal an idea)', 'private-incubation-log', 'Idea vault', 'Seal a half-formed idea; it comes back to you later. Kept on this device only.'],
-  ['(?:void(?:\'s)? (?:growth chart|progress|growth)|void progress|how is void growing)', 'correlation-view', 'V01D growth', 'The benchmark score round by round, and what moved it.'],
+  ['(?:void(?:\'s)? (?:growth chart|progress|growth)|(?:verse|void) progress|how is (?:verse|void) growing)', 'correlation-view', 'Verse growth', 'The benchmark score round by round, and what moved it.'],
   ['(?:hypothesis ledger|weak signal ledger|weak signals)', 'weak-signal-hypothesis-ledger', 'Hypothesis ledger', 'Weak signals held as hypotheses, each with its confidence and source.'],
   ['(?:(?:uap|ufo) (?:disclosure )?timeline|uap disclosure)', 'anomalous-event-timeline', 'UAP timeline', 'Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved.'],
   // the lab: the newest working draft of each fringe family, each a real experiment with its own self-test (2026-10-13)
   ['(?:posner(?: cue| cueing)?(?: test)?|arrow (?:attention )?test|attention test|test my attention)', 'attention-7', 'The pointing arrow', 'An arrow hints where a star will appear. Sometimes it lies. How much does a hint steer you?'],
   ['(?:hold the lamp|lamp timing(?: test)?|scalar timing(?: test)?)', 'interval-timing-8', 'Hold the lamp', 'Hold for as long as the lamp was lit. Longer times drift more, in proportion.'],
   ['(?:fitts(?:\'s|s)?(?: law)?(?: test)?|pointing test|how fast can i tap)', 'opt-in-gesture-6', 'How small a button', 'Tap the targets as fast as you can; Fitts\'s law predicts your time from size and distance.'],
-  ['(?:(?:joint )?simon (?:effect|test|task)|joint simon|its side of the table)', 'human-machine-co-agency-8', 'Its side of the table', 'Answer only the green dots. Does sharing the task with V01D slow you on its side?'],
+  ['(?:(?:joint )?simon (?:effect|test|task)|joint simon|its side of the table)', 'human-machine-co-agency-8', 'Its side of the table', 'Answer only the green dots. Does sharing the task with Verse slow you on its side?'],
   ['(?:count the flashes|flash[\\s-]beep(?: illusion)?|double[\\s-]flash illusion|sound[\\s-]induced flash(?: illusion)?)', 'sensory-substitution-7', 'Count the flashes', 'One flash or two? The beeps are not a clue, and they still change what you see.'],
   ['(?:feeling of knowing|do they know|how sure are they)', 'non-lexical-intent-5', 'Do they know', 'Only how the answer arrives: the pause, the um. How sure do they sound?'],
   ['(?:simpson(?:\'s|s)? paradox|the link turns over)', 'correlation-view-6', 'The link turns over', 'Inside every group more x goes with more y; pooled, the line can slope the other way.'],
   ['(?:cusum|change detector|when did it start|change[\\s-]point(?: test)?)', 'quiet-signal-filter-5', 'When did it start', 'Paste a series of numbers; a cumulative-sum test finds when a small lasting change began.'],
   ['(?:base[\\s-]rate(?: fallacy| test| check)?|one in a hundred|how likely is it really)', 'weak-signal-hypothesis-ledger-7', 'One in a hundred', 'A positive test, an alarm, a strong hunch: how likely is the thing behind it, really?'],
   ['(?:remote associates(?: test)?|three[\\s-]word puzzles?|word puzzles?|the wrong lead)', 'private-incubation-log-6', 'The wrong lead', 'Three words, one word that goes with all of them. Some come with a misleading hint.'],
-  ['(?:good[\\s-]turing|unseen asks|what hasn\'?t void heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has V01D already seen? Good and Turing\'s estimate.'],
+  ['(?:good[\\s-]turing|unseen asks|what hasn\'?t (?:verse|void) heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has Verse already seen? Good and Turing\'s estimate.'],
   ['(?:odd moments?(?: log)?|something odd (?:just )?happened|weirdness log)', 'anomalous-event-timeline-4', 'Odd moments', 'Log each odd moment; over days it asks whether they come in bursts more than chance would.'],
 ].map(([re, id, label, sub]) => [new RegExp('^' + OPEN + re + '$'), id, label, sub]);
 // drafts the fringe ledger published with a lab entry (tools/fringe.mjs --publish writes /fringe/lab.json): they join the lab
@@ -67,7 +67,7 @@ export function noteUse(id, { store = globalThis.localStorage, send = (b) => fet
 
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:show (?:me )?|open )?(?:the |void'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
+  if (/^(?:show (?:me )?|open )?(?:the |(?:verse|void)'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
   for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
   for (const [, id, label, sub] of TOOLS) if (label.toLowerCase().replace(/[^a-z' ]/g, '') === t.replace(/[^a-z' ]/g, '')) return { kind: 'tool', id, label, sub }; // the lab's own titles
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);
@@ -105,10 +105,10 @@ if(maxi){var v=-1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(bb,k);if(r<0)conti
 var v=1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(bb,k);if(r<0)continue;bb[r][k]=1;v=Math.min(v,mm(bb,depth-1,al,be,true));bb[r][k]=0;be=Math.min(be,v);if(al>=be)break}return v}
 function best(){var bk=-1,bv=-1e9;for(var i=0;i<7;i++){var k=ORDER[i],r=row(b,k);if(r<0)continue;b[r][k]=2;var v=mm(b,5,-1e9,1e9,false);b[r][k]=0;if(v>bv){bv=v;bk=k}}return bk}
 function play(k,p){var r=row(b,k);if(r<0)return false;b[r][k]=p;drops.push({r:r,k:k,p:p,y:-S/2,t:performance.now()});return true}
-function after(p){var w=win(b,p);if(w){over=w;st.textContent=p===1?'You win! Four in a row':'V01D wins this one';return true}if(full(b)){over=true;st.textContent='A draw';return true}return false}
+function after(p){var w=win(b,p);if(w){over=w;st.textContent=p===1?'You win! Four in a row':'Verse wins this one';return true}if(full(b)){over=true;st.textContent='A draw';return true}return false}
 c.addEventListener('pointermove',function(e){var q=c.getBoundingClientRect();hover=Math.floor((e.clientX-q.left)/q.width*C)});
 c.addEventListener('pointerleave',function(){hover=-1});
-c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='V01D is thinking…';dot.style.background='#f2c230';
+c.addEventListener('click',function(e){if(over||turn!==1)return;var q=c.getBoundingClientRect(),k=Math.floor((e.clientX-q.left)/q.width*C);if(!play(k,1))return;if(after(1))return;turn=2;st.textContent='Verse is thinking…';dot.style.background='#f2c230';
 setTimeout(function(){var k2=best();if(k2>=0)play(k2,2);if(!after(2)){turn=1;st.textContent='Your move';dot.style.background='#e0303e'}},420)});
 document.getElementById('r').onclick=reset;
 function disc(cx,cy,p,a){x.globalAlpha=a;x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=6;x.shadowOffsetY=3;var g=x.createRadialGradient(cx-9,cy-11,3,cx,cy,30);if(p===1){g.addColorStop(0,'#ff8f8f');g.addColorStop(.55,'#e0303e');g.addColorStop(1,'#9c1421')}else{g.addColorStop(0,'#fff3b0');g.addColorStop(.55,'#f2c230');g.addColorStop(1,'#b8860b')}x.fillStyle=g;x.beginPath();x.arc(cx,cy,28,0,7);x.fill();x.restore();
@@ -222,7 +222,7 @@ async function run(text, api) {
   if (q.kind === 'game') {
     title = q.label; h = 0;
     doc = connect4Doc();
-    sub = 'You are red. V01D plays yellow and looks five moves ahead.';
+    sub = 'You are red. Verse plays yellow and looks five moves ahead.';
   } else {
     const rgb = COLORS[q.color] || [124, 180, 255];
     const cap = (w) => w[0].toUpperCase() + w.slice(1); title = q.color ? cap(q.color) + ' ' + q.word : cap(q.word); h = 360;

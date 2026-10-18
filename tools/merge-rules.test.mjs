@@ -1,4 +1,4 @@
-// V01D card merges, the pure rules (lib/merge-rules.js) and the merge skill's parsing (skills/merge.js). Run: node --test tools/merge-rules.test.mjs
+// Verse card merges, the pure rules (lib/merge-rules.js) and the merge skill's parsing (skills/merge.js). Run: node --test tools/merge-rules.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

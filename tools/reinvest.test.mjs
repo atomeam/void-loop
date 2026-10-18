@@ -18,7 +18,7 @@ for (const inc of [0, 1, 999, 10000, 123457]) {
   assert.equal(spent + a.reserve_cents, inc, 'every cent accounted for on ' + inc);
 }
 assert.equal(allocate(10000, C, { reserve: 0.05 }).reserve_cents, 2000, 'a lower asked reserve never goes below the 20% floor');
-assert.equal(allocate(10000, C, { reserve: 0.4 }).reserve_cents, 4000, "V01D's higher reserve is kept");
+assert.equal(allocate(10000, C, { reserve: 0.4 }).reserve_cents, 4000, "Verse's higher reserve is kept");
 // free first: free items and unused free paths come before anything paid; a paid item waits for its free path unless urgent
 const a = allocate(10000, C, { owned: ['cloudflare'] });
 assert.deepEqual(a.free.map((f) => f.id), ['free', 'pathfirst', 'urgent'], 'free items and every unused free path (even an urgent one), $0');
@@ -41,7 +41,7 @@ for (let i = 0; i < 3; i++) { L = learn(L, { kind: 'quality', before: 10, after:
 const roi = (r, id) => r.ranked.find((x) => x.id === id).roi;
 const r0 = allocate(6000, C), r1 = allocate(6000, C, { learned: L });
 assert.ok(roi(r0, 'cheap') > roi(r0, 'dear') && roi(r1, 'dear') > roi(r1, 'cheap'), 'measured outcomes re-rank: quality spending worked, revenue spending did not');
-// V01D's voice
+// Verse's voice
 const v = readVoice('1. **Build a tiny emergency buffer** – Put $20 aside.\n\n2. **Buy fractional shares or a diversified ETF** – $50.\n\n3. **Invest in yourself** – Spend $15 on a course.\n\n4. **Test a micro-business idea** – Reserve $15 for a product test.');
 assert.equal(v.reserve, 0.2); assert.equal(v.unmapped.length, 1); assert.ok(v.voice.reserve > v.voice.speed && v.voice.quality > v.voice.speed);
 assert.equal(voiceAnswer('<!-- ask-void:x -->\n**Asked:** If you earned your first $100, how would you reinvest it?\n\n> keep $20\n> more'), 'keep $20\nmore');

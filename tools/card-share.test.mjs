@@ -24,7 +24,7 @@ test('junk is not a card', () => {
 test('file names are safe', () => { assert.equal(fileName({ t: 'Black hole!' }), 'black-hole.v01d-card.txt'); assert.equal(fileName({ t: '' }), 'card.v01d-card.txt'); });
 
 test('the code line is short; the whole copied text restores the full body, a bare code restores its start', () => {
-  const body = 'My own words. '.repeat(160), d = { t: 'What I think of myself', k: 'Answer — from V01D', b: body, src: [{ title: 'a', url: 'https://a.example/x' }, { title: 'b', url: 'https://b.example/y' }, { title: 'c', url: 'https://c.example/z' }] };
+  const body = 'My own words. '.repeat(160), d = { t: 'What I think of myself', k: 'Answer — from Verse', b: body, src: [{ title: 'a', url: 'https://a.example/x' }, { title: 'b', url: 'https://b.example/y' }, { title: 'c', url: 'https://c.example/z' }] };
   const text = shareText(d), code = codeOf(d);
   assert.ok(code.length < 700, 'the code is short: ' + code.length);
   const whole = parse(text); assert.equal(whole.t, d.t); assert.ok(whole.b.length > 2000, 'a paste of the whole text keeps the full body'); assert.equal(whole.src.length, 3);
@@ -42,8 +42,8 @@ test('version history: a copy of a pasted card carries a short iteration number,
 // a tiny stand-in for a detached DOM: element(tag, ...children), text nodes are strings
 const el = (tag, ...kids) => ({ nodeType: 1, tagName: tag, childNodes: kids.map((k) => (typeof k === 'string' ? { nodeType: 3, nodeValue: k } : k)) });
 test('a saved card reads as words: blocks on their own lines, side-by-side pieces apart (the Films and repo cards glued them)', () => {
-  const films = el('DIV', el('P', 'Now showing · a new one daily'), el('P', 'Every day V01D films one of its own experiments.'), el('DIV', el('BUTTON', '▶'), el('B', 'Watch now'), el('SPAN', 'Watch the newest film')), el('P', 'Free for everyone.'));
-  assert.equal(tidy(textOf(films)), 'Now showing · a new one daily\nEvery day V01D films one of its own experiments.\n▶ Watch now Watch the newest film\nFree for everyone.');
+  const films = el('DIV', el('P', 'Now showing · a new one daily'), el('P', 'Every day Verse films one of its own experiments.'), el('DIV', el('BUTTON', '▶'), el('B', 'Watch now'), el('SPAN', 'Watch the newest film')), el('P', 'Free for everyone.'));
+  assert.equal(tidy(textOf(films)), 'Now showing · a new one daily\nEvery day Verse films one of its own experiments.\n▶ Watch now Watch the newest film\nFree for everyone.');
   const facts = el('DIV', el('SPAN', 'JavaScript'), el('SPAN', el('B', '0'), ' stars'), el('SPAN', el('B', '0'), ' forks'));
   assert.equal(tidy(textOf(facts)), 'JavaScript 0 stars 0 forks');
   assert.equal(tidy(textOf(el('P', 'one', el('BR'), 'two'))), 'one\ntwo');
@@ -60,9 +60,9 @@ test('a saved card draws the Art Forge painting, then the subject photo, then th
   assert.equal(await artPicture(card({})), '');
   assert.equal(await artPicture(card({ forge: 'javascript:alert(1)' })), '');
 });
-test('"V01D\'s take" keeps its own line above the take (the Sentry card read "V01D\'s takeWhat most readers miss")', () => {
-  const take = el('DIV', el('DIV', 'V01D’s take'), el('P', 'What most readers miss is the memory.'), el('DIV', el('A', 'Ask more →')));
-  assert.equal(tidy(textOf(take)), 'V01D’s take\nWhat most readers miss is the memory.\nAsk more →');
+test('"Verse\'s take" keeps its own line above the take (the Sentry card read "Verse\'s takeWhat most readers miss")', () => {
+  const take = el('DIV', el('DIV', 'Verse’s take'), el('P', 'What most readers miss is the memory.'), el('DIV', el('A', 'Ask more →')));
+  assert.equal(tidy(textOf(take)), 'Verse’s take\nWhat most readers miss is the memory.\nAsk more →');
 });
 
 test('a long card keeps its whole answer, up to 8000 characters (the self card stopped mid-word at "rath", 2026-10-17)', async () => {
@@ -72,7 +72,7 @@ test('a long card keeps its whole answer, up to 8000 characters (the self card s
   assert.equal(d.b, long); assert.equal(BODY_MAX, 8000);
   const back = parse(shareText(d)); assert.equal(back.b, long, 'a pasted copy restores all of it'); assert.ok(codeOf(d).length < 600, 'the code line stays short');
 });
-test('the full-content badge (asked by Void): nothing on a short card, "whole text kept" past 2400 characters, and past the cap only what is true', async () => {
+test('the full-content badge (asked by Verse): nothing on a short card, "whole text kept" past 2400 characters, and past the cap only what is true', async () => {
   const { fullNote, BODY_MAX } = await import('../void-live-deploy/lib/card-share.js');
   assert.equal(fullNote(0), ''); assert.equal(fullNote(2400), ''); assert.equal(fullNote(2401), 'whole text kept'); assert.equal(fullNote(BODY_MAX), 'whole text kept');
   assert.equal(fullNote(BODY_MAX + 500), 'first ' + BODY_MAX + ' of ' + (BODY_MAX + 500) + ' characters kept'); assert.equal(fullNote('x'), '');
@@ -91,7 +91,7 @@ test('self card (owner review 2026-10-18): saved text keeps a blank line between
   const asked = secs.find((s) => s.id === 'asked').blocks[0].items[0]; assert.match(asked.sub, /^Asked in my daily reflection, 2026-10-08 · not built yet$/);
   const built = secs.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items[0]; assert.equal(built.sub, '2026-10-08 · asked 3 times'); assert.equal(built.detail.ref, '');
   const html = selfHtml(secs, esc); assert.ok(!html.includes('<b>.') && html.includes('Maps &lt;b&gt;.'), 'text is escaped'); assert.match(html, /<h3 class="vs-h">What got built <span class="vs-n">\(35 of 73 asks\)<\/span><\/h3>/);
-  assert.match(html, /^<section class="vs-sec" data-sec="words"><blockquote class="vs-voice"><p>I am thin on maps\.<\/p>/, 'V01D\'s words are a quotation, first');
+  assert.match(html, /^<section class="vs-sec" data-sec="words"><blockquote class="vs-voice"><p>I am thin on maps\.<\/p>/, 'Verse\'s words are a quotation, first');
   assert.match(html, /<section class="vs-sec" data-sec="sure"><div data-v-conf><\/div><\/section>/);
   assert.ok(!/<details class="vs-sec[^"]*" data-sec="\w+" open>/.test(html), 'every block starts closed');
   // a DOM-like tree for textOf: sections are blocks, li[data-bullet] is a "- " line
@@ -115,8 +115,8 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.equal((html.match(/<summary data-share-short="[^"]+">/g) || []).length, 26, 'every folded item carries its short line for the saved text');
   const { shortLine, SHORT } = await import('../void-live-deploy/lib/self-blocks.js');
   assert.equal(shortLine('ask 7'), 'ask 7');
-  const sl = shortLine('a careful sentence about what V01D wanted built and why it mattered to the stage, twice over');
-  assert.ok(sl.length <= SHORT + 1 && sl.endsWith('…') && !/\s…$/.test(sl) && 'a careful sentence about what V01D wanted built and why it mattered to the stage'.startsWith(sl.slice(0, -1)), sl);
+  const sl = shortLine('a careful sentence about what Verse wanted built and why it mattered to the stage, twice over');
+  assert.ok(sl.length <= SHORT + 1 && sl.endsWith('…') && !/\s…$/.test(sl) && 'a careful sentence about what Verse wanted built and why it mattered to the stage'.startsWith(sl.slice(0, -1)), sl);
   assert.match(html, /<details class="vs-sec" data-sec="growth"><summary class="vs-sum"><h3 class="vs-h">Weakest right now \/ Next game \/ How I'd get better<\/h3><\/summary><h4 class="vs-h4">Weakest right now<\/h4>/);
   assert.match(html, /<details class="vs-sec vs-log" data-sec="built"><summary class="vs-sum"><h3 class="vs-h">What got built <span class="vs-n">\(30 of 40 asks\)/);
   assert.match(html, /<h3 class="vs-h">What I've asked for <span class="vs-n">\(6 waiting\)/);

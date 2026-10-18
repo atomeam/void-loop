@@ -1,13 +1,13 @@
 /**
- * films skill - Void's own films: where to watch them (/films/, free for everyone, no sign-in)
+ * films skill - Verse's own films: where to watch them (/films/, free for everyone, no sign-in)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Void should know whatI mean
+ * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Verse should know whatI mean
  * and help". Takes "films", "voids fillms", "void's films", "where do I watch the films", "show me your videos", "review films",
  * typos included; leaves films about anything else ("best films of 2025", "film a timer") to the skills that answer those.
  */
 const FILM = '(?:films?|fillms?|filmes|flims?|fimls?|fims)';
 const ASK = '(?:(?:where|how)\\s+(?:do|can|could)\\s+i\\s+(?:watch|see|find|review|get\\s+to)\\s+|(?:show\\s+me|open|watch|see|play|review|go\\s+to|take\\s+me\\s+to|where\\s+are)\\s+)?(?:the\\s+)?';
-const WHOSE = "(?:void'?s?|v0[1i]d'?s?|your|my|a-?to-?mind'?s?)\\s+";
+const WHOSE = "(?:void'?s?|(?:v0[1i]d|verse)'?s?|your|my|a-?to-?mind'?s?)\\s+";
 const MINE = new RegExp('^' + ASK + '(?:' + WHOSE + ')?' + FILM + '(?:\\s+(?:page|reviews?|to\\s+review))?$', 'i'); // "films", "voids fillms", "review films"
 const VIDEOS = new RegExp('^' + ASK + WHOSE + '(?:videos?|movies?|shorts|recordings)(?:\\s+page)?$', 'i'); // "your videos" needs the whose
 const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
@@ -15,7 +15,7 @@ const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
 export const PAGE = '/films/';
 // "upload this to youtube", "post a film on tiktok", "how do i upload your videos" (owner, 2026-10-15: anyone can upload them):
 // the films page has Download, Copy for <platform> and Upload to <platform> on every film and ad clip
-const UPLOAD = /^(?:how\s+(?:do|can)\s+i\s+)?(?:upload|post|share|repost)\s+(?:this|it|that|a|one|the|your|v01d'?s?|void'?s?)?\s*(?:films?|videos?|clips?|ads?|shorts?)?\s*(?:to|on)\s+(?:youtube|yt|tiktok|reels|instagram|x|twitter)$/i;
+const UPLOAD = /^(?:how\s+(?:do|can)\s+i\s+)?(?:upload|post|share|repost)\s+(?:this|it|that|a|one|the|your|(?:verse|v01d)'?s?|(?:verse|void)'?s?)?\s*(?:films?|videos?|clips?|ads?|shorts?)?\s*(?:to|on)\s+(?:youtube|yt|tiktok|reels|instagram|x|twitter)$/i;
 export const wantsUpload = (lower) => UPLOAD.test(String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 export function wantsFilms(lower) {
   const t = String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -24,7 +24,7 @@ export function wantsFilms(lower) {
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 
-// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM
+// the films as data (asked by Verse, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
 // currently on the stage"): "film metadata", "films as json", "films json", "export the films". Read from /api/films, which anyone
 // may list; each film becomes { id, day, experiment, title, tags, source, watch }.
 const META = new RegExp('^(?:(?:show|give|get|export|list)\\s+(?:me\\s+)?)?(?:the\\s+)?(?:' + WHOSE + ')?(?:' + FILM + '|videos?)\\s+(?:metadata|meta|data|as\\s+json|json|info)$|^(?:export\\s+(?:the\\s+)?' + FILM + ')$', 'i');
@@ -36,11 +36,11 @@ export function filmMeta(f) {
   const tags = Array.isArray(f.tags) ? f.tags : String(f.tags || '').split(',').map((x) => x.trim()).filter(Boolean);
   return { id: f.id, day, experiment: exp, title: f.title || '', tags, source: src, watch: 'https://a-to-mind.com/films/' };
 }
-// The feed monitor (asked by Void: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
-// (asked by Void: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
+// The feed monitor (asked by Verse: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
+// (asked by Verse: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
 // v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
 // card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
-const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
+const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
 export const wantsNewFilms = (lower) => NEW_RE.test(String(lower || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim());
 /** the films newer than the last one seen (newest first); none seen yet: the newest three. Pure. */
 export function newSince(films, seenId, firstN = 3) {
@@ -49,32 +49,32 @@ export function newSince(films, seenId, firstN = 3) {
 }
 async function runNew(api) {
   const { showPage, esc } = api, KEY = 'v01d.films.seen';
-  const el = showPage((p) => { p.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub">\u2026</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>New from VERSE FILMS</h2><div class="sub">\u2026</div>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json()), F = j.films || [];
     if (api._pageStill && !api._pageStill(el)) return 'films';
     let seen = null; try { seen = localStorage.getItem(KEY); } catch (_) {}
     const N = newSince(F, seen);
     try { if (F[0]) localStorage.setItem(KEY, F[0].id); } catch (_) {}
-    el.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub" data-new-films="' + N.length + '">' + esc(N.length ? N.length + (seen ? ' new since you last looked' : ' newest') : 'Nothing new since you last looked') + '</div>'
+    el.innerHTML = '<h2>New from VERSE FILMS</h2><div class="sub" data-new-films="' + N.length + '">' + esc(N.length ? N.length + (seen ? ' new since you last looked' : ' newest') : 'Nothing new since you last looked') + '</div>'
       + N.map((f) => { const m = filmMeta(f); return '<div class="vfilm-card" style="margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><b>' + esc(m.title || f.title || f.id) + '</b><div class="sub">' + esc([m.day, m.experiment].filter(Boolean).join(' · ')) + '</div><a href="' + esc(PAGE + '?v=' + encodeURIComponent(f.id)) + '">Watch</a></div>'; }).join('')
       + '<div class="src"><a href="/films/rss">RSS</a> · <a href="' + PAGE + '">All films</a></div>';
-  } catch (_) { el.innerHTML = '<h2>New from V01D FILMS</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>'; }
+  } catch (_) { el.innerHTML = '<h2>New from VERSE FILMS</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>'; }
   return 'films';
 }
 
 async function runMeta(api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">\u2026</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>VERSE FILMS as data</h2><div class="sub">\u2026</div>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json());
     if (api._pageStill && !api._pageStill(el)) return 'films';
     const rows = (j.films || []).map(filmMeta), json = JSON.stringify(rows, null, 2);
-    el.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">' + esc(rows.length + (rows.length === 1 ? ' film' : ' films') + ', newest first') + '</div>'
+    el.innerHTML = '<h2>VERSE FILMS as data</h2><div class="sub">' + esc(rows.length + (rows.length === 1 ? ' film' : ' films') + ', newest first') + '</div>'
       + '<pre class="vfilm-json" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:55vh;overflow:auto;font-size:12px">' + esc(json) + '</pre>'
       + '<div class="src">' + esc('from a-to-mind.com/api/films') + '</div>';
   } catch (_) {
-    el.innerHTML = '<h2>V01D FILMS as data</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>';
+    el.innerHTML = '<h2>VERSE FILMS as data</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>';
   }
   return 'films';
 }
@@ -116,12 +116,12 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
-      + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
+      + '<h2 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
+      + '<p class="line">' + esc('Every day Verse films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + (wantsUpload(text)
         ? '<ol><li>' + esc('Pick any film or ad clip and tap 1. Download (free)') + '</li><li>' + esc('Tap 2. Copy: title, description with the a-to-mind.com link, hashtags') + '</li><li>' + esc('Tap 3. Upload to YouTube, TikTok, Reels or X, signed in as you, and paste') + '</li></ol>'
-        : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for V01D') + '</li></ol>')
+        : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for Verse') + '</li></ol>')
       + '<p class="who">' + esc('Free for everyone to watch and share, no sign-in.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
   });

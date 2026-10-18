@@ -1,4 +1,4 @@
-// The correction channel (asked by Void: "the routing handler for the 'open the self card' intent so I can ingest user corrections ... a strict
+// The correction channel (asked by Verse: "the routing handler for the 'open the self card' intent so I can ingest user corrections ... a strict
 // meta-data channel"). A person opens the self card ("open the self card", "tell void what it got wrong") and says which answer was wrong and
 // what they wanted. That goes here, into a store of its own in the `self` family (CORRECTIONS.key), and nowhere else: it shares no key and no
 // code with the look skill's state (the look store in lib/state.js), so a correction can never restyle the stage and a restyle can never overwrite a
@@ -57,7 +57,7 @@ export function recentAnswered(log, limit = 8) {
 
 /** "tell void what it got wrong", "correct void ...", "void got this wrong", "I want to correct you": a correction, not a look or a page. Pure. */
 export function wantsCorrection(lower) {
-  return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b|made\s+a\s+mistake|self[- ]?card\b.*\b(?:correct|fix)\s+(?:it|that|this)\b)/.test(String(lower || '').toLowerCase());
+  return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|verse|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b|made\s+a\s+mistake|self[- ]?card\b.*\b(?:correct|fix)\s+(?:it|that|this)\b)/.test(String(lower || '').toLowerCase());
 }
 
 /** the answer a select value names: null for the empty placeholder, a non-number or an index out of range. Pure. */
@@ -82,14 +82,14 @@ export function mountForm(root, doc, { storage, log, onSaved } = {}) {
     return el('li', {}, [el('label', { className: 'corr-which' }, [radio, el('span', { textContent: ' ' + r.ask }), skill])]); });
   const select = el('ul', { className: 'v-asks corr-list', ariaLabel: 'Which answer was wrong' }, [el('li', { className: 'sub', textContent: recent.length ? 'Which answer was wrong?' : 'Nothing answered on this device yet' }), ...items]);
   Object.defineProperty(select, 'value', { get() { const r = radios.find((x) => x.checked); return r ? r.value : ''; }, set(v) { for (const r of radios) r.checked = r.value === String(v); } });
-  const box = el('textarea', { maxLength: CORRECTIONS.textMax, rows: 2, placeholder: 'What I got wrong, or what you wanted', ariaLabel: 'What V01D got wrong' });
+  const box = el('textarea', { maxLength: CORRECTIONS.textMax, rows: 2, placeholder: 'What I got wrong, or what you wanted', ariaLabel: 'What Verse got wrong' });
   const note = el('div', { className: 'sub' });
-  const save = el('button', { type: 'button', className: 'tr-copy', textContent: 'Tell V01D' });
+  const save = el('button', { type: 'button', className: 'tr-copy', textContent: 'Tell Verse' });
   save.addEventListener('click', () => {
     const r = chosenAnswer(recent, select.value);
     if (recent.length && !r) { note.textContent = 'Pick which answer was wrong first.'; return; } // the placeholder is not an answer: save nothing
     const res = addCorrection({ ask: r && r.ask, skill: r && r.skill, text: box.value }, storage);
-    note.textContent = res.ok ? 'Kept on this device, apart from how your V01D looks. Thank you.' : 'Write what went wrong first.';
+    note.textContent = res.ok ? 'Kept on this device, apart from how your Verse looks. Thank you.' : 'Write what went wrong first.';
     if (res.ok) { box.value = ''; if (onSaved) onSaved(res.list); }
   });
   for (const ev of ['pointerdown', 'keydown']) box.addEventListener(ev, (e) => e.stopPropagation());

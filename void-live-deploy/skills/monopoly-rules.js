@@ -1,19 +1,19 @@
 /**
  * monopoly-rules — a property-trading board game with Monopoly's rules, in plain JS (no DOM, no three.js), shared by the
  * card (skills/monopoly.js), its 3D board and the tests. Asked for by Adam, 2026-10-08, as the next game: it is the first
- * one where money and ownership persist across a long run of turns, and where Void plays seats of its own.
+ * one where money and ownership persist across a long run of turns, and where Verse plays seats of its own.
  * The rules and numbers are the classic ones; the street names, the cards' wording and the look are our own.
  *
  * What a seat can do is what the rules allow, and every act is named for what it is:
  *  - a roll moves you; landing can force things you did not choose (rent, tax, a card, jail): the log says "forced"
  *  - buying is always the buyer's own choice (Buy / Don't buy); nothing is bought automatically
- *  - a trade is an offer the other seat accepts or declines; Void says why
- *  - Void's seats choose like players (no peeking at the dice or the decks) and record why each choice was made
+ *  - a trade is an offer the other seat accepts or declines; Verse says why
+ *  - Verse's seats choose like players (no peeking at the dice or the decks) and record why each choice was made
  *
  *   create({ voids = 1, seed }) -> state      roll(s) -> s      buy(s, yes) -> s      build(s, i) -> s      endTurn(s) -> s
- *   payJail(s) -> s      offer(s, { space, cash }) -> { s, accepted, why }      voidTurn(s) -> s (one whole Void turn)
+ *   payJail(s) -> s      offer(s, { space, cash }) -> { s, accepted, why }      voidTurn(s) -> s (one whole Verse turn)
  *   rentFor(s, i, diceSum) -> number      canBuild(s, p, i) -> bool      worth(s, p) -> number
- *   answer(s, yes) -> s      your answer to an offer Void made you (s.proposal): nothing moves until you answer
+ *   answer(s, yes) -> s      your answer to an offer Verse made you (s.proposal): nothing moves until you answer
  * Not yet: auctions, mortgages, house shortages.
  */
 export const START_MONEY = 1500, GO_PAY = 200, JAIL = 10, GO_TO_JAIL = 30, JAIL_FINE = 50;
@@ -72,7 +72,7 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
     players: [{ name: 'You', seat: 'you', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false }],
     owner: {}, houses: {}, turn: 0, phase: 'roll', dice: null, doubles: 0, pending: null, proposal: null, rng: seed >>> 0, moves: 0, log: [], winner: null,
   };
-  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'V01D' : 'V01D ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
+  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'Verse' : 'Verse ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
   s.decks = { chance: shuffled(s, CHANCE.length), chest: shuffled(s, CHEST.length) };
   return s;
 }
@@ -107,7 +107,7 @@ function pay(s, p, amount, to = null, why = '') {
   pl.money = 0;
   say(s, p, 'is out: could not pay' + (why ? ' ' + why : ''), { forced: true });
   const left = s.players.map((x, k) => (x.out ? -1 : k)).filter((k) => k >= 0);
-  // the game is over when one seat is left, or when you are out (the Void seats don't play on without you): the richest left wins
+  // the game is over when one seat is left, or when you are out (the Verse seats don't play on without you): the richest left wins
   if (left.length === 1 || s.players[0].out) { s.winner = left.sort((a, b) => worth(s, b) - worth(s, a))[0]; s.phase = 'over'; say(s, s.winner, 'wins'); }
 }
 
@@ -212,7 +212,7 @@ export function endTurn(s0) {
   return s;
 }
 
-// ---- Void's seats: it chooses like a player and says why (the why goes in the log and to Void's reflections) ----
+// ---- Verse's seats: it chooses like a player and says why (the why goes in the log and to Verse's reflections) ----
 const RESERVE = 150;
 function setsWouldComplete(s, p, i) { const g = SPACES[i].g; return !!g && GROUP[g].every((j) => j === i || s.owner[j] === p); }
 export function voidWantsToBuy(s, p, i) {
@@ -224,7 +224,7 @@ export function voidWantsToBuy(s, p, i) {
   if (left >= RESERVE) return { yes: true, why: 'it can afford it and keep ' + left + ' in reserve' };
   return { yes: false, why: 'buying would leave only ' + left + ', under its ' + RESERVE + ' reserve' };
 }
-// one whole turn for the Void seat whose turn it is: jail, roll, buy, build, end
+// one whole turn for the Verse seat whose turn it is: jail, roll, buy, build, end
 export function voidTurn(s0) {
   let s = clone(s0);
   const p = s.turn;
@@ -256,7 +256,7 @@ export function voidTurn(s0) {
   return s;
 }
 
-// Void starts a trade when you hold the one street it needs to finish a set: an offer, open until you answer it
+// Verse starts a trade when you hold the one street it needs to finish a set: an offer, open until you answer it
 function propose(s, p) {
   if (s.proposal || s.players[0].out) return;
   const cash = s.players[p].money;
@@ -265,7 +265,7 @@ function propose(s, p) {
     if (mine.length !== GROUP[g].length - 1 || yours.length !== 1 || s.houses[yours[0]]) continue;
     const i = yours[0], price = Math.ceil(SPACES[i].p * 1.8 / 10) * 10;
     if (cash - price < RESERVE) continue;
-    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to V01D than its ' + SPACES[i].p + ' price' };
+    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to Verse than its ' + SPACES[i].p + ' price' };
     say(s, p, 'offered you ' + price + ' for ' + SPACES[i].n, { why: s.proposal.why });
     return;
   }
@@ -280,7 +280,7 @@ export function answer(s0, yes) {
   return s;
 }
 
-// a trade is an offer: you offer cash for one of a Void seat's properties; Void accepts or declines and says why
+// a trade is an offer: you offer cash for one of a Verse seat's properties; Verse accepts or declines and says why
 export function offer(s0, { space, cash }) {
   const i = Number(space), c = Math.floor(Number(cash) || 0), me = s0.turn, o = s0.owner[i];
   if (s0.players[me].seat !== 'you' || o == null || s0.players[o].seat !== 'void' || s0.players[o].out || c <= 0 || c > s0.players[me].money)

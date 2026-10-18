@@ -1,4 +1,4 @@
-// Teach-on-miss (docs/multipliers.md #5): a site-test teach item becomes a ready PR. The site tester found a wording V01D did not
+// Teach-on-miss (docs/multipliers.md #5): a site-test teach item becomes a ready PR. The site tester found a wording Verse did not
 // understand ("yo calculator" meaning "open a calculator"); this teaches the existing skill the phrase (Adam: extend skills, do not
 // add new ones) by writing it into void-live-deploy/skills/aliases.json, adds the wording to the tester's regression cases, and
 // (with --pr) opens the PR that closes the issue, labelled automerge.
@@ -15,9 +15,9 @@ const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..')
 export const ALIASES = resolve(SK, 'aliases.json'), SUITE = resolve(here, 'site-test.json');
 export const keyOf = (s) => String(s || '').toLowerCase().trim().replace(/[\s?!.]+$/, '');
 
-/** "site-test: teach V01D "x" (means "y", skill:z): ..." -> { ask, means, skill }. Pure. */
+/** "site-test: teach Verse "x" (means "y", skill:z): ..." -> { ask, means, skill }. Pure. */
 export function fromTitle(t) {
-  const m = String(t).match(/teach V01D "([^"]+)" \(means "([^"]+)", skill:([a-z0-9-]+)\)/i);
+  const m = String(t).match(/teach (?:Verse|V01D) "([^"]+)" \(means "([^"]+)", skill:([a-z0-9-]+)\)/i);
   return m ? { ask: m[1], means: m[2], skill: m[3] } : null;
 }
 /** Can this wording be taught? skills: [{ name, match }] in routing order. '' when it can, else why not. Pure. */
@@ -61,7 +61,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     g('checkout', '-b', branch); g('add', 'void-live-deploy/skills/aliases.json', 'tools/site-test.json');
     g('commit', '-m', 'Teach ' + item.skill + ' "' + keyOf(item.ask) + '" (means "' + item.means + '")' + (issue ? ' (fixes #' + issue + ')' : ''));
     g('push', 'origin', 'HEAD:refs/heads/' + branch);
-    const body = 'The site tester found V01D did not understand "' + keyOf(item.ask) + '". This teaches the existing ' + item.skill + ' skill the wording (skills/aliases.json: an exact taught wording runs as "' + item.means + '") and keeps it as a regression case in tools/site-test.json. Checked: "' + item.means + '" is taken by ' + item.skill + ', and no other skill takes the wording.' + (issue ? '\n\nFixes #' + issue : '');
+    const body = 'The site tester found Verse did not understand "' + keyOf(item.ask) + '". This teaches the existing ' + item.skill + ' skill the wording (skills/aliases.json: an exact taught wording runs as "' + item.means + '") and keeps it as a regression case in tools/site-test.json. Checked: "' + item.means + '" is taken by ' + item.skill + ', and no other skill takes the wording.' + (issue ? '\n\nFixes #' + issue : '');
     const pr = execFileSync('gh', ['pr', 'create', '--head', branch, '--base', 'main', '--title', 'Teach ' + item.skill + ': "' + keyOf(item.ask) + '"', '--body', body, '--label', 'automerge'], { cwd: root, encoding: 'utf8' }).trim();
     console.log(pr);
   }

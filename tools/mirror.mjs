@@ -1,5 +1,5 @@
 // Continuity (frontier "metabolism"): once a week, copy the non-secret knowledge of this repo to a second git host, so a lost account or a
-// banned repo does not take what Void learned with it. Only an allowlist is ever copied (skills, the growth ledger, docs, domains, the two
+// banned repo does not take what Verse learned with it. Only an allowlist is ever copied (skills, the growth ledger, docs, domains, the two
 // standing documents), only files git tracks, and a file that looks like it holds a secret, is binary or is large is left out and named in the
 // manifest. Fail closed: the same masking the site applies to everything it logs (lib/automation-fix.js redact) must leave a file unchanged.
 // The remote gets a normal commit on top of its own history (never a force push); with MIRROR_URL unset it says so and exits 0.
@@ -56,7 +56,7 @@ export async function main(argv = process.argv.slice(2), env = process.env, root
     if (!git(['status', '--porcelain'], work).trim()) { console.log('mirror: nothing changed since the last copy'); return { include, skipped, pushed: false }; } // the manifest is only rewritten with a real change, so a quiet week makes no commit
     writeFileSync(join(work, 'MIRROR.json'), JSON.stringify({ source: 'atomeam/void-loop', sha, at: new Date().toISOString(), files: include.length, leftOut: skipped }, null, 2) + '\n');
     git(['add', '-A'], work);
-    git(['-c', 'user.name=Void mirror', '-c', 'user.email=mirror@a-to-mind.com', 'commit', '-q', '-m', 'Mirror of non-secret knowledge from ' + sha.slice(0, 7)], work);
+    git(['-c', 'user.name=Verse mirror', '-c', 'user.email=mirror@a-to-mind.com', 'commit', '-q', '-m', 'Mirror of non-secret knowledge from ' + sha.slice(0, 7)], work);
     git([...auth, 'push', 'origin', 'HEAD'], work); // a normal push: a remote that moved on its own is reported, never overwritten
     console.log('mirror: pushed ' + include.length + ' files');
     return { include, skipped, pushed: true };

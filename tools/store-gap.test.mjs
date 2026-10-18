@@ -2,7 +2,7 @@ import assert from 'node:assert/strict';
 import { gapFiles, testFiles, buildGap, slug, title } from './store-gap.mjs';
 const long = 'Start by listing what you need. '.repeat(10);
 const ask = async () => long;
-assert.equal(slug('Logo Design!'), 'logo-design'); assert.equal(title('logo-design'), 'V01D Logo Design Starter Kit');
+assert.equal(slug('Logo Design!'), 'logo-design'); assert.equal(title('logo-design'), 'Verse Logo Design Starter Kit');
 const files = await gapFiles('logo-design', ask);
 assert.equal(files.length, 4); assert.ok(testFiles(files).ok);
 assert.ok(!testFiles(await gapFiles('x', async () => 'too short')).ok, 'thin content is not sold');

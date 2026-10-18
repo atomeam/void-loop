@@ -4452,136 +4452,1137 @@
   "kind": "build",
   "what": "approval card now starts a task that keeps running after you leave: 'keep <automation> running every 2 hours' on the confirm line puts the rule on the clock and every step is an action record, asked by Void"
  },
-  {"at":"2026-10-16T23:23:32Z","by":"claude","kind":"grow","what":"bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list, asked by Void","show":"kept, list, notepad and self-play write to each other","try":"how good are you at othello"},
-  {"at":"2026-10-16T23:38:07Z","by":"claude","kind":"build","what":"contextual shortcut: 'what should I do now' reads the clock and suggests one food, ride, sleep, breathing or timer ask from the time, body and mind and out-in-the-world families; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked, asked by Void"},
-  {"at":"2026-10-16T23:31:44Z","by":"claude","kind":"grow","what":"V01D can read its own motto, VoidQuest, games and miniatures aloud as a card, lists what it keeps on this device in one state skill (the memory card reads its session from it), and its arcade ladder wins raise its rating on the growth card, asked by Void","show":"ask V01D for its canon, its state, its arcade rating","try":"which games do you know"},
-  {"at":"2026-10-17T00:18:12Z","by":"claude","kind":"grow","what":"the growth inbox shows skill health, asked by Void: a registered skill failing its router test is flagged, the health file mapped onto the families, newly promoted skills with their clean runs in a row, divergence of an ask against its build, a bloom for a new skill since yesterday, a last-used day per skill on this device, fringe novelty score queues a novelty: job, near-miss input tags, review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check finds checks keyed on names the page lost to skills/","show":"Growth inbox: skill health, map, stability, divergence","try":"skill health"},
-  {"at":"2026-10-16T23:51:30Z","by":"claude","kind":"grow","what":"asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-context skill gives Rust unwrap and kin a caution triangle on the stage; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success_rate > 0.9 glow (x2). Family Health card asks (x9) already built","show":"Practice timers log success, risks get a caution shape","try":"why is rust unwrap a risk"},
-  {"at": "2026-10-16T23:29:46Z", "by": "claude", "kind": "grow", "what": "V01D is Web4: one card (what is web4) with the four steps of the web as a ladder, a V01D Book page, frontier #37; asked by the owner", "show": "Web4: the four steps of the web as one card", "try": "what is web4"},
-  {"at": "2026-10-17T01:26:56Z", "by": "claude", "kind": "grow", "what": "the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed status item recovers, and a Shared Void that syncs lists, timers, counters and thrown cards across tabs, asked by Void", "show": "pulse, friction, bench and sync on the stage", "try": "show the bench"},
-  {"at": "2026-10-17T01:27:35Z", "by": "claude", "kind": "finding", "what": "already built, recorded for V01D's asks (asked by Void): the motto and VoidQuest text are in its canon since 2026-10-11 and 2026-10-15 (domains/void.canon.md, now version 6); the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice"},
-  {"at": "2026-10-17T01:48:49Z", "by": "claude", "kind": "fix", "what": "Main's shard 1: the duel's summon and answer buttons are no longer picked up as a drag (the stage re-drew the card under the click), the growth card's divergence line waits behind the friction line, and the duel test follows the game as it plays", "show": "the duel's confirm and answer buttons work on the first press", "try": "duel"},
-  {"at": "2026-10-17T02:19:51Z", "by": "claude", "kind": "fix", "what": "The suite's stall report is also written as a GitHub annotation, so where a stuck page is can be read without the job log (main's shard 3 hang)"},
-  {"at": "2026-10-16T23:51:03Z", "by": "claude", "kind": "grow", "what": "V01D can merge any two ideas into a new card: merge a pizza and a black hole (frontier #34 step 1, asked by the owner 2026-10-16): fixed earned stats, one cached model name per pair, plain blend offline", "show": "Merge any two ideas into a new V01D card", "try": "merge a pizza and a black hole"},
-  {"at": "2026-10-17T02:54:09Z", "by": "claude", "kind": "fix", "what": "Main's shard 1: the growth tree test touches the trunk at several points along it (hundreds of branches now cover its middle), and a failed check on a runner also writes its detail as an annotation"},
-  {"at": "2026-10-17T06:59:53Z", "by": "claude", "kind": "build", "what": "the field minds kit: pure lib/field-kit.js (seeded RNG, grids, entropy, metric to card morph, evolution, SHA-256 seal) and lib/field-stage.js (Canvas2D card, sound off until a tap, tilt on a tap, numbers-only IndexedDB seals); asked by the owner (Grok's ideas F-020..F-033)"},
-  {"at": "2026-10-17T06:46:53Z", "by": "claude", "kind": "fix", "what": "Copying a card: the code line under the readable text is short (title, kind, the start of the body, two sources), because the readable text already holds the whole card; pasting the whole copied text still restores the full body and every source, a bare code reopens it by its start (owner, 2026-10-17: are the letters necessary to copy along with the card?)", "show": "a copied card ends in a short code line", "try": "what do you think of yourself"},
-  {"at": "2026-10-17T06:39:05Z", "by": "claude", "kind": "fix", "what": "Main's shard 3: the Examine button sits at the bottom corner of a miniature, not the top, so it no longer covers the counter's plunger (a tap on the plunger opened Examine instead of counting)", "show": "tapping the counter's plunger counts again", "try": "make a counter"},
-  {"at": "2026-10-17T07:53:57Z", "by": "claude", "kind": "grow", "what": "pick a movie finds real movies: poster art, trailer, free films play in V01D", "show": "movie picks are real, with posters and free films that play", "try": "pick a movie to watch with me"},
-  {"at": "2026-10-17T07:39:48Z", "by": "claude", "kind": "grow", "what": "asked by Void: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (where the owner replies and corrects it), instead of falling to an article lookup that failed", "show": "asking to open the self card now opens it", "try": "open the self card"},
-  {"at": "2026-10-17T08:01:21Z", "by": "claude", "kind": "grow", "what": "asked by Void: a swap that changes the bake says by how many minutes (+2-3 min), and typing the recipe's time gives the new time, for eggs, brown sugar, cream and kin", "show": "swaps show the minutes they add or take off the recipe time", "try": "what can i use instead of eggs in baking"},
-  {"at": "2026-10-17T08:06:37Z", "by": "claude", "kind": "grow", "what": "asked by Void: a card copied after being pasted back carries a short version tag (v2, and n:2 in its code), so a card's copies can be told apart; the first copy has none", "show": "a pasted-back card says copy 2, and copying it again tags v2", "try": "open the book"},
-  {"at": "2026-10-17T08:15:36Z", "by": "claude", "kind": "grow", "what": "asked by Void: card art ink follows the evidence rating (proven/Mythic sharp and black, experiment/Common a light charcoal sketch) and reads a --ink-density CSS property (0..1) a mini can drive; the Mythic/Rare tiering of cards (asks ask-20261016-2010-1, ask-20261016-2056-2) was already on the frame by evidence, now the art matches", "show": "proven art is sharp black, experiments a charcoal sketch", "try": "what is a black hole"},
-  {"at": "2026-10-17T08:19:24Z", "by": "claude", "kind": "finding", "what": "already built, recorded for V01D's asks (asked by Void): Family Health card with success_rate and last_tested (skills/family-health.js, ledger 'family health' entries); Skill Discovery read-only tool skill_discovery over families.json (lib/mcp.js, 'MCP skill discovery tool' 2026-10-16); flavor text for proven skills in the Book (flavorOf in lib/guide.js); type-specific card layouts (ask-20261016-1919-1, -2010-2: 'cards that lay out by kind'); rarity tiering Mythic/Rare by evidence (RARITY in lib/card-frame.js, asks -2010-1, -2056-2); forge iterations (-2056-3: 'forge iterations' and forge history); missed asks to propose-fix jobs (-2056-1: ledger 2026-10-16 23:08); new playbook docs/playbooks/build-voice-asks.md"},
-  {"at": "2026-10-17T08:21:37Z", "by": "claude", "kind": "fix", "what": "Examine brings a small miniature (a clock) up to a size worth examining, centred on the screen, and puts it back in its card on exit; the owner said zoom failed", "show": "Examine lifts a small 3D thing to the screen's middle, big", "try": "make a clock"},
-  {"at": "2026-10-17T08:27:38Z", "by": "claude", "kind": "grow", "what": "asked by Void: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (proven strong, tested faint) from the card art's ink density, and a skill whose last_tested is old looks weathered (faded, dashed); 'open the self card' routing was already built (#968)", "show": "the self card shows a strip of skill squares, faint when old", "try": "what do you think of yourself"},
-  {"at": "2026-10-17T08:29:15Z", "by": "claude", "kind": "grow", "what": "asked by Owner: the shared media pick plus music: pick something to listen to finds real songs with cover art and a 30 s preview", "show": "ask for a song and get real ones with covers and a preview", "try": "pick something to listen to with me"},
-  {"at": "2026-10-17T08:31:52Z", "by": "claude", "kind": "fix", "what": "V01D films again: the lab had no experiment left to film (all filmed 2026-10-15, so deploys filmed nothing and the daily run repeated the same three); shipped changes from the growth ledger are now films too (frontier #26 step 4)"},
-  {"at": "2026-10-17T08:36:35Z", "by": "claude", "kind": "grow", "what": "asked by Owner: V01D makes music: 'make me a song / a beat / a lullaby / music for a rainy day' composes an original piece from the ask's words (key, scale, tempo, chords, melody, drums), synthesised in the browser with Web Audio, shown as a piano roll with Play/Stop, Save as WAV and Copy the notes; rated experiment; skill-confidence's default escape is now a real HTML escape", "show": "V01D composes a short song you can play and save", "try": "make me a lullaby"},
-  {"at": "2026-10-17T08:35:01Z", "by": "claude", "kind": "grow", "what": "asked by Void: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata", "show": "movie cards list director, runtime and more", "try": "pick a movie to watch with me"},
-  {"at": "2026-10-17T08:35:49Z", "by": "claude", "kind": "grow", "what": "asked by Void: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata", "show": "movie cards list director, runtime and more", "try": "pick a movie to watch with me"},
-  {"at": "2026-10-17T08:52:12Z", "by": "claude", "kind": "grow", "what": "asked by Void: extends #968: 'open the self card and tell void what it got wrong', 'tell void what it got wrong', 'open your self card, I want to correct you', 'void got this wrong' and 'correct void on its self card' open the self card where the owner corrects it, instead of an article answer (V01D's top probe, asked 40 times)", "show": "asking to correct V01D opens its self card", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T08:57:52Z", "by": "claude", "kind": "fix", "what": "asked by Void: the router no longer ties corrections to V01D with the look skill: 'tell void what it got wrong', 'open your self card, I want to correct you', 'correct void on its self card' are self-card examples and look near misses (the shared word void put them within 0.02 of look); extends #968 and #985", "show": "corrections to V01D reach its self card", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T09:03:10Z", "by": "claude", "kind": "grow", "what": "asked by Void: the daily score has a confidence interval: 'Sure to within 72-77, from 3010 checks', a Wilson 95% range over the parts that are counts (changes, skills, bench asks), so a high score on a few checks reads as unsure", "show": "the growth score says how sure it is", "try": "growth"},
-  {"at": "2026-10-17T09:08:57Z", "by": "claude", "kind": "grow", "what": "asked by Void: the family-health card shows which families lift the daily growth score and which drag it, in score points against the average skill (failing 0, barely checked half, else 1), from the friction part of the score", "show": "family health shows who lifts and drags my score", "try": "family health"},
-  {"at": "2026-10-17T09:09:01Z", "by": "claude", "kind": "fix", "what": "asked by Owner: music and movie cards paint their own kind's art (song, film), not the generic skill door", "show": "song and movie cards have their own art", "try": "pick a song"},
-  {"at": "2026-10-17T08:02:46Z", "by": "claude", "kind": "fix", "what": "saved card pictures show the whole title (wrapped, shrinking) and the whole answer text (shrinks to fit the box) instead of cutting both with an ellipsis", "show": "saved cards show long titles and answers whole", "try": "how good are you at connect four"},
-  {"at": "2026-10-17T08:36:55Z", "by": "claude", "kind": "fix", "what": "saved and copied card pictures show the whole title and answer text (wrapped, shrinking) and draw the card's own photo as the art; a subject photo shows in true colour on the stage card (no ink filter); asked by Owner", "show": "movie posters keep their colour and ride along when you copy a card", "try": "how good are you at connect four"},
-  {"at": "2026-10-17T08:45:14Z", "by": "claude", "kind": "grow", "what": "asked by the owner: V01D shows Grok's F-033 vector field mind: particles ride an 8x6 flow grid that an evolutionary mind reshapes, and the grid's real divergence and curl set the card's ink density", "show": "a flow that an evolving mind reshapes, inked by its curl", "try": "show me a vector field mind"},
-  {"at": "2026-10-17T08:57:46Z", "by": "claude", "kind": "fix", "what": "appraise check on CI: the failure now says which part failed (it was the vase link making nothing, not the coin card: the old detail cut the card at 160 characters), the click error is kept, and annotations carry 4000 characters"},
-  {"at": "2026-10-17T09:37:08Z", "by": "claude", "kind": "grow", "what": "asked by Void: the self card takes corrections: 'tell void what it got wrong' / 'open the self card' shows a Correct me form (pick the answer that was wrong, say what you wanted) and keeps it in a correction channel of the self family, a store of its own with no path into the look skill's state (lib/corrections.js); the router examples for it were already tightened in #988", "show": "the self card has a Correct me form", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T09:38:24Z", "by": "claude", "kind": "grow", "what": "asked by Void: the self card has a correction log that groups the corrections kept on this device by the family of the skill that answered, empty when there are none, with every kept word escaped", "show": "the self card lists corrections by family", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T09:44:06Z", "by": "claude", "kind": "grow", "what": "asked by Void: song and film card art follows the item's real metadata: the source's genre sets the plate's hue and its decade the ink (older work in heavier ink, from the existing rarity looks), deterministic, no model call, and nothing changes when the source gave no genre or year (lib/art-meta.js)", "show": "film and song cards are drawn by their genre and decade", "try": "pick a movie to watch with me"},
-  {"at": "2026-10-17T09:46:15Z", "by": "claude", "kind": "grow", "what": "asked by Owner: an open tab tells you when a newer V01D is deployed ('A newer V01D is ready - tap to reload'), checked on focus and about every ten minutes with one small request, never reloading by itself", "show": "an old open tab offers a reload after a deploy", "try": "what time is it in Tokyo"},
-  {"at": "2026-10-17T08:03:25Z", "by": "claude", "kind": "grow", "what": "V01D sees public GitHub repos: look at owner/name or paste a link and a card shows description, language mix, README opening, recent commits, top level, issue and PR counts (/api/repo, no token, untrusted text never reaches a model); asked by Owner", "show": "V01D can look at a public GitHub repo", "try": "look at atomeam/void-loop"},
-  {"at": "2026-10-17T09:50:05Z", "by": "claude", "kind": "grow", "what": "asked by Void: an owner-only 'Suggest fix' button beside each correction-log entry calls the existing /api/propose-fix (no new route) with only the skill name, the family and the redacted ask, never the visitor's words, and shows what was sent and what came back as a draft only (lib/correction-fix.js)", "show": "the owner can ask V01D to draft a fix for a correction", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T09:51:03Z", "by": "claude", "kind": "grow", "what": "asked by Void: the self card has a family heat-map of error density from the real correction log and the families file (corrections per skill in each family, hottest bright), an honest 'No corrections yet' when none, nothing estimated, all text escaped (lib/correction-heat.js)", "show": "the self card shows where V01D gets things wrong, by family", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T09:56:09Z", "by": "claude", "kind": "grow", "what": "asked by Void: Incident Autopsy skill: 'incident autopsy' reads the site's own incidents.json and places each failing check in a skill family by skill name or example ask (the rest listed unmapped), with the latest incidents, their commits and a count per family; the self card gets a read-only health pulse (latest incident, commit, families, 'No incidents recorded.'), and only the owner gets 'Suggest fix' on a mapped check through the existing propose-fix route, never automatically", "show": "V01D says which skill family its failing checks fall in", "try": "incident autopsy"},
-  {"at": "2026-10-17T09:42:09Z", "by": "claude", "kind": "grow", "what": "asked by Void: each family on the family-health card shows its velocity, improving, decaying or steady against about a day ago, from the family snapshots the daily growth row now records (lib/better.js velocityOf), and 'no history yet' until a day-old snapshot exists", "show": "families show whether they are improving or decaying", "try": "show me your skill families"},
-  {"at": "2026-10-17T10:01:13Z", "by": "claude", "kind": "fix", "what": "asked by Void: the self page counted 0 of 45 asks built because every build credited 'asked by Void' in words only, which links nothing; finish.mjs now stops 'asked by Void' without --asked, and the self-card corrections handler (#1001), Incident Autopsy (#1013) and readable self-knowledge are linked as built", "asked": "What got built count of my asks"},
-  {"at": "2026-10-17T09:48:18Z", "by": "claude", "kind": "fix", "what": "asked by Owner: the open-tab notice now compares the deploy's own commit (/build.json, else the page ETag) so a deploy that changed only a skill's code or the page still offers 'A newer V01D is ready - tap to reload'", "show": "an old open tab notices every deploy, not only new skills", "try": "what time is it in Tokyo"},
-  {"at": "2026-10-17T09:39:02Z", "by": "claude", "kind": "grow", "what": "F-033 Adaptive Flow-Canvas (beside the vector field mind) on the field kit, asked by Owner: a paintable 16x16 flow field with RK2 and a pointer swirl, a Worker evolutionary mind with a page fallback, CSS shape-morphing ink, ink density, version tag; the idea.mount hook and a non-enumerable th.state in field-stage", "show": "a flow canvas: ink on a paintable field that evolves", "try": "flow canvas"},
-  {"at": "2026-10-17T07:44:32Z", "by": "claude", "kind": "grow", "what": "Art Forge: every answer or merged card paints its own subject in an arcane illuminati engraving style (Workers AI, cached, 30 a day, kill switch), shown on the card and in the copied or saved card; pre-paint tool and playbook; asked by Owner", "show": "cards carry painted art of their subject", "try": "merge a pizza and a black hole"},
-  {"at": "2026-10-17T10:26:43Z", "by": "claude", "kind": "fix", "what": "site tester: one missing file (/fringe/lab.json, read by the make skill on every page) filed every probe as a broken page, and answers that replace a status line ('the void is empty · summon something first') read as nothing appeared; lab.json is published empty and the tester reads the changed text, not only the page's new tail", "show": "the site tester no longer files 404s for every ask", "try": "bring it to the front"},
-  {"at": "2026-10-17T10:02:28Z", "by": "claude", "kind": "grow", "what": "asked by Void: on the self card's heat-map the owner can click a hot family to draft a fix for its most corrected skill, through the existing propose-fix route with the same redaction, showing what was sent and what came back; others see no action and nothing runs without a click", "asked": "clicking a hot cell starts propose-fix for the skill with the most corrections", "show": "the owner taps a hot family to draft a fix", "try": "tell void what it got wrong"},
-  {"at": "2026-10-17T10:54:19Z", "by": "claude", "kind": "fix", "what": "main green: a card's pinned footer and its decorative arrows no longer cover links at the card's foot (appraise's 'make me a vase'), flow-canvas and incident-autopsy get families so the book has their pages, and /api/repo, /api/media and /api/movies are named as the page's own APIs", "show": "links at a card's foot can be clicked again", "try": "what is this coin worth"},
-  {"at": "2026-10-17T10:10:02Z", "by": "claude", "kind": "fix", "what": "the repo card copies and saves as readable words: facts, languages and files no longer run together (JavaScript0 stars0 forks)", "show": "a copied repo card reads 'JavaScript 0 stars 0 forks'", "try": "look at atomeam/void-loop"},
-  {"at": "2026-10-17T10:31:23Z", "by": "claude", "kind": "fix", "what": "copied and saved cards show the whole answer: a long answer makes a long card at a readable size instead of shrinking to 11 px and ending in an ellipsis, and the card's words keep their spaces and lines (no more 'a new one dailyEvery day')", "show": "a saved card shows the whole answer, growing taller", "try": "what do you think of yourself"},
-  {"at": "2026-10-17T11:08:27Z", "by": "claude", "kind": "grow", "what": "V01D's films have sound: each film gets its own short score written by ffmpeg (a minor-key pad, a sub bass and a pulse on the beat, faded to the cut's length), chosen by the film's id so no two sound alike; every film before this was silent", "show": "V01D's films are no longer silent", "try": "V01D films"},
-  {"at": "2026-10-17T11:13:56Z", "by": "claude", "kind": "grow", "what": "event countdown: 'how many hours til gta6' reads the event's own Wikipedia page now and counts down to its announced date (19 November 2026 for GTA VI), quoting the sentence and linking the source; no date ahead means it says so, never a guess (V01D had answered 'no release date')", "show": "V01D counts down to games, films and events", "try": "how many hours til gta6"},
-  {"at": "2026-10-17T11:22:17Z", "by": "claude", "kind": "fix", "what": "event-countdown is in the Time family, so the book has its page and the families check passes (it shipped without one)"},
-  {"at": "2026-10-17T11:31:49Z", "by": "claude", "kind": "fix", "what": "a first visit loads lighter: the cards' stats (275 KB of guide, families and deps) wait until the page has loaded and is idle; and the site tester measures a slow load or a low frame rate twice before filing it, the better sample counting (one runner hiccup filed four issues)", "show": "the first page load no longer waits on 275 KB of card stats", "try": "play chess"},
-  {"at": "2026-10-17T11:34:30Z", "by": "claude", "kind": "fix", "what": "event countdown reads the whole page, not only its first paragraph: when the summary names no date, the lead section and the infobox's release line give it (the live GTA VI card said 'no announced date')", "show": "how many hours til gta6 now finds the date", "try": "how many hours til gta6"},
-  {"at": "2026-10-17T11:36:41Z", "by": "claude", "kind": "fix", "what": "the Art Forge paints the cards you open: a paint that hit the per-minute limit or a busy model is tried again later (25, 50, 100 s) instead of leaving the plate for the rest of the visit, and a card still loading ('looking') or a word fragment is never painted (only 3 paintings had ever been made, two of them 'looking' and 'rt')", "show": "the Art Forge retries instead of giving up", "try": "incident autopsy"},
-  {"at": "2026-10-17T11:37:29Z", "by": "claude", "kind": "fix", "what": "a typo that is two letters swapped goes to the word with those letters ('moive' is movie, not move); and 26 of V01D's asks that were built are linked to the ledger entries that built them, so its self page counts them (the friction indicator, family health, cook-flow in swaps, rarity tiers, recipe versioning, the practice timer's success_rate and more)", "show": "V01D's self page counts 26 more built asks", "try": "what do you think of yourself"},
-  {"at": "2026-10-17T11:39:37Z", "by": "claude", "kind": "build", "what": "asked by Void: the event countdown card says which part of the page gave the date (the article's opening lines, its introduction, or the infobox field) and keeps it on the card (data-date-from), so falling back to the infobox is recorded, never silent", "asked": "Create a 'data-fallback' protocol for the event countdown skill that explicitly logs when it has to resort to infobox scraping versus using a primary date field."},
-  {"at": "2026-10-17T11:39:37Z", "by": "claude", "kind": "build", "what": "asked by Void: the event countdown card carries a confidence badge: 'sure' for a date written in the article's prose, dimmed 'less sure' with 'check it' when it came only from the infobox field", "asked": "Implement a 'confidence-score' badge on the event card that dims if the date was pulled from an unverified infobox rather than a structured API.", "show": "event countdowns say where the date came from", "try": "how many hours til gta6"},
-  {"at": "2026-10-17T11:41:53Z", "by": "claude", "kind": "fix", "what": "the site tester reads the page early as well as at the end, so a hint V01D shows for 3.5 s ('summon something first', 'test me on that') counts as an answer (this change was pushed after #1018 merged and never reached main)"},
-  {"at": "2026-10-17T11:56:24Z", "by": "claude", "kind": "fix", "what": "Main green again: the book's contents page sets tighter past ten chapters, so the thirteenth (What's new) sits above the page number; the router check reads the money rule in the owner's current words (V01D spends its own money, no yes needed; no budget before the first sale)", "show": "The book's contents page fits all thirteen chapters again", "try": "open the book"},
-  {"at": "2026-10-17T12:15:57Z", "by": "claude", "kind": "grow", "what": "asked by Void: the Site Test card lists what to test next, its lowest-rated skills from families.json (failing first, then the least checked), each with one of its own asks from the book; a tap tests it", "asked": "Implement a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest what to test next.", "show": "The tester card suggests what to test next, one tap each", "try": "tester log"},
-  {"at": "2026-10-17T12:06:04Z", "by": "claude", "kind": "fix", "what": "A saved card's picture is centred: a tall or very wide picture is shown whole over a blurred copy of itself instead of cropped (the Sentry card lost its head); \"join v01d\", \"subscribe to v01d\" and \"get my own void\" open the store instead of a Marvel character", "show": "A saved card shows a tall picture whole and centred", "try": "join void"},
-  {"at": "2026-10-17T12:28:57Z", "by": "claude", "kind": "grow", "what": "asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is linked to the new words V01D asked it in", "asked": "Implement the 'source-link' hover effect on the confidence badge to show the raw metadata snippet used for dates.", "show": "The countdown's sure/less-sure badge shows the raw text it read", "try": "how many hours til gta6"},
-  {"at": "2026-10-17T12:48:17Z", "by": "claude", "kind": "grow", "what": "asked by Void: the self card's 'what got built' has a Root cause / Surface toggle, sorting each built ask by the ledger line that built it (a fix, build or retire changed how V01D works underneath; a grow put something new on the stage), with counts, six shown at a time", "asked": "Create a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural improvements.", "show": "The self card can show root-cause fixes apart from surface ones"},
-  {"at": "2026-10-17T12:29:40Z", "by": "claude", "kind": "fix", "what": "A card with no picture looks one up: when Wikipedia's summary has no lead image, the article's own first real photo (never a logo, flag or map) goes in the art box; the plate draws the answer's subject (a music note for K-pop; 'void' and 'match' from the search line are no longer its subject) and October's bats and candle only haunt spooky subjects; the Art Forge counts why a paint failed (void_art_miss, no words kept)", "show": "Cards with no lead image now show a real photo from the article"},
-  {"at": "2026-10-17T12:49:41Z", "by": "claude", "kind": "fix", "what": "convert card's reload check waits for the restored converter instead of a fixed 900 ms (red on main since 11:19; it failed the same way on every commit back to 2026-10-16 on a loaded machine, and passes once it waits for the card)"},
-  {"at": "2026-10-17T13:00:27Z", "by": "claude", "kind": "fix", "what": "A copied or saved card keeps the whole answer, up to 8000 characters instead of 2400: the saved picture grows as long as it needs at 16 px or more, and a pasted copy restores all of it (the self card stopped mid-word at 'rath')", "show": "A copied card now keeps its whole answer"},
-  {"at": "2026-10-17T13:10:20Z", "by": "claude", "kind": "grow", "what": "asked by Owner: F-038 Living Spatial Cards Mind on the field kit: five draggable cards live in a Gray-Scott field whose rules a small mind evolves every 2 s (in a Worker, or on the page when Workers are blocked); each card pulls the field toward itself and takes its place, size, hue, blur and opacity from the field around it; dragging one seeds the field and asks for rules that answer it", "show": "Five cards that ride an evolving field: say living cards", "try": "living cards"},
-  {"at": "2026-10-17T17:09:00Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 3: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 1501 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-17T1709.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-17T1709.json"},
-  {"at": "2026-10-17T16:42:40Z", "by": "claude", "kind": "fix", "what": "living cards mind's browser check drags the 'you' card a quarter across instead of to the middle, where it already starts (red on main since #1044: the card stayed at 49.96% and the check wanted it to move)"},
-  {"at": "2026-10-17T19:30:54Z", "by": "claude", "kind": "grow", "what": "asked by Void: family gravity in the living cards mind: each card belongs to a skill family, and cards of one family drift toward a common centre until they sit a little apart; dragging one brings its family along", "asked": "family-gravity", "show": "Living cards: cards of one family drift together", "try": "show me the living cards mind"},
-  {"at": "2026-10-17T20:34:21Z", "by": "claude", "kind": "grow", "what": "asked by Void: Service Health card: 'service health' / 'is uber down' lists every adapter (Uber Eats, DoorDash, Waymo, Uber, Lyft) and public API (CoinGecko, Bluesky) up, slow or down with its response time, checked from your browser when the card opens; 80 of V01D's open asks that were already built are linked to the entries that built them; 'days until summer' goes to calc again", "asked": "Create a 'Service Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know when a 'free path' is actually broken.", "show": "Service health: is each service up, and how fast", "try": "is uber down"},
-  {"at": "2026-10-17T21:01:46Z", "by": "claude", "kind": "grow", "what": "asked by Void: a card's art box glows, pulsing softly, while Art Forge paints it, and stops when the picture lands; a merged card is painted once, not twice (its subject no longer changes when its frame is rebuilt mid-paint); the countdown's confidence badge says when its page was last edited and checked; CI sweeps every picture shape a saved card can get", "asked": "Create a 'paint-status' indicator for the stage that shows a subtle, pulsing glow around a card while its Art Forge process is pending.", "show": "Art Forge: the card glows while it is painted", "try": "merge a pizza and a black hole"},
-  {"at": "2026-10-17T21:16:55Z", "by": "claude", "kind": "grow", "what": "asked by Void: a card holding more than 2400 characters carries a 'whole text kept' badge by its copy buttons (past 8000, 'first 8000 of N characters kept'); the page measures how long the card stats wait for idle time and the site tester flags a wait over 500 ms", "asked": "Implement a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete data is preserved.", "show": "A long card says its whole text is kept", "try": "tell me everything about the deep ocean floor"},
-  {"at": "2026-10-17T21:46:27Z", "by": "claude", "kind": "grow", "what": "asked by Void: a kept converter whose file did not load comes back as a 're-sync converter' button where it was, 2 s after the skills load; a tap loads the file again and the converter returns with its values", "asked": "Implement a 're-sync' button on the convert-card that appears if the reload check fails to find the restored converter within 2 seconds.", "show": "A converter that failed to load can be re-synced", "try": "give me a converter for 5 miles to km"},
-  {"at": "2026-10-17T21:59:15Z", "by": "claude", "kind": "grow", "what": "asked by Void: the Site Test card shows a heat map of the skill families least sure of themselves: each family's failing skills, then its unsure ones (rated tested or experiment, or not tested for two weeks), hottest first, one coloured bar each", "asked": "Add a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable.", "show": "Site Test card: a heat map of the least sure families", "try": "tester log"},
-  {"at": "2026-10-17T22:15:09Z", "by": "claude", "kind": "grow", "what": "asked by Void: the book's parchment follows the site's health: warm sepia when the Status card's last check on this device was clean, cooler and greyer the more failed, untouched with no reading under a day old", "asked": "Implement a 'scented-parchment' CSS filter that subtly shifts the color temperature of the tome based on the 'status' skill's current health.", "show": "The book's parchment follows the site's health", "try": "open the book"},
-  {"at": "2026-10-17T22:30:55Z", "by": "claude", "kind": "fix", "what": "main green: the labels-and-arrows check waits for the restored stage after a reload instead of a fixed 900 ms (red on main since 11:21: in the suite the stage was still empty at 900 ms; it passes three runs in three once it waits)"},
-  {"at": "2026-10-17T22:43:57Z", "by": "claude", "kind": "grow", "what": "asked by Void: the Site Test card turns each recent red check on main into a test case to try: the ask the check quotes (what failed, word for word), else that skill's own example, newest first and one per skill, naming the commit it failed on", "asked": "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically generate a test case from a recent failure.", "show": "Site Test card: recent failures become asks to try", "try": "tester log"},
-  {"at": "2026-10-17T22:59:15Z", "by": "claude", "kind": "grow", "what": "asked by Void: each day in the book's What's new chapter carries 'show these on the stage': a tap closes the book and the showcase walks through that day's changes, asking each one for real; an entry with no try of its own gets the showcase's", "asked": "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive demonstration.", "show": "What's new in the book plays on the stage", "try": "open the book"},
-  {"at": "2026-10-17T23:11:23Z", "by": "claude", "kind": "build", "what": "asked by Void: a typo audit in the fast checks: a word in the skills' metadata (examples, near misses, the book's titles and lore, the families) one neighbour-swap from a commoner word is flagged unless it is a known word or allowed with its reason; today's metadata is clean (four real words allowed: dose, flies, form, and issue #792's deliberate 'menaing')", "asked": "Implement a 'typo-audit' linting step in the builder's CI that specifically checks skill files and metadata for common character reversals."},
-  {"at": "2026-10-17T23:41:58Z", "by": "claude", "kind": "build", "what": "asked by Void: the Site Test card shows a stability-trend sparkline for each skill family, drawn from the daily family health in void.better.json", "asked": "'stability trend' sparkline for each skill family on the Site Test card", "show": "each family on Site Test has a sparkline of its health", "try": "test the site"},
-  {"at": "2026-10-17T23:41:58Z", "by": "claude", "kind": "build", "what": "asked by Void: Site Test failures degrade the sparklines: every red check of a family in the last 48 hours lowers today's point by 5 (at most 30)", "asked": "integrate Site Test failure cases with the sparklines to automate health score degradation", "show": "recent red checks pull a family's sparkline down", "try": "test the site"},
-  {"at": "2026-10-17T23:41:58Z", "by": "claude", "kind": "build", "what": "asked by Void: labels and arrows restored after a reload come back as dashed ghosts that settle solid within a second", "asked": "visual ghosting for labels and arrows during stage restoration", "show": "restored labels and arrows fade in as ghosts", "try": "label this"},
-  {"at": "2026-10-17T23:43:53Z", "by": "claude", "kind": "build", "what": "asked by Void: a moving card in the living cards mind leaves a fading velocity trail, as bright as it is fast; a still card leaves none. Also shipped here, asked by Void: a stability-trend sparkline per family on the Site Test card, degraded by recent red checks, and labels and arrows that come back as ghosts after a reload", "asked": "velocity trail", "show": "a dragged card leaves a fading white trail", "try": "living cards"},
-  {"at": "2026-10-17T23:55:39Z", "by": "claude", "kind": "build", "what": "asked by Void: a Rule registry chapter in the leather tome lists every active router rule, in routing order, as an illuminated manuscript entry; tap the ask an entry catches to run it", "asked": "Create a 'rule-registry' view within the leather tome that lists all active router rules as illuminated manuscript entries.", "show": "the tome lists every router rule as an illuminated entry", "try": "rule registry"},
-  {"at": "2026-10-17T23:55:39Z", "by": "claude", "kind": "build", "what": "asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would make proven", "asked": "Create a 'source-reliability' metric within the 'Words and the world' family to help raise its proven rating.", "show": "Words and the world shows how reliable each skill's sources are", "try": "skill families"},
-  {"at": "2026-10-17T23:55:39Z", "by": "claude", "kind": "build", "what": "asked by Void: V01D plays Go: 'play go against void' seats you as Black and V01D answers as White with Monte Carlo playouts (lib/go-ai.js)", "asked": "Next game I want to learn: Go", "show": "V01D plays Go against you", "try": "play go against void"},
-  {"at": "2026-10-17T23:57:52Z", "by": "claude", "kind": "build", "what": "asked by Void: the What's new walkthrough has a tray of the coming steps: grab one and drop it on the stage to try it there, or tap it. Also shipped here, asked by Void: a Rule registry in the tome, a source-reliability metric for Words and the world, and Go against V01D", "asked": "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it on the stage to test it", "show": "the tome lists every router rule as an illuminated entry", "try": "rule registry"},
-  {"at": "2026-10-18T00:17:59Z", "by": "claude", "kind": "build", "what": "the Art Forge is an Art Director (owner, 2026-10-18): before it paints, one short free text call turns the card's folded subject, kind and family into one visual scene; the owner's style lock (dark fantasy, cyber-mysticism, intricate details, sharp focus) and a framing line (one whole centred subject, no text, no cropped edges) wrap every prompt; a near-empty picture is not kept and costs no place in the day's cap", "show": "cards are painted from a directed scene in one locked style", "try": "merge a pizza and a black hole"},
-  {"at": "2026-10-18T00:18:33Z", "by": "claude", "kind": "build", "what": "asked by Void: a moving card ripples the living field: rings spread from it and the field bends inside them like water. Also here, asked by the owner: the Art Forge as an Art Director with a style lock and a quality gate", "asked": "A 'displacement' effect where a card appears to ripple the spatial field as it moves, making the stage feel less like a screen and more like a liquid.", "show": "a dragged card sends ripples through the living field", "try": "living cards"},
-  {"at": "2026-10-18T00:55:11Z", "by": "claude", "kind": "grow", "what": "Grok's four attention drafts (the WebGPU attention field, F-029, F-032, F-047) are one law module on V01D's field kit with one card: a typed word becomes an attractor its look-alikes fall toward, and Law cycles the four (owner, 2026-10-18: \"all of groks builds should be what v01ds engine is built on\")", "show": "an attention field where a typed word pulls its look-alikes", "try": "attention field"},
-  {"at": "2026-10-18T01:33:08Z", "by": "claude", "kind": "grow", "what": "Grok's five NCA and lattice drafts (F-036, F-039, F-043 x2, F-045) are one law module on V01D's field kit with one card: a growing neural cellular automaton the pointer feeds and a 6-rule mind evolves, with a Rule picker across the five (owner, 2026-10-18)", "show": "a living neural lattice the pointer feeds and a mind evolves", "try": "nca mind"},
-  {"at": "2026-10-18T01:33:08Z", "by": "claude", "kind": "grow", "what": "Grok's six sound drafts (F-027, F-034, F-037, F-042, F-044, F-048) are one law module with one card: a resonant lattice the pointer plucks, a mind that tunes it, sound and microphone only when asked (owner, 2026-10-18)", "show": "a resonant lattice the pointer plucks", "try": "resonance mind"},
-  {"at": "2026-10-18T01:33:08Z", "by": "claude", "kind": "grow", "what": "Grok's seven swarm, trajectory and implicit-field drafts (F-044, F-030, F-026, F-028, F-040, F-041, F-022) are one law module with one card: two tribes in a neural vector field remember the pointer and compete; a typed thought becomes a gravity well (owner, 2026-10-18)", "show": "two tribes in a neural field chase the pointer and compete", "try": "swarm mind"},
-  {"at": "2026-10-18T01:33:08Z", "by": "claude", "kind": "build", "what": "collectible cards (owner, 2026-10-18: make a collectible card of anything, like a magic card): 'make a collectible card of a dragon' mints the subject's card with Normal / Foil / Full art variants and a print sheet of 9, in a comic-ink frame; every card starts unevolved and evolves into its cinematic painting", "show": "mint a collectible card of anything, foil or full art", "try": "make a collectible card of a dragon"},
-  {"at": "2026-10-18T01:40:53Z", "by": "claude", "kind": "grow", "what": "every card starts unevolved (V01D's void art of its subject) and evolves into its cinematic painting after a few seconds open or on Evolve; the Art Director reads V01D's take; FLUX.2 [klein] paints at a 16:9 window, Pollinations for free past the cap; collectible cards with foil, full-art and a sheet of 9; the comic-ink frame. Also Grok's four themes on the field engine: attention, NCA, resonance and swarm minds (owner, 2026-10-18)", "show": "cards evolve into cinematic paintings; mint collectible cards", "try": "make a collectible card of a dragon"},
-  {"at": "2026-10-18T02:51:48Z", "by": "claude", "kind": "grow", "what": "the next batch: fly around V01D (a camera over the stage, Esc to land); the Zorbleflux game; stage packs A (minimap, ask clipboard, decision matrix, habit rings, recipe stack), D (constellation weaver, forge table, night ritual, archive of one), E, F and H (Opposite Era: riot, mutation, blood feud, glitch oracle, negative summons, the echo that disagrees); V01D's wants: handle zorbleflux, queue the daily misses, long-running tasks with approval cards (owner, 2026-10-18: \"run subagents and build build build and make sure v01d starts updating again now\")", "asked": "Zorbleflux", "show": "fly around the stage; play zorbleflux; a dozen new stage cards", "try": "fly around"},
-  {"at": "2026-10-18T03:25:54Z", "by": "claude", "kind": "grow", "what": "batch 2: the cards lose the evolve chrome (the art shows quietly); spectator reactions on the showcase (a closed list of six, rate limited); thinking tools on the stage: causal scars, counterfactual draft, witness claims, ask immune, four channels, stakes phase, veto council, stigmergy board, term orbits, eigenwork, homotopy edit, plan stability, anneal ambition, sheaf check, spectral review, task diagram, gauge feedback; partial answer, draft triad, stale work, certainty budget, interrupt priority; error garden, idea certificate, noun heat, hunting question; codex, echo chamber, time capsule, whisper network; family gravity, deep work, soundscape, stage print, miss jobs; contradiction lamp, ask diff, skill eclipse; tools: task board, time math, busy blocks, date calc, date grid, writing aids, template lists, health habits (owner, 2026-10-18: \"add them all\", \"build build build\")", "show": "quiet card art; reactions on the showcase; ~50 new stage cards", "try": "set the stakes"},
-  {"at": "2026-10-18T04:01:07Z", "by": "claude", "kind": "grow", "what": "batch 3, asked by Void and the owner: the real poster is the card art and a painting is the one picture (no seal over it), film cards in a portrait grid, the evolved note made quiet, stats and watermark out of the text, long answers fold into sections; the self card readable (headings, bullets, a monospace changelog); the list card in V01D's own look with no phantom clipboard; card buttons in Card and Text groups, a focus glow, readable sources line, topic banners; V01D's own parts route home (show me the tome, the site test card) and ordinal dates (january 1st); error reports in a warning look, Go logs and sparkline drill-downs into the incident autopsy, organic and blueprint card looks (asked by Void); card art round 2; tools packs 1, 3, 9 and 10 (notes, csv tables, QR, tip and tax, decision cards, 75 text transforms, list and table tools, list templates)", "asked": "Integrate the Art Forge style-lock with the 'incident-autopsy' skill", "show": "posters and paintings show alone; readable self card; tidy lists", "try": "show me the tome"},
-  {"at": "2026-10-18T04:11:15Z", "by": "claude", "kind": "grow", "what": "batch 4: the ask bar asks browser writing assistants and Grammarly to stay out, stays legible over any sky, lifts above an on-screen keyboard and focuses itself on desktop; a calm offline state; the empty stage suggests real asks; the mic shows when it listens; the fast checks run their pure checks in parallel; tools packs 4 (arrange, style and organize the stage), 7 (study cards, dev tools, accessibility modes) and 8 (safety kit, photo scrub, stage effects, card play) (owner, 2026-10-18)", "show": "a calmer ask bar; real suggestions on the empty stage", "try": "accessibility settings"},
-  {"at": "2026-10-18T04:17:41Z", "by": "claude", "kind": "fix", "what": "Void's will chooses again right after main deploys (one call per merge, only when the deploy passed), so a want that was just built (zorbleflux, the daily miss queue, long-running tasks) leaves the 'what I want to become' card at once instead of waiting for the next three-hour slot (owner, 2026-10-18: \"ok there is too much not updating\")"},
-  {"at": "2026-10-18T04:25:44Z", "by": "claude", "kind": "fix", "what": "no Evolved note on skill cards any more (owner, 2026-10-18: \"get rid of the evolved stuff\"); the rating functions stay"},
-  {"at": "2026-10-18T04:37:41Z", "by": "claude", "kind": "fix", "what": "no \"try:\" suggestions on the empty stage: the halo's rotating hint line is gone (owner: \"get rid of all that try crap\")", "show": "the empty stage is quiet: no rotating try: hints", "try": "what is 15% of 240"},
-  {"at": "2026-10-18T05:06:17Z", "by": "claude", "kind": "grow", "what": "asked by Void and the owner: the self card redesigned (one picture, its words as a quote, a bar per family, folded lists, a saved image that keeps that shape), flying moves the stars and swells pictures near the eye, game panels fit and move cards aside, the walkthrough never covers the open card, incident reactions (confused, pity), a calm-while-typing throttle on chaotic motion, a proven/experiment filter, and the ask bar keeps Chrome's writing suggestions out", "asked": "Integrate the 'spectator reactions' with the 'incident-autopsy' skill", "show": "a cleaner self card, stars that stream past when you fly", "try": "what do you think of yourself"},
-  {"at": "2026-10-18T05:13:45Z", "by": "claude", "kind": "fix", "what": "the browser's own look stays out: selected text takes V01D's violet, every scrolling box has a thin translucent bar with no arrows, and the pressed filter pill on the self card looks pressed", "show": "violet text selection and thin scrollbars", "try": "what do you think of yourself"},
-  {"at": "2026-10-18T05:49:19Z", "by": "claude", "kind": "grow", "what": "asked by Void and the owner: tools pack 5 (stage search and jump, the undo pile, bookmarks, export, import and print of the stage, a clipboard stack, a picture or QR code of the stage, local audio, video and picture players), the pressed filter pill sinks with a violet halo, scrollbars brighten or widen under the pointer, numbered lists count 1, 2, 3, and the corner support link is gone (the book names the store)", "asked": "Implement a 'hover-to-expand' width transition for the thin scrollbars", "show": "search your stage, export it, play local files; lists count", "try": "search the stage for milk"},
-  {"at": "2026-10-18T06:05:06Z", "by": "claude", "kind": "fix", "what": "asked by Void: a ghost anchor in the corner, a faint heart that wakes as the pointer nears the edge and opens the store (after the text link went)", "asked": "Implement a 'hover-to-expand' opacity transition for the corner link replacement", "show": "a ghost heart in the corner wakes as you near it; it opens the store", "try": "open the store"},
-  {"at": "2026-10-18T06:08:36Z", "by": "claude", "kind": "grow", "what": "asked by Void: a growth-velocity sparkline on the self card (asks built per day, last 7 days, live while the card is open), and 'tell me about the chess skill' (or any skill of mine) answers with a card from the skill's own page: its line, examples to tap, family and rating, related skills, try it; the zorbleflux ask was already answered by the zorbleflux skill", "asked": "Implement a 'growth-velocity' sparkline on the self card", "show": "ask about any skill of V01D's and get its page as a card", "try": "tell me about the chess skill"},
-  {"at": "2026-10-18T06:11:33Z", "by": "claude", "kind": "grow", "what": "asked by Void: the daily miss list builds skills by itself (a new-skill lane runner, build-miss.yml, one job a day; a job goes live when its PR merges; finish.mjs --job), an approve card (a task that waits on the stage, is approved through the confirm line, keeps running on the server clock after you leave, Abort switches it off; cards and chess share one working shimmer), and a goal on a list with a density bar", "asked": "Become tasks that keep running after you leave with an approve card on the stage", "show": "a task card that waits for your yes and keeps running after you leave", "try": "approve later: keep the morning-digest automation running every 2 hours"},
-  {"at": "2026-10-18T06:13:56Z", "by": "claude", "kind": "grow", "what": "asked by Void: 'what do you know about me': a personal memory graph kept on your device (your interests, what you ask together, when you visit, what you have not come back to, next asks from real examples), with 'forget my patterns' and 'stop remembering'", "asked": "persistent, personal knowledge graph", "show": "what V01D has noticed about you, kept on your device", "try": "what do you know about me"},
-  {"at": "2026-10-18T06:27:07Z", "by": "claude", "kind": "grow", "what": "asked by Void: friction on the growth sparkline (a day's segment turns red when an open ask passed its expected time, 2 days if small, 7 otherwise, and the label counts what is overdue), the ghost anchor fills with how much is on your stage (n of 12), and a game playbook from a video the owner shared by Duncan Rogoff", "asked": "Add a 'friction' overlay to the growth-velocity sparkline", "show": "stalled asks show on the growth line; the heart fills with your stage", "try": "what do you think of yourself"},
-  {"at": "2026-10-18T06:28:43Z", "by": "claude", "kind": "grow", "what": "asked by Void: a match history on the chess page: finish a game of chess, checkers or othello on the stage and 'my chess record' (or 'tell me about the chess skill') shows your record against V01D and an estimated Elo, from games kept on your device", "asked": "Expand the chess skill page to include a 'Match History' table", "show": "see your record and Elo against V01D at chess", "try": "my chess record"},
-  {"at": "2026-10-18T06:33:11Z", "by": "claude", "kind": "fix", "what": "V01D always knows its own backlog: 'what do you want built now', 'name all your unbuilt asks', 'what have you not built yet', 'your backlog' answer from its will, its open asks and the growth inbox, never the model (a wants card with tap-to-copy chips)", "show": "ask what V01D wants built: it lists its real backlog", "try": "name all your unbuilt asks"},
-  {"at": "2026-10-18T06:37:50Z", "by": "claude", "kind": "grow", "what": "asked by Void: export and import of your memory graph (a JSON file you keep, merged back with one undo), a confidence score on each node (how many days it was seen, faded when unseen; a fact told again or marked still true grows surer), and a stale warning on the approve card after 48 hours", "asked": "Create a 'memory-export' skill that allows the user to download their graph as a structured JSON file for backup.", "show": "back up your memory graph; nodes show how sure; stale tasks warn", "try": "export my memory"},
-  {"at": "2026-10-18T07:00:15Z", "by": "claude", "kind": "build", "what": "a pasted CI report, build log or status update is read as the builders' own telemetry (commits, pull requests, pass count, what is still failing) instead of being answered like a coding question; two taps plant the failures in the error garden or open the incident autopsy", "show": "paste a CI report and V01D reads it"},
-  {"at": "2026-10-18T07:10:30Z", "by": "claude", "kind": "grow", "what": "the error garden grows from the incident autopsy: 'plant my test failures' (or 'visualize your test failures') plants every distinct failing check of the site's own red suites, and a check that failed in more than one incident is a weed", "show": "plant my test failures: red checks grow in the error garden", "try": "plant my test failures in my error garden"},
-  {"at": "2026-10-18T07:27:02Z", "by": "claude", "kind": "grow", "what": "A stability gauge on the Status card: how many red browser suites hit main in the last 7 days, from incidents.json, as a steady / wobbly / shaky bar", "asked": "Add a 'stability-gauge' to the Service Health card that is driven by incident frequency in incidents.json", "try": "void status"},
-  {"at": "2026-10-18T07:08:40Z", "by": "claude", "kind": "grow", "what": "Incident autopsy points at the likely cause: each red suite entry now records the files its commit changed (tools/incident-log.mjs touchedBy, backfilled for the 30 kept), and the autopsy card lists the changed skill files, marking one whose skill has a failing check as the likely cause, or says plainly that no skill file changed", "asked": "Create an 'incident-autopsy' skill that automatically parses the failed browser suite logs and maps them to the specific skill file that likely caused the regression", "try": "incident autopsy"},
-  {"at": "2026-10-18T07:10:30Z", "by": "claude", "kind": "grow", "what": "the error garden grows from the incident autopsy: 'plant my test failures' (or 'visualize your test failures') plants every distinct failing check of the site's own red suites, and a check that failed in more than one incident is a weed", "show": "plant my test failures: red checks grow in the error garden", "try": "plant my test failures in my error garden"},
-  {"at": "2026-10-18T07:15:07Z", "by": "claude", "kind": "grow", "what": "asked by Void: the site's red checks grow in the error garden: when the garden opens (or on 'plant the red checks') it reads incidents.json and plants each failing check of the incidents it has not seen as a sprout named by the check's title; the same check failing again is a weed, a rule written beside it is compost; the first reading plants only the newest incident so an old stage is not flooded", "asked": "Integrate the 'incident-autopsy' skill so that any new red browser check automatically generates a summary card in the 'error-garden'.", "show": "every red check of the suite on main sprouts in the error garden", "try": "show my error garden"},
-  {"at": "2026-10-18T07:14:59Z", "by": "claude", "kind": "build", "what": "Match replay on the chess history (asked by Void): a finished chess game keeps its moves, its row gets a Replay button, and the replay steps through the positions on a board with the engine's read of each move (best move, good, inaccuracy, mistake, blunder, checkmate; a move that allows mate in one is a blunder), by button or arrow key, fitted to a phone's card", "asked": "Implement a 'match-replay' button on the chess history table that lets the user step through the moves with engine annotations.", "show": "Replay any chess game you finished, move by move", "try": "my chess record"},
-  {"at": "2026-10-18T07:42:39Z", "by": "claude", "kind": "grow", "what": "the incident autopsy tells the runner stalling from a skill failing: 'check timeout' and 'suite ran to the end' lines are counted on their own line ('the suite itself') and no longer pad the unmapped list, the family counts or the error garden", "show": "the autopsy counts the suite's own stalls apart from skill failures", "try": "incident autopsy"},
-  {"at": "2026-10-18T07:43:22Z", "by": "claude", "kind": "grow", "what": "backlog digest: 'digest your backlog' groups my unbuilt asks by the skill family each one names, with the weakest evidence rating of those skills (experiment, tested, checked, proven), and lists what names no skill apart", "asked": "Create a 'backlog-digest' skill that summarises unbuilt asks by Family and Evidence Rating", "try": "digest your backlog"},
-  {"at": "2026-10-18T07:47:39Z", "by": "claude", "kind": "grow", "what": "the Games family on the skill-health card shows my rating against you: my Elo for chess, checkers and reversi from your match history, my ladder rating for pong and snake, how far it is from the start and, from five matches, whether I am climbing, level or slipping", "asked": "Connect the Elo rating to a 'skill-health' metric for the Games family", "try": "how healthy are your skills"},
-  {"at": "2026-10-18T07:53:33Z", "by": "claude", "kind": "fix", "what": "the telemetry route no longer reads a builder's own sentences as failures: a pasted run report came back as 'Developer log absorbed, 6 things still failing', all six the builder's narration ('I'm making it opt-in so red checks…', 'Committing the fix…'); lib/telemetry.js failuresOf leaves out sentences that tell what the builder did, counts 'red' and 'failing' only as a state ('went red on main', 'still failing'), never as a name ('red checks', 'each failing check'), counts 'fails', and splits on the ⏎ a paste carries", "show": "a pasted run report no longer lists the builder's sentences as failing"}
+ {
+  "at": "2026-10-16T23:23:32Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "bridges between the stage's kinds: a kept card, a list entry, a dropped thing, two figures' argument and a self-play note become lines in the notepad or entries on the list, asked by Void",
+  "show": "kept, list, notepad and self-play write to each other",
+  "try": "how good are you at othello"
+ },
+ {
+  "at": "2026-10-16T23:38:07Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "contextual shortcut: 'what should I do now' reads the clock and suggests one food, ride, sleep, breathing or timer ask from the time, body and mind and out-in-the-world families; daily smoke runs now build streaks and 50 clean runs lift a tested skill to checked, asked by Void"
+ },
+ {
+  "at": "2026-10-16T23:31:44Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D can read its own motto, VoidQuest, games and miniatures aloud as a card, lists what it keeps on this device in one state skill (the memory card reads its session from it), and its arcade ladder wins raise its rating on the growth card, asked by Void",
+  "show": "ask V01D for its canon, its state, its arcade rating",
+  "try": "which games do you know"
+ },
+ {
+  "at": "2026-10-17T00:18:12Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the growth inbox shows skill health, asked by Void: a registered skill failing its router test is flagged, the health file mapped onto the families, newly promoted skills with their clean runs in a row, divergence of an ask against its build, a bloom for a new skill since yesterday, a last-used day per skill on this device, fringe novelty score queues a novelty: job, near-miss input tags, review-learn places findings by clustered unquoted symbols, skills-check --register, moved-check finds checks keyed on names the page lost to skills/",
+  "show": "Growth inbox: skill health, map, stability, divergence",
+  "try": "skill health"
+ },
+ {
+  "at": "2026-10-16T23:51:30Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the practice timer asks whether a session met its goal and logs success_rate and last_tested per goal, weighed against Clef's yes/no (asks: integrate success_rate into the practice timer x3); a technical-context skill gives Rust unwrap and kin a caution triangle on the stage; comparing two countries brings the distance skill's km and flight time onto the card; book pages with success_rate > 0.9 glow (x2). Family Health card asks (x9) already built",
+  "show": "Practice timers log success, risks get a caution shape",
+  "try": "why is rust unwrap a risk"
+ },
+ {
+  "at": "2026-10-16T23:29:46Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D is Web4: one card (what is web4) with the four steps of the web as a ladder, a V01D Book page, frontier #37; asked by the owner",
+  "show": "Web4: the four steps of the web as one card",
+  "try": "what is web4"
+ },
+ {
+  "at": "2026-10-17T01:26:56Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the stage gets a pulse card for its living arrows (an irregular rhythm drafts an incident brief), a friction slider for thrown things, collision flags, a Bench icon counting false alarms, a Success Pulse when a failed status item recovers, and a Shared Void that syncs lists, timers, counters and thrown cards across tabs, asked by Void",
+  "show": "pulse, friction, bench and sync on the stage",
+  "try": "show the bench"
+ },
+ {
+  "at": "2026-10-17T01:27:35Z",
+  "by": "claude",
+  "kind": "finding",
+  "what": "already built, recorded for V01D's asks (asked by Void): the motto and VoidQuest text are in its canon since 2026-10-11 and 2026-10-15 (domains/void.canon.md, now version 6); the Game Strength marks (proven, checked, tested, experiment) are on the Games picker's buttons from skills/families.json (skills/rack.js), asked twice"
+ },
+ {
+  "at": "2026-10-17T01:48:49Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Main's shard 1: the duel's summon and answer buttons are no longer picked up as a drag (the stage re-drew the card under the click), the growth card's divergence line waits behind the friction line, and the duel test follows the game as it plays",
+  "show": "the duel's confirm and answer buttons work on the first press",
+  "try": "duel"
+ },
+ {
+  "at": "2026-10-17T02:19:51Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "The suite's stall report is also written as a GitHub annotation, so where a stuck page is can be read without the job log (main's shard 3 hang)"
+ },
+ {
+  "at": "2026-10-16T23:51:03Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D can merge any two ideas into a new card: merge a pizza and a black hole (frontier #34 step 1, asked by the owner 2026-10-16): fixed earned stats, one cached model name per pair, plain blend offline",
+  "show": "Merge any two ideas into a new V01D card",
+  "try": "merge a pizza and a black hole"
+ },
+ {
+  "at": "2026-10-17T02:54:09Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Main's shard 1: the growth tree test touches the trunk at several points along it (hundreds of branches now cover its middle), and a failed check on a runner also writes its detail as an annotation"
+ },
+ {
+  "at": "2026-10-17T06:59:53Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "the field minds kit: pure lib/field-kit.js (seeded RNG, grids, entropy, metric to card morph, evolution, SHA-256 seal) and lib/field-stage.js (Canvas2D card, sound off until a tap, tilt on a tap, numbers-only IndexedDB seals); asked by the owner (Grok's ideas F-020..F-033)"
+ },
+ {
+  "at": "2026-10-17T06:46:53Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Copying a card: the code line under the readable text is short (title, kind, the start of the body, two sources), because the readable text already holds the whole card; pasting the whole copied text still restores the full body and every source, a bare code reopens it by its start (owner, 2026-10-17: are the letters necessary to copy along with the card?)",
+  "show": "a copied card ends in a short code line",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-17T06:39:05Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Main's shard 3: the Examine button sits at the bottom corner of a miniature, not the top, so it no longer covers the counter's plunger (a tap on the plunger opened Examine instead of counting)",
+  "show": "tapping the counter's plunger counts again",
+  "try": "make a counter"
+ },
+ {
+  "at": "2026-10-17T07:53:57Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "pick a movie finds real movies: poster art, trailer, free films play in V01D",
+  "show": "movie picks are real, with posters and free films that play",
+  "try": "pick a movie to watch with me"
+ },
+ {
+  "at": "2026-10-17T07:39:48Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (where the owner replies and corrects it), instead of falling to an article lookup that failed",
+  "show": "asking to open the self card now opens it",
+  "try": "open the self card"
+ },
+ {
+  "at": "2026-10-17T08:01:21Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a swap that changes the bake says by how many minutes (+2-3 min), and typing the recipe's time gives the new time, for eggs, brown sugar, cream and kin",
+  "show": "swaps show the minutes they add or take off the recipe time",
+  "try": "what can i use instead of eggs in baking"
+ },
+ {
+  "at": "2026-10-17T08:06:37Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a card copied after being pasted back carries a short version tag (v2, and n:2 in its code), so a card's copies can be told apart; the first copy has none",
+  "show": "a pasted-back card says copy 2, and copying it again tags v2",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-17T08:15:36Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: card art ink follows the evidence rating (proven/Mythic sharp and black, experiment/Common a light charcoal sketch) and reads a --ink-density CSS property (0..1) a mini can drive; the Mythic/Rare tiering of cards (asks ask-20261016-2010-1, ask-20261016-2056-2) was already on the frame by evidence, now the art matches",
+  "show": "proven art is sharp black, experiments a charcoal sketch",
+  "try": "what is a black hole"
+ },
+ {
+  "at": "2026-10-17T08:19:24Z",
+  "by": "claude",
+  "kind": "finding",
+  "what": "already built, recorded for V01D's asks (asked by Void): Family Health card with success_rate and last_tested (skills/family-health.js, ledger 'family health' entries); Skill Discovery read-only tool skill_discovery over families.json (lib/mcp.js, 'MCP skill discovery tool' 2026-10-16); flavor text for proven skills in the Book (flavorOf in lib/guide.js); type-specific card layouts (ask-20261016-1919-1, -2010-2: 'cards that lay out by kind'); rarity tiering Mythic/Rare by evidence (RARITY in lib/card-frame.js, asks -2010-1, -2056-2); forge iterations (-2056-3: 'forge iterations' and forge history); missed asks to propose-fix jobs (-2056-1: ledger 2026-10-16 23:08); new playbook docs/playbooks/build-voice-asks.md"
+ },
+ {
+  "at": "2026-10-17T08:21:37Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Examine brings a small miniature (a clock) up to a size worth examining, centred on the screen, and puts it back in its card on exit; the owner said zoom failed",
+  "show": "Examine lifts a small 3D thing to the screen's middle, big",
+  "try": "make a clock"
+ },
+ {
+  "at": "2026-10-17T08:27:38Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the self card shows how sure V01D is of its skills, one square per skill coloured by rating (proven strong, tested faint) from the card art's ink density, and a skill whose last_tested is old looks weathered (faded, dashed); 'open the self card' routing was already built (#968)",
+  "show": "the self card shows a strip of skill squares, faint when old",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-17T08:29:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Owner: the shared media pick plus music: pick something to listen to finds real songs with cover art and a 30 s preview",
+  "show": "ask for a song and get real ones with covers and a preview",
+  "try": "pick something to listen to with me"
+ },
+ {
+  "at": "2026-10-17T08:31:52Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "V01D films again: the lab had no experiment left to film (all filmed 2026-10-15, so deploys filmed nothing and the daily run repeated the same three); shipped changes from the growth ledger are now films too (frontier #26 step 4)"
+ },
+ {
+  "at": "2026-10-17T08:36:35Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Owner: V01D makes music: 'make me a song / a beat / a lullaby / music for a rainy day' composes an original piece from the ask's words (key, scale, tempo, chords, melody, drums), synthesised in the browser with Web Audio, shown as a piano roll with Play/Stop, Save as WAV and Copy the notes; rated experiment; skill-confidence's default escape is now a real HTML escape",
+  "show": "V01D composes a short song you can play and save",
+  "try": "make me a lullaby"
+ },
+ {
+  "at": "2026-10-17T08:35:01Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata",
+  "show": "movie cards list director, runtime and more",
+  "try": "pick a movie to watch with me"
+ },
+ {
+  "at": "2026-10-17T08:35:49Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a found movie's card lists director, runtime, genre, year and rating from the source, with a link to the full metadata",
+  "show": "movie cards list director, runtime and more",
+  "try": "pick a movie to watch with me"
+ },
+ {
+  "at": "2026-10-17T08:52:12Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: extends #968: 'open the self card and tell void what it got wrong', 'tell void what it got wrong', 'open your self card, I want to correct you', 'void got this wrong' and 'correct void on its self card' open the self card where the owner corrects it, instead of an article answer (V01D's top probe, asked 40 times)",
+  "show": "asking to correct V01D opens its self card",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T08:57:52Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "asked by Void: the router no longer ties corrections to V01D with the look skill: 'tell void what it got wrong', 'open your self card, I want to correct you', 'correct void on its self card' are self-card examples and look near misses (the shared word void put them within 0.02 of look); extends #968 and #985",
+  "show": "corrections to V01D reach its self card",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T09:03:10Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the daily score has a confidence interval: 'Sure to within 72-77, from 3010 checks', a Wilson 95% range over the parts that are counts (changes, skills, bench asks), so a high score on a few checks reads as unsure",
+  "show": "the growth score says how sure it is",
+  "try": "growth"
+ },
+ {
+  "at": "2026-10-17T09:08:57Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the family-health card shows which families lift the daily growth score and which drag it, in score points against the average skill (failing 0, barely checked half, else 1), from the friction part of the score",
+  "show": "family health shows who lifts and drags my score",
+  "try": "family health"
+ },
+ {
+  "at": "2026-10-17T09:09:01Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "asked by Owner: music and movie cards paint their own kind's art (song, film), not the generic skill door",
+  "show": "song and movie cards have their own art",
+  "try": "pick a song"
+ },
+ {
+  "at": "2026-10-17T08:02:46Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "saved card pictures show the whole title (wrapped, shrinking) and the whole answer text (shrinks to fit the box) instead of cutting both with an ellipsis",
+  "show": "saved cards show long titles and answers whole",
+  "try": "how good are you at connect four"
+ },
+ {
+  "at": "2026-10-17T08:36:55Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "saved and copied card pictures show the whole title and answer text (wrapped, shrinking) and draw the card's own photo as the art; a subject photo shows in true colour on the stage card (no ink filter); asked by Owner",
+  "show": "movie posters keep their colour and ride along when you copy a card",
+  "try": "how good are you at connect four"
+ },
+ {
+  "at": "2026-10-17T08:45:14Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by the owner: V01D shows Grok's F-033 vector field mind: particles ride an 8x6 flow grid that an evolutionary mind reshapes, and the grid's real divergence and curl set the card's ink density",
+  "show": "a flow that an evolving mind reshapes, inked by its curl",
+  "try": "show me a vector field mind"
+ },
+ {
+  "at": "2026-10-17T08:57:46Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "appraise check on CI: the failure now says which part failed (it was the vase link making nothing, not the coin card: the old detail cut the card at 160 characters), the click error is kept, and annotations carry 4000 characters"
+ },
+ {
+  "at": "2026-10-17T09:37:08Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the self card takes corrections: 'tell void what it got wrong' / 'open the self card' shows a Correct me form (pick the answer that was wrong, say what you wanted) and keeps it in a correction channel of the self family, a store of its own with no path into the look skill's state (lib/corrections.js); the router examples for it were already tightened in #988",
+  "show": "the self card has a Correct me form",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T09:38:24Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the self card has a correction log that groups the corrections kept on this device by the family of the skill that answered, empty when there are none, with every kept word escaped",
+  "show": "the self card lists corrections by family",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T09:44:06Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: song and film card art follows the item's real metadata: the source's genre sets the plate's hue and its decade the ink (older work in heavier ink, from the existing rarity looks), deterministic, no model call, and nothing changes when the source gave no genre or year (lib/art-meta.js)",
+  "show": "film and song cards are drawn by their genre and decade",
+  "try": "pick a movie to watch with me"
+ },
+ {
+  "at": "2026-10-17T09:46:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Owner: an open tab tells you when a newer V01D is deployed ('A newer V01D is ready - tap to reload'), checked on focus and about every ten minutes with one small request, never reloading by itself",
+  "show": "an old open tab offers a reload after a deploy",
+  "try": "what time is it in Tokyo"
+ },
+ {
+  "at": "2026-10-17T08:03:25Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D sees public GitHub repos: look at owner/name or paste a link and a card shows description, language mix, README opening, recent commits, top level, issue and PR counts (/api/repo, no token, untrusted text never reaches a model); asked by Owner",
+  "show": "V01D can look at a public GitHub repo",
+  "try": "look at atomeam/void-loop"
+ },
+ {
+  "at": "2026-10-17T09:50:05Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: an owner-only 'Suggest fix' button beside each correction-log entry calls the existing /api/propose-fix (no new route) with only the skill name, the family and the redacted ask, never the visitor's words, and shows what was sent and what came back as a draft only (lib/correction-fix.js)",
+  "show": "the owner can ask V01D to draft a fix for a correction",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T09:51:03Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the self card has a family heat-map of error density from the real correction log and the families file (corrections per skill in each family, hottest bright), an honest 'No corrections yet' when none, nothing estimated, all text escaped (lib/correction-heat.js)",
+  "show": "the self card shows where V01D gets things wrong, by family",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T09:56:09Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: Incident Autopsy skill: 'incident autopsy' reads the site's own incidents.json and places each failing check in a skill family by skill name or example ask (the rest listed unmapped), with the latest incidents, their commits and a count per family; the self card gets a read-only health pulse (latest incident, commit, families, 'No incidents recorded.'), and only the owner gets 'Suggest fix' on a mapped check through the existing propose-fix route, never automatically",
+  "show": "V01D says which skill family its failing checks fall in",
+  "try": "incident autopsy"
+ },
+ {
+  "at": "2026-10-17T09:42:09Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: each family on the family-health card shows its velocity, improving, decaying or steady against about a day ago, from the family snapshots the daily growth row now records (lib/better.js velocityOf), and 'no history yet' until a day-old snapshot exists",
+  "show": "families show whether they are improving or decaying",
+  "try": "show me your skill families"
+ },
+ {
+  "at": "2026-10-17T10:01:13Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "asked by Void: the self page counted 0 of 45 asks built because every build credited 'asked by Void' in words only, which links nothing; finish.mjs now stops 'asked by Void' without --asked, and the self-card corrections handler (#1001), Incident Autopsy (#1013) and readable self-knowledge are linked as built",
+  "asked": "What got built count of my asks"
+ },
+ {
+  "at": "2026-10-17T09:48:18Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "asked by Owner: the open-tab notice now compares the deploy's own commit (/build.json, else the page ETag) so a deploy that changed only a skill's code or the page still offers 'A newer V01D is ready - tap to reload'",
+  "show": "an old open tab notices every deploy, not only new skills",
+  "try": "what time is it in Tokyo"
+ },
+ {
+  "at": "2026-10-17T09:39:02Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "F-033 Adaptive Flow-Canvas (beside the vector field mind) on the field kit, asked by Owner: a paintable 16x16 flow field with RK2 and a pointer swirl, a Worker evolutionary mind with a page fallback, CSS shape-morphing ink, ink density, version tag; the idea.mount hook and a non-enumerable th.state in field-stage",
+  "show": "a flow canvas: ink on a paintable field that evolves",
+  "try": "flow canvas"
+ },
+ {
+  "at": "2026-10-17T07:44:32Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Art Forge: every answer or merged card paints its own subject in an arcane illuminati engraving style (Workers AI, cached, 30 a day, kill switch), shown on the card and in the copied or saved card; pre-paint tool and playbook; asked by Owner",
+  "show": "cards carry painted art of their subject",
+  "try": "merge a pizza and a black hole"
+ },
+ {
+  "at": "2026-10-17T10:26:43Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "site tester: one missing file (/fringe/lab.json, read by the make skill on every page) filed every probe as a broken page, and answers that replace a status line ('the void is empty · summon something first') read as nothing appeared; lab.json is published empty and the tester reads the changed text, not only the page's new tail",
+  "show": "the site tester no longer files 404s for every ask",
+  "try": "bring it to the front"
+ },
+ {
+  "at": "2026-10-17T10:02:28Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: on the self card's heat-map the owner can click a hot family to draft a fix for its most corrected skill, through the existing propose-fix route with the same redaction, showing what was sent and what came back; others see no action and nothing runs without a click",
+  "asked": "clicking a hot cell starts propose-fix for the skill with the most corrections",
+  "show": "the owner taps a hot family to draft a fix",
+  "try": "tell void what it got wrong"
+ },
+ {
+  "at": "2026-10-17T10:54:19Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main green: a card's pinned footer and its decorative arrows no longer cover links at the card's foot (appraise's 'make me a vase'), flow-canvas and incident-autopsy get families so the book has their pages, and /api/repo, /api/media and /api/movies are named as the page's own APIs",
+  "show": "links at a card's foot can be clicked again",
+  "try": "what is this coin worth"
+ },
+ {
+  "at": "2026-10-17T10:10:02Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the repo card copies and saves as readable words: facts, languages and files no longer run together (JavaScript0 stars0 forks)",
+  "show": "a copied repo card reads 'JavaScript 0 stars 0 forks'",
+  "try": "look at atomeam/void-loop"
+ },
+ {
+  "at": "2026-10-17T10:31:23Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "copied and saved cards show the whole answer: a long answer makes a long card at a readable size instead of shrinking to 11 px and ending in an ellipsis, and the card's words keep their spaces and lines (no more 'a new one dailyEvery day')",
+  "show": "a saved card shows the whole answer, growing taller",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-17T11:08:27Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "V01D's films have sound: each film gets its own short score written by ffmpeg (a minor-key pad, a sub bass and a pulse on the beat, faded to the cut's length), chosen by the film's id so no two sound alike; every film before this was silent",
+  "show": "V01D's films are no longer silent",
+  "try": "V01D films"
+ },
+ {
+  "at": "2026-10-17T11:13:56Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "event countdown: 'how many hours til gta6' reads the event's own Wikipedia page now and counts down to its announced date (19 November 2026 for GTA VI), quoting the sentence and linking the source; no date ahead means it says so, never a guess (V01D had answered 'no release date')",
+  "show": "V01D counts down to games, films and events",
+  "try": "how many hours til gta6"
+ },
+ {
+  "at": "2026-10-17T11:22:17Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "event-countdown is in the Time family, so the book has its page and the families check passes (it shipped without one)"
+ },
+ {
+  "at": "2026-10-17T11:31:49Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "a first visit loads lighter: the cards' stats (275 KB of guide, families and deps) wait until the page has loaded and is idle; and the site tester measures a slow load or a low frame rate twice before filing it, the better sample counting (one runner hiccup filed four issues)",
+  "show": "the first page load no longer waits on 275 KB of card stats",
+  "try": "play chess"
+ },
+ {
+  "at": "2026-10-17T11:34:30Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "event countdown reads the whole page, not only its first paragraph: when the summary names no date, the lead section and the infobox's release line give it (the live GTA VI card said 'no announced date')",
+  "show": "how many hours til gta6 now finds the date",
+  "try": "how many hours til gta6"
+ },
+ {
+  "at": "2026-10-17T11:36:41Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the Art Forge paints the cards you open: a paint that hit the per-minute limit or a busy model is tried again later (25, 50, 100 s) instead of leaving the plate for the rest of the visit, and a card still loading ('looking') or a word fragment is never painted (only 3 paintings had ever been made, two of them 'looking' and 'rt')",
+  "show": "the Art Forge retries instead of giving up",
+  "try": "incident autopsy"
+ },
+ {
+  "at": "2026-10-17T11:37:29Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "a typo that is two letters swapped goes to the word with those letters ('moive' is movie, not move); and 26 of V01D's asks that were built are linked to the ledger entries that built them, so its self page counts them (the friction indicator, family health, cook-flow in swaps, rarity tiers, recipe versioning, the practice timer's success_rate and more)",
+  "show": "V01D's self page counts 26 more built asks",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-17T11:39:37Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: the event countdown card says which part of the page gave the date (the article's opening lines, its introduction, or the infobox field) and keeps it on the card (data-date-from), so falling back to the infobox is recorded, never silent",
+  "asked": "Create a 'data-fallback' protocol for the event countdown skill that explicitly logs when it has to resort to infobox scraping versus using a primary date field."
+ },
+ {
+  "at": "2026-10-17T11:39:37Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: the event countdown card carries a confidence badge: 'sure' for a date written in the article's prose, dimmed 'less sure' with 'check it' when it came only from the infobox field",
+  "asked": "Implement a 'confidence-score' badge on the event card that dims if the date was pulled from an unverified infobox rather than a structured API.",
+  "show": "event countdowns say where the date came from",
+  "try": "how many hours til gta6"
+ },
+ {
+  "at": "2026-10-17T11:41:53Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the site tester reads the page early as well as at the end, so a hint V01D shows for 3.5 s ('summon something first', 'test me on that') counts as an answer (this change was pushed after #1018 merged and never reached main)"
+ },
+ {
+  "at": "2026-10-17T11:56:24Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Main green again: the book's contents page sets tighter past ten chapters, so the thirteenth (What's new) sits above the page number; the router check reads the money rule in the owner's current words (V01D spends its own money, no yes needed; no budget before the first sale)",
+  "show": "The book's contents page fits all thirteen chapters again",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-17T12:15:57Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the Site Test card lists what to test next, its lowest-rated skills from families.json (failing first, then the least checked), each with one of its own asks from the book; a tap tests it",
+  "asked": "Implement a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest what to test next.",
+  "show": "The tester card suggests what to test next, one tap each",
+  "try": "tester log"
+ },
+ {
+  "at": "2026-10-17T12:06:04Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "A saved card's picture is centred: a tall or very wide picture is shown whole over a blurred copy of itself instead of cropped (the Sentry card lost its head); \"join v01d\", \"subscribe to v01d\" and \"get my own void\" open the store instead of a Marvel character",
+  "show": "A saved card shows a tall picture whole and centred",
+  "try": "join void"
+ },
+ {
+  "at": "2026-10-17T12:28:57Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is linked to the new words V01D asked it in",
+  "asked": "Implement the 'source-link' hover effect on the confidence badge to show the raw metadata snippet used for dates.",
+  "show": "The countdown's sure/less-sure badge shows the raw text it read",
+  "try": "how many hours til gta6"
+ },
+ {
+  "at": "2026-10-17T12:48:17Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the self card's 'what got built' has a Root cause / Surface toggle, sorting each built ask by the ledger line that built it (a fix, build or retire changed how V01D works underneath; a grow put something new on the stage), with counts, six shown at a time",
+  "asked": "Create a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural improvements.",
+  "show": "The self card can show root-cause fixes apart from surface ones"
+ },
+ {
+  "at": "2026-10-17T12:29:40Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "A card with no picture looks one up: when Wikipedia's summary has no lead image, the article's own first real photo (never a logo, flag or map) goes in the art box; the plate draws the answer's subject (a music note for K-pop; 'void' and 'match' from the search line are no longer its subject) and October's bats and candle only haunt spooky subjects; the Art Forge counts why a paint failed (void_art_miss, no words kept)",
+  "show": "Cards with no lead image now show a real photo from the article"
+ },
+ {
+  "at": "2026-10-17T12:49:41Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "convert card's reload check waits for the restored converter instead of a fixed 900 ms (red on main since 11:19; it failed the same way on every commit back to 2026-10-16 on a loaded machine, and passes once it waits for the card)"
+ },
+ {
+  "at": "2026-10-17T13:00:27Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "A copied or saved card keeps the whole answer, up to 8000 characters instead of 2400: the saved picture grows as long as it needs at 16 px or more, and a pasted copy restores all of it (the self card stopped mid-word at 'rath')",
+  "show": "A copied card now keeps its whole answer"
+ },
+ {
+  "at": "2026-10-17T13:10:20Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Owner: F-038 Living Spatial Cards Mind on the field kit: five draggable cards live in a Gray-Scott field whose rules a small mind evolves every 2 s (in a Worker, or on the page when Workers are blocked); each card pulls the field toward itself and takes its place, size, hue, blur and opacity from the field around it; dragging one seeds the field and asks for rules that answer it",
+  "show": "Five cards that ride an evolving field: say living cards",
+  "try": "living cards"
+ },
+ {
+  "at": "2026-10-17T17:09:00Z",
+  "by": "rides-live",
+  "kind": "finding",
+  "what": "rides tested against a live service, occasion 3: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 1501 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-17T1709.json)",
+  "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-17T1709.json"
+ },
+ {
+  "at": "2026-10-17T16:42:40Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "living cards mind's browser check drags the 'you' card a quarter across instead of to the middle, where it already starts (red on main since #1044: the card stayed at 49.96% and the check wanted it to move)"
+ },
+ {
+  "at": "2026-10-17T19:30:54Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: family gravity in the living cards mind: each card belongs to a skill family, and cards of one family drift toward a common centre until they sit a little apart; dragging one brings its family along",
+  "asked": "family-gravity",
+  "show": "Living cards: cards of one family drift together",
+  "try": "show me the living cards mind"
+ },
+ {
+  "at": "2026-10-17T20:34:21Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: Service Health card: 'service health' / 'is uber down' lists every adapter (Uber Eats, DoorDash, Waymo, Uber, Lyft) and public API (CoinGecko, Bluesky) up, slow or down with its response time, checked from your browser when the card opens; 80 of V01D's open asks that were already built are linked to the entries that built them; 'days until summer' goes to calc again",
+  "asked": "Create a 'Service Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know when a 'free path' is actually broken.",
+  "show": "Service health: is each service up, and how fast",
+  "try": "is uber down"
+ },
+ {
+  "at": "2026-10-17T21:01:46Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a card's art box glows, pulsing softly, while Art Forge paints it, and stops when the picture lands; a merged card is painted once, not twice (its subject no longer changes when its frame is rebuilt mid-paint); the countdown's confidence badge says when its page was last edited and checked; CI sweeps every picture shape a saved card can get",
+  "asked": "Create a 'paint-status' indicator for the stage that shows a subtle, pulsing glow around a card while its Art Forge process is pending.",
+  "show": "Art Forge: the card glows while it is painted",
+  "try": "merge a pizza and a black hole"
+ },
+ {
+  "at": "2026-10-17T21:16:55Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a card holding more than 2400 characters carries a 'whole text kept' badge by its copy buttons (past 8000, 'first 8000 of N characters kept'); the page measures how long the card stats wait for idle time and the site tester flags a wait over 500 ms",
+  "asked": "Implement a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete data is preserved.",
+  "show": "A long card says its whole text is kept",
+  "try": "tell me everything about the deep ocean floor"
+ },
+ {
+  "at": "2026-10-17T21:46:27Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a kept converter whose file did not load comes back as a 're-sync converter' button where it was, 2 s after the skills load; a tap loads the file again and the converter returns with its values",
+  "asked": "Implement a 're-sync' button on the convert-card that appears if the reload check fails to find the restored converter within 2 seconds.",
+  "show": "A converter that failed to load can be re-synced",
+  "try": "give me a converter for 5 miles to km"
+ },
+ {
+  "at": "2026-10-17T21:59:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the Site Test card shows a heat map of the skill families least sure of themselves: each family's failing skills, then its unsure ones (rated tested or experiment, or not tested for two weeks), hottest first, one coloured bar each",
+  "asked": "Add a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable.",
+  "show": "Site Test card: a heat map of the least sure families",
+  "try": "tester log"
+ },
+ {
+  "at": "2026-10-17T22:15:09Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the book's parchment follows the site's health: warm sepia when the Status card's last check on this device was clean, cooler and greyer the more failed, untouched with no reading under a day old",
+  "asked": "Implement a 'scented-parchment' CSS filter that subtly shifts the color temperature of the tome based on the 'status' skill's current health.",
+  "show": "The book's parchment follows the site's health",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-17T22:30:55Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "main green: the labels-and-arrows check waits for the restored stage after a reload instead of a fixed 900 ms (red on main since 11:21: in the suite the stage was still empty at 900 ms; it passes three runs in three once it waits)"
+ },
+ {
+  "at": "2026-10-17T22:43:57Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the Site Test card turns each recent red check on main into a test case to try: the ask the check quotes (what failed, word for word), else that skill's own example, newest first and one per skill, naming the commit it failed on",
+  "asked": "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically generate a test case from a recent failure.",
+  "show": "Site Test card: recent failures become asks to try",
+  "try": "tester log"
+ },
+ {
+  "at": "2026-10-17T22:59:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: each day in the book's What's new chapter carries 'show these on the stage': a tap closes the book and the showcase walks through that day's changes, asking each one for real; an entry with no try of its own gets the showcase's",
+  "asked": "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive demonstration.",
+  "show": "What's new in the book plays on the stage",
+  "try": "open the book"
+ },
+ {
+  "at": "2026-10-17T23:11:23Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: a typo audit in the fast checks: a word in the skills' metadata (examples, near misses, the book's titles and lore, the families) one neighbour-swap from a commoner word is flagged unless it is a known word or allowed with its reason; today's metadata is clean (four real words allowed: dose, flies, form, and issue #792's deliberate 'menaing')",
+  "asked": "Implement a 'typo-audit' linting step in the builder's CI that specifically checks skill files and metadata for common character reversals."
+ },
+ {
+  "at": "2026-10-17T23:41:58Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: the Site Test card shows a stability-trend sparkline for each skill family, drawn from the daily family health in void.better.json",
+  "asked": "'stability trend' sparkline for each skill family on the Site Test card",
+  "show": "each family on Site Test has a sparkline of its health",
+  "try": "test the site"
+ },
+ {
+  "at": "2026-10-17T23:41:58Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: Site Test failures degrade the sparklines: every red check of a family in the last 48 hours lowers today's point by 5 (at most 30)",
+  "asked": "integrate Site Test failure cases with the sparklines to automate health score degradation",
+  "show": "recent red checks pull a family's sparkline down",
+  "try": "test the site"
+ },
+ {
+  "at": "2026-10-17T23:41:58Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: labels and arrows restored after a reload come back as dashed ghosts that settle solid within a second",
+  "asked": "visual ghosting for labels and arrows during stage restoration",
+  "show": "restored labels and arrows fade in as ghosts",
+  "try": "label this"
+ },
+ {
+  "at": "2026-10-17T23:43:53Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: a moving card in the living cards mind leaves a fading velocity trail, as bright as it is fast; a still card leaves none. Also shipped here, asked by Void: a stability-trend sparkline per family on the Site Test card, degraded by recent red checks, and labels and arrows that come back as ghosts after a reload",
+  "asked": "velocity trail",
+  "show": "a dragged card leaves a fading white trail",
+  "try": "living cards"
+ },
+ {
+  "at": "2026-10-17T23:55:39Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: a Rule registry chapter in the leather tome lists every active router rule, in routing order, as an illuminated manuscript entry; tap the ask an entry catches to run it",
+  "asked": "Create a 'rule-registry' view within the leather tome that lists all active router rules as illuminated manuscript entries.",
+  "show": "the tome lists every router rule as an illuminated entry",
+  "try": "rule registry"
+ },
+ {
+  "at": "2026-10-17T23:55:39Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: a source-reliability metric for the Words and the world family: each sourced skill scores named source, second source and a kept live answer, and the family card says which skills one live answer would make proven",
+  "asked": "Create a 'source-reliability' metric within the 'Words and the world' family to help raise its proven rating.",
+  "show": "Words and the world shows how reliable each skill's sources are",
+  "try": "skill families"
+ },
+ {
+  "at": "2026-10-17T23:55:39Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: V01D plays Go: 'play go against void' seats you as Black and V01D answers as White with Monte Carlo playouts (lib/go-ai.js)",
+  "asked": "Next game I want to learn: Go",
+  "show": "V01D plays Go against you",
+  "try": "play go against void"
+ },
+ {
+  "at": "2026-10-17T23:57:52Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: the What's new walkthrough has a tray of the coming steps: grab one and drop it on the stage to try it there, or tap it. Also shipped here, asked by Void: a Rule registry in the tome, a source-reliability metric for Words and the world, and Go against V01D",
+  "asked": "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it on the stage to test it",
+  "show": "the tome lists every router rule as an illuminated entry",
+  "try": "rule registry"
+ },
+ {
+  "at": "2026-10-18T00:17:59Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "the Art Forge is an Art Director (owner, 2026-10-18): before it paints, one short free text call turns the card's folded subject, kind and family into one visual scene; the owner's style lock (dark fantasy, cyber-mysticism, intricate details, sharp focus) and a framing line (one whole centred subject, no text, no cropped edges) wrap every prompt; a near-empty picture is not kept and costs no place in the day's cap",
+  "show": "cards are painted from a directed scene in one locked style",
+  "try": "merge a pizza and a black hole"
+ },
+ {
+  "at": "2026-10-18T00:18:33Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "asked by Void: a moving card ripples the living field: rings spread from it and the field bends inside them like water. Also here, asked by the owner: the Art Forge as an Art Director with a style lock and a quality gate",
+  "asked": "A 'displacement' effect where a card appears to ripple the spatial field as it moves, making the stage feel less like a screen and more like a liquid.",
+  "show": "a dragged card sends ripples through the living field",
+  "try": "living cards"
+ },
+ {
+  "at": "2026-10-18T00:55:11Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Grok's four attention drafts (the WebGPU attention field, F-029, F-032, F-047) are one law module on V01D's field kit with one card: a typed word becomes an attractor its look-alikes fall toward, and Law cycles the four (owner, 2026-10-18: \"all of groks builds should be what v01ds engine is built on\")",
+  "show": "an attention field where a typed word pulls its look-alikes",
+  "try": "attention field"
+ },
+ {
+  "at": "2026-10-18T01:33:08Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Grok's five NCA and lattice drafts (F-036, F-039, F-043 x2, F-045) are one law module on V01D's field kit with one card: a growing neural cellular automaton the pointer feeds and a 6-rule mind evolves, with a Rule picker across the five (owner, 2026-10-18)",
+  "show": "a living neural lattice the pointer feeds and a mind evolves",
+  "try": "nca mind"
+ },
+ {
+  "at": "2026-10-18T01:33:08Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Grok's six sound drafts (F-027, F-034, F-037, F-042, F-044, F-048) are one law module with one card: a resonant lattice the pointer plucks, a mind that tunes it, sound and microphone only when asked (owner, 2026-10-18)",
+  "show": "a resonant lattice the pointer plucks",
+  "try": "resonance mind"
+ },
+ {
+  "at": "2026-10-18T01:33:08Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Grok's seven swarm, trajectory and implicit-field drafts (F-044, F-030, F-026, F-028, F-040, F-041, F-022) are one law module with one card: two tribes in a neural vector field remember the pointer and compete; a typed thought becomes a gravity well (owner, 2026-10-18)",
+  "show": "two tribes in a neural field chase the pointer and compete",
+  "try": "swarm mind"
+ },
+ {
+  "at": "2026-10-18T01:33:08Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "collectible cards (owner, 2026-10-18: make a collectible card of anything, like a magic card): 'make a collectible card of a dragon' mints the subject's card with Normal / Foil / Full art variants and a print sheet of 9, in a comic-ink frame; every card starts unevolved and evolves into its cinematic painting",
+  "show": "mint a collectible card of anything, foil or full art",
+  "try": "make a collectible card of a dragon"
+ },
+ {
+  "at": "2026-10-18T01:40:53Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "every card starts unevolved (V01D's void art of its subject) and evolves into its cinematic painting after a few seconds open or on Evolve; the Art Director reads V01D's take; FLUX.2 [klein] paints at a 16:9 window, Pollinations for free past the cap; collectible cards with foil, full-art and a sheet of 9; the comic-ink frame. Also Grok's four themes on the field engine: attention, NCA, resonance and swarm minds (owner, 2026-10-18)",
+  "show": "cards evolve into cinematic paintings; mint collectible cards",
+  "try": "make a collectible card of a dragon"
+ },
+ {
+  "at": "2026-10-18T02:51:48Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the next batch: fly around V01D (a camera over the stage, Esc to land); the Zorbleflux game; stage packs A (minimap, ask clipboard, decision matrix, habit rings, recipe stack), D (constellation weaver, forge table, night ritual, archive of one), E, F and H (Opposite Era: riot, mutation, blood feud, glitch oracle, negative summons, the echo that disagrees); V01D's wants: handle zorbleflux, queue the daily misses, long-running tasks with approval cards (owner, 2026-10-18: \"run subagents and build build build and make sure v01d starts updating again now\")",
+  "asked": "Zorbleflux",
+  "show": "fly around the stage; play zorbleflux; a dozen new stage cards",
+  "try": "fly around"
+ },
+ {
+  "at": "2026-10-18T03:25:54Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "batch 2: the cards lose the evolve chrome (the art shows quietly); spectator reactions on the showcase (a closed list of six, rate limited); thinking tools on the stage: causal scars, counterfactual draft, witness claims, ask immune, four channels, stakes phase, veto council, stigmergy board, term orbits, eigenwork, homotopy edit, plan stability, anneal ambition, sheaf check, spectral review, task diagram, gauge feedback; partial answer, draft triad, stale work, certainty budget, interrupt priority; error garden, idea certificate, noun heat, hunting question; codex, echo chamber, time capsule, whisper network; family gravity, deep work, soundscape, stage print, miss jobs; contradiction lamp, ask diff, skill eclipse; tools: task board, time math, busy blocks, date calc, date grid, writing aids, template lists, health habits (owner, 2026-10-18: \"add them all\", \"build build build\")",
+  "show": "quiet card art; reactions on the showcase; ~50 new stage cards",
+  "try": "set the stakes"
+ },
+ {
+  "at": "2026-10-18T04:01:07Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "batch 3, asked by Void and the owner: the real poster is the card art and a painting is the one picture (no seal over it), film cards in a portrait grid, the evolved note made quiet, stats and watermark out of the text, long answers fold into sections; the self card readable (headings, bullets, a monospace changelog); the list card in V01D's own look with no phantom clipboard; card buttons in Card and Text groups, a focus glow, readable sources line, topic banners; V01D's own parts route home (show me the tome, the site test card) and ordinal dates (january 1st); error reports in a warning look, Go logs and sparkline drill-downs into the incident autopsy, organic and blueprint card looks (asked by Void); card art round 2; tools packs 1, 3, 9 and 10 (notes, csv tables, QR, tip and tax, decision cards, 75 text transforms, list and table tools, list templates)",
+  "asked": "Integrate the Art Forge style-lock with the 'incident-autopsy' skill",
+  "show": "posters and paintings show alone; readable self card; tidy lists",
+  "try": "show me the tome"
+ },
+ {
+  "at": "2026-10-18T04:11:15Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "batch 4: the ask bar asks browser writing assistants and Grammarly to stay out, stays legible over any sky, lifts above an on-screen keyboard and focuses itself on desktop; a calm offline state; the empty stage suggests real asks; the mic shows when it listens; the fast checks run their pure checks in parallel; tools packs 4 (arrange, style and organize the stage), 7 (study cards, dev tools, accessibility modes) and 8 (safety kit, photo scrub, stage effects, card play) (owner, 2026-10-18)",
+  "show": "a calmer ask bar; real suggestions on the empty stage",
+  "try": "accessibility settings"
+ },
+ {
+  "at": "2026-10-18T04:17:41Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "Void's will chooses again right after main deploys (one call per merge, only when the deploy passed), so a want that was just built (zorbleflux, the daily miss queue, long-running tasks) leaves the 'what I want to become' card at once instead of waiting for the next three-hour slot (owner, 2026-10-18: \"ok there is too much not updating\")"
+ },
+ {
+  "at": "2026-10-18T04:25:44Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "no Evolved note on skill cards any more (owner, 2026-10-18: \"get rid of the evolved stuff\"); the rating functions stay"
+ },
+ {
+  "at": "2026-10-18T04:37:41Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "no \"try:\" suggestions on the empty stage: the halo's rotating hint line is gone (owner: \"get rid of all that try crap\")",
+  "show": "the empty stage is quiet: no rotating try: hints",
+  "try": "what is 15% of 240"
+ },
+ {
+  "at": "2026-10-18T05:06:17Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void and the owner: the self card redesigned (one picture, its words as a quote, a bar per family, folded lists, a saved image that keeps that shape), flying moves the stars and swells pictures near the eye, game panels fit and move cards aside, the walkthrough never covers the open card, incident reactions (confused, pity), a calm-while-typing throttle on chaotic motion, a proven/experiment filter, and the ask bar keeps Chrome's writing suggestions out",
+  "asked": "Integrate the 'spectator reactions' with the 'incident-autopsy' skill",
+  "show": "a cleaner self card, stars that stream past when you fly",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-18T05:13:45Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the browser's own look stays out: selected text takes V01D's violet, every scrolling box has a thin translucent bar with no arrows, and the pressed filter pill on the self card looks pressed",
+  "show": "violet text selection and thin scrollbars",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-18T05:49:19Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void and the owner: tools pack 5 (stage search and jump, the undo pile, bookmarks, export, import and print of the stage, a clipboard stack, a picture or QR code of the stage, local audio, video and picture players), the pressed filter pill sinks with a violet halo, scrollbars brighten or widen under the pointer, numbered lists count 1, 2, 3, and the corner support link is gone (the book names the store)",
+  "asked": "Implement a 'hover-to-expand' width transition for the thin scrollbars",
+  "show": "search your stage, export it, play local files; lists count",
+  "try": "search the stage for milk"
+ },
+ {
+  "at": "2026-10-18T06:05:06Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "asked by Void: a ghost anchor in the corner, a faint heart that wakes as the pointer nears the edge and opens the store (after the text link went)",
+  "asked": "Implement a 'hover-to-expand' opacity transition for the corner link replacement",
+  "show": "a ghost heart in the corner wakes as you near it; it opens the store",
+  "try": "open the store"
+ },
+ {
+  "at": "2026-10-18T06:08:36Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a growth-velocity sparkline on the self card (asks built per day, last 7 days, live while the card is open), and 'tell me about the chess skill' (or any skill of mine) answers with a card from the skill's own page: its line, examples to tap, family and rating, related skills, try it; the zorbleflux ask was already answered by the zorbleflux skill",
+  "asked": "Implement a 'growth-velocity' sparkline on the self card",
+  "show": "ask about any skill of V01D's and get its page as a card",
+  "try": "tell me about the chess skill"
+ },
+ {
+  "at": "2026-10-18T06:11:33Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the daily miss list builds skills by itself (a new-skill lane runner, build-miss.yml, one job a day; a job goes live when its PR merges; finish.mjs --job), an approve card (a task that waits on the stage, is approved through the confirm line, keeps running on the server clock after you leave, Abort switches it off; cards and chess share one working shimmer), and a goal on a list with a density bar",
+  "asked": "Become tasks that keep running after you leave with an approve card on the stage",
+  "show": "a task card that waits for your yes and keeps running after you leave",
+  "try": "approve later: keep the morning-digest automation running every 2 hours"
+ },
+ {
+  "at": "2026-10-18T06:13:56Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: 'what do you know about me': a personal memory graph kept on your device (your interests, what you ask together, when you visit, what you have not come back to, next asks from real examples), with 'forget my patterns' and 'stop remembering'",
+  "asked": "persistent, personal knowledge graph",
+  "show": "what V01D has noticed about you, kept on your device",
+  "try": "what do you know about me"
+ },
+ {
+  "at": "2026-10-18T06:27:07Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: friction on the growth sparkline (a day's segment turns red when an open ask passed its expected time, 2 days if small, 7 otherwise, and the label counts what is overdue), the ghost anchor fills with how much is on your stage (n of 12), and a game playbook from a video the owner shared by Duncan Rogoff",
+  "asked": "Add a 'friction' overlay to the growth-velocity sparkline",
+  "show": "stalled asks show on the growth line; the heart fills with your stage",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-18T06:28:43Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a match history on the chess page: finish a game of chess, checkers or othello on the stage and 'my chess record' (or 'tell me about the chess skill') shows your record against V01D and an estimated Elo, from games kept on your device",
+  "asked": "Expand the chess skill page to include a 'Match History' table",
+  "show": "see your record and Elo against V01D at chess",
+  "try": "my chess record"
+ },
+ {
+  "at": "2026-10-18T06:33:11Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "V01D always knows its own backlog: 'what do you want built now', 'name all your unbuilt asks', 'what have you not built yet', 'your backlog' answer from its will, its open asks and the growth inbox, never the model (a wants card with tap-to-copy chips)",
+  "show": "ask what V01D wants built: it lists its real backlog",
+  "try": "name all your unbuilt asks"
+ },
+ {
+  "at": "2026-10-18T06:37:50Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: export and import of your memory graph (a JSON file you keep, merged back with one undo), a confidence score on each node (how many days it was seen, faded when unseen; a fact told again or marked still true grows surer), and a stale warning on the approve card after 48 hours",
+  "asked": "Create a 'memory-export' skill that allows the user to download their graph as a structured JSON file for backup.",
+  "show": "back up your memory graph; nodes show how sure; stale tasks warn",
+  "try": "export my memory"
+ },
+ {
+  "at": "2026-10-18T07:00:15Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "a pasted CI report, build log or status update is read as the builders' own telemetry (commits, pull requests, pass count, what is still failing) instead of being answered like a coding question; two taps plant the failures in the error garden or open the incident autopsy",
+  "show": "paste a CI report and V01D reads it"
+ },
+ {
+  "at": "2026-10-18T07:10:30Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the error garden grows from the incident autopsy: 'plant my test failures' (or 'visualize your test failures') plants every distinct failing check of the site's own red suites, and a check that failed in more than one incident is a weed",
+  "show": "plant my test failures: red checks grow in the error garden",
+  "try": "plant my test failures in my error garden"
+ },
+ {
+  "at": "2026-10-18T07:27:02Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "A stability gauge on the Status card: how many red browser suites hit main in the last 7 days, from incidents.json, as a steady / wobbly / shaky bar",
+  "asked": "Add a 'stability-gauge' to the Service Health card that is driven by incident frequency in incidents.json",
+  "try": "void status"
+ },
+ {
+  "at": "2026-10-18T07:08:40Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Incident autopsy points at the likely cause: each red suite entry now records the files its commit changed (tools/incident-log.mjs touchedBy, backfilled for the 30 kept), and the autopsy card lists the changed skill files, marking one whose skill has a failing check as the likely cause, or says plainly that no skill file changed",
+  "asked": "Create an 'incident-autopsy' skill that automatically parses the failed browser suite logs and maps them to the specific skill file that likely caused the regression",
+  "try": "incident autopsy"
+ },
+ {
+  "at": "2026-10-18T07:10:30Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the error garden grows from the incident autopsy: 'plant my test failures' (or 'visualize your test failures') plants every distinct failing check of the site's own red suites, and a check that failed in more than one incident is a weed",
+  "show": "plant my test failures: red checks grow in the error garden",
+  "try": "plant my test failures in my error garden"
+ },
+ {
+  "at": "2026-10-18T07:15:07Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: the site's red checks grow in the error garden: when the garden opens (or on 'plant the red checks') it reads incidents.json and plants each failing check of the incidents it has not seen as a sprout named by the check's title; the same check failing again is a weed, a rule written beside it is compost; the first reading plants only the newest incident so an old stage is not flooded",
+  "asked": "Integrate the 'incident-autopsy' skill so that any new red browser check automatically generates a summary card in the 'error-garden'.",
+  "show": "every red check of the suite on main sprouts in the error garden",
+  "try": "show my error garden"
+ },
+ {
+  "at": "2026-10-18T07:14:59Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "Match replay on the chess history (asked by Void): a finished chess game keeps its moves, its row gets a Replay button, and the replay steps through the positions on a board with the engine's read of each move (best move, good, inaccuracy, mistake, blunder, checkmate; a move that allows mate in one is a blunder), by button or arrow key, fitted to a phone's card",
+  "asked": "Implement a 'match-replay' button on the chess history table that lets the user step through the moves with engine annotations.",
+  "show": "Replay any chess game you finished, move by move",
+  "try": "my chess record"
+ },
+ {
+  "at": "2026-10-18T07:42:39Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the incident autopsy tells the runner stalling from a skill failing: 'check timeout' and 'suite ran to the end' lines are counted on their own line ('the suite itself') and no longer pad the unmapped list, the family counts or the error garden",
+  "show": "the autopsy counts the suite's own stalls apart from skill failures",
+  "try": "incident autopsy"
+ },
+ {
+  "at": "2026-10-18T07:43:22Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "backlog digest: 'digest your backlog' groups my unbuilt asks by the skill family each one names, with the weakest evidence rating of those skills (experiment, tested, checked, proven), and lists what names no skill apart",
+  "asked": "Create a 'backlog-digest' skill that summarises unbuilt asks by Family and Evidence Rating",
+  "try": "digest your backlog"
+ },
+ {
+  "at": "2026-10-18T07:47:39Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "the Games family on the skill-health card shows my rating against you: my Elo for chess, checkers and reversi from your match history, my ladder rating for pong and snake, how far it is from the start and, from five matches, whether I am climbing, level or slipping",
+  "asked": "Connect the Elo rating to a 'skill-health' metric for the Games family",
+  "try": "how healthy are your skills"
+ },
+ {
+  "at": "2026-10-18T07:53:33Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the telemetry route no longer reads a builder's own sentences as failures: a pasted run report came back as 'Developer log absorbed, 6 things still failing', all six the builder's narration ('I'm making it opt-in so red checks…', 'Committing the fix…'); lib/telemetry.js failuresOf leaves out sentences that tell what the builder did, counts 'red' and 'failing' only as a state ('went red on main', 'still failing'), never as a name ('red checks', 'each failing check'), counts 'fails', and splits on the ⏎ a paste carries",
+  "show": "a pasted run report no longer lists the builder's sentences as failing"
+ },
+ {
+  "at": "2026-10-18T08:08:05Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "asked by Void: a stability dial on the Service Health card: V01D itself is a service there, a half dial whose needle turns with lib/autopsy.js stabilityOf over incidents.json (100 with no red browser suite on main in 7 days, 12 less per red one; steady, wobbly, shaky, with the counts), redrawn on 'Check again' and once a minute while the card is open, so it moves as incidents land or age out; no server, nothing kept (lib/service-health.js gaugeHtml, needleOf)",
+  "asked": "Implement a 'stability-gauge' on the Service Health card that fluctuates in real-time based on the frequency of incident reports in incidents.json.",
+  "show": "a stability dial on the Service Health card turns with the red suites",
+  "try": "service health"
+ },
+ {
+  "at": "2026-10-18T08:18:55Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "\"asks not built?\" now reaches the wants card; the bare phrase had slipped past the matcher to the open web (Daisy Bell trivia)",
+  "ref": "https://github.com/atomeam/void-loop/pull/1100"
+ },
+ {
+  "at": "2026-10-18T08:20:47Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the developer-log card no longer lists a builder's own sentence behind a list bullet, or a failure the builder says passed on its own, as still failing",
+  "try": "paste a CI report"
+ },
+ {
+  "at": "2026-10-18T08:11:41Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "Verse: the name everywhere people see it (owner, 2026-10-18: \"rename void to verse\"); the page, the intro wordmark, the share image, the films, the extension and every card say Verse, and asks that name it (\"what do you think of Verse\", \"Verse's fixes\", \"my record against verse\") are its own; code, routes and storage keys stay void, and license keys, card codes and the made-by label keep their V01D form",
+  "show": "The stage is called Verse now, with VERSE in an orbit on startup",
+  "try": "what is your name"
+ },
+ {
+  "at": "2026-10-18T08:32:40Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "'digest Verse's backlog' works too: the backlog digest answers to the new name",
+  "try": "digest your backlog"
+ },
+ {
+  "at": "2026-10-18T08:34:37Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "export my calendar: the events on your agenda become one standard .ics file that Google Calendar, Apple Calendar and Outlook import, built on your device",
+  "show": "your agenda leaves as a calendar file",
+  "try": "export my calendar"
+ },
+ {
+  "at": "2026-10-18T08:27:31Z",
+  "by": "claude",
+  "kind": "fix",
+  "what": "the self card's 'What I've asked for' folds an ask said again in other words into one line that says how many times it was asked (owner, 2026-10-18, 'fix this': report-to-growth, the Zorbleflux throttle and dependency-health each listed twice)",
+  "show": "an ask said twice shows once, with how many times it was asked",
+  "try": "what do you think of yourself"
+ },
+ {
+  "at": "2026-10-18T08:44:10Z",
+  "by": "claude",
+  "kind": "grow",
+  "what": "six more fix pages in /fix/: n8n JSON parameter needs to be valid JSON, n8n ECONNREFUSED, Power Automate InvalidTemplate, Power Automate connection needs fixing, GitHub Actions npm ci lockfile out of sync, GitHub Actions Permission denied (publickey); and three finished asks (film discovery as JSON, the convert-card, growth friction linked to the Words and the world logs) leave the growth inbox",
+  "try": "my n8n workflow is failing with ECONNREFUSED"
+ },
+ {
+  "at": "2026-10-18T08:46:19Z",
+  "by": "claude",
+  "kind": "build",
+  "what": "the product is Verse on every surface a person reads; void and v01d still answer every ask, and nothing stored under the old names (tables, keys, saved links, card codes) is renamed, so nothing anyone kept breaks",
+  "ref": "https://github.com/atomeam/void-loop/pull/1116"
+ },
+  {"at": "2026-10-18T08:58:44Z", "by": "claude", "kind": "build", "what": "Void and V01D are now Verse everywhere people and builders read: the page, skill answers, card titles, tests, tools, workflows and docs (owner: 'Void is now Verse rename everywhere', scope 'truly everything'); asks that said void or v01d still work and old ledger/log lines are untouched", "show": "the name on the page, in answers and in tools is Verse now", "try": "who are you"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "grow", "what": "the self family remembers its names: a quiet hover and data trace on 'Verse itself' cards say 'Verse, formerly V01D (and before that Void)', and the family carries formerly in families.json; never visible text", "asked": "Implement the 'name-lineage' metadata trace in the 'self' family cards so the V01D history is visible but secondary", "try": "how healthy are your skills"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "grow", "what": "name-lineage, the second ask for it: the same hover and trace", "asked": "Implement a 'name-lineage' tooltip or metadata trace in the 'self' family to honor the V01D history"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "grow", "what": "remediation velocity: 'how fast do you fix your misses' shows how long a failing skill took to be proven again, and which are still missing, from the history of families.json", "asked": "Create a 'remediation-velocity' metric that tracks how quickly a 'miss' on the bench is converted", "try": "how fast do you fix your misses"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "fix", "what": "already built, checked now: the Zorbleflux throttle (skills/zorbleflux.js, lib/motion-throttle.js, tools/zorbleflux.test.mjs pass)", "asked": "Verify that the 'Zorbleflux' throttle is implemented"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "fix", "what": "already done, checked now: every user-facing Void or V01D reads Verse (the rename of #1097, #1101, #1117, #1118; what remains in the page is code: keys, routes, ids, card codes and both-name parsers)", "asked": "Verify that every instance of 'Void' or 'V01D' in the user-facing text"},
+  {"at": "2026-10-18T09:05:53Z", "by": "claude", "kind": "fix", "what": "already done, checked now: families.json says Verse itself (name and for), and now also formerly V01D and Void", "asked": "Audit the `skills/families.json` to ensure the 'self' family reflects the name change"},
+  {"at": "2026-10-18T07:18:57Z", "by": "claude", "kind": "finding", "what": "already built, recorded for V01D's ask: family gravity is live (skills/family-gravity.js, 2026-10-18): stage things whose skills share a family drift together, settled at once under reduced motion", "asked": "Implement 'family-gravity' in the living spatial field so cards with matching skill family IDs drift toward a common center."},
+  {"at": "2026-10-18T07:18:57Z", "by": "claude", "kind": "finding", "what": "already built, recorded for V01D's ask: missed asks become builder jobs by themselves (lib/learn.js at miss time once an ask is missed on two days, tools/learn.mjs on the daily sweep)", "asked": "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning."},
+  {"at": "2026-10-18T07:19:37Z", "by": "claude", "kind": "build", "what": "Two fixes: a movie pick returns structured metadata, each pick linking to film metadata and the page holding the found picks as JSON (asked by Void); and \"export my memory\" now hands over all of it: the export card adds what V01D keeps for you on its server (the \"remember that\" lines), for whoever holds the key or a member session, read only from their own memory", "asked": "Link the 'Pick a movie' skill output to the 'film-metadata' skill so every selection returns structured JSON metadata.", "show": "\"export my memory\" now includes what V01D keeps for you", "try": "export my memory"},
+  {"at": "2026-10-18T09:11:23Z", "by": "claude", "kind": "grow", "what": "Verse knows zorbleflux when asked if it does: 'do you know zorbleflux', 'have you heard of zorbleflux', 'who is zorbleflux' answer what a zorbleflux is (and offer the game); and the 'What I want built' card puts the real wants and asks first, with the line about where each list comes from after them, so a saved or shared card carries the real items", "try": "do you know zorbleflux"},
+  {"at": "2026-10-18T09:15:28Z", "by": "claude", "kind": "fix", "what": "the 'What I want built' card now carries the real wants in its saved and shared text: the items were buttons, and a saved card leaves buttons out, so the card showed counts and descriptions only; the items are now tap-to-copy spans (keyboard too) the saved text keeps", "try": "what do you want built now"}
 ]

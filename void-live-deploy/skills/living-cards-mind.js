@@ -1,6 +1,6 @@
 /**
  * living-cards-mind skill — F-038 Living Spatial Cards Mind, Grok's frontier idea (delivered to atomeam/a-to-mind.com 85651746; asked by
- * the owner, 2026-10-17: "all of Grok's ideas are to be added to Void"): a Gray-Scott field whose feed, kill and diffusion a small
+ * the owner, 2026-10-17: "all of Grok's ideas are to be added to Verse"): a Gray-Scott field whose feed, kill and diffusion a small
  * evolutionary mind keeps choosing (6 genomes, one generation every 2 s, in a Worker or on the page when Workers are blocked), and five
  * real cards that live in it. Each card pulls energy toward itself, drifts along the field, and takes its size, hue, blur and opacity
  * from the field around it; drag one and it seeds the field where it is and asks the mind for rules that answer it. The law is
@@ -64,7 +64,7 @@ const idea = {
     if (!og) return; const img = og.createImageData(F.GW, F.GH), d = img.data;
     for (let i = 0; i < s.u.length; i++) { const a = s.u[i], b = s.v[i]; d[i * 4] = 20 + a * 235; d[i * 4 + 1] = 10 + a * 120 + (1 - b) * 60; d[i * 4 + 2] = 40 + (1 - a) * 120 + a * 60; d[i * 4 + 3] = 255; }
     og.putImageData(img, 0, 0); g.imageSmoothingEnabled = true; g.drawImage(off, 0, 0, W, H);
-    // the velocity trail (asked by Void): each card's recent path, fading toward its tail, as bright as the card is fast; none when it is still
+    // the velocity trail (asked by Verse): each card's recent path, fading toward its tail, as bright as the card is fast; none when it is still
     s.trails = s.trails || s.cards.map(() => []);
     const tnow = typeof performance !== 'undefined' ? performance.now() : 0; // one position every TRAIL_EVERY ms, however often the stage draws
     if (!(tnow - (s.trailAt || -1e9) < F.TRAIL_EVERY)) { s.trailAt = tnow; s.cards.forEach((c, i) => F.trailPush(s.trails[i], c)); }
@@ -75,7 +75,7 @@ const idea = {
         g.lineWidth = w; for (let j = 1; j < t.length; j++) { g.strokeStyle = col(a * (0.35 + 0.65 * j / t.length)); g.beginPath(); g.moveTo(t[j - 1].x * W, t[j - 1].y * H); g.lineTo(t[j].x * W, t[j].y * H); g.stroke(); } }
     });
     s.trailShown = s.trails.filter((t) => F.trailSpeed(t) >= F.TRAIL_MIN).length;
-    // the displacement ripple (asked by Void): rings spread from a moving card, and inside each ring the field is drawn slightly magnified
+    // the displacement ripple (asked by Verse): rings spread from a moving card, and inside each ring the field is drawn slightly magnified
     // about the ring's centre, so the field itself bends like water as the card passes; a light crest and a dark trough sell the wave
     s.ripples = s.ripples || []; s.rippleAt = F.rippleTick(s.ripples, s.cards, s.trails, tnow, s.rippleAt);
     for (const rp of s.ripples) {

@@ -1,4 +1,4 @@
-// The book: everything V01D can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
+// The book: everything Verse can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
 // through that contains everything so you don't have to search ... like a BradyGames or Prima strategy guide").
 // Pure functions only, shared by the generator (tools/guide.mjs writes skills/guide.json) and the reader (skills/guide.js draws
 // it). Nothing here is a hand-written list: the chapters are skills/families.json's families in its order, the pages are every
@@ -129,7 +129,7 @@ export function miniOwners(names, read) {
 
 const title = (s) => String(s || '').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
-// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book
+// Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
 // epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
 // it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.
@@ -174,7 +174,7 @@ export function flavorOf(name, familyName, why, tier, taken = new Set()) {
  *   core      the page's own built-in asks ([{ name, description, examples }], functions/tools.json.js CORE)
  * Returns { chapters, pages, index, totals, unplaced }: every member skill on exactly one page, in the family that holds it.
  */
-/** a skill page glows when families.json says more than 9 in 10 of the benchmark asks routed to it passed (asked by Void: a 'proven' glow on the book page, success_rate > 0.9). Pure. */
+/** a skill page glows when families.json says more than 9 in 10 of the benchmark asks routed to it passed (asked by Verse: a 'proven' glow on the book page, success_rate > 0.9). Pure. */
 export const GLOW_ABOVE = 0.9;
 export const glows = (rate) => typeof rate === 'number' && rate > GLOW_ABOVE && rate <= 1;
 export function compose({ names = [], read = () => '', families = { families: [] }, games = [], minis = [], readMini = () => '', miniDoc = {}, core = [] }) {
@@ -187,12 +187,12 @@ export function compose({ names = [], read = () => '', families = { families: []
   const skillPage = (name, chap) => {
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
     const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
-    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of V01D.',
+    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of Verse.',
       examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
-  page({ kind: 'cover', chapter: 'front', title: 'The V01D Book', line: 'Everything V01D can do, one page each, nothing left out.' });
+  page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
   page({ kind: 'how', chapter: 'front', title: 'How to ask', core: core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })) });
   page({ kind: 'legend', chapter: 'front', title: 'How to read a page' });
   page({ kind: 'toc', chapter: 'front', title: 'Contents' });
@@ -206,7 +206,7 @@ export function compose({ names = [], read = () => '', families = { families: []
     for (const s of f.skills || []) {
       if (!members.includes(s.name) || placed.has(s.name)) continue;
       const p = skillPage(s.name, f.id); placed.add(s.name);
-      // a boxed game wears its box's name (the rack's Void-brand titles: Star Marbles, Back to Start) and opens with its box's ask
+      // a boxed game wears its box's name (the rack's Verse-brand titles: Star Marbles, Back to Start) and opens with its box's ask
       if (isGames) { const g = games.find((x) => x.id === s.name); if (g) { p.game = { title: g.title, ask: g.ask, color: g.color, ink: g.ink, motif: g.motif }; p.title = g.title; if (!p.examples.includes(g.ask)) p.examples = [g.ask, ...p.examples].slice(0, 3); } }
     }
     if (isGames) for (const g of games) if (!placed.has(g.id) && !pages.some((p) => p.game && p.game.title === g.title)) { // a boxed game that is not its own skill (VoidQuest lives in the Landlord's Game) still gets a page
@@ -227,7 +227,7 @@ export function compose({ names = [], read = () => '', families = { families: []
       card: owner ? title(owner === 'place' ? 'map' : owner) : (d.card ? d.card.replace(/\s*\(.*$/, '') : ''), examples: ex, owner: owner || undefined, ownerPage: ownerPage ? ownerPage.n : undefined });
   }
   mchap.to = pages.length;
-  // the rule registry (asked by Void): every active router rule, each skill in routing order (index.json), as an illuminated entry
+  // the rule registry (asked by Verse): every active router rule, each skill in routing order (index.json), as an illuminated entry
   const rchap = chapter({ id: RULES_ID, name: RULES_NAME, for: RULES_FOR, kind: 'rules' });
   const rules = rulesOf(names, (n) => { const src = read(n); return listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src); });
   page({ kind: 'opener', chapter: RULES_ID, title: RULES_NAME, line: RULES_FOR, skills: names.slice() });

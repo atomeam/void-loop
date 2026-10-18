@@ -1,6 +1,6 @@
 {
- "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 665,
+ "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
+ "counted": 669,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -28,9 +28,9 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 20,
-   "direct": 2,
-   "dependants": 40
+   "skills": 21,
+   "direct": 3,
+   "dependants": 41
   },
   {
    "file": "lib/field-kit.js",
@@ -40,21 +40,21 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 0,
-   "dependants": 35
+   "dependants": 36
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 1,
-   "dependants": 35
+   "dependants": 36
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 0,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/sky-math.js",
@@ -87,34 +87,34 @@
    "dependants": 30
   },
   {
+   "file": "lib/corrections.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 26
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 10,
+   "direct": 1,
+   "dependants": 26
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 10,
+   "direct": 5,
+   "dependants": 23
+  },
+  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
    "dependants": 11
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 9,
-   "direct": 0,
-   "dependants": 25
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 9,
-   "direct": 1,
-   "dependants": 25
-  },
-  {
    "file": "lib/ladder.js",
    "skills": 9,
    "direct": 4,
    "dependants": 23
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 9,
-   "direct": 4,
-   "dependants": 22
   },
   {
    "file": "lib/skyfacts.js",
@@ -291,6 +291,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/movies.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 10
+  },
+  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -310,6 +316,12 @@
   },
   {
    "file": "lib/card-sections.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
    "dependants": 6
@@ -369,10 +381,10 @@
    "dependants": 4
   },
   {
-   "file": "lib/movies.js",
+   "file": "lib/telemetry.js",
    "skills": 3,
-   "direct": 2,
-   "dependants": 7
+   "direct": 1,
+   "dependants": 50
   },
   {
    "file": "lib/date-words.js",
@@ -639,6 +651,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/film-discovery.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
@@ -807,6 +825,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/ics.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/linediff.js",
    "skills": 1,
    "direct": 1,
@@ -916,12 +940,6 @@
   },
   {
    "file": "lib/technical-context.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/telemetry.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1530,6 +1548,12 @@
    ],
    "importedBy": []
   },
+  "functions/api/filmfind.js": {
+   "imports": [
+    "lib/film-discovery.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/films.js": {
    "imports": [
     "lib/void-me.js",
@@ -2028,6 +2052,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -2120,7 +2145,9 @@
    ]
   },
   "lib/automation-fix.js": {
-   "imports": [],
+   "imports": [
+    "lib/telemetry.js"
+   ],
    "importedBy": [
     "functions/api/answer.js",
     "functions/api/card-art.js",
@@ -2217,6 +2244,7 @@
     "skills/error-garden.js",
     "skills/growth.js",
     "skills/incident-autopsy.js",
+    "skills/service-health.js",
     "skills/status.js"
    ],
    "reachedBy": [
@@ -2389,6 +2417,7 @@
    "imports": [
     "lib/guide.js",
     "lib/card-kinds.js",
+    "lib/lineage.js",
     "lib/card-share.js",
     "lib/art-meta.js",
     "lib/card-art.js",
@@ -2666,6 +2695,7 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -2952,6 +2982,15 @@
     "skills/swarm-mind.js"
    ]
   },
+  "lib/film-discovery.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/filmfind.js",
+    "skills/film-metadata.js"
+   ]
+  },
   "lib/film-reviews.js": {
    "imports": [],
    "importedBy": [
@@ -3155,6 +3194,12 @@
     "functions/api/will.js"
    ]
   },
+  "lib/ics.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/calendar-file.js"
+   ]
+  },
   "lib/inbox-health.js": {
    "imports": [],
    "importedBy": [
@@ -3239,6 +3284,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -3284,6 +3330,19 @@
     "functions/api/miss.js",
     "lib/refusal.js",
     "skills/miss-jobs.js"
+   ]
+  },
+  "lib/lineage.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js"
    ]
   },
   "lib/linediff.js": {
@@ -3456,6 +3515,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -3527,12 +3587,15 @@
    "importedBy": [
     "functions/api/media.js",
     "functions/api/movies.js",
+    "lib/film-discovery.js",
     "lib/media.js",
     "lib/taste.js",
     "skills/movie.js",
     "skills/pick-for-me.js"
    ],
    "reachedBy": [
+    "functions/api/filmfind.js",
+    "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
   },
@@ -4064,6 +4127,7 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/status.js"
    ]
   },
@@ -4697,6 +4761,7 @@
     "lib/ladder.js",
     "lib/match-history.js",
     "lib/stage-pack-c.js",
+    "skills/memory-graph.js",
     "skills/memory.js",
     "skills/state.js"
    ],
@@ -4851,7 +4916,58 @@
   "lib/telemetry.js": {
    "imports": [],
    "importedBy": [
+    "lib/automation-fix.js",
     "skills/telemetry-route.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/figurescript.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/handoff.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/merge.js",
+    "functions/api/miss.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/queue.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/repo.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/api/support.js",
+    "functions/api/voice-reply.js",
+    "functions/api/will.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js",
+    "lib/bench-asks.js",
+    "lib/clef.js",
+    "lib/code-review.js",
+    "lib/correction-fix.js",
+    "lib/job-draft.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js",
+    "lib/privacy.js",
+    "lib/probe-asks.js",
+    "lib/propose-fix.js",
+    "lib/repo-look.js",
+    "lib/review-api.js",
+    "lib/router.js",
+    "lib/routine-skill.js",
+    "lib/self-context.js",
+    "lib/shared-routines.js",
+    "lib/voice.js",
+    "skills/repo.js",
+    "skills/routine.js"
    ]
   },
   "lib/template-list.js": {
@@ -5285,6 +5401,12 @@
   },
   "skills/calc.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/calendar-file.js": {
+   "imports": [
+    "lib/ics.js"
+   ],
    "importedBy": []
   },
   "skills/calendar.js": {
@@ -5786,7 +5908,9 @@
    ]
   },
   "skills/film-metadata.js": {
-   "imports": [],
+   "imports": [
+    "lib/film-discovery.js"
+   ],
    "importedBy": []
   },
   "skills/films.js": {
@@ -6409,9 +6533,11 @@
   },
   "skills/memory-graph.js": {
    "imports": [
+    "lib/state.js",
     "lib/memory-graph.js"
    ],
    "external": [
+    ", { headers: { authorization: ",
     " takes it away again.</p>"
    ],
    "importedBy": []
@@ -7120,6 +7246,10 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/remediation-velocity.js": {
+   "imports": [],
+   "importedBy": []
+  },
   "skills/remind.js": {
    "imports": [],
    "importedBy": [
@@ -7267,7 +7397,8 @@
   "skills/service-health.js": {
    "imports": [
     "skills/providers.js",
-    "lib/service-health.js"
+    "lib/service-health.js",
+    "lib/autopsy.js"
    ],
    "importedBy": []
   },

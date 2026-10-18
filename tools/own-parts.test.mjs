@@ -1,4 +1,4 @@
-// V01D's own component names route to the component, and ordinal dates read as numbers (owner, 2026-10-18).
+// Verse's own component names route to the component, and ordinal dates read as numbers (owner, 2026-10-18).
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { partOf, PARTS } from '../void-live-deploy/lib/own-parts.js';
 import ownParts from '../void-live-deploy/skills/own-parts.js';
@@ -10,7 +10,7 @@ const WANT = {
   'the status card': 'status', 'open the status page': 'status', 'pull up the growth inbox': 'growth', 'the growth card': 'growth', 'show me the tome': 'book',
   'where is the book': 'book', 'the book chapter': 'book', 'show me the rule registry': 'rule-registry', 'open the rule registry view': 'rule-registry', 'the merges page': 'merges',
 };
-test('an ask that names a part of V01D with the frame or a card word finds that part', () => {
+test('an ask that names a part of Verse with the frame or a card word finds that part', () => {
   for (const [ask, id] of Object.entries(WANT)) assert.equal((partOf(ask) || {}).id, id, ask);
 });
 test('look-alikes about other things are left alone', () => {

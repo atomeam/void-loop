@@ -1,11 +1,11 @@
 // The self card ("What I think of myself") as structured blocks, then as markup (asked by the owner's review, 2026-10-18: the card read as a wall of text).
-// selfSections(v) turns /api/reflect into sections: V01D's own words (a reflection: normal reading font) and the changelog (what got built: monospace).
+// selfSections(v) turns /api/reflect into sections: Verse's own words (a reflection: normal reading font) and the changelog (what got built: monospace).
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
 
 const day = (t) => String(t || '').slice(0, 10);
-// the growth velocity (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
+// the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
 // over the last 7 days"): one point a day for the last VELOCITY_DAYS days, each the count of its asks built that day (follow.asked, by builtAt)
 export const VELOCITY_DAYS = 7;
 export const VELOCITY_EVERY = 60e3; // while the card is open, a stage change redraws it from /api/reflect at most this often (void.html showVoice)
@@ -18,8 +18,8 @@ export function velocity(asked, now = Date.now()) {
 }
 /** the velocity's words: "N built this week · M today", or "nothing built this week". Pure. */
 export const velocityLabel = (v) => (v.total ? v.total + ' built this week · ' + v.today + ' today' : 'nothing built this week');
-// friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
-// resolution time"): an open ask is overdue once it is older than its expected resolution time, OVERDUE_SMALL_DAYS for an ask V01D called small,
+// friction (asked by Verse: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
+// resolution time"): an open ask is overdue once it is older than its expected resolution time, OVERDUE_SMALL_DAYS for an ask Verse called small,
 // OVERDUE_DAYS for any other; the day it crossed that limit is a friction day, drawn red on the same line
 export const OVERDUE_SMALL_DAYS = 2, OVERDUE_DAYS = 7;
 export const FRICTION_RED = 'rgb(255,120,110)';
@@ -57,6 +57,26 @@ export function shortLine(t) {
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
+// one ask said twice in other words is one ask (owner, 2026-10-18, "fix this" on a self card listing 'report-to-growth', the Zorbleflux
+// throttle and 'dependency-health' twice each): two asks are the same when they quote the same name, or share most of their words
+const STOP = new Set('a an the to of in on for and or so that this it its my me i as by with from into is be can when which what'.split(' '));
+const quoted = (t) => { const m = /['‘"“]([^'’"”]{3,40})['’"”]/.exec(t); return m ? m[1].toLowerCase().replace(/[\s_-]+/g, '-') : ''; };
+const words = (t) => new Set(String(t).toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w)));
+export function sameAsk(a, b) {
+  const qa = quoted(a), qb = quoted(b);
+  if (qa && qb && qa !== qb) return false;
+  const wa = words(a), wb = words(b); if (Math.min(wa.size, wb.size) < 3) return false; // too few words to call two asks one
+  let n = 0; for (const w of wa) if (wb.has(w)) n++;
+  // the same quoted name with a few more words in common is the same ask; two asks about one skill that want different things are not
+  return n / Math.min(wa.size, wb.size) >= (qa && qb ? 0.4 : 0.7);
+}
+/** the asks with each one said again in other words folded into its first telling, which carries how many times it was asked. Pure. */
+export function foldAsks(asks) {
+  const out = [];
+  for (const a of asks || []) { const t = sentence(a && a.ask); if (!t) continue; const same = out.find((o) => sameAsk(o.ask, t)); if (same) same.times++; else out.push({ ...a, ask: t, times: 1 }); }
+  return out;
+}
+
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
@@ -64,7 +84,7 @@ export function selfSections(v, now = Date.now()) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
-  // the owner's redesign (2026-10-18, "its still ugly"): V01D's own paragraph is a quotation and the only thing open; everything else is a closed
+  // the owner's redesign (2026-10-18, "its still ugly"): Verse's own paragraph is a quotation and the only thing open; everything else is a closed
   // block whose heading carries its count; how sure it is of its skills (the page's family bars) sits right under its words
   const voice = sentence((daily || build || {}).thoughts);
   out.push({ id: 'words', title: '', log: false, blocks: voice ? [{ t: 'quote', text: voice, cite: 'My own words, kept as I said them. The people who build me read them first.' }]
@@ -80,9 +100,9 @@ export function selfSections(v, now = Date.now()) {
     if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + sentence(build.better) });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
-  const asks = ((v && v.asks) || []).slice(0, 12);
+  const asks = foldAsks((v && v.asks) || []).slice(0, 12);
   if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: asks.length + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
-    text: sentence(a.ask), open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
+    text: a.ask, open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.times > 1 ? ' · asked ' + a.times + ' times' : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
   const f = v && v.follow;
   if (f && f.total) {
     const recent = Array.isArray(f.recent) ? f.recent : [];
@@ -126,7 +146,7 @@ export function sectionHtml(s, esc) {
     return '';
   }).join('');
   // a titled section is a collapsible block whose heading (with its count) is the toggle (owner, 2026-10-18): <details> keeps it keyboard accessible
-  // with no script, and its text stays in the saved card whether it is open or not; every block starts closed, so V01D's own words are read first
+  // with no script, and its text stays in the saved card whether it is open or not; every block starts closed, so Verse's own words are read first
   if (!s.title) return '<section class="vs-sec' + (s.log ? ' vs-log' : '') + '" data-sec="' + esc(s.id) + '">' + body + '</section>';
   return secOpen(s.id, s.title, esc, false, s.count, s.log) + body + '</details>';
 }

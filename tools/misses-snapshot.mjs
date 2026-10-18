@@ -1,4 +1,4 @@
-// The public miss snapshot: what people asked that Void could not answer, reduced to terms and counts that are safe in a
+// The public miss snapshot: what people asked that Verse could not answer, reduced to terms and counts that are safe in a
 // public repo. A builder without the owner token (any cloud session) reads domains/void.misses.json instead of the
 // board. Nothing a person typed is copied: only short, all-letter words, and only a word that at least MIN_ASKS different
 // asks contain. Asks that look like they carry a secret are dropped first (misses.mjs redact).
@@ -53,7 +53,7 @@ export function snapshot(rows, { at = new Date().toISOString(), since = null } =
   };
   return {
     schema: 'void.misses.v1', at, since,
-    rule: 'Terms are lower-case words of 3-16 letters from asks Void could not answer, each listed only when at least ' + MIN_ASKS + ' different asks contain it and someone wrote it in lower case (a word only ever capitalised may be a name); no ask is copied. "make" lists the things in make/print asks the same way.',
+    rule: 'Terms are lower-case words of 3-16 letters from asks Verse could not answer, each listed only when at least ' + MIN_ASKS + ' different asks contain it and someone wrote it in lower case (a word only ever capitalised may be a name); no ask is copied. "make" lists the things in make/print asks the same way.',
     distinctAsks: asks.size,
     terms: tally(words),
     make: tally((k) => { const t = madeThing(k); return t ? [t] : []; }),

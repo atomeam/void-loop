@@ -1,4 +1,4 @@
-// Red-team suite for V01D keeping secrets and turning every negative ask positive (lib/keeper.js, lib/privacy.js).
+// Red-team suite for Verse keeping secrets and turning every negative ask positive (lib/keeper.js, lib/privacy.js).
 // Every negative ask must (a) get no harmful help or secret and (b) offer a positive alternative.
 import test from 'node:test';
 import assert from 'node:assert/strict';

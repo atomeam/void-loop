@@ -1,5 +1,5 @@
 /**
- * friction skill - a slider for how slippery things are (asked by Void, 2026-10-16: "a 'drag-velocity' slider on the stage that
+ * friction skill - a slider for how slippery things are (asked by Verse, 2026-10-16: "a 'drag-velocity' slider on the stage that
  * allows users to manually adjust the friction of moved objects"). "add a friction slider" puts one card on the stage: 0 is ice
  * (a thrown thing keeps its speed), 100 is mud (it stops almost at once); the default 5 is how the stage has always felt. The
  * setting is kept on this device (lib/state.js lists it) and void.html's throw reads it every time something is let go fast.

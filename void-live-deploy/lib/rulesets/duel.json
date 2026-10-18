@@ -1,11 +1,11 @@
 {
  "name": "duel",
- "title": "The V01D duel",
+ "title": "The Verse duel",
  "about": "Two sides, a Root each, a Treasury, two actions a turn. Any idea may be summoned for a price; attacks are paid for in coins; the side that neutralises the other Root wins, or has more Power after 12 turns.",
  "rules": [
   {
    "id": "duel-base-income",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "turnStart",
    "then": [
@@ -18,7 +18,7 @@
   },
   {
    "id": "duel-card-income",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "turnStart",
    "then": [
@@ -33,7 +33,7 @@
   },
   {
    "id": "duel-two-actions",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "turnStart",
    "then": [
@@ -46,7 +46,7 @@
   },
   {
    "id": "duel-turn-limit",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": "turnStart",
    "if": [
@@ -66,7 +66,7 @@
   },
   {
    "id": "duel-summon-price",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "summon",
    "then": [
@@ -83,7 +83,7 @@
   },
   {
    "id": "duel-summon-on-own",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "summon",
    "if": [
@@ -102,7 +102,7 @@
   },
   {
    "id": "duel-summon-open-arrow",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "summon",
    "if": [
@@ -121,7 +121,7 @@
   },
   {
    "id": "duel-any-idea",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "summon",
    "then": [
@@ -133,7 +133,7 @@
   },
   {
    "id": "duel-needs-action",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": [
     "summon",
@@ -155,7 +155,7 @@
   },
   {
    "id": "duel-spend-action",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": [
     "summon",
@@ -171,7 +171,7 @@
   },
   {
    "id": "duel-turn-ends",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": [
     "summon",
@@ -195,7 +195,7 @@
   },
   {
    "id": "duel-attack-total",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "attack",
    "then": [
@@ -224,7 +224,7 @@
   },
   {
    "id": "duel-defence-total",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 2,
    "when": "attack",
    "then": [
@@ -253,7 +253,7 @@
   },
   {
    "id": "duel-attack-with-own",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "attack",
    "if": [
@@ -272,7 +272,7 @@
   },
   {
    "id": "duel-attacker-awake",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "attack",
    "if": [
@@ -291,7 +291,7 @@
   },
   {
    "id": "duel-attack-an-enemy",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "attack",
    "if": [
@@ -310,7 +310,7 @@
   },
   {
    "id": "duel-target-awake",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 1,
    "when": "attack",
    "if": [
@@ -329,7 +329,7 @@
   },
   {
    "id": "duel-neutralise",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": "attack",
    "if": [
@@ -349,7 +349,7 @@
   },
   {
    "id": "duel-root-falls",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": "attack",
    "if": [
@@ -379,7 +379,7 @@
   },
   {
    "id": "duel-pass-banks",
-   "source": "V01D duel",
+   "source": "Verse duel",
    "layer": 3,
    "when": "pass",
    "then": [

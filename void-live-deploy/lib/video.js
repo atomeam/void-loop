@@ -1,5 +1,5 @@
-// Video: the pure part of V01D's video skill (skills/video.js) and its search route (functions/api/video.js). Owner, 2026-10-15:
-// "it should master youtube and easily pull up any video, rumble and other free platforms too. V01D should be the only site you need."
+// Video: the pure part of Verse's video skill (skills/video.js) and its search route (functions/api/video.js). Owner, 2026-10-15:
+// "it should master youtube and easily pull up any video, rumble and other free platforms too. Verse should be the only site you need."
 // Embed only: every player is the platform's own official embed (YouTube through youtube-nocookie.com), so nothing is downloaded or
 // rehosted, the platform's terms are kept and the creator's ads and counts stay theirs. Nothing here touches the network.
 
@@ -34,7 +34,7 @@ export function clockOf(n) {
 }
 
 const YT_ID = /^[A-Za-z0-9_-]{11}$/;
-/** a pasted url -> { platform, id, start?, needsOembed? } for any platform V01D can play, or null. Pure. */
+/** a pasted url -> { platform, id, start?, needsOembed? } for any platform Verse can play, or null. Pure. */
 export function parseVideoUrl(raw) {
   let u; try { u = new URL(String(raw || '').trim()); } catch (_) { return null; }
   if (!/^https?:$/.test(u.protocol)) return null;
@@ -114,7 +114,7 @@ export function watchUrl(v) {
     default: return null;
   }
 }
-/** what each embed can do from V01D's controls: seek in place, speed, captions. Pure data. */
+/** what each embed can do from Verse's controls: seek in place, speed, captions. Pure data. */
 export const CAN = {
   youtube: { seek: 'api', speed: true, captions: true }, vimeo: { seek: 'api', speed: true, captions: true },
   dailymotion: { seek: 'reload', speed: false, captions: true }, peertube: { seek: 'reload', speed: false, captions: true },
@@ -126,7 +126,7 @@ const PLAT_WORD = { youtube: /\b(?:youtube|yt)\b/, rumble: /\brumble\b/, vimeo: 
 const PLAT_STRIP = /\s*\b(?:on|from|in|at|over\s+on)\s+(?:the\s+)?(?:youtube|yt|rumble|vimeo|daily\s?motion|internet\s+archive|archive\.org|archive|peer\s?tube|odysee|twitch)\b\s*/g;
 export function platformIn(t) { for (const [k, re] of Object.entries(PLAT_WORD)) if (re.test(t)) return k; return null; }
 // "play" asks that belong to the page's games, music boxes and the rest: never a video search
-const NOT_VIDEO = /^(?:a\s+|the\s+|some\s+)?(?:game|games|chess|checkers|go|othello|reversi|connect\s*4|connect\s+four|tic\s*tac\s*toe|noughts|mancala|monopoly|battleship|poker|sorry|aggravation|ringer|marbles|cards?|solitaire|blackjack|pool|8\s*ball|eight\s*ball|dice|a\s+round|again|music|a\s+song|songs?|sound|sounds|noise|white\s+noise|rain|fireworks|with\s+me|with\s+you|it|this|that|next|pause|stop|resume|nice|fair|dead|catch|tag|hide\s+and\s+seek|rock\s+paper\s+scissors|20\s+questions|twenty\s+questions|trivia|quiz|a\s+quiz|hangman|wordle|sudoku|snake|pong|tetris|voidquest|void\s*quest)\b/;
+const NOT_VIDEO = /^(?:a\s+|the\s+|some\s+)?(?:game|games|chess|checkers|go|othello|reversi|connect\s*4|connect\s+four|tic\s*tac\s*toe|noughts|mancala|monopoly|battleship|poker|sorry|aggravation|ringer|marbles|cards?|solitaire|blackjack|pool|8\s*ball|eight\s*ball|dice|a\s+round|again|music|a\s+song|songs?|sound|sounds|noise|white\s+noise|rain|fireworks|with\s+me|with\s+you|it|this|that|next|pause|stop|resume|nice|fair|dead|catch|tag|hide\s+and\s+seek|rock\s+paper\s+scissors|20\s+questions|twenty\s+questions|trivia|quiz|a\s+quiz|hangman|wordle|sudoku|snake|pong|tetris|voidquest|(?:verse|void)\s*quest)\b/;
 
 /** what an ask wants from the video skill, or null. Pure. Kinds: play (url|query), search, seek, speed, captions, queue, next,
  * prev, list, recent, close, clear-recent, platform. `hasCard` lets the watch tools ("skip to 2:30") take bare asks only while a
@@ -134,9 +134,9 @@ const NOT_VIDEO = /^(?:a\s+|the\s+|some\s+)?(?:game|games|chess|checkers|go|othe
 export function videoAskOf(text, { hasCard = false, late = false } = {}) {
   const raw = String(text || '').trim(), url = raw.match(/https?:\/\/\S+/);
   if (url) { const v = parseVideoUrl(url[0].replace(/[),.;!?]+$/, '')); if (v) { const queue = /^(?:queue|add|put)\b/i.test(raw) || /\b(?:to|in|on)\s+(?:the\s+|my\s+)?(?:queue|playlist)\b/i.test(raw); return { kind: queue ? 'queue' : 'play', video: v }; } return null; }
-  let t = raw.toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^(?:hey\s+)?(?:v01d|void)[,:]?\s+/, '').replace(/^(?:please|can\s+you|could\s+you|would\s+you)\s+/, '').replace(/\s+please$/, '').trim();
+  let t = raw.toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^(?:hey\s+)?(?:v01d|(?:verse|void)|verse)[,:]?\s+/, '').replace(/^(?:please|can\s+you|could\s+you|would\s+you)\s+/, '').replace(/\s+please$/, '').trim();
   if (!t) return null;
-  if (/\b(?:your|v01d'?s|void'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // V01D's own films are the films skill's
+  if (/\b(?:your|(?:verse|v01d)'?s|(?:verse|void)'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // Verse's own films are the films skill's
   const vid = /\b(?:videos?|vids?|clips?|youtube|rumble|vimeo|dailymotion|peertube|odysee|twitch|trailer|music\s+video|documentary|livestream|vod)\b/;
   // the watch tools
   if (/^(?:close|stop|remove|hide|put\s+away|get\s+rid\s+of)\s+(?:the\s+|my\s+)?(?:video|player|youtube|video\s+player|video\s+card)$/.test(t) || (hasCard && /^stop\s+(?:watching|playing)$/.test(t))) return { kind: 'close' };
@@ -175,12 +175,12 @@ export function videoAskOf(text, { hasCard = false, late = false } = {}) {
     || t.match(/^(?:play|watch|show\s+me|pull\s+up|bring\s+up|put\s+on)\s+(.+?)\s+(?:on|from)\s+(?:youtube|yt|rumble|vimeo|daily\s?motion|peer\s?tube|odysee|twitch|the\s+internet\s+archive|archive\.org)$/)
     || t.match(/^(?:play|watch|show\s+me|pull\s+up|put\s+on)\s+(?:the\s+)?(.+?)\s+(trailer|music\s+video|video|clip|documentary)$/);
   if (m) { const q = cleanQuery(m[1] + (m[2] && /trailer|music video|documentary/.test(m[2]) ? ' ' + m[2] : '')); if (q) return { kind: 'play', query: q, platform }; }
-  if (late) { m = t.match(/^(?:play|watch|put\s+on)\s+(.{2,120})$/); if (m && !NOT_VIDEO.test(m[1]) && !/\b(?:against|vs\.?|versus|with\s+(?:me|you|void)|a\s+game)\b/.test(m[1])) { const q = cleanQuery(m[1]); if (q) return { kind: 'play', query: q, platform }; } }
+  if (late) { m = t.match(/^(?:play|watch|put\s+on)\s+(.{2,120})$/); if (m && !NOT_VIDEO.test(m[1]) && !/\b(?:against|vs\.?|versus|with\s+(?:me|you|(?:verse|void))|a\s+game)\b/.test(m[1])) { const q = cleanQuery(m[1]); if (q) return { kind: 'play', query: q, platform }; } }
   return null;
 }
 function cleanQuery(q) { return String(q || '').replace(PLAT_STRIP, ' ').replace(/^(?:the\s+)?(?:videos?|vids?|clips?)\s+(?:of|about|for)\s+/, '').replace(/\s+/g, ' ').trim().slice(0, 120) || null; }
 
-/** one search hit from each platform's public API, in V01D's own shape: { platform, id, title, channel, seconds, thumb, ... }. Pure. */
+/** one search hit from each platform's public API, in Verse's own shape: { platform, id, title, channel, seconds, thumb, ... }. Pure. */
 export function hitsOf(platform, j) {
   const s = (x) => String(x == null ? '' : x).slice(0, 200), n = (x) => (Number.isFinite(+x) && +x > 0 ? Math.round(+x) : null);
   try {

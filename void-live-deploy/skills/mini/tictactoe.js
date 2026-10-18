@@ -2,7 +2,7 @@
  * tic-tac-toe miniature — a maple board where the grid, every X and every O are carved into the wood (Adam, 2026-10-08:
  * "the x and o should be carved into the wood"). The top is a drawn grain texture plus a matching depth (bump) map, so
  * the cuts read as real grooves under the light; a new mark carves itself in stroke by stroke, and a winning line's
- * grooves fill with gold. Built from code. The card keeps the rules and Void's replies (skills/tictactoe.js).
+ * grooves fill with gold. Built from code. The card keeps the rules and Verse's replies (skills/tictactoe.js).
  * data: { board: Array(9) of 'X'|'O'|null, win: [i], onTap(selector) }  Square i = row * 3 + col, row 0 far, col 0 left.
  */
 const S = 0.07, H = 0.026, half = S * 1.5 + 0.02, CARVE = 0.45; // seconds to carve one mark

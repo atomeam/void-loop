@@ -1,7 +1,7 @@
-// a-to-mind.com/c/<clip>?p=<platform>&q=<ask>: the link in every V01D clip's description (tools/clips.mjs). Counts the visit in D1
-// (void_clip_visits: which clip, which platform, when; no IP, no cookie) and sends the visitor to Void with the clip's ask, so we can
-// see which clip drove visits and V01D can film more of what works. Hostile read: clip and platform are checked against patterns,
-// the ask is capped and only ever becomes ?q= on Void's own page. GET /c/_stats with the owner's token -> visits per clip and platform.
+// a-to-mind.com/c/<clip>?p=<platform>&q=<ask>: the link in every Verse clip's description (tools/clips.mjs). Counts the visit in D1
+// (void_clip_visits: which clip, which platform, when; no IP, no cookie) and sends the visitor to Verse with the clip's ask, so we can
+// see which clip drove visits and Verse can film more of what works. Hostile read: clip and platform are checked against patterns,
+// the ask is capped and only ever becomes ?q= on Verse's own page. GET /c/_stats with the owner's token -> visits per clip and platform.
 import { ownerOk } from '../../lib/guard.js';
 
 export const CLIP_RE = /^[0-9]{8}-[a-z0-9-]{2,60}$/, PLATFORMS = ['youtube', 'tiktok', 'instagram', 'x', 'site', 'other'];

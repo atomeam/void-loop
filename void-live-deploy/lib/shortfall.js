@@ -1,4 +1,4 @@
-// Where the free model fell short (Atom, 2026-09-28): until Void has earned money, it stays on free models and writes down each
+// Where the free model fell short (Atom, 2026-09-28): until Verse has earned money, it stays on free models and writes down each
 // time it would have used a stronger one. That is the evidence the will weighs when the budget can pay for an upgrade; any
 // real spend still needs a yes on the confirm line. One row per day, place and reason, counted up. No ask text is kept.
 // place: 'answer' | 'fix' | 'review' | 'will'.  reason: 'free limit' (daily free allocation used up) | 'busy' | 'empty' | 'error' | 'guard' (the answer failed lib/patch-guard.js).

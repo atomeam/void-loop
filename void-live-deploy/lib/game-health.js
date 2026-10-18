@@ -1,15 +1,15 @@
 /**
- * Game health (asked by Void: "connect the Elo rating to a 'skill-health' metric for the Games family"): V01D's rating in each game it
+ * Game health (asked by Verse: "connect the Elo rating to a 'skill-health' metric for the Games family"): Verse's rating in each game it
  * plays against the person on this device, shown in the Games family on the skill-health card. Chess, checkers and reversi use the Elo
  * estimate from the match history (lib/match-history.js, from 1200); pong and snake use the arcade ladder (lib/ladder.js, from 1000).
- * Each row says the rating, how far it is from where it started, and, once five matches are in, whether V01D is climbing, level or
+ * Each row says the rating, how far it is from where it started, and, once five matches are in, whether Verse is climbing, level or
  * slipping. Fewer than five matches reads "too few matches to say"; nothing played reads nothing. Pure over the two records.
  */
 import { summary, GAMES as BOARD, TITLES as BOARD_TITLES, START as BOARD_START } from './match-history.js';
 import { rating, played, GAMES as ARCADE, START as ARCADE_START } from './ladder.js';
 
 export const MIN = 5, BAND = 16;
-const ARCADE_TITLES = { pong: 'Void Pong', snake: 'Void Snake' };
+const ARCADE_TITLES = { pong: 'Verse Pong', snake: 'Verse Snake' };
 const read = (delta, n) => (n < MIN ? 'too few matches to say' : delta >= BAND ? 'climbing' : delta <= -BAND ? 'slipping' : 'level');
 
 /** [{ game, title, rating, delta, played, read }] for every game with at least one match. Pure. */

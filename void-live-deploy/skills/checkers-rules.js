@@ -1,7 +1,7 @@
 /**
  * checkers-rules — American checkers (English draughts) in plain JS, shared by the checkers card and its tests.
  * Squares 0..63 = row * 8 + col, row 0 nearest you. Only dark squares ((row + col) even) are used.
- * Pieces: 'd' your man (dark, moves up), 'D' your king, 'l' Void's man (light, moves down), 'L' Void's king.
+ * Pieces: 'd' your man (dark, moves up), 'D' your king, 'l' Verse's man (light, moves down), 'L' Verse's king.
  *   create() / fromRows(rows, turn) / legalMoves(s) -> [{ from, path: [sq...], captures: [sq...], crown }]
  *   play(s, move | [from, to, to...]) -> new position   status(s) -> 'playing' | 'dark-wins' | 'light-wins' | 'draw'
  *   bestMove(s, { depth, ms }) -> move

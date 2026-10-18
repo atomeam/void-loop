@@ -1,4 +1,4 @@
-// V01D's quick asks, built into the skills they belong to (Suggested-by: Void): the country card's time zone row and the digest
+// Verse's quick asks, built into the skills they belong to (Suggested-by: Verse): the country card's time zone row and the digest
 // recovery loop (a second, simpler prompt when the first summary comes back empty or fails).
 import { test } from 'node:test';
 import fs from 'node:fs';

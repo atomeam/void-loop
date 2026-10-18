@@ -1,4 +1,4 @@
-// cook-flow (lib/cook-flow.js, asked by Void): a kitchen conversion or swap ends with one tap that starts a timer; a sum, a
+// cook-flow (lib/cook-flow.js, asked by Verse): a kitchen conversion or swap ends with one tap that starts a timer; a sum, a
 // distance or a currency ask gets no chip. Run: node --test tools/cook-flow.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

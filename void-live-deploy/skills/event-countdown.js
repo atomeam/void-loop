@@ -1,6 +1,6 @@
 /**
  * event-countdown skill - how long until a named event: "how many hours til gta6", "how long until the world cup starts", "countdown to
- * the olympics" (owner's pasted card, 2026-10-17: V01D said GTA VI had no release date when it had one, 19 November 2026). The date
+ * the olympics" (owner's pasted card, 2026-10-17: Verse said GTA VI had no release date when it had one, 19 November 2026). The date
  * comes from the event's own Wikipedia summary, read now, never from a model's memory; the card names the source and counts down live.
  * When the summary names no date still ahead it says exactly that. Dates, holidays and times of day stay with countdown, holidays and
  * the clock (lib/event-date.js eventAsk leaves them out).
@@ -9,7 +9,7 @@
 import { eventAsk, searchWords, announcedFrom, confidenceOf, rawSnippet, left } from '../lib/event-date.js';
 
 const WIKI = 'https://en.wikipedia.org';
-const UA = { headers: { 'Api-User-Agent': 'V01D/1.0 (https://a-to-mind.com)' } };
+const UA = { headers: { 'Api-User-Agent': 'Verse/1.0 (https://a-to-mind.com)' } };
 
 /** the summary of the page that best names the event: the exact title first, then the top search hit. { title, extract, url } or null */
 async function summaryOf(words) {
@@ -28,8 +28,8 @@ async function summaryOf(words) {
 }
 
 const n = (x, w) => x + ' ' + w + (x === 1 ? '' : 's');
-/** how fresh the source is, after the confidence badge (asked by Void: "a 'last-verified' timestamp to the confidence badge so users know how
- *  fresh the source data is"): the page's last edit from Wikipedia and when V01D read it. '' when the page gave no edit time. Pure. */
+/** how fresh the source is, after the confidence badge (asked by Verse: "a 'last-verified' timestamp to the confidence badge so users know how
+ *  fresh the source data is"): the page's last edit from Wikipedia and when Verse read it. '' when the page gave no edit time. Pure. */
 export function verifiedLine(edited, now = new Date()) {
   const e = new Date(edited || ''); if (!edited || isNaN(e)) return '';
   const day = e.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });
@@ -70,7 +70,7 @@ async function run(text, api) {
     + '<p>' + esc(s.title) + ': ' + esc(day) + ' (counted to the start of that day where you are; the hour can differ by region).</p>'
     + '<blockquote style="margin:8px 0;opacity:.85">' + esc(when.sentence.slice(0, 280)) + '</blockquote>'
     + '<p class="ec-sure" data-from="' + esc(when.from) + '" data-sure="' + esc(conf.sure) + '" style="font-size:12px;margin:4px 0;opacity:' + (conf.sure === 'high' ? '.95' : '.6') + '"><span class="ec-badge" tabindex="0" title="' + esc(rawSnippet(when)) + '" style="display:inline-block;padding:1px 8px;border-radius:9px;border:1px solid currentColor;margin-right:6px;cursor:help">' + (conf.sure === 'high' ? 'sure' : 'less sure') + '</span>' + esc('Date ' + conf.label) + (verifiedLine(s.edited) ? ' <span class="ec-verified" data-verified="' + esc(s.edited) + '">· ' + esc(verifiedLine(s.edited)) + '</span>' : '')
-    // the raw text the date was read from, on hover, focus or a tap of the badge (asked by Void, twice)
+    // the raw text the date was read from, on hover, focus or a tap of the badge (asked by Verse, twice)
     + '<code class="ec-raw" style="display:none;margin-top:4px;padding:4px 6px;border-radius:4px;background:rgba(255,255,255,.07);white-space:pre-wrap;word-break:break-word">' + esc(rawSnippet(when)) + '</code></p>'
     + '<style>.ec-sure:hover .ec-raw,.ec-sure:focus-within .ec-raw,.ec-sure.open .ec-raw{display:block!important}</style>' + src;
   const badge = body.querySelector('.ec-badge'); if (badge) badge.addEventListener('click', () => badge.parentNode.classList.toggle('open'));

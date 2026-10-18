@@ -1,5 +1,5 @@
 /**
- * miss-jobs skill - today's misses as jobs (asked by the owner, 2026-10-18): "turn today's misses into jobs" lists the top asks Void could
+ * miss-jobs skill - today's misses as jobs (asked by the owner, 2026-10-18): "turn today's misses into jobs" lists the top asks Verse could
  * not answer that the build queue would take ("ready to queue"), ranked and filtered the way the server does it (lib/learn.js plan(), the
  * same board /api/misses and the same queue /api/queue). Owner only, like the status card's recovery: the board and the queue are read
  * with the owner key, and a job is queued only by a tap on its own button (Bearer owner key to /api/queue). Without the key the card is a

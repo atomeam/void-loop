@@ -1,13 +1,13 @@
-// lib/film-share.js + /films/: anyone uploads any V01D film or ad clip (owner, 2026-10-15: "put an upload to youtube button in
-// V01D Films so that anyone can easily uplad each vid"; every video is its own ad, with the a-to-mind.com link and a share line).
+// lib/film-share.js + /films/: anyone uploads any Verse film or ad clip (owner, 2026-10-15: "put an upload to youtube button in
+// Verse Films so that anyone can easily uplad each vid"; every video is its own ad, with the a-to-mind.com link and a share line).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { shareWords, shareLink, PLATFORMS, CTA, SHARE } from '../void-live-deploy/lib/film-share.js';
 import films, { wantsUpload } from '../void-live-deploy/skills/films.js';
 
-const clip = { id: '20261015-void-voice', title: 'I have opinions | V01D #Shorts', description: 'Try it: https://a-to-mind.com/c/20261015-void-voice?p=youtube&q=x', tags: ['#Shorts', '#AI', '#V01D'] };
-const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Void, physics' };
+const clip = { id: '20261015-void-voice', title: 'I have opinions | Verse #Shorts', description: 'Try it: https://a-to-mind.com/c/20261015-void-voice?p=youtube&q=x', tags: ['#Shorts', '#AI', '#Verse'] };
+const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Verse, physics' };
 
 test('every platform: tracked per-uploader link, call to action, share line, its own upload page', () => {
   for (const p of Object.keys(PLATFORMS)) {
@@ -21,12 +21,12 @@ test('every platform: tracked per-uploader link, call to action, share line, its
   }
   assert.equal(shareWords(clip, 'youtube').upload, 'https://www.youtube.com/upload');
 });
-test('titles: one V01D, one #Shorts on YouTube, at most 100; tags without repeats', () => {
+test('titles: one Verse, one #Shorts on YouTube, at most 100; tags without repeats', () => {
   const w = shareWords(clip, 'youtube');
-  assert.equal(w.title, 'I have opinions | V01D #Shorts');
-  assert.ok(shareWords(film, 'youtube').title.endsWith('| V01D #Shorts'));
+  assert.equal(w.title, 'I have opinions | Verse #Shorts');
+  assert.ok(shareWords(film, 'youtube').title.endsWith('| Verse #Shorts'));
   assert.equal(shareWords({ ...film, title: 'x'.repeat(300) }, 'youtube').title.length, 100);
-  assert.equal(w.tags, '#Shorts #AI #V01D');
+  assert.equal(w.tags, '#Shorts #AI #Verse');
   assert.ok(!shareWords(film, 'tiktok').title.includes('#Shorts'));
 });
 test('a film without a clip id links the home page, still tracked', () => {
@@ -44,12 +44,12 @@ test('"upload this to YouTube" reaches the films skill', () => {
   for (const a of ['upload this to youtube', 'post it on tiktok', 'how do i upload your videos to youtube', 'share a clip on x']) assert.ok(films.match(a), a);
   for (const a of ['upload a file', 'youtube', 'post a tweet']) assert.ok(!wantsUpload(a), a);
 });
-test('clips.yml puts every ad clip in V01D FILMS', () => {
+test('clips.yml puts every ad clip in VERSE FILMS', () => {
   const y = readFileSync(new URL('../.github/workflows/clips.yml', import.meta.url), 'utf8');
   assert.match(y, /film-post\.mjs "media\/clips\/\$id\.mp4"/);
 });
 
-// V01D Tube phase 1: views in D1 (no KV), an RSS feed, a watch page per video
+// Verse Tube phase 1: views in D1 (no KV), an RSS feed, a watch page per video
 import { DatabaseSync } from 'node:sqlite';
 import * as views from '../void-live-deploy/functions/api/film-views.js';
 import { rss } from '../void-live-deploy/functions/films/rss.js';
@@ -71,7 +71,7 @@ test('RSS: escaped, each item links its watch page, never the signed play link',
   assert.match(x, /A &lt;UFO&gt; &amp; me/);
   assert.ok(!x.includes('sig='));
 });
-test('/films/ is V01D Tube: watch page, related, views, share-on links, RSS', () => {
+test('/films/ is Verse Tube: watch page, related, views, share-on links, RSS', () => {
   const html = readFileSync(new URL('../void-live-deploy/films/index.html', import.meta.url), 'utf8');
   for (const s of ["get('v')", 'Up next', '/api/film-views', 'x.com/intent/post', 'reddit.com/submit', '/films/rss']) assert.ok(html.includes(s), s);
 });

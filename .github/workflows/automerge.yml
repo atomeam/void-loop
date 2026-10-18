@@ -4,13 +4,13 @@
 # on every head of main, started by this bot after it merges, and reverts a commit that fails it (verify.yml, verify-main). It looks again whenever anything that could change the answer happens, and once an hour.
 # A PR that conflicts with main gets no pull_request runs at all (GitHub skips them), so a labelled one would sit silently forever
 # (2026-10-10). For such a PR the bot merges main into the branch itself (tools/merge-main.mjs from main's checkout settles the
-# append-only records), pushes the merge commit (never forced) and starts Void's review on the new head; a conflict outside those
+# append-only records), pushes the merge commit (never forced) and starts Verse's review on the new head; a conflict outside those
 # records comes back as one comment on the PR naming the files.
-name: Void automerge
+name: Verse automerge
 
 on:
   workflow_run:
-    workflows: ["Void deploy", "Void review", "Void bench"]
+    workflows: ["Verse deploy", "Verse review", "Verse bench"]
     types: [completed]
   pull_request_review:
     types: [submitted]
@@ -32,7 +32,7 @@ permissions:
   contents: write # merge; push the merge of main to a conflicted PR's branch
   pull-requests: write # mark a draft ready; the one conflict comment
   checks: read
-  actions: write # start the deploy of main after a merge; start Void's review on a head the bot pushed
+  actions: write # start the deploy of main after a merge; start Verse's review on a head the bot pushed
 
 jobs:
   automerge:

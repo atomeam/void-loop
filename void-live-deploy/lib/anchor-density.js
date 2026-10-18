@@ -1,5 +1,5 @@
 // anchor-density — how much "navigation depth" the ghost anchor (#void-anchor in void.html, the heart that opens the store) has behind
-// it. Asked by Void (2026-10-18): "Integrate the 'density-indicator' logic into the ghost anchor so it visually shows how much
+// it. Asked by Verse (2026-10-18): "Integrate the 'density-indicator' logic into the ghost anchor so it visually shows how much
 // 'navigation depth' or history is available." Navigation depth is what is on this device to go back to: the things on the stage
 // (kept cards among them: a kept card is a stage thing of kind 'kept'), read from the stage store the way lib/state.js reads it
 // (STORES.stage), against a goal of ANCHOR_GOAL things. density() from lib/list-goal.js gives the ratio and the state (under, near,
@@ -25,6 +25,6 @@ export function anchorDensity(things) {
   const count = list.filter((t) => t && typeof t === 'object').length;
   const d = density(count, ANCHOR_GOAL);
   const h = Math.round((HEART_BOTTOM - HEART_TOP) * d.ratio * 10) / 10;
-  return { count, goal: ANCHOR_GOAL, ratio: d.ratio, state: d.state, label: d.label, title: 'support V01D · ' + d.label + ' things on your stage',
+  return { count, goal: ANCHOR_GOAL, ratio: d.ratio, state: d.state, label: d.label, title: 'support Verse · ' + d.label + ' things on your stage',
     fill: { y: Math.round((HEART_BOTTOM - h) * 10) / 10, h: h ? h + (24 - HEART_BOTTOM) : 0 } }; // past the bottom edge so the rect never leaves a sliver
 }

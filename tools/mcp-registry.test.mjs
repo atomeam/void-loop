@@ -1,4 +1,4 @@
-// server.json (Void in the official MCP registry, .github/workflows/mcp-registry.yml) stays in step with the live endpoint it
+// server.json (Verse in the official MCP registry, .github/workflows/mcp-registry.yml) stays in step with the live endpoint it
 // names: the registry's limits, the remote is the MCP endpoint the public API describes, and the version is one a publish takes.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

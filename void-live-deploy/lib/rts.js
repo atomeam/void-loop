@@ -1,7 +1,7 @@
-// V01D's world as a real-time strategy game (owner, 2026-10-16: "the world of V01D itself should become a working RTS game so if a
+// Verse's world as a real-time strategy game (owner, 2026-10-16: "the world of Verse itself should become a working RTS game so if a
 // background is added the floating figures are grounded and can interact and build. gather wood supplies all with whatever the
 // user has summoned. so new summons are treated as new resources for the chosen backdrop or scene"). The loop is Age of Empires':
-// resource nodes, villagers who carry one load home, a camp with a stock, buildings with costs. V01D's twist: what you summon is
+// resource nodes, villagers who carry one load home, a camp with a stock, buildings with costs. Verse's twist: what you summon is
 // the node (a tree is wood, a rock is stone, every food thing is food). Pure rules; skills/rts.js is the stage half, skills/scripts.js
 // and skills/figures3d.js walk the villagers.
 export const RESOURCES = ['wood', 'stone', 'food'];

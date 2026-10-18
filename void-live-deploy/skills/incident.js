@@ -69,7 +69,7 @@ export function briefMarkdown(s) {
 
 const blank = (title) => ({ title: title || '', status: 'investigating', severity: '', started: '', detected: '', mitigated: '', resolved: '', impact: '', cause: '', timeline: [{ at: '', what: '' }], next: [{ what: '', owner: '', due: '' }] });
 function load() { try { const s = JSON.parse(localStorage.getItem(KEY) || 'null'); return s && typeof s === 'object' && Array.isArray(s.timeline) && Array.isArray(s.next) ? s : null; } catch (_) { return null; } }
-/** keep a drafted brief (the pulse card drafts one when the arrows' rhythm turns irregular, asked by Void) unless the person already has one with real content in it; true when kept. */
+/** keep a drafted brief (the pulse card drafts one when the arrows' rhythm turns irregular, asked by Verse) unless the person already has one with real content in it; true when kept. */
 export function keepDraft(s) {
   const have = load();
   if (have && (have.impact || have.cause || (have.title && have.title !== s.title))) return false;
@@ -94,9 +94,9 @@ function formHtml(esc, s) {
     + '<div style="font-size:12px;color:#8a8a92;margin-top:8px">next steps</div>' + rows(s.next, 'next', [['what', 'what will change'], ['owner', 'owner', 'text', '0 1 120px'], ['due', 'due', 'date', '0 0 150px']]) + '<button type="button" data-add="next">add a step</button>';
 }
 
-// what broke lately (asked by Void, four times: an incident entry whenever a 3D suite check fails): the list verify.yml writes to
+// what broke lately (asked by Verse, four times: an incident entry whenever a 3D suite check fails): the list verify.yml writes to
 // /incidents.json (tools/incident-log.mjs), newest first, each with its failed checks, the commit and the run, and the brief one tap away
-const LATELY_RE = /^(?:what(?:'s|\s+has|\s+is)?\s+)?(?:broke|is\s+broken|failed|went\s+wrong|has\s+(?:broken|failed))(?:\s+(?:lately|recently|today|this\s+week|on\s+main|in\s+(?:void|v01d)))?$|^(?:(?:show|list)\s+(?:me\s+)?)?(?:the\s+)?(?:recent\s+|latest\s+|last\s+|void\s+|v01d\s+|my\s+)?incidents?(?:\s+(?:log|list|history))?$|^what\s+broke\s+lately$/i;
+const LATELY_RE = /^(?:what(?:'s|\s+has|\s+is)?\s+)?(?:broke|is\s+broken|failed|went\s+wrong|has\s+(?:broken|failed))(?:\s+(?:lately|recently|today|this\s+week|on\s+main|in\s+(?:void|(?:verse|v01d)|verse)))?$|^(?:(?:show|list)\s+(?:me\s+)?)?(?:the\s+)?(?:recent\s+|latest\s+|last\s+|(?:verse|void)\s+|(?:verse|v01d)\s+|my\s+)?incidents?(?:\s+(?:log|list|history))?$|^what\s+broke\s+lately$/i;
 export const latelyOf = (text) => LATELY_RE.test(CLEAN(text)) && !incidentOf(text);
 export function incidentsHtml(esc, list) {
   const L = Array.isArray(list) ? list : [];

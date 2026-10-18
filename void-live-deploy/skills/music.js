@@ -1,5 +1,5 @@
 /**
- * music skill - "make me a song", "make a beat", "a lullaby", "music for a rainy day": V01D composes an original short piece (owner, 2026-10-17:
+ * music skill - "make me a song", "make a beat", "a lullaby", "music for a rainy day": Verse composes an original short piece (owner, 2026-10-17:
  * "void should also learn how to make music"). The tempo, key, scale, chords, melody and drum pattern come from the mood word and a seed made of the
  * ask's own words (lib/compose.js), so the same ask gives the same piece; it is synthesised in the browser with Web Audio, no model, no sample, no
  * paid service. The card shows what was composed as a piano roll, plays and stops it, saves it as a WAV (OfflineAudioContext) and copies the notes.
@@ -10,7 +10,7 @@ import { compose, describe, notesText, renderWav, schedule, noteName } from '../
 
 const KINDS = '(?:song|songs|tune|beat|beats|lullaby|melody|jingle|music|soundtrack|ditty|loop)';
 const WHEN = new RegExp('^(?!.*\\b(?:list|lyrics|playlist|chords|sheet)\\b)(?:please\\s+|can you\\s+|could you\\s+|will you\\s+)?(?:(?:make|compose|write|create|generate|give|play|cook up)(?:\\s+(?:me|us))?\\s+(?:a\\s+|an\\s+|some\\s+|my\\s+|another\\s+|new\\s+)?(?:[a-z]+\\s+){0,3}?' + KINDS + '(?:\\s+(?:for|about|to|in|with)\\s+.{1,60})?|music\\s+for\\s+.{2,60}|(?:a|an)\\s+(?:[a-z]+\\s+){0,2}' + KINDS + '\\s+(?:for|about)\\s+.{2,60})\\s*[?.!]*$', 'i');
-// "play some music" and "play me a song" ask for a recording, not for V01D to compose one
+// "play some music" and "play me a song" ask for a recording, not for Verse to compose one
 const PLAY_ONLY = /^(?:please\s+)?play\b(?!.*\b(?:made|new|original)\b)/i;
 
 const esc2 = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
@@ -33,7 +33,7 @@ function run(text, api) {
     el.dataset.cardKind = 'Song';
     el.innerHTML = '<h2>' + esc(p.title) + '</h2><p>' + esc(describe(p)) + '</p>' + rollSvg(p)
       + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
-      + '<div class="src">Made by V01D from the words of your ask, synthesised in this browser (Web Audio). Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
+      + '<div class="src">Made by Verse from the words of your ask, synthesised in this browser (Web Audio). Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
     const q = (s) => el.querySelector(s), msg = (t) => { const m = q('.mu-msg'); if (m) m.textContent = t; };
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('button')) b.addEventListener(ev, (e) => e.stopPropagation());
     let ac = null, timer = 0, raf = 0, t0 = 0, dur = 0;

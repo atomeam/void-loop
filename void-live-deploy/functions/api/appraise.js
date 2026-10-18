@@ -1,7 +1,7 @@
 // POST /api/appraise { image: data URL (PNG, JPEG or WebP, downsized by the page), note?: what the person typed }
-// -> { seen, value: { kind, cents, text, says, expert, person }, text }. V01D values anything from a photo (frontier #30):
+// -> { seen, value: { kind, cents, text, says, expert, person }, text }. Verse values anything from a photo (frontier #30):
 // the vision model (lib/models.js path 'vision', the site's own Workers AI binding) describes the photo, and lib/appraise-photo.js
-// turns the description into V01D's valuation. The photo is read for this answer and dropped: nothing is stored or logged.
+// turns the description into Verse's valuation. The photo is read for this answer and dropped: nothing is stored or logged.
 // People are never priced: a person in the photo, or an ask about one, gets a compliment (owner, 2026-10-15). 503 with no AI
 // binding (a deploy without the model), 502 when the model does not answer, 400 for anything that is not a small image.
 import { models, VISION_FALLBACK } from '../../lib/models.js';
@@ -39,7 +39,7 @@ export async function onRequestPost({ request, env }) {
   if (isPersonAsk(note)) { const v = { kind: 'person', cents: 0, text: '', says: [complimentFor(note, note.length)], expert: false, person: true }; return json({ seen: '', value: v, text: appraisalText(v) }); }
   const bytes = imageBytes(body && body.image);
   if (!bytes) return json({ error: 'a PNG, JPEG or WebP photo, under 800 KB' }, 400);
-  if (!env || !env.AI) return json({ error: 'V01D cannot see photos from this deploy yet (no vision model bound)' }, 503);
+  if (!env || !env.AI) return json({ error: 'Verse cannot see photos from this deploy yet (no vision model bound)' }, 503);
   let seen = '';
   try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 200) }, 502); }
   const value = valueFrom(seen, note);

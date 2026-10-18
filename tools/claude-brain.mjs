@@ -1,9 +1,9 @@
-// Claude as V01D's builder brain (frontier #28): the same job /api/propose-fix gives Workers AI (lib/propose-fix.js: the ask a
+// Claude as Verse's builder brain (frontier #28): the same job /api/propose-fix gives Workers AI (lib/propose-fix.js: the ask a
 // skill missed or took wrongly, the skill's file, the narrowest matcher change as exact line replacements), asked of Claude on the
 // GitHub runner instead, so the key lives only in the ANTHROPIC_API_KEY repo secret and never reaches the site. One call per run and
 // a hard ceiling on what it can spend: the input is bounded by MAX_SOURCE (fixPrompt clips the skill file) and the output by
 // MAX_OUTPUT_TOKENS, so the worst run costs about WORST_RUN_USD. The reply goes through the same gate (parseEdits) and the same
-// checks (tools/propose-fix.mjs) as V01D's own model; nothing it writes runs with a write token.
+// checks (tools/propose-fix.mjs) as Verse's own model; nothing it writes runs with a write token.
 //   node tools/propose-fix.mjs --brain claude ...   (the workflow's "brain: claude" input)
 import Anthropic from '@anthropic-ai/sdk';
 import { FIX_SYSTEM, NARROW_SYSTEM, MAX_SOURCE, fixPrompt, parseEdits, evidenceOf } from '../void-live-deploy/lib/propose-fix.js';
@@ -20,7 +20,7 @@ export const costOf = (usage) => {
   return Math.round((input * PRICE.input + (u.output_tokens || 0) * PRICE.output) / 1e4) / 100;
 };
 
-/** The request for one proposal: the same system text and question V01D's own model gets, with the output ceiling. Pure. */
+/** The request for one proposal: the same system text and question Verse's own model gets, with the output ceiling. Pure. */
 export function brainRequest({ ask, skill, source, mode = 'learn', said = '' }) {
   return {
     model: BRAIN_MODEL,

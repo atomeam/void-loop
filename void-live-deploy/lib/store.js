@@ -1,4 +1,4 @@
-// V01D's own store (docs/store.md). Phase 1: our catalog, our cart, our receipts, signed downloads and license keys,
+// Verse's own store (docs/store.md). Phase 1: our catalog, our cart, our receipts, signed downloads and license keys,
 // with the payment provider behind an adapter. Gumroad is the primary checkout today (owner, 2026-10-15); Stripe Checkout
 // switches on later by setting Pages secrets, no rebuild. We never see or touch a card number: every provider is hosted.
 //   STORE_PROVIDER      'gumroad' (default) | 'stripe'   which adapter checkout uses
@@ -13,7 +13,7 @@ export { railsOf, specialRails, instructions as specialInstructions, verifyUsdcT
 export const ALL_PRODUCTS = CATALOG;
 export const STORE_PRODUCTS = CATALOG.filter((p) => p.status !== 'unpublished').map((p) => ({ ...p, soon: p.status === 'soon' || p.status === 'needs-gumroad' }));
 export const productOf = (id) => STORE_PRODUCTS.find((p) => p.id === id) || null;
-// UTM on every link we hand out, so Gumroad's analytics show which V01D surface sold it
+// UTM on every link we hand out, so Gumroad's analytics show which Verse surface sold it
 export const gumroadUrl = (p, medium = 'store') => 'https://moonbeam846.gumroad.com/l/' + p.gumroad + '?utm_source=a-to-mind&utm_medium=' + medium + '&utm_campaign=v01d-store';
 export const price = (p) => (p.pwyw && p.cents > 0 ? 'Pay what you want · ' + '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + ' gets it all' : p.pwyw && !p.cents ? 'Free · pay what you want' : p.cents ? '$' + (p.cents / 100).toFixed(p.cents % 100 ? 2 : 0) + (p.every ? ' a ' + p.every : '') : 'Free');
 export const publicCatalog = () => STORE_PRODUCTS.map(({ files, ...p }) => ({ ...p, price: price(p), buy: p.gumroad ? gumroadUrl(p) : null, files: files ? files.length : 0, ...(isShareProduct(p) ? { share: publicShare(p) } : {}) }));
@@ -40,12 +40,12 @@ export async function verifyToken(key, token, now = Date.now()) {
   let p; try { p = JSON.parse(atob(body.replace(/-/g, '+').replace(/_/g, '/'))); } catch (_) { return null; }
   return p && p.e > now ? p : null;
 }
-// a license key for one order and product: V01D-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
+// a license key for one order and product: Verse-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
 export async function licenseKey(key, order, product) {
   const h = hex(await hmac(key, 'license:' + order + ':' + product)).toUpperCase().slice(0, 16);
-  return 'V01D-' + h.match(/.{4}/g).join('-');
+  return 'Verse-' + h.match(/.{4}/g).join('-'); // license keys keep their Verse- prefix through the rename to Verse: keys already sold must keep working
 }
-export const LICENSE_V01D_RE = /^V01D-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
+export const LICENSE_Verse_RE = /^Verse-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
 
 // Stripe-Signature: t=<unix>,v1=<hex hmac of "t.body">; 5 minute tolerance (Stripe's own default)
 export async function verifyStripe(secret, header, body, now = Date.now()) {
@@ -83,9 +83,9 @@ export const ORDERS_TABLE = 'CREATE TABLE IF NOT EXISTS store_orders (id TEXT PR
 export async function emailHash(key, email) { return hex(await hmac(key, 'email:' + String(email || '').trim().toLowerCase())); }
 export const orderCode = (id) => String(id).slice(-8).toUpperCase();
 
-// "what can I buy": V01D's answer, from the catalog
+// "what can I buy": Verse's answer, from the catalog
 export function buyAnswer() {
   const live = STORE_PRODUCTS.filter((p) => p.gumroad && !p.soon);
   const made = STORE_PRODUCTS.filter((p) => !p.gumroad && !p.soon && p.files).map((p) => ({ id: p.id, name: p.name, price: p.pwyw ? 'Free · pay what you want' : price(p), blurb: p.blurb, url: '/store/#' + p.id }));
-  return { lead: 'What V01D sells · support V01D', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
+  return { lead: 'What Verse sells · support Verse', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
 }

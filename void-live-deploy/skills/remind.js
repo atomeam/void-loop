@@ -43,7 +43,7 @@ async function run(text, api) {
   const el = showPage((p) => { p.innerHTML = '<h2>Reminder</h2>'; });
   el.innerHTML = '<h2>Reminder</h2><p>' + esc(hold.line) + ' Yes / No</p>'
     + '<p>Held for the confirm line. Phone push is not connected, so nothing is sent.</p>'
-    + '<div class="src">Uses the confirm line already on V01D. No new connector.</div>';
+    + '<div class="src">Uses the confirm line already on Verse. No new connector.</div>';
   return 'remind';
 }
 export default {

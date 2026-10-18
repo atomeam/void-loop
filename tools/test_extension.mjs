@@ -1,5 +1,5 @@
-// node tools/test_extension.mjs — the Void extension (extension/) loaded in Chromium, with a-to-mind.com served from this checkout.
-// B1: Void reads the tab you point it at (title, address, selection) into a card. B2: a draft goes into the box you were typing in.
+// node tools/test_extension.mjs — the Verse extension (extension/) loaded in Chromium, with a-to-mind.com served from this checkout.
+// B1: Verse reads the tab you point it at (title, address, selection) into a card. B2: a draft goes into the box you were typing in.
 // Page text never leaves the browser: no request carries it, and the saved stage (which syncs when signed in) never holds it.
 // The keypress that gives the extension activeTab can't be pressed headless, so the test copy of the extension also gets
 // <all_urls> (only here); everything after the grant is the shipped code.
@@ -16,7 +16,7 @@ const live = path.join(repo, 'void-live-deploy');
 const exe = [process.env.VOID_TEST_BROWSER, '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
 const PINNED = 'dcjdpaeachfmfndklkiglgebfflamhkg';
 const SECRET = 'PLUM-7731 is the secret on this page';
-const DRAFT = 'Thanks, Void drafted this';
+const DRAFT = 'Thanks, Verse drafted this';
 
 let pass = 0, fail = 0;
 function check(name, ok, info) { if (ok) { pass++; console.log('pass ' + name); } else { fail++; console.log('FAIL ' + name + (info !== undefined ? '  -> ' + (typeof info === 'string' ? info : JSON.stringify(info)) : '')); } }
@@ -26,8 +26,8 @@ for (const f of fs.readdirSync(path.join(repo, 'extension'))) if (!f.endsWith('.
 const man = JSON.parse(fs.readFileSync(path.join(extDir, 'manifest.json'), 'utf8'));
 { const bg = fs.readFileSync(path.join(repo, 'extension', 'background.js'), 'utf8');
   const titles = [...bg.matchAll(/contextMenus\.create\(\{[^}]*title: '([^']+)'/g)].map((m) => m[1]);
-  check('menus: each one says whether the page stays in the browser or is sent to Void, and the old "Ask Void about \'…\'" (selection sent as an ask) is gone',
-    titles.length === 3 && titles.every((t) => /stays in your browser|sends it to Void/.test(t)) && !/ask-void|Ask Void about “%s”/.test(bg), titles); }
+  check('menus: each one says whether the page stays in the browser or is sent to Verse, and the old "Ask Verse about \'…\'" (selection sent as an ask) is gone',
+    titles.length === 3 && titles.every((t) => /stays in your browser|sends it to Verse/.test(t)) && !/ask-void|Ask Verse about “%s”/.test(bg), titles); }
 check('manifest: only activeTab and scripting reach into pages (no host permissions shipped)', man.permissions.includes('activeTab') && man.permissions.includes('scripting') && !man.host_permissions && !man.optional_host_permissions, man.permissions);
 man.host_permissions = ['<all_urls>'];
 fs.writeFileSync(path.join(extDir, 'manifest.json'), JSON.stringify(man));
@@ -115,7 +115,7 @@ await ctx.route(/^https?:\/\//, (r) => {
 
 const sw = ctx.serviceWorkers()[0] || await ctx.waitForEvent('serviceworker');
 const id = new URL(sw.url()).host;
-check('the extension id is the one Void trusts (pinned by the manifest key)', id === PINNED && fs.readFileSync(path.join(repo, 'void.html'), 'utf8').includes("'chrome-extension://" + PINNED + "'"), id);
+check('the extension id is the one Verse trusts (pinned by the manifest key)', id === PINNED && fs.readFileSync(path.join(repo, 'void.html'), 'utf8').includes("'chrome-extension://" + PINNED + "'"), id);
 
 const page = await ctx.newPage();
 await page.goto(FIXTURE);
@@ -130,7 +130,7 @@ const voidFrame = async () => { for (let i = 0; i < 100; i++) { const f = panel.
 const V = await voidFrame();
 await V.waitForSelector('.tab-card', { timeout: 15000 }).catch(() => {});
 const card = await V.evaluate(() => { const c = document.querySelector('.tab-card'); return c ? c.innerText : ''; });
-check('B1: the panel shows the tab in Void: its title, address and the selected text, marked as staying in this browser',
+check('B1: the panel shows the tab in Verse: its title, address and the selected text, marked as staying in this browser',
   /Fixture page/.test(card) && /fixture\.test/.test(card) && card.includes(SECRET) && /stays in this browser/.test(card), card.slice(0, 300));
 
 // step 6's visible upgrade for the tab card (skills/tab.js; owner, 2026-10-11: every cleanup move ships one): the card looks
@@ -140,7 +140,7 @@ const look = await V.evaluate(() => { const c = document.querySelector('.tab-car
   return { tab: !!ts && parseFloat(ts.borderTopLeftRadius) >= 6 && parseFloat(ts.borderBottomLeftRadius) === 0 && ts.backgroundColor !== 'rgba(0, 0, 0, 0)',
     bar: !!hs && parseFloat(hs.borderTopLeftRadius) >= 8 && hs.backgroundColor !== 'rgba(0, 0, 0, 0)', host: h && h.textContent, lock: !!(h && h.querySelector('svg.tab-lock')),
     mark: !!m && /linear-gradient/.test(getComputedStyle(m).backgroundImage) && /rgba?\(255, 2\d\d, \d+/.test(getComputedStyle(m).backgroundImage), marked: m && m.textContent }; });
-check('tab card look: the title sits on a browser tab, the address in a rounded bar with a lock for https, and the selection Void read is marked in yellow highlighter',
+check('tab card look: the title sits on a browser tab, the address in a rounded bar with a lock for https, and the selection Verse read is marked in yellow highlighter',
   !!look && look.tab && look.bar && /fixture\.test/.test(look.host || '') && look.lock && look.mark && (look.marked || '').includes(SECRET), look);
 
 // a new read replaces the card's contents while the panel is open
@@ -150,7 +150,7 @@ await V.waitForFunction(() => { const c = document.querySelector('.tab-card'); r
 const card2 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
 check('B1: reading again updates the card (no selection now; the box you are in is named)', /nothing selected/.test(card2) && /goes into: Reply/.test(card2), card2.slice(0, 300));
 
-// the context check (lib/context-check.js, asked by Void): the extension ctxCounts what the tab holds, the card names the kind and one skill to try;
+// the context check (lib/context-check.js, asked by Verse): the extension ctxCounts what the tab holds, the card names the kind and one skill to try;
 // the short fixture page is too little of anything, so its card carries no such line
 const ctxPage = await ctx.newPage(); await ctxPage.goto(FIXTURE + 'table');
 const rCtx = await read(FIXTURE + 'table');
@@ -202,19 +202,19 @@ check('local only: the saved stage (synced when signed in) holds no page text, n
 const leaked = out.filter((x) => x.includes('PLUM-7731') || x.includes(encodeURIComponent('PLUM-7731')) || x.includes(DRAFT) || x.includes(encodeURIComponent(DRAFT)));
 check('local only: no request anywhere carried the page text or the draft', leaked.length === 0, leaked.slice(0, 3));
 
-// "draft for me" on the tab card (sends it to Void, lib/draft.js): the card's box fills with the draft (rules draft here, no model),
+// "draft for me" on the tab card (sends it to Verse, lib/draft.js): the card's box fills with the draft (rules draft here, no model),
 // the card flags what left and for what, and the one request carried the title, address and selection, nothing else of the page
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
 await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
-await V.waitForFunction(() => /from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+await V.waitForFunction(() => /from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
 const dFoot = await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || '');
 const dPosts = out.slice(beforeDraft).filter((x) => /a-to-mind\.com\/api\/answer /.test(x));
 let dBody = null; try { dBody = JSON.parse(dPosts[0].slice(dPosts[0].indexOf(' ') + 1)); } catch (_) {}
-check('draft for me: the summary comes back into the card\'s box, the card says it is from Void and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
-  /summary from V01D/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
+check('draft for me: the summary comes back into the card\'s box, the card says it is from Verse and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
+  /summary from Verse/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
   && dPosts.length === 1 && dBody && dBody.mode === 'draft' && dBody.intent === 'summary' && dBody.title === 'Fixture page' && dBody.url === 'https://fixture.test/' && dBody.note === 'keep it short' && !('text' in dBody) && !('field' in dBody),
   { dSaid, dBox: dBox.slice(0, 120), dFoot, dBody });
 check('draft for me: rewrite is disabled with nothing selected', await V.evaluate(() => !!(document.querySelector('.tab-ask-rewrite') || {}).disabled));
@@ -223,9 +223,9 @@ check('draft for me: rewrite is disabled with nothing selected', await V.evaluat
 await V.evaluate(() => window.postMessage({ type: 'void-ext:tab', tab: { title: 'forged', url: 'https://evil.test/', selection: 'forged' } }, '*'));
 await V.waitForTimeout(500);
 const card3 = await V.evaluate(() => (document.querySelector('.tab-card') || {}).innerText || '');
-check('trust: in the panel, a tab message from the Void page itself is ignored (only the extension\'s panel is heard)', /Fixture page/.test(card3) && !/forged/.test(card3), card3.slice(0, 120));
+check('trust: in the panel, a tab message from the Verse page itself is ignored (only the extension\'s panel is heard)', /Fixture page/.test(card3) && !/forged/.test(card3), card3.slice(0, 120));
 
-// --- B3: Void proposes one step; the extension's panel shows it with Yes / No; it runs only on an allowed site and only on Yes
+// --- B3: Verse proposes one step; the extension's panel shows it with Yes / No; it runs only on an allowed site and only on Yes
 await V.evaluate((k) => localStorage.setItem('a2m.void.owner.v1', k), OWNER);
 await page.evaluate(() => { document.getElementById('reply').value = 'before'; window.submitted = false; });
 const EXACT = 'Thanks, Sam. Friday works: 10:30?';
@@ -351,7 +351,7 @@ check('gap 2: a harmless button on the same page (Save) is still clicked after Y
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
-const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
 await draftReply();
 await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
 const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -361,16 +361,16 @@ await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
 await page.waitForTimeout(200);
 // the card's line is read the moment the draft lands (a later redraw of the card may reset it), not after a fixed wait
 await V.evaluate(() => document.querySelector('.tab-ask-reply').click());
-const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from V01D/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from Verse/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
 await page.waitForTimeout(400);
 const offList = { on: await cardOn(), said: offSaid, act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
 check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
-  && !offList.on && /^reply from V01D/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
+  && !offList.on && /^reply from Verse/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
   { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
 
 // A customer email becomes a proposal in your reply box, after your yes: "draft for me: proposal" in a mail thread sends the
-// thread once, the proposal card drafts it, and on an allowed site Void proposes filling the reply box with it as plain text
+// thread once, the proposal card drafts it, and on an allowed site Verse proposes filling the reply box with it as plain text
 const THREAD = FIXTURE + 'thread';
 await page.goto(THREAD);
 await page.evaluate(() => document.getElementById('body').focus());
@@ -383,8 +383,8 @@ const sendOn = () => panel.evaluate(() => document.getElementById('send').classL
 const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
   await panel.waitForFunction(() => document.getElementById('send').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
   await press('.send-yes', async () => !(await sendOn())); // the page is read only after this Yes, in the panel
-  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
-// Gap 1: reading the page for Void needs a Yes in the extension's own panel. The frame only asks; until that Yes nothing is read
+  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+// Gap 1: reading the page for Verse needs a Yes in the extension's own panel. The frame only asks; until that Yes nothing is read
 // from the tab and nothing is sent, and a No reads nothing. The same holds for an ask the frame makes by itself (a page on
 // a-to-mind.com gone wrong): it gets the card too, a second ask while it is open is refused, and No sends back no page text.
 const g0 = proposalPosts().length;
@@ -458,7 +458,7 @@ for (const [app, name, redraw] of [['Gmail in French', 'gmail-fr', false], ['Gma
   await V.waitForFunction(() => /recorded/.test((document.querySelector('.tab-act-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
   const after = await page.evaluate(() => ({ body: document.querySelector('[data-t=body]').innerText, others: [...document.querySelectorAll('input, [contenteditable]')].filter((e) => e.dataset.t !== 'body').map((e) => (e.tagName === 'INPUT' ? e.value : e.textContent)) }));
   const rec = records[records.length - 1] || {};
-  check('mail apps: ' + app + (redraw ? ' (re-drawn after you pointed Void at it)' : '') + ': "draft for me: proposal" yields the step card for the reply box you were in, and Yes fills that box with the proposal and nothing else (search, To, Subject and any other compose window untouched), with a done record',
+  check('mail apps: ' + app + (redraw ? ' (re-drawn after you pointed Verse at it)' : '') + ': "draft for me: proposal" yields the step card for the reply box you were in, and Yes fills that box with the proposal and nothing else (search, To, Subject and any other compose window untouched), with a done record',
     card.on && !!drafted && card.text.startsWith(drafted.title) && after.body.includes(drafted.title) && /What they asked for:/.test(after.body)
     && after.others.every((v) => v === '' || /^Re: /.test(v)) && records.length === r0m + 1 && rec.state === 'done',
     { app, card: { ...card, text: card.text.slice(0, 80) }, title: drafted && drafted.title, after: { body: after.body.slice(0, 120), others: after.others }, rec });
@@ -470,15 +470,15 @@ check('proposal → reply joined to the sale job: with the owner key, the thread
   queuePosts.length >= 1 && queuePosts.every((b) => b.from === 'dana@acme.test' && b.request.includes('order flow fixed by June')) && /on the job for acme\.test \(sale:s-1\)/.test(toJob),
   { posts: queuePosts.map((b) => ({ from: b.from, n: (b.request || '').length })), toJob });
 
-// "Ask Void about this page" (sent to Void, #134): the answer card says the page left the browser for this answer
+// "Ask Verse about this page" (sent to Verse, #134): the answer card says the page left the browser for this answer
 await sw.evaluate(() => chrome.storage.session.set({ ask: { q: 'What is this page about?', page: { title: 'Fixture page', url: 'https://fixture.test/', selection: '', field: '', text: 'fixture text' }, at: Date.now() } }));
 await V.waitForSelector('.page-sent', { timeout: 10000 }).catch(() => {});
 const sent = await V.evaluate(() => (document.querySelector('.page-sent') || {}).textContent || '');
 const answerPosts = out.filter((x) => /a-to-mind\.com\/api\/answer /.test(x) && x.includes('fixture text'));
-check('sent to Void: "Ask Void about this page" posts the page to /api/answer and the card flags it ("sent to a-to-mind.com for this answer")',
+check('sent to Verse: "Ask Verse about this page" posts the page to /api/answer and the card flags it ("sent to a-to-mind.com for this answer")',
   /sent to a-to-mind\.com for this answer/.test(sent) && answerPosts.length === 1, { sent, posts: answerPosts.length });
 
-// outside the panel, Void takes no tab from anyone: the same message posted on a-to-mind.com itself does nothing
+// outside the panel, Verse takes no tab from anyone: the same message posted on a-to-mind.com itself does nothing
 const plain = await ctx.newPage();
 await plain.goto('https://a-to-mind.com/');
 await plain.evaluate(() => window.postMessage({ type: 'void-ext:tab', tab: { title: 'forged', url: 'https://evil.test/', selection: 'forged' } }, '*'));

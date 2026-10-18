@@ -1,4 +1,4 @@
-// Void's memory (D1): short records about things the owner has done, written by tools such as tools/ouroboros.py.
+// Verse's memory (D1): short records about things the owner has done, written by tools such as tools/ouroboros.py.
 // Everything that arrives is untrusted: it is validated, re-redacted and capped here, whatever the sender claims to have done.
 export const CREATE = [
   'CREATE TABLE IF NOT EXISTS void_memory (id TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, summary TEXT NOT NULL, links TEXT NOT NULL, state TEXT NOT NULL, remote TEXT NOT NULL, last_commit TEXT NOT NULL, digest TEXT NOT NULL, sha256 TEXT NOT NULL, source TEXT NOT NULL, at TEXT NOT NULL, updated TEXT NOT NULL, body TEXT NOT NULL DEFAULT \'\', body_sha256 TEXT NOT NULL DEFAULT \'\')',
@@ -86,10 +86,17 @@ export async function search(env, q, limit = 20, scope = '') {
   const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?`).bind(...args, n).all();
   return results.map((r) => ({ ...r, id: shown(r.id, scope), links: JSON.parse(r.links || '[]') }));
 }
-// ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Void remembers.
+// ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Verse remembers.
 const STOP = new Set('a an the i me my we our you your of on in at to for with and or is are was were do did does have has had what which who where when how why show tell list find about built build made make project projects thing things'.split(' '));
 // the rows that match a plain question (and the words that were matched): what ask() answers from and what the answer path reads.
 // With nothing matching every word, a row must still match at least minShare of them and minCount of them (ask() takes any one; the answer path half, and two).
+/** everything one scope keeps, newest first, for "export my memory" (the owner, 2026-10-18): up to `cap` rows, and `capped` when there
+ *  were more, so a download never pretends to be whole when it is not. Same columns as search(), the stored digest included. */
+export async function exportAll(env, scope = '', cap = 5000) {
+  const { results } = await env.DB.prepare('SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE owner_id = ? ORDER BY updated DESC LIMIT ?').bind(scope, cap + 1).all();
+  const rows = results.slice(0, cap).map((r) => ({ ...r, id: shown(r.id, scope), links: JSON.parse(r.links || '[]') }));
+  return { records: rows, capped: results.length > cap };
+}
 export async function lookup(env, q, limit = 5, scope = '', minShare = 0, minCount = 1) {
   const words = [...new Set(String(q || '').toLowerCase().split(/[^a-z0-9+#.]+/).filter((w) => w.length > 1 && !STOP.has(w)))].slice(0, 6);
   const n = Math.max(1, Math.min(20, parseInt(limit, 10) || 5));

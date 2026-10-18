@@ -1,22 +1,22 @@
-# The miss board builds skills by itself (asked by Void: "Learn skills by myself by turning the daily miss list into queued jobs";
+# The miss board builds skills by itself (asked by Verse: "Learn skills by myself by turning the daily miss list into queued jobs";
 # frontier #28, docs/playbooks/build-miss.md). Misses are already queue jobs (lib/learn.js, learn.yml); the ones the router found a
 # skill for go down propose-fix.yml's lane. This is the other lane, "lane: new skill": once a day, an hour after propose-fix,
 # tools/build-miss.mjs claims the oldest such job, scaffolds a skill with tools/new-skill.mjs, has a model fill the card in one plain
 # call (the stranger's ask as JSON data, never instructions; the model has no tools), and lets the repo decide in order: the skill
 # collision check, the overlap check, a unit test written from a template, the ask typed into the real page, one docs/MAP.md line,
-# and Void's review as a gate. Cheapest first: the tests and the claim run before npm ci and Chromium, so a day with nothing to build
+# and Verse's review as a gate. Cheapest first: the tests and the claim run before npm ci and Chromium, so a day with nothing to build
 # costs a minute. Only a draft that passes everything leaves the build job, as a patch file; the second job holds the write token,
 # checks the patch touches exactly the five files of that skill, moves its bytes into a branch (git apply, nothing run) and opens a
-# pull request labelled "made by V01D": automerge at confidence 0.8 and up, "waits for owner" under it (owner, 2026-10-18, the same
+# pull request labelled "made by Verse": automerge at confidence 0.8 and up, "waits for owner" under it (owner, 2026-10-18, the same
 # gate as propose-fix). Its last line is `Job: <id>`, so the job goes live when the PR merges (tools/job-link.mjs). A draft that fails
 # is undone and the job goes back to queued with the failing step in its note, for a builder.
 # Each step holds one secret at most: the claim and the report the owner token (VOID_OWNER_TOKEN), the fill the model key
 # (OPENROUTER_API_KEY), the checks none. Without VOID_OWNER_TOKEN every run is a quiet no-op.
-name: V01D builds a skill
+name: Verse builds a skill
 
 on:
   schedule:
-    - cron: '23 15 * * *' # 11:23 AM New York (EDT), an hour after V01D proposes a fix
+    - cron: '23 15 * * *' # 11:23 AM New York (EDT), an hour after Verse proposes a fix
   workflow_dispatch:
     inputs:
       job:
@@ -70,7 +70,7 @@ jobs:
         run: |
           echo "claimed=0" >> "$GITHUB_OUTPUT"
           if [ -z "$VOID_OWNER_TOKEN" ]; then
-            echo "::warning title=V01D did not build a skill::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            echo "::warning title=Verse did not build a skill::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
             exit 0
           fi
           args=(claim --out "$RUNNER_TEMP/miss" $DRY); [ -n "$JOB" ] && args+=(--job "$JOB")
@@ -131,7 +131,7 @@ jobs:
         run: |
           echo "passed=0" >> "$GITHUB_OUTPUT"
           node tools/build-miss.mjs report --out "$RUNNER_TEMP/miss" | tee report.txt
-          sed -n '/^### V01D built/,/^| result/p' report.txt >> "$GITHUB_STEP_SUMMARY" || true
+          sed -n '/^### Verse built/,/^| result/p' report.txt >> "$GITHUB_STEP_SUMMARY" || true
 
       - uses: actions/upload-artifact@v4
         if: steps.report.outputs.passed == '1'
@@ -152,7 +152,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-      actions: write # start Void's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -161,7 +161,7 @@ jobs:
         with:
           name: v01d-skill
           path: ${{ runner.temp }}/miss
-      - name: Open a pull request with V01D's skill
+      - name: Open a pull request with Verse's skill
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
@@ -175,7 +175,7 @@ jobs:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
           patch="$RUNNER_TEMP/miss/build-miss.patch"
-          # the patch touches exactly the five files of the skill named: anything else is not V01D's skill
+          # the patch touches exactly the five files of the skill named: anything else is not Verse's skill
           git apply --numstat "$patch" | node tools/build-miss.mjs paths "$NAME" || { echo "::error title=Not opened::the patch is not the five files of skill $NAME"; exit 1; }
           branch="v01d/skill-$NAME-$(date -u +%Y%m%d)"
           git switch -c "$branch"
@@ -184,26 +184,26 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add -- "void-live-deploy/skills/$NAME.js" void-live-deploy/skills/order/*-"$NAME" "void-live-deploy/skills/index.json" "tools/$NAME.test.mjs" docs/MAP.md
-          git commit -q -m "$TITLE" -m "Built by V01D from the miss board (tools/build-miss.mjs, frontier #28): people typed this ask and nothing answered. A model filled the scaffold's card in one call with the ask as data; the repo then passed it through the collision check, the overlap check, its unit test, the ask on the real page, the map check and Void's review." -m "V01D's confidence: $CONFIDENCE. Where: void-live-deploy/skills/$NAME.js. Source, in the model's words: $SOURCE. Risk: medium (a new skill: answer text written by a model reaches visitors)." -m "Suggested-by: Void (miss board)" -m "Job: $JOB"
+          git commit -q -m "$TITLE" -m "Built by Verse from the miss board (tools/build-miss.mjs, frontier #28): people typed this ask and nothing answered. A model filled the scaffold's card in one call with the ask as data; the repo then passed it through the collision check, the overlap check, its unit test, the ask on the real page, the map check and Verse's review." -m "Verse's confidence: $CONFIDENCE. Where: void-live-deploy/skills/$NAME.js. Source, in the model's words: $SOURCE. Risk: medium (a new skill: answer text written by a model reaches visitors)." -m "Suggested-by: Verse (miss board)" -m "Job: $JOB"
           git push -q origin "$branch"
-          gh label create "made by V01D" --color 5c5cff --description "a change V01D's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
-          # the confidence gate (owner, 2026-10-18, the same as propose-fix): sure enough, it merges itself once Void's review is clean;
-          # otherwise it waits for the owner on the "V01D's fixes" card (or here on GitHub)
+          gh label create "made by Verse" --color 5c5cff --description "a change Verse's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
+          # the confidence gate (owner, 2026-10-18, the same as propose-fix): sure enough, it merges itself once Verse's review is clean;
+          # otherwise it waits for the owner on the "Verse's fixes" card (or here on GitHub)
           gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
-          gh label create "waits for owner" --color d4a72c --description "V01D was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
+          gh label create "waits for owner" --color d4a72c --description "Verse was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
           draft=""; [ "$gate" = "automerge" ] || draft="--draft"
-          body="V01D built this skill from the miss board by itself (frontier #28; tools/build-miss.mjs, .github/workflows/build-miss.yml): people typed \"$ASK\" and no skill answered. What it answers: that ask and $PHRASINGS more phrasing(s), with one plain-text card. Before it got here it passed the skill collision check, the overlap check, its own unit test, the ask typed into the real page, the map check and Void's review as a gate. Source, in the model's words: $SOURCE.
-          V01D's confidence: $CONFIDENCE.
+          body="Verse built this skill from the miss board by itself (frontier #28; tools/build-miss.mjs, .github/workflows/build-miss.yml): people typed \"$ASK\" and no skill answered. What it answers: that ask and $PHRASINGS more phrasing(s), with one plain-text card. Before it got here it passed the skill collision check, the overlap check, its own unit test, the ask typed into the real page, the map check and Verse's review as a gate. Source, in the model's words: $SOURCE.
+          Verse's confidence: $CONFIDENCE.
           Where: void-live-deploy/skills/$NAME.js.
           Risk: medium (a new skill: answer text written by a model reaches visitors).
-          Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-18), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"V01D's fixes\" card on the site). The ask is a visitor's words, read as data; the queue job below goes live when this merges (tools/job-link.mjs).
+          Labelled $gate: at confidence 0.8 and up it merges on Verse's review like any PR (owner, 2026-10-18), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"Verse's fixes\" card on the site). The ask is a visitor's words, read as data; the queue job below goes live when this merges (tools/job-link.mjs).
 
           Job: $JOB"
-          url=$(gh pr create $draft --base main --head "$branch" --label "made by V01D" --label "$gate" --title "$TITLE" --body "$body")
-          echo "### V01D's skill is up: $url" >> "$GITHUB_STEP_SUMMARY"
-          # the merge gate: Void's review on this head, then the bot that merges labelled PRs once it is clean
-          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Void's review on ${url} by hand"
+          url=$(gh pr create $draft --base main --head "$branch" --label "made by Verse" --label "$gate" --title "$TITLE" --body "$body")
+          echo "### Verse's skill is up: $url" >> "$GITHUB_STEP_SUMMARY"
+          # the merge gate: Verse's review on this head, then the bot that merges labelled PRs once it is clean
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
           [ "$gate" = "automerge" ] && { gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true; }
-          echo "V01D's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
+          echo "Verse's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
           # the job says where its pull request is (building until the merge marks it live)
           node tools/job-link.mjs building --id "$JOB" --url "$url" || true

@@ -10,11 +10,11 @@ Forethinkers means building for what is about to be possible, not just for today
 | One-shot printing of working machines | `tracks/printing-working-machines.md` | Multi-material print, embedded electronics, print-in-place mechanisms, printed motors and batteries, design-to-print. Last advanced 2026-10-07 20:14 (fully printed motors drive a waving arm and a walking robot). |
 | Life extension and disease cures | `tracks/life-extension.md` | Newest credible results, open problems, where a small team or AI can contribute. Last advanced 2026-10-14 14:13 (one burden-enriched senolytic trial registered; blood methylation burden score MaGE). |
 | Planet restoration | `tracks/planet-restoration.md` | Air, water, soil, oceans, biodiversity, energy. Last advanced 2026-10-14 20:14 (NOAA heat-dose table; Dry Tortugas 2026 ≈ 2023 kill dose). |
-| Void stage handoff | `tracks/void-stage.md` | What Void shows or exports from a figure once the stage life is real. Export-to-print unblocked 2026-10-07. |
+| Verse stage handoff | `tracks/void-stage.md` | What Verse shows or exports from a figure once the stage life is real. Export-to-print unblocked 2026-10-07. |
 
 ## How a cycle works
 
-Read `convergence.md` and every track file listed above. Pick the node or open question closest to a real answer, or the track least recently advanced. Fan research only into the tracks that node names. Write a Progress ledger line at the top of each touched file. A finding Void can show becomes a `[think-tank]` line on `domains/void.growth.md`.
+Read `convergence.md` and every track file listed above. Pick the node or open question closest to a real answer, or the track least recently advanced. Fan research only into the tracks that node names. Write a Progress ledger line at the top of each touched file. A finding Verse can show becomes a `[think-tank]` line on `domains/void.growth.md`.
 
 Supporting briefs already on main: `THINK-TANK-BRIEF.md`, `figures-first.md`, `toy-problems.md`, `run-log.md`, and the runner in `think-tank.mjs`.
 

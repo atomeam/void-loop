@@ -1,5 +1,5 @@
 // The fix pages are generated from tools/fix-pages.json: the files on disk and the sitemap must match what the generator
-// writes, and every page's "Ask Void" link must be an ask Void's fixer takes (build() throws otherwise).
+// writes, and every page's "Ask Verse" link must be an ask Verse's fixer takes (build() throws otherwise).
 import { spawnSync } from 'node:child_process';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';

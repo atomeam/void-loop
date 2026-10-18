@@ -1,22 +1,22 @@
 /**
- * pong skill — Void Pong against V01D (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
+ * pong skill — Verse Pong against Verse (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
  * Move your paddle with the mouse or a finger on the court, or W/S and the arrow keys with the card focused. First to 7.
  */
 import * as P from './pong-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { pongRecorder, pongGhostY, submit, load, words } from '../lib/arcade-ghost.js';
-import { finish } from '../lib/ladder.js'; // a finished match goes on V01D's arcade ladder (asked by Void)
+import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Verse)
 
 export function pongOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:void\s+|v01d\s+)?(?:pong|ping\s*pong game|table tennis game)(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|void|you))?$/.test(t) ? { kind: 'game' } : null;
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:void\s+|(?:verse|v01d)\s+)?(?:pong|ping\s*pong game|table tennis game)(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|(?:verse|void)|you))?$/.test(t) ? { kind: 'game' } : null;
 }
 
 function mount(th, stageApi) {
   th.state = P.create((Date.now() & 0xffff) || 1);
-  const c = arcadeCard(th, stageApi, { cls: 'pong-card', title: 'Void Pong', sub: 'you are left · first to 7', w: P.W, h: P.H });
+  const c = arcadeCard(th, stageApi, { cls: 'pong-card', title: 'Verse Pong', sub: 'you are left · first to 7', w: P.W, h: P.H });
   let input = {}; const keys = new Set();
-  // the ghost (asked by Void): your best game so far, replayed as a faint paddle; a better game replaces it
+  // the ghost (asked by Verse): your best game so far, replayed as a faint paddle; a better game replaces it
   let ghost = load('pong'), rec = pongRecorder(), saved = false, clock = 0;
   const fresh = () => { th.state = P.create((Date.now() & 0xffff) || 1); rec = pongRecorder(); saved = false; clock = 0; };
   c.cv.addEventListener('pointermove', (e) => { input = { y: c.local(e).y }; });
@@ -37,8 +37,8 @@ function mount(th, stageApi) {
     g.shadowBlur = 12; g.shadowColor = '#4ef0a0'; g.fillStyle = '#4ef0a0'; g.fillRect(0, s.you.y - P.PAD_H / 2, P.PAD_W, P.PAD_H);
     g.shadowColor = '#a070ff'; g.fillStyle = '#a070ff'; g.fillRect(P.W - P.PAD_W, s.void.y - P.PAD_H / 2, P.PAD_W, P.PAD_H);
     g.shadowColor = '#fff'; g.fillStyle = '#fff'; g.beginPath(); g.arc(s.ball.x, s.ball.y, P.BALL / 2, 0, 7); g.fill(); g.shadowBlur = 0;
-    c.status.textContent = s.over === 'you' ? 'You win ' + s.you.score + '–' + s.void.score + '!' : s.over === 'void' ? 'V01D wins ' + s.void.score + '–' + s.you.score : 'You ' + s.you.score + ' · V01D ' + s.void.score;
-    c.why.textContent = (s.lastWhy ? 'V01D: ' + s.lastWhy + ' · ' : '') + words(ghost);
+    c.status.textContent = s.over === 'you' ? 'You win ' + s.you.score + '–' + s.void.score + '!' : s.over === 'void' ? 'Verse wins ' + s.void.score + '–' + s.you.score : 'You ' + s.you.score + ' · Verse ' + s.void.score;
+    c.why.textContent = (s.lastWhy ? 'Verse: ' + s.lastWhy + ' · ' : '') + words(ghost);
     if (s.over && !s._counted) { s._counted = true; finish('pong', s.over); }
   });
 }
@@ -48,7 +48,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'pong');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'pong'; }
   api.summon('pong', { x: Math.max(10, Math.round(innerWidth / 2 - 220)), y: 50 });
-  api.say('Void Pong (plays like the arcade classic) · you are left, V01D is right · move on the court or use W/S');
+  api.say('Verse Pong (plays like the arcade classic) · you are left, Verse is right · move on the court or use W/S');
   return 'pong';
 }
 

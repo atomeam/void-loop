@@ -1,4 +1,4 @@
-// V01D reads a video's words (owner, 2026-10-15: "V01D was already supposed to be learning from YouTube videos anyway"):
+// Verse reads a video's words (owner, 2026-10-15: "Verse was already supposed to be learning from YouTube videos anyway"):
 // a transcript someone pastes, or the open captions of a PeerTube or Internet Archive video, become a short summary and
 // answers to "what did this teach?". Pure helpers, no network. Nothing here is stored: transcripts are the creator's words
 // and never enter the repo or KV (.claude/skills/learn-from-video). YouTube captions are not fetched (YouTube only gives

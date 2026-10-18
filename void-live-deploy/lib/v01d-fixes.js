@@ -1,20 +1,21 @@
-// V01D's fixes, previewed for the owner (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam").
-// The pull requests V01D's own model opened (label "made by V01D", .github/workflows/propose-fix.yml) carry its confidence and
+// Verse's fixes, previewed for the owner (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam").
+// The pull requests Verse's own model opened (label "made by Verse", .github/workflows/propose-fix.yml) carry its confidence and
 // the lines they change in their body; one under 0.8 is labelled "waits for owner" instead of automerge. The card
 // (skills/v01d-fixes.js) shows each open one with its confidence, where it changes, and the diff; Approve
-// (functions/api/v01d-fixes.js, owner only) swaps "waits for owner" for automerge, so it merges once Void's review is clean. Pure.
+// (functions/api/v01d-fixes.js, owner only) swaps "waits for owner" for automerge, so it merges once Verse's review is clean. Pure.
 export const REPO = 'atomeam/void-loop';
-export const LABEL = 'made by V01D', WAITS = 'waits for owner', MERGES = 'automerge';
+// LABEL is the GitHub label's name, an identifier the workflows make (people see Verse)
+export const LABEL = 'made by Verse', WAITS = 'waits for owner', MERGES = 'automerge';
 export const MAX_LINES = 40;
 
-/** one open pull request, as the card shows it: number, title, link, V01D's confidence and where, and whether it waits. */
+/** one open pull request, as the card shows it: number, title, link, Verse's confidence and where, and whether it waits. */
 export function fixOf(pr) {
   if (!pr || typeof pr.number !== 'number') return null;
   const labels = (pr.labels || []).map((l) => (l && l.name) || '').filter(Boolean);
   if (!labels.includes(LABEL)) return null;
   const body = String(pr.body || '');
-  const c = /V01D's confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in V01D's words: ([^\n]*?)\. (?:V01D's confidence|Labelled)/.exec(body);
-  const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Void: how much the fix changes, worked out by tools/propose-fix.mjs
+  const c = /(?:Verse|V01D)'s confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in (?:Verse|V01D)'s words: ([^\n]*?)\. (?:(?:Verse|V01D)'s confidence|Labelled)/.exec(body);
+  const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Verse: how much the fix changes, worked out by tools/propose-fix.mjs
   const conf = c && c[1] !== 'none given' && Number.isFinite(parseFloat(c[1])) ? Math.round(parseFloat(c[1]) * 100) / 100 : null;
   return {
     number: pr.number, title: String(pr.title || '').slice(0, 200), url: /^https:\/\/github\.com\//.test(String(pr.html_url || '')) ? pr.html_url : 'https://github.com/' + REPO + '/pull/' + pr.number,

@@ -9,7 +9,7 @@
 ---
 # Domain: capacity marketplace (private)
 
-**Status:** living brief — A-to-Mind does this; public Void never markets it.  
+**Status:** living brief — A-to-Mind does this; public Verse never markets it.  
 **Opened:** 2026-09-23  
 **Public face:** blank. No a-to-mind.com copy, scoreboard, or CTA for this Domain.
 
@@ -127,17 +127,17 @@ Team seed: power-markets (DR registration), sales (kitchen/boiler room), softwar
 
 | Date | Attempt | Result | Notes |
 | --- | --- | --- | --- |
-| 2026-09-23 | Domain file created from intake brief | Pass | Phase 0 research next; Void face untouched |
+| 2026-09-23 | Domain file created from intake brief | Pass | Phase 0 research next; Verse face untouched |
 
 Score: _(human)_
 
-## Relation to Void
+## Relation to Verse
 
 Parallel track. `void.html` / a-to-mind.com stay blank stage + chat skills. This Domain never ships as marketing on the public face. Chooser may note "Domain active" in agent log only — not in public UI.
 
 ## Phase 0 research notes
 
-_Appended 2026-09-23 ~15:45 America/New_York. Sources linked; unverified items marked. Public Void / a-to-mind.com untouched._
+_Appended 2026-09-23 ~15:45 America/New_York. Sources linked; unverified items marked. Public Verse / a-to-mind.com untouched._
 
 ### 1. NJ Data Center Fair Share — verified YES (partially operative)
 
@@ -265,7 +265,7 @@ Subtraction rule: no infrastructure build, no customer app, no public marketing.
 ### Explicitly parked this phase
 - [ ] Battery financing
 - [ ] Data-center Fair Share / BYOC pitches
-- [ ] Void / public website work for this Domain
+- [ ] Verse / public website work for this Domain
 - [ ] Duke Energy Florida (unless ERCOT stalls)
 
 ---
@@ -302,7 +302,7 @@ Subtraction rule: no infrastructure build, no customer app, no public marketing.
 "If you’re open to it, I’ll send a one-page authorization and a short site sheet. You fill meter / ESI ID and floors; we submit for the next term. No commitment to buy hardware. Can I send that to your email today?"
 
 ### Do not say on this call
-- AI, Void, nodes, VPP platform, marketplace, Fair Share, data center, climate, next-gen, disrupt
+- AI, Verse, nodes, VPP platform, marketplace, Fair Share, data center, climate, next-gen, disrupt
 - Guaranteed dollar amounts
 - "We’ll install controls" (unless they ask and a later phase pays for it)
 

@@ -1,4 +1,4 @@
-// node --test tools/growth-tree.test.mjs: the layout of Void's growth tree (void-live-deploy/skills/growth-tree.js, frontier
+// node --test tools/growth-tree.test.mjs: the layout of Verse's growth tree (void-live-deploy/skills/growth-tree.js, frontier
 // #3) on a fixture ledger: one branch per entry, the same tree every time, the newest at the tips, a new entry only adds a
 // branch, and the wood is shaped like a real tree's (on its parent, above the ground, thinning by the pipe model).
 import { test } from 'node:test';
@@ -169,7 +169,7 @@ test('the week: entries since 7 days ago, grouped by kind, in plain words, newes
 test('wants are buds until built: the glowing shoot while a claim builds them, gone once their grow line lands', async () => {
   const { wantState, saysTheSame } = await import('../void-live-deploy/skills/growth-tree.js');
   const want = 'Learn backgammon so people can play it';
-  const building = { what: 'backgammon you can play against Void, first piece', item: 'Games', at: '2026-10-10T09:00:00Z' };
+  const building = { what: 'backgammon you can play against Verse, first piece', item: 'Games', at: '2026-10-10T09:00:00Z' };
   const grown = FIXTURE.concat([{ at: '2026-10-11T09:00:00Z', by: 'claude', kind: 'grow', what: 'Backgammon, the board game: you can play it now' }]);
   assert.equal(wantState(want, FIXTURE, null), 'bud', 'a want without a ledger entry is a bud');
   assert.equal(wantState(want, FIXTURE, building), 'building');

@@ -1,4 +1,4 @@
-// The skill-confidence strip on V01D's self card (asked by Void twice, "small": "a 'skill-confidence' visualizer on the self card showing
+// The skill-confidence strip on Verse's self card (asked by Verse twice, "small": "a 'skill-confidence' visualizer on the self card showing
 // proven versus tested by colour intensity"; its idea on the ink change: skills whose last_tested date is old look weathered, washed out, so the
 // 'proven' look decays with age). One square per skill, one row per family, read off skills/families.json (rating, last_tested): nothing invented.
 // Intensity is the card art's own ink density for the rating (RARITY_LOOK[...].dens in lib/card-art.js: proven strongest, experiment faintest), so a

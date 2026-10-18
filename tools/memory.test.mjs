@@ -1,4 +1,4 @@
-// Tests for Void's memory API (void-live-deploy/functions/api/memory.js) against a real SQLite (D1 is SQLite).
+// Tests for Verse's memory API (void-live-deploy/functions/api/memory.js) against a real SQLite (D1 is SQLite).
 // Run: node --test tools/memory.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -98,13 +98,13 @@ import { createHash } from 'node:crypto';
 const sha = (t) => createHash('sha256').update(t).digest('hex');
 const DIGEST = '# alpha\n\n- Backup state: **remote-current**\n\n## Recent commits\n- first\n- second\n\nunicode: café → ✓\n';
 
-test('Void keeps the whole digest, and reports the hash of what it actually stored', async () => {
+test('Verse keeps the whole digest, and reports the hash of what it actually stored', async () => {
   const env = { READ_TOKEN: TOKEN, DB: d1() };
   const r = await (await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ body: DIGEST })] } })).json();
   assert.deepEqual(r, { saved: 1, rejected: 0 });
   const got = (await (await call(api.onRequestGet, env, { url: 'https://x/api/memory?id=alpha-1234abcd' })).json()).memory[0];
   assert.equal(got.body, DIGEST);
-  assert.equal(got.body_sha256, sha(DIGEST), "Void's own hash of the stored text matches an independent SHA-256");
+  assert.equal(got.body_sha256, sha(DIGEST), "Verse's own hash of the stored text matches an independent SHA-256");
   const listed = (await (await call(api.onRequestGet, env)).json()).memory[0];
   assert.equal(listed.body, undefined, 'lists stay light: the body comes only from the exact lookup');
 });
@@ -168,7 +168,7 @@ test('the guard lets a full-size push through: /api/memory has its own limit, at
   assert.deepEqual(await res.json(), { saved: 12, rejected: 0 });
 });
 
-test('ask: a plain question gets a plain answer from what Void remembers, filler words ignored, partial matches ranked', async () => {
+test('ask: a plain question gets a plain answer from what Verse remembers, filler words ignored, partial matches ranked', async () => {
   const env = { READ_TOKEN: TOKEN, DB: d1() };
   await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec(), rec({ id: 'beta-1234abcd', name: 'beta', summary: 'Rust parser.', links: ['rust'], remote: '' })] } });
   const get = async (q) => (await call(api.onRequestGet, env, { url: 'https://x/api/memory?ask=' + encodeURIComponent(q) })).json();
@@ -256,7 +256,7 @@ test('remember that: a member keeps a plain line in their own memory, recalls it
   assert.equal((await keep(bob, 'one more thing than allowed')).status, 413);
 });
 
-// ---- Ouroboros for members: a machine pushes with the member's Void key (vr1.…, the paid Void key that also does code review)
+// ---- Ouroboros for members: a machine pushes with the member's Verse key (vr1.…, the paid Verse key that also does code review)
 async function voidKey(env, userId, tier = 'paid') {
   await ensureTables(env);
   const key = newKey();
@@ -284,8 +284,8 @@ test('ouroboros for members: the owner\'s push is unchanged; a member\'s key lan
   const back = await (await as(annKey, api.onRequestGet, env, { url: 'https://x/api/memory?id=shared' })).json();
   assert.equal(back.memory[0].name, 'annsapp'); assert.match(back.memory[0].body_sha256, /^[0-9a-f]{64}$/);
   // refused, in plain words
-  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on paid Void\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
-  const unknown = await push(env, newKey(), [rec({ id: 'x' })]); assert.equal(unknown.status, 403); assert.match(await unknown.text(), /Void does not know this key/);
+  const free = await push(env, freeKey, [rec({ id: 'x' })]); assert.equal(free.status, 403); assert.match(await free.text(), /owner and paid members: this key belongs to an account that is not on paid Verse\. Make one at https:\/\/a-to-mind\.com\/code-review\/#pro/);
+  const unknown = await push(env, newKey(), [rec({ id: 'x' })]); assert.equal(unknown.status, 403); assert.match(await unknown.text(), /Verse does not know this key/);
   assert.equal((await push(env, 'not-a-key-at-all', [rec({ id: 'x' })])).status, 401);
   assert.equal((await call(api.onRequestPost, env, { auth: false, method: 'POST', body: { records: [rec({ id: 'x' })] } })).status, 401);
   assert.deepEqual((await askBy(annKey, 'react')).matches, ['shared'], 'a refused push wrote nothing');
@@ -296,4 +296,22 @@ test('ouroboros for members: the 500-project cap applies to a push by key', asyn
   for (let at = 0; at < MEMBER_MAX; at += 100) assert.equal((await push(env, key, Array.from({ length: 100 }, (_, i) => rec({ id: 'p' + (at + i), name: 'proj' + (at + i) })))).status, 200);
   const over = await push(env, key, [rec({ id: 'one-more', name: 'onemore' })]);
   assert.equal(over.status, 413); assert.match(await over.text(), /full/);
+});
+
+// "export my memory" (the owner, 2026-10-18): ?view=export hands back everything one caller's memory keeps, as a download, and nothing of anyone else's
+test('export: the whole of your own memory as one file, newest first; a member gets only theirs, a free account and a stranger nothing', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid'), free = await account(env, 'freeFreeFreeFreeFreeFr', 'free');
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'owner-old', name: 'olderthing', last_commit: '2024-01-01T00:00:00+00:00' }), rec({ id: 'owner-new', name: 'newerthing' })] } });
+  await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'ann-1', name: 'annsapp' })] } });
+  const URL_ = 'https://x/api/memory?view=export';
+  const r = await call(api.onRequestGet, env, { url: URL_ });
+  assert.equal(r.status, 200); assert.match(r.headers.get('content-disposition') || '', /attachment/); assert.equal(r.headers.get('cache-control'), 'no-store');
+  const o = await r.json();
+  assert.equal(o.v01d_memory, 1); assert.equal(o.count, 2); assert.equal(o.capped, false); assert.ok(!Number.isNaN(Date.parse(o.exported)));
+  assert.deepEqual(o.records.map((x) => x.name).sort(), ['newerthing', 'olderthing']); assert.ok(o.records.every((x) => Array.isArray(x.links)), 'links come back as a list');
+  const a = await (await as(ann, api.onRequestGet, env, { url: URL_ })).json();
+  assert.deepEqual(a.records.map((x) => x.name), ['annsapp'], 'a member exports only their own'); assert.equal(a.records[0].id, 'ann-1');
+  assert.equal((await as(free, api.onRequestGet, env, { url: URL_ })).status, 403, 'a free account gets nothing');
+  assert.equal((await call(api.onRequestGet, env, { auth: false, url: URL_ })).status, 401, 'a stranger gets nothing');
 });

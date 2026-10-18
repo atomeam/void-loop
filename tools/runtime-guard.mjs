@@ -1,4 +1,4 @@
-// Runtime guard (owner, 2026-10-15: "make V01D the best at keeping secrets ever made"). Uses the one key-shape engine,
+// Runtime guard (owner, 2026-10-15: "make Verse the best at keeping secrets ever made"). Uses the one key-shape engine,
 // tools/secret-scan.mjs (#742), on what ships, plus two runtime checks. None prints a value:
 //  1. the built output: everything the site ships to browsers (void-live-deploy/ minus functions/) holds no key or token
 //  2. functions read secrets from env only: no secret-shaped literal in void-live-deploy/functions or lib

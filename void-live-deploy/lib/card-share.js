@@ -1,10 +1,10 @@
-// A V01D card is easy to copy, save and paste back (owner, 2026-10-16: "each card should be easily copyable and saved and pasted").
+// A Verse card is easy to copy, save and paste back (owner, 2026-10-16: "each card should be easily copyable and saved and pasted").
 // Copy gives readable text that ends in one code line; save downloads the same text as a file; pasting that text (or only the code line)
-// into V01D reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
+// into Verse reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
-export const MARK = 'V01D-CARD:';
-const CODE_RE = /V01D-CARD:([A-Za-z0-9_-]{8,12000})/;
+export const MARK = 'V01D-CARD:'; // an identifier, kept through the rename to Verse (2026-10-18) so every card already shared still pastes
+const CODE_RE = /(?:Verse|V01D)-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const httpsOnly = (u) => (/^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u).slice(0, 300) : '');
 
@@ -28,15 +28,15 @@ export const codeOf = (d) => { const x = dataOf({ title: d.t, kind: d.k, body: d
 /** the text a person copies or saves: readable, then the code. Pure. */
 export function shareText(d) {
   const x = dataOf({ title: d.t, kind: d.k, body: d.b, sources: d.src, n: d.n });
-  return [x.t, x.k, '', x.b, x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nV01D card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
+  return [x.t, x.k, '', x.b, x.src.length ? '\nSources:\n' + x.src.map((s, i) => '[' + (i + 1) + '] ' + s.t + (s.u ? ' ' + s.u : '')).join('\n') : '', '\nVerse card from a-to-mind.com' + (x.n ? ' \u00b7 v' + x.n : ''), codeOf(x)].filter((l, i) => i !== 2 || l !== undefined).join('\n').replace(/\n{3,}/g, '\n\n').trim();
 }
 /** the card inside a pasted text, or null: any text holding a code line, or a bare code. Pure. */
 export function parse(text) {
   const m = CODE_RE.exec(String(text || '')); if (!m) return null;
   try {
     const j = JSON.parse(unb64(m[1])); if (!j || j.v !== 1 || !clip(j.t, 120)) return null;
-    // the readable part (title, kind, blank line, the body, then "V01D card from a-to-mind.com") restores the whole body and every source
-    const pre = String(text).slice(0, m.index).split(/\n?V01D card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
+    // the readable part (title, kind, blank line, the body, then "Verse card from a-to-mind.com") restores the whole body and every source
+    const pre = String(text).slice(0, m.index).split(/\n?(?:Verse|V01D) card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
     let body = j.b, src = j.src;
     if (at >= 0) { const rest = lines.slice(at + 1).join('\n'), cut = rest.search(/\n?Sources:\n/); const full = (cut >= 0 ? rest.slice(0, cut) : rest).trim(); if (full.length > String(j.b || '').length && full.startsWith(String(j.b || '').slice(0, 40))) body = full;
       if (cut >= 0) { const found = [...rest.slice(cut).matchAll(/^\[\d+\] (.*?)(?: (https:\/\/\S+))?$/gm)].map((x) => ({ t: x[1], u: x[2] || '' })); if (found.length > (src || []).length) src = found; } }
@@ -110,7 +110,7 @@ export async function artPicture(el) {
   if (forged) { const src = forged.getAttribute('src') || ''; if (/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return src; const got = await photoData(forged.src || src); if (got) return got; }
   return photo ? photoData(photo.getAttribute('src'), (el.dataset || {}).poster ? { w: 293, h: 440 } : undefined) : ''; // a film's poster is drawn at its own portrait shape
 }
-/** the full-content badge (asked by Void: "a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete
+/** the full-content badge (asked by Verse: "a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete
  *  data is preserved"): '' for a short card, 'whole text kept' up to BODY_MAX, and past it only what is true. Pure. */
 export function fullNote(n) {
   const len = Math.max(0, Math.floor(+n) || 0);

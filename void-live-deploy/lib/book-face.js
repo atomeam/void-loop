@@ -1,4 +1,4 @@
-// The faces of the 3D V01D Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
+// The faces of the 3D Verse Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
 // things to draw plus the places a tap lands. Pure, so it runs without a browser: the caller gives it a measure(text, font)
 // function (a canvas' measureText in the page, a fixed width in the tests) and paints the result with paint(). The same page data
 // the flat book reads (lib/guide.js, tools/guide.mjs), so the 3D book can never show a different page.
@@ -60,7 +60,7 @@ export function layoutFace(page, book, side, measure) {
   if (page.kind === 'cover') {
     t('a-to-mind.com', x0 + w / 2, y + 10, '13px ' + SANS, SOFT, 'center'); y += 36;
     ops.push({ k: 'glyph', name: 'v01d', chapter: 'front', x: x0 + w / 2 - 90, y: y, size: 180 }); y += 214;
-    t(page.title || 'The V01D Book', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
+    t(page.title || 'The Verse Book', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 3)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const tot = (book && book.totals) || {};
     y += 12; t([tot.skills + ' skills', tot.games + ' games', tot.minis + ' 3D miniatures', tot.pages + ' pages'].join(' · '), x0 + w / 2, y, '13px ' + SANS, SOFT, 'center');
@@ -90,7 +90,10 @@ export function layoutFace(page, book, side, measure) {
     footer(); return out;
   }
   if (page.kind === 'opener') {
-    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40; t(page.title, x0, y, '700 32px ' + SERIF, INK); y += 16;
+    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40;
+    // a long chapter name ("Safety and small delights") steps the title down until it fits the sheet, never off it
+    let ts = 32; while (ts > 18 && measure(page.title, '700 ' + ts + 'px ' + SERIF) > w - 8) ts -= 2;
+    t(page.title, x0, y, '700 ' + ts + 'px ' + SERIF, INK); y += 16;
     ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - 80, y: y + 6, size: 160 }); y += 190;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 4)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const n = (page.skills || []).length;
@@ -106,7 +109,7 @@ export function layoutFace(page, book, side, measure) {
   }
   if (page.kind === 'legend') {
     t('Start here', x0, y, '13px ' + SANS, SOFT); y += 34; t(page.title, x0, y, '700 26px ' + SERIF, INK); y += 22;
-    para('Each page is one thing V01D does. The rating is earned from evidence, never claimed:', 15, INK, 4, 3);
+    para('Each page is one thing Verse does. The rating is earned from evidence, never claimed:', 15, INK, 4, 3);
     TIERS.slice().reverse().forEach((k, i) => {
       const col = ['hsl(150,45%,32%)', 'hsl(225,50%,42%)', 'hsl(40,60%,36%)', 'hsl(0,0%,40%)'][i];
       t(k, x0, y, '700 16px ' + SANS, col); y += 20;

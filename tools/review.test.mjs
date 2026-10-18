@@ -113,7 +113,7 @@ for (const [lang, c] of [['csharp', 'async void OnClick(object sender, EventArgs
   ['swift', 'DispatchQueue.main.async { update() }'], ['php', '$x = json_decode($_COOKIE["data"]);'], ['php', 'if ($a === $b) {}'], ['php', '$c = $a <= $b;'], ['ruby', 'cfg = YAML.safe_load(input)'], ['terraform', 'acl = "private"'],
   ['dockerfile', 'ADD app.tar.gz /app/'], ['yaml', 'runAsUser: 1000'], ['yaml', 'hostNetwork: false']])
   ok(!rules(c, lang).some((r) => /cs-async-void|cs-sync-over-async|cs-null-or-empty|kt-globalscope|swift-main-sync|php-unserialize-input|php-loose-eq|php-extract-input|ruby-yaml-load|tf-public-acl|docker-add-url|yaml-run-as-root|yaml-host-namespace/.test(r)), 'no finding in ' + lang + ': ' + c + ' (got ' + rules(c, lang).join(',') + ')');
-// inline review comments on PRs (tools/review-post.mjs): a line that already has Void's comment for the same checks is not posted again
+// inline review comments on PRs (tools/review-post.mjs): a line that already has Verse's comment for the same checks is not posted again
 { const { postedKeys, fresh } = await import('./review-post.mjs');
   const keys = postedKeys([{ path: 'a.py', line: 4, body: '<!-- void-review-inline bare-except except-pass -->\n**risk**' }, { path: 'b.js', original_line: 9, body: '<!-- void-review-inline eval -->' }, { path: 'c.js', line: 1, body: 'a person wrote this' }]);
   const out = fresh([{ path: 'a.py', line: 4, rules: ['bare-except', 'except-pass'] }, { path: 'a.py', line: 4, rules: ['bare-except'] }, { path: 'b.js', line: 9, rules: ['eval'] }, { path: 'c.js', line: 1, rules: ['eval'] }], keys);
@@ -130,7 +130,7 @@ ok(rules('curl -fsSL https://x.sh | bash', 'shell').includes('curl-pipe-sh@1'), 
 ok(rules('UPDATE users SET admin = 1;', 'sql').includes('update-no-where@1'), 'update without where');
 ok(!rules('UPDATE users SET admin = 1\nWHERE id = 3;', 'sql').includes('update-no-where@1'), 'update with where on the next line');
 ok(rules('DELETE FROM sessions;', 'sql').includes('delete-no-where@1'), 'delete without where');
-// learned from Void's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
+// learned from Verse's closer read (tools/review-learn.mjs, 2026-10-10): each a line it must flag, a near-miss it must leave alone
 ok(rules("for (const r of rows) {\n  const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM t WHERE owner = ?').bind(r.id).first();\n  out.push(n);\n}", 'javascript').includes('query-in-loop@2')
   && rules("for (const id of ids) { const u = await fetch('https://api.example.com/users/' + id); got.push(await u.json()); }", 'javascript').includes('query-in-loop@1')
   && rules("items.forEach(async (it) => {\n  await db.query('UPDATE t SET seen = 1 WHERE id = ?', [it.id]);\n});", 'javascript').includes('query-in-loop@2')
@@ -184,7 +184,7 @@ ok(rules('const db = "postgres://admin:s3cretpw@db.host/app";', 'javascript').in
   for (const name of ["secret: 'GITHUB_TOKEN'", "token: 'CLOUDFLARE_API_TOKEN'", "apiKey: 'OPENWEATHER_KEY'", "secret = 'WEBHOOK_SECRET'"])
     ok(redact(name) === name, 'an env-shaped name is kept: ' + name + ' -> ' + redact(name));
 }
-// fixes Void makes by itself
+// fixes Verse makes by itself
 const fx = (c, lang) => autoFix(c, lang ? { lang } : {}).code;
 ok(fx('if (a == b) { var n = parseInt(s); }', 'javascript') === 'if (a == b) { var n = parseInt(s); }', 'js: == / var / parseInt stay warnings, never rewritten ("5" == 5, a var used after its block, parseInt("0x10"))');
 ok(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript') === 'var x = 1;\nif (x == null) go();', 'only the debugger line goes: ' + JSON.stringify(fx('var x = 1;\nif (x == null) go();\ndebugger;', 'javascript')));
@@ -413,7 +413,7 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(langOf('apiVersion: v1\nkind: Pod\nspec:\n  containers:\n    - image: nginx') === 'yaml', 'a k8s manifest is yaml');
   ok(isReviewAsk('audit my github actions') && isReviewAsk('check this CI workflow') && isReviewAsk('review my GitHub Actions workflow') && !isReviewAsk('is my workflow good') && !isReviewAsk('check my actions'), 'actions review asks');
 }
-// speed: Void's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
+// speed: Verse's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
 // /\s+\w+\s+/ written out) once sent the string finder into exponential backtracking: one line of go.js took 2.5 s, and
 // code-review.js itself never finished. Each case below must finish in well under a second.
 {

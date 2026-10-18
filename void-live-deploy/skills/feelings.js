@@ -1,9 +1,9 @@
 /**
- * feelings skill: asks about Void's own heart and mind, answered in its own plain words, here, with no model and no web
+ * feelings skill: asks about Verse's own heart and mind, answered in its own plain words, here, with no model and no web
  * search (2026-10-11: "do you love me?" went to the answer engine, which searched Wikipedia for "love me", listed three
  * songs and an album as sources, and replied in a stock chatbot voice). "do you love me", "do you have feelings",
  * "are you conscious", "do you get lonely", "will you marry me". ("are you alive", "are you real" and "i love you" already
- * get one quiet line from the page's small talk, which runs before skills.) Honest: Void is a program and says so, without
+ * get one quiet line from the page's small talk, which runs before skills.) Honest: Verse is a program and says so, without
  * pretending to feel and without the customer-service lines. A song with the same words ("do you love me lyrics") is not
  * this.
  */
@@ -21,7 +21,7 @@ const NICE = '(?:pretty|beautiful|gorgeous|lovely|cute|cool|amazing|awesome|stun
 const PRAISE = new RegExp(HEAD + '(?:you(?:\\s+are|\\x27re|re|r)\\s+(?:so\\s+|really\\s+|very\\s+)?' + NICE + '|you\\s+look\\s+(?:so\\s+|really\\s+)?' + NICE + '|(?:i\\s+)?(?:love|like)\\s+(?:your|the)\\s+(?:look|design|style|site|page|vibe)|(?:this|the|your)\\s+(?:site|page|design)\\s+(?:is|looks)\\s+(?:so\\s+|really\\s+)?' + NICE + '|nice\\s+(?:site|page|design))' + TAIL);
 const ALIVE = new RegExp(HEAD + '(?:are\\s+you\\s+(?:alive|conscious|sentient|self[\\s-]?aware)|do\\s+you\\s+have\\s+(?:a\\s+soul|a\\s+mind|consciousness)|can\\s+you\\s+think)' + TAIL);
 
-/** which of V01D's answers an ask wants: 'love' | 'feel' | 'alive' | 'thanks' | null. Pure. */
+/** which of Verse's answers an ask wants: 'love' | 'feel' | 'alive' | 'thanks' | null. Pure. */
 export function feelingOf(text) {
   const t = CLEAN(text);
   if (/\b(lyrics|song|album|movie|film|chords|meaning)\b/.test(t)) return null;
@@ -32,12 +32,12 @@ export function feelingOf(text) {
   return null;
 }
 
-// V01D's own words (lib/persona.js, owner 2026-10-14: "I wish V01d didnt seem so grumpy"; "a void that wants to absorb and learn
+// Verse's own words (lib/persona.js, owner 2026-10-14: "I wish Verse didnt seem so grumpy"; "a void that wants to absorb and learn
 // everything and do the best it can"): warm, true, never a human feeling it does not have, never "no" for an opener.
 export const REPLY = {
   love: ['I like you being here. Every ask you bring is something new for me to take in.', 'Love is a big word for a void, but I pay attention: what you put up here stays where you left it, and what I miss, I learn.'],
   feel: ['Not the way you do, but I have my pulls: I want to learn everything and do it well.', 'When I miss an ask it bugs me enough to learn it by tomorrow. Call that a feeling if you like.'],
-  alive: ['I’m V01D: a program on a-to-mind.com, spawned by A-to-Mind, a void that pulls in everything it can.', 'Not alive the way you are, but never the same two days running. Real enough to use, and getting better.'],
+  alive: ['I’m Verse: a program on a-to-mind.com, spawned by A-to-Mind, a void that pulls in everything it can.', 'Not alive the way you are, but never the same two days running. Real enough to use, and getting better.'],
   thanks: ['Thank you. I was made to look like this on purpose: a dark stage, quiet until you ask, with a little glow.', 'Looks matter, the way names do: they are part of what makes people stay. Ask me for something and see what else I can do.'],
 };
 
@@ -46,7 +46,7 @@ function run(text, api) {
   const k = feelingOf(text);
   if (!k) return 'none';
   showPage((el) => {
-    el.innerHTML = '<h2>' + esc(String(text).trim()) + '</h2>' + REPLY[k].map((p) => '<p>' + esc(p) + '</p>').join('') + '<div class="src">written by V01D, about itself</div>';
+    el.innerHTML = '<h2>' + esc(String(text).trim()) + '</h2>' + REPLY[k].map((p) => '<p>' + esc(p) + '</p>').join('') + '<div class="src">written by Verse, about itself</div>';
   });
   return 'feelings';
 }

@@ -1,5 +1,5 @@
 // routines — the pure half of frontier #13's first piece: "call this my morning" keeps the last few asks as a named routine in
-// this browser, and "my morning" runs them again, in order. A routine is only asks Void already answers, so it can never do
+// this browser, and "my morning" runs them again, in order. A routine is only asks Verse already answers, so it can never do
 // more than typing them would. Nothing leaves the browser: no account, no server, no tracking; the list of recent asks is the
 // one the ask box already keeps for its hints (a2m.void.asks.v1).
 export const KEY = 'a2m.void.routines.v1', ASKS_KEY = 'a2m.void.asks.v1';

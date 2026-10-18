@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// One-click forge for an offered routine (asked by Void): the owner approves an offer on the site ("offered routines"), then
+// One-click forge for an offered routine (asked by Verse): the owner approves an offer on the site ("offered routines"), then
 //   node tools/routine-skill.mjs --list            the approved routines (GET /api/routines; no key needed)
 //   node tools/routine-skill.mjs <id|name> [--ask-phrase]   write skills/<name>.js, its routing-order file and skills/index.json
 //   node tools/routine-skill.mjs --file offer.json  the same from a { name, author, asks } file (offline)
@@ -45,7 +45,7 @@ async function main(argv) {
   writeIndex();
   const c = spawnSync(process.execPath, [resolve(root, 'tools', 'skills-check.mjs')], { encoding: 'utf8' });
   console.log(((c.stdout || '') + (c.stderr || '')).trim());
-  console.log('wrote ' + r.file + '\nsay "' + r.phrase + '" to run it. next: node tools/finish.mjs grow "forged ' + r.name + ', asked by Void" ...');
+  console.log('wrote ' + r.file + '\nsay "' + r.phrase + '" to run it. next: node tools/finish.mjs grow "forged ' + r.name + ', asked by Verse" ...');
   return c.status === 0 ? 0 : 1;
 }
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main(process.argv).then((c) => process.exit(c));

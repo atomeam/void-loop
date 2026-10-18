@@ -1,8 +1,8 @@
-// The execution record (frontier build order step 2, owner 2026-10-09): every action Void takes, or stubs, writes one
+// The execution record (frontier build order step 2, owner 2026-10-09): every action Verse takes, or stubs, writes one
 // record: who it was for (owner), what it was (kind, ref), its state, and its result or its error. Nothing is "done"
 // without its record: the record is written as `running` before the action starts, and an action whose record can't be
-// written does not run. A record that stays `running` means the action started and Void never learned how it ended.
-//   states: running -> done (result) | failed (error) | stubbed (result says what would have happened; nothing left Void)
+// written does not run. A record that stays `running` means the action started and Verse never learned how it ended.
+//   states: running -> done (result) | failed (error) | stubbed (result says what would have happened; nothing left Verse)
 // D1 table void_actions; the owner reads them at /api/actions. The pure half (begin/settle/problems) has no D1.
 
 export const STATES = ['running', 'done', 'failed', 'stubbed'];

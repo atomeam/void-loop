@@ -88,7 +88,7 @@ test('forge: the STL is the model, binary, millimetres, Z up, every facet with a
     const m = F.build(k), buf = F.stl(m), dv = new DataView(buf), n = m.indices.length / 3;
     assert.equal(buf.byteLength, 84 + 50 * n);
     assert.equal(dv.getUint32(80, true), n);
-    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^V01D forge: /);
+    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^Verse forge: /);
     assert.doesNotMatch(String.fromCharCode(...new Uint8Array(buf, 0, 5)), /^solid/, 'binary STL never starts with "solid" (slicers would read it as ASCII)');
     let maxZ = 0, minZ = Infinity;
     for (let t = 0; t < n; t++) {
@@ -120,7 +120,7 @@ test('forge: the second four read as themselves (teapot spout and handle, house 
   assert.equal(Object.keys(F.THINGS).length, 16, 'the ten things #14 asks for, the person (a figure as a recipe), and the five a camp can raise (hut, wall, well, bridge, tower; lib/rts.js BUILDS)');
 });
 
-// Void's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
+// Verse's ask (2026-10-10): "a link between the forge and print-file so I can verify an object's geometry before the print
 // command is issued". Before a file goes out, the STL bytes are read back and held to the model: the facet count, the
 // file's length, every number finite, its extent the model's size, and the mesh a slicer takes as it is (printCheck.ok).
 test('forge: before printing, the STL is read back and held to the model; every thing passes', () => {
@@ -162,7 +162,7 @@ test('forge: "print it" and the Print button only download a file that passed; a
   } finally { delete globalThis.document; URL.createObjectURL = realURL.create; URL.revokeObjectURL = realURL.revoke; }
 });
 
-test('recipe versioning (asked by Void twice): every recipe has a stable id that changes with the recipe, and the STL file name carries it', () => {
+test('recipe versioning (asked by Verse twice): every recipe has a stable id that changes with the recipe, and the STL file name carries it', () => {
   const ids = Object.keys(F.THINGS).map((k) => F.recipeId(k));
   assert.ok(ids.every((id) => /^[0-9a-f]{8}$/.test(id)), ids.join(','));
   assert.equal(new Set(ids).size, ids.length, 'no two recipes share an id');
@@ -177,7 +177,7 @@ test('recipe versioning (asked by Void twice): every recipe has a stable id that
   assert.equal(fnv(s1), F.recipeId('vase')); assert.notEqual(fnv(s2), F.recipeId('vase'));
 });
 
-test('forge history (asked by Void twice): "forge history" and "what can you make" list the recipes; other asks are untouched', () => {
+test('forge history (asked by Verse twice): "forge history" and "what can you make" list the recipes; other asks are untouched', () => {
   for (const a of ['forge history', 'what can you make', 'What can you 3D print for me?', 'show me the forge gallery', 'forge recipes']) assert.deepEqual(forgeOf(a), { list: true }, a);
   for (const a of ['what can you do', 'make me a coffee', 'history of the forge in england', 'what can you make of this']) assert.ok(!forgeOf(a) || !forgeOf(a).list, a);
   assert.deepEqual(forgeOf('make me a rocket'), { make: 'rocket' });

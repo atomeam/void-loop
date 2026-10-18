@@ -82,9 +82,9 @@ test('2026-10-10: a red run that never reached the named checks (the suite crash
 
 test('what verify-main found on a commit, from its deploy runs', () => {
   const api = (path) => {
-    if (path.includes('head_sha=red')) return { workflow_runs: [{ id: 1, name: 'Void deploy', event: 'push' }, { id: 9, name: 'Void deploy', event: 'pull_request' }] };
-    if (path.includes('head_sha=green')) return { workflow_runs: [{ id: 2, name: 'Void deploy', event: 'workflow_dispatch' }] };
-    if (path.includes('head_sha=gone')) return { workflow_runs: [{ id: 3, name: 'Void deploy', event: 'push' }] };
+    if (path.includes('head_sha=red')) return { workflow_runs: [{ id: 1, name: 'Verse deploy', event: 'push' }, { id: 9, name: 'Verse deploy', event: 'pull_request' }] };
+    if (path.includes('head_sha=green')) return { workflow_runs: [{ id: 2, name: 'Verse deploy', event: 'workflow_dispatch' }] };
+    if (path.includes('head_sha=gone')) return { workflow_runs: [{ id: 3, name: 'Verse deploy', event: 'push' }] };
     if (path.endsWith('runs/1/jobs')) return { jobs: [{ id: 11, name: 'test-and-deploy', status: 'completed', conclusion: 'success' }, { id: 12, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
     if (path.endsWith('runs/2/jobs')) return { jobs: [{ id: 21, name: 'verify-main', status: 'completed', conclusion: 'success' }] };
     if (path.endsWith('runs/3/jobs')) return { jobs: [{ id: 31, name: 'verify-main', status: 'completed', conclusion: 'cancelled' }] };
@@ -95,20 +95,20 @@ test('what verify-main found on a commit, from its deploy runs', () => {
   assert.deepEqual(verifiedState('red', 'o/r', api, body), { sha: 'red', state: 'fail', failing: [RACK] });
   assert.deepEqual(verifiedState('green', 'o/r', api, body), { sha: 'green', state: 'pass', failing: [] });
   assert.equal(verifiedState('gone', 'o/r', api, body).state, 'unknown');
-  assert.equal(verifiedState('green', 'o/r', api, () => 'Revert "x"\n\nVoid-auto-revert: abc').state, 'unknown'); // never re-tested
+  assert.equal(verifiedState('green', 'o/r', api, () => 'Revert "x"\n\nVerse-auto-revert: abc').state, 'unknown'); // never re-tested
 });
 
 // Every merge has its own verify run (deploy.yml, 2026-10-10), so two red suites can finish together: a revert is taken
 // only while its target is still live on main and its failed checks are still red on main's newest verified head.
 test('a target that left main\'s first-parent line, or was already reverted by another run, is not reverted again', () => {
-  const bodies = { h: 'Merge #5', r: 'Revert "x"\n\nVoid-auto-revert: m215', m216: 'Merge #216', m215: 'Merge #215', m214: 'Merge #214' };
+  const bodies = { h: 'Merge #5', r: 'Revert "x"\n\nVerse-auto-revert: m215', m216: 'Merge #216', m215: 'Merge #215', m214: 'Merge #214' };
   const body = (s) => bodies[s] || '';
   assert.deepEqual(stillLive('m215', ['h', 'm216', 'm215', 'm214'], body), { live: true });
   assert.equal(stillLive('m215', ['h', 'r', 'm216', 'm215', 'm214'], body).live, false);
   assert.match(stillLive('m215', ['h', 'r', 'm216', 'm215', 'm214'], body).why, /already reverted on main \(r\)/);
   assert.match(stillLive('gone', ['h', 'm216'], body).why, /not on main's first-parent line/);
-  assert.equal(stillLive('m215abcdef', ['h', 'r2', 'm215abcdef'], (s) => (s === 'r2' ? 'Void-auto-revert: m215abc' : '')).live, false, 'a short sha in the trailer still matches');
-  assert.equal(stillLive('m215abcdef', ['h', 'r3', 'm215abcdef'], (s) => (s === 'r3' ? 'Void-auto-revert: m21' : '')).live, true, 'a trailer shorter than a short sha is not a match');
+  assert.equal(stillLive('m215abcdef', ['h', 'r2', 'm215abcdef'], (s) => (s === 'r2' ? 'Verse-auto-revert: m215abc' : '')).live, false, 'a short sha in the trailer still matches');
+  assert.equal(stillLive('m215abcdef', ['h', 'r3', 'm215abcdef'], (s) => (s === 'r3' ? 'Verse-auto-revert: m21' : '')).live, true, 'a trailer shorter than a short sha is not a match');
 });
 
 test('a check that main\'s newest verified head no longer fails is not reverted for', () => {
@@ -126,15 +126,15 @@ test('a check that main\'s newest verified head no longer fails is not reverted 
 test('pickLive: the pick stands only while the target is live and the check is still red on main', () => {
   const history = [{ sha: 'p', state: 'pass', failing: [] }];
   const api = (path) => {
-    if (path.includes('head_sha=t')) return { workflow_runs: [{ id: 1, name: 'Void deploy', event: 'push' }] };
-    if (path.includes('head_sha=green')) return { workflow_runs: [{ id: 2, name: 'Void deploy', event: 'push' }] };
+    if (path.includes('head_sha=t')) return { workflow_runs: [{ id: 1, name: 'Verse deploy', event: 'push' }] };
+    if (path.includes('head_sha=green')) return { workflow_runs: [{ id: 2, name: 'Verse deploy', event: 'push' }] };
     if (path.includes('head_sha=')) return { workflow_runs: [] };
     if (path.endsWith('runs/1/jobs')) return { jobs: [{ id: 12, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
     if (path.endsWith('runs/2/jobs')) return { jobs: [{ id: 21, name: 'verify-main', status: 'completed', conclusion: 'success' }] };
     if (path.includes('check-runs/12/annotations')) return [{ title: TITLE, message: RACK }, { title: COUNT_TITLE, message: '1' }];
     throw new Error('unexpected ' + path);
   };
-  const body = (s) => (s === 'rev' ? 'Revert\n\nVoid-auto-revert: t' : 'Merge');
+  const body = (s) => (s === 'rev' ? 'Revert\n\nVerse-auto-revert: t' : 'Merge');
   // the tested commit is main's head and its own red run is the newest word: revert
   assert.deepEqual([pickLive({ tested: 't', failing: [RACK], history, mainLine: ['t', 'p'], body, repo: 'o/r', api }).action], ['revert']);
   // another suite already reverted it: report
@@ -149,8 +149,8 @@ test('pickLive: the pick stands only while the target is live and the check is s
 
 test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count, older deploy-run verdicts still count, other workflows do not', () => {
   const api = (path) => {
-    if (path.includes('head_sha=new')) return { workflow_runs: [{ id: 5, name: 'Void verify', event: 'workflow_dispatch' }, { id: 6, name: 'Void deploy', event: 'workflow_dispatch' }] };
-    if (path.includes('head_sha=other')) return { workflow_runs: [{ id: 7, name: 'Void review', event: 'push' }] };
+    if (path.includes('head_sha=new')) return { workflow_runs: [{ id: 5, name: 'Verse verify', event: 'workflow_dispatch' }, { id: 6, name: 'Verse deploy', event: 'workflow_dispatch' }] };
+    if (path.includes('head_sha=other')) return { workflow_runs: [{ id: 7, name: 'Verse review', event: 'push' }] };
     if (path.endsWith('runs/5/jobs')) return { jobs: [{ id: 50, name: 'python-tests', status: 'completed', conclusion: 'failure' }, { id: 51, name: 'browser-suite', status: 'completed', conclusion: 'failure' }] };
     if (path.endsWith('runs/6/jobs')) return { jobs: [{ id: 61, name: 'test-and-deploy', status: 'completed', conclusion: 'success' }] };
     if (path.endsWith('runs/7/jobs')) return { jobs: [{ id: 71, name: 'verify-main', status: 'completed', conclusion: 'failure' }] };
@@ -160,7 +160,7 @@ test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count,
   const body = () => 'Merge pull request #2';
   assert.deepEqual(verifiedState('new', 'o/r', api, body), { sha: 'new', state: 'fail', failing: [RACK] });
   assert.equal(verifiedState('other', 'o/r', api, body).state, 'unknown', 'a job named verify-main in some other workflow is not a verdict');
-  assert.deepEqual(VERIFY_WORKFLOWS, ['Void verify', 'Void deploy']);
+  assert.deepEqual(VERIFY_WORKFLOWS, ['Verse verify', 'Verse deploy']);
   assert.deepEqual(SUITE_JOBS, ['browser-suite', 'verify-main'], 'the suite job today, and the name older verdicts carry; python-tests is never read as the suite');
 });
 
@@ -168,7 +168,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   const { readFileSync } = await import('node:fs');
   const read = (p) => readFileSync(new URL('../' + p, import.meta.url), 'utf8');
   const verify = read('.github/workflows/verify.yml'), deploy = read('.github/workflows/deploy.yml'), auto = read('tools/automerge.mjs');
-  assert.match(verify, /^name: Void verify$/m, 'the name VERIFY_WORKFLOWS looks for');
+  assert.match(verify, /^name: Verse verify$/m, 'the name VERIFY_WORKFLOWS looks for');
   assert.match(verify, /^on:\n  push:\n    branches: \[main\]\n  workflow_dispatch:/m, 'a push to main, or a dispatch (automerge, by hand)');
   assert.match(verify, /^  python-tests:\n    runs-on:/m, 'the fast tests are their own job (2026-10-10)');
   assert.match(verify, /^  browser-suite:\n    runs-on:/m, 'the suite is its own job, and neither has needs');
@@ -182,7 +182,7 @@ test('the wiring (2026-10-10): every head of main gets its suite in verify.yml, 
   const action = read('.github/actions/void-test/action.yml');
   assert.match(action, /inputs\.part != 'suite'/); assert.match(action, /inputs\.part != 'fast'/);
   assert.match(verify, /node tools\/revert-target\.mjs --pick/);
-  assert.match(verify, /Void-auto-revert: \$sha/);
+  assert.match(verify, /Verse-auto-revert: \$sha/);
   assert.match(verify, /gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/);
   assert.doesNotMatch(deploy, /^  verify-main:/m, 'the deploy no longer carries the suite');
   assert.match(deploy, /void-deploy-\$\{\{ github\.event_name == 'pull_request' && format\('pr-\{0\}', github\.event\.pull_request\.number\) \|\| 'production' \}\}/, 'deploys stay serialized in production');

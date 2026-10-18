@@ -1,7 +1,7 @@
 /**
- * tab skill — the card the Void extension's side panel shows for the tab you point it at (Alt+Shift+V): its title,
+ * tab skill — the card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title,
  * address and selection, a draft box with "put in the page", "draft for me" (reply, summary, notes, rewrite,
- * proposal: sent to Void once, said so on the card), and a step for Void to propose (fill / click, up to three; the
+ * proposal: sent to Verse once, said so on the card), and a step for Verse to propose (fill / click, up to three; the
  * extension's panel asks Yes / No and acts only on a site you allowed). Moved out of void.html in cleanup step 6. The
  * page keeps the extension bridge itself (the messages, what was read, drafting into the page, the execution record);
  * the card reaches it through stageApi.ext. The card never serializes: it is not in the saved stage, /api/mine or undo.
@@ -30,19 +30,19 @@ function mount(th, stageApi) {
       + '<div class="tab-host">' + lock + bridge.esc(host) + '</div>'
       + (t.selection ? '<blockquote class="tab-sel"><mark>' + bridge.esc(t.selection) + '</mark></blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
       + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
-      // the context check (asked by Void): what the page mostly is, from the extension's counts, and one skill for it (lib/context-check.js)
+      // the context check (asked by Verse): what the page mostly is, from the extension's counts, and one skill for it (lib/context-check.js)
       + suggestionHtml(bridge.esc, contentOf(t.content))
       + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
-      // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
+      // draft for me (sends it to Verse): the title, address and selection go to Verse's answer engine once (mode draft, lib/draft.js), the draft
       // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
       + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
       + ['reply', 'summary', 'notes', 'rewrite', 'proposal'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')
-      + '<span>(sends it to V01D)</span></div>'
+      + '<span>(sends it to Verse)</span></div>'
       + '<div style="display:flex;gap:8px;align-items:center;margin-top:6px"><button type="button" class="tab-put vcopy">put in the page</button><span class="tab-said" style="color:var(--muted);font-size:12px">'
       + bridge.esc(t.field ? 'goes into: ' + (t.field.name || t.field.tag) : 'goes into the box you click on the page') + '</span></div>'
       + '<div class="tab-foot" style="color:var(--muted);font-size:11px;margin-top:6px"></div>'
-      + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for V01D: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
-      + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">V01D acts only on a site you allowed, and only after your yes in the panel.</div>';
+      + '<div style="display:flex;gap:6px;margin-top:10px"><input class="tab-step" placeholder="a step for Verse: fill Reply with … / click Save (up to 3, split by ;)" style="flex:1;min-width:0;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:5px 6px;font:inherit"><button type="button" class="tab-propose vcopy">propose</button></div>'
+      + '<div class="tab-act-said" style="color:var(--muted);font-size:12px;margin-top:4px">Verse acts only on a site you allowed, and only after your yes in the panel.</div>';
     const put = body.querySelector('.tab-put'), ta = body.querySelector('.tab-draft'), said = body.querySelector('.tab-said'), foot = body.querySelector('.tab-foot');
     const footLine = () => { foot.textContent = ext.sent ? 'Not saved. ' + ext.sent + ' You press send on the page yourself.' : 'Not saved, not sent anywhere. You press send on the page yourself.'; };
     ta.value = ext.draft; footLine();
@@ -51,7 +51,7 @@ function mount(th, stageApi) {
     body.querySelectorAll('.tab-ask button').forEach((b) => b.addEventListener('click', async () => {
       const intent = b.dataset.intent, tab = ext.tab; if (!tab) return;
       if (intent === 'proposal') return bridge.proposalFromTab(tab, said, footLine);
-      said.textContent = 'asking V01D for a ' + intent + '…';
+      said.textContent = 'asking Verse for a ' + intent + '…';
       let j = null;
       try {
         const r = await fetch('/api/answer', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ mode: 'draft', intent, title: tab.title, url: tab.url, selection: tab.selection, note: ta.value.trim().slice(0, 300) }) });
@@ -59,10 +59,10 @@ function mount(th, stageApi) {
       } catch (_) {}
       if (!ta.isConnected) return; // the card was redrawn or closed meanwhile
       ext.sent = 'The title, address and selection were sent to a-to-mind.com for a ' + intent + ' draft · not kept there.'; footLine();
-      if (!j || !j.draft) { said.textContent = (j && j.note) || 'V01D couldn’t draft just now. Try again in a moment.'; return; }
+      if (!j || !j.draft) { said.textContent = (j && j.note) || 'Verse couldn’t draft just now. Try again in a moment.'; return; }
       ext.draft = j.draft; ta.value = j.draft; ta.rows = Math.min(12, Math.max(3, (j.draft.match(/\n/g) || []).length + 2));
       const notes = [j.model === 'rules' && 'by rule, no model just now', j.masked && 'keys in the text were masked', j.cut && 'the selection was cut'].filter(Boolean);
-      said.textContent = intent + ' from V01D' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
+      said.textContent = intent + ' from Verse' + (notes.length ? ' (' + notes.join('; ') + ')' : '') + ' · put it in the page, or copy it';
       // B3 joined to the draft: a reply for the box you were in becomes a proposed step, the same Yes / No card in the panel
       // and the same record; the panel shows it only on a site on your list (off the list it says nothing: copy as before)
       if (intent === 'reply' && tab.field) bridge.propose({ action: 'fill', label: bridge.boxName(tab.field), box: 'mine', text: j.draft, auto: true });

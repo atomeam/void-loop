@@ -1,5 +1,5 @@
 // What happened to a stage while its owner was away, as one execution record (lib/actions.js track(), kind `scene.advance`).
-// Asked by Void: "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct
+// Asked by Verse: "Connect 'frontier #4' to the 'automations' and 'actions' skills to allow for state changes without direct
 // user input." advance() (skills/scripts.js) runs in the browser; the page sends its result here, and a record is written in the
 // sender's own scope only: the owner's (owner 'owner') or a paid member's (owner 'member:<account id>'). A stranger, a free
 // account and a made-up session get nothing written (nothing is stored for strangers; the note on the page stands alone).

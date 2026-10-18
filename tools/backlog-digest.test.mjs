@@ -1,4 +1,4 @@
-// Backlog digest (asked by Void): unbuilt asks grouped by family and evidence rating, own records only. node --test tools/backlog-digest.test.mjs
+// Backlog digest (asked by Verse): unbuilt asks grouped by family and evidence rating, own records only. node --test tools/backlog-digest.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
 import { skillTable, skillsNamed, digestOf, digestHtml } from '../void-live-deploy/lib/backlog-digest.js';
 import skill from '../void-live-deploy/skills/backlog-digest.js';
@@ -30,6 +30,6 @@ test('the real families.json places this backlog\'s own asks', () => {
   assert.ok(d.placed >= 1 && d.groups.every((g) => g.asks.length));
 });
 test('the skill takes its asks and leaves the plain backlog list to the wants card', () => {
-  for (const a of ['digest your backlog', 'Backlog digest', 'summarise your unbuilt asks by family', 'group your open asks by family and evidence rating', 'asks by family']) assert.ok(skill.match(a.toLowerCase(), a), a);
+  for (const a of ['digest your backlog', 'Backlog digest', 'summarise your unbuilt asks by family', 'group your open asks by family and evidence rating', 'asks by family', "digest verse's backlog"]) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of ['what is your backlog', 'digest my email', 'name all your unbuilt asks', 'your backlog']) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });

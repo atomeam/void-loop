@@ -1,4 +1,4 @@
-// tools/targets.mjs: a target's score counts only what Void beats; every feature carries its plus one before the build
+// tools/targets.mjs: a target's score counts only what Verse beats; every feature carries its plus one before the build
 import assert from 'node:assert/strict';
 import { scoreOf, problems, load } from './targets.mjs';
 const t = { site: 'X', features: [{ id: 'a', theirs: 'A', plus_one: 'A+1', void: 'beats' }, { id: 'b', theirs: 'B', plus_one: 'B+1', void: 'none' }, { id: 'c', theirs: 'C', plus_one: 'C+1', void: 'matches' }] };

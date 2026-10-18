@@ -5,7 +5,7 @@ import { judge, changedText, onceEach, robotsAllows, checkSteps, improve, invent
 let n = 0; const t = (name, f) => { f(); n++; };
 t('a refusal fails', () => assert.equal(judge({ ask: 'x' }, { text: "I don't know this yet" }).ok, false));
 t('an ask no skill caught fails', () => assert.match(judge({ ask: 'x' }, { text: 'x\nthinking…' }).why[0], /no skill/));
-t('a good answer passes', () => assert.equal(judge({ ask: 'what are you?', expect: { text: 'V01D' } }, { text: 'I am V01D' }).ok, true));
+t('a good answer passes', () => assert.equal(judge({ ask: 'what are you?', expect: { text: 'Verse' } }, { text: 'I am Verse' }).ok, true));
 t('console errors fail', () => assert.match(judge({ ask: 'x' }, { text: 'hi', errors: ['boom'] }).why[0], /console/));
 t('fps floor', () => assert.equal(judge({ ask: 'x', fps: true }, { text: 'hi', fps: 12 }, { fpsMin: 20 }).ok, false));
 t('missing selector', () => assert.equal(judge({ ask: 'x', expect: { selector: '.c' } }, { text: 'hi', selector: false }).ok, false));
@@ -44,13 +44,13 @@ t('a wording keeps the example it came from', () => { const inv3 = inventory([{ 
   const p = plan(inv3, { asks: ['play despacito', 'watch the moon landing'] }, 1)[0]; assert.equal(p.base, 'play despacito');
   const all = variants('play despacito'); const q = plan(inv3, { asks: ['play despacito', 'watch the moon landing', ...all] }, 1)[0]; assert.equal(q.base, 'watch the moon landing'); });
 t('an answer that replaces a status line in the middle of the page counts as something appearing', () => {
-t('a card-stats idle wait over the limit is flagged, never failed (asked by Void: flag an idle wait over 500 ms)', () => {
-  const c = { ask: 'what are you?', expect: { text: 'V01D' } }, r = { text: 'I am V01D', errors: [] }, lim = { statsIdleMs: 500 };
+t('a card-stats idle wait over the limit is flagged, never failed (asked by Verse: flag an idle wait over 500 ms)', () => {
+  const c = { ask: 'what are you?', expect: { text: 'Verse' } }, r = { text: 'I am Verse', errors: [] }, lim = { statsIdleMs: 500 };
   const slow = judge(c, { ...r, statsIdleMs: 812 }, lim), quick = judge(c, { ...r, statsIdleMs: 120 }, lim), none = judge(c, { ...r, statsIdleMs: null }, lim);
   assert.deepEqual(slow.flags, ['stats idle 812 ms > 500']); assert.equal(slow.ok, true, 'a flag is not a failure');
   assert.deepEqual(quick.flags, []); assert.deepEqual(none.flags, [], 'no measure (stats not loaded yet) is no flag'); assert.deepEqual(judge(c, { ...r, statsIdleMs: 9000 }, {}).flags, [], 'no limit, no flag');
 });
-  const before = 'V01D\n↵\ntype anything\nsupport V01D', after = 'V01D\n↵\nthe void is empty · summon something first\nsupport V01D';
+  const before = 'Verse\n↵\ntype anything\nsupport Verse', after = 'Verse\n↵\nthe void is empty · summon something first\nsupport Verse';
   assert.match(changedText(before, after), /void is empty/); assert.equal(judge({ ask: 'bring it to the front' }, { text: changedText(before, after) }).ok, true);
   assert.equal(changedText(before, before), ''); assert.equal(changedText('a', 'a then more'), ' then more'); });
 console.log('site-test: ' + n + ' checks passed');

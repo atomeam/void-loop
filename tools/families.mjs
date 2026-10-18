@@ -1,4 +1,4 @@
-// Void's skill families (Void's own ask, its reflection of 2026-10-12: "implement 'skill-families' to group my new
+// Verse's skill families (Verse's own ask, its reflection of 2026-10-12: "implement 'skill-families' to group my new
 // capabilities ... and assign a stability rating to each experiment to signal readiness for permanent integration"; the
 // owner: "This should be taken seriously."). Every skill in skills/index.json sits in one family, and each gets a rating
 // from evidence only, never from how it describes itself:
@@ -7,7 +7,7 @@
 //               everyday benchmark (tools/bench.json, run in CI) routed to it
 //   checked     two kinds
 //   proven      all three, or two with at least 3 real asks routed to it, or two where one is a fresh live finding (below)
-//   live        a fourth kind (the coordinating session for the owner, 2026-10-16; V01D's own words: "turn those 3 tested skills into 3
+//   live        a fourth kind (the coordinating session for the owner, 2026-10-16; Verse's own words: "turn those 3 tested skills into 3
 //               proven ones by actually interacting with external APIs or real-world data"): the repo holds a kept artifact of a real
 //               call to the outside service the skill wraps, findings/<skill>/*.json with "attempt": "live" and "ok": true (the rides
 //               family's daily finding from tools/rides-live.mjs is the first). A real answer from the real service is the strongest
@@ -18,7 +18,7 @@
 //   node tools/families.mjs           write void-live-deploy/skills/families.json and print the families
 //   node tools/families.mjs --stale   list experiments older than STALE_DAYS, flagged for review (never deleted)
 //   node tools/families.mjs --check   exit 1 if families.json is out of date or a skill has no family (checks.mjs runs this)
-// Each skill also carries (asked by Void, ask-20261013-1823-1: "Add a 'last_tested' timestamp and a 'success_rate' float to each
+// Each skill also carries (asked by Verse, ask-20261013-1823-1: "Add a 'last_tested' timestamp and a 'success_rate' float to each
 // entry in the skills manifest"):
 //   last_tested     YYYY-MM-DD, the newest date its evidence has: for its own tests and the browser suite, the day this file was
 //                   last regenerated with that evidence changed (carried across rewrites while it is unchanged: the checks run on
@@ -28,9 +28,9 @@
 //   success_rate    benchmark asks routed to the skill that pass, over all routed to it (0 to 1), from tools/bench.json and the
 //                   misses of the bench's last conclusive run; left out until that run is recorded, or when no ask is routed to it.
 //   smoke           the daily smoke test's failures for the skill (tools/skills-smoke.json, written by tools/skills-check.mjs --write
-//                   in the upkeep workflow; asked by Void, ask-20261013-1823-2): a skill in it has no passing self-test that day, so
+//                   in the upkeep workflow; asked by Verse, ask-20261013-1823-2): a skill in it has no passing self-test that day, so
 //                   its rating drops; one not in it was tested that day (last_tested_by: the daily smoke test).
-//   re-test         tools/retest.json (tools/retest.mjs, daily in upkeep.yml; asked by Void): skills not tested in 7 days are re-tested
+//   re-test         tools/retest.json (tools/retest.mjs, daily in upkeep.yml; asked by Verse): skills not tested in 7 days are re-tested
 //                   (routing of their own examples and near misses, their unit test); a pass dates the skill ("a re-test"), a failure
 //                   joins `smoke` as "re-test: …" and drops its self-test evidence until it passes again.
 // Nothing here counts how often people use a skill: no usage, no "popular", no "last used" (the owner's rule: no behaviour tracking).
@@ -41,34 +41,34 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const OUT = resolve(root, 'void-live-deploy/skills/families.json');
 
-// what each family is for, in Void's words to a visitor, and its skills (a new skill must be placed here: --check fails)
+// what each family is for, in Verse's words to a visitor, and its skills (a new skill must be placed here: --check fails)
 export const FAMILIES = [
   { id: 'make', name: 'Making things', for: 'figures, 3D models, prints, drawings and parts', skills: ['forge', 'make', 'music', 'figure', 'figures', 'zoom-figure', 'figure-can', 'cartoon', 'part', 'together', 'gears', 'motorbody', 'printedmotor', 'magnetize', 'print-file', 'print-download', 'inventory', 'splat', 'poster', 'draw', 'shape', 'image', 'throw-off', 'swarm', 'vector-field-mind', 'living-cards-mind', 'flow-canvas', 'attention-field-mind', 'rts', 'nca-mind', 'resonance-mind', 'swarm-mind', 'veto-council', 'stigmergy-board', 'term-orbits'] },
-  { id: 'games', name: 'Games', for: 'board games, card games and play: one picker ("games"), one V01D strength, one 3D stage', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge', 'pong', 'snake', 'duel', 'merge', 'zorbleflux'] },
+  { id: 'games', name: 'Games', for: 'board games, card games and play: one picker ("games"), one Verse strength, one 3D stage', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge', 'pong', 'snake', 'duel', 'merge', 'zorbleflux'] },
   { id: 'sky', name: 'Sky and earth', for: 'weather, the sky tonight, places and time zones', skills: ['sky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'sky-card', 'suntimes', 'moon', 'night-sky', 'place', 'worldtime', 'distance', 'country'] },
-  { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['timer', 'clock', 'countdown', 'event-countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine', 'deadlines', 'shortcut', 'time-math', 'busy-blocks', 'date-calc', 'date-grid'] },
+  { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['calendar-file', 'timer', 'clock', 'countdown', 'event-countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine', 'deadlines', 'shortcut', 'time-math', 'busy-blocks', 'date-calc', 'date-grid'] },
   { id: 'numbers', name: 'Numbers and money', for: 'sums, unit conversions, loans, savings, prices and home projects', skills: ['calc', 'convert', 'loan', 'savings', 'fuel', 'tip', 'crypto', 'markets', 'grades', 'util', 'counter', 'room', 'walls', 'home', 'appraise', 'calc-more', 'dev-tools'] },
   { id: 'body', name: 'Body and mind', for: 'sleep, cycles, food, heart and calm', skills: ['sleep', 'ovulation', 'period', 'pregnancy', 'nutrition', 'food', 'heart', 'breath', 'feelings', 'health-habits'] },
   { id: 'words', name: 'Words and the world', for: 'definitions, translation, news, books, shows, videos and sport', skills: ['repo', 'digest', 'movie', 'pick-for-me', 'video', 'video-play', 'define', 'technical-context', 'words', 'spanish', 'translate', 'news', 'joke', 'recipe', 'swaps', 'film-metadata', 'media-pick', 'book', 'show', 'sport', 'pdf-card', 'coral', 'senolytic', 'trialwatch', 'releasenotes', 'writing-aids', 'text-tools', 'study-cards'] },
   { id: 'life', name: 'Out in the world', for: 'food delivery, rides and Waymo, social feeds and dating', skills: ['rides', 'social', 'dating', 'service-health'] },
   { id: 'stage', name: 'The stage', for: 'notes, lists, links and how the stage looks and is arranged', skills: ['telemetry-route', 'sticky', 'notepad', 'pulse', 'friction', 'collide', 'bench', 'link', 'kept', 'list', 'tab', 'group', 'layer', 'label', 'dismiss', 'lock', 'light-look', 'dark-look', 'recent', 'showcase', 'type-filter', 'collectible', 'fly', 'riot', 'mutate', 'sudden-death', 'overload', 'extinction', 'feud', 'oracle', 'crowd', 'unkeepable', 'spectators', 'negative-summons', 'echo-disagrees', 'near-choir', 'minimap', 'ask-clipboard', 'decision-matrix', 'habit-ring', 'recipe-stack', 'constellation-weaver', 'forge-table', 'night-ritual', 'archive-of-one', 'codex', 'echo-chamber', 'time-capsule', 'whisper-network', 'sheaf-check', 'spectral-review', 'task-diagram', 'gauge-feedback', 'eigenwork', 'homotopy-edit', 'plan-stability', 'anneal-ambition', 'partial-answer', 'draft-triad', 'stale-work', 'certainty-budget', 'interrupt-priority', 'causal-scars', 'counterfactual-draft', 'witness-claims', 'task-board', 'template-list', 'error-garden', 'idea-certificate', 'noun-heat', 'hunting-question', 'contradiction-lamp', 'ask-diff', 'family-gravity', 'deep-work', 'soundscape', 'stage-print', 'note-tools', 'outline-note', 'csv-table', 'qr-scan', 'list-tools', 'list-templates', 'stage-arrange', 'stage-style', 'stage-organize', 'accessibility-modes', 'stage-find', 'dismissed-pile', 'bookmarks', 'stage-export', 'copy-stack', 'stage-image', 'media-object'] },
-  { id: 'self', name: 'Void itself', for: 'how Void grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['backlog-digest', 'guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'know', 'state', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'web4', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health', 'incident-autopsy', 'deps', 'fringe-to-skill', 'skill-eclipse', 'miss-jobs', 'ask-immune', 'four-channels', 'stakes-phase', 'own-parts', 'about-skill', 'approve-card', 'memory-graph', 'wants'] },
+  { id: 'self', name: 'Verse itself', formerly: ['V01D', 'Void'], for: 'how Verse grows, what it wants, what it can do and sell, and acting on your behalf', skills: ['backlog-digest', 'remediation-velocity', 'guide', 'growth', 'v01d-fixes', 'merges', 'goal', 'intent', 'different', 'know', 'state', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'web4', 'invite', 'local-inference', 'rebuild-map', 'films', 'app', 'family-health', 'incident-autopsy', 'deps', 'fringe-to-skill', 'skill-eclipse', 'miss-jobs', 'ask-immune', 'four-channels', 'stakes-phase', 'own-parts', 'about-skill', 'approve-card', 'memory-graph', 'wants'] },
   { id: 'decide', name: 'Deciding', for: 'ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards', skills: ['decide-cards'] },
   { id: 'safety-play', name: 'Safety and small delights', for: 'privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)', skills: ['safety-kit', 'photo-scrub', 'stage-fx', 'card-play'] },
 ];
 import { promote, streaksOf } from './streaks.mjs';
 import { SOURCE_FAMILIES, scanSkill, reliabilityOf, familySources } from './source-reliability.mjs';
 export const TIERS = ['experiment', 'tested', 'checked', 'proven'];
-// what the two per-skill dates and rates mean, written into the file so a reader of the JSON knows (asked by Void)
+// what the two per-skill dates and rates mean, written into the file so a reader of the JSON knows (asked by Verse)
 export const MEANS = {
   last_tested: 'the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.',
   success_rate: 'benchmark asks routed to the skill that passed on the bench\'s last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it',
   smoke: 'what the daily smoke test of every skill (tools/skills-check.mjs --write) or the 7-day re-test (tools/retest.mjs, lines starting re-test:) found wrong with this one: its examples not reaching it, a near miss taken, its suite() or unit test failing; while present the skill has no passing self-test, so its rating is lower',
-  promoted: 'the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Void',
-  streak: 'consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Void',
+  promoted: 'the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Verse',
+  streak: 'consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Verse',
   live: 'a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven',
-  source: 'source reliability (asked by Void, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating',
-  not_here: 'how often people use a skill is never counted by Void: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person\'s own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device',
+  source: 'source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating',
+  not_here: 'how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person\'s own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device',
 };
 
 export const LIVE_FRESH_DAYS = 8;
@@ -108,7 +108,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
   listFindings = (skill) => { try { return readdirSync(resolve(root, 'findings', skill)); } catch (_) { return []; } }) {
   const suiteText = read('tools/test_void.mjs') + '\n' + read('tools/test_3d.mjs') + '\n' + read('tools/test_extension.mjs'), bench = JSON.parse(read('tools/bench.json')); // the browser suites
   // the asks the everyday benchmark got wrong on its last clean run on main (tools/bench.misses.json, "ask -> what it gave"),
-  // for the growth card's friction line (Void's ask: "a 'friction' indicator ... which skills are currently failing")
+  // for the growth card's friction line (Verse's ask: "a 'friction' indicator ... which skills are currently failing")
   let missed = []; try { const m = JSON.parse(read('tools/bench.misses.json')); missed = Array.isArray(m && m.misses) ? m.misses.map((x) => String(x).replace(/\s+->\s+[^>]*$/, '').toLowerCase()) : []; } catch (_) {}
   const unitTexts = listTests().map((f) => { try { return read('tools/' + f); } catch (_) { return ''; } });
   const streaks = streaksOf(read); // consecutive clean daily runs per skill
@@ -118,7 +118,7 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
   for (const n of names) {
     let src = ''; try { src = read('void-live-deploy/skills/' + n + '.js'); } catch (_) {}
     // the browser suites: a check or a section named after the skill ("weather: …", "3d: chess and checkers"), or one naming its
-    // file or route; a longer name may sit anywhere in the label ("how Void is different: …"), a short one ("go", "tab") only at
+    // file or route; a longer name may sit anywhere in the label ("how Verse is different: …"), a short one ("go", "tab") only at
     // its start. One pattern, so a mention counts once.
     const word = esc(n).replace(/-/g, '[ -]');
     const label = n.length >= 6 ? '[^\'"`]{0,60}\\b' : '(?:3d:\\s*)?(?:[a-z]+ and )?';
@@ -188,7 +188,7 @@ export function lastTested(e, why, prevRow, today, bench, smoke, retestAt = '') 
 }
 
 /** the families with each skill rated, the counts, and any skill no family holds. Pure, given the evidence. */
-// The decay timer (asked by Void, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
+// The decay timer (asked by Verse, ask-20261015-0614-1: "flag stale experiments"): an experiment carries the day it was first
 // rated one (`since`, kept across rewrites); one left an experiment longer than STALE_DAYS is flagged for review. Flag only:
 // nothing is ever deleted or retired by this; a builder decides (test it, or retire it through the ledger).
 export const STALE_DAYS = 14;
@@ -227,13 +227,13 @@ export function build(names, ev, meta = {}) {
       if (e.smoke) x.smoke = e.smoke; // the daily smoke test's failures (its self-test does not count while they stand)
       const lt = lastTested(e, x.why, prevRows.get(n), today, bench, smoke, retest.at && retest.passed.has(n) ? retest.at : ''); if (lt) { x.last_tested = lt.at; x.last_tested_by = lt.by; }
       const sr = successRate(e, bench.recorded); if (sr !== null) x.success_rate = sr;
-      const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Void)
+      const pr = promotedOn(x.tier, prevRows.get(n), today); if (pr) x.promoted = pr; // the day it moved up a rating (asked by Verse)
       if (Number.isFinite(+(smoke.streak || {})[n])) x.streak = +smoke.streak[n]; // clean smoke runs in a row
-      const rel = meta.sources && meta.sources[n] ? reliabilityOf(meta.sources[n], x, e, today) : null; if (rel) x.source = rel; // source reliability (asked by Void)
+      const rel = meta.sources && meta.sources[n] ? reliabilityOf(meta.sources[n], x, e, today) : null; if (rel) x.source = rel; // source reliability (asked by Verse)
       return x; });
     const count = Object.fromEntries(TIERS.map((t) => [t, skills.filter((s) => s.tier === t).length]));
     const sources = meta.sources && SOURCE_FAMILIES.includes(f.id) ? familySources(skills) : null;
-    return { id: f.id, name: f.name, for: f.for, count, ...(sources ? { sources } : {}), skills };
+    return { id: f.id, name: f.name, ...(f.formerly ? { formerly: f.formerly } : {}), for: f.for, count, ...(sources ? { sources } : {}), skills };
   });
   const totals = Object.fromEntries(TIERS.map((t) => [t, families.reduce((n, f) => n + f.count[t], 0)]));
   return { families, totals, unplaced: names.filter((n) => !placed.has(n)), missing: [...placed].filter((n) => !names.includes(n)) };
@@ -250,7 +250,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const b = build(names, evidence(names), { prev, bench: benchRun(), smoke: smokeRun(), retest: retestRun(), today: new Date().toISOString().slice(0, 10), sources });
   carrySince(b.families, prev, new Date().toISOString().slice(0, 10));
   if (process.argv.includes('--stale')) { const st = staleExperiments(prev || b, new Date().toISOString().slice(0, 10)); console.log(st.length ? st.map((x) => `${x.name} (${x.family}): an experiment for ${x.days} days, since ${x.since}: review it (test it or retire it)`).join('\n') : 'no stale experiments'); process.exit(0); }
-  const json = JSON.stringify({ note: 'Void\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, ...(smokeRun().at ? { smoke_at: smokeRun().at } : {}), totals: b.totals, families: b.families }, null, 1) + '\n';
+  const json = JSON.stringify({ note: 'Verse\'s skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)', means: MEANS, ...(smokeRun().at ? { smoke_at: smokeRun().at } : {}), totals: b.totals, families: b.families }, null, 1) + '\n';
   const problems = [];
   if (b.unplaced.length) problems.push('skills with no family (add them to FAMILIES in tools/families.mjs): ' + b.unplaced.join(', '));
   if (b.missing.length) problems.push('family members that are not skills (remove or rename): ' + b.missing.join(', '));

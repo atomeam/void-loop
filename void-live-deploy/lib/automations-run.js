@@ -1,5 +1,5 @@
 /**
- * Void's automations, the side that touches the world (lib/automations.js says what a rule may do; this runs it).
+ * Verse's automations, the side that touches the world (lib/automations.js says what a rule may do; this runs it).
  * D1: void_automations (the rules) and void_automation_runs (what each run did, newest 200 kept). GitHub through its
  * REST API with GITHUB_TOKEN (a fine-grained token the owner sets in the Pages project: contents + pull requests +
  * issues on the allowed repos). Without the token a GitHub step fails with that reason in the log, nothing else.
@@ -90,7 +90,7 @@ export async function remove(env, id, scope) {
 }
 
 // ---- the watch (lib/watch.js): fetch one thing, judge it, keep the check as its record ----
-const UA = { 'user-agent': 'Void/1.0 (https://a-to-mind.com; a standing watch asked for by a person)' };
+const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; a standing watch asked for by a person)' };
 /** what one check looks at: a temperature, a page's text, or the clock */
 export async function sampleFor(w, { fetcher = fetch, now = Date.now } = {}) {
   if (w.kind === 'time') return { now: typeof now === 'function' ? now() : now };
@@ -132,7 +132,7 @@ export async function hookOk(stored, given) { return !!stored && typeof given ==
 // ---- the actions ----
 const GH = 'https://api.github.com';
 async function gh(env, fetcher, method, path, body) {
-  if (!env.GITHUB_TOKEN) throw new Error('GITHUB_TOKEN is not set in the Pages project, so Void cannot reach GitHub');
+  if (!env.GITHUB_TOKEN) throw new Error('GITHUB_TOKEN is not set in the Pages project, so Verse cannot reach GitHub');
   const r = await fetcher(GH + path, { method, headers: { authorization: 'Bearer ' + env.GITHUB_TOKEN, accept: 'application/vnd.github+json', 'x-github-api-version': '2022-11-28', 'user-agent': 'void-automations', ...(body ? { 'content-type': 'application/json' } : {}) }, body: body ? JSON.stringify(body) : undefined });
   const data = await r.json().catch(() => null);
   return { status: r.status, ok: r.ok, data };
@@ -170,7 +170,7 @@ export async function act(env, step, { fetcher = fetch } = {}) {
       const put = await gh(env, fetcher, 'PUT', repo + '/contents/' + pathEnc(f.path), { message: step.title, content: b64(f.content), branch: step.branch, ...(cur.ok && cur.data && cur.data.sha ? { sha: cur.data.sha } : {}) });
       if (!put.ok) throw new Error('could not write ' + f.path + ' (' + put.status + ')');
     }
-    const pr = await gh(env, fetcher, 'POST', repo + '/pulls', { title: step.title, head: step.branch, base: step.base, body: step.body || 'Opened by a Void automation.', draft: true });
+    const pr = await gh(env, fetcher, 'POST', repo + '/pulls', { title: step.title, head: step.branch, base: step.base, body: step.body || 'Opened by a Verse automation.', draft: true });
     if (pr.ok) return 'opened ' + pr.data.html_url;
     if (pr.status === 422) { const open = await gh(env, fetcher, 'GET', repo + '/pulls?state=open&head=' + enc(step.repo.split('/')[0] + ':' + step.branch)); if (open.ok && open.data && open.data[0]) return 'updated ' + open.data[0].html_url; }
     throw new Error('could not open the pull request (' + pr.status + ')');

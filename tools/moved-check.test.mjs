@@ -2,7 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { declared, movedNames, lookups, dangling, updated, ANCHOR } from './moved-check.mjs';
 
-test('a name removed from the page and added in skills/ is moved (asked by Void)', () => {
+test('a name removed from the page and added in skills/ is moved (asked by Verse)', () => {
   const page = '--- a/void.html\n+++ b/void.html\n-  function mountCalendar(el) {\n-  const keepThis = 1;\n+  const keepThis = 2;\n';
   const skill = '+++ b/skills/calendar.js\n+export function mountCalendar(el) {\n';
   assert.deepEqual(movedNames(page, skill), ['mountCalendar']);

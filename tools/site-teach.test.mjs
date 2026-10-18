@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fromTitle, teachable, taught, keyOf, loadSkills, ALIASES } from './site-teach.mjs';
-assert.deepEqual(fromTitle('site-test: teach V01D "yo calculator" (means "calculator", skill:calc): refused'), { ask: 'yo calculator', means: 'calculator', skill: 'calc' });
+assert.deepEqual(fromTitle('site-test: teach Verse "yo calculator" (means "calculator", skill:calc): refused'), { ask: 'yo calculator', means: 'calculator', skill: 'calc' });
 assert.equal(fromTitle('site-test: fix: "x" console'), null);
 const skills = [{ name: 'calc', match: (l) => /calculator/.test(l) && !/yo/.test(l) }, { name: 'clock', match: (l) => /time/.test(l) }];
 assert.equal(teachable({ ask: 'yo calculator', means: 'calculator', skill: 'calc' }, skills), '');

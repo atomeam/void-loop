@@ -1,9 +1,9 @@
 /**
- * figures skill — a small 3D friend that roams your own Void, notices your cursor, and leaves when you send it away
+ * figures skill — a small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Board Next #17. "summon a sprite", "bring a friend", "show me a 3D buddy"; "send them away" / "dismiss figures" (undo brings
  * them back); "less motion" holds them still. Figures are stage items in this browser (the personal layer), so the next
- * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
+ * visitor still arrives at a blank Verse. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
 import { fallbackScript, natureOf } from './scripts.js';
 import { thingOf } from './forge-rules.js';
@@ -13,7 +13,7 @@ export const DETAIL_KEY = 'a2m.void.3d.v1'; // the same key skills/scene3d.js re
 
 const NOUN = '(?:sprites?|buddy|buddies|friends?|figurines?|critters?|creatures?|companions?|pals?)'; // not bare figure(s): Motelet
 const FIG = '(?:sprites?|buddy|buddies|friends?|figures?|figurines?|critters?|creatures?|companions?|pals?)';
-const ADJ = '(?:(?:little|tiny|small|cute|new|roaming|void|3d|3-d|three[\\s-]?d)\\s+)*';
+const ADJ = '(?:(?:little|tiny|small|cute|new|roaming|(?:verse|void)|3d|3-d|three[\\s-]?d)\\s+)*';
 const SUMMON = new RegExp('^(?:please\\s+)?(?:summon|bring(?:\\s+(?:out|in))?|show\\s+me|give\\s+me|call(?:\\s+up)?|spawn|add|make\\s+me)\\s+'
   + '(?:me\\s+)?(?:a|an|another|one\\s+more|my|some)?\\s*' + ADJ + NOUN + '(?:\\s+(?:friend|buddy))?(?:\\s+please)?$');
 const WHO = '(?:them|the\\s+' + ADJ + FIG + '|my\\s+' + ADJ + FIG + '|all\\s+(?:the\\s+)?' + ADJ + FIG + '|everyone|everybody)';
@@ -25,7 +25,7 @@ const DISMISS = [
 const STILL = /^(?:please\s+)?(?:less\s+motion|reduce(?:d)?\s+motion|hold\s+still|stay\s+still|stop\s+moving|keep\s+(?:them|the\s+(?:figures?|sprites?))\s+still|(?:figures?|sprites?)\s+hold\s+still)$/;
 const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sprites?))\s+(?:roam|move|wander)(?:\s+again)?|roam\s+free|you\s+can\s+move(?:\s+again)?)$/;
 
-// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Void, ask-20261015-0347-2: a low-poly toggle for older hardware)
+// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Verse, ask-20261015-0347-2: a low-poly toggle for older hardware)
 const LOW_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?low[\s-]?poly(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:lighter|simpler?|lite|light)\s+3d|3d\s+(?:low|light|lite|simple|low[\s-]?poly)(?:\s+mode)?|low\s+3d\s+detail)$/;
 const FULL_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?(?:full|high)[\s-]?(?:poly|detail)(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:full|detailed|sharp)\s+3d|3d\s+(?:full|high|detailed)(?:\s+(?:detail|mode))?|full\s+3d\s+detail)$/;
 const AUTO_POLY = /^(?:please\s+)?(?:auto(?:matic)?\s+3d(?:\s+(?:detail|mode))?|3d\s+(?:detail\s+)?auto(?:matic)?|3d\s+auto\s+detail|(?:let\s+)?3d\s+(?:detail\s+)?decide(?:\s+itself)?)$/;
@@ -88,7 +88,7 @@ export function natureSummon(t) {
 
 // An article's figure is the thing itself (Adam, 2026-10-09): a page about cats brings a real cat, about a banana a real
 // banana. Matched on the title's last word, then the whole title ("Honey bee" is a bee, "Great white shark" a shark);
-// null when Void has no real model of it yet, so the page brings no stand-in.
+// null when Verse has no real model of it yet, so the page brings no stand-in.
 export function realFigureFor(card, seed = (Math.random() * 4294967296) >>> 0) {
   const title = String((card && card.title) || '').replace(/\s*\(.*\)$/, '').trim().toLowerCase();
   if (!title || title.split(/\s+/).length > 4) return null;
@@ -160,7 +160,7 @@ async function run(text, api) {
     try { if (bag) { if (q.mode === 'auto') bag.removeItem(DETAIL_KEY); else bag.setItem(DETAIL_KEY, q.mode); } } catch (_) {}
     if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.querySelector('.void-mini, #void-3d')) import('/skills/scene3d.js').then((m) => m.setDetail(q.mode)).catch(() => {});
     say(q.mode === 'low' ? 'low-poly 3D: 1x pixels, no shadows, light figures. "full 3d" brings the detail back.'
-      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets V01D step down when frames run late.'
+      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets Verse step down when frames run late.'
       : 'auto 3D detail: full, stepping down to low-poly only while frames run late.');
     return 'figures';
   }

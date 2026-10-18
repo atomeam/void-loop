@@ -34,7 +34,7 @@ function mount(th, stageApi) {
   head.innerHTML = '<span class="g-title">Five minutes</span><span class="g-sub challenge-src"></span>';
   const tray = document.createElement('div'); tray.className = 'challenge-tray'; tray.style.cssText = 'display:flex;align-items:center;gap:10px;margin:6px 0';
   const tokens = document.createElement('span'); tokens.className = 'challenge-tokens'; tokens.setAttribute('aria-label', 'rounds');
-  // the countdown is Void's own timer face (void.html timerFace: the ring, m:ss, a state word), fed from this card's timestamps
+  // the countdown is Verse's own timer face (void.html timerFace: the ring, m:ss, a state word), fed from this card's timestamps
   const timer = document.createElement('span'); timer.className = 'challenge-timer'; timer.style.cssText = 'margin-left:auto;display:inline-flex;align-items:center;gap:6px;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-weight:700';
   const face = stageApi.timerFace ? stageApi.timerFace(timer) : (rem, total, word) => { timer.textContent = clock(rem) + ' ' + word; };
   tray.append(tokens, timer);

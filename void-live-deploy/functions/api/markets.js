@@ -1,4 +1,4 @@
-// Crypto prices for V01D's markets card: the top coins (or a short list of CoinGecko ids) with 7-day sparklines, from
+// Crypto prices for Verse's markets card: the top coins (or a short list of CoinGecko ids) with 7-day sparklines, from
 // CoinGecko's free public API (https://docs.coingecko.com/v3.0.1/reference/coins-markets, no key). Hostile read: GET only,
 // ids are checked against a strict pattern, no model is called and nothing is written to KV; the answer is kept in the edge
 // cache (caches.default) for two minutes, so CoinGecko is asked at most once per two minutes per list per data centre.
@@ -26,7 +26,7 @@ export async function onRequestGet({ request }) {
   if (cache) { const hit = await cache.match(key); if (hit) return hit; }
   let body, status = 200;
   try {
-    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=' + vs + '&ids=' + ids + '&sparkline=true&price_change_percentage=24h', { headers: { accept: 'application/json', 'user-agent': 'V01D (a-to-mind.com)' } });
+    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=' + vs + '&ids=' + ids + '&sparkline=true&price_change_percentage=24h', { headers: { accept: 'application/json', 'user-agent': 'Verse (a-to-mind.com)' } });
     if (!r.ok) throw new Error('upstream ' + r.status);
     const rows = await r.json();
     body = { ok: true, vs, source: 'CoinGecko', at: new Date().toISOString(), coins: (Array.isArray(rows) ? rows : []).map(slim) };

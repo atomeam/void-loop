@@ -1,4 +1,4 @@
-// node --test tools/appraise-photo.test.mjs: V01D values anything from a photo (frontier #30). The valuation from a description
+// node --test tools/appraise-photo.test.mjs: Verse values anything from a photo (frontier #30). The valuation from a description
 // (lib/appraise-photo.js), the route (functions/api/appraise.js, the vision model stubbed) and the asks the skill takes
 // (skills/appraise.js). People are never priced, in the photo or in the ask.
 import test from 'node:test';
@@ -17,7 +17,7 @@ test('appraise: one value, the reasons, and an expert line when the kind calls f
   assert.equal(coin.kind, 'coin'); assert.ok(coin.cents > 0); assert.match(coin.text, /^\$/); assert.ok(coin.expert, 'silver: an expert in hand');
   assert.ok(coin.says.some((s) => /wear or damage/.test(s)) && coin.says.some((s) => /silver/.test(s)));
   const t = appraisalText(coin);
-  assert.match(t, /^V01D values this at \$/); assert.ok(!/range|between|to \$/.test(t), t); assert.match(t, /not a certified appraisal/); assert.match(t, /looked at in hand/);
+  assert.match(t, /^Verse values this at \$/); assert.ok(!/range|between|to \$/.test(t), t); assert.match(t, /not a certified appraisal/); assert.match(t, /looked at in hand/);
   const chair = valueFrom('A modern plastic chair in excellent condition.');
   assert.equal(chair.kind, 'furniture'); assert.ok(!chair.expert); assert.ok(!/looked at in hand/.test(appraisalText(chair)));
   const mint = valueFrom('A sealed first edition holographic Pokémon trading card.'), worn = valueFrom('A faded Pokémon trading card with torn corners.');
@@ -39,7 +39,7 @@ test('appraise: people and pets are never priced, in the photo or in the ask', (
   assert.ok(personIn('a crowd of people at a concert') && !personIn('a wooden table'));
 });
 
-test('appraise: the route reads one small image, asks the vision model, and answers with V01D\'s value; no model = 503, a person = compliment', async () => {
+test('appraise: the route reads one small image, asks the vision model, and answers with Verse\'s value; no model = 503, a person = compliment', async () => {
   assert.ok(imageBytes(PNG) instanceof Uint8Array); assert.equal(imageBytes(PNG).length, 70);
   assert.equal(imageBytes('data:text/html;base64,PGI+'), null); assert.equal(imageBytes('https://example.org/x.png'), null);
   assert.equal(imageBytes('data:image/png;base64,' + 'A'.repeat(MAX_IMAGE_CHARS + 4)), null);
@@ -51,7 +51,7 @@ test('appraise: the route reads one small image, asks the vision model, and answ
   // the vision slot fails or says nothing: the beta image-to-text model gets the raw bytes
   const tried = []; const fb = await (await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async (model, input) => { tried.push(model); if (input.messages) throw new Error('no vision here'); assert.equal(input.image.length, 70); return { description: 'A silver coin, worn on the face.' }; } } } })).json();
   assert.deepEqual(tried, [models('vision'), VISION_FALLBACK]); assert.equal(fb.value.kind, 'coin');
-  assert.equal(j.value.kind, 'watch'); assert.match(j.text, /^V01D values this at \$/); assert.match(j.seen, /Omega/);
+  assert.equal(j.value.kind, 'watch'); assert.match(j.text, /^Verse values this at \$/); assert.match(j.seen, /Omega/);
   assert.equal((await onRequestPost({ request: req({ image: PNG }), env: {} })).status, 503);
   assert.equal((await onRequestPost({ request: req({ image: 'nope' }), env })).status, 400);
   const down = await onRequestPost({ request: req({ image: PNG }), env: { AI: { run: async () => { throw new Error('busy'); } } } }); assert.equal(down.status, 502); assert.equal((await down.json()).reason, 'vision: busy; fallback: busy', 'a 502 says why, for both models');
@@ -70,7 +70,7 @@ test('appraise: the asks that open the card, and the money and abstraction asks 
     assert.equal(appraiseOf(a), null, a);
 });
 
-test('appraise: a photo of something the forge can model links to its make recipe (asked by Void, ask-20261015-2008-1)', () => {
+test('appraise: a photo of something the forge can model links to its make recipe (asked by Verse, ask-20261015-2008-1)', () => {
   assert.deepEqual(makeableIn('A blue glass vase sitting on a wooden table. It has a narrow neck.', THINGS), { key: 'vase', label: 'Vase', ask: 'make me a vase' });
   assert.equal(makeableIn('A small white sailboat in a harbor.', THINGS).ask, 'make me a boat', 'a synonym makes its recipe');
   assert.equal(makeableIn('A brass kettle on a stove.', THINGS).key, 'teapot');

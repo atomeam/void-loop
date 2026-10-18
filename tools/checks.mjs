@@ -67,6 +67,7 @@ for (const [name, file] of [
   ['swarm', 'swarm.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
+  ['film-discovery', 'film-discovery.test.mjs'],
   ['store-gap', 'store-gap.test.mjs'],
   ['film-share', 'film-share.test.mjs'],
   ['appraise', 'appraise.test.mjs'],
@@ -128,6 +129,7 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['family-logs', 'family-logs.test.mjs'],
   ['spark', 'spark.test.mjs'],
   ['self-blocks', 'self-blocks.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],
@@ -300,6 +302,9 @@ for (const [name, file] of [
   ['card-look', 'card-look.test.mjs'],
   ['autopsy-asks', 'autopsy-asks.test.mjs'],
   ['game-health', 'game-health.test.mjs'],
+  ['ics', 'ics.test.mjs'],
+  ['lineage', 'lineage.test.mjs'],
+  ['remediation-velocity', 'remediation-velocity.test.mjs'],
   ['backlog-digest', 'backlog-digest.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],
@@ -364,26 +369,26 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
   return [!stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']; });
 // skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
 // without the index rewritten, is caught here, not on the page
-// every line this branch adds, in every file type, holds no real key (tools/secret-scan.mjs; owner, 2026-10-15: "make V01D the best
+// every line this branch adds, in every file type, holds no real key (tools/secret-scan.mjs; owner, 2026-10-15: "make Verse the best
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
 addScript('overlap', 'skill-overlap.mjs', ['--check']);
-// every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
+// every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Verse's own ask)
 addScript('families-json', 'families.mjs', ['--check']);
-// the dependency map (skills/deps.json, tools/deps.mjs; asked by Void) is read off the import lines and kept current like families.json
-// a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Void)
+// the dependency map (skills/deps.json, tools/deps.mjs; asked by Verse) is read off the import lines and kept current like families.json
+// a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Verse)
 addScript('moved-check', 'moved-check.mjs');
 addScript('deps-json', 'deps.mjs', ['--check']);
 // the book (skills/guide.json) names every skill, game and miniature on one page each; stale or a skill on no page fails (tools/guide.mjs)
 addScript('guide-json', 'guide.mjs', ['--check']);
-// the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
+// the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Verse)
 addScript('mcp-skills', 'mcp-skills.mjs', ['--check']);
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
 addScript('doc-drift', 'doc-drift.mjs', ['--check']);
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
-// letter reversals in the skills' metadata (asked by Void: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
+// letter reversals in the skills' metadata (asked by Verse: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
 addScript('typos', 'typo-audit.mjs', ['--check']);
 addScript('untested', 'untested.mjs', ['--check']);
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in

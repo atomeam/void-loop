@@ -1,4 +1,4 @@
-// functions/api/films.js + tools/film-post.mjs: Void's films are on the site for anyone to watch; reviews are for the owner and members
+// functions/api/films.js + tools/film-post.mjs: Verse's films are on the site for anyone to watch; reviews are for the owner and members
 // (owner, 2026-10-14: "just put void films right onto the sight , with only paid access").
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,8 +46,8 @@ const FILM = new Uint8Array(5000).map((_, i) => i % 251);
 
 test('the owner posts a film; anyone lists it and plays it from a signed link with Range (the films are the ads); reviews and the owner flag only with sign-in', async () => {
   const { env, sess } = await world();
-  const words = parseWords('TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTAGS\nVoid, AI\n');
-  assert.deepEqual(words, { title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.', tags: 'Void, AI' });
+  const words = parseWords('TITLE\nOdd moments | an AI built this itself #Shorts\n\nDESCRIPTION\nLog each odd moment.\n\nTAGS\nVerse, AI\n');
+  assert.deepEqual(words, { title: 'Odd moments | an AI built this itself #Shorts', description: 'Log each odd moment.', tags: 'Verse, AI' });
   assert.deepEqual(parseWords(JSON.stringify({ title: 't', description: 'd', tags: ['a', 'b'] })), { title: 't', description: 'd', tags: 'a, b' });
   const r = await post({ mp4: FILM, words, id: '20261014-odd-moments-r6', site: 'https://x.test', token: OWNER, fetchImpl: site(env) });
   assert.equal(r.bytes, 5000);
@@ -128,13 +128,13 @@ test('members and the owner review a film; a member sees the totals and their ow
   assert.ok(!kept.includes('Z'.repeat(43)), 'a key typed into a note is never kept');
 });
 
-// the films as data (asked by Void, 2026-10-15: "extract structured JSON from any V01D FILM")
+// the films as data (asked by Verse, 2026-10-15: "extract structured JSON from any Verse FILM")
 test('film metadata: the asks it takes, and each film as { id, day, experiment, title, tags, source, watch }', async () => {
   const { wantsFilmMeta, filmMeta } = await import('../void-live-deploy/skills/films.js');
   for (const a of ['film metadata', 'films as json', 'show me the films json', 'export the films', 'v01d films metadata', 'film data']) assert.ok(wantsFilmMeta(a), a);
   for (const a of ['films', 'metadata', 'json', 'export data', 'best films of 2025', 'film a timer']) assert.ok(!wantsFilmMeta(a), a);
-  const m = filmMeta({ id: '20261014-anomalous-event-timeline-4-r6', at: '2026-10-14T16:33:31Z', title: 'T', tags: 'Void, AI', description: 'Try it.\n\nHow it is built: https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html\n\nmore' });
-  assert.deepEqual(m, { id: '20261014-anomalous-event-timeline-4-r6', day: '2026-10-14', experiment: 'anomalous-event-timeline-4', title: 'T', tags: ['Void', 'AI'],
+  const m = filmMeta({ id: '20261014-anomalous-event-timeline-4-r6', at: '2026-10-14T16:33:31Z', title: 'T', tags: 'Verse, AI', description: 'Try it.\n\nHow it is built: https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html\n\nmore' });
+  assert.deepEqual(m, { id: '20261014-anomalous-event-timeline-4-r6', day: '2026-10-14', experiment: 'anomalous-event-timeline-4', title: 'T', tags: ['Verse', 'AI'],
     source: 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/anomalous-event-timeline-4.html', watch: 'https://a-to-mind.com/films/' });
   assert.equal(filmMeta({ id: '20261015-miss-board-4-r9', title: 'x', tags: '', description: '' }).source, 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/miss-board-4.html', 'an older film without the line still links its experiment');
 });

@@ -1,14 +1,14 @@
 /**
- * invite skill: bring someone into your Void (frontier #11). A signed-in member gets a link; whoever opens it appears here
- * as a faint presence, and what either of you summons shows on both stages. Closing the tab ends it; your Void stays yours.
+ * invite skill: bring someone into your Verse (frontier #11). A signed-in member gets a link; whoever opens it appears here
+ * as a faint presence, and what either of you summons shows on both stages. Closing the tab ends it; your Verse stays yours.
  * The room is made by POST /api/share (lib/share.js); the page joins it on the 'void:share-join' event (lib/share-client.js).
- * "invite someone", "invite a friend into my Void", "bring someone in".
+ * "invite someone", "invite a friend into my Verse", "bring someone in".
  */
 const ME_KEY = 'a2m.void.me.v1';
 export function inviteOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:please\s+)?(?:invite\s+(?:someone|somebody|a\s+friend|a\s+person|people)|bring\s+(?:someone|somebody|a\s+friend|a\s+person)\s+in(?:to)?)(?:\s+(?:in|into|to)?\s*(?:my|your|this)\s+void)?$/.test(t)
-    || /^(?:please\s+)?share\s+(?:my|this)\s+void\s+live$/.test(t);
+  return /^(?:please\s+)?(?:invite\s+(?:someone|somebody|a\s+friend|a\s+person|people)|bring\s+(?:someone|somebody|a\s+friend|a\s+person)\s+in(?:to)?)(?:\s+(?:in|into|to)?\s*(?:my|your|this)\s+(?:verse|void))?$/.test(t)
+    || /^(?:please\s+)?share\s+(?:my|this)\s+(?:verse|void)\s+live$/.test(t);
 }
 
 async function run(text, api) {
@@ -16,7 +16,7 @@ async function run(text, api) {
   if (!inviteOf(text)) return 'none';
   let me = null; try { me = JSON.parse(localStorage.getItem(ME_KEY) || 'null'); } catch (_) {}
   if (!me || !me.token) {
-    showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>An invite comes from a signed-in V01D. Say <b>remember me</b> first, then <b>invite someone</b>.</p>'; });
+    showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>An invite comes from a signed-in Verse. Say <b>remember me</b> first, then <b>invite someone</b>.</p>'; });
     return 'invite';
   }
   let j = null;
@@ -26,8 +26,8 @@ async function run(text, api) {
     return 'none';
   }
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your V01D as a faint presence, and what either of you summons shows on both.</p>'
-      + '<p><a target="_blank" rel="noopener"></a></p><p>Close the tab to end it. Your own V01D stays yours: nothing of theirs is saved here.</p><div class="src"></div>';
+    p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your Verse as a faint presence, and what either of you summons shows on both.</p>'
+      + '<p><a target="_blank" rel="noopener"></a></p><p>Close the tab to end it. Your own Verse stays yours: nothing of theirs is saved here.</p><div class="src"></div>';
   });
   const a = el && el.querySelector('a');
   if (a) { a.href = j.link; a.textContent = j.link; el.querySelector('.src').textContent = j.live ? 'Live across devices.' : 'The live relay is not on yet: for now, tabs in this browser share.'; }
@@ -37,7 +37,7 @@ async function run(text, api) {
 
 export default {
   name: 'invite',
-  examples: ['invite someone', 'invite a friend', 'invite someone into my Void', 'bring someone in', 'share my Void live'],
+  examples: ['invite someone', 'invite a friend', 'invite someone into my Verse', 'bring someone in', 'share my Verse live'],
   nearMisses: ['share this card', 'how do i invite someone to a zoom call', 'send an invite to the party', 'invite'],
   match(lower, text) { return inviteOf(text); },
   run,

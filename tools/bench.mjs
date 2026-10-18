@@ -1,6 +1,6 @@
 // The everyday benchmark: common asks replayed on the real page. tools/bench.json says what should answer each one (`want`, a
 // note from the page's own log a2m.void.loop.v1, alternatives with |). The score is how many are answered by what should answer
-// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Void, not their uptime.
+// them (when an ask has "before", those setup asks run first on the same page; and, when an ask has "says", whose visible answer matches that pattern); growth is that score going up. External services are stubbed with plausible data: this measures Verse, not their uptime.
 //   node tools/bench.mjs            prints each ask and what answered it, then the totals
 //   node tools/bench.mjs --score    prints only {"score","total","wrong":[...],"env","cores","pages","latency":{p50,p95,n}} (plus "inconclusive","note" when the machine was under load: tools/bench-load.mjs) (the tests read this; tools/bench.best.json is the floor)
 //   node tools/bench.mjs --last 10  replays only the last 10 asks (fast while growing a new round; the score and floor use all)
@@ -25,7 +25,7 @@ import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
-// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Void answers them.
+// finds the gaps fast. Add the ones worth keeping with tools/append.mjs once Verse answers them.
 // --again: probe only the asks the last probe missed (kept outside the repo), so a fix is checked in seconds, not a whole batch
 const AGAIN = path.join(os.tmpdir(), 'void-probe-misses-' + crypto.createHash('sha1').update(here).digest('hex').slice(0, 10) + '.json'); // one per checkout
 const probeFile = process.argv.includes('--again') ? AGAIN : process.argv.includes('--probe') ? process.argv[process.argv.indexOf('--probe') + 1] : null;
@@ -90,7 +90,7 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('translate.googleapis.com')) return r.fulfill(json([[['hola', 'hello']]]));
     if (u.includes('api.datamuse.com/sug')) return r.fulfill(json([{ word: 'necessary', score: 1 }]));
     if (u.includes('api.datamuse.com')) return r.fulfill(json([{ word: 'glad' }, { word: 'joyful' }, { word: 'cheerful' }, { word: 'content' }]));
-    if (u.includes('restcountries.com')) { // the country asked for, from Void's own built-in lists (Australia in full)
+    if (u.includes('restcountries.com')) { // the country asked for, from Verse's own built-in lists (Australia in full)
       const n = decodeURIComponent((u.match(/\/name\/([^?]+)/) || [])[1] || '').toLowerCase();
       if (n === 'australia' || !CAPITALS[n]) return r.fulfill(json([{ name: { common: 'Australia', official: 'Commonwealth of Australia' }, capital: ['Canberra'], population: 25687041, currencies: { AUD: { name: 'Australian dollar', symbol: '$' } }, languages: { eng: 'English' }, area: 7692024, flag: '🇦🇺', region: 'Oceania', subregion: 'Australia and New Zealand' }]));
       const t = n.replace(/\b\w/g, (x) => x.toUpperCase());
@@ -105,6 +105,8 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
   await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
+    // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
+    if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
@@ -173,7 +175,7 @@ for (const x of out) if (!probeFile || !x.right) console.log((x.right ? '  ok  '
 const n = a.score;
 // with --last N only part of the list ran: the asks that did not run stay in the replay file
 // say why the common misses happen, so a fix starts in the right file
-if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Void did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
+if (probeFile && out.some((x) => !x.right && /asked for code/.test(x.by))) console.log('("asked for code": Verse did not see code in the ask. Name the language in NAMED and give looksLikeCode a reason to count a short paste, both in void-live-deploy/lib/code-review.js)');
 if (probeFile && out.some((x) => !x.right && /^review .* 0 \(wrong value\)/.test(x.by))) console.log('("review … 0 (wrong value)": the review found nothing. Add a rule to RULES in void-live-deploy/lib/code-review.js and a case to tools/review.test.mjs)');
 if (probeFile) { const missed = asks.filter((a) => !todo.includes(a)).concat(todo.filter((_, i) => !out[i].right)); fs.writeFileSync(AGAIN, JSON.stringify(missed, null, 1)); if (missed.length) console.log('(node tools/bench.mjs --again probes just these ' + missed.length + ' after a fix)'); }
 if (GROUND) {

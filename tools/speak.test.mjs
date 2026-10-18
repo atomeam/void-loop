@@ -1,4 +1,4 @@
-// node --test tools/speak.test.mjs: Void's spoken voice (frontier #16, first piece). Hold Space to talk; Void answers out loud
+// node --test tools/speak.test.mjs: Verse's spoken voice (frontier #16, first piece). Hold Space to talk; Verse answers out loud
 // in one low voice, sentence by sentence (void-live-deploy/lib/speak.js, wired in void.html).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -19,9 +19,9 @@ test('the voice: the page\'s language, a low one where there is one, never a nov
 });
 
 test('what is said: no code, links, citation marks or source line; sentences in order, the first one alone so it starts at once', () => {
-  const card = 'Canberra is the capital of Australia. It was chosen in 1908 as a compromise between Sydney and Melbourne [1].\n```js\nconst x = 1;\n```\nSee https://example.com/a for more.\nSource: [1] Wikipedia · written by Void';
+  const card = 'Canberra is the capital of Australia. It was chosen in 1908 as a compromise between Sydney and Melbourne [1].\n```js\nconst x = 1;\n```\nSee https://example.com/a for more.\nSource: [1] Wikipedia · written by Verse';
   const s = speakable(card);
-  for (const bad of [/const x/, /https?:/, /\[1\]/, /Source:/, /written by Void/]) assert.doesNotMatch(s, bad);
+  for (const bad of [/const x/, /https?:/, /\[1\]/, /Source:/, /written by Verse/]) assert.doesNotMatch(s, bad);
   const c = chunks(card);
   assert.equal(c[0], 'Canberra is the capital of Australia.');
   assert.match(c.join(' '), /compromise between Sydney and Melbourne/);
@@ -65,7 +65,7 @@ test('the pacing: short phrases with a beat at commas, colons, dashes and senten
   assert.ok(VOICE.pitch <= 0.65 && VOICE.rate < 0.95, 'a low, steady robot');
 });
 
-test('the cadence (asked by Void): precise content is said slower than plain talk, never below 0.78', () => {
+test('the cadence (asked by Verse): precise content is said slower than plain talk, never below 0.78', () => {
   const plain = cadence('Canberra is the capital of Australia, chosen as a compromise between Sydney and Melbourne.');
   const forge = cadence('Forge: print the bracket at 0.2 mm layers, 20% infill, nozzle at 210 °C; step 3 sets the tolerance to 0.15 mm.');
   const sim = cadence('The simulation ran 400 steps; at step 120 the ratio hit 1.6 and the voltage settled at 4.8 V.');

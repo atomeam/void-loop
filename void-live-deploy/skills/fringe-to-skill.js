@@ -3,7 +3,7 @@
  * published fringe family from the ledger (tools/fringe.json, written to /fringe/ledger.json by tools/fringe.mjs --publish) with
  * its live drafts, its research notes' findings, what its runs were built toward (the ledger's `near`: a miss-board target or a
  * router skill) and the core skills its notes name, each a link from the experiment to the skill it grew into.
- * Asked by Void (ask-20261013-0026-2: "a dashboard that visualizes the relationship between a fringe experiment and its potential
+ * Asked by Verse (ask-20261013-0026-2: "a dashboard that visualizes the relationship between a fringe experiment and its potential
  * as a permanent skill"; ask-20261013-1719-1 and -2: link ledger entries to the router's near misses, flag what matches no skill).
  * Read-only: a family whose notes name no skill is shown as "no skill yet", which is the flag; nothing is scored or counted
  * about people.
@@ -12,10 +12,10 @@
 export const LEDGER_URL = '/fringe/ledger.json';
 
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
-const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|v01d\'?s\\s+)?'
+const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|(?:verse|void)\'?s\\s+|(?:verse|v01d)\'?s\\s+)?'
   + '(?:fringe\\s+to\\s+skills?(?:\\s+(?:card|map|board))?|fringe\\s+(?:ledger|findings|research(?:\\s+notes)?|experiments?\\s+(?:to|into)\\s+skills?)|fringe\\s+experiments?(?:\\s+(?:findings|results|notes))?|from\\s+fringe\\s+to\\s+skills?)$'
   + '|^(?:which|what)\\s+skills?\\s+(?:came|grew|come|grows?)\\s+(?:out\\s+of|from)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?$'
-  + '|^what\\s+(?:did|have|has)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?\\s+(?:teach|taught|learn|learned|found|find)(?:\\s+(?:you|us|void|v01d))?$', 'i');
+  + '|^what\\s+(?:did|have|has)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?\\s+(?:teach|taught|learn|learned|found|find)(?:\\s+(?:you|us|(?:verse|void)|(?:verse|v01d)|verse))?$', 'i');
 export const asksFringe = (t) => WHEN.test(norm(t));
 
 /** the card's rows from ledger.json: each published family, newest first, with the words the card shows. Pure. */

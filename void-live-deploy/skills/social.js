@@ -1,5 +1,5 @@
 /**
- * social skill - V01D's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each
+ * social skill - Verse's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each
  * network's official embed or open public API (no login, no keys, nothing stored). X: the official blockquote embed with
  * platform.twitter.com/widgets.js (posts by link). Bluesky: embed.bsky.app for a post link; the public AppView
  * (public.api.bsky.app, app.bsky.feed.getAuthorFeed) for a handle. Mastodon: the server's own /embed for a post link;
@@ -30,7 +30,7 @@ async function run(text, api) {
   const el = showPage((p) => { p.className += ' social-card'; p.innerHTML = '<h2>Social</h2><div class="sc-body"><p class="g-sub">loading…</p></div>'; });
   const body = el.querySelector('.sc-body'), src = (s) => el.insertAdjacentHTML('beforeend', '<div class="src">' + s + ' · public posts only · nothing stored</div>');
   try {
-    if (q.open) { body.innerHTML = '<p>Paste a post link from X, Bluesky or Mastodon, or ask for a handle:</p><ul><li><a data-ask="bsky.app.bsky.social feed" href="#">bsky.app on Bluesky</a></li><li><a data-ask="@Mastodon@mastodon.social" href="#">@Mastodon@mastodon.social</a></li></ul><p class="g-sub" style="font-size:12px">The start of V01D social: read-only public feeds. Posting, DMs and your own timeline need sign-in to each network (docs/everything-app.md).</p>'; return 'social'; }
+    if (q.open) { body.innerHTML = '<p>Paste a post link from X, Bluesky or Mastodon, or ask for a handle:</p><ul><li><a data-ask="bsky.app.bsky.social feed" href="#">bsky.app on Bluesky</a></li><li><a data-ask="@Mastodon@mastodon.social" href="#">@Mastodon@mastodon.social</a></li></ul><p class="g-sub" style="font-size:12px">The start of Verse social: read-only public feeds. Posting, DMs and your own timeline need sign-in to each network (docs/everything-app.md).</p>'; return 'social'; }
     if (q.net === 'x') {
       body.innerHTML = '<blockquote class="twitter-tweet" data-theme="dark"><a href="' + esc(q.url) + '">Post by @' + esc(q.user) + ' on X</a></blockquote>';
       const s = document.createElement('script'); s.async = true; s.src = 'https://platform.twitter.com/widgets.js'; body.appendChild(s);

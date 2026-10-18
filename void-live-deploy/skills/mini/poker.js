@@ -1,5 +1,5 @@
 /**
- * poker miniature — a felt card table standing in the void: your two cards face up in front of you, Void's two face down
+ * poker miniature — a felt card table standing in the void: your two cards face up in front of you, Verse's two face down
  * across the table (they turn over only at a showdown, because they are only in `data` then), the board in the middle,
  * and the stacks and the pot as clay chips. Built from code; the card keeps the rules (skills/poker-rules.js).
  * data: { mine: [c, c], theirs: [c, c] | null, board: [c...], pot, stacks: { you, void }, hand }
@@ -46,7 +46,7 @@ export default async function build(ctx, data) {
   function paint(d) {
     for (const o of [...layer.children]) { layer.remove(o); if (Array.isArray(o.material)) o.material[2].dispose(); } // card faces are made per paint; the textures stay cached
     const fresh = d.hand !== lastHand; lastHand = d.hand;
-    // you sit at -z: your cards near you, Void's across the table, the board in a row in the middle
+    // you sit at -z: your cards near you, Verse's across the table, the board in a row in the middle
     (d.mine || []).forEach((c, k) => { const m = card(c); m.position.set((0.5 - k) * (CW + 0.008), Y + CT / 2, -0.11); m.rotation.y = Math.PI + (k ? 0.06 : -0.06); layer.add(m); // turned to read the right way up from your seat
       if (fresh) { const to = m.position.clone(); m.position.set(0, Y + 0.05, 0.16); tw.add(m, to, { dur: 0.4, hop: 0.03, delay: k * 0.15 }); } });
     const theirs = d.theirs || [null, null];

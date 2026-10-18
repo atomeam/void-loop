@@ -3,13 +3,13 @@
 //   { model, from, to, file? }  -> { model, total, results: [{ i, text, ms } | { i, error, ms }] }
 //                                  the built-in asks from..to-1 (lib/bench-asks.js), at most CHUNK a call, with the messages
 //                                  /api/answer sends, run with its options (ANSWER_RUN: thinking off, its token budget) and its
-//                                  think-stripping (Void's live facts for self asks, pages masked); scoring stays in the tool
+//                                  think-stripping (Verse's live facts for self asks, pages masked); scoring stays in the tool
 //   { probe: true }             -> { ok, asks, chunk, catalog, clef }  the route is there and the key works; the text models the
 //                                  binding lists, with prices when it gives them (for the tool's spend plan); and what the
 //                                  binding knows of Clef and Clef-flash (frontier #9: tools/clef-probe.mjs prints it, so the
 //                                  router's Clef call is written to the real input shape, not a guess)
 //   { route: true, asks: [..] } -> { route, results: [{ i, embed: { skill|null, score, ms, nearest? }, clef: { skill|null, p, ms } }] }
-//                                  nearest (on a none): { skill, score, bar, held }, the skill the embedding came closest to and what held it back (asked by Void)
+//                                  nearest (on a none): { skill, score, bar, held }, the skill the embedding came closest to and what held it back (asked by Verse)
 //                                  frontier #9: both routers on up to ROUTE_CHUNK asks (lib/router.js's embedding guess and
 //                                  Clef-flash, lib/clef.js); null = no skill, answer in words; a failure is { error }
 // What a stranger could make it do: nothing (owner only). With the key: run at most CHUNK built-in asks a call, on a free

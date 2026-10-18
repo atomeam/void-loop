@@ -1,5 +1,5 @@
 /**
- * Practice sessions that say whether they worked (asked by Void: "Integrate a 'success_rate' metadata update into the practice
+ * Practice sessions that say whether they worked (asked by Verse: "Integrate a 'success_rate' metadata update into the practice
  * timer so every session logs how many attempts actually resulted in a successful skill execution", "... whether the skill
  * execution actually met the goal", "... so that Clef's 'yes/no' decision is weighed against the execution quality").
  * A practice timer a plan put up (skills/intent.js) knows its goal. When it reaches 0:00 the timer asks one question, did

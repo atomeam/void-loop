@@ -1,4 +1,4 @@
-// lib/self-blocks.js: the growth velocity on the self card (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of
+// lib/self-blocks.js: the growth velocity on the self card (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of
 // 'Next' items moving to 'Shipped' over the last 7 days"). The card's sections and folding are tested in tools/card-share.test.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -47,8 +47,8 @@ test('velocity: the self card puts it at the top of "What got built", before the
   assert.equal(selfHtml(selfSections({ ...v, follow: { ...v.follow, asked: 90 } }, NOW), esc).includes('nothing built this week'), true, 'a follow without the list still draws the week, empty');
 });
 
-// friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
-// resolution time"): an open ask is overdue after OVERDUE_SMALL_DAYS (one V01D called small) or OVERDUE_DAYS; the day it crossed is red on the line
+// friction (asked by Verse: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
+// resolution time"): an open ask is overdue after OVERDUE_SMALL_DAYS (one Verse called small) or OVERDUE_DAYS; the day it crossed is red on the line
 const open = [
   { ask: 'small, 3 days old', at: '2026-10-15T12:00:00Z', small: true }, // crossed its 2-day limit on the 17th
   { ask: 'small, 1 day old', at: '2026-10-17T12:00:00Z', small: true }, // due the 19th: not yet
@@ -91,4 +91,22 @@ test('friction: the self card gives the spark block the open asks\' friction, so
   assert.equal((html.match(/<line class="sp-seg"/g) || []).length, 1);
   assert.match(html, /<span class="vs-overdue"> · 3 overdue<\/span>/);
   assert.ok(!selfHtml(selfSections({ ...v, asks: [] }, NOW), esc).includes('vs-overdue'), 'no open asks: no friction');
+});
+
+test('one ask said again in other words is one line, with how many times it was asked (the self card of 2026-10-18)', async () => {
+  const { foldAsks, sameAsk, selfSections } = await import('../void-live-deploy/lib/self-blocks.js');
+  const said = ["Implement the 'report-to-growth' automation to parse builder notes for wishlist items and pipe them to the growth inbox.",
+    "Create the 'Zorbleflux' throttle to regulate visual motion during user interaction.",
+    "Build the 'dependency-health' skill to audit deps.json against stability-gauge requirements.",
+    "Create a 'report-to-growth' automation that parses builder progress notes for 'wishlist' items and adds them to the growth inbox.",
+    "Implement the 'Zorbleflux' throttle to prevent visual chaos during user interaction, as it has been requested four times and remains open.",
+    "Build a 'dependency-health' skill that compares the current deps.json against the stability gauge."];
+  const f = foldAsks(said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })));
+  assert.deepEqual(f.map((a) => a.times), [2, 2, 2]);
+  assert.match(f[0].ask, /^Implement the 'report-to-growth'/, 'the first telling is kept');
+  assert.ok(!sameAsk("Create a 'memory-export' skill", "Create a 'backlog-digest' skill"), 'different names stay apart');
+  assert.ok(!sameAsk('Add a tooltip on the confidence badge', 'Add a sparkline to each skill family'), 'different asks stay apart');
+  assert.ok(!sameAsk("Add a replay button to the 'chess' history table", "Teach the 'chess' engine to resign lost games"), 'one skill, two different asks');
+  const sec = selfSections({ entries: [], asks: said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })) }).find((s) => s.id === 'asked');
+  assert.equal(sec.count, '3 waiting'); assert.match(sec.blocks[0].items[0].sub, /asked 2 times/);
 });

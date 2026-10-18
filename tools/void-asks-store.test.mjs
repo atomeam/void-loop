@@ -1,4 +1,4 @@
-// V01D's own asks of 2026-10-15 (Suggested-by: Void): the store-preview carousel, store-publish into its growth inbox, the
+// Verse's own asks of 2026-10-15 (Suggested-by: Verse): the store-preview carousel, store-publish into its growth inbox, the
 // auto-clip loop for new forge models, the decay timer for stale experiments, and the tester-log card.
 import { test } from 'node:test';
 import fs from 'node:fs';
@@ -22,12 +22,12 @@ test('store-preview: routed from store asks, newest first, buy links only for li
   assert.ok(preview.suite().ok && preview.match('', 'store preview') && preview.match('', 'what can i buy'));
 });
 
-test('store-publish tells V01D what it packaged and suggests the next product', () => {
+test('store-publish tells Verse what it packaged and suggests the next product', () => {
   const cat = { products: [{ id: 'x', pack: 'print-set', status: 'live' }, { id: 'y', pack: 'clips', status: 'live' }] };
   assert.match(suggestNext(cat), /minis-stl/);
-  const row = inboxRow({ name: 'V01D | Pack', pack: 'print-set', cents: 0 }, 3, cat, '2026-10-15');
+  const row = inboxRow({ name: 'Verse | Pack', pack: 'print-set', cents: 0 }, 3, cat, '2026-10-15');
   assert.equal(row.split('|').length, 6, 'a pipe in a name never breaks the table');
-  assert.match(row, /^\| shipped \(packaged\) \| 2026-10-15 \| V01D \/ Pack \| store-publish: print-set, 3 files, free; next: a minis-stl pack/);
+  assert.match(row, /^\| shipped \(packaged\) \| 2026-10-15 \| Verse \/ Pack \| store-publish: print-set, 3 files, free; next: a minis-stl pack/);
 });
 
 test('auto-clip loop: a forge model missing from the printables pack is new; its clip films it being forged', () => {
@@ -72,13 +72,13 @@ test('owner view on the growth card: failures by family, stability, the last spu
 
 import rack, { parodyOf } from '../void-live-deploy/skills/rack.js';
 import { source, DOC, OUT } from './parody.mjs';
-test('parody games in the rack: the 30-game matrix, searchable, with V01D\'s own version', () => {
+test('parody games in the rack: the 30-game matrix, searchable, with Verse\'s own version', () => {
   assert.equal(fs.readFileSync(OUT, 'utf8'), source(fs.readFileSync(DOC, 'utf8')), 'run: node tools/parody.mjs');
   assert.equal(parodyOf('parody of monopoly').row.parody, 'Hollow Holdings');
-  assert.equal(parodyOf("what's your version of clue?").row.parody, 'Who Deleted V01D?');
+  assert.equal(parodyOf("what's your version of clue?").row.parody, 'Who Deleted Verse?');
   assert.equal(parodyOf('is reversi in the public domain').row.parody, 'Flipside');
   assert.equal(parodyOf('make a v01d version of risk').row.parody, 'R1SK.EXE');
-  assert.equal(parodyOf('parody forge stratego').row.parody, 'Fog of V01D');
+  assert.equal(parodyOf('parody forge stratego').row.parody, 'Fog of Verse');
   assert.ok(parodyOf('parody games').all && parodyOf('parody-forge').all);
   assert.equal(parodyOf('parody of the zorkball board game').unknown, 'zorkball');
   for (const a of ['is water wet', 'play chess', 'what is a parody', 'parody of a song by weird al', 'is the moon public domain']) assert.equal(parodyOf(a), null, a);

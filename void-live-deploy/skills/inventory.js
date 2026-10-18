@@ -1,8 +1,8 @@
 /**
- * inventory skill — assimilate row 6 (Inventory orchestrator → Void)
+ * inventory skill — assimilate row 6 (Inventory orchestrator → Verse)
  * Feeds agents and anyone who asks with "already built" rows so they reuse before rebuilding.
  * Skill ids come from skills/index.json so the list cannot drift from the registry.
- * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
+ * No network. Tessl / BoardKit exist outside Verse; this is Verse's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
 import familyList from './families.json' with { type: 'json' };
@@ -25,7 +25,7 @@ const WHAT = {
   pollen: 'pollen',
   spanish: 'answers in Spanish',
   translate: 'translation',
-  'rebuild-map': 'assimilation map (what is being rebuilt as V01D)',
+  'rebuild-map': 'assimilation map (what is being rebuilt as Verse)',
   place: 'street maps and places',
   worldtime: 'world clock, time zones, sunrise/sunset',
   define: 'definitions',
@@ -42,7 +42,7 @@ const WHAT = {
   util: 'passwords, QR, colours, moon, lorem',
   remind: 'a reminder held on the confirm line',
   calendar: 'calendar / agenda on this device',
-  today: "what V01D did today (this device's loop log)",
+  today: "what Verse did today (this device's loop log)",
   book: 'books (Open Library)',
   show: 'TV shows (TVMaze)',
   sport: 'teams (TheSportsDB)',
@@ -60,16 +60,16 @@ export const TOOLS_BUILT = [
   { id: 'existing-tools.md', what: 'registry of tools to check before building anything' },
   { id: 'confirm line', what: 'yes before any send, book or spend' },
   { id: 'Workers AI + router', what: 'Gemma answers; bge-m3 routes; paid model only from earnings' },
-  { id: 'passkeys', what: 'your V01D follows you across devices' },
-  { id: 'WebMCP tools.json', what: 'V01D tools declared for browser agents' },
+  { id: 'passkeys', what: 'your Verse follows you across devices' },
+  { id: 'WebMCP tools.json', what: 'Verse tools declared for browser agents' },
   { id: 'Gumroad catalog', what: 'live store products when asked' },
   { id: 'defences middleware', what: 'limits, secret masking, CSP, no cross-site writes' },
   { id: 'growth inbox', what: 'unfinished features written down before they are built' },
 ];
 
 export const ASSIMILATE_LIVE = [
-  { id: 'board (misses)', what: 'show the board — what people asked that V01D cannot answer yet' },
-  { id: 'skill files', what: 'edit engine step 1 — skills as files V01D loads' },
+  { id: 'board (misses)', what: 'show the board — what people asked that Verse cannot answer yet' },
+  { id: 'skill files', what: 'edit engine step 1 — skills as files Verse loads' },
   { id: 'today', what: 'what did you do today' },
   { id: 'work', what: 'find me work as a …' },
   { id: 'inventory', what: 'already built rows (this skill + board section)' },
@@ -82,9 +82,9 @@ export const ASSIMILATE_LIVE = [
 export function inventoryOf(text) {
   const t = CLEAN(text);
   if (!t) return null;
-  if (/^(?:what\s+(?:can|could)\s+(?:you|i|void|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
-    && !/^what\s+can\s+(?:you|i|void)\s+make$/i.test(t)) return { kind: 'printable' };
-  // the print ledger (asked by Void: a feedback loop between print-file and inventory): what has actually left for a printer
+  if (/^(?:what\s+(?:can|could)\s+(?:you|i|(?:verse|void)|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
+    && !/^what\s+can\s+(?:you|i|(?:verse|void))\s+make$/i.test(t)) return { kind: 'printable' };
+  // the print ledger (asked by Verse: a feedback loop between print-file and inventory): what has actually left for a printer
   if (/^(?:what\s+(?:have\s+(?:i|we|you)\s+printed|(?:physical\s+)?(?:things|assets|objects)\s+(?:do\s+(?:i|we|you)\s+have|exist)|physical\s+assets\s+exist)|(?:show\s+(?:me\s+)?)?(?:my|the)\s+(?:print\s+ledger|printed\s+things|physical\s+inventory)|physical\s+inventory)$/i.test(t)) return { kind: 'printed' };
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
@@ -97,7 +97,7 @@ export function inventoryOf(text) {
   return null;
 }
 
-/** What Void can make in the world right now: every forge thing whose file passes the same check "print it" runs
+/** What Verse can make in the world right now: every forge thing whose file passes the same check "print it" runs
  *  (forge-rules.js verifyStl, the file read back and held to its model), with its size and solid-PLA weight; one that
  *  fails is held back with the reason. Computed from the recipes on each ask: nothing about anyone is kept. */
 export async function printable(verify) {
@@ -155,7 +155,7 @@ function pageHtml(esc, hit) {
     }
     const rows = found.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
     return '<h2>Already built · ' + esc(hit.q) + '</h2><div class="sub">Matches in skills, tools and live assimilate rows · reuse before rebuilding</div><ul>' + rows + '</ul>'
-      + '<div class="src">Source: V01D inventory · skills/index.json</div>';
+      + '<div class="src">Source: Verse inventory · skills/index.json</div>';
   }
   const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
@@ -165,7 +165,7 @@ function pageHtml(esc, hit) {
     + '<div class="sub" style="margin-top:12px">Skills</div><ul>' + skills + '</ul>'
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>'
     + '<div class="sub">Assimilate (live)</div><ul>' + assim + '</ul>'
-    + '<div class="src">Source: V01D inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
+    + '<div class="src">Source: Verse inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';
 }
 
 async function run(text, api) {

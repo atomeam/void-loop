@@ -1,6 +1,6 @@
-# void.edit-engine — how Void edits Void (row 2 of void.assimilate.md)
+# void.edit-engine — how Verse edits Verse (row 2 of void.assimilate.md)
 
-Goal: someone types "learn to <X>" (or Void picks the top ask on the board) and Void builds the skill, checks itself, and goes live on its own. No approval step. What Void learns, everyone gets.
+Goal: someone types "learn to <X>" (or Verse picks the top ask on the board) and Verse builds the skill, checks itself, and goes live on its own. No approval step. What Verse learns, everyone gets.
 
 ## The one design change that makes this safe: skills become files
 Today every skill is hand-merged into one 120 KB void.html. A model rewriting that file is how you break the whole site.

@@ -16,7 +16,7 @@ test('pong and snake asks route to their games, near misses do not', () => {
   assert.ok(pong.match('pong', 'pong')); assert.ok(snake.match('snake', 'snake'));
 });
 
-test('pong: V01D predicts the ball through wall bounces', () => {
+test('pong: Verse predicts the ball through wall bounces', () => {
   const s = P.create(3); s.ball = { x: 100, y: 20, vx: 200, vy: -200 };
   const y = P.predictY(s); assert.ok(y >= 0 && y <= P.H);
   // simulate the ball alone to the paddle line and compare
@@ -24,38 +24,38 @@ test('pong: V01D predicts the ball through wall bounces', () => {
   assert.ok(Math.abs(b.y - y) < 3, b.y + ' vs ' + y);
 });
 
-test('pong: a still player loses to V01D, a game ends at 7, and every point has a reason', () => {
+test('pong: a still player loses to Verse, a game ends at 7, and every point has a reason', () => {
   const s = P.create(5);
   for (let i = 0; i < 200000 && !s.over; i++) P.step(s, 1 / 120, {});
   assert.equal(s.over, 'void'); assert.equal(s.void.score, P.WIN); assert.ok(s.lastWhy);
 });
 
-test('pong: V01D is beatable (a perfect tracker scores on it)', () => {
+test('pong: Verse is beatable (a perfect tracker scores on it)', () => {
   const s = P.create(9); let you = 0;
   for (let i = 0; i < 400000 && !s.over; i++) { P.step(s, 1 / 120, { y: s.ball.y }); you = s.you.score; }
   assert.ok(you > 0, 'you scored ' + you);
 });
 
-test('snake: V01D eats, never turns back on itself, and says why', () => {
+test('snake: Verse eats, never turns back on itself, and says why', () => {
   const s = S.create(11); s.you.alive = true;
   let ate = 0, len = s.void.body.length;
   for (let i = 0; i < 400 && !s.over; i++) { S.turn(s, i % 40 < 20 ? 'down' : 'up'); const before = s.void.body.length; S.tick(s); if (s.void.body.length > before) ate++; }
-  assert.ok(s.void.body.length > len || ate > 0, 'V01D grew'); assert.ok(s.why.length > 5);
+  assert.ok(s.void.body.length > len || ate > 0, 'Verse grew'); assert.ok(s.why.length > 5);
 });
 
-test('snake: crashing into a wall ends you and V01D wins', () => {
+test('snake: crashing into a wall ends you and Verse wins', () => {
   const s = S.create(2);
   S.turn(s, 'up'); for (let i = 0; i < 10 && !s.over; i++) S.tick(s);
   assert.equal(s.you.alive, false); assert.equal(s.over, 'void');
 });
 
-test('snake: V01D alone survives a long game (it keeps room to move)', () => {
+test('snake: Verse alone survives a long game (it keeps room to move)', () => {
   const s = S.create(4); s.you.alive = false; s.you.body = [[0, 0]];
   for (let i = 0; i < 600 && s.void.alive; i++) { s.over = null; S.tick(s); }
   assert.ok(s.void.alive || s.void.body.length > 12, 'length ' + s.void.body.length);
 });
 
-// the ghost (asked by Void): play against your own best Pong game or Snake run
+// the ghost (asked by Verse): play against your own best Pong game or Snake run
 import * as G from '../void-live-deploy/lib/arcade-ghost.js';
 const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; };
 

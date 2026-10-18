@@ -1,7 +1,7 @@
 /**
- * own-parts skill: V01D's own components by name (owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card).
+ * own-parts skill: Verse's own components by name (owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card).
  * "show me the site test card", "open the book", "where is the status page", "the rule registry view": the ask names a part of
- * V01D (lib/own-parts.js, one table), so it goes to the skill that shows that part, ranked ahead of every generic skill and the
+ * Verse (lib/own-parts.js, one table), so it goes to the skill that shows that part, ranked ahead of every generic skill and the
  * article fallback. It draws nothing itself: it runs the part's skill on the ask that skill already answers and names that
  * skill as the one that answered (part), so the log and the benchmark read skill:growth, not skill:own-parts.
  * Contract: { name, examples, nearMisses, match(lower, text), part(lower, text), run(text, api) }

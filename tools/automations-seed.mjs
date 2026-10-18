@@ -1,7 +1,7 @@
 #!/usr/bin/env node
-// Puts V01D's seeded automations (automations/*.json) on the site through its own door, POST /api/automations with the owner
+// Puts Verse's seeded automations (automations/*.json) on the site through its own door, POST /api/automations with the owner
 // token, so every rule passes the same checks a rule made on the card does (lib/automations.js validate). The same id replaces
-// a rule, so a second run changes nothing. Owner, 2026-10-14: "make sure V01D has 10 new automations hourly".
+// a rule, so a second run changes nothing. Owner, 2026-10-14: "make sure Verse has 10 new automations hourly".
 //   node tools/automations-seed.mjs --check            validate only (no network): what the fast checks run
 //   node tools/automations-seed.mjs [file]             seed (VOID_OWNER_TOKEN, VOID_SITE overrides https://a-to-mind.com)
 import { readFileSync } from 'node:fs';

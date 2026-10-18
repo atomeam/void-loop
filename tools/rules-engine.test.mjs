@@ -1,4 +1,4 @@
-// V01D's rules engine (frontier #35): rules are data, the engine is pure, clashes are settled in a fixed order and written in plain words.
+// Verse's rules engine (frontier #35): rules are data, the engine is pure, clashes are settled in a fixed order and written in plain words.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -250,7 +250,7 @@ test('three games at once play a few turns and every clash is written in plain w
   const stack = stackOf('duel', 'mana', 'tribute'), play = playTurns(stack, { turns: 6 }), lines = playLines(play);
   assert.ok(play.steps.length > 8); assert.ok(lines.some((l) => l.startsWith('Clash on the summon: the tribute rules')));
   assert.ok(lines.every((l) => typeof l === 'string' && l.length > 3 && !/undefined|\[object|NaN/.test(l)), lines.find((l) => /undefined|\[object|NaN/.test(l)));
-  assert.ok(lines.some((l) => /^V01D /.test(l)) && lines.some((l) => /^You /.test(l)));
+  assert.ok(lines.some((l) => /^Verse /.test(l)) && lines.some((l) => /^You /.test(l)));
   assert.equal(playLines(playTurns(stackOf('duel'), { turns: 2 })).some((l) => l.startsWith('Clash')), false, 'the duel alone clashes with nothing');
   const everything = playTurns(SET_NAMES.map(set), { turns: 8 }); assert.ok(everything.steps.length > 8 && everything.load.length === 0);
 });

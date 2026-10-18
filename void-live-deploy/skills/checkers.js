@@ -1,5 +1,5 @@
 /**
- * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Void.
+ * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Verse.
  * "play checkers", "checkers", "lets play draughts" summons it; it stays until thrown off. You are the dark (rosewood) men
  * and move first. Tap a man, then where it lands; for a multi-jump tap each landing in turn.
  * The rules live in skills/checkers-rules.js (forced captures, multi-jumps, crowning, a king moves both ways).
@@ -8,15 +8,15 @@
 import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as K from './checkers-rules.js';
-import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
 
 export function checkersOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|i'd like to|wanna|want to)\s+)?(?:play|start|open|summon|begin|new|set up|setup)?\s*(?:me\s+|us\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:new\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:3d\s+)?(?:checkers|draughts)(?:\s+(?:game|board|set|match))?(?:\s+(?:with|against|vs\.?)\s+(?:me|void|you|the computer))?$/.test(t)) return { kind: 'game', fresh: /\bnew\b/.test(t) };
+  if (/^(?:(?:let'?s|lets|can we|i want to|i'd like to|wanna|want to)\s+)?(?:play|start|open|summon|begin|new|set up|setup)?\s*(?:me\s+|us\s+)?(?:a\s+|an\s+|the\s+|some\s+)?(?:new\s+)?(?:game\s+of\s+|round\s+of\s+)?(?:3d\s+)?(?:checkers|draughts)(?:\s+(?:game|board|set|match))?(?:\s+(?:with|against|vs\.?)\s+(?:me|(?:verse|void)|you|the computer))?$/.test(t)) return { kind: 'game', fresh: /\bnew\b/.test(t) };
   return null;
 }
 
-const STATUS = { 'dark-wins': 'You win', 'light-wins': 'V01D wins', draw: 'A draw · forty moves without progress' };
+const STATUS = { 'dark-wins': 'You win', 'light-wins': 'Verse wins', draw: 'A draw · forty moves without progress' };
 const thinking = new Map(); // th.id -> pending reply, so a re-render never starts a second one
 const freshState = () => ({ s: K.create(), sel: -1, hops: [], moves: 0 });
 const btnCss = 'font:inherit;font-size:12px;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 12px;cursor:pointer';
@@ -63,7 +63,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = st().s, code = K.status(s), n = K.count(s);
     const forced = s.turn === 'd' && K.legalMoves(s).some((m) => m.captures.length);
-    status.textContent = STATUS[code] || (thinking.has(th.id) ? 'V01D is thinking…' : s.turn === 'd' ? (forced ? 'Your move · a capture is forced' : 'Your move') : 'V01D to move');
+    status.textContent = STATUS[code] || (thinking.has(th.id) ? 'Verse is thinking…' : s.turn === 'd' ? (forced ? 'Your move · a capture is forced' : 'Your move') : 'Verse to move');
     status.textContent += ' · ' + (n.d + n.D) + '–' + (n.l + n.L);
     const h = st().hist || []; back.disabled = !h.length; back.style.opacity = h.length ? '1' : '.4';
     if (mini) mini.update(data()); else if (flat) flat();
@@ -72,7 +72,7 @@ function mount(th, stageApi) {
     if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([st().s]).slice(-60);
     st().s = K.apply(st().s, m); st().sel = -1; st().hops = []; st().moves++;
-    // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
+    // the game ended on the board: one line on this device's match history (asked by Verse); a take-back after that plays on without a second line
     const code = K.status(st().s);
     if (code !== 'playing' && !st().logged) { st().logged = true; finish('checkers', code === 'dark-wins' ? 'win' : code === 'light-wins' ? 'loss' : 'draw', { moves: Math.ceil(st().moves / 2), minutes: minutesSince(st().started) }); }
     save(); paint();
@@ -80,7 +80,7 @@ function mount(th, stageApi) {
   function voidTurn() {
     const s = st().s;
     if (s.turn !== 'l' || K.status(s) !== 'playing' || thinking.has(th.id)) return;
-    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Void thinks on this thread
+    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Verse thinks on this thread
       .then((m) => new Promise((res) => setTimeout(() => res(m), 150))).then((m) => {
         thinking.delete(th.id);
         if (st().s !== s || !m) { paint(); return; }
@@ -123,7 +123,7 @@ function mount(th, stageApi) {
           m.style.cssText = 'width:76%;height:76%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(cell * 0.4) + 'px;color:#e8c26a;box-shadow:inset 0 -3px 0 rgba(0,0,0,.35),0 2px 3px rgba(0,0,0,.4);background:' + (dark ? 'radial-gradient(circle at 40% 35%,#8a3b2a,#4a1a12)' : 'radial-gradient(circle at 40% 35%,#f6e2bd,#c9a46e)');
           if (p === 'D' || p === 'L') m.textContent = '♛'; b.appendChild(m); }
         b.style.boxShadow = sq === d.selected ? 'inset 0 0 0 3px #ffd36b' : tg.has(sq) ? 'inset 0 0 0 3px #9fe08a' : d.hops.includes(sq) ? 'inset 0 0 0 99px rgba(159,224,138,.3)' : d.movable.includes(sq) ? 'inset 0 0 0 2px rgba(255,211,107,.6)' : 'none';
-        b.setAttribute('aria-label', 'abcdefgh'[sq & 7] + ((sq >> 3) + 1) + (p ? { d: ' your man', D: ' your king', l: ' V01D man', L: ' V01D king' }[p] : '')); });
+        b.setAttribute('aria-label', 'abcdefgh'[sq & 7] + ((sq >> 3) + 1) + (p ? { d: ' your man', D: ' your king', l: ' Verse man', L: ' Verse king' }[p] : '')); });
     };
   }
   again.addEventListener('click', (e) => { e.stopPropagation(); thinking.delete(th.id); th.state = freshState(); save(); paint(); });

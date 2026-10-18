@@ -1,4 +1,4 @@
-// Void's facts about itself, for the answer engine (void-live-deploy/lib/self-context.js): what it is (llms.txt), and the
+// Verse's facts about itself, for the answer engine (void-live-deploy/lib/self-context.js): what it is (llms.txt), and the
 // growth inbox (domains/growth-inbox.md: what shipped, what is still open), its games and the cards that have a 3D miniature
 // (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks, the claim
 // being built now (domains/forethinkers/index.md, domains/void.frontier.md) and the last commits on main (git log). Skills, the will and its reflections are read live at answer time.
@@ -17,19 +17,19 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'void-live-deploy/self.json');
 const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 
-// skills that are games Void plays with you (names as in skills/index.json)
+// skills that are games Verse plays with you (names as in skills/index.json)
 export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'connect4'];
 
-// domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest) and Void's terms for its parts, versioned;
+// domains/void.canon.md: Adam's words about what Verse is (motto, VoidQuest) and Verse's terms for its parts, versioned;
 // '(not written yet)' stays unknown
 export function readCanon(text) {
   const t = String(text || ''), sec = (h) => clip((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1], 600);
   const known = (v) => (v && !/^\(not written yet\)$/i.test(v) ? v : null);
-  // terms: '- **name**: what it is' lines under ## Terms (Void's names for its own parts); left out when there are none
+  // terms: '- **name**: what it is' lines under ## Terms (Verse's names for its own parts); left out when there are none
   const terms = [...String((new RegExp('^## Terms\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ term: m[1].trim().slice(0, 60), means: clip(m[2], 400) })).slice(0, 20);
-  // how Void is different: Adam's '- **name**: line' lines under ## How Void is different (2026-10-11); left out when there are none
-  const different = [...String((new RegExp('^## How Void is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+  // how Verse is different: Adam's '- **name**: line' lines under ## How Verse is different (2026-10-11); left out when there are none
+  const different = [...String((new RegExp('^## How (?:Verse|V01D) is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ name: m[1].trim().slice(0, 60), line: clip(m[2], 400) })).slice(0, 8);
   return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}), ...(different.length ? { different } : {}) };
 }
@@ -70,7 +70,7 @@ export function readCommits(log, n = 20) {
 }
 
 // domains/handoff.md: the two builders' shared board. Its Just finished, Ladders and Lessons ('- **name**: line' bullets) go into
-// self.json trimmed, so V01D learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
+// self.json trimmed, so Verse learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
 export function readTagteam(text, n = 6) {
   const t = String(text || '');
   const sec = (h) => [...String((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
@@ -80,8 +80,8 @@ export function readTagteam(text, n = 6) {
   return out.finished.length || out.ladders.length || out.lessons.length ? out : null;
 }
 
-// docs/wishlist.md: V01D's ranked improvement budget (plan only, nothing bought). Each table row goes into self.json 'wishlist'
-// trimmed, so "what's on your wishlist?" is answered from it and V01D can propose a new order.
+// docs/wishlist.md: Verse's ranked improvement budget (plan only, nothing bought). Each table row goes into self.json 'wishlist'
+// trimmed, so "what's on your wishlist?" is answered from it and Verse can propose a new order.
 export function readWishlist(text, n = 12) {
   return String(text || '').split('\n').map((l) => l.split('|').slice(1, -1).map((c) => c.trim())).filter((c) => c.length >= 7 && /^\d+$/.test(c[0]))
     .map((c) => { const t = (x, k) => clip(x.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*]/g, ''), k); return { rank: +c[0], item: t(c[1], 80), free: t(c[2], 200), cost: t(c[3], 200), value: t(c[4], 120), why: t(c[5], 160) }; })
@@ -99,7 +99,7 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     // the note in brackets is for agents (corrections, checks); the public line keeps only the source's first clause
     rows.push({ state: shipped ? 'shipped' : clip(status.split(/\s/)[0], 20).toLowerCase(), date: clip(date, 10), ask: clip(ask, 120), from: clip(source.replace(/\s*\(.*$/, ''), 120) });
   }
-  // what Void studies stays off the site (tools/private.mjs): self.json is served, and the answer engine reads it
+  // what Verse studies stays off the site (tools/private.mjs): self.json is served, and the answer engine reads it
   const pub = (r) => !isPrivate(r.ask) && !isPrivate(r.from) && !isPrivate(r.subject) && !isPrivate(r.title);
   if (commits) commits = commits.filter(pub);
   if (open) open = open.filter(pub);
@@ -134,10 +134,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
     wishlist: existsSync(resolve(root, 'docs/wishlist.md')) ? readWishlist(readFileSync(resolve(root, 'docs/wishlist.md'), 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
-  // V01D's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
+  // Verse's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
   const clipsFile = resolve(root, 'domains/void.clips.json');
   if (existsSync(clipsFile)) { try { const c = JSON.parse(readFileSync(clipsFile, 'utf8')); const { TRICKS } = await import('./clips.mjs');
-    self.clips = { upload: 'Anyone can upload any V01D film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". V01D Tube: a-to-mind.com/films/ is the V01D video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
+    self.clips = { upload: 'Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;

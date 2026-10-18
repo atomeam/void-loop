@@ -23,11 +23,11 @@ test('landing on an unowned property never buys it: the seat chooses, and declin
 });
 
 test('rent is forced and logged as forced; a full set doubles bare rent; houses go up evenly', () => {
-  let s = fresh(); s.owner[1] = 1; s.owner[3] = 1; // Void owns both browns
+  let s = fresh(); s.owner[1] = 1; s.owner[3] = 1; // Verse owns both browns
   assert.equal(M.rentFor(s, 3), 8);
   s = M.roll(s, [1, 2]);
   assert.equal(s.players[0].money, 1492); assert.equal(s.players[1].money, 1508);
-  assert.ok(s.log.some((l) => /paid 8 rent to V01D for Cinder Lane/.test(l.text) && l.forced));
+  assert.ok(s.log.some((l) => /paid 8 rent to Verse for Cinder Lane/.test(l.text) && l.forced));
   s.turn = 1; s.phase = 'end';
   assert.ok(M.canBuild(s, 1, 1)); s = M.build(s, 1);
   assert.equal(s.houses[1], 1); assert.ok(!M.canBuild(s, 1, 1), 'must build on Cinder Lane before a second house on Old Mill Row');
@@ -64,18 +64,18 @@ test('a seat that cannot pay sells houses at half, then goes out; you going out 
   assert.ok(s.players[0].out); assert.equal(s.phase, 'over'); assert.equal(s.winner, 1);
 });
 
-test('Void chooses like a player and says why: it buys within its reserve, declines below it, builds a set it owns', () => {
+test('Verse chooses like a player and says why: it buys within its reserve, declines below it, builds a set it owns', () => {
   let s = fresh(); s.turn = 1;
   const yes = M.voidWantsToBuy(s, 1, 39); assert.equal(yes.yes, true); assert.match(yes.why, /reserve/);
   s.players[1].money = 300; const no = M.voidWantsToBuy(s, 1, 39); assert.equal(no.yes, false); assert.match(no.why, /under its 150 reserve|cannot afford/);
   s.players[1].money = 1500; s.owner[1] = 1; const set = M.voidWantsToBuy(s, 1, 3); assert.equal(set.yes, true); assert.match(set.why, /completes the brown set/);
-  // a whole Void turn: every choice in its log has a reason
+  // a whole Verse turn: every choice in its log has a reason
   let g = fresh(); g.turn = 1; g = M.voidTurn(g);
   assert.notEqual(g.turn, 1, 'the turn passes back');
-  for (const l of g.log.filter((x) => x.who === 'V01D' && /bought|did not buy|built|chose/.test(x.text))) assert.ok(l.why, l.text);
+  for (const l of g.log.filter((x) => x.who === 'Verse' && /bought|did not buy|built|chose/.test(x.text))) assert.ok(l.why, l.text);
 });
 
-test('a trade is an offer: Void accepts a fair price and declines a low one, and says why either way', () => {
+test('a trade is an offer: Verse accepts a fair price and declines a low one, and says why either way', () => {
   let s = fresh(); s.owner[39] = 1;
   const low = M.offer(s, { space: 39, cash: 450 }); assert.equal(low.accepted, false); assert.match(low.why, /under the 600/); assert.equal(low.s.owner[39], 1);
   const fair = M.offer(s, { space: 39, cash: 600 }); assert.equal(fair.accepted, true); assert.equal(fair.s.owner[39], 0); assert.equal(fair.s.players[0].money, 900);
@@ -95,7 +95,7 @@ test('thousands of seeded moves: money only moves by the rules and never goes be
   assert.ok(s.moves > 20);
 });
 
-test('Void starts a trade when you hold the street it needs for a set: an offer with a reason, nothing moves until you answer', () => {
+test('Verse starts a trade when you hold the street it needs for a set: an offer with a reason, nothing moves until you answer', () => {
   let s = fresh(); s.owner[1] = 1; s.owner[3] = 0; s.turn = 1; s.phase = 'end';
   s = M.voidTurn(s);
   assert.deepEqual({ space: s.proposal.space, cash: s.proposal.cash }, { space: 3, cash: 110 }); assert.match(s.proposal.why, /complete its brown set/);

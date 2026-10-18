@@ -1,6 +1,6 @@
 /**
- * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: V01D wrote 'Talk to Me (2022)' from memory; "have it find the
- * actual movies it suggests ... and play right in v01d"). V01D suggests titles, then each is looked up at /api/movies (iTunes Search + the
+ * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: Verse wrote 'Talk to Me (2022)' from memory; "have it find the
+ * actual movies it suggests ... and play right in v01d"). Verse suggests titles, then each is looked up at /api/movies (iTunes Search + the
  * Internet Archive, lib/movies.js). A verified movie gets its own card: its poster as the card's art, year, genre, the source's one-line overview,
  * and what plays here: a public-domain / Creative Commons film from the Internet Archive plays in a <video>; an official trailer plays from Apple's
  * CDN; an in-copyright film gets the trailer and where-to-watch links, never a pirate source. A title no source knows is listed as "not verified".
@@ -19,13 +19,13 @@ const badge = (f, esc) => '<span class="mv-badge" style="font-size:11px;letter-s
 const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
-const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · V01D plays only free, legal films and official trailers</div>';
+const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · Verse plays only free, legal films and official trailers</div>';
 
 /** the card of one movie: art, facts, the player, the links. Pure given a lookup result. */
 export function movieCard(f, esc) {
   if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>Not verified: no source I check knows a movie by this name, so I will not state anything about it.</p>';
   const price = [money(f.price, f.currency) && 'buy ' + money(f.price, f.currency), money(f.rentPrice, f.currency) && 'rent ' + money(f.rentPrice, f.currency)].filter(Boolean).join(' · ');
-  // the structured facts (asked by Void, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
+  // the structured facts (asked by Verse, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
   const facts = [['Year', f.year], ['Genre', f.genre], ['Rated', f.rating], ['Director', f.director], ['Runtime', f.runtime ? f.runtime + ' min' : '']].filter((x) => x[1]);
   const meta = '<dl class="mv-facts" style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:6px 0">' + facts.map((x) => '<dt style="color:var(--muted,#9a9aa2)">' + x[0] + '</dt><dd style="margin:0">' + esc(x[1]) + '</dd>').join('') + '</dl>'
     + '<a href="#" class="mv-json" data-ask="film metadata for ' + esc(f.title) + '">Full metadata as JSON</a>';
@@ -62,6 +62,16 @@ export async function runCard(m, api) {
   return 'movie';
 }
 
+/** every verified pick as structured film metadata (asked by Void, 2026-10-18: "Link the 'Pick a movie' skill output to the
+ *  'film-metadata' skill so every selection returns structured JSON metadata"): film-metadata's own fields, filled only from what the
+ *  source returned for that pick, never a second guess; a field the source left empty is left out. Pure. */
+export function pickJson(films) {
+  return (films || []).filter((f) => f && f.verified).map((f) => {
+    const o = { title: f.title, year: f.year, director: f.director, genre: f.genre, rated: f.rating, runtime: f.runtime ? f.runtime + ' min' : '', description: f.overview, free: !!f.free };
+    for (const k of Object.keys(o)) if (o[k] === '' || o[k] === undefined || o[k] === null) delete o[k];
+    return o;
+  });
+}
 export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
@@ -77,12 +87,15 @@ export async function runPick(api) {
   const row = (f) => '<div class="mv-row" style="display:flex;gap:10px;margin:10px 0;align-items:flex-start">'
     + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
     + '<div><a href="#" data-ask="' + esc(cardAskText(f.title, f.year)) + '"><b>' + esc(f.title) + '</b>' + (f.year ? ' (' + f.year + ')' : '') + '</a> ' + badge(f, esc)
+    + ' <a href="#" class="mv-json" data-ask="film metadata for ' + esc(f.title) + '">JSON</a>'
     + '<div class="sub">' + esc([f.genre, f.rating].filter(Boolean).join(' · ')) + '</div>' + (f.overview ? '<div>' + esc(f.overview) + '</div>' : '') + '</div></div>';
   artMeta(el, real[0]);
   el.innerHTML = real.length
     ? (real[0].poster ? '<img src="' + esc(real[0].poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '')
       + '<h2>A movie to watch</h2><div class="sub">every title below was found in a real source; open one to watch or see the trailer</div>' + real.map(row).join('')
       + (fake.length ? '<div class="sub">Not verified (no source knows them, so not shown as fact): ' + fake.map((f) => esc(f.title)).join(', ') + '</div>' : '')
+      + '<details class="mv-picks-json"><summary>These picks as JSON</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:300px;overflow:auto">'
+      + esc(JSON.stringify({ count: real.length, films: pickJson(real) }, null, 2)) + '</pre></details>'
       + SRC({ sources: ['iTunes Search API', 'Internet Archive'] }, esc)
     : '<h2>A movie to watch</h2><p>I could not reach the movie sources just now, so I will not name a movie from memory. Ask again in a moment.</p>';
   return 'movie';

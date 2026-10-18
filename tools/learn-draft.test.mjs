@@ -1,4 +1,4 @@
-// tools/learn-draft.mjs: the drafting half of Void learns. A stranger's ask goes to a model as quoted data, the draft
+// tools/learn-draft.mjs: the drafting half of Verse learns. A stranger's ask goes to a model as quoted data, the draft
 // lands only under drafts/learned/<slug>.md, and what comes back is stripped of HTML and links.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

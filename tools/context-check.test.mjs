@@ -1,4 +1,4 @@
-// lib/context-check.js: the extension's context check (asked by Void, 2026-10-14): the dominant kind of a tab from counts alone,
+// lib/context-check.js: the extension's context check (asked by Verse, 2026-10-14): the dominant kind of a tab from counts alone,
 // and one matching skill for it.
 import assert from 'node:assert/strict';
 import { contentOf, suggestFor, suggestionHtml, SUGGESTIONS } from '../void-live-deploy/lib/context-check.js';

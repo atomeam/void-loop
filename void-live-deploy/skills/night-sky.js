@@ -11,7 +11,7 @@ import { sky } from '../lib/sky-math.js';
 /** what the ask means: null, { show: true } or { hide: true } */
 export function nightSkyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:hide|close|clear|remove|turn\s+off)\s+(?:the\s+)?(?:night\s+)?sky$|^(?:back\s+to\s+the\s+void|no\s+more\s+sky)$/.test(t)) return { hide: true };
+  if (/^(?:hide|close|clear|remove|turn\s+off)\s+(?:the\s+)?(?:night\s+)?sky$|^(?:back\s+to\s+the\s+(?:verse|void)|no\s+more\s+sky)$/.test(t)) return { hide: true };
   if (/^(?:please\s+)?(?:show|open|give)(?:\s+me)?\s+(?:the\s+)?(?:night\s+|real\s+|live\s+)?sky(?:\s+(?:tonight|now|right\s+now|above\s+me|over\s+me))?$|^what'?s?\s+(?:is\s+)?in\s+the\s+sky(?:\s+(?:tonight|now|right\s+now))?$|^(?:the\s+)?(?:night\s+)?sky\s+(?:tonight|right\s+now|now)$|^what\s+does\s+the\s+sky\s+look\s+like(?:\s+(?:tonight|now|right\s+now))?$|^stargazing$|^night\s+sky$/.test(t)) return { show: true };
   return null;
 }

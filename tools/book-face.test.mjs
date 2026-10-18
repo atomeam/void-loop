@@ -1,4 +1,4 @@
-// The faces of the 3D V01D Book (lib/book-face.js): every page of skills/guide.json lays out inside its sheet, asks and jumps are
+// The faces of the 3D Verse Book (lib/book-face.js): every page of skills/guide.json lays out inside its sheet, asks and jumps are
 // where a tap can land, and the same page always draws the same. Run: node --test tools/book-face.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -54,7 +54,7 @@ test('a glyph is the same on every visit and different for different names', () 
   const r = rng(7), r2 = rng(7); assert.equal(r(), r2()); assert.ok(r() < 1);
 });
 
-// asked by Void: a proven skill (success_rate > 0.9) wears a glow behind its glyph, and says so in its footer
+// asked by Verse: a proven skill (success_rate > 0.9) wears a glow behind its glyph, and says so in its footer
 test('a page with a glow draws a glow op before its glyph and says the percentage; one without does not', () => {
   const lit = book.pages.find((p) => p.kind === 'skill' && p.glow), plain = book.pages.find((p) => p.kind === 'skill' && !p.glow);
   assert.ok(lit, 'some skill in the real book glows');

@@ -1,4 +1,4 @@
-// V01D proposes the fix for an ask its own probe missed (frontier #28, step 3; lib/propose-fix.js). Owner only; nothing is stored.
+// Verse proposes the fix for an ask its own probe missed (frontier #28, step 3; lib/propose-fix.js). Owner only; nothing is stored.
 // POST { ask, skill, source, mode?, said? }   mode 'narrow': the skill answered an ask that is not its own (a routing correction)   the missed ask, the owning skill's name and its file as it stands (tools/propose-fix.mjs sends it)
 //   -> { edits: [{ find, replace }], why, confidence, evidence: [{ file, line, was }], model }   exact line replacements that passed the gate; the caller applies and tests them
 // 400 when the ask, the skill name or the source is missing or malformed; 503 when no model is bound or it did not answer; 502 when
@@ -12,7 +12,7 @@ const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices
 
 export async function onRequestPost(ctx) {
   // one catch around everything: a failure anywhere answers JSON with its reason category, never the platform's HTML page
-  try { return await propose(ctx); } catch (e) { try { await recordShortfall(ctx.env, 'propose-fix', reasonOf(e)); } catch (_) {} return Response.json({ error: 'V01D could not propose a fix: ' + reasonOf(e) }, { status: 502 }); }
+  try { return await propose(ctx); } catch (e) { try { await recordShortfall(ctx.env, 'propose-fix', reasonOf(e)); } catch (_) {} return Response.json({ error: 'Verse could not propose a fix: ' + reasonOf(e) }, { status: 502 }); }
 }
 
 async function propose({ request, env }) {
@@ -28,8 +28,8 @@ async function propose({ request, env }) {
   try {
     const r = await env.AI.run(models('will'), { messages: [{ role: 'system', content: mode === 'narrow' ? NARROW_SYSTEM : FIX_SYSTEM }, { role: 'user', content: fixPrompt(ask, skill, source, mode, note) }], max_tokens: 900, chat_template_kwargs: { enable_thinking: false } });
     said = pick(r); if (said && typeof said !== 'string') said = JSON.stringify(said);
-  } catch (e) { await recordShortfall(env, 'propose-fix', reasonOf(e)); return Response.json({ error: 'V01D could not propose a fix just now: ' + reasonOf(e) }, { status: 503 }); }
+  } catch (e) { await recordShortfall(env, 'propose-fix', reasonOf(e)); return Response.json({ error: 'Verse could not propose a fix just now: ' + reasonOf(e) }, { status: 503 }); }
   const { edits, why, confidence } = parseEdits(said, source);
-  if (!edits.length) return new Response('V01D proposed nothing that passes the gate', { status: 502 });
+  if (!edits.length) return new Response('Verse proposed nothing that passes the gate', { status: 502 });
   return Response.json({ edits, why, confidence, evidence: evidenceOf(source, edits, skill), model: models('will') });
 }

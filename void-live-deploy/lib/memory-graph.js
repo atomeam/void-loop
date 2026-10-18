@@ -1,4 +1,4 @@
-// The personal memory graph (asked by Void, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge graph across
+// The personal memory graph (asked by Verse, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge graph across
 // conversations—so I could remember details you've shared before, notice patterns in your interests, and build on them over time
 // without you having to repeat anything"). A tiny graph of what a person asks about, kept on this device only (the `graph` store in
 // lib/state.js, localStorage) and never sent: nodes are skills, topics and explicit facts, edges join a skill to the topics it answered
@@ -97,7 +97,7 @@ export function noteAsk(graph, ask) {
 }
 
 const factId = (t) => 'fact:' + String(t).toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
-/** a plain fact the person asked V01D to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
+/** a plain fact the person asked Verse to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
 export function noteFact(graph, text, at) {
   const f = String(text || '').replace(/[\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, FACT_MAX);
   if (!graph || !f) return graph;
@@ -108,7 +108,7 @@ export function forgetFact(graph, text) { const g = copy(graph); delete g.nodes[
 
 export const CONF_DAYS = 3, CONF_HALF_LIFE_DAYS = 30; // 3 distinct days is about two thirds sure; unseen for 30 days halves it
 /**
- * how sure the graph is of a node, 0 to 1 (asked by Void: "a confidence score on each node ... how many times a specific fact has been verified"):
+ * how sure the graph is of a node, 0 to 1 (asked by Verse: "a confidence score on each node ... how many times a specific fact has been verified"):
  * evidence = 1 - exp(-d / 3), where d is the distinct days the node was seen on plus a quarter for each repeat on a day already counted (n), weighted by
  * recency, 0.5 ^ (days since last seen / 30). A fact told again (noteFact) or tapped "still true" raises it; "forget that" removes the node (0). Pure.
  */
@@ -166,14 +166,14 @@ export function suggest(graph, at, examples) {
 /** "remember that …" / "forget that …" as the memory skill reads them (a whole sentence, three words or more): { remember } or { forget } or null. Pure. */
 export function factAsk(text) {
   const o = String(text || '').trim().replace(/[’]/g, "'");
-  const m = /^(?:(?:please|void),?\s+)?(remember\s*(?:that|:)|forget\s+that)\s+(.+)$/i.exec(o);
+  const m = /^(?:(?:please|(?:verse|void)),?\s+)?(remember\s*(?:that|:)|forget\s+that)\s+(.+)$/i.exec(o);
   if (!m) return null;
   const f = m[2].trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
   if (f.split(' ').length < 3 || f.length > 280) return null;
   return /^forget/i.test(m[1]) ? { forget: f } : { remember: f };
 }
 
-// ---- export and import (asked by Void: "download their graph as a structured JSON file for backup"). The file is the person's: made and read in the
+// ---- export and import (asked by Verse: "download their graph as a structured JSON file for backup"). The file is the person's: made and read in the
 // browser, never uploaded. An imported file is read with care: version-checked, caps enforced, every label cleaned again, unknown fields dropped.
 export const SCHEMA = 'void.memory.v1';
 export const IMPORT_MAX = 2e6; // characters; a bigger text is refused before it is parsed
@@ -213,7 +213,7 @@ export function importInto(graph, json) {
     if (json.length > IMPORT_MAX) return { ok: false, why: 'that file is over 2 MB' };
     try { j = JSON.parse(json); } catch (_) { return { ok: false, why: 'that is not a JSON file' }; }
   }
-  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a V01D memory file (schema ' + SCHEMA + ')' };
+  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a Verse memory file (schema ' + SCHEMA + ')' };
   if (j.v !== 1) return { ok: false, why: 'that file is version ' + String(j.v).slice(0, 12) + ', this page reads version 1' };
   if (!plain(j.nodes)) return { ok: false, why: 'that file has no nodes' };
   const g = copy(graph && plain(graph) && plain(graph.nodes) ? graph : empty());

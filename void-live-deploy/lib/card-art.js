@@ -1,7 +1,7 @@
-// V01D card art (owner, 2026-10-16: "no art exists yet ... commit to V01D's style: every card needs art"; "V01D is scary like AI is scary, but it's for
-// all ages ... Plus it's Halloween, so go extra scary this month"; "V01D cards should have their own magic or Todd McFarlane style art signature").
-// The signature is V01D's own and copies no artist, character or logo: heavy black ink on a field tinted with the card's family hue, thick contour
-// lines, crosshatch shading, torn-paper edges, chain and cloak line work, ink splatters, and the one motif that makes it V01D: the void looks back
+// Verse card art (owner, 2026-10-16: "no art exists yet ... commit to Verse's style: every card needs art"; "Verse is scary like AI is scary, but it's for
+// all ages ... Plus it's Halloween, so go extra scary this month"; "Verse cards should have their own magic or Todd McFarlane style art signature").
+// The signature is Verse's own and copies no artist, character or logo: heavy black ink on a field tinted with the card's family hue, thick contour
+// lines, crosshatch shading, torn-paper edges, chain and cloak line work, ink splatters, and the one motif that makes it Verse: the void looks back
 // (eyes opening in the dark, static and glitch tears, a face that is an empty frame, a doorway that is a screen). Scary the way AI is scary, for
 // every age: uncanny and storybook-spooky, never gore, weapons, real faces or real tragedy. Every kind has its own plate (a Film is an aperture
 // and a strip, a Person a cloaked bust with an empty frame for a face, a Place a door on a horizon ...); a skill, game or miniature is its guide
@@ -17,7 +17,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 /** the rarity's ink: weight, colour, how much the line wobbles and its default density, plus the foil; only these change between rarities, never the subject.
- *  Asked by Void: the ink follows the evidence rating, a proven skill (Mythic) is sharp and high-contrast, an experiment (Common) a light charcoal sketch.
+ *  Asked by Verse: the ink follows the evidence rating, a proven skill (Mythic) is sharp and high-contrast, an experiment (Common) a light charcoal sketch.
  *  The plate's opacity reads the CSS custom property --ink-density (0..1) from the svg or any ancestor, so a mini can drive it live (field divergence, curl);
  *  with none set, `dens` is the rarity's own. */
 export const RARITY_LOOK = {

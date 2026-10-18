@@ -12,7 +12,7 @@ test('a card is 63 x 88 mm: 744 x 1039 at 300 dpi, and bleed adds 35 px (3 mm) o
 test('it is a standalone, inert picture holding the frame, art, type line, text, stats and number', () => {
   const s = cardSvg(d);
   assert.ok(!/<script|<foreignObject|<image|javascript:|href="(?!#)/i.test(s)); assert.ok(!/https?:\/\/(?!www\.w3\.org)/.test(s));
-  for (const w of ['Casablanca', 'FILM', '012/221', 'Adds to V01D', 'vc-art-svg|<svg x="40"']) assert.match(s, new RegExp(w));
+  for (const w of ['Casablanca', 'FILM', '012/221', 'Adds to Verse', 'vc-art-svg|<svg x="40"']) assert.match(s, new RegExp(w));
   assert.ok(s.length < 40000, String(s.length));
 });
 test('every text field is escaped', () => {
@@ -25,7 +25,7 @@ test('long text is wrapped and cut with an ellipsis', () => {
   assert.deepEqual(wrap('', 50, 5), []);
 });
 test('a long title is never cut: it shrinks or takes two lines, whole', () => {
-  const t = "I've widened the movies agent's job to find real films and play the free ones in V01D";
+  const t = "I've widened the movies agent's job to find real films and play the free ones in Verse";
   const svg = cardSvg({ ...d, title: t, cost: 3 });
   const shown = [...svg.matchAll(/font-weight="700" font-size="(\d+)" fill="#f3efe2">([^<]*)</g)].filter((m) => +m[1] !== 34).map((m) => m[2]).join(' ');
   assert.ok(!shown.includes('…')); assert.equal(shown.replace(/&#39;/g, "'"), t);
@@ -53,7 +53,7 @@ test('a picture is centred: a near fit fills the frame, a tall figure is shown w
   assert.ok(tall.fill.w >= 664 && tall.fill.h >= 440, 'the blurred copy still fills the frame');
   const wide = picturePlan(3000, 600, 664, 440); assert.ok(wide.whole); assert.ok(wide.whole.w <= 664 + 1e-9);
 });
-test('visual consistency (asked by Void): every picture shape from 1:20 to 20:1 stays inside the saved card\'s art box, centred, and the blur behind it covers the box', () => {
+test('visual consistency (asked by Verse): every picture shape from 1:20 to 20:1 stays inside the saved card\'s art box, centred, and the blur behind it covers the box', () => {
   const W = 664, H = 440, eps = 1e-6; let filled = 0, whole = 0;
   for (let k = -60; k <= 60; k++) { // aspect ratios from 1:20 to 20:1, evenly in log scale
     const r = Math.pow(20, k / 60), iw = Math.round(1000 * Math.sqrt(r)), ih = Math.round(1000 / Math.sqrt(r)), p = picturePlan(iw, ih, W, H), at = iw + 'x' + ih;

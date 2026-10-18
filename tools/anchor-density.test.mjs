@@ -1,4 +1,4 @@
-// lib/anchor-density.js: the ghost anchor's heart fills with how much is on your stage to go back to (asked by Void, 2026-10-18: "Integrate the
+// lib/anchor-density.js: the ghost anchor's heart fills with how much is on your stage to go back to (asked by Verse, 2026-10-18: "Integrate the
 // 'density-indicator' logic into the ghost anchor so it visually shows how much 'navigation depth' or history is available"). Drawn in void.html;
 // the browser check is "empty state and input bar" (7). Run: node --test tools/anchor-density.test.mjs
 import test from 'node:test';
@@ -11,10 +11,10 @@ const things = (n) => Object.fromEntries(Array.from({ length: n }, (_, i) => ['t
 test('anchor density: every thing on the stage (kept cards among them) against a goal of 12, the list bar\'s own density rule, the title the anchor shows', () => {
   assert.equal(ANCHOR_GOAL, 12);
   const none = anchorDensity({});
-  assert.deepEqual([none.count, none.goal, none.ratio, none.state, none.label, none.title], [0, 12, 0, 'under', '0 of 12', 'support V01D · 0 of 12 things on your stage']);
+  assert.deepEqual([none.count, none.goal, none.ratio, none.state, none.label, none.title], [0, 12, 0, 'under', '0 of 12', 'support Verse · 0 of 12 things on your stage']);
   assert.deepEqual(none.fill, { y: 21, h: 0 }, 'nothing on the stage: no fill at all');
   const seven = anchorDensity(things(7));
-  assert.equal(seven.count, 7); assert.equal(seven.state, 'under'); assert.equal(seven.title, 'support V01D · 7 of 12 things on your stage');
+  assert.equal(seven.count, 7); assert.equal(seven.state, 'under'); assert.equal(seven.title, 'support Verse · 7 of 12 things on your stage');
   assert.deepEqual({ ratio: seven.ratio, state: seven.state, label: seven.label }, density(7, 12), 'the same rule as a list\'s goal bar');
   assert.ok(seven.fill.y < 21 && seven.fill.y > HEART_TOP && seven.fill.h > none.fill.h, 'the fill rises from the bottom of the heart');
   assert.equal(anchorDensity(things(11)).state, 'near');

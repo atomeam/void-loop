@@ -1,9 +1,9 @@
 /**
- * merge skill - two ideas make one V01D card (frontier #34 step 1; owner, 2026-10-16: "research merge games so V01D can experiment with
+ * merge skill - two ideas make one Verse card (frontier #34 step 1; owner, 2026-10-16: "research merge games so Verse can experiment with
  * card merges"; research in docs/research/merge-games.md). "merge a pizza and a black hole", "combine fire with ice", "fuse a cat and the
- * moon", "what do you get if you merge ...": the result is a V01D card (lib/card-frame.js) showing both parents, the new card's name,
+ * moon", "what do you get if you merge ...": the result is a Verse card (lib/card-frame.js) showing both parents, the new card's name,
  * kinds, and Power / Resistance / Income worked out from the parents by FIXED rules (lib/merge-rules.js, written at its top). A name that is
- * a V01D skill brings that skill's real stats (cardOf); any other idea is a fresh card 1 / 1 / 0. The model is asked only for a name and one
+ * a Verse skill brings that skill's real stats (cardOf); any other idea is a fresh card 1 / 1 / 0. The model is asked only for a name and one
  * line, once per pair, by /api/merge (functions/api/merge.js), and everyone who merges that pair gets the same answer; with the route down
  * the card is still made, named by the plain blend. No number on the card ever comes from the model.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
@@ -11,7 +11,7 @@
 import { ideaKey, freshCard, cardFromStats, mergeKinds, mergeStats, fallbackName, fallbackLine, sanitiseName, sanitiseLine } from '../lib/merge-rules.js';
 import { cardOf, lookup, loadStats } from '../lib/card-frame.js';
 
-const LEAD = /^(?:(?:please|hey|v01d|void|can you|could you|would you|will you|let'?s|lets|i want to|i'?d like to|i would like to|try to|try and)\s+)+/;
+const LEAD = /^(?:(?:please|hey|v01d|void|verse|can you|could you|would you|will you|let'?s|lets|i want to|i'?d like to|i would like to|try to|try and)\s+)+/;
 const WHAT = /^(?:what|who|which)\s+(?:(?:do|would|will|might|could|can|should)\s+(?:you|we|i)\s+(?:get|make|have|see)|happens|if)\s+(?:if|when)?\s*(?:you|we|i)?\s*(?:were to\s+|did\s+|tried to\s+)?/;
 const VERB = /^(?:merge|combine|fuse|smash together|mash together|blend)\s+(.+)$/;
 const SPLIT = /\s+(?:and|with|plus|into|&|\+)\s+/;
@@ -34,7 +34,7 @@ export function mergeAsk(text) {
 }
 
 const nameOf = (s) => (s.charAt(0).toUpperCase() + s.slice(1));
-/** a card for one side: a V01D skill of that name (its real stats), else a fresh idea. Pure. */
+/** a card for one side: a Verse skill of that name (its real stats), else a fresh idea. Pure. */
 export function parentCard(name, stats) {
   const key = ideaKey(name);
   for (const f of (stats && stats.fam && stats.fam.families) || []) for (const s of f.skills || []) {
@@ -53,9 +53,9 @@ export function mergedCard(pa, pb, words = {}) {
 }
 
 export const SRC = {
-  pending: 'Naming it… the plain blend shows until V01D has a name.',
-  fresh: "Named once by V01D's model; everyone who merges this pair gets this name.",
-  cached: "Named by V01D's model and kept: everyone who merges this pair gets this name.",
+  pending: 'Naming it… the plain blend shows until Verse has a name.',
+  fresh: "Named once by Verse's model; everyone who merges this pair gets this name.",
+  cached: "Named by Verse's model and kept: everyone who merges this pair gets this name.",
   offline: 'Named offline, the plain blend of the two names: the model could not be reached, so this name is not kept.',
 };
 export const CSS = '.mg-parents{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 8px}.mg-p{flex:1 1 130px;min-width:0;padding:6px 10px;border:1px solid var(--edge,#556);border-radius:8px;background:rgba(255,255,255,.04)}.mg-p b{display:block;overflow-wrap:anywhere}.mg-p span{font-size:11.5px;opacity:.8}.mg-plus{font-size:18px;opacity:.7}.mg-rule{font-size:12px;opacity:.8;margin:4px 0}';

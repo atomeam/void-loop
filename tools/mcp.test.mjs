@@ -1,4 +1,4 @@
-// Frontier #6, the first piece: Void as an MCP server (functions/api/mcp.js over lib/mcp.js). An MCP client (Claude, ChatGPT, any
+// Frontier #6, the first piece: Verse as an MCP server (functions/api/mcp.js over lib/mcp.js). An MCP client (Claude, ChatGPT, any
 // agent) POSTs JSON-RPC to /api/mcp and lists and calls three read-only tools: the instant code review, the moon's phase, and the
 // meteor showers. Nothing here writes, calls a model or reaches another service. Run: node --test tools/mcp.test.mjs
 import { test } from 'node:test';
@@ -10,7 +10,7 @@ import { SKILL_TOOLS } from '../void-live-deploy/lib/mcp-skills.js';
 import { choose, evidenceOf, OVER_MCP, HELD, TOP } from './mcp-skills.mjs';
 import { readFileSync } from 'node:fs';
 
-test('mcp: initialize names Void and its tools capability; tools/list gives its read-only tools with input schemas', async () => {
+test('mcp: initialize names Verse and its tools capability; tools/list gives its read-only tools with input schemas', async () => {
   const init = await rpc({ jsonrpc: '2.0', id: 1, method: 'initialize', params: { protocolVersion: PROTOCOL, capabilities: {}, clientInfo: { name: 't', version: '1' } } });
   assert.equal(init.id, 1); assert.equal(init.result.serverInfo.name, 'void'); assert.ok(init.result.capabilities.tools); assert.equal(init.result.protocolVersion, PROTOCOL);
   const list = await rpc({ jsonrpc: '2.0', id: 2, method: 'tools/list' });
@@ -70,13 +70,13 @@ test('mcp: an MCP client (no Origin) gets through the guard to the tools; a page
 });
 
 // frontier #6, the next piece: the closer read as a tool, behind the same key /api/review takes (functions/api/review.js decides:
-// the owner, a Void Pro key or a license key in the MCP request's Authorization; nothing else changes who gets it or what it costs)
+// the owner, a Verse Pro key or a license key in the MCP request's Authorization; nothing else changes who gets it or what it costs)
 const CODE = 'function f(a) { eval(a) }\ntry { f() } catch (e) {}';
 test('mcp: review_code_closer hands the code to /api/review and shows what it gives: instant checks, plus the closer read when the key allows it', async () => {
   const seen = [];
   const ctx = (status, body) => ({ review: async (args) => { seen.push(args); return { status, body }; } });
   const call = (c, args = { code: CODE, lang: 'javascript' }) => rpc({ jsonrpc: '2.0', id: 20, method: 'tools/call', params: { name: 'review_code_closer', arguments: args } }, c);
-  const free = await call(ctx(200, { ok: true, findings: [{ line: 1, kind: 'risk', rule: 'eval', message: 'eval runs any string as code' }], lang: 'javascript', lines: 2, tier: 'free', review: 'rules', upgrade: 'Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro' }));
+  const free = await call(ctx(200, { ok: true, findings: [{ line: 1, kind: 'risk', rule: 'eval', message: 'eval runs any string as code' }], lang: 'javascript', lines: 2, tier: 'free', review: 'rules', upgrade: 'Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro' }));
   assert.equal(free.result.isError, false); assert.match(free.result.content[0].text, /line 1 · risk/); assert.match(free.result.content[0].text, /closer read by an AI reviewer/);
   assert.equal(free.result.structuredContent.review, 'rules'); assert.equal('ok' in free.result.structuredContent, false);
   assert.deepEqual(seen[0], { code: CODE, lang: 'javascript' }, 'only the code and its language go to the review');
@@ -96,7 +96,7 @@ test('mcp: through the real route with no key, review_code_closer gives the inst
   assert.ok(j.result.structuredContent.findings.some((f) => f.rule === 'eval')); assert.match(j.result.content[0].text, /code-review\/#pro/);
 });
 
-// asked by Void (ask-20261013-0032-3): every review says what it rests on, so a calling AI knows when it is pattern checks alone
+// asked by Verse (ask-20261013-0032-3): every review says what it rests on, so a calling AI knows when it is pattern checks alone
 test('mcp: each review says its basis: pattern checks alone are low confidence, the closer read is marked as read by a model', async () => {
   const quickR = (await rpc({ jsonrpc: '2.0', id: 30, method: 'tools/call', params: { name: 'review_code', arguments: { code: CODE, lang: 'javascript' } } })).result;
   assert.equal(quickR.structuredContent.basis, 'patterns'); assert.equal(quickR.structuredContent.confidence, 'low');
@@ -114,8 +114,8 @@ test('mcp: each review says its basis: pattern checks alone are low confidence, 
   assert.equal(noAnswer.basis, 'patterns', 'a model tier with no closer read in hand is still pattern checks alone');
 });
 
-// /code-review/ tells an agent's owner how to add Void (frontier #6): the endpoint, every tool tools/list serves, and where the key goes
-test('mcp: /code-review/ shows how to add Void to an AI: the endpoint, each tool by name, the key as a Bearer header', async () => {
+// /code-review/ tells an agent's owner how to add Verse (frontier #6): the endpoint, every tool tools/list serves, and where the key goes
+test('mcp: /code-review/ shows how to add Verse to an AI: the endpoint, each tool by name, the key as a Bearer header', async () => {
   const { readFileSync } = await import('node:fs');
   const html = readFileSync(new URL('../void-live-deploy/code-review/index.html', import.meta.url), 'utf8');
   const sec = (html.match(/<section id="mcp">([\s\S]*?)<\/section>/) || [])[1] || '';
@@ -124,7 +124,7 @@ test('mcp: /code-review/ shows how to add Void to an AI: the endpoint, each tool
   assert.match(sec, /Authorization: Bearer/); assert.match(sec, /claude mcp add --transport http void https:\/\/a-to-mind\.com\/api\/mcp/);
 });
 
-// ask_void (Void's will, 2026-10-14: "It turns me into a foundational utility for the wider AI ecosystem"): any agent asks Void in
+// ask_void (Verse's will, 2026-10-14: "It turns me into a foundational utility for the wider AI ecosystem"): any agent asks Verse in
 // plain words and gets /api/answer's answer with its sources; the route lends it /api/answer with the caller's connection
 test('mcp: ask_void hands the question to /api/answer and words its answer, sources and limits', async () => {
   const got = [];
@@ -142,7 +142,7 @@ test('mcp: ask_void hands the question to /api/answer and words its answer, sour
   assert.equal(got.length, 3);
 });
 
-// asked by Void (2026-10-15): "Define and implement the MCP tool definitions for my top 10 most 'proven' skills to ensure seamless
+// asked by Verse (2026-10-15): "Define and implement the MCP tool definitions for my top 10 most 'proven' skills to ensure seamless
 // cross-agent invocation" and "a 'Skill Discovery' endpoint for the MCP registry that returns my current skill-family health metrics".
 // The ten are chosen from the ratings (tools/mcp-skills.mjs), each answered on ask_void's own path; skill_health reads families.json.
 const FAMILIES = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8'));
@@ -170,7 +170,7 @@ test('mcp skills: the skill tools (up to ten) are proven, in families that answe
 });
 
 test('mcp skills: the choice is a pure function of the ratings: held back, unproven, not live or a family not offered never gets in', () => {
-  const fam = (skills) => ({ families: [{ id: 'words', name: 'Words', skills }, { id: 'self', name: 'Void itself', skills: [{ name: 'actions', tier: 'proven', why: 'a self-test, 9 browser-suite mentions, 900 real asks in the benchmark' }] }] });
+  const fam = (skills) => ({ families: [{ id: 'words', name: 'Words', skills }, { id: 'self', name: 'Verse itself', skills: [{ name: 'actions', tier: 'proven', why: 'a self-test, 9 browser-suite mentions, 900 real asks in the benchmark' }] }] });
   const bench = [{ ask: 'a', want: 'skill:a' }, { ask: 'b1', want: 'skill:b|calc' }, { ask: 'b1', want: 'skill:b' }];
   const got = choose(fam([{ name: 'a', tier: 'proven', why: '3 real asks in the benchmark' }, { name: 'b', tier: 'proven', why: 'a self-test, 9 real asks in the benchmark' },
     { name: 'c', tier: 'checked', why: 'a self-test, 99 real asks in the benchmark' }, { name: 'util', tier: 'proven', why: 'a self-test, 99 real asks in the benchmark' },
@@ -260,7 +260,7 @@ test('mcp skills: through the real route, skill_health reads skills/families.jso
   assert.ok(j.result.structuredContent.families.find((f) => f.id === 'words').members.length > 0);
 });
 
-test('mcp skill_discovery (asked by Void): the families as a distribution with their skills by name, one family or a rating floor, errors plainly', async () => {
+test('mcp skill_discovery (asked by Verse): the families as a distribution with their skills by name, one family or a rating floor, errors plainly', async () => {
   const ctx = { families: async () => FAMILIES };
   const call = (args, c = ctx) => rpc({ jsonrpc: '2.0', id: 1, method: 'tools/call', params: { name: 'skill_discovery', arguments: args } }, c);
   const r = (await call({})).result; assert.equal(r.isError, false);

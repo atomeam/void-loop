@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { behaviorOf, patternOf, noveltyOf, scoreRuns, jobOf, plan, PREFIX } from './fringe-novelty.mjs';
 
 const patterns = { timer: patternOf({ name: 'timer', examples: ['set a timer for ten minutes', 'countdown timer'] }), weather: patternOf({ name: 'weather', examples: ['weather in Oslo', 'will it rain tomorrow'] }) };
-test('a behavior a skill already says scores low, one nothing says scores high (asked by Void)', () => {
+test('a behavior a skill already says scores low, one nothing says scores high (asked by Verse)', () => {
   assert.ok(noveltyOf('set a countdown timer for ten minutes', patterns).score <= 0.2);
   const n = noveltyOf('answer the middle arrow while neighbours disagree, timed per sitting', patterns);
   assert.ok(n.score >= 0.8 && n.skill === 'timer' || n.score >= 0.8, JSON.stringify(n));

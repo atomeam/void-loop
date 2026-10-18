@@ -1,31 +1,197 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:09:42.004Z",
-   "sha": "59a6bc6abaa33ee05a33e092a83567577248ea27",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39109240620",
+   "at": "2026-10-18T09:23:16.595Z",
+   "sha": "6cd1c283be0d9df4c8e3165c0cc9c6b42cfc8f9a",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114830643",
    "suite": "browser suite on main",
    "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "check timeout: no check finished within 300 s"
+    "suite ran to the end"
    ],
    "touched": [
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/void.html",
-    "void.html",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
     "void-live-deploy/incidents.json"
    ]
   },
   {
-   "at": "2026-10-18T07:51:02.914Z",
+   "at": "2026-10-18T09:18:00.174Z",
+   "sha": "74238086e71d24d854c72443c9ac94533bd9f0c0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114167283",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/memory.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/functions/api/memory.js",
+    "void-live-deploy/lib/memory-core.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/memory-graph.js",
+    "void-live-deploy/skills/movie.js",
+    "void-live-deploy/void.growth.json",
+    "docs/MAP.md",
+    "tools/bench.json",
+    "tools/checks.mjs",
+    "tools/film-discovery.test.mjs"
+   ]
+  },
+  {
+   "at": "2026-10-18T09:04:48.244Z",
+   "sha": "e18a912b6823ed01643149a1b8393bf5dae4d3ce",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39113265435",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "extension/README.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/card-share.js",
+    "void-live-deploy/lib/film-share.js",
+    "void-live-deploy/lib/rulesets/duel.json",
+    "void-live-deploy/lib/self-context.js",
+    "void-live-deploy/lib/service-health.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/poster.js",
+    "void-live-deploy/skills/v01d-fixes.js",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/void.html",
+    "void.html"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:52:37.130Z",
+   "sha": "b95dc3a3d4aaa0cf8d38957c1ab643a500f40cb3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39112830224",
+   "suite": "browser suite on main",
+   "checks": [
+    "tools pack 8: the PIN lock card says it is a casual lock, keeps a hash (never the PIN) on this device, locks on \"lock now\", refuses a wrong PIN, opens on the right one, and \"auto lock after 1 minute\" locks after the idle time",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/bench.json",
+    "tools/bench.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/forge.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/fix-pages.json",
+    "void-live-deploy/fix/github-actions-npm-ci-lockfile-out-of-sync/index.html",
+    "void-live-deploy/fix/github-actions-permission-denied-publickey/index.html",
+    "void-live-deploy/fix/index.html",
+    "void-live-deploy/fix/n8n-econnrefused-http-request/index.html"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:45:21.144Z",
+   "sha": "f74e9b8a321dc61f2748c90a821f54e3521814a1",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39112292446",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:39:29.316Z",
+   "sha": "5d587a25718577c1cf95a30221b85cc3c7294103",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111133589",
+   "suite": "browser suite on main",
+   "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.frontier.md",
+    "tools/checks.mjs",
+    "tools/convert-math.test.mjs",
+    "void-live-deploy/lib/convert-math.js",
+    "void-live-deploy/skills/convert.js",
+    "void-live-deploy/skills/deps.json",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/service-health.test.mjs",
+    "tools/test_void.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/service-health.js"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:19:40.157Z",
+   "sha": "57c01f522894cbd8b16adc12f056518c215025ae",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39110000209",
+   "suite": "browser suite on main",
+   "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
+    "void-live-deploy/void.growth.json",
+    "tools/automation-fix.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/automation-fix.js"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:02:35.721Z",
+   "sha": "200e56d541283389e47fa1ce10207a9236113dc3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39109636216",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/automation-fix.test.mjs",
+    "void-live-deploy/lib/automation-fix.js"
+   ]
+  },
+  {
+   "at": "2026-10-18T07:56:29.677Z",
    "sha": "910c92721fee52d22d10220ba9fafcc2aaaccf40",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39108913625",
    "suite": "browser suite on main",
    "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
     "suite ran to the end"
    ],
    "touched": [
@@ -567,190 +733,6 @@
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T22:45:05.077Z",
-   "sha": "c6a6b80021ec7d203f1cf148d03fe472193a112a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39075109496",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "tools/tome.test.mjs",
-    "void-live-deploy/lib/success-pulse.js",
-    "void-live-deploy/lib/tome.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/status.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T22:25:09.356Z",
-   "sha": "3bf19cdaaf54f18cfe2ec00063efd2416b620d59",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39074012082",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/growth.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/growth.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T22:10:41.425Z",
-   "sha": "149bb4d15579bb95a029293bb51d00076d2cf3b6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39073068014",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:56:22.353Z",
-   "sha": "5773a89f69c3525bec022c1fba868277f8a00bfb",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39072138179",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/card-share.test.mjs",
-    "tools/site-test.json",
-    "tools/site-test.mjs",
-    "tools/site-test.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/card-share.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:32:09.232Z",
-   "sha": "bd24a1a092dce69345452966453f0cb0c620f9b1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39070065218",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/asks-link.json",
-    "tools/card-image.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/card-forge.js",
-    "void-live-deploy/skills/event-countdown.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:13:54.211Z",
-   "sha": "7c66b3b8f12db0a052bcbf22811e77ac2d39e459",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39068791421",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/event-date.test.mjs",
-    "tools/families.mjs",
-    "tools/service-health.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/event-date.js",
-    "void-live-deploy/lib/service-health.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/event-countdown.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1260-service-health"
-   ]
-  },
-  {
-   "at": "2026-10-17T20:46:06.453Z",
-   "sha": "9b1e44e13ab43a10aa9beaf01d26de32171fdf1a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39066819200",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/field-cards.test.mjs",
-    "tools/skill-contract.test.mjs",
-    "tools/test_void.mjs",
-    "tools/untested.json",
-    "void-live-deploy/lib/field-cards.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/living-cards-mind.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
     "void-live-deploy/tester-log.json"
    ]
   }

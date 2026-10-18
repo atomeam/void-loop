@@ -1,5 +1,5 @@
 /**
- * markets skill - V01D's crypto board: live prices and 7-day sparklines for the top coins, from V01D's own edge-cached
+ * markets skill - Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached
  * /api/markets (CoinGecko underneath, two-minute cache, no KV), and a read-only Bitcoin address lookup by public address
  * (mempool.space public API). Read-only by design: no wallets held, no keys or seed phrases, no trades, no advice.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }. Single-coin asks ("bitcoin price") stay with crypto.js.
@@ -26,7 +26,7 @@ const money = (v) => v == null ? '–' : new Intl.NumberFormat('en-US', { style:
 async function run(text, api) {
   const { showPage, esc } = api; const q = marketsAsk(text);
   if (!q) return 'none';
-  if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, V01D included. V01D only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
+  if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, Verse included. Verse only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
   if (q.addr) {
     const el = showPage((p) => { p.innerHTML = '<h2>Bitcoin address</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
     try {

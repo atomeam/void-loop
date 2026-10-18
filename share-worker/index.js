@@ -11,7 +11,7 @@ export class ShareRoom {
   accept(server) {
     server.accept();
     const id = this.room.join((m) => server.send(JSON.stringify(m)));
-    if (!id) { try { server.close(4001, 'this Void is full'); } catch (_) {} return null; }
+    if (!id) { try { server.close(4001, 'this Verse is full'); } catch (_) {} return null; }
     const bye = () => this.room.leave(id);
     server.addEventListener('message', (e) => this.room.message(id, e.data));
     server.addEventListener('close', bye);

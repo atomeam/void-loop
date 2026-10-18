@@ -1,7 +1,7 @@
 /**
- * poker skill — heads-up Texas Hold'em against Void for play money (skills/poker-rules.js): "play poker", "texas hold'em".
- * The card shows only what you may see (rules view()): your two cards, the board, the pot and both stacks; Void's cards
- * stay face down until a showdown. Each choice Void makes shows its estimate of how often it wins and why it chose.
+ * poker skill — heads-up Texas Hold'em against Verse for play money (skills/poker-rules.js): "play poker", "texas hold'em".
+ * The card shows only what you may see (rules view()): your two cards, the board, the pot and both stacks; Verse's cards
+ * stay face down until a showdown. Each choice Verse makes shows its estimate of how often it wins and why it chose.
  * The table stands in the void in 3D (mini/poker.js), lifted by skills/lift3d.js with this card beside it.
  */
 import * as P from './poker-rules.js';
@@ -9,7 +9,7 @@ import { lift3d } from './lift3d.js';
 
 export function pokerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|deal|new)\s+(?:a\s+(?:game|hand|round)\s+of\s+|some\s+)?(?:poker|texas hold ?'?em|hold ?'?em)(?:\s+(?:game|hand))?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|deal|new)\s+(?:a\s+(?:game|hand|round)\s+of\s+|some\s+)?(?:poker|texas hold ?'?em|hold ?'?em)(?:\s+(?:game|hand))?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
   if (/^(?:a\s+)?(?:game|hand)\s+of\s+(?:poker|texas hold ?'?em|hold ?'?em)$|^deal\s+(?:me\s+)?(?:in|a\s+hand)$/.test(t)) return { kind: 'game' };
   return null;
 }
@@ -48,7 +48,7 @@ function mount(th, stageApi) {
   const newB = btn('New game', 'pk-new', () => { clearTimeout(timers.get(th)); th.state = P.create(); save(); paint(); voidPlays(); });
   bar.append(dealB, newB);
   const log = document.createElement('div'); log.className = 'pk-log'; log.style.cssText = 'font-size:11.5px;color:var(--muted,#8a8a8a);max-height:120px;overflow:auto;border-top:1px solid rgba(255,255,255,.08);padding-top:4px';
-  const foot = document.createElement('div'); foot.className = 'g-rules'; foot.textContent = 'Fixed limit, play money. V01D never sees your cards: it estimates its chances from the hands you could hold.';
+  const foot = document.createElement('div'); foot.className = 'g-rules'; foot.textContent = 'Fixed limit, play money. Verse never sees your cards: it estimates its chances from the hands you could hold.';
   const save = () => stageApi.save && stageApi.save();
   function voidPlays() {
     clearTimeout(timers.get(th));
@@ -60,17 +60,17 @@ function mount(th, stageApi) {
     voidRow.replaceChildren(...(v.theirs || [null, null]).map(cardEl));
     boardRow.replaceChildren(...v.board.map(cardEl));
     youRow.replaceChildren(...v.mine.map(cardEl));
-    potRow.textContent = 'Pot ' + v.pot + (v.bet.void || v.bet.you ? ' · in this round: V01D ' + v.bet.void + ', you ' + v.bet.you : '');
-    stacks.textContent = 'You ' + v.stacks.you + ' · V01D ' + v.stacks.void;
+    potRow.textContent = 'Pot ' + v.pot + (v.bet.void || v.bet.you ? ' · in this round: Verse ' + v.bet.void + ', you ' + v.bet.you : '');
+    stacks.textContent = 'You ' + v.stacks.you + ' · Verse ' + v.stacks.void;
     for (const m of Object.keys(moves)) {
       moves[m].hidden = !v.legal.includes(m);
       const owe = v.bet.void - v.bet.you;
       if (m === 'call') moves[m].textContent = 'Call ' + owe;
     }
     dealB.hidden = !(v.result && !v.over);
-    status.textContent = v.over ? (v.over === 'you' ? 'You took all of V01D’s chips!' : 'V01D took all your chips.')
-      : v.result ? (v.result.winner === 'you' ? 'You win ' + v.result.pot : v.result.winner === 'void' ? 'V01D wins ' + v.result.pot : 'Split pot') + (v.result.hands ? ' · you: ' + v.result.hands.you + ', V01D: ' + v.result.hands.void : '')
-        : v.toAct === 'you' ? 'Your move' : 'V01D is thinking…';
+    status.textContent = v.over ? (v.over === 'you' ? 'You took all of Verse’s chips!' : 'Verse took all your chips.')
+      : v.result ? (v.result.winner === 'you' ? 'You win ' + v.result.pot : v.result.winner === 'void' ? 'Verse wins ' + v.result.pot : 'Split pot') + (v.result.hands ? ' · you: ' + v.result.hands.you + ', Verse: ' + v.result.hands.void : '')
+        : v.toAct === 'you' ? 'Your move' : 'Verse is thinking…';
     log.textContent = '';
     for (const l of s.log.slice(-12).reverse()) { const line = document.createElement('div'); line.textContent = (l.who ? l.who + ' ' : '') + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; line.appendChild(w); } log.appendChild(line); }
   }
@@ -88,7 +88,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'poker');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'poker'; }
   api.summon('poker', { state: P.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 50 });
-  api.say('Poker · Texas Hold’em for play money · V01D can’t see your cards');
+  api.say('Poker · Texas Hold’em for play money · Verse can’t see your cards');
   return 'poker';
 }
 

@@ -15,13 +15,13 @@ export function join(room, hooks, env = globalThis) {
   // one message from the room or another tab, checked again before the stage sees it
   function take(m) {
     if (!m || typeof m !== 'object') return;
-    if (m.t === 'hello') { if (Array.isArray(m.peers) && m.peers.length) note('in a shared Void with ' + m.peers.length + ' other' + (m.peers.length > 1 ? 's' : '')); return; }
-    if (m.t === 'join') { note('someone came into your Void'); return; }
+    if (m.t === 'hello') { if (Array.isArray(m.peers) && m.peers.length) note('in a shared Verse with ' + m.peers.length + ' other' + (m.peers.length > 1 ? 's' : '')); return; }
+    if (m.t === 'join') { note('someone came into your Verse'); return; }
     if (m.t === 'left') { if (peerId(m.id)) { seen.delete(m.id); hooks.gone(m.id); note('they left'); } return; }
     if (!peerId(m.from) || m.from === me) return;
     const c = clean(JSON.stringify({ t: m.t, x: m.x, y: m.y, ask: m.ask, k: m.k, key: m.key, text: m.text, data: m.data }));
     if (!c) return;
-    if (!seen.has(m.from) && s.mode === 'tabs') { seen.add(m.from); note('another tab came into this Void'); }
+    if (!seen.has(m.from) && s.mode === 'tabs') { seen.add(m.from); note('another tab came into this Verse'); }
     if (c.t === 'cursor') hooks.presence(m.from, c.x, c.y);
     else if (c.t === 'move') { if (hooks.move) hooks.move(c.key, c.x, c.y); }
     else if (c.t === 'text') { if (hooks.text) hooks.text(c.key, c.text); }
@@ -43,7 +43,7 @@ export function join(room, hooks, env = globalThis) {
     s.dropped = (key) => post({ t: 'drop', key });
     s.synced = (key, data) => post({ t: 'sync', key, data });
     s.leave = () => { if (s.mode === 'left') return; try { ch.postMessage({ t: 'left', id: me }); } catch (_) {} ch.close(); s.mode = 'left'; };
-    note('the live relay is not on yet: tabs in this browser share this Void');
+    note('the live relay is not on yet: tabs in this browser share this Verse');
   }
   if (!env.WebSocket) { tabs(); return s; }
   let ws; try { ws = new env.WebSocket((env.location.protocol === 'http:' ? 'ws:' : 'wss:') + '//' + env.location.host + '/api/share/' + room); } catch (_) { tabs(); return s; }
@@ -63,7 +63,7 @@ export function join(room, hooks, env = globalThis) {
   ws.onerror = () => { if (!open) tabs(); };
   ws.onclose = (e) => {
     if (!open) return tabs();
-    if (s.mode !== 'left') { s.mode = 'ended'; note(e && e.code === 4001 ? 'this Void is full' : 'the share ended'); }
+    if (s.mode !== 'left') { s.mode = 'ended'; note(e && e.code === 4001 ? 'this Verse is full' : 'the share ended'); }
   };
   return s;
 }

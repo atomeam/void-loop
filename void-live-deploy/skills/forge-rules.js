@@ -14,7 +14,7 @@ const FLOOR = { type: 'sphere', c: [0, -2000, 0], r: 2000, cut: true, k: 0.01 };
 const cyl = (y0, y1, r, rb) => ({ type: 'capsule', a: [0, y0, 0], b: [0, y1, 0], ra: r, rb: rb ?? r });
 const leg = (x, z, h, r) => ({ type: 'capsule', a: [x, 0, z], b: [x, h, z], ra: r, k: 2 });
 
-/** A figure as a recipe (asked by Void: "expand the forge to include the figures as a recipe, so I can make a person instead of
+/** A figure as a recipe (asked by Verse: "expand the forge to include the figures as a recipe, so I can make a person instead of
  *  just a vase"): the stage's own person body (skills/sdfmesh.js PERSON, the shapes every roaming figure is meshed from) in
  *  millimetres, lifted so its feet sink 2 mm into a round plinth, with its arms at its sides (the stage swings them as separate
  *  pieces; a print needs them joined). R is the body radius in mm: a person stands about 3 R tall. Pure. */
@@ -100,7 +100,7 @@ export const THINGS = {
     cyl(-10, 118, 30, 19), { type: 'ellipsoid', c: [0, 120, 0], r: [27, 5, 27] }, cyl(122, 144, 15), { type: 'sphere', c: [0, 146, 0], r: 15 }, cyl(150, 166, 5, 1),
     { type: 'ellipsoid', c: [0, 0, 0], r: [44, 10, 44] },
     FLOOR] },
-  // the first figure as a recipe (asked by Void): the stage's person body on a plinth; "make me a person" prints what "summon a sprite" roams as
+  // the first figure as a recipe (asked by Verse): the stage's person body on a plinth; "make me a person" prints what "summon a sprite" roams as
   person: { label: 'Person', names: ['person', 'human', 'man', 'woman', 'little person', 'human figure', 'person figure', 'figure of a person', 'statue'], k: 3, cell: 1.4, figure: 'person', shapes: [
     ...personShapes(),
     FLOOR] },
@@ -124,7 +124,7 @@ function bounds(shapes) {
 }
 
 const cache = new Map();
-/** the recipe's id (asked by Void twice, 2026-10-16: "a 'recipe-versioning' system in the forge so that every 'make' can be saved as a
+/** the recipe's id (asked by Verse twice, 2026-10-16: "a 'recipe-versioning' system in the forge so that every 'make' can be saved as a
  * unique, immutable ID linked to its resulting STL"): eight hex characters of FNV-1a over the recipe as written (its key, shapes,
  * blend and cell), so the same recipe always gives the same id and any change to it gives a new one. The STL's file name carries
  * it (skills/forge.js fileName), so a printed file names the exact recipe it came from. Pure. */
@@ -190,7 +190,7 @@ export function printCheck(model) {
   return { fits, stands, brim: !stands, closed, outward, baseCm2, volumeCm3, grams, overhangPct, supports, triangles: n, ok: fits && closed && outward, notes };
 }
 
-/** Before a file goes to print (Void's ask: verify the geometry before the print command): read the STL back and hold it to
+/** Before a file goes to print (Verse's ask: verify the geometry before the print command): read the STL back and hold it to
  *  its model. The facet count in the header matches the model and the file's length, every number is finite, the file's
  *  extent is the model's size (Z up), and the mesh is one a slicer takes as it is (printCheck: fits, watertight, outward).
  *  { ok, problems: [why, in words], triangles } — pure, from the bytes and the model alone. */
@@ -221,7 +221,7 @@ export function verifyStl(buf, model) {
 export function stl(model) {
   const P = model.positions, I = model.indices, n = I.length / 3;
   const buf = new ArrayBuffer(84 + n * 50), dv = new DataView(buf);
-  const head = 'V01D forge: ' + model.label + ' (a-to-mind.com), mm, Z up';
+  const head = 'Verse forge: ' + model.label + ' (a-to-mind.com), mm, Z up';
   for (let i = 0; i < 80; i++) dv.setUint8(i, i < head.length ? head.charCodeAt(i) & 127 : 32);
   dv.setUint32(80, n, true);
   // model (x, y, z) with y up -> STL (x, -z, y) with Z up; the swap keeps every facet's winding outward

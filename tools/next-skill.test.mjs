@@ -1,4 +1,4 @@
-// node --test tools/next-skill.test.mjs: the learning queue's next entry (tools/next-skill.mjs, frontier #2, asked by Void):
+// node --test tools/next-skill.test.mjs: the learning queue's next entry (tools/next-skill.mjs, frontier #2, asked by Verse):
 // the miss board's asks grouped by intent, the top intent of the last 7 days, a ready probe batch in tools/bench.json's
 // shape and the files a skill for it touches. Fixture rows only: real misses are what people typed and never enter this repo.
 import { test } from 'node:test';

@@ -1,10 +1,10 @@
-// mcp — Void as an MCP server (frontier #6): the JSON-RPC half of functions/api/mcp.js, pure and tested in node
+// mcp — Verse as an MCP server (frontier #6): the JSON-RPC half of functions/api/mcp.js, pure and tested in node
 // (tools/mcp.test.mjs). An MCP client POSTs one JSON-RPC message to /api/mcp (the streamable HTTP transport, answered with plain
-// JSON, no stream) and lists and calls Void's tools. Every tool is read-only: it computes from what it is given and from Void's own
+// JSON, no stream) and lists and calls Verse's tools. Every tool is read-only: it computes from what it is given and from Verse's own
 // tables and reaches no other service, except ask_void, which is /api/answer itself (the route hands it over, ctx.answer: the open
 // web and the model, on that endpoint's terms and limits). One, review_code_closer, is /api/review itself (the route hands it over, ctx.review): the
 // closer read by a model comes only with the key that endpoint takes, on its terms, and the only thing written is that key's daily
-// count. /tools.json is the same list, public. The skill tools (asked by Void, 2026-10-15) are Void's most proven read-only (up to ten)
+// count. /tools.json is the same list, public. The skill tools (asked by Verse, 2026-10-15) are Verse's most proven read-only (up to ten)
 // skills, generated from the ratings (tools/mcp-skills.mjs -> lib/mcp-skills.js): each is ask_void's own path with the skill's
 // name on it and the link where the skill itself runs. skill_health reads skills/families.json (the route lends it, ctx.families).
 import { quick } from './review-api.js';
@@ -14,9 +14,9 @@ import { SKILL_TOOLS } from './mcp-skills.js';
 import { drive } from './drive.js';
 
 export const PROTOCOL = '2025-06-18';
-export const SERVER = { name: 'void', title: 'Void (a-to-mind.com)', version: '1.2.0' };
+export const SERVER = { name: 'void', title: 'Verse (a-to-mind.com)', version: '1.2.0' };
 const RO = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false };
-// what shape an agent wants back (asked by Void, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
+// what shape an agent wants back (asked by Verse, ask-20261014-1722-1): 'text' (default: the words, sources listed) or 'raw_data'
 // (the structured result as JSON text). 'image' is named so an agent learns it is not offered yet, rather than guessing.
 const RESPONSE_TYPE = { type: 'string', enum: ['text', 'raw_data', 'image'], description: "What to get back: 'text' (default) or 'raw_data' (the structured result as JSON). 'image' is not offered yet." };
 export function shaped(result, type) {
@@ -27,21 +27,21 @@ export function shaped(result, type) {
 const DATE = { type: 'string', description: 'An ISO date or date-time (UTC). Leave it out for now.' };
 const SITE = 'https://a-to-mind.com';
 const ASKS = { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true }; // a model and the open web answer
-// one of Void's most proven skills as its own tool: the definition is built from lib/mcp-skills.js, never written by hand
-const skillTool = (s) => ({ name: s.tool, title: "Void's " + s.skill + ' skill', annotations: ASKS,
-  description: "Ask Void's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Void offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Void's benchmark, its tests), never from how it describes itself. Asks like "
-    + s.examples.map((e) => '"' + e + '"').join(', ') + ". Over MCP it is answered the way ask_void is: Void's answer engine (a model, citing Wikipedia when it matches; up to 12 a minute per caller). The skill itself works it out on its own card at the \"open\" link in the result.",
+// one of Verse's most proven skills as its own tool: the definition is built from lib/mcp-skills.js, never written by hand
+const skillTool = (s) => ({ name: s.tool, title: "Verse's " + s.skill + ' skill', annotations: ASKS,
+  description: "Ask Verse's \"" + s.skill + "\" skill (" + s.familyName + "), one of the proven skills with the most evidence that Verse offers over MCP (read-only): rated proven on a-to-mind.com from evidence (real asks in Verse's benchmark, its tests), never from how it describes itself. Asks like "
+    + s.examples.map((e) => '"' + e + '"').join(', ') + ". Over MCP it is answered the way ask_void is: Verse's answer engine (a model, citing Wikipedia when it matches; up to 12 a minute per caller). The skill itself works it out on its own card at the \"open\" link in the result.",
   inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The ask in plain words (3 to 600 characters)' + (s.examples[0] ? ', e.g. "' + s.examples[0] + '"' : '') + '.' }, response_type: RESPONSE_TYPE } } });
 
 export const TOOLS = [
-  { name: 'ask_void', title: 'Ask Void anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
-    description: "Ask Void a question in plain words and get its answer: a short, direct answer from Void's answer engine (a-to-mind.com), citing the Wikipedia pages it drew on when they match. Ask about Void itself (\"what are you building?\") and it answers from its own live facts. Up to 12 model answers a minute per caller; a repeated question may come from the 7-day cache.",
+  { name: 'ask_void', title: 'Ask Verse anything', annotations: { readOnlyHint: true, destructiveHint: false, idempotentHint: false, openWorldHint: true },
+    description: "Ask Verse a question in plain words and get its answer: a short, direct answer from Verse's answer engine (a-to-mind.com), citing the Wikipedia pages it drew on when they match. Ask about Verse itself (\"what are you building?\") and it answers from its own live facts. Up to 12 model answers a minute per caller; a repeated question may come from the 7-day cache.",
     inputSchema: { type: 'object', required: ['ask'], properties: { ask: { type: 'string', description: 'The question, in plain words (3 to 600 characters).' }, response_type: RESPONSE_TYPE } } },
   { name: 'review_code', title: 'Review code (instant checks)', annotations: RO,
-    description: "Void's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Void to review code. No model; the closer read is not included. Its structured result says basis 'patterns' and confidence 'low'.",
+    description: "Verse's instant code review: pattern checks for bugs, risks and style in pasted code or a diff's added lines, in many languages. The same checks a-to-mind.com runs when someone asks Verse to review code. No model; the closer read is not included. Its structured result says basis 'patterns' and confidence 'low'.",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: only the added lines are reviewed, with their line numbers in the new file.' }, lang: { type: 'string', description: 'The language, if known (javascript, python, go, rust, sql, ...).' } } } },
   { name: 'review_code_closer', title: 'Review code (with the closer read)', annotations: { ...RO, idempotentHint: false },
-    description: "Void's code review with the closer read: the instant checks, then an AI reviewer that confirms real findings, drops wrong ones and adds what the patterns missed, each quoting its line. The closer read needs a key in the MCP request's Authorization header (Bearer: a Void Pro review key vr1.… or a Void Code Review Pro license key; https://a-to-mind.com/code-review/#pro). Without one you get the instant checks and how to get it. The structured result says what it rests on: basis 'closer_read' (confidence 'reviewed') only when the closer read came back, else 'patterns' (confidence 'low').",
+    description: "Verse's code review with the closer read: the instant checks, then an AI reviewer that confirms real findings, drops wrong ones and adds what the patterns missed, each quoting its line. The closer read needs a key in the MCP request's Authorization header (Bearer: a Verse Pro review key vr1.… or a Verse Code Review Pro license key; https://a-to-mind.com/code-review/#pro). Without one you get the instant checks and how to get it. The structured result says what it rests on: basis 'closer_read' (confidence 'reviewed') only when the closer read came back, else 'patterns' (confidence 'low').",
     inputSchema: { type: 'object', properties: { code: { type: 'string', description: 'The code to review (up to 60,000 characters).' }, diff: { type: 'string', description: 'A unified diff instead of code: the added lines are reviewed.' }, lang: { type: 'string', description: 'The language, if known.' } } } },
   { name: 'moon_phase', title: "The moon's phase", annotations: RO,
     description: "The moon's illuminated fraction, whether it is waxing or waning, and the phase's name for a moment, from Meeus' formulas (Astronomical Algorithms, ch. 47-48).",
@@ -50,14 +50,14 @@ export const TOOLS = [
     description: 'The meteor showers active on a date (strongest first, with days to each peak and the peak rate) and the next peak on or after it, from the IMO calendar of the major showers.',
     inputSchema: { type: 'object', properties: { date: DATE } } },
   { name: 'drive_time', title: 'Drive time between two places', annotations: { ...RO, idempotentHint: false, openWorldHint: true },
-    description: "How long the drive is between two places, and how far, from a live routing service (the public OSRM router, no key; road network at free-flow speed, so no live traffic). Places by name (looked up with Open-Meteo's geocoder) or as \"lat,lon\". Void's rides family checks this same router once a day.",
+    description: "How long the drive is between two places, and how far, from a live routing service (the public OSRM router, no key; road network at free-flow speed, so no live traffic). Places by name (looked up with Open-Meteo's geocoder) or as \"lat,lon\". Verse's rides family checks this same router once a day.",
     inputSchema: { type: 'object', required: ['from', 'to'], properties: { from: { type: 'string', description: 'Where from: a place name ("San Francisco") or "lat,lon".' }, to: { type: 'string', description: 'Where to: a place name or "lat,lon".' } } } },
   ...SKILL_TOOLS.map(skillTool),
-  { name: 'skill_health', title: "Void's skill-family health", annotations: RO,
-    description: "How far each of Void's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Void's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
+  { name: 'skill_health', title: "Verse's skill-family health", annotations: RO,
+    description: "How far each of Verse's skills is checked, family by family (a-to-mind.com/skills/families.json). Every skill is rated from evidence only, never from how it describes itself: experiment (nothing checks it), tested, checked or proven (its own tests, the browser suite, real asks in Verse's benchmark). Gives the totals, each family's counts and share proven, the skills failing a benchmark ask, and which skills have their own tool here. Name a family to get each of its skills with its rating and why.",
     inputSchema: { type: 'object', properties: { family: { type: 'string', description: "A family's id (families[].id in this tool's result, e.g. numbers) for its skills one by one." }, response_type: RESPONSE_TYPE } } },
-  { name: 'skill_discovery', title: "Discover Void's skills by family", annotations: RO,
-    description: "Skill Discovery (asked by Void): what skills Void has and how they are spread across its families, for an agent that wants to know where to look before it asks. Gives each family's id, name, what it is for, how many skills it holds, its share of all of Void's skills (the distribution), and the skills in it by name with their rating; ask for one family, or only the skills at a rating. Read from a-to-mind.com/skills/families.json, rated from evidence only. Ask a skill by name through ask_void or the skill's own tool.",
+  { name: 'skill_discovery', title: "Discover Verse's skills by family", annotations: RO,
+    description: "Skill Discovery (asked by Verse): what skills Verse has and how they are spread across its families, for an agent that wants to know where to look before it asks. Gives each family's id, name, what it is for, how many skills it holds, its share of all of Verse's skills (the distribution), and the skills in it by name with their rating; ask for one family, or only the skills at a rating. Read from a-to-mind.com/skills/families.json, rated from evidence only. Ask a skill by name through ask_void or the skill's own tool.",
     inputSchema: { type: 'object', properties: { family: { type: 'string', description: "Only this family (an id from the result, e.g. numbers)." }, tier: { type: 'string', enum: ['experiment', 'tested', 'checked', 'proven'], description: 'Only skills rated at least this high.' }, response_type: RESPONSE_TYPE } } },
 ];
 
@@ -70,7 +70,7 @@ function when(a) {
   const d = new Date(String(a));
   return Number.isNaN(d.getTime()) ? null : d;
 }
-// what a review rests on (asked by Void): pattern checks alone are low confidence; the closer read is only claimed when its answer came back
+// what a review rests on (asked by Verse): pattern checks alone are low confidence; the closer read is only claimed when its answer came back
 const BASIS = {
   patterns: { basis: 'patterns', confidence: 'low', line: 'Basis: pattern checks only, no model. A finding can be a false positive, and finding nothing is not proof the code is right.' },
   closer_read: { basis: 'closer_read', confidence: 'reviewed', line: 'Basis: pattern checks, then an AI reviewer read the code. It can still miss things.' },
@@ -95,10 +95,10 @@ async function closer(a, ctx) {
 async function askVoid(a, ctx) {
   const ask = typeof a.ask === 'string' ? a.ask.trim().slice(0, 600) : '';
   if (ask.length < 3) return toolError('Give the question as "ask", in plain words.');
-  if (!ctx || typeof ctx.answer !== 'function') return toolError('Asking Void is only reachable at https://a-to-mind.com/api/mcp.');
+  if (!ctx || typeof ctx.answer !== 'function') return toolError('Asking Verse is only reachable at https://a-to-mind.com/api/mcp.');
   const { status, body } = await ctx.answer({ ask });
-  if (status === 429) return toolError('Slow down: Void answers up to 12 questions a minute per caller. Try again in a minute.');
-  if (!body || !body.answer) return toolError('Void had no answer for that just now' + (body && body.note ? ' (' + String(body.note).slice(0, 160) + ')' : '') + '. Rephrase it, or try again in a moment.');
+  if (status === 429) return toolError('Slow down: Verse answers up to 12 questions a minute per caller. Try again in a minute.');
+  if (!body || !body.answer) return toolError('Verse had no answer for that just now' + (body && body.note ? ' (' + String(body.note).slice(0, 160) + ')' : '') + '. Rephrase it, or try again in a moment.');
   const sources = (body.sources || []).map(({ title, url }) => ({ title, url }));
   const text = body.answer + (sources.length ? '\n\nSources:\n' + sources.map((x) => '- ' + x.title + ': ' + x.url).join('\n') : '');
   return toolResult(text, { answer: body.answer, sources, at: body.at || null, cached: !!body.cached });
@@ -196,7 +196,7 @@ export async function rpc(msg, ctx) {
   if (!msg || typeof msg !== 'object' || Array.isArray(msg) || msg.jsonrpc !== '2.0' || typeof msg.method !== 'string') return err(msg && msg.id, -32600, 'Invalid request: one JSON-RPC 2.0 message');
   const { id, method } = msg, params = (msg.params && typeof msg.params === 'object') ? msg.params : {};
   if (id === undefined) return null; // notifications (notifications/initialized, cancelled) need no reply
-  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Void's read-only tools: ask Void anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
+  if (method === 'initialize') return ok(id, { protocolVersion: PROTOCOL, capabilities: { tools: { listChanged: false } }, serverInfo: SERVER, instructions: "Verse's read-only tools: ask Verse anything (ask_void, its answer engine), the instant code review, the closer read (with a key in Authorization), the moon's phase, the meteor showers, a tool for each of its most proven read-only skills (skill_*, answered the way ask_void is), and skill_health (how far each skill is checked). ask_void, the skill tools and the closer read call a model." });
   if (method === 'ping') return ok(id, {});
   if (method === 'tools/list') return ok(id, { tools: TOOLS });
   if (method === 'tools/call') {

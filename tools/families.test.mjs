@@ -14,7 +14,7 @@ test('a rating is earned from evidence: one kind tested, two checked, three (or 
 
 test('evidence is read off the repo: suite(), a unit test of the skill or its rules, both browser suites, benchmark asks', () => {
   const files = {
-    'tools/test_void.mjs': 'check(\'weather: rain\', ok); want("how Void is different: canon")', 'tools/test_3d.mjs': 'want("3d: chess and checkers")', 'tools/test_extension.mjs': '',
+    'tools/test_void.mjs': 'check(\'weather: rain\', ok); want("how Verse is different: canon")', 'tools/test_3d.mjs': 'want("3d: chess and checkers")', 'tools/test_extension.mjs': '',
     'tools/bench.json': JSON.stringify([{ ask: 'a', want: 'skill:weather' }, { ask: 'b', want: 'calc|answer' }]),
     'tools/poker.test.mjs': "import * as P from '../void-live-deploy/skills/poker-rules.js';",
     'void-live-deploy/skills/draw.js': 'export default { suite() { return 1; } }',
@@ -35,7 +35,7 @@ test('every skill sits in one family; one in no family, or a family member that 
   assert.equal(b.totals.experiment, all.length - 1);
 });
 
-test('Void reads its families before it reflects', () => {
+test('Verse reads its families before it reflects', () => {
   const fam = { totals: { proven: 1, checked: 0, tested: 1, experiment: 1 }, families: [
     { name: 'Games', count: { proven: 1 }, skills: [{ name: 'go', tier: 'proven' }, { name: 'chess', tier: 'tested' }] },
     { name: 'Sky', count: { proven: 0 }, skills: [{ name: 'moon', tier: 'experiment' }] }] };
@@ -44,7 +44,7 @@ test('Void reads its families before it reflects', () => {
   assert.equal(familyFacts(null), '');
 });
 
-test('friction (Void\'s ask): the asks the bench got wrong on main are each skill\'s failing asks, on its row in families.json', () => {
+test('friction (Verse\'s ask): the asks the bench got wrong on main are each skill\'s failing asks, on its row in families.json', () => {
   const files = {
     'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '',
     'tools/bench.json': JSON.stringify([{ ask: 'Weather in Oslo', want: 'skill:weather' }, { ask: 'rain later', want: 'skill:weather' }, { ask: '15% of 80', want: 'calc|answer' }, { ask: 'set a timer', want: 'timer' }]),
@@ -63,7 +63,7 @@ test('friction (Void\'s ask): the asks the bench got wrong on main are each skil
   assert.equal(row('timer').failing, undefined);
 });
 
-test('last_tested and success_rate (asked by Void, ask-20261013-1823-1): from evidence dates only, carried while unchanged, never from usage', async () => {
+test('last_tested and success_rate (asked by Verse, ask-20261013-1823-1): from evidence dates only, carried while unchanged, never from usage', async () => {
   const { benchRun, successRate, lastTested, build: B } = await import('./families.mjs');
   // the bench's last run: the misses file when recorded, else the run that set the floor; nothing recorded is said so
   const files = {
@@ -99,7 +99,7 @@ test('last_tested and success_rate (asked by Void, ask-20261013-1823-1): from ev
   for (const s of b1.families.flatMap((f) => f.skills)) for (const k of Object.keys(s)) assert.doesNotMatch(k, /usage|popular|used/, 'no behaviour tracking');
 });
 
-test('the daily smoke test (asked by Void, ask-20261013-1823-2): a failing skill loses its self-test evidence and carries the reasons; a passing one was tested that day', async () => {
+test('the daily smoke test (asked by Verse, ask-20261013-1823-2): a failing skill loses its self-test evidence and carries the reasons; a passing one was tested that day', async () => {
   const { smokeRun, evidence: ev2, build: B2, lastTested: LT } = await import('./families.mjs');
   const files = {
     'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '', 'tools/bench.json': '[]',
@@ -153,7 +153,7 @@ test('live evidence (the owner, 2026-10-16): a kept ok artifact of a real call i
   assert.deepEqual(row('rides'), b2.families.flatMap((f) => f.skills).find((s) => s.name === 'rides'), 'a day later, nothing changed: the same row');
 });
 
-test('the 7-day re-test (asked by Void): a pass dates the skill, a failure joins smoke as re-test lines and drops its self-test', async () => {
+test('the 7-day re-test (asked by Verse): a pass dates the skill, a failure joins smoke as re-test lines and drops its self-test', async () => {
   const { retestRun, evidence: E, build: B } = await import('./families.mjs');
   const files = {
     'tools/retest.json': JSON.stringify({ at: '2026-10-20', retested: { clock: { ok: true, failing: [], test: 'clock.test.mjs' }, timer: { ok: false, failing: ['"high timer" -> weather'], test: null } } }),
@@ -174,7 +174,7 @@ test('the 7-day re-test (asked by Void): a pass dates the skill, a failure joins
   assert.equal(row('timer').tier, 'experiment'); assert.equal(row('timer').last_tested, undefined);
 });
 
-// promotion and clean-run streaks (asked by Void: "a 'skill-stability' metric ... consecutive successful runs for all newly promoted skills")
+// promotion and clean-run streaks (asked by Verse: "a 'skill-stability' metric ... consecutive successful runs for all newly promoted skills")
 {
   const { promotedOn, build, smokeRun } = await import('./families.mjs');
   assert.equal(promotedOn('checked', { tier: 'tested' }, '2026-10-16'), '2026-10-16', 'a higher rating than the last file is a promotion today');

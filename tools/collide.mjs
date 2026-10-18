@@ -28,7 +28,7 @@ export function against(files, prs, common = COMMON) {
 export const COMMON = ['domains/handoff.md', 'tools/checks.mjs', 'void-live-deploy/void.growth.json', 'docs/void-voice.md'];
 
 const gh = (path) => execFileSync('gh', ['api', '--paginate', path, '--jq', '.[]'], { encoding: 'utf8', maxBuffer: 64 << 20 }).split('\n').filter(Boolean).map((l) => JSON.parse(l));
-// The conflict heatmap (asked by Void, ask-20261015-0612-1: "which skill files are currently under high-frequency edit pressure"):
+// The conflict heatmap (asked by Verse, ask-20261015-0612-1: "which skill files are currently under high-frequency edit pressure"):
 // each file's heat = open PRs touching it (x3, they are the live risk) + commits to it on main in the last week. Shared ledgers
 // (COMMON) are left out, since every PR appends to them. Pure.
 export function heat(prs, commits = {}, top = 15) {

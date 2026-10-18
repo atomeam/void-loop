@@ -1,6 +1,6 @@
 /**
  * approve-card skill — a task that waits on the stage, is approved through the confirm line, and keeps running on the server
- * clock after you leave (asked by Void: "Become tasks that keep running after you leave with an approve card on the stage";
+ * clock after you leave (asked by Verse: "Become tasks that keep running after you leave with an approve card on the stage";
  * growth-inbox #10). Owner's decision, 2026-10-18: the first version runs D1 automations only.
  *
  * "approve later: keep morning-digest running every 2 hours" puts a pending card on the stage and runs NOTHING. Its Approve
@@ -13,7 +13,7 @@
  * (synced through /api/mine, cleaned by void.html's cleanThings) and the tables that already exist.
  * "approve later: keep morning-digest running every 2 hours", "approve later: keep the nightly-check automation running every day".
  * A card pending, approved or running for more than 48 hours (createdAt, else seenAt) shows an amber "waiting 3 days — still want this?" line (staleOf; asked by
- * Void) beside its Approve or Abort, and "Keep waiting" starts the 48 hours again.
+ * Verse) beside its Approve or Abort, and "Keep waiting" starts the 48 hours again.
  */
 import { keepAsk, keepLine } from '../lib/keep-going.js';
 import { cardEl, keepOut } from '../lib/stage-pack.js';
@@ -63,7 +63,7 @@ export function catchUp(runs, seenAt) {
 
 export const STALE_HOURS = 48; // a task waiting or running this long gets "still want this?"
 /**
- * Has the card been waiting too long (asked by Void: "a stale-warning ... if the task has been running/pending for more than 48 hours")? Only a pending,
+ * Has the card been waiting too long (asked by Verse: "a stale-warning ... if the task has been running/pending for more than 48 hours")? Only a pending,
  * approved or running card can be stale; its age is from createdAt (set when summoned), else the older card's seenAt. { stale, hours } (hours is whole, 0 when unknown). Pure.
  */
 export function staleOf(th, now = Date.now()) {
@@ -130,7 +130,7 @@ function mount(th, stageApi) {
   paint();
 
   const tok = ownerToken();
-  if (!tok) { line.textContent = 'the owner\'s: unlock V01D (unlock <key>, or sign in with your passkey) to approve or read it'; return; }
+  if (!tok) { line.textContent = 'the owner\'s: unlock Verse (unlock <key>, or sign in with your passkey) to approve or read it'; return; }
   let runs = [];
   const progress = () => {
     if (!runs.length) return th.status === 'pending' ? WORDS.pending : th.status === 'aborted' ? WORDS.aborted : 'no run yet · the clock ticks every 15 minutes';

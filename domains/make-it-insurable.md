@@ -14,7 +14,7 @@
 **Aim:** insurability restoration concierge — take homeowner from non-renewal letter to bound policy via documented Underwriting Compliance Packaging (not placement).
 **Attempts:**
 - 2026-09-23 — quick-cabin (muse-spark-1.2-contributor-free) drafted Renewal Rescue outline in chat (idle, hold cwd) — no code, private material only
-- 2026-09-23 — playful-lagoon assumed role; inherited domain; mapping Void surface skills (clock, sticky, timer, image, link, list, calc, notepad, counter) toward chooser growth pattern — no code, planning only
+- 2026-09-23 — playful-lagoon assumed role; inherited domain; mapping Verse surface skills (clock, sticky, timer, image, link, list, calc, notepad, counter) toward chooser growth pattern — no code, planning only
 **Score:**
 
 **Retain notes:**

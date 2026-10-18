@@ -11,7 +11,7 @@ export default [
   "safest": "Own world map art, own pieces, the same conquest rules",
   "generic": "World Conquest",
   "parody": "R1SK.EXE",
-  "twist": "armies are glitch-bots; V01D \"defragments\" continents"
+  "twist": "armies are glitch-bots; Verse \"defragments\" continents"
  },
  {
   "game": "Monopoly (1935)",
@@ -36,7 +36,7 @@ export default [
   "protects": "CLUE/Cluedo marks, characters, art",
   "safest": "New suspects, rooms and weapons; same deduction rules",
   "generic": "Mystery Deduction",
-  "parody": "Who Deleted V01D?",
+  "parody": "Who Deleted Verse?",
   "twist": "find which process, which server, which bug"
  },
  {
@@ -49,7 +49,7 @@ export default [
   "protects": "SCRABBLE mark, board look, tile design",
   "safest": "Own board colours and premium layout styling, own tiles",
   "generic": "Word Tiles",
-  "parody": "Glyph Void",
+  "parody": "Glyph Verse",
   "twist": "letters drift in from the void"
  },
  {
@@ -88,7 +88,7 @@ export default [
   "protects": "SORRY! mark, card text, art",
   "safest": "Pachisi-style race with original cards",
   "generic": "Home Run Race",
-  "parody": "Oops, V01D",
+  "parody": "Oops, Verse",
   "twist": "bump rivals into the void"
  },
  {
@@ -128,7 +128,7 @@ export default [
   "protects": "CONNECT 4 mark, frame look",
   "safest": "Own colours and frame",
   "generic": "Four in a Row",
-  "parody": "Line of V01D",
+  "parody": "Line of Verse",
   "twist": "discs fall into a black hole"
  },
  {
@@ -141,7 +141,7 @@ export default [
   "protects": "STRATEGO mark, art",
   "safest": "Hidden ranks with own unit names",
   "generic": "Hidden Ranks",
-  "parody": "Fog of V01D",
+  "parody": "Fog of Verse",
   "twist": "bots hidden in static"
  },
  {
@@ -167,8 +167,8 @@ export default [
   "protects": "MASTERMIND mark, box art",
   "safest": "Code-break with own pegs",
   "generic": "Code Breaker",
-  "parody": "Crack V01D's Code",
-  "twist": "V01D sets the code and taunts you"
+  "parody": "Crack Verse's Code",
+  "twist": "Verse sets the code and taunts you"
  },
  {
   "game": "Yahtzee (1956)",
@@ -219,7 +219,7 @@ export default [
   "protects": "Mark, characters, art",
   "safest": "New colour-track world",
   "generic": "Color Track",
-  "parody": "Candy Void",
+  "parody": "Candy Verse",
   "twist": "sugar nebulae"
  },
  {
@@ -245,7 +245,7 @@ export default [
   "protects": "OPERATION mark, patient figure (\"Cavity Sam\")",
   "safest": "Own figure and circuit design",
   "generic": "Steady Hand",
-  "parody": "Repair V01D DR01D",
+  "parody": "Repair Verse DR01D",
   "twist": "fix the robot without a zap"
  },
  {
@@ -258,7 +258,7 @@ export default [
   "protects": "Mark, character art",
   "safest": "Own faces and flip-board look",
   "generic": "Face Guess",
-  "parody": "Who's in the Void?",
+  "parody": "Who's in the Verse?",
   "twist": "alien faces"
  },
  {
@@ -271,8 +271,8 @@ export default [
   "protects": "Mark, word cards",
   "safest": "Own word lists",
   "generic": "Sketch Guess",
-  "parody": "Draw the Void",
-  "twist": "V01D guesses your drawing"
+  "parody": "Draw the Verse",
+  "twist": "Verse guesses your drawing"
  },
  {
   "game": "Trivial Pursuit (1981)",
@@ -311,7 +311,7 @@ export default [
   "safest": "Own threats and roles",
   "generic": "Co-op Outbreak",
   "parody": "System Crash",
-  "twist": "stop viruses spreading across V01D's servers"
+  "twist": "stop viruses spreading across Verse's servers"
  },
  {
   "game": "Dominion (2008)",
@@ -323,7 +323,7 @@ export default [
   "protects": "Mark, card names, text and art (deckbuilding is free)",
   "safest": "Own cards entirely",
   "generic": "Deckbuilder",
-  "parody": "Void Deck",
+  "parody": "Verse Deck",
   "twist": "build a deck of glitches"
  },
  {
@@ -337,7 +337,7 @@ export default [
   "safest": "VoidQuest already exists: own board, property-game rules",
   "generic": "Space Property Game",
   "parody": "VoidQuest",
-  "twist": "you against V01D"
+  "twist": "you against Verse"
  },
  {
   "game": "Axis & Allies (1981)",
@@ -349,7 +349,7 @@ export default [
   "protects": "Mark, sculpts, map art",
   "safest": "Own map, units and sculpts",
   "generic": "WWII Strategy",
-  "parody": "Axis of V01D",
+  "parody": "Axis of Verse",
   "twist": "robot factions, not historical armies"
  },
  {
@@ -375,7 +375,7 @@ export default [
   "protects": "Mark, category lists",
   "safest": "Own lists",
   "generic": "Category Rush",
-  "parody": "Void Categories",
+  "parody": "Verse Categories",
   "twist": ""
  },
  {
@@ -407,7 +407,7 @@ export default [
   "protects": "Nothing for the game itself; only modern art or sets",
   "safest": "Identical play, any style",
   "generic": "(own names)",
-  "parody": "V01D Chess, etc.",
+  "parody": "Verse Chess, etc.",
   "twist": ""
  }
 ];

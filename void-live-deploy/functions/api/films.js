@@ -1,11 +1,11 @@
-// Void's films, on the site for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid
+// Verse's films, on the site for people who pay (owner, 2026-10-14: "just put void films right onto the sight , with only paid
 // access"; "we need to scale up . just because we use cloudflare we can use whatever it takes on top of that"). The films live
 // in R2 (bucket void-films, binding FILMS in wrangler.toml): films/<id>.mp4 and its words in films/<id>.json. Who may watch is the
-// support desk's rule (payer() in functions/api/support.js): the owner, a Void Pro key, a Code Review Pro license or a paid
+// support desk's rule (payer() in functions/api/support.js): the owner, a Verse Pro key, a Code Review Pro license or a paid
 // account's session. A <video> cannot send a Bearer header, so the list hands each payer a link to each film that is signed and
 // stops working after WATCH_MS; the link streams from R2 with Range, so a film plays at once and seeks, however many people watch.
 //   GET                          (anyone)              -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner, member }
-//                                 reviews only for the owner and members (2026-10-15: the films are V01D's ads, so anyone watches)
+//                                 reviews only for the owner and members (2026-10-15: the films are Verse's ads, so anyone watches)
 //                                 reviews: lib/film-reviews.js (POST one at /api/film-review)
 //   GET ?id=&exp=&sig=           (a signed link)       -> the MP4 (206 for a Range)
 //   POST ?id= video/mp4 body     (the owner)           -> stores the film      (.github/workflows/record.yml, daily)

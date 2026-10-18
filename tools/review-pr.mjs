@@ -1,11 +1,11 @@
 // node tools/review-pr.mjs [--base origin/main] [--head HEAD] [--json] [--inline] [--gate] [--deep URL]
-// Void reviews a pull request with the same checks it runs for visitors (void-live-deploy/lib/code-review.js): each changed
+// Verse reviews a pull request with the same checks it runs for visitors (void-live-deploy/lib/code-review.js): each changed
 // file is checked as a whole, and only findings on lines this change added are reported, so old code doesn't drown the new.
 // --deep URL also asks for the model's closer read of the added code (https://a-to-mind.com/api/review, the Pro review: send the
-// key in VOID_REVIEW_KEY; or Void's answer engine, /api/answer with mode 'review'); it is best-effort.
+// key in VOID_REVIEW_KEY; or Verse's answer engine, /api/answer with mode 'review'); it is best-effort.
 // Prints markdown (the PR comment: a walkthrough of what changed, then the findings) or JSON. --inline prints the
-// review comments for GitHub instead: one per line with a bug or risk, with a one-click suggested change when Void's
-// safe automatic fix (autoFix) rewrites that line. --gate makes Void's review a merge gate: exit 1 when the added lines carry a
+// review comments for GitHub instead: one per line with a bug or risk, with a one-click suggested change when Verse's
+// safe automatic fix (autoFix) rewrites that line. --gate makes Verse's review a merge gate: exit 1 when the added lines carry a
 // bug or a risk (the "void-review" check, .github/workflows/void-review.yml). A line that is right as written says so with
 // "void-review: ok" in a comment on it, and is left out. Otherwise the exit code is 0: the review informs.
 import { offerLines, HOME } from './review-offer.mjs';
@@ -116,7 +116,7 @@ if (process.argv.includes('--inline')) {
       const fx = line != null && autoFix(line, { lang: langs[f.file] });
       if (fx && fx.changes.length && fx.code !== line && !/```/.test(fx.code)) body += '\n\nSuggested fix (' + fx.changes.map((c) => c.what).join('; ') + '):\n```suggestion\n' + fx.code + '\n```';
     } catch (_) {}
-    comments.push({ path: f.file, line: f.line, side: 'RIGHT', rules: fs.map((x) => x.rule), body: body + '\n\n<sub>Void’s review (void-live-deploy/lib/code-review.js)</sub>' });
+    comments.push({ path: f.file, line: f.line, side: 'RIGHT', rules: fs.map((x) => x.rule), body: body + '\n\n<sub>Verse’s review (void-live-deploy/lib/code-review.js)</sub>' });
   }
   console.log(JSON.stringify(comments));
   process.exit(0);
@@ -129,7 +129,7 @@ function what(file) {
   if ((m = file.match(/^void-live-deploy\/skills\/([\w-]+)\.js$/))) return 'skill: ' + m[1];
   if ((m = file.match(/^void-live-deploy\/lib\/([\w-]+)\.js$/))) return 'shared code: ' + m[1];
   if ((m = file.match(/^void-live-deploy\/functions\/(.+)\.js$/))) return 'server: /' + m[1];
-  if (/^void-live-deploy\/(?:index|void)\.html$/.test(file)) return 'deploy copy of void.html';
+  if (/^void-live-deploy\/(?:index|(?:verse|void))\.html$/.test(file)) return 'deploy copy of void.html';
   if (file === 'void.html') return 'the page';
   if (file === 'tools/bench.json') return 'benchmark asks';
   if (/^tools\/test[_-]|\.test\.m?js$/.test(file)) return 'tests';
@@ -162,7 +162,7 @@ const gate = process.argv.includes('--gate') && blocking ? 1 : 0;
 if (process.argv.includes('--json')) { console.log(JSON.stringify({ base, head, findings: report, deep: deepText || null, quoted: deepQuoted, deepWhy: deepWhy || null, lines: scanned, ms, blocking }, null, 1)); process.exit(gate); }
 const n = { bug: 0, risk: 0, style: 0, note: 0 }; report.forEach((f) => n[f.kind]++);
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || '', outside = !!repo && repo.toLowerCase() !== HOME; // whose PR this is (the Action passes it)
-const out = ['<!-- void-review -->', '### Void\'s review', '', ...walkthrough()];
+const out = ['<!-- void-review -->', '### Verse\'s review', '', ...walkthrough()];
 if (!report.length) out.push('The quick checks found nothing in the lines this PR adds.');
 else {
   out.push([n.bug && n.bug + ' bug' + (n.bug > 1 ? 's' : ''), n.risk && n.risk + ' risk' + (n.risk > 1 ? 's' : ''), n.style && n.style + ' style', n.note && n.note + ' note' + (n.note > 1 ? 's' : '')].filter(Boolean).join(' · ') + ' in the lines this PR adds:', '');
@@ -170,7 +170,7 @@ else {
   const main = report.filter((f) => f.kind === 'bug' || f.kind === 'risk'), minor = report.filter((f) => f.kind === 'style' || f.kind === 'note');
   for (const f of main.slice(0, 30)) out.push(item(f));
   if (main.length > 30) out.push('', '…and ' + (main.length - 30) + ' more bugs and risks.');
-  // on someone else's repository the best style points are shown as upgrades, not folded away (Void's own PRs keep them folded)
+  // on someone else's repository the best style points are shown as upgrades, not folded away (Verse's own PRs keep them folded)
   const lead = outside ? minor.filter((f, i, all) => f.kind === 'style' && all.findIndex((g) => g.kind === 'style' && g.rule === f.rule) === i).slice(0, 3) : []; // three different upgrades, one per rule
   if (lead.length) out.push('', '**Quick upgrades** (not bugs; each makes the code a little better):', ...lead.map(item));
   const rest = minor.filter((f) => !lead.includes(f));
@@ -178,7 +178,7 @@ else {
 }
 if (deepText) out.push('', '#### A closer read', '', deepText);
 out.push('', blocking ? '**Blocking:** ' + blocking + ' bug' + (blocking > 1 ? 's and risks' : ' or risk') + ' to fix first (or mark a line that is right as written with a `void-review: ok` comment).' : '**Not blocking:** no bugs or risks in the added lines.');
-out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + (deepQuoted.parsed === false ? 'its JSON did not parse, so nothing to report' : deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' + (deepQuoted.echoes ? ', ' + deepQuoted.echoes + ' echo' + (deepQuoted.echoes === 1 ? '' : 'es') + ' of the shape' : '')) : '') + ')' : deepWhy ? ' (closer read unavailable (' + deepWhy + '))' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Void to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
+out.push('', '<sub>Reviewed ' + scanned + ' added line' + (scanned === 1 ? '' : 's') + ' in ' + (ms < 1000 ? ms + ' ms' : (ms / 1000).toFixed(1) + ' s') + (deepText ? ' (plus the closer read' + (deepQuoted ? ': ' + (deepQuoted.parsed === false ? 'its JSON did not parse, so nothing to report' : deepQuoted.kept + ' finding' + (deepQuoted.kept === 1 ? '' : 's') + ' quoted from the diff, ' + deepQuoted.dropped + ' claim' + (deepQuoted.dropped === 1 ? '' : 's') + ' about lines not in it dropped' + (deepQuoted.echoes ? ', ' + deepQuoted.echoes + ' echo' + (deepQuoted.echoes === 1 ? '' : 'es') + ' of the shape' : '')) : '') + ')' : deepWhy ? ' (closer read unavailable (' + deepWhy + '))' : '') + '. Pattern checks from void-live-deploy/lib/code-review.js, the same ones a-to-mind.com runs when someone asks Verse to review code. Bugs and risks are worth a look; style is a suggestion.</sub>');
 const offer = offerLines({ repo, files: git('diff', '--name-only', '--no-color', base + '...' + head).split('\n').filter(Boolean), blocking, deep: !!deepText, upgrades: report.filter((f) => f.kind === 'style').length });
 if (offer.length) out.splice(out.length - 2, 0, '', '#### From A-to-Mind', '', ...offer.map((l) => '- ' + l)); // above the small print
 console.log(out.join('\n'));

@@ -1,4 +1,4 @@
-// lib/bridges.js: what one kind of thing hands another as text (asked by Void, 2026-10-16). node --test tools/bridges.test.mjs
+// lib/bridges.js: what one kind of thing hands another as text (asked by Verse, 2026-10-16). node --test tools/bridges.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { keptNote, entryFor, itemLine, boxOverlap, overlapping, togetherLine, arenaNoteLine } from '../void-live-deploy/lib/bridges.js';
 import { toNoteAsk } from '../void-live-deploy/skills/kept.js';

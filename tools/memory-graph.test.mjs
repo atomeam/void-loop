@@ -1,4 +1,4 @@
-// The personal memory graph (lib/memory-graph.js, skills/memory-graph.js; asked by Void). node --test tools/memory-graph.test.mjs
+// The personal memory graph (lib/memory-graph.js, skills/memory-graph.js; asked by Verse). node --test tools/memory-graph.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { empty, parseGraph, topicOf, noteAsk, confidence, pct, factAsk, exportOf, importInto, noteFactStored, forgetFactStored, SCHEMA, FACT_MAX, noteFact, forgetFact, patterns, suggest, whenWords, trim, readGraph, writeGraph, noteAskStored, setOn, clearGraph, NODE_MAX, EDGE_MAX, LABEL_MAX, WORDS_MAX, STALE_DAYS, GRAPH_KEY, NOTE } from '../void-live-deploy/lib/memory-graph.js';
@@ -185,7 +185,7 @@ test('the card: chips tap into a skill\'s own example, counts and the since day,
   const noEx = graphSkill.cardHtml(esc, p, [], {}); assert.ok(/<span class="mg-chip"[^>]*>clock/.test(noEx) && !/mg-chip" data-ask/.test(noEx.replace(/<a [^>]*>/g, '')), 'no example known: a chip with no ask, never an invented one');
 });
 
-// ---- confidence, export and import (asked by Void)
+// ---- confidence, export and import (asked by Verse)
 const isoAt = (t) => new Date(t).toISOString();
 
 test('confidence: more distinct days is surer, a repeat on the same day counts a quarter, time away halves it over 30 days, always 0 to 1', () => {
@@ -269,8 +269,8 @@ test('importInto: a round trip onto an empty graph gives the same graph; the sam
 test('importInto: version, schema and shape are checked, and a file over 2 MB is refused before it is parsed', () => {
   const good = exportOf(sample(), T0);
   assert.match(importInto(empty(), JSON.stringify({ ...good, v: 2 })).why, /version 2/);
-  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: 'void.stage.v1' })).why, /not a V01D memory file/);
-  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: undefined })).why, /not a V01D memory file/);
+  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: 'void.stage.v1' })).why, /not a Verse memory file/);
+  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: undefined })).why, /not a Verse memory file/);
   assert.equal(importInto(empty(), 'not json {').ok, false);
   for (const x of ['null', '[]', '5', '"x"', '{}', JSON.stringify({ ...good, nodes: [] }), JSON.stringify({ ...good, nodes: 'x' }), JSON.stringify({ ...good, nodes: {} })]) assert.equal(importInto(empty(), x).ok, false, x);
   for (const x of [null, undefined, 5, [], {}]) assert.equal(importInto(empty(), x).ok, false);

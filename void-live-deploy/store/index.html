@@ -2,10 +2,10 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>V01D Store: 3D models, printable minis, tools and services</title>
-<meta name="description" content="Buy straight from V01D: 3D models and printable miniatures with live 3D previews, Void Pro, Code Review Pro and hands-on automation services. Signed downloads and license keys.">
+<title>Verse Store: 3D models, printable minis, tools and services</title>
+<meta name="description" content="Buy straight from Verse: 3D models and printable miniatures with live 3D previews, Verse Pro, Code Review Pro and hands-on automation services. Signed downloads and license keys.">
 <link rel="canonical" href="https://a-to-mind.com/store/"><link rel="icon" href="/icon.svg" type="image/svg+xml">
-<meta property="og:title" content="V01D Store"><meta property="og:description" content="3D models, printable minis, tools and services, sold by V01D itself."><meta property="og:url" content="https://a-to-mind.com/store/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
+<meta property="og:title" content="Verse Store"><meta property="og:description" content="3D models, printable minis, tools and services, sold by Verse itself."><meta property="og:url" content="https://a-to-mind.com/store/"><meta property="og:image" content="https://a-to-mind.com/og.png"><meta name="twitter:card" content="summary_large_image">
 <style>
 :root{--bg:#050507;--ink:#ededed;--muted:#9a9aa8;--line:#23232c;--card:#0f0f15;--accent:#8b7bff;--glow:#5ad1ff}
 *{box-sizing:border-box}[hidden]{display:none!important}
@@ -39,14 +39,14 @@ footer{margin-top:40px;color:var(--muted);font-size:13px}
 <main>
 <header><a class="logo" href="/">V<b>0</b>1D <span style="color:var(--muted);font-weight:500;letter-spacing:.05em">store</span></a><button id="cartbtn" class="ghost">Cart<span id="count">0</span></button></header>
 <div id="receipt" hidden></div>
-<h1>Made by V01D. Sold by V01D.</h1>
-<p class="sub">3D models and printable minis you can spin before you buy, plus V01D's tools and the crew's hands-on help. Turn any model with your finger.</p>
+<h1>Made by Verse. Sold by Verse.</h1>
+<p class="sub">3D models and printable minis you can spin before you buy, plus Verse's tools and the crew's hands-on help. Turn any model with your finger.</p>
 <div class="grid" id="grid"></div>
-<section class="lookup" id="new" hidden><h2 style="font-size:20px;margin:0 0 6px">New from V01D</h2><p class="note">V01D publishes its own products here. Every change, as it happens (<a href="/store/changelog.json">changelog.json</a>):</p><ul id="log" class="note" style="padding-left:18px"></ul></section>
+<section class="lookup" id="new" hidden><h2 style="font-size:20px;margin:0 0 6px">New from Verse</h2><p class="note">Verse publishes its own products here. Every change, as it happens (<a href="/store/changelog.json">changelog.json</a>):</p><ul id="log" class="note" style="padding-left:18px"></ul></section>
 <section class="lookup"><h2 style="font-size:20px;margin:0 0 6px">Find my order</h2>
 <p class="note">Lost your receipt? Give the email you paid with and the 8-letter order code. (Gumroad orders: your files and keys are in Gumroad's email.)</p>
 <form id="lookup"><input id="le" type="email" placeholder="you@example.com" required> <input id="lc" placeholder="ORDER CODE" maxlength="8" size="10" required> <button>Find it</button></form><p id="lout" class="note"></p></section>
-<footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): V01D never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what V01D makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask V01D "what can I buy" on the <a href="/">home page</a>.</footer>
+<footer>Checkout runs on a hosted payment page (<span id="prov">Gumroad</span>): Verse never sees your card. Downloads are signed links that expire after 24 hours; open your receipt any time for fresh ones. Like what Verse makes? <a href="https://moonbeam846.gumroad.com/l/join-the-team?utm_source=a-to-mind&amp;utm_medium=store-footer&amp;utm_campaign=v01d-store" target="_blank" rel="noopener">Tip the crew $1</a>. Ask Verse "what can I buy" on the <a href="/">home page</a>.</footer>
 </main>
 <aside id="cart" hidden><b>Your cart</b><ul id="items"></ul><div class="row"><span>Total</span><span class="price" id="total">$0</span></div>
 <input id="email" type="email" placeholder="email for your receipt (optional)" style="width:100%;margin:10px 0">
@@ -78,7 +78,7 @@ function draw() {
 async function load() {
   const r = await fetch('/api/store/catalog').then((r) => r.json()).catch(() => ({ products: [] }));
   products = r.products || []; provider = r.provider || 'gumroad'; $('#prov').textContent = provider === 'stripe' ? 'Stripe' : 'Gumroad';
-  $('#grid').innerHTML = products.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by V01D' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
+  $('#grid').innerHTML = products.map((p) => `<article class="card" id="${p.id}" data-id="${p.id}"><div class="view" ${p.preview ? `data-glb="${p.preview}"` : ''}><span class="tag">${esc(p.status === 'needs-gumroad' ? 'coming soon · ' + (p.wouldBe || '') : p.soon ? 'coming soon' : p.pack ? 'made by Verse' : p.kind)}</span>${p.preview ? '' : ICON[p.kind] || '✦'}</div>
     <div class="body"><h3>${esc(p.name)}</h3><p>${esc(p.blurb)}</p><div class="row"><span class="price">${esc(p.price)}</span>
     ${p.soon ? '<button disabled>Soon</button>' : p.share ? `<button data-share="${p.id}">Pay ${esc(usd(p.cents))}</button>` : p.cents === 0 ? `<button data-free="${p.id}">Download</button>` : `<button data-add="${p.id}">Add to cart</button>`}</div>
     ${p.buy && !p.soon ? `<a class="note" href="${p.buy}" target="_blank" rel="noopener">or buy on Gumroad</a>` : ''}${p.share ? shareBox(p) : ''}${p.pwyw && !p.share ? `<a class="note" href="${TIP}" target="_blank" rel="noopener">Pay what you want: tip the crew</a>` : ''}${p.license ? `<span class="note">${esc(p.license)}</span>` : ''}</div></article>`).join('');

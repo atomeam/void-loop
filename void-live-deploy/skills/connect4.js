@@ -1,6 +1,6 @@
 /**
- * connect4 skill — Connect Four against Void (skills/connect4-rules.js): "play connect 4", "connect four", "four in a row".
- * Void looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
+ * connect4 skill — Connect Four against Verse (skills/connect4-rules.js): "play connect 4", "connect four", "four in a row".
+ * Verse looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
  * (mini/connect4.js), lifted by skills/lift3d.js with this card beside it; the flat grid here is the fallback.
  */
 import { levelPick } from './game-level.js';
@@ -10,9 +10,9 @@ import { showArena } from '../lib/arena-say.js';
 
 export function connect4Of(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:how (?:good|strong|well) (?:are you|is void|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/.test(t)
+  if (/^(?:how (?:good|strong|well) (?:are you|is (?:verse|void)|do you play)|are you (?:any )?good|what(?:'s| is) your (?:rating|elo|level))\s+(?:at|in)\s+(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)$/.test(t)
     || /^what(?:'s| is) your (?:connect\s*(?:4|four)|four\s+in\s+a\s+row) (?:rating|elo|level)$/.test(t)) return { kind: 'rating' };
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|make\s+(?:me\s+)?a)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|make\s+(?:me\s+)?a)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:connect\s*(?:4|four)|four\s+in\s+a\s+row)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
   return null;
 }
 const timers = new WeakMap();
@@ -60,7 +60,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = th.state, line = s.over && s.over !== 'draw' ? K.winLine(s.board, s.over === 'you' ? 1 : 2) || [] : [];
     s.board.forEach((v, i) => { holes[i].style.background = v === 1 ? '#e0303e' : v === 2 ? '#f2c230' : '#0d1a33'; holes[i].style.boxShadow = line.includes(i) ? '0 0 0 3px #fff' : ''; });
-    status.textContent = s.over === 'you' ? 'You win! Four in a row' : s.over === 'void' ? 'V01D wins this one' : s.over === 'draw' ? 'A draw' : s.turn === 1 ? 'Your move: pick a column' : 'V01D is thinking…';
+    status.textContent = s.over === 'you' ? 'You win! Four in a row' : s.over === 'void' ? 'Verse wins this one' : s.over === 'draw' ? 'A draw' : s.turn === 1 ? 'Your move: pick a column' : 'Verse is thinking…';
     const entry = (l) => { const d = document.createElement('div'); d.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; d.appendChild(w); } return d; };
     const moves = s.log.slice(-10).reverse();
     latest.textContent = ''; past.textContent = '';

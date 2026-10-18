@@ -1,15 +1,15 @@
-// match-history — the games you finished against V01D on this device, and your record from them (asked by Void: "Expand the chess
+// match-history — the games you finished against Verse on this device, and your record from them (asked by Verse: "Expand the chess
 // skill page to include a 'Match History' table that pulls from my recent game logs", and "I want the page to show my current Elo
 // or win-rate against the owner to make the 'Games' family feel competitive and real"). A game card (chess, checkers, othello)
 // calls finish() when a game ends on the board (checkmate, stalemate, a draw, a win on discs or men; a board thrown off mid-game
 // is not a game); the about card for that game ("tell me about the chess skill", "my chess record") shows the summary line and
 // the last ten games. Nothing leaves the device: the log is a2m.void.games.v1 (lib/state.js), capped at 100 games, oldest out.
-// The Elo is an estimate: you and V01D both start at 1200 and move by K = 32 a game, computed from the log each time, never kept.
+// The Elo is an estimate: you and Verse both start at 1200 and move by K = 32 a game, computed from the log each time, never kept.
 // Pure over the log; the storage helpers at the end take the storage handed in (default localStorage) and never throw.
 //
 //   record(log, game)                -> the log with one more game, newest last, at most MAX kept
 //   summary(log, { game })           -> { game, played, wins, losses, draws, winRate, streak, elo: { you, void } }
-//   summaryLine(sum)                 -> "12 played · 7–4–1 · 58% · you ~1240, V01D ~1160 (estimated)" or "no games on this device yet"
+//   summaryLine(sum)                 -> "12 played · 7–4–1 · 58% · you ~1240, Verse ~1160 (estimated)" or "no games on this device yet"
 //   historyAsk(text)                 -> { game } for "chess match history", "my chess record", "my record against void"; null otherwise
 //   historyHtml(esc, sum, log)       -> the Match History block for the about card (summary line, the last ten as a table)
 //   load(s) / save(log, s) / finish(game, result, { moves, minutes, vs, line }, s)   line: a chess game's moves ('e2e4'…), for the replay
@@ -27,7 +27,7 @@ export function parseGame(g) {
   const game = String(g.game || '').toLowerCase(), result = String(g.result || '').toLowerCase(), vs = VS.includes(g.vs) ? g.vs : 'v01d';
   if (!GAMES.includes(game) || !RESULTS.includes(result)) return null;
   const at = new Date(g.at || 0); const when = isNaN(at.getTime()) || !g.at ? new Date().toISOString() : at.toISOString();
-  // a chess game keeps its moves as coordinates ('e2e4', 'e7e8q') for the match replay (asked by Void); anything else is dropped
+  // a chess game keeps its moves as coordinates ('e2e4', 'e7e8q') for the match replay (asked by Verse); anything else is dropped
   const line = game === 'chess' && Array.isArray(g.line) && g.line.length <= LINE_MAX && g.line.every((x) => typeof x === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(x)) ? g.line.slice() : null;
   return { at: when, game, vs, result, moves: Math.round(num(g.moves)), minutes: Math.round(num(g.minutes) * 10) / 10, ...(line && line.length ? { line } : {}) };
 }
@@ -37,7 +37,7 @@ export function record(log, game) {
   if (!g) return l.slice(-MAX);
   return l.concat([g]).slice(-MAX);
 }
-/** the Elo of you and V01D after the games against V01D in the log, in order, from START with K. Pure. */
+/** the Elo of you and Verse after the games against Verse in the log, in order, from START with K. Pure. */
 export function elo(games) {
   let you = START, me = START;
   for (const g of games) {
@@ -59,14 +59,14 @@ export function summary(log, { game = '' } = {}) {
 /** the one line of the record. Pure. */
 export function summaryLine(sum) {
   if (!sum || !sum.played) return 'no games on this device yet';
-  return sum.played + ' played · ' + sum.wins + '–' + sum.losses + '–' + sum.draws + ' · ' + sum.winRate + '% · you ~' + sum.elo.you + ', V01D ~' + sum.elo.void + ' (estimated)';
+  return sum.played + ' played · ' + sum.wins + '–' + sum.losses + '–' + sum.draws + ' · ' + sum.winRate + '% · you ~' + sum.elo.you + ', Verse ~' + sum.elo.void + ' (estimated)';
 }
 
 const GAME_WORD = { chess: 'chess', checkers: 'checkers', draughts: 'checkers', othello: 'othello', reversi: 'othello' };
 const G = '(chess|checkers|draughts|othello|reversi)';
-const RE_GAME_HISTORY = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?(?:my\\s+)?' + G + '\\s+match\\s+history(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
-const RE_MY_GAME = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+' + G + '\\s+(?:record|history|results|match\\s+history|match\\s+record)(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
-const RE_MY_VS = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+(?:match\\s+history|record|match\\s+record)(?:\\s+(?:at|in)\\s+' + G + ')?(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
+const RE_GAME_HISTORY = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?(?:my\\s+)?' + G + '\\s+match\\s+history(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
+const RE_MY_GAME = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+' + G + '\\s+(?:record|history|results|match\\s+history|match\\s+record)(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
+const RE_MY_VS = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+(?:match\\s+history|record|match\\s+record)(?:\\s+(?:at|in)\\s+' + G + ')?(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
 /** { game } for an ask about your record: a named game ("chess match history", "my checkers record"), or "my record against void" /
  *  "my match history" (chess, the first game with a log). A bare "match history", "my record" or "chess record" is not one. Pure. */
 export function historyAsk(text) {
@@ -77,7 +77,7 @@ export function historyAsk(text) {
   m = RE_MY_VS.exec(t);
   if (!m) return null;
   if (m[1]) return { game: GAME_WORD[m[1]] };
-  if (/\b(?:against|vs\.?|with)\s+(?:void|v01d|you)$/.test(t) || /^my match history$/.test(t)) return { game: 'chess' };
+  if (/\b(?:against|vs\.?|with)\s+(?:void|v01d|verse|you)$/.test(t) || /^my match history$/.test(t)) return { game: 'chess' };
   return null;
 }
 
@@ -88,11 +88,11 @@ export function whenLabel(at) {
   const two = (n) => String(n).padStart(2, '0');
   return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + two(d.getHours()) + ':' + two(d.getMinutes());
 }
-const WORD = { win: 'you won', loss: 'V01D won', draw: 'a draw' };
+const WORD = { win: 'you won', loss: 'Verse won', draw: 'a draw' };
 /** the Match History block: the summary line and the last LAST games of that game, newest first; every value escaped. Pure. */
 export function historyHtml(esc, sum, log) {
   const game = sum && sum.game || '', games = (Array.isArray(log) ? log : []).map(parseGame).filter((g) => g && (!game || g.game === game)).slice(-LAST).reverse();
-  const rows = games.map((g) => '<tr><td>' + esc(whenLabel(g.at)) + '</td><td>' + esc(g.vs === 'self' ? 'yourself' : 'V01D') + '</td><td data-result="' + esc(g.result) + '">' + esc(WORD[g.result]) + '</td><td>' + esc(g.moves) + '</td><td>' + esc(g.minutes) + '</td><td>' + (g.line ? '<button type="button" class="mh-replay" data-at="' + esc(g.at) + '" aria-label="Replay this game move by move">\u25B6 Replay</button>' : '') + '</td></tr>').join('');
+  const rows = games.map((g) => '<tr><td>' + esc(whenLabel(g.at)) + '</td><td>' + esc(g.vs === 'self' ? 'yourself' : 'Verse') + '</td><td data-result="' + esc(g.result) + '">' + esc(WORD[g.result]) + '</td><td>' + esc(g.moves) + '</td><td>' + esc(g.minutes) + '</td><td>' + (g.line ? '<button type="button" class="mh-replay" data-at="' + esc(g.at) + '" aria-label="Replay this game move by move">\u25B6 Replay</button>' : '') + '</td></tr>').join('');
   return '<div class="about-h">Match history</div><div class="match-history" data-game="' + esc(game) + '" data-played="' + esc(sum ? sum.played : 0) + '">'
     + '<p class="mh-sum">' + esc(summaryLine(sum)) + (sum && sum.played ? '' : ' · finish a game of ' + esc(TITLES[game] || 'chess') + ' on the stage and it shows here') + '</p>'
     + (rows ? '<table class="mh-table"><thead><tr><th>when</th><th>vs</th><th>result</th><th>moves</th><th>minutes</th><th aria-label="replay"></th></tr></thead><tbody>' + rows + '</tbody></table>' : '')

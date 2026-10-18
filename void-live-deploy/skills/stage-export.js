@@ -34,7 +34,7 @@ export function buildSheet(things, paper) {
   const st = document.createElement('style'); st.id = 'p5-print-style'; st.textContent = printCss(paper);
   const sheet = document.createElement('div'); sheet.id = 'p5-print-sheet'; sheet.dataset.paper = paper;
   sheet.dataset.size = PAPERS[paper].w + 'x' + PAPERS[paper].h;
-  const h = document.createElement('h1'); h.textContent = 'My Void stage · ' + localDay(); h.style.cssText = 'font-size:16pt;margin:0 0 8px'; sheet.appendChild(h);
+  const h = document.createElement('h1'); h.textContent = 'My Verse stage · ' + localDay(); h.style.cssText = 'font-size:16pt;margin:0 0 8px'; sheet.appendChild(h);
   const cards = printCards(things);
   for (const c of cards) {
     const d = document.createElement('div'); d.className = 'p5-card';
@@ -114,7 +114,7 @@ async function run(text, api) {
   if (it.op === 'text') { textCard(api); return 'stage-export'; }
   if (it.op === 'print' || it.op === 'paper') {
     const paper = it.paper || paperPref();
-    printCard(api, paper, /^(?:please\s+)?print\s+(?:the|my)\s+(?:stage|void)\b/i.test(String(text).trim()) && it.op === 'print'); // "print view of ..." only shows the sheet; "print the stage" opens the dialog too
+    printCard(api, paper, /^(?:please\s+)?print\s+(?:the|my)\s+(?:stage|(?:verse|void))\b/i.test(String(text).trim()) && it.op === 'print'); // "print view of ..." only shows the sheet; "print the stage" opens the dialog too
     return 'stage-export';
   }
   const hist = readJson(HISTORY_KEY, []);

@@ -1,6 +1,6 @@
 /**
  * share skill — a link to this card (plan item 10, shared Voids)
- * Uses the share target already on Void (?share_text=). Does not publish, rename, or send.
+ * Uses the share target already on Verse (?share_text=). Does not publish, rename, or send.
  * "share this card", "share this card: rain in Lisbon".
  */
 export function shareOf(text) {
@@ -24,10 +24,10 @@ async function run(text, api) {
   const href = shareLink(text);
   const el = showPage((p) => { p.innerHTML = '<h2>Share this card</h2>'; });
   const body = hit.words
-    ? '<p>Anyone with this link opens the same words in V01D. Nothing is published and nothing is sent.</p><p><a href="' + esc(href) + '">' + esc(href) + '</a></p>'
+    ? '<p>Anyone with this link opens the same words in Verse. Nothing is published and nothing is sent.</p><p><a href="' + esc(href) + '">' + esc(href) + '</a></p>'
     : '<p>No words on this card yet. Say share this card: and the words, and the link carries only those.</p>';
   el.innerHTML = '<h2>Share this card</h2>' + body
-    + '<div class="src">Uses the share target already on V01D. Not a published page.</div>';
+    + '<div class="src">Uses the share target already on Verse. Not a published page.</div>';
   return 'share';
 }
 

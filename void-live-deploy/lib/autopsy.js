@@ -1,4 +1,4 @@
-// Incident autopsy (asked by Void: "parse incidents.json and say which skill family is currently unhealthy"). Reads the site's own incidents.json
+// Incident autopsy (asked by Verse: "parse incidents.json and say which skill family is currently unhealthy"). Reads the site's own incidents.json
 // (every red browser suite on main: time, commit, the names of the checks that failed; written by tools/incident-log.mjs) and places each failing
 // check in a skill family by its name alone, with no guessing: the check's title (the words before its first colon) is matched against the skill
 // names in skills/families.json, and failing that a double-quoted ask in the check is matched, word for word, against a skill's example asks
@@ -10,7 +10,7 @@ import { incidentTargetOf, ERROR_REACTIONS } from './reactions.js';
 
 export const RECENT = 8; // incidents listed
 export const REACT_ON = 3; // the newest incidents that carry a spectator reaction bar (each bar is one read of /api/react)
-/** the warning look on the error reactions of an incident's bar (asked by Void: "errors trigger a specific 'confusion' or 'pity' reaction aesthetic"):
+/** the warning look on the error reactions of an incident's bar (asked by Verse: "errors trigger a specific 'confusion' or 'pity' reaction aesthetic"):
  *  { confused: css, pity: css } from the warning style lock's amber. Pure constant; nothing from a request. */
 export const ERROR_TINT = Object.freeze(Object.fromEntries(ERROR_REACTIONS.map((id) => [id, 'background:rgba(255,176,0,.18);border-color:' + WARNING_LOCK.css.match(/#ffb000/)[0] + ';color:#ffd45e;box-shadow:0 0 0 1px rgba(255,176,0,.35) inset'])));
 const norm = (t) => String(t == null ? '' : t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -55,24 +55,24 @@ export function skillOfCheck(check, names, pages) {
   return null;
 }
 
-/** the "Go against V01D" log (asked by Void: "Connect the 'Go against V01D' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
- *  of the Go games against V01D (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
+/** the "Go against Verse" log (asked by Verse: "Connect the 'Go against Verse' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
+ *  of the Go games against Verse (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
  *  offered back as the ask that replays one. Matched by words in the check's name; nothing is guessed. Pure. */
-export const GO_LOG = { id: 'go-against-void', name: 'Go against V01D', replay: 'play go against void' };
-export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
+export const GO_LOG = { id: 'go-against-void', name: 'Go against Verse', replay: 'play go against void' };
+export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|verse|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
 
-/** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Void and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
+/** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Verse and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
 export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
 
 /** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }],
- *  goLog: [{ sha, at, text }] (every failing Go-against-V01D check), focus }. `focus` (a family id; asked by Void: a drill-down from the stability sparklines) keeps only
+ *  goLog: [{ sha, at, text }] (every failing Go-against-Verse check), focus }. `focus` (a family id; asked by Verse: a drill-down from the stability sparklines) keeps only
  *  that family's failing checks, and only the incidents that have one. Pure. */
 export function autopsy(incidentsJson, fam, guide, focus = '') {
   const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
   const counts = new Map(), un = new Map(), goLog = [], suite = { timeouts: 0, ended: 0, incidents: 0 };
   let placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
     if (isSuiteMeta(text)) return { text, skill: null, family: null, name: null, meta: true };
-    const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-V01D check belongs to the go skill (its name is too short to match by words)
+    const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-Verse check belongs to the go skill (its name is too short to match by words)
     return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
   }) }));
   if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);
@@ -92,7 +92,7 @@ export function autopsy(incidentsJson, fam, guide, focus = '') {
   };
 }
 
-/** a test case from each recent failure (asked by Void: "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically
+/** a test case from each recent failure (asked by Verse: "Integrate the 'Site Test' suggestions with the 'incident-autopsy' skill to automatically
  *  generate a test case from a recent failure"): for every failing check of a recent incident that maps to a skill, newest first and one per skill,
  *  the ask to try: the check's own double-quoted ask when it has one (what failed, word for word), else the skill's last example from the book.
  *  [{ skill, family, ask, sha, check (its title) }]. Pure. */
@@ -111,7 +111,7 @@ export function incidentCases(a, guide, show = 5) {
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 /** the card's body (below the title). An empty file says "no incidents recorded". Pure; every word from the file goes through esc. */
 export function autopsyHtml(a, esc = escHtml) {
-  // the warning style lock (lib/art-rules.js WARNING_LOCK; asked by Void): error reports are amber on black with a hazard stripe, whatever they say
+  // the warning style lock (lib/art-rules.js WARNING_LOCK; asked by Verse): error reports are amber on black with a hazard stripe, whatever they say
   const L = WARNING_LOCK, frame = (attr, inner) => '<div ' + attr + ' data-style-lock="' + L.id + '" style="' + L.css + '"><div style="' + L.stripe + '"></div><div style="padding:6px 12px 0">' + inner + '</div></div>';
   if (!a.total) return frame('data-autopsy-empty="1"', '<p>No incidents recorded.</p>');
   const top = a.families.length ? a.families.filter((f) => f.count === a.families[0].count) : [], fam = a.focus && a.families[0];
@@ -121,14 +121,14 @@ export function autopsyHtml(a, esc = escHtml) {
       + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>')
     + (!a.focus && a.suite && (a.suite.timeouts || a.suite.ended) ? '<p class="sub" data-autopsy-suite="1"><b>The suite itself:</b> ' + esc(a.suite.timeouts) + ' stalled check' + (a.suite.timeouts === 1 ? '' : 's') + ' (no check finished within 300 s) and ' + esc(a.suite.ended) + ' end-of-run flag' + (a.suite.ended === 1 ? '' : 's') + ' in ' + esc(a.suite.incidents) + ' of the ' + esc(a.total) + ' red suites: the runner stalling, not a skill failing, so none of it is counted in a family.</p>' : '')
     + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
-    + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
+    + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
 /**
- * the stability gauge (Status card, asked by Void): how often the browser suite went red on main in the last 7 days, from incidents.json.
+ * the stability gauge (Status card, asked by Verse): how often the browser suite went red on main in the last 7 days, from incidents.json.
  * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Pure.
  */
 export function stabilityOf(incidentsJson, now = Date.now()) {
@@ -173,7 +173,7 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
 }
 
 /**
- * The failures as garden plants (asked by Void and the owner: "the error garden grows from the incident autopsy"): one plant per distinct failing
+ * The failures as garden plants (asked by Verse and the owner: "the error garden grows from the incident autopsy"): one plant per distinct failing
  * check title in the newest incidents, its count the number of incidents it failed in (two or more is a weed), the most repeated first. Pure.
  */
 export function failurePlants(incidentsJson, max = 12) {

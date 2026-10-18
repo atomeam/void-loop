@@ -1,5 +1,5 @@
 /**
- * figures3d — Void's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
+ * figures3d — Verse's light 3D layer and its roaming figures (board Next #17). Not a skill: nothing imports this file until a figure is on the stage,
  * so the empty page loads no 3D code at all. On first use it loads the bundled three.js (/vendor/three-r180, shared with scene3d.js) and puts one transparent
  * WebGL canvas behind the cards, over the black stage. Pointer events pass through to the cards; the page asks this layer
  * whether a figure is under the pointer, and only then does a click, wheel or pinch go to the figure.
@@ -22,7 +22,7 @@
 import { dressFromCard, pickBody, SAMPLE_CARDS, BODIES, colorFromCard, propFor, lineFromCard } from './bodies.js';
 import { PERSON, ANIMAL, bodyMesh, zombieMesh, zombieGroups, brainMesh, creatureMesh, CREATURE_KINDS, foodMesh, lifeMesh } from './sdfmesh.js';
 import { makeCloud, cloudGeometry, cloudShade, makePrecip, makeGlow } from './sky3d.js';
-// the shared 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Void, ask-20261015-0347-2): low-poly keeps every figure at its
+// the shared 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Verse, ask-20261015-0347-2): low-poly keeps every figure at its
 // light tier and draws at 1x. Read here, not imported: scene3d.js is the miniatures' engine and is absent where they are off.
 const DETAIL_KEY = 'a2m.void.3d.v1';
 let autoLow = false; // the miniature governor's own low step, told by its void:3d-detail event

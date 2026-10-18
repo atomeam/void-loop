@@ -58,7 +58,7 @@ test('the site shows the owner\'s words as he meant them, spelled right; a quote
   const { lineOf } = await import('../void-live-deploy/skills/showcase.js');
   const assert = (await import('node:assert/strict')).default;
   const typo = Object.keys(OWNER_WORDS).find((k) => /Theatre/.test(k));
-  assert.equal(publicWhat('Void\'s will made real (owner: "' + typo + '"): Void hears'), 'Void\'s will made real (owner: "if it is theatre, it needs to be seriously worked on until Void\'s will is more real"): Void hears');
+  assert.equal(publicWhat('Verse\'s will made real (owner: "' + typo + '"): Verse hears'), 'Verse\'s will made real (owner: "if it is theatre, it needs to be seriously worked on until Verse\'s will is more real"): Verse hears');
   assert.equal(publicWhat('a card (the owner: "make it bluer plz"): it is'), 'a card (the owner): it is');
   assert.equal(publicWhat('the stage keeps its look (2026-10-09)'), 'the stage keeps its look (2026-10-09)');
   for (const bad of Object.keys(OWNER_WORDS)) {
@@ -97,7 +97,7 @@ test('previewed once: an ask already shown is never offered again, and the recap
 });
 
 test('"show me everything you made" is the whole walkthrough by name; nothing else is', () => {
-  for (const a of ['show me everything you made', 'everything you have made', "walk me through all the things you've built", 'Everything V01D made so far', 'all you made for me'])
+  for (const a of ['show me everything you made', 'everything you have made', "walk me through all the things you've built", 'Everything Verse made so far', 'all you made for me'])
     assert.ok(everythingOf(a), a);
   for (const a of ['show me what you made', "what's new", 'everything you can do', 'show me everything', 'all the things'])
     assert.ok(!everythingOf(a), a);
@@ -117,7 +117,7 @@ test('a preview is proved by a new thing, a new card, or the page log saying a s
   assert.ok(!proved({ madeIds: [], pageChanged: false, log: null }));
 });
 
-test('the tray (asked by Void: grab a newly shipped skill from the walkthrough and drop it on the stage): the coming steps, at most six, each cut to fit a chip', async () => {
+test('the tray (asked by Verse: grab a newly shipped skill from the walkthrough and drop it on the stage): the coming steps, at most six, each cut to fit a chip', async () => {
   const { trayOf, TRAY } = await import('../void-live-deploy/skills/showcase.js');
   const steps = Array.from({ length: 10 }, (_, k) => ({ line: 'step ' + k }));
   assert.deepEqual(trayOf(steps, 0).map((x) => x.j), [1, 2, 3, 4, 5, 6]); assert.equal(TRAY, 6);

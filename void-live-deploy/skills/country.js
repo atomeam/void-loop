@@ -13,14 +13,14 @@ export function countryOf(text) {
   m = t.match(/^(?:what|which)\s+(currency|languages?)\s+(?:does|do|is|are)\s+(?:used\s+in|spoken\s+in)?\s*(?:the\s+)?([A-Za-zÀ-ÿ' .-]{2,40}?)(?:\s+(?:use|speak|have))?$/i);
   // "what language does the word kindergarten come from" asks where a word comes from, not about a country
   if (m && !/\b(?:words?|come|comes|came|from|originate)\b/i.test(m[2]) && !NOT_COUNTRY.test(m[2].trim())) return { want: FIELDS[m[1].toLowerCase()], name: m[2].trim() };
-  // "how big is france": only a country Void knows by name, so "how big is the sun" stays with what knows it
+  // "how big is france": only a country Verse knows by name, so "how big is the sun" stays with what knows it
   m = t.match(/^how\s+(?:big|large)\s+is\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{2,40})$/i);
   if (m && CAPITALS[m[1].trim().toLowerCase()]) return { want: 'area', name: m[1].trim() };
   m = t.match(/^how\s+many\s+people\s+live\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'population', name: m[1].trim() };
   m = t.match(/^(?:what\s+)?languages?\s+(?:are\s+|is\s+)?spoken\s+in\s+(?:the\s+)?([A-Za-zÀ-ÿ' .-]{3,40})$/i);
   if (m) return { want: 'languages', name: m[1].trim() };
-  // more ways to ask, each only for a country Void knows by name (so "what do they speak in the movie" stays out):
+  // more ways to ask, each only for a country Verse knows by name (so "what do they speak in the movie" stays out):
   // "what do they speak in brazil", "what money do they use in japan", "what continent is egypt in", "what countries border germany",
   // "the calling code for france", "what side of the road do they drive on in japan"
   const known = (n) => { const k = String(n || '').trim().toLowerCase().replace(/^the\s+/, ''); return CAPITALS[k] ? k : null; };
@@ -42,7 +42,7 @@ export function countryOf(text) {
 // names that look like a country ask's place but are not countries ("what currency does bitcoin use" is the crypto skill's)
 const NOT_COUNTRY = /^(?:the\s+)?(?:world|earth|bitcoin|ethereum|crypto|eu|euro\s?zone|internet|universe)$/i;
 // the card's rows from a REST Countries record (and the names of the countries on its borders). Pure.
-// the time zone row (asked by Void, ask-20261015-0048-2): the offset and how far ahead of or behind the asker it is. Pure.
+// the time zone row (asked by Verse, ask-20261015-0048-2): the offset and how far ahead of or behind the asker it is. Pure.
 // zones: REST Countries strings like 'UTC+09:00'; mine: the asker's offset from UTC in minutes (east positive).
 export function tzLine(zones, mine) {
   const mins = (z) => { const m = /^UTC(?:([+-−])(\d\d):(\d\d))?$/.exec(String(z).trim()); return m ? (m[1] ? (m[1] === '+' ? 1 : -1) * (+m[2] * 60 + +m[3]) : 0) : null; };
@@ -64,7 +64,7 @@ export function offsetOf(zone, now = new Date()) {
     return Math.round((Date.UTC(p.year, p.month - 1, p.day, p.hour, p.minute) - Math.floor(now.getTime() / 60000) * 60000) / 60000);
   } catch (_) { return null; }
 }
-// the time row: "2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)" when Void knows the capital's zone (live source or not);
+// the time row: "2:32 PM Thu in Tokyo, UTC+09:00 (13 h ahead of you)" when Verse knows the capital's zone (live source or not);
 // a country with several zones keeps its span after the capital's time; else the offsets alone (tzLine). Pure given now.
 export function timeLine(key, zones, mine, now = new Date()) {
   const z = CAPITAL_ZONES[key], off = z ? offsetOf(z, now) : null;
@@ -92,7 +92,7 @@ export function rowsOf(c, borderNames = [], mine = typeof Date !== 'undefined' ?
 export const CAPITALS = {"afghanistan": "Kabul", "albania": "Tirana", "algeria": "Algiers", "andorra": "Andorra la Vella", "angola": "Luanda", "antigua and barbuda": "Saint John's", "argentina": "Buenos Aires", "armenia": "Yerevan", "australia": "Canberra", "austria": "Vienna", "azerbaijan": "Baku", "bahamas": "Nassau", "bahrain": "Manama", "bangladesh": "Dhaka", "barbados": "Bridgetown", "belarus": "Minsk", "belgium": "Brussels", "belize": "Belmopan", "benin": "Porto-Novo", "bhutan": "Thimphu", "bolivia": "Sucre", "bosnia and herzegovina": "Sarajevo", "botswana": "Gaborone", "brazil": "Brasília", "brunei": "Bandar Seri Begawan", "bulgaria": "Sofia", "burkina faso": "Ouagadougou", "burundi": "Gitega", "cabo verde": "Praia", "cape verde": "Praia", "cambodia": "Phnom Penh", "cameroon": "Yaoundé", "canada": "Ottawa", "central african republic": "Bangui", "chad": "N'Djamena", "chile": "Santiago", "china": "Beijing", "colombia": "Bogotá", "comoros": "Moroni", "congo": "Brazzaville", "republic of the congo": "Brazzaville", "democratic republic of the congo": "Kinshasa", "dr congo": "Kinshasa", "drc": "Kinshasa", "costa rica": "San José", "ivory coast": "Yamoussoukro", "côte d'ivoire": "Yamoussoukro", "cote d'ivoire": "Yamoussoukro", "croatia": "Zagreb", "cuba": "Havana", "cyprus": "Nicosia", "czechia": "Prague", "czech republic": "Prague", "denmark": "Copenhagen", "djibouti": "Djibouti", "dominica": "Roseau", "dominican republic": "Santo Domingo", "ecuador": "Quito", "egypt": "Cairo", "el salvador": "San Salvador", "equatorial guinea": "Malabo", "eritrea": "Asmara", "estonia": "Tallinn", "eswatini": "Mbabane", "swaziland": "Mbabane", "ethiopia": "Addis Ababa", "fiji": "Suva", "finland": "Helsinki", "france": "Paris", "gabon": "Libreville", "gambia": "Banjul", "georgia": "Tbilisi", "germany": "Berlin", "ghana": "Accra", "greece": "Athens", "grenada": "St. George's", "guatemala": "Guatemala City", "guinea": "Conakry", "guinea-bissau": "Bissau", "guyana": "Georgetown", "haiti": "Port-au-Prince", "honduras": "Tegucigalpa", "hungary": "Budapest", "iceland": "Reykjavík", "india": "New Delhi", "indonesia": "Jakarta", "iran": "Tehran", "iraq": "Baghdad", "ireland": "Dublin", "israel": "Jerusalem", "italy": "Rome", "jamaica": "Kingston", "japan": "Tokyo", "jordan": "Amman", "kazakhstan": "Astana", "kenya": "Nairobi", "kiribati": "Tarawa", "north korea": "Pyongyang", "south korea": "Seoul", "korea": "Seoul", "kuwait": "Kuwait City", "kyrgyzstan": "Bishkek", "laos": "Vientiane", "latvia": "Riga", "lebanon": "Beirut", "lesotho": "Maseru", "liberia": "Monrovia", "libya": "Tripoli", "liechtenstein": "Vaduz", "lithuania": "Vilnius", "luxembourg": "Luxembourg", "madagascar": "Antananarivo", "malawi": "Lilongwe", "malaysia": "Kuala Lumpur", "maldives": "Malé", "mali": "Bamako", "malta": "Valletta", "marshall islands": "Majuro", "mauritania": "Nouakchott", "mauritius": "Port Louis", "mexico": "Mexico City", "micronesia": "Palikir", "moldova": "Chișinău", "monaco": "Monaco", "mongolia": "Ulaanbaatar", "montenegro": "Podgorica", "morocco": "Rabat", "mozambique": "Maputo", "myanmar": "Naypyidaw", "burma": "Naypyidaw", "namibia": "Windhoek", "nauru": "Yaren", "nepal": "Kathmandu", "netherlands": "Amsterdam", "holland": "Amsterdam", "new zealand": "Wellington", "nicaragua": "Managua", "niger": "Niamey", "nigeria": "Abuja", "north macedonia": "Skopje", "macedonia": "Skopje", "norway": "Oslo", "oman": "Muscat", "pakistan": "Islamabad", "palau": "Ngerulmud", "panama": "Panama City", "papua new guinea": "Port Moresby", "paraguay": "Asunción", "peru": "Lima", "philippines": "Manila", "poland": "Warsaw", "portugal": "Lisbon", "qatar": "Doha", "romania": "Bucharest", "russia": "Moscow", "rwanda": "Kigali", "saint kitts and nevis": "Basseterre", "saint lucia": "Castries", "saint vincent and the grenadines": "Kingstown", "samoa": "Apia", "san marino": "San Marino", "sao tome and principe": "São Tomé", "são tomé and príncipe": "São Tomé", "saudi arabia": "Riyadh", "senegal": "Dakar", "serbia": "Belgrade", "seychelles": "Victoria", "sierra leone": "Freetown", "singapore": "Singapore", "slovakia": "Bratislava", "slovenia": "Ljubljana", "solomon islands": "Honiara", "somalia": "Mogadishu", "south africa": "Pretoria", "south sudan": "Juba", "spain": "Madrid", "sri lanka": "Sri Jayawardenepura Kotte", "sudan": "Khartoum", "suriname": "Paramaribo", "sweden": "Stockholm", "switzerland": "Bern", "syria": "Damascus", "tajikistan": "Dushanbe", "tanzania": "Dodoma", "thailand": "Bangkok", "timor-leste": "Dili", "east timor": "Dili", "togo": "Lomé", "tonga": "Nuku'alofa", "trinidad and tobago": "Port of Spain", "tunisia": "Tunis", "turkey": "Ankara", "türkiye": "Ankara", "turkmenistan": "Ashgabat", "tuvalu": "Funafuti", "uganda": "Kampala", "ukraine": "Kyiv", "united arab emirates": "Abu Dhabi", "uae": "Abu Dhabi", "united kingdom": "London", "uk": "London", "great britain": "London", "britain": "London", "england": "London", "scotland": "Edinburgh", "wales": "Cardiff", "united states": "Washington, D.C.", "united states of america": "Washington, D.C.", "usa": "Washington, D.C.", "us": "Washington, D.C.", "america": "Washington, D.C.", "uruguay": "Montevideo", "uzbekistan": "Tashkent", "vanuatu": "Port Vila", "vatican city": "Vatican City", "vatican": "Vatican City", "venezuela": "Caracas", "vietnam": "Hanoi", "yemen": "Sana'a", "zambia": "Lusaka", "zimbabwe": "Harare", "taiwan": "Taipei", "palestine": "Ramallah", "kosovo": "Pristina"};
 // Built-in currencies for the most asked-about countries, used the same way as CAPITALS.
 export const CURRENCIES = {"argentina": "Argentine peso", "australia": "Australian dollar", "austria": "euro", "bangladesh": "Bangladeshi taka", "belgium": "euro", "brazil": "Brazilian real", "bulgaria": "euro", "canada": "Canadian dollar", "chile": "Chilean peso", "china": "Chinese yuan (renminbi)", "colombia": "Colombian peso", "croatia": "euro", "czechia": "Czech koruna", "czech republic": "Czech koruna", "denmark": "Danish krone", "egypt": "Egyptian pound", "estonia": "euro", "ethiopia": "Ethiopian birr", "finland": "euro", "france": "euro", "germany": "euro", "ghana": "Ghanaian cedi", "greece": "euro", "hungary": "Hungarian forint", "iceland": "Icelandic króna", "india": "Indian rupee", "indonesia": "Indonesian rupiah", "iran": "Iranian rial", "iraq": "Iraqi dinar", "ireland": "euro", "israel": "Israeli new shekel", "italy": "euro", "japan": "Japanese yen", "jordan": "Jordanian dinar", "kenya": "Kenyan shilling", "kuwait": "Kuwaiti dinar", "latvia": "euro", "lithuania": "euro", "luxembourg": "euro", "malaysia": "Malaysian ringgit", "malta": "euro", "mexico": "Mexican peso", "mongolia": "Mongolian tögrög", "morocco": "Moroccan dirham", "nepal": "Nepalese rupee", "netherlands": "euro", "holland": "euro", "new zealand": "New Zealand dollar", "nigeria": "Nigerian naira", "norway": "Norwegian krone", "pakistan": "Pakistani rupee", "peru": "Peruvian sol", "philippines": "Philippine peso", "poland": "Polish złoty", "portugal": "euro", "qatar": "Qatari riyal", "romania": "Romanian leu", "russia": "Russian ruble", "saudi arabia": "Saudi riyal", "singapore": "Singapore dollar", "slovakia": "euro", "slovenia": "euro", "south africa": "South African rand", "south korea": "South Korean won", "korea": "South Korean won", "spain": "euro", "sri lanka": "Sri Lankan rupee", "sweden": "Swedish krona", "switzerland": "Swiss franc", "taiwan": "New Taiwan dollar", "tanzania": "Tanzanian shilling", "thailand": "Thai baht", "turkey": "Turkish lira", "türkiye": "Turkish lira", "uganda": "Ugandan shilling", "ukraine": "Ukrainian hryvnia", "united arab emirates": "UAE dirham", "uae": "UAE dirham", "united kingdom": "pound sterling", "uk": "pound sterling", "great britain": "pound sterling", "britain": "pound sterling", "england": "pound sterling", "scotland": "pound sterling", "wales": "pound sterling", "united states": "US dollar", "united states of america": "US dollar", "usa": "US dollar", "us": "US dollar", "america": "US dollar", "vietnam": "Vietnamese đồng (dong)", "zimbabwe": "Zimbabwe gold (ZiG)"};
-// two countries compared (asked by Void, ask-20261015-0048-1: "comparing two countries automatically generates a travel-metric card"):
+// two countries compared (asked by Verse, ask-20261015-0048-1: "comparing two countries automatically generates a travel-metric card"):
 // "france vs spain", "compare japan and korea" -> both capitals side by side with the distance and flight-time asks one tap away
 // (the distance skill answers those). Pure.
 export function compareOf(text) {
@@ -110,7 +110,7 @@ async function run(text, api) {
   if (cq) {
     const shownEl = showPage((p) => { p.innerHTML = '<h2>' + esc(cq.a + ' and ' + cq.b) + '</h2><ul style="padding-left:18px"><li><b>' + esc(cq.a) + '</b> capital ' + esc(cq.capA) + '</li><li><b>' + esc(cq.b) + '</b> capital ' + esc(cq.capB) + '</li></ul>'
       + '<p><a href="#" data-ask="' + esc(cq.distance) + '">How far apart</a> · <a href="#" data-ask="' + esc(cq.flight) + '">Flight time</a> · <a href="#" data-ask="' + esc('population of ' + cq.a) + '">' + esc(cq.a) + ' facts</a> · <a href="#" data-ask="' + esc('population of ' + cq.b) + '">' + esc(cq.b) + ' facts</a></p>'; });
-    // linked to the distance skill (asked by Void): the travel metrics come up on the card by themselves, from the same place
+    // linked to the distance skill (asked by Verse): the travel metrics come up on the card by themselves, from the same place
     // lookup and great-circle sum as "distance from X to Y"; the links above stay if the place service does not answer
     try {
       const [ga, gb] = await Promise.all([geo(cq.capA.replace(/ DC$/, '')), geo(cq.capB.replace(/ DC$/, ''))]);
@@ -130,13 +130,13 @@ async function run(text, api) {
   // the built-in answer (capital, or currency for currency asks): shown at once while the live source loads, and kept if it never answers
   const key = q.name.toLowerCase().replace(/^the\s+/, '');
   const known = q.want === 'currencies' ? CURRENCIES[key] : CAPITALS[key];
-  // returns 'answered' (the asked field is shown), 'shown' (only the capital is shown) or '' (nothing Void knows)
+  // returns 'answered' (the asked field is shown), 'shown' (only the capital is shown) or '' (nothing Verse knows)
   const builtIn = (waiting) => { const cap = CAPITALS[key]; const big = known || cap; if (!big || !api._pageStill(el)) return '';
     const answers = !!known && (q.want === 'capital' || q.want === 'currencies');
     el.innerHTML = '<h2>' + esc(q.name.replace(/\b\w/g, (x) => x.toUpperCase())) + '</h2><div class="sub">' + (known && q.want === 'currencies' ? 'Currency' : 'Capital') + '</div><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(big) + '</div>'
       + (CAPITAL_ZONES[key] ? '<p>Time there now: ' + esc(timeLine(key, [], -new Date().getTimezoneOffset())) + '</p>' : '')
       + (answers ? '' : waiting ? '<p>Looking up the ' + esc(q.want) + '…</p>' : '<p>The country service didn\'t answer just now, so only the capital is shown. Ask again in a moment for ' + esc(q.want) + '.</p>')
-      + '<div class="src">' + (waiting ? 'From V01D\'s built-in list, checking REST Countries…' : 'From V01D\'s built-in list (the live source, REST Countries, didn\'t answer)') + '</div>';
+      + '<div class="src">' + (waiting ? 'From Verse\'s built-in list, checking REST Countries…' : 'From Verse\'s built-in list (the live source, REST Countries, didn\'t answer)') + '</div>';
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {
@@ -144,8 +144,8 @@ async function run(text, api) {
     const all = r.ok ? await r.json() : [];
     if (!api._pageStill(el)) return 'country';
     const lc = q.name.toLowerCase();
-    // the exact name first; else the result whose capital is the one Void knows for that name ("uk" -> the country with London);
-    // never just the first result when Void knows the country, since a loose search can put another country first
+    // the exact name first; else the result whose capital is the one Verse knows for that name ("uk" -> the country with London);
+    // never just the first result when Verse knows the country, since a loose search can put another country first
     const flat = (v) => String(v || '').toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
     const c = (all || []).find((x) => x.name && (x.name.common.toLowerCase() === lc || x.name.official.toLowerCase() === lc))
       || (CAPITALS[key] ? (all || []).find((x) => (x.capital || []).some((cc) => flat(cc) === flat(CAPITALS[key]))) : (all || [])[0]);
@@ -168,7 +168,7 @@ async function run(text, api) {
     return 'country';
   } catch (_) {
     if (!api._pageStill(el)) return 'none';
-    // keep what Void knows on the page (the capital, with a note that the asked field is not available) rather than an error
+    // keep what Verse knows on the page (the capital, with a note that the asked field is not available) rather than an error
     const b = builtIn(false); if (b === 'answered') return 'country'; if (b) return 'none';
     el.innerHTML = '<h2>' + esc(q.name) + '</h2><p>The country service didn\'t answer just now. Ask again in a moment.</p>';
     return 'none';

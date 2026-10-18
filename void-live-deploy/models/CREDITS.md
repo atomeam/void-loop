@@ -1,6 +1,6 @@
 # 3D credits
 
-Everything Void draws in 3D is made in code or comes from the sources below. All are free for commercial use.
+Everything Verse draws in 3D is made in code or comes from the sources below. All are free for commercial use.
 
 | Asset | Where it is used | Source | License |
 |---|---|---|---|

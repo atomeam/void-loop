@@ -45,7 +45,7 @@ test('the skill takes its example and leaves its near misses; the card escapes w
 
 test('a builder\'s own report of a run is not a list of failures: narration and "red checks" as a name are left out, a real "fails on main" stays (the card of 2026-10-18)', () => {
   const report = ["I'm making it opt-in so red checks only grow on their own after the garden's test failures have been shown. ⏎ Committing the opt-in fix and running the remaining finish steps (fast checks, push, PR body). ⏎ Confirmed the merge commit 92189bd.",
-    'Pushing the changes and opening the PR now. ⏎ Took Void\'s first open ask from the card and shipped it as PR #1090, labelled for automerge.',
+    'Pushing the changes and opening the PR now. ⏎ Took Verse\'s first open ask from the card and shipped it as PR #1090, labelled for automerge.',
     'Once a garden has been shown or asked for its test failures, every mount reads incidents.json and plants each failing check of the incidents it has not seen.',
     'The same check failing again becomes a weed, a rule written beside it compost. First contact plants only the newest incident, so an old stage is not flooded.',
     'Three garden browser checks pass in a real browser. The fast checks are clean apart from four reds that are not this branch\'s: book-face fails identically on main (page 304 runs off its sheet), claude-brain needs an npm package the container never installed.',
@@ -53,10 +53,43 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   const f = failuresOf(report);
   assert.ok(f.some((l) => /book-face fails identically/.test(l)), 'the real failure stays: ' + JSON.stringify(f));
   assert.ok(f.some((l) => /went red on main/.test(l)), 'a commit that went red stays: ' + JSON.stringify(f));
-  for (const bad of [/^I'm making/, /^Committing/, /^Pushing/, /^Took Void/, /^Once a garden/, /^First contact/, /^Three garden/]) assert.ok(!f.some((l) => bad.test(l)), 'narration left out: ' + bad + ' in ' + JSON.stringify(f));
+  for (const bad of [/^I'm making/, /^Committing/, /^Pushing/, /^Took Verse/, /^Once a garden/, /^First contact/, /^Three garden/]) assert.ok(!f.some((l) => bad.test(l)), 'narration left out: ' + bad + ' in ' + JSON.stringify(f));
   const t = telemetryOf(report);
   assert.ok(t && t.prs.includes('1090') && t.shas.includes('92189bd'), 'still read as a report');
   assert.equal(t.failures.length, 2, 'two real ones, not six: ' + JSON.stringify(t.failures));
   assert.deepEqual(failuresOf('the error garden grows a sprout for every red check of the suite; red checks grow in it by themselves'), [], '"red checks" as a name is not a state');
   assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since 411: the proposal card check FAILS on every head'], 'a state line stays (clean() strips the #)');
+});
+
+test('a builder\'s own sentence behind a list marker, and a failure that passed on its own, are not still failing (2026-10-18 card)', () => {
+  assert.deepEqual(failuresOf("- I didn't touch films; it failed once under load and passed on its own."), []);
+  assert.deepEqual(failuresOf("1. I did not look into it; it keeps failing on main."), [], 'narration behind a number');
+  assert.deepEqual(failuresOf('The suite failed on the first run and passed again on a re-run.'), []);
+  assert.deepEqual(failuresOf('The check is still red on main and nobody has fixed it yet.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails on plain origin/main too, page 305 off the sheet').length, 1, 'a bullet name line stays');
+});
+
+test('a builder\'s report that quotes a timeout is a report, not a broken automation; a real automation error still is one', async () => {
+  const { intentOf, isFixAsk } = await import('../void-live-deploy/lib/automation-fix.js');
+  const { isBuildersReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const report = 'I fixed three red checks on main in PR 1096 and I am watching it. The 3D block stalls with a check timeout after the voice check, the CI suite stays red, and I did not fix it. All three fixed checks failed locally and pass now after the push.';
+  assert.equal(isBuildersReport(report), true); assert.equal(intentOf(report).intent, 'report'); assert.equal(isFixAsk(report), false);
+  const zap = 'my zap keeps failing with 429 Too Many Requests and the workflow stops on every single run, here is the log: {"status":429,"error":"rate limit"} on the webhook step, how do I fix it?';
+  assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
+});
+
+test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
+  assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
+  assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
+  assert.deepEqual(failuresOf('With the refusal taken out of the code, the new check fails, so it really tests the refusal.'), []);
+  assert.equal(failuresOf('The extension check fails on main since the merge.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails without warning on plain origin/main').length, 1, '"without" alone is not a planned failure');
+});
+
+test('the lines of a status report that are the builder\'s own account of a fix are not still failing (2026-10-18 card: six "failures", all narration)', () => {
+  for (const line of ['My report quoted a "check timeout", which the fixer read as an error.', 'Without it, the check fails, because the card never appears.',
+    '- Found: It fails without the change and passes with it.', 'It then answered "I read this as a broken automation" and invented a fix.', 'Remainder: unverified, the live site failed to answer once.'])
+    assert.deepEqual(failuresOf(line), [], line);
+  assert.equal(failuresOf('The 3D block stalls with a check timeout after the voice check.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('FAIL fly stars move: the streak never showed').length, 1, 'a FAIL line stays');
 });

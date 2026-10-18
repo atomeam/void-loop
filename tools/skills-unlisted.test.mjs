@@ -30,7 +30,7 @@ test('the real index lists every real skill', async () => {
   assert.deepEqual(await unlistedSkills(dir), []);
 });
 
-test('a skill the index lost is registered again at the end of the order (asked by Void)', async () => {
+test('a skill the index lost is registered again at the end of the order (asked by Verse)', async () => {
   const { mkdtempSync: mk, writeFileSync: wf, readdirSync: rd } = await import('node:fs');
   const { registerNames } = await import('./skills-index.mjs');
   const od = mk(join(tmpdir(), 'order-'));

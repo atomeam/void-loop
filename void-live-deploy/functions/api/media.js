@@ -7,7 +7,7 @@
 import { cleanTitle, normTitle, pickSong, listenLinks, pickShow, showLinks, showAvailability } from '../../lib/media.js';
 import { cleanYear } from '../../lib/movies.js';
 import { lookup as movie } from './movies.js';
-const UA = { 'user-agent': 'V01D/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
+const UA = { 'user-agent': 'Verse/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
 async function getJson(u, ms = 5000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(u, { headers: UA, signal: c.signal, cf: { cacheTtl: 86400 } }); if (!r.ok) throw new Error('upstream ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
 const reply = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=86400' } });
 
