@@ -1,17 +1,21 @@
 {
- "at": "2026-10-17T11:12:31.355Z",
- "score": 75,
+ "at": "2026-10-18T11:46:31.056Z",
+ "score": 76,
  "parts": {
   "self": 77,
-  "asks": 90,
-  "friction": 77,
+  "asks": 96,
+  "friction": 80,
   "bench": 99,
   "probes": 30
  },
  "families": [
   {
    "id": "body",
-   "health": 94
+   "health": 90
+  },
+  {
+   "id": "decide",
+   "health": 50
   },
   {
    "id": "games",
@@ -19,65 +23,69 @@
   },
   {
    "id": "life",
-   "health": 67
+   "health": 88
   },
   {
    "id": "make",
-   "health": 72
-  },
-  {
-   "id": "numbers",
-   "health": 83
-  },
-  {
-   "id": "self",
-   "health": 81
-  },
-  {
-   "id": "sky",
    "health": 74
   },
   {
-   "id": "stage",
-   "health": 73
+   "id": "numbers",
+   "health": 82
   },
   {
-   "id": "time",
+   "id": "safety-play",
    "health": 63
   },
   {
+   "id": "self",
+   "health": 84
+  },
+  {
+   "id": "sky",
+   "health": 76
+  },
+  {
+   "id": "stage",
+   "health": 81
+  },
+  {
+   "id": "time",
+   "health": 67
+  },
+  {
    "id": "words",
-   "health": 72
+   "health": 77
   }
  ],
  "facts": {
-  "week": 446,
-  "owner": 101,
+  "week": 456,
+  "owner": 106,
   "askedBuilt": 41,
   "medianLagDays": 0.3,
-  "open": 6,
-  "oldestOpenDays": 0.7,
-  "skills": 181,
-  "failing": 9,
-  "unsure": 65,
-  "benchScore": 2343,
+  "open": 0,
+  "oldestOpenDays": 0,
+  "skills": 294,
+  "failing": 7,
+  "unsure": 104,
+  "benchScore": 2345,
   "benchTotal": 2368,
   "probeFixes": 3
  },
  "trend": {
-  "score": 75,
-  "day": 0,
+  "score": 76,
+  "day": 1,
   "week": null,
   "weakest": "probes",
-  "at": "2026-10-17T11:12:31.355Z",
+  "at": "2026-10-18T11:46:31.056Z",
   "frictionWeek": null
  },
- "summary": "better: 75 of 100 (level since yesterday); weakest: probes",
+ "summary": "better: 76 of 100 (up 1 since yesterday); weakest: probes",
  "means": {
-  "self": "the share of this week's ledger lines that do not cite the owner (V01D driving its own changes)",
-  "asks": "how fast V01D's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
+  "self": "the share of this week's ledger lines that do not cite the owner (Verse driving its own changes)",
+  "asks": "how fast Verse's own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait",
   "friction": "skills failing the bench or barely checked, against all skills (skills/families.json)",
   "bench": "the everyday benchmark's score on main (tools/bench.misses.json)",
-  "probes": "fixes this week that came from V01D's own probes"
+  "probes": "fixes this week that came from Verse's own probes"
  }
 }
