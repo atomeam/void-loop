@@ -340,12 +340,21 @@
       box-shadow: 0 14px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
       color: var(--ink, #e9ebf2); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
     }
-    .list-card > :not(.list-head) { margin-left: 16px; margin-right: 16px; }
+    .list-card > :not(.list-head):not(.list-density) { margin-left: 16px; margin-right: 16px; }
     .list-head { display: flex; align-items: baseline; gap: 10px; padding: 12px 16px 10px; margin-bottom: 4px; background: rgba(150,120,255,.08); border-bottom: 1px solid rgba(150,120,255,.22); }
     .list-title { flex: 1; min-width: 0; min-height: 22px; margin: 0; color: var(--ink, #e9ebf2); font-size: 15px; font-weight: 600; letter-spacing: .01em; outline: 0; }
     .list-title:empty::before { content: attr(data-placeholder); color: var(--muted); font-weight: 400; }
     .list-title:focus-visible { box-shadow: 0 1px 0 rgba(214,178,92,.7); }
     .list-count { flex: 0 0 auto; color: rgba(214,178,92,.9); font: 11px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .06em; }
+    /* the goal (asked by Void, 2026-10-18, lib/list-goal.js): "7 of 10" in the head's mono, and a 3px density bar under the head, violet,
+       amber within one of the goal, a quiet green at or past it; neither is drawn when no goal is set */
+    .list-goal { flex: 0 0 auto; color: rgba(150,120,255,.9); font: 11px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .06em; }
+    .list-goal[data-state="near"] { color: rgba(214,178,92,.95); }
+    .list-goal[data-state="met"] { color: rgba(120,200,150,.9); }
+    .list-density { height: 3px; margin: -4px 0 8px; background: rgba(255,255,255,.06); }
+    .list-density-fill { height: 100%; width: 0; background: rgba(150,120,255,.85); transition: width .25s ease; }
+    .list-density[data-state="near"] .list-density-fill { background: rgba(214,178,92,.9); }
+    .list-density[data-state="met"] .list-density-fill { background: rgba(120,200,150,.75); }
     .list-entry { display: flex; gap: 10px; align-items: center; margin-top: 0; padding: 7px 0; min-width: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
     .list-entry input[type="checkbox"] {
       appearance: none; flex: 0 0 auto; width: 16px; height: 16px; margin: 0; border: 1.5px solid rgba(150,120,255,.7); border-radius: 4px;

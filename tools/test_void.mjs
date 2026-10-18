@@ -3477,6 +3477,21 @@ try {
         && r.red.color === '#ff5c5c' && r.edge === 'rgb(255, 92, 92)' && r.reload === 'eggs|milk*|apples|pears|rice' && r.reloadTitle === 'Saturday'
         && r.clear.items === '' && r.empty === 'No items yet' && r.gone === 0 && r.none === 0 && r.bare && r.bare.items === '' && !P.errors.length,
       JSON.stringify({ r, e: P.errors }).slice(0, 1400));
+    // a goal on the list (asked by Void, 2026-10-18; lib/list-goal.js): the head's "n of goal" and the density bar under it, on the bare list just made
+    const G = () => P.p.$eval('.thing.list-card', (e) => { const g = e.querySelector('.list-goal'), b = e.querySelector('.list-density'), f = b && b.querySelector('.list-density-fill');
+      return (g ? g.textContent + ':' + g.dataset.state : 'none') + '|' + (b ? b.dataset.state + ':' + f.style.width + ':' + getComputedStyle(b).height : 'none'); }).catch(() => null);
+    const goalSaved = async () => { const l = (await P.state()).find((x) => x.kind === 'list'); return l ? l.goal : null; };
+    const g = {};
+    g.before = await G();
+    await P.ask('set a goal of 3 on the list', 400); g.set = await G();
+    await P.ask('add eggs', 400); await P.ask('add milk', 400); g.two = await G();
+    await P.ask('add bread', 400); g.three = await G();
+    await P.p.reload(); await P.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 15000 }).catch(() => {}); await until(async () => !!(await card()), 8000); g.reload = await G(); g.kept = await goalSaved();
+    await P.ask('clear the goal', 400); g.cleared = await G(); g.gone = await goalSaved();
+    check('list goal (asked by Void): "set a goal of 3 on the list" puts "0 of 3" in the head and a 3px violet bar under it, two items make it "2 of 3" and amber (near), a third meets it (green, full), a reload keeps the goal on the list, "clear the goal" takes the count and the bar off; nothing showed before the goal was set',
+      g.before === 'none|none' && g.set === '0 of 3:under|under:0%:3px' && g.two === '2 of 3:near|near:67%:3px' && g.three === '3 of 3:met|met:100%:3px'
+        && g.reload === g.three && g.kept === 3 && g.cleared === 'none|none' && g.gone === undefined && !P.errors.length,
+      JSON.stringify({ g, e: P.errors }));
     await P.ctx.close(); }
   // step 6's visible upgrade for the list (owner, 2026-10-11: every cleanup move ships one): the card is the clipboard its 3D view shows
   // tools pack 2 (owner, 2026-10-18): the task board, the time questions, the days-since card and busy blocks, played the way a person uses them
