@@ -5,7 +5,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as route from '../void-live-deploy/functions/api/card-art.js';
-import { models } from '../void-live-deploy/lib/models.js';
+import { models, ART_FALLBACK } from '../void-live-deploy/lib/models.js';
 import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
 import { readFileSync } from 'node:fs';
 
@@ -18,10 +18,16 @@ function d1() {
   const stmt = (sql, a = []) => ({ bind: (...b) => stmt(sql, b), run: async () => { const r = db.prepare(sql).run(...a); return { meta: { changes: Number(r.changes) } }; }, first: async () => db.prepare(sql).get(...a) || null });
   return { prepare: (sql) => stmt(sql), raw: db };
 }
+// the art model gets multipart form data (FLUX.2 [klein]) or JSON (schnell): read both as { prompt, width, height, steps }
+async function formOf(o) {
+  if (!o || !o.multipart) return o;
+  const t = await new Response(o.multipart.body, { headers: { 'content-type': o.multipart.contentType } }).formData();
+  return { prompt: t.get('prompt'), width: +t.get('width'), height: +t.get('height'), multipart: true };
+}
 function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false } = {}) {
   store.clear(); route.resetReady();
-  const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ...extra };
-  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
+  const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
+  if (ai) env.AI = { run: async (model, o) => { if (model === models('merge')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
   return { env, calls, dcalls };
 }
 const post = (env, subject, kind = 'answer', rarity = 'common', ip = '1.1.1.1') => route.onRequestPost({ env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ subject, kind, rarity }) }) });
@@ -56,7 +62,7 @@ test('the prompt is the fixed template with only the folded key, the kind and th
   assert.ok(!/[<>"';]/.test(p), p);
   assert.ok(p.endsWith(STYLE_LOCK + ', ' + FRAMING), 'the style lock and the framing close every prompt');
   assert.ok(!/\b(in the style of artist|by [A-Z]|disney|marvel|pokemon|nintendo|ghibli|picasso)\b/i.test(artPrompt('cat', 'animal', 'rare')));
-  assert.equal(calls[0].o.steps, 4);
+  assert.deepEqual([calls[0].model, calls[0].o.width, calls[0].o.height, calls[0].o.multipart], [models('art'), 1024, 576, true], 'klein paints the card\'s 16:9 art window');
 });
 
 test('the daily cap: over it, the card keeps its plate and the model is not asked; ART_DAILY_CAP changes it', async () => {
@@ -133,7 +139,8 @@ test('a failed paint is counted by its reason, with no subject (owner, 2026-10-1
   const r = await (await post(w.env, 'k pop music')).json(); assert.equal(r.state, 'plate'); assert.equal(r.why, 'busy');
   await post(w.env, 'jazz music', 'answer', 'common', '2.2.2.2');
   const misses = w.env.DB.raw.prepare('SELECT * FROM void_art_miss').all();
-  assert.equal(misses.length, 1); assert.equal(misses[0].why, '3040: capacity'); assert.equal(misses[0].n, 2); assert.ok(!JSON.stringify(misses).includes('music'));
+  // klein failed, then the square fallback, and no other painter answered: each reason is counted, twice each
+  assert.deepEqual(misses.map((m) => [m.why, m.n]).sort(), [['klein 3040: capacity', 2], ['no painter answered', 2], ['schnell 3040: capacity', 2]]); assert.ok(!JSON.stringify(misses).includes('music'));
   const w2 = world({ reply: { nope: 1 } }); await post(w2.env, 'k pop music');
   assert.equal(w2.env.DB.raw.prepare('SELECT why FROM void_art_miss').get().why, 'not an image: nope');
   assert.equal(route.missWhy(new Error('slow')), 'timeout');
@@ -160,4 +167,43 @@ test('sceneOf keeps plain words only, one line, at most 240 characters, and refu
   assert.equal(sceneOf('Scene: A <i>lantern</i> "glowing" in fog; centered.\nSecond line'), 'A lantern glowing in fog centered');
   assert.equal(sceneOf('x'.repeat(10) + ' ' + 'word '.repeat(80)).length <= 240, true);
   for (const bad of ['a nude figure in the dark', 'a swastika on a wall in the void', 'in the style of Picasso a cat sits', 'a key sk-abcdefghijklmnopqrstuvwxyz0123456789 glows']) assert.equal(sceneOf(bad), '', bad); // secret-scan: ok (made-up shape)
+});
+test('FLUX.2 [klein] paints first at the 16:9 window; when it fails the square model paints instead and the picture is kept', async () => {
+  const w = world(); const real = w.env.AI.run;
+  w.env.AI.run = async (model, o) => { if (/flux-2/.test(model)) { await real(model, o); throw new Error('5006: model busy'); } return real(model, o); };
+  const r = await (await post(w.env, 'owl')).json(); assert.equal(r.state, 'art');
+  assert.deepEqual(w.calls.map((c) => c.model), [models('art'), ART_FALLBACK]); assert.equal(w.calls[1].o.steps, 4); assert.equal(rows(w.env).length, 1);
+  const { asImage } = route; assert.equal(await asImage(new Response(new Uint8Array([255, 216, 255])).body), '/9j/'); assert.deepEqual(await asImage({ image: 'x' }), { image: 'x' });
+});
+test('a new painting (owner, 2026-10-18: "a regenerate card art button"): once a day per subject, in the cap, keeping the old picture when the new one fails', async () => {
+  const w = world({ extra: { ART_DAILY_CAP: '5' } });
+  const again = (subject, ip = '7.7.7.7') => route.onRequestPost({ env: w.env, request: new Request('https://x/api/card-art', { method: 'POST', headers: { 'cf-connecting-ip': ip }, body: JSON.stringify({ subject, again: true }) }) });
+  await post(w.env, 'owl'); assert.equal(w.calls.length, 1);
+  const today = await (await again('owl')).json(); assert.deepEqual([today.state, today.why], ['art', 'again-today'], 'painted today: no second painting'); assert.equal(w.calls.length, 1);
+  w.env.DB.raw.prepare("UPDATE void_art SET day = '2026-01-01'").run(); const old = rows(w.env)[0].img;
+  const JPEG2 = '/9j/4AAQSkZJRgABAg' + 'B'.repeat(9000); w.env.AI.run = async (model, o) => { w.calls.push({ model, o }); return { image: JPEG2 }; };
+  const fresh = await (await again('owl', '8.8.8.8')).json(); assert.equal(fresh.state, 'art'); assert.equal(fresh.again, true); assert.ok(fresh.img.endsWith('B'.repeat(20)));
+  assert.equal(rows(w.env).length, 1); assert.notEqual(rows(w.env)[0].img, old); assert.equal(rows(w.env)[0].day, new Date().toISOString().slice(0, 10), 'a repaint counts in today\'s cap');
+  w.env.DB.raw.prepare("UPDATE void_art SET day = '2026-01-01'").run(); const kept = rows(w.env)[0].img;
+  w.env.AI.run = async () => { throw new Error('busy'); };
+  const failed = await (await again('owl', '9.9.9.9')).json(); assert.equal(failed.state, 'plate'); assert.equal(rows(w.env)[0].img, kept, 'the old picture stays');
+});
+test('past the Workers AI cap, or when it fails, Pollinations paints for free (up to POLL_CAP more a day), with the same prompt and the card\'s size', async () => {
+  const real = globalThis.fetch, seen = [];
+  globalThis.fetch = async (u, o) => { seen.push({ u: String(u), auth: (o && o.headers && o.headers.authorization) || '' }); return new Response(Uint8Array.from(Buffer.from('/9j/' + 'A'.repeat(9000), 'base64')), { headers: { 'content-type': 'image/jpeg' } }); };
+  try {
+    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '' } });
+    assert.equal((await (await post(w.env, 'cat')).json()).state, 'art'); assert.equal(w.calls.length, 1); assert.equal(seen.length, 0, 'under the cap: Workers AI paints');
+    const over = await (await post(w.env, 'dog', 'animal', 'common', '2.2.2.2')).json();
+    assert.equal(over.state, 'art'); assert.equal(w.calls.length, 1, 'over the cap: Workers AI is not asked'); assert.equal(seen.length, 1);
+    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&model=flux$/); assert.equal(seen[0].auth, '');
+    assert.ok(!/<|>|;/.test(decodeURIComponent(seen[0].u)), 'only the fixed or directed prompt');
+    const k = world({ extra: { POLLINATIONS_KEY: 'test-only-not-a-key', ART_POLLINATIONS: '' } }); k.env.AI.run = async () => { throw new Error('3040: capacity'); }; // secret-scan: ok
+    assert.equal((await (await post(k.env, 'owl')).json()).state, 'art', 'Workers AI failing: Pollinations paints');
+    assert.match(seen[1].u, /^https:\/\/gen\.pollinations\.ai\/image\//); assert.equal(seen[1].auth, 'Bearer test-only-not-a-key');
+    const off = world({ extra: { ART_DAILY_CAP: '0' } }); assert.equal((await (await post(off.env, 'cat')).json()).why, 'cap', 'ART_POLLINATIONS=0 keeps the old cap');
+    globalThis.fetch = async () => new Response('<html>busy</html>', { status: 503, headers: { 'content-type': 'text/html' } });
+    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); const b = await (await post(bad.env, 'fox')).json();
+    assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
+  } finally { globalThis.fetch = real; }
 });

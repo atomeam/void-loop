@@ -66,3 +66,15 @@ test('visual consistency (asked by Void): every picture shape from 1:20 to 20:1 
   }
   assert.ok(filled > 10 && whole > 10, 'both ways are exercised: ' + filled + ' filled, ' + whole + ' whole');
 });
+
+test('a whole long ask is the title (owner, 2026-10-18: "make it show the whole ask"): no cut, no ellipsis, the bar grows and everything below moves down with it', async () => {
+  const { titleExtra } = await import('../void-live-deploy/lib/card-image.js');
+  const ask = "I'll build `skill-gravity-map` on the helper branch for issue #92, using `node tools/new-skill.mjs` to register it and adding a matching test file to satisfy the untested-skill ratchet that just blocked my own PR. First, let me check the diagnostic output on my two failures.";
+  const svg = cardSvg({ ...d, title: ask, cost: 0 }), plain = cardSvg({ ...d, title: 'Casablanca', cost: 0 });
+  const shown = [...svg.matchAll(/font-weight="700" font-size="(\d+)" fill="#f3efe2">([^<]*)</g)].filter((m) => +m[1] !== 34).map((m) => m[2]).join(' ');
+  assert.ok(!shown.includes('…')); assert.equal(shown.replace(/&#39;|&#x27;/g, "'").replace(/&amp;/g, '&').replace(/&#96;/g, '`'), ask);
+  const lines = fitTitle(ask, 620); assert.ok(lines.lines.length > 2 && lines.fs === 16, JSON.stringify([lines.lines.length, lines.fs]));
+  const T = titleExtra(lines.lines.length, lines.fs); assert.ok(T > 0 && titleExtra(2, 20) === 0 && titleExtra(1, 38) === 0);
+  const h = (x) => +/viewBox="0 0 \d+ (\d+)"/.exec(x)[1]; assert.equal(h(svg) - h(plain), T, 'the card is as much taller as the title bar grew');
+  assert.match(svg, new RegExp('translate\\(0 ' + T + '\\)'));
+});

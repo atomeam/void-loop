@@ -14,10 +14,11 @@ const unb64 = (c) => { const bin = atob(String(c).replace(/-/g, '+').replace(/_/
 // the whole answer, not its first 2400 characters (owner, 2026-10-17: "copy card should show the rest of the info"; the self card stopped mid-word at "rath"):
 // the saved picture grows longer to hold it (lib/card-image.js fitLong) and the code line still carries only its start
 export const BODY_MAX = 8000;
+export const TITLE_MAX = 600; // the whole ask shows as the title (owner, 2026-10-18: "make it show the whole ask"); it was 120
 /** the facts a card carries, cleaned and capped: { v, t, k, b, src: [{ t, u }] }. Pure. */
 export function dataOf({ title, kind, body, sources, n } = {}) {
   const gen = Math.floor(+n); // version history: how many times this card has been copied on from a pasted one (2 = the copy of a pasted card); only 2..99 ride along
-  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: clip(title, 120), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.t || s.u) };
+  return { v: 1, ...(gen >= 2 && gen <= 99 ? { n: gen } : {}), t: clip(title, TITLE_MAX), k: clip(kind, 80), b: clip(body, BODY_MAX), src: (sources || []).slice(0, 8).map((s) => ({ t: clip(s.title || s.t, 100), u: httpsOnly(s.url || s.u) })).filter((s) => s.t || s.u) };
 }
 /** the code line for a card. Pure. */
 // short on purpose (owner, 2026-10-17: "are the letters necessary to copy along with the card?"): the readable text above it already holds the
@@ -81,7 +82,7 @@ export function readCard(el) {
 /** what the card's picture is drawn from: the frame's own numbers (el._vcard, set by keep) and the card's text. */
 export function imageData(el, d) {
   const c = el._vcard || {}, text = d.b || '';
-  return { art: el._vcForge || '', nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill };
+  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill };
 }
 const download = (blob, name) => { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
 /** the picture a saved card draws in its art box: the Art Forge's painting first (owner, 2026-10-17: "still no art": the copied card

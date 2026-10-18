@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 485,
+ "counted": 495,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -45,34 +45,46 @@
    "dependants": 8
   },
   {
-   "file": "lib/skyask.js",
-   "skills": 7,
-   "direct": 6,
-   "dependants": 7
-  },
-  {
    "file": "lib/rule-registry.js",
-   "skills": 6,
+   "skills": 7,
    "direct": 0,
-   "dependants": 28
+   "dependants": 29
   },
   {
    "file": "lib/guide.js",
-   "skills": 6,
+   "skills": 7,
    "direct": 1,
-   "dependants": 27
+   "dependants": 28
   },
   {
    "file": "lib/card-subject.js",
-   "skills": 6,
+   "skills": 7,
+   "direct": 0,
+   "dependants": 27
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 7,
    "direct": 0,
    "dependants": 25
   },
   {
-   "file": "lib/card-art.js",
-   "skills": 6,
+   "file": "lib/field-kit.js",
+   "skills": 7,
    "direct": 0,
-   "dependants": 24
+   "dependants": 16
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 7,
+   "direct": 7,
+   "dependants": 7
+  },
+  {
+   "file": "lib/skyask.js",
+   "skills": 7,
+   "direct": 6,
+   "dependants": 7
   },
   {
    "file": "lib/ladder.js",
@@ -85,6 +97,12 @@
    "skills": 6,
    "direct": 3,
    "dependants": 8
+  },
+  {
+   "file": "lib/field-worker.js",
+   "skills": 6,
+   "direct": 6,
+   "dependants": 6
   },
   {
    "file": "lib/corrections.js",
@@ -147,10 +165,22 @@
    "dependants": 4
   },
   {
-   "file": "lib/field-kit.js",
+   "file": "lib/keeper.js",
    "skills": 3,
    "direct": 0,
-   "dependants": 8
+   "dependants": 16
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 11
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 9
   },
   {
    "file": "lib/movies.js",
@@ -159,16 +189,28 @@
    "dependants": 7
   },
   {
+   "file": "lib/card-image.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/card-forge.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
    "dependants": 4
-  },
-  {
-   "file": "lib/field-stage.js",
-   "skills": 3,
-   "direct": 3,
-   "dependants": 3
   },
   {
    "file": "lib/parody.js",
@@ -195,30 +237,6 @@
    "dependants": 48
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 15
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 10
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 8
-  },
-  {
-   "file": "lib/card-image.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -231,19 +249,13 @@
    "dependants": 4
   },
   {
-   "file": "lib/card-forge.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
    "file": "lib/card-kinds.js",
    "skills": 2,
    "direct": 0,
    "dependants": 4
   },
   {
-   "file": "lib/card-share.js",
+   "file": "lib/void-seal.js",
    "skills": 2,
    "direct": 0,
    "dependants": 4
@@ -282,12 +294,6 @@
    "file": "lib/eclipses.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2
-  },
-  {
-   "file": "lib/field-worker.js",
-   "skills": 2,
-   "direct": 2,
    "dependants": 2
   },
   {
@@ -435,6 +441,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/field-attention.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/field-cards.js",
    "skills": 1,
    "direct": 1,
@@ -442,6 +454,24 @@
   },
   {
    "file": "lib/field-flow.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-nca.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-resonance.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-swarm.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1545,6 +1575,7 @@
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -1813,6 +1844,7 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -1827,7 +1859,8 @@
     "lib/art-rules.js"
    ],
    "importedBy": [
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -1843,6 +1876,7 @@
     "lib/art-meta.js",
     "lib/card-art.js",
     "lib/card-forge.js",
+    "lib/void-seal.js",
     "lib/card-subject.js"
    ],
    "importedBy": [
@@ -1857,7 +1891,8 @@
     "lib/art-rules.js"
    ],
    "importedBy": [
-    "lib/card-share.js"
+    "lib/card-share.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -1882,7 +1917,8 @@
     "lib/card-image.js"
    ],
    "importedBy": [
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -1894,7 +1930,8 @@
    "imports": [],
    "importedBy": [
     "lib/card-art.js",
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "lib/void-seal.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -1913,6 +1950,7 @@
     "lib/skill-confidence.js",
     "lib/tome.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2125,6 +2163,14 @@
     "skills/event-countdown.js"
    ]
   },
+  "lib/field-attention.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/attention-field-mind.js"
+   ]
+  },
   "lib/field-cards.js": {
    "imports": [
     "lib/field-kit.js"
@@ -2144,16 +2190,40 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/field-attention.js",
     "lib/field-cards.js",
     "lib/field-flow.js",
+    "lib/field-nca.js",
+    "lib/field-resonance.js",
     "lib/field-stage.js",
+    "lib/field-swarm.js",
     "lib/field-vector.js"
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
+    "skills/attention-field-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-nca.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/nca-mind.js"
+   ]
+  },
+  "lib/field-resonance.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/resonance-mind.js"
    ]
   },
   "lib/field-stage.js": {
@@ -2161,9 +2231,21 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "skills/attention-field-mind.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-swarm.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/swarm-mind.js"
    ]
   },
   "lib/field-vector-worker.js": {
@@ -2184,8 +2266,12 @@
   "lib/field-worker.js": {
    "imports": [],
    "importedBy": [
+    "skills/attention-field-mind.js",
     "skills/flow-canvas.js",
-    "skills/living-cards-mind.js"
+    "skills/living-cards-mind.js",
+    "skills/nca-mind.js",
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -2303,6 +2389,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2422,6 +2509,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -2549,6 +2637,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js"
    ]
   },
@@ -3103,6 +3192,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -3549,6 +3639,19 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/void-seal.js": {
+   "imports": [
+    "lib/card-subject.js"
+   ],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/merge.js"
+   ]
+  },
   "lib/watch.js": {
    "imports": [],
    "importedBy": [
@@ -3656,6 +3759,14 @@
     "skills/pong.js",
     "skills/snake.js"
    ]
+  },
+  "skills/attention-field-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-attention.js"
+   ],
+   "importedBy": []
   },
   "skills/aurora-tonight.js": {
    "imports": [
@@ -3815,6 +3926,14 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/collectible.js": {
+   "imports": [
+    "lib/card-share.js",
+    "lib/card-image.js",
+    "lib/card-forge.js"
+   ],
+   "importedBy": []
   },
   "skills/collide.js": {
    "imports": [],
@@ -4868,6 +4987,14 @@
    ],
    "importedBy": []
   },
+  "skills/nca-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-nca.js"
+   ],
+   "importedBy": []
+  },
   "skills/news.js": {
    "imports": [
     "skills/live.js"
@@ -5131,6 +5258,14 @@
   "skills/repo.js": {
    "imports": [
     "lib/repo-look.js"
+   ],
+   "importedBy": []
+  },
+  "skills/resonance-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-resonance.js"
    ],
    "importedBy": []
   },
@@ -5520,6 +5655,14 @@
    "importedBy": [
     "skills/recipe.js"
    ]
+  },
+  "skills/swarm-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-swarm.js"
+   ],
+   "importedBy": []
   },
   "skills/swarm.js": {
    "imports": [],

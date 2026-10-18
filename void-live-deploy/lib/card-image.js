@@ -33,8 +33,12 @@ export function fitTitle(title, avail) {
   const t = String(title || '').replace(/\s+/g, ' ').trim() || 'V01D', W = 0.6; // average glyph width in em for bold serif
   for (let fs = 38; fs >= 22; fs--) if (t.length * fs * W <= avail) return { lines: [t], fs };
   for (let fs = 28; fs >= 12; fs--) { const l = wrap(t, Math.floor(avail / (fs * W)), 99); if (l.length <= 2) return { lines: l, fs }; }
-  const l = wrap(t, Math.floor(avail / (12 * W)), 99); return { lines: l.slice(0, 2), fs: 12 };
+  // a long ask (owner, 2026-10-18: "make it show the whole ask"): it keeps its whole length, wrapped at a readable 16 px on as many lines as it needs
+  // (the title bar grows: titleExtra, used by cardSvg); only an absurd ask is stopped, at 14 lines
+  return { lines: wrap(t, Math.floor(avail / (16 * W)), 14), fs: 16 };
 }
+/** how much taller the title bar must be for `lines` lines at `fs` px: nothing for one or two lines. Pure. */
+export const titleExtra = (lines, fs) => (lines > 2 ? (lines - 2) * (fs + 3) : 0);
 
 export const LONG_MIN_FS = 16;
 /** a long answer's card (owner, 2026-10-17: "copy card should show the rest of the info, either make a long card or multiple"): the text at the
@@ -55,11 +59,11 @@ export function fitText(text, h, w = 624) {
  *  bleed: true adds the 3 mm print bleed on every side. */
 export function cardSvg(data = {}, { bleed = false } = {}) {
   const d = data || {}, rk = rarityKey(d.rarity), RL = RARITY_LOOK[rk], foil = FOIL[rk], b = bleed ? BLEED : 0;
-  const box = fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + b * 2; // X: a long card's extra height below the art
-  const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const title = String(d.title || d.name || 'V01D').replace(/\s+/g, ' ').trim();
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
-  const { lines: tl, fs } = fitTitle(title, 620 - cost * 24);
+  const { lines: tl, fs } = fitTitle(title, 620 - cost * 24), T = titleExtra(tl.length, fs); // T: how much taller a long ask makes the title bar; everything below moves down by it
+  const box = fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
+  const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — V01D card">';
   s += '<defs><linearGradient id="' + id + 'f" x1="0" y1="0" x2="1" y2="1">' + foil.map((c, i) => '<stop offset="' + (i / (foil.length - 1)).toFixed(2) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>';
@@ -67,12 +71,14 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   s += '<linearGradient id="' + id + 's" x1="0" y1="0" x2="1" y2="1"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (rk === 'common' ? 0 : RL.a * 0.9) + '"/><stop offset=".7" stop-color="#fff" stop-opacity="0"/></linearGradient>';
   s += '<clipPath id="' + id + 'k"><rect width="' + W + '" height="' + H + '" rx="' + (bleed ? 0 : 34) + '"/></clipPath></defs>';
   s += '<g clip-path="url(#' + id + 'k)"><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 'f)"/><g transform="translate(' + b + ' ' + b + ')">';
-  s += '<rect x="22" y="22" width="700" height="' + (995 + X) + '" rx="20" fill="url(#' + id + 'p)" stroke="' + INK + '" stroke-width="4"/><rect x="26" y="26" width="692" height="' + (987 + X) + '" rx="17" fill="none" stroke="' + edge + '" stroke-width="3"/>';
+  s += '<rect x="22" y="22" width="700" height="' + (995 + X + T) + '" rx="20" fill="url(#' + id + 'p)" stroke="' + INK + '" stroke-width="4"/><rect x="26" y="26" width="692" height="' + (987 + X + T) + '" rx="17" fill="none" stroke="' + edge + '" stroke-width="3"/>';
   // title bar
-  s += '<rect x="40" y="44" width="664" height="66" rx="14" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/>';
+  s += '<rect x="40" y="44" width="664" height="' + (66 + T) + '" rx="14" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/>';
   // the whole title shows (owner, 2026-10-17: long titles were cut off with "..."): one line at the largest size that fits, else two lines that shrink
-  tl.forEach((l, i) => { s += '<text x="62" y="' + (77 + (i - (tl.length - 1) / 2) * (fs + 3) + fs * 0.35) + '" font-family="Georgia,\'Times New Roman\',serif" font-weight="700" font-size="' + fs + '" fill="#f3efe2">' + esc(l) + '</text>'; });
-  for (let i = 0; i < cost; i++) { const x = 684 - i * 24; s += '<path d="M' + x + ' 68l9 10-9 10-9-10z" fill="' + soft + '" stroke="' + INK + '" stroke-width="2"/>'; }
+  tl.forEach((l, i) => { s += '<text x="62" y="' + (77 + T / 2 + (i - (tl.length - 1) / 2) * (fs + 3) + fs * 0.35) + '" font-family="Georgia,\'Times New Roman\',serif" font-weight="700" font-size="' + fs + '" fill="#f3efe2">' + esc(l) + '</text>'; });
+  for (let i = 0; i < cost; i++) { const x = 684 - i * 24; s += '<path d="M' + x + ' ' + (68 + T / 2) + 'l9 10-9 10-9-10z" fill="' + soft + '" stroke="' + INK + '" stroke-width="2"/>'; }
+  // everything below the title bar moves down by T
+  s += '<g transform="translate(0 ' + T + ')">';
   // art
   const aw = 664, ah = 440;
   // the card's own picture (a poster, a still), already drawn small onto a canvas by photoData(): true colour, the plate over it as a light texture
@@ -95,7 +101,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
-  s += '</g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
+  s += '</g></g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;
 }
 

@@ -2528,6 +2528,30 @@ try {
     check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), a moving card leaves a fading trail and ripples the field around it (both asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
       out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
   }
+  if (want("field minds: swarm mind, two tribes in a neural field remember the pointer and compete, every draft's law runs, with or without a Worker")) { // asked by the owner: Grok's drafts F-044, F-030, F-026, F-028, F-040, F-041, F-022
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
+      await F.ask('swarm mind', 700); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000);
+      const card = '.ff-swarm-mind', read = () => F.p.$eval(card, (e) => ({ law: e.dataset.law, fid: e.dataset.fid, agents: +e.dataset.agents, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, wells: +e.dataset.wells, dominant: e.dataset.dominant,
+        status: e.querySelector('.ff-hud').textContent, button: e.querySelector('.sw-law').textContent, sound: e.querySelector('.ff-sound').textContent, filter: e.style.filter, page: getComputedStyle(document.body).filter }));
+      const a = await read(), box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 60, box.y + 60); for (let i = 0; i < 16; i++) await F.p.mouse.move(box.x + 60 + i * 12, box.y + 70 + (i % 4) * 10);
+      await until(async () => (await read()).gen > 0, 12000).catch(() => {});
+      const b = await read();
+      await F.p.fill(card + ' .sw-thought', 'a quiet idea'); await F.p.press(card + ' .sw-thought', 'Enter'); const wells = (await read()).wells;
+      const laws = []; for (let i = 0; i < 8; i++) { await F.p.click(card + ' .sw-law'); await F.p.waitForTimeout(250); const r = await read(); laws.push(r.law + ':' + r.agents + ':' + r.status.split(' · ')[0]); }
+      await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const kept = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const all = q.result.transaction('seals').objectStore('seals').getAll(); all.onsuccess = () => { q.result.close(); res(JSON.stringify(all.result.filter((x) => x.idea === 'swarm-mind'))); }; }; q.onerror = () => res('[]'); }));
+      let gravity = null; if (!noWorker) { await F.ask('thought gravity', 700); gravity = await read(); }
+      out.push({ noWorker, a, b, wells, laws, kept, gravity, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.law === 'swarm' && o.a.agents === 160 && /^[AB]$/.test(o.a.dominant) && o.b.gen > 0 && /^F-044\+F-030\+F-026\+F-028 · gen \d+ · fitness [\d.]+ · entropy [\d.]+ · (blue engages|amber explores) \(A [\d.]+ vs B [\d.]+\)/.test(o.b.status)
+      && o.wells === 1 && o.laws.join(',') === 'neural:160:F-044,memory:140:F-030,lattice:200:F-026,compete:160:F-028,probes:12:F-040,resonance:24:F-041,gravity:180:F-022,swarm:160:F-044+F-030+F-026+F-028'
+      && /"law":"swarm"/.test(o.kept) && !/quiet|lastOver|"x":/.test(o.kept) && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && !o.errors.length;
+    check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
+      out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
+  }
   if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
     const out = [];
     for (const noWorker of [false, true]) {
@@ -2546,6 +2570,69 @@ try {
     const good = (o) => o.a.ink >= 0 && o.a.ink <= 1 && o.a.cssInk === String(o.a.ink) && /^gen \d+ \u00b7 fitness [\d.]+ \u00b7 div -?[\d.]+ \u00b7 curl -?[\d.]+/.test(o.b.status) && !/gen 0 /.test(o.b.status) && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && o.b.sound === 'false' && /^[0-9a-f]{12}$/.test(o.sealed) && o.b.n === 1 && !o.errors.length;
     check('field minds: the vector field mind card shows a live ink density that is also its CSS variable, the mind has thought at least once (gen above 0) with and without a Worker, the morph touches the card and not the page, sound stays off, and Seal keeps a record',
       out.length === 2 && good(out[0]) && good(out[1]) && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
+  }
+  if (want("field minds: attention field mind, a typed word becomes an attractor its look-alikes fall toward, Law cycles Grok's four attention drafts, with and without a Worker")) { // asked by Owner, 2026-10-18: Grok's attention drafts
+    const out = [];
+    for (const bare of [false, true]) { // bare: no Worker and no Web Audio (docs/playbooks/field-mind.md), the mind falls back to the page
+      const F = bare ? await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;') : await fresh();
+      const card = '.ff-attention-field-mind';
+      await F.ask('attention field', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+      const read = () => F.p.$eval(card, (e) => ({ law: e.dataset.law, mind: e.dataset.mind, gen: +(e.dataset.gen || 0), words: +(e.dataset.words || 0), answer: +(e.dataset.answer || 0), clusters: +(e.dataset.clusters || 0),
+        consensus: +e.dataset.consensus, lawBtn: e.querySelector('.af-law').textContent, status: e.querySelector('.ff-hud').textContent, sound: e.querySelector('.ff-sound').textContent, filter: e.style.filter, page: getComputedStyle(document.body).filter }));
+      await F.p.fill(card + ' .af-word', 'cluster'); await F.p.press(card + ' .af-word', 'Enter');
+      await until(async () => (await read()).answer > 0.5 && (await read()).gen > 0, 12000);
+      const a = await read();
+      const box = await (await F.p.$(card + ' canvas')).boundingBox(); // the pointer sculpts: move over it, press to push
+      await F.p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.3); for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + box.width * (0.3 + i * 0.03), box.y + box.height * 0.4);
+      await F.p.mouse.down(); await F.p.waitForTimeout(250); await F.p.mouse.up();
+      const laws = [a.law];
+      for (let i = 0; i < 2; i++) { await F.p.click(card + ' .af-law'); laws.push((await read()).law); } // affinity -> heads -> lattice
+      await until(async () => /gen [1-9]/.test((await read()).status), 12000); // the HUD shows the generation on the frame after the thought
+      const lat = await read();
+      await F.p.click(card + ' .af-law'); laws.push((await read()).law); await F.p.click(card + ' .af-law'); laws.push((await read()).law);
+      await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal).catch(() => '')), 4000);
+      const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      const rows = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { q.result.close(); res(JSON.stringify(g.result)); }; }; q.onerror = () => res(''); }));
+      out.push({ bare, a, lat, laws, sealed, sealHasWord: /"cluster"/.test(rows), errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.law === 'affinity' && o.a.words === 1 && o.a.answer > 0.5 && o.a.gen > 0 && o.a.clusters > 0 && /^affinity \(frontier-webgpu-attention-field\) · 1 word · \d+ clusters/.test(o.a.status)
+      && o.laws.join() === 'affinity,heads,lattice,causal,affinity' && o.lat.law === 'lattice' && o.lat.gen > 0 && /^lattice \(F-029\) · 0 words · gen \d+ · fitness [\d.]+/.test(o.lat.status)
+      && /^hue-rotate\(/.test(o.a.filter) && o.a.page === 'none' && /^[0-9a-f]{12}$/.test(o.sealed) && !o.sealHasWord && !o.errors.length;
+    check('field minds: the attention field mind (Grok\'s attention drafts) turns a typed word into an attractor its look-alikes fall toward, clusters like with like, Law cycles affinity, two heads (F-032), lattice (F-029, its mind evolves) and causal (F-047), the morph touches the card only, Seal keeps no typed word, and with Worker and Web Audio deleted the mind thinks on the page and Sound says it is unavailable',
+      out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
+      && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
+  }
+  if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext; window.Worker = undefined;' : () => {});
+      const card = '.ff-nca-mind', read = () => F.p.$eval(card, (el) => ({ variant: el.dataset.variant, mind: el.dataset.mind, gen: +(el.dataset.gen || 0), entropy: +el.dataset.entropy, consensus: +el.dataset.consensus, status: el.querySelector('.ff-hud').textContent,
+        rule: el.querySelector('.nca-rule').value, rules: el.querySelectorAll('.nca-rule option').length, portals: +(el.dataset.portals || 0), reinforced: +(el.dataset.reinforced || 0), sound: el.querySelector('.ff-sound').textContent,
+        filter: el.style.filter, page: getComputedStyle(document.body).filter, n: document.querySelectorAll('.ff-nca-mind').length }));
+      await F.ask('show me a living lattice', 700); await until(async () => !!(await F.p.$(card + ' .nca-rule')), 8000);
+      const a = await read();
+      const box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5); await F.p.mouse.down();
+      for (let i = 0; i < 10; i++) await F.p.mouse.move(box.x + box.width * (0.3 + i * 0.02), box.y + box.height * 0.5);
+      await F.p.mouse.up();
+      await until(async () => (await read()).gen > 0, 12000);
+      const b = await read();
+      await F.ask('nca portal mind', 700); await until(async () => (await read()).variant === 'portal', 4000);
+      for (let i = 0; i < 40 && !(await read()).portals; i++) { await F.p.mouse.move(box.x + box.width * (0.2 + (i % 10) * 0.06), box.y + box.height * (0.3 + (i % 4) * 0.12)); await F.p.waitForTimeout(100); }
+      const c = await read();
+      if (c.portals) { await F.p.$eval(card + ' .nca-portal', (p) => p.click()); await until(async () => (await read()).reinforced > 0, 2000); }
+      const d = await read();
+      await F.p.selectOption(card + ' .nca-rule', 'residual'); await F.p.mouse.move(box.x + 20, box.y + 40); for (let i = 0; i < 12; i++) await F.p.mouse.move(box.x + 20 + i * 12, box.y + 40 + i * 4);
+      await F.p.waitForTimeout(300);
+      const e = await read();
+      out.push({ noWorker, a, b, c, d, e, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.variant === 'growing' && o.a.rule === 'growing' && o.a.rules === 6 && o.a.entropy > 0.05 && o.b.gen > 0 && /^F-036 \+ F-039 · gen \d+ · fitness [\d.]+ · entropy [\d.]+ · activity [\d.]+/.test(o.b.status)
+      && o.c.variant === 'portal' && o.c.rule === 'portal' && o.c.n === 1 && o.c.portals >= 1 && o.d.reinforced === 1 && o.e.variant === 'residual' && /^F-043 .* surprise [\d.]+/.test(o.e.status)
+      && /^hue-rotate\(/.test(o.e.filter) && o.e.page === 'none' && !o.errors.length;
+    check('field minds: the NCA mind card (F-036, F-039, F-043, F-045) starts on the growing multichannel NCA, the pointer seeds it and the mind evolves it (gen above 0); "nca portal mind" switches the same card to F-045 whose hotspots open portals a tap reinforces, the Rule picker switches to F-043\'s residual lattice, the morph stays on the card, in a Worker and on the page with Worker and Web Audio deleted',
+      out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable',
+      JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: o.a, b: o.b, c: o.c, d: o.d, e: o.e, errors: o.errors }))));
   }
   if (want("flow canvas: F-033 ink rides a paintable field, a mind evolves it in a Worker and on the page when workers are blocked, velocity morphs the ink's CSS shapes")) { // asked by Owner: F-033
     const flowRun = async (F) => {
@@ -2566,6 +2653,30 @@ try {
       a.version === 'f033-1' && a.mind === 'worker' && /F-033/.test(a.sub) && a.gen >= 1 && /^\d+% \d+% \d+% \d+%$/.test(a.shape) && a.blobs === 10 && a.ink === '0.1' && /[1-9]\d* cells painted/.test(a.status) && a.pageFilter === 'none' && !A.errors.length, JSON.stringify({ a, errors: A.errors }));
     check('flow canvas: with Worker and Web Audio blocked the mind falls back to the page (it still evolves), Sound says it is unavailable, and nothing throws',
       b.mind === 'main' && b.gen >= 1 && b.soundOff && /unavailable/i.test(b.sound) && /cells painted/.test(b.status) && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
+    await A.ctx.close(); await B.ctx.close(); }
+  if (want("resonance mind: a lattice the pointer plucks runs six of Grok's sound drafts, the mind evolves it in a Worker and on the page, no sound or microphone until asked")) { // asked by Owner: F-027, F-034, F-037, F-042, F-044, F-048
+    const MIC = 'window.__mic = 0; try { if (navigator.mediaDevices) { const g = navigator.mediaDevices.getUserMedia; navigator.mediaDevices.getUserMedia = function () { window.__mic++; return g ? g.apply(this, arguments) : Promise.reject(new Error("none")); }; } } catch (_) {}';
+    const rmRun = async (F, ask) => {
+      await F.ask(ask, 900); await until(async () => !!(await F.p.$('.ff-resonance-mind canvas')), 8000);
+      const card = '.ff-resonance-mind', read = () => F.p.$eval(card, (e) => ({ variant: e.dataset.variant, fid: e.dataset.fid, mind: e.dataset.mind, gen: +(e.dataset.gen || 0), entropy: e.dataset.entropy, activity: +e.dataset.activity, hue: e.dataset.hue,
+        status: e.querySelector('.ff-hud').textContent, chips: [...e.querySelectorAll('.rm-variant')].map((b) => b.dataset.variant + ':' + b.getAttribute('aria-pressed')).join(','), sound: e.querySelector('.ff-sound').textContent, soundOff: e.querySelector('.ff-sound').disabled,
+        soundPressed: e.querySelector('.ff-sound').getAttribute('aria-pressed'), mic: e.querySelector('.rm-mic-btn').textContent, micOff: e.querySelector('.rm-mic-btn').disabled, micOn: e.dataset.mic || 'off', asked: window.__mic, page: getComputedStyle(document.body).filter }));
+      const a = await read(), box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      for (let i = 0; i < 16; i++) { await F.p.mouse.move(box.x + box.width * (0.3 + 0.4 * (i % 2)), box.y + box.height * 0.45); if (i % 5 === 0) { await F.p.mouse.down(); await F.p.mouse.up(); } } // swing and pluck
+      await until(async () => (await read()).gen >= 1, 12000).catch(() => {});
+      const b = await read(), seen = [];
+      for (const v of ['resonance', 'phase', 'bands', 'voice', 'spatial', 'predict']) { await F.p.click(card + ' .rm-variant[data-variant="' + v + '"]'); await F.p.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.4); await F.p.mouse.down(); await F.p.mouse.up(); await F.p.waitForTimeout(250); const r = await read(); seen.push(r.variant + ':' + r.fid + ':' + r.status.slice(0, 5)); }
+      return { a, b, seen, c: await read() };
+    };
+    const A = await fresh(MIC); const a = await rmRun(A, 'resonance mind');
+    const B = await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;', MIC); const b = await rmRun(B, 'resonant voice lattice mind');
+    const laws = 'resonance:F-034:F-034,phase:F-027:F-027,bands:F-044:F-044,voice:F-037:F-037,spatial:F-048:F-048,predict:F-042:F-042';
+    check('resonance mind: "resonance mind" opens F-034, plucking the lattice changes its numbers and the card\'s hue (not the page), the mind runs a generation in a Worker, each of the six laws runs from its chip with its F-id, and neither sound nor the microphone starts unasked',
+      a.a.variant === 'resonance' && a.a.fid === 'F-034' && /^F-034 spectral resonance · resonance [\d.]+ · gen \d+/.test(a.b.status) && a.b.mind === 'worker' && a.b.gen >= 1 && (a.b.hue !== a.a.hue || a.b.entropy !== a.a.entropy)
+      && a.seen.join(',') === laws && /resonance:true/.test(a.b.chips) && a.b.soundPressed === 'false' && /Use microphone \(asks permission\)/.test(a.b.mic) && a.c.micOn === 'off' && a.c.asked === 0 && a.b.page === 'none' && !A.errors.length, JSON.stringify({ a, errors: A.errors }));
+    check('resonance mind: "resonant voice lattice mind" opens on F-037; with Worker and Web Audio deleted the mind thinks on the page (it still evolves), Sound and the microphone say they are unavailable, every law still runs, and nothing throws',
+      b.a.variant === 'voice' && /^F-037/.test(b.b.status) && b.b.mind === 'main' && b.b.gen >= 1 && b.b.soundOff && /unavailable/i.test(b.b.sound) && b.b.micOff && /unavailable/i.test(b.b.mic) && b.seen.join(',') === laws && b.c.asked === 0 && b.c.page === 'none' && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
     await A.ctx.close(); await B.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
@@ -3948,6 +4059,32 @@ try {
     check('V01D merge: a refusal from the route is shown kindly, with no card and no page errors', kept && !(await cardOfMerge(K)) && !K.errors.length, JSON.stringify(K.errors)); await K.ctx.close(); }
   // The Art Forge (lib/card-forge.js, lib/art-rules.js, functions/api/card-art.js; owner, 2026-10-17: "the art should be of the subject of each card"): a cached picture fills a merged
   // card's art box under the foil frame; an uncached answer card paints once by itself (one POST); a skill card paints by its name; the route down leaves the plate
+  // the void seal (owner, 2026-10-18: the ink plates "suck"): every card gets V01D's procedural art, the same picture for the same card
+  // a collectible card (owner, 2026-10-18): "make a collectible card of a dragon" mints the subject's card with variants and a print sheet;
+  // it starts unevolved (V01D's void art) and evolves when its painting lands, by itself after a few seconds open
+  if (want("collectible card: mint, variants, evolve")) {
+    const C = await fresh(); const posts = []; const IMG = 'data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(9000);
+    await C.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, 2500)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: IMG, cached: false }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
+    await C.ask('make a collectible card of a dragon', 1200);
+    const read = () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-collect]'); if (!e) return null; const a = e.querySelector(':scope > .vc-art');
+      return { title: e.dataset.collect, collect: e.classList.contains('vc-collect'), variant: e.dataset.variant || '', strip: [...e.querySelectorAll('.vc-variants button')].map((b) => b.textContent).join('|'), stage: a && a.dataset.stage, seal: !!(a && a.querySelector('.vc-seal')), forged: !!(a && a.querySelector('.vc-forge-img')) }; });
+    const first = await until(async () => { const r = await read(); return r && r.seal && r.strip ? r : null; }, 9000).catch(() => null);
+    await C.p.click('.vc-variants [data-variant=full]'); const full = await read();
+    const evolved = await until(async () => { const r = await read(); return r && r.forged && r.stage === 'evolved' ? r : null; }, 9000).catch(() => null);
+    check('collectible card: "make a collectible card of a dragon" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), unevolved under V01D\'s void art, and it evolves into its painting by itself, with one paint asked for the dragon',
+      !!first && /dragon/i.test(first.title) && first.collect && first.variant === 'foil' && /Normal\|Foil\|Full art\|Print sheet of 9/.test(first.strip) && first.stage === 'unevolved'
+        && full.variant === 'full' && !!evolved && posts.length >= 1 && posts.every((p) => /dragon/.test(p.subject)) && !C.errors.length, JSON.stringify({ first, full, evolved, posts, errors: C.errors }).slice(0, 800));
+    await C.ctx.close(); }
+  if (want("void seal: every card's art box carries V01D's procedural art, the same for the same card")) {
+    const S = await fresh(); await S.ctx.route(/\/api\/card-art/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'plate', why: 'off' }) }));
+    const seal = () => until(async () => S.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); const im = a && a.querySelector(':scope > .vc-seal'); const svg = a && a.querySelector(':scope > svg');
+      return im && im.complete && im.naturalWidth > 100 ? { src: im.src.slice(0, 30), len: im.src.length, sum: [...im.src].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7), w: im.naturalWidth, plateHidden: !svg || getComputedStyle(svg).visibility === 'hidden', cover: getComputedStyle(im).position === 'absolute' } : null; }), 8000).catch(() => null);
+    await S.ask('20% tip on 45', 1600); const a = await seal();
+    await S.ask('close', 400); await S.ask('20% tip on 45', 1600); const b = await seal();
+    await S.ask('close', 400); await S.ask('make a timer for 5 minutes', 1600); const c = await seal();
+    check("void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+      !!a && /^data:image\/(webp|jpeg)/.test(a.src) && a.w >= 320 && a.plateHidden && a.cover && !!b && b.sum === a.sum && (!c || c.sum !== a.sum) && !S.errors.length, JSON.stringify({ a, b, c, errors: S.errors }));
+    await S.ctx.close(); }
   if (want("V01D art forge: a cached picture fills the art box, an uncached answer card paints once by itself, a skill card paints by its name")) {
     const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
     const forged = (P) => P.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const a = e && e.querySelector(':scope > .vc-art'); return e && a ? { img: (a.querySelector('.vc-forge-img') || {}).src || '', btn: (a.querySelector('.vc-forge-btn') || {}).textContent || '', plate: !!a.querySelector('svg'), title: (e.querySelector('h2') || {}).textContent || '' } : null; });
@@ -3959,7 +4096,7 @@ try {
     const glowing = () => A.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); return !!a && a.classList.contains('vc-painting') && getComputedStyle(a).animationName === 'vc-paint'; });
     const pending = await until(glowing, 8000).catch(() => false); // asked by Void: a pulsing glow while the painting is pending
     const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000), glowAfter = await glowing();
-    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind, rarity and family only (the family steers the Art Director), its art box glows while the paint is pending, then the picture fills the art box over the plate and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'family,kind,rarity,subject' && typeof posts[0].family === 'string' && posts[0].family.length < 40 && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
+    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind, rarity, family and V01D\'s take (they steer the Art Director), its art box glows while the paint is pending, then the picture fills the art box over the plate and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'family,kind,rarity,subject,take' && typeof posts[0].family === 'string' && posts[0].family.length < 40 && typeof posts[0].take === 'string' && posts[0].take.length <= 300 && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
     await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
     const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
     check('V01D art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();

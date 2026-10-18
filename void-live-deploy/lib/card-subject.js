@@ -70,6 +70,8 @@ const DRAW = {
   mask: [['M10 28Q50 12 90 28Q92 64 70 80Q50 94 30 80Q8 64 10 28Z', 'P'], ['M24 42Q34 36 44 46Q34 54 24 42ZM56 46Q66 36 76 42Q66 54 56 46Z', 'I'], ['M38 70Q50 78 62 70', 'N']],
 };
 /** the motifs as ink drawings for an art box of w x h: a gold halo of sigils behind, the first motif large, the others beside it. `c` = { P, L, D, G, ink, sw }. Pure. */
+/** a motif's drawing as [path, fill] pairs in a 100 x 100 box (fills: P paper, L light, I ink, G gold, N none), or null. Pure. */
+export const motifPaths = (name) => DRAW[name] || null;
 export function motifSvg(names, w, h, c) {
   if (!names || !names.length) return '';
   const fill = { P: c.P, L: c.L, I: c.ink, G: c.G, N: 'none' }, u = h / 100;
