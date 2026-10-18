@@ -30,6 +30,6 @@ test('the real families.json places this backlog\'s own asks', () => {
   assert.ok(d.placed >= 1 && d.groups.every((g) => g.asks.length));
 });
 test('the skill takes its asks and leaves the plain backlog list to the wants card', () => {
-  for (const a of ['digest your backlog', 'Backlog digest', 'summarise your unbuilt asks by family', 'group your open asks by family and evidence rating', 'asks by family']) assert.ok(skill.match(a.toLowerCase(), a), a);
+  for (const a of ['digest your backlog', 'Backlog digest', 'summarise your unbuilt asks by family', 'group your open asks by family and evidence rating', 'asks by family', "digest verse's backlog"]) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of ['what is your backlog', 'digest my email', 'name all your unbuilt asks', 'your backlog']) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
