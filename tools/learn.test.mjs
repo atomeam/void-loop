@@ -2,7 +2,7 @@
 // ones. node --test tools/learn.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { learnable, plan, jobOf, score, targetOf, learnFromMiss, queueMiss, OPEN_MAX, MIN_COUNT } from '../void-live-deploy/lib/learn.js';
+import { learnable, plan, jobOf, score, targetOf, learnFromMiss, queueMiss, OPEN_MAX, MIN_COUNT, readAndUnknown } from '../void-live-deploy/lib/learn.js';
 
 const now = Date.parse('2026-10-09T18:00:00Z');
 const d = (daysAgo) => new Date(now - daysAgo * 864e5).toISOString();
@@ -168,4 +168,21 @@ test('origin: the owner\'s board merges agent counts across wordings, and leaves
   const m = mergeMisses([{ ask: 'play ludo', count: 3, agent: 1, first: d(2), last: d(1) }, { ask: 'play ludo!', count: 2, agent: 2, first: d(3), last: d(0) }, { ask: 'connect 4', count: 2 }]);
   assert.equal(m.find((r) => r.ask === 'play ludo').agent, 3);
   assert.equal('agent' in m.find((r) => r.ask === 'connect 4'), false);
+});
+
+// asked by Void: the daily miss list becomes the top 3 jobs, and never a made-up word (a miss every source was read for and none knew)
+test('the daily sweep queues the top 3 learnable asks and never a word every source read and none knew', () => {
+  assert.equal(readAndUnknown('none:wikipedia,wiktionary'), true);
+  assert.equal(readAndUnknown('none'), false, 'a plain none read nothing');
+  assert.equal(readAndUnknown('unreached'), false);
+  const rows = [
+    row('tell me about blorptangle', 154, 0, 'none:wikipedia,wiktionary'), // a probe: most asked, still not a job
+    row('play sorry', 6, 0, 'game not built yet: Sorry!'), row('connect 4', 5, 1), row('clear calendar', 4, 1), row('make a vase', 3, 2), row('sing a song', 2, 3),
+  ];
+  const p = plan(rows, { items: [] }, { now });
+  assert.equal(p.queue.length, 3, 'three jobs, OPEN_MAX');
+  assert.deepEqual(p.queue.map((c) => c.ask), ['play sorry', 'connect 4', 'clear calendar']);
+  assert.ok(![...p.queue, ...p.later].some((c) => /blorptangle/.test(c.ask)), 'the made-up word is neither queued nor kept for later');
+  assert.deepEqual(p.skipped.filter((s) => /blorptangle/.test(s.ask)), [{ ask: 'tell me about blorptangle', why: 'every source was read and none knew it' }]);
+  assert.equal(plan(rows, { items: [{ target: 'miss:a', state: 'queued' }, { target: 'miss:b', state: 'building' }] }, { now }).queue.length, 1, 'never past OPEN_MAX with two open');
 });

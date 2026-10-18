@@ -22,6 +22,9 @@ export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').r
 export const targetOf = (ask) => 'miss:' + slug(ask);
 export const unbuilt = (fallback) => /not built yet|^none(?:$|:)/i.test(String(fallback || '')); // 'none:<sources>': looked up, nothing found
 
+/** the fallback the page sends when it read at least one source and none knew the ask ('none:wikipedia,wiktionary'); a plain 'none' or 'unreached' read nothing. Pure. */
+export const readAndUnknown = (fallback) => /^none:[a-z]/.test(String(fallback || ''));
+
 // one row from the board -> a learnable ask, or null (noise, secrets, pasted transcripts, test traffic)
 export function learnable(r) {
   const a = String((r && r.ask) || '').replace(/[\w.+-]+@[\w-]+\.[\w.-]+/g, '[email]').replace(/\d[\d\s().-]{7,}\d/g, '[number]').trim();
@@ -61,6 +64,9 @@ export function plan(rows, queue, { known = new Set(), now = Date.now(), days = 
     if (c.last && c.last < since) continue;
     const t = targetOf(c.ask);
     if (known.has(c.ask.toLowerCase()) || taken.has(t) || asked.has(`learn to handle "${c.ask.toLowerCase()}"`)) { skipped.push({ ask: c.ask, why: taken.has(t) ? 'already a job' : 'already beaten or benched' }); continue; }
+    // every source was read for it and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to build a skill for, so the sweep
+    // never queues it (asked by Void: turn the daily miss list into jobs; the same rule tools/will.py has for its wants)
+    if (readAndUnknown(c.fallback)) { skipped.push({ ask: c.ask, why: 'every source was read and none knew it' }); continue; }
     if (originOf(c) === 'agent') { quarantined.push({ ask: c.ask, count: c.count }); continue; } // only visiting agents asked it: seen, never queued
     cands.push({ ...c, target: t, score: score(c, now) });
   }
