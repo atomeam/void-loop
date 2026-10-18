@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 635,
+ "counted": 648,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 44,
-   "direct": 44,
-   "dependants": 44
+   "skills": 51,
+   "direct": 47,
+   "dependants": 56
   },
   {
    "file": "lib/ask-text.js",
@@ -141,6 +141,12 @@
    "dependants": 19
   },
   {
+   "file": "lib/qr.js",
+   "skills": 7,
+   "direct": 2,
+   "dependants": 11
+  },
+  {
    "file": "lib/field-stage.js",
    "skills": 7,
    "direct": 7,
@@ -171,10 +177,10 @@
    "dependants": 18
   },
   {
-   "file": "lib/qr.js",
+   "file": "lib/stage-find.js",
    "skills": 6,
-   "direct": 1,
-   "dependants": 10
+   "direct": 4,
+   "dependants": 8
   },
   {
    "file": "lib/field-worker.js",
@@ -243,6 +249,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/pack5-ui.js",
+   "skills": 5,
+   "direct": 5,
+   "dependants": 5
+  },
+  {
    "file": "lib/pulse.js",
    "skills": 5,
    "direct": 2,
@@ -280,6 +292,12 @@
   },
   {
    "file": "lib/stage-pack-c.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
+  },
+  {
+   "file": "lib/stage-watch.js",
    "skills": 4,
    "direct": 4,
    "dependants": 4
@@ -466,6 +484,12 @@
   },
   {
    "file": "lib/safety.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
+   "file": "lib/stage-port.js",
    "skills": 2,
    "direct": 2,
    "dependants": 2
@@ -735,6 +759,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/media-local.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/own-parts.js",
    "skills": 1,
    "direct": 1,
@@ -784,6 +814,12 @@
   },
   {
    "file": "lib/stage-camera.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/stage-image.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -3145,6 +3181,14 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/media-local.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": [
+    "skills/media-object.js"
+   ]
+  },
   "lib/media.js": {
    "imports": [
     "lib/movies.js"
@@ -3368,6 +3412,16 @@
    "imports": [],
    "importedBy": [
     "skills/own-parts.js"
+   ]
+  },
+  "lib/pack5-ui.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/bookmarks.js",
+    "skills/copy-stack.js",
+    "skills/dismissed-pile.js",
+    "skills/stage-export.js",
+    "skills/stage-find.js"
    ]
   },
   "lib/page-picture.js": {
@@ -3755,7 +3809,8 @@
    "imports": [],
    "importedBy": [
     "lib/card-image.js",
-    "skills/spectators.js"
+    "skills/spectators.js",
+    "skills/stage-image.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -4201,6 +4256,31 @@
     "skills/fly.js"
    ]
   },
+  "lib/stage-find.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": [
+    "lib/stage-port.js",
+    "lib/stage-watch.js",
+    "skills/bookmarks.js",
+    "skills/dismissed-pile.js",
+    "skills/stage-find.js",
+    "skills/stage-image.js"
+   ],
+   "reachedBy": [
+    "skills/copy-stack.js",
+    "skills/stage-export.js"
+   ]
+  },
+  "lib/stage-image.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": [
+    "skills/stage-image.js"
+   ]
+  },
   "lib/stage-math.js": {
    "imports": [],
    "importedBy": [
@@ -4248,6 +4328,10 @@
   "lib/stage-pack.js": {
    "imports": [],
    "importedBy": [
+    "lib/media-local.js",
+    "lib/stage-find.js",
+    "lib/stage-image.js",
+    "lib/stage-port.js",
     "skills/accessibility-modes.js",
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
@@ -4272,6 +4356,7 @@
     "skills/idea-certificate.js",
     "skills/list-templates.js",
     "skills/list-tools.js",
+    "skills/media-object.js",
     "skills/minimap.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
@@ -4282,7 +4367,9 @@
     "skills/safety-kit.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/stage-export.js",
     "skills/stage-fx.js",
+    "skills/stage-image.js",
     "skills/stakes-phase.js",
     "skills/stale-work.js",
     "skills/study-cards.js",
@@ -4292,6 +4379,23 @@
     "skills/time-math.js",
     "skills/witness-claims.js",
     "skills/writing-aids.js"
+   ],
+   "reachedBy": [
+    "lib/stage-watch.js",
+    "skills/bookmarks.js",
+    "skills/copy-stack.js",
+    "skills/dismissed-pile.js",
+    "skills/stage-find.js"
+   ]
+  },
+  "lib/stage-port.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-find.js"
+   ],
+   "importedBy": [
+    "skills/copy-stack.js",
+    "skills/stage-export.js"
    ]
   },
   "lib/stage-tools-dom.js": {
@@ -4311,6 +4415,17 @@
     "skills/stage-arrange.js",
     "skills/stage-organize.js",
     "skills/stage-style.js"
+   ]
+  },
+  "lib/stage-watch.js": {
+   "imports": [
+    "lib/stage-find.js"
+   ],
+   "importedBy": [
+    "skills/bookmarks.js",
+    "skills/dismissed-pile.js",
+    "skills/stage-export.js",
+    "skills/stage-find.js"
    ]
   },
   "lib/stage-words.js": {
@@ -4776,7 +4891,9 @@
     "skills/recent.js",
     "lib/stage-pack.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/bookmarks.js"
+   ]
   },
   "skills/ask-diff.js": {
    "imports": [
@@ -4856,6 +4973,16 @@
   },
   "skills/book.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/bookmarks.js": {
+   "imports": [
+    "lib/stage-find.js",
+    "lib/stage-watch.js",
+    "lib/pack5-ui.js",
+    "skills/ask-clipboard.js",
+    "skills/recent.js"
+   ],
    "importedBy": []
   },
   "skills/breath.js": {
@@ -5056,6 +5183,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/copy-stack.js": {
+   "imports": [
+    "lib/stage-port.js",
+    "lib/pack5-ui.js"
+   ],
+   "importedBy": []
+  },
   "skills/coral.js": {
    "imports": [
     "lib/reefwatch.js",
@@ -5190,6 +5324,14 @@
   "skills/dismiss.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/dismissed-pile.js": {
+   "imports": [
+    "lib/stage-find.js",
+    "lib/stage-watch.js",
+    "lib/pack5-ui.js"
    ],
    "importedBy": []
   },
@@ -5949,6 +6091,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/media-object.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/media-local.js"
+   ],
+   "importedBy": []
+  },
   "skills/media-pick.js": {
    "imports": [
     "lib/media.js",
@@ -6641,7 +6790,8 @@
   "skills/recent.js": {
    "imports": [],
    "importedBy": [
-    "skills/ask-clipboard.js"
+    "skills/ask-clipboard.js",
+    "skills/bookmarks.js"
    ]
   },
   "skills/recipe-stack.js": {
@@ -7088,10 +7238,36 @@
    ],
    "importedBy": []
   },
+  "skills/stage-export.js": {
+   "imports": [
+    "lib/stage-port.js",
+    "lib/stage-watch.js",
+    "lib/pack5-ui.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-find.js": {
+   "imports": [
+    "lib/stage-find.js",
+    "lib/stage-watch.js",
+    "lib/pack5-ui.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-fx.js": {
    "imports": [
     "lib/stage-pack.js",
     "lib/fx.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-image.js": {
+   "imports": [
+    "lib/stage-image.js",
+    "lib/qr.js",
+    "lib/stage-find.js",
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },

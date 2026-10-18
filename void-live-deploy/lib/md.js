@@ -18,21 +18,27 @@ export function mdInline(escaped) {
 
 export function mdBlock(text, esc) {
   const lines = String(text).replace(/\r/g, '').split('\n');
-  let out = '', list = null, para = [];
+  let out = '', list = null, para = [], gap = false, li = false;
   const flushPara = () => { if (para.length) { out += '<p>' + para.map((l) => mdInline(esc(l))).join('<br>') + '</p>'; para = []; } };
-  const closeList = () => { if (list) { out += '</' + list + '>'; list = null; } };
+  const closeItem = () => { if (li) { out += '</li>'; li = false; } };
+  const closeList = () => { closeItem(); if (list) { out += '</' + list + '>'; list = null; } };
   for (const raw of lines) {
     const l = raw.trim();
-    if (!l) { flushPara(); closeList(); continue; }
+    // a blank line ends a paragraph, but not a list: "1. a", blank, "1. b" is one list numbered 1, 2 (CommonMark's loose list),
+    // never a column of 1s (owner, 2026-10-18: "it is failing to increment the <ol> index")
+    if (!l) { flushPara(); gap = true; continue; }
     let m;
-    if ((m = /^(#{1,6})\s+(.*)$/.exec(l))) { flushPara(); closeList(); const n = Math.min(6, m[1].length + 2); out += '<h' + n + '>' + mdInline(esc(m[2].replace(/\s*#+\s*$/, ''))) + '</h' + n + '>'; continue; }
-    if (/^(?:[-*_]\s*){3,}$/.test(l)) { flushPara(); closeList(); out += '<hr>'; continue; }
-    if ((m = /^[-*+•]\s+(.*)$/.exec(l)) || (m = /^\d+[.)]\s+(.*)$/.exec(l))) {
-      const kind = /^\d/.test(l) ? 'ol' : 'ul';
-      flushPara(); if (list !== kind) { closeList(); out += '<' + kind + '>'; list = kind; }
-      out += '<li>' + mdInline(esc(m[1])) + '</li>'; continue;
+    if ((m = /^(#{1,6})\s+(.*)$/.exec(l))) { flushPara(); closeList(); gap = false; const n = Math.min(6, m[1].length + 2); out += '<h' + n + '>' + mdInline(esc(m[2].replace(/\s*#+\s*$/, ''))) + '</h' + n + '>'; continue; }
+    if (/^(?:[-*_]\s*){3,}$/.test(l)) { flushPara(); closeList(); gap = false; out += '<hr>'; continue; }
+    if ((m = /^[-*+•]\s+(.*)$/.exec(l)) || (m = /^(\d+)[.)]\s+(.*)$/.exec(l))) {
+      const kind = /^\d/.test(l) ? 'ol' : 'ul', body = kind === 'ol' ? m[2] : m[1];
+      flushPara(); closeItem();
+      if (list !== kind) { closeList(); const n = kind === 'ol' ? +m[1] : 1; out += '<' + kind + (n > 1 ? ' start="' + n + '"' : '') + '>'; list = kind; }
+      out += '<li>' + mdInline(esc(body)); li = true; gap = false; continue;
     }
-    closeList(); para.push(l);
+    // an indented line under an item (after a blank or not) belongs to that item
+    if (li && /^\s{2,}\S/.test(raw)) { out += (gap ? '<br><br>' : '<br>') + mdInline(esc(l)); gap = false; continue; }
+    closeList(); gap = false; para.push(l);
   }
   flushPara(); closeList();
   return out;

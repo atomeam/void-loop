@@ -765,11 +765,12 @@ try {
     const P = await fresh(); await P.ask('what do you think of yourself', 2500);
     const got = await P.p.evaluate(() => { const sel = getComputedStyle(document.body, '::selection').backgroundColor, pg = document.querySelector('.vpage.on') || document.querySelector('.vpage');
       const pills = [...document.querySelectorAll('[data-v-depth]')].map((b) => ({ on: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor }));
-      return { sel, sw: pg ? getComputedStyle(pg).scrollbarWidth : 'none', any: getComputedStyle(document.documentElement).scrollbarWidth, pills }; });
+      const onB = document.querySelector('[data-v-depth][aria-pressed="true"]'), lift = onB ? { t: getComputedStyle(onB).transform, glow: getComputedStyle(onB).boxShadow } : null;
+      return { sel, sw: pg ? getComputedStyle(pg).scrollbarWidth : 'none', any: getComputedStyle(document.documentElement).scrollbarWidth, pills, lift }; });
     await P.ctx.close();
     const on = got.pills.find((x) => x.on === 'true'), off = got.pills.find((x) => x.on === 'false');
     check('aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off',
-      /150, 110, 255/.test(got.sel) && got.any === 'thin' && (got.sw === 'thin' || got.sw === 'none') && on && off && on.bg !== off.bg, JSON.stringify(got));
+      /150, 110, 255/.test(got.sel) && got.any === 'thin' && (got.sw === 'thin' || got.sw === 'none') && on && off && on.bg !== off.bg && /matrix\(1, 0, 0, 1, 0, 2\)/.test(got.lift.t) && /150, 110, 255/.test(got.lift.glow), JSON.stringify(got)); // asked by Void: the pressed pill sinks 2px with a violet halo
   }
   if (want("accessibility settings hanging indent")) {
     for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 800 }]) {
@@ -831,11 +832,13 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) the ghost text at the bottom right is the "support V01D" link: readable now, inside the viewport, and not under the bar
+    // 7) no corner "support V01D" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
+    //    "open the store" still opens the store, and the book's Start here page names it
     const S = await fresh(); await S.p.waitForTimeout(1500);
-    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-support'), b = a.getBoundingClientRect(), r = document.getElementById('row').getBoundingClientRect(), cs = getComputedStyle(a); return { text: a.textContent, color: cs.color, op: cs.opacity, l: b.left, t: b.top, r: b.right, b: b.bottom, rowR: r.right, vw: innerWidth, vh: innerHeight }; });
-    const supBg = await px(S.p, sup.l - 8, sup.t + 6);
-    check('empty state: the bottom-right ghost text is the "support V01D" link; it is full opacity, at least 4.5:1 on the stage, and inside the viewport clear of the bar', sup.text === 'support V01D' && sup.op === '1' && ratio(rgbOf(sup.color), supBg) >= 4.5 && sup.r <= sup.vw && sup.b <= sup.vh && sup.l > sup.rowR, JSON.stringify({ sup, supBg, ratio: ratio(rgbOf(sup.color), supBg) }));
+    const sup = await S.p.evaluate(() => ({ el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, text: /support v01d/i.test(document.body.innerText) }));
+    await S.ask('open the store', 900); const storePg = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300);
+    const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
+    check('empty state: no corner "support V01D" link (no visible link on the empty stage); "open the store" opens the store; the book\'s Start here page names the store', !sup.el && sup.links === 0 && !sup.text && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, storePg: storePg.slice(0, 80), howStore }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -2254,6 +2257,159 @@ try {
     await S.ask('generate a password', 700); await S.ask('keep this', 700);
     const vib = await S.p.evaluate(() => window.__vib);
     check('accessibility: spoken words appear as a caption while captions are on, and keeping an answer ticks the phone once when haptic is on', cap && vib === 1 && (await S.state()).some((x) => x.kind === 'kept') && !S.errors.length, JSON.stringify({ cap, vib, errors: S.errors }));
+  }
+  // tools pack 5 (owner, 2026-10-18; numbers 91 to 120): search and history, export and share, media light, played the way a person uses them
+  if (want("tools pack 5: find and jump on the stage, the undo pile, favorites and bookmarks, export and import, a print sheet, the clipboard stack, a picture of the stage, a QR code, local audio, pictures and subtitles")) { const F = await import('./fixtures/pack5-files.mjs'); const S = await fresh();
+    const rows = () => S.p.$$eval('.vpage.on .p5-text', (e) => e.map((x) => x.textContent));
+    const settle = () => S.p.waitForTimeout(300);
+    const outlineOf = (text) => S.p.evaluate((t) => { const el = [...document.querySelectorAll('#stage > [data-id]')].find((e) => e.innerText.includes(t) || (e.querySelector('textarea') && e.querySelector('textarea').value.includes(t))); return el ? el.style.outline : 'no card'; }, text);
+    await S.ask('add a sticky that says buy milk and eggs', 500); await S.ask('another note that says call mom', 500); await S.ask('make a 5 minute timer', 500);
+    await S.ask('search the stage for milk', 600); // "find milk on the stage" is note-tools' own example (tools pack 1)
+    await until(async () => (await rows()).length > 0, 6000);
+    const milkRows = await rows();
+    await S.p.click('.vpage.on button.p5-go >> nth=0').catch(() => {});
+    const picked = (await S.state()).length;
+    await S.ask('show all timers on the stage', 600);
+    await until(async () => /timer/.test((await rows()).join()), 6000);
+    const timerRows = await rows();
+    await S.ask('jump to the milk note', 500);
+    const jumpSaid = await S.whisper(); const jumpOutline = await outlineOf('buy milk');
+    check('find and jump: "search the stage for milk" lists only the milk note (a go button picks it), "show all timers on the stage" lists the timer, "jump to the milk note" scrolls to it and outlines it',
+      milkRows.length === 1 && /buy milk/.test(milkRows[0]) && picked === 3 && timerRows.length === 1 && /timer/.test(timerRows.join()) && /here: buy milk/.test(jumpSaid) && /255, 209, 102/.test(jumpOutline) && !S.errors.length, JSON.stringify({ milkRows, picked, timerRows, jumpSaid, jumpOutline, errors: S.errors }));
+    await S.p.click('#stage .sticky >> nth=1').catch(() => {}); // call mom
+    await S.ask('dismiss this', 700);
+    const gone = !(await S.state()).some((x) => /call mom/.test(x.text || ''));
+    await S.ask('show the undo pile', 600);
+    const pileRows = await rows();
+    await S.p.click('.vpage.on button.p5-go >> nth=0').catch(() => {});
+    const back = await until(async () => (await S.state()).some((x) => /call mom/.test(x.text || '')), 4000);
+    await S.p.click('#stage .sticky >> nth=1').catch(() => {}); await S.ask('dismiss this', 700);
+    await S.ask('restore the last dismissed', 700);
+    const backByWords = await until(async () => (await S.state()).some((x) => /call mom/.test(x.text || '')), 4000);
+    await S.ask('what changed today', 600);
+    const changes = (await rows()).join(' | ');
+    check('undo pile: a dismissed sticky is on the pile, a restore button and "restore the last dismissed" put it back, and "what changed today" lists the adds and the dismissals',
+      gone && pileRows.length === 1 && /call mom/.test(pileRows[0]) && back && backByWords && /added sticky/.test(changes) && /dismissed sticky/.test(changes) && !S.errors.length, JSON.stringify({ gone, pileRows, back, backByWords, changes, errors: S.errors }));
+    await S.p.click('#stage .sticky >> nth=0').catch(() => {});
+    await S.ask('favorite this', 500);
+    const stars = await S.p.$$eval('#stage .fav-star', (e) => e.length); const favState = (await S.state()).filter((x) => x.fav).length;
+    await S.ask('bookmark: make a clock', 400);
+    await S.ask('my bookmarks', 600);
+    const bm = (await rows()).join(' | ');
+    await S.p.click('.vpage.on button.p5-go >> nth=1').catch(() => {}); // run the bookmarked ask
+    const clockMade = await until(async () => (await S.state()).some((x) => x.kind === 'clock'), 5000);
+    await S.ask('recently kept', 500);
+    const keptSaid = await S.page();
+    check('favorites and bookmarks: "favorite this" puts a star on the picked card, "bookmark: make a clock" keeps the ask, "my bookmarks" lists both and a run button asks it again; "recently kept" with nothing kept says so',
+      stars === 1 && favState === 1 && /make a clock/.test(bm) && /buy milk|call mom/.test(bm) && clockMade && /Nothing kept/.test(keptSaid) && !S.errors.length, JSON.stringify({ stars, favState, bm, clockMade, keptSaid: keptSaid.slice(0, 120), errors: S.errors }));
+    // export and share
+    const [dl] = await Promise.all([S.p.waitForEvent('download', { timeout: 8000 }).catch(() => null), S.ask('export my stage as json', 700)]);
+    const exported = dl ? JSON.parse(fs.readFileSync(await dl.path(), 'utf8')) : null;
+    const imp = JSON.stringify({ app: 'void', version: 1, things: [{ id: 'imp1', kind: 'sticky', x: 60, y: 60, text: 'imported hello' }, { id: 'imp2', kind: 'nonsense', x: 1, y: 1 }] });
+    await S.ask('import a stage from json', 600);
+    await S.p.setInputFiles('.vpage.on input.p5-file', { name: 'stage.json', mimeType: 'application/json', buffer: Buffer.from(imp) });
+    const imported = await until(async () => (await S.state()).some((x) => /imported hello/.test(x.text || '')), 5000);
+    const importSaid = await S.p.$eval('.vpage.on .p5-result', (e) => e.textContent).catch(() => '');
+    await S.ask('undo', 500);
+    const undone = !(await S.state()).some((x) => /imported hello/.test(x.text || ''));
+    await S.ask('email-ready text of my stage', 600);
+    const dump = await S.p.$eval('.vpage.on textarea.p5-text', (e) => e.value).catch(() => '');
+    check('export and import: "export my stage as json" downloads a file with every thing, "import a stage" reads a file back beside what is there (an unknown kind is left out), one undo takes it away, and the plain-text dump names the notes',
+      exported && exported.app === 'void' && exported.things.some((t) => /buy milk/.test(t.text || '')) && imported && /Imported 1 thing \(1 left out\)/.test(importSaid) && undone && /^My Void stage/.test(dump) && /sticky: buy milk and eggs/.test(dump) && !S.errors.length,
+      JSON.stringify({ count: exported && exported.count, imported, importSaid, undone, dump: dump.slice(0, 160), errors: S.errors }));
+    await S.p.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    await S.ask('print the stage on letter', 700);
+    const sheet = await S.p.evaluate(() => { const s = document.getElementById('p5-print-sheet'), st = document.getElementById('p5-print-style'); return s ? { paper: s.dataset.paper, cards: s.querySelectorAll('.p5-card').length, css: st ? st.textContent.includes('size:letter') : false, printed: window.__printed, shown: getComputedStyle(s).display } : null; });
+    await S.p.emulateMedia({ media: 'print' });
+    const printLook = await S.p.evaluate(() => { const s = document.getElementById('p5-print-sheet'); return { sheet: s ? getComputedStyle(s).display : 'none', stage: getComputedStyle(document.getElementById('stage')).display, vis: [...document.body.children].filter((c) => getComputedStyle(c).display !== 'none').map((c) => c.id || c.tagName).join() }; });
+    await S.p.emulateMedia({ media: 'screen' });
+    await S.ask('print view of the stage on A4', 600);
+    const a4 = await S.p.evaluate(() => (document.getElementById('p5-print-sheet') || { dataset: {} }).dataset.paper);
+    await S.ask('export history', 600);
+    const hist = (await rows()).join(' | ');
+    check('print view: "print the stage on letter" lays the stage out on a sheet with a letter page rule and opens the print dialog; in print only the sheet shows; "print view on A4" switches paper; the export history lists the exports',
+      sheet && sheet.paper === 'Letter' && sheet.css && sheet.cards >= 3 && sheet.printed === 1 && sheet.shown === 'none' && printLook.sheet === 'block' && printLook.stage === 'none' && a4 === 'A4' && /json/.test(hist) && /text/.test(hist) && /import/.test(hist) && /print Letter/.test(hist) && !S.errors.length,
+      JSON.stringify({ sheet, printLook, a4, hist, errors: S.errors }));
+    // the clipboard stack: five copies, no repeats, no keys
+    await S.p.evaluate(() => { for (const t of ['copy 1', 'copy 2', 'password: hunter2hunter2', 'copy 3', 'copy 4', 'copy 5', 'copy 6']) navigator.clipboard.writeText(t).catch(() => {}); });
+    await S.ask('show my clipboard stack', 600);
+    const stack = await rows();
+    check('clipboard stack: the last five copies made on the page, newest first, the one that looked like a password left out',
+      stack.join('|') === 'copy 6|copy 5|copy 4|copy 3|copy 2' && !S.errors.length, JSON.stringify({ stack, errors: S.errors }));
+    // the stage as a picture and a QR code
+    await S.p.evaluate(() => { window.__img = null; navigator.clipboard.write = async (items) => { const b = await items[0].getType('image/png'); const bmp = await createImageBitmap(b); const c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height; const g = c.getContext('2d'); g.drawImage(bmp, 0, 0); const seen = new Set(); const d = g.getImageData(0, 0, c.width, c.height).data; for (let i = 0; i < d.length; i += 4 * 7) seen.add(d[i] + ',' + d[i + 1] + ',' + d[i + 2]); window.__img = { type: b.type, size: b.size, w: bmp.width, h: bmp.height, colors: seen.size }; }; });
+    await S.ask('copy the stage as an image', 600);
+    await until(async () => S.p.$eval('.vpage.on', (e) => !!e.dataset.via && e.dataset.how), 20000); await until(async () => S.p.evaluate(() => !!window.__img), 20000);
+    const whole = await S.p.evaluate(() => { const e = document.querySelector('.vpage.on'); return { via: e && e.dataset.via, how: e && e.dataset.how, img: window.__img, shot: !!(e && e.querySelector('img.p5-shot')) }; });
+    await S.p.click('#stage .sticky >> nth=0').catch(() => {});
+    await S.p.evaluate(() => { window.__img = null; });
+    await S.ask('copy this card as a png', 600);
+    await until(async () => S.p.evaluate(() => !!window.__img), 20000); await until(async () => S.p.$eval('.vpage.on', (e) => !!e.dataset.how), 20000);
+    const one = await S.p.evaluate(() => { const e = document.querySelector('.vpage.on'); return { via: e && e.dataset.via, how: e && e.dataset.how, img: window.__img }; });
+    await S.ask('qr code for this stage view', 600);
+    const qr = await S.p.evaluate(() => { const e = document.querySelector('.vpage.on'); const s = e && e.querySelector('.p5-qr svg'); return { svg: !!s, path: s ? (s.querySelector('path').getAttribute('d') || '').length : 0, href: e && e.dataset.qrFor, at: location.href.split('#')[0] }; });
+    check('stage as a picture: "copy the stage as an image" puts a PNG with real pixels on the clipboard (painted ' + whole.via + '), "copy this card as a png" does the picked card alone and is smaller, and "qr code for this stage view" shows a code for this page\'s address',
+      whole.how === 'copied' && whole.img && whole.img.type === 'image/png' && whole.img.size > 400 && whole.img.colors >= 3 && whole.shot && one.how === 'copied' && one.img && one.img.w < whole.img.w && qr.svg && qr.path > 300 && qr.href === qr.at && !S.errors.length,
+      JSON.stringify({ whole, one, qr, errors: S.errors }));
+    // media light
+    await S.ask('local audio player', 500);
+    await S.p.setInputFiles('.media-card input.media-file', [{ name: 'one.wav', mimeType: 'audio/wav', buffer: F.wav(0.4, 330) }, { name: 'two.wav', mimeType: 'audio/wav', buffer: F.wav(0.4, 550) }]);
+    await S.p.waitForSelector('.media-card audio', { timeout: 5000 }).catch(() => {});
+    const player = await S.p.evaluate(() => ({ items: [...document.querySelectorAll('.media-card .media-list button')].map((b) => b.textContent), audio: document.querySelectorAll('.media-card audio').length, cur: (document.querySelector('.media-card [aria-current]') || {}).textContent }));
+    await S.p.evaluate(() => { const v = document.querySelector('.media-card input.media-vol'); v.value = '0.4'; v.dispatchEvent(new Event('input', { bubbles: true })); });
+    const vol = await S.p.evaluate(() => document.querySelector('.media-card audio').volume);
+    await S.p.evaluate(() => document.querySelector('.media-card audio').dispatchEvent(new Event('ended'))); // the first track ends: the second starts by itself
+    await settle();
+    const advanced = await S.p.evaluate(() => (document.querySelector('.media-card [aria-current]') || {}).textContent);
+    await S.ask('mute all media', 400);
+    const muted = await S.p.evaluate(() => document.querySelector('.media-card audio').muted);
+    await S.ask('unmute all media', 400);
+    const unmuted = await S.p.evaluate(() => !document.querySelector('.media-card audio').muted);
+    const savedMedia = (await S.state()).find((x) => x.kind === 'media');
+    await S.p.reload(); // the stage comes back only after every skill loads: under load that is past 8 s, so wait for the card's words, not a fixed time
+    const afterReload = await until(() => S.p.evaluate(() => { const c = document.querySelector('.media-card'); return c && /again/.test(c.innerText) ? c.innerText : ''; }), 20000) || await S.p.$eval('.media-card', (e) => e.innerText).catch(() => '');
+    check('local audio: two chosen files make a playlist with a volume slider of its own (40%), the next track starts when one ends, "mute all media" silences the player and "unmute all media" gives the sound back, and after a reload the card keeps its names and asks for the files again',
+      player.items.join() === 'one.wav,two.wav' && player.audio === 1 && player.cur === 'one.wav' && Math.abs(vol - 0.4) < 0.01 && advanced === 'two.wav' && muted && unmuted && savedMedia && savedMedia.vol === 0.4 && savedMedia.names.join() === 'one.wav,two.wav' && /again/.test(afterReload) && /one\.wav/.test(afterReload) && !S.errors.length,
+      JSON.stringify({ player, vol, advanced, muted, unmuted, savedMedia, afterReload: afterReload.slice(0, 160), errors: S.errors }));
+    await S.ask('local video player', 500);
+    await S.p.setInputFiles('.media-card >> nth=1 >> input.media-file', { name: 'clip.webm', mimeType: 'video/webm', buffer: Buffer.from('not really a video') }).catch(() => {});
+    await S.p.waitForSelector('.media-card video', { timeout: 5000 }).catch(() => {});
+    await S.p.setInputFiles('.media-card:has(video) input.media-subs', { name: 'clip.srt', mimeType: 'application/x-subrip', buffer: Buffer.from(F.SRT) }).catch(() => {});
+    await settle();
+    const subs = await S.p.evaluate(async () => { const t = document.querySelector('.media-card video track'); if (!t) return null; const text = await (await fetch(t.src)).text(); return { kind: t.kind, label: t.label, vtt: text.slice(0, 80), said: (document.querySelector('.media-card:has(video) .media-status') || {}).textContent }; });
+    check('subtitles: an .srt chosen on a video card becomes a WebVTT track on the video (times with dots, the header) and the card says subtitles are on',
+      subs && subs.kind === 'subtitles' && /^WEBVTT/.test(subs.vtt) && /00:00:01\.000 --> 00:00:02\.500/.test(subs.vtt) && /Subtitles on: clip\.srt/.test(subs.said) && !S.errors.length, JSON.stringify({ subs, errors: S.errors }));
+    await S.ask('image viewer for local files', 500);
+    await S.p.setInputFiles('.media-card:not([data-mode]) input.media-file, .media-card[data-mode=""] input.media-file', [{ name: 'wide.png', mimeType: 'image/png', buffer: F.png(40, 20) }, { name: 'tall.png', mimeType: 'image/png', buffer: F.png(20, 40) }, { name: 'dot.gif', mimeType: 'image/gif', buffer: F.gif() }]).catch(() => {});
+    await S.p.waitForSelector('.media-card .media-strip', { timeout: 5000 }).catch(() => {});
+    const imgCard = '.media-card[data-mode="images"]';
+    const canvasOf = () => S.p.$eval(imgCard + ' canvas.media-canvas', (c) => ({ w: c.width, h: c.height, rot: c.dataset.rot, crop: c.dataset.crop })).catch(() => null);
+    const thumbs = await S.p.$$eval(imgCard + ' .media-thumb', (b) => b.length);
+    await settle();
+    const plain = await canvasOf();
+    await S.p.click(imgCard + ' button.media-right');
+    await settle();
+    const turned = await canvasOf();
+    await S.p.selectOption(imgCard + ' select.media-crop', 'square');
+    await settle();
+    const cropped = await canvasOf();
+    await S.p.click(imgCard + ' .media-thumb >> nth=2'); // the GIF
+    await settle();
+    const gifPlaying = await S.p.$eval(imgCard + ' img.media-gif', (i) => !!i.src).catch(() => false);
+    await S.p.click(imgCard + ' button.media-gif-toggle');
+    await settle();
+    const gifPaused = await S.p.evaluate((sel) => ({ canvas: !!document.querySelector(sel + ' canvas.media-canvas'), img: !!document.querySelector(sel + ' img.media-gif'), label: document.querySelector(sel + ' button.media-gif-toggle').textContent }), imgCard);
+    await S.p.click(imgCard + ' button.media-gif-toggle');
+    await settle();
+    const gifAgain = await S.p.$eval(imgCard + ' img.media-gif', (i) => !!i.src).catch(() => false);
+    await S.p.click(imgCard + ' .media-thumb >> nth=0');
+    await settle();
+    const [png] = await Promise.all([S.p.waitForEvent('download', { timeout: 8000 }).catch(() => null), S.p.click(imgCard + ' button.media-save')]);
+    const savedPng = png ? fs.readFileSync(await png.path()) : null;
+    check('local pictures: three files make a thumbnail strip; turn right swaps a 40x20 picture to 20x40, a square crop makes it 20x20; a GIF plays as a picture, pause freezes the frame onto a canvas and play brings the GIF back; Save PNG writes a real PNG',
+      thumbs === 3 && plain && plain.w === 40 && plain.h === 20 && turned && turned.w === 20 && turned.h === 40 && turned.rot === '90' && cropped && cropped.w === 20 && cropped.h === 20 && cropped.crop === 'square'
+      && gifPlaying && gifPaused.canvas && !gifPaused.img && /play/.test(gifPaused.label) && gifAgain && savedPng && savedPng.slice(1, 4).toString() === 'PNG' && png.suggestedFilename() === 'wide-edited.png' && !S.errors.length,
+      JSON.stringify({ thumbs, plain, turned, cropped, gifPlaying, gifPaused, gifAgain, png: png && png.suggestedFilename(), errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
@@ -6609,7 +6765,7 @@ try {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click (owner, 2026-10-15; the corner support link went on 2026-10-18)', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));

@@ -62,7 +62,8 @@ test('4. "How to play" never stays over the board', () => {
   assert.match(src, /className = 'howto-x'/, 'a close button on the panel');
   assert.match(src, /e\.key === 'Escape'/, 'Esc closes it');
   assert.match(src, /addEventListener\('pointerdown', onTap, true\)/, 'the first tap off it (a move) folds it');
-  assert.match(src, /max-height:min\(46vh,340px\)/, 'never taller than half the screen');
+  // its height is the game panel's now (2026-10-18, game panels fit): the side card is the one box, sized by lib/panel-fit.js to stop above the ask bar
+  assert.match(read('void-live-deploy/skills/side-card.js'), /fitPanel\(/, 'the panel is fitted above the ask bar');
 });
 
 test('5. the real game\'s name finds the Void version (owner, 2026-10-15)', async () => {
@@ -78,4 +79,15 @@ test('5. the real game\'s name finds the Void version (owner, 2026-10-15)', asyn
   assert.match(mono.THEMES.voidquest.sub, /our version of SolarQuest/);
   assert.match(read('void-live-deploy/skills/monopoly.js'), /VoidQuest, our version of SolarQuest/);
   assert.match(read('void-live-deploy/skills/fireworks.js'), /Fireworks, our version of Hanabi/);
+});
+
+test('a numbered list split by blank lines is one list, numbered 1, 2, 3 (owner, 2026-10-18: "it is failing to increment the <ol> index")', async () => {
+  const { mdBlock } = await import('../void-live-deploy/lib/md.js'), e = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+  assert.equal(mdBlock('1. **Hover** - a\n\n1. **Pressed** - b\n\n1. **Growth** - c\n\nwritten by V01D', e),
+    '<ol><li><b>Hover</b> - a</li><li><b>Pressed</b> - b</li><li><b>Growth</b> - c</li></ol><p>written by V01D</p>');
+  assert.equal(mdBlock('3. c\n4. d', e), '<ol start="3"><li>c</li><li>d</li></ol>');
+  assert.equal(mdBlock('1. a\n   more of a\n2. b', e), '<ol><li>a<br>more of a</li><li>b</li></ol>');
+  assert.equal(mdBlock('- a\n- b\n\npara', e), '<ul><li>a</li><li>b</li></ul><p>para</p>');
+  assert.equal(mdBlock('- a\n\n1. b', e), '<ul><li>a</li></ul><ol><li>b</li></ol>');
+  assert.equal(mdBlock('1. a\n\n## Next\n\n1. b', e), '<ol><li>a</li></ol><h4>Next</h4><ol><li>b</li></ol>');
 });
