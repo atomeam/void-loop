@@ -759,6 +759,18 @@ try {
   // writing assistants, the bar is legible over a white backdrop, the support link is readable, and a mouse gets the bar focused while touch does not.
   // Accessibility settings (owner, 2026-10-18: "the descriptive subtext ... wraps all the way to the left edge, sitting directly underneath the checkbox"):
   // every switch's description hangs under its title, never under the checkbox, at desktop and phone widths
+  // the browser's own look stays out (owner, 2026-10-18): selected text is V01D's violet, scrolling boxes get a thin translucent bar, and the
+  // self card's depth filter shows which pill is on
+  if (want("aesthetic perimeter")) {
+    const P = await fresh(); await P.ask('what do you think of yourself', 2500);
+    const got = await P.p.evaluate(() => { const sel = getComputedStyle(document.body, '::selection').backgroundColor, pg = document.querySelector('.vpage.on') || document.querySelector('.vpage');
+      const pills = [...document.querySelectorAll('[data-v-depth]')].map((b) => ({ on: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor }));
+      return { sel, sw: pg ? getComputedStyle(pg).scrollbarWidth : 'none', any: getComputedStyle(document.documentElement).scrollbarWidth, pills }; });
+    await P.ctx.close();
+    const on = got.pills.find((x) => x.on === 'true'), off = got.pills.find((x) => x.on === 'false');
+    check('aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off',
+      /150, 110, 255/.test(got.sel) && got.any === 'thin' && (got.sw === 'thin' || got.sw === 'none') && on && off && on.bg !== off.bg, JSON.stringify(got));
+  }
   if (want("accessibility settings hanging indent")) {
     for (const vp of [{ width: 1280, height: 800 }, { width: 390, height: 800 }]) {
       const A = await fresh(); await A.p.setViewportSize(vp); await A.ask('accessibility settings', 1200);
