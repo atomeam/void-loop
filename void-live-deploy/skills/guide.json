@@ -651,8 +651,7 @@
     "draw a line"
    ],
    "tier": "checked",
-   "why": "2 browser-suite mentions, 1 real ask in the benchmark",
-   "glow": 100,
+   "why": "2 browser-suite mentions, 2 real asks in the benchmark",
    "n": 26
   },
   {
