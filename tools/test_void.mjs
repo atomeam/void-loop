@@ -2793,23 +2793,25 @@ try {
     await M.ctx.close(); }
   if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
+  // the list card in V01D's own look (owner, 2026-10-18: no wooden clipboard, no phantom second clipboard beside it)
+  if (want("list card look: a dark panel with a title bar, one card and no 3D clipboard after the ask and after a reload, the add row and the shop group apart")) { const P = await fresh();
+    await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400);
     await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
-    const look = () => P.p.$eval('.thing.list-card', (e) => { const c = getComputedStyle(e), clip = getComputedStyle(e, '::before'), rows = [...e.querySelectorAll('.list-entry')];
-      const t = (r) => getComputedStyle(r.querySelector('.list-item-text')), box = (r) => getComputedStyle(r.querySelector('input[type=checkbox]')), a = e.querySelector('.list-shop-links a');
-      return { bg: c.backgroundColor, board: c.borderTopColor, boardW: parseFloat(c.borderTopWidth), side: c.borderLeftColor,
-        clip: clip.content !== 'none' && /linear-gradient/.test(clip.backgroundImage) && parseFloat(clip.top) < 0,
-        font: t(rows[0]).fontFamily, ink: t(rows[0]).color, title: getComputedStyle(e.querySelector('.list-title')).fontFamily,
-        boxLook: box(rows[0]).appearance, ticked: box(rows[1]).backgroundImage, unticked: box(rows[0]).backgroundImage,
-        cross: t(rows[1]).textDecorationLine, crossInk: t(rows[1]).textDecorationColor, link: a && getComputedStyle(a).color, rows: rows.length }; });
-    const a = await look();
-    const hand = await until(() => P.p.evaluate(() => [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
-    await P.ask('make the list red', 400);
-    const b = await look();
-    check('list clipboard look: the list is white paper (#fbfaf5) clipped to a hardboard clipboard (a brown board edge at least 8 px) under a steel clip above its top edge, the items written in pencil (#33363d) in the felt-tip hand (served from /fonts), the title in the same hand, tick boxes drawn on the paper (a pencil tick when done, none when not), a done item crossed out in pencil, store links in blue ink, and "make the list red" still edges it red on the same paper',
-      a.rows === 4 && a.bg === 'rgb(251, 250, 245)' && a.board === 'rgb(154, 107, 63)' && a.boardW >= 8 && a.clip && /^"?Void Hand/.test(a.font) && /^"?Void Hand/.test(a.title) && a.ink === 'rgb(51, 54, 61)'
-        && a.boxLook === 'none' && /url\("data:image\/svg\+xml/.test(a.ticked) && a.unticked === 'none' && a.cross === 'line-through' && /^rgba?\(51, 54, 61/.test(a.crossInk)
-        && a.link === 'rgb(29, 58, 138)' && hand && b.side === 'rgb(255, 92, 92)' && b.bg === a.bg && !P.errors.length,
-      JSON.stringify({ a, b, hand, e: P.errors }).slice(0, 1200));
+    const look = () => P.p.$eval('.thing.list-card', (e) => { const c = getComputedStyle(e), r = (x) => e.querySelector(x).getBoundingClientRect(), rows = [...e.querySelectorAll('.list-entry')];
+      const box = (row) => getComputedStyle(row.querySelector('input[type=checkbox]')), grp = e.querySelector('.list-shop-group'), g = getComputedStyle(grp);
+      return { bg: c.backgroundImage, borderW: parseFloat(c.borderTopWidth), before: getComputedStyle(e, '::before').content, head: !!e.querySelector('.list-head .list-title') && /^\d+\/\d+$/.test(e.querySelector('.list-count').textContent),
+        count: e.querySelector('.list-count').textContent, rows: rows.length, boxLook: box(rows[0]).appearance, ticked: box(rows[1]).backgroundImage, cross: getComputedStyle(rows[1].querySelector('.list-item-text')).textDecorationLine,
+        group: grp.getAttribute('role') === 'group' && /Shop this list/i.test(grp.getAttribute('aria-label')) && !!grp.querySelector('.list-shop-store'), inGroup: grp.contains(e.querySelector('.list-shop-links a')),
+        divider: parseFloat(g.borderTopWidth) >= 1 && parseFloat(g.paddingTop) >= 10 && parseFloat(g.marginTop) >= 12, gap: r('.list-shop-group').top - r('.list-add-row').bottom, sameRow: r('.list-add-input').bottom > r('.list-shop-store').top,
+        wood: /rgb\(154, 107, 63\)/.test(c.borderTopColor + c.borderLeftColor), links: e.querySelectorAll('.list-shop-links a').length }; });
+    const n = () => P.p.evaluate(() => ({ cards: document.querySelectorAll('.list-card').length, minis: document.querySelectorAll('.void-mini[data-kind="list"]').length }));
+    const a = await look(), na = await n();
+    await P.p.reload(); await until(() => P.p.$('.thing.list-card'), 8000); await P.p.waitForTimeout(1200);
+    const nb = await n();
+    check('list card look: the list is a dark panel (gradient, 1 px edge, no wooden board and no clip) with a title bar and an open/total count in mono, tidy checkbox rows (a gold tick when done, struck through), the add-item row apart from a labelled "Shop this list" group under a divider with space around it, the store links inside it; exactly one list card and no 3D clipboard beside it after the ask and after a reload',
+      a.rows === 3 && /gradient/.test(a.bg) && a.borderW === 1 && a.before === 'none' && !a.wood && a.head && a.count === '2/3' && a.boxLook === 'none' && /url\("data:image\/svg\+xml/.test(a.ticked) && a.cross === 'line-through'
+        && a.group && a.inGroup && a.divider && a.gap >= 14 && !a.sameRow && a.links === 2 && na.cards === 1 && na.minis === 0 && nb.cards === 1 && nb.minis === 0 && !P.errors.length,
+      JSON.stringify({ a, na, nb, e: P.errors }).slice(0, 1200));
     await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();

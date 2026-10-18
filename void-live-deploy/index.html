@@ -329,15 +329,53 @@
       text-transform: uppercase;
       rotate: -3deg;
     }
+    /* the list card (skills/list.js), in V01D's own look (owner, 2026-10-18: no wooden clipboard): the dark panel the other cards use,
+       a purple edge with a gold hairline on top, mono accents, a title bar, tidy checkbox rows; a colour ("make the list red") edges it */
     .list-card {
-      width: 280px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: #141414;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-      font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+      box-sizing: border-box; width: 300px; padding: 0 0 14px; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(165deg, rgba(30,28,46,.96), rgba(12,12,20,.97));
+      border: 1px solid rgba(150,120,255,.32); border-top-color: rgba(214,178,92,.55);
+      box-shadow: 0 14px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+      color: var(--ink, #e9ebf2); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
     }
+    .list-card > :not(.list-head) { margin-left: 16px; margin-right: 16px; }
+    .list-head { display: flex; align-items: baseline; gap: 10px; padding: 12px 16px 10px; margin-bottom: 4px; background: rgba(150,120,255,.08); border-bottom: 1px solid rgba(150,120,255,.22); }
+    .list-title { flex: 1; min-width: 0; min-height: 22px; margin: 0; color: var(--ink, #e9ebf2); font-size: 15px; font-weight: 600; letter-spacing: .01em; outline: 0; }
+    .list-title:empty::before { content: attr(data-placeholder); color: var(--muted); font-weight: 400; }
+    .list-title:focus-visible { box-shadow: 0 1px 0 rgba(214,178,92,.7); }
+    .list-count { flex: 0 0 auto; color: rgba(214,178,92,.9); font: 11px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .06em; }
+    .list-entry { display: flex; gap: 10px; align-items: center; margin-top: 0; padding: 7px 0; min-width: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .list-entry input[type="checkbox"] {
+      appearance: none; flex: 0 0 auto; width: 16px; height: 16px; margin: 0; border: 1.5px solid rgba(150,120,255,.7); border-radius: 4px;
+      background: transparent no-repeat center / 12px 12px; cursor: pointer;
+    }
+    .list-entry input[type="checkbox"]:checked {
+      background-color: rgba(150,120,255,.18); border-color: rgba(214,178,92,.9);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8.5l3.2 3.6L13.8 2.5' fill='none' stroke='%23d6b25c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .list-entry input[type="checkbox"]:focus-visible, .list-add-input:focus-visible, .list-shop-store:focus-visible { outline: 2px solid rgba(214,178,92,.8); outline-offset: 2px; }
+    .list-entry .list-item-text { flex: 1; min-width: 0; word-break: break-word; }
+    .list-entry.done .list-item-text { color: var(--muted); text-decoration: line-through; }
+    .list-remove { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 2px; font: inherit; }
+    .list-remove:hover { color: #ff8a8a; }
+    .list-to-note { font: 10px/1.6 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+    .list-empty { color: var(--muted); padding: 10px 0 4px; font: 12px/1.4 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+    .list-add-row { display: flex; gap: 8px; margin-top: 12px; }
+    .list-add-input { flex: 1; min-width: 0; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 7px 9px; outline: 0; background: rgba(0,0,0,.35); color: var(--fg); font: inherit; }
+    .list-add-input::placeholder { color: var(--muted); }
+    .list-add-input:focus { border-color: rgba(150,120,255,.6); }
+    .list-add-button { border: 1px solid rgba(150,120,255,.45); border-radius: 6px; background: rgba(150,120,255,.12); color: var(--ink, #e9ebf2); cursor: pointer; padding: 4px 12px; font: inherit; }
+    .list-add-button:hover { background: rgba(150,120,255,.26); }
+    /* "Shop this list": its own labelled group under a divider with room above it, apart from the add-item row */
+    .list-shop-group { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(150,120,255,.28); }
+    .list-shop { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; }
+    .list-shop-label { color: var(--muted); font: 11px/1.2 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .list-shop-stores { display: flex; flex-wrap: wrap; gap: 6px; }
+    .list-shop-store { font: inherit; font-size: 12px; color: var(--ink, #e9ebf2); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); border-radius: 6px; padding: 4px 11px; cursor: pointer; }
+    .list-shop-store:hover { background: rgba(255,255,255,.1); }
+    .list-shop-store[aria-pressed="true"] { background: rgba(150,120,255,.22); border-color: rgba(214,178,92,.7); }
+    .list-shop-links { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 12.5px; }
+    .list-shop-links a { color: #b9a8ff; text-decoration: underline; text-underline-offset: 2px; }
     /* a pocket calculator's face (skills/calc.js): charcoal matte plastic with a little bevel, the sum and its result in one
        olive LCD window, right-aligned the way a calculator shows them, the result in big dark tabular digits; a colour
        ("make the calculator blue") edges the body */
@@ -396,94 +434,11 @@
       line-height: 36px;
       letter-spacing: 0.04em;
     }
-    .list-title {
-      min-height: 22px;
-      margin-bottom: 10px;
-      color: var(--fg);
-      font-size: 16px;
-      font-weight: 600;
-      outline: 0;
-    }
-    .list-title:empty::before {
-      content: attr(data-placeholder);
-      color: var(--muted);
-      font-weight: 400;
-    }
-    .list-entry {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-top: 7px;
-      min-width: 0;
-    }
-    .list-entry input[type="checkbox"] { accent-color: #8ab4ff; flex: 0 0 auto; }
-    .list-entry .list-item-text { flex: 1; min-width: 0; word-break: break-word; }
-    .list-entry.done .list-item-text { color: var(--muted); text-decoration: line-through; }
-    .list-remove {
-      border: 0; background: transparent; color: var(--muted);
-      cursor: pointer; padding: 0 2px; font: inherit;
-    }
-    .list-remove:hover { color: var(--fg); }
-    .list-empty { color: var(--muted); margin-top: 6px; }
-    .list-add-row { display: flex; gap: 6px; margin-top: 12px; }
-    .list-shop { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted, #8a8a8a); }
-    .list-shop-store { font: inherit; color: var(--ink, #ddd); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
-    .list-shop-store[aria-pressed="true"] { background: rgba(255,255,255,.16); }
-    .list-shop-links { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; font-size: 12.5px; }
-    .list-shop-links a { color: var(--ink, #ddd); text-decoration: underline; text-underline-offset: 2px; }
-    .list-add-input {
-      flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 6px;
-      padding: 6px 8px; outline: 0; background: #0c0c0c; color: var(--fg); font: inherit;
-    }
-    .list-add-input::placeholder { color: var(--muted); }
-    .list-add-button {
-      border: 1px solid var(--line); border-radius: 6px; background: #1d1d1d;
-      color: var(--accent); cursor: pointer; padding: 4px 9px; font: inherit;
-    }
-    .list-add-button:hover { background: #2a2a2a; }
     /* "map it" on the document card (skills/pdf-card.js): each heading indented by its depth on a thin line back to its parent */
     .doc-map { list-style: none; margin: 8px 0; padding: 0; }
     .doc-map > li { margin: 3px 0 3px calc(var(--depth, 0) * 18px); padding-left: 10px; border-left: 1px solid var(--line); }
     .doc-map summary { cursor: pointer; }
     .doc-map ol { margin: 4px 0 6px; padding-left: 18px; }
-    /* the list is the clipboard its 3D view shows (skills/list.js, skills/mini/list.js): white paper on a hardboard board under a
-       steel clip, the items written in pencil in the felt-tip hand, tick boxes drawn on the paper with a pencil tick, a done
-       item crossed out in pencil; a colour ("make the list red") paints the board's edge */
-    .thing.list-card {
-      box-sizing: border-box; width: 290px; padding: 22px 16px 14px; border-radius: 4px;
-      background: #fbfaf5; border: 9px solid #9a6b3f; color: #33363d;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 0 1px rgba(60, 35, 15, 0.5), 0 14px 26px -6px rgba(0, 0, 0, 0.55);
-      font: 20px/1.25 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
-    }
-    .thing.list-card::before { /* the steel clip */
-      content: ''; position: absolute; left: 50%; top: -17px; width: 78px; height: 26px; margin-left: -39px; border-radius: 7px 7px 3px 3px;
-      background-image: linear-gradient(to bottom, #eef0f3, #b5bac2 45%, #7c828b 100%);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -2px 3px rgba(0, 0, 0, 0.25), 0 3px 4px rgba(0, 0, 0, 0.45);
-    }
-    .thing.list-card .list-title { color: #33363d; font: 700 24px/1.2 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; }
-    .thing.list-card .list-title:empty::before, .thing.list-card .list-empty { color: rgba(51, 54, 61, 0.5); }
-    .thing.list-card .list-entry { margin-top: 4px; border-bottom: 1px solid rgba(90, 130, 190, 0.22); padding-bottom: 2px; }
-    .thing.list-card .list-entry .list-item-text { color: #33363d; }
-    .thing.list-card .list-entry.done .list-item-text { color: rgba(51, 54, 61, 0.55); text-decoration: line-through 2px #33363d; }
-    .thing.list-card .list-entry input[type="checkbox"] {
-      appearance: none; width: 17px; height: 17px; margin: 0; border: 1.6px solid #33363d; border-radius: 3px 2px 4px 2px;
-      background: transparent no-repeat center / 15px 15px; cursor: pointer; rotate: -2deg;
-    }
-    .thing.list-card .list-entry input[type="checkbox"]:checked {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8.5l3.2 3.6L13.8 2.5' fill='none' stroke='%2333363d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    }
-    .thing.list-card .list-entry input[type="checkbox"]:focus-visible { outline: 2px solid #1d3a8a; outline-offset: 2px; }
-    .thing.list-card .list-remove { color: rgba(51, 54, 61, 0.45); }
-    .thing.list-card .list-remove:hover { color: #a8231f; }
-    .thing.list-card .list-add-input { background: transparent; border: 0; border-bottom: 1.5px dashed rgba(51, 54, 61, 0.45); border-radius: 0; color: #33363d; font: inherit; padding: 2px 2px; }
-    .thing.list-card .list-add-input::placeholder { color: rgba(51, 54, 61, 0.45); }
-    .thing.list-card .list-add-button { background: transparent; border: 1.5px solid rgba(51, 54, 61, 0.55); color: #33363d; border-radius: 50%; width: 30px; padding: 0; }
-    .thing.list-card .list-add-button:hover { background: rgba(51, 54, 61, 0.08); }
-    .thing.list-card .list-shop { color: rgba(51, 54, 61, 0.7); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif; }
-    .thing.list-card .list-shop-store { color: #33363d; background: #fff; border-color: rgba(51, 54, 61, 0.3); }
-    .thing.list-card .list-shop-store[aria-pressed="true"] { background: #e8ecf7; border-color: #1d3a8a; color: #1d3a8a; }
-    .thing.list-card .list-shop-links { font: 13px/1.45 ui-sans-serif, system-ui, sans-serif; }
-    .thing.list-card .list-shop-links a { color: #1d3a8a; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; }
