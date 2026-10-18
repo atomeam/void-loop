@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 581,
+ "counted": 584,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/stage-pack.js",
-   "skills": 25,
-   "direct": 25,
-   "dependants": 25
+   "skills": 28,
+   "direct": 28,
+   "dependants": 28
   },
   {
    "file": "lib/field-kit.js",
@@ -3756,6 +3756,7 @@
    "importedBy": [
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
+    "skills/ask-immune.js",
     "skills/busy-blocks.js",
     "skills/causal-scars.js",
     "skills/counterfactual-draft.js",
@@ -3763,6 +3764,7 @@
     "skills/date-grid.js",
     "skills/decision-matrix.js",
     "skills/eigenwork.js",
+    "skills/four-channels.js",
     "skills/gauge-feedback.js",
     "skills/habit-ring.js",
     "skills/health-habits.js",
@@ -3772,6 +3774,7 @@
     "skills/recipe-stack.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/stakes-phase.js",
     "skills/stale-work.js",
     "skills/task-board.js",
     "skills/task-diagram.js",
@@ -4207,6 +4210,12 @@
   "skills/ask-diff.js": {
    "imports": [
     "lib/linediff.js"
+   ],
+   "importedBy": []
+  },
+  "skills/ask-immune.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
@@ -4812,6 +4821,12 @@
     "skills/forge-rules.js",
     "lib/prints.js",
     "lib/forge-makes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/four-channels.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
@@ -6354,6 +6369,12 @@
   },
   "skills/stage-print.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/stakes-phase.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/stale-work.js": {

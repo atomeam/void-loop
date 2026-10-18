@@ -216,6 +216,7 @@ for (const [name, file] of [
   ['thought laws', 'thought-laws.test.mjs'],
   ['tools pack 2', 'tools-pack-2.test.mjs'],
   ['tools pack 11 dates', 'date-pack.test.mjs'],
+  ['stage pack j', 'stage-pack-j.test.mjs'],
   ['together', 'together.test.mjs'],
   ['tools pack 6', 'tools-pack-6.test.mjs'],
   ['plan', 'plan.test.mjs'],

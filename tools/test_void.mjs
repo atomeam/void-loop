@@ -1554,6 +1554,33 @@ try {
     const committed = await S.p.$$eval('.witness-claims .wc-committed .wc-claim', (e) => e.map((x) => x.textContent));
     check('witness claims: the claim with no witness is refused (stays in Draft), the one with a data pointer moves to Committed and shows it',
       /no witness/.test(refused) && draftCount === 2 && committed.length === 1 && /data: q3\.csv/.test(committed[0]) && !S.errors.length, JSON.stringify({ refused, draftCount, committed, errors: S.errors }));
+  // stage pack b (owner, 2026-10-18): the immune check, four channels and the stakes phase, played the way a person uses them
+  if (want("stage pack b: immune check fever and antibodies, four channels collision and empty synthesis, stakes phase that gates confirm")) { const S = await fresh();
+    await S.ask('immune check: make the app better and also fix everything', 700);
+    const paths = await S.p.$$eval('.ask-immune .im-path', (r) => r.map((x) => x.dataset.pathogen));
+    const fever0 = await S.p.$eval('.ask-immune', (e) => e.dataset.fever), acc0 = await S.p.$eval('.im-accept', (b) => b.disabled);
+    await S.p.click('.im-check');
+    const anti = await S.p.$eval('.im-anti', (e) => e.textContent);
+    await S.p.fill('.ask-immune .im-text', 'make the app better and also fix everything by Friday for Priya');
+    const acc1 = await S.p.$eval('.im-accept', (b) => b.disabled), fever1 = await S.p.$eval('.ask-immune', (e) => e.dataset.fever);
+    check('immune check: vague goal and scope creep are found, fever keeps Accept off until a date and a named person appear (the vague goal then has a date to stand on), and the antibodies are counted',
+      paths.join() === 'vague,scope,scope' && fever0 === '1' && acc0 && !acc1 && !fever1 && /vague goal x1/.test(anti) && /scope creep x1/.test(anti) && !S.errors.length, JSON.stringify({ paths, fever0, acc0, acc1, fever1, anti, errors: S.errors }));
+    await S.ask('answer in four channels: is the plan sound? Claim: it is cheap. Doubt: it is cheap. It may break. Method: test it.', 700);
+    const warn = await S.p.$eval('.four-channels .fc-warn', (e) => e.textContent);
+    const cols = await S.p.$$eval('.four-channels .fc-col', (c) => c.map((x) => x.dataset.channel + ':' + x.querySelectorAll('.fc-s').length + ':' + x.querySelectorAll('[data-prompt]').length));
+    const syn = await S.p.$eval('.four-channels .fc-synthesis', (e) => e.value);
+    check('four channels: the repeated sentence is flagged and not shown twice, the missing channel shows a prompt, and the synthesis box is empty',
+      /Collision/.test(warn) && cols.join() === 'claim:1:0,doubt:1:0,method:1:0,risk:1:1' && syn === '' && !S.errors.length, JSON.stringify({ warn, cols, syn, errors: S.errors }));
+    await S.ask('set the stakes: money', 700);
+    const phase1 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), locked = await S.p.$eval('.sp-confirm', (b) => b.disabled);
+    await S.p.fill('.sp-dissent', 'the price could double');
+    const stillCooling = await S.p.$eval('.sp-confirm', (b) => b.disabled);
+    await S.p.click('.sp-chip[data-stake="people"]');
+    const phase2 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), hidden = await S.p.$eval('.sp-confirm', (b) => getComputedStyle(b).display);
+    await S.p.click('.sp-chip[data-stake="people"]'); await S.p.click('.sp-chip[data-stake="money"]');
+    const phase3 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), open = await S.p.$eval('.sp-confirm', (b) => b.disabled);
+    check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
+      phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
