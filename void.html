@@ -5115,7 +5115,7 @@ say('nothing selected to remove');
         // "egg timer": how long each kind of boiled egg takes, so the person picks
         .replace(/^(?:an?\s+)?egg\s+timer\s*[.!]*$/i, 'how long to boil an egg')
         .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
-        .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
+        .replace(/^(capital|currency|population)\s+(?!of\b|converters?\b|calculators?\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
         .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))
         .replace(new RegExp('^(' + CODES + ')\\s+(?:to|in|into)\\s+(' + CODES + ')\\s*[?.!]*$', 'i'), '1 $1 to $2');
     }

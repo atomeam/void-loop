@@ -8169,6 +8169,66 @@ try {
       fast: document.querySelector('.health-habits[data-type="fasting"]')?.dataset.fast }));
     check('a reload keeps every card as it was: the writing mode, the packing tick, today\'s cups, the habit streak and the running fast',
       kept.mode === 'steps' && kept.packed === '1 of 18 packed' && /^3 of 8 cups today/.test(kept.water || '') && kept.streak === '1 day' && kept.fast === 'running' && !S.errors.length, JSON.stringify({ kept, errors: S.errors }));
+  // tools pack 3 (owner, 2026-10-18, list items 41 to 60): the answers that were missing (pixels at a DPI, a currency at a typed rate, tip with tax,
+  // an "84 dollar bill" split) and the seven decision cards, played the way a person uses them
+  if (want("tools pack 3: pixels and a typed-rate currency answer, tip with tax, and the decision cards (rank, pros and cons, votes, eliminate, pairwise, 2x2, must/should/could) on the stage")) { const S = await fresh();
+    const tap = (sel) => S.p.$eval(sel, (e) => e.click()); // a card sits over another where they share a spot: click the element itself
+    const said = async (a, ms = 700) => { await S.ask(a, ms); return S.page(); };
+    const px = await said('300 px in cm at 150 dpi'), px2 = await said('5 cm to pixels at 300 dpi');
+    const fx = await said('convert 100 usd to eur at 0.92'), fxNo = await said('convert 5 kgs to lbs at 2.2');
+    const tax = await said('45 with 8% tax and 20% tip'), split = await said('split an 84 dollar bill 4 ways');
+    check('calc-more and tip: "300 px in cm at 150 dpi" is 5.08 cm, "5 cm to pixels at 300 dpi" is 590.55 px, "100 usd to eur at 0.92" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; "45 with 8% tax and 20% tip" totals $57.60 with $3.60 tax, and "an 84 dollar bill 4 ways" is $21.00 each',
+      /5\.08/.test(px) && /590\.55/.test(px2) && /92 EUR/.test(fx) && /your rate/i.test(fx) && !/your rate/i.test(fxNo) && /57\.60/.test(tax) && /3\.60/.test(tax) && /\$21\.00/.test(split) && !S.errors.length,
+      JSON.stringify({ px: px.slice(0, 120), px2: px2.slice(0, 120), fx: fx.slice(0, 160), fxNo: fxNo.slice(0, 120), tax: tax.slice(0, 200), split: split.slice(0, 200), errors: S.errors }));
+    await S.ask('currency converter with my own rate', 600);
+    await S.p.fill('#fx-v', '10'); await S.p.fill('#fx-r', '0.5');
+    const live = await S.p.$eval('#fx-out', (e) => e.textContent).catch(() => '');
+    await S.ask('dpi converter', 600);
+    await S.p.fill('#pc-v', '96'); await S.p.selectOption('#pc-b', 'in');
+    const live2 = await S.p.$eval('#pc-out', (e) => e.textContent).catch(() => '');
+    check('calc-more openers: "currency converter with my own rate" turns 10 at a typed 0.5 into 5, and "dpi converter" turns 96 px into 1 in at 96 dpi', /10 USD = 5 EUR/.test(live) && /96 px = 1 in/.test(live2) && !S.errors.length, JSON.stringify({ live, live2, errors: S.errors }));
+    await S.ask('rank pizza, tacos, sushi', 600);
+    await tap('.dc-rank button[aria-label="move tacos up"]');
+    const order = await S.p.$$eval('.dc-rank li > span', (e) => e.map((x) => x.textContent));
+    await S.ask('weighted pros and cons for moving to Berlin', 600);
+    await S.p.fill('.dc-proscons input[aria-label="Pros 1"]', 'cheap'); await S.p.fill('.dc-proscons input[aria-label="weight of Pros 1"]', '5');
+    await S.p.fill('.dc-proscons input[aria-label="Cons 1"]', 'loud'); await S.p.fill('.dc-proscons input[aria-label="weight of Cons 1"]', '2');
+    const verdict = await S.p.$eval('.dc-proscons [data-verdict]', (e) => e.textContent + '|' + e.dataset.verdict);
+    const kept = (await S.state()).find((x) => x.kind === 'dc-proscons');
+    check('rank and pros/cons cards: "rank pizza, tacos, sushi" moves tacos to the top on a tap; a 5-weight pro against a 2-weight con says "pros lead by 3" and the rows are kept with the stage',
+      order.join() === 'tacos,pizza,sushi' && /pros lead by 3/.test(verdict) && kept && kept.pros[0].text === 'cheap' && kept.cons[0].w === 2 && !S.errors.length, JSON.stringify({ order, verdict, kept, errors: S.errors }));
+    await S.ask('vote marks for pizza, tacos', 600);
+    for (let i = 0; i < 6; i++) await tap('.dc-votes button[aria-label="one vote for tacos"]');
+    await tap('.dc-votes button[aria-label="one vote for pizza"]');
+    const marks = await S.p.$$eval('.dc-votes [data-count]', (e) => e.map((x) => x.dataset.count + ':' + x.querySelectorAll('span[style*="line-through"]').length + ':' + x.textContent));
+    const lead = await S.p.$$eval('.dc-votes [data-lead="1"]', (e) => e.map((x) => x.textContent));
+    await S.p.reload(); await S.p.waitForSelector('.dc-votes [data-count]', { timeout: 8000 }).catch(() => {});
+    const afterReload = await S.p.$$eval('.dc-votes [data-count]', (e) => e.map((x) => x.dataset.count));
+    check('vote marks: six votes for tacos show one struck group of four strokes and one more stroke, one vote for pizza one stroke, the leader is marked, and a reload keeps the counts',
+      marks[0].startsWith('1:0:') && marks[1].startsWith('6:1:') && lead.join() === 'tacos' && afterReload.join() === '1,6' && !S.errors.length, JSON.stringify({ marks, lead, afterReload, errors: S.errors }));
+    await S.ask('eliminate until one: red, green, blue', 600);
+    await tap('.dc-knockout button[aria-label="knock out red"]'); await tap('.dc-knockout button[aria-label="knock out green"]');
+    await tap('.dc-knockout button[aria-label="knock out blue"]'); // the last one standing can't go
+    const ko = await S.p.$eval('.dc-knockout', (e) => e.firstElementChild.nextElementSibling.textContent + '|' + [...e.querySelectorAll('button[data-state]')].map((b) => b.dataset.state).join());
+    await S.ask('pairwise compare pizza, tacos, sushi', 600);
+    await tap('.dc-pairwise button[data-pick="0"]'); await tap('.dc-pairwise button[data-pick="0"]'); await tap('.dc-pairwise button[data-pick="1"]');
+    const rank = await S.p.$$eval('.dc-pairwise ol[data-done] li', (e) => e.map((x) => x.textContent));
+    check('eliminate and pairwise: two taps leave "Last one standing: blue" and a third tap on blue changes nothing; three pair choices rank pizza (2 wins), tacos (1), sushi (0)',
+      /Last one standing: blue/.test(ko) && ko.endsWith('out,out,win') && rank.join() === 'pizza · 2 wins,tacos · 1 win,sushi · 0 wins' && !S.errors.length, JSON.stringify({ ko, rank, errors: S.errors }));
+    await S.ask('2x2 matrix for impact vs effort', 600);
+    await S.p.fill('.dc-buckets[data-mode="quad"] input[aria-label="add a thing"]', 'redesign'); await S.p.press('.dc-buckets[data-mode="quad"] input[aria-label="add a thing"]', 'Enter');
+    await tap('.dc-buckets[data-mode="quad"] [data-tray] button[data-item="0"]');
+    await tap('.dc-buckets[data-mode="quad"] [data-bucket="1"]');
+    const quad = await S.p.$$eval('.dc-buckets[data-mode="quad"] [data-bucket] button[data-state="placed"]', (e) => e.map((b) => b.closest('[data-bucket]').dataset.bucket + b.textContent));
+    await S.ask('must should could for the launch', 600);
+    await S.p.fill('.dc-buckets[data-mode="moscow"] input[aria-label="add a thing"]', 'ship'); await S.p.press('.dc-buckets[data-mode="moscow"] input[aria-label="add a thing"]', 'Enter');
+    await tap('.dc-buckets[data-mode="moscow"] [data-tray] button[data-item="0"]');
+    await tap('.dc-buckets[data-mode="moscow"] [data-bucket="0"]');
+    const mos = await S.p.$$eval('.dc-buckets[data-mode="moscow"] [data-bucket] button[data-state="placed"]', (e) => e.map((b) => b.closest('[data-bucket]').dataset.bucket + b.textContent));
+    const names = await S.p.$$eval('.dc-buckets[data-mode="moscow"] [data-bucket] > div:first-child', (e) => e.map((x) => x.textContent));
+    const savedB = (await S.state()).filter((x) => x.kind === 'dc-buckets').map((x) => x.mode + JSON.stringify(x.place));
+    check('2x2 matrix and must/should/could: tap an item, tap a quadrant puts "redesign" in quadrant 1 (big bets); tap "ship", tap Must puts it in Must; the buckets are Must, Should, Could; both are kept',
+      quad.join() === '1redesign' && mos.join() === '0ship' && names.join() === 'Must,Should,Could' && savedB.join() === 'quad{"0":1},moscow{"0":0}' && !S.errors.length, JSON.stringify({ quad, mos, names, savedB, errors: S.errors }));
     await S.ctx.close(); }
 
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)

@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 603,
+ "counted": 607,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 37,
-   "direct": 37,
-   "dependants": 37
+   "skills": 38,
+   "direct": 38,
+   "dependants": 38
   },
   {
    "file": "lib/ask-text.js",
@@ -519,6 +519,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/calc-more.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
@@ -550,6 +556,12 @@
   },
   {
    "file": "lib/day-blocks.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/decide-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2020,6 +2032,12 @@
     "skills/othello.js"
    ]
   },
+  "lib/calc-more.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/calc-more.js"
+   ]
+  },
   "lib/card-art.js": {
    "imports": [
     "lib/card-subject.js",
@@ -2345,6 +2363,12 @@
    ],
    "importedBy": [
     "skills/busy-blocks.js"
+   ]
+  },
+  "lib/decide-cards.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/decide-cards.js"
    ]
   },
   "lib/digest.js": {
@@ -3858,6 +3882,7 @@
     "skills/csv-table.js",
     "skills/date-calc.js",
     "skills/date-grid.js",
+    "skills/decide-cards.js",
     "skills/decision-matrix.js",
     "skills/eigenwork.js",
     "skills/error-garden.js",
@@ -4417,6 +4442,12 @@
    ],
    "importedBy": []
   },
+  "skills/calc-more.js": {
+   "imports": [
+    "lib/calc-more.js"
+   ],
+   "importedBy": []
+  },
   "skills/calc.js": {
    "imports": [],
    "importedBy": []
@@ -4678,6 +4709,13 @@
   "skills/deadlines.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/decide-cards.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/decide-cards.js"
    ],
    "importedBy": []
   },

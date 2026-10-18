@@ -280,6 +280,7 @@ for (const [name, file] of [
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
   ['thinking math', 'thinking-math.test.mjs'],
+  ['tools pack 3', 'tools-pack3.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }
