@@ -239,6 +239,7 @@ for (const [name, file] of [
   ['tools pack 1', 'tools-pack-1.test.mjs'],
   ['text tools', 'text-tools.test.mjs'],
   ['tools pack 10', 'tools-pack-10.test.mjs'],
+  ['stage tools', 'stage-tools.test.mjs'],
   ['together', 'together.test.mjs'],
   ['tools pack 6', 'tools-pack-6.test.mjs'],
   ['plan', 'plan.test.mjs'],

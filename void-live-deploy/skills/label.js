@@ -406,7 +406,7 @@ async function run(text, api) {
     if (!!t.locked === hit.on) { say(nameOf(t) + (hit.on ? ' is already locked' : ' is not locked')); return 'label'; }
     snap();
     if (hit.on) t.locked = true; else delete t.locked;
-    say(hit.on ? 'locked ' + nameOf(t) + ' · arrows bring it nothing until you unlock it' : 'unlocked ' + nameOf(t));
+    say(hit.on ? 'locked ' + nameOf(t) + ' · it stays put and arrows bring it nothing until you unlock it' : 'unlocked ' + nameOf(t));
     return done();
   }
   if (hit.op === 'show') {

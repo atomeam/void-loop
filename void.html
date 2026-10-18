@@ -1569,6 +1569,7 @@ Object.values(things).forEach((th) => {
     function bindDrag(el, th) {
       el.addEventListener('pointerdown', (e) => {
         if (e.button > 0) return;
+        if (th.locked) { selectedId = th.id; return; } // a locked card (skills/label.js, skills/stage-arrange.js) stays where it is: picked, never dragged or thrown
         const editable = !!(e.target && e.target.isContentEditable); // text you can edit: a click edits, a real move drags
         const startX = e.clientX, startY = e.clientY;
         const origX = th.x, origY = th.y;
@@ -1583,7 +1584,7 @@ Object.values(things).forEach((th) => {
           cur = stage.querySelector('[data-id="' + th.id + '"]') || el; // render() replaced the element; move the live one
           cur.style.transform = 'translateY(-18px) rotate(-6deg)'; // lifted in the hand
           // grouped things (skills/group.js) ride along with the one in the hand
-          mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure')
+          mates = th.group ? Object.values(things).filter((t) => t !== th && t.group === th.group && t.kind !== 'figure' && !t.locked)
             .map((t) => ({ t, ox: t.x, oy: t.y, el: stage.querySelector('[data-id="' + CSS.escape(t.id) + '"]') })) : [];
         };
         let mates = [];
@@ -3987,6 +3988,14 @@ say('nothing selected to remove');
     if (isEntered()) document.body.classList.add('void-entered');
     applyLook(false);
     // the Draw card hands its picture here ("make it my backdrop"); an empty src takes it off
+    // the stage-style skill sets the stage background colour and the larger-type mode through here (skills/stage-style.js); only these three values are taken
+    window.addEventListener('void-look', (e) => {
+      const d = (e && e.detail) || {}, hex = (v) => typeof v === 'string' && /^#[0-9a-f]{6}$/i.test(v);
+      if (hex(d.bg)) voidLook.bg = d.bg;
+      if (hex(d.glow)) voidLook.glow = d.glow;
+      if (typeof d.scale === 'number' && d.scale >= 0.85 && d.scale <= 1.4) voidLook.scale = d.scale;
+      enterVoid(); applyLook(true);
+    });
     window.addEventListener('void-backdrop', (e) => { const src = e && e.detail && e.detail.src; if (src && !backdropOk(src)) return; voidLook.backdrop = src || ''; if (src) enterVoid(); applyLook(true); });
 
     // --- Skill loader (edit engine step 1) ---

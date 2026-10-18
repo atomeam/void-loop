@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 613,
+ "counted": 619,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -321,6 +321,12 @@
    "dependants": 4
   },
   {
+   "file": "lib/stage-tools.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 4
+  },
+  {
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
@@ -340,6 +346,12 @@
   },
   {
    "file": "lib/skill-family.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3
+  },
+  {
+   "file": "lib/stage-tools-dom.js",
    "skills": 3,
    "direct": 3,
    "dependants": 3
@@ -1096,6 +1108,12 @@
   },
   {
    "file": "lib/correction-heat.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/empty-state.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -2560,6 +2578,10 @@
    "importedBy": [
     "functions/api/approval.js"
    ]
+  },
+  "lib/empty-state.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/event-date.js": {
    "imports": [],
@@ -4067,6 +4089,25 @@
     "skills/time-math.js",
     "skills/witness-claims.js",
     "skills/writing-aids.js"
+   ]
+  },
+  "lib/stage-tools-dom.js": {
+   "imports": [
+    "lib/stage-tools.js"
+   ],
+   "importedBy": [
+    "skills/stage-arrange.js",
+    "skills/stage-organize.js",
+    "skills/stage-style.js"
+   ]
+  },
+  "lib/stage-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/stage-tools-dom.js",
+    "skills/stage-arrange.js",
+    "skills/stage-organize.js",
+    "skills/stage-style.js"
    ]
   },
   "lib/stage-words.js": {
@@ -6789,8 +6830,29 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/stage-arrange.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-organize.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-print.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/stage-style.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
    "importedBy": []
   },
   "skills/stakes-phase.js": {

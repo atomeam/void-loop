@@ -508,6 +508,115 @@ try {
     check('body: the tap puts a cartoon figure on the stage', (await B.state()).some((x) => x.kind === 'figure'), JSON.stringify((await B.state()).map((x) => x.kind)));
     check('body: no page errors', !B.errors.length, B.errors.join(' | ').slice(0, 200));
     await B.ctx.close(); }
+  // tools pack 4 (owner, 2026-10-18): align, distribute, grid, snap, guides, multi-select, lock; card style, stage background, contrast, type; tags, folders, layouts, snapshots, diff, template, clear unkept
+  if (want("tools pack 4: arrange (align, spacing, grid, snap, guide, select, lock), style (opacity, tint, border, corners, shadow, background, blur, contrast, type), organize (tags, folder, layout, snapshots, diff, template, clear unkept)")) { const S = await fresh();
+    await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
+    const things = async () => (await S.state()).filter((x) => x.kind !== 'figure');
+    const xs = async (k) => (await things()).filter((x) => !k || x.kind === k).map((x) => Math.round(x.x));
+    await S.ask('align top', 500);
+    const ys = new Set((await things()).map((x) => Math.round(x.y)));
+    await S.ask('space them out evenly', 500);
+    const gaps = await S.p.$$eval('#stage > [data-id]', (e) => { const r = e.map((x) => x.getBoundingClientRect()).sort((a, b) => a.left - b.left); return r.slice(1).map((b, i) => Math.round(b.left - r[i].right)); });
+    await S.ask('save this layout as start', 400); await S.ask('select all notes', 500);
+    const picked = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
+    await S.ask('align the selection to the bottom', 300);
+    await S.ask('deselect all', 400);
+    const afterDeselect = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
+    await S.ask('align left', 500);
+    const left = new Set(await xs());
+    await S.ask('restore layout start', 500); // the cards go back to where the spacing left them, for the checks below
+    check('tools pack 4 align: "align top" gives every card one top and "align left" one left edge', ys.size === 1 && left.size === 1 && !S.errors.length, JSON.stringify({ ys: [...ys], left: [...left], errors: S.errors }));
+    check('tools pack 4 select and spacing: "space them out evenly" leaves equal gaps, "select all notes" outlines the three notes and "deselect all" takes it off', picked === 3 && afterDeselect === 0 && gaps.length === 3 && Math.max(...gaps) - Math.min(...gaps) <= 8 && !S.errors.length, JSON.stringify({ picked, afterDeselect, gaps, errors: S.errors }));
+    await S.ask('show the grid', 400);
+    const gridOn = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
+    await S.ask('grid size 40', 300);
+    const grid40 = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
+    await S.ask('snap everything to the grid', 500);
+    const onGrid = (await things()).every((x) => Math.round(x.x) % 40 === 0 && Math.round(x.y) % 40 === 0);
+    await S.ask('grid off', 300);
+    const gridGone = (await S.p.$('#stage-grid')) === null;
+    await S.ask('add a vertical guide at 300', 400);
+    const guide = await S.p.$eval('.stage-guide[data-axis="v"]', (e) => e.dataset.at).catch(() => '');
+    await S.p.reload(); await S.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 15000 }).catch(() => {});
+    const guideKept = await until(async () => (await S.p.$eval('.stage-guide[data-axis="v"]', (e) => e.dataset.at).catch(() => '')) === '300', 4000);
+    await S.ask('clear guides', 400);
+    const guideGone = (await S.p.$('.stage-guide')) === null;
+    check('tools pack 4 grid and guides: the grid shows at 20 then 40, "snap everything to the grid" lands every card on it, grid off clears it; a vertical guide at 300 survives a reload and "clear guides" removes it',
+      gridOn === '20' && grid40 === '40' && onGrid && gridGone && guide === '300' && guideKept && guideGone && !S.errors.length, JSON.stringify({ gridOn, grid40, onGrid, gridGone, guide, guideKept, guideGone, errors: S.errors }));
+    const noteBox = async () => S.p.evaluate(() => { const id = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1'))).find((t) => t.kind === 'clock').id; const r = document.querySelector('#stage > [data-id="' + id + '"]').getBoundingClientRect(); return { id, x: r.left + 4, y: r.top + 4 }; });
+    const clockAt = async () => Math.round((await things()).find((x) => x.kind === 'clock').x);
+    await S.ask('select all clocks', 400); await S.ask('lock the selection', 500);
+    const lockedKinds = (await things()).filter((x) => x.locked).map((x) => x.kind).join();
+    const lb = await noteBox(), x0 = await clockAt();
+    await S.p.mouse.move(lb.x, lb.y); await S.p.mouse.down(); await S.p.mouse.move(lb.x + 60, lb.y + 30, { steps: 6 }); await S.p.mouse.move(lb.x + 120, lb.y + 60, { steps: 6 }); await S.p.mouse.up(); await S.p.waitForTimeout(300);
+    const heldPut = (await clockAt()) === x0;
+    await S.ask('unlock all', 500);
+    const unlocked = !(await things()).some((x) => x.locked);
+    const lb2 = await noteBox();
+    await S.p.mouse.move(lb2.x, lb2.y); await S.p.mouse.down(); await S.p.mouse.move(lb2.x + 40, lb2.y + 20, { steps: 6 }); await S.p.mouse.move(lb2.x + 100, lb2.y + 40, { steps: 6 }); await S.p.mouse.up(); await S.p.waitForTimeout(300);
+    const dragged = (await clockAt()) !== x0;
+    check('tools pack 4 lock: "lock the selection" locks the clock and a drag leaves it where it was; "unlock all" frees it and the same drag moves it', lockedKinds === 'clock' && heldPut && unlocked && dragged && !S.errors.length, JSON.stringify({ lockedKinds, heldPut, unlocked, dragged, errors: S.errors }));
+    await S.ask('set the opacity of the clocks to 50%', 500); await S.ask('tint the clocks red', 400); await S.ask('border weight of the clocks to 3', 400); await S.ask('corner radius of the clocks to 20', 400); await S.ask('add a shadow to the clocks', 400);
+    const css = () => S.p.evaluate(() => { const id = Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1'))).find((t) => t.kind === 'clock').id; const c = getComputedStyle(document.querySelector('#stage > [data-id="' + id + '"]')); return { o: c.opacity, bw: c.borderTopWidth, r: c.borderTopLeftRadius, sh: c.boxShadow }; });
+    const st1 = await css();
+    await S.p.reload(); await S.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 15000 }).catch(() => {}); await S.p.waitForSelector('#stage > [data-id]', { timeout: 8000 }).catch(() => {});
+    const st2 = await until(async () => { const c = await css(); return c.o === '0.5' ? c : false; }, 5000) || await css();
+    await S.ask('shadow off for the clocks', 400); const st3 = await css();
+    check('tools pack 4 card style: opacity 50%, a red tint, a 3 px border, 20 px corners and a shadow draw on the clock, survive a reload, and "shadow off" clears the shadow',
+      st1.o === '0.5' && st1.bw === '3px' && st1.r === '20px' && /229, 72, 77/.test(st1.sh) && /12px 28px/.test(st1.sh) && st2.o === '0.5' && st2.bw === '3px' && !/12px 28px/.test(st3.sh) && !S.errors.length, JSON.stringify({ st1, st2, st3, errors: S.errors }));
+    await S.ask('make the background green', 500);
+    const bg = await S.p.evaluate(() => ({ v: getComputedStyle(document.documentElement).getPropertyValue('--void-bg').trim(), look: JSON.parse(localStorage.getItem('a2m.void.look.v1') || '{}').bg }));
+    await S.ask('blur the background', 300); const blur = await S.p.evaluate(() => document.documentElement.dataset.bgblur);
+    await S.ask('larger type mode', 300); const big = await S.p.evaluate(() => document.body.style.fontSize);
+    await S.ask('turn off larger type mode', 300); const normal = await S.p.evaluate(() => document.body.style.fontSize);
+    await S.ask('high contrast mode', 300);
+    const hc = await S.p.evaluate(() => { const e = document.querySelector('#stage > [data-id]'); const c = getComputedStyle(e); return { on: document.documentElement.dataset.hc, bg: c.backgroundColor, color: c.color, w: c.borderTopWidth }; });
+    await S.ask('turn off high contrast', 300); const hcOff = await S.p.evaluate(() => document.documentElement.dataset.hc || '');
+    check('tools pack 4 stage look: a green background (kept in the look), blur 8 px, larger type 21 px then back to 15, high contrast gives black cards with white text and a 2 px border, and turns off',
+      bg.v === '#3fb950' && bg.look === '#3fb950' && blur === '8' && big === '21px' && normal === '15px' && hc.on === 'on' && hc.bg === 'rgb(0, 0, 0)' && hc.color === 'rgb(255, 255, 255)' && hc.w === '2px' && hcOff === '' && !S.errors.length, JSON.stringify({ bg, blur, big, normal, hc, hcOff, errors: S.errors }));
+    await S.ask('use a picture from my files as the background', 500);
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    await S.p.setInputFiles('#stage-bg-pick input[type=file]', { name: 'bg.png', mimeType: 'image/png', buffer: png });
+    const backdrop = await until(async () => S.p.evaluate(() => { const b = document.getElementById('void-backdrop'); return b && b.classList.contains('on') && /^url\("data:image\/jpeg/.test(b.style.backgroundImage) ? 'on' : ''; }), 6000);
+    check('tools pack 4 background picture: a chosen image is shrunk here, becomes the backdrop and the chooser closes', backdrop === 'on' && (await S.p.$('#stage-bg-pick')) === null && !S.errors.length, JSON.stringify({ backdrop, errors: S.errors }));
+    await S.ask('reset the background', 300);
+    await S.ask('tag the clock as work', 500); await S.ask('tag the notes with home, errands', 500); await S.ask('colour label the clock red', 500);
+    const tagged = (await things()).map((x) => x.kind + ':' + (x.tags || []).join('+')).sort().join();
+    const badges = await S.p.$$eval('.stage-badge', (b) => b.map((x) => x.textContent).join('|'));
+    const dots = await S.p.$$eval('.stage-dot', (d) => d.length);
+    await S.ask('show only things tagged work', 500);
+    const onlyWork = await S.p.$$eval('#stage > [data-id]', (e) => e.filter((x) => getComputedStyle(x).display !== 'none').length);
+    await S.ask('clear the tag filter', 400);
+    const allBack = await S.p.$$eval('#stage > [data-id]', (e) => e.filter((x) => getComputedStyle(x).display !== 'none').length);
+    check('tools pack 4 tags and colour: the clock is tagged work and the notes home and errands, the badges and the red dot show, "show only things tagged work" leaves one card and the filter clears',
+      /clock:work/.test(tagged) && /sticky:home\+errands/.test(tagged) && /#work/.test(badges) && /#home #errands/.test(badges) && dots === 1 && onlyWork === 1 && allBack === 4 && !S.errors.length, JSON.stringify({ tagged, badges, dots, onlyWork, allBack, errors: S.errors }));
+    await S.ask('put the notes in folder errands', 500); await S.ask('open folder errands', 500);
+    const inFolder = await S.p.$$eval('#stage > [data-id]', (e) => e.filter((x) => getComputedStyle(x).display !== 'none').length);
+    await S.ask('close folder', 400);
+    const folderClosed = await S.p.$$eval('#stage > [data-id]', (e) => e.filter((x) => getComputedStyle(x).display !== 'none').length);
+    check('tools pack 4 folder: three notes filed under errands, "open folder errands" shows only them and "close folder" brings the clock back', inFolder === 3 && folderClosed === 4 && !S.errors.length, JSON.stringify({ inFolder, folderClosed, errors: S.errors }));
+    await S.ask('save this layout as morning', 400);
+    const before = (await things()).map((x) => x.id + ':' + Math.round(x.x) + ',' + Math.round(x.y)).sort().join('|');
+    await S.ask('align right', 400); await S.ask('align bottom', 400);
+    const moved = (await things()).map((x) => x.id + ':' + Math.round(x.x) + ',' + Math.round(x.y)).sort().join('|') !== before;
+    await S.ask('restore layout morning', 500);
+    const restored = (await things()).map((x) => x.id + ':' + Math.round(x.x) + ',' + Math.round(x.y)).sort().join('|') === before;
+    await S.ask('duplicate layout morning as evening', 300); await S.ask('list layouts', 300); const lay = await S.whisper();
+    check('tools pack 4 layout: a saved layout is brought back after the cards were moved, and a copy of it is listed beside it', moved && restored && /evening/.test(lay) && /morning/.test(lay) && !S.errors.length, JSON.stringify({ moved, restored, lay, errors: S.errors }));
+    await S.ask('snapshot as one', 400); await S.ask('add a sticky that says d', 500); await S.ask('snapshot as two', 400);
+    await S.ask('diff snapshot one and two', 400); const diff = await S.whisper();
+    await S.ask('restore snapshot one', 600);
+    const backToFour = (await things()).length === 4;
+    check('tools pack 4 snapshots: a diff of two snapshots names what is only in two (a sticky, not its words), and restoring the first puts the stage back to four cards', /only in two/.test(diff) && /sticky/.test(diff) && !/\bd\b: /.test(diff) && backToFour && !S.errors.length, JSON.stringify({ diff, backToFour, errors: S.errors }));
+    await S.ask('save this stage as template weekly', 400);
+    await S.ask('clear unkept', 600);
+    const cleared = (await things()).length;
+    await S.ask('restore snapshot before clear', 600); const backAfterClear = (await things()).length;
+    await S.ask('clear unkept', 600); await S.ask('use template weekly', 1200);
+    const kindsBack = (await things()).map((x) => x.kind), emptyWords = (await things()).every((x) => !x.text || x.text === '');
+    check('tools pack 4 clear unkept and template: "clear unkept" empties the stage after taking a snapshot that brings it back, and the template remakes fresh cards (clock and notes) with none of the old words',
+      cleared === 0 && backAfterClear === 4 && kindsBack.includes('clock') && kindsBack.includes('sticky') && emptyWords && !S.errors.length, JSON.stringify({ cleared, backAfterClear, kindsBack, emptyWords, errors: S.errors }));
+    await S.ctx.close(); }
   // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
   // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
   if (want("404 page: a missing path is a 404 in V01D's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
