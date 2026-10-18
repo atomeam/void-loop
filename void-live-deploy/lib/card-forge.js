@@ -6,6 +6,8 @@
 import { safeImg } from './art-rules.js';
 
 export const FORGE_CSS = [
+  '.vcard .vc-art .vc-stage{position:absolute;left:8px;top:8px;z-index:3;font:700 10px/1 system-ui,sans-serif;letter-spacing:.14em;text-transform:uppercase;padding:4px 7px;border-radius:3px;border:2px solid #000;background:rgba(10,10,18,.78);color:hsl(var(--h,260) 70% 78%);box-shadow:2px 2px 0 #000;pointer-events:none}.vcard .vc-art[data-stage=evolved] .vc-stage{background:linear-gradient(90deg,#ffd27a,#ff9ad5);color:#14081c}',
+  '.vcard .vc-art.vc-art-evolve{animation:vc-art-evolve 1.6s ease-out 1}@keyframes vc-art-evolve{0%{filter:brightness(2.4) saturate(1.6)}100%{filter:none}}@media (prefers-reduced-motion:reduce){.vcard .vc-art.vc-art-evolve{animation:none}}',
   '.vcard .vc-art .vc-again{position:absolute;right:6px;bottom:6px;z-index:3;font:600 11px/1 system-ui,sans-serif;letter-spacing:.04em;color:#fff;background:rgba(8,8,16,.72);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 9px;cursor:pointer;opacity:.55;transition:opacity .2s}.vcard .vc-art:hover .vc-again,.vcard .vc-art .vc-again:focus-visible{opacity:1}.vcard .vc-art .vc-again[disabled]{cursor:default;opacity:.9}',
   '.vcard .vc-art{position:relative}.vcard .vc-art .vc-forge-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;animation:vc-forge-in .9s ease-out 1}',
   '.vcard .vc-art.vc-forged::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%),linear-gradient(180deg,rgba(255,215,140,.10),transparent 30%,rgba(0,0,0,.28));box-shadow:inset 0 0 22px rgba(0,0,0,.6)}',
@@ -39,7 +41,7 @@ export function worthy(el, c) {
 }
 /** the text of the answer on a card: its own paragraphs, not the frame, the sources, the share bar, the title or the .thin "Closest match I found for ..." line (the search, not the subject). */
 export function answerText(el) {
-  let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.src,.vtail,.vtell,.vtell-box,.vc-share,.thin,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
+  let t = ''; for (const n of el.children || []) { if (n.matches && n.matches('.vc-art,.vc-type,.vc-foot,.vc-arrows,.vc-adds,.vc-variants,.src,.vtail,.vtell,.vtell-box,.vc-share,.thin,style,script,button,h2,nav')) continue; t += ' ' + (n.textContent || ''); }
   return t.replace(/\s+/g, ' ').trim().slice(0, 1500);
 }
 export const kindOf = (el, c) => (el.dataset && el.dataset.cardOwn ? 'merge' : el.dataset && el.dataset.skill ? 'skill' : (c && c.kindName) || 'answer');
@@ -51,19 +53,23 @@ function painting(el, on) {
   const art = el && el.querySelector && el.querySelector(':scope > .vc-art'); if (!art) return;
   art.classList.toggle('vc-painting', !!on); if (on) el.dataset.painting = '1'; else delete el.dataset.painting;
 }
+/** the card's art stage badge: 'unevolved' (V01D's void art) or 'evolved' (the painting) */
+export function stageTag(art, word) { let t = art.querySelector(':scope > .vc-stage'); if (!t) { t = document.createElement('span'); t.className = 'vc-stage'; art.appendChild(t); } t.textContent = word; }
 function show(el, img) {
   const art = el.querySelector(':scope > .vc-art'); if (!art) return; painting(el, false);
   const url = safeImg(img); if (!url) return;
   for (const n of art.querySelectorAll('.vc-forge-btn, .vc-forge-img')) n.remove();
   const im = document.createElement('img'); im.className = 'vc-forge-img'; im.alt = ''; im.decoding = 'async'; im.src = url;
-  art.appendChild(im); art.classList.add('vc-forged'); el.dataset.forged = '1';
+  art.appendChild(im); art.classList.add('vc-forged'); const was = el.dataset.forged; el.dataset.forged = '1';
+  // the card evolves (owner, 2026-10-18: "like your card hasnt fully evolved yet"): the void art is its unevolved form; the painting landing is the evolution
+  art.dataset.stage = 'evolved'; stageTag(art, 'evolved'); if (!was && el.isConnected && !el._vcEvolvedArt) { el._vcEvolvedArt = 1; art.classList.remove('vc-art-evolve'); void art.offsetWidth; art.classList.add('vc-art-evolve'); }
   if (el._vcard && mode() !== 'off') again(el, art);
 }
 // a new painting of this card (owner, 2026-10-18: "each card could have a regenerate card art button"): a small button in the art box's corner;
 // the server allows one a day per subject inside the shared cap, and keeps the old picture when the new one fails
 function again(el, art) {
   if (art.querySelector(':scope > .vc-again')) return;
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-again'; b.textContent = '\u21bb new art'; b.title = 'Paint this card again';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-again'; b.textContent = '\u21bb evolve again'; b.title = 'Evolve this card again: a new painting of it';
   b.addEventListener('pointerdown', (e) => e.stopPropagation());
   b.addEventListener('click', async (e) => {
     e.stopPropagation(); const c = el._vcard; if (!c || b.disabled) return;
@@ -73,21 +79,21 @@ function again(el, art) {
     const img = got && got.state === 'art' && !got.why ? safeImg(got.img) : '';
     if (img && got.again) { const sk = subjectFor(el, c); seen.set(sk, img); land(sk, img); el._vcForge = img; show(el, img); b.remove(); return; }
     b.textContent = got && got.why === 'again-today' ? 'repainted today already' : got && got.why === 'cap' ? 'out of paint today' : 'try again later';
-    setTimeout(() => { if (b.isConnected) { b.disabled = false; b.textContent = '\u21bb new art'; } }, 4000);
+    setTimeout(() => { if (b.isConnected) { b.disabled = false; b.textContent = '\u21bb evolve again'; } }, 4000);
   });
   art.appendChild(b);
 }
 async function ask(method, el, c, again = false) {
   const kind = kindOf(el, c), rarity = c.rarity ? c.rarity.name.toLowerCase() : 'common';
   const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(subjectFor(el, c)) + '&kind=' + encodeURIComponent(kind) : '');
-  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity, family: c.chapter || '', ...(again ? { again: true } : {}) }) });
+  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity, family: c.chapter || '', take: answerText(el).slice(0, 300), ...(again ? { again: true } : {}) }) });
   return r.ok ? r.json() : { state: 'plate', why: r.status === 429 ? 'slow' : 'http' };
 }
 function button(el, c) {
   if (mode() === 'off') return;
   if (!worthy(el, el._vcard || c)) return; // the card may have turned out to be a skill while the read was out
   const art = el.querySelector(':scope > .vc-art'); if (!art || art.querySelector('.vc-forge-btn')) return;
-  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-forge-btn'; b.textContent = 'paint this card';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-forge-btn'; b.textContent = 'Evolve card';
   b.addEventListener('pointerdown', (e) => e.stopPropagation());
   b.addEventListener('click', (e) => { e.stopPropagation(); paint(el, c, b); });
   art.appendChild(b);
@@ -109,11 +115,23 @@ async function paint(el, c, b) {
   if (b) { b.disabled = false; b.textContent = got && got.why === 'cap' ? 'out of paint today' : 'try again later'; if (got && (got.why === 'cap' || got.why === 'off')) setTimeout(() => b.remove(), 2500); }
 }
 
+/** paint this card now, whatever kind it is (a collectible card asks for its painting at once: owner, 2026-10-18: "a real image generator that
+ *  can just generate a badass dragon"); the same one POST per subject, cap and rate limit as any paint. Never throws. */
+export function paintNow(el) {
+  try { const c = el && el._vcard; if (!c || el._vcForge || typeof fetch === 'undefined' || mode() === 'off') return; const k = seen.get(subjectFor(el, c)); if (k && k.startsWith('data:')) { el._vcForge = k; show(el, k); return; } paint(el, c, null); } catch (_) {}
+}
+// the evolution on dwell (owner, 2026-10-18: "looking at any card for a few seconds it should evolve into the cinematic real version"): a card still open
+// DWELL_MS after its frame is built, and not yet painted, asks for its painting, whatever kind it is (one ask per card; the server's cap and rate limit hold)
+export const DWELL_MS = 3000;
+function dwell(el) {
+  if (el._vcDwell) return; el._vcDwell = setTimeout(() => { el._vcDwell = 0; if (el.isConnected && el.classList.contains('on') && !el._vcForge && !document.hidden) paintNow(el); }, DWELL_MS);
+}
 /** the forge's turn for a card whose frame was just built: show the art it has, look for cached art, or offer the button. Never throws. */
 export function forge(el, c, photo) {
   try {
     if (el._vcForge) { show(el, el._vcForge); return; } // a rebuilt frame shows the picture it already has, whatever the card turned out to be
     if (photo) return; // a real picture of the thing (a poster, a still) is the art: never paint over it
+    dwell(el);
     if (!worthy(el, c) || typeof fetch === 'undefined' || mode() === 'off') return;
     const known = seen.get(subjectFor(el, c));
     if (known && known.startsWith('data:')) { el._vcForge = known; show(el, known); return; }

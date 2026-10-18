@@ -26,7 +26,7 @@ async function formOf(o) {
 }
 function world({ reply = { image: JPEG }, fail = false, ai = true, extra = {}, scene = '', directFail = false } = {}) {
   store.clear(); route.resetReady();
-  const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ...extra };
+  const calls = [], dcalls = [], env = { DB: d1(), SALT: 'test-salt', ART_POLLINATIONS: '0', ...extra }; // Pollinations is tested on its own, with a fake fetch
   if (ai) env.AI = { run: async (model, o) => { if (model === models('merge')) { dcalls.push({ model, o }); if (directFail) throw new Error('slow'); return { response: scene }; } calls.push({ model, o: await formOf(o) }); if (fail) throw new Error('3040: capacity'); return typeof reply === 'function' ? reply(o) : reply; } };
   return { env, calls, dcalls };
 }
@@ -139,8 +139,8 @@ test('a failed paint is counted by its reason, with no subject (owner, 2026-10-1
   const r = await (await post(w.env, 'k pop music')).json(); assert.equal(r.state, 'plate'); assert.equal(r.why, 'busy');
   await post(w.env, 'jazz music', 'answer', 'common', '2.2.2.2');
   const misses = w.env.DB.raw.prepare('SELECT * FROM void_art_miss').all();
-  // klein failed, then the square fallback failed too: both reasons are counted, twice each
-  assert.deepEqual(misses.map((m) => [m.why, m.n]).sort(), [['3040: capacity', 2], ['klein 3040: capacity', 2]]); assert.ok(!JSON.stringify(misses).includes('music'));
+  // klein failed, then the square fallback, and no other painter answered: each reason is counted, twice each
+  assert.deepEqual(misses.map((m) => [m.why, m.n]).sort(), [['klein 3040: capacity', 2], ['no painter answered', 2], ['schnell 3040: capacity', 2]]); assert.ok(!JSON.stringify(misses).includes('music'));
   const w2 = world({ reply: { nope: 1 } }); await post(w2.env, 'k pop music');
   assert.equal(w2.env.DB.raw.prepare('SELECT why FROM void_art_miss').get().why, 'not an image: nope');
   assert.equal(route.missWhy(new Error('slow')), 'timeout');
@@ -187,4 +187,23 @@ test('a new painting (owner, 2026-10-18: "a regenerate card art button"): once a
   w.env.DB.raw.prepare("UPDATE void_art SET day = '2026-01-01'").run(); const kept = rows(w.env)[0].img;
   w.env.AI.run = async () => { throw new Error('busy'); };
   const failed = await (await again('owl', '9.9.9.9')).json(); assert.equal(failed.state, 'plate'); assert.equal(rows(w.env)[0].img, kept, 'the old picture stays');
+});
+test('past the Workers AI cap, or when it fails, Pollinations paints for free (up to POLL_CAP more a day), with the same prompt and the card\'s size', async () => {
+  const real = globalThis.fetch, seen = [];
+  globalThis.fetch = async (u, o) => { seen.push({ u: String(u), auth: (o && o.headers && o.headers.authorization) || '' }); return new Response(Uint8Array.from(Buffer.from('/9j/' + 'A'.repeat(9000), 'base64')), { headers: { 'content-type': 'image/jpeg' } }); };
+  try {
+    const w = world({ extra: { ART_DAILY_CAP: '1', ART_POLLINATIONS: '' } });
+    assert.equal((await (await post(w.env, 'cat')).json()).state, 'art'); assert.equal(w.calls.length, 1); assert.equal(seen.length, 0, 'under the cap: Workers AI paints');
+    const over = await (await post(w.env, 'dog', 'animal', 'common', '2.2.2.2')).json();
+    assert.equal(over.state, 'art'); assert.equal(w.calls.length, 1, 'over the cap: Workers AI is not asked'); assert.equal(seen.length, 1);
+    assert.match(seen[0].u, /^https:\/\/image\.pollinations\.ai\/prompt\/.+width=1024&height=576&seed=\d+&nologo=true&model=flux$/); assert.equal(seen[0].auth, '');
+    assert.ok(!/<|>|;/.test(decodeURIComponent(seen[0].u)), 'only the fixed or directed prompt');
+    const k = world({ extra: { POLLINATIONS_KEY: 'test-only-not-a-key', ART_POLLINATIONS: '' } }); k.env.AI.run = async () => { throw new Error('3040: capacity'); }; // secret-scan: ok
+    assert.equal((await (await post(k.env, 'owl')).json()).state, 'art', 'Workers AI failing: Pollinations paints');
+    assert.match(seen[1].u, /^https:\/\/gen\.pollinations\.ai\/image\//); assert.equal(seen[1].auth, 'Bearer test-only-not-a-key');
+    const off = world({ extra: { ART_DAILY_CAP: '0' } }); assert.equal((await (await post(off.env, 'cat')).json()).why, 'cap', 'ART_POLLINATIONS=0 keeps the old cap');
+    globalThis.fetch = async () => new Response('<html>busy</html>', { status: 503, headers: { 'content-type': 'text/html' } });
+    const bad = world({ extra: { ART_DAILY_CAP: '0', ART_POLLINATIONS: '' } }); const b = await (await post(bad.env, 'fox')).json();
+    assert.equal(b.state, 'plate'); assert.equal(rows(bad.env).length, 0, 'a refusal is never kept');
+  } finally { globalThis.fetch = real; }
 });

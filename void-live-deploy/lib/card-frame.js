@@ -107,6 +107,14 @@ export const CARD_CSS = [
   '.vpage.vcard.vc-evolving{animation:vc-evolve 2.6s ease-out 1}.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffd27a}',
   '@media (prefers-reduced-motion:reduce){.vpage.vcard.vc-evolving{animation:none;outline:3px solid #ffd27a}}',
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
+  // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
+  // shadow like a printed panel, a bold outlined title banner, the stats in an inked plate, and halftone dots over the art
+  '.vpage.vcard{outline:3px solid #000;outline-offset:-1px}',
+  '.vcard .vc-title{text-transform:uppercase;font-family:"Bangers","Impact","Anton","Arial Black",system-ui,sans-serif!important;font-weight:800;letter-spacing:.06em;color:#fff7e0;text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),4px 4px 0 #000}',
+  '.vcard .vc-art{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),5px 5px 0 #000;border-radius:3px}',
+  '.vcard .vc-art::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle,rgba(0,0,0,.28) 0.9px,transparent 1.3px) 0 0/5px 5px;mix-blend-mode:multiply;opacity:.55}',
+  '.vcard .vc-type{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;font-weight:700;color:#f3efe2}',
+  '.vcard .vc-pt{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;transform:rotate(-2deg)}.vcard .vc-pt b{text-shadow:1px 1px 0 #000,-1px -1px 0 #000}',
 ].join('') + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
 // Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
@@ -158,7 +166,8 @@ export function editedDaysAgo(text, now = Date.now()) {
 export function keep(el, esc, stats) {
   if (!el || !el.classList) return;
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
-  const name = el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
+  // a minted collectible (skills/collectible.js) stays the card of its subject, not of the skill that minted it
+  const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
   const entity = !name && el.dataset.cardDesc !== undefined ? { ...kindOf(el.dataset.cardDesc, el.dataset.cardExtract), also: (el.dataset.cardAlso || '').split(',').filter(Boolean) } : null;
   let own = null; try { own = el.dataset.cardOwn ? JSON.parse(el.dataset.cardOwn) : null; } catch (_) {} // a merged card brings its own worked-out numbers
   const c = own ? ownCard(own) : cardOf({ ...lookup(stats, name), entity, kind: el.dataset.cardKind || '', artKind: el.dataset.artKind || '', artMeta: el.dataset.artKind ? { genre: el.dataset.artGenre || '', year: el.dataset.artYear || '' } : null, sources: name ? null : srcLinks || null, ageDays: name ? null : editedDaysAgo(src && src.textContent) });

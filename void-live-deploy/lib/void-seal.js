@@ -34,7 +34,7 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
     form: FORMS[Math.floor(r() * FORMS.length)],
     // the card's subject, drawn in light at the core (owner, 2026-10-18: "the art should be of each card's subject"): the answer's words
     // (lib/card-subject.js subjectOf) mapped to a motif, else the key's own words; none found keeps the burning iris
-    motif: (motifsFor(nouns && nouns.length ? nouns : String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean)) || [])[0] || '',
+    motif: (motifsFor(nouns || [])[0]) || (motifsFor(String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean))[0]) || '', // the answer's words first, else the card's own name
     core: { x: 0.28 + r() * 0.44, y: 0.38 + r() * 0.24, sides, rays, spin: r() * Math.PI * 2, size: 0.3 + r() * 0.12 },
     nebula: Array.from({ length: 3 }, () => ({ x: r(), y: r(), r: 0.25 + r() * 0.4, c: Math.floor(r() * 3), a: 0.05 + r() * 0.08 })),
     tear: null,
@@ -194,6 +194,7 @@ export function sealArt(box, { key = '', kind = 'Idea', hue = null, rarity = nul
       const url = sealUrl(sealPlan(key, { kind, hue, rarity, nouns }), w, h); if (!url) return;
       const im = document.createElement('img'); im.className = 'vc-seal'; im.alt = ''; im.decoding = 'async'; im.src = url;
       box.insertBefore(im, box.querySelector(':scope > .vc-forge-img, :scope > .vc-forge-btn')); box.classList.add('vc-sealed');
+      if (!box.dataset.stage) { box.dataset.stage = 'unevolved'; const t = document.createElement('span'); t.className = 'vc-stage'; t.textContent = 'unevolved'; box.appendChild(t); } // the painting is its evolved form (lib/card-forge.js show)
     };
     if (typeof requestIdleCallback === 'function') requestIdleCallback(go, { timeout: 400 }); else setTimeout(go, 0);
   } catch (_) {}

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 488,
+ "counted": 489,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -45,34 +45,34 @@
    "dependants": 8
   },
   {
+   "file": "lib/rule-registry.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 29
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 7,
+   "direct": 1,
+   "dependants": 28
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 27
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 25
+  },
+  {
    "file": "lib/skyask.js",
    "skills": 7,
    "direct": 6,
    "dependants": 7
-  },
-  {
-   "file": "lib/rule-registry.js",
-   "skills": 6,
-   "direct": 0,
-   "dependants": 28
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 27
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 6,
-   "direct": 0,
-   "dependants": 26
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 6,
-   "direct": 0,
-   "dependants": 24
   },
   {
    "file": "lib/ladder.js",
@@ -159,10 +159,46 @@
    "dependants": 4
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 16
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 11
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 9
+  },
+  {
    "file": "lib/movies.js",
    "skills": 3,
    "direct": 2,
    "dependants": 7
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/card-forge.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 5
   },
   {
    "file": "lib/arena-say.js",
@@ -201,30 +237,6 @@
    "dependants": 48
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 15
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 10
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 8
-  },
-  {
-   "file": "lib/card-image.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -237,19 +249,7 @@
    "dependants": 4
   },
   {
-   "file": "lib/card-forge.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
    "file": "lib/card-kinds.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/card-share.js",
    "skills": 2,
    "direct": 0,
    "dependants": 4
@@ -1557,6 +1557,7 @@
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -1825,6 +1826,7 @@
     "lib/duel-rules.js",
     "lib/self-context.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -1839,7 +1841,8 @@
     "lib/art-rules.js"
    ],
    "importedBy": [
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -1870,7 +1873,8 @@
     "lib/art-rules.js"
    ],
    "importedBy": [
-    "lib/card-share.js"
+    "lib/card-share.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/card-frame.js",
@@ -1895,7 +1899,8 @@
     "lib/card-image.js"
    ],
    "importedBy": [
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "skills/collectible.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -1927,6 +1932,7 @@
     "lib/skill-confidence.js",
     "lib/tome.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2329,6 +2335,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2448,6 +2455,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/merge.js"
    ]
@@ -2575,6 +2583,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "skills/collectible.js",
     "skills/duel.js"
    ]
   },
@@ -3129,6 +3138,7 @@
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
+    "skills/collectible.js",
     "skills/duel.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -3862,6 +3872,14 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/collectible.js": {
+   "imports": [
+    "lib/card-share.js",
+    "lib/card-image.js",
+    "lib/card-forge.js"
+   ],
+   "importedBy": []
   },
   "skills/collide.js": {
    "imports": [],

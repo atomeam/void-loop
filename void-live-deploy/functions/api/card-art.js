@@ -15,6 +15,7 @@
 //     person, sexual, hateful, a brand or an artist, a secret or key shape, or refused by the keeper get no model call;
 //   - ask for a NEW painting of a subject already painted (`again: true`): at most once a day per subject, inside the same cap and rate limit,
 //     replacing the row only when the new picture is good;
+//   - past the Workers AI cap, or when it fails, the same prompt goes to Pollinations (free; POLL_CAP more a day), never with anything typed;
 //   - fill the table: one row per distinct folded subject (at most ~700 KB), only when the model really drew, and only up to the daily cap.
 // Nothing a person typed is stored and nobody is recorded: the row holds the folded key, the picture and the day. A model that fails, is busy, or
 // returns something that is not a small jpeg or png gives { state: 'plate' } and writes NOTHING, so a bad moment is never cached and the card keeps
@@ -25,7 +26,7 @@ import { scrubOut } from '../../lib/keeper.js';
 import { models, ART_FALLBACK } from '../../lib/models.js';
 import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, ART_W, ART_H, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt } from '../../lib/art-rules.js';
 
-export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000;
+export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
 const on = (env) => !!(env && env.AI) && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
 /** the daily cap (owner, 2026-10-17: V01D spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
@@ -59,10 +60,10 @@ async function noteMiss(env, why) {
 // the Art Director (lib/art-rules.js): one short call to the free text model with the folded subject, the kind and the family (allow-lists only);
 // its scene is cleaned and checked by sceneOf, and anything that fails, is slow or is refused gives '' and the fixed template paints instead
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
-export async function direct(env, key, kind, family) {
+export async function direct(env, key, kind, family, take = '') {
   try {
     const r = await Promise.race([
-      env.AI.run(models('merge'), { messages: [{ role: 'system', content: DIRECTOR_SYSTEM }, { role: 'user', content: directorPrompt(key, kind, family) }], max_tokens: 90 }),
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: DIRECTOR_SYSTEM }, { role: 'user', content: directorPrompt(key, kind, family, take) }], max_tokens: 90 }),
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
     ]);
     return sceneOf(scrubOut(redact(String(pick(r))), env), isSecret);
@@ -81,6 +82,23 @@ export async function asImage(r) {
   const buf = new Uint8Array(await new Response(r).arrayBuffer()); let s = '';
   for (let i = 0; i < buf.length; i += 0x8000) s += String.fromCharCode.apply(null, buf.subarray(i, i + 0x8000));
   return btoa(s);
+}
+// Pollinations (open source, free): with a POLLINATIONS_KEY secret (a free account's key) its keyed endpoint, else the anonymous one. The prompt is the same
+// fixed or directed prompt (nothing typed), the size the card's 16:9 window, the seed the subject's, so a subject asks for one picture. ART_POLLINATIONS=0 turns it off.
+export const pollOn = (env) => !/^(0|false|no|off)$/i.test(String((env && env.ART_POLLINATIONS) || '').trim());
+export function pollinationsUrl(prompt, key, token = '') {
+  let seed = 0; for (const ch of String(key)) seed = (seed * 31 + ch.charCodeAt(0)) >>> 0;
+  const q = 'width=' + ART_W + '&height=' + ART_H + '&seed=' + (seed % 1000000) + '&nologo=true';
+  return token ? 'https://gen.pollinations.ai/image/' + encodeURIComponent(prompt) + '?' + q : 'https://image.pollinations.ai/prompt/' + encodeURIComponent(prompt) + '?' + q + '&model=flux';
+}
+export async function pollinations(env, prompt, key, fetchFn = (u, o) => fetch(u, o)) {
+  const token = String((env && env.POLLINATIONS_KEY) || '').trim(), ac = new AbortController(), t = setTimeout(() => ac.abort(), TIMEOUT_MS);
+  try {
+    const res = await fetchFn(pollinationsUrl(prompt, key, token), { headers: token ? { authorization: 'Bearer ' + token } : {}, signal: ac.signal });
+    const type = (res.headers.get('content-type') || '').toLowerCase();
+    if (!res.ok || !/^image\/(jpeg|png)/.test(type)) throw new Error('answered ' + res.status + ' ' + type.slice(0, 20));
+    return imageOf(await asImage(res.body));
+  } finally { clearTimeout(t); }
 }
 const hit = (row, key) => ({ state: 'art', key, img: row.img, cached: true, day: row.day });
 const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
@@ -111,15 +129,21 @@ export async function onRequestPost({ request, env }) {
   // subject (the row's day says when it was last painted), counted in the same daily cap and rate limit; the old picture stays if the new one fails
   if (row && (!again || row.day === today())) return json(again ? { ...hit(row, key), why: 'again-today' } : hit(row, key));
   if (!on(env)) return plate('off');
-  if ((await madeToday(env)) >= capOf(env)) return plate('cap');
+  const made = await madeToday(env), overWorkers = made >= capOf(env);
+  if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
-  const scene = await direct(env, key, kind, body && body.family); // the Art Director's scene, or '' for the fixed template
+  const scene = await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and V01D's take on it), or '' for the fixed template
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));
     let r = null;
-    try { r = await Promise.race([paintOnce(env, models('art'), prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { if (models('art') === ART_FALLBACK) throw e; await noteMiss(env, 'klein ' + missWhy(e)); }
-    if (!img && models('art') !== ART_FALLBACK) { r = await Promise.race([paintOnce(env, ART_FALLBACK, prompt), slow()]); img = imageOf(await asImage(r)); } // the square model, cropped into the window
+    if (!overWorkers) {
+      try { r = await Promise.race([paintOnce(env, models('art'), prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'klein ' + missWhy(e)); }
+      if (!img && models('art') !== ART_FALLBACK) { try { r = await Promise.race([paintOnce(env, ART_FALLBACK, prompt), slow()]); img = imageOf(await asImage(r)); } catch (e) { await noteMiss(env, 'schnell ' + missWhy(e)); } } // the square model, cropped into the window
+    }
+    // past the Workers AI share, or when it failed: Pollinations, free (owner, 2026-10-18: "try to find fallbacks ... for free")
+    if (!img && pollOn(env)) { try { img = await pollinations(env, prompt, key); } catch (e) { await noteMiss(env, 'pollinations ' + missWhy(e)); } }
+    if (!img && !r) throw new Error('no painter answered');
     if (!img) await noteMiss(env, 'not an image: ' + (r && typeof r === 'object' ? Object.keys(r).join(',').slice(0, 40) : typeof r));
   } catch (e) { await noteMiss(env, missWhy(e)); return plate('busy'); }
   if (!img) return plate('busy'); // nothing usable: nothing is kept
