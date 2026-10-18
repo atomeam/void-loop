@@ -22,6 +22,9 @@ import { envName, latencyOf, assess } from './bench-load.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 import { isRouted } from './routed.mjs';
 import { triggersFrom, grounded } from '../void-live-deploy/lib/ground.js';
+// how long one ask may take before it counts as unanswered (4 s, as a person waits); a test that checks counting, not speed, raises it
+// (tools/bench-load.test.mjs: on a loaded machine the page logged the ask after 4 s and the miss read as "said")
+const ASK_WAIT_MS = Number(process.env.VOID_BENCH_ASK_WAIT_MS) || 4000;
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));
 const root = path.resolve(here, '..', 'void-live-deploy');
 // --probe file.json: try candidate asks (same shape) without touching bench.json; prints only the misses, so a big batch
@@ -119,7 +122,7 @@ async function one({ ask: a, want, says, before }) {
     if (await p.locator('.vpage').count()) await p.keyboard.press('Escape').catch(() => {}); }
   await p.evaluate(() => { window.__said = ''; });
   // wait for the answer itself (the page's own loop log), not a guessed time; a log that does not parse reads as empty (a miss)
-  const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, 4000);
+  const t0 = Date.now(); await p.fill('#input', a); await p.keyboard.press('Enter'); await logged(a, ASK_WAIT_MS);
   const said = await p.evaluate(() => { const w = document.getElementById('whisper'); return (w && w.textContent) || window.__said || ''; }).catch(() => '');
   const log = await p.evaluate(() => { try { const l = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); return Array.isArray(l) ? l : []; } catch (_) { return []; } });
   const last = log.filter((x) => String(x.ask).trim() === a.trim()).pop();
