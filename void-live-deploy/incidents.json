@@ -2,6 +2,18 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T13:21:10.665Z",
+   "sha": "a27f0e341f0e0a4cbf2533c1885b67bf61e90209",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39130832807",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-18T13:16:33.708Z",
    "sha": "8322451d1c0c9b28668141581c884cf94be716d4",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39129540983",
@@ -677,32 +689,6 @@
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T04:17:13.491Z",
-   "sha": "9b4595d5cf5577bea0bfdb813c4b74862dbf1095",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39096333993",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/empty-state.test.mjs",
-    "tools/families.mjs",
-    "tools/pool.mjs",
-    "tools/pool.test.mjs",
-    "tools/skill-overlap.json",
-    "tools/stage-tools.test.mjs",
-    "tools/test_void.mjs",
-    "tools/tools-pack-7.test.mjs",
-    "tools/tools-pack-8.test.mjs",
-    "tools/typo-audit.json",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/a11y-modes.js"
    ]
   }
  ]
