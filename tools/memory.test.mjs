@@ -297,3 +297,21 @@ test('ouroboros for members: the 500-project cap applies to a push by key', asyn
   const over = await push(env, key, [rec({ id: 'one-more', name: 'onemore' })]);
   assert.equal(over.status, 413); assert.match(await over.text(), /full/);
 });
+
+// "export my memory" (the owner, 2026-10-18): ?view=export hands back everything one caller's memory keeps, as a download, and nothing of anyone else's
+test('export: the whole of your own memory as one file, newest first; a member gets only theirs, a free account and a stranger nothing', async () => {
+  const env = { READ_TOKEN: TOKEN, DB: d1() };
+  const ann = await account(env, 'annAnnAnnAnnAnnAnnAnn', 'paid'), free = await account(env, 'freeFreeFreeFreeFreeFr', 'free');
+  await call(api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'owner-old', name: 'olderthing', last_commit: '2024-01-01T00:00:00+00:00' }), rec({ id: 'owner-new', name: 'newerthing' })] } });
+  await as(ann, api.onRequestPost, env, { method: 'POST', body: { records: [rec({ id: 'ann-1', name: 'annsapp' })] } });
+  const URL_ = 'https://x/api/memory?view=export';
+  const r = await call(api.onRequestGet, env, { url: URL_ });
+  assert.equal(r.status, 200); assert.match(r.headers.get('content-disposition') || '', /attachment/); assert.equal(r.headers.get('cache-control'), 'no-store');
+  const o = await r.json();
+  assert.equal(o.v01d_memory, 1); assert.equal(o.count, 2); assert.equal(o.capped, false); assert.ok(!Number.isNaN(Date.parse(o.exported)));
+  assert.deepEqual(o.records.map((x) => x.name).sort(), ['newerthing', 'olderthing']); assert.ok(o.records.every((x) => Array.isArray(x.links)), 'links come back as a list');
+  const a = await (await as(ann, api.onRequestGet, env, { url: URL_ })).json();
+  assert.deepEqual(a.records.map((x) => x.name), ['annsapp'], 'a member exports only their own'); assert.equal(a.records[0].id, 'ann-1');
+  assert.equal((await as(free, api.onRequestGet, env, { url: URL_ })).status, 403, 'a free account gets nothing');
+  assert.equal((await call(api.onRequestGet, env, { auth: false, url: URL_ })).status, 401, 'a stranger gets nothing');
+});

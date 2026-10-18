@@ -3194,6 +3194,21 @@ try {
       !!before && before.length === 2 && tea(before).conf > cat(before).conf && cat(before).conf > 0 && tea(before).bar === tea(before).conf + '%' && /% sure/.test(tea(before).title)
         && !!after && cat(after).conf > cat(before).conf && stored['fact:my cat is called pixel'].n === 2 && !G.errors.length, JSON.stringify({ before, after, errors: G.errors }));
     await G.ctx.close(); }
+  // "export my memory" (the owner, 2026-10-18): the export card also hands over what "remember that …" kept on V01D's server, to whoever
+  // holds the key; without one it offers only the graph in this browser. /api/memory is stood in for.
+  if (want("export my memory: with the key the card also downloads what V01D keeps on its server")) { const X = await fresh();
+    let auth = '';
+    await X.ctx.route(/\/api\/memory\?view=export/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ v01d_memory: 1, exported: '2026-10-18T00:00:00Z', count: 2, capped: false, records: [{ id: 'note-1', name: 'I like tea' }, { id: 'note-2', name: 'my dog is Rex' }] })); });
+    await X.ask('export my memory', 700); const noKey = await X.p.$('.vpage.on .mg-kept');
+    await X.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'owner-k')); await X.p.keyboard.press('Escape');
+    await X.ask('export my memory', 700);
+    const dl = X.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await X.p.click('.vpage.on .mg-kept').catch(() => {}); const d = await dl; const body = d ? JSON.parse(fs.readFileSync(await d.path(), 'utf8')) : null;
+    const said = await X.p.$eval('.vpage.on .mg-kept-out', (e) => e.textContent).catch(() => '');
+    check('export my memory: without a key only the browser graph is offered; with the key the card downloads what V01D keeps (v01d-kept-<date>.json, read with the key) and says how many lines',
+      !noKey && auth === 'Bearer owner-k' && !!d && /^v01d-kept-\d{4}-\d{2}-\d{2}\.json$/.test(d.suggestedFilename()) && body && body.count === 2 && body.records[1].name === 'my dog is Rex' && /saved: 2 lines/.test(said) && !X.errors.length,
+      JSON.stringify({ noKey: !!noKey, auth, file: d && d.suggestedFilename(), said, e: X.errors }));
+    await X.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

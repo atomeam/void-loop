@@ -2,7 +2,7 @@
 // Owner token, or a paid member's session (their own memory only). Records come from tools such as tools/ouroboros.py (`ouroboros.py push`); each is validated and re-redacted
 // (lib/memory-core.js), and the tables are created on first use. Without D1 this answers 503 and changes nothing.
 import { scopeOf } from '../../lib/memory-scope.js';
-import { ensure, upsert, search, ask, byId, topics, related, forget, MAX_BATCH, MAX_BODY, MEMBER_MAX } from '../../lib/memory-core.js';
+import { ensure, upsert, search, ask, byId, topics, related, forget, exportAll, MAX_BATCH, MAX_BODY, MEMBER_MAX } from '../../lib/memory-core.js';
 
 // Who is asking, and whose memory that is: lib/memory-scope.js (owner, paid member, free account, stranger).
 const guard = (fn) => async (ctx) => {
@@ -16,6 +16,11 @@ const guard = (fn) => async (ctx) => {
 export const onRequestGet = guard(async ({ request, env }, scope) => {
   const u = new URL(request.url);
   if (u.searchParams.get('view') === 'topics') return Response.json({ topics: await topics(env, scope) });
+  // ?view=export: everything this caller's memory keeps, as one file (the owner, 2026-10-18: "export my memory"); only their own scope
+  if (u.searchParams.get('view') === 'export') {
+    const { records, capped } = await exportAll(env, scope);
+    return Response.json({ v01d_memory: 1, exported: new Date().toISOString(), count: records.length, capped, records }, { headers: { 'cache-control': 'no-store', 'content-disposition': 'attachment; filename="v01d-memory.json"' } });
+  }
   if (u.searchParams.get('related')) {
     const rel = await related(env, u.searchParams.get('related'), u.searchParams.get('limit'), scope);
     return rel ? Response.json({ related: rel }) : new Response('no such record', { status: 404 });
