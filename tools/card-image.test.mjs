@@ -100,3 +100,12 @@ test('the self card picture (owner\'s redesign, 2026-10-18): its words as a quot
   assert.match(svg, /font-style="italic"[^>]*>I feel the vector field/); assert.ok(!svg.includes('xxxxxxxx'), 'the raw text is not drawn');
   assert.equal(cardSvg(d), cardSvg({ ...d, self: undefined }), 'a card without the self data draws as before');
 });
+
+test('a utility card (data-card-plain) saves a plain picture: its title and words once, its QR code, no frame, rarity or stats', async () => {
+  const { plainSvg } = await import('../void-live-deploy/lib/card-image.js'), { qrMatrix } = await import('../void-live-deploy/lib/qr.js');
+  const s = plainSvg({ title: 'Your stage is open', text: 'Anyone with this link sees a read-only snapshot of 2 things.\nNote · <milk>\na-to-mind.com/?spectate=eyJ2…fV19', qr: qrMatrix('https://a-to-mind.com/?spectate=eyJ2') });
+  assert.match(s, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 744 \d+"/); assert.match(s, />Your stage is open</);
+  assert.equal((s.match(/a-to-mind\.com\/\?spectate=/g) || []).length, 1, 'the link shows once, shortened'); assert.match(s, /&lt;milk&gt;/); assert.ok(!/<milk>/.test(s));
+  assert.match(s, /<svg x="\d+" y="\d+" width="300" height="300" xmlns/); assert.ok(!/Mythic|Rare|Uncommon|>P<|>R</.test(s));
+  assert.ok(!/<svg x=/.test(plainSvg({ title: 't', text: 'x' })), 'no code without a matrix');
+});

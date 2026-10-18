@@ -1935,7 +1935,7 @@
     {
      "name": "spectators",
      "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },

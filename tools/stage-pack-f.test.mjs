@@ -141,3 +141,24 @@ test('spectators: the snapshot is words only, leaves out the unkeepable and the 
   assert.ok(S.pack(big).length <= S.MAX_CODE && S.unpack(S.pack(big)).things.length === 24 && S.unpack(S.pack(big)).things[0].t.length <= 60, 'a long stage is shortened to fit the link');
   assert.equal(S.snapshotOf(Object.fromEntries(Array.from({ length: 30 }, (_, i) => ['s' + i, { id: 's' + i, kind: 'sticky', x: i, y: i, text: 'n' + i }]))).length, S.MAX_THINGS);
 });
+test('spectators card: the link is shortened in the middle to what the field holds, and what is shared is named from the snapshot itself', () => {
+  const link = 'https://a-to-mind.com/?spectate=' + 'eyJ2IjoxLCJhdCI6MTc5'.repeat(6);
+  assert.equal(S.shownLink(link).startsWith('a-to-mind.com/?spectate='), true); assert.equal(S.shownLink('http://x.y/'), 'x.y/');
+  const m = S.middle(S.shownLink(link), 30);
+  assert.equal(m.length, 30); assert.ok(m.startsWith('a-to-mind.com/?spe') && m.endsWith(link.slice(-11)) && m.includes('…'), m);
+  assert.equal(S.middle('short', 30), 'short'); assert.equal(S.middle('abcdefghij', 2).length, 5, 'never under 5'); assert.equal(S.middle(null, 10), '');
+  assert.ok(S.middle(S.shownLink(link), S.LINK_MAX).length <= S.LINK_MAX);
+  assert.deepEqual(S.thingName({ k: 'sticky', t: 'buy milk and eggs' }), { name: 'Note', words: 'buy milk and eggs' });
+  assert.deepEqual(S.thingName({ k: 'clock', t: 'clock' }), { name: 'Clock', words: '' }, 'no word that only repeats the name');
+  assert.deepEqual(S.thingName({ k: 'counter', t: 'counter 4' }), { name: 'Counter', words: '4' });
+  assert.deepEqual(S.thingName({ k: 'word-cloud', t: '' }), { name: 'Word cloud', words: '' });
+  assert.ok(S.thingName({ k: 'sticky', t: 'a very long note that goes on and on past the chip' }).words.length <= 28);
+  const snap = Array.from({ length: 10 }, (_, i) => ({ k: i ? 'sticky' : 'clock', x: 0, y: 0, t: i ? 'n' + i : '' }));
+  const sum = S.summaryOf(snap);
+  assert.equal(sum.line, 'Anyone with this link sees a read-only snapshot of 10 things on your stage.');
+  assert.equal(sum.names.length, 8); assert.equal(sum.more, 2); assert.deepEqual(sum.names[0], { name: 'Clock', words: '' }); assert.deepEqual(sum.names[1], { name: 'Note', words: 'n1' });
+  assert.equal(S.summaryOf(snap.slice(0, 1)).line, 'Anyone with this link sees a read-only snapshot of 1 thing on your stage.');
+  assert.match(S.summaryOf([]).line, /empty right now/); assert.equal(S.summaryOf(null).n, 0);
+  // the names come from the link's own snapshot: what a spectator will see is what the card lists
+  const back = S.unpack(S.pack(snap.slice(0, 3), 1)); assert.deepEqual(S.summaryOf(back.things).names, S.summaryOf(snap.slice(0, 3)).names);
+});

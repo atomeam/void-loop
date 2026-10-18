@@ -136,6 +136,11 @@ export const CARD_CSS = [
   '.vcard .vc-art::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle,rgba(0,0,0,.28) 0.9px,transparent 1.3px) 0 0/5px 5px;mix-blend-mode:multiply;opacity:.55}',
   '.vcard .vc-type{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;font-weight:700;color:#f3efe2}',
   '.vcard .vc-pt{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;transform:rotate(-2deg)}.vcard .vc-pt b{text-shadow:1px 1px 0 #000,-1px -1px 0 #000}',
+  // a utility card's share bar (data-card-plain): small, quiet and after a thin rule, so the card's own actions lead
+  '.vcard-plain .vc-share{display:flex;flex-wrap:wrap;align-items:center;gap:6px 16px;margin:14px 0 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)}.vcard-plain .vc-share .vc-grp{display:flex;flex-wrap:wrap;align-items:center;gap:6px}',
+  '.vcard-plain .vc-share .vc-grp::before{content:attr(data-label);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:#a9afc2}',
+  '.vcard-plain .vc-share button{font:inherit;font-size:12px;padding:4px 10px;border-radius:7px;border:1px solid rgba(255,255,255,.16);background:transparent;color:#c9cede;cursor:pointer;min-height:28px}',
+  '.vcard-plain .vc-share button:hover,.vcard-plain .vc-share button:focus-visible{background:rgba(255,255,255,.08);outline:2px solid rgba(160,190,255,.7);outline-offset:1px}.vcard-plain .vc-share .vc-full{font-size:10.5px;color:#a9afc2}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
 // Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
@@ -186,6 +191,7 @@ export function editedDaysAgo(text, now = Date.now()) {
 /** put the card's frame on a page, or refresh it: idempotent, and safe to call from a MutationObserver (it only writes when it changes). */
 export function keep(el, esc, stats) {
   if (!el || !el.classList) return;
+  if (el.dataset && el.dataset.cardPlain !== undefined) { plain(el); return; } // a utility card asks for no collectible frame (data-card-plain)
   if (!el.classList.contains('vcard')) el.classList.add('vcard');
   // a minted collectible (skills/collectible.js) stays the card of its subject, not of the skill that minted it
   const name = el.dataset.collect ? '' : el.dataset.skill || '', srcLinks = el.querySelectorAll('.src a').length, src = el.querySelector('.src');
@@ -235,6 +241,15 @@ export function keep(el, esc, stats) {
   accordion(el); // a very long body: sections behind one-line summaries
   shareBar(el); // copy card / save card (lib/card-share.js)
   // no "Evolved" note on cards any more (owner, 2026-10-18: "get rid of the evolved stuff"); evolved() and noteTier() stay for the ratings
+}
+
+/** a utility card (owner, 2026-10-18, the spectators card: "make sure its perfect i dont like it at all"): a page that sets data-card-plain keeps
+ *  the plain glass page, with no foil frame, rarity, art, type line, stats or arrows; only the share bar (copy / save) is added, and its saved
+ *  picture is the plain one (lib/card-image.js plainSvg). Idempotent. */
+function plain(el) {
+  el.classList.remove('vcard'); el.classList.add('vcard-plain'); el._vcard = null;
+  for (const n of el.querySelectorAll(':scope > .vc-art, :scope > .vc-type, :scope > .vc-adds, :scope > .vc-foot, :scope > .vc-arrows')) n.remove();
+  shareBar(el);
 }
 
 /** a body past 3,000 characters becomes an accordion (lib/card-sections.js decides the cut). Every node stays in the page, so copy card and save text keep it all. Never throws. */

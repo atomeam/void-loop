@@ -8832,6 +8832,60 @@ try {
       /\?spectate=[A-Za-z0-9_-]{8,}/.test(link) && view && view.kinds.length >= 1 && JSON.stringify(view.kinds) === JSON.stringify(nowKinds) && /read-only/.test(view.text) && viewerState === ownerState && left && /closed to spectators/.test(closed) && Q.errors.length === 0,
       JSON.stringify({ link: link.slice(0, 80), view: view && { kinds: view.kinds, text: view.text.slice(0, 160) }, nowKinds, same: viewerState === ownerState, left, closed, errs: Q.errors }));
     await Q.ctx.close(); }
+  // the spectators card, clean (owner, 2026-10-18: "make sure its perfect i dont like it at all"): a utility card with a headline, what is shared,
+  // the link in a field that never overflows, Copy link, a QR code, open / refresh / close; old links still open (skills/spectators.js, lib/qr.js)
+  if (want("spectators card: a plain share card with the shared things, a copyable link that never overflows, a QR code, refresh and close, at desktop and phone width; an old link still opens")) {
+    const CLIP = () => { window.__copied = []; try { Object.defineProperty(navigator, 'clipboard', { configurable: true, value: { writeText: async (t) => { window.__copied.push(String(t)); }, readText: async () => '', write: async () => { throw new Error('no'); } } }); } catch (_) {} };
+    const overflow = (P) => P.p.evaluate(() => {
+      const c = document.querySelector('.vpage.spx-card'); if (!c) return ['no card'];
+      const r = c.getBoundingClientRect(), out = [];
+      for (const e of c.querySelectorAll('*')) { const b = e.getBoundingClientRect(); if (b.width && (b.right > r.right + 1 || b.left < r.left - 1)) out.push(String(e.getAttribute('class') || e.tagName)); }
+      const f = c.querySelector('.spx-field'); if (!f || f.scrollWidth > f.clientWidth + 1) out.push('field ' + (f ? f.scrollWidth + '>' + f.clientWidth : 'missing'));
+      if (c.scrollWidth > c.clientWidth + 1) out.push('card scrolls sideways'); if (document.documentElement.scrollWidth > innerWidth) out.push('page scrolls sideways');
+      return out;
+    });
+    const seen = {};
+    for (const phone of [false, true]) {
+      const P = phone ? await fresh({ phone: true }, CLIP) : await fresh(CLIP), tag = phone ? '390' : '1280';
+      await P.ask('make a clock', 500); await P.ask('sticky note buy milk and eggs', 500);
+      await P.ask('open the stage to spectators', 900);
+      const card = await until(() => P.p.$eval('.vpage.spx-card', (e) => ({ plain: e.classList.contains('vcard-plain') && !e.classList.contains('vcard'), frame: e.querySelectorAll('.vc-art, .vc-type, .vc-foot, .vc-adds, .vc-pt').length,
+        h2: e.querySelector('h2').textContent.trim(), lede: e.querySelector('.spx-lede').textContent, chips: [...e.querySelectorAll('.spx-things li')].map((l) => l.textContent), field: e.querySelector('.spx-field').textContent,
+        link: e.querySelector('a.spectate-link').href, qrPath: ((e.querySelector('.spx-qr svg path') || { getAttribute: () => '' }).getAttribute('d') || '').length, qrW: (e.querySelector('.spx-qr svg') || { getBoundingClientRect: () => ({ width: 0 }) }).getBoundingClientRect().width,
+        text: e.innerText })).catch(() => null), 5000);
+      const over = await overflow(P);
+      await P.p.focus('.vpage .spx-body .spx-copy'); await P.p.keyboard.press('Enter'); // the keyboard copies too
+      const copied = await until(() => P.p.evaluate(() => window.__copied.slice(-1)[0] || ''), 2000), copyLabel = await P.p.$eval('.vpage .spx-body .spx-copy', (b) => b.textContent).catch(() => '');
+      seen[tag] = { card: card && { ...card, text: card.text.slice(0, 200) }, over, copied: copied.slice(0, 60), copyLabel };
+      const ok = card && card.plain && card.frame === 0 && card.h2 === 'Your stage is open' && /read-only snapshot of 2 things on your stage/.test(card.lede)
+        && card.chips.some((c) => /^Clock/.test(c)) && card.chips.some((c) => /Note · buy milk and eggs/.test(c)) && /\?spectate=[A-Za-z0-9_-]{8,}$/.test(card.link)
+        && card.field.includes('…') && card.field.length <= 48 && !card.text.includes(card.link.replace(/^https?:\/\//, '')) && !/Reactions|Rare|Mythic|SKILL/.test(card.text)
+        && card.qrPath > 200 && card.qrW >= 120 && over.length === 0 && copied === card.link && /Copied/.test(copyLabel);
+      if (!phone) {
+        // refresh makes a new link with what is on the stage now; "Close the stage" closes it; "Open it again" opens it again
+        const code0 = await P.p.$eval('.vpage.spx-card', (e) => e.dataset.spectateCode);
+        await P.p.waitForTimeout(20); const clickErr = await P.p.click('.vpage.spx-card .spx-refresh', { timeout: 5000 }).then(() => '', (e) => e.message.slice(0, 300));
+        const fresh2 = await until(() => P.p.$eval('.vpage.spx-card', (e, was) => (e.dataset.spectateCode !== was && e.querySelector('a.spectate-link').href.endsWith(e.dataset.spectateCode) && /2 things/.test(e.querySelector('.spx-lede').textContent) ? e.dataset.spectateCode.slice(0, 12) : ''), code0).catch(() => ''), 3000);
+        const refreshSaid = await P.whisper();
+        await P.p.click('.vpage.spx-card .spx-close');
+        const closed = await until(() => P.p.$eval('.vpage.spx-card', (e) => e.dataset.spectate === 'closed' && /Your stage is closed/.test(e.querySelector('h2').textContent) && !e.querySelector('.spx-field')).catch(() => false), 2000);
+        const closedSaid = await P.whisper(); await P.ask('close the stage', 400); const again = await P.whisper();
+        seen.flow = { clickErr, fresh2, refreshSaid, closed, closedSaid, again };
+        check('spectators card ' + tag + ': "open the stage to spectators" is a plain share card (no collectible frame, rarity, art or stats): "Your stage is open", one line naming how many things the read-only snapshot holds and a chip for each (Clock; Note · buy milk and eggs), the link once, shortened in the middle in a field that never overflows (nor does anything else on the card), a QR code of the link, and Copy link (by keyboard) puts the whole link on the clipboard and says Copied; Refresh snapshot makes a new link (a new snapshot) and says so; Close the stage turns the card to "Your stage is closed" and says so, and asking again says it was not open',
+          ok && !!fresh2 && /a fresh link: 2 things/.test(refreshSaid) && closed && /closed to spectators/.test(closedSaid) && /was not open/.test(again) && P.errors.length === 0, JSON.stringify({ seen, errs: P.errors }));
+        // a link made before this card (the v1 format, by hand) still opens the read-only spectator view in another tab
+        const code = Buffer.from(JSON.stringify({ v: 1, at: 1700000000000, things: [{ k: 'sticky', x: 40, y: 60, t: 'old link note' }, { k: 'clock', x: 300, y: 80, t: 'clock' }] })).toString('base64url');
+        const V = await P.ctx.newPage(); V.on('pageerror', (e) => P.errors.push('viewer: ' + e.message));
+        await V.goto(base + '?spectate=' + code); await skillsUp(V, 300);
+        const view = await until(() => V.$eval('#void-spectate', (e) => ({ kinds: [...e.querySelectorAll('.spectate-thing')].map((t) => t.dataset.kind).sort(), text: e.innerText })).catch(() => null), 6000);
+        await V.close();
+        check('spectators card: a ?spectate= link in the v1 format made before the new card still opens the read-only spectator view with its things',
+          !!view && JSON.stringify(view.kinds) === '["clock","sticky"]' && /old link note/.test(view.text) && /read-only/.test(view.text) && P.errors.length === 0, JSON.stringify({ view, errs: P.errors }));
+      } else check('spectators card 390: the same card at a 390 px phone: plain, the shared things, the link field and every button inside the card with no sideways scroll, a QR code, and Copy link copies the whole link',
+        ok && P.errors.length === 0, JSON.stringify({ seen, errs: P.errors }));
+      await P.ctx.close();
+    }
+  }
   // stage pack H (owner, 2026-10-18): "summon everything except urgency", "what would the echo say ...", "what almost answered that"
   if (want("stage pack h: negative summons, the echo that disagrees, the near choir")) {
     // negative summons: calm things come, a clear button takes back exactly what it summoned

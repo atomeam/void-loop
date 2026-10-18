@@ -6,6 +6,7 @@
 import { artSource } from './art-source.js';
 import { artInner, rarityKey, RARITY_LOOK } from './card-art.js';
 import { safeImg } from './art-rules.js';
+import { qrSvg } from './qr.js';
 
 export const CARD_W = 744, CARD_H = 1039, BLEED = 35;
 const INK = '#0a0a10';
@@ -155,6 +156,26 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
   s += '</g></g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;
+}
+
+/** a utility card's picture (data-card-plain, lib/card-frame.js): no foil, rarity, art or stats; the title, the card's own words and, when it has
+ *  one, its QR code (lib/qr.js qrMatrix) at a size a phone can scan, on the plain dark page. data: { title, text, qr }. Every text field is escaped. Pure. */
+export function plainSvg(data = {}) {
+  const d = data || {}, W = CARD_W, P = 56, title = String(d.title || 'V01D').replace(/\s+/g, ' ').trim();
+  const tl = wrap(title, 30, 3), body = wrap(d.text, 52, 40), q = d.qr && d.qr.modules ? d.qr : null, Q = q ? 300 : 0;
+  let y = P + 44, s = '';
+  tl.forEach((l) => { s += '<text x="' + P + '" y="' + y + '" font-family="ui-sans-serif,system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" font-weight="700" font-size="40" fill="#f2f4fa">' + esc(l) + '</text>'; y += 50; });
+  y += 10;
+  body.forEach((l) => { s += '<text x="' + P + '" y="' + y + '" font-family="ui-sans-serif,system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" font-size="23" fill="#d9dde8">' + esc(l) + '</text>'; y += 34; });
+  if (q) {
+    y += 10; const inner = qrSvg(q, { margin: 3, label: 'QR code' }).replace('<svg ', '<svg x="' + P + '" y="' + y + '" width="' + Q + '" height="' + Q + '" ');
+    s += '<rect x="' + (P - 6) + '" y="' + (y - 6) + '" width="' + (Q + 12) + '" height="' + (Q + 12) + '" rx="14" fill="#fff"/>' + inner;
+    s += '<text x="' + (P + Q + 28) + '" y="' + (y + Q / 2) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" fill="#b9bfd0">Scan to open</text>';
+    y += Q + 16;
+  }
+  const H = y + 64;
+  s += '<text x="' + P + '" y="' + (H - 32) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="17" letter-spacing="1.5" fill="#9aa1b5">V01D \u00b7 A-TO-MIND.COM</text>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + '"><rect width="' + W + '" height="' + H + '" rx="34" fill="#12152a"/><rect x="2" y="2" width="' + (W - 4) + '" height="' + (H - 4) + '" rx="32" fill="none" stroke="#2c3252" stroke-width="2"/>' + s + '</svg>';
 }
 
 /** the PNG of a card's SVG, in the browser: an Image and a canvas. Resolves a Blob; rejects when the browser cannot draw it. */

@@ -2,7 +2,7 @@
 // Copy gives readable text that ends in one code line; save downloads the same text as a file; pasting that text (or only the code line)
 // into V01D reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
-import { cardSvg, toPng, photoData } from './card-image.js';
+import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
 export const MARK = 'V01D-CARD:';
 const CODE_RE = /V01D-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
@@ -67,8 +67,8 @@ export const tidy = (s) => String(s || '').split('\n').map((l) => l.replace(/[ \
 /** a card's title and its whole body text, before any cap (the frame's own chrome and buttons left out). */
 function bodyOf(el) {
   const c = el.cloneNode(true);
-  // [data-share-skip]: a part the card shows but the saved text leaves out (the self card's folded items keep their one line, not their dates and details)
-  c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent, [data-share-skip]').forEach((x) => x.remove());
+  // [data-share-skip]: a part the card shows but the saved text leaves out / [data-nosave] (the self card's folded items keep their one line, not their dates and details)
+  c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent, [data-share-skip], [data-nosave]').forEach((x) => x.remove());
   c.querySelectorAll('[data-share-short]').forEach((x) => { x.textContent = x.getAttribute('data-share-short'); }); // ... and a long line it shows saves as its short form
   const h2 = c.querySelector('h2'), title = h2 ? h2.textContent : '';
   if (h2) h2.remove();
@@ -133,7 +133,10 @@ export function bar(el) {
   const grp = (name) => { const g = document.createElement('div'); g.className = 'vc-grp'; g.dataset.label = name; g.setAttribute('role', 'group'); g.setAttribute('aria-label', name); w.appendChild(g); return g; };
   const gCard = grp('Card'), gText = grp('Text');
   const mk = (g, label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); g.appendChild(b); };
-  const png = async (d) => { const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
+  const png = async (d) => {
+    if (el.dataset && el.dataset.cardPlain !== undefined) return toPng(plainSvg({ title: d.t, text: d.b, qr: el._qr || null }), 1); // a utility card saves its plain picture (lib/card-image.js)
+    const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1);
+  };
   mk(gCard, 'copy card', async () => {
     const d = readCard(el), text = shareText(d);
     try { if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) { await navigator.clipboard.write([new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }), 'image/png': png(d) })]); return 'copied'; } } catch (_) { /* the picture could not ride along: text only */ }

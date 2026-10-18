@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 634,
+ "counted": 635,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -169,6 +169,12 @@
    "skills": 6,
    "direct": 2,
    "dependants": 18
+  },
+  {
+   "file": "lib/qr.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 10
   },
   {
    "file": "lib/field-worker.js",
@@ -2263,7 +2269,8 @@
    "imports": [
     "lib/art-source.js",
     "lib/card-art.js",
-    "lib/art-rules.js"
+    "lib/art-rules.js",
+    "lib/qr.js"
    ],
    "importedBy": [
     "lib/card-share.js",
@@ -3742,6 +3749,23 @@
     "skills/constellation-weaver.js",
     "skills/forge-table.js",
     "skills/whisper-network.js"
+   ]
+  },
+  "lib/qr.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-image.js",
+    "skills/spectators.js"
+   ],
+   "reachedBy": [
+    "lib/card-frame.js",
+    "lib/card-share.js",
+    "lib/duel-rules.js",
+    "skills/collectible.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/rating-note.js": {
@@ -7029,7 +7053,8 @@
   },
   "skills/spectators.js": {
    "imports": [
-    "lib/bridges.js"
+    "lib/bridges.js",
+    "lib/qr.js"
    ],
    "importedBy": []
   },
