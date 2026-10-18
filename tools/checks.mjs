@@ -1,17 +1,34 @@
 // The fast checks an hourly run makes before it opens a PR, in one go: fringe ledger, every-skill collisions,
 // calendar parser, the cross-sense board draft, the board reader's redaction, and the full everyday benchmark (against tools/bench.best.json).
 // The full browser suite (tools/test_void.mjs) still runs in CI.
-//   node tools/checks.mjs      prints one line per check, exit 1 if any fails
+//   node tools/checks.mjs                 prints one line per check (always in the same order), exit 1 if any fails
+//   node tools/checks.mjs --only <words>  only the checks whose name has one of the words (a check is named in its output line)
+//   node tools/checks.mjs --skip-browser  leave out the checks that open a browser (BROWSER below)
+// The pure checks (no browser, no network, no heavy lock) run side by side, up to one per core (4 at most; one fewer while a browser
+// check runs); the browser checks run one after another beside them, each taking the heavy lock itself (tools/heavy.mjs).
+// The slowest five and the wall time print after the list (owner, 2026-10-18: "how can we speed this all up?").
 import { spawnSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { conflictMarkers } from '../void-live-deploy/lib/code-review.js';
+import { makeGate, poolSize, runNode, slowest, fmtMs } from './pool.mjs';
 
 const here = dirname(fileURLToPath(import.meta.url));
-const run = (args) => { const r = spawnSync(process.execPath, args, { cwd: resolve(here, '..'), encoding: 'utf8', timeout: 1800000 }); // 30 min: the full bench takes about 20 on a slow shared machine
-  return { ok: r.status === 0, out: ((r.stdout || '') + (r.stderr || '')).trim().split('\n').filter((l) => !/ExperimentalWarning|trace-warnings/.test(l)) }; };
-const results = [];
+const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
+const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
+// the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
+const BROWSER = new Set(['draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs']);
+let browserRunning = 0;
+const gate = makeGate(() => poolSize(browserRunning > 0));
+const root = resolve(here, '..');
+// run a script: pure ones wait for a pool slot; a browser one starts at once (the heavy lock queues it). r.ms is the time it ran, not the wait.
+const run = (a, browser = false) => { const go = async () => { const t = Date.now(); const r = await runNode(a, { cwd: root }); r.ms = Date.now() - t; return r; }; return browser ? go() : gate(go); };
+const last = (r) => r.out[r.out.length - 1] || '';
+// every check is a job: [name, browser?, async () => [ok, line, ms?]]; the report keeps the order they were added in
+const jobs = [];
+const add = (name, fn, browser = false) => { jobs.push({ name, fn, browser }); };
+const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(name, async () => { const r = await run([resolve(here, file), ...extra], browser); return [r.ok, last(r), r.ms]; }, browser);
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
@@ -33,6 +50,7 @@ for (const [name, file] of [
   ['label', 'label.test.mjs'],
   ['void-seal', 'void-seal.test.mjs'],
   ['collectible', 'collectible.test.mjs'],
+  ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],
@@ -222,6 +240,8 @@ for (const [name, file] of [
   ['tools pack 1', 'tools-pack-1.test.mjs'],
   ['text tools', 'text-tools.test.mjs'],
   ['tools pack 10', 'tools-pack-10.test.mjs'],
+  ['stage tools', 'stage-tools.test.mjs'],
+  ['tools pack 7', 'tools-pack-7.test.mjs'],
   ['together', 'together.test.mjs'],
   ['tools pack 6', 'tools-pack-6.test.mjs'],
   ['plan', 'plan.test.mjs'],
@@ -250,6 +270,7 @@ for (const [name, file] of [
   ['skills-unlisted', 'skills-unlisted.test.mjs'],
   ['skill-family', 'skill-family.test.mjs'],
   ['heavy', 'heavy.test.mjs'],
+  ['pool', 'pool.test.mjs'],
   ['clef-probe', 'clef-probe.test.mjs'],
   ['route-bench', 'route-bench.test.mjs'],
   ['models', 'models.test.mjs'],
@@ -285,86 +306,100 @@ for (const [name, file] of [
   ['thinking math', 'thinking-math.test.mjs'],
   ['tools pack 3', 'tools-pack3.test.mjs'],
 ]) {
-  const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
+  addScript(name, file);
 }
 // Every script parses, and no text file was re-encoded through a Windows code page (a merge did both to main once:
 // a dash turned into three box-drawing letters, lines doubled, a const declared twice, and CI died before running a single test).
-{ const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+add('files', async () => { const files = spawnSync('git', ['ls-files', '*.js', '*.mjs', '*.html', '*.md', '*.json', '*.py', '*.yml'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
   const GARBLED = /\u0393[\u00c7\u00c4]|\u252c[\u2556\u2591\u00aa]|\u251c[\u00ba\u00e9]|\u256c\u00f4/; // the cp437 readings of UTF-8 dashes, dots, quotes
-  const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(here, '..', f), 'utf8')));
-  const broken = files.filter((f) => /\.m?js$/.test(f) && !run(['--check', resolve(here, '..', f)]).ok);
-  results.push(['files', !garbled.length && !broken.length, garbled.length || broken.length
+  const garbled = files.filter((f) => GARBLED.test(readFileSync(resolve(root, f), 'utf8')));
+  const checked = await Promise.all(files.filter((f) => /\.m?js$/.test(f)).map(async (f) => [f, await run(['--check', resolve(root, f)])]));
+  const broken = checked.filter(([, r]) => !r.ok).map(([f]) => f);
+  return [!garbled.length && !broken.length, garbled.length || broken.length
     ? [garbled.length && 'garbled text in ' + garbled.join(', '), broken.length && 'does not parse: ' + broken.join(', ')].filter(Boolean).join('; ')
-    : files.length + ' files: clean text, every script parses']); }
+    : files.length + ' files: clean text, every script parses', checked.reduce((t, [, r]) => t + r.ms, 0)]; });
 // nothing installed is ever tracked: a node_modules symlink from a worktree once got committed, and copying that commit
 // back replaced the real folder with a link to itself
-{ const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: resolve(here, '..'), encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
-  results.push(['tracked', !bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']); }
+add('tracked', async () => { const bad = spawnSync('git', ['ls-files', '--', 'node_modules', 'node_modules/*'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean);
+  return [!bad.length, bad.length ? 'git tracks ' + bad.slice(0, 3).join(', ') + ': git rm --cached it (a worktree runs its own npm ci, never a link)' : 'no installed files tracked']; });
 // no conflict marker anywhere in the tree (#291 merged one into the growth ledger): these checks run on the merged head, so a
 // merge of main made after they ran is not covered; run them again after merging main, before the push
-{ const root = resolve(here, '..'), marked = [];
+add('markers', async () => { const marked = [];
   for (const f of spawnSync('git', ['ls-files'], { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20 }).stdout.split('\n').filter(Boolean)) {
     let t = ''; try { t = readFileSync(resolve(root, f), 'utf8'); } catch (_) { continue; }
     if (t.length < 5e6 && !t.includes('\0')) for (const c of conflictMarkers(t)) marked.push(f + ':' + c.line);
   }
-  results.push(['markers', !marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']); }
+  return [!marked.length, marked.length ? 'conflict markers at ' + marked.slice(0, 5).join(', ') + ': settle the merge (node tools/merge-main.mjs) and remove them' : 'no conflict markers in the tree']; });
 // every bundled file the page or a skill loads by path is in the tree (issue #757: a merge dropped vendor/three-r180/build and
 // vendor/pdfjs build, the CDN kept serving a cached copy, and any fresh URL got the HTML fallback: "Failed to load module script")
-{ const root = resolve(here, '..'), gone = new Set();
+add('vendor', async () => { const gone = new Set();
   for (const f of spawnSync('git', ['ls-files', 'void.html', 'void-live-deploy/skills/*.js', 'void-live-deploy/lib/*.js'], { cwd: root, encoding: 'utf8' }).stdout.split('\n').filter(Boolean))
     for (const m of readFileSync(resolve(root, f), 'utf8').matchAll(/['"`](\/vendor\/[^'"`\s?#]+\.(?:m?js|wasm|css|json))['"`]/g)) { try { readFileSync(resolve(root, 'void-live-deploy' + m[1])); } catch (_) { gone.add(f + ' -> ' + m[1]); } }
-  results.push(['vendor', !gone.size, gone.size ? 'bundled file missing: ' + [...gone].slice(0, 4).join(', ') + ' (restore it from git history)' : 'every bundled file the page loads is in the tree']); }
+  return [!gone.size, gone.size ? 'bundled file missing: ' + [...gone].slice(0, 4).join(', ') + ' (restore it from git history)' : 'every bundled file the page loads is in the tree']; });
 // no perspective grid floor on the stage (owner 2026-10-15: "the ugly every-AI-website grid"); docs/design.md "Never"
-{ const css = readFileSync(resolve(here, '..', 'void.html'), 'utf8'); const bad = [...css.matchAll(/\{[^{}]*repeating-linear-gradient[^{}]*rotateX\([^{}]*\}/g)].filter((m) => !/\.vpage|\.thing|card/.test(m[0]));
-  results.push(['no-grid-floor', !bad.length, bad.length ? 'a perspective grid floor is back in void.html (design.md forbids it)' : 'no perspective grid floor']); }
+add('no-grid-floor', async () => { const css = readFileSync(resolve(here, '..', 'void.html'), 'utf8'); const bad = [...css.matchAll(/\{[^{}]*repeating-linear-gradient[^{}]*rotateX\([^{}]*\}/g)].filter((m) => !/\.vpage|\.thing|card/.test(m[0]));
+  return [!bad.length, bad.length ? 'a perspective grid floor is back in void.html (design.md forbids it)' : 'no perspective grid floor']; });
 // the bench and the deploy serve void-live-deploy/index.html: an edit to void.html that was not copied there is tested stale, silently
-{ const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
+add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..', f), 'utf8').replace(/\r\n/g, '\n'), src = read('void.html');
   const stale = ['void-live-deploy/index.html', 'void-live-deploy/void.html'].filter((f) => read(f) !== src);
-  results.push(['copies', !stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']); }
+  return [!stale.length, stale.length ? stale.join(' and ') + ' differ from void.html: cp void.html void-live-deploy/index.html && cp void.html void-live-deploy/void.html' : 'void.html and both deploy copies match']; });
 // skills/index.json is generated from skills/order/ (tools/skills-index.mjs): a skill added without its order file, or an order file
 // without the index rewritten, is caught here, not on the page
 // every line this branch adds, in every file type, holds no real key (tools/secret-scan.mjs; owner, 2026-10-15: "make V01D the best
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
-{ const r = run([resolve(here, 'secret-scan.mjs'), '--base', 'origin/main']); results.push(['secrets', r.ok, r.out[r.out.length - 1] || '']); }
-{ const r = run([resolve(here, 'skills-index.mjs'), '--check']); results.push(['index', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
+addScript('index', 'skills-index.mjs', ['--check']);
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
-{ const r = run([resolve(here, 'skill-overlap.mjs'), '--check']); results.push(['overlap', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('overlap', 'skill-overlap.mjs', ['--check']);
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
-{ const r = run([resolve(here, 'families.mjs'), '--check']); results.push(['families-json', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('families-json', 'families.mjs', ['--check']);
 // the dependency map (skills/deps.json, tools/deps.mjs; asked by Void) is read off the import lines and kept current like families.json
 // a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Void)
-{ const r = run([resolve(here, 'moved-check.mjs')]); results.push(['moved-check', r.ok, r.out[r.out.length - 1] || '']); }
-{ const r = run([resolve(here, 'deps.mjs'), '--check']); results.push(['deps-json', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('moved-check', 'moved-check.mjs');
+addScript('deps-json', 'deps.mjs', ['--check']);
 // the book (skills/guide.json) names every skill, game and miniature on one page each; stale or a skill on no page fails (tools/guide.mjs)
-{ const r = run([resolve(here, 'guide.mjs'), '--check']); results.push(['guide-json', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('guide-json', 'guide.mjs', ['--check']);
 // the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
-{ const r = run([resolve(here, 'mcp-skills.mjs'), '--check']); results.push(['mcp-skills', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('mcp-skills', 'mcp-skills.mjs', ['--check']);
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
-{ const r = run([resolve(here, 'doc-drift.mjs'), '--check']); results.push(['doc-drift', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('doc-drift', 'doc-drift.mjs', ['--check']);
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
 // letter reversals in the skills' metadata (asked by Void: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
-{ const r = run([resolve(here, 'typo-audit.mjs'), '--check']); results.push(['typos', r.ok, r.out[r.out.length - 1] || '']); }
-{ const r = run([resolve(here, 'untested.mjs'), '--check']); results.push(['untested', r.ok, r.out[r.out.length - 1] || '']); }
+addScript('typos', 'typo-audit.mjs', ['--check']);
+addScript('untested', 'untested.mjs', ['--check']);
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in
 // domains/void.frontier.md); CI runs it as its own job (.github/workflows/bench.yml) and reports the number on the PR, and a drop below
 // the floor is a fix PR, never a wait. Without the variable this row replays it as before.
-if (process.env.VOID_SKIP_BENCH) results.push(['bench', true, 'skipped: CI runs it (bench.yml)']);
-else { const r = run([resolve(here, 'bench.mjs'), '--score']); let b = null; try { b = JSON.parse(r.out.filter((l) => l.startsWith('{')).pop()); } catch (_) {} // stderr is merged in: the JSON is the last line that starts with {
+if (process.env.VOID_SKIP_BENCH) add('bench', async () => [true, 'skipped: CI runs it (bench.yml)']);
+else add('bench', async () => { const r = await run([resolve(here, 'bench.mjs'), '--score'], true); let b = null; try { b = JSON.parse(r.out.filter((l) => l.startsWith('{')).pop()); } catch (_) {} // stderr is merged in: the JSON is the last line that starts with {
   const best = JSON.parse(readFileSync(resolve(here, 'bench.best.json'), 'utf8'));
   const ok = !!b && b.score >= best.score && b.total >= best.total; // score counts a miss that passed alone as a pass and lists only the ones that reproduce alone (tools/bench-load.mjs): below the floor is a real failure, load or not
-  results.push(['bench', ok, b ? `${b.inconclusive ? b.note + ' - ' : ''}${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' ')]); }
-{ // the board reader must drop anything key-like before it prints (tools/misses.mjs)
+  return [ok, b ? `${b.inconclusive ? b.note + ' - ' : ''}${b.score}/${b.total} (floor ${best.score})${b.cached ? ' (nothing it reads changed since the passing run at ' + b.cached + '; not replayed: --fresh forces it)' : ''}${b.wrong.length ? ' wrong: ' + b.wrong.join(' | ') : ''}` : r.out.slice(-2).join(' '), r.ms]; }, true);
+add('misses', async () => { // the board reader must drop anything key-like before it prints (tools/misses.mjs)
   const { redact } = await import('./misses.mjs');
   const cases = [['unlock abcdEFGH12345678zz', null], ['my key is Zx9kQ2mP7vR4tY8wL3nB', null], ['mail sam@example.com', 'mail [email]'],
     ['call 555-123-4567', 'call [number]'], ['weather in kyoto', 'weather in kyoto'], ['define antidisestablishmentarianism', 'define antidisestablishmentarianism']];
   const bad = cases.filter(([a, want]) => redact(a) !== want);
-  results.push(['misses', !bad.length, bad.length ? 'redact wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' redaction cases ok']); }
-{ // test traffic (probe, ping, test) never becomes a miss or a want, and real questions about probes still do (lib/noise.js, tools/will.py)
+  return [!bad.length, bad.length ? 'redact wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' redaction cases ok']; });
+add('noise', async () => { // test traffic (probe, ping, test) never becomes a miss or a want, and real questions about probes still do (lib/noise.js, tools/will.py)
   const { isNoise } = await import('../void-live-deploy/lib/noise.js');
   const py = (await import('node:fs')).readFileSync(new URL('./will.py', import.meta.url), 'utf8').includes('NOISE.match(');
   const cases = [['probe', true], ['ping', true], ['research probe', true], ['test', true], ['how do space probes work', false], ['probe the moon', false], ['weather in paris', false]];
   const bad = cases.filter(([a, want]) => isNoise(a) !== want);
-  results.push(['noise', !bad.length && py, !py ? 'tools/will.py no longer uses the noise list' : bad.length ? 'noise wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' noise cases ok (miss board and will)']); }
-if (process.env.VOID_SKIP_BENCH && !results.some(([n, , l]) => n === 'bench' && /^skipped/.test(l))) results.push(['self', false, 'VOID_SKIP_BENCH is set but the bench row did not say skipped']);
+  return [!bad.length && py, !py ? 'tools/will.py no longer uses the noise list' : bad.length ? 'noise wrong for: ' + bad.map((c) => c[0]).join(' | ') : cases.length + ' noise cases ok (miss board and will)']; });
+
+// Run them: the browser checks one after another in their own lane from the start, the pure ones through the gate beside them.
+// A check that throws fails with its message; the report below is in the order the checks were added, whatever finished first.
+const wanted = jobs.filter((j) => (!skipBrowser || !j.browser) && (!only.length || only.some((w) => j.name.toLowerCase().includes(w))));
+const t0 = Date.now(), results = new Array(wanted.length), timings = [];
+const exec = async (j, i) => { const s = Date.now(); let r; try { r = await j.fn(); } catch (e) { r = [false, 'check crashed: ' + (e && e.message || e)]; }
+  results[i] = [j.name, r[0], r[1]]; timings.push({ name: j.name, ms: r[2] ?? Date.now() - s, browser: j.browser }); };
+const lane = wanted.reduce((p, j, i) => (j.browser ? p.then(async () => { browserRunning++; try { await exec(j, i); } finally { browserRunning--; gate.poke(); } }) : p), Promise.resolve());
+await Promise.all([lane, ...wanted.map((j, i) => (j.browser ? null : exec(j, i)))]);
+const wall = Date.now() - t0;
+if (process.env.VOID_SKIP_BENCH && !only.length && !skipBrowser && !results.some(([n, , l]) => n === 'bench' && /^skipped/.test(l))) results.push(['self', false, 'VOID_SKIP_BENCH is set but the bench row did not say skipped']);
 for (const [n, ok, line] of results) console.log((ok ? (/^inconclusive/.test(line) ? 'inconclusive ' : 'ok   ') : 'FAIL ') + n.padEnd(9) + line);
+{ const pure = timings.filter((t) => !t.browser), br = timings.filter((t) => t.browser);
+  console.log(`\n${results.length} checks in ${fmtMs(wall)} (${pure.length} pure, up to ${poolSize(false)} at once: ${fmtMs(pure.reduce((t, x) => t + x.ms, 0))} of work; ${br.length} browser: ${fmtMs(br.reduce((t, x) => t + x.ms, 0))})`);
+  console.log('slowest: ' + slowest(timings).map((t) => `${t.name}${t.browser ? ' (browser)' : ''} ${fmtMs(t.ms)}`).join(', ')); }
 process.exit(results.every((r) => r[1]) ? 0 : 1);

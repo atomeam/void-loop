@@ -25,6 +25,11 @@ export function utilOf(text) {
   if (m) return { kind: 'qr', data: m[1].trim() };
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?(?:the\s+colou?r\s+)?|colou?r\s+)(#?[0-9a-f]{6}|#?[0-9a-f]{3}|[a-z]{3,12})$/);
   if (m && (/^#?[0-9a-f]{3}([0-9a-f]{3})?$/.test(m[1]) || NAMED[m[1]])) return { kind: 'color', c: m[1] };
+  // the converter forms (tools pack 7, owner 2026-10-18, "Color hex <-> rgb"): "#ff8800 to rgb", "hex to rgb #ff8800", "rgb 255 136 0 to hex", "rgb to hex 255 136 0"; the same colour card
+  m = l.match(/^(?:convert\s+)?(#[0-9a-f]{6}|#[0-9a-f]{3})\s+(?:to|in|into|as)\s+(?:rgb|hsl|hex|colou?r)$/) || l.match(/^(?:convert\s+)?(?:hex|colou?r)\s+(?:code\s+)?(#?[0-9a-f]{6}|#?[0-9a-f]{3})\s+to\s+(?:rgb|hsl)$/) || l.match(/^hex\s+to\s+(?:rgb|hsl)\s*:?\s*(#?[0-9a-f]{6}|#?[0-9a-f]{3})$/);
+  if (m) return { kind: 'color', c: m[1] };
+  m = l.match(/^(?:convert\s+)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?\s+to\s+(?:hex|hsl|colou?r)$/) || l.match(/^rgb\s+to\s+(?:hex|hsl)\s*:?\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
+  if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };
   // "what color is rgb 255 0 0", "rgb(0, 128, 255)"
   m = l.match(/^(?:what\s+colou?r\s+is\s+|show\s+(?:me\s+)?)?rgb\s*\(?\s*(\d{1,3})[\s,]+(\d{1,3})[\s,]+(\d{1,3})\s*\)?$/);
   if (m && [m[1], m[2], m[3]].every((v) => +v <= 255)) return { kind: 'color', c: '#' + [m[1], m[2], m[3]].map((v) => (+v).toString(16).padStart(2, '0')).join('') };

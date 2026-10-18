@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 613,
+ "counted": 631,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 38,
-   "direct": 38,
-   "dependants": 38
+   "skills": 44,
+   "direct": 44,
+   "dependants": 44
   },
   {
    "file": "lib/ask-text.js",
@@ -321,6 +321,12 @@
    "dependants": 4
   },
   {
+   "file": "lib/stage-tools.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 4
+  },
+  {
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
@@ -340,6 +346,12 @@
   },
   {
    "file": "lib/skill-family.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3
+  },
+  {
+   "file": "lib/stage-tools-dom.js",
    "skills": 3,
    "direct": 3,
    "dependants": 3
@@ -411,6 +423,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/fx.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
@@ -418,6 +436,12 @@
   },
   {
    "file": "lib/list-ops.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
+   "file": "lib/safety.js",
    "skills": 2,
    "direct": 2,
    "dependants": 2
@@ -549,6 +573,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/a11y-modes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
@@ -592,6 +622,12 @@
   },
   {
    "file": "lib/decide-cards.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/dev-tools.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -730,6 +766,12 @@
   },
   {
    "file": "lib/stigmergy-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/study-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -1096,6 +1138,12 @@
   },
   {
    "file": "lib/correction-heat.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/empty-state.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -1683,6 +1731,12 @@
     "lib/mcp.js"
    ],
    "importedBy": []
+  },
+  "lib/a11y-modes.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/accessibility-modes.js"
+   ]
   },
   "lib/actions.js": {
    "imports": [],
@@ -2478,6 +2532,12 @@
     "skills/decide-cards.js"
    ]
   },
+  "lib/dev-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/dev-tools.js"
+   ]
+  },
   "lib/digest.js": {
    "imports": [],
    "importedBy": [
@@ -2560,6 +2620,10 @@
    "importedBy": [
     "functions/api/approval.js"
    ]
+  },
+  "lib/empty-state.js": {
+   "imports": [],
+   "importedBy": []
   },
   "lib/event-date.js": {
    "imports": [],
@@ -2720,6 +2784,13 @@
   "lib/fuzzy.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/fx.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/card-play.js",
+    "skills/stage-fx.js"
+   ]
   },
   "lib/go-ai.js": {
    "imports": [],
@@ -3771,6 +3842,13 @@
     "skills/duel.js"
    ]
   },
+  "lib/safety.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/photo-scrub.js",
+    "skills/safety-kit.js"
+   ]
+  },
   "lib/sale-jobs.js": {
    "imports": [
     "lib/products.js",
@@ -4029,6 +4107,7 @@
   "lib/stage-pack.js": {
    "imports": [],
    "importedBy": [
+    "skills/accessibility-modes.js",
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
     "skills/ask-immune.js",
@@ -4040,6 +4119,7 @@
     "skills/date-grid.js",
     "skills/decide-cards.js",
     "skills/decision-matrix.js",
+    "skills/dev-tools.js",
     "skills/eigenwork.js",
     "skills/error-garden.js",
     "skills/four-channels.js",
@@ -4054,19 +4134,42 @@
     "skills/minimap.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
+    "skills/photo-scrub.js",
     "skills/plan-stability.js",
     "skills/qr-scan.js",
     "skills/recipe-stack.js",
+    "skills/safety-kit.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/stage-fx.js",
     "skills/stakes-phase.js",
     "skills/stale-work.js",
+    "skills/study-cards.js",
     "skills/task-board.js",
     "skills/task-diagram.js",
     "skills/template-list.js",
     "skills/time-math.js",
     "skills/witness-claims.js",
     "skills/writing-aids.js"
+   ]
+  },
+  "lib/stage-tools-dom.js": {
+   "imports": [
+    "lib/stage-tools.js"
+   ],
+   "importedBy": [
+    "skills/stage-arrange.js",
+    "skills/stage-organize.js",
+    "skills/stage-style.js"
+   ]
+  },
+  "lib/stage-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/stage-tools-dom.js",
+    "skills/stage-arrange.js",
+    "skills/stage-organize.js",
+    "skills/stage-style.js"
    ]
   },
   "lib/stage-words.js": {
@@ -4199,6 +4302,12 @@
     "functions/api/merge.js",
     "functions/api/repo.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/study-cards.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/study-cards.js"
    ]
   },
   "lib/success-pulse.js": {
@@ -4458,6 +4567,13 @@
     "skills/zorbleflux.js"
    ]
   },
+  "skills/accessibility-modes.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/a11y-modes.js"
+   ],
+   "importedBy": []
+  },
   "skills/actions.js": {
    "imports": [
     "skills/live.js"
@@ -4635,6 +4751,12 @@
    "reachedBy": [
     "skills/dates.js"
    ]
+  },
+  "skills/card-play.js": {
+   "imports": [
+    "lib/fx.js"
+   ],
+   "importedBy": []
   },
   "skills/cartoon.js": {
    "imports": [
@@ -4903,6 +5025,13 @@
   },
   "skills/deps.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/dev-tools.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/dev-tools.js"
+   ],
    "importedBy": []
   },
   "skills/different.js": {
@@ -6185,6 +6314,13 @@
     "skills/period.js"
    ]
   },
+  "skills/photo-scrub.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/safety.js"
+   ],
+   "importedBy": []
+  },
   "skills/pick-for-me.js": {
    "imports": [
     "lib/media.js",
@@ -6449,6 +6585,13 @@
    "imports": [
     "lib/rts.js",
     "skills/scripts.js"
+   ],
+   "importedBy": []
+  },
+  "skills/safety-kit.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/safety.js"
    ],
    "importedBy": []
   },
@@ -6789,8 +6932,36 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/stage-arrange.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-fx.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/fx.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-organize.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
+   "importedBy": []
+  },
   "skills/stage-print.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/stage-style.js": {
+   "imports": [
+    "lib/stage-tools.js",
+    "lib/stage-tools-dom.js"
+   ],
    "importedBy": []
   },
   "skills/stakes-phase.js": {
@@ -6835,6 +7006,13 @@
   "skills/store.js": {
    "imports": [
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "skills/study-cards.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/study-cards.js"
    ],
    "importedBy": []
   },
