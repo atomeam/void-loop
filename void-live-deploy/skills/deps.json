@@ -40,21 +40,21 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 0,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 1,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 0,
-   "dependants": 33
+   "dependants": 34
   },
   {
    "file": "lib/sky-math.js",
@@ -93,28 +93,28 @@
    "dependants": 11
   },
   {
+   "file": "lib/corrections.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 25
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 25
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 9,
+   "direct": 4,
+   "dependants": 22
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
    "dependants": 9
-  },
-  {
-   "file": "lib/corrections.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 24
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 8,
-   "direct": 1,
-   "dependants": 24
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 8,
-   "direct": 3,
-   "dependants": 21
   },
   {
    "file": "lib/ladder.js",
@@ -2010,7 +2010,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/art-source.js": {
@@ -2197,7 +2198,8 @@
    "importedBy": [
     "skills/error-garden.js",
     "skills/growth.js",
-    "skills/incident-autopsy.js"
+    "skills/incident-autopsy.js",
+    "skills/status.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -2634,7 +2636,8 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/council-law.js": {
@@ -3197,7 +3200,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/ladder.js": {
@@ -3409,7 +3413,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/misskey.js": {
@@ -4015,7 +4020,8 @@
     "skills/guide.js",
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
-    "skills/own-parts.js"
+    "skills/own-parts.js",
+    "skills/status.js"
    ]
   },
   "lib/reefwatch.js": {
@@ -7562,6 +7568,7 @@
   "skills/status.js": {
    "imports": [
     "lib/ask-text.js",
+    "lib/autopsy.js",
     "lib/success-pulse.js"
    ],
    "importedBy": [
