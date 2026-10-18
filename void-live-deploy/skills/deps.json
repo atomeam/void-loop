@@ -321,6 +321,12 @@
    "dependants": 6
   },
   {
+   "file": "lib/lineage.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
    "file": "lib/void-seal.js",
    "skills": 4,
    "direct": 0,
@@ -2411,6 +2417,7 @@
    "imports": [
     "lib/guide.js",
     "lib/card-kinds.js",
+    "lib/lineage.js",
     "lib/card-share.js",
     "lib/art-meta.js",
     "lib/card-art.js",
@@ -3323,6 +3330,19 @@
     "functions/api/miss.js",
     "lib/refusal.js",
     "skills/miss-jobs.js"
+   ]
+  },
+  "lib/lineage.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js"
    ]
   },
   "lib/linediff.js": {
@@ -7220,6 +7240,10 @@
    "importedBy": []
   },
   "skills/releasenotes.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/remediation-velocity.js": {
    "imports": [],
    "importedBy": []
   },
