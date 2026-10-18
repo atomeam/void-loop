@@ -7,7 +7,8 @@
  * error-garden"): when the garden is shown or mounted it reads incidents.json (every red browser suite on main, tools/incident-log.mjs) and plants
  * each failing check of the incidents it has not seen, by the check's title, the same plants "plant my test failures" makes; the same check failing
  * again is a weed, and a rule written beside it (the fix) is compost. The first time a garden meets the file only the newest incident is planted, so
- * an old stage is not flooded. The shas seen stay on the garden, on this device.
+ * an old stage is not flooded; a garden kept only for a person's own mistakes (never shown, never asked for the failures) is left alone. The shas
+ * seen stay on the garden, on this device.
  */
 import { escHtml, addThing, cardEl, keepOut, firstOf, tidy } from '../lib/stage-pack.js';
 import { words, sameThing } from '../lib/stage-words.js';
@@ -149,7 +150,9 @@ function mount(th, stageApi) {
   });
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
-  growIncidents(th, stageApi).catch(() => {}); // the site's red checks grow here (one reading a page load; a change re-renders)
+  // the site's red checks grow here by themselves once the garden has met them ("show my error garden" or "plant my test failures"); a garden a person
+  // keeps only for their own mistakes stays theirs. One reading a page load; a change re-renders.
+  if (Array.isArray(th.incidentsSeen)) growIncidents(th, stageApi).catch(() => {});
 }
 
 /** the stage kind's ask hook; the name of what happened, or '' */
@@ -158,6 +161,7 @@ export function ask(lower, text, stageApi) {
   if (!it) return '';
   let th = firstOf(stageApi, 'errgarden');
   if (!th) th = addThing(stageApi, 'errgarden', { plants: [] });
+  if (it.act === 'show' && !Array.isArray(th.incidentsSeen)) th.incidentsSeen = []; // shown: from now on the red checks grow in it (the newest incident first, on this render)
   if (it.act === 'plant') {
     const r = plant(th.plants, it.text);
     th.plants = r.plants;
@@ -185,6 +189,7 @@ export default {
       if (!items.length) { api.stage.say('no failed checks on record: the garden stays as it is'); return 'error-garden-none'; }
       const st = api.stage; let th = firstOf(st, 'errgarden'); if (!th) th = addThing(st, 'errgarden', { plants: [] });
       th.plants = plantMany(th.plants, items);
+      th.incidentsSeen = parseIncidents(j).map((i) => i.sha).slice(-200); // every incident's checks are in; the ones after this grow by themselves
       const weeds = th.plants.filter((p) => stageOf(p) === 'weed').length;
       st.say('planted ' + items.length + ' failed checks from the incident autopsy' + (weeds ? ': ' + weeds + ' came back and are weeds' : ''));
       st.select(th.id); st.save(); st.render(); return 'error-garden';
