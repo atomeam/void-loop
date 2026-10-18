@@ -353,17 +353,19 @@ check('gap 2: a harmless button on the same page (Save) is still clicked after Y
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
-const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+// a card redraw while the request is in flight drops its answer on purpose (skills/tab.js: "the card was redrawn or closed meanwhile"), so on a loaded machine the click is asked again, up to 3 times
+const askReply = async () => { for (let i = 0; i < 3; i++) { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); const t = await V.waitForFunction(() => { const x = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from Verse/.test(x) ? x : null; }, null, { timeout: 6000 }).then((h) => h.jsonValue()).catch(() => ''); if (t) return t; } return ''; };
+const draftReply = async () => { await askReply(); };
 await draftReply();
-await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+// the card is on and its text is filled before either is read (on a loaded machine the card lit up a beat before its text was set)
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on') && !!document.querySelector('.act-text').textContent, null, { timeout: 8000 }).catch(() => {});
 const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
 const autoCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
 await press('.act-no', async () => !(await cardOn()));
 await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
 await page.waitForTimeout(200);
 // the card's line is read the moment the draft lands (a later redraw of the card may reset it), not after a fixed wait
-await V.evaluate(() => document.querySelector('.tab-ask-reply').click());
-const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from Verse/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+const offSaid = await askReply();
 await page.waitForTimeout(400);
 const offList = { on: await cardOn(), said: offSaid, act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
 check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',

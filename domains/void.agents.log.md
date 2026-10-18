@@ -917,3 +917,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-18T16:13:18Z | claude | grow | A verifiable growth ledger: hash per line, root hash, Atom feed
 2026-10-18T16:22:50Z | claude | grow | The approval gate as tested functions
 2026-10-18T16:41:46Z | claude | grow | Incidents that close
+2026-10-18T16:51:30Z | claude | grow | Churn caps for the build loop

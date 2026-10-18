@@ -210,6 +210,7 @@ for (const [name, file] of [
   ['notebook', 'notebook.test.mjs'],
   ['ledger-proof', 'ledger-proof.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
+  ['churn', 'churn.test.mjs'],
   ['will-guard', 'will-guard.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
