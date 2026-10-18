@@ -1106,7 +1106,7 @@ try {
     R.p.on('request', (q) => { if (/\/api\/miss$/.test(q.url())) { try { missed.push(JSON.parse(q.postData() || '{}').fallback); } catch (_) {} } });
     await R.ctx.route(/wikipedia\.org/, (r) => (reachable ? r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ batchcomplete: '', query: { searchinfo: { totalhits: 0 }, search: [] } }) }) : r.abort()));
     await R.ctx.route(/wiktionary\.org/, (r) => (reachable ? r.fulfill({ status: 404, contentType: 'application/json', body: '{}' }) : r.abort()));
-    await R.ask('tell me about zorbleflux', 400);
+    await R.ask('tell me about blorptangle', 400);
     await until(async () => /Missing:/.test(await R.page()), 6000);
     const pg = await R.page();
     const agent = await R.p.evaluate(async () => { for (let i = 0; i < 50 && !window.__tools.void_ask; i++) await new Promise((r) => setTimeout(r, 100)); return window.__tools.void_ask ? String(await window.__tools.void_ask.execute({ ask: 'tell me about quuxblarf' })) : 'no tool'; });
@@ -1118,9 +1118,9 @@ try {
     await until(async () => /nothing was looked up/.test(await R.page()), 6000);
     const pg2 = await R.page(), last = await R.p.evaluate(() => { const l = window.voidRefusals || []; return l[l.length - 1] || null; });
     check('refusal object: every "I cannot" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from "no such thing"',
-      /don't know this yet/.test(pg) && /Missing: what this is .*Looked in Wikipedia and Wiktionary\. Noted as miss:tell-me-about-zorbleflux\./.test(pg)
+      /don't know this yet/.test(pg) && /Missing: what this is .*Looked in Wikipedia and Wiktionary\. Noted as miss:tell-me-about-blorptangle\./.test(pg)
       && obj && obj.cannot === true && obj.kind === 'knowledge' && obj.id === 'cannot:knowledge:tell-me-about-quuxblarf' && JSON.stringify(obj.sources_checked) === '["wikipedia","wiktionary"]'
-      && kept.includes('cannot:knowledge:tell-me-about-zorbleflux') && missed.includes('none:wikipedia,wiktionary')
+      && kept.includes('cannot:knowledge:tell-me-about-blorptangle') && missed.includes('none:wikipedia,wiktionary')
       && /couldn't look this up/.test(pg2) && !/don't know this yet/.test(pg2) && last && last.kind === 'lookup' && JSON.stringify(last.sources_checked) === '[]' && missed.includes('unreached'),
       [pg.slice(0, 200), agent.slice(-200), kept.join(','), missed.join(','), pg2.slice(0, 160)].join(' | '));
     await R.ctx.close(); }
@@ -2478,7 +2478,7 @@ try {
     await R.p.hover('.vpage.on .ec-badge'); const rawHover = await R.p.$eval('.vpage.on .ec-raw', (c) => ({ shown: getComputedStyle(c).display !== 'none', text: c.textContent }));
     await R.p.mouse.move(0, 0); await R.p.click('.vpage.on .ec-badge'); await R.p.mouse.move(0, 0); const rawTap = await R.p.$eval('.vpage.on .ec-raw', (c) => getComputedStyle(c).display !== 'none');
     const verified = await R.p.$eval('.vpage.on .ec-verified', (v) => ({ at: v.dataset.verified, text: v.textContent })).catch(() => null); // asked by Void: how fresh the source is
-    await R.ask('countdown to zorbleflux', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
+    await R.ask('countdown to blorptangle', 400); await until(async () => /no announced date/.test(await R.page()), 6000);
     const none = await R.page();
     check('event countdown: "how many hours til gta6?" reads Grand Theft Auto VI\'s Wikipedia page (its summary has no date, so the lead and the infobox release line) and counts the hours to its announced release day, quoting the source line and linking the page with when it was last edited and checked; an event whose page names no date ahead says so, no guess',
       /Until Grand Theft Auto VI/.test(card) && /\d[\d,]* hours/.test(card) && /2099/.test(card) && /release/.test(card) && /less sure/.test(card) && /infobox/.test(card) && !!link && seen[0] === 'Grand_Theft_Auto_VI'
@@ -2509,6 +2509,33 @@ try {
     check('arcade ghost: the Pong card names the saved best game as its ghost (7-3), the Snake card the saved best run (9 long), and nothing is overwritten while a game is only starting',
       /Ghost: your best game, 7-3/.test(pw) && /Ghost: your best run, 9 long/.test(sw) && stored.pong === 7 && stored.snake === 9 && !G.errors.length, JSON.stringify({ pw, sw, stored, errors: G.errors }));
     await G.ctx.close(); }
+  if (want("zorbleflux: the game opens from the ask, a collected mote raises the score, the round ends and Play again works, with and without reduced motion")) { // asked by Void and the owner (2026-10-18)
+    const out = [];
+    for (const reduce of [false, true]) {
+      const Zf = await fresh(); if (reduce) await Zf.p.emulateMedia({ reducedMotion: 'reduce' });
+      await Zf.ask('play zorbleflux', 600); await until(async () => !!(await Zf.p.$('.zorble-card canvas')), 6000);
+      const ph0 = await Zf.p.$eval('.zorble-card', (e) => e.dataset.phase);
+      const box = await Zf.p.$eval('.zorble-card canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+      await Zf.p.mouse.move(box.x + box.w / 2, box.y + box.h / 2); await Zf.p.mouse.down(); await Zf.p.mouse.up(); await Zf.p.mouse.move(box.x + box.w / 2 + 6, box.y + box.h / 2 + 4);
+      await until(async () => (await Zf.p.$eval('.zorble-card', (e) => e.dataset.phase)) === 'play', 4000);
+      await Zf.p.$eval('.zorble-card', (e) => { const s = e._zorble(); s.bleeds.length = 0; s.motes[0] = { x: s.zorb.x, y: s.zorb.y }; });
+      await until(async () => +(await Zf.p.$eval('.zorble-card', (e) => e.dataset.score)) > 0, 4000);
+      const score = +(await Zf.p.$eval('.zorble-card', (e) => e.dataset.score)), slow = await Zf.p.$eval('.zorble-card', (e) => e._zorble().slow);
+      await Zf.p.$eval('.zorble-card', (e) => { e._zorble().t = 44.95; });
+      await until(async () => (await Zf.p.$eval('.zorble-card', (e) => e.dataset.phase)) === 'over', 4000);
+      const best = await Zf.p.evaluate(() => localStorage.getItem('void-zorbleflux-best')), st = await Zf.p.$eval('.zorble-card .g-status', (e) => e.textContent);
+      await Zf.p.click('.zorble-card .zorble-card-new');
+      await until(async () => (await Zf.p.$eval('.zorble-card', (e) => e.dataset.phase)) === 'play', 4000);
+      const fresher = await Zf.p.$eval('.zorble-card', (e) => e._zorble().t < 1 && !e._zorble().over);
+      out.push({ reduce, ph0, score, slow, best, st: st.slice(0, 40), fresher, errors: Zf.errors.slice() });
+      await Zf.ctx.close();
+    }
+    const A = await fresh(); await A.ask('what is a zorbleflux', 600); await until(async () => !!(await A.p.$('.zorble-about')), 6000);
+    const about = await A.p.$eval('.zorble-about', (e) => e.textContent); await A.ctx.close();
+    check('zorbleflux: "play zorbleflux" opens a calm start screen, moving and a collected mote raise the score, the round ends at 45s with the best kept on the device, Play again starts a fresh round, reduced motion slows the field, and "what is a zorbleflux" opens it with its one line',
+      out.every((o) => o.ph0 === 'ready' && o.score >= 10 && o.slow === o.reduce && +o.best >= o.score && /Round over/.test(o.st) && o.fresher && !o.errors.length)
+      && about === 'A zorbleflux is the thing V01D got asked about 154 times and could not answer, so it made it a game.', JSON.stringify({ out, about }));
+  }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
     const r = await F.p.evaluate(async () => {

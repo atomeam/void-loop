@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 508,
+ "counted": 510,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 2,
-   "dependants": 24
+   "dependants": 26
   },
   {
    "file": "lib/sky-math.js",
@@ -568,6 +568,12 @@
   },
   {
    "file": "lib/web4.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/zorbleflux.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2217,6 +2223,7 @@
     "lib/field-swarm.js",
     "lib/field-vector.js",
     "lib/opposite-era.js",
+    "lib/zorbleflux.js",
     "skills/crowd.js",
     "skills/feud.js"
    ],
@@ -2233,7 +2240,8 @@
     "skills/riot.js",
     "skills/sudden-death.js",
     "skills/swarm-mind.js",
-    "skills/vector-field-mind.js"
+    "skills/vector-field-mind.js",
+    "skills/zorbleflux.js"
    ]
   },
   "lib/field-nca.js": {
@@ -3769,6 +3777,14 @@
     "skills/time.js"
    ]
   },
+  "lib/zorbleflux.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/zorbleflux.js"
+   ]
+  },
   "skills/actions.js": {
    "imports": [
     "skills/live.js"
@@ -3805,7 +3821,8 @@
    "imports": [],
    "importedBy": [
     "skills/pong.js",
-    "skills/snake.js"
+    "skills/snake.js",
+    "skills/zorbleflux.js"
    ]
   },
   "skills/attention-field-mind.js": {
@@ -5969,6 +5986,13 @@
    "imports": [
     "lib/ask-text.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/zorbleflux.js": {
+   "imports": [
+    "lib/zorbleflux.js",
+    "skills/arcade-card.js"
    ],
    "importedBy": []
   }
