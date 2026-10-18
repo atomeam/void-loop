@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 656,
+ "counted": 657,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -30,7 +30,7 @@
    "file": "lib/state.js",
    "skills": 19,
    "direct": 2,
-   "dependants": 37
+   "dependants": 38
   },
   {
    "file": "lib/field-kit.js",
@@ -459,6 +459,12 @@
    "dependants": 3
   },
   {
+   "file": "lib/list-goal.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
    "file": "lib/media.js",
    "skills": 2,
    "direct": 2,
@@ -502,12 +508,6 @@
   },
   {
    "file": "lib/go-ai.js",
-   "skills": 2,
-   "direct": 1,
-   "dependants": 2
-  },
-  {
-   "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2
@@ -1209,6 +1209,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/anchor-density.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
    "file": "lib/appraise.js",
    "skills": 0,
    "direct": 0,
@@ -1882,6 +1888,13 @@
     "lib/price-lock.js",
     "skills/store.js"
    ]
+  },
+  "lib/anchor-density.js": {
+   "imports": [
+    "lib/list-goal.js",
+    "lib/state.js"
+   ],
+   "importedBy": []
   },
   "lib/appraise-photo.js": {
    "imports": [],
@@ -3215,6 +3228,7 @@
   "lib/list-goal.js": {
    "imports": [],
    "importedBy": [
+    "lib/anchor-density.js",
     "skills/list.js"
    ],
    "reachedBy": [
@@ -4605,6 +4619,7 @@
   "lib/state.js": {
    "imports": [],
    "importedBy": [
+    "lib/anchor-density.js",
     "lib/eclipse.js",
     "lib/ladder.js",
     "lib/match-history.js",

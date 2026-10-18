@@ -1710,8 +1710,8 @@
     {
      "name": "friction",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
-     "last_tested": "2026-10-17",
+     "why": "a self-test, 5 browser-suite mentions",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "streak": 1
     },
@@ -2399,7 +2399,7 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 14 real asks in the benchmark",
+     "why": "a self-test, 15 browser-suite mentions, 14 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
