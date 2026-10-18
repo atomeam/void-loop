@@ -2,14 +2,48 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T16:27:37.490Z",
+   "at": "2026-10-18T16:31:47.282Z",
+   "sha": "b0113f6749f20b329a507b61d1be400152778b90",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39144673452",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "owner board: what Verse earned (net, sales), its milestones and the free-model shortfalls sit on top of the board",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/deploy.yml",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/checks.mjs",
+    "tools/ledger-proof.mjs",
+    "tools/ledger-proof.test.mjs",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-18T16:21:27.740Z",
    "sha": "cfbda4fbadec0dddd424c003ed870ab185410d71",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39143833356",
    "suite": "browser suite on main",
    "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
+    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
+    "suite ran to the end"
    ],
    "touched": [
     "docs/MAP.md",
@@ -674,39 +708,6 @@
     "void-live-deploy/skills/note-tools.js",
     "void-live-deploy/void.html",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-18T06:50:42.063Z",
-   "sha": "d139d79e5b5ffee950b2ea79c49e586ea355f51b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39104498469",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "intent without a day: \"plan my move\" brings the move's steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day",
-    "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
-    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/skill-overlap.json",
-    "tools/test_void.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/lib/router.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0069-wants",
-    "void-live-deploy/skills/wants.js"
    ]
   }
  ]
