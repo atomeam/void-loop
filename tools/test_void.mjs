@@ -1858,6 +1858,55 @@ try {
       !!bellOk && bellOk.count === '2' && /2 new things/.test(bellOk.label) && /wn-pulse/.test(bellOk.anim) && bellOk.fixed === 'fixed' && /1 of 2/.test(bar) && !gone && !P.errors.length, JSON.stringify({ bellOk, bar, gone: !!gone, errors: P.errors }));
     await P.ctx.close();
   }
+  if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
+    const LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
+    const TARGET = '2026-10-14t01-00-00z';
+    const run = async ({ reduce = false, mode = 'ok' } = {}) => {
+      const posts = [], gets = [], counts = { clap: 4, fire: 0, wow: 0, laugh: 0, heart: 1200, eyes: 0 };
+      const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
+      if (reduce) await P.p.emulateMedia({ reducedMotion: 'reduce' });
+      await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+      await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk'] }) }));
+      await P.ctx.route(/\/api\/react(?:\?|$)/, (r) => {
+        const q = r.request();
+        if (mode === 'down') return r.fulfill({ status: 503, contentType: 'application/json', body: '{"ok":false,"error":"reactions are off for now"}' });
+        if (q.method() === 'GET') { gets.push(new URL(q.url()).searchParams.get('target')); return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts: mode === 'hostile' ? { clap: '<img src=x onerror=window.__pwn=1>', fire: 2, evil: 5 } : counts }) }); }
+        posts.push(JSON.parse(q.postData() || '{}'));
+        if (mode === 'limit') return r.fulfill({ status: 429, headers: { 'retry-after': '30' }, contentType: 'application/json', body: '{"ok":false,"error":"slow down"}' });
+        counts[posts[posts.length - 1].reaction] += 1;
+        return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: true, counts }) });
+      });
+      await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200);
+      await until(async () => P.p.$('#whatsnew-bell'), 20000); await P.p.click('#whatsnew-bell');
+      await P.p.waitForTimeout(1200);
+      return { P, posts, gets, counts };
+    };
+    const info = (P) => P.p.evaluate(() => { const b = document.querySelector('#showcase-bar .rx-bar'); return b ? { hidden: b.hidden || getComputedStyle(b).display === 'none', ids: [...b.querySelectorAll('button')].map((x) => x.dataset.reaction), nums: [...b.querySelectorAll('button')].map((x) => x.querySelector('.rx-n').textContent), disabled: [...b.querySelectorAll('button')].map((x) => x.disabled), img: !!b.querySelector('img'), burst: !!b.querySelector('.rx-b'), target: b.dataset.target } : null; });
+    const A = await run();
+    const first = await info(A.P);
+    await A.P.p.dblclick('#showcase-bar .rx-bar [data-reaction="clap"]'); await A.P.p.waitForTimeout(500);
+    const after = await info(A.P);
+    await A.P.p.waitForTimeout(1500);
+    const rested = await info(A.P);
+    await A.P.p.click('#showcase-bar .rx-bar [data-reaction="fire"]'); await A.P.p.waitForTimeout(150);
+    const resting = await info(A.P);
+    await A.P.ctx.close();
+    const R = await run({ reduce: true }); await R.P.p.click('#showcase-bar .rx-bar [data-reaction="wow"]'); await R.P.p.waitForTimeout(300);
+    const calm = await info(R.P); await R.P.ctx.close();
+    const H = await run({ mode: 'hostile' }); const hostile = await info(H.P); const pwn = await H.P.p.evaluate(() => window.__pwn === 1); await H.P.ctx.close();
+    const L = await run({ mode: 'limit' }); await L.P.p.click('#showcase-bar .rx-bar [data-reaction="eyes"]'); await L.P.p.waitForTimeout(2000);
+    const limited = await info(L.P); await L.P.ctx.close();
+    const D = await run({ mode: 'down' }); const down = await info(D.P); const downBar = await D.P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''); await D.P.ctx.close();
+    check('spectator reactions: the 6 buttons of the closed list sit under a "look what I made" step with live counts read for that step\'s target (1.2k for 1,200); a double tap sends ONE {target, reaction} and counts it; the button rests after a tap and comes back; a burst plays only with motion allowed; the server\'s text is never drawn; a 429 rests the bar for its Retry-After; a dead endpoint shows no bar and the step still works',
+      first && !first.hidden && first.ids.join() === 'clap,fire,wow,laugh,heart,eyes' && first.nums.join() === '4,,,,1.2k,' && first.target === TARGET && A.gets[0] === TARGET
+        && A.posts.length >= 1 && A.posts[0].reaction === 'clap' && JSON.stringify(Object.keys(A.posts[0]).sort()) === '["reaction","target"]' && A.posts[0].target === TARGET && A.posts.filter((x) => x.reaction === 'clap').length === 1 && after.nums[0] === '5' && after.burst
+        && resting.disabled.every(Boolean) && rested.disabled.every((d) => !d)
+        && calm && calm.nums[2] === '1' && !calm.burst
+        && hostile && hostile.nums[0] === '' && hostile.nums[1] === '2' && !hostile.img && !pwn
+        && limited && limited.disabled.every(Boolean) && L.posts.length === 1
+        && (!down || down.hidden) && /1 of 1/.test(downBar) && !A.P.errors.length && !R.P.errors.length && !H.P.errors.length && !D.P.errors.length,
+      JSON.stringify({ first, after, resting, rested, calm, hostile, pwn, limited, down, downBar: downBar.slice(0, 120), posts: A.posts, errors: [...A.P.errors, ...D.P.errors] }));
+  }
   if (want("look what I made: a returning visitor's quiet line, the walkthrough on the stage (Next, Keep, Done), nothing on a first visit, \"what's new\"")) {
     const LEDGER = [
       { at: '2026-10-10T00:00:00Z', by: 'claude', kind: 'grow', what: 'older', show: 'an old thing', try: 'make a clock' },

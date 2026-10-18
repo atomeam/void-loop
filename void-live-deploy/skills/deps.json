@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 589,
+ "counted": 592,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -321,6 +321,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/reactions.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 4
+  },
+  {
    "file": "lib/date-math.js",
    "skills": 2,
    "direct": 1,
@@ -364,6 +370,12 @@
   },
   {
    "file": "lib/go-ai.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/reaction-bar.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2
@@ -726,7 +738,7 @@
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42
+   "dependants": 43
   },
   {
    "file": "lib/models.js",
@@ -1433,6 +1445,13 @@
     "lib/guard.js",
     "lib/actions.js",
     "lib/job-draft.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/react.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js"
    ],
    "importedBy": []
   },
@@ -2577,6 +2596,7 @@
     "functions/api/probe-log.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/react.js",
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
     "functions/api/review.js",
@@ -3337,6 +3357,28 @@
   "lib/rating-note.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/reaction-bar.js": {
+   "imports": [
+    "lib/reactions.js"
+   ],
+   "importedBy": [
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "skills/guide.js"
+   ]
+  },
+  "lib/reactions.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/react.js",
+    "lib/reaction-bar.js",
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "skills/guide.js"
+   ]
   },
   "lib/reefwatch.js": {
    "imports": [],
@@ -6230,7 +6272,9 @@
   },
   "skills/showcase.js": {
    "imports": [
-    "skills/growth-tree.js"
+    "skills/growth-tree.js",
+    "lib/reaction-bar.js",
+    "lib/reactions.js"
    ],
    "importedBy": [
     "skills/guide.js"

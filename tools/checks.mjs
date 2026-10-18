@@ -260,6 +260,7 @@ for (const [name, file] of [
   ['merge-rules', 'merge-rules.test.mjs'],
   ['merge-route', 'merge-route.test.mjs'],
   ['card-art-route', 'card-art-route.test.mjs'],
+  ['react', 'react.test.mjs'],
   ['card-subject', 'card-subject.test.mjs'],
   ['page-picture', 'page-picture.test.mjs'],
   ['card-forge', 'card-forge.test.mjs'],
