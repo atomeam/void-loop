@@ -770,7 +770,7 @@
     .vpage h2 { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -.005em; line-height: 1.25; margin: 0 0 4px; }
     .vpage .sub { font-size: var(--fs-s); color: var(--ink-3); margin-bottom: 14px; }
     .vpage p, .vpage ul { color: #d5d8e2; }
-    .vpage .src { font-size: var(--fs-xs); color: var(--ink-3); }
+    .vpage .src { font-size: var(--fs-xs); color: var(--ink-2); } /* "written by V01D, from what it knows": ink-2 on the card, ~9:1 (it was ink-3, 5.7:1 and read as too dark; owner, 2026-10-18); the answer stays brighter and larger */
     /* Void's reflection card (showVoice): section heads in the one accent, the built-of-asked bar, asks that open */
     .vpage .vh { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--d-key, 158 178 255)); margin: 18px 0 6px; }
     .vpage .v-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin: 6px 0 8px; }
@@ -990,6 +990,10 @@
       opacity: .45; transition: opacity .35s ease; }
     #row:focus-within::after { opacity: 1; }
     #row:focus-within { box-shadow: var(--d-lift), 0 0 0 4px rgb(var(--d-key) / .10), 0 0 60px rgb(var(--d-key) / .16); }
+    /* the ask bar's focus glow in the card's own palette (owner, 2026-10-18): a purple rim with a faint gold bloom and an inner shadow; only the glow eases in, and not at all for reduced motion */
+    #row { transition: box-shadow .3s ease, border-color .3s ease; }
+    #row:focus-within { border-color: rgba(190,150,255,.78); box-shadow: var(--d-lift), inset 0 0 16px rgba(167,120,255,.20), 0 0 0 3px rgba(167,120,255,.18), 0 0 34px rgba(167,120,255,.30), 0 0 72px rgba(255,210,122,.12); }
+    @media (prefers-reduced-motion: reduce) { #row { transition: none; } }
     #input { font-size: 17px; letter-spacing: -.005em; color: var(--d-ink); }
     #input::placeholder { color: var(--d-ink-3); }
     #go { transition: background .25s ease, box-shadow .25s ease, color .25s ease; }
@@ -2030,9 +2034,19 @@ say('nothing selected to remove');
       window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up); stage.addEventListener('pointerdown', down);
     }
     stage.addEventListener('wheel', (e) => { if (e.target === stage && worldCur && worldCur.inst && worldCur.inst.zoom) { e.preventDefault(); worldCur.inst.zoom(e.deltaY > 0 ? 1.1 : 0.9); } }, { passive: false });
+    // an answer card that is replaced leaves its header and words in this browser (skills/recent.js shows them as "earlier answers"; owner, 2026-10-18)
+    function trailKeep(el) {
+      try {
+        if (!el.querySelector('.src') || el.dataset.noTrail || /^(?:unlock\s*)+\S{16,}\s*$/i.test(String(el._ask || ''))) return;
+        const h = el.querySelector('h2'), c = el.cloneNode(true); c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, script, h2').forEach((x) => x.remove());
+        const t = (h ? h.textContent : '').replace(/\s+/g, ' ').trim().slice(0, 160), x = (c.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 700); if (!t || !x) return;
+        let list = []; try { list = JSON.parse(localStorage.getItem('a2m.void.trail.v1') || '[]'); } catch (_) {} if (!Array.isArray(list)) list = [];
+        localStorage.setItem('a2m.void.trail.v1', JSON.stringify([{ t, x, at: Date.now() }].concat(list.filter((e) => e && e.t !== t)).slice(0, 12)));
+      } catch (_) {}
+    }
     function closePage() {
       if (!vpageEl) return false;
-      const el = vpageEl; vpageEl = null; closeWorld();
+      const el = vpageEl; vpageEl = null; trailKeep(el); closeWorld();
       if (el._slogan && el._slogan.parentNode) el._slogan.parentNode.removeChild(el._slogan);
       el._slogan = null;
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
@@ -2208,7 +2222,10 @@ say('nothing selected to remove');
       return el;
     }
     // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
-    function addCopy(el) {
+    // (owner, 2026-10-18, UI polish: an answer card keeps one set of buttons: its card frame's "copy text" does what this pill did, lib/card-share.js,
+    // so an answer calls addCopy(el, false) and gets only the side panel's "into the page"; the stage's own things still get the pill)
+    function addCopy(el, pill) {
+      if (pill !== false) {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tr-copy vcopy'; b.textContent = 'copy'; b.style.marginTop = '10px';
       b.addEventListener('click', async () => {
         const c = el.cloneNode(true); c.querySelectorAll('button, .src').forEach((x) => x.remove());
@@ -2217,6 +2234,7 @@ say('nothing selected to remove');
         b.textContent = ok ? 'copied' : 'select and copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600);
       });
       el.appendChild(b);
+      }
       if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Void at
       const p = document.createElement('button'); p.type = 'button'; p.className = 'tr-copy vcopy vput'; p.textContent = 'into the page'; p.style.cssText = 'margin-top:10px;margin-left:8px';
       p.addEventListener('pointerdown', (e) => e.stopPropagation()); // on a stage card a press starts a drag, which redraws the card before the click lands
@@ -2350,7 +2368,7 @@ say('nothing selected to remove');
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
         + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by V01D' : j.told ? 'from what you told me · written by V01D' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by V01D' : 'written by V01D, from what it knows') + '</div>';
-      addCopy(el);
+      addCopy(el, false);
       say('');
       return 'answer';
     }
@@ -2583,7 +2601,7 @@ say('nothing selected to remove');
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
-        addCopy(el);
+        addCopy(el, false);
         // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
         el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); keepCard(el);
         import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});

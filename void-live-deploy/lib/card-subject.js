@@ -15,7 +15,7 @@ const STOP = new Set(('about above after again against also always another aroun
 const MOTIFS = {
   hand: 'hand hands fist palm finger fingers glove', eye: 'eye eyes gaze vision watcher', skull: 'skull skulls bone bones dead death corpse skeleton grave tomb embalmed mummy',
   ghost: 'ghost ghosts spirit spirits haunt haunted haunting soul souls phantom specter possession possessed demon demons', moon: 'moon lunar crescent night midnight',
-  sun: 'sun solar sunrise sunset dawn day', star: 'star stars space galaxy cosmos planet universe constellation', tree: 'tree trees forest woods jungle garden plant',
+  sun: 'sun solar sunrise sunset dawn day', star: 'star stars space galaxy cosmos planet universe constellation astronomy astronaut orbit comet asteroid telescope nebula', tree: 'tree trees forest woods jungle garden plant',
   house: 'house home door castle mansion building room cabin village', key: 'key keys lock secret mystery', book: 'book books tome library novel magic spell spells',
   sword: 'sword swords blade knife war battle weapon fight warrior', flame: 'flame fire burn burning ember explosion', crown: 'crown king queen throne royal kingdom',
   wave: 'ocean sea wave waves water ship island river boat', mountain: 'mountain mountains peak climb hill', heart: 'heart love romance hearts', gem: 'crystal gem gems diamond jewel treasure gold',
@@ -24,8 +24,9 @@ const MOTIFS = {
   // round 2 (owner, 2026-10-18: "continue to improve the card art its not perfect"): a cat, a skyline, a black hole, a chart, a bowl, a warning and code each had only a stand-in
   cat: 'cat cats kitten kitty feline tiger lion lynx', city: 'city cities tokyo skyline street streets neon downtown metropolis skyscraper tower towers urban', hole: 'hole holes singularity horizon vortex blackhole accretion',
   chart: 'stock stocks market markets money price prices finance coin coins cash bank dollar dollars profit growth economy trading invest investing budget', food: 'recipe recipes cook cooking food kitchen bake baking soup eggs flour dinner meal dish bowl pancake pancakes',
-  warning: 'error errors bug bugs broke broken fail failed failure crash warning fault exception outage incident', code: 'code coding hacker hack program programming matrix software computer digital cyber binary algorithm script',
+  warning: 'error errors bug bugs broke broken fail failed failure crash warning fault exception outage incident', code: 'code coding hacker hack program programming programmer developer matrix software computer digital cyber binary algorithm script scripts javascript python typescript function functions variable debug compile compiler api database syntax github',
   dragon: 'dragon dragons wyvern serpent drake',
+  landscape: 'geography landscape country countries continent continents valley desert canyon terrain plains',
 };
 // the hue each motif is drawn in, so a dragon burns red and the sea is blue whatever the family's hue (the family's hue still tints the rest of the plate)
 export const MOTIF_HUE = { hand: 28, eye: 48, skull: 70, ghost: 190, moon: 214, sun: 42, star: 52, tree: 128, house: 18, key: 46, book: 30, sword: 205, flame: 16, crown: 46, wave: 198, mountain: 212, heart: 346, gem: 168, note: 292, clock: 38, mask: 282, cat: 36, city: 262, hole: 284, chart: 142, food: 26, warning: 38, code: 132, dragon: 6 };
@@ -85,6 +86,7 @@ const DRAW = {
   warning: [['M50 8L94 88H6Z', 'G'], ['M45 34H55L53 64H47Z', 'I'], [circ(50, 75, 4.5), 'I']],
   code: [['M34 22L8 50L34 78M66 22L92 50L66 78M57 14L43 86', 'N']],
   dragon: [['M46 60L2 14Q10 40 6 54Q18 46 22 62Q32 52 34 70Q42 62 46 74Z', 'P'], ['M54 60L98 14Q90 40 94 54Q82 46 78 62Q68 52 66 70Q58 62 54 74Z', 'P'], ['M43 30Q50 6 57 30L59 66Q50 96 41 66Z', 'P'], ['M44 20L36 4M56 20L64 4M50 90L50 98', 'N'], [circ(46, 30, 2), 'G'], [circ(54, 30, 2), 'G']],
+  landscape: [['M4 90L4 62Q22 40 42 62Q62 30 96 60L96 90Z', 'P'], ['M4 78Q30 66 50 80T96 74', 'N'], [circ(76, 26, 10), 'G']],
   mask: [['M10 28Q50 12 90 28Q92 64 70 80Q50 94 30 80Q8 64 10 28Z', 'P'], ['M24 42Q34 36 44 46Q34 54 24 42ZM56 46Q66 36 76 42Q66 54 56 46Z', 'I'], ['M38 70Q50 78 62 70', 'N']],
 };
 /** the motifs as ink drawings for an art box of w x h: a gold halo of sigils behind, the first motif large, the others beside it. `c` = { P, L, D, G, ink, sw }. Pure. */

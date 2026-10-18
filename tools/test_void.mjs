@@ -4691,6 +4691,56 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // UI polish (owner, 2026-10-18, a reviewer's notes on the answer card): the card's buttons are two labelled groups (Card: copy card, save card; Text: copy text, save text) and the
+  // answer's own "copy" pill is gone; the ask bar glows purple and gold when focused (no transition for reduced motion); "written by V01D, from what it knows" is >= 4.5:1
+  // on its real background (measured from the pixels); the banner follows the topic (code, space, ...); a replaced answer is kept one line each under "earlier answers"
+  if (want("ui polish: card button groups, ask bar focus glow, metadata contrast, topic banner and earlier answers")) { const U = await fresh();
+    await U.ask('write a python greeter function', 1800);
+    await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
+    const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
+    check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
+      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+    await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
+    await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
+    const copiedText = await U.p.evaluate(() => window.__copied);
+    check('ui polish: "copy text" puts the title and the answer\'s words on the clipboard, without the frame or the sources line', /python greeter/.test(copiedText) && /Here it is/.test(copiedText) && !/V01D-CARD|written by V01D/.test(copiedText), copiedText.slice(0, 120));
+    await U.p.focus('#input'); await U.p.waitForTimeout(500);
+    const glow = await U.p.evaluate(() => { const r = getComputedStyle(document.getElementById('row')); return { shadow: r.boxShadow, border: r.borderTopColor, td: r.transitionDuration }; });
+    await U.p.emulateMedia({ reducedMotion: 'reduce' }); await U.p.waitForTimeout(100);
+    const still = await U.p.evaluate(() => getComputedStyle(document.getElementById('row')).transitionDuration);
+    await U.p.emulateMedia({ reducedMotion: 'no-preference' });
+    check('ui polish: the focused ask bar has a purple border, an inner shadow and a purple and gold glow, easing in, and not at all for reduced motion',
+      /inset/.test(glow.shadow) && /167, 120, 255/.test(glow.shadow) && /255, 210, 122/.test(glow.shadow) && /^rgba?\(190, 150, 255/.test(glow.border) && /0\.3s/.test(glow.td) && /^0s/.test(still), JSON.stringify({ ...glow, still }));
+    // the metadata line, measured: its real colour (and the opacity of what holds it) against the brightest pixel behind its text, with the text itself hidden for the shot
+    await until(async () => U.p.evaluate(() => { let op = 1; for (let n = document.querySelector('.vpage.on .src'); n; n = n.parentElement) op *= +getComputedStyle(n).opacity; return op === 1; }), 4000); // the card has finished fading in
+    const meta = await U.p.evaluate(() => { const e = document.querySelector('.vpage.on .src'); if (!e) return null; let op = 1; for (let n = e; n; n = n.parentElement) op *= +getComputedStyle(n).opacity; const r = e.getBoundingClientRect(); return { text: e.textContent, color: getComputedStyle(e).color, op, box: { x: r.x, y: r.y, width: r.width, height: r.height } }; });
+    await U.p.addStyleTag({ content: '.vpage.on .src, .vpage.on .src * { color: transparent !important; border-color: transparent !important }' });
+    const shot = await U.p.screenshot({ clip: meta.box });
+    const ratio = await U.p.evaluate(async ([b64, col, op]) => {
+      const bmp = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob()), c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height; const x = c.getContext('2d'); x.drawImage(bmp, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height).data, f = (v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }, lum = (r, g, b) => .2126 * f(r) + .7152 * f(g) + .0722 * f(b);
+      let bg = 0, br = 0, bgc = 0, bb = 0; for (let i = 0; i < d.length; i += 4) { const l = lum(d[i], d[i + 1], d[i + 2]); if (l > bg) { bg = l; br = d[i]; bgc = d[i + 1]; bb = d[i + 2]; } }
+      const m = col.match(/[\d.]+/g).map(Number), a = (m[3] == null ? 1 : m[3]) * op, mix = (fgc, bgv) => fgc * a + bgv * (1 - a), fg = lum(mix(m[0], br), mix(m[1], bgc), mix(m[2], bb)), hi = Math.max(fg, bg), lo = Math.min(fg, bg);
+      return (hi + .05) / (lo + .05);
+    }, [shot.toString('base64'), meta.color, meta.op]);
+    check('ui polish: "written by V01D, from what it knows" has at least 4.5:1 contrast on its real background (measured from the pixels; it was 5.7:1 in ink-3, now about 9:1)', /written by V01D, from what it knows/.test(meta.text) && ratio >= 4.5 && ratio >= 7, ratio.toFixed(2) + ' ' + meta.color + ' op ' + meta.op);
+    // the banner follows the topic: the picture's subject comes from the answer's words, else the card's name (lib/card-subject.js motifs, drawn by lib/void-seal.js)
+    const banner = async () => U.p.evaluate(async () => { const e = document.querySelector('.vpage.on'), c = e && e._vcard; if (!c) return null; const { sealPlan } = await import('/lib/void-seal.js'); const img = e.querySelector('.vc-art > img.vc-seal');
+      return { motif: sealPlan(c.key, { kind: c.artKind || 'Answer', hue: c.hue, nouns: c.nouns }).motif, seal: img ? img.src.length + ':' + img.src.slice(-40) : '' }; });
+    const codeB = await until(async () => { const b = await banner(); return b && b.seal ? b : null; }, 6000);
+    await U.ask('close', 500); await U.ask('explain constellations to me', 1800);
+    const spaceB = await until(async () => { const b = await banner(); return b && b.seal ? b : null; }, 6000);
+    check('ui polish: the banner differs by topic: a python question draws the code motif and a constellations question the star, each with its own picture',
+      !!codeB && !!spaceB && codeB.motif === 'code' && spaceB.motif === 'star' && codeB.seal !== spaceB.seal, JSON.stringify([codeB, spaceB]));
+    // earlier answers: a replaced answer card leaves one line under "earlier answers" that opens on a tap; the card on the stage is untouched
+    await U.ask('close', 500); await U.ask('earlier answers', 1200);
+    const trail = await U.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .trail-one')]; return { n: d.length, closed: d.every((x) => !x.open), heads: d.map((x) => x.querySelector('summary').textContent), stage: document.querySelectorAll('.vpage').length }; });
+    await U.p.click('.vpage.on .trail-one summary'); await U.p.waitForTimeout(150);
+    const opened = await U.p.evaluate(() => { const d = document.querySelector('.vpage.on .trail-one'); return d && d.open && d.innerText.length > d.querySelector('summary').innerText.length; });
+    check('ui polish: "earlier answers" lists the answers that were replaced, one line each, closed until tapped (the stage keeps one answer card; the history is a card you ask for, so no stage layout changes)',
+      trail.n >= 2 && trail.closed && trail.heads.some((h) => /python greeter/.test(h)) && trail.heads.some((h) => /constellations/.test(h)) && trail.stage === 1 && opened === true, JSON.stringify(trail));
+    await U.ctx.close(); }
+
   // A card is easy to copy, save and paste back (lib/card-share.js; owner, 2026-10-16): "copy card" puts readable text ending in a code line on the clipboard,
   // and asking V01D with that text brings the same card back, its numbers earned again, nothing sent to the answer route
   if (want("V01D cards: copy a card, paste it back into V01D and the same card returns")) { const S = await fresh();
