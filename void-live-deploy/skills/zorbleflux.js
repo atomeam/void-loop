@@ -13,6 +13,8 @@ const BEST_KEY = 'void-zorbleflux-best';
 export function zorbleOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:what\s+(?:is|are)|what'?s|whats|tell me about|explain|define)\s+(?:a\s+|an\s+|the\s+)?zorbleflux(?:\s+game)?$/.test(t)) return { kind: 'about' };
+  // "do you know zorbleflux" (the owner, 2026-10-18: "Verse should know zorbleflux"): a question about whether it knows it is an about ask
+  if (/^(?:(?:do|did|would|can)\s+you\s+(?:know|remember|recognise|recognize)|have\s+you\s+(?:heard\s+of|met|played)|(?:are|is)\s+you\s+(?:familiar|aware)\s+(?:with|of)|who(?:'?s|\s+is)|know\s+about)\s+(?:about\s+|of\s+)?(?:a\s+|an\s+|the\s+)?(?:what\s+(?:a\s+|the\s+)?)?zorbleflux(?:\s+(?:is|game))?$/.test(t)) return { kind: 'about' };
   if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+|the\s+)?(?:game\s+of\s+)?(?:void\s+|(?:verse|v01d)\s+)?zorbleflux(?:\s+game)?$/.test(t)) return { kind: 'game' };
   return null;
 }
@@ -75,7 +77,7 @@ export default {
   name: 'zorbleflux',
   zorbleOf,
   about: Z.ABOUT, // the one line "tell me about <a skill>" (skills/about-skill.js) prefers over the book's
-  examples: ['zorbleflux', 'play zorbleflux', 'a zorbleflux game', 'what is a zorbleflux', 'tell me about zorbleflux', "what's a zorbleflux?"],
+  examples: ['zorbleflux', 'play zorbleflux', 'a zorbleflux game', 'what is a zorbleflux', 'tell me about zorbleflux', "what's a zorbleflux?", 'do you know zorbleflux', 'have you heard of zorbleflux'],
   nearMisses: ['zorb', 'flux capacitor', 'what is flux', 'play chess'],
   match(lower, text) { return !!zorbleOf(text); },
   run,

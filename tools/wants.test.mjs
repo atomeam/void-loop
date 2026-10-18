@@ -104,3 +104,10 @@ test('the skill: its name, an about line, examples and near misses that do not c
   assert.ok(skill.examples.length >= 5 && skill.nearMisses.length >= 5 && !skill.examples.some((e) => skill.nearMisses.includes(e)));
   assert.equal(await skill.run('weather in paris', {}), 'none');
 });
+
+test('cardHtml: the items come before the line that says where a list comes from, so a card cut to fit carries the real wants first (owner, 2026-10-18)', () => {
+  const html = cardHtml(cardModel({ will, reflect, self }), esc), text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  const first = html.indexOf('<button type="button" class="wants-chip"'), sub = html.indexOf('<p class="wants-sub">');
+  assert.ok(first > 0 && sub > first, 'the first chip is before the first source line');
+  const firstSub = text.indexOf('What I chose to become next'); assert.ok(text.indexOf('answer every question about tides') > 0 && text.indexOf('answer every question about tides') < firstSub, 'the first want is read before any line about where the list comes from'); assert.ok(text.indexOf('Absorb and connect every repo') > 0 && text.indexOf('Give the map card terrain') > 0);
+});

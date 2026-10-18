@@ -93,9 +93,11 @@ const CSS = '.wants-card .wants-count{font-size:13px;color:var(--muted);margin:2
  *  missing line), the compound line when there is one, and a source line. esc escapes for HTML; every value goes through it. Pure. */
 export function cardHtml(m, esc, { more = '' } = {}) {
   const chip = (text, sub) => '<button type="button" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</button>';
-  const block = (id, title, items, sub) => '<section class="wants-block" data-block="' + id + '" data-n="' + items.length + '"><h3 class="wants-h">' + esc(title) + ' <span class="wants-n">(' + items.length + ')</span></h3><p class="wants-sub">' + esc(SUB[id]) + '</p>'
+  const block = (id, title, items, sub) => '<section class="wants-block" data-block="' + id + '" data-n="' + items.length + '"><h3 class="wants-h">' + esc(title) + ' <span class="wants-n">(' + items.length + ')</span></h3>'
     + (m.missing[id === 'wants' ? 'will' : id === 'asks' ? 'reflect' : 'self'] ? '<p class="wants-empty" data-missing="1">' + esc(MISSING[id]) + '</p>'
-      : items.length ? '<div class="wants-chips">' + items.map((it) => chip(it.text, sub(it))).join('') + '</div>' : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>') + '</section>';
+      : items.length ? '<div class="wants-chips">' + items.map((it) => chip(it.text, sub(it))).join('') + '</div>' : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>')
+    // where the list comes from goes after the items, so a saved or shared card (its text is cut to fit) carries the real wants first (owner, 2026-10-18: "make sure the card updates with real wants")
+    + '<p class="wants-sub">' + esc(SUB[id]) + '</p></section>';
   return '<style>' + CSS + '</style><h2>What I want built</h2><div class="wants-count" data-counts="' + esc(JSON.stringify(m.counts)) + '">' + esc(countLine(m.counts)) + '</div>'
     + block('wants', 'My will', m.wants, (w) => w.because)
     + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : ''].filter(Boolean).join(' · '))
