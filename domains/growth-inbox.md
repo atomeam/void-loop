@@ -42,3 +42,21 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
 | open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
+| open | 2026-10-17 | make a collectible card of anything | idea-bank-100 #1, card art generator |
+| open | 2026-10-17 | foil variant of this card | idea-bank-100 #2 |
+| open | 2026-10-17 | print a 9-up sheet of my cards | idea-bank-100 #4 |
+| open | 2026-10-17 | turn on family gravity | idea-bank-100 #11, Void ask |
+| open | 2026-10-17 | riot mode for the whole stage | idea-bank-100 #12 |
+| open | 2026-10-17 | open the living codex | idea-bank-100 #21 |
+| open | 2026-10-17 | walk the archive of one | idea-bank-100 #23 |
+| open | 2026-10-17 | deep work shield for 25 minutes | idea-bank-100 #31 |
+| open | 2026-10-17 | open the stage to spectators | idea-bank-100 #41 |
+| open | 2026-10-17 | mutate this card | idea-bank-100 #51 |
+| open | 2026-10-17 | something unkeepable | idea-bank-100 #56 |
+| open | 2026-10-17 | challenge void with my deck | idea-bank-100 #61 |
+| open | 2026-10-17 | begin the night ritual | idea-bank-100 #71 |
+| open | 2026-10-17 | decision matrix for this choice | idea-bank-100 #81 |
+| open | 2026-10-17 | habit ring for write walk sleep | idea-bank-100 #82 |
+| open | 2026-10-17 | stage minimap | idea-bank-100 #84 |
+| open | 2026-10-17 | turn today misses into jobs | idea-bank-100 #91 |
+| open | 2026-10-17 | card art generator works offline | idea-bank-100 #99, priority |
