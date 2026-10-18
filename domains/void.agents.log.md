@@ -885,3 +885,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-18T07:27:02Z | claude | grow | asked by Void: stability gauge on the Status card, driven by how often the browser suite went red in the last 7 days (incidents.json)
 2026-10-18T07:43:22Z | claude | grow | asked by Void: backlog-digest skill, unbuilt asks grouped by skill family and the weakest evidence rating of the skills they name (own records, no model)
 2026-10-18T07:42:39Z | claude | grow | the incident autopsy tells the runner stalling from a skill failing: 'check timeout' and 'suite ran to the end' lines are counted on their own line ('the suite itself') and no longer pad the unmapped list, the family counts or the error garden
+2026-10-18T07:47:39Z | claude | grow | asked by Void: the Games family on the skill-health card shows V01D's Elo rating against you (match history and arcade ladder), its change from the start and climbing / level / slipping from five matches
