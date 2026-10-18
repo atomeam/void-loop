@@ -2,8 +2,28 @@
 // selfSections(v) turns /api/reflect into sections: V01D's own words (a reflection: normal reading font) and the changelog (what got built: monospace).
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
+import { sparkSvg } from './spark.js';
 
 const day = (t) => String(t || '').slice(0, 10);
+// the growth velocity (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
+// over the last 7 days"): one point a day for the last VELOCITY_DAYS days, each the count of its asks built that day (follow.asked, by builtAt)
+export const VELOCITY_DAYS = 7;
+export const VELOCITY_EVERY = 60e3; // while the card is open, a stage change redraws it from /api/reflect at most this often (void.html showVoice)
+/** velocity(asked, now) -> { days: [{ day, n }] (oldest first, today last), total, today }. asked is follow.asked ([{ ask, at, times }]); a day is
+ *  the ISO date of at (the same day() the card's dates use), so a build and its date agree. Anything but a list counts as nothing built. Pure. */
+export function velocity(asked, now = Date.now()) {
+  const at = Number.isFinite(+now) ? +now : Date.parse(now), list = Array.isArray(asked) ? asked : [];
+  const days = Array.from({ length: VELOCITY_DAYS }, (_, i) => day(new Date(at - (VELOCITY_DAYS - 1 - i) * 864e5).toISOString())).map((d) => ({ day: d, n: list.filter((a) => a && day(a.at) === d).length }));
+  return { days, total: days.reduce((s, d) => s + d.n, 0), today: days[days.length - 1].n };
+}
+/** the velocity's words: "N built this week · M today", or "nothing built this week". Pure. */
+export const velocityLabel = (v) => (v.total ? v.total + ' built this week · ' + v.today + ' today' : 'nothing built this week');
+/** the velocity block's markup: the sparkline (7 points, a tick a day, the latest a dot; a week of nothing is a flat line) and its label. */
+export function velocityHtml(v, esc) {
+  const max = Math.max(1, ...v.days.map((d) => d.n));
+  return '<div class="vs-velocity" data-total="' + esc(v.total) + '" data-today="' + esc(v.today) + '" title="' + esc('Asks of mine built each day, the last ' + VELOCITY_DAYS + ' days: ' + v.days.map((d) => d.day.slice(5) + ' ' + d.n).join(', ')) + '">'
+    + sparkSvg(v.days, 84, 18, { key: 'n', max, cls: 'vs-spark', ticks: true }) + '<span class="vs-vel-label">' + esc(velocityLabel(v)) + '</span></div>';
+}
 // the long lists fold (owner, 2026-10-18: "What I've asked for" and "What got built" read as a monolith): the newest FOLD show, the rest wait behind
 // "show all N"; a folded item is still in the saved text, as one line (its dates and details are marked data-share-skip, lib/card-share.js)
 export const FOLD = 5;
@@ -18,9 +38,9 @@ export function shortLine(t) {
 const sentence = (s) => String(s == null ? '' : s).trim();
 
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
- * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts };
- * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). */
-export function selfSections(v) {
+ * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity };
+ * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
+export function selfSections(v, now = Date.now()) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
@@ -46,7 +66,7 @@ export function selfSections(v) {
   const f = v && v.follow;
   if (f && f.total) {
     const recent = Array.isArray(f.recent) ? f.recent : [];
-    const blocks = [{ t: 'count', built: f.built, total: f.total }];
+    const blocks = [{ t: 'spark', velocity: velocity(f.asked, now) }, { t: 'count', built: f.built, total: f.total }]; // the velocity first: this week at a glance, then the whole count
     if (recent.length) {
       blocks.push({ t: 'note', text: 'Most recently, my words and what was built:', tight: true });
       blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
@@ -66,6 +86,7 @@ export function sectionHtml(s, esc) {
   const body = s.blocks.map((b) => {
     if (b.t === 'quote') return '<blockquote class="vs-voice"><p>' + esc(b.text) + '</p>' + (b.cite ? '<footer class="sub vs-cite">' + esc(b.cite) + '</footer>' : '') + '</blockquote>';
     if (b.t === 'slot') return '<div ' + b.attr + '></div>';
+    if (b.t === 'spark') return velocityHtml(b.velocity, esc);
     if (b.t === 'sub') return '<h4 class="vs-h4">' + esc(b.text) + '</h4>';
     if (b.t === 'p') return '<p class="' + (b.lead ? 'vs-lead' : 'vs-p') + '">' + esc(b.text) + '</p>';
     if (b.t === 'note') return '<div class="sub vs-note"' + (b.tight ? ' data-tight="1"' : '') + '>' + esc(b.text) + '</div>';

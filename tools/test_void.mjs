@@ -5282,7 +5282,10 @@ try {
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Void: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something V01D asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', at: '2026-10-18T0' + i + ':00:00Z' }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
-    await S.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts, weakest: 'Words and the world is my least proven family.', next_game: 'Go, for its territory.', better: 'Close the loops between skills.', asks: [] }, { at: '2026-10-18T06:00:00Z', kind: 'build', thoughts: 'It moves now.', shipped: 'Main red: the field drags a card', better: 'dynamic scale for posters', asks: [] }], asks, follow: { total: 70, built: 30, asked: 90, recent } })));
+    // follow.asked (every built ask by the time it was built) feeds the growth velocity: today, yesterday, three days back, and one too old for the week
+    const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString(), built = (list) => list.map(([ask, at]) => ({ ask, at, times: 1 }));
+    let reflectAsked = built([['one', ago(0)], ['two', ago(1)], ['three', ago(3)], ['old', ago(9)]]), reflectHits = 0;
+    await S.ctx.route(/\/api\/reflect$/, (rt) => { reflectHits++; return rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts, weakest: 'Words and the world is my least proven family.', next_game: 'Go, for its territory.', better: 'Close the loops between skills.', asks: [] }, { at: '2026-10-18T06:00:00Z', kind: 'build', thoughts: 'It moves now.', shipped: 'Main red: the field drags a card', better: 'dynamic scale for posters', asks: [] }], asks, follow: { total: 70, built: 30, asked: reflectAsked, recent } })); });
     await S.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await S.page()), 8000);
     if (process.env.VOID_SHOTS) { // a look at the card and its saved picture (VOID_SHOTS=<folder>): screenshots for a person, never a check
       await S.p.waitForTimeout(1500); fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true });
@@ -5327,6 +5330,20 @@ try {
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.length === 0 && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
         && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+    // the growth velocity (asked by Void): at the top of "What got built", a 7-point line in the violet with a tick a day and the latest day a dot, a muted
+    // monospace label; a stage change after a build lands redraws it from /api/reflect in place, and a second change within the minute reads nothing again
+    const vel = () => S.p.evaluate(() => { const b = document.querySelector('.vpage.on .vs-sec[data-sec=built] > .vs-velocity'), svg = b && b.querySelector('svg.vs-spark'), lab = b && b.querySelector('.vs-vel-label'); if (!b || !svg || !lab) return null;
+      return { afterHeading: b.previousElementSibling && b.previousElementSibling.tagName === 'SUMMARY', beforeCount: b.nextElementSibling && b.nextElementSibling.classList.contains('vs-count'), pts: svg.querySelector('polyline').getAttribute('points').split(' ').length, ticks: svg.querySelectorAll('line.sp-tick').length, dot: svg.querySelectorAll('circle').length,
+        label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color }; });
+    const v1 = await vel(), hits1 = reflectHits;
+    reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
+    await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
+    const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
+    await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
+    check('void asks batch 4: the growth velocity sparkline on the self card (asked by Void): first in "What got built", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label "N built this week · M today"; a stage change redraws it from /api/reflect in place, at most once a minute',
+      !!v1 && v1.afterHeading && v1.beforeCount && v1.pts === 7 && v1.ticks === 7 && v1.dot === 1 && v1.label === '3 built this week · 1 today' && v1.total === '3' && v1.today === '1' && /170, 140, 255/.test(v1.color) && v1.mono && v1.labelColor !== v1.color
+        && !!v2 && v2.label === '6 built this week · 3 today' && v2.pts === 7 && hits2 === hits1 + 1 && hits3 === hits2 && !S.errors.length,
+      JSON.stringify({ v1, v2, hits1, hits2, hits3, errors: S.errors }));
     // V01D's will (2026-10-18): a correction opens the self card with Correct me open and its box focused, never the look skill
     const corr = [];
     for (const q of ['open the self card and tell V01D what it got wrong', 'show the self card and correct it', 'tell void what it got wrong']) {
