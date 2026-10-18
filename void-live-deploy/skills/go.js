@@ -150,7 +150,7 @@ function mount(th, stageApi) {
   // the card: separate, beside the board (or under it on a narrow screen), moved on its own
   const card = document.createElement('div');
   card.className = 'game-card go-card';
-  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against V01D (White)' : 'two players · Black first') + '</span></div>';
+  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against V01D (White)' : 'two players · Black first') + '</span></div>'; // void-review: ok (two constant strings, nothing typed)
   const note = document.createElement('div'); note.className = 'go-note';
   note.textContent = 'A placed stone is a move, not a verdict. Nothing is counted until you ask.';
   const status = document.createElement('div'); status.className = 'g-status go-status'; status.setAttribute('aria-live', 'polite');
