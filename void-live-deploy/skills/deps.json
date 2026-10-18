@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 592,
+ "counted": 597,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 32,
-   "direct": 32,
-   "dependants": 32
+   "skills": 35,
+   "direct": 35,
+   "dependants": 35
   },
   {
    "file": "lib/ask-text.js",
@@ -223,6 +223,12 @@
    "skills": 4,
    "direct": 1,
    "dependants": 6
+  },
+  {
+   "file": "lib/note-tools.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
   },
   {
    "file": "lib/stage-math.js",
@@ -3014,6 +3020,15 @@
     "skills/miss-jobs.js"
    ]
   },
+  "lib/note-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/csv-table.js",
+    "skills/note-tools.js",
+    "skills/outline-note.js",
+    "skills/qr-scan.js"
+   ]
+  },
   "lib/observations.js": {
    "imports": [],
    "importedBy": [
@@ -3808,6 +3823,7 @@
     "skills/busy-blocks.js",
     "skills/causal-scars.js",
     "skills/counterfactual-draft.js",
+    "skills/csv-table.js",
     "skills/date-calc.js",
     "skills/date-grid.js",
     "skills/decision-matrix.js",
@@ -3822,7 +3838,9 @@
     "skills/idea-certificate.js",
     "skills/minimap.js",
     "skills/noun-heat.js",
+    "skills/outline-note.js",
     "skills/plan-stability.js",
+    "skills/qr-scan.js",
     "skills/recipe-stack.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
@@ -4574,6 +4592,13 @@
   },
   "skills/crypto.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/csv-table.js": {
+   "imports": [
+    "lib/note-tools.js",
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/dark-look.js": {
@@ -5773,6 +5798,12 @@
     "skills/sky-card.js"
    ]
   },
+  "skills/note-tools.js": {
+   "imports": [
+    "lib/note-tools.js"
+   ],
+   "importedBy": []
+  },
   "skills/notepad.js": {
    "imports": [],
    "importedBy": [
@@ -5817,6 +5848,13 @@
     "lib/arena.js",
     "skills/games.js"
    ]
+  },
+  "skills/outline-note.js": {
+   "imports": [
+    "lib/note-tools.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/overload.js": {
    "imports": [
@@ -5983,6 +6021,13 @@
    "imports": [
     "lib/pulse.js",
     "skills/incident.js"
+   ],
+   "importedBy": []
+  },
+  "skills/qr-scan.js": {
+   "imports": [
+    "lib/note-tools.js",
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },

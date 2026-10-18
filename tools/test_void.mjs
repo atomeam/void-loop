@@ -1621,6 +1621,94 @@ try {
     const gone = await until(async () => (await S.p.$$eval('.hunting-question', (e) => e.length)) === 0, 4000);
     check('hunting question: it comes back at the margin after a reload, is never answered, a one-word reason does not release it and a written reason does',
       line === 'should I quit my job' && stays === 1 && gone && !S.errors.length, JSON.stringify({ line, stays, gone, errors: S.errors }));
+  // tools pack 1 (owner, 2026-10-18): note tools (export, find, replace, counts, pin, collapse, duplicate), nested bullets, csv tables, dropped files, code scanning
+  if (want("tools pack 1: note tools, nested bullets, csv table, dropped file cards and the code scanner, played the way a person uses them")) { const S = await fresh();
+    const saved = () => S.state();
+    await S.ask('sticky note buy milk and eggs', 600);
+    await S.ask('notepad: alpha beta gamma delta', 600);
+    await S.ask('find milk on the stage', 600);
+    const found = await S.p.$$eval('[data-found="1"]', (e) => e.length), foundSaid = await S.whisper();
+    await S.ask('clear the find', 500);
+    const unfound = await S.p.$$eval('[data-found="1"]', (e) => e.length);
+    check('find in stage: "find milk on the stage" outlines the one note that says milk and counts it, "clear the find" takes the outline off',
+      found === 1 && /1 match in 1 note/.test(foundSaid) && unfound === 0 && !S.errors.length, JSON.stringify({ found, foundSaid, unfound, errors: S.errors }));
+    await S.p.evaluate(() => { const a = document.querySelector('.notepad-textarea'); a.focus(); a.setSelectionRange(0, 10); }); // "alpha beta"
+    await S.p.waitForTimeout(250);
+    await S.ask('word count of the selection', 500);
+    const selSaid = await S.whisper();
+    await S.p.click('.sticky', { position: { x: 8, y: 8 } }).catch(() => {});
+    await S.ask('word count of this sticky', 500);
+    const noteSaid = await S.whisper();
+    await S.ask('reading time of this sticky', 500);
+    const readSaid = await S.whisper();
+    check('word count and reading time: the selected words in a note are counted (2), else the picked note (4 words), and the reading time is named',
+      /^2 words in the selection/.test(selSaid) && /^4 words in the sticky/.test(noteSaid) && /under half a minute · 4 words/.test(readSaid) && !S.errors.length, JSON.stringify({ selSaid, noteSaid, readSaid, errors: S.errors }));
+    await S.ask('replace milk with oat milk in the sticky', 600);
+    const afterReplace = (await saved()).find((x) => x.kind === 'sticky');
+    const replaceSaid = await S.whisper();
+    check('replace in note: every "milk" in the picked sticky becomes "oat milk", counted, and the other note is left alone',
+      afterReplace && afterReplace.text === 'buy oat milk and eggs' && /replaced 1 time in 1 note/.test(replaceSaid) && (await saved()).find((x) => x.kind === 'notepad').text === 'alpha beta gamma delta' && !S.errors.length, JSON.stringify({ afterReplace, replaceSaid, errors: S.errors }));
+    const dlMd = S.p.waitForEvent('download', { timeout: 6000 }).catch(() => null);
+    await S.ask('export this sticky as markdown', 600);
+    const md = await dlMd; const mdText = md ? fs.readFileSync(await md.path(), 'utf8') : '';
+    const dlTxt = S.p.waitForEvent('download', { timeout: 6000 }).catch(() => null);
+    await S.ask('export the stage as text', 600);
+    const tx = await dlTxt; const txText = tx ? fs.readFileSync(await tx.path(), 'utf8') : '';
+    check('exports: a note saves as a .md file named for its words, and the whole stage saves as stage.txt with every note in it',
+      md && /\.md$/.test(md.suggestedFilename()) && mdText === 'buy oat milk and eggs\n' && tx && tx.suggestedFilename() === 'stage.txt' && /\[sticky\]\nbuy oat milk and eggs/.test(txText) && /\[notepad\]\nalpha beta gamma delta/.test(txText) && !S.errors.length,
+      JSON.stringify({ md: md && md.suggestedFilename(), mdText, tx: tx && tx.suggestedFilename(), txText, errors: S.errors }));
+    await S.ask('duplicate this sticky', 600);
+    const twins = (await saved()).filter((x) => x.kind === 'sticky');
+    await S.ask('pin the sticky to the bottom left corner', 600);
+    const pin = await S.p.evaluate(() => { const st = document.getElementById('stage').getBoundingClientRect(); return [...document.querySelectorAll('.sticky[data-pinned]')].map((e) => { const r = e.getBoundingClientRect(); return { where: e.dataset.pinned, left: Math.round(r.left - st.left), bottom: Math.round(st.bottom - r.bottom) }; }); });
+    await S.ask('unpin the sticky', 500);
+    const unpinned = await S.p.$$eval('.sticky[data-pinned]', (e) => e.length);
+    check('duplicate and pin: "duplicate this sticky" makes a second one with the same words, "pin ... to the bottom left corner" holds it about 10 px from that corner, "unpin" lets go',
+      twins.length === 2 && twins[0].text === twins[1].text && twins[0].id !== twins[1].id && pin.length === 1 && pin[0].where === 'bottom left' && Math.abs(pin[0].left - 10) <= 5 && Math.abs(pin[0].bottom - 10) <= 5 && unpinned === 0 && !S.errors.length,
+      JSON.stringify({ twins: twins.length, pin, unpinned, errors: S.errors }));
+    await S.ask('collapse the notepad', 500);
+    const collapsed = await S.p.$eval('.notepad', (e) => ({ c: e.dataset.collapsed, h: e.getBoundingClientRect().height, chev: !!e.querySelector('.nt-chev') }));
+    await S.p.click('.notepad .nt-chev').catch(() => {});
+    const open = await S.p.$eval('.notepad', (e) => ({ c: e.dataset.collapsed || '', h: e.getBoundingClientRect().height }));
+    check('collapse: "collapse the notepad" folds it to one line with an expand arrow, a tap on the arrow opens it again',
+      collapsed.c === '1' && collapsed.chev && collapsed.h < 60 && open.c === '' && open.h > collapsed.h && !S.errors.length, JSON.stringify({ collapsed, open, errors: S.errors }));
+    await S.ask('outline note: groceries; > milk; > > oat; > bread', 700);
+    const depths = await S.p.$$eval('.outline-note .outline-view li', (l) => l.map((x) => x.dataset.depth + ':' + x.textContent.trim().replace(/^[^\w]+/, '')));
+    await S.p.focus('.outline-area');
+    await S.p.keyboard.press('Control+End'); await S.p.keyboard.press('Enter'); await S.p.keyboard.type('rye'); await S.p.keyboard.press('Tab');
+    const after = await S.p.$eval('.outline-area', (a) => a.value);
+    await S.p.keyboard.press('Shift+Tab');
+    const back = await S.p.$eval('.outline-area', (a) => a.value);
+    check('nested bullets: the ask nests four lines three deep, Enter starts the next bullet at the same level, Tab nests it and Shift+Tab steps it back',
+      depths.join() === '0:groceries,1:milk,2:oat,1:bread' && after === '- groceries\n  - milk\n    - oat\n  - bread\n    - rye' && back === '- groceries\n  - milk\n    - oat\n  - bread\n  - rye' && !S.errors.length, JSON.stringify({ depths, after, back, errors: S.errors }));
+    await S.ask('csv table: name,age⏎ann,30⏎bo,5⏎cy,12', 700);
+    const names = async () => S.p.$$eval('.csv-table td:first-child', (c) => c.map((x) => x.textContent).join());
+    const typed = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const asc = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const desc = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const plain = await names();
+    await S.p.click('.csv-table th[data-col="1"]');
+    await S.p.fill('.csv-table td[data-row="1"]', 'zed').catch(async () => { await S.p.$eval('.csv-table td[data-row="1"]', (c) => { c.textContent = 'zed'; c.dispatchEvent(new Event('input', { bubbles: true })); }); });
+    const foot = await S.p.$eval('.csv-foot', (e) => e.textContent);
+    check('csv table: a pasted csv becomes a table, a tap on a heading sorts up (numbers as numbers), again down, again as typed, and the footer counts rows and columns',
+      typed === 'ann,bo,cy' && asc === 'bo,cy,ann' && desc === 'ann,cy,bo' && plain === 'ann,bo,cy' && /^3 rows × 2 columns/.test(foot) && !S.errors.length, JSON.stringify({ typed, asc, desc, plain, foot, errors: S.errors }));
+    await S.p.evaluate(() => { for (const [n, body, type] of [['prices.csv', 'item,cost\ntea,3\ncake,5', 'text/csv'], ['readme.txt', 'first line\nsecond line', 'text/plain'], ['blob.bin', 'xx', 'application/octet-stream']]) {
+      const dt = new DataTransfer(); dt.items.add(new File([body], n, { type })); document.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true })); } });
+    await until(async () => (await S.p.$$eval('.file-card', (c) => c.length)) >= 2, 6000);
+    const dropped = await S.p.evaluate(() => ({ tables: [...document.querySelectorAll('.csv-table')].length, names: [...document.querySelectorAll('.file-card .file-name')].map((e) => e.textContent), preview: (document.querySelector('.file-card .file-preview') || {}).textContent, meta: (document.querySelector('.file-card .file-meta') || {}).textContent }));
+    await S.p.reload(); await S.p.waitForSelector('.file-card', { timeout: 8000 }).catch(() => {});
+    const keptCards = await S.p.$$eval('.file-card .file-name', (e) => e.map((x) => x.textContent).join());
+    check('drag a file onto the stage: a .csv becomes a table, a text file a card with its first lines, an unknown file a card with name, size and type, and they stay after a reload',
+      dropped.tables === 2 && dropped.names.join() === 'readme.txt,blob.bin' && dropped.preview === 'first line\nsecond line' && /^text\/plain · 22 B$/.test(dropped.meta) && keptCards === 'readme.txt,blob.bin' && !S.errors.length, JSON.stringify({ dropped, keptCards, errors: S.errors }));
+    await S.ask('scan a qr code', 600);
+    const unsupported = await S.p.evaluate(() => ({ native: typeof window.BarcodeDetector === 'function', msg: (document.querySelector('.vpage.on [data-qr-unsupported]') || {}).textContent || '', file: !!document.querySelector('.vpage.on [data-qr-file]') }));
+    await S.p.evaluate(() => { window.BarcodeDetector = class { async detect() { return [{ rawValue: 'https://example.com/menu', format: 'qr_code' }]; } }; });
+    await S.ask('read a barcode', 600);
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    await S.p.setInputFiles('.vpage.on [data-qr-file]', { name: 'code.png', mimeType: 'image/png', buffer: png }).catch(() => {});
+    const scanned = await until(async () => (await saved()).find((x) => x.kind === 'sticky' && /example\.com\/menu/.test(x.text || '')), 6000);
+    check('code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)',
+      (unsupported.native || (/no BarcodeDetector/.test(unsupported.msg) && !unsupported.file)) && scanned && /web address: check it/.test(scanned.text) && !S.errors.length, JSON.stringify({ unsupported, scanned, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
