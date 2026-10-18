@@ -4170,7 +4170,7 @@
    "examples": [
     "plant my mistake: I sent the email before checking it",
     "show my error garden",
-    "plant the red checks in my garden"
+    "plant my test failures in my error garden"
    ],
    "tier": "checked",
    "why": "a self-test, 4 browser-suite mentions",

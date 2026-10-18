@@ -122,3 +122,18 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
     + (owner ? '<ul data-pulse-checks="1">' + p.checks.map((c, i) => c.skill ? '<li>' + esc(c.text.split(':')[0]) + ' <button type="button" class="tr-copy" data-incident-fix="' + esc(i) + '">Suggest fix</button><span data-fix-out></span></li>' : '').join('') + '</ul>' : '')
     + '</div>';
 }
+
+/**
+ * The failures as garden plants (asked by Void and the owner: "the error garden grows from the incident autopsy"): one plant per distinct failing
+ * check title in the newest incidents, its count the number of incidents it failed in (two or more is a weed), the most repeated first. Pure.
+ */
+export function failurePlants(incidentsJson, max = 12) {
+  const by = new Map();
+  for (const inc of parseIncidents(incidentsJson).slice(0, 30)) {
+    for (const t of new Set(inc.checks.filter((c) => !/^suite ran to the end$/i.test(String(c).trim())).map(titleOf).filter((x) => x.length >= 3))) { // the suite's own last line is not a check
+      const e = by.get(t) || { text: t.slice(0, 120), count: 0, last: Date.parse(inc.at) };
+      e.count += 1; by.set(t, e);
+    }
+  }
+  return [...by.values()].sort((a, b) => b.count - a.count || b.last - a.last).slice(0, Math.max(1, Math.min(20, max | 0)));
+}

@@ -2,32 +2,33 @@
  * error-garden skill — "plant my mistake: <text>" puts a mistake in a garden on the stage as a sprout; planting the same
  * mistake again (same content words) turns it into a weed that grows with each repeat; writing a rule next to it ("write a rule
  * for my mistake: <words> => <rule>", or the box on the card) turns it into compost and shows the rule. "show my error garden"
- * brings the card back. Kept with the stage on this device; nothing is sent anywhere. Asked for by the owner (2026-10-18).
- * The site's own red checks grow here too (asked by Void, 2026-10-18: "any new red browser check automatically generates a summary card in the
- * error-garden"): when the garden is shown or mounted it reads incidents.json (every red browser suite on main, tools/incident-log.mjs) and
- * plants each failing check of the incidents it has not seen as a sprout, "red check: <the check's title>"; the same check failing again is a
- * weed, and a rule written beside it (the fix) is compost. The first time a garden meets the file only the newest incident is planted, so an
- * old stage is not flooded; "plant the red checks" reads it again. The shas seen stay on the garden, on this device.
+ * brings the card back; "plant my test failures" plants every distinct failing check of incidents.json (a check that failed in two incidents is a weed). Kept with the stage on this device; nothing is sent anywhere. Asked for by the owner (2026-10-18).
+ * The red checks also grow here by themselves (asked by Void, 2026-10-18: "any new red browser check automatically generates a summary card in the
+ * error-garden"): when the garden is shown or mounted it reads incidents.json (every red browser suite on main, tools/incident-log.mjs) and plants
+ * each failing check of the incidents it has not seen, by the check's title, the same plants "plant my test failures" makes; the same check failing
+ * again is a weed, and a rule written beside it (the fix) is compost. The first time a garden meets the file only the newest incident is planted, so
+ * an old stage is not flooded. The shas seen stay on the garden, on this device.
  */
 import { escHtml, addThing, cardEl, keepOut, firstOf, tidy } from '../lib/stage-pack.js';
 import { words, sameThing } from '../lib/stage-words.js';
-import { parseIncidents, titleOf } from '../lib/autopsy.js';
+import { parseIncidents, titleOf, failurePlants } from '../lib/autopsy.js';
 
 const MAX_PLANTS = 40;
 export const INCIDENT_BATCH = 12; // red checks planted from one reading at most (newest first)
 const SUITE_END = /^suite ran to the end$/i; // the suite's own last line, not a check
-const INCIDENTS = /^(?:please\s+)?(?:plant|add|read)\s+(?:the\s+|my\s+)?(?:red|failed|failing)\s+(?:checks?|incidents?|suites?)(?:\s+(?:in|into|to)\s+(?:my\s+|the\s+)?(?:error\s+)?garden)?(?:\s+please)?$/i;
 const PLANT = /^(?:please\s+)?plant\s+(?:my|a|this|another)\s+(?:mistake|error)\s*[:\-]\s*(.+)$/i;
 const SHOW = /^(?:please\s+)?(?:show|open|water|see|bring\s+up)\s+(?:me\s+)?(?:my\s+|the\s+)?error\s+garden(?:\s+please)?$/i;
 const RULE = /^(?:please\s+)?(?:write|add|put)\s+(?:a\s+)?rule\s+(?:for|next\s+to|beside)\s+(?:my\s+)?(?:the\s+)?mistake\s*[:\-]?\s*(.+?)\s*(?:=>|->)\s*(.+)$/i;
 
-/** what an ask wants of the garden: { act:'plant', text } | { act:'show' } | { act:'rule', about, rule } | null. Pure. */
+const FAILURES = /^(?:please\s+)?(?:(?:plant|grow|garden|sow)\s+(?:all\s+)?(?:my\s+|the\s+|your\s+)?(?:recent\s+)?(?:test\s+|check\s+|suite\s+)?(?:failures|errors|incidents|red\s+checks)(?:\s+(?:from|of)\s+(?:the\s+)?(?:incident\s+autopsy|site\s+test|browser\s+suite))?(?:\s+(?:in|into|to|in\s+to)\s+(?:my\s+|the\s+)?error\s+garden)?|visuali[sz]e\s+(?:your\s+|the\s+|my\s+)?(?:own\s+)?(?:test\s+|check\s+|suite\s+)(?:failures|errors))(?:\s+please)?$/i;
+
+/** what an ask wants of the garden: { act:'plant', text } | { act:'show' } | { act:'rule', about, rule } | { act:'failures' } | null. Pure. */
 export function gardenIntent(text) {
   const t = tidy(text);
   let m;
   if ((m = PLANT.exec(t))) { const x = m[1].trim().slice(0, 200); return words(x).length ? { act: 'plant', text: x } : null; }
   if (SHOW.test(t)) return { act: 'show' };
-  if (INCIDENTS.test(t)) return { act: 'incidents' };
+  if (FAILURES.test(t)) return { act: 'failures' };
   if ((m = RULE.exec(t))) { const about = m[1].trim(), rule = m[2].trim().slice(0, 200); return words(about).length && rule.length >= 3 ? { act: 'rule', about, rule } : null; }
   return null;
 }
@@ -48,6 +49,17 @@ export function plant(plants, text, now = Date.now()) {
   return { plants: kept, index: kept.length - 1, stage: 'sprout' };
 }
 
+/** plant a list of { text, count } (the incidents' failing checks): one already there keeps the larger count, the rest are new; the newest 40 stay. Pure. */
+export function plantMany(plants, items, now = Date.now()) {
+  let list = (plants || []).map((p) => ({ ...p }));
+  for (const it of items || []) {
+    const i = list.findIndex((p) => sameThing(p.text, it.text));
+    if (i >= 0) { list[i].count = Math.max(list[i].count || 1, it.count || 1); list[i].last = now; }
+    else list.push({ text: String(it.text).slice(0, 200), count: Math.max(1, it.count | 0), first: now, last: now, rule: '', from: 'incident' });
+  }
+  return list.slice(-MAX_PLANTS);
+}
+
 /** write the rule next to the mistake it is about (best word match); a short rule or no match leaves the garden as it was. Pure. */
 export function writeRule(plants, about, rule) {
   const r = String(rule || '').trim();
@@ -59,8 +71,9 @@ export function writeRule(plants, about, rule) {
   return { plants: list, index: i, stage: 'compost' };
 }
 
-/** the summary a red check is planted as: its title (the words before the first colon), so the same check failing on another day reads as the same plant. Pure. */
-export const checkSummary = (check) => 'red check: ' + titleOf(check);
+/** the plant a red check becomes: its title (the words before the first colon), the same text failurePlants gives it, so the automatic growth and
+ *  "plant my test failures" grow one plant per check. Pure. */
+export const checkSummary = (check) => titleOf(check).slice(0, 120);
 
 /** plant the red checks of incidents.json the garden has not seen: { plants, seen, planted, weeds }. Incidents are taken oldest first so a check that
  *  failed twice counts twice (a weed); the suite's own "suite ran to the end" line is not a check. A garden meeting the file for the first time
@@ -69,17 +82,17 @@ export const checkSummary = (check) => 'red check: ' + titleOf(check);
 export function plantIncidents(plants, incidentsJson, seen = [], now = Date.now()) {
   const inc = parseIncidents(incidentsJson), had = new Set((seen || []).map(String));
   const fresh = inc.filter((i) => !had.has(i.sha));
-  const take = (had.size ? fresh : fresh.slice(0, 1)).slice().reverse(); // oldest first
+  const take = (had.size ? fresh : fresh.slice(0, 1)).slice().reverse(); // oldest first; incidents.json is newest first
   let list = (plants || []).map((p) => ({ ...p })), planted = 0, weeds = 0, budget = INCIDENT_BATCH;
   for (const i of take) {
     const at = Number.isFinite(Date.parse(i.at)) ? Date.parse(i.at) : now;
     for (const check of i.checks) {
       if (SUITE_END.test(check.trim()) || budget <= 0) continue;
       budget--;
-      // the same check is known by its exact title (not by shared words: "chess rules" and "checkers rules" are two checks, and every one of them says "red check")
-      const key = titleOf(check), ref = String(check).slice(0, 160), sha = i.sha.slice(0, 7), k = list.findIndex((p) => p.from === 'incident' && p.key === key);
-      if (k >= 0) { const p = list[k]; p.count = (p.count || 1) + 1; p.last = at; p.sha = sha; p.ref = ref; weeds++; continue; }
-      list.push({ text: checkSummary(check), key, count: 1, first: at, last: at, rule: '', from: 'incident', ref, sha }); list = list.slice(-MAX_PLANTS); planted++;
+      // the same check is known by its exact title (not by shared words: "chess rules" and "checkers rules" are two checks); a plant "plant my test failures" made is the same plant
+      const key = checkSummary(check), ref = String(check).slice(0, 160), sha = i.sha.slice(0, 7), k = list.findIndex((p) => (p.from === 'incident' && p.key === key) || p.text === key);
+      if (k >= 0) { const p = list[k]; p.count = (p.count || 1) + 1; p.last = at; p.sha = sha; p.ref = ref; p.from = 'incident'; p.key = key; weeds++; continue; }
+      list.push({ text: key, key, count: 1, first: at, last: at, rule: '', from: 'incident', ref, sha }); list = list.slice(-MAX_PLANTS); planted++;
     }
   }
   return { plants: list, seen: [...new Set([...had, ...inc.map((i) => i.sha)])].slice(-200), planted, weeds };
@@ -145,11 +158,6 @@ export function ask(lower, text, stageApi) {
   if (!it) return '';
   let th = firstOf(stageApi, 'errgarden');
   if (!th) th = addThing(stageApi, 'errgarden', { plants: [] });
-  if (it.act === 'incidents') {
-    stageApi.select(th.id); stageApi.save(); stageApi.render();
-    growIncidents(th, stageApi, true).then((r) => stageApi.say(r ? 'planted ' + r.planted + ' red check' + (r.planted === 1 ? '' : 's') + (r.weeds ? ', ' + r.weeds + ' came back as weeds' : '') : 'no new red checks')).catch(() => stageApi.say('could not read the incidents'));
-    return 'error-garden';
-  }
   if (it.act === 'plant') {
     const r = plant(th.plants, it.text);
     th.plants = r.plants;
@@ -166,10 +174,22 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'error-garden',
-  examples: ['plant my mistake: I sent the email before checking it', 'show my error garden', 'plant the red checks in my garden'],
-  nearMisses: ['how do I garden', 'what is an error budget', 'plant tomatoes in spring', 'what broke lately'],
+  examples: ['plant my mistake: I sent the email before checking it', 'show my error garden', 'plant my test failures in my error garden', 'visualize your test failures'],
+  nearMisses: ['how do I garden', 'plant tomato failures', 'what are test failures', 'what is an error budget', 'plant tomatoes in spring', 'what broke lately'],
   gardenIntent,
   match(lower, text) { return !!gardenIntent(text || lower); },
-  async run(text, api) { return ask(String(text || '').toLowerCase(), text, api.stage) ? 'error-garden' : 'none'; },
+  async run(text, api) {
+    if (gardenIntent(text)?.act === 'failures') {
+      let j = null; try { const r = await fetch('/incidents.json', { cache: 'no-cache' }); j = r.ok ? await r.json() : null; } catch (_) { /* no incidents file: say so below */ }
+      const items = failurePlants(j);
+      if (!items.length) { api.stage.say('no failed checks on record: the garden stays as it is'); return 'error-garden-none'; }
+      const st = api.stage; let th = firstOf(st, 'errgarden'); if (!th) th = addThing(st, 'errgarden', { plants: [] });
+      th.plants = plantMany(th.plants, items);
+      const weeds = th.plants.filter((p) => stageOf(p) === 'weed').length;
+      st.say('planted ' + items.length + ' failed checks from the incident autopsy' + (weeds ? ': ' + weeds + ' came back and are weeds' : ''));
+      st.select(th.id); st.save(); st.render(); return 'error-garden';
+    }
+    return ask(String(text || '').toLowerCase(), text, api.stage) ? 'error-garden' : 'none';
+  },
   stageKinds: { errgarden: { mount, ask } },
 };
