@@ -12,8 +12,8 @@
  },
  "smoke_at": "2026-10-17",
  "totals": {
-  "experiment": 5,
-  "tested": 95,
+  "experiment": 7,
+  "tested": 96,
   "checked": 88,
   "proven": 131
  },
@@ -23,8 +23,8 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 0,
-    "tested": 12,
+    "experiment": 2,
+    "tested": 13,
     "checked": 9,
     "proven": 11
    },
@@ -297,6 +297,29 @@
      "why": "2 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "veto-council",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "stigmergy-board",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-18"
+    },
+    {
+     "name": "term-orbits",
+     "tier": "experiment",
+     "why": "nothing checks it yet",
+     "last_tested": "2026-10-17",
+     "last_tested_by": "the daily smoke test",
+     "since": "2026-10-18"
     }
    ]
   },
@@ -377,8 +400,8 @@
      "name": "go",
      "tier": "checked",
      "why": "a self-test, 4 browser-suite mentions",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test"
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     },
     {
      "name": "monopoly",
@@ -817,8 +840,8 @@
      "name": "go",
      "tier": "checked",
      "why": "a self-test, 4 browser-suite mentions",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test"
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     },
     {
      "name": "monopoly",
@@ -2202,7 +2225,8 @@
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-18"
     },
     {
      "name": "fly",
@@ -2632,7 +2656,7 @@
      "name": "family-health",
      "tier": "checked",
      "why": "a self-test, 7 browser-suite mentions",
-     "last_tested": "2026-10-17",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "streak": 1
     },
@@ -3096,7 +3120,7 @@
      "name": "family-health",
      "tier": "checked",
      "why": "a self-test, 7 browser-suite mentions",
-     "last_tested": "2026-10-17",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "streak": 1
     },

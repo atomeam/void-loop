@@ -2775,7 +2775,23 @@ try {
     check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
       out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
   }
-  if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
+  if (want("operating laws: veto council keeps mass at 100 and names who delayed or blocked, stigmergy board grows returning trails, term orbits merge overused words")) { // asked by the owner, 2026-10-18
+    const F = await fresh();
+    await F.ask('convene a council on whether to rewrite the app', 700); await until(async () => !!(await F.p.$('.veto-council .vc-p')), 8000);
+    const c0 = await F.p.$eval('.veto-council', (e) => ({ total: +e.dataset.total, survivor: e.dataset.survivor, ps: e.querySelectorAll('.vc-p').length }));
+    await F.p.fill('.veto-council input[data-agent="Skeptic"]', '70'); await F.p.press('.veto-council input[data-agent="Skeptic"]', 'Tab');
+    const c1 = await F.p.$eval('.veto-council', (e) => ({ total: +e.dataset.total, skeptic: +e.querySelector('input[data-agent="Skeptic"]').value, text: e.textContent }));
+    await F.ask('leave a trail on onboarding', 700); await until(async () => !!(await F.p.$('.stigmergy-board canvas')), 8000);
+    await F.p.click('.stigmergy-board canvas', { position: { x: 40, y: 40 } }); await F.p.click('.stigmergy-board .sb-visit'); await F.p.click('.stigmergy-board canvas', { position: { x: 40, y: 40 } }); await F.p.click('.stigmergy-board .sb-tick');
+    const s1 = await F.p.$eval('.stigmergy-board', (e) => ({ marks: +e.dataset.marks, reinforced: +e.dataset.reinforced, hot: e.dataset.hot }));
+    await F.ask('watch my words drift', 700); await until(async () => !!(await F.p.$('.term-orbits canvas')), 8000);
+    await until(async () => (await F.p.$eval('.term-orbits', (e) => +e.dataset.merges)) > 0, 20000).catch(() => {});
+    const t1 = await F.p.$eval('.term-orbits', (e) => ({ terms: +e.dataset.terms, merges: +e.dataset.merges, mush: +e.dataset.mush }));
+    check('operating laws: the veto council keeps its mass at 100 when one is edited and names a survivor, the stigmergy board reinforces a trail visited twice, term orbits collapse overused words into mush',
+      c0.total === 100 && c0.ps === 5 && c1.total === 100 && c1.skeptic === 70 && /survived|No proposal survived/.test(c1.text) && s1.marks >= 1 && s1.reinforced === 1 && s1.hot === '1,1' && t1.merges >= 1 && t1.mush >= 1 && !F.errors.length, JSON.stringify({ c0, s1, t1, errors: F.errors }));
+    await F.ctx.close();
+  }
+  if (want("field minds: vector field mind evolves its flow,divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
     const out = [];
     for (const noWorker of [false, true]) {
       const F = await fresh(noWorker ? () => { window.Worker = undefined; } : () => {});

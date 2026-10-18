@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 535,
+ "counted": 541,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 15,
+   "skills": 18,
    "direct": 2,
-   "dependants": 26
+   "dependants": 32
   },
   {
    "file": "lib/state.js",
@@ -459,6 +459,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/council-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/duel-rules.js",
    "skills": 1,
    "direct": 1,
@@ -579,6 +585,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/stigmergy-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/taste.js",
    "skills": 1,
    "direct": 1,
@@ -586,6 +598,12 @@
   },
   {
    "file": "lib/technical-context.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/term-orbits-law.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2165,6 +2183,14 @@
     "skills/showcase.js"
    ]
   },
+  "lib/council-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/veto-council.js"
+   ]
+  },
   "lib/digest.js": {
    "imports": [],
    "importedBy": [
@@ -2281,6 +2307,7 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/council-law.js",
     "lib/field-attention.js",
     "lib/field-cards.js",
     "lib/field-flow.js",
@@ -2290,6 +2317,8 @@
     "lib/field-swarm.js",
     "lib/field-vector.js",
     "lib/opposite-era.js",
+    "lib/stigmergy-law.js",
+    "lib/term-orbits-law.js",
     "lib/zorbleflux.js",
     "skills/crowd.js",
     "skills/feud.js"
@@ -2305,9 +2334,12 @@
     "skills/overload.js",
     "skills/resonance-mind.js",
     "skills/riot.js",
+    "skills/stigmergy-board.js",
     "skills/sudden-death.js",
     "skills/swarm-mind.js",
+    "skills/term-orbits.js",
     "skills/vector-field-mind.js",
+    "skills/veto-council.js",
     "skills/zorbleflux.js"
    ]
   },
@@ -3639,6 +3671,14 @@
     "skills/whisper-network.js"
    ]
   },
+  "lib/stigmergy-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/stigmergy-board.js"
+   ]
+  },
   "lib/store-db.js": {
    "imports": [
     "lib/gumroad.js"
@@ -3722,6 +3762,14 @@
    "imports": [],
    "importedBy": [
     "skills/technical-context.js"
+   ]
+  },
+  "lib/term-orbits-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/term-orbits.js"
    ]
   },
   "lib/tome-search.js": {
@@ -5992,6 +6040,12 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/stigmergy-board.js": {
+   "imports": [
+    "lib/stigmergy-law.js"
+   ],
+   "importedBy": []
+  },
   "skills/store.js": {
    "imports": [
     "lib/store.js"
@@ -6049,6 +6103,12 @@
    "imports": [
     "lib/technical-context.js",
     "skills/shape.js"
+   ],
+   "importedBy": []
+  },
+  "skills/term-orbits.js": {
+   "imports": [
+    "lib/term-orbits-law.js"
    ],
    "importedBy": []
   },
@@ -6160,6 +6220,12 @@
    "imports": [
     "lib/field-stage.js",
     "lib/field-vector.js"
+   ],
+   "importedBy": []
+  },
+  "skills/veto-council.js": {
+   "imports": [
+    "lib/council-law.js"
    ],
    "importedBy": []
   },
