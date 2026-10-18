@@ -2,12 +2,16 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T05:20:04.195Z",
-   "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39099926163",
+   "at": "2026-10-18T05:28:02.746Z",
+   "sha": "ffc8284e48e34604dca3c2adc4f1bc77b38b0df1",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39099696315",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
+    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
