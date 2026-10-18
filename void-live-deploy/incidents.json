@@ -2,26 +2,34 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:43:27.747Z",
-   "sha": "523238b265335559b0a085e4afa0c29b6c85d230",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111884599",
+   "at": "2026-10-18T08:43:32.481Z",
+   "sha": "d22388039cb41027b26192f46efdec0423956c95",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39112251345",
    "suite": "browser suite on main",
    "checks": [
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
     "suite ran to the end"
    ],
    "touched": [
-    "tools/bench.json",
-    "domains/void.frontier.md",
-    "tools/checks.mjs",
-    "tools/family-logs.test.mjs",
-    "void-live-deploy/skills/growth.js"
+    "domains/void.agents.log.md",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:38:29.082Z",
+   "sha": "51a1558a2dadc923f71e71f468bca70609ae7a8f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111918629",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/backlog-digest.test.mjs",
+    "void-live-deploy/skills/backlog-digest.js",
+    "void-live-deploy/void.growth.json",
+    "tools/bench.json"
    ]
   },
   {
@@ -713,32 +721,6 @@
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:56:22.353Z",
-   "sha": "5773a89f69c3525bec022c1fba868277f8a00bfb",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39072138179",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/card-share.test.mjs",
-    "tools/site-test.json",
-    "tools/site-test.mjs",
-    "tools/site-test.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/card-share.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json"
    ]
   }
  ]
