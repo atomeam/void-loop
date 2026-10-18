@@ -1,15 +1,43 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T09:11:28.831Z",
+   "at": "2026-10-18T09:11:42.038Z",
+   "sha": "c53adfce08747cb63caae0b1a02d2a67714f2d23",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114090393",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/lineage.test.mjs",
+    "tools/remediation-velocity.mjs",
+    "tools/remediation-velocity.test.mjs",
+    "void-live-deploy/lib/card-frame.js",
+    "void-live-deploy/lib/lineage.js",
+    "void-live-deploy/remediation.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1715-remediation-velocity"
+   ]
+  },
+  {
+   "at": "2026-10-18T09:04:48.244Z",
    "sha": "e18a912b6823ed01643149a1b8393bf5dae4d3ce",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39113265435",
    "suite": "browser suite on main",
    "checks": [
-    "empty state: the ask input opts out of writing assistants (autocomplete, autocorrect, autocapitalize, spellcheck, Chrome writing suggestions, grammarly, lastpass, 1password) and keeps its name; the notepad (its own spellcheck setting) gets none of them",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "check timeout: no check finished within 300 s"
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
    ],
    "touched": [
     "extension/README.md",
@@ -713,28 +741,6 @@
     "tools/site-test.log.json",
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T22:25:09.356Z",
-   "sha": "3bf19cdaaf54f18cfe2ec00063efd2416b620d59",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39074012082",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/growth.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/growth.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
    ]
   }
  ]
