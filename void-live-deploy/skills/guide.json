@@ -15,8 +15,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 11,
-    "checked": 7,
+    "tested": 12,
+    "checked": 6,
     "proven": 11
    },
    "from": 5,
@@ -277,8 +277,8 @@
     "swarm",
     "vector-field-mind",
     "living-cards-mind",
+    "swarm-mind",
     "flow-canvas",
-    "resonance-mind",
     "rts"
    ],
    "n": 5
@@ -698,6 +698,21 @@
   {
    "kind": "skill",
    "chapter": "make",
+   "name": "swarm-mind",
+   "title": "Swarm mind",
+   "line": "Swarms, trajectories and implicit fields: seven of Grok's drafts on V01D's field kit",
+   "examples": [
+    "swarm mind",
+    "thought gravity",
+    "neural field"
+   ],
+   "tier": "tested",
+   "why": "2 browser-suite mentions",
+   "n": 32
+  },
+  {
+   "kind": "skill",
+   "chapter": "make",
    "name": "flow-canvas",
    "title": "Flow canvas",
    "line": "F-033, the Adaptive Flow-Canvas: , made with lib/field-stage.js fieldSkill",
@@ -708,21 +723,6 @@
    ],
    "tier": "tested",
    "why": "3 browser-suite mentions",
-   "n": 32
-  },
-  {
-   "kind": "skill",
-   "chapter": "make",
-   "name": "resonance-mind",
-   "title": "Resonance mind",
-   "line": "The spectral / resonance / sound field minds of Grok's drafts on V01D's shared engine: one card, six laws from lib/field-resonance.js, each citing its draft…",
-   "examples": [
-    "resonance mind",
-    "spectral mind",
-    "resonant lattice"
-   ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
    "n": 33
   },
   {
@@ -4394,7 +4394,7 @@
     "incident-autopsy",
     "event-countdown",
     "living-cards-mind",
-    "resonance-mind"
+    "swarm-mind"
    ],
    "n": 242
   },
@@ -5304,8 +5304,8 @@
     },
     {
      "rank": 152,
-     "name": "resonance-mind",
-     "catches": "resonance mind"
+     "name": "swarm-mind",
+     "catches": "swarm mind"
     }
    ],
    "n": 261
@@ -5577,7 +5577,7 @@
     },
     {
      "name": "Flow canvas",
-     "page": 32
+     "page": 33
     },
     {
      "name": "Food",
@@ -5992,10 +5992,6 @@
      "page": 120
     },
     {
-     "name": "Resonance mind",
-     "page": 33
-    },
-    {
      "name": "Reversi",
      "page": 40
     },
@@ -6066,6 +6062,10 @@
     {
      "name": "Show countdown",
      "page": 84
+    },
+    {
+     "name": "Showcase",
+     "page": 169
     }
    ],
    "n": 266
@@ -6075,10 +6075,6 @@
    "chapter": "index",
    "title": "Index S–T",
    "entries": [
-    {
-     "name": "Showcase",
-     "page": 169
-    },
     {
      "name": "Sky",
      "page": 60
@@ -6154,6 +6150,10 @@
     {
      "name": "Swarm (3D)",
      "page": 235
+    },
+    {
+     "name": "Swarm mind",
+     "page": 32
     },
     {
      "name": "Tab",
@@ -6558,7 +6558,7 @@
   },
   {
    "name": "Flow canvas",
-   "page": 32
+   "page": 33
   },
   {
    "name": "Food",
@@ -6949,10 +6949,6 @@
    "page": 120
   },
   {
-   "name": "Resonance mind",
-   "page": 33
-  },
-  {
    "name": "Reversi",
    "page": 40
   },
@@ -7103,6 +7099,10 @@
   {
    "name": "Swarm (3D)",
    "page": 235
+  },
+  {
+   "name": "Swarm mind",
+   "page": 32
   },
   {
    "name": "Tab",

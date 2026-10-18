@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 493,
+ "counted": 495,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -69,6 +69,18 @@
    "dependants": 25
   },
   {
+   "file": "lib/field-kit.js",
+   "skills": 7,
+   "direct": 0,
+   "dependants": 16
+  },
+  {
+   "file": "lib/field-stage.js",
+   "skills": 7,
+   "direct": 7,
+   "dependants": 7
+  },
+  {
    "file": "lib/skyask.js",
    "skills": 7,
    "direct": 6,
@@ -81,19 +93,13 @@
    "dependants": 18
   },
   {
-   "file": "lib/field-kit.js",
-   "skills": 6,
-   "direct": 0,
-   "dependants": 14
-  },
-  {
    "file": "lib/bridges.js",
    "skills": 6,
    "direct": 3,
    "dependants": 8
   },
   {
-   "file": "lib/field-stage.js",
+   "file": "lib/field-worker.js",
    "skills": 6,
    "direct": 6,
    "dependants": 6
@@ -127,12 +133,6 @@
    "skills": 5,
    "direct": 3,
    "dependants": 6
-  },
-  {
-   "file": "lib/field-worker.js",
-   "skills": 5,
-   "direct": 5,
-   "dependants": 5
   },
   {
    "file": "lib/observations.js",
@@ -466,6 +466,12 @@
   },
   {
    "file": "lib/field-resonance.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/field-swarm.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2190,6 +2196,7 @@
     "lib/field-nca.js",
     "lib/field-resonance.js",
     "lib/field-stage.js",
+    "lib/field-swarm.js",
     "lib/field-vector.js"
    ],
    "reachedBy": [
@@ -2199,6 +2206,7 @@
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
    ]
   },
@@ -2228,7 +2236,16 @@
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
     "skills/resonance-mind.js",
+    "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
+   ]
+  },
+  "lib/field-swarm.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/swarm-mind.js"
    ]
   },
   "lib/field-vector-worker.js": {
@@ -2253,7 +2270,8 @@
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
     "skills/nca-mind.js",
-    "skills/resonance-mind.js"
+    "skills/resonance-mind.js",
+    "skills/swarm-mind.js"
    ]
   },
   "lib/film-reviews.js": {
@@ -5637,6 +5655,14 @@
    "importedBy": [
     "skills/recipe.js"
    ]
+  },
+  "skills/swarm-mind.js": {
+   "imports": [
+    "lib/field-stage.js",
+    "lib/field-worker.js",
+    "lib/field-swarm.js"
+   ],
+   "importedBy": []
   },
   "skills/swarm.js": {
    "imports": [],

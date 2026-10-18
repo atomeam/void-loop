@@ -2528,6 +2528,30 @@ try {
     check('field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), a moving card leaves a fading trail and ripples the field around it (both asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page',
       out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main', JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: { ...o.a, status: o.a.status.slice(0, 80) }, b: { ...o.b, status: o.b.status.slice(0, 80) }, errors: o.errors }))));
   }
+  if (want("field minds: swarm mind, two tribes in a neural field remember the pointer and compete, every draft's law runs, with or without a Worker")) { // asked by the owner: Grok's drafts F-044, F-030, F-026, F-028, F-040, F-041, F-022
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext;' : () => {}); // the playbook's test: no Worker, no Web Audio
+      await F.ask('swarm mind', 700); await until(async () => !!(await F.p.$('.ff-swarm-mind canvas')), 8000);
+      const card = '.ff-swarm-mind', read = () => F.p.$eval(card, (e) => ({ law: e.dataset.law, fid: e.dataset.fid, agents: +e.dataset.agents, gen: +(e.dataset.gen || 0), mind: e.dataset.mind, wells: +e.dataset.wells, dominant: e.dataset.dominant,
+        status: e.querySelector('.ff-hud').textContent, button: e.querySelector('.sw-law').textContent, sound: e.querySelector('.ff-sound').textContent, filter: e.style.filter, page: getComputedStyle(document.body).filter }));
+      const a = await read(), box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + 60, box.y + 60); for (let i = 0; i < 16; i++) await F.p.mouse.move(box.x + 60 + i * 12, box.y + 70 + (i % 4) * 10);
+      await until(async () => (await read()).gen > 0, 12000).catch(() => {});
+      const b = await read();
+      await F.p.fill(card + ' .sw-thought', 'a quiet idea'); await F.p.press(card + ' .sw-thought', 'Enter'); const wells = (await read()).wells;
+      const laws = []; for (let i = 0; i < 8; i++) { await F.p.click(card + ' .sw-law'); await F.p.waitForTimeout(250); const r = await read(); laws.push(r.law + ':' + r.agents + ':' + r.status.split(' · ')[0]); }
+      await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
+      const kept = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const all = q.result.transaction('seals').objectStore('seals').getAll(); all.onsuccess = () => { q.result.close(); res(JSON.stringify(all.result.filter((x) => x.idea === 'swarm-mind'))); }; }; q.onerror = () => res('[]'); }));
+      let gravity = null; if (!noWorker) { await F.ask('thought gravity', 700); gravity = await read(); }
+      out.push({ noWorker, a, b, wells, laws, kept, gravity, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.law === 'swarm' && o.a.agents === 160 && /^[AB]$/.test(o.a.dominant) && o.b.gen > 0 && /^F-044\+F-030\+F-026\+F-028 · gen \d+ · fitness [\d.]+ · entropy [\d.]+ · (blue engages|amber explores) \(A [\d.]+ vs B [\d.]+\)/.test(o.b.status)
+      && o.wells === 1 && o.laws.join(',') === 'neural:160:F-044,memory:140:F-030,lattice:200:F-026,compete:160:F-028,probes:12:F-040,resonance:24:F-041,gravity:180:F-022,swarm:160:F-044+F-030+F-026+F-028'
+      && /"law":"swarm"/.test(o.kept) && !/quiet|lastOver|"x":/.test(o.kept) && /^hue-rotate\(/.test(o.b.filter) && o.b.page === 'none' && !o.errors.length;
+    check('field minds: the swarm mind (F-044, F-030, F-026, F-028) runs 160 agents in two competing tribes whose genomes a mind evolves (gen above 0) in a Worker and on the page with no Worker and no Web Audio; a typed thought becomes a well (F-022), Law runs each draft (F-040, F-041 too) with its own agents, Seal keeps the law and genome but not the thought or the pointer, and "thought gravity" opens on its law',
+      out.length === 2 && out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable' && out[0].gravity && out[0].gravity.law === 'gravity' && out[0].gravity.wells === 3, JSON.stringify(out.map((o) => ({ ...o, kept: o.kept.slice(0, 300) }))));
+  }
   if (want("field minds: vector field mind evolves its flow, divergence and curl set the ink density and the card's morph, and it still runs with no Worker")) { // asked by the owner: Grok's idea F-033
     const out = [];
     for (const noWorker of [false, true]) {

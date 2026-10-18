@@ -12,8 +12,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 2,
-  "tested": 62,
-  "checked": 36,
+  "tested": 63,
+  "checked": 35,
   "proven": 85
  },
  "families": [
@@ -23,8 +23,8 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 11,
-    "checked": 7,
+    "tested": 12,
+    "checked": 6,
     "proven": 11
    },
    "skills": [
@@ -254,19 +254,19 @@
      "promoted": "2026-10-17"
     },
     {
+     "name": "swarm-mind",
+     "tier": "tested",
+     "why": "2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "flow-canvas",
      "tier": "tested",
      "why": "3 browser-suite mentions",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
-    },
-    {
-     "name": "resonance-mind",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
-     "last_tested": "2026-10-18",
-     "last_tested_by": "its tests"
     },
     {
      "name": "rts",
