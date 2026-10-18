@@ -4157,12 +4157,14 @@ say('nothing selected to remove');
       const still = reduceMotion.matches;
       SKY.near = L.layerView(SKY.cam, L.NEAR, innerWidth, innerHeight, { still }); SKY.far = L.layerView(SKY.cam, L.FAR, innerWidth, innerHeight, { still });
     }
+    const warmSky = () => { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); };
+    (window.requestIdleCallback || setTimeout)(() => setTimeout(warmSky, 1500)); // loaded before the first flight, so the first move already streaks (a first move used to wait on this file and, on a slow link, ended before it came)
     const kickStars = () => { if (voidLook.stars !== 'off' && !starRAF && !document.hidden) starRAF = requestAnimationFrame(drawStars); };
     window.addEventListener('void-camera', (e) => {
       const d = e && e.detail; if (!d) return;
       const now = performance.now(), prev = SKY.cam, was = SKY.near, dt = SKY.at ? (now - SKY.at) / 1000 : 0;
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
-      if (!SKY.lib) { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); return; }
+      if (!SKY.lib) { warmSky(); return; }
       skyView();
       if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
         const t = Math.min(0.25, dt);
@@ -4171,7 +4173,7 @@ say('nothing selected to remove');
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
-    try { window.__voidStars = () => ({ near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
+    try { window.__voidStars = () => ({ lib: !!SKY.lib, near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
     function skyTick(now) { // the streak fades once the camera stops telling (a drag let go, the keys up): a frame with no move since the last one
       const dt = SKY.drawAt ? Math.min(0.25, (now - SKY.drawAt) / 1000) : 0; SKY.drawAt = now;
       if (SKY.fresh) SKY.fresh = false; else { const k = Math.exp(-9 * dt); SKY.vx *= k; SKY.vy *= k; SKY.zr *= k; if (Math.hypot(SKY.vx, SKY.vy) < 2) SKY.vx = SKY.vy = 0; if (Math.abs(SKY.zr) < 0.05) SKY.zr = 0; }
