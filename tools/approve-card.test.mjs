@@ -2,7 +2,7 @@
 // stage"): the ask it accepts, the status it reads off D1's rule and runs, and the catch-up count. node --test tools/approve-card.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { approveOf, statusOf, catchUp, STATUSES } from '../void-live-deploy/skills/approve-card.js';
+import { approveOf, statusOf, catchUp, staleOf, staleLine, STALE_HOURS, STATUSES } from '../void-live-deploy/skills/approve-card.js';
 import { parseGatedAsk } from '../void-live-deploy/lib/approval-core.js';
 
 test('approveOf: "approve later: keep <automation> running every 2 hours" is the card; its ask is the confirm line\'s own ask, and a stop or anything else is not', () => {
@@ -47,4 +47,21 @@ test('catchUp: how many runs since the card was last seen, and the newest', () =
   assert.deepEqual(catchUp(runs, null), { n: 3, last: runs[1] }, 'never seen: every run is news');
   assert.deepEqual(catchUp([], '2026-10-18T04:00:00.000Z'), { n: 0, last: null });
   assert.deepEqual(catchUp(undefined, undefined), { n: 0, last: null });
+});
+
+test('staleOf: pending, approved or running for more than 48 hours is stale (createdAt, else seenAt); done, failed, aborted and unknown ages never are', () => {
+  const H = 36e5, iso = (h) => new Date(NOW - h * H).toISOString();
+  assert.equal(STALE_HOURS, 48);
+  assert.deepEqual(staleOf({ status: 'pending', createdAt: iso(72) }, NOW), { stale: true, hours: 72 });
+  assert.deepEqual(staleOf({ status: 'pending', createdAt: iso(47) }, NOW), { stale: false, hours: 47 });
+  assert.equal(staleOf({ status: 'pending', createdAt: iso(48) }, NOW).stale, false, 'exactly 48 hours is not more than 48');
+  assert.equal(staleOf({ status: 'pending', createdAt: iso(48.01) }, NOW).stale, true);
+  for (const s of ['approved', 'running']) assert.equal(staleOf({ status: s, createdAt: iso(100) }, NOW).stale, true, s);
+  for (const s of ['done', 'failed', 'aborted', 'nonsense', undefined]) assert.equal(staleOf({ status: s, createdAt: iso(100) }, NOW).stale, false, String(s));
+  assert.deepEqual(staleOf({ status: 'pending', seenAt: iso(80) }, NOW), { stale: true, hours: 80 }, 'an older card has no createdAt: its seenAt');
+  assert.equal(staleOf({ status: 'pending', createdAt: iso(1), seenAt: iso(200) }, NOW).stale, false, 'createdAt wins over seenAt (Keep waiting resets it)');
+  for (const bad of [null, undefined, {}, { status: 'pending' }, { status: 'pending', createdAt: 'yesterday' }, { status: 'pending', createdAt: null, seenAt: null }]) assert.deepEqual(staleOf(bad, NOW), { stale: false, hours: 0 });
+  assert.equal(staleOf({ status: 'pending', createdAt: iso(-5) }, NOW).stale, false, 'a time in the future is not old');
+  assert.equal(staleOf({ status: 'pending', createdAt: iso(72) }, NaN).stale, false);
+  assert.equal(staleLine(72), 'waiting 3 days — still want this?'); assert.equal(staleLine(49), 'waiting 2 days — still want this?');
 });

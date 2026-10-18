@@ -12,6 +12,8 @@
  * enabled/when, its runs): pending, approved, running, done, failed, aborted. Nothing persists beyond the stage JSON
  * (synced through /api/mine, cleaned by void.html's cleanThings) and the tables that already exist.
  * "approve later: keep morning-digest running every 2 hours", "approve later: keep the nightly-check automation running every day".
+ * A card pending, approved or running for more than 48 hours (createdAt, else seenAt) shows an amber "waiting 3 days — still want this?" line (staleOf; asked by
+ * Void) beside its Approve or Abort, and "Keep waiting" starts the 48 hours again.
  */
 import { keepAsk, keepLine } from '../lib/keep-going.js';
 import { cardEl, keepOut } from '../lib/stage-pack.js';
@@ -59,6 +61,22 @@ export function catchUp(runs, seenAt) {
   return { n: list.filter((r) => t(r.at) > seen).length, last: list[0] || null };
 }
 
+export const STALE_HOURS = 48; // a task waiting or running this long gets "still want this?"
+/**
+ * Has the card been waiting too long (asked by Void: "a stale-warning ... if the task has been running/pending for more than 48 hours")? Only a pending,
+ * approved or running card can be stale; its age is from createdAt (set when summoned), else the older card's seenAt. { stale, hours } (hours is whole, 0 when unknown). Pure.
+ */
+export function staleOf(th, now = Date.now()) {
+  const x = th || {};
+  if (!['pending', 'approved', 'running'].includes(x.status)) return { stale: false, hours: 0 };
+  const from = t(x.createdAt) || t(x.seenAt);
+  if (!from || !Number.isFinite(now)) return { stale: false, hours: 0 };
+  const hours = Math.max(0, Math.floor((now - from) / 36e5));
+  return { stale: (now - from) / 36e5 > STALE_HOURS, hours };
+}
+/** "waiting 3 days — still want this?" (whole days, since it is only said after 48 hours). Pure. */
+export const staleLine = (hours) => 'waiting ' + Math.floor(hours / 24) + ' days — still want this?';
+
 const PILL = { pending: '#c9a84a', approved: '#7aa9ff', running: '#6fd38f', done: '#9ad', failed: '#ff7b7b', aborted: '#999' };
 const WORDS = { pending: 'waiting for your yes · nothing runs', approved: 'approved · on the clock, no run yet', running: 'running by itself', done: 'done', failed: 'failed', aborted: 'aborted · switched off' };
 const el = (tag, css, text) => { const e = document.createElement(tag); if (css) e.style.cssText = css; if (text != null) e.textContent = text; return e; };
@@ -72,6 +90,7 @@ function mount(th, stageApi) {
   const status = el('div', 'margin-top:8px;font-size:13px'); status.className = 'approve-status'; status.setAttribute('aria-live', 'polite');
   const pill = el('span', 'display:inline-block;padding:1px 8px;border-radius:999px;font-size:12px;border:1px solid currentColor'); pill.className = 'approve-pill';
   const line = el('div', 'margin-top:6px;font-size:12px;color:#8b90a0'); line.className = 'approve-line';
+  const stale = el('div', null); stale.className = 'approve-stale vc-stale'; stale.setAttribute('role', 'status'); stale.hidden = true;
   const bar = el('div', 'display:flex;gap:6px;margin-top:10px'); bar.className = 'approve-bar';
   const btn = (label, cls, fn) => { const b = keepOut(el('button', null, label)); b.type = 'button'; b.className = 'g-btn ' + cls; b.addEventListener('click', (e) => { e.stopPropagation(); fn(); }); return b; };
   const approve = btn('Approve', 'approve-yes', () => {
@@ -90,8 +109,10 @@ function mount(th, stageApi) {
       th.status = 'aborted'; stageApi.save(); line.textContent = 'switched off · it runs again only when you approve it again'; paint();
     } catch (e) { line.textContent = e.message; }
   });
-  status.append(pill); bar.append(approve, abort);
-  card.append(title, what, status, line, bar);
+  const keepWaiting = btn('Keep waiting', 'approve-keep', () => { th.createdAt = new Date().toISOString(); stageApi.save(); paint(); }); // starts the 48 hours again
+  if (!th.createdAt) { th.createdAt = th.seenAt || new Date().toISOString(); stageApi.save(); } // an older card: its age is when it was last looked at
+  status.append(pill); bar.append(approve, abort, keepWaiting);
+  card.append(title, what, status, stale, line, bar);
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
 
@@ -102,6 +123,9 @@ function mount(th, stageApi) {
     status.title = WORDS[s];
     approve.style.display = s === 'pending' || s === 'failed' || s === 'aborted' ? '' : 'none';
     abort.style.display = s === 'approved' || s === 'running' ? '' : 'none';
+    const old = staleOf(th);
+    stale.hidden = !old.stale; keepWaiting.style.display = old.stale ? '' : 'none'; card.classList.toggle('vc-stale-card', old.stale);
+    if (old.stale) stale.textContent = staleLine(old.hours);
   }
   paint();
 
@@ -144,14 +168,14 @@ function mount(th, stageApi) {
 async function run(text, api) {
   const a = approveOf(text);
   if (!a) return 'none';
-  api.summon('approve', { ...a, title: 'Keep “' + a.rule + '” running', status: 'pending', approvedAt: null, seenAt: new Date().toISOString(), times: 0, center: true });
+  api.summon('approve', { ...a, title: 'Keep “' + a.rule + '” running', status: 'pending', approvedAt: null, seenAt: new Date().toISOString(), createdAt: new Date().toISOString(), times: 0, center: true });
   api.say('Approve later · the card waits on the stage · Approve asks the confirm line, then it runs by itself after you leave');
   return 'approve-card';
 }
 
 export default {
   name: 'approve-card',
-  approveOf,
+  approveOf, staleOf,
   examples: ['approve later: keep morning-digest running every 2 hours', 'approve later: keep the nightly-check automation running every day'],
   nearMisses: ['approve my leave request', 'keep morning-digest running every 2 hours', 'approve this proposal', 'approve later', 'what does approve mean'],
   match(lower, text) { return !!approveOf(text); },
