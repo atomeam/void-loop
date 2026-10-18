@@ -832,11 +832,13 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) the ghost text at the bottom right is the "support V01D" link: readable now, inside the viewport, and not under the bar
+    // 7) no corner "support V01D" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
+    //    "open the store" still opens the store, and the book's Start here page names it
     const S = await fresh(); await S.p.waitForTimeout(1500);
-    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-support'), b = a.getBoundingClientRect(), r = document.getElementById('row').getBoundingClientRect(), cs = getComputedStyle(a); return { text: a.textContent, color: cs.color, op: cs.opacity, l: b.left, t: b.top, r: b.right, b: b.bottom, rowR: r.right, vw: innerWidth, vh: innerHeight }; });
-    const supBg = await px(S.p, sup.l - 8, sup.t + 6);
-    check('empty state: the bottom-right ghost text is the "support V01D" link; it is full opacity, at least 4.5:1 on the stage, and inside the viewport clear of the bar', sup.text === 'support V01D' && sup.op === '1' && ratio(rgbOf(sup.color), supBg) >= 4.5 && sup.r <= sup.vw && sup.b <= sup.vh && sup.l > sup.rowR, JSON.stringify({ sup, supBg, ratio: ratio(rgbOf(sup.color), supBg) }));
+    const sup = await S.p.evaluate(() => ({ el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, text: /support v01d/i.test(document.body.innerText) }));
+    await S.ask('open the store', 900); const storePg = await S.p.evaluate(() => { const p = document.querySelector('.vpage.on'); return p ? p.innerText.slice(0, 200) : ''; }); await S.ask('close', 300);
+    const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
+    check('empty state: no corner "support V01D" link (no visible link on the empty stage); "open the store" opens the store; the book\'s Start here page names the store', !sup.el && sup.links === 0 && !sup.text && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, storePg: storePg.slice(0, 80), howStore }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -2364,8 +2366,8 @@ try {
     await S.ask('unmute all media', 400);
     const unmuted = await S.p.evaluate(() => !document.querySelector('.media-card audio').muted);
     const savedMedia = (await S.state()).find((x) => x.kind === 'media');
-    await S.p.reload(); await S.p.waitForSelector('.media-card', { timeout: 8000 }).catch(() => {});
-    const afterReload = await S.p.$eval('.media-card', (e) => e.innerText).catch(() => '');
+    await S.p.reload(); // the stage comes back only after every skill loads: under load that is past 8 s, so wait for the card's words, not a fixed time
+    const afterReload = await until(() => S.p.evaluate(() => { const c = document.querySelector('.media-card'); return c && /again/.test(c.innerText) ? c.innerText : ''; }), 20000) || await S.p.$eval('.media-card', (e) => e.innerText).catch(() => '');
     check('local audio: two chosen files make a playlist with a volume slider of its own (40%), the next track starts when one ends, "mute all media" silences the player and "unmute all media" gives the sound back, and after a reload the card keeps its names and asks for the files again',
       player.items.join() === 'one.wav,two.wav' && player.audio === 1 && player.cur === 'one.wav' && Math.abs(vol - 0.4) < 0.01 && advanced === 'two.wav' && muted && unmuted && savedMedia && savedMedia.vol === 0.4 && savedMedia.names.join() === 'one.wav,two.wav' && /again/.test(afterReload) && /one\.wav/.test(afterReload) && !S.errors.length,
       JSON.stringify({ player, vol, advanced, muted, unmuted, savedMedia, afterReload: afterReload.slice(0, 160), errors: S.errors }));
@@ -6763,7 +6765,7 @@ try {
   const hits0 = catalogHits.length; // earlier contexts asked questions (an answer may carry a product line, so they read the catalog)
   const P = await fresh();
   const bare = await P.p.evaluate(() => ({ stage: document.querySelectorAll('#stage > *').length, text: document.body.innerText, links: Array.from(document.querySelectorAll('a')).filter((e) => e.offsetParent !== null).length, gum: document.querySelectorAll('a[href*="gumroad"]').length, clickable: Array.from(document.querySelectorAll('button, a, [role=button], microphone')).filter((e) => e.offsetParent !== null).map((e) => e.id || e.tagName) }));
-  check('a fresh visit is the void: an empty stage and the input, nothing else to click but the faint support link (owner, 2026-10-15)', bare.stage === 0 && !(await P.page()) && bare.links <= 1 && bare.clickable.every((x) => x === 'go' || x === 'mic' || x === 'void-support'), JSON.stringify(bare).slice(0, 200));
+  check('a fresh visit is the void: an empty stage and the input, nothing else to click (owner, 2026-10-15; the corner support link went on 2026-10-18)', bare.stage === 0 && !(await P.page()) && bare.links === 0 && bare.clickable.every((x) => x === 'go' || x === 'mic'), JSON.stringify(bare).slice(0, 200));
   await P.ask('what can you do', 600); const selfPg = await P.page(); await P.ask('close');
   await P.ask('menu', 300); const menuTome = !!(await until(async () => ((await P.p.evaluate(() => !!document.getElementById('vtome'))) ? 'open' : ''), 8000)); await P.ask('close', 300); // the book loads its pages first: wait for it, a runner is slower than 900 ms
   const menuGone = !!(await until(async () => ((await P.p.evaluate(() => !document.getElementById('vtome'))) ? 'gone' : ''), 5000));

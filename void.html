@@ -1099,10 +1099,9 @@
     html.void-offline #void-lens { background: radial-gradient(closest-side, transparent 35.2%, rgba(255,190,100,.30) 36.4%, rgba(255,160,70,.12) 46%, transparent 60%); }
     html.void-offline #void-depth::before { opacity: calc(.62 * var(--ring)); }
     /* the support link: readable (AA on the dark stage), a quiet footer line at the bottom right */
-    #void-support { position: fixed; right: 12px; bottom: 10px; z-index: 6; font: 12px/1.3 var(--font, system-ui, sans-serif); color: #b4b9cb; text-decoration: none; padding: 2px 4px; border-radius: 4px; }
-    #void-support:hover, #void-support:focus-visible { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
-    #void-support:focus-visible { outline: 2px solid rgb(var(--d-key)); }
-    @media (max-width: 700px) { #void-support { right: 8px; bottom: calc(2px + env(safe-area-inset-bottom, 0px)); font-size: 11px; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+    /* no corner "support V01D" link (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the store answers "open the store",
+       "support void", "tip", "buy", and the book's Start here page names it */
+    @media (max-width: 700px) { #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
 </head>
 <body>
@@ -6391,7 +6390,6 @@ say('nothing selected to remove');
     sync();
   })();
   </script>
-<a id="void-support" href="/store/">support V01D</a>
 </body>
 </html>
 
