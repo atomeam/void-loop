@@ -2839,6 +2839,40 @@ try {
         && /a hut needs 6 wood: \d wood so far; the villagers are on it/.test(short) && /wood 9|wood 1\d/.test(wood9) && /the villagers raised a hut \(6 wood\)/.test(raised) && !!hut && campAfter && campAfter.stock.wood >= 3 && /^the camp has \d+ wood/.test(rep) && /built: hut/.test(rep) && !P.errors.length,
       JSON.stringify({ camp0, grounded, tree: tree && tree.res, villager: !!villager, bar, treeLeft, onGround, short, wood9, raised, hut: !!hut, stock: campAfter && campAfter.stock, rep, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // asked by Owner, 2026-10-18: look around and fly around V01D (skills/fly.js, the maths in lib/stage-camera.js): a camera over the stage, a view only
+  if (want("fly: look around and fly around the stage: keys move the camera, the wheel zooms, a drag pans, Esc lands, no thing moves")) { const P = await fresh();
+    await P.ask('make a clock', 700); await until(async () => (await P.state()).some((x) => x.kind === 'clock'), 6000);
+    const before = (await P.state()).map((x) => [x.id, x.x, x.y]);
+    const emptyHud = await P.p.$('#void-fly-hud'); // nothing shows until asked
+    await P.ask('fly around', 500);
+    const hud = await P.p.$eval('#void-fly-hud', (e) => e.textContent).catch(() => ''), said = await P.whisper();
+    const flying = await P.p.evaluate(() => document.documentElement.classList.contains('void-flying') && window.__voidFly.state().flying);
+    // a key is held until the eye has moved (the headless browser's first frames can be slow), never for a guessed time
+    const hold = async (page, key, far) => { await page.keyboard.down(key); const ok = await until(() => page.evaluate((f) => { const s = window.__voidFly.state(); return s.x <= f[0] && s.y <= f[1] && s.y >= f[2]; }, far), 5000); await page.keyboard.up(key); return ok; };
+    const heldD = await hold(P.p, 'd', [-50, Infinity, -Infinity]), heldDown = await hold(P.p, 'ArrowDown', [-50, -20, -Infinity]);
+    const moved = await P.p.evaluate(() => window.__voidFly.state()), tf = await P.p.$eval('#stage', (e) => e.style.transform);
+    await P.p.waitForTimeout(700); // the eye comes to rest before the wheel and the drag, so their checks read only what they did
+    const rest = await P.p.evaluate(() => window.__voidFly.state());
+    await P.p.mouse.move(400, 300); await P.p.mouse.wheel(0, -240); await P.p.waitForTimeout(200);
+    const zoomed = await P.p.evaluate(() => window.__voidFly.state());
+    await P.p.mouse.move(600, 400); await P.p.mouse.down(); await P.p.mouse.move(650, 430, { steps: 5 }); await P.p.mouse.up(); await P.p.waitForTimeout(150);
+    const panned = await P.p.evaluate(() => window.__voidFly.state()), kept = await P.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.camera.v1') || 'null'));
+    await P.p.keyboard.press('Escape');
+    const landed = await until(() => P.p.evaluate(() => !document.documentElement.classList.contains('void-flying') && !window.__voidFly.state().flying && !window.__voidFly.state().landing && document.getElementById('stage').style.transform === '' && !document.getElementById('void-fly-hud')), 6000);
+    const after = (await P.state()).map((x) => [x.id, x.x, x.y]);
+    await P.ask('land', 300); const ground = await P.whisper();
+    // reduced motion: no easing, Esc snaps home in a frame
+    const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' });
+    await R.ask('fly around', 500); const heldW = await hold(R.p, 'w', [Infinity, Infinity, 40]);
+    const rMoved = await R.p.evaluate(() => window.__voidFly.state());
+    await R.p.keyboard.press('Escape'); // home in the next frame (no glide: the pure test checks ease() snaps when still); a busy machine's frame can be late, so poll
+    const rHome = await until(() => R.p.evaluate(() => document.getElementById('stage').style.transform === '' && !window.__voidFly.state().landing && !document.getElementById('void-fly-hud')), 3000);
+    check('fly: nothing shows until asked; "fly around" puts up the chip ("Esc to land") and says so; D slides the view left and ArrowDown slides it up (a translate on #stage), the eye eases to rest when the keys are let go, the wheel zooms in, a drag pans right, the camera is kept on this device, Esc lands (the chip gone, the transform empty) with every thing exactly where it was saved, "land" on the ground says so; under reduced motion Esc snaps home',
+      !emptyHud && /Esc to land/.test(hud) && /^flying/.test(said) && flying && heldD && heldDown && moved.x < -50 && moved.y < -20 && /translate\(/.test(tf) && Math.abs(rest.x - moved.x) < 400 && zoomed.z > 1 && Math.abs(zoomed.x - rest.x) < 400
+        && panned.x > zoomed.x + 30 && panned.y > zoomed.y + 15 && kept && kept.flying === true && Math.abs(kept.x - panned.x) < 1 && landed && JSON.stringify(after) === JSON.stringify(before) && /already on the ground/.test(ground)
+        && heldW && rMoved.y > 40 && rHome && !P.errors.length && !R.errors.length,
+      JSON.stringify({ emptyHud: !!emptyHud, hud, said, flying, heldD, heldDown, moved, tf, rest, zoomed, panned, kept, landed, before, after, ground, heldW, rMoved, rHome, e: P.errors, re: R.errors }).slice(0, 1200));
+    await R.ctx.close(); await P.ctx.close(); }
   // frontier #4, the owner's piece (2026-10-11): figures left together pick something to do (skills/together.js)
   if (want("figures together: \"what are they doing\" names what two figures pick (trade, spar, inspect, argue) and why")) { const P = await fresh();
     await P.ask('what are they doing', 500); const none = await P.whisper();

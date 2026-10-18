@@ -21,6 +21,7 @@ export const STORES = {
   ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against V01D in Pong and Snake' },
   corrections: { key: 'a2m.void.corrections.v1', what: 'what you told V01D it got wrong (kept apart from how your V01D looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },
+  camera:   { key: 'a2m.void.camera.v1',   what: 'where the stage camera is and whether you are flying ("fly around")' },
 };
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };

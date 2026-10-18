@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 495,
+ "counted": 497,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -526,6 +526,12 @@
   },
   {
    "file": "lib/skill-use.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/stage-camera.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -3419,6 +3425,12 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/stage-camera.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/fly.js"
+   ]
+  },
   "lib/stale-tab.js": {
    "imports": [],
    "importedBy": []
@@ -4197,6 +4209,12 @@
     "lib/field-stage.js",
     "lib/field-worker.js",
     "lib/field-flow.js"
+   ],
+   "importedBy": []
+  },
+  "skills/fly.js": {
+   "imports": [
+    "lib/stage-camera.js"
    ],
    "importedBy": []
   },

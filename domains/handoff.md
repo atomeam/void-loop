@@ -15,6 +15,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
+- Claude (fly helper) · worktree-agent-a15d345f1755e8c3b · look around and fly around V01D (owner, 2026-10-18): a camera over the stage, skills/fly.js + lib/stage-camera.js, view only, nothing in void.html · 2026-10-18 01:40 UTC
 - Claude (this session) · claude/modest-lovelace-u962xp · Grok's builds onto the field-mind engine (owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"): four themes in flight (attention, NCA lattices, resonance, swarms and implicit fields), each one lib/field-<theme>.js with every draft a named variant citing its F-id, one card per theme; also the Art Director for the Art Forge and the displacement ripple · 2026-10-18 00:20 UTC
 - Claude (resonance helper) · worktree-agent-abe08e3d6012c89ea · Grok's sound drafts on the field engine, asked by Owner ("all of groks builds should be what v01ds engine is built on"): F-027, F-034, F-037, F-042, F-044, F-048 as variants of lib/field-resonance.js, one card skills/resonance-mind.js · 2026-10-18 00:40 UTC
 - Claude (this session) · helper/f-living-cards · F-038 Living Spatial Cards Mind (delivered to atomeam/a-to-mind.com 85651746) on the field kit: an evolving excitable lattice with five draggable DOM cards that ride it and reshape it (lib/field-cards.js, skills/living-cards-mind.js); F-036 and F-037 next if nobody holds them · 2026-10-17 13:10 UTC
