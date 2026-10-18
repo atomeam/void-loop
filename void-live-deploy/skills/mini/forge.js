@@ -1,5 +1,5 @@
 /**
- * forge miniature — frontier #14: the thing you asked Void to make, standing on a small turntable in the void. The mesh is
+ * forge miniature — frontier #14: the thing you asked Verse to make, standing on a small turntable in the void. The mesh is
  * the exact one the STL prints (skills/forge-rules.js build(key)), shown at real scale (millimetres), in a matte
  * print-like material with the turntable turning it slowly; drag the space around it to look closer. Under reduced
  * motion it stays still. data: { key, angle? (degrees, the card's turntable angle when still) }

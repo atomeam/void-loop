@@ -36,7 +36,7 @@ test('the layout: the title big at the top, the text wrapped inside the margins,
   assert.ok(long.lines.every((l) => l.y <= 2700 - long.margin));
 });
 
-// a poster for a V01D film (asked by Void, 2026-10-15: "Create a 'poster' skill integration that consumes the new film-metadata
+// a poster for a Verse film (asked by Verse, 2026-10-15: "Create a 'poster' skill integration that consumes the new film-metadata
 // JSON to generate promotional layouts")
 test('film posters: the asks, which film, and a card from its metadata with a phone-story size', async () => {
   const { filmPosterOf, filmCard, STORY } = await import('../void-live-deploy/skills/poster.js');

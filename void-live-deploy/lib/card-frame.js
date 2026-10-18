@@ -1,10 +1,10 @@
-// V01D cards (owner, 2026-10-16: "cards should look like actual cards, like magic cards ... with stats and an intention to add to the
-// overall V01D experience"; "even what's new pussycat becomes its own magic style card, which we will call V01D cards").
-// Every page V01D puts up is a card: a foil frame (its colour is the family, its foil the rarity), a title bar with a cost, an art box
-// with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to V01D" line, and a footer with a collector
+// Verse cards (owner, 2026-10-16: "cards should look like actual cards, like magic cards ... with stats and an intention to add to the
+// overall Verse experience"; "even what's new pussycat becomes its own magic style card, which we will call Verse cards").
+// Every page Verse puts up is a card: a foil frame (its colour is the family, its foil the rarity), a title bar with a cost, an art box
+// with the family's glyph, a type line with a rarity gem, the body as the text box, an "adds to Verse" line, and a footer with a collector
 // number and a power/toughness plate. Nothing is invented: the rarity is the skill's evidence rating (proven mythic, checked rare, tested
 // uncommon, experiment common); the cost is how many words you say to play it; power is its success rate out of nine and toughness the
-// real asks that proved it; the collector number is its page in the V01D Book; "adds" is the one line the book says it does. An answer
+// real asks that proved it; the collector number is its page in the Verse Book; "adds" is the one line the book says it does. An answer
 // fetched from a source (an encyclopedia page) is an Answer card: power is how many sources it stands on, toughness how many days old the
 // source is. The Illuminati card game (Steve Jackson Games) lends its three stats and its control arrows: Power, Resistance and Income,
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
@@ -17,7 +17,7 @@ import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
 import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf } from './card-subject.js';
-import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Void)
+import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
 import { sectionsOf } from './card-sections.js';
 
@@ -97,7 +97,7 @@ export const CARD_CSS = [
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:linear-gradient(180deg,hsl(var(--h) 28% 26%),hsl(var(--h) 26% 14%));border:2px solid var(--edge);border-radius:9px 4px 9px 4px;font-size:17px;font-weight:700;letter-spacing:.05em;color:#f3efe2;box-shadow:0 2px 6px rgba(0,0,0,.5)}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 30% 70%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:16px;color:#f3efe2;letter-spacing:.02em}',
   '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:-1px;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:-1px;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
-  // type-specific layouts (asked by Void: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
+  // type-specific layouts (asked by Verse: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
   // visual hierarchies"): the answer card's kind (card-kinds.js) decides what leads. A Film is a cinema screen: a tall letterboxed art box and an
   // italic centred title. A Place leads with where it is: its type line first, in large caps, then the title, over a shallow horizon. A Person is a
   // portrait: a round art box centred above the name. A Song is a record sleeve: a thin strip, the title with a note before it.
@@ -108,7 +108,7 @@ export const CARD_CSS = [
   // the stats chip sits in the footer row after the copy / save actions, in the flow: it never floats over the text (owner, 2026-10-18: "P 1 R 39" hid words)
   '.vcard .vc-foot{position:static!important;background:none!important;padding:8px 0 4px!important;align-items:center;flex-wrap:wrap;gap:6px 10px}',
   '.vcard .vc-route{margin:6px 18px 0;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:0;text-transform:none;color:hsl(var(--h) 14% 70%)!important}',
-  // two voices, two looks: the source's excerpt is a quotation (left rule, darker ground, its source line attached); V01D's take is labelled in a bright, bold ink
+  // two voices, two looks: the source's excerpt is a quotation (left rule, darker ground, its source line attached); Verse's take is labelled in a bright, bold ink
   '.vpage.vcard[data-card-extract]>p:not(.vc-route){border-left:3px solid hsl(var(--h) 38% 48%);background:rgba(0,0,0,.26);padding:8px 12px;margin-bottom:0;border-radius:0 6px 0 0;color:#dcd8ca}',
   '.vpage.vcard[data-card-extract]>.src{margin-top:0;padding:4px 12px 8px;border-left:3px solid hsl(var(--h) 38% 48%);background:rgba(0,0,0,.26);border-radius:0 0 6px 0;font-size:11.5px;color:hsl(var(--h) 18% 76%)}',
   '.vcard .take-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--h) 70% 82%);margin-bottom:3px}',
@@ -143,7 +143,7 @@ export const CARD_CSS = [
   '.vcard-plain .vc-share button:hover,.vcard-plain .vc-share button:focus-visible{background:rgba(255,255,255,.08);outline:2px solid rgba(160,190,255,.7);outline-offset:1px}.vcard-plain .vc-share .vc-full{font-size:10.5px;color:#a9afc2}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
-// Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
+// Skill evolution (asked by Verse: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
 // test passes"): a skill's rating only rises when new evidence arrives (tools/families.mjs). This browser remembers the rating it last showed
 // for each skill; when a card appears with a higher one the card glows once and says what it became. The first sight of a skill only
 // remembers it, so nothing evolves on a first visit. Stored on this device only.
@@ -207,7 +207,7 @@ export function keep(el, esc, stats) {
   const key = JSON.stringify([c.key, c.nouns, c.season, c.isSkill, c.chapter, c.typeLine, c.cost, c.power, c.toughness, c.income, c.arrowsOut, c.arrowIn, c.number, c.adds, c.artKind, c.artHue, c.artInk, c.rarity && c.rarity.name, c.hue, photo]);
   const h2 = el.querySelector('h2');
   if (h2 && !h2.classList.contains('vc-title')) h2.classList.add('vc-title');
-  // the page keeps its own lines last (a product line, the Tell V01D link): the arrows sit before them, never after, or the two keep moving past each other forever
+  // the page keeps its own lines last (a product line, the Tell Verse link): the arrows sit before them, never after, or the two keep moving past each other forever
   const trailing = (n) => n.classList.contains('vtail') || n.classList.contains('vtell') || n.classList.contains('vtell-box');
   let last = el.lastElementChild; while (last && trailing(last)) last = last.previousElementSibling;
   if (el.dataset.cardKey === key && el.querySelector(':scope > .vc-type') && el.querySelector(':scope > .vc-arrows') === last) return;
@@ -215,7 +215,7 @@ export function keep(el, esc, stats) {
   el.style.setProperty('--h', String(c.hue));
   el._vcard = c; el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (c.kindName) el.dataset.kind = c.kindName; else delete el.dataset.kind;
-  const look = name ? lookOfSkill(stats && stats.fam, name) : ''; if (look) el.dataset.look = look; else delete el.dataset.look; // asked by Void: the family decides the frame
+  const look = name ? lookOfSkill(stats && stats.fam, name) : ''; if (look) el.dataset.look = look; else delete el.dataset.look; // asked by Verse: the family decides the frame
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
@@ -236,7 +236,7 @@ export function keep(el, esc, stats) {
   // one title and the small kind label (owner, 2026-10-18): a heading in the answer that only repeats the card's title is dropped
   if (h2 && !c.isSkill && !own) { const first = [...el.children].find((n) => /^H[1-4]$/.test(n.tagName) && n !== h2); if (first && repeatsTitle(h2.textContent, first.textContent)) first.hidden = true; }
   const thin = el.querySelector(':scope > p.thin'), foot0 = el.querySelector(':scope > .vc-foot'); if (thin && foot0) { thin.classList.add('vc-route'); thin.removeAttribute('style'); foot0.before(thin); }
-  if (source === 'seal') sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): V01D's procedural art under any painted picture
+  if (source === 'seal') sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): Verse's procedural art under any painted picture
   forge(el, c, !!photo); // the Art Forge (lib/card-forge.js): painted art for an answer or merged card, or a "paint this card" button
   accordion(el); // a very long body: sections behind one-line summaries
   shareBar(el); // copy card / save card (lib/card-share.js)

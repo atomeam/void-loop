@@ -5,7 +5,7 @@
 //
 // Fetched text is a stranger's. Only titles and counts are read (never a page or a question body), a title is used only if it is a plain
 // topic (letters, numbers and a little punctuation, no instruction-like words, no links, addresses or keys: `plainTopic`), and then only
-// as quoted data. A title that fails the check is not used at all: the job is Void's own summary, which names the source, the numbers and
+// as quoted data. A title that fails the check is not used at all: the job is Verse's own summary, which names the source, the numbers and
 // the id. The job target is built from the source and the id, never from the title. So no stranger's text reaches a job as an instruction.
 //   node tools/gaps.mjs                  queue the top gaps (owner token VOID_OWNER_TOKEN)
 //   node tools/gaps.mjs --dry            show what would be queued
@@ -37,7 +37,7 @@ export function plainTopic(raw) {
   return t;
 }
 
-/** Candidates from the two answers (already parsed JSON); each carries Void's own one-line summary and a target from ids only. */
+/** Candidates from the two answers (already parsed JSON); each carries Verse's own one-line summary and a target from ids only. */
 export function gapsFrom({ wanted, se } = {}) {
   const out = [];
   const w = (((wanted || {}).query || {}).querypage || {}).results || [];
@@ -57,7 +57,7 @@ export function gapsFrom({ wanted, se } = {}) {
 }
 function hash(s) { let h = 2166136261; for (const ch of String(s)) h = Math.imul(h ^ ch.charCodeAt(0), 16777619); return h >>> 0; }
 
-/** The job: Void's summary, the title only when it is a plain topic and only as quoted data. */
+/** The job: Verse's summary, the title only when it is a plain topic and only as quoted data. */
 export const jobOf = (c) => ({
   ask: ('fill a gap: ' + (c.topic ? '"' + c.topic + '"' : 'a ' + c.source + ' gap, id ' + c.id)).slice(0, 120),
   target: c.target,

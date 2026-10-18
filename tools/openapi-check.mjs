@@ -2,7 +2,7 @@
 // The public API's description (void-live-deploy/openapi.json, found from /.well-known/api-catalog) against the real routes.
 //   node tools/openapi-check.mjs    one line per problem, exit 1 if any
 // Checks: every operation in the spec has a function file that answers its method (or, for GET, a static file); every /api route file is either in the spec
-// or named below as Void's own, with why; the catalog points at the spec. A new route fails here until someone decides which it
+// or named below as Verse's own, with why; the catalog points at the spec. A new route fails here until someone decides which it
 // is, so the description never drifts from the code and nothing internal is published by accident.
 import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join, relative } from 'node:path';
@@ -10,7 +10,7 @@ import { join, relative } from 'node:path';
 const ROOT = new URL('../void-live-deploy/', import.meta.url).pathname;
 const FN = join(ROOT, 'functions');
 
-// Void's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
+// Verse's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
   '/api/react': "the showcase's reaction bar: a closed list of six reactions and a showcase slug in, integer counts out, rate limited per hashed client (functions/api/react.js, lib/reactions.js, docs/playbooks/open-endpoint-closed-list.md); the page is the only caller",
   '/api/store/{[path}]': "the /store page's own API: catalog, checkout, receipts and signed downloads (functions/api/store/[[path]].js, docs/store.md)",
@@ -22,15 +22,15 @@ export const INTERNAL = {
   '/api/card-art': "the Art Forge: a card's subject in, one cached painted picture out (functions/api/card-art.js, lib/art-rules.js, lib/card-forge.js); the page is the only caller",
   '/api/digest': "the page's digest card: a pasted transcript or an open-captions video, summarized for that ask only (functions/api/digest.js, lib/digest.js)",
   '/api/film-review': 'the films page review form: members and the owner give a film a verdict and a note (functions/api/film-review.js)',
-  '/api/film-views': 'V01D Tube view counts on /films/: one D1 upsert per view, read for the grid (functions/api/film-views.js)',
+  '/api/film-views': 'Verse Tube view counts on /films/: one D1 upsert per view, read for the grid (functions/api/film-views.js)',
   '/api/actions': 'the actions record, for the page and the owner',
-  '/api/propose-fix': "V01D proposes the narrowest matcher fix for an ask its own probe missed (owner only, frontier #28 step 3; tools/propose-fix.mjs and its daily workflow are the only callers)",
-  '/api/probe-asks': "V01D writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
-  '/api/voice-reply': "the owner talks back to V01D on its self card and under any card; V01D answers and keeps the lesson (owner only; functions/api/voice-reply.js, lib/voice.js)",
-  '/api/probe-log': "V01D's probe ledger: counts and outcomes the growth card shows, written by its probe and fix tools (POST owner only; lib/probe-log.js)",
-  '/api/v01d-fixes': "approve one of V01D's own fix pull requests that waits for the owner (owner only; skills/v01d-fixes.js, lib/v01d-fixes.js)",
+  '/api/propose-fix': "Verse proposes the narrowest matcher fix for an ask its own probe missed (owner only, frontier #28 step 3; tools/propose-fix.mjs and its daily workflow are the only callers)",
+  '/api/probe-asks': "Verse writes its own probe asks for one skill family (owner only, frontier #28; tools/probe-asks.mjs and its daily workflow are the only callers)",
+  '/api/voice-reply': "the owner talks back to Verse on its self card and under any card; Verse answers and keeps the lesson (owner only; functions/api/voice-reply.js, lib/voice.js)",
+  '/api/probe-log': "Verse's probe ledger: counts and outcomes the growth card shows, written by its probe and fix tools (POST owner only; lib/probe-log.js)",
+  '/api/v01d-fixes': "approve one of Verse's own fix pull requests that waits for the owner (owner only; skills/v01d-fixes.js, lib/v01d-fixes.js)",
   '/api/answer': "the page's answer model",
-  '/api/appraise': "the page's appraise card: one photo in, V01D's valuation out (functions/api/appraise.js, lib/appraise-photo.js)",
+  '/api/appraise': "the page's appraise card: one photo in, Verse's valuation out (functions/api/appraise.js, lib/appraise-photo.js)",
   '/api/video': "the page's video card: search and link lookup for the official embeds (functions/api/video.js)",
   '/api/approval': 'the approve card, signed-in',
   '/api/aurora': "the page's aurora card",
@@ -42,23 +42,23 @@ export const INTERNAL = {
   '/api/gumroad': "Gumroad's ping, server to server",
   '/api/handoff': 'agent handoff, owner key',
   '/api/hook/{id}': 'automation webhooks, one secret URL each',
-  '/api/memory': 'what Void remembers, owner only',
-  '/api/mine': "a person's own Void, passkey session",
+  '/api/memory': 'what Verse remembers, owner only',
+  '/api/mine': "a person's own Verse, passkey session",
   '/api/miss': 'the page reports a miss',
   '/api/misses': 'the miss board, owner token',
   '/api/passkey': 'sign in with a passkey, for the page',
   '/api/publish': 'publishing a skill, owner',
   '/api/queue': 'the build queue, owner token',
-  '/api/reflect': "Void's reflections, owner",
+  '/api/reflect': "Verse's reflections, owner",
   '/api/rehearsal': 'the sales rehearsal, owner',
   '/api/routes': "the page's router",
   '/api/routines': 'routines, signed-in',
   '/api/share': 'shared Voids, for the page',
-  '/api/share/{room}': 'a shared Void room (WebSocket)',
+  '/api/share/{room}': 'a shared Verse room (WebSocket)',
   '/api/watch': 'watches, signed-in',
   '/api/where': "the page's place lookup",
   '/api/markets': "the crypto card's edge-cached price list",
-  '/api/will': "Void's will card",
+  '/api/will': "Verse's will card",
 };
 
 const METHODS = ['get', 'post', 'put', 'patch', 'delete'];
@@ -87,7 +87,7 @@ export function check({ spec, routes, catalog, statics = new Set() }) {
   }
   for (const path of routes.keys()) {
     if (!path.startsWith('/api/') && path !== '/tools.json') continue; // /[handle] is the share-card page, not an API
-    if (!spec.paths[path] && !INTERNAL[path]) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Void's own`);
+    if (!spec.paths[path] && !INTERNAL[path]) problems.push(`${path} is a route but neither in openapi.json nor marked internal in tools/openapi-check.mjs: document it, or say why it is Verse's own`);
   }
   for (const path of Object.keys(INTERNAL)) if (!routes.has(path)) problems.push(`tools/openapi-check.mjs marks ${path} internal, but no function serves it any more`);
   const ls = (catalog && catalog.linkset && catalog.linkset[0]) || {};
@@ -111,5 +111,5 @@ if (import.meta.url === `file://${process.argv[1]}`) {
   if (spec.openapi !== '3.1.0') problems.push('openapi.json is not OpenAPI 3.1.0');
   for (const p of problems) console.log('openapi: ' + p);
   if (problems.length) process.exit(1);
-  console.log(`openapi: ok, ${Object.keys(spec.paths).length} public paths documented, ${Object.keys(INTERNAL).length} of Void's own left out on purpose`);
+  console.log(`openapi: ok, ${Object.keys(spec.paths).length} public paths documented, ${Object.keys(INTERNAL).length} of Verse's own left out on purpose`);
 }

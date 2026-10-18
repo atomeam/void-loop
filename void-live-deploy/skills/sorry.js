@@ -11,7 +11,7 @@ import { COLORS, HEX, TRACK, SIDE, PAWNS, SAFE, SLIDES, startExit, safeEntry, cr
 
 export function sorryOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can\s+we|i\s+want\s+to)\s+)?(?:play|start|open)\s+(?:a\s+)?(?:game\s+of\s+)?(?:sorry!?|back\s+to\s+start)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you|the\s+computer|bots?))?!?$|^(?:sorry!?|back\s+to\s+start)\s+(?:board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:sorry!?|back\s+to\s+start)$|^back\s+to\s+start$/.test(t);
+  return /^(?:(?:let'?s|lets|can\s+we|i\s+want\s+to)\s+)?(?:play|start|open)\s+(?:a\s+)?(?:game\s+of\s+)?(?:sorry!?|back\s+to\s+start)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you|the\s+computer|bots?))?!?$|^(?:sorry!?|back\s+to\s+start)\s+(?:board\s+)?game$|^(?:a\s+)?game\s+of\s+(?:sorry!?|back\s+to\s+start)$|^back\s+to\s+start$/.test(t);
 }
 
 // ---- board geometry: a 16 x 16 grid, the track on its edge (SVG units, centre 0,0; 22.5 a square) ----
@@ -65,7 +65,7 @@ function boardSvg() {
     const [sx, sy] = startCentre(c); svgEl('circle', { cx: r1(sx), cy: r1(sy), r: 19, fill: '#fff', stroke: HEX[col], 'stroke-width': 3 }, s);
     svgEl('text', { x: r1(sx), y: r1(sy - 21.5), 'text-anchor': 'middle', 'font-size': 7, 'font-weight': 700, fill: HEX[col], 'font-family': 'system-ui, sans-serif' }, s).textContent = 'START';
   });
-  // the middle: Void's own name for it, set across the board like a vintage box lid (Void brand, not the original's logo)
+  // the middle: Verse's own name for it, set across the board like a vintage box lid (Verse brand, not the original's logo)
   const lid = svgEl('g', { transform: 'rotate(-28)' }, s);
   svgEl('text', { x: 0, y: -4, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, 'letter-spacing': 3, fill: '#1d2a52', 'font-family': 'Georgia, serif' }, lid).textContent = 'BACK TO';
   svgEl('text', { x: 0, y: 26, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 800, 'letter-spacing': 2, fill: '#c8202c', 'font-family': 'Georgia, serif' }, lid).textContent = 'START';

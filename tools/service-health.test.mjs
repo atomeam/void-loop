@@ -1,4 +1,4 @@
-// Service Health (lib/service-health.js, skills/service-health.js; asked by Void): every adapter and public API gets a row, a check is
+// Service Health (lib/service-health.js, skills/service-health.js; asked by Verse): every adapter and public API gets a row, a check is
 // graded up / slow / down by its answer and time, and the card says how many are up. Run: node --test tools/service-health.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -37,7 +37,7 @@ test('the skill (skills/service-health.js) takes its asks and leaves the look-al
   for (const a of [...skill.nearMisses, 'order pizza to 1 main st', 'bitcoin price']) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
 
-test('the stability dial (asked by Void): the needle turns with the score, the label and counts are shown, none recorded rests at the top, everything escaped', () => {
+test('the stability dial (asked by Verse): the needle turns with the score, the label and counts are shown, none recorded rests at the top, everything escaped', () => {
   assert.equal(S.needleOf(0), -90); assert.equal(S.needleOf(100), 90); assert.equal(S.needleOf(50), 0); assert.equal(S.needleOf(76), 47); assert.equal(S.needleOf(-5), -90); assert.equal(S.needleOf('x'), -90);
   const steady = S.gaugeHtml(esc, { score: 100, label: 'steady', week: 0, day: 0, known: 3 });
   assert.match(steady, /data-stability="steady" data-score="100"/); assert.match(steady, /rotate\(90deg\)/); assert.match(steady, /steady · 100\/100/); assert.match(steady, /0 red suites on main in 7 days/);

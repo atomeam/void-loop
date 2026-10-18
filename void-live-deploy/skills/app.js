@@ -1,17 +1,17 @@
 /**
- * app skill - V01D as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't
+ * app skill - Verse as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "wheres my apps . web mobile? hows that all look". V01D installs from the browser (manifest.webmanifest, sw.js):
+ * Owner, 2026-10-14: "wheres my apps . web mobile? hows that all look". Verse installs from the browser (manifest.webmanifest, sw.js):
  * on its own window, from the home screen, with films one long-press away. Chrome and Edge offer the install (kept by void.html as
  * window.__v01dInstall); iPhone and iPad install through Safari's Share menu, so the card shows those steps instead.
  */
 const APP = '(?:app|apps|application)';
-const WHAT = "(?:void|v0id|v01d|this|the|your|a)";
+const WHAT = "(?:void|v0id|(?:verse|v01d)|this|the|your|a)";
 const WHEN = new RegExp('^(?:'
-  + '(?:get|download|install|add)\\s+(?:' + WHAT + '\\s+)?(?:' + APP + '|void|v01d|verse)(?:\\s+(?:on|to)\\s+(?:my\\s+)?(?:phone|iphone|android|home\\s*screen|desktop|computer|mac|pc))?'
+  + '(?:get|download|install|add)\\s+(?:' + WHAT + '\\s+)?(?:' + APP + '|(?:verse|void)|(?:verse|v01d)|verse)(?:\\s+(?:on|to)\\s+(?:my\\s+)?(?:phone|iphone|android|home\\s*screen|desktop|computer|mac|pc))?'
   + '|(?:is\\s+there|do\\s+you\\s+have|where.?s|where\\s+is|wheres)\\s+(?:a|an|the|my|your)?\\s*(?:' + WHAT + '\\s+)?(?:mobile\\s+|phone\\s+|iphone\\s+|android\\s+|desktop\\s+)?' + APP
   + '|(?:' + WHAT + '\\s+)?(?:mobile|phone|iphone|ios|android|desktop)\\s+' + APP
-  + '|(?:void|v01d|verse)\\s+' + APP
+  + '|(?:void|(?:verse|v01d)|verse)\\s+' + APP
   + '|add\\s+to\\s+home\\s*screen'
   + '|' + APP
   + ')$', 'i');

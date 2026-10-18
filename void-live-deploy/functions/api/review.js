@@ -1,9 +1,9 @@
-// Void's code review API (lib/review-api.js). The page /code-review/ and the GitHub Action (review/action.yml) call it.
+// Verse's code review API (lib/review-api.js). The page /code-review/ and the GitHub Action (review/action.yml) call it.
 // POST { code | diff, lang?, ask? }  -> { findings, lang, lines, ms, tier, answer?, review: 'rules' | 'model', quoted?: { kept, dropped }, left?, upgrade? }
 //   Who gets the closer read (the model's review on top of the instant checks), from the Authorization header:
-//     the owner (READ_TOKEN or an owner session)      always, free, no daily cap: Void's reviewer is ours first
-//     a Void Pro key  vr1.…                           paid Void ($49 a month) includes it; minted below by a signed-in paid account
-//     a license key   XXXXXXXX-XXXXXXXX-…             Void Code Review Pro bought on its own (lib/products.js), checked with Gumroad
+//     the owner (READ_TOKEN or an owner session)      always, free, no daily cap: Verse's reviewer is ours first
+//     a Verse Pro key  vr1.…                           paid Verse ($49 a month) includes it; minted below by a signed-in paid account
+//     a license key   XXXXXXXX-XXXXXXXX-…             Verse Code Review Pro bought on its own (lib/products.js), checked with Gumroad
 //     nothing                                         the instant checks only, free, no account
 // POST { action: 'key' }   (Bearer session)   -> { key } once (only its hash is kept) | 401 not signed in | 402 not paid | 409 too many
 // GET                      (Bearer session)   -> { tier, keys: [{ prefix, at, used, total }] }
@@ -24,8 +24,8 @@ export async function onRequestPost({ request, env }) {
     try {
       await ready(env);
       const me = await session(request, env);
-      if (!me) return bad(401, 'sign in to Void first (a passkey, at a-to-mind.com)');
-      if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'review keys come with Void Pro', { buy: BUY_URL });
+      if (!me) return bad(401, 'sign in to Verse first (a passkey, at a-to-mind.com)');
+      if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'review keys come with Verse Pro', { buy: BUY_URL });
       const n = await env.DB.prepare('SELECT COUNT(*) AS n FROM void_review_keys WHERE user_id = ?').bind(me.userId).first();
       if (n && Number(n.n) >= MAX_KEYS) return bad(409, 'you have ' + MAX_KEYS + ' keys already: revoke one first');
       const key = newKey();
@@ -39,7 +39,7 @@ export async function onRequestPost({ request, env }) {
   let a; try { a = await access(request, env); } catch (_) { a = { tier: 'free', note: 'Pro unavailable right now: the instant checks are above' }; }
   if (a.refuse) return bad(401, a.refuse);
   out.tier = a.tier;
-  if (a.tier === 'free') return good({ ...out, ...(a.note ? { note: a.note } : {}), upgrade: 'Void Code Review Pro adds a closer read by an AI reviewer: ' + BUY_URL });
+  if (a.tier === 'free') return good({ ...out, ...(a.note ? { note: a.note } : {}), upgrade: 'Verse Code Review Pro adds a closer read by an AI reviewer: ' + BUY_URL });
   if (a.left <= 0) return good({ ...out, note: 'today\'s closer reads are used; the instant checks still run' });
   if (!modelsOn(env)) return good({ ...out, note: 'the model is off right now; the instant checks are above' });
   try {
@@ -53,7 +53,7 @@ export async function onRequestPost({ request, env }) {
 
 export async function onRequestGet({ request, env }) {
   if (new URL(request.url).searchParams.has('offer')) {
-    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'Void Pro', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
+    return Response.json({ product: PRODUCT.name, adds: PRODUCT.adds, included: { in: 'Verse Pro', url: 'https://moonbeam846.gumroad.com/l/yinmj' }, standalone: forSale(PRODUCT) ? { url: buyUrl(PRODUCT) } : null }, { headers: { 'cache-control': 'public, max-age=300' } });
   }
   try {
     await ready(env);

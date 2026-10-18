@@ -1,5 +1,5 @@
-// lib/film-share.js + /films/: anyone uploads any V01D film or ad clip (owner, 2026-10-15: "put an upload to youtube button in
-// V01D Films so that anyone can easily uplad each vid"; every video is its own ad, with the a-to-mind.com link and a share line).
+// lib/film-share.js + /films/: anyone uploads any Verse film or ad clip (owner, 2026-10-15: "put an upload to youtube button in
+// Verse Films so that anyone can easily uplad each vid"; every video is its own ad, with the a-to-mind.com link and a share line).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -7,7 +7,7 @@ import { shareWords, shareLink, PLATFORMS, CTA, SHARE } from '../void-live-deplo
 import films, { wantsUpload } from '../void-live-deploy/skills/films.js';
 
 const clip = { id: '20261015-void-voice', title: 'I have opinions | Verse #Shorts', description: 'Try it: https://a-to-mind.com/c/20261015-void-voice?p=youtube&q=x', tags: ['#Shorts', '#AI', '#Verse'] };
-const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Void, physics' };
+const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Verse, physics' };
 
 test('every platform: tracked per-uploader link, call to action, share line, its own upload page', () => {
   for (const p of Object.keys(PLATFORMS)) {
@@ -49,7 +49,7 @@ test('clips.yml puts every ad clip in VERSE FILMS', () => {
   assert.match(y, /film-post\.mjs "media\/clips\/\$id\.mp4"/);
 });
 
-// V01D Tube phase 1: views in D1 (no KV), an RSS feed, a watch page per video
+// Verse Tube phase 1: views in D1 (no KV), an RSS feed, a watch page per video
 import { DatabaseSync } from 'node:sqlite';
 import * as views from '../void-live-deploy/functions/api/film-views.js';
 import { rss } from '../void-live-deploy/functions/films/rss.js';

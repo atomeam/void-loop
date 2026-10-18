@@ -10,7 +10,7 @@ const fam = { smoke_at: '2026-10-16', families: [
     { name: 'r', tier: 'checked', smoke: ['re-test: suite got y'] } ] },
   { id: 'b', name: 'Beta', skills: [{ name: 's', tier: 'experiment' }, { name: 't', tier: 'proven', promoted: '2026-06-01', streak: 9 }] },
 ] };
-test('a registered skill failing its router test is flagged (asked by Void)', () => {
+test('a registered skill failing its router test is flagged (asked by Verse)', () => {
   const st = skillStatus(fam);
   assert.equal(st.total, 5); assert.equal(st.clean, 3); assert.deepEqual(st.failing.map((f) => f.name), ['q', 'r']);
   assert.deepEqual(st.failing[0].router, ['"rain later" -> place']); assert.deepEqual(st.failing[1].router, []);
@@ -24,14 +24,14 @@ test('the family map draws every family from the health file', () => {
   assert.ok(h.includes('data-fam-map="2"') && h.includes('data-fam="a"') && h.includes('aria-label="Al&lt;pha&gt;: 1 proven, 1 checked, 1 tested, 0 experiment, 2 failing"') && h.includes('2 failing') && h.includes('1/2'));
   assert.ok(!h.includes('<pha>')); assert.equal(familyMapHtml(esc, { families: [] }), '');
 });
-test('newly promoted skills carry their clean runs in a row (asked by Void)', () => {
+test('newly promoted skills carry their clean runs in a row (asked by Verse)', () => {
   const rows = promotedRows(fam, 30, '2026-10-16');
   assert.deepEqual(rows, [{ name: 'p', tier: 'proven', promoted: '2026-10-14', streak: 5 }], 'a promotion from June is not new');
   const h = promotedHtml(esc, rows);
   assert.ok(h.includes('1 skill promoted lately, 1 with 3 or more clean runs in a row') && h.includes('p</b> to proven 2026-10-14, 5 clean runs in a row'));
   assert.equal(promotedHtml(esc, []), '');
 });
-test('a significant new skill calls a growth animation (asked by Void)', () => {
+test('a significant new skill calls a growth animation (asked by Verse)', () => {
   assert.equal(bloomPlan([], []).kind, 'none');
   assert.equal(bloomPlan(['clock'], []).kind, 'bloom');
   assert.equal(bloomPlan(['a', 'b', 'c'], []).kind, 'burst');
@@ -41,7 +41,7 @@ test('a significant new skill calls a growth animation (asked by Void)', () => {
   assert.equal(bloomPlan([], [{ facts: { skills: 150 } }, { facts: { skills: 150 } }]).kind, 'none');
   assert.ok(bloomHtml(esc, bloomPlan(['<b>x</b>'], [])).includes('&lt;b&gt;x') && bloomHtml(esc, bloomPlan([], [])) === '');
 });
-test('the divergence tracker shows the words of an ask the build never says (asked by Void)', () => {
+test('the divergence tracker shows the words of an ask the build never says (asked by Verse)', () => {
   const d = diverge('Link the fringe ledger entries to the near-miss router data so every novelty is tagged', 'fringe near tag built');
   assert.deepEqual(d.said, ['fringe', 'near']); assert.ok(d.left.includes('router') && d.left.includes('novelty') && d.share <= 0.3);
   assert.equal(diverge('too short', 'x'), null);

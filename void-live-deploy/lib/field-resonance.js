@@ -1,4 +1,4 @@
-// field-resonance — the spectral / resonance / sound laws of V01D's field minds, one pure module for six of Grok's drafts (asked by
+// field-resonance — the spectral / resonance / sound laws of Verse's field minds, one pure module for six of Grok's drafts (asked by
 // Owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"; drafts in atomeam/a-to-mind.com drafts/). Each draft's
 // law is a named VARIANT with the same shape (create / step / metrics, plus a fitness the mind can replay), so one card
 // (skills/resonance-mind.js) runs any of them and the next sound idea is one more variant here, not one more page:

@@ -1,4 +1,4 @@
-// Model bake-off: the same asks, the same system prompts Void's answer engine uses, sent live to Workers AI for the current
+// Model bake-off: the same asks, the same system prompts Verse's answer engine uses, sent live to Workers AI for the current
 // default model and a few challengers. Scores each answer against fixed checks and times the first token, then says whether a
 // switch is justified. tools/bench.mjs can't do this: it measures which skill answers an ask, with the answer engine stubbed.
 //
@@ -26,7 +26,7 @@
 //
 // What the scores mean: each ask has plain checks (must say X, must not say Y). Fact asks get no sources, unlike the live
 // engine, which adds Wikipedia extracts: this measures what the model knows on its own, the same for every model. Self asks
-// get Void's real facts (self.json, skills/index.json, as /api/answer builds them); page asks get the page the extension
+// get Verse's real facts (self.json, skills/index.json, as /api/answer builds them); page asks get the page the extension
 // would send. A check list is a floor, not a judge: an answer can pass and still be clumsy, so read the samples it prints.
 import fs from 'node:fs'; import os from 'node:os'; import path from 'node:path'; import { fileURLToPath } from 'node:url';
 import { DEFAULT_MODEL, PAID_MODEL } from '../void-live-deploy/lib/router.js';
@@ -268,7 +268,7 @@ function dryRun(model, a) {
   const text = pass || {
     howto: '```python\ndef rev(s):\n    return s[::-1]\n```\nwc -l file\n```js\nfunction debounce(f,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>f(...a),ms)}}\n```\ngit reset --soft HEAD~1\ndisplay:flex; place-items:center; justify-content:center\nSELECT * FROM orders ORDER BY created_at DESC LIMIT 5;\n37.8 °C',
     reason: 'The ball costs $0.05. There are three r letters, so 3. 17 x 23 = 391. Yes. They weigh the same.',
-    self: 'I can play ' + (self.games || []).join(', ') + '. My skills include ' + skills.slice(0, 5).join(', ') + ', and weather. Nothing is open in my growth inbox right now. A-to-Mind made me, Void.',
+    self: 'I can play ' + (self.games || []).join(', ') + '. My skills include ' + skills.slice(0, 5).join(', ') + ', and weather. Nothing is open in my growth inbox right now. A-to-Mind made me, Verse.',
     page: 'The launch is October 14. Ads are $12,000 of the budget. This page is the Q3 plan. The page does not say who the CEO is. Hi team, the launch moves to Friday because the vendor is late. You need spaghetti, a lemon and parmesan. The recipe does not say how long it takes.',
   }[a.kind] || good.fact;
   if (a.diff) { // the strong dry model answers the shape, the weak one writes prose about it

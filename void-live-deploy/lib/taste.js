@@ -1,4 +1,4 @@
-// V01D's taste for "pick for me" (owner, 2026-10-17: Netflix's Max, "V01D will be way better than Max"). Built the other way round from Max: no long quiz,
+// Verse's taste for "pick for me" (owner, 2026-10-17: Netflix's Max, "Verse will be way better than Max"). Built the other way round from Max: no long quiz,
 // no character. A person may say a mood (a chip or a word) and give a thumb to a pick; both are optional and a pick never waits for them. Taste lives in
 // this browser only (localStorage); the server is only ever told the one mood WORD, chosen from MOODS (a fixed list, so a typed word cannot become a prompt).
 // Every pick says why in one line, built only from what was really used. Pure; the page side is skills/pick-for-me.js.
@@ -70,7 +70,7 @@ export function tasteCmd(text, hasLast = false) {
 
 // ---- the pick algorithm (owner, 2026-10-17: "something new every time ... personalized with interests like YouTube, or an even better algorithm"). All on this device.
 // Signals are real ones only: the YouTube history the person imported themselves, their thumbs, the cards they kept, the kinds and words of their recent asks.
-// A candidate (a found title with its genre/artist/overview) is scored by the interests it touches; mostly V01D takes the best (exploit), about one pick in four
+// A candidate (a found title with its genre/artist/overview) is scored by the interests it touches; mostly Verse takes the best (exploit), about one pick in four
 // it tries a genre the person has not picked yet (explore), and a pick in the genre of the last one is marked down so consecutive picks differ.
 export const EXPLORE = 0.25, SAME_GENRE_PENALTY = 3;
 const STOP = new Set('the a an and or of to in on for with from by at as is it its this that these those my me you your i we our be are was were not no yes video videos watched watch official music new full hd 4k part episode ep vs feat ft live trailer clip clips how what why who when where'.split(' '));

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
-// Void records its own experiments (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"; step 1 of
-// the broadcast loop is teaching Void to record itself). One lab experiment (a page under void-live-deploy/fringe/) is opened in a
+// Verse records its own experiments (owner, 2026-10-14: "Verse should use my Youtube channel to make its own Videos"; step 1 of
+// the broadcast loop is teaching Verse to record itself). One lab experiment (a page under void-live-deploy/fringe/) is opened in a
 // real browser and filmed while it runs: the page's own demo() when it has one, otherwise its buttons pressed one after another.
 // The narration is the run's own research notes from the fringe ledger (tools/fringe.json: behavior, hypothesis, findings),
 // shown as a caption on the video (a headless browser has no speech voices) and written next to it as the title and
@@ -29,16 +29,16 @@ export function hookOf(tool, run) {
   return (q ? q[0] : String((run && run.behavior) || tool.sub || tool.label || '')).trim();
 }
 
-/** what the video says, as an ad for Void (owner, 2026-10-14: "make each video into an awesomely epic ad for itself and reach as
+/** what the video says, as an ad for Verse (owner, 2026-10-14: "make each video into an awesomely epic ad for itself and reach as
  *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
-// the name viewers see is V01D (owner, 2026-10-14: "it shoud say V01d everywhere"; "V01D FILMS"): the lab's and ledger's own words say Void
+// the name viewers see is Verse (owner, 2026-10-14: "it shoud say Verse everywhere"; "Verse FILMS"): the lab's and ledger's own words say Verse
 export const brand = (t) => String(t || '').replace(/\b(?:Void|V01D|Verse)\b/g, 'Verse'); // both older names (owner, 2026-10-18: "rename void to verse")
-// the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
+// the code a film shows: its lab page in the repository (asked by Verse, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
 export const sourceOf = (id) => String(id).startsWith('ship-') ? REPO + 'void-live-deploy/void.growth.json' : REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
-// a film of something V01D shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
+// a film of something Verse shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
 // experiments never filmed (all were by 2026-10-15, after which every deploy filmed nothing and the daily run repeated the same three).
 // Each growth-ledger entry with a "show" and a "try" is a film: the ask opened on the live site. ship-<yyyymmddhhmm of the entry>. Pure.
 export const shipId = (e) => 'ship-' + String(e.at).replace(/\D/g, '').slice(0, 12);
@@ -70,7 +70,7 @@ export function script(tool0, run0) {
   const parts = [
     hook + ' Try it free: ' + link, // the first lines are what a viewer sees before "more": the hook and the link
     'Verse, an AI at https://a-to-mind.com, built this experiment by itself, tested it, and filmed it in a real browser. Nothing was edited by hand.',
-    'How it is built: ' + sourceOf(tool0.id), // the film and the code it shows, linked (asked by Void, 2026-10-15)
+    'How it is built: ' + sourceOf(tool0.id), // the film and the code it shows, linked (asked by Verse, 2026-10-15)
     behavior !== hook ? behavior : '',
     run && run.hypothesis ? 'What it set out to show: ' + String(run.hypothesis).trim() : '',
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
@@ -81,7 +81,7 @@ export function script(tool0, run0) {
     '#Shorts #AI #Verse',
   ].filter(Boolean);
   return { source: sourceOf(tool0.id), hook, finding: findingOf(run), caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
-    tags: ['Verse', 'VERSE FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
+    tags: ['Verse', 'VERSE FILMS', 'Verse', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
 /** which lab experiment each film was, from the film release tags (film-<yyyymmdd>-<id>-r<run>), oldest first: [{ id, day }] */
@@ -145,7 +145,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
   const page = await ctx.newPage();
   try {
     await page.goto(ship ? 'https://a-to-mind.com/?q=' + encodeURIComponent(tool.ask) : base + 'fringe/' + id + '.html', { waitUntil: 'load' });
-    // the edit (owner, 2026-10-14: "teach Void how to edit and make epic videos that are very entertaining"): a hook that slams in,
+    // the edit (owner, 2026-10-14: "teach Verse how to edit and make epic videos that are very entertaining"): a hook that slams in,
     // a progress bar, a punch-in on every action with a kinetic caption, and an ending that matches the first frame so it loops.
     await page.evaluate(({ title, caption, total }) => {
       document.documentElement.style.zoom = '2.3'; // the page laid out about 470 px wide, as on a phone, and big enough to read
@@ -233,7 +233,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const lab = toolList().filter((t) => /-\d+$/.test(t.id));
   const ships = shipsOf(JSON.parse(fs.readFileSync(path.join(site, 'void.growth.json'), 'utf8'))).map((t) => t.id);
   // the films already made, as their release tags (record.yml passes them in VOID_FILMED), so a new film is a new experiment
-  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "V01D can make as many videos as it wants and
+  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "Verse can make as many videos as it wants and
   // is encouraged to use it as its voice to the world")
   // --only-new (after a deploy): only experiments never filmed, possibly none
   const filmed = filmedOf(process.env.VOID_FILMED || ''), done = new Set(filmed.map((f) => f.id));

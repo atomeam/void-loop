@@ -1,4 +1,4 @@
-// Asks about testing or taking payments on V01D are answered from verified facts only (a fix item, 2026-10-15: asked how to test
+// Asks about testing or taking payments on Verse are answered from verified facts only (a fix item, 2026-10-15: asked how to test
 // payments, the model invented AI payment providers with fee and settlement scores, told the asker to make real one-cent charges
 // and log in to dashboards, and said Cash App and crypto already work). Nothing here names a provider, a fee or a live feature
 // that the store data (lib/store.js) and the live check do not confirm; the steps point to the verified doc instead.

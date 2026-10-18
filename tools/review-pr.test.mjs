@@ -30,7 +30,7 @@ const run = (r, url) => new Promise((resolve, reject) => execFile('node', [join(
 
 test('the owner check fails at the API: the footer says "closer read unavailable (access)" and nothing else about why', async () => {
   const r = repo();
-  const s = await serve({ body: { ok: true, findings: [], lang: 'javascript', lines: 4, ms: 3, tier: 'free', review: 'rules', upgrade: 'Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro' } });
+  const s = await serve({ body: { ok: true, findings: [], lang: 'javascript', lines: 4, ms: 3, tier: 'free', review: 'rules', upgrade: 'Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/#pro' } });
   try {
     const out = await run(r, s.url), f = footerOf(out);
     assert.match(f, /\(closer read unavailable \(access\)\)/);

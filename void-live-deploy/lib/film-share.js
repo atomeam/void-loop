@@ -1,5 +1,5 @@
-// Every V01D film and ad clip is its own ad, and anyone may repost it (owner, 2026-10-15: "put an upload to youtube button in
-// V01D Films so that anyone can easily uplad each vid"; "anyone can upload them ... the more the better"). No API, no token:
+// Every Verse film and ad clip is its own ad, and anyone may repost it (owner, 2026-10-15: "put an upload to youtube button in
+// Verse Films so that anyone can easily uplad each vid"; "anyone can upload them ... the more the better"). No API, no token:
 // download the MP4, copy the words, open the platform's own upload page signed in as yourself. Pure; used by /films/ and tests.
 export const SITE = 'https://a-to-mind.com';
 export const PLATFORMS = {

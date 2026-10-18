@@ -5,7 +5,7 @@ import { gapTopic, recordGap, GAP_MIN } from '../void-live-deploy/lib/product-ga
 const gaps_of = () => globalThis.__gaps.entries();
 import { publicProduct } from '../void-live-deploy/lib/gumroad.js';
 
-const catalog = [{ slug: 'void-code-review', name: 'Void Code Review Pro', description: 'An AI reviewer on every pull request.', price_cents: 1000, available: true }].map(publicProduct);
+const catalog = [{ slug: 'void-code-review', name: 'Verse Code Review Pro', description: 'An AI reviewer on every pull request.', price_cents: 1000, available: true }].map(publicProduct);
 assert.equal(gapTopic('review my code', catalog), null); // a real match is a line, not a gap
 assert.equal(gapTopic('what is a black hole', catalog), null); // not a buy ask
 assert.equal(gapTopic('I am adding tests to check that it refuses harmful requests and offers something good instead. It should never just say no, and this goes into the core values for good.', catalog), null);

@@ -1,9 +1,9 @@
-// What Void has earned (all of Atom's Gumroad products), from the recorded pings in void_sales. Owner-side only: nothing
+// What Verse has earned (all of Atom's Gumroad products), from the recorded pings in void_sales. Owner-side only: nothing
 // about money is ever shown on the page. The will engine reads it as its budget; any actual spend still needs a yes on the
 // confirm line (plan item 7).
 //   gross    = every real sale (Gumroad test pings excluded), each sale counted once
 //   refunded = sales later refunded or lost to a dispute (a dispute that was won counts again)
-//   earned   = gross - refunded;  budget = earned (Atom: all profit goes to what Void wills)
+//   earned   = gross - refunded;  budget = earned (Atom: all profit goes to what Verse wills)
 
 // x-www-form-urlencoded with bracketed keys (url_params[void], custom_fields[Name]) -> nested object
 export function parsePing(text) {
@@ -20,8 +20,8 @@ export function parsePing(text) {
 export const MILESTONES = [
   // Gumroad's own store assistant (the 'Agent' tab, antiwork/gumroad app/models/user.rb eligible_for_store_agent?) opens when the
   // seller is confirmed, not suspended, has at least one COMPLETED payout and sales_cents_total >= 10_000. Self-purchases don't
-  // count. Void can't see payouts, so this never claims it's unlocked; nothing gets built for it.
-  { id: 'sales-100', cents: 10000, note: "Sales passed $100 (net of refunds, as Void counts them). Gumroad's Agent tab (its store assistant: reads the store and makes changes, always asking first) opens once the first payout completes; Void can't see payouts, so check the dashboard. Nothing gets built for it: once it's there, Void uses Gumroad's Agent for store changes." },
+  // count. Verse can't see payouts, so this never claims it's unlocked; nothing gets built for it.
+  { id: 'sales-100', cents: 10000, note: "Sales passed $100 (net of refunds, as Verse counts them). Gumroad's Agent tab (its store assistant: reads the store and makes changes, always asking first) opens once the first payout completes; Verse can't see payouts, so check the dashboard. Nothing gets built for it: once it's there, Verse uses Gumroad's Agent for store changes." },
 ];
 
 // rows: [{ resource, sale_id, raw }] -> totals in cents

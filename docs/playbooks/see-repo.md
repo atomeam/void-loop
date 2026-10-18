@@ -1,6 +1,6 @@
 # See a repo: an open endpoint that reads somewhere else's text
 
-**Starts when:** V01D should answer from a live outside source that strangers name (a repo, a page, a feed) and the source holds text other people wrote.
+**Starts when:** Verse should answer from a live outside source that strangers name (a repo, a page, a feed) and the source holds text other people wrote.
 
 1. **Name in, path out.** The caller sends only a name. Validate it with one anchored regex (`NAME_RE` in `lib/repo-look.js`), parse links first (`parseRepo`), then build every URL on the server from the checked name. A caller never picks a host, path, query or header. Fetch with `redirect: 'manual'` and follow a redirect only when it stays on the same host with a numeric id (GitHub's renamed-repo case).
 2. **Bound the cost.** Cap each body while reading the stream, cap files and commits, give each call a time limit, cache a good answer on the edge (`caches.default`, ten minutes) and never cache a failure, and rate-limit only the cache misses in the route's own bucket (`rateLimited()`) on top of the `LIMITS` row in `lib/guard.js`. Write the "what could a stranger make this do" paragraph at the top of the route.

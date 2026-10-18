@@ -1,8 +1,8 @@
-// Append one entry to Void's growth ledger (void-live-deploy/void.growth.json), in its own style (one object per line),
+// Append one entry to Verse's growth ledger (void-live-deploy/void.growth.json), in its own style (one object per line),
 // so the diff shows only the new line. The ledger is what "growth" summons on the surface; it is live on the next deploy.
-//   node tools/grow.mjs grow "Poker: heads-up fixed-limit Hold'em against Void"         a new thing Void can do
+//   node tools/grow.mjs grow "Poker: heads-up fixed-limit Hold'em against Verse"         a new thing Verse can do
 //   node tools/grow.mjs fix "the timer no longer stops at 59 s" --by claude --ref https://github.com/atomeam/void-loop/pull/205
-//   node tools/grow.mjs grow "…" --asked ask-20261009-2159-1   this answers one of Void's asks: its id from the asks list (tools/reflect.mjs drops it)
+//   node tools/grow.mjs grow "…" --asked ask-20261009-2159-1   this answers one of Verse's asks: its id from the asks list (tools/reflect.mjs drops it)
 //   node tools/grow.mjs grow "…" --show "sticky notes look like real paper" --try "sticky note buy milk"
 //                                  the plain line and the ask the "look what I made" walkthrough shows (skills/showcase.js)
 //   node tools/grow.mjs --check      the whole ledger is valid (also run by tools/checks.mjs)
@@ -64,7 +64,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (show) entry.show = show;
   if (tryAsk) entry.try = tryAsk;
   const p = entryProblem(entry);
-  if (p) { console.error(p + '\nusage: node tools/grow.mjs <' + KINDS.join('|') + '> "what changed" [--by slug] [--ref https://…] [--asked "Void\'s ask"] [--show "plain line"] [--try "an ask that shows it"]'); process.exit(2); }
+  if (p) { console.error(p + '\nusage: node tools/grow.mjs <' + KINDS.join('|') + '> "what changed" [--by slug] [--ref https://…] [--asked "Verse\'s ask"] [--show "plain line"] [--try "an ask that shows it"]'); process.exit(2); }
   const text = readFileSync(LEDGER, 'utf8');
   const next = appendTo(text, entry);
   JSON.parse(next);

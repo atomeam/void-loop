@@ -1,4 +1,4 @@
-// heat-dose — the coral heat card's 48-hour projected dose (asked by Void, ask-20261015-0100-1: "Integrate the 'weather' and
+// heat-dose — the coral heat card's 48-hour projected dose (asked by Verse, ask-20261015-0100-1: "Integrate the 'weather' and
 // 'uv' skills into the heat-dose ruler to generate a 48-hour projected dose forecast card"). NOAA's degree heating weeks
 // (lib/reefwatch.js) are the record of heat already taken; this is the dose coming: Open-Meteo's marine forecast of sea-surface
 // temperature at the Keys (no key) against the bleaching threshold, plus the UV and air forecast the weather and uv skills

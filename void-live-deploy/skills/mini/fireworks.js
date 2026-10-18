@@ -1,6 +1,6 @@
 /**
- * fireworks miniature — the co-op table standing in the void: Void's five cards stand facing you across the table (you can
- * read them, Void can't), your five stand facing Void (you see their backs, with what hints have told you chalked on),
+ * fireworks miniature — the co-op table standing in the void: Verse's five cards stand facing you across the table (you can
+ * read them, Verse can't), your five stand facing Verse (you see their backs, with what hints have told you chalked on),
  * the five firework rows lie in the middle, and the hint tokens (blue) and mistakes (red) sit at the side.
  * Built from code; the card keeps the rules (skills/fireworks-rules.js). A tap selects the card, as on the card.
  * data: { theirs: [{ c, r, known }], own: [{ known }], rows: [n x5], hints, mistakes, sel }
@@ -20,7 +20,7 @@ export default async function build(ctx, data) {
   const back = (known) => face('b' + known.c + '_' + known.r, (g) => { g.fillStyle = '#1b2233'; g.fillRect(0, 0, 200, 288); g.strokeStyle = '#3c4a6b'; g.lineWidth = 8; g.strokeRect(10, 10, 180, 268);
     g.fillStyle = known.c != null ? HEX[known.c] : 'rgba(255,255,255,.25)'; g.font = 'bold 120px Georgia, serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText(known.r != null ? String(known.r + 1) : '?', 100, 150); });
   const geo = new THREE.BoxGeometry(CW, CH, CT), flatGeo = new THREE.BoxGeometry(CW, CT, CH), edge = new THREE.MeshStandardMaterial({ color: '#e9e6dc' });
-  // a standing card: +z face toward Void's side, -z face toward you
+  // a standing card: +z face toward Verse's side, -z face toward you
   const stand = (towardYou, behind) => new THREE.Mesh(geo, [edge, edge, edge, edge, new THREE.MeshStandardMaterial({ map: behind }), new THREE.MeshStandardMaterial({ map: towardYou })]);
   const layer = new THREE.Group(); root.add(layer);
   const tokGeo = new THREE.CylinderGeometry(0.008, 0.008, 0.004, 24), blue = new THREE.MeshStandardMaterial({ color: '#3d7fe0', roughness: 0.4 }), red = new THREE.MeshStandardMaterial({ color: '#e2453c', roughness: 0.4 }), dim = new THREE.MeshStandardMaterial({ color: '#3a3f4a', roughness: 0.8 });

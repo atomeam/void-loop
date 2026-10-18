@@ -1,7 +1,7 @@
 /**
- * snake-rules — Void Snake in plain JS (no DOM), shared by the card (skills/snake.js) and its tests.
- * Two snakes on one grid: you (green) and V01D (violet). Eat orbs to grow; hitting a wall, yourself or the other snake ends
- * you. V01D searches (breadth-first) for the nearest orb it can reach first and only takes a path that leaves it room to
+ * snake-rules — Verse Snake in plain JS (no DOM), shared by the card (skills/snake.js) and its tests.
+ * Two snakes on one grid: you (green) and Verse (violet). Eat orbs to grow; hitting a wall, yourself or the other snake ends
+ * you. Verse searches (breadth-first) for the nearest orb it can reach first and only takes a path that leaves it room to
  * move (a flood fill of what is left); with no safe path it takes the roomiest move. Most length when someone crashes wins.
  *   create(seed?) -> s    turn(s, dir) -> s    tick(s) -> s (mutates)    voidDir(s) -> { dir, why }
  */

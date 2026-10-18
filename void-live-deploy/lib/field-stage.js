@@ -1,4 +1,4 @@
-// field-stage — the DOM half of V01D's field minds (lib/field-kit.js is the pure half; docs/playbooks/field-mind.md says how to add one).
+// field-stage — the DOM half of Verse's field minds (lib/field-kit.js is the pure half; docs/playbooks/field-mind.md says how to add one).
 // mountField(th, stageApi, idea) puts a small Canvas2D card on the stage and runs the idea's step law on it:
 //   - one requestAnimationFrame loop, paused while the tab is hidden and gone when the card leaves the page;
 //     with prefers-reduced-motion the field is warmed up once and then moves only when you touch it (no loop);
@@ -14,7 +14,7 @@
 // mount?(ctx) is also allowed: it adds the idea's own controls and background thinking (a Worker mind) and returns { dispose() }.
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
-import { motionThrottle } from './motion-throttle.js'; // asked by Void: chaotic motion slows to a quarter while someone types in another card
+import { motionThrottle } from './motion-throttle.js'; // asked by Verse: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
 
@@ -163,7 +163,7 @@ export function mountField(th, stageApi, idea) {
 
 /** the whole skill for an idea: { name, examples, nearMisses, match, run, stageKinds }. words is the regexp body for the ask (anchored here). */
 export function fieldSkill({ name, words, examples, nearMisses, idea, say }) {
-  const WHEN = new RegExp('^(?:(?:show|open|start|run|make|give|let me see|i want)\\s+(?:me\\s+)?)?(?:a\\s+|an\\s+|the\\s+|your\\s+|v01d\'?s\\s+|void\'?s\\s+)?(?:' + words + ')(?:\\s+(?:demo|card|please))?$', 'i');
+  const WHEN = new RegExp('^(?:(?:show|open|start|run|make|give|let me see|i want)\\s+(?:me\\s+)?)?(?:a\\s+|an\\s+|the\\s+|your\\s+|(?:verse|v01d)\'?s\\s+|(?:verse|void)\'?s\\s+)?(?:' + words + ')(?:\\s+(?:demo|card|please))?$', 'i');
   const matches = (t) => WHEN.test(String(t || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
   return {
     name, examples, nearMisses, WHEN,

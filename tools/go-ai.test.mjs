@@ -1,4 +1,4 @@
-// V01D's Go opponent (void-live-deploy/lib/go-ai.js), asked by Void: "Next game I want to learn: Go".
+// Verse's Go opponent (void-live-deploy/lib/go-ai.js), asked by Verse: "Next game I want to learn: Go".
 // Its moves are checked against the card's own rules engine (skills/go.js): legal only, captures, saves, eyes, passes,
 // the same move under the same seed, and a bounded time per move.
 import test from 'node:test';

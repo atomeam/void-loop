@@ -1,11 +1,11 @@
 /**
- * status skill — "void status" / "system status" / "is void working": each part of Void checked on the spot, in this
+ * status skill — "void status" / "system status" / "is void working": each part of Verse checked on the spot, in this
  * browser (domains/void.assimilate.md, ask "status": each component). Skills: the page's own load check run again
  * (index entries whose module is missing or misshapen are named). This browser: storage (a throwaway value written and
- * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Void reads,
+ * removed), 3D (WebGL), the offline layer (service worker), online or not. Outside sources: the open services Verse reads,
  * pinged once each, only now, in parallel, with a 6 s limit, showing up / down and how long each took. The translation
- * service is not pinged: a ping would spend its small daily quota. Void's own build: the newest checks and deploy on main (GitHub's
- * public API), and the actions Void took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
+ * service is not pinged: a ping would spend its small daily quota. Verse's own build: the newest checks and deploy on main (GitHub's
+ * public API), and the actions Verse took for the owner that failed in the last day (owner-only /api/actions). For the owner, the card
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
@@ -24,12 +24,12 @@ export const SOURCES = [
 ];
 
 const CLEAN = cleanLower; // shared: lib/ask-text.js
-const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+void))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+void\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
+const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+(?:verse|void)))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+(?:verse|void)\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
 export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
 
-// News about V01D's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs
+// News about Verse's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs
 // every few hours and empties the lists got back only a list of run times). A long statement, not a question, that names one of
-// V01D's own parts and a change to it is news about V01D: it answers the substance first, in its own voice, and does any time math
+// Verse's own parts and a change to it is news about Verse: it answers the substance first, in its own voice, and does any time math
 // only as an aside.
 const PART_RE = /\b(routines?|automations?|workflows?|cron|deploy(?:s|ment)?|tester|site tester|queues?|lists?|board|skills?|store|films?|pipeline|loop|reviewer|code review|builders?|agents?)\b/;
 const SELF_RE = /\b(v01d|void|verse|your|yourself)\b|^(?:update|heads up|fyi|news|status update|new)\b/;
@@ -39,7 +39,7 @@ export function newsOf(text) {
   if (words < 8 || /^(what|how|why|when|where|who|which|can|could|should|is|are|do|does)\b/.test(t) || /\?\s*$/.test(String(text))) return false;
   return PART_RE.test(t) && SELF_RE.test(t) && CHANGE_RE.test(t);
 }
-/** What the news means for V01D: { part, take, aside } (aside: run times when it says every N hours from a time). Pure. */
+/** What the news means for Verse: { part, take, aside } (aside: run times when it says every N hours from a time). Pure. */
 export function takeOf(text) {
   const t = CLEAN(text), part = (t.match(PART_RE) || ['system'])[1] || 'system';
   const take = [];
@@ -91,7 +91,7 @@ export function checkBrowser(w = typeof window !== 'undefined' ? window : {}) {
   return out;
 }
 
-// Void's own build (Void asked, 2026-10-11/12, five times: "a system where a blocked deployment or failed action generates a 'status'
+// Verse's own build (Verse asked, 2026-10-11/12, five times: "a system where a blocked deployment or failed action generates a 'status'
 // card automatically"; "make the results of verify-main visible to me as a status card"): the newest run on main of the checks and
 // of the deploy, from GitHub's public API (the repository is public; no key, 60 reads an hour per address). The owner chose
 // (2026-10-13) that the card opens by itself only for the owner: visitors keep the blank stage (autoOpen below).
@@ -108,7 +108,7 @@ export async function buildRun(wf, fetchFn = (u, o) => fetch(u, o)) {
   } catch (_) { return { ...wf, state: 'unknown', note: 'GitHub could not be reached from this browser' }; }
 }
 export const buildState = (fetchFn) => Promise.all(BUILD.map((w) => buildRun(w, fetchFn)));
-// the root cause (asked by Void: "a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed
+// the root cause (asked by Verse: "a 'Root Cause' field in the Status card that automatically pulls the error trace from the failed
 // action", and twice before: the failure linked to its log): a red check on main is written down with the checks that failed
 // (void-live-deploy/incidents.json, verify.yml), so the card can say which ones, not only that something failed. Pure except the fetch.
 export function causesOf(rows, incidents) {
@@ -119,10 +119,10 @@ export function causesOf(rows, incidents) {
     return hit && Array.isArray(hit.checks) && hit.checks.length ? { ...r, checks: hit.checks.map((c) => String(c).slice(0, 160)).slice(0, 5), suite: hit.suite || '' } : r;
   });
 }
-// the suggested fix and the recovery (asked by Void: "a 'suggested fix' snippet directly in the owner's status card failure trigger",
-// and twice "a 'recovery' button that triggers a rebuild attempt using the most relevant skill from my 'Void itself' family"). A red
+// the suggested fix and the recovery (asked by Verse: "a 'suggested fix' snippet directly in the owner's status card failure trigger",
+// and twice "a 'recovery' button that triggers a rebuild attempt using the most relevant skill from my 'Verse itself' family"). A red
 // check names its own section ("appraise: ..."); the fix snippet is the two commands that find and then ship the repair, for that
-// section only. The recovery queues one job for the builder naming the check and the Void-itself skill that fits it best.
+// section only. The recovery queues one job for the builder naming the check and the Verse-itself skill that fits it best.
 export const SELF_SKILLS = ['v01d-fixes', 'rebuild-map', 'guide', 'growth', 'merges', 'goal', 'intent', 'different', 'memory', 'watch', 'status', 'incident', 'actions', 'automations', 'proposal', 'services', 'store', 'share', 'invite', 'family-health', 'deps', 'fringe-to-skill'];
 const sectionOf = (check) => String(check || '').split(/[:;]/)[0].replace(/["'`\u201c\u201d]/g, '').replace(/\s+/g, ' ').trim().split(' ').slice(0, 4).join(' ');
 /** { words, cmd, ship }: the commands that reproduce and then ship the repair of one failed check. Pure. */
@@ -131,7 +131,7 @@ export function fixOf(check) {
   if (!words) return { words: '', cmd: 'VOID_TRACE=1 node tools/heavy.mjs node tools/test_void.mjs --only core', ship: 'node tools/finish.mjs fix "what the timeout was" --test "core"', note: 'a stall: the trace names the check that hung' };
   return { words, cmd: 'node tools/heavy.mjs node tools/test_void.mjs --only "' + words + '"', ship: 'node tools/finish.mjs fix "repair ' + words + '" --test "' + words + '"', note: '' };
 }
-/** the skill of V01D's own family that fits these failed checks best: the most name words found in them; v01d-fixes when none. Pure. */
+/** the skill of Verse's own family that fits these failed checks best: the most name words found in them; v01d-fixes when none. Pure. */
 export function recoverSkill(checks, pool = SELF_SKILLS) {
   const t = (Array.isArray(checks) ? checks.join(' ') : String(checks || '')).toLowerCase();
   let best = 'v01d-fixes', top = 0;
@@ -167,13 +167,13 @@ export async function autoOpen(open, { fetchFn, store = typeof sessionStorage !=
   if (buildFailed(rows)) { await open(); return true; }
   const sup = await supportState(fetchFn); // a paying user waiting on an answer opens the card too
   if (sup && sup.open) { await open(); return true; }
-  const acts = await failedActions(fetchFn, undefined, now); // an action Void took for the owner that failed (the other half of Void's ask)
+  const acts = await failedActions(fetchFn, undefined, now); // an action Verse took for the owner that failed (the other half of Verse's ask)
   if (acts && acts.length) { await open(); return true; }
   return false;
 }
 
-// Actions Void took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
-// owner-only). Void asked five times for "a blocked deployment or failed action" to open a status card by itself: the build half
+// Actions Verse took on the owner's behalf that failed in the last day (lib/actions.js records every one in D1; GET /api/actions is
+// owner-only). Verse asked five times for "a blocked deployment or failed action" to open a status card by itself: the build half
 // is buildState above, this is the action half. A visitor has no key and gets null; so does a browser that is offline.
 export const ACTION_WINDOW_MS = 86400000;
 export async function failedActions(fetchFn = (u, o) => fetch(u, o), key = ownerKey(), now = Date.now()) {
@@ -234,7 +234,7 @@ async function run(text, api) {
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
   const stability = online ? await fetch('/incidents.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((j) => j ? stabilityOf(j) : null).catch(() => null) : null;
   el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability);
-  // a Success Pulse (asked by Void): something that failed at the last check and is fine now (a skill that did not load and does)
+  // a Success Pulse (asked by Verse): something that failed at the last check and is fine now (a skill that did not load and does)
   const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const back = recovered(loadFailed(), failing, [...checked, ...(skills.error ? [] : (loadFailed().filter((n) => n.startsWith('skill:'))))]);

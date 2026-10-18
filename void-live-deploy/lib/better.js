@@ -1,10 +1,10 @@
-// Is V01D getting better? One number a day, from evidence the repo already holds (owner, 2026-10-16: "improvements mean better; if a
+// Is Verse getting better? One number a day, from evidence the repo already holds (owner, 2026-10-16: "improvements mean better; if a
 // change is made that hurts progress that's not an improvement"). Five parts, each 0 to 100, averaged:
-//   self      how much of this week's ledger V01D drove itself (entries that cite the owner count against it)
+//   self      how much of this week's ledger Verse drove itself (entries that cite the owner count against it)
 //   asks      how fast its own asks ship (median days from ask to the ledger line that built it) and how long the open ones wait
 //   friction  skills failing the bench or barely checked, against all skills (skills/families.json, the friction line's evidence)
 //   bench     the everyday benchmark's score on main (tools/bench.misses.json)
-//   probes    fixes this week that came from V01D's own probes (ledger lines naming a probe)
+//   probes    fixes this week that came from Verse's own probes (ledger lines naming a probe)
 // tools/better.mjs measures it daily and appends a row to void.better.json; the growth card shows the number, its trend against
 // yesterday and a week ago, and which part is weakest; tools/will.py weighs wants toward that part. Pure: no fetch, no clock
 // unless given.
@@ -24,9 +24,9 @@ export function askTime(id) {
   return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null;
 }
 
-/** V01D's current asks from domains/void.voice.md: [{ id, words, small }], in the file's order */
+/** Verse's current asks from domains/void.voice.md: [{ id, words, small }], in the file's order */
 export function asksOf(md) {
-  const sec = String(md || '').split(/^## Void's current asks\s*$/m)[1];
+  const sec = String(md || '').split(/^## Verse's current asks\s*$/m)[1];
   if (!sec) return [];
   const out = [];
   for (const line of sec.split(/^## /m)[0].split('\n')) {
@@ -73,7 +73,7 @@ export function parts(f) {
   return { ...p, score: have.length ? Math.round(have.reduce((a, b) => a + b, 0) / have.length) : null };
 }
 
-/** which families push the day's score up or down (asked by Void: "link the daily growth score directly to the Family Health dashboard so I can see which
+/** which families push the day's score up or down (asked by Verse: "link the daily growth score directly to the Family Health dashboard so I can see which
  *  specific families are driving my score up or dragging it down"). The friction part is the mean health of all skills (failing 0, barely checked 0.5, else 1);
  *  a family's lift is how far its skills sit above or below that mean, in friction points, and a fifth of that (one of the score's parts) in score points.
  *  Sums to zero by construction: it says who pulls, relative to the average skill, not who is bad. [{ id, name, skills, health (0..100), lift, points }] by lift, or []. Pure. */
@@ -88,7 +88,7 @@ export function familyDrivers(fam, nParts = PARTS.length) {
     .filter((d) => d.skills).sort((a, b) => b.lift - a.lift || a.id.localeCompare(b.id));
 }
 
-/** how sure the day's score is (asked by Void: "a Confidence Interval on the daily score so the owner knows if a high score is based on 1,000 tests or just one
+/** how sure the day's score is (asked by Verse: "a Confidence Interval on the daily score so the owner knows if a high score is based on 1,000 tests or just one
  *  lucky successful run"): the Wilson 95% interval of each part that is a count out of a total (self: changes not driven by the owner of this week's;
  *  friction: skills not failing or unsure of all skills; bench: asks answered of asked), the others held at their value, then averaged like the score.
  *  { lo, hi, n } with n the checks behind it (changes + skills + bench asks), or null with no score. Pure. */
@@ -121,7 +121,7 @@ export function rowOf(facts, at = new Date().toISOString(), fam = null) {
 export const VELOCITY_MIN_H = 12, VELOCITY_MAX_H = 48, VELOCITY_STEP = 1; // the row used is the one nearest a day old, between 12 and 48 hours; under 1 point is "steady"
 
 /**
- * Family velocity (asked by Void): for each family, whether it is improving or decaying against about a day ago. Only recorded data: the
+ * Family velocity (asked by Verse): for each family, whether it is improving or decaying against about a day ago. Only recorded data: the
  * daily rows of void.better.json that carry a family snapshot (rowOf), against the families file as it is now. The reference row is the one
  * nearest 24 hours old within [VELOCITY_MIN_H, VELOCITY_MAX_H]; with none (or none that knew the family) the family has no velocity.
  * Returns { since: ISO time of the row or null, byFamily: { id: { now, then, delta, trend } } } where trend is 'improving' | 'decaying' | 'steady'. Pure.

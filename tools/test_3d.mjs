@@ -1,4 +1,4 @@
-// Checks for Void's shared 3D scene (skills/scene3d.js, docs/miniatures.md) and the playable 3D board games built on it.
+// Checks for Verse's shared 3D scene (skills/scene3d.js, docs/miniatures.md) and the playable 3D board games built on it.
 // Called from tools/test_void.mjs with its browser helpers; the pure rules checks also run alone: node tools/test_3d.mjs --rules
 import fs from 'node:fs';
 import path from 'node:path';
@@ -63,7 +63,7 @@ export async function runRulesChecks(check) {
   const castle = C.fromFEN('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1'), blocked = C.fromFEN('r3k2r/8/8/8/8/8/8/R3K2R w KQkq - 0 1'.replace('8/8/8/8/8/8', '8/8/8/8/8/5r2'));
   const castled = C.play(castle, 'e1g1'), promo = C.fromFEN('8/P7/8/8/8/8/8/k6K w - - 0 1');
   const mateIn1 = C.bestMove(C.fromFEN('6k1/5ppp/8/8/8/8/5PPP/3R2K1 w - - 0 1'), { depth: 3, ms: 3000 });
-  check('chess rules: fool\u2019s mate is checkmate, a lone king boxed in is stalemate, en passant takes the pawn, castling moves the rook and is refused through an attacked square, a pawn on the 7th promotes four ways, and Void finds a back-rank mate',
+  check('chess rules: fool\u2019s mate is checkmate, a lone king boxed in is stalemate, en passant takes the pawn, castling moves the rook and is refused through an attacked square, a pawn on the 7th promotes four ways, and Verse finds a back-rank mate',
     C.status(fool) === 'checkmate' && C.status(stale) === 'stalemate' && epMove && C.sqName(epMove.to) === 'd6' && afterEp.board[C.sqIndex('d5')] === null && afterEp.board[C.sqIndex('d6')] === 'P'
     && castled.board[C.sqIndex('f1')] === 'R' && castled.board[C.sqIndex('g1')] === 'K' && !castled.castle.includes('K') && C.legalMoves(castle).some((m) => m.castle === 'q')
     && !C.legalMoves(blocked).some((m) => m.castle === 'k') && C.legalMoves(promo).filter((m) => m.promo).length === 4 && mateIn1 && C.sqName(mateIn1.to) === 'd8',
@@ -77,7 +77,7 @@ export async function runRulesChecks(check) {
   const afterCrown = cm.length ? K.apply(crowning, cm[0]) : null;
   const stuck = K.fromRows(['........', '........', '........', '........', '........', '..l.....', '.l......', 'd.......'], 'd'); // boxed in: no step, and the jump lands on a man
   const ai = K.bestMove(K.fromRows(['........', '........', '........', '........', '...l....', '..d.....', '........', '........'], 'd'), { depth: 4, ms: 2000 });
-  check('checkers rules: 7 opening moves, a capture is forced, a man keeps jumping (both double-jump routes offered), crowning ends the move, a king steps backward, a side with no move loses, and Void takes a free man',
+  check('checkers rules: 7 opening moves, a capture is forced, a man keeps jumping (both double-jump routes offered), crowning ends the move, a king steps backward, a side with no move loses, and Verse takes a free man',
     K.legalMoves(start).length === 7 && fm.length && fm.every((m) => m.captures.length) && mm.length === 2 && mm.every((m) => m.captures.length === 2)
     && cm.length === 2 && cm.every((m) => m.crown && m.path.length === 1) && afterCrown && afterCrown.board[cm[0].path[0]] === 'D'
     && km.some((m) => (m.path[0] >> 3) < 3) && K.status(stuck) === 'light-wins' && ai && ai.captures.length === 1,
@@ -88,7 +88,7 @@ if (process.argv.includes('--rules')) {
   process.exit(bad ? 1 : 0);
 }
 // node tools/test_3d.mjs --browser ["regex"]: only these browser checks (minutes, not the whole suite), served from
-// void-live-deploy/ with the suite's offline outside services and Void's read-only /api data (tools/fixtures/outside.mjs); the rest of /api answers 404.
+// void-live-deploy/ with the suite's offline outside services and Verse's read-only /api data (tools/fixtures/outside.mjs); the rest of /api answers 404.
 // The regex picks which checks are printed; the rest still run (they set up state for the later ones).
 if (process.argv.includes('--browser')) {
   const http = await import('node:http');
@@ -135,7 +135,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       hits.length === 0 && !index.includes('scene3d') && !index.some((n) => n.startsWith('mini/')) && !/\/vendor\/|\/models\//.test(html), JSON.stringify(hits));
     const r = await F.p.evaluate(async () => {
       const host = document.createElement('div'); host.id = 't3host'; host.style.cssText = 'position:fixed;left:40px;top:40px;width:320px;height:320px;z-index:9'; document.body.appendChild(host);
-      // the rendered signal (asked by Void): how the wrapper looks the moment it is put in, and every void:mini-rendered event after
+      // the rendered signal (asked by Verse): how the wrapper looks the moment it is put in, and every void:mini-rendered event after
       window.__t3born = []; window.__t3rendered = [];
       new MutationObserver((ms) => { for (const x of ms) for (const n of x.addedNodes) if (n.classList && n.classList.contains('void-mini')) { const c = n.querySelector('canvas'); window.__t3born.push({ rendered: n.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity }); } }).observe(host, { childList: true });
       host.addEventListener('void:mini-rendered', (e) => window.__t3rendered.push(e.detail));
@@ -152,7 +152,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const pix = (await until(async () => { const v = await pixOf(); return v > 0.03 ? v : 0; }, 20000)) || (await pixOf()); // a slow software renderer can hand over its first frame late
     const sig = await F.p.evaluate(async () => { const w = document.querySelector('#t3host .void-mini'), c = w && w.querySelector('canvas'); const m = await import('/skills/scene3d.js');
       return { born: window.__t3born, now: w && w.dataset.rendered, busy: c && c.getAttribute('aria-busy'), opacity: c && c.style.opacity, events: window.__t3rendered, listed: (m.liveMiniatures()[0] || {}).rendered }; });
-    check('3D scene: a miniature says when it has drawn (asked by Void: a rendered signal): put in as data-rendered="false", aria-busy and invisible; its first frame sets data-rendered="true", fades it in and fires one void:mini-rendered with its key and kind; liveMiniatures() lists rendered',
+    check('3D scene: a miniature says when it has drawn (asked by Verse: a rendered signal): put in as data-rendered="false", aria-busy and invisible; its first frame sets data-rendered="true", fades it in and fires one void:mini-rendered with its key and kind; liveMiniatures() lists rendered',
       sig.born.length === 1 && sig.born[0].rendered === 'false' && sig.born[0].busy === 'true' && sig.born[0].opacity === '0'
       && sig.now === 'true' && sig.busy === 'false' && sig.opacity === '1' && sig.events.length === 1 && sig.events[0].key === 't3' && sig.events[0].kind === 'sample' && sig.listed === true,
       JSON.stringify(sig));
@@ -270,7 +270,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
   // ---- "growth": the card brings its tree (two-part summons), and touching the trunk reads the oldest entry under it
   if (want("3d: \"growth\"")) {
     const F = await fresh();
-    // what Void asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
+    // what Verse asked for, by the entry that built it (GET /api/reflect follow.asked): here every entry has one naming its own time
     const ledgerAts = JSON.parse(fs.readFileSync(path.join(root, 'void.growth.json'), 'utf8')).map((e) => e.at);
     await F.ctx.route(/\/api\/reflect(?:\?|$)/, (rt) => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ entries: [], asks: [], follow: { total: 1, built: 1, recent: [], asked: ledgerAts.map((at) => ({ ask: 'the ask built at ' + at, at, times: 2 })) } }) }));
     await F.ask('growth');
@@ -289,7 +289,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const read = at && await until(() => F.p.evaluate((w) => { const s = document.querySelector('.vpage .growth-picked'); return s && s.textContent.includes(w) ? s.textContent.slice(0, 80) : false; }, at.oldest), 8000);
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
-    check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
+    check('"growth": touching a branch says what Verse asked for that it built (asked by Verse: "link the growth card branches to the growth inbox"), matched by the entry that built it',
       cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
@@ -649,7 +649,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     check('game panel fits: chess opened with a list on the stage leaves no overlapping boxes among the list, the board, its panel and the ask bar (the list moves aside or waits in the tray, one tap brings it back), at 1280x800 and on a phone; closing the game puts the list back exactly where it was',
       res.length === 2 && res.every((o) => o.ok), JSON.stringify(res).slice(0, 2000));
   }
-  // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
+  // ---- chess and checkers: routing, the real 3D board takes taps, Verse replies, and a flat board where WebGL can't run
   if (want("3d: chess and checkers")) {
     const F = await fresh();
     await F.ask('play chess', 600); await F.ask('chess', 600);
@@ -659,7 +659,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const sq = async (name, lift) => F.p.evaluate(([n, y]) => { const k = window.__voidMini.keys().find((x) => x.startsWith('chess:')); const f = 'abcdefgh'.indexOf(n[0]), r = +n[1] - 1;
       return window.__voidMini.project(k, [(3.5 - f) * 0.0579, 0.0174 + y, (r - 3.5) * 0.0579]); }, [name, lift]);
     const tap = async (name, lift = 0) => { const pt = await sq(name, lift); await F.p.mouse.click(pt.x, pt.y); await F.p.waitForTimeout(250); };
-    // every line the card's status shows while Void answers (asked by Void: say what it is weighing while it thinks)
+    // every line the card's status shows while Verse answers (asked by Verse: say what it is weighing while it thinks)
     await F.p.evaluate(() => { const seen = window.__chessLines = []; const note = () => { for (const e of document.querySelectorAll('.chess-status')) if (seen[seen.length - 1] !== e.textContent) seen.push(e.textContent); }; new MutationObserver(note).observe(document.body, { subtree: true, childList: true, characterData: true }); note(); }); // every change, not a look every 30 ms: a quick search came and went between two looks
     if (ready) { await tap('e2', 0.04); await tap('e4'); }
     const moved = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.s.board[28] === 'P' ? c : false; }, 20000);
@@ -667,11 +667,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
     const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
-    check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
+    check('chess: while Verse thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Verse), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
     const shot = await F.p.evaluate(() => [...document.querySelectorAll('.void-mini')].map((m) => m.dataset.kind));
-    check('chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Void answers with a legal move',
+    check('chess: the 3D wooden set draws on the card, tapping e2 then e4 on the canvas plays 1. e4, and Verse answers with a legal move',
       !!ready && !!moved && !!replied && pix > 0.2 && shot.includes('chess') && !F.errors.length, JSON.stringify({ ready, moved: !!moved, replied, pix, shot, e: F.errors }));
     await F.ask('play checkers', 600);
     const ck = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'checkers'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
@@ -681,7 +681,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       await tapC('c3'); await tapC('d4');
       jumped = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'checkers'); return c && c.state.s.board[27] === 'd' && c.state.moves >= 2 && c.state.s.turn === 'd' ? true : false; }, 30000);
     }
-    check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Void replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
+    check('checkers: "play checkers" lays turned wooden men on the same board; tapping c3 then d4 moves your man and Verse replies', !!ck && !!jumped && !F.errors.length, JSON.stringify({ ck, jumped, e: F.errors }));
     // two boards on a 1280-wide stage don't both fit with their cards: the one pushed aside shrinks instead of half-covering the
     // new one, and a tap on it brings it back (the other then shrinks in its place)
     const boards = () => F.p.evaluate(() => {
@@ -747,13 +747,13 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       await F.ask('close', 200); await F.ask(ask, 600);
       const ready = await until(() => F.p.evaluate((k) => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === k); return l && l.ready && l.draws > 0; }, kind), 90000);
       lifted[kind] = ready && await F.p.evaluate((k) => { const c = document.querySelector('.' + k + '-side'), b = document.querySelector('.free-board .' + k + '-view'); return !!c && !!b && c.closest('.side-card') === c; }, kind);
-      if (kind === 'tictactoe' && ready) { // tap the centre square on the carved board: X lands there and Void answers
+      if (kind === 'tictactoe' && ready) { // tap the centre square on the carved board: X lands there and Verse answers
         const pt = await F.p.evaluate(() => { const k = window.__voidMini.keys().find((x) => x.startsWith('tictactoe:')); return window.__voidMini.project(k, [0, 0.026, 0]); });
         await F.p.mouse.click(pt.x, pt.y);
         lifted.played = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'tictactoe'); return t && t.state.board[4] === 'X' && t.state.board.filter(Boolean).length === 2; }, 15000);
       }
     }
-    check('lift3d: tic-tac-toe, Othello, mancala, Aggravation and Connect Four each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Void answers',
+    check('lift3d: tic-tac-toe, Othello, mancala, Aggravation and Connect Four each stand a 3D board in the void with their card separate; tapping the carved tic-tac-toe board\'s centre plays X there and Verse answers',
       lifted.tictactoe && lifted.othello && lifted.mancala && lifted.aggravation && lifted.connect4 && !!lifted.played && !F.errors.length, JSON.stringify({ lifted, e: F.errors }));
     await F.ctx.close();
   }
@@ -768,7 +768,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.waitForTimeout(1500);
     const sides = await F.p.evaluate(() => [...document.querySelectorAll('.connect4-side')].map((c) => ({ log: (c.querySelector('.c4-latest') || {}).textContent || '' })));
     check('one side card per lifted board: a move made while the 3D board loads leaves exactly one side card on the stage, and it carries the move, not the empty first state',
-      !!key && sides.length === 1 && /because|You|Void/.test(sides[0].log) && !F.errors.length, JSON.stringify({ key, sides, e: F.errors }));
+      !!key && sides.length === 1 && /because|You|Verse/.test(sides[0].log) && !F.errors.length, JSON.stringify({ key, sides, e: F.errors }));
     await F.ctx.close();
   }
   // ---- Four in a Row on a phone (owner, 2026-10-11 polish): the frame fits a 390 px screen, the card sits below it and never
@@ -778,15 +778,15 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load V01D's search
+    // you keep dropping in column 1; Verse finds its four. The game sets the pace, not a move count: under CI load Verse's search
     // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
     // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
-    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when V01D had not blocked it: "You dropped in column 1" as the last line, no reason)
+    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
     for (const end = Date.now() + 90000; key && Date.now() < end;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
       if (/Your move/.test(st)) {
-        // a full column ignores the tap and the game would wait for you for good (the other way this check went red: Void had not
+        // a full column ignores the tap and the game would wait for you for good (the other way this check went red: Verse had not
         // found its four before column 1 filled): the next tap is in another column anyway
         const d0 = await F.p.evaluate((k) => window.__voidMini.state(k).discs, key);
         await F.p.evaluate((c) => document.querySelectorAll('.c4-col')[c].click(), COLS[turn % COLS.length]);
@@ -808,7 +808,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       JSON.stringify({ won, lay, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- the V01D Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
+  // ---- the Verse Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
   // menu): tools/test_void.mjs "the book:" covers it. The desk-sized WebGL hardcover (skills/mini/book.js, lib/book-face.js) is on
   // the salvage shelf (docs/SALVAGE.md); its leaf geometry and page painter still have their own unit tests (tools/book-face.test.mjs).
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer
@@ -842,7 +842,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       !!ready && sep && !!moved && (moved.players[0].pos > 0 || moved.log.some((l) => /Advance to Go/.test(l.text))) && owned === 0 && !F.errors.length, JSON.stringify({ ready, sep, pos: moved && moved.players[0].pos, phase: moved && moved.phase, owned, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- Battleship: the folding case in the void; a tap on the upright board fires; Void's fleet never reaches the page
+  // ---- Battleship: the folding case in the void; a tap on the upright board fires; Verse's fleet never reaches the page
   if (want("3d: battleship")) {
     const F = await fresh();
     await F.ask('play battleship', 600);
@@ -851,11 +851,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       const lit = [...document.querySelectorAll('.bs-target button')].filter((b) => b.querySelector('i') || b.style.background !== 'rgb(29, 106, 147)').length; return { voidCells: voidCells.length, lit }; });
     if (ready) { const pt = await F.p.evaluate(() => { const k = window.__voidMini.keys().find((x) => x.startsWith('battleship:')); return window.__voidMini.project(k, [0.0964, 0.2372, 0.1268]); }); await F.p.mouse.click(pt.x, pt.y); }
     const fired = await until(async () => { const t = (await F.state()).find((x) => x.kind === 'battleship'); return t && t.state.shots.you[0] ? t.state : false; }, 10000);
-    check('battleship: "play battleship" stands the folding case in the void with its card separate; before any shot nothing of Void\'s fleet shows; tapping A1 on the upright board fires there',
+    check('battleship: "play battleship" stands the folding case in the void with its card separate; before any shot nothing of Verse\'s fleet shows; tapping A1 on the upright board fires there',
       !!ready && hidden.voidCells === 17 && hidden.lit === 0 && !!fired && !F.errors.length, JSON.stringify({ ready, hidden, fired: !!fired, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- Poker: the felt table in the void; your cards show, Void's stay face down until a showdown
+  // ---- Poker: the felt table in the void; your cards show, Verse's stay face down until a showdown
   if (want("3d: poker")) {
     const F = await fresh();
     await F.ask('play poker', 600);
@@ -863,11 +863,11 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     // only once the table is ready (as the rack below): a table still loading after 90 s fails this check with what it shows,
     // instead of a null state ending the whole run (verify on 6d2585f: "Cannot read properties of null (reading 'cards')")
     const shown = await F.p.evaluate(() => { const s = window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('poker:'))); return { cards: s ? s.cards : null, faces: [...document.querySelectorAll('.pk-table .pk-card')].map((c) => c.textContent) }; });
-    check('poker: "play poker" stands the card table in the void with its card separate; your two cards show, Void\'s two stay face down',
+    check('poker: "play poker" stands the card table in the void with its card separate; your two cards show, Verse\'s two stay face down',
       !!ready && shown.cards === 4 && shown.faces.filter(Boolean).length === 2 && shown.faces.length === 4 && !F.errors.length, JSON.stringify({ ready, shown, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- Fireworks (co-op): Void's cards face you, yours face Void; tapping one of Void's cards offers a hint
+  // ---- Fireworks (co-op): Verse's cards face you, yours face Verse; tapping one of Verse's cards offers a hint
   if (want("3d: fireworks")) {
     const F = await fresh();
     await F.ask('play fireworks', 600);
@@ -875,7 +875,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const faces = await F.p.evaluate(() => ({ void: [...document.querySelectorAll('.fw-void .fw-card')].map((b) => b.textContent), you: [...document.querySelectorAll('.fw-you .fw-card')].map((b) => b.textContent) }));
     await F.p.evaluate(() => document.querySelector('.fw-void .fw-card').click());
     const offer = await until(() => F.p.evaluate(() => !!document.querySelector('.fw-hint-color') && !!document.querySelector('.fw-hint-rank')), 3000);
-    check('fireworks: "play fireworks" stands the co-op table in the void with its card separate; you can read Void\'s cards but not yours; picking one of Void\'s offers a hint',
+    check('fireworks: "play fireworks" stands the co-op table in the void with its card separate; you can read Verse\'s cards but not yours; picking one of Verse\'s offers a hint',
       !!ready && faces.void.every((t) => /^[1-5]$/.test(t)) && faces.you.every((t) => t === '?') && !!offer && !F.errors.length, JSON.stringify({ ready, faces, offer, e: F.errors }));
     await F.ctx.close();
   }
@@ -961,7 +961,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       !!drawn && r.inPage && r.quarter === 0.5 && r.rest === 0 && r.first[0] === 0.55 && r.first[1] === 0 && r.next === 1 && moves && !F.errors.length, JSON.stringify({ drawn, r, moves, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- Void's own body on its self page: one fixed seed (the same entity everywhere), asymmetric, tap breaks it apart
+  // ---- Verse's own body on its self page: one fixed seed (the same entity everywhere), asymmetric, tap breaks it apart
   if (want("3d: void's own body on its self page")) {
     const F = await fresh();
     await F.ask('void', 900);
@@ -975,7 +975,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const pt = drawn && await F.p.evaluate((k) => window.__voidMini.project(k, [0, 0.075, 0]), drawn.key);
     if (pt) await F.p.mouse.click(pt.x, pt.y);
     const broke = await until(() => F.p.evaluate((b) => window.__voidMini.list().find((x) => x.kind === 'void').draws > b + 4, before), 15000);
-    check('3D Void: its self page shows its own body, built from one fixed seed (the same 24 shards every time; another seed differs), lopsided by design (the shard directions lean to one side), and a tap breaks it apart and back',
+    check('3D Verse: its self page shows its own body, built from one fixed seed (the same 24 shards every time; another seed differs), lopsided by design (the shard directions lean to one side), and a tap breaks it apart and back',
       !!drawn && r.inPage && r.n === 24 && r.same && r.other && r.lean > 0.12 && broke && !F.errors.length, JSON.stringify({ drawn, r, broke, e: F.errors }));
     await F.ctx.close();
   }
@@ -1016,7 +1016,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.ctx.close();
   }
 
-  // ---- three of Void's own asks about 3D on phones: a wire placeholder the moment a card asks (ask-20261014-1025-1), a
+  // ---- three of Verse's own asks about 3D on phones: a wire placeholder the moment a card asks (ask-20261014-1025-1), a
   // low-poly setting that draws 1x pixels with no shadows and keeps figures at their light tier (ask-20261015-0347-2), and a
   // status card where a model that failed would have left empty space (ask-20261012-0856-1)
   if (want("3d: low-poly, the wire placeholder and the status card")) {
@@ -1058,7 +1058,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     });
     await F.ask('low poly 3d', 300); const saidLow = await F.whisper(); const storedLow = await F.p.evaluate(() => localStorage.getItem('a2m.void.3d.v1'));
     await F.ask('auto 3d', 300); const storedAuto = await F.p.evaluate(() => localStorage.getItem('a2m.void.3d.v1'));
-    check('3D detail (asked by Void, three asks): a wire placeholder is on the card within 80 ms of asking, before three.js, with the real canvas still first, busy and transparent, and goes when the first frame lands; "low poly" on a 3x phone draws at 1x with the shadow pass off and the contact shadows hidden, "full" restores both, "auto" clears the setting; a model with nothing behind it leaves a status card naming it (data-rendered="failed", one void:mini-failed) and still rejects; the asks "low poly 3d" and "auto 3d" set and clear the key',
+    check('3D detail (asked by Verse, three asks): a wire placeholder is on the card within 80 ms of asking, before three.js, with the real canvas still first, busy and transparent, and goes when the first frame lands; "low poly" on a 3x phone draws at 1x with the shadow pass off and the contact shadows hidden, "full" restores both, "auto" clears the setting; a model with nothing behind it leaves a status card naming it (data-rendered="failed", one void:mini-failed) and still rejects; the asks "low poly 3d" and "auto 3d" set and clear the key',
       r.phone && r.early.wrap && r.early.rendered === 'false' && r.early.wire && r.early.inked > 50 && !r.early.firstIsWire && r.early.busy === 'true' && r.early.opacity === '0'
       && !r.after.wire && r.after.rendered === 'true' && r.after.same
       && r.low.lowWidth === Math.round(r.full.css * 1) && r.full.width > r.low.width && r.low.detail.low && r.low.detail.mode === 'low' && r.low.stored === 'low' && r.low.shadows === 0 && r.low.shadowsOff && r.low.contactsHidden

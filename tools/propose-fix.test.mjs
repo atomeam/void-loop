@@ -1,4 +1,4 @@
-// V01D proposes the fix (frontier #28, step 3): lib/propose-fix.js keeps only exact, short, inert line replacements; the route is
+// Verse proposes the fix (frontier #28, step 3): lib/propose-fix.js keeps only exact, short, inert line replacements; the route is
 // owner-only and stores nothing; tools/propose-fix.mjs picks the oldest probe: job, replays the skill's own asks, and says which step
 // stopped a proposal; the workflow runs nothing a model wrote under a write token.
 import test from 'node:test';
@@ -29,7 +29,7 @@ const ai = (reply, calls = []) => ({ run: async (m, o) => { calls.push({ m, o })
 const post = (env, body, key = OWNER) => route.onRequestPost({ request: new Request('https://a-to-mind.com/api/propose-fix', { method: 'POST', headers: key ? { authorization: 'Bearer ' + key } : {}, body: JSON.stringify(body) }), env });
 
 test('a probe: job names its ask and its skill; a want with alternatives gives the first skill; bare words that are not skills do not', () => {
-  const j = { ask: 'learn to handle "opposite of brave"', target: 'probe:opposite-of-brave', note: 'V01D wrote this ask for its words family and missed it (wanted skill:words); from the daily probe' };
+  const j = { ask: 'learn to handle "opposite of brave"', target: 'probe:opposite-of-brave', note: 'Verse wrote this ask for its words family and missed it (wanted skill:words); from the daily probe' };
   assert.deepEqual(jobAsk(j), { ask: 'opposite of brave', skill: 'words', want: 'skill:words', mode: 'learn' });
   // a routing correction (owner, 2026-10-16): the skill that wrongly answered is the one to change
   assert.deepEqual(jobAsk({ ask: 'stop answering "quoting a chat about your memory"', target: 'route:quoting', note: 'My owner said a card was not its job (wrong skill:automation-fix) (wanted answer)' }),
@@ -80,7 +80,7 @@ test('the route is owner-only, needs ask, skill and source, asks the review mode
   const r = await post(env, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'V01D says how sure it is (asked by Void)'); assert.deepEqual(j.evidence.map((e) => [e.file, e.line]), [['void-live-deploy/skills/words.js', 5], ['void-live-deploy/skills/words.js', 8]], 'each edit cites its file and line (asked by Void)'); assert.equal(j.model, models('will'));
+  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'Verse says how sure it is (asked by Verse)'); assert.deepEqual(j.evidence.map((e) => [e.file, e.line]), [['void-live-deploy/skills/words.js', 5], ['void-live-deploy/skills/words.js', 8]], 'each edit cites its file and line (asked by Verse)'); assert.equal(j.model, models('will'));
   assert.equal(calls[0].o.messages[0].content, FIX_SYSTEM); assert.match(calls[0].o.messages[1].content, /opposite of brave/); assert.equal(calls.length, 1, 'one model call, so the request ends inside the platform limit'); assert.equal(calls[0].m, models('will'));
   const none = await post({ AI: ai({ why: 'x', edits: [{ find: 'nope', replace: 'x' }] }), READ_TOKEN: OWNER }, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(none.status, 502);
@@ -102,7 +102,7 @@ test('the tool: the oldest open probe: job, the skill\'s own asks replayed with 
   assert.equal(pickJob(q).id, 'a'); assert.equal(pickJob(q, 'b').id, 'b'); assert.equal(pickJob(q, 'c'), null); assert.equal(pickJob({ items: [] }), null);
   const bench = [{ ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }, { ask: '15% of 80', want: 'calc' }, { ask: 'Opposite of brave', want: 'skill:words' }];
   assert.deepEqual(regressionAsks({ ask: 'opposite of brave', want: 'skill:words' }, bench, 'words'), [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }]);
-  assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark \(2 line changes in skills\/words\.js\); see the pull request labelled "made by V01D"/);
+  assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark \(2 line changes in skills\/words\.js\); see the pull request labelled "made by Verse"/);
   assert.match(noteFor({ passed: false, edits: 1, failed: 'benchmark', detail: '2 of 48 missed' }), /failed at: benchmark \(2 of 48 missed\); a builder takes it from here/);
   assert.deepEqual(STEPS, ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']);
   assert.match(noteFor({ passed: true, edits: 1, skill: 'automation-fix', mode: 'narrow' }), /passed collisions, lets go, unit test, void review, benchmark/);
@@ -121,7 +121,7 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
   const [propose, pr] = wf.split(/\n  pull-request:\n/);
   assert.match(propose, /node tools\/propose-fix\.mjs/); assert.match(propose, /VOID_OWNER_TOKEN: \$\{\{ secrets\.VOID_OWNER_TOKEN \}\}/); assert.doesNotMatch(propose, /contents: write|pull-requests: write/);
-  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by V01D/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label "\$gate"/, 'V01D\'s passing fixes are labelled by the confidence gate (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
+  assert.match(pr, /contents: write/); assert.match(pr, /git apply/); assert.match(pr, /made by Verse/); assert.doesNotMatch(pr, /node tools\/|npm |bench\.mjs/); assert.match(pr, /--label "\$gate"/, 'Verse\'s passing fixes are labelled by the confidence gate (owner, 2026-10-16)'); assert.match(pr, /gh workflow run void-review\.yml/, 'the merge gate is started on the PR the workflow token opened');
   // the one outside key (owner, 2026-10-16: Claude as the builder brain): the propose job only, and only on a run that picked Claude;
   // the job that holds the write token never sees it
   assert.doesNotMatch(wf, /OPENROUTER|secrets\.(?!VOID_OWNER_TOKEN|ANTHROPIC_API_KEY\b)/);
@@ -130,13 +130,13 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   assert.doesNotMatch(pr, /ANTHROPIC/);
 });
 
-test('evidence (asked by Void): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {
+test('evidence (asked by Verse): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {
   const ev = evidenceOf(SOURCE, GOOD.edits, 'words');
   assert.deepEqual(ev.map((e) => e.line), [5, 8]); assert.equal(ev[0].file, 'void-live-deploy/skills/words.js'); assert.match(ev[0].was, /^return \/\^\(\?:rhymes/);
   assert.equal(whereOf(ev), 'void-live-deploy/skills/words.js lines 5, 8'); assert.equal(whereOf(ev.slice(0, 1)), 'void-live-deploy/skills/words.js line 5'); assert.equal(whereOf([]), '');
   assert.deepEqual(evidenceOf(SOURCE, [{ find: 'not in the file', replace: 'x' }], 'words'), []);
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
-  assert.match(wf, /V01D's confidence: \$CONFIDENCE\. Where: \$WHERE\./, 'the pull request V01D opens says how sure it was and where');
+  assert.match(wf, /Verse's confidence: \$CONFIDENCE\. Where: \$WHERE\./, 'the pull request Verse opens says how sure it was and where');
 });
 
 test('lets go: a routing correction passes only when the edited skill, loaded fresh, no longer takes the ask', async () => {
@@ -155,7 +155,7 @@ test('the confidence gate (owner, 2026-10-16): 0.8 and up is labelled automerge,
   const m = /gate=\$\(node -e '([^']+)' "\$CONFIDENCE"\)/.exec(wf); assert.ok(m, 'the gate is computed from the confidence');
   const gate = (c) => { let out = ''; const log = console.log; console.log = (x) => { out = x; }; try { new Function('process', m[1])({ argv: ['node', c] }); } finally { console.log = log; } return out; };
   assert.equal(gate('0.8'), 'automerge'); assert.equal(gate('0.93'), 'automerge'); assert.equal(gate('0.79'), 'waits for owner'); assert.equal(gate('none given'), 'waits for owner'); assert.equal(gate(''), 'waits for owner');
-  assert.match(wf, /--label "made by V01D" --label "\$gate"/); assert.match(wf, /\[ "\$gate" = "automerge" \] && \{ gh workflow run automerge\.yml/);
+  assert.match(wf, /--label "made by Verse" --label "\$gate"/); assert.match(wf, /\[ "\$gate" = "automerge" \] && \{ gh workflow run automerge\.yml/);
 });
 
 test('the workflow installs packages before its checks (the Claude brain test imports the SDK; the daily fix run failed at this step until 2026-10-16)', async () => {
@@ -163,7 +163,7 @@ test('the workflow installs packages before its checks (the Claude brain test im
   assert.ok(wf.indexOf('npm ci --no-audit') > 0 && wf.indexOf('npm ci --no-audit') < wf.indexOf('node --test tools/propose-fix.test.mjs'));
 });
 
-test('a missed ask the router says a skill should have caught is a propose-fix job (lane), one with no skill near is a builder\'s (asked by Void)', () => {
+test('a missed ask the router says a skill should have caught is a propose-fix job (lane), one with no skill near is a builder\'s (asked by Verse)', () => {
   const q = { items: [
     { id: 'm1', at: '2026-10-16T09:00:00Z', target: 'miss:cab-to-oakland', state: 'queued', ask: 'learn to handle "cab to oakland"', note: 'asked 3× (1 phrasing), last 2026-10-15; router skill:rides 0.71; lane: propose-fix; from the miss board' },
     { id: 'm2', at: '2026-10-16T08:00:00Z', target: 'miss:sunset-on-mars', state: 'queued', ask: 'learn to handle "sunset on mars"', note: 'asked 3× (1 phrasing), last 2026-10-15; router simple 0.30; lane: new skill; from the miss board' },

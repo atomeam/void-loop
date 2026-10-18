@@ -114,7 +114,7 @@ function run(text, api) {
   el.addEventListener('dragover', (e) => { e.preventDefault(); });
   el.addEventListener('drop', (e) => { e.preventDefault(); const f = e.dataTransfer && e.dataTransfer.files && e.dataTransfer.files[0]; if (f) readFile(f); });
   const where = (l) => titles ? (titles[l.page - 1] ? 'section “' + esc(titles[l.page - 1]) + '”' : 'the opening') + ', line ' + l.line : 'page ' + l.page + ', line ' + l.line;
-  // "map it": the headings as a tree, indented by depth, each opening to its own lines (asked by Void, 2026-10-11)
+  // "map it": the headings as a tree, indented by depth, each opening to its own lines (asked by Verse, 2026-10-11)
   mapBtn.addEventListener('click', () => {
     mapOut.innerHTML = '<ul class="doc-map" data-pdf-outline-list>' + outline.map((n) => { // void-review: ok: titles and lines go through esc(), the rest is numbers
       const own = lines.filter((l) => l.page === n.page);

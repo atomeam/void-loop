@@ -2,7 +2,7 @@
  * tictactoe skill — the first board game as a real skill (countdown's shape, not make's iframe).
  * "lets play tic tac toe" summons an interactive board on the stage; it stays until thrown off.
  * The engine is a flat 9-element board; the canvas maps it to a 3x3 grid of cells.
- * You are X and Void is O: after each tap Void answers with its best move (full minimax, so it never loses).
+ * You are X and Verse is O: after each tap Verse answers with its best move (full minimax, so it never loses).
  * The status line calls the result. New game resets.
  */
 import { levelPick } from './game-level.js';
@@ -48,7 +48,7 @@ export function resolveMove(state, index) {
   };
 }
 
-// Void's move: full minimax over the flat board (9 squares, so it is instant). Wins fast, loses slow; ties go to the lowest index.
+// Verse's move: full minimax over the flat board (9 squares, so it is instant). Wins fast, loses slow; ties go to the lowest index.
 export function bestMove(state) {
   const me = state.currentPlayer, other = me === 'X' ? 'O' : 'X';
   const score = (board, player, depth) => {
@@ -113,7 +113,7 @@ function mount(th, stageApi) {
     b.addEventListener('pointerdown', (e) => e.stopPropagation());
     b.addEventListener('click', (e) => {
       e.stopPropagation();
-      if (th.state.currentPlayer !== 'X') return; // Void is answering
+      if (th.state.currentPlayer !== 'X') return; // Verse is answering
       try {
         th.state = resolveMove(th.state, i).nextState;
         paint();

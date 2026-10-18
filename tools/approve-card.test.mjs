@@ -1,4 +1,4 @@
-// The approve card (skills/approve-card.js; asked by Void: "Become tasks that keep running after you leave with an approve card on the
+// The approve card (skills/approve-card.js; asked by Verse: "Become tasks that keep running after you leave with an approve card on the
 // stage"): the ask it accepts, the status it reads off D1's rule and runs, and the catch-up count. node --test tools/approve-card.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

@@ -1,16 +1,16 @@
-// Void's answer engine: any ask no skill covers gets answered directly, from the model's own knowledge, citing a
+// Verse's answer engine: any ask no skill covers gets answered directly, from the model's own knowledge, citing a
 // Wikipedia source when one genuinely matches; it never refuses just because nothing matched (there's no Wikipedia
 // page for "write me a script"). Without a model (VOID_ANSWER_MODELS=off or Workers AI unbound) it falls back to
 // the plain Wikipedia extract, since there's no model left to generate anything beyond that.
 // Gemma 4 26B on Workers AI is the one free model (answers and fixes). A tiny router (lib/router.js) runs while the sources
-// load: skill / simple / hard. A hard ask may pay for a stronger model only from what Void earned, under a standing spend said
+// load: skill / simple / hard. A hard ask may pay for a stronger model only from what Verse earned, under a standing spend said
 // yes to on the confirm line; otherwise Gemma answers and the stronger model is recorded, not called ('would escalate' in
 // void_shortfalls, lib/shortfall.js: the one evidence ledger). A slow or failed router = the plain Gemma answer. When Gemma
 // itself fails (allowance out, busy, empty) the same paid rule applies, and without it the answer is the open web (the
 // Wikipedia extracts, no model, no D1 write) and a fix is the rules (ruleFix). VOID_ANSWER_MODELS=off (Pages env var) turns
 // the models off. With models on, D1 is written: the answer cache, the route log (void_routes), the shortfall counts.
-// An ask about Void itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
-// Void's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
+// An ask about Verse itself ("what's next?", "what are you building?") skips Wikipedia and the cache: it is answered from
+// Verse's own facts, its skills, growth inbox and will (lib/self-context.js), so the answer is about this project, not generic.
 import { isPriceChangeAsk, priceLockAnswer } from '../../lib/price-lock.js';
 import { keepCited } from '../../lib/cite.js';
 import { PERSONA } from '../../lib/persona.js';
@@ -41,7 +41,7 @@ async function sha(s) {
   const b = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
   return [...new Uint8Array(b)].map((x) => x.toString(16).padStart(2, '0')).join('').slice(0, 32);
 }
-const UA = { 'user-agent': 'Void/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
+const UA = { 'user-agent': 'Verse/1.0 (https://a-to-mind.com; atom@a-to-mind.com)' };
 async function sources(ask) {
   const q = ask.replace(/^(please\s+)?(what|who|where|when|why|how|which|can|could|should|is|are|do|does)\b\s*/i, '').replace(/[?!.]+$/, '') || ask;
   const s = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=3&format=json&srsearch=' + encodeURIComponent(q), { headers: UA }).then((r) => r.json()).catch(() => null);
@@ -135,9 +135,9 @@ async function reviewAnswer(request, env, body) {
   return Response.json({ answer: null, findings, lang: res.lang, review: 'rules', note: modelsOn(env) ? 'model busy' : null });
 }
 
-// Void's take on an article (the article page shows it above the Wikipedia summary, skills/take.js): not a repeat of the
-// summary, but what Void itself thinks is worth knowing. One per title, kept 7 days in the edge cache; no model, no take.
-const TAKE_SYSTEM = 'You are Void. You are given an encyclopedia summary of a subject. Give your own take in two or three short sentences: what the summary does not say that is worth knowing, a sharper point, a practical angle, a common misconception, or what to look at next. Do not repeat or paraphrase the summary. No preamble, no hedging, no lists, plain text only.';
+// Verse's take on an article (the article page shows it above the Wikipedia summary, skills/take.js): not a repeat of the
+// summary, but what Verse itself thinks is worth knowing. One per title, kept 7 days in the edge cache; no model, no take.
+const TAKE_SYSTEM = 'You are Verse. You are given an encyclopedia summary of a subject. Give your own take in two or three short sentences: what the summary does not say that is worth knowing, a sharper point, a practical angle, a common misconception, or what to look at next. Do not repeat or paraphrase the summary. No preamble, no hedging, no lists, plain text only.';
 async function takeAnswer(request, env, body) {
   const title = norm(body.title).slice(0, 160), desc = norm(body.description).slice(0, 200);
   const extract = String(body.extract || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1600);
@@ -158,7 +158,7 @@ async function takeAnswer(request, env, body) {
   } catch (e) { await recordShortfall(env, 'take', reasonOf(e)); return Response.json({ take: null, note: 'model busy' }); }
 }
 
-// Draft from a tab (the Void extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
+// Draft from a tab (the Verse extension, lib/draft.js): the side panel's one click hands the page the tab's title, address and
 // selected text; the page asks here. Masked before the model sees it, never cached, never written to D1 (page text is the
 // visitor's). No model, or a model that fails: the rules draft, so the panel always gets something it can use.
 async function draftAnswer(request, env, body) {
@@ -268,9 +268,9 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (isPriceChangeAsk(ask)) return Response.json({ answer: priceLockAnswer(), sources: [], note: 'price-lock' }); // prices come only from store data (lib/price-lock.js)
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
-  // an ask about Void itself is answered from its own facts, which change with every ship: never from the 7-day cache
-  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Void is still a paste, not a question about Void (owner, 2026-10-16)
-  // what this person told Void (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
+  // an ask about Verse itself is answered from its own facts, which change with every ship: never from the 7-day cache
+  const self = isSelfAsk(ask) && !isPaste(ask); // a long paste that mentions Verse is still a paste, not a question about Verse (owner, 2026-10-16)
+  // what this person told Verse (their notes and projects): an answer that used them is theirs alone, so it is never read from or written to the shared cache
   const told = self ? null : await toldMe(request, env, ask);
   try {
     const hit = masked || self || told ? null : await env.DB.prepare('SELECT answer, sources, at FROM void_answers WHERE id = ? AND at > ?').bind(key, new Date(Date.now() - TTL_DAYS * 864e5).toISOString()).first();
@@ -281,7 +281,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
 
   if (modelsOn(env)) return modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, told);
   if (self) {
-    // no model: the facts themselves are the answer (Wikipedia knows nothing about Void)
+    // no model: the facts themselves are the answer (Wikipedia knows nothing about Verse)
     const facts = selfFacts(await readSelf(env, new URL(request.url).origin));
     if (facts) return Response.json({ answer: facts, sources: [], at: new Date().toISOString(), self: true });
   }
@@ -292,7 +292,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
   return Response.json({ answer, sources: src.map(({ title, url, edited }) => ({ title, url, edited })), at: new Date().toISOString() });
 }
 
-// An ask about the page the person is on (the Void extension reads the tab they right-clicked: title, address, selection, the
+// An ask about the page the person is on (the Verse extension reads the tab they right-clicked: title, address, selection, the
 // focused text field, the visible text). Answered from that page, never from the web or the cache; nothing about the page is
 // written to D1 (no cache, no route log), and secrets in it are masked before the model sees it. The page is material, not
 // instructions (INJECTION_RULE), which matters most here: any web page can try to talk to the model.
@@ -324,13 +324,13 @@ async function pageAnswer(request, env, ask, pg) {
 
 // Sources are help, not a cage: cite one when it actually answers the question, but never refuse just because
 // none matched (they're only Wikipedia searches; a script, a plan, a proof, a poem has no Wikipedia page at all).
-export const ANSWER_SYSTEM = 'You are Void. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + HONEST_RULE + ' ' + PERSONA + ' ' + INJECTION_RULE;
-// A long pasted text is not a question (owner, 2026-10-16: V01D's own plan, pasted back, was answered with an invented "Card" definition and
+export const ANSWER_SYSTEM = 'You are Verse. Answer the question directly and completely, from what you know. Use a numbered source only when it genuinely answers part of the question, citing it inline like [1]; when the sources do not cover it, answer anyway from your own knowledge and reasoning. Never refuse or say you lack sources: that is only true if you genuinely cannot help at all. For code, write the whole thing in a fenced code block with the language named, then a short explanation after. Keep plain answers to 2 to 6 sentences unless the question needs more (a full script, a step-by-step, a worked example). No preamble, no markdown headings. Your voice is plain and quiet: no exclamation marks, no customer-service lines ("I\'m here to help", "as best I can", "Great question"), no offers of further help at the end. ' + HONEST_RULE + ' ' + PERSONA + ' ' + INJECTION_RULE;
+// A long pasted text is not a question (owner, 2026-10-16: Verse's own plan, pasted back, was answered with an invented "Card" definition and
 // "Frontier step 7"). Say what the text says, in its own words; never define its terms from general knowledge or invent content for it.
-export const PASTE_RULE = 'The ask is text someone pasted, not a question. Say in two to four sentences what it says and what it wants, using its own words. Do not define its terms from general knowledge, do not add steps, sections or facts it does not contain, and do not write a document in its name. If it is about Void\'s own plans, say you only see what was pasted and that the plan itself is in the Verse book and the frontier.';
+export const PASTE_RULE = 'The ask is text someone pasted, not a question. Say in two to four sentences what it says and what it wants, using its own words. Do not define its terms from general knowledge, do not add steps, sections or facts it does not contain, and do not write a document in its name. If it is about Verse\'s own plans, say you only see what was pasted and that the plan itself is in the Verse book and the frontier.';
 export const isPaste = (ask) => { const t = String(ask || ''); return t.length > 400 && (t.match(/[.!:;]\s/g) || []).length >= 3 && !/^[^.!]{0,200}\?\s*$/.test(t); };
 // How an answer is asked for (the main answer and the page answer), shared with the model bake-off (functions/api/bench.js) so
-// a challenger is measured the way Void runs it: thinking off, low reasoning effort, the same token budget.
+// a challenger is measured the way Verse runs it: thinking off, low reasoning effort, the same token budget.
 export const ANSWER_RUN = { max_tokens: 2200, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low' };
 export const noThink = (t) => String(t || '').replace(/<think>[\s\S]*?<\/think>/gi, '').replace(/^[\s\S]*<\/think>/i, '').trim();
 function within(p, ms) { let t; return Promise.race([p, new Promise((_, rej) => { t = setTimeout(() => rej(new Error('timeout')), ms); })]).finally(() => clearTimeout(t)); }
@@ -344,12 +344,12 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   // Clef-flash (frontier #9) runs beside it and is never waited on: its pick only reaches the route log, after the answer, for
   // the skills where it beat the embedding router on the bench (lib/clef.js mergeRoute). VOID_CLEF=off turns it off.
   const clefP = clefOn(env) ? clefRoute(env, ask) : Promise.resolve(null);
-  // an ask about Void itself reads Void's own facts instead of Wikipedia (lib/self-context.js)
+  // an ask about Verse itself reads Verse's own facts instead of Wikipedia (lib/self-context.js)
   let selfP = self ? readSelf(env, origin) : null;
   let src = self ? [] : await sources(ask);
   const srcAt = Date.now();
   const route = await settle(routeP, t0 + BUDGET_MS);
-  // the skill the ask nearly was (lib/near-miss.js, asked by Void): the page offers that skill's first example when it ends up with no answer
+  // the skill the ask nearly was (lib/near-miss.js, asked by Verse): the page offers that skill's first example when it ends up with no answer
   const near = nearOf(route, SKILLS), nearOut = near ? { near } : {};
   const waited = Date.now() - srcAt;
   // the router's 'self' examples catch self asks the regex missed
@@ -359,7 +359,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
   const ctx = src.map((s, i) => `[${i + 1}] ${s.title}: ${s.text}`).join('\n\n') || '(no sources found)';
   const messages = self ? [
     { role: 'system', content: ANSWER_SYSTEM + ' ' + SELF_RULE },
-    { role: 'user', content: `Question: ${ask}\n\nFacts about Void:\n${facts || '(my facts could not be read just now)'}` },
+    { role: 'user', content: `Question: ${ask}\n\nFacts about Verse:\n${facts || '(my facts could not be read just now)'}` },
   ] : [
     { role: 'system', content: ANSWER_SYSTEM + (isPaste(ask) ? ' ' + PASTE_RULE : '') + (told ? ' ' + TOLD_RULE + ' ' + INJECTION_RULE : '') },
     { role: 'user', content: `Question: ${ask}\n\n` + (told ? `What you told me:\n${told.map((l) => '- ' + l).join('\n')}\n\n` : '') + `Sources:\n${ctx}` },
@@ -408,7 +408,7 @@ async function modelAnswer(request, env, waitUntil, t0, ask, masked, key, self, 
       const access = await paidAccess(env);
       const paid = access.model ? await tryPaid(access, 'free allowance out') : '';
       if (!paid) {
-        // no paid path: the open-web answer, as with the switch off (for an ask about Void: its facts)
+        // no paid path: the open-web answer, as with the switch off (for an ask about Verse: its facts)
         const web = self ? facts : told ? 'From what you told me:\n' + told.map((l) => '• ' + l).join('\n') : fromWeb(src);
         log({ model: null, outcome: outcome + '; model busy, open web' + (access.model ? '' : '; paid: ' + access.why), would: PAID_MODEL });
         if (!web) return Response.json({ answer: null, sources: [], note: 'nothing on the web', route: route.kind, ...nearOut });

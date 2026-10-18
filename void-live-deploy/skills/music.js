@@ -1,5 +1,5 @@
 /**
- * music skill - "make me a song", "make a beat", "a lullaby", "music for a rainy day": V01D composes an original short piece (owner, 2026-10-17:
+ * music skill - "make me a song", "make a beat", "a lullaby", "music for a rainy day": Verse composes an original short piece (owner, 2026-10-17:
  * "void should also learn how to make music"). The tempo, key, scale, chords, melody and drum pattern come from the mood word and a seed made of the
  * ask's own words (lib/compose.js), so the same ask gives the same piece; it is synthesised in the browser with Web Audio, no model, no sample, no
  * paid service. The card shows what was composed as a piano roll, plays and stops it, saves it as a WAV (OfflineAudioContext) and copies the notes.
@@ -10,7 +10,7 @@ import { compose, describe, notesText, renderWav, schedule, noteName } from '../
 
 const KINDS = '(?:song|songs|tune|beat|beats|lullaby|melody|jingle|music|soundtrack|ditty|loop)';
 const WHEN = new RegExp('^(?!.*\\b(?:list|lyrics|playlist|chords|sheet)\\b)(?:please\\s+|can you\\s+|could you\\s+|will you\\s+)?(?:(?:make|compose|write|create|generate|give|play|cook up)(?:\\s+(?:me|us))?\\s+(?:a\\s+|an\\s+|some\\s+|my\\s+|another\\s+|new\\s+)?(?:[a-z]+\\s+){0,3}?' + KINDS + '(?:\\s+(?:for|about|to|in|with)\\s+.{1,60})?|music\\s+for\\s+.{2,60}|(?:a|an)\\s+(?:[a-z]+\\s+){0,2}' + KINDS + '\\s+(?:for|about)\\s+.{2,60})\\s*[?.!]*$', 'i');
-// "play some music" and "play me a song" ask for a recording, not for V01D to compose one
+// "play some music" and "play me a song" ask for a recording, not for Verse to compose one
 const PLAY_ONLY = /^(?:please\s+)?play\b(?!.*\b(?:made|new|original)\b)/i;
 
 const esc2 = (s) => String(s == null ? '' : s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);

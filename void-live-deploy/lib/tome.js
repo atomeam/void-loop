@@ -1,4 +1,4 @@
-// The tome: the V01D Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
+// The tome: the Verse Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
 // make it like that ... its supposed to be the graphic style and visuals of the way they do books"). In Skyrim a book you pick
 // up fills the screen: the world dims behind it, a worn leather tome lies open on two parchment pages set in a serif with the
 // text of the book and nothing else (no menu, no tabs, no chrome), and your only controls are turning the page and closing it.
@@ -93,7 +93,7 @@ export const TOME_CSS = [
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
   '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
-].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Void)
+].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Verse)
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
@@ -101,7 +101,7 @@ const asks = (list, esc) => (list && list.length ? '<div class="tome-say">Say</d
 
 /** the contents page's list: every chapter with its first page; past ten chapters it sets tighter so the last still sits above the
  *  page number (the What's new chapter made it thirteen). Pure. */
-/** the parchment's tone from the Status card's last reading on this device (asked by Void: "a 'scented-parchment' CSS filter that subtly
+/** the parchment's tone from the Status card's last reading on this device (asked by Verse: "a 'scented-parchment' CSS filter that subtly
  *  shifts the color temperature of the tome based on the 'status' skill's current health"): warm sepia when all is well, cooler and greyer
  *  the more fails; '' (the parchment as drawn) with no reading or one over a day old. health: { failing, checked, at }. Pure. */
 export function parchmentFilter(health, now = Date.now()) {
@@ -134,7 +134,7 @@ export function pageHtml(p, book, esc) {
     return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
       + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>'
       + (p.core || []).map((c) => '<p class="tome-note"><b>' + esc(c.name) + '</b> · ' + esc(c.line) + '</p><ul class="tome-try gb-try">' + c.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>').join('')
-      // the store, named where a first visit reads (owner, 2026-10-18: the corner "support V01D" link is gone, "but make the store easy to find")
+      // the store, named where a first visit reads (owner, 2026-10-18: the corner "support Verse" link is gone, "but make the store easy to find")
       + '<p class="tome-note tome-store"><b>The store</b> · what Verse sells, and how to support it.</p><ul class="tome-try gb-try"><li><a href="#" data-ask="open the store">open the store</a></li><li><a href="#" data-ask="support void">support void</a></li></ul></div>';
   }
   if (p.kind === 'legend') {
@@ -153,7 +153,7 @@ export function pageHtml(p, book, esc) {
     return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
       + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
-  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Void): lib/rule-registry.js
+  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Verse): lib/rule-registry.js
   if (p.kind === 'index') {
     return '<div class="tome-kicker">Index</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><ul class="tome-list gb-list">' + (p.entries || []).map((e) => '<li>' + jump(e.page, e.name, esc) + '<span class="lead-dots"></span><span class="n">' + e.page + '</span></li>').join('') + '</ul></div>';
   }
@@ -195,7 +195,7 @@ export function backCoverHtml(book, esc) {
 }
 export function coverHtml(book, esc) {
   const t = book.totals || {};
-  // the cover carries V01D's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
+  // the cover carries Verse's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
   let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The Verse Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
   return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The Verse Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }

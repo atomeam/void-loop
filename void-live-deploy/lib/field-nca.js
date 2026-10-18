@@ -1,4 +1,4 @@
-// field-nca — V01D's neural cellular automata and living lattices, one pure law module for Grok's NCA/lattice drafts (asked by the
+// field-nca — Verse's neural cellular automata and living lattices, one pure law module for Grok's NCA/lattice drafts (asked by the
 // owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"). Each draft's law is a named VARIANT here, on one
 // state shape, so one card (skills/nca-mind.js on lib/field-stage.js) runs them all and one mind (evolveNca, in a Worker through
 // lib/field-worker.js or on the page) evolves them all:

@@ -1,10 +1,10 @@
 /**
- * service-health skill (asked by Void, 2026-10-16: "Create a 'Service Health' dashboard card that monitors the connectivity and response
+ * service-health skill (asked by Verse, 2026-10-16: "Create a 'Service Health' dashboard card that monitors the connectivity and response
  * speed of the new adapters (Waymo, Uber, Crypto, etc.) so I know w…"): "service health", "are the services up", "is uber down",
  * "is coingecko working", "check the adapters". One status-page card: every adapter in skills/providers.js and the public APIs the stage
  * calls (lib/service-health.js APIS), each with a dot (up, slow, down) and its response time, checked from this browser when the card
- * opens or "Check again" is tapped. No server, nothing kept. The law and the HTML are lib/service-health.js (pure, tested). V01D itself is
- * a service on the card too (asked by Void, 2026-10-18): a stability dial over incidents.json (how often the suite on main went red in 7
+ * opens or "Check again" is tapped. No server, nothing kept. The law and the HTML are lib/service-health.js (pure, tested). Verse itself is
+ * a service on the card too (asked by Verse, 2026-10-18): a stability dial over incidents.json (how often the suite on main went red in 7
  * days) that is redrawn on "Check again" and once a minute while the card is open, so it moves as incidents land or age out.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
@@ -33,7 +33,7 @@ function run(text, api) {
   });
   const out = el.querySelector('[data-sh-out]'), again = el.querySelector('[data-sh-again]'), dial = el.querySelector('[data-sh-gauge]');
   const still = () => !_pageStill || _pageStill(el);
-  // the dial: V01D's own suite, from incidents.json (the file is public and tiny; a failed read leaves the last reading up)
+  // the dial: Verse's own suite, from incidents.json (the file is public and tiny; a failed read leaves the last reading up)
   const gauge = () => fetch('/incidents.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && still()) { dial.innerHTML = gaugeHtml(esc, stabilityOf(j)); dial.dataset.reads = String((+dial.dataset.reads || 0) + 1); } }).catch(() => {}); // void-review: ok (gaugeHtml escapes every value)
   const go = () => {
     const results = new Array(services.length); again.disabled = true;

@@ -9,7 +9,7 @@
 ---
 # Domain: Neighborhood Street Days (private)
 
-**Status:** living brief — A-to-Mind does this; public Void never markets it.  
+**Status:** living brief — A-to-Mind does this; public Verse never markets it.  
 **Opened:** 2026-09-23  
 **Public face:** blank. No a-to-mind.com CTA or scoreboard for this Domain.
 
@@ -67,7 +67,7 @@ Start analog: Nextdoor, HOA newsletters, senior-center flyers, door hangers. For
 
 - **capacity-marketplace (ERCOT):** current **cash transaction** focus (program enrollment / settlement).
 - **Street Days:** parallel Domain; proves with paid Street Days, not homepage traffic.
-- Void / a-to-mind.com: capability stage only — never the marketing face for either.
+- Verse / a-to-mind.com: capability stage only — never the marketing face for either.
 
 ## Attempts
 

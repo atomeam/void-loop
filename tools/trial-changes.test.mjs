@@ -42,7 +42,7 @@ test('trial changes: one run reads the registry, writes a finding per change to 
   assert.equal(JSON.parse(readFileSync(ledger, 'utf8')).length, list.length, 'nothing written when the registry is down');
 });
 
-test('trial watch card: with the registry out of reach it shows the newer of this browser\'s last check and Void\'s own daily one (served at /trialwatch.json)', () => {
+test('trial watch card: with the registry out of reach it shows the newer of this browser\'s last check and Verse\'s own daily one (served at /trialwatch.json)', () => {
   const a = { at: '2026-10-10T06:41:00Z', rows: { NCT1: row() } }, b = { at: '2026-10-12T06:41:00Z', rows: { NCT1: row() } };
   assert.equal(newerSnap(a, b), b); assert.equal(newerSnap(b, a), b);
   assert.equal(newerSnap(null, b), b); assert.equal(newerSnap(a, null), a); assert.equal(newerSnap(null, null), null);

@@ -1,10 +1,10 @@
-// The router keeps corrections to V01D out of the look skill (asked by Void: its probe of "open the self card and tell void ... wrong" came within
+// The router keeps corrections to Verse out of the look skill (asked by Verse: its probe of "open the self card and tell void ... wrong" came within
 // 0.02 of look, which shares the word "void"). Run: node --test tools/router-self.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { SKILLS } from '../void-live-deploy/lib/router.js';
 const CORRECT = ['tell void what it got wrong', 'open your self card, I want to correct you', 'correct void on its self card',
-  // V01D's will, 2026-10-18, its top two wants: the look skill must never take these (people typed them and look answered)
+  // Verse's will, 2026-10-18, its top two wants: the look skill must never take these (people typed them and look answered)
   'open the self card and tell void what it got wrong', 'open the self card and tell Verse what it got wrong', 'show the self card and correct it'];
 test('corrections are examples of the self card and near misses of look, never the other way round', () => {
   for (const q of CORRECT) {

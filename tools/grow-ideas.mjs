@@ -1,4 +1,4 @@
-// The idea intake: add new Void asks to the open list on the frontier, the one build order (cleanup step 4, 2026-10-11).
+// The idea intake: add new Verse asks to the open list on the frontier, the one build order (cleanup step 4, 2026-10-11).
 // Ideas are plain asks a visitor might type. An ask already on the frontier, or already in the growth inbox's history
 // (shipped or listed there before 2026-10-11), is skipped. Nothing is ever removed.
 import { readFileSync, writeFileSync } from 'node:fs';

@@ -1,5 +1,5 @@
-# V01D's seeded automations (automations/*.json) put on the site through POST /api/automations (tools/automations-seed.mjs), so
-# every rule passes the engine's own checks. Owner, 2026-10-14: "make sure V01D has 10 new automations hourly so that it starts
+# Verse's seeded automations (automations/*.json) put on the site through POST /api/automations (tools/automations-seed.mjs), so
+# every rule passes the engine's own checks. Owner, 2026-10-14: "make sure Verse has 10 new automations hourly so that it starts
 # to really utilize all it can to progress". The same id replaces a rule, so a run changes nothing when nothing changed. The deploy
 # starts it after every main deploy (an automerge merge starts no push workflow), and it can be run by hand.
 # Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it the run says so and stops green.

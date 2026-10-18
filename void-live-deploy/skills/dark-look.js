@@ -13,9 +13,9 @@ export function darkOf(text) {
   const t = CLEAN(text);
   if (/^(?:please\s+)?dark$/.test(t)) return { theme: 'dark' };
   if (/^(?:please\s+)?dark look$/.test(t)) return { theme: 'dark' };
-  if (/^(?:please\s+)?make my void dark$/.test(t)) return { theme: 'dark' };
-  if (/^(?:please\s+)?switch (?:my void|the void) to dark$/.test(t)) return { theme: 'dark' };
-  if (/^(?:please\s+)?make the void dark$/.test(t)) return { theme: 'dark' };
+  if (/^(?:please\s+)?make my (?:verse|void) dark$/.test(t)) return { theme: 'dark' };
+  if (/^(?:please\s+)?switch (?:my (?:verse|void)|the (?:verse|void)) to dark$/.test(t)) return { theme: 'dark' };
+  if (/^(?:please\s+)?make the (?:verse|void) dark$/.test(t)) return { theme: 'dark' };
   return null;
 }
 

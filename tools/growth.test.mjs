@@ -7,7 +7,7 @@ import { entryProblem, ledgerProblems, appendTo, LEDGER } from './grow.mjs';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 
 test('"growth" and its plain phrasings summon the ledger; growth as a topic stays a topic', () => {
-  for (const t of ['growth', 'Growth', 'growth?', 'void growth', "Void's growth", 'show growth', 'show me the growth ledger', 'summon growth', 'how have you grown', 'how has void grown', "what's new with void", 'your growth'])
+  for (const t of ['growth', 'Growth', 'growth?', 'void growth', "Verse's growth", 'show growth', 'show me the growth ledger', 'summon growth', 'how have you grown', 'how has void grown', "what's new with void", 'your growth'])
     assert.ok(growthOf(t), t);
   for (const t of ['economic growth', 'growth rate of india', 'growth mindset', 'hair growth', 'what is growth', 'population growth', 'how do plants grow', 'growth hormone', 'grow a tree'])
     assert.equal(growthOf(t), false, t);
@@ -66,7 +66,7 @@ test('grow.mjs: entries are checked, appended one per line, and the real ledger 
   assert.ok(suite().ok);
 });
 
-test('velocity (asked by Void, 2026-10-12): new or better changes this week against the week before, and whether that is speeding up, steady, slowing or stalled', async () => {
+test('velocity (asked by Verse, 2026-10-12): new or better changes this week against the week before, and whether that is speeding up, steady, slowing or stalled', async () => {
   const { velocity, growthHead } = await import('../void-live-deploy/skills/growth.js');
   const now = Date.parse('2026-10-12T12:00:00Z'), d = (n, kind = 'grow') => ({ at: new Date(now - n * 864e5).toISOString(), kind, what: 'x' });
   assert.deepEqual(velocity([d(1), d(2), d(3, 'build'), d(9)], now), { week: 3, before: 1, trend: 'speeding up' });
@@ -77,7 +77,7 @@ test('velocity (asked by Void, 2026-10-12): new or better changes this week agai
   assert.match(growthHead(esc, [d(1), d(9)], now), /This week 1 new or better, the week before 1: steady/);
 });
 
-test('the Site Test card suggests what to test next: the lowest-rated skills, failing first, each with its own ask (asked by Void, 2026-10-17)', () => {
+test('the Site Test card suggests what to test next: the lowest-rated skills, failing first, each with its own ask (asked by Verse, 2026-10-17)', () => {
   const fam = { families: [
     { name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] },
     { name: 'Words and the world', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }, { name: 'poster', tier: 'tested' }, { name: 'quiet', tier: 'experiment' }] },
@@ -90,7 +90,7 @@ test('the Site Test card suggests what to test next: the lowest-rated skills, fa
   assert.deepEqual(testCandidates(null, null), []); assert.deepEqual(testCandidates(fam, null), []);
 });
 
-test('the Site Test heat map ranks families least stable first: failing skills, then unsure ones (tested, experiment or weathered) (asked by Void)', () => {
+test('the Site Test heat map ranks families least stable first: failing skills, then unsure ones (tested, experiment or weathered) (asked by Verse)', () => {
   const today = Date.parse('2026-10-17T12:00:00Z');
   const fam = { families: [
     { name: 'Body and mind', skills: [{ name: 'heart', tier: 'proven', last_tested: '2026-10-17' }, { name: 'sleep', tier: 'proven', last_tested: '2026-10-16' }] },
@@ -106,7 +106,7 @@ test('the Site Test heat map ranks families least stable first: failing skills, 
   assert.match(html, /data-family="&lt;b>x"/); assert.match(html, /1 failing · 0 of 2 unsure/); assert.equal(heatHtml(esc, []), '');
 });
 
-test('the stability trend: a point a day per family from void.better.json, today from families.json lowered by recent failures on main (asked by Void)', () => {
+test('the stability trend: a point a day per family from void.better.json, today from families.json lowered by recent failures on main (asked by Verse)', () => {
   const now = Date.parse('2026-10-17T20:00:00Z');
   const fam = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'timer', tier: 'proven' }, { name: 'clock', tier: 'proven' }] }, { id: 'words', name: 'Words <b>', skills: [{ name: 'define', tier: 'proven' }] }] };
   const rows = [{ at: '2026-10-15T09:00:00Z', families: [{ id: 'time', health: 70 }] }, { at: '2026-10-16T09:00:00Z', families: [{ id: 'time', health: 60 }, { id: 'words', health: 90 }] }, { at: '2026-10-16T18:00:00Z', families: [{ id: 'time', health: 80 }] }, { at: '2026-10-17T09:00:00Z', families: [{ id: 'time', health: 1 }] }];

@@ -1,4 +1,4 @@
-// V01D's world as an RTS (lib/rts.js, skills/rts.js, the villagers in skills/figures3d.js and skills/scripts.js). Run: node --test tools/rts.test.mjs
+// Verse's world as an RTS (lib/rts.js, skills/rts.js, the villagers in skills/figures3d.js and skills/scripts.js). Run: node --test tools/rts.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { yieldOf, canPay, pay, missing, stockLine, report, orderOf, BUILDS, fullStock } from '../void-live-deploy/lib/rts.js';

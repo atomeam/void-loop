@@ -7,10 +7,10 @@
 //                                  once the sale is trusted: with GUMROAD_ACCESS_TOKEN set, it's read back from Gumroad's API
 //                                  (view_sales); without a token, the ping itself is trusted only when it came with the right ?k=,
 //                                  carries Atom's seller_id (lib/gumroad.js SELLER_IDS), is for
-//                                  the membership that unlocks paid Void, and isn't a test ping
+//                                  the membership that unlocks paid Verse, and isn't a test ping
 //   refund, dispute, cancellation, subscription_ended          -> back to 'free' (found by subscription_id or sale_id)
 //   subscription_restarted, dispute_won                        -> 'paid' again, only for an account a verified sale already linked
-// Pings are unsigned, so the key in the URL is always required; one sale links to one Void only (void_accounts.sale_id is unique).
+// Pings are unsigned, so the key in the URL is always required; one sale links to one Verse only (void_accounts.sale_id is unique).
 // After each ping the running total is recomputed (lib/earnings.js) and any milestone crossed is recorded once (void_milestones).
 import { sameSecret } from '../../lib/guard.js';
 import { unlockFor, sellerMatches } from '../../lib/gumroad.js';
@@ -73,18 +73,18 @@ export async function onRequestPost({ request, env }) {
           await env.DB.prepare("INSERT INTO void_accounts (user_id, tier, sale_id, subscription_id, updated) VALUES (?, ?, ?, ?, ?) ON CONFLICT(user_id) DO UPDATE SET tier = excluded.tier, sale_id = excluded.sale_id, subscription_id = excluded.subscription_id, updated = excluded.updated")
             .bind(voidId, unlock.tier, p.sale_id, v.subscription_id, now).run();
           effect = 'tier ' + unlock.tier;
-        } catch (e) { effect = /UNIQUE|constraint/i.test(String(e && e.message)) ? 'sale already linked to another Void' : 'tier not set'; }
+        } catch (e) { effect = /UNIQUE|constraint/i.test(String(e && e.message)) ? 'sale already linked to another Verse' : 'tier not set'; }
       } else if (v.subscription_id) { // a renewal: the account this subscription already belongs to stays paid
         verified = 1;
         const u = await env.DB.prepare('UPDATE void_accounts SET tier = ?, updated = ? WHERE subscription_id = ? OR sale_id = ?').bind(unlock.tier, now, v.subscription_id, p.sale_id).run();
-        effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (renewal)' : 'verified, no Void id: link by hand';
-      } else { verified = 1; effect = 'verified, no Void id: link by hand'; }
+        effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (renewal)' : 'verified, no Verse id: link by hand';
+      } else { verified = 1; effect = 'verified, no Verse id: link by hand'; }
     } else if (unlock && (DOWN.includes(resource) || (resource === 'sale' && String(p.refunded) === 'true'))) {
       const u = await env.DB.prepare('UPDATE void_accounts SET tier = ?, updated = ? WHERE subscription_id = ? OR sale_id = ?').bind('free', now, p.subscription_id || '-', p.sale_id || '-').run();
-      effect = u.meta && u.meta.changes ? 'tier free (' + resource + ')' : resource + ': no linked Void';
+      effect = u.meta && u.meta.changes ? 'tier free (' + resource + ')' : resource + ': no linked Verse';
     } else if (unlock && UP_AGAIN.includes(resource)) {
       const u = await env.DB.prepare('UPDATE void_accounts SET tier = ?, updated = ? WHERE subscription_id = ? OR sale_id = ?').bind(unlock.tier, now, p.subscription_id || '-', p.sale_id || '-').run();
-      effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (' + resource + ')' : resource + ': no linked Void';
+      effect = u.meta && u.meta.changes ? 'tier ' + unlock.tier + ' (' + resource + ')' : resource + ': no linked Verse';
     }
     await env.DB.prepare('UPDATE void_sales SET verified = ?, effect = ?, void_id = ? WHERE id = ?').bind(verified, effect, voidId, id).run();
     // a service sale becomes work on the board (lib/sale-jobs.js): one record, one job, keyed on the sale id. Its

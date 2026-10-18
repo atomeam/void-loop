@@ -1,4 +1,4 @@
-// wordMath in parts (asked by Void): the parts run in order, each answers its own asks, and the whole still gives every golden answer.
+// wordMath in parts (asked by Verse): the parts run in order, each answers its own asks, and the whole still gives every golden answer.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

@@ -1,4 +1,4 @@
-// V01D's video skill (skills/video.js, lib/video.js, functions/api/video.js): links from every platform become official embeds,
+// Verse's video skill (skills/video.js, lib/video.js, functions/api/video.js): links from every platform become official embeds,
 // the asks route, the watch tools parse, and the search route keeps to fixed hosts and needs no KV or model. Run: node --test tools/video.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

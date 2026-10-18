@@ -1,5 +1,5 @@
 /**
- * void miniature — Void's own body, shown only where Void shows itself (its self page). Not a creature and not a symbol:
+ * void miniature — Verse's own body, shown only where Verse shows itself (its self page). Not a creature and not a symbol:
  * a fractured, angular solid of dark graphite shards around an empty core, read by silhouette and negative space.
  * The Sculpt Layer, as rules the code keeps: no face, no symmetry, no organic curves (every surface is a flat facet),
  * no softness, no implied emotion, gender or species. The shape comes from one fixed seed, so it is the same entity on
@@ -55,7 +55,7 @@ export default function build(ctx, data) {
     shard.position.copy(dir).multiplyScalar(s.dist);
     form.add(shard); shards.push({ shard, dir, dist: s.dist, phase: s.phase });
   }
-  ctx.frame(root, { view: [0.35, 0.12, 1], pad: 0.78, light: [-0.6, 1.2, 0.5], ground: 'none' }); // it floats: Void is not a physical object
+  ctx.frame(root, { view: [0.35, 0.12, 1], pad: 0.78, light: [-0.6, 1.2, 0.5], ground: 'none' }); // it floats: Verse is not a physical object
 
   const energy = Math.max(0, Math.min(1, data.energy ?? 0.35));
   let burst = 0; // 0..1 after a tap: the shards fly out, then settle back

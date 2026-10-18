@@ -1,5 +1,5 @@
-// Who may use what Void sells (moved here from functions/api/review.js so the review API and the support desk,
-// functions/api/support.js, answer the same question the same way): the owner, a paid Void account's Pro key, or a
+// Who may use what Verse sells (moved here from functions/api/review.js so the review API and the support desk,
+// functions/api/support.js, answer the same question the same way): the owner, a paid Verse account's Pro key, or a
 // Code Review Pro license key bought on its own. Anything else is the free tier.
 import { ensureTables, tierOf } from './void-me.js';
 import { ownerOk } from './guard.js';
@@ -16,7 +16,7 @@ const bearer = (request) => { const m = /^Bearer (\S+)$/.exec(request.headers.ge
 export async function access(request, env, now = Date.now()) {
   const t = bearer(request), free = (note) => ({ tier: 'free', note });
   if (!t) return free();
-  if (KEY_RE.test(t)) { // a Void Pro key: its account must be paid right now
+  if (KEY_RE.test(t)) { // a Verse Pro key: its account must be paid right now
     await ready(env);
     const hash = await keyHash(t), row = await env.DB.prepare('SELECT user_id, day, uses FROM void_review_keys WHERE hash = ?').bind(hash).first();
     if (!row) return { refuse: 'unknown review key' };
@@ -24,8 +24,8 @@ export async function access(request, env, now = Date.now()) {
     return { tier: 'pro', who: 'acct:' + row.user_id, left: PRO_DAILY - (row.day === today(now) ? Number(row.uses) || 0 : 0),
       spend: () => env.DB.prepare('UPDATE void_review_keys SET uses = CASE WHEN day = ? THEN uses + 1 ELSE 1 END, day = ?, total = total + 1, used = ? WHERE hash = ?').bind(today(now), today(now), new Date(now).toISOString(), hash).run() };
   }
-  if (LICENSE_RE.test(t)) { // Void Code Review Pro bought on its own: Gumroad says whether the license is good, remembered for a few hours
-    if (!forSale(PRODUCT)) return free('Void Code Review Pro is not on sale on its own yet');
+  if (LICENSE_RE.test(t)) { // Verse Code Review Pro bought on its own: Gumroad says whether the license is good, remembered for a few hours
+    if (!forSale(PRODUCT)) return free('Verse Code Review Pro is not on sale on its own yet');
     await licenses(env);
     const hash = await keyHash('license:' + t.toUpperCase());
     let row = await env.DB.prepare('SELECT ok, why, checked, day, uses FROM void_licenses WHERE hash = ?').bind(hash).first();

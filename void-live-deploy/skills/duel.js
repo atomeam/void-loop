@@ -1,7 +1,7 @@
 /**
- * duel skill: the V01D card game (frontier #33, steps 1 and 2). "duel", "play cards", "card duel", "play the card game" put a table on the stage:
- * your Root against V01D's, V01D cards (lib/card-frame.js) with their arrows, the Treasury and the turn in view. "summon <idea>" and
- * "attack <card> with <card>" play on a duel that is already there. All rules, and V01D's side, are lib/duel-rules.js (pure, no dice, no hidden hand).
+ * duel skill: the Verse card game (frontier #33, steps 1 and 2). "duel", "play cards", "card duel", "play the card game" put a table on the stage:
+ * your Root against Verse's, Verse cards (lib/card-frame.js) with their arrows, the Treasury and the turn in view. "summon <idea>" and
+ * "attack <card> with <card>" play on a duel that is already there. All rules, and Verse's side, are lib/duel-rules.js (pure, no dice, no hidden hand).
  * A real skill's name summons the card it has earned (statsFor); any other idea is a fresh card (1 / 1 / 0, cost 1).
  */
 import * as D from '../lib/duel-rules.js';
@@ -10,7 +10,7 @@ import { gamesOf, playTurns, playLines } from '../lib/rules-play.js';
 
 export function duelOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play\s+)?(?:a\s+)?(?:(?:card\s+)?duel|cards|the card game|(?:a\s+)?card game)(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(l) || /^play (?:a )?(?:card duel|cards|the card game)$/.test(l)) return { kind: 'open' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play\s+)?(?:a\s+)?(?:(?:card\s+)?duel|cards|the card game|(?:a\s+)?card game)(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(l) || /^play (?:a )?(?:card duel|cards|the card game)$/.test(l)) return { kind: 'open' };
   const games = gamesOf(t); if (games) return { kind: 'rules', games };
   let m = /^summon (.{1,40})$/i.exec(t); if (m) return { kind: 'summon', idea: m[1] };
   m = /^attack (.{1,40}?) with (.{1,40})$/i.exec(t); if (m) return { kind: 'attack', target: m[1], mine: m[2] };
@@ -64,7 +64,7 @@ function mount(th, stageApi) {
   for (const b of el.querySelectorAll('button,input')) b.addEventListener('pointerdown', (e) => e.stopPropagation());
   const fam = () => stats && stats.fam, deps = () => stats && stats.deps;
   const defOf = (name) => D.statsFor(name, fam(), deps());
-  function seedPool() { // V01D summons from what the site has proved most: the skills whose card has earned more than a fresh one
+  function seedPool() { // Verse summons from what the site has proved most: the skills whose card has earned more than a fresh one
     if (!stats || !stats.fam || th.state.pool.void.length) return;
     const names = []; for (const f of stats.fam.families || []) for (const s of f.skills || []) names.push(s.name);
     const earned = names.map(defOf).filter((c) => c.power > 1 || c.resistance > 1).sort((a, b) => (b.power + b.resistance) - (a.power + a.resistance) || (a.name < b.name ? -1 : 1));
@@ -86,7 +86,7 @@ function mount(th, stageApi) {
     }
     for (const b of el.querySelectorAll('.d-ctl button,.d-ctl input')) b.disabled = !mineTurn && !b.classList.contains('d-new');
     panel.hidden = true; panel.textContent = '';
-    if (pending) { // V01D attacks: you answer with coins
+    if (pending) { // Verse attacks: you answer with coins
       const a = s.cards.find((c) => c.id === pending.from), t = s.cards.find((c) => c.id === pending.target), cap = Math.min(s.treasury.you, 8);
       panel.hidden = false; panel.innerHTML = '<div>Verse attacks <b>' + esc(t.name) + '</b> with <b>' + esc(a.name) + '</b>' + (pending.pledge ? ' and pledges ' + pending.pledge : '') + '. Its total: <b>' + (a.power + D.support(s, a) + pending.pledge) + '</b>, yours: <b>' + (t.resistance + D.support(s, t)) + '</b> + the coins you answer with.</div>';
       for (let n = 0; n <= cap; n++) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn d-answer'; b.textContent = 'Answer ' + n; b.dataset.n = n; b.addEventListener('click', (e) => { e.stopPropagation(); const p = pending; pending = null; step({ ...p, answer: n }); }); panel.appendChild(b); }
@@ -108,7 +108,7 @@ function mount(th, stageApi) {
     log.textContent = s.log.slice(-3).reverse().join(' · ');
     if (s.over) { const w = document.createElement('div'); w.className = 'd-win'; w.textContent = s.over.winner === 'draw' ? 'A draw: level on Power after ' + D.TURNS + ' turns.' : s.over.winner === 'you' ? 'You win' + (s.over.why === 'root' ? ': Verse’s Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.you + ' to ' + s.over.void + ').') : 'Verse wins' + (s.over.why === 'root' ? ': your Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.void + ' to ' + s.over.you + ').'); panel.hidden = false; panel.textContent = ''; panel.appendChild(w); }
   }
-  function step(action) { // one action by whoever is to move; V01D answers when it is its turn
+  function step(action) { // one action by whoever is to move; Verse answers when it is its turn
     try { th.state = D.apply(th.state, action); } catch (e) { log.textContent = String(e.message); return paint(); }
     mode = null; mine = theirs = slot = null; pledge = 0; input.value = ''; save(); paint(); voidPlays();
   }

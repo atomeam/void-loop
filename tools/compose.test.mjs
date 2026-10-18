@@ -1,4 +1,4 @@
-// V01D's music (lib/compose.js, skills/music.js). Run: node --test tools/compose.test.mjs
+// Verse's music (lib/compose.js, skills/music.js). Run: node --test tools/compose.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { compose, describe, notesText, wavBytes, schedule, moodOf, SCALES, hz } from '../void-live-deploy/lib/compose.js';

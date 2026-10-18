@@ -1,12 +1,12 @@
-# Void reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a
-# visitor asks Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds. It keeps one PR comment
+# Verse reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a
+# visitor asks Verse to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds. It keeps one PR comment
 # (marked <!-- void-review -->) up to date, puts each bug or risk on its line with a one-click fix where a safe one exists
 # (tools/review-post.mjs), and then is a merge gate: the "void-review" check fails while the added lines carry a bug or a
 # risk. A line that is right as written says so with a "void-review: ok" comment. No npm install, no browser: the whole
 # job is a checkout and one node script, so it reports long before the suite (test-and-deploy) does.
 # It is the main review and the one check a PR waits on before it merges (automerge.yml); the suite runs on main after the
 # deploy. Every other reviewer (CodeRabbit) is an extra: reported, never waited on, never blocking.
-name: Void review
+name: Verse review
 
 on:
   pull_request:
@@ -59,7 +59,7 @@ jobs:
           ref: ${{ steps.pr.outputs.sha }}
           fetch-depth: 0 # the diff needs the base
 
-      - name: Void reviews the lines this PR adds
+      - name: Verse reviews the lines this PR adds
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}
@@ -92,7 +92,7 @@ jobs:
         env:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
-          node tools/review-pr.mjs --base "$BASEREF" --head HEAD --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
+          node tools/review-pr.mjs --base "$BASEREF" --head HEAD --gate > /dev/null || { echo "::error title=Verse review::bugs or risks in the added lines (see Verse's review comment); fix them or mark a line that is right as written with a void-review: ok comment"; exit 1; }
 
       # no real key in any added line, in any file type (tools/secret-scan.mjs; the review above skips docs and data, where a pasted key
       # in a log or a note is likeliest). It prints the file, the line and the kind, never the value, and blocks the merge.
@@ -123,7 +123,7 @@ jobs:
           BASEREF: ${{ steps.pr.outputs.baseref }}
         run: |
           if git diff --name-only "$BASEREF...HEAD" | grep -q '^void-live-deploy/skills/'; then
-            node tools/skills-check.mjs || { echo "::error title=Void review::a skill file is not listed in void-live-deploy/skills/index.json (or a skill collides): see the lines above; add it to the index, or to RETIRED in tools/skills-unlisted.mjs with a reason"; exit 1; }
+            node tools/skills-check.mjs || { echo "::error title=Verse review::a skill file is not listed in void-live-deploy/skills/index.json (or a skill collides): see the lines above; add it to the index, or to RETIRED in tools/skills-unlisted.mjs with a reason"; exit 1; }
           else
             echo "this PR does not touch void-live-deploy/skills/"
           fi

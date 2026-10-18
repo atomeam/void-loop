@@ -31,8 +31,8 @@ export const GATED = {
   'booking.make': { rule: 'book.booking', kind: 'book', service: 'booking', board: 'make a booking' },
   'order.place': { rule: 'spend.order', kind: 'spend', service: 'shopping', board: 'buy something' },
   'payment.send': { rule: 'spend.payment', kind: 'spend', service: 'payments', board: 'pay someone' },
-  // A standing spend on a stronger model, paid only from what Void earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
-  'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Void pay for a stronger model' },
+  // A standing spend on a stronger model, paid only from what Verse earned (STANDING.md; lib/router.js). The newest one wins; $0 stops it.
+  'models.spend': { rule: 'spend.models', kind: 'spend', service: 'model spending', board: 'let Verse pay for a stronger model' },
   // Phone push is not connected. The ask still stops on the confirm line; no executor, so a yes does not send.
   'reminder.ping': { rule: 'send.reminder', kind: 'send', service: 'reminders', board: 'remind me' },
   // Build-queue handoff to a2m-bridge (tools/dispatcher.mjs). Not a spend: hands a task title to the bridge after the owner yes.
@@ -81,12 +81,12 @@ export function confirmLine(toolName, args) {
     case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
-    case 'order.place': { // a spend proposal from V01D's own money (lib/reinvest.js) also says what it should pay back, and by when
+    case 'order.place': { // a spend proposal from Verse's own money (lib/reinvest.js) also says what it should pay back, and by when
       const back = a.payback ? ` Expected payback: ${a.payback}${a.by ? ', checked by ' + a.by : ''}.` : '';
       return (cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`) + back;
     }
     case 'payment.send': return `Pay ${a.to} ${cost}?`;
-    case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Void spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Void paying for a stronger model?';
+    case 'models.spend': return a.cost && a.cost.amount > 0 ? `Let Verse spend up to ${cost} a ${a.per || 'month'} of what it earned on a stronger model?` : 'Stop Verse paying for a stronger model?';
     case 'reminder.ping': return `Remind you at ${a.when}${a.what ? ' to ' + a.what : ''}?`;
     case 'automation.keep': return keepLine(a);
     case 'bridge.task': return a.title ? `Hand build task “${a.title}” to the bridge?` : 'Hand this build task to the bridge?';
@@ -131,7 +131,7 @@ export function parseGatedAsk(text) {
       || (m = s.match(/^e-?mail\s+(.+?)(?:\s+(?:saying|that says|to say|about|with)\s+(.+))?$/i))) {
     return { toolName: 'email.send', args: { to: clip(m[1], 120), body: clip(m[2], 2000) } };
   }
-  // "let Void spend up to $5 a month on a stronger model" / "let Void pay for a stronger model up to $5 a month" / "stop paying for stronger models"
+  // "let Verse spend up to $5 a month on a stronger model" / "let Verse pay for a stronger model up to $5 a month" / "stop paying for stronger models"
   const MODELS = '(?:a\\s+)?(?:stronger|better|smarter|paid)\\s+(?:ai\\s+)?models?';
   const EARNED = '(?:\\s+(?:from|out of)\\s+(?:what\\s+(?:it|you)(?:\\s+ha(?:s|ve))?\\s+earned|(?:its|your)\\s+earnings))?';
   if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))

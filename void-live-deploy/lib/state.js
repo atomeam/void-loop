@@ -1,5 +1,5 @@
-// state — the one list of what V01D keeps on this device (asked by Void, 2026-10-16: "Connect the memory card session
-// persistence to a centralized 'state' skill"). Every browser-storage key V01D uses is named here once, with what it holds and
+// state — the one list of what Verse keeps on this device (asked by Verse, 2026-10-16: "Connect the memory card session
+// persistence to a centralized 'state' skill"). Every browser-storage key Verse uses is named here once, with what it holds and
 // whether it is secret; the memory card reads its session through sessionToken() instead of keeping its own copy of the
 // key names, and the state skill (skills/state.js) shows the list. A secret is shown as "kept" or "not kept", never its value.
 // Pure over the storage handed in (default localStorage), so a test can pass a stand-in.

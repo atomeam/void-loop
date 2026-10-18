@@ -70,7 +70,7 @@ async function main(cmd, a) {
     const urls = new Set();
     for (const f of ['void-live-deploy/sitemap.xml', 'void-live-deploy/llms.txt']) for (const m of fs.readFileSync(path.join(root, f), 'utf8').matchAll(/https?:\/\/[^\s<>"')\]]+/g)) urls.add(m[0].replace(/[.,]$/, ''));
     const codes = await Promise.all([...urls].map(async (u) => { // all links at once, one timeout each
-      try { return [u, (await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'V01D-linkcheck' } })).status]; } catch (_) { return [u, 0]; }
+      try { return [u, (await fetch(u, { method: 'GET', redirect: 'follow', signal: AbortSignal.timeout(10000), headers: { 'user-agent': 'Verse-linkcheck' } })).status]; } catch (_) { return [u, 0]; }
     }));
     let bad = 0;
     for (const [u, s] of codes) if (!(s >= 200 && s < 400) && ![401, 403, 405, 429].includes(s)) { bad++; console.log(`::warning title=Dead link::${u} answered ${s || 'nothing'}`); }

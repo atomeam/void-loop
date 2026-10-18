@@ -1,19 +1,19 @@
 /**
- * zorbleflux skill - V01D's own game (asked by Void: it was asked "what is a zorbleflux" 154 times and could only refuse; the owner,
+ * zorbleflux skill - Verse's own game (asked by Verse: it was asked "what is a zorbleflux" 154 times and could only refuse; the owner,
  * 2026-10-18: "we should just have a zorbleflux game"). Pilot a glowing zorb through a flux field for 45 seconds: collect motes to
  * grow, dodge the dark bleeds. Pointer, touch drag or arrow keys/WASD. The pure game is lib/zorbleflux.js; the best score stays in
  * this browser only (localStorage), nothing is sent. Reduced motion: the field drifts at 40% speed and nothing glows or flashes.
  */
 import * as Z from '../lib/zorbleflux.js';
 import { arcadeCard } from './arcade-card.js';
-import { motionThrottle } from '../lib/motion-throttle.js'; // asked by Void: the field slows while someone types in another card
+import { motionThrottle } from '../lib/motion-throttle.js'; // asked by Verse: the field slows while someone types in another card
 
 const BEST_KEY = 'void-zorbleflux-best';
 /** { kind: 'game' | 'about' } for "zorbleflux" asks, else null. Bare "zorb", "flux capacitor" and "what is flux" are other asks. Pure. */
 export function zorbleOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^(?:what\s+(?:is|are)|what'?s|whats|tell me about|explain|define)\s+(?:a\s+|an\s+|the\s+)?zorbleflux(?:\s+game)?$/.test(t)) return { kind: 'about' };
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+|the\s+)?(?:game\s+of\s+)?(?:void\s+|v01d\s+)?zorbleflux(?:\s+game)?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+|the\s+)?(?:game\s+of\s+)?(?:void\s+|(?:verse|v01d)\s+)?zorbleflux(?:\s+game)?$/.test(t)) return { kind: 'game' };
   return null;
 }
 const bestGet = () => { try { return Z.parseBest(localStorage.getItem(BEST_KEY)); } catch (e) { return 0; } };

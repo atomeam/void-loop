@@ -1,14 +1,14 @@
 /**
- * merges skill — the merge log (asked by Void, ask-20261015-1610-2: "a 'merge-log' card on the stage that shows a live feed of what
+ * merges skill — the merge log (asked by Verse, ask-20261015-1610-2: "a 'merge-log' card on the stage that shows a live feed of what
  * the bot just merged and why"). "what did you merge", "merge log", "what merged lately": the newest pull requests merged into
  * atomeam/void-loop, read from GitHub's public API (the repo is public, so anyone may look): number, title, when, and how it got
- * in (automerge, made by V01D, or by hand). The card keeps itself live (skills/live.js, every 5 minutes) while it is up.
+ * in (automerge, made by Verse, or by hand). The card keeps itself live (skills/live.js, every 5 minutes) while it is up.
  * Nothing about the visitor is sent; GitHub sees one anonymous request.
  */
 import { keepLive } from './live.js';
 
 export const REPO = 'atomeam/void-loop', EVERY = 5 * 60e3, SHOW = 10;
-const ASK = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:merge\s+log|merge\s+feed|recent\s+merges|latest\s+merges)$|^what\s+(?:did\s+(?:you|the\s+bot|v01d)|got|has\s+been|was)\s+merged?(?:\s+(?:today|lately|recently|this\s+week))?$|^what\s+merged(?:\s+(?:today|lately|recently|this\s+week))?$/;
+const ASK = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:merge\s+log|merge\s+feed|recent\s+merges|latest\s+merges)$|^what\s+(?:did\s+(?:you|the\s+bot|(?:verse|v01d))|got|has\s+been|was)\s+merged?(?:\s+(?:today|lately|recently|this\s+week))?$|^what\s+merged(?:\s+(?:today|lately|recently|this\s+week))?$/;
 
 export function mergesAsk(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -21,7 +21,7 @@ export function mergedOf(prs, n = SHOW) {
     .sort((a, b) => String(b.merged_at).localeCompare(String(a.merged_at))).slice(0, n)
     .map((p) => { const labels = (p.labels || []).map((l) => (l && l.name) || '');
       return { number: p.number, title: String(p.title || '').slice(0, 160), at: String(p.merged_at).slice(0, 16).replace('T', ' '), url: /^https:\/\/github\.com\//.test(String(p.html_url || '')) ? p.html_url : 'https://github.com/' + REPO + '/pull/' + p.number,
-        how: labels.includes('made by V01D') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Void\'s review' : 'merged by hand' }; });
+        how: labels.includes('made by Verse') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Verse\'s review' : 'merged by hand' }; });
 }
 
 /** the card's list. Pure. */
@@ -39,7 +39,7 @@ async function run(text, api) {
       const rows = mergedOf(await r.json());
       if (!el.isConnected) return;
       el.querySelector('.sub').textContent = 'the newest pull requests merged into ' + REPO + ', and how each got in';
-      body.innerHTML = mergesHtml(esc, rows) + '<div class="src">Source: <a href="https://github.com/' + REPO + '/pulls?q=is%3Apr+is%3Amerged" target="_blank" rel="noopener">GitHub</a> · a bot merges a labelled pull request once the suite and Void\'s review pass; verify.yml takes back what breaks main.</div>';
+      body.innerHTML = mergesHtml(esc, rows) + '<div class="src">Source: <a href="https://github.com/' + REPO + '/pulls?q=is%3Apr+is%3Amerged" target="_blank" rel="noopener">GitHub</a> · a bot merges a labelled pull request once the suite and Verse\'s review pass; verify.yml takes back what breaks main.</div>';
     } catch (_) { if (el.isConnected) body.innerHTML = '<p>GitHub did not answer just now. Ask again in a moment.</p>'; }
   };
   await read();

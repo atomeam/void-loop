@@ -1,4 +1,4 @@
-// The tester-log (asked by Void, ask-20261015-0616-1: "Integrate the Site tester's output into a "tester-log" on the
+// The tester-log (asked by Verse, ask-20261015-0616-1: "Integrate the Site tester's output into a "tester-log" on the
 // stage so I can see exactly what is being tested"). tools/site-test.mjs keeps its run log in tools/site-test.log.json; this
 // writes the public view the growth card reads, void-live-deploy/tester-log.json: the newest runs (what passed, what each improved)
 // and the suite's size. Only tester-made wordings ever reach the log (never a visitor's words), so it is safe to serve.
@@ -16,7 +16,7 @@ export function summarize(log = [], suite = [], n = 20, seen = {}) {
   const runs = (Array.isArray(log) ? log : []).filter((r) => r && r.at).slice(-n).reverse()
     .map((r) => ({ at: r.at, passed: r.passed | 0, of: r.of | 0, kind: String(r.kind || ''), note: String(r.note || '').slice(0, 200) }));
   const kinds = {}; for (const r of log || []) if (r && r.kind) kinds[r.kind] = (kinds[r.kind] || 0) + 1;
-  return { note: 'V01D\'s site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).', cases: Array.isArray(suite) ? suite.length : (suite && suite.cases ? suite.cases.length : 0), runsTotal: (log || []).length, kinds, runs, seen: Object.fromEntries(Object.entries((seen && seen.features) || {}).filter(([k]) => /^(?:skill|page):[a-z0-9/-]+$/.test(k))) };
+  return { note: 'Verse\'s site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).', cases: Array.isArray(suite) ? suite.length : (suite && suite.cases ? suite.cases.length : 0), runsTotal: (log || []).length, kinds, runs, seen: Object.fromEntries(Object.entries((seen && seen.features) || {}).filter(([k]) => /^(?:skill|page):[a-z0-9/-]+$/.test(k))) };
 }
 const read = (p, d) => { try { return JSON.parse(readFileSync(resolve(root, p), 'utf8')); } catch (_) { return d; } };
 

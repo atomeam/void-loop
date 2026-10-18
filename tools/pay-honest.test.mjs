@@ -1,4 +1,4 @@
-// node --test tools/pay-honest.test.mjs: asked how to test payments, V01D once invented providers, fee scores and live features.
+// node --test tools/pay-honest.test.mjs: asked how to test payments, Verse once invented providers, fee scores and live features.
 // Payment asks now get verified facts only (no model), and every model answer carries the no-invention rule.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

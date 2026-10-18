@@ -12,7 +12,7 @@ import { add as recordPrint } from '../lib/prints.js';
 import * as Makes from '../lib/forge-makes.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
-/** What V01D's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
+/** What Verse's probes asked the forge for, each with its status in the forge now (asked by Verse, ask-20261015-2045-2: the probe
  *  output linked to the frontier #14 tracker): 'made' when a recipe answers that name today (with its key), else 'wanted'. Pure. */
 export function wantsStatus(wants) {
   return (Array.isArray(wants) ? wants : []).filter((w) => w && typeof w.thing === 'string').map((w) => {
@@ -28,7 +28,7 @@ const MAKE = new RegExp('^(?:please\\s+)?(?:(?:can|could)\\s+you\\s+)?(?:make|bu
 const PRINT = /^(?:please\s+)?(?:print\s+(?:it|this|that)|3d[\s-]?print\s+(?:it|this|that)|download\s+(?:the|its|an?)\s+stl|(?:give\s+me\s+|export\s+)?(?:the\s+|an?\s+)?stl(?:\s+file)?(?:\s+(?:of|for)\s+(?:it|this|that))?|save\s+(?:it|this)\s+as\s+(?:an?\s+)?stl)(?:\s+please)?$/;
 
 const LIST = /^(?:(?:show|open)\s+(?:me\s+)?)?(?:the\s+)?(?:forge\s+(?:history|gallery|recipes?|catalog(?:ue)?)|what\s+can\s+you\s+(?:(?:make|forge)(?:\s+(?:for\s+)?me)?|3d\s+print\s+(?:for\s+)?me)|what\s+(?:things\s+)?(?:can|do)\s+you\s+(?:forge|make\s+in\s+3d)|(?:my|your)\s+forge)$/;
-// "check it before printing" / "verify the vase": the geometry check without the download (asked by Void: forge to print-file link); "forge iterations": every make kept (recipe versioning)
+// "check it before printing" / "verify the vase": the geometry check without the download (asked by Verse: forge to print-file link); "forge iterations": every make kept (recipe versioning)
 const VERIFY = new RegExp('^(?:please\\s+)?(?:(?:check|verify|inspect|test)\\s+(?:the\\s+|my\\s+)?(?:geometry\\s+of\\s+(?:the\\s+|my\\s+)?)?(' + NAMES + '|it|this|that)(?:\\s+(?:before\\s+(?:i\\s+)?print(?:ing)?(?:\\s+it)?|geometry))?|(?:check|verify)\\s+(?:it|this|that)\\s+before\\s+(?:i\\s+)?print(?:ing)?(?:\\s+it)?|is\\s+(?:it|this|that)\\s+(?:ready|safe)\\s+to\\s+print)$');
 const ITER = /^(?:show\s+(?:me\s+)?)?(?:the\s+|my\s+)?(?:forge\s+(?:iterations?|makes|versions|log)|recipe\s+(?:versions|iterations))$/;
 /** what the ask means: null, { make: key }, { print: true } or { list: true } (the forge history: every recipe and what stands on the stage) */
@@ -44,7 +44,7 @@ export function forgeOf(text) {
   return null;
 }
 
-export const fileName = (key) => 'void-' + key + (F.recipeId(key) ? '-' + F.recipeId(key) : '') + '.stl'; // the recipe's id rides in the file name (asked by Void: recipe versioning)
+export const fileName = (key) => 'void-' + key + (F.recipeId(key) ? '-' + F.recipeId(key) : '') + '.stl'; // the recipe's id rides in the file name (asked by Verse: recipe versioning)
 const dims = (s) => s.map((v) => Math.round(v)).join(' × ') + ' mm';
 
 /** the flat fallback: the same mesh, shaded and drawn back to front, turned about its upright axis */
@@ -127,15 +127,15 @@ async function run(text, api) {
   const q = forgeOf(text);
   if (!q) return 'none';
   const forged = Object.values(api.stage.things()).filter((t) => t.kind === 'forge');
-  if (q.list) { // forge history (asked by Void twice): the recipes it can make, each with its size and print notes, and the ones standing on the stage now
-    const { showPage, esc } = api, onStage = new Map(), askedOf = new Map(); for (const t of forged) { onStage.set(t.key, (onStage.get(t.key) || 0) + 1); if (t.ask) askedOf.set(t.key, t.ask); } // the ask behind a recipe on the stage is kept on its thing (asked by Void: recipe versioning)
+  if (q.list) { // forge history (asked by Verse twice): the recipes it can make, each with its size and print notes, and the ones standing on the stage now
+    const { showPage, esc } = api, onStage = new Map(), askedOf = new Map(); for (const t of forged) { onStage.set(t.key, (onStage.get(t.key) || 0) + 1); if (t.ask) askedOf.set(t.key, t.ask); } // the ask behind a recipe on the stage is kept on its thing (asked by Verse: recipe versioning)
     const el = showPage((p) => {
       p.innerHTML = '<h2>Forge history</h2><div class="sub">' + Object.keys(F.THINGS).length + ' recipes, one mesh each: what you spin is what prints. ' + (forged.length ? forged.length + ' on the stage now.' : 'Nothing forged on this stage yet.') + '</div>'
         + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (F.THINGS[key].figure ? ' · <span class="sub">a figure as a recipe</span>' : '') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + (askedOf.get(key) ? ' · <span class="sub">asked "' + esc(askedOf.get(key)) + '"</span>' : '') + '</li>'; }).join('') + '</ul>'
         + '<div data-forge-tracker></div>'
         + '<div class="src">Recipes from skills/forge-rules.js; what Verse\'s probes asked the forge for (frontier #14) is read from its probe ledger, each marked made or not made yet.</div>';
     });
-    // the frontier #14 tracker (asked by Void): the probe ledger's forge wants, each with its status in the forge today
+    // the frontier #14 tracker (asked by Verse): the probe ledger's forge wants, each with its status in the forge today
     try {
       const r = await fetch('/api/probe-log'), j = r.ok ? await r.json() : null, rows = wantsStatus(j && j.stats && j.stats.forge);
       const slot = el && el.querySelector ? el.querySelector('[data-forge-tracker]') : (typeof document !== 'undefined' ? document.querySelector('.vpage.on [data-forge-tracker]') : null);
@@ -148,7 +148,7 @@ async function run(text, api) {
     api.showPage((p) => { p.innerHTML = Makes.iterationsHtml(api.esc, rows); }); // void-review: ok: iterationsHtml escapes every value
     return 'forge';
   }
-  if (q.verify) { // the check "print it" runs, without the download (asked by Void)
+  if (q.verify) { // the check "print it" runs, without the download (asked by Verse)
     const sel = api.stage.selected && api.stage.selected(), th = forged.find((t) => t.id === sel) || forged[forged.length - 1], key = q.verify === true ? (th && th.key) : q.verify;
     if (!key) { api.say('Nothing forged to check yet · say "make me a vase", then "check it before printing"'); return 'forge'; }
     const m = F.build(key), v = F.verifyStl(F.stl(m), m), pc = F.printCheck(m);

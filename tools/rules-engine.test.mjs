@@ -1,4 +1,4 @@
-// V01D's rules engine (frontier #35): rules are data, the engine is pure, clashes are settled in a fixed order and written in plain words.
+// Verse's rules engine (frontier #35): rules are data, the engine is pure, clashes are settled in a fixed order and written in plain words.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

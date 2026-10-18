@@ -48,12 +48,12 @@ const sample = () => {
     timer: "/**\n * timer skill — countdowns on the stage.\n */\nexport default { examples: ['set a timer for 5 minutes', 'make a timer', 'pause', 'resume'] }",
     clock: "/**\n * clock skill — the clock on the stage: \"make a clock\".\n */\nexport default { examples: [] }",
     chess: "/**\n * chess skill — a real wooden chess set.\n */\nexport default { examples: ['play chess'] }\nstageApi.miniature(view, 'chess', data(), {})",
-    growth: "/**\n * growth skill — Void's growth ledger.\n */\nexport default { examples: ['growth'] }",
+    growth: "/**\n * growth skill — Verse's growth ledger.\n */\nexport default { examples: ['growth'] }",
   };
   const families = { families: [
     { id: 'time', name: 'Time', for: 'timers and clocks', skills: [{ name: 'timer', tier: 'proven', why: 'a self-test, 2 real asks' }, { name: 'clock', tier: 'tested', why: 'a self-test' }] },
     { id: 'games', name: 'Games', for: 'play', skills: [{ name: 'chess', tier: 'checked', why: 'x' }, { name: 'growth', tier: 'tested', why: 'y' }] },
-    { id: 'self', name: 'Void itself', for: 'how Void grows', skills: [] },
+    { id: 'self', name: 'Verse itself', for: 'how Verse grows', skills: [] },
   ] };
   const games = [{ id: 'chess', title: 'Chess', ask: 'play chess', color: '#2c2f38', ink: '#f4e9d2', motif: 'chess' }, { id: 'growth', title: 'Growing Pains', ask: 'play growth', color: '#111', ink: '#eee', motif: 'go' }, { id: 'voidquest', title: 'VoidQuest', ask: 'play voidquest', color: '#14122b', ink: '#cdbcff', motif: 'monopoly' }];
   return compose({ names: ['time', 'chess', 'growth'], read: (n) => files[n] || '', families, games, minis: ['chess', 'clock'], readMini: (k) => (k === 'clock' ? '/**\n * clock miniature — a brass desk clock.\n */' : ''), miniDoc: { chess: { card: 'the playable boards', what: 'see above' } }, core: [{ name: 'page', description: 'A page.', examples: ['what is a black hole'] }] });
@@ -134,7 +134,7 @@ test('completeness: the real book has every skill in skills/index.json (families
   assert.equal(readFileSync(OUT, 'utf8'), textOf(b), 'void-live-deploy/skills/guide.json is stale: node tools/guide.mjs');
 });
 
-// asked by Void: a 'proven' glow on a skill's book page when its success_rate in families.json is above 0.9
+// asked by Verse: a 'proven' glow on a skill's book page when its success_rate in families.json is above 0.9
 test('a skill page glows only when its success_rate is above 0.9, and the glow is drawn', () => {
   assert.equal(GLOW_ABOVE, 0.9);
   for (const [r, want] of [[1, true], [0.999, true], [0.91, true], [0.9, false], [0.882, false], [0, false], [undefined, false], ['1', false], [1.2, false]]) assert.equal(glows(r), want, String(r));

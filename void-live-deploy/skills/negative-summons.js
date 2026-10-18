@@ -1,6 +1,6 @@
 /**
  * negative-summons skill - "summon everything except urgency" (owner, 2026-10-18).
- * The person names what must NOT appear; V01D summons up to four existing stage things that fit the opposite mood
+ * The person names what must NOT appear; Verse summons up to four existing stage things that fit the opposite mood
  * (lib/stage-pack-h.js: a curated mood table, then the skills' own examples), one after another through the stage's normal ask,
  * and a small card "without urgency" lists them with a clear button. No model call, nothing sent anywhere. Nothing appears until asked.
  */

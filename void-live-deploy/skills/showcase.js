@@ -1,5 +1,5 @@
 /**
- * showcase skill: "look what I made". Void puts what it built since you were last here on the real stage, one thing at a
+ * showcase skill: "look what I made". Verse puts what it built since you were last here on the real stage, one thing at a
  * time, instead of a changelog to read (the owner, 2026-10-11: overnight growth should hit you when you open the page).
  * "show me what you made", "what's new", "what did you make for me", "look what you did": everything built since you were last here,
  * newest first, with no ceiling (owner, 2026-10-16: "there should not be a limit or stopping point to what it makes or can show you";
@@ -25,7 +25,7 @@ export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:hey\s+)?void,?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:\s+(?:with\s+you|in\s+void|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
+const ASK_RE = /^(?:(?:hey\s+)?(?:verse|void),?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:\s+(?:with\s+you|in\s+(?:verse|void)|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
 
 /** the ask wants the walkthrough. Pure. */
 export const showcaseOf = (text) => ASK_RE.test(CLEAN(text));
@@ -35,8 +35,8 @@ export const KNOWN = [
   { match: /^sticky notes look like real paper/i, show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
   { match: /^do you love me\?: answered/i, show: 'Verse answers "do you love me?" in its own words', try: 'do you love me?' },
   { match: /^Four in a Row looks finished/i, show: 'Four in a Row: the winning four light up', try: 'four in a row' },
-  { match: /^Void played Othello against itself/i, show: 'Verse knows how good it is at Othello', try: 'how good are you at othello' },
-  { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'Verse learns Connect Four a little every day', try: 'how good are you at connect four' },
+  { match: /^(?:Verse|Void|V01D) played Othello against itself/i, show: 'Verse knows how good it is at Othello', try: 'how good are you at othello' },
+  { match: /^(?:Ask (?:Verse|Void|V01D) how good it is at Connect Four|(?:Verse|Void|V01D) now learns Connect Four)/i, show: 'Verse learns Connect Four a little every day', try: 'how good are you at connect four' },
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
 
@@ -54,7 +54,7 @@ const RETIRED = [/real suggestions on the empty stage/i];
 export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
-  if (!lineOf(e.what)) return null; // a line about what Void studies is never shown
+  if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
   if (e.try) return showcaseOf(e.try) ? null : { line: e.show || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
@@ -85,7 +85,7 @@ export function whatsNew(entries, { shown = new Set(), verified = null, n = Infi
   return { steps, waiting };
 }
 
-/** the tray of the walkthrough (asked by Void: "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it
+/** the tray of the walkthrough (asked by Verse: "make the What's new walkthrough interactive, grab a newly shipped skill from it and drop it
  *  on the stage to test it"): the steps after the current one, up to `max`, each { j, line } with its line cut to fit a chip. Pure. */
 export const TRAY = 6;
 export function trayOf(steps, i, max = TRAY) {
@@ -107,7 +107,7 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
 const nowIso = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-/** the asks already previewed on this device (cleaned); bounded, so it stays small however much V01D makes */
+/** the asks already previewed on this device (cleaned); bounded, so it stays small however much Verse makes */
 export function shownSet() { try { return new Set(JSON.parse(read(SHOWN_KEY) || '[]')); } catch (_) { return new Set(); } }
 export function markShown(steps) {
   const all = [...shownSet()]; for (const s of steps || []) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
@@ -173,7 +173,7 @@ function bar() {
     el = document.createElement('div');
     el.id = 'showcase-bar';
     el.setAttribute('role', 'region');
-    el.setAttribute('aria-label', 'What Void made');
+    el.setAttribute('aria-label', 'What Verse made');
     el.style.cssText = 'position:fixed;box-sizing:border-box;z-index:60;padding:8px 12px;border-radius:12px;overflow:auto;overscroll-behavior:contain;'
       + 'background:rgba(20,22,30,.9);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.4);'
       + 'color:var(--ink-2,#b9bdcb);font-size:13px;line-height:1.35;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px';
@@ -233,7 +233,7 @@ async function step(stageApi) {
     button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
-  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what V01D made; hidden unless /api/react answers
+  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
   if (rx) el.append(rx);
   const items = trayOf(tour.steps, tour.i);
   if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)
@@ -366,7 +366,7 @@ export async function nudge(stageApi, note) {
   return n;
 }
 
-/** a small animated icon on the stage for what is new (asked by Void: "Link the 'whats new' showcase trigger to a small, animated
+/** a small animated icon on the stage for what is new (asked by Verse: "Link the 'whats new' showcase trigger to a small, animated
  * notification icon on the stage to prevent users from having to type it"): a bell-less sparkle with the count, pulsing quietly; a tap
  * starts the same walkthrough as typing "what's new", and the icon and the quiet line both go. It appears only when something is new
  * (so a first visit and an empty page stay empty) and never moves anything. Pure DOM, nothing sent anywhere. */
@@ -387,7 +387,7 @@ export function bell(stageApi, steps) {
 }
 
 /** "show me everything you made": the whole walkthrough, previewed before or not, asked for by name. Pure. */
-const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything|all(?: the things)?|every single thing) (?:you|v01d|void|verse)(?:'ve| have|'s| has)? (?:ever )?(?:made|built|done)(?: for me)?(?: so far| ever)?$/;
+const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything|all(?: the things)?|every single thing) (?:you|(?:verse|v01d)|(?:verse|void)|verse)(?:'ve| have|'s| has)? (?:ever )?(?:made|built|done)(?: for me)?(?: so far| ever)?$/;
 export const everythingOf = (text) => ALL_RE.test(CLEAN(text));
 
 async function run(text, api) {

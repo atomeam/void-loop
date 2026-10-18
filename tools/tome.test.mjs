@@ -1,4 +1,4 @@
-// The tome (lib/tome.js): the V01D Book typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
+// The tome (lib/tome.js): the Verse Book typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -55,7 +55,7 @@ test('the stacks of unread leaves grow and shrink with the page you are on', () 
   assert.deepEqual(stacks(200, 200), { left: 0.995, right: 0 });
 });
 
-test('flavor text (asked by Void): one line of lore for a proven skill, cut from its evidence, unique across the book, none for the unproven', () => {
+test('flavor text (asked by Verse): one line of lore for a proven skill, cut from its evidence, unique across the book, none for the unproven', () => {
   assert.equal(flavorOf('timer', 'Time', 'a self-test, 12 real asks', 'checked'), '');
   const taken = new Set(), a = flavorOf('timer', 'Time', 'a self-test, 12 real asks in the benchmark', 'proven', taken), b = flavorOf('clock', 'Time', 'a self-test', 'proven', taken);
   assert.ok(a && b && a !== b && taken.size === 2);
@@ -66,7 +66,7 @@ test('flavor text (asked by Void): one line of lore for a proven skill, cut from
   assert.equal(new Set(lines).size, lines.length, 'no two alike');
   assert.ok(lines.every((l) => l.length <= 150), 'short enough for one or two lines under a title: ' + Math.max(...lines.map((l) => l.length)));
 });
-test('scented parchment (asked by Void): the tome is warm when the last status check was clean, cooler the more failed, untouched with no fresh reading', async () => {
+test('scented parchment (asked by Verse): the tome is warm when the last status check was clean, cooler the more failed, untouched with no fresh reading', async () => {
   const { parchmentFilter } = await import('../void-live-deploy/lib/tome.js');
   const { keepHealth, loadHealth } = await import('../void-live-deploy/lib/success-pulse.js');
   const now = Date.parse('2026-10-17T22:00:00Z');

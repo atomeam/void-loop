@@ -1,8 +1,8 @@
-// Every "new / built" claim V01D makes must answer live. A claim is a ledger line's `try` ask (void.growth.json, what the
+// Every "new / built" claim Verse makes must answer live. A claim is a ledger line's `try` ask (void.growth.json, what the
 // showcase plays for "what's new") or a skill's first example (skills/index.json). Each is typed into the real page; it fails
 // when it falls through to the encyclopedia / generic-answer fallback (Wikipedia, "answer", "short topic") or to a miss.
 // Passing claims are written to void-live-deploy/claims-verified.json; the showcase only plays a claim that is on that list,
-// so V01D never says it built something that answers with Wikipedia.
+// so Verse never says it built something that answers with Wikipedia.
 //   node tools/claims-verify.mjs --live           ask the live site (network on) and write claims-verified.json from what answered
 //   node tools/claims-verify.mjs --live --check   same, write nothing, exit 1 when a must-pass or ledger ask falls through
 //   node tools/claims-verify.mjs                  the local tree with outside services blocked (network skills can't answer), print only

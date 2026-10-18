@@ -1,8 +1,8 @@
-// V01D's own store (lib/store.js, functions/api/store/[[path]].js): tokens, license keys, Stripe signatures, the adapter
+// Verse's own store (lib/store.js, functions/api/store/[[path]].js): tokens, license keys, Stripe signatures, the adapter
 // falling back to Gumroad without keys, and the routes end to end with a fake env.
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
-import { STORE_PRODUCTS, providerOf, signToken, verifyToken, licenseKey, LICENSE_V01D_RE, verifyStripe, buyAnswer, publicCatalog } from '../void-live-deploy/lib/store.js';
+import { STORE_PRODUCTS, providerOf, signToken, verifyToken, licenseKey, LICENSE_Verse_RE, verifyStripe, buyAnswer, publicCatalog } from '../void-live-deploy/lib/store.js';
 import { onRequest } from '../void-live-deploy/functions/api/store/[[path]].js';
 import { storeAsk } from '../void-live-deploy/skills/store.js';
 
@@ -24,13 +24,13 @@ assert.equal(await verifyToken(K, tok.slice(0, -2) + 'AA'), null, 'tampered');
 assert.equal(await verifyToken(K, await signToken(K, { o: 'x', p: 'y', f: 0, e: Date.now() - 1 })), null, 'expired');
 // license keys: format, stable per order+product, different across orders
 const L = await licenseKey(K, 'ord_1', 'chess-set-glb');
-assert.match(L, LICENSE_V01D_RE); assert.equal(L, await licenseKey(K, 'ord_1', 'chess-set-glb')); assert.notEqual(L, await licenseKey(K, 'ord_2', 'chess-set-glb'));
+assert.match(L, LICENSE_Verse_RE); assert.equal(L, await licenseKey(K, 'ord_1', 'chess-set-glb')); assert.notEqual(L, await licenseKey(K, 'ord_2', 'chess-set-glb'));
 // Stripe signatures
 const body = '{"id":"evt_1"}', t = Math.floor(Date.now() / 1000), sig = createHmac('sha256', 'whsec').update(t + '.' + body).digest('hex');
 assert.equal(await verifyStripe('whsec', `t=${t},v1=${sig}`, body), true);
 assert.equal(await verifyStripe('whsec', `t=${t},v1=${sig}`, body + ' '), false);
 assert.equal(await verifyStripe('whsec', `t=${t - 1000},v1=${sig}`, body), false, 'too old');
-// V01D answers "what can I buy"
+// Verse answers "what can I buy"
 for (const a of ['tip', 'buy', 'pricing', 'support void']) assert.ok(storeAsk(a), a);
 assert.ok(!storeAsk('20% tip on 45') && !storeAsk('buy milk'));
 assert.ok(buyAnswer().rows.length === 8 && buyAnswer().rows.every((r) => /utm_source=a-to-mind/.test(r.url)));
@@ -43,7 +43,7 @@ let x = await call('status'); assert.equal(x.j.provider, 'gumroad'); assert.equa
 x = await call('checkout', { method: 'POST', body: JSON.stringify({ items: ['one-time-fix', 'void-monthly', 'voidquest-minis'] }) });
 assert.equal(x.j.mode, 'gumroad'); assert.deepEqual(x.j.urls.map((u) => u.split('?')[0]), ['https://moonbeam846.gumroad.com/l/eozcma', 'https://moonbeam846.gumroad.com/l/yinmj']); assert.ok(x.j.urls.every((u) => u.includes('utm_medium=checkout')));
 x = await call('free', { method: 'POST', body: JSON.stringify({ id: 'chess-set-glb' }) });
-assert.equal(x.j.status, 'free'); const dl = new URL(x.j.items[0].downloads[0].url); assert.match(x.j.items[0].license, LICENSE_V01D_RE);
+assert.equal(x.j.status, 'free'); const dl = new URL(x.j.items[0].downloads[0].url); assert.match(x.j.items[0].license, LICENSE_Verse_RE);
 x = await call('download' + dl.search); assert.equal(x.s, 200); assert.match(x.r.headers.get('content-disposition'), /attachment/);
 x = await call('download?t=bogus.token'); assert.equal(x.s, 403);
 x = await call('free', { method: 'POST', body: JSON.stringify({ id: 'void-monthly' }) }); assert.equal(x.s, 400, 'paid items are never free');

@@ -1,6 +1,6 @@
-// Talking back to V01D (lib/voice.js "Talking back", functions/api/voice-reply.js): the owner replies to a reflection, V01D
+// Talking back to Verse (lib/voice.js "Talking back", functions/api/voice-reply.js): the owner replies to a reflection, Verse
 // answers in its own words and keeps a line, and every later reflection is given the conversation; public answers get only
-// the lines V01D kept, never the owner's words. Run: node --test tools/voice-reply.test.mjs
+// the lines Verse kept, never the owner's words. Run: node --test tools/voice-reply.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -57,7 +57,7 @@ test('talking back: the route is owner only, answers in Verse\'s words, keeps th
   const r1 = await (await route.onRequestPost({ request: req('POST', { text: 'rides is live now' }), env })).json();
   assert.equal(r1.to, DAILY.at, 'no `to` means the newest reflection');
   const q = env.DB.raw.prepare('SELECT ask, target, state, note FROM void_queue').all();
-  assert.equal(q.length, 1); assert.equal(q[0].ask, 'Show the live rides finding on the rides card'); assert.equal(q[0].target, 'voice:show-the-live-rides-finding-on-the-rides'); assert.match(q[0].note, /owner replied to it .* Credit Void\./);
+  assert.equal(q.length, 1); assert.equal(q[0].ask, 'Show the live rides finding on the rides card'); assert.equal(q[0].target, 'voice:show-the-live-rides-finding-on-the-rides'); assert.match(q[0].note, /owner replied to it .* Credit Verse\./);
   assert.ok(r1.queued, 'what the conversation made Verse want built went to the builders'); assert.equal(r1.answer, 'You are right, I had rides wrong.'); assert.equal(r1.correction, true); assert.equal(r1.remember, 'rides is live');
   const r2 = await (await route.onRequestPost({ request: req('POST', { text: 'and the finding has an artifact', to: DAILY.at }), env })).json();
   assert.match(asked[1], /The conversation so far:\nOwner: "rides is live now"\nYou: "You are right, I had rides wrong\."/, 'Verse sees the thread it is in');
@@ -87,7 +87,7 @@ test('talking back about any card: the reply carries the ask, the card\'s title 
 });
 
 test('a misrouted card (owner, 2026-10-16): the false match and the correction become a route: job for the skill that answered', async () => {
-  // the misfire: a quoted conversation about V01D's memory went to the automation-fix card as if it were a broken webhook
+  // the misfire: a quoted conversation about Verse's memory went to the automation-fix card as if it were a broken webhook
   const asked = [];
   const env = envWith(async (m, input) => { asked.push(input.messages[1].content); return { response: JSON.stringify({ answer: 'You are right: that was a quote about my memory, not a broken automation. My automation-fix skill grabbed it because it saw "webhook".', correction: true, remember: 'a quoted conversation is not a broken automation', misroute: true, wanted: 'answer' }) }; });
   const about = { ask: 'he said your memory resets like a zapier webhook that never fires', title: 'Your automation, fixed', said: 'Likely cause: the webhook trigger is not receiving events.', routed: { skill: 'automation-fix', via: 'void.fix' } };
@@ -101,7 +101,7 @@ test('a misrouted card (owner, 2026-10-16): the false match and the correction b
   assert.match(q[0].target, /^route:automation-fix-/); // tools/propose-fix.mjs reads this note as a 'narrow' job (tools/propose-fix.test.mjs)
   await route.onRequestPost({ request: req('POST', { about, text: 'again' }), env });
   assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE target LIKE 'route:%'").get().n, 1, 'one open job per skill and ask');
-  // not a misroute when V01D says so, or when nothing says which skill answered
+  // not a misroute when Verse says so, or when nothing says which skill answered
   const calm = envWith(async () => ({ response: '{"answer":"Fair.","misroute":false}' }));
   assert.equal((await (await route.onRequestPost({ request: req('POST', { about, text: 'shorter please' }), env: calm })).json()).misroute, undefined);
   const noRoute = envWith(async () => ({ response: '{"answer":"Fair.","misroute":true,"wanted":"answer"}' }));

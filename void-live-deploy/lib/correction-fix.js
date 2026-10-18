@@ -1,10 +1,10 @@
-// "Suggest fix" on a correction (asked by Void: a button next to each entry of the self card's correction log, wired to the EXISTING propose-fix
+// "Suggest fix" on a correction (asked by Verse: a button next to each entry of the self card's correction log, wired to the EXISTING propose-fix
 // tool, lib/propose-fix.js and the owner-only /api/propose-fix route, frontier #28 step 3; no new route). It is for the owner only: the page draws the
 // button only with the owner key (logHtml's `owner`), this module refuses without it, and the route checks the key again (ownerOk). What leaves
 // the page is exactly: the skill's name, the family's id (from the families file, not typed), the ask run through redact(), the skill's own public
 // file (which the route needs to read the matcher), and a fixed sentence. The visitor's own words (the correction text) are never sent.
 // The click only drafts a proposal (line edits that passed the route's gate): nothing is applied here; a builder or tools/propose-fix.mjs opens
-// the pull request, and Void's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
+// the pull request, and Verse's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
 import { redact } from './automation-fix.js';
 import { familyMap } from './corrections.js';
 export const FIX_ROUTE = '/api/propose-fix';
@@ -36,7 +36,7 @@ export function resultHtml(sent, got, esc = escHtml) {
   const edits = Array.isArray(j.edits) ? j.edits.slice(0, 4) : [];
   return head + '<div class="sub" data-fix-proposal="1">Verse proposes ' + esc(edits.length) + ' line change' + (edits.length === 1 ? '' : 's') + (Number.isFinite(+j.confidence) ? ', sure to ' + esc(Math.round(+j.confidence * 100)) + '%' : '') + ': ' + esc(j.why || '') + '</div>'
     + edits.map((e) => '<pre style="white-space:pre-wrap;font-size:12px;margin:2px 0">' + esc('- ' + e.find + '\n+ ' + e.replace) + '</pre>').join('')
-    + '<div class="sub">A draft only: nothing was changed. A builder opens it as a pull request, and Void\'s review decides.</div>';
+    + '<div class="sub">A draft only: nothing was changed. A builder opens it as a pull request, and Verse\'s review decides.</div>';
 }
 
 async function callRoute(skillName, build, { owner, fetchFn }) {

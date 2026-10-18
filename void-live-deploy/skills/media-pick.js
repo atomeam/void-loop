@@ -1,7 +1,7 @@
 /**
  * media-pick skill — "pick something to listen to", "pick a song", "pick something" (owner, 2026-10-17: the real-movie pick for music, shows, video and
- * games too; "V01D should pick on its own ... when the ask names no kind or title"). lib/media.js says which kind the ask is for, or V01D chooses
- * by the day; V01D suggests titles; each is looked up at /api/media (a real source); only a found one is shown as fact, as a card with its own art
+ * games too; "Verse should pick on its own ... when the ask names no kind or title"). lib/media.js says which kind the ask is for, or Verse chooses
+ * by the day; Verse suggests titles; each is looked up at /api/media (a real source); only a found one is shown as fact, as a card with its own art
  * (the first https image on the card is the card frame's art). Music plays as the 30 s official preview in an <audio>; the full song links out.
  * Movies are the movie skill's (skills/movie.js): a pick of kind movie runs that. Titles are untrusted: lib/media.js cleans them.
  */

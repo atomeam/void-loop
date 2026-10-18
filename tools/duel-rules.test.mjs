@@ -1,4 +1,4 @@
-// The V01D card duel's rules (frontier #33): cost, income, summon, attack, answer, neutralised cards, the Root, the 12-turn tiebreak, no randomness, and an opponent that never breaks a rule.
+// The Verse card duel's rules (frontier #33): cost, income, summon, attack, answer, neutralised cards, the Root, the 12-turn tiebreak, no randomness, and an opponent that never breaks a rule.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

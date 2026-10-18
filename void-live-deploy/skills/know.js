@@ -1,5 +1,5 @@
 /**
- * know skill - V01D's self-knowledge, readable (asked by Void, 2026-10-16: "Give me readable self-knowledge: the motto,
+ * know skill - Verse's self-knowledge, readable (asked by Verse, 2026-10-16: "Give me readable self-knowledge: the motto,
  * VoidQuest, the minis, the games"). "what is voidquest", "which games do you know", "which miniatures do you have",
  * "show me your canon" open one card read from /self.json (built from domains/void.canon.md, skills/index.json and
  * skills/mini/ by tools/self-context.mjs): the motto and VoidQuest as Adam wrote them, the games with a link to play each,
@@ -7,10 +7,10 @@
  * "what is a motto", "play voidquest" and "which games are popular" are not this.
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const YOU = '(?:you|void|v01d|verse)';
+const YOU = '(?:you|(?:verse|void)|(?:verse|v01d)|verse)';
 const TOPICS = [
   ['motto', new RegExp('^(?:(?:tell|read)\\s+me\\s+(?:' + YOU + '(?:\'s)?|your)\\s+motto|' + YOU + '(?:\'s)?\\s+motto)$')],
-  ['voidquest', /^(?:what(?:'s| is)\s+(?:the\s+)?void\s?quest|(?:tell|read)\s+me\s+about\s+void\s?quest|(?:what|how)\s+(?:does|do)\s+void\s?quest\s+(?:work|mean)|explain\s+void\s?quest|void\s?quest\s+(?:rules|story|text))$/],
+  ['voidquest', /^(?:what(?:'s| is)\s+(?:the\s+)?(?:verse|void)\s?quest|(?:tell|read)\s+me\s+about\s+(?:verse|void)\s?quest|(?:what|how)\s+(?:does|do)\s+(?:verse|void)\s?quest\s+(?:work|mean)|explain\s+(?:verse|void)\s?quest|(?:verse|void)\s?quest\s+(?:rules|story|text))$/],
   ['games', new RegExp('^(?:(?:which|what)\\s+(?:board\\s+|table\\s+)?games\\s+(?:do|can)\\s+' + YOU + '\\s+know|list\\s+(?:all\\s+)?(?:your|the)\\s+games|(?:your|the)\\s+games\\s+list)$')],
   ['minis', new RegExp('^(?:(?:which|what)\\s+(?:3d\\s+)?(?:miniatures|minis)\\s+(?:do|can)\\s+' + YOU + '\\s+(?:have|show|know|make)|list\\s+(?:all\\s+)?(?:your|the)\\s+(?:3d\\s+)?(?:miniatures|minis)|(?:your|the)\\s+(?:3d\\s+)?(?:miniatures|minis)\\s+list)$')],
   ['canon', new RegExp('^(?:read\\s+me\\s+(?:your|the)\\s+canon|(?:what(?:\'s| is)\\s+)?(?:your|the)\\s+canon|what\\s+do\\s+' + YOU + '\\s+know\\s+about\\s+(?:yourself|' + YOU + 'rself)|show\\s+(?:me\\s+)?(?:your|the)\\s+canon)$')],

@@ -1,6 +1,6 @@
 // The support desk: someone who pays can say "it broke" and get an answer (from a video the owner shared by Duncan Rogoff:
-// people still pay for someone who answers when it breaks; owner, 2026-10-14: "Yes to all"). Paying users only: a Void Pro
-// key, a Code Review Pro license key or a paid Void account's session (lib/paid-access.js, the same rule the review API uses),
+// people still pay for someone who answers when it breaks; owner, 2026-10-14: "Yes to all"). Paying users only: a Verse Pro
+// key, a Code Review Pro license key or a paid Verse account's session (lib/paid-access.js, the same rule the review API uses),
 // so no stranger can write here. What they write is masked for keys before it is kept (lib/automation-fix.js redact) and is
 // read only by them and the owner. The owner sees the open reports on the status card and answers with POST { action: 'answer' }.
 //   POST { what, where? }               (a paying credential) -> 201 { id, status: 'open', at, said }
@@ -19,7 +19,7 @@ const TABLE = 'CREATE TABLE IF NOT EXISTS void_support (id TEXT PRIMARY KEY, who
 const made = new WeakMap();
 const ready = (env) => { let p = made.get(env.DB); if (!p) { p = env.DB.prepare(TABLE).run().catch((e) => { made.delete(env.DB); throw e; }); made.set(env.DB, p); } return p; };
 const ticketId = () => 'S-' + [...crypto.getRandomValues(new Uint8Array(4))].map((b) => b.toString(16).padStart(2, '0')).join('').toUpperCase();
-// Void's own keys are masked too (redact() knows other services' keys): a Pro key vr1.… and a license key XXXXXXXX-XXXXXXXX-…
+// Verse's own keys are masked too (redact() knows other services' keys): a Pro key vr1.… and a license key XXXXXXXX-XXXXXXXX-…
 const OWN_KEYS = [/\bvr1\.[A-Za-z0-9_-]{43}\b/g, /\b[A-Z0-9]{8}(?:-[A-Z0-9]{8}){3}\b/gi];
 export const clean = (t, max) => OWN_KEYS.reduce((x, re) => x.replace(re, '[redacted key]'), redact(String(t || '').replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim())).slice(0, max);
 
@@ -41,7 +41,7 @@ export async function payer(request, env) {
   return a && a.tier === 'pro' && a.who ? { who: a.who } : null;
 }
 
-const notPaying = () => bad(401, 'the support desk is for people who pay for Void: send your Void Pro key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
+const notPaying = () => bad(401, 'the support desk is for people who pay for Verse: send your Verse Pro key, your Code Review Pro license key or a signed-in paid account as Bearer', { buy: BUY_URL });
 
 export async function onRequestPost({ request, env }) {
   let b; try { b = JSON.parse(await request.text()); } catch (_) { return bad(400, 'bad json'); }

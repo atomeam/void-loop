@@ -8,7 +8,7 @@ export function workOf(text) {
   let m = t.match(/^(?:find\s+(?:me\s+)?(?:work|jobs?|a\s+job)|remote\s+jobs?(?:\s+for)?|jobs?(?:\s+for)?)\s+(?:as\s+(?:a\s+|an\s+)?)?(.{2,40})$/i);
   if (m) {
     const q = m[1].replace(/^(?:a|an|the)\s+/i, '').trim();
-    if (!q || /^(?:me|you|void|it|that|this)$/i.test(q)) return null;
+    if (!q || /^(?:me|you|(?:verse|void)|it|that|this)$/i.test(q)) return null;
     if (/^(?:table|flight|hotel|meeting|appointment)\b/i.test(q)) return null;
     return q;
   }

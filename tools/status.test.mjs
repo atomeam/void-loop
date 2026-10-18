@@ -5,7 +5,7 @@ import { statusOf, ping, checkSkills, checkBrowser, statusHtml, SOURCES } from '
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => '&#' + c.charCodeAt(0) + ';');
 
 test('status asks open the check; other "status" phrases stay with their own answers', () => {
-  for (const t of ['void status', 'system status', 'status', 'is void working', 'Is Void down?', 'health check', 'are the sources up', 'check yourself']) assert.ok(statusOf(t), t);
+  for (const t of ['void status', 'system status', 'status', 'is void working', 'Is Verse down?', 'health check', 'are the sources up', 'check yourself']) assert.ok(statusOf(t), t);
   for (const t of ['what is my status', 'status of my order', 'relationship status', 'flight status', 'status quo', 'check the weather']) assert.ok(!statusOf(t), t);
 });
 
@@ -40,7 +40,7 @@ test('the browser checks read storage, WebGL, the offline layer and the connecti
   assert.match(html, /2 of 3 load; not loading: b/); assert.match(html, /Not checked: this browser is offline/);
 });
 
-test('Void\'s own build: the newest checks and deploy on main, from GitHub\'s public API; failed, passed, running or unknown', async () => {
+test('Verse\'s own build: the newest checks and deploy on main, from GitHub\'s public API; failed, passed, running or unknown', async () => {
   const { buildRun, buildState, buildFailed, BUILD, REPO } = await import('../void-live-deploy/skills/status.js');
   const runs = (r) => async (u) => ({ ok: true, status: 200, json: async () => ({ workflow_runs: r ? [r] : [] }), url: u });
   const seen = [];
@@ -67,7 +67,7 @@ test('for the owner, the card opens by itself only when a run on main failed; th
   assert.equal(await autoOpen(open, { fetchFn: gh('failure'), store: S, now: 700000 }), true); assert.equal(opened, 1); assert.equal(reads, 4);
 });
 
-test('the card shows Void\'s own build with a link to a failed run, escaped', async () => {
+test('the card shows Verse\'s own build with a link to a failed run, escaped', async () => {
   const { statusHtml } = await import('../void-live-deploy/skills/status.js');
   const h = statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', [{ name: 'Checks on main', state: 'failed', note: 'failed (failure) on <b>', url: 'https://github.com/x' }, { name: 'Deploy', state: 'passed', note: 'passed' }]);
   assert.match(h, /Verse’s own build · <span style="color:#e0584a">something on main failed<\/span>/);
@@ -90,7 +90,7 @@ test('paying users who said it broke: read with the owner key only, shown on the
   finally { delete globalThis.localStorage; }
 });
 
-// news about V01D's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
+// news about Verse's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
 test('a pasted update about my own routine is news about me, not a time list', async () => {
   const { newsOf, takeOf } = await import('../void-live-deploy/skills/status.js');
   const paste = 'update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list';
@@ -103,7 +103,7 @@ test('a pasted update about my own routine is news about me, not a time list', a
   assert.equal(out, 'self-news'); assert.match(html, /News about me/); assert.ok(html.indexOf('My take') < html.indexOf('runs a day'));
 });
 
-// the other half of Void's ask (five times): an action Void took for the owner that failed opens the status card by itself
+// the other half of Verse's ask (five times): an action Verse took for the owner that failed opens the status card by itself
 test('a failed action in the last day opens the status card for the owner and is listed on it; old or done ones are not', async () => {
   const { failedActions, autoOpen, statusHtml } = await import('../void-live-deploy/skills/status.js');
   const now = Date.parse('2026-10-15T12:00:00Z');
@@ -125,7 +125,7 @@ test('a failed action in the last day opens the status card for the owner and is
   finally { delete globalThis.localStorage; }
 });
 
-test('status: a red check on main names what failed (asked by Void: the root cause, from incidents.json), and only a red one', async () => {
+test('status: a red check on main names what failed (asked by Verse: the root cause, from incidents.json), and only a red one', async () => {
   const { causesOf, withCauses } = await import('../void-live-deploy/skills/status.js');
   const rows = [{ name: 'Checks on main', state: 'failed', sha: '60e2e47', note: 'failed' }, { name: 'Deploy', state: 'passed', sha: '60e2e47', note: 'passed' }];
   const inc = [{ sha: '60e2e47f458e', suite: 'browser suite on main', checks: ['Four in a Row on a phone: the 3D frame fits'] }, { sha: 'ad536f3', checks: ['other'] }];

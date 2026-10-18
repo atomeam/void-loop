@@ -2,7 +2,7 @@
  * map skill — the assimilation map (row 2 of the skill-file contract).
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
- * Shows the map of how everything already built is being rebuilt as Void.
+ * Shows the map of how everything already built is being rebuilt as Verse.
  * Mirrors domains\void.assimilate.md (kept light: names + status, no paths).
  */
 const MAP = [

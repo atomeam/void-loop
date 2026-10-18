@@ -1,7 +1,7 @@
 // From the bake-off's verdict to a change (model-bench.yml, after a run). When a challenger wins under the thresholds in
 // tools/model-bench.mjs verdict(), the answer path's model in void-live-deploy/lib/models.js is set to it, and the PR body
 // carries the table, the previous model and the one-line revert; the workflow opens that PR and labels it for automerge, and
-// Void's review and the automerge rules take it from there. A "keep" verdict changes nothing (the table is only posted), unless
+// Verse's review and the automerge rules take it from there. A "keep" verdict changes nothing (the table is only posted), unless
 // the closer read lags the answer engine and the run shows the answer engine's model follows the JSON shape at least as well:
 // then the PR moves PATH_MODELS.review to it (planReviewFollow).
 //   node tools/model-switch.mjs model-bench.json table.md     a switch: edits lib/models.js, writes switch-body.md and
@@ -74,7 +74,7 @@ export function planSwitch(result, table, src) {
     '', table.trim(), '',
     `Previous model: \`${from}\`. New model on the answer path: \`${to}\` (\`void-live-deploy/lib/models.js\`, \`PATH_MODELS.answer\`${review ? ' and \`PATH_MODELS.review\`: the compliance column says it follows the closer read\'s JSON shape at least as well as the previous model, so the closer read switches too; the will and figurescript paths are unchanged' : '; the will, review and figurescript paths are unchanged' + (result.rows && result.rows.some((r) => r.comply && r.comply.asks) ? ', the review path because the winner followed the closer read\'s JSON shape worse than the previous model' : '')}).`,
     '', `To revert, one line: set \`answer: FREE_MODEL\`${review ? ' (and \`review: FREE_MODEL\`)' : ''} back in \`PATH_MODELS\` (\`${from}\`).`,
-    '', 'Opened by `.github/workflows/model-bench.yml` (`tools/model-switch.mjs`). Void\'s review and the automerge rules decide from here; the full suite runs on main after the merge.',
+    '', 'Opened by `.github/workflows/model-bench.yml` (`tools/model-switch.mjs`). Verse\'s review and the automerge rules decide from here; the full suite runs on main after the merge.',
   ].join('\n');
   const grow = ledgerLine(result);
   return { to, from, review, branch: `bench/switch-${day}-${short}`, title: `${review ? 'Answer engine and closer read' : 'Answer engine'}: switch to ${short} (model bake-off ${day})`, body, grow };
@@ -98,7 +98,7 @@ export function planReviewFollow(result, table, src) {
     '', (table || '').trim(), '',
     `So the closer read follows: \`PATH_MODELS.review\` → \`${answer}\` (\`void-live-deploy/lib/models.js\`). The answer, will and figurescript paths are unchanged.`,
     '', `To revert, one line: set \`review: FREE_MODEL\` back in \`PATH_MODELS\` (\`${from}\`).`,
-    '', 'Opened by `.github/workflows/model-bench.yml` (`tools/model-switch.mjs`). Void\'s review and the automerge rules decide from here; the full suite runs on main after the merge.',
+    '', 'Opened by `.github/workflows/model-bench.yml` (`tools/model-switch.mjs`). Verse\'s review and the automerge rules decide from here; the full suite runs on main after the merge.',
   ].join('\n');
   return { to: answer, from, review: true, reviewOnly: true, branch: `bench/review-follow-${day}-${short}`, title: `Closer read: follow the answer engine to ${short} (model bake-off ${day})`, body, grow: ledgerLine(result) + `; the closer read follows the answer engine to ${short}` };
 }

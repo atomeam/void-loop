@@ -1,5 +1,5 @@
 /**
- * swarm-mind skill — swarms, trajectories and implicit fields: seven of Grok's drafts on V01D's field kit (asked by the owner, 2026-10-18:
+ * swarm-mind skill — swarms, trajectories and implicit fields: seven of Grok's drafts on Verse's field kit (asked by the owner, 2026-10-18:
  * "all of groks builds should be what v01ds engine is built on"). The card's own law (F-044 + F-030 + F-026 + F-028): two tribes of
  * agents ride a tiny MLP vector field, climb the fading memory of where your pointer went, lean toward where it is heading, and compete,
  * one tribe rewarded for staying with you and one for exploring; the tribe doing better at its own reward leads. A small evolutionary

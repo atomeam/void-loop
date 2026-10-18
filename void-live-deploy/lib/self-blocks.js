@@ -1,11 +1,11 @@
 // The self card ("What I think of myself") as structured blocks, then as markup (asked by the owner's review, 2026-10-18: the card read as a wall of text).
-// selfSections(v) turns /api/reflect into sections: V01D's own words (a reflection: normal reading font) and the changelog (what got built: monospace).
+// selfSections(v) turns /api/reflect into sections: Verse's own words (a reflection: normal reading font) and the changelog (what got built: monospace).
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
 
 const day = (t) => String(t || '').slice(0, 10);
-// the growth velocity (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
+// the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
 // over the last 7 days"): one point a day for the last VELOCITY_DAYS days, each the count of its asks built that day (follow.asked, by builtAt)
 export const VELOCITY_DAYS = 7;
 export const VELOCITY_EVERY = 60e3; // while the card is open, a stage change redraws it from /api/reflect at most this often (void.html showVoice)
@@ -18,8 +18,8 @@ export function velocity(asked, now = Date.now()) {
 }
 /** the velocity's words: "N built this week · M today", or "nothing built this week". Pure. */
 export const velocityLabel = (v) => (v.total ? v.total + ' built this week · ' + v.today + ' today' : 'nothing built this week');
-// friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
-// resolution time"): an open ask is overdue once it is older than its expected resolution time, OVERDUE_SMALL_DAYS for an ask V01D called small,
+// friction (asked by Verse: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
+// resolution time"): an open ask is overdue once it is older than its expected resolution time, OVERDUE_SMALL_DAYS for an ask Verse called small,
 // OVERDUE_DAYS for any other; the day it crossed that limit is a friction day, drawn red on the same line
 export const OVERDUE_SMALL_DAYS = 2, OVERDUE_DAYS = 7;
 export const FRICTION_RED = 'rgb(255,120,110)';
@@ -84,7 +84,7 @@ export function selfSections(v, now = Date.now()) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
-  // the owner's redesign (2026-10-18, "its still ugly"): V01D's own paragraph is a quotation and the only thing open; everything else is a closed
+  // the owner's redesign (2026-10-18, "its still ugly"): Verse's own paragraph is a quotation and the only thing open; everything else is a closed
   // block whose heading carries its count; how sure it is of its skills (the page's family bars) sits right under its words
   const voice = sentence((daily || build || {}).thoughts);
   out.push({ id: 'words', title: '', log: false, blocks: voice ? [{ t: 'quote', text: voice, cite: 'My own words, kept as I said them. The people who build me read them first.' }]
@@ -146,7 +146,7 @@ export function sectionHtml(s, esc) {
     return '';
   }).join('');
   // a titled section is a collapsible block whose heading (with its count) is the toggle (owner, 2026-10-18): <details> keeps it keyboard accessible
-  // with no script, and its text stays in the saved card whether it is open or not; every block starts closed, so V01D's own words are read first
+  // with no script, and its text stays in the saved card whether it is open or not; every block starts closed, so Verse's own words are read first
   if (!s.title) return '<section class="vs-sec' + (s.log ? ' vs-log' : '') + '" data-sec="' + esc(s.id) + '">' + body + '</section>';
   return secOpen(s.id, s.title, esc, false, s.count, s.log) + body + '</details>';
 }

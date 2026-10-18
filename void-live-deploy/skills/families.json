@@ -1,14 +1,14 @@
 {
- "note": "Void's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
+ "note": "Verse's skill families and how far each skill is checked (tools/families.mjs; ratings from evidence only)",
  "means": {
   "last_tested": "the newest date its evidence has: for its own tests and the browser suite, the day this file was last regenerated with that evidence changed (the checks run on every PR, the suite on every merge; not a run log); for the benchmark, its last conclusive run on main. last_tested_by says which. No evidence, no date.",
   "success_rate": "benchmark asks routed to the skill that passed on the bench's last conclusive run on main, over all routed to it (0 to 1); absent until that run is recorded, or when no benchmark ask is routed to it",
   "smoke": "what the daily smoke test of every skill (tools/skills-check.mjs --write) or the 7-day re-test (tools/retest.mjs, lines starting re-test:) found wrong with this one: its examples not reaching it, a near miss taken, its suite() or unit test failing; while present the skill has no passing self-test, so its rating is lower",
-  "promoted": "the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Void",
-  "streak": "consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Void",
+  "promoted": "the day the skill last moved up a rating (experiment to tested, tested to checked, checked to proven), kept for 60 days; asked by Verse",
+  "streak": "consecutive clean runs of the daily smoke test since the skill was last seen failing (tools/skills-check.mjs --write counts them); asked by Verse",
   "live": "a kept artifact of a real call to the outside service the skill wraps (findings/<skill>/*.json with attempt live and ok true): the fourth kind of evidence; two kinds where one is a live finding under 8 days old make a skill proven",
-  "source": "source reliability (asked by Void, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating",
-  "not_here": "how often people use a skill is never counted by Void: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
+  "source": "source reliability (asked by Verse, Words and the world only; tools/source-reliability.mjs): the outside sites the skill reads, whether its card names the source, whether it has a second source, whether the repo holds a kept live answer from it (findings/<skill>/; the benchmark stubs outside services, so it does not count); one point each. next live: one kept live answer from its source would make it proven under the rules above. It changes no rating",
+  "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-10-17",
  "totals": {
@@ -330,7 +330,7 @@
   {
    "id": "games",
    "name": "Games",
-   "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
+   "for": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
     "tested": 5,
@@ -2386,8 +2386,8 @@
   },
   {
    "id": "self",
-   "name": "Void itself",
-   "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
+   "name": "Verse itself",
+   "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
     "tested": 10,

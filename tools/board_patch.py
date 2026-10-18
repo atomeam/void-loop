@@ -1,9 +1,9 @@
-"""Adds the owner's board to Void: 'unlock <READ_TOKEN>' once, then 'show the board' / 'what are people asking'."""
+"""Adds the owner's board to Verse: 'unlock <READ_TOKEN>' once, then 'show the board' / 'what are people asking'."""
 import pathlib
 f = pathlib.Path(__file__).resolve().parent.parent / 'void.html'
 s = f.read_text(encoding='utf-8'); nl = '\r\n' if '\r\n' in s else '\n'; s = s.replace('\r\n', '\n')
 js = r'''
-    // owner board: what visitors asked that Void couldn't answer yet (reads /api/misses)
+    // owner board: what visitors asked that Verse couldn't answer yet (reads /api/misses)
     const OWNER_KEY = 'a2m.void.owner.v1';
     function wantsBoard(lower) {
       return /^(show\s+(me\s+)?)?(the\s+)?(big\s+)?board$|^what\s+(are|were)\s+people\s+asking|^(show\s+(me\s+)?)?(the\s+)?misses$/.test(lower);
@@ -18,7 +18,7 @@ js = r'''
         if (r.status === 401) { el.innerHTML = '<h2>The board</h2><p>That key didn\'t open it.</p>'; return; }
         const rows = await r.json();
         if (vpageEl !== el) return;
-        el.innerHTML = '<h2>The board</h2><div class="sub">What people asked that Void can\'t answer yet · most asked first</div>'
+        el.innerHTML = '<h2>The board</h2><div class="sub">What people asked that Verse can\'t answer yet · most asked first</div>'
           + (rows.length ? '<ul>' + rows.slice(0, 40).map((x) => '<li><b>' + x.count + '×</b> ' + esc(x.ask) + ' <span style="color:#6a6a6a">· ' + esc((x.last || '').slice(0, 10)) + (x.fallback ? ' · ' + esc(x.fallback) : '') + '</span></li>').join('') + '</ul>' : '<p>Nothing missed yet.</p>');
       } catch (_) { if (vpageEl === el) el.innerHTML = '<h2>The board</h2><p>The board didn\'t answer just now.</p>'; }
     }

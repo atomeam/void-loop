@@ -1,7 +1,7 @@
 // The wants card (skills/wants.js; owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell to the model,
-// which said V01D had no catalog of unbuilt asks and made 50 up). Every phrasing that must reach it does, every near miss stays where it
+// which said Verse had no catalog of unbuilt asks and made 50 up). Every phrasing that must reach it does, every near miss stays where it
 // was (the will card, the self card, the calendar, the list, the world), a compound ask is matched on its first clause, and the card is
-// built from V01D's own records with the three blocks, the count line, tap-to-copy chips, and honest empty and missing states.
+// built from Verse's own records with the three blocks, the count line, tap-to-copy chips, and honest empty and missing states.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';

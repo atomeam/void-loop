@@ -1,8 +1,8 @@
-// V01D's probe ledger (asked by Void twice: "Create a 'probe-success-rate' card in the growth inbox that tracks how many of my
+// Verse's probe ledger (asked by Verse twice: "Create a 'probe-success-rate' card in the growth inbox that tracks how many of my
 // self-generated probe asks actually result in a new skill or improved evidence rating", and "Integrate the confidence score into
 // the Growth Inbox so I can prioritize fixing 'high-certainty' misses first"). Each daily probe run (tools/probe-asks.mjs) and each
-// fix V01D proposes (tools/propose-fix.mjs) leaves one record: counts, the skill, the line changes, V01D's confidence, and whether
-// the fix passed every check or which check stopped it. Never the asks' words (they are V01D's own, still kept out of public view).
+// fix Verse proposes (tools/propose-fix.mjs) leaves one record: counts, the skill, the line changes, Verse's confidence, and whether
+// the fix passed every check or which check stopped it. Never the asks' words (they are Verse's own, still kept out of public view).
 // Kept in void_kv 'probe-log' by functions/api/probe-log.js; the growth card shows the rate and the proposals, most certain first.
 // Pure.
 export const LOG_KEEP = 200;
@@ -17,7 +17,7 @@ export function recordOf(r, at = new Date().toISOString()) {
   if (r.kind === 'probe') {
     const wrote = int(r.wrote, 200), probed = int(r.probed, 200), misses = int(r.misses, 200), queued = int(r.queued, 200);
     if (wrote === null || probed === null || misses === null || queued === null || misses > probed || probed > wrote) return null;
-    // what the probe asked the forge for and it could not make (asked by Void, ask-20261015-2045-2: link probe output to frontier #14)
+    // what the probe asked the forge for and it could not make (asked by Verse, ask-20261015-2045-2: link probe output to frontier #14)
     const forge = [...new Set((Array.isArray(r.forge) ? r.forge : []).map((t) => String(t || '').toLowerCase().trim()).filter((t) => /^[a-z][a-z -]{1,30}$/.test(t)))].slice(0, 8);
     return { at, kind: 'probe', family: slug(r.family), wrote, probed, misses, queued, ...(forge.length ? { forge } : {}) };
   }
@@ -31,7 +31,7 @@ export function recordOf(r, at = new Date().toISOString()) {
 }
 
 /** what the ledger says: runs, asks written and missed, fixes proposed and passed, the rate, where fixes stop, the proposals most
- * certain first, and whether V01D's confidence predicts a pass (high = 0.7 and over). Pure. */
+ * certain first, and whether Verse's confidence predicts a pass (high = 0.7 and over). Pure. */
 export function probeStats(log) {
   const L = Array.isArray(log) ? log : [];
   const probes = L.filter((x) => x && x.kind === 'probe'), fixes = L.filter((x) => x && x.kind === 'fix');

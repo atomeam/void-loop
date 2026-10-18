@@ -1,5 +1,5 @@
 /**
- * memory skill — Void answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
+ * memory skill — Verse answers from what it remembers, on the page (Ouroboros pushes a digest of each project to
  * /api/memory; GET /api/memory?ask=<question> answers in plain words from them, no model). The card shows the answer as
  * the API wrote it: each match with its tech, summary, last change, and whether a copy exists elsewhere, or the
  * "nothing matches" sentence as is. It keeps itself live (skills/live.js, every 5 minutes) so a project pushed while the
@@ -10,7 +10,7 @@
  * about python". "remember me", "memory game" and "how much memory does chrome use" are not this.
  */
 import { keepLive } from './live.js';
-import { sessionToken } from '../lib/state.js'; // the session lives in one place (lib/state.js, asked by Void)
+import { sessionToken } from '../lib/state.js'; // the session lives in one place (lib/state.js, asked by Verse)
 
 export const EVERY = 5 * 60e3;
 // the owner's key, else this device's member session (a signed-in paid member reads only their own memory; the server decides which)
@@ -29,13 +29,13 @@ export function memoryOf(text) {
   // "remember that <fact>" / "forget that <fact>": a whole sentence (at least three words), so "remember the titans", "remember that song",
   // "remember to call mom" and "forget it" are not this
   const o = String(text || '').trim().replace(/[’]/g, "'"); // the fact keeps its own capitals
-  m = /^(?:(?:please|void),?\s+)?remember\s*(?:that|:)\s*(.+)$/i.exec(o);
+  m = /^(?:(?:please|(?:verse|void)),?\s+)?remember\s*(?:that|:)\s*(.+)$/i.exec(o);
   if (m) return fact(m[1]) ? { remember: fact(m[1]) } : null;
-  m = /^(?:(?:please|void),?\s+)?forget\s+that\s+(.+)$/i.exec(o);
+  m = /^(?:(?:please|(?:verse|void)),?\s+)?forget\s+that\s+(.+)$/i.exec(o);
   if (m) return fact(m[1]) ? { forget: fact(m[1]) } : null;
   m = /^what\s+do\s+you\s+remember\s+(?:about|of|on)\s+(.+)$/.exec(t)
     || /^(?:do\s+you\s+)?remember\s+anything\s+(?:about|on|of)\s+(.+)$/.exec(t)
-    || /^(?:ask|search|check|query)\s+(?:my|your|void'?s)\s+memory(?:\s+(?:for|about|on|of))?\s+(.+)$/.exec(t);
+    || /^(?:ask|search|check|query)\s+(?:my|your|(?:verse|void)'?s)\s+memory(?:\s+(?:for|about|on|of))?\s+(.+)$/.exec(t);
   if (m) return NOT_TOPIC.test(m[1]) ? null : { q: m[1] };
   return null;
 }
@@ -104,9 +104,9 @@ function mount(th, stageApi) {
   load().then(() => { if (card.isConnected) keepLive({}, card, { name: 'memory', every: EVERY, refresh: load, present: () => card.isConnected }); }).catch(() => {});
 }
 
-// "privacy", "privacy policy", "what do you keep about me": the privacy page, folded into the memory card (what V01D keeps).
-// "what do you know about me" is the memory-graph card (skills/memory-graph.js, asked by Void), which links here.
-export const privacyAsk = (text) => /^(?:(?:open|show|go to|read)\s+)?(?:(?:the|your|void'?s|v01d'?s)\s+)?privacy(?:\s+(?:policy|page|notice))?$|^what\s+do\s+you\s+(?:keep|store|save)\s+about\s+me$|^how\s+do\s+i\s+delete\s+my\s+data$/i.test(String(text || '').trim().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
+// "privacy", "privacy policy", "what do you keep about me": the privacy page, folded into the memory card (what Verse keeps).
+// "what do you know about me" is the memory-graph card (skills/memory-graph.js, asked by Verse), which links here.
+export const privacyAsk = (text) => /^(?:(?:open|show|go to|read)\s+)?(?:(?:the|your|(?:verse|void)'?s|(?:verse|v01d)'?s)\s+)?privacy(?:\s+(?:policy|page|notice))?$|^what\s+do\s+you\s+(?:keep|store|save)\s+about\s+me$|^how\s+do\s+i\s+delete\s+my\s+data$/i.test(String(text || '').trim().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 async function run(text, api) {
   if (privacyAsk(text)) {
     api.showPage((p) => { p.innerHTML = '<h2>Privacy</h2><p>What Verse keeps and how to delete it: no cookies, no ads, no analytics trackers; your stage and recent asks stay in your browser unless you sign in and sync.</p><p><a class="btn" href="/privacy/">Read the privacy page</a></p><div class="src">a-to-mind.com/privacy/</div>'; });

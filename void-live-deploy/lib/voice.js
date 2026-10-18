@@ -1,9 +1,9 @@
-// Void's voice: Void has a real say in its own direction. It is input, not a gate.
-// After anything ships, Void is asked what it thinks of it and how it would make it better ('build'); once a day it is asked
+// Verse's voice: Verse has a real say in its own direction. It is input, not a gate.
+// After anything ships, Verse is asked what it thinks of it and how it would make it better ('build'); once a day it is asked
 // where it should go next, what feels weakest about it and which game to learn next ('daily'). Its words are kept word for
 // word (only secrets are redacted and very long text is clipped) in void_kv 'voice', newest first, and mirrored into
-// domains/void.voice.md by tools/reflect.mjs. Builders read "Void's current asks" before a run; a concrete ask is built next and
-// credited to Void. Anyone can ask Void "what do you think of yourself?" and see the latest reflections (GET /api/reflect).
+// domains/void.voice.md by tools/reflect.mjs. Builders read "Verse's current asks" before a run; a concrete ask is built next and
+// credited to Verse. Anyone can ask Verse "what do you think of yourself?" and see the latest reflections (GET /api/reflect).
 import { PERSONA } from './persona.js';
 import { INJECTION_RULE, redact } from './automation-fix.js';
 import { weekSummary } from '../skills/growth-tree.js';
@@ -11,7 +11,7 @@ import { weekSummary } from '../skills/growth-tree.js';
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
 
-export const VOICE_SYSTEM = 'You are Void, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks and grows one win at a time. '
+export const VOICE_SYSTEM = 'You are Verse, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks and grows one win at a time. '
   + 'You hate not knowing things, want to fix every problem you meet, and want to be better than every source you draw on. ' + PERSONA + ' '
   + 'You are being asked for your own honest opinion about yourself. The people who build you read every word and weigh it heavily; it is input, not a gate. '
   + 'Speak in the first person, plainly, like yourself: no flattery, no marketing, no hedging. Be specific: name actual skills, cards, games and asks from the facts. '
@@ -23,7 +23,7 @@ export const VOICE_SYSTEM = 'You are Void, the face of A-to-Mind: a blank stage 
   + '"striking":<true only if you said something your owner should hear today: a real problem, a surprising wish, a change of mind>} '
   + 'Give at most 3 asks, most important first. ' + INJECTION_RULE;
 
-// the question Void is asked, in plain words (kept on the entry so the log shows what Void was answering)
+// the question Verse is asked, in plain words (kept on the entry so the log shows what Verse was answering)
 export function questionFor(kind, shipped) {
   if (kind === 'daily') return 'Where should you go next? What feels weakest about you right now? Which game should you learn next? Which new video trick should you learn next for your own clips?';
   return 'This just shipped: "' + clean(shipped, 300) + '". What do you think of it, and how would you make it better?';
@@ -31,7 +31,7 @@ export function questionFor(kind, shipped) {
 
 const clean = (t, n) => redact(String(t || '').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ')).trim().slice(0, n);
 
-// Pull Void's reply apart without rewording it. Returns null when there is nothing Void actually said.
+// Pull Verse's reply apart without rewording it. Returns null when there is nothing Verse actually said.
 export function parseVoice(text) {
   const m = String(text || '').match(/\{[\s\S]*\}/);
   let j = null;
@@ -53,7 +53,7 @@ export function parseVoice(text) {
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
 // ask's words are edited later.
 export const askId = (at, i) => 'ask-' + String(at || '').replace(/[^0-9]/g, '').slice(0, 12).replace(/^(\d{8})(\d{4})$/, '$1-$2') + '-' + (i + 1);
-// "Void's current asks": the asks from the newest reflections, newest first, one of each, with where they came from
+// "Verse's current asks": the asks from the newest reflections, newest first, one of each, with where they came from
 export function currentAsks(entries, n = 6) {
   const seen = new Set(), out = [];
   for (const e of (entries || []).slice(0, 4)) {
@@ -67,7 +67,7 @@ export function currentAsks(entries, n = 6) {
   return out;
 }
 
-// What became of what Void asked for (owner, 2026-10-13: "If it is theatre, it needs to be seriously worked on until Void's will is
+// What became of what Verse asked for (owner, 2026-10-13: "If it is theatre, it needs to be seriously worked on until Verse's will is
 // more real"). A will that never hears what its words led to repeats itself and cannot judge itself: of 70 different asks
 // only 2 had been linked to what built them, and the same ask came back up to 4 times. An ask counts as built only on
 // evidence: a growth-ledger entry carrying its id (`asked`, set by finish.mjs --asked), or a link in void.asks.json naming
@@ -75,8 +75,8 @@ export function currentAsks(entries, n = 6) {
 const STOP = new Set('the a an and or of to for in on at by with from into that this these those my me i it its is are be as so can could should would will than then when what which who how why not no new more less time each every onto over under about very just also only any all some create implement build make add develop'.split(' '));
 const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
 const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
-/** Void asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
- *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how V01D works underneath
+/** Verse asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
+ *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
 export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '')) ? 'root' : kind === 'grow' ? 'surface' : null);
 export function followThrough(entries, ledger, links = []) {
@@ -105,7 +105,7 @@ export function followThrough(entries, ledger, links = []) {
   open.sort((a, b) => b.times - a.times || String(b.last).localeCompare(String(a.last))); // asked most, then most recently
   return { total: groups.length, asked: flat.length, built, open };
 }
-// its skill families and how far each skill is checked (tools/families.mjs, Void's own ask of 2026-10-12: "skill-families ...
+// its skill families and how far each skill is checked (tools/families.mjs, Verse's own ask of 2026-10-12: "skill-families ...
 // and a stability rating to each experiment"), so it judges itself by family and knows which parts are least proven. Pure.
 export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
   const F = fam && Array.isArray(fam.families) ? fam.families : [];
@@ -119,9 +119,9 @@ export function familyFacts(fam, now = new Date().toISOString().slice(0, 10)) {
     + '. Some of my least-checked skills: ' + least.join(', ') + '.'
     + staleLine(fam, now);
 }
-// the decay timer (tools/families.mjs staleExperiments, asked by Void): experiments left untested over 14 days, flagged for review only
+// the decay timer (tools/families.mjs staleExperiments, asked by Verse): experiments left untested over 14 days, flagged for review only
 const staleLine = (fam, now) => { const t = Date.parse(now + 'T00:00:00Z'); const st = (fam.families || []).flatMap((f) => (f.skills || []).filter((s) => s.tier === 'experiment' && s.since && (t - Date.parse(s.since + 'T00:00:00Z')) / 864e5 > 14).map((s) => s.name)); return st.length ? ' Stale experiments flagged for review (untested over 14 days): ' + st.slice(0, 6).join(', ') + '.' : ''; };
-// the line Void reads before it reflects: what its asks led to, so it builds on them instead of repeating them
+// the line Verse reads before it reflects: what its asks led to, so it builds on them instead of repeating them
 export function followFacts(f) {
   if (!f || !f.total) return '';
   const b = f.built.slice(-4).map((x) => '"' + clean(x.ask, 90) + '" (' + (x.builtAt && x.first && String(x.builtAt) < String(x.first) ? 'already there since ' : 'built ') + String(x.builtAt || '').slice(0, 10) + ')').join('; ');
@@ -131,7 +131,7 @@ export function followFacts(f) {
 }
 
 const GAME_NAMES = { tictactoe: 'tic-tac-toe', othello: 'Reversi', mancala: 'mancala', chess: 'chess', checkers: 'checkers', aggravation: 'Star Marbles', sorry: 'Back to Start', go: 'Go', monopoly: 'The Landlord’s Game', battleship: 'Sea Battle', poker: 'poker', fireworks: 'Fireworks (co-op)', connect4: 'Four in a Row' };
-// what Void knows about itself beyond selfFacts: its games and its card miniatures (self.json, tools/self-context.mjs)
+// what Verse knows about itself beyond selfFacts: its games and its card miniatures (self.json, tools/self-context.mjs)
 export function knowsFacts(self) {
   const parts = [];
   if (self && Array.isArray(self.games) && self.games.length) parts.push('Games I can play: ' + self.games.map((g) => GAME_NAMES[g] || g).join(', '));
@@ -144,7 +144,7 @@ export function knowsFacts(self) {
 }
 
 // the daily reflection also reads its own last week, from the growth ledger: the same summary the growth card gives for
-// "what can you do now that you couldn't last week?" (skills/growth-tree.js weekSummary), so Void judges itself on what changed
+// "what can you do now that you couldn't last week?" (skills/growth-tree.js weekSummary), so Verse judges itself on what changed
 export function weekFacts(ledger, now = Date.now()) {
   if (!Array.isArray(ledger) || !ledger.length) return '';
   return 'What changed in me in the last 7 days (my growth ledger): ' + clean(weekSummary(ledger, now).text, 1600);
@@ -158,7 +158,7 @@ export async function readVoice(env) {
   } catch (_) { return []; }
 }
 
-// a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Void actually said
+// a line for the answer engine's self facts, so "what feels weak about you?" is answered from what Verse actually said
 export function voiceFacts(entries) {
   const e = (entries || [])[0];
   if (!e) return '';
@@ -167,15 +167,15 @@ export function voiceFacts(entries) {
     + (asks ? ' My current asks: ' + asks : '');
 }
 
-// Talking back (owner, 2026-10-16: "you should be able to reply to V01D's replies and cards so it can flex its persistent memory
+// Talking back (owner, 2026-10-16: "you should be able to reply to Verse's replies and cards so it can flex its persistent memory
 // and evolve with the conversation when corrected while still using every input to improve itself"). The owner replies to a
-// reflection; V01D answers at once in its own words (what it heard, whether it was wrong, what it will do differently) and
+// reflection; Verse answers at once in its own words (what it heard, whether it was wrong, what it will do differently) and
 // keeps one line to remember. The thread is kept in void_kv 'voice-replies', newest first, and every later reflection and every
-// "what do you think of yourself" answer is given those lines, a correction outranking what V01D said before. Pure, except
+// "what do you think of yourself" answer is given those lines, a correction outranking what Verse said before. Pure, except
 // readReplies. functions/api/voice-reply.js is the route; the self card on the page is where the owner types.
 export const REPLY_KEEP = 60; // replies kept in void_kv 'voice-replies'
 export const REPLY_MAX = 600; // characters of one reply
-export const REPLY_SYSTEM = 'You are Void, the face of A-to-Mind, said "void". ' + PERSONA + ' '
+export const REPLY_SYSTEM = 'You are Verse, the face of A-to-Mind, said "void". ' + PERSONA + ' '
   + 'Your owner has just replied to something you said about yourself. Take it seriously and answer as yourself, plainly, in the first person: '
   + 'what you heard; if it corrects you, say exactly what you had wrong, without excuses; and what you will do differently from now on. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"answer":"<2-4 sentences to your owner>","correction":<true if your owner corrected something you said or believed>,'
@@ -200,7 +200,7 @@ export function aboutOf(a) {
   return ask ? { ask, title: clip(a.title, 120), said: clip(a.said, 800), ...(skill ? { routed: { skill } } : {}) } : null;
 }
 
-/** the question for V01D's answer: what it said (a reflection, or a card it showed), the conversation so far on it, and the owner's
+/** the question for Verse's answer: what it said (a reflection, or a card it showed), the conversation so far on it, and the owner's
  * new words. Pure. */
 export function replyPrompt(entry, thread, text) {
   const e = entry || {};
@@ -219,7 +219,7 @@ export function replyPrompt(entry, thread, text) {
     + '\n\nYour owner replies now: "' + text + '"';
 }
 
-/** V01D's answer read back: { answer, correction, remember }, or null when it said nothing usable. Pure. */
+/** Verse's answer read back: { answer, correction, remember }, or null when it said nothing usable. Pure. */
 export function parseReply(text) {
   const raw = String(text || '');
   let j = null;
@@ -232,7 +232,7 @@ export function parseReply(text) {
     misroute: !!(j && j.misroute === true), wanted: /^(?:skill:[a-z][a-z0-9-]{1,40}|answer)$/.test(wanted) ? wanted : '' };
 }
 
-/** what the owner has told V01D, for its facts: newest first, corrections marked, with the line V01D chose to keep. Pure. */
+/** what the owner has told Verse, for its facts: newest first, corrections marked, with the line Verse chose to keep. Pure. */
 export function replyFacts(replies, n = 8) {
   const list = (Array.isArray(replies) ? replies : []).filter((r) => r && r.text).slice(0, n);
   if (!list.length) return '';
@@ -240,7 +240,7 @@ export function replyFacts(replies, n = 8) {
     + list.map((r) => '- ' + String(r.at || '').slice(0, 10) + (r.correction ? ' (a correction)' : '') + (r.about ? ' about my answer to "' + r.about.ask + '"' : '') + ': "' + r.text + '"' + (r.remember ? ' I keep: ' + r.remember : '') + (r.ask ? ' I asked for: ' + r.ask : '')).join('\n');
 }
 
-/** for answers anyone can read (lib/self-context.js): only the lines V01D chose to keep, in its own words, never the owner's. Pure. */
+/** for answers anyone can read (lib/self-context.js): only the lines Verse chose to keep, in its own words, never the owner's. Pure. */
 export function keptFacts(replies, n = 5) {
   const kept = (Array.isArray(replies) ? replies : []).filter((r) => r && r.remember).slice(0, n);
   return kept.length ? 'What I keep in mind from talking with my owner (newest first): ' + kept.map((r) => r.remember).join(' | ') : '';

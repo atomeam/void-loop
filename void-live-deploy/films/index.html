@@ -70,7 +70,7 @@
 </head>
 <body>
 <main>
-  <!-- Void's films, for everyone (owner, 2026-10-15: "just give the films to everyone they arent anything special yet anyway").
+  <!-- Verse's films, for everyone (owner, 2026-10-15: "just give the films to everyone they arent anything special yet anyway").
        The films live in Cloudflare R2 behind functions/api/films.js: anyone gets the list, and each film plays from a signed link
        that runs out in hours. .github/workflows/record.yml adds one a day. The owner also gets the steps to post one to YouTube:
        download it, copy its words, open YouTube's upload page. Nothing here uploads anything by itself. -->
@@ -79,7 +79,7 @@
   <h1 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h1>
   <p class="sub">Every day Verse films one of its own experiments. Watch them free, and post any of them anywhere: every film is an ad for Verse, and anyone can upload it.</p>
   <!-- no sign-in here (owner, 2026-10-15: "i just need the sign in gone honestly just give the films to everyone"): everyone gets
-       the films. A sign-in this browser already holds (the owner's, a member's from V01D) still brings the owner's YouTube steps
+       the films. A sign-in this browser already holds (the owner's, a member's from Verse) still brings the owner's YouTube steps
        and the review box, without asking. -->
   <div id="watch"></div>
   <p id="status">Loading the films…</p>
@@ -178,7 +178,7 @@
       if (!r.ok) throw new Error(String(r.status));
       const films = j.films || [];
       if (!films.length) { status.textContent = 'No films yet: the first arrives with the next daily recording.'; return; }
-      // V01D Tube (owner, 2026-10-15: "V01D should be its own version of YouTube"): the channel grid, and a watch page per video
+      // Verse Tube (owner, 2026-10-15: "Verse should be its own version of YouTube"): the channel grid, and a watch page per video
       // at /films/?v=<id> with its player, words, views, share and upload buttons and related videos
       const views = await fetch('/api/film-views?ids=' + films.map((f) => f.id).join(',')).then((x) => x.json()).then((x) => x.views || {}).catch(() => ({}));
       const vlabel = (id) => { const n = views[id] || 0; return n.toLocaleString() + (n === 1 ? ' view' : ' views'); };

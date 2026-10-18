@@ -1,5 +1,5 @@
-// node tools/chess-thinking.test.mjs: while Void searches a chess move, the card says how far it has looked and what it leans
-// to (asked by Void, ask-20261012-2345-3 / ask-20261012-2247-1: "a real-time reasoning or status line near the board during
+// node tools/chess-thinking.test.mjs: while Verse searches a chess move, the card says how far it has looked and what it leans
+// to (asked by Verse, ask-20261012-2345-3 / ask-20261012-2247-1: "a real-time reasoning or status line near the board during
 // long-running calculations"). bestMove reports each finished depth; thinkingLine words it.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

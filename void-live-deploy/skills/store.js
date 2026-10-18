@@ -1,12 +1,12 @@
 /**
- * store skill: "what can I buy" -> V01D's store, from the same catalog the /store page and /api/store use (lib/store.js).
+ * store skill: "what can I buy" -> Verse's store, from the same catalog the /store page and /api/store use (lib/store.js).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { buyAnswer, STORE_PRODUCTS, gumroadUrl, price } from '../lib/store.js';
 
-// The store preview, folded into this card (asked by Void, ask-20261015-0619-1; owner: "most skills can be combined"): "what's new in
+// The store preview, folded into this card (asked by Verse, ask-20261015-0619-1; owner: "most skills can be combined"): "what's new in
 // the store" shows a carousel of the newest products; a buy link only for a live product with a Gumroad listing; soon stays off.
-const PREVIEW_ASK = /^(?:so\s+)?(?:what'?s|what is|whats|anything)\s+new\s+(?:in|at|on)\s+(?:the|your|v01d'?s|void'?s)\s+(?:store|shop)\??$|^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:store|shop)\s+(?:preview|carousel)$|^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:new|newest|latest)\s+(?:store\s+)?products?(?:\s+in\s+(?:the|your)\s+store)?\??$|^(?:new|newest|latest)\s+(?:in|from)\s+(?:the|your)\s+store\??$|^preview\s+(?:the|your)\s+store$|^store$/;
+const PREVIEW_ASK = /^(?:so\s+)?(?:what'?s|what is|whats|anything)\s+new\s+(?:in|at|on)\s+(?:the|your|(?:verse|v01d)'?s|(?:verse|void)'?s)\s+(?:store|shop)\??$|^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:store|shop)\s+(?:preview|carousel)$|^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:new|newest|latest)\s+(?:store\s+)?products?(?:\s+in\s+(?:the|your)\s+store)?\??$|^(?:new|newest|latest)\s+(?:in|from)\s+(?:the|your)\s+store\??$|^preview\s+(?:the|your)\s+store$|^store$/;
 export const previewAsk = (text) => PREVIEW_ASK.test(String(text || '').toLowerCase().trim().replace(/[’']/g, "'").replace(/\s+/g, ' ').replace(/[.!]+$/, ''));
 
 /** newest first, at most n; each with its gated link. Pure. */

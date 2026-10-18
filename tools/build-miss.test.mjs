@@ -75,7 +75,7 @@ test('the fill replaces exactly the WHEN line, the ANSWER line, the examples lis
   let html = ''; s.run(ASK, { esc: (t) => String(t), showPage: (b) => b({ set innerHTML(v) { html = v; } }) });
   assert.match(html, /About 2,000 steps/); assert.match(html, /Source: a stride of 2\.5 feet/);
   // a source the card's string cannot hold is replaced by a plain marker, never dropped into the code
-  assert.match(applyFill(scaffold, { ask: ASK, answer: 'About two thousand steps, give or take, for most adults walking at a normal pace.', phrasings: [], source: "it's ' + fetch('/x') + '" }).text, /Source: V01D \(not yet verified\)/);
+  assert.match(applyFill(scaffold, { ask: ASK, answer: 'About two thousand steps, give or take, for most adults walking at a normal pace.', phrasings: [], source: "it's ' + fetch('/x') + '" }).text, /Source: Verse \(not yet verified\)/);
 });
 
 test('the fill refuses what a card never carries: code, links, keys, markup, stub text, a one-word answer, and a scaffold that is not new-skill\'s', async () => {
@@ -126,7 +126,7 @@ test('a passing patch touches exactly the five files: the skill, its order file,
 });
 
 test('the queue note says which step stopped it, or that it is a pull request; never the ask', () => {
-  assert.equal(noteFor({ passed: false, failed: 'ask', detail: 'the page answered with article, not skill:steps' }), 'V01D built a skill draft that failed at: ask (the page answered with article, not skill:steps); a builder takes it from here');
-  assert.equal(noteFor({ passed: true, name: 'steps' }), 'V01D built the steps skill from the miss board: it passed ' + STEPS.join(', ') + '; see the pull request labelled "made by V01D"');
+  assert.equal(noteFor({ passed: false, failed: 'ask', detail: 'the page answered with article, not skill:steps' }), 'Verse built a skill draft that failed at: ask (the page answered with article, not skill:steps); a builder takes it from here');
+  assert.equal(noteFor({ passed: true, name: 'steps' }), 'Verse built the steps skill from the miss board: it passed ' + STEPS.join(', ') + '; see the pull request labelled "made by Verse"');
   assert.deepEqual(STEPS, ['collisions', 'overlap', 'unit test', 'ask', 'map', 'void review']);
 });

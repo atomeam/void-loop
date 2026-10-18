@@ -1,6 +1,6 @@
 // node --test tools/own-work-prose.test.mjs (paraphrased cases, 2026-10-15):
 // 1. a long pasted status note that mentions "air quality" must not fire the air card (or any keyword card) with the paste as a city;
-// 2. a note about V01D's own cards/routing/fixes is a self ask, answered from V01D's facts with a rule against third-party troubleshooting.
+// 2. a note about Verse's own cards/routing/fixes is a self ask, answered from Verse's facts with a rule against third-party troubleshooting.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { isLongProse, LONG_OK } from '../void-live-deploy/lib/ask-text.js';

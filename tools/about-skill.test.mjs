@@ -1,5 +1,5 @@
-// "tell me about <a skill of V01D's>" (asked by Void): lib/about-skill.js and skills/about-skill.js against the real book, the real
-// ratings and the real overlap pairs: every example resolves to its skill, every near miss (Wikipedia's topics, V01D's self page) to
+// "tell me about <a skill of Verse's>" (asked by Verse): lib/about-skill.js and skills/about-skill.js against the real book, the real
+// ratings and the real overlap pairs: every example resolves to its skill, every near miss (Wikipedia's topics, Verse's self page) to
 // nothing, the resolve rule holds (named: any page; tagged or bare: an exact hit, bare also a coined name), and the card's facts are right.
 import test from 'node:test';
 import assert from 'node:assert/strict';

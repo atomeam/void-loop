@@ -1,4 +1,4 @@
-// void-seal — V01D's card art, drawn in the browser from a seed (owner, 2026-10-18: the ink plates "suck"; the art should be epic, the void
+// void-seal — Verse's card art, drawn in the browser from a seed (owner, 2026-10-18: the ink plates "suck"; the art should be epic, the void
 // itself: deep black, light moving through it). Same key, same picture, on every device, with no model and nothing sent anywhere.
 // The picture is a field of light: a seeded flow field (value noise, the field minds' law) traced by a few thousand particles in additive
 // light, a nebula under it, a sacred-geometry lattice and a burning core (the void looking back), star dust, a glitch tear and a bloom.
@@ -185,7 +185,7 @@ export function drawSeal(ctx, w, h, p) {
 }
 
 // On the card: the art box (.vc-art) gets the seal as a picture under any painted art (lib/card-forge.js lays its image over it) and over
-// V01D's ink plate (lib/card-art.js, kept for where no canvas runs and for the saved SVG). Drawn when the browser is idle, once per key and
+// Verse's ink plate (lib/card-art.js, kept for where no canvas runs and for the saved SVG). Drawn when the browser is idle, once per key and
 // size per page (a rebuilt frame reuses the picture). A real photo of the thing is never covered.
 export const SEAL_CSS = '.vcard .vc-art>img.vc-seal{position:absolute;inset:0;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;margin:0!important;object-fit:cover;display:block;animation:vc-seal-in .6s ease-out 1}.vcard .vc-art.vc-sealed>svg{visibility:hidden}@keyframes vc-seal-in{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:reduce){.vcard .vc-art .vc-seal{animation:none}}';
 const made = new Map();

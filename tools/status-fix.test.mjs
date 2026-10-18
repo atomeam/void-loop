@@ -1,4 +1,4 @@
-// The status card's suggested fix and recovery button (asked by Void): node --test tools/status-fix.test.mjs
+// The status card's suggested fix and recovery button (asked by Verse): node --test tools/status-fix.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fixOf, recoverSkill, recoverJob, recover, statusHtml, SELF_SKILLS } from '../void-live-deploy/skills/status.js';
@@ -10,7 +10,7 @@ test('a red check becomes the two commands that find and ship its repair, for th
   assert.match(fixOf('check timeout: no check finished within 300 s').cmd, /VOID_TRACE=1/);
 });
 
-test('the recovery picks the best-fitting skill of the Void itself family, v01d-fixes when none fits', () => {
+test('the recovery picks the best-fitting skill of the Verse itself family, v01d-fixes when none fits', () => {
   assert.equal(recoverSkill(['merge log: the card lists what merged']), 'merges');
   assert.equal(recoverSkill(['automations: my automations opens the rules']), 'automations');
   assert.equal(recoverSkill(['calendar: add a meeting']), 'v01d-fixes');

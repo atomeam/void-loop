@@ -8,7 +8,7 @@
  */
 import { liveLine } from '../lib/reefwatch.js';
 import { cleanLower } from '../lib/ask-text.js';
-import { doseForecast, doseLines, MARINE_URL, WX_URL, KEYS } from '../lib/heat-dose.js'; // asked by Void: the 48-hour projected dose
+import { doseForecast, doseLines, MARINE_URL, WX_URL, KEYS } from '../lib/heat-dose.js'; // asked by Verse: the 48-hour projected dose
 
 export const ACCRETION_SOURCES = [
   { date: '2025', name: 'Toth et al., Scientific Reports', href: 'https://doi.org/10.1038/s41598-025-04818-3' },

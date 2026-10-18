@@ -1,8 +1,8 @@
 # Product gaps become products (tools/store-gap.mjs). Every few hours: take one queued `store-gap:<topic>` job (3+ asks for something
-# V01D doesn't sell, lib/product-gap.js), have V01D write the kit, test the files, price it with lib/appraise.js, upload the zip to R2,
+# Verse doesn't sell, lib/product-gap.js), have Verse write the kit, test the files, price it with lib/appraise.js, upload the zip to R2,
 # and open a PR with the catalog row + public changelog entry; automerge.yml merges it on green. Needs VOID_OWNER_TOKEN (queue) and
 # CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID with R2 write; without them every run is a quiet no-op.
-name: Void builds store gaps
+name: Verse builds store gaps
 
 on:
   schedule:
@@ -47,6 +47,6 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add domains/store.products.json domains/store.clips.jsonl void-live-deploy/lib/store-products.js void-live-deploy/store/changelog.json docs/store-changelog.md
-          git commit -q -m "store: V01D publishes a product people asked for (tools/store-gap.mjs)"
+          git commit -q -m "store: Verse publishes a product people asked for (tools/store-gap.mjs)"
           git push -q origin "$branch"
-          gh pr create --base main --head "$branch" --title "store: new V01D product from a product gap" --body "Built by tools/store-gap.mjs from a queued store-gap job: files tested, no trademarks, priced by lib/appraise.js (why-note in the public changelog)."
+          gh pr create --base main --head "$branch" --title "store: new Verse product from a product gap" --body "Built by tools/store-gap.mjs from a queued store-gap job: files tested, no trademarks, priced by lib/appraise.js (why-note in the public changelog)."

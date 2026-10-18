@@ -1,4 +1,4 @@
-// Frontier #5, the first piece: Void plays Connect Four against itself (lib/arena.js), the stronger version is kept, and the
+// Frontier #5, the first piece: Verse plays Connect Four against itself (lib/arena.js), the stronger version is kept, and the
 // ratings come out of the games, not a claim. Run: node --test tools/arena.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

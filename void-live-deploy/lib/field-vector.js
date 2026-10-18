@@ -1,5 +1,5 @@
 // field-vector — F-033, the evolving vector field mind (Grok's frontier idea, asked by the owner, 2026-10-17: "all of Grok's ideas are to be
-// added to Void"; draft atomeam/a-to-mind.com drafts/F033-vector-field-mind). Particles are carried by a coarse 8x6 grid of control vectors
+// added to Verse"; draft atomeam/a-to-mind.com drafts/F033-vector-field-mind). Particles are carried by a coarse 8x6 grid of control vectors
 // (angle and magnitude per cell, 48 vectors), and a small evolutionary mind (6 genomes) reshapes that grid for the flow it wants: spread-out
 // paths, moderate energy, and particles near where someone is pointing. This is the pure law: genome, bilinear field, advection step, the
 // field's REAL local divergence and curl (central finite differences on the control grid, not the draft's global sums), the fitness

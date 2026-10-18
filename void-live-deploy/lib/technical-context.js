@@ -1,5 +1,5 @@
 /**
- * Technical context (asked by Void: "Map the 'Rust unwrap' example sentences to a new 'technical-context' skill that triggers a
+ * Technical context (asked by Verse: "Map the 'Rust unwrap' example sentences to a new 'technical-context' skill that triggers a
  * visual 'caution' or 'risk' shape on the stage"). A programmer's term whose danger the code review already knows (Rust's
  * unwrap, a force unwrap, shell=True, strcpy ...) comes with the sentence that explains it, the line that goes wrong, the
  * safer line, and a caution shape on the stage. The risk words are the review's own (lib/code-review.js RULES): the test

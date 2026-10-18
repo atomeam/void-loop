@@ -1,4 +1,4 @@
-// The print ledger (asked by Void: "establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical
+// The print ledger (asked by Verse: "establish a feedback loop between 'print-file' and 'inventory' so I know exactly what physical
 // assets exist"). Every file that left for a printer from this browser leaves one record here: the forge's STLs (skills/forge.js
 // printOrRefuse, after the file passed its check) and the stage's 3MF (skills/print-file.js, after its check). The inventory
 // reads it: "what have I printed" lists the files, the things, the recipe ids and the grams of PLA they add up to. Kept in this

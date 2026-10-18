@@ -11,7 +11,7 @@ import will  # noqa: E402  (importing it must not need the token or call the net
 
 class Learnable(unittest.TestCase):
     """Owner, 2026-10-16 ("for the love of God clear this list"): 'tell me about blorptangle', asked 64 times, sat at the top of
-    Void's wants. Every source had been read and none knew it (fallback none:wikipedia,wiktionary): there is nothing to learn
+    Verse's wants. Every source had been read and none knew it (fallback none:wikipedia,wiktionary): there is nothing to learn
     about a thing that does not exist, so such a miss is never a want. A miss a skill half-caught, or one no source could be
     reached for, still is."""
 

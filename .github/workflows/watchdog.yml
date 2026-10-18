@@ -1,9 +1,9 @@
-# Void watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
+# Verse watchdog: the loop checks itself. Once a day (and on demand) it runs the full suite on main; on Sundays the everyday
 # benchmark and the grown replay too. A daily run is skipped when main has not moved since the last green watchdog run, so a
 # quiet day costs about a minute. If anything fails it opens one issue (or comments on the open one) with the failing run,
 # so the next agent fixes it first; when main is green again it closes that issue. No secrets needed.
 # (Once a day rather than every six hours: GitHub Free gives a private repo 2,000 Actions minutes a month.)
-name: Void watchdog
+name: Verse watchdog
 
 on:
   schedule:
@@ -60,7 +60,7 @@ jobs:
           OUTCOME: ${{ steps.test.outcome }}
         with:
           script: |
-            const title = 'Void watchdog: main is failing';
+            const title = 'Verse watchdog: main is failing';
             const { data: open } = await github.rest.issues.listForRepo({ owner: context.repo.owner, repo: context.repo.repo, state: 'open', labels: 'watchdog' });
             const run = `${context.serverUrl}/${context.repo.owner}/${context.repo.repo}/actions/runs/${context.runId}`;
             if (process.env.OUTCOME === 'success') {
@@ -75,10 +75,10 @@ jobs:
             else await github.rest.issues.create({ owner: context.repo.owner, repo: context.repo.repo, title, body, labels: ['watchdog'] });
             core.setFailed('main failed the check');
 
-  # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Void's closer read on the PRs merged in the
+  # The reviewer's own scoreboard, once a week (frontier #1): tools/review-learn.mjs reads Verse's closer read on the PRs merged in the
   # last 30 days, counts the findings its rules had already flagged and the false claims it filtered, and writes the numbers to
-  # void-live-deploy/review-stats.json; /code-review/ shows them ("this month Void's rules caught N of M findings its closer read
-  # made; K rules learned"). The commit goes straight to main like Void's voice does (void-voice.yml); main's deploy carries it.
+  # void-live-deploy/review-stats.json; /code-review/ shows them ("this month Verse's rules caught N of M findings its closer read
+  # made; K rules learned"). The commit goes straight to main like Verse's voice does (void-voice.yml); main's deploy carries it.
   review-stats:
     if: github.event.schedule == '17 10 * * 0' || (github.event_name == 'workflow_dispatch' && inputs.stats)
     runs-on: ubuntu-latest

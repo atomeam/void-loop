@@ -1,6 +1,6 @@
 /**
- * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: V01D wrote 'Talk to Me (2022)' from memory; "have it find the
- * actual movies it suggests ... and play right in v01d"). V01D suggests titles, then each is looked up at /api/movies (iTunes Search + the
+ * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: Verse wrote 'Talk to Me (2022)' from memory; "have it find the
+ * actual movies it suggests ... and play right in v01d"). Verse suggests titles, then each is looked up at /api/movies (iTunes Search + the
  * Internet Archive, lib/movies.js). A verified movie gets its own card: its poster as the card's art, year, genre, the source's one-line overview,
  * and what plays here: a public-domain / Creative Commons film from the Internet Archive plays in a <video>; an official trailer plays from Apple's
  * CDN; an in-copyright film gets the trailer and where-to-watch links, never a pirate source. A title no source knows is listed as "not verified".
@@ -25,7 +25,7 @@ const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes
 export function movieCard(f, esc) {
   if (!f.verified) return '<h2>' + esc(f.title) + (f.year ? ' (' + f.year + ')' : '') + '</h2><p>Not verified: no source I check knows a movie by this name, so I will not state anything about it.</p>';
   const price = [money(f.price, f.currency) && 'buy ' + money(f.price, f.currency), money(f.rentPrice, f.currency) && 'rent ' + money(f.rentPrice, f.currency)].filter(Boolean).join(' · ');
-  // the structured facts (asked by Void, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
+  // the structured facts (asked by Verse, 2026-10-17): only what the source returned, never a guess; iTunes gives no cast, so none is shown
   const facts = [['Year', f.year], ['Genre', f.genre], ['Rated', f.rating], ['Director', f.director], ['Runtime', f.runtime ? f.runtime + ' min' : '']].filter((x) => x[1]);
   const meta = '<dl class="mv-facts" style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:6px 0">' + facts.map((x) => '<dt style="color:var(--muted,#9a9aa2)">' + x[0] + '</dt><dd style="margin:0">' + esc(x[1]) + '</dd>').join('') + '</dl>'
     + '<a href="#" class="mv-json" data-ask="film metadata for ' + esc(f.title) + '">Full metadata as JSON</a>';

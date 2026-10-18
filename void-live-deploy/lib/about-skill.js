@@ -1,7 +1,7 @@
-// about-skill - the pure half of "tell me about <a skill of V01D's>" (asked by Void: "Learn how to handle 'tell me about zorbleflux'
+// about-skill - the pure half of "tell me about <a skill of Verse's>" (asked by Verse: "Learn how to handle 'tell me about zorbleflux'
 // (asked 156 times)"; the zorbleflux ask itself is answered by skills/zorbleflux.js, this is the gap behind it: "tell me about the
 // chess skill" went to Wikipedia and was noted as a miss). An ask of the shape "tell me about X", "what is X", "what's X",
-// "explain X", "how does X work", "how do i use X" is about a skill when X resolves to a page of V01D's own book (skills/guide.json,
+// "explain X", "how does X work", "how do i use X" is about a skill when X resolves to a page of Verse's own book (skills/guide.json,
 // pageFor in skills/guide.js: by name, title or one of its examples). Wikipedia topics keep their route: a bare one-word X
 // ("what is time", "tell me about music") stays a world question even when a skill shares the word; X resolves bare only when it is
 // a coined name (two words or a hyphen: "what is family health") and exactly a name, title or example; naming it ("the chess
@@ -24,11 +24,11 @@ const PHRASES = [
   /^how do (?:i|you|we) use (.+)$/,
   /^how to use (.+)$/,
 ];
-const OWN = /^(?:(?:the|a|an)\s+)?(?:(?:your|v01d'?s?|void'?s?|its)\s+)/; // "your chess", "v01d's forge": named as V01D's own
-const MARK = /\s+(?:skill|ability|feature)$/; // "the chess skill": the one V01D has, not the thing in the world
-const TAG = /\s+(?:card|game|tool|thing|page)$/; // "the weather card", "the chess game": V01D's if it has exactly that, else the world's ("a sim card")
+const OWN = /^(?:(?:the|a|an)\s+)?(?:(?:your|(?:verse|v01d)'?s?|(?:verse|void)'?s?|its)\s+)/; // "your chess", "v01d's forge": named as Verse's own
+const MARK = /\s+(?:skill|ability|feature)$/; // "the chess skill": the one Verse has, not the thing in the world
+const TAG = /\s+(?:card|game|tool|thing|page)$/; // "the weather card", "the chess game": Verse's if it has exactly that, else the world's ("a sim card")
 
-/** the X of an about-ask and how it was pointed at V01D: { topic, named, tagged } or null when the ask has another shape.
+/** the X of an about-ask and how it was pointed at Verse: { topic, named, tagged } or null when the ask has another shape.
  *  named: "your X", "v01d's X", "the X skill"; tagged: "the X card", "the X game". Pure. */
 export function parseAsk(text) {
   const t = CLEAN(text).replace(LEAD, '');

@@ -6,8 +6,8 @@ import { proposalOf, growthLine, appendLine } from './digest-proposal.mjs';
 const digest = (last) => '# Weekly digest\n\nA lot happened.\n\n- one\n- two\n\n' + last + '\n';
 
 test('digest-proposal: the last "Proposal:" line is the proposal, in plain or bold form, without its final full stop', () => {
-  assert.deepEqual(proposalOf(digest('Proposal: let Void learn to read tide tables from the harbour offices’ open data.')), { proposal: 'let Void learn to read tide tables from the harbour offices’ open data' });
-  assert.equal(proposalOf(digest('**Proposal:** teach Void to say when a source it quoted has changed since last week')).proposal, 'teach Void to say when a source it quoted has changed since last week');
+  assert.deepEqual(proposalOf(digest('Proposal: let Verse learn to read tide tables from the harbour offices’ open data.')), { proposal: 'let Verse learn to read tide tables from the harbour offices’ open data' });
+  assert.equal(proposalOf(digest('**Proposal:** teach Verse to say when a source it quoted has changed since last week')).proposal, 'teach Verse to say when a source it quoted has changed since last week');
   assert.equal(proposalOf('# d\r\n\r\nProposal: try a weekly check on the bake-off winner against last month.\r\n\r\n').proposal, 'try a weekly check on the bake-off winner against last month');
   assert.match(proposalOf('Proposal: a proposal in the middle is not the end\n\nand then more text after it').error, /does not end with/);
   assert.match(proposalOf('').error, /does not end with/);

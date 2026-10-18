@@ -1,4 +1,4 @@
-// Void's incident asks: the warning style lock, the Go-against-V01D log, the drill-down from a stability sparkline. Run: node --test tools/autopsy-asks.test.mjs
+// Verse's incident asks: the warning style lock, the Go-against-Verse log, the drill-down from a stability sparkline. Run: node --test tools/autopsy-asks.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { autopsy, autopsyHtml, GO_LOG, isGoLog } from '../void-live-deploy/lib/autopsy.js';
 import { WARNING_LOCK } from '../void-live-deploy/lib/art-rules.js';

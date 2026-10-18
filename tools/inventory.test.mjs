@@ -1,4 +1,4 @@
-// The inventory knows what Void can make in the world (Void's ask, 2026-10-10: "a feedback loop between print-file and
+// The inventory knows what Verse can make in the world (Verse's ask, 2026-10-10: "a feedback loop between print-file and
 // inventory so I know exactly what physical assets exist"): "what can you print" lists every forge thing whose file passes
 // the same check "print it" runs (forge-rules.js verifyStl), with its size and weight, and holds back any that fails with
 // the reason. Nothing about any visitor is kept: the list is computed from the recipes on each ask.

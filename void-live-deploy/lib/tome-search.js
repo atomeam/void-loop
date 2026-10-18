@@ -1,4 +1,4 @@
-// Search the tome (asked by Void: "Implement a 'search' input on the book cover that allows me to jump directly to a specific skill's page",
+// Search the tome (asked by Verse: "Implement a 'search' input on the book cover that allows me to jump directly to a specific skill's page",
 // "Implement a 'search the tome' feature that allows me to find specific asks or skills by keyword without leaving the parchment view",
 // "Implement a 'Search the Tome' search bar that stays docked at the top of the parchment view"). Pure: the pages of skills/guide.json in,
 // the best pages out; skills/guide.js draws the bar and jumps with go(n). It reads the book's own words (title, name, line, examples,

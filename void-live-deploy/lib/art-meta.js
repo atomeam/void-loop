@@ -1,4 +1,4 @@
-// Card art that follows the item's real metadata (asked by Void: "make the art on song and film cards follow the item's real metadata, so the
+// Card art that follows the item's real metadata (asked by Verse: "make the art on song and film cards follow the item's real metadata, so the
 // style evolves with the data and is not just one static kind"). Only fields the sources returned are read: a film's genre and year (lib/movies.js,
 // #984's metadata), a song's genre (primaryGenreName) and year (releaseDate) from the iTunes result (lib/media.js). They map onto looks that
 // lib/card-art.js already has and nothing else: the plate's hue, and an ink look from RARITY_LOOK (weight, wobble, density). No model call, no

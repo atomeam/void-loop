@@ -1,6 +1,6 @@
 /**
- * pong-rules — Void Pong in plain JS (no DOM), shared by the card (skills/pong.js) and its tests.
- * A table tennis classic (the 1972 game's mechanics; name and look are V01D's own). You are the left paddle; V01D plays
+ * pong-rules — Verse Pong in plain JS (no DOM), shared by the card (skills/pong.js) and its tests.
+ * A table tennis classic (the 1972 game's mechanics; name and look are Verse's own). You are the left paddle; Verse plays
  * the right one: it reads the ball's path off the walls and moves there at a capped speed with a small aim error, so it
  * is beatable. First to 7 wins. Units: the court is W x H, the ball moves in units per second.
  *   create() -> state    step(s, dt, input?) -> s (mutates)    voidAim(s) -> y    predictY(s) -> y
@@ -15,7 +15,7 @@ export function serve(s) {
   const a = (rand(s) - 0.5) * 0.9, sp = 210;
   s.ball = { x: W / 2, y: H / 2, vx: Math.cos(a) * sp * s.serve, vy: Math.sin(a) * sp }; s.rally = 0; s.aimErr = 0;
 }
-/** Where the ball will cross V01D's paddle line, bouncing off the top and bottom walls. */
+/** Where the ball will cross Verse's paddle line, bouncing off the top and bottom walls. */
 export function predictY(s) {
   const b = s.ball; if (b.vx <= 0) return H / 2;
   const t = (W - PAD_W - BALL / 2 - b.x) / b.vx; let y = b.y + b.vy * t;

@@ -1,4 +1,4 @@
-// The void seal (void-live-deploy/lib/void-seal.js): V01D's procedural card art. Same key, same plan; a different key, a different picture;
+// The void seal (void-live-deploy/lib/void-seal.js): Verse's procedural card art. Same key, same plan; a different key, a different picture;
 // rarity sets the light, the kind the core, the family hue the colour. Run: node --test tools/void-seal.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';

@@ -1,7 +1,7 @@
 /**
  * void-ring — a summoned circle drawn as something alive instead of a CSS border (Adam, 2026-10-09): a WebGL ring whose
  * radius breathes with slow noise, a feathered dark hole that pulls inward like an eclipse, a faint glow bleeding into
- * the black, and it reacts to the "Ask the Void" box: as you type it turns faster, brightens and draws in, then settles.
+ * the black, and it reacts to the "Ask the Verse" box: as you type it turns faster, brightens and draws in, then settles.
  * Not a skill: void.html's mountShape loads it for circles only, so the empty page loads none of it. One small raw WebGL
  * canvas per circle (no three.js), kept per id so the stage re-rendering never makes a new context. Reduced motion: still.
  *   ringCanvas(id, color) -> canvas (or null where WebGL can't run: the caller keeps its CSS ring)
