@@ -15,6 +15,7 @@ import { bar as shareBar, SHARE_CSS } from './card-share.js';
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
+import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf } from './card-subject.js';
 
 export const RARITY = {
@@ -85,7 +86,7 @@ export const CARD_CSS = [
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
   '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px;line-height:1.2;overflow-wrap:anywhere;min-width:0}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:132px;margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.28;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/9;max-height:min(300px,38vh);margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.28;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -106,7 +107,7 @@ export const CARD_CSS = [
   '.vpage.vcard.vc-evolving{animation:vc-evolve 2.6s ease-out 1}.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffd27a}',
   '@media (prefers-reduced-motion:reduce){.vpage.vcard.vc-evolving{animation:none;outline:3px solid #ffd27a}}',
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
-].join('') + FORGE_CSS + SHARE_CSS;
+].join('') + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
 // Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
 // test passes"): a skill's rating only rises when new evidence arrives (tools/families.mjs). This browser remembers the rating it last showed
@@ -186,6 +187,7 @@ export function keep(el, esc, stats) {
   tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   let anchor = null; for (let n = el.lastElementChild; n && trailing(n); n = n.previousElementSibling) anchor = n;
   for (const n of [...tpl.content.childNodes]) el.insertBefore(n, anchor);
+  if (!photo) sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): V01D's procedural art under any painted picture
   forge(el, c, !!photo); // the Art Forge (lib/card-forge.js): painted art for an answer or merged card, or a "paint this card" button
   shareBar(el); // copy card / save card (lib/card-share.js)
   const up = name && c.rarity ? noteTier(name, (lookup(stats, name).skill || {}).tier) : null; // a rating that rose since this browser last saw the skill

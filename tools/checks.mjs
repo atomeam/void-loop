@@ -26,6 +26,7 @@ for (const [name, file] of [
   ['untested-unit', 'untested.test.mjs'],
   ['typo-audit', 'typo-audit.test.mjs'],
   ['label', 'label.test.mjs'],
+  ['void-seal', 'void-seal.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],

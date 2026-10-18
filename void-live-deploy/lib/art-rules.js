@@ -6,7 +6,7 @@
 import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
-export const SUBJECT_RAW_MAX = 120, IMG_MAX = 700000, IMG_MIN = 8000; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
+export const SUBJECT_RAW_MAX = 120, IMG_MAX = 1400000, IMG_MIN = 8000, ART_W = 1024, ART_H = 576; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
 export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument' };
 const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a halo of arcane sigils', rare: 'warm gold light, floating glyphs', uncommon: 'cool silver light, faint runes', common: 'moody indigo light, soft mist' };

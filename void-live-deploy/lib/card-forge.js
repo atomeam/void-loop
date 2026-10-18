@@ -6,6 +6,7 @@
 import { safeImg } from './art-rules.js';
 
 export const FORGE_CSS = [
+  '.vcard .vc-art .vc-again{position:absolute;right:6px;bottom:6px;z-index:3;font:600 11px/1 system-ui,sans-serif;letter-spacing:.04em;color:#fff;background:rgba(8,8,16,.72);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:5px 9px;cursor:pointer;opacity:.55;transition:opacity .2s}.vcard .vc-art:hover .vc-again,.vcard .vc-art .vc-again:focus-visible{opacity:1}.vcard .vc-art .vc-again[disabled]{cursor:default;opacity:.9}',
   '.vcard .vc-art{position:relative}.vcard .vc-art .vc-forge-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;animation:vc-forge-in .9s ease-out 1}',
   '.vcard .vc-art.vc-forged::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%),linear-gradient(180deg,rgba(255,215,140,.10),transparent 30%,rgba(0,0,0,.28));box-shadow:inset 0 0 22px rgba(0,0,0,.6)}',
   '.vcard .vc-forge-btn{position:absolute;right:6px;bottom:6px;z-index:3;font:inherit;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:6px;border:1px solid var(--edge);background:rgba(10,10,16,.72);color:hsl(var(--h) 55% 80%);cursor:pointer}',
@@ -56,11 +57,30 @@ function show(el, img) {
   for (const n of art.querySelectorAll('.vc-forge-btn, .vc-forge-img')) n.remove();
   const im = document.createElement('img'); im.className = 'vc-forge-img'; im.alt = ''; im.decoding = 'async'; im.src = url;
   art.appendChild(im); art.classList.add('vc-forged'); el.dataset.forged = '1';
+  if (el._vcard && mode() !== 'off') again(el, art);
 }
-async function ask(method, el, c) {
+// a new painting of this card (owner, 2026-10-18: "each card could have a regenerate card art button"): a small button in the art box's corner;
+// the server allows one a day per subject inside the shared cap, and keeps the old picture when the new one fails
+function again(el, art) {
+  if (art.querySelector(':scope > .vc-again')) return;
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'vc-again'; b.textContent = '\u21bb new art'; b.title = 'Paint this card again';
+  b.addEventListener('pointerdown', (e) => e.stopPropagation());
+  b.addEventListener('click', async (e) => {
+    e.stopPropagation(); const c = el._vcard; if (!c || b.disabled) return;
+    b.disabled = true; b.textContent = 'painting\u2026'; painting(el, true);
+    let got = null; try { got = await ask('POST', el, c, true); } catch (_) {}
+    painting(el, false);
+    const img = got && got.state === 'art' && !got.why ? safeImg(got.img) : '';
+    if (img && got.again) { const sk = subjectFor(el, c); seen.set(sk, img); land(sk, img); el._vcForge = img; show(el, img); b.remove(); return; }
+    b.textContent = got && got.why === 'again-today' ? 'repainted today already' : got && got.why === 'cap' ? 'out of paint today' : 'try again later';
+    setTimeout(() => { if (b.isConnected) { b.disabled = false; b.textContent = '\u21bb new art'; } }, 4000);
+  });
+  art.appendChild(b);
+}
+async function ask(method, el, c, again = false) {
   const kind = kindOf(el, c), rarity = c.rarity ? c.rarity.name.toLowerCase() : 'common';
   const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(subjectFor(el, c)) + '&kind=' + encodeURIComponent(kind) : '');
-  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity, family: c.chapter || '' }) });
+  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity, family: c.chapter || '', ...(again ? { again: true } : {}) }) });
   return r.ok ? r.json() : { state: 'plate', why: r.status === 429 ? 'slow' : 'http' };
 }
 function button(el, c) {
