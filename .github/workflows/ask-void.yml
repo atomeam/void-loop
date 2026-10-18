@@ -1,12 +1,12 @@
-# Ask live V01D one question from GitHub's network (tools/ask-void.mjs --print), for builders whose own machine can't reach
+# Ask live Verse one question from GitHub's network (tools/ask-void.mjs --print), for builders whose own machine can't reach
 # a-to-mind.com: its answer, word for word, goes to the run summary and the log. Manual only; nothing is written to the repo.
-name: Ask V01D
+name: Ask Verse
 
 on:
   workflow_dispatch:
     inputs:
       question:
-        description: What to ask V01D
+        description: What to ask Verse
         required: true
         type: string
 
@@ -22,9 +22,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Ask V01D
+      - name: Ask Verse
         env:
           QUESTION: ${{ inputs.question }}
         run: |
           set -o pipefail
-          { echo '### Asked V01D'; echo; echo "> $QUESTION"; echo; echo '### Its answer'; echo; node tools/ask-void.mjs --print --ask "$QUESTION"; } | tee -a "$GITHUB_STEP_SUMMARY"
+          { echo '### Asked Verse'; echo; echo "> $QUESTION"; echo; echo '### Its answer'; echo; node tools/ask-void.mjs --print --ask "$QUESTION"; } | tee -a "$GITHUB_STEP_SUMMARY"

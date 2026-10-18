@@ -20,7 +20,7 @@ export function parseWords(text) {
 // what a viewer reads says Verse (owner, 2026-10-14: "it shoud say V01d everywhere"); films made before the name keep working
 export function branded(w) {
   const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Void' || t === 'Verse' ? 'Verse' : t));
-  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|V01D|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
+  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|Verse|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
 }
 
 export async function post({ mp4, words: raw, id, site = 'https://a-to-mind.com', token, fetchImpl = fetch, wordsOnly = false }) {

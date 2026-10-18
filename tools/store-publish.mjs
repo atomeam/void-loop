@@ -35,7 +35,7 @@ const BUCKET = 'void-films'; // the FILMS binding (wrangler.toml); store files l
 export const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 
 // ---- guardrails (pure) ----
-export const PRICE_RANGE = { min: 100, max: 5000 }; // a paid V01D-made product is $1 to $50; 0 = free / pay what you want
+export const PRICE_RANGE = { min: 100, max: 5000 }; // a paid Verse-made product is $1 to $50; 0 = free / pay what you want
 // the pricing rule: what each kind would cost once paid checkout is on (Stripe), from comparable packs on Gumroad/Cults3D/itch.io
 export const PRICE_RULE = { 'minis-stl': 900, 'print-set': 700, clips: 0, comics: 500, 'game-print': 700, sdk: 1900, templates: 900, download: 0 };
 export const priceFor = (kind, extra = 0) => Math.min(PRICE_RANGE.max, Math.max(0, (PRICE_RULE[kind] ?? 0) + extra));

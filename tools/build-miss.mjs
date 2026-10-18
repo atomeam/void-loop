@@ -11,7 +11,7 @@
 //   decide    (no secret)    the repo decides, stopping at the first failure: the skill collision check, the overlap check, a unit
 //                            test written from a template (each example match()es, run() with a fake api returns the name), the ask
 //                            typed into the real page (tools/ask.mjs: `by: skill:<name>`, tools/finish.mjs tryProblem), one line in
-//                            docs/MAP.md (tools/map-coverage.test.mjs), a commit, Void's review as a gate; a pass is a patch file, and
+//                            docs/MAP.md (tools/map-coverage.test.mjs), a commit, Verse's review as a gate; a pass is a patch file, and
 //                            the tree is put back either way
 //   report    (owner token)  a failure puts the job back to `queued` with the failing step in its note, for a builder; a pass hands
 //                            the patch to the workflow's write job, which only moves bytes into a pull request labelled "made by Verse"

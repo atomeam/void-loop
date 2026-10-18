@@ -2,7 +2,7 @@
 // names no kind or title"). One flow for every kind: Verse proposes titles (a model writes them, so they are untrusted), each is looked up in a real
 // keyless source, and only a FOUND one is shown as fact (a card with its own art); the rest is "not verified". Playback is legal only: 30 s official
 // previews, free public-domain/CC films, official trailers; everything else links out, never a pirate or scraped stream. Movies live in
-// lib/movies.js and keep working unchanged; this file adds kind detection, the V01D-picks-the-kind rule and the music adapter (iTunes Search).
+// lib/movies.js and keep working unchanged; this file adds kind detection, the Verse-picks-the-kind rule and the music adapter (iTunes Search).
 // Pure. skills/media-pick.js is the page side, functions/api/media.js the server side.
 import { cleanTitle, normTitle, cleanYear, onHost, parseSuggestions } from './movies.js';
 export { cleanTitle, normTitle, cleanYear };

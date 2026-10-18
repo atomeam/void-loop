@@ -2,7 +2,7 @@
 // for itself and missed, tools/probe-asks.mjs) goes back to Verse's model with the owning skill's file (owner-only /api/propose-fix,
 // lib/propose-fix.js), which proposes the narrowest matcher change as exact line replacements. This applies them to a copy of the
 // skill and lets the repo's own checks decide, in order: the skill collision check (tools/skills-check.mjs), the skill's unit test
-// when it has one, Void's review as a gate (tools/review-pr.mjs --gate), and the everyday benchmark on the missed ask plus every
+// when it has one, Verse's review as a gate (tools/review-pr.mjs --gate), and the everyday benchmark on the missed ask plus every
 // bench ask the skill already answers (BENCH_ASKS, so nothing it knew is lost). A proposal that passes everything is written as
 // a patch file for the workflow's write job (.github/workflows/propose-fix.yml), which moves the bytes into a pull request labelled
 // "made by Verse" and automerge (owner, 2026-10-16); a proposal that fails any step is undone here and the job's note says which step, so a builder
@@ -101,7 +101,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     }
     const unit = join(here, miss.skill + '.test.mjs');
     if (!result.failed && existsSync(unit)) { const u = run(process.execPath, ['--test', unit]); if (u.status !== 0) stop('unit test', (u.stdout.match(/^# fail (\d+)/m) || [])[1] ? (u.stdout.match(/^# fail (\d+)/m) || [])[1] + ' failing' : 'failed'); }
-    // Void's review reads committed refs (tools/review-pr.mjs diffs base...head), so the proposal is committed for the review and reset below
+    // Verse's review reads committed refs (tools/review-pr.mjs diffs base...head), so the proposal is committed for the review and reset below
     if (!result.failed) {
       run('git', ['-c', 'user.name=Verse', '-c', 'user.email=void@a-to-mind.com', 'commit', '-q', '--no-verify', '-m', 'Verse proposes: learn to handle "' + miss.ask + '"', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
       committed = run('git', ['rev-parse', '--verify', '-q', 'HEAD~1']).status === 0 && /Verse proposes/.test(run('git', ['log', '-1', '--format=%s']).stdout);

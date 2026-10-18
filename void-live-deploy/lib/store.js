@@ -40,12 +40,12 @@ export async function verifyToken(key, token, now = Date.now()) {
   let p; try { p = JSON.parse(atob(body.replace(/-/g, '+').replace(/_/g, '/'))); } catch (_) { return null; }
   return p && p.e > now ? p : null;
 }
-// a license key for one order and product: V01D-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
+// a license key for one order and product: Verse-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
 export async function licenseKey(key, order, product) {
   const h = hex(await hmac(key, 'license:' + order + ':' + product)).toUpperCase().slice(0, 16);
-  return 'V01D-' + h.match(/.{4}/g).join('-'); // license keys keep their V01D- prefix through the rename to Verse: keys already sold must keep working
+  return 'Verse-' + h.match(/.{4}/g).join('-'); // license keys keep their Verse- prefix through the rename to Verse: keys already sold must keep working
 }
-export const LICENSE_V01D_RE = /^V01D-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
+export const LICENSE_Verse_RE = /^Verse-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
 
 // Stripe-Signature: t=<unix>,v1=<hex hmac of "t.body">; 5 minute tolerance (Stripe's own default)
 export async function verifyStripe(secret, header, body, now = Date.now()) {

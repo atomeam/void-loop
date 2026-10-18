@@ -33,7 +33,7 @@ export function hookOf(tool, run) {
  *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
 // the name viewers see is Verse (owner, 2026-10-14: "it shoud say V01d everywhere"; "Verse FILMS"): the lab's and ledger's own words say Void
-export const brand = (t) => String(t || '').replace(/\b(?:Void|V01D|Verse)\b/g, 'Verse'); // both older names (owner, 2026-10-18: "rename void to verse")
+export const brand = (t) => String(t || '').replace(/\b(?:Void|Verse|Verse)\b/g, 'Verse'); // both older names (owner, 2026-10-18: "rename void to verse")
 // the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';

@@ -6,7 +6,7 @@
 // Rules (Adam, 2026-10-15): it only tests. Every request that is not a GET is answered by the tester itself with an empty 204 and never
 // leaves the browser, so it cannot submit a form, post, sign up, buy, send, or land in Verse's answer/miss logs or view counts. Each
 // run goes through the suite once, never the same ask twice, at most one ask every GAP_MS. Its traffic says who it is (user agent
-// "V01DSiteTest" and an x-void-test header). On another site it reads robots.txt first and stops if the path is disallowed.
+// "VerseSiteTest" and an x-void-test header). On another site it reads robots.txt first and stops if the path is disallowed.
 // Every run ends in exactly one improvement (lib below: improve): a new failure is filed once (deduped by key), else the suite grows
 // by one ask, else a threshold tightens, else the weakest answer is filed for a quality upgrade. tools/site-test.log.json keeps one
 // line per run so nobody has to wonder whether a run was wasted.
@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 export const SUITE = resolve(here, 'site-test.json'), LOG = resolve(here, 'site-test.log.json'), SEEN = resolve(here, 'site-test.seen.json');
 export const NEW_PER_RUN = 4;
-export const GAP_MS = 3000, UA_TAG = 'V01DSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
+export const GAP_MS = 3000, UA_TAG = 'VerseSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
 export const REFUSAL = /don.t know this yet|couldn.t find|isn.t connected|something went wrong/i;
 export const STEP_KINDS = ['goto', 'click', 'fill', 'wait', 'expect', 'shot'];
 

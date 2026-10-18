@@ -1157,10 +1157,10 @@
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
   <a id="void-anchor" href="/store/" aria-label="support Verse: the store" title="support Verse" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
-  <div id="dock" role="search" aria-label="Ask Void">
+  <div id="dock" role="search" aria-label="Ask Verse">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
-      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Command the Verse" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <input id="input" aria-label="Ask Verse" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Command the Verse" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
@@ -2514,7 +2514,7 @@ say('nothing selected to remove');
     // "what are you?" / "who are you" / "what is void" / "tell me about yourself": Verse says what it is and its motto first, then
     // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
     // (domains/void.canon.md ## Motto; tools/launch-fixes.test.mjs keeps them the same).
-    const MOTTO = 'You name it, Void learns it and does it better.';
+    const MOTTO = 'You name it, Verse learns it and does it better.';
     const SELF_LEAD = 'I’m Verse: one box where you ask for anything and it appears as a working card, game or page. My motto: “' + MOTTO + '”';
     function wantsIdentity(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|v01d|verse|a-to-mind)\b|^tell\s+me\s+about\s+(yourself|you|void|v01d|verse)\b|^what('?s|\s+is)\s+your\s+motto\b/.test(lower);

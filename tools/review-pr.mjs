@@ -5,7 +5,7 @@
 // key in VOID_REVIEW_KEY; or Void's answer engine, /api/answer with mode 'review'); it is best-effort.
 // Prints markdown (the PR comment: a walkthrough of what changed, then the findings) or JSON. --inline prints the
 // review comments for GitHub instead: one per line with a bug or risk, with a one-click suggested change when Void's
-// safe automatic fix (autoFix) rewrites that line. --gate makes Void's review a merge gate: exit 1 when the added lines carry a
+// safe automatic fix (autoFix) rewrites that line. --gate makes Verse's review a merge gate: exit 1 when the added lines carry a
 // bug or a risk (the "void-review" check, .github/workflows/void-review.yml). A line that is right as written says so with
 // "void-review: ok" in a comment on it, and is left out. Otherwise the exit code is 0: the review informs.
 import { offerLines, HOME } from './review-offer.mjs';

@@ -65,14 +65,14 @@ export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|
 export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
 
 /** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }],
- *  goLog: [{ sha, at, text }] (every failing Go-against-V01D check), focus }. `focus` (a family id; asked by Void: a drill-down from the stability sparklines) keeps only
+ *  goLog: [{ sha, at, text }] (every failing Go-against-Verse check), focus }. `focus` (a family id; asked by Void: a drill-down from the stability sparklines) keeps only
  *  that family's failing checks, and only the incidents that have one. Pure. */
 export function autopsy(incidentsJson, fam, guide, focus = '') {
   const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
   const counts = new Map(), un = new Map(), goLog = [], suite = { timeouts: 0, ended: 0, incidents: 0 };
   let placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
     if (isSuiteMeta(text)) return { text, skill: null, family: null, name: null, meta: true };
-    const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-V01D check belongs to the go skill (its name is too short to match by words)
+    const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-Verse check belongs to the go skill (its name is too short to match by words)
     return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
   }) }));
   if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);

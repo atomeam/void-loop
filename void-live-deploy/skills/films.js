@@ -7,7 +7,7 @@
  */
 const FILM = '(?:films?|fillms?|filmes|flims?|fimls?|fims)';
 const ASK = '(?:(?:where|how)\\s+(?:do|can|could)\\s+i\\s+(?:watch|see|find|review|get\\s+to)\\s+|(?:show\\s+me|open|watch|see|play|review|go\\s+to|take\\s+me\\s+to|where\\s+are)\\s+)?(?:the\\s+)?';
-const WHOSE = "(?:void'?s?|v0[1i]d'?s?|your|my|a-?to-?mind'?s?)\\s+";
+const WHOSE = "(?:void'?s?|(?:v0[1i]d|verse)'?s?|your|my|a-?to-?mind'?s?)\\s+";
 const MINE = new RegExp('^' + ASK + '(?:' + WHOSE + ')?' + FILM + '(?:\\s+(?:page|reviews?|to\\s+review))?$', 'i'); // "films", "voids fillms", "review films"
 const VIDEOS = new RegExp('^' + ASK + WHOSE + '(?:videos?|movies?|shorts|recordings)(?:\\s+page)?$', 'i'); // "your videos" needs the whose
 const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"

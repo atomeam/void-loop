@@ -66,7 +66,7 @@ jobs:
           suite=false
           [ "$EVENT" = "workflow_dispatch" ] && suite=true
           if [ "$EVENT" = "pull_request" ]; then
-            # no preview deploys (owner, 2026-10-15: "cloudflare is not unlimited V01D should spend its actions on growth and not
+            # no preview deploys (owner, 2026-10-15: "cloudflare is not unlimited Verse should spend its actions on growth and not
             # so much on testing old thing"): a PR merges in minutes and main deploys right after, so a preview was a Cloudflare
             # deploy nobody opened. A PR gets the quick checks; main gets the deploy.
             echo "### PR: quick checks only, no preview deploy" >> "$GITHUB_STEP_SUMMARY"
@@ -178,7 +178,7 @@ jobs:
           # bytes more than void.html, while the skill files matched exactly), so the page is checked for being Void and
           # the difference is printed; the byte-exact files below are what prove this deploy is the one being served
           code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com/?v=$SHA") || code=000
-          # the title comes from void.html itself, so renaming the page (Void became V01D, 2026-10-14) never fails a good deploy
+          # the title comes from void.html itself, so renaming the page (Void became Verse, 2026-10-14) never fails a good deploy
           want=$(grep -o -m1 '<title>[^<]*</title>' void.html)
           if [ "$code" = "200" ] && [ -n "$want" ] && grep -qF "$want" live.tmp; then
             cmp -s live.tmp void.html && echo "a-to-mind.com/ matches void.html" || { echo "::notice::a-to-mind.com/ is this page but $(( $(wc -c < live.tmp) - $(wc -c < void.html) )) bytes differ from void.html (added at the edge):"; diff void.html live.tmp | head -c 1500; echo; }
@@ -208,7 +208,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run mcp-registry.yml --repo "${{ github.repository }}" --ref main && echo "MCP registry started" >> "$GITHUB_STEP_SUMMARY"
 
-      # V01D's hourly automations (automations/hourly.json): seeded through its own door after every main deploy, so a change to the
+      # Verse's hourly automations (automations/hourly.json): seeded through its own door after every main deploy, so a change to the
       # seed file is live within minutes (an automerge merge starts no push workflow). The same id replaces a rule: most runs change nothing.
       - name: Start the automations seed
         if: steps.deploy.outcome == 'success' && steps.target.outputs.branch == 'main'

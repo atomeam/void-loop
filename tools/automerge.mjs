@@ -4,7 +4,7 @@
 // not start the push-to-main workflows, so it starts both itself: the deploy (deploy.yml, after_merge=true: it deploys at
 // once) and the full suite on that head (verify.yml, which reverts what broke it if it fails). A PR GitHub reports dirty (it conflicts with main)
 // gets no pull_request runs at all, so the bot merges main into it first (resolveMain in pr-ready.mjs: tools/merge-main.mjs from
-// main's checkout, the merge commit pushed to the branch, never forced, Void's review dispatched on the new head); a conflict
+// main's checkout, the merge commit pushed to the branch, never forced, Verse's review dispatched on the new head); a conflict
 // outside the append-only records comes back as one comment on the PR naming the files.
 //   node tools/automerge.mjs                 every open PR labelled automerge (in the workflow)
 //   node tools/automerge.mjs 205             just that one
@@ -35,7 +35,7 @@ async function markLive(p) {
 if (process.argv.includes('--label')) {
   if (!one) { console.error('usage: node tools/automerge.mjs <pr> --label'); process.exit(2); }
   run(['api', '-X', 'POST', `repos/${repo}/issues/${one}/labels`, '--input', '-'], JSON.stringify({ labels: [LABEL] }));
-  console.log(`#${one} labelled ${LABEL}: GitHub merges it as soon as Void's review is clean; the suite runs on main after the deploy`);
+  console.log(`#${one} labelled ${LABEL}: GitHub merges it as soon as Verse's review is clean; the suite runs on main after the deploy`);
   process.exit(0);
 }
 
@@ -55,7 +55,7 @@ for (let p of prs) {
   console.log(`#${p.number}: ${r.state} (${r.why})` + (r.extra ? ' · ' + r.extra : ''));
   if (r.state === 'resolve') {
     const m = resolveMain(ex, gh, { repo, pr: p.number, branch: r.branch, tools: here });
-    console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Void's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
+    console.log(`#${p.number}: ` + (m.state === 'pushed' ? `main merged in and pushed as ${m.sha.slice(0, 7)}; Verse's review started on it` : m.state === 'conflict' ? `conflicts need a person in ${m.files.join(', ')}` + (m.commented ? ' (commented on the PR)' : ' (already said on the PR)') : `could not merge main: ${m.why}`));
     continue;
   }
   if (r.state !== 'merge') continue;

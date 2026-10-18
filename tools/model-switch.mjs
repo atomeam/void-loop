@@ -1,7 +1,7 @@
 // From the bake-off's verdict to a change (model-bench.yml, after a run). When a challenger wins under the thresholds in
 // tools/model-bench.mjs verdict(), the answer path's model in void-live-deploy/lib/models.js is set to it, and the PR body
 // carries the table, the previous model and the one-line revert; the workflow opens that PR and labels it for automerge, and
-// Void's review and the automerge rules take it from there. A "keep" verdict changes nothing (the table is only posted), unless
+// Verse's review and the automerge rules take it from there. A "keep" verdict changes nothing (the table is only posted), unless
 // the closer read lags the answer engine and the run shows the answer engine's model follows the JSON shape at least as well:
 // then the PR moves PATH_MODELS.review to it (planReviewFollow).
 //   node tools/model-switch.mjs model-bench.json table.md     a switch: edits lib/models.js, writes switch-body.md and
