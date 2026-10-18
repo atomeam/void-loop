@@ -1,7 +1,7 @@
 /**
  * battleship-rules — Battleship in plain JS (no DOM, no three.js), shared by the card (skills/battleship.js), its 3D board
- * and the tests. Next after Monopoly (Adam, 2026-10-08): the game of hidden state. Void keeps a fleet you cannot see,
- * and every answer it gives (miss, hit, sunk) has to stay consistent with that hidden fleet; Void's own shots use only
+ * and the tests. Next after Monopoly (Adam, 2026-10-08): the game of hidden state. Verse keeps a fleet you cannot see,
+ * and every answer it gives (miss, hit, sunk) has to stay consistent with that hidden fleet; Verse's own shots use only
  * what it has been told, never your ship positions, and each one records why it was chosen.
  *
  * Grid 10 x 10, cell = row * 10 + col (row 0 = A, col 0 = 1). Fleet: carrier 5, battleship 4, cruiser 3, submarine 3,
@@ -51,15 +51,15 @@ function shoot(s, side, cell) {
   let result = ship ? 'hit' : 'miss';
   if (ship && sunk(ship, shots)) { result = 'sunk'; for (const c of ship.cells) shots[c] = 'sunk'; }
   const sank = result === 'sunk' ? ship.name : null;
-  s.log.push({ who: side === 'you' ? 'You' : 'V01D', text: 'fired at ' + cellName(cell) + ': ' + (sank ? 'sank the ' + sank : result) });
-  if (s.fleet[foe].every((sh) => sunk(sh, shots))) { s.over = side; s.log.push({ who: side === 'you' ? 'You' : 'V01D', text: 'sank the whole fleet' }); }
+  s.log.push({ who: side === 'you' ? 'You' : 'Verse', text: 'fired at ' + cellName(cell) + ': ' + (sank ? 'sank the ' + sank : result) });
+  if (s.fleet[foe].every((sh) => sunk(sh, shots))) { s.over = side; s.log.push({ who: side === 'you' ? 'You' : 'Verse', text: 'sank the whole fleet' }); }
   else if (result === 'miss') s.turn = foe; // a hit fires again
   return { result, sank, cell };
 }
 export function fire(s0, cell) { const s = clone(s0), r = shoot(s, 'you', cell); return r ? { s, result: r.result, sank: r.sank } : { s: s0, result: null }; }
 
 // What a side may see: its own fleet and the shots the other side has taken at it, but of the other fleet only its own
-// shot results (and a ship's cells once it is sunk). The card draws only this, so Void's fleet can't leak to the screen.
+// shot results (and a ship's cells once it is sunk). The card draws only this, so Verse's fleet can't leak to the screen.
 export function view(s, side) {
   const foe = other(side), mine = s.shots[side];
   return {
@@ -69,7 +69,7 @@ export function view(s, side) {
   };
 }
 
-// Void's shot, from what it has been told only (view(s, 'void').target): finish a ship it has hit, along the line
+// Verse's shot, from what it has been told only (view(s, 'void').target): finish a ship it has hit, along the line
 // when two hits line up; otherwise hunt on a checkerboard, preferring cells where the most remaining ships still fit.
 export function chooseShot(seen, rnd = Math.random) {
   const shots = seen.shots, open = (c) => c >= 0 && c < N * N && !shots[c];
@@ -100,7 +100,7 @@ export function chooseShot(seen, rnd = Math.random) {
 export function voidFire(s0) {
   const s = clone(s0);
   if (s.over || s.turn !== 'void') return { s: s0, result: null };
-  const pick = chooseShot(view(s, 'void').target, () => next(s)); // Void sees only what it has been told
+  const pick = chooseShot(view(s, 'void').target, () => next(s)); // Verse sees only what it has been told
   const r = shoot(s, 'void', pick.cell);
   s.log[s.log.length - (s.over ? 2 : 1)].why = pick.why;
   return { s, result: r.result, sank: r.sank, why: pick.why };
