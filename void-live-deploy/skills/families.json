@@ -14,8 +14,8 @@
  "totals": {
   "experiment": 7,
   "tested": 98,
-  "checked": 98,
-  "proven": 91
+  "checked": 97,
+  "proven": 92
  },
  "families": [
   {
@@ -1698,7 +1698,7 @@
    "count": {
     "experiment": 3,
     "tested": 32,
-    "checked": 52,
+    "checked": 51,
     "proven": 7
    },
    "skills": [
@@ -2016,14 +2016,6 @@
     },
     {
      "name": "ask-clipboard",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
-     "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "streak": 1
-    },
-    {
-     "name": "decision-matrix",
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
@@ -2858,7 +2850,7 @@
     "experiment": 1,
     "tested": 0,
     "checked": 0,
-    "proven": 0
+    "proven": 1
    },
    "skills": [
     {
@@ -2869,6 +2861,16 @@
      "last_tested_by": "the daily smoke test",
      "streak": 1,
      "since": "2026-10-18"
+    },
+    {
+     "name": "decision-matrix",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
+     "streak": 1
     }
    ]
   },
