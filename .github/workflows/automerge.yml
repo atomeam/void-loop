@@ -53,4 +53,5 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
           REPO: ${{ github.repository }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }} # the merged PR's `Job: <id>` line moves that queue job to live (tools/job-link.mjs)
         run: node tools/automerge.mjs

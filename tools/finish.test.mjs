@@ -20,6 +20,15 @@ test('parseArgs takes the kind, what changed and the flags, and refuses what it 
   assert.ok(!steps(parseArgs(['grow', 'x']))[1][1][1].includes('--show'), 'and only when given');
 });
 
+test('--job: a queue job id goes on the PR body as its last line; a bad id is refused; the steps stay the same', () => {
+  const a = parseArgs(['build', 'the tide card', '--job', 'mgw1x2y3']);
+  assert.equal(a.job, 'mgw1x2y3');
+  assert.ok(prBody(a).endsWith('\nJob: mgw1x2y3'), 'the last line is the Job: line');
+  assert.ok(!prBody(parseArgs(['build', 'x'])).includes('Job:'), 'and only with --job');
+  for (const bad of ['', 'abc', 'ABCD1234', '../x', 'a'.repeat(17)]) assert.match(parseArgs(['build', 'x', '--job', bad]).error || '', /--job/, bad);
+  assert.deepEqual(steps(a).map((s) => s[0]), steps(parseArgs(['build', 'x'])).map((s) => s[0]), 'no step is added for it: the move happens inside the pull request step');
+});
+
 test('the log line has the log\'s own shape', () => {
   assert.equal(logLine({ by: 'claude', kind: 'fix', log: 'the timer  no longer\nstops' }, new Date('2026-10-11T02:00:00.123Z')), '2026-10-11T02:00:00Z | claude | fix | the timer no longer stops');
 });

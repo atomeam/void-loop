@@ -95,6 +95,8 @@ for (const [name, file] of [
   ['map-sync', 'map-sync.test.mjs'],
   ['map-coverage', 'map-coverage.test.mjs'],
   ['finish', 'finish.test.mjs'],
+  ['job-link', 'job-link.test.mjs'],
+  ['build-miss', 'build-miss.test.mjs'],
   ['flakes', 'flakes.test.mjs'],
   ['next', 'next.test.mjs'],
   ['calendar', 'test_calendar.mjs'],

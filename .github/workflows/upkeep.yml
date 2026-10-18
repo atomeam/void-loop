@@ -4,7 +4,8 @@
 #           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Void),
 #           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Void)
 #   weekly: dead links in sitemap.xml + llms.txt, npm audit summary, delete branches already merged into main and idle 14+ days
-#   on merge: the PR's Working on line in domains/handoff.md moves to Just finished
+#   on merge: the PR's Working on line in domains/handoff.md moves to Just finished, and the queue job its body names (`Job: <id>`,
+#           tools/job-link.mjs) goes live: the belt for a merge a person made (the bot's merges mark it live from tools/automerge.mjs)
 name: Void upkeep
 
 on:
@@ -87,6 +88,12 @@ jobs:
         with: { ref: main }
       - uses: actions/setup-node@v4
         with: { node-version: 22 }
+      - name: The queue job the PR body names goes live (a merge a person made; the bot's own merges do this in automerge.mjs)
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: node tools/job-link.mjs live --body-env PR_BODY --url "$PR_URL" || true
       - name: Move the branch's Working on line to Just finished
         env:
           BRANCH: ${{ github.event.pull_request.head.ref }}

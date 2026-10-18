@@ -14,6 +14,7 @@ import { dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { readiness, resolveMain } from './pr-ready.mjs';
 import { safety } from './skill-safety.mjs';
+import { jobOfBody, moveJob } from './job-link.mjs';
 
 const repo = process.env.REPO || process.env.GITHUB_REPOSITORY || 'atomeam/void-loop', LABEL = 'automerge';
 const one = process.argv.slice(2).find((a) => /^\d+$/.test(a));
@@ -21,6 +22,15 @@ const run = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input 
 const gh = (path) => JSON.parse(run(['api', path]) || 'null');
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
+
+// the build-queue job a merged PR names on its last line (`Job: <id>`, tools/job-link.mjs) goes live (asked by Void); the PR list and
+// the single-PR read both carry `body`. Needs VOID_OWNER_TOKEN in the step's env; without it the line says so. Never stops the loop.
+async function markLive(p) {
+  try {
+    const id = jobOfBody(p && p.body);
+    if (id) console.log(`#${p.number}: ${await moveJob({ id, state: 'live', label: 'live', url: p.html_url })}`);
+  } catch (e) { console.log(`#${p.number}: job not marked live: ${String(e && e.message || e).slice(0, 200)}`); }
+}
 
 if (process.argv.includes('--label')) {
   if (!one) { console.error('usage: node tools/automerge.mjs <pr> --label'); process.exit(2); }
@@ -56,7 +66,7 @@ for (let p of prs) {
   try {
     if (r.draft) run(['pr', 'ready', String(p.number), '--repo', repo]);
     const m = JSON.parse(run(['api', '-X', 'PUT', `repos/${repo}/pulls/${p.number}/merge`, '-f', 'merge_method=merge', '-f', `sha=${r.sha}`]));
-    if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); }
+    if (m.merged) { merged++; console.log(`merged #${p.number} at ${r.sha.slice(0, 7)}`); await markLive(p); }
   } catch (e) { console.log(`#${p.number}: merge refused: ${String(e.stderr || e.message).slice(0, 300)}`); }
 }
 if (merged) {
