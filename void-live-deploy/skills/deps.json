@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 661,
+ "counted": 663,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -658,6 +658,12 @@
   },
   {
    "file": "lib/about-skill.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/backlog-digest.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2220,6 +2226,12 @@
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
     "skills/showcase.js"
+   ]
+  },
+  "lib/backlog-digest.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/backlog-digest.js"
    ]
   },
   "lib/bench-asks.js": {
@@ -5167,6 +5179,12 @@
   },
   "skills/automations.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/backlog-digest.js": {
+   "imports": [
+    "lib/backlog-digest.js"
+   ],
    "importedBy": []
   },
   "skills/battleship-rules.js": {
