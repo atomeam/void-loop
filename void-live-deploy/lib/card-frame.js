@@ -10,13 +10,16 @@
 // and arrows on the card's edges, from the site's real dependency map (skills/deps.json): an arrow out for each thing the skill controls
 // (what it imports), an arrow in at the top when other skills lean on it, Income being how many do. Pure: cardOf(), chromeHtml(); the page calls keep() and style().
 import { hueOf } from './guide.js';
-import { typeWords, kindOf } from './card-kinds.js';
+import { typeWords, kindOf, newInSub, repeatsTitle } from './card-kinds.js';
 import { bar as shareBar, SHARE_CSS } from './card-share.js';
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
 import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf } from './card-subject.js';
+import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Void)
+import { artSource } from './art-source.js';
+import { sectionsOf } from './card-sections.js';
 
 export const RARITY = {
   proven: { name: 'Mythic', gem: '#f0852d', foil: '#ffb347,#c4561a,#ffd27a,#b8430f' }, checked: { name: 'Rare', gem: '#e3c15a', foil: '#f1dc8a,#a98a2e,#f6e7a6,#8a6d1c' },
@@ -86,7 +89,7 @@ export const CARD_CSS = [
   '.vcard>*:not(.vc-art):not(.vc-type):not(.vc-foot):not(.vc-adds):not(.vc-title):not(style){margin-left:18px;margin-right:18px}',
   '.vcard .vc-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:10px 12px 0!important;padding:5px 12px;background:linear-gradient(90deg,hsl(var(--h) 28% 22%),hsl(var(--h) 24% 15%));border:2px solid var(--edge);border-radius:12px 12px 6px 6px/16px 16px 6px 6px;font-weight:600;letter-spacing:.02em;font-size:20px;line-height:1.2;overflow-wrap:anywhere;min-width:0}',
   '.vcard .vc-title::after{content:attr(data-cost);font-size:13px;letter-spacing:.18em;color:hsl(var(--h) 60% 74%);white-space:nowrap}',
-  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/9;max-height:min(300px,38vh);margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo svg{position:absolute;inset:0;mix-blend-mode:overlay;opacity:.28;pointer-events:none}.vpage.skyc .vc-art{height:72px}',
+  '.vcard .vc-art{display:flex;align-items:center;justify-content:center;height:auto;aspect-ratio:16/9;max-height:min(300px,38vh);margin:7px 12px 0;border:2px solid var(--edge);border-radius:4px;background:radial-gradient(ellipse at 50% 120%,hsl(var(--h) 60% 40% / .55),transparent 70%),linear-gradient(180deg,hsl(var(--h) 30% 12%),hsl(var(--h) 34% 20%));overflow:hidden}.vcard .vc-art{position:relative}.vcard .vc-art svg{display:block;width:100%;height:100%}.vpage.vcard .vc-art img.vc-art-photo{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;border-radius:0!important;object-fit:cover;object-position:50% 35%;filter:none}.vcard .vc-art.has-photo::before{content:none}.vpage.skyc .vc-art{height:72px}',
   '.vcard .vc-type{display:flex;align-items:center;justify-content:space-between;margin:7px 12px 12px;padding:3px 12px;background:linear-gradient(90deg,hsl(var(--h) 26% 21%),hsl(var(--h) 22% 16%));border:2px solid var(--edge);border-radius:6px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 40% 78%)}',
   '.vcard .vc-gem{width:11px;height:11px;transform:rotate(45deg);border-radius:2px;box-shadow:0 0 0 2px rgba(0,0,0,.55),0 0 9px currentColor}',
   '.vcard .vc-adds{margin:8px 12px 0;padding:8px 12px;border-top:1px solid var(--edge);font-size:12.5px;font-style:italic;color:hsl(var(--h) 18% 74%)}.vcard .vc-adds b{font-style:normal;letter-spacing:.08em;text-transform:uppercase;font-size:11px;color:hsl(var(--h) 55% 72%);margin-right:6px}',
@@ -102,11 +105,32 @@ export const CARD_CSS = [
   '.vpage.vcard[data-kind=place]{display:flex!important;flex-direction:column}.vpage.vcard[data-kind=place] .vc-type{order:-3;margin-top:12px;margin-bottom:0;font-size:15px;letter-spacing:.2em;border-radius:6px 6px 0 0}.vpage.vcard[data-kind=place] .vc-title{order:-2;margin-top:0!important;border-radius:0 0 12px 12px/0 0 16px 16px}.vpage.vcard[data-kind=place] .vc-art{order:-1;height:44px;background:linear-gradient(180deg,hsl(var(--h) 55% 62%) 0 52%,hsl(var(--h) 40% 24%) 52%)}.vpage.vcard[data-kind=place] .vc-arrows{order:99}',
   '.vpage.vcard[data-kind=person] .vc-art{width:84px;height:84px;margin:10px auto 0;border-radius:50%;border-width:3px}.vpage.vcard[data-kind=person] .vc-title{justify-content:center;text-align:center}.vpage.vcard[data-kind=person] .vc-title::after{content:none}.vpage.vcard[data-kind=person] .vc-type{justify-content:center;gap:10px}',
   '.vpage.vcard[data-kind=song] .vc-art{height:40px}.vpage.vcard[data-kind=song] .vc-title::before{content:"\\266A";margin-right:8px;color:hsl(var(--h) 60% 74%)}',
-  // a card whose skill just earned a higher rating glows once (asked by Void, skill evolution): lib/card-frame.js evolved()
-  '@keyframes vc-evolve{0%{box-shadow:0 0 0 0 var(--edge),0 30px 80px rgba(0,0,0,.65)}30%{box-shadow:0 0 36px 12px #ffd27a,0 0 90px 30px rgba(255,140,40,.55),0 30px 80px rgba(0,0,0,.65);filter:brightness(1.25)}100%{box-shadow:0 30px 80px rgba(0,0,0,.65);filter:none}}',
-  '.vpage.vcard.vc-evolving{animation:vc-evolve 2.6s ease-out 1}.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#ffd27a}',
-  '@media (prefers-reduced-motion:reduce){.vpage.vcard.vc-evolving{animation:none;outline:3px solid #ffd27a}}',
+  // the stats chip sits in the footer row after the copy / save actions, in the flow: it never floats over the text (owner, 2026-10-18: "P 1 R 39" hid words)
+  '.vcard .vc-foot{position:static!important;background:none!important;padding:8px 0 4px!important;align-items:center;flex-wrap:wrap;gap:6px 10px}',
+  '.vcard .vc-route{margin:6px 18px 0;font:11px/1.4 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;letter-spacing:0;text-transform:none;color:hsl(var(--h) 14% 70%)!important}',
+  // two voices, two looks: the source's excerpt is a quotation (left rule, darker ground, its source line attached); V01D's take is labelled in a bright, bold ink
+  '.vpage.vcard[data-card-extract]>p:not(.vc-route){border-left:3px solid hsl(var(--h) 38% 48%);background:rgba(0,0,0,.26);padding:8px 12px;margin-bottom:0;border-radius:0 6px 0 0;color:#dcd8ca}',
+  '.vpage.vcard[data-card-extract]>.src{margin-top:0;padding:4px 12px 8px;border-left:3px solid hsl(var(--h) 38% 48%);background:rgba(0,0,0,.26);border-radius:0 0 6px 0;font-size:11.5px;color:hsl(var(--h) 18% 76%)}',
+  '.vcard .take-label{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:hsl(var(--h) 70% 82%);margin-bottom:3px}',
+  // the read-aloud button shares the title bar's row and right edge, and the title leaves room for it (owner, 2026-10-18)
+  '.vcard>.vread{position:absolute!important;float:none!important;top:12px!important;right:22px!important;margin:0!important;width:32px;height:32px}.vcard .vc-title{padding-right:50px}',
+  // a very long answer is an accordion (lib/card-sections.js): the first section open, the rest behind one-line summaries; the text stays in the page
+  '.vcard .vc-sec{margin:6px 18px 0;border:1px solid hsl(var(--h) 25% 28%);border-radius:6px}.vcard .vc-sec-head{display:block;width:100%;text-align:left;font:inherit;font-size:13px;font-weight:600;color:hsl(var(--h) 40% 84%);background:hsl(var(--h) 22% 14%);border:0;border-radius:6px;padding:8px 12px 8px 30px;cursor:pointer;position:relative}',
+  '.vcard .vc-sec-head::before{content:"\\25B8";position:absolute;left:11px;top:8px;transition:none}.vcard .vc-sec-head[aria-expanded=true]::before{content:"\\25BE"}.vcard .vc-sec-head:focus-visible{outline:2px solid hsl(var(--h) 70% 70%);outline-offset:1px}.vcard .vc-sec-body{padding:6px 12px 2px}.vcard .vc-sec-body>*{margin-left:0!important;margin-right:0!important}',
+  // a skill that just earned a higher rating says so in one quiet line in the card's own metadata ink (asked by Void: lib/card-frame.js evolved()); it never glows or moves
+  // (owner, 2026-10-18: "get rid of the distracting evolve stuff": no badge, no gradient, no animation)
+  '.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 30% 72%);background:none;animation:none}',
+  // a film with a real poster (owner, 2026-10-18): a clean two-column card. The poster keeps its own portrait shape on the left (never cropped or stretched,
+  // a thin ink edge); the title, type line and the rest of the card stack to its right. Narrow screens centre the poster above the rest.
+  '.vpage.vcard[data-poster]{display:grid!important;grid-template-columns:228px minmax(0,1fr);align-content:start}.vpage.vcard[data-poster]>*{grid-column:2}.vpage.vcard[data-poster]>.vread{grid-column:auto}',
+  '.vpage.vcard[data-poster] .vc-art{grid-column:1;grid-row:1 / span 8;align-self:start;position:relative;width:200px;height:auto;max-height:none;aspect-ratio:2/3;margin:14px 0 14px 14px;border:2px solid var(--edge)!important;border-radius:3px;box-shadow:none;background:hsl(var(--h) 30% 8%)}',
+  '.vpage.vcard[data-poster] .vc-art::before{content:none}',
+  '.vpage.vcard[data-poster] .vc-art img.vc-art-photo{object-fit:contain!important;object-position:50% 50%!important}',
+  '.vpage.vcard[data-poster] .vc-title{margin-top:14px!important;justify-content:flex-start;text-align:left}',
+  '.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-share,.vpage.vcard[data-poster] .vc-route,.vpage.vcard[data-poster] .vc-foot,.vpage.vcard[data-poster] .vc-arrows{grid-column:1 / -1}',
+  '.vpage.vcard[data-poster]>img{position:absolute;width:0;height:0;margin:0;opacity:0;pointer-events:none}', // the source's own thumbnail is the poster in the art box: not shown twice
   '@media (max-width:520px){.vpage.vcard:not(.skyc){max-height:min(40vh,calc(100vh - 140px))}.vcard .vc-title{margin:8px 6px 0!important;font-size:18px}.vcard .vc-art,.vcard .vc-type,.vcard .vc-adds,.vcard .vc-foot{margin-left:6px;margin-right:6px}.vcard .vc-art{height:0;margin-top:0;margin-bottom:0;border:0;overflow:hidden}.vcard .vc-type{margin-bottom:8px}.vpage.skyc .vc-title,.vpage.skyc .vc-type,.vpage.skyc .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-adds{height:0;margin:0!important;padding:0;border:0;overflow:hidden}.vcard .vc-pt{gap:5px;padding:3px 6px}.vcard .vc-foot{font-size:9.5px;gap:6px}}',
+  '@media (max-width:520px){.vpage.vcard[data-poster]{grid-template-columns:minmax(0,1fr)}.vpage.vcard[data-poster]>*{grid-column:1}.vpage.vcard[data-poster] .vc-art{grid-row:auto;justify-self:center;width:min(46%,170px);height:auto!important;margin:12px auto 4px!important;overflow:hidden}.vpage.vcard[data-poster] .vc-title{margin:8px 6px 0!important;justify-content:center;text-align:center}.vpage.vcard[data-poster] .vc-type,.vpage.vcard[data-poster] .vc-adds,.vpage.vcard[data-poster] .vc-foot{margin-left:6px}}',
   // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
   // shadow like a printed panel, a bold outlined title banner, the stats in an inked plate, and halftone dots over the art
   '.vpage.vcard{outline:3px solid #000;outline-offset:-1px}',
@@ -115,7 +139,7 @@ export const CARD_CSS = [
   '.vcard .vc-art::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle,rgba(0,0,0,.28) 0.9px,transparent 1.3px) 0 0/5px 5px;mix-blend-mode:multiply;opacity:.55}',
   '.vcard .vc-type{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;font-weight:700;color:#f3efe2}',
   '.vcard .vc-pt{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;transform:rotate(-2deg)}.vcard .vc-pt b{text-shadow:1px 1px 0 #000,-1px -1px 0 #000}',
-].join('') + FORGE_CSS + SEAL_CSS + SHARE_CSS;
+].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
 // Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
 // test passes"): a skill's rating only rises when new evidence arrives (tools/families.mjs). This browser remembers the rating it last showed
@@ -188,24 +212,56 @@ export function keep(el, esc, stats) {
   el.style.setProperty('--h', String(c.hue));
   el._vcard = c; el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (c.kindName) el.dataset.kind = c.kindName; else delete el.dataset.kind;
+  const look = name ? lookOfSkill(stats && stats.fam, name) : ''; if (look) el.dataset.look = look; else delete el.dataset.look; // asked by Void: the family decides the frame
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];
   if (h2 && h2.parentNode === el) { let at = h2; for (const n of top) { at.after(n); at = n; } } else for (const n of top.reverse()) el.prepend(n);
-  if (photo) { const box = el.querySelector(':scope > .vc-art'); if (box) { box.classList.add('has-photo'); const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = ''; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = photo; box.appendChild(im); } }
+  // a real picture is the art (owner, 2026-10-18): it is the only thing in the box, with no plate, seal, texture or painting under or over it
+  const source = artSource({ photo, painting: !!el._vcForge, hasArt: !!el.querySelector(':scope > .vc-art') }); // lib/art-source.js: one picture in the slot
+  if (source === 'photo') { const box = el.querySelector(':scope > .vc-art'); if (box) {
+    for (const n of box.querySelectorAll(':scope > svg, :scope > .vc-seal')) n.remove(); box.classList.remove('vc-sealed'); box.classList.add('has-photo');
+    const im = document.createElement('img'); im.className = 'vc-art-photo'; im.alt = ''; im.referrerPolicy = 'no-referrer'; im.loading = 'lazy'; im.src = photo; box.appendChild(im);
+    if (c.kindName === 'film') { el.dataset.poster = '1'; im.addEventListener('load', () => { if (im.naturalWidth > im.naturalHeight * 1.15) delete el.dataset.poster; }); } else delete el.dataset.poster; // a portrait poster gets the two-column layout, a landscape still keeps the wide box
+  } } else delete el.dataset.poster;
   tpl.innerHTML = html.adds + html.foot + html.arrows; // void-review: ok: built by chromeHtml, every text field escaped
   let anchor = null; for (let n = el.lastElementChild; n && trailing(n); n = n.previousElementSibling) anchor = n;
   for (const n of [...tpl.content.childNodes]) el.insertBefore(n, anchor);
-  if (!photo) sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): V01D's procedural art under any painted picture
+  // the header box holds the hard facts, so the description line under it keeps only what is new (lib/card-kinds.js newInSub); the "closest match"
+  // routing note is a small monospace line at the bottom of the card, by the stats, not above the answer
+  const sub = el.querySelector(':scope > .sub'); if (sub && entity) { const rest = newInSub(el.dataset.cardDesc, c.typeLine); sub.textContent = rest; sub.hidden = !rest; }
+  // one title and the small kind label (owner, 2026-10-18): a heading in the answer that only repeats the card's title is dropped
+  if (h2 && !c.isSkill && !own) { const first = [...el.children].find((n) => /^H[1-4]$/.test(n.tagName) && n !== h2); if (first && repeatsTitle(h2.textContent, first.textContent)) first.hidden = true; }
+  const thin = el.querySelector(':scope > p.thin'), foot0 = el.querySelector(':scope > .vc-foot'); if (thin && foot0) { thin.classList.add('vc-route'); thin.removeAttribute('style'); foot0.before(thin); }
+  if (source === 'seal') sealArt(el.querySelector(':scope > .vc-art'), { key: c.key || c.name || c.typeLine, kind: c.artKind || kindWord(c.typeLine), hue: c.artHue != null ? c.artHue : c.hue, rarity: c.rarity, nouns: c.nouns }); // the void seal (lib/void-seal.js): V01D's procedural art under any painted picture
   forge(el, c, !!photo); // the Art Forge (lib/card-forge.js): painted art for an answer or merged card, or a "paint this card" button
+  accordion(el); // a very long body: sections behind one-line summaries
   shareBar(el); // copy card / save card (lib/card-share.js)
   const up = name && c.rarity ? noteTier(name, (lookup(stats, name).skill || {}).tier) : null; // a rating that rose since this browser last saw the skill
   if (up) {
-    el.classList.add('vc-evolving'); el.dataset.evolved = up.to;
-    const note = document.createElement('div'); note.className = 'vc-evolved-note'; note.textContent = 'Evolved: ' + up.from + ' \u2192 ' + up.to;
+    el.dataset.evolved = up.to;
+    const note = document.createElement('div'); note.className = 'vc-evolved-note'; note.textContent = 'Evolved: ' + up.from + ' \u2192 ' + up.to; // one quiet static line, no glow
     const at = el.querySelector(':scope > .vc-type'); if (at) at.after(note);
-    setTimeout(() => { el.classList.remove('vc-evolving'); note.remove(); }, 4500);
   }
+}
+
+/** a body past 3,000 characters becomes an accordion (lib/card-sections.js decides the cut). Every node stays in the page, so copy card and save text keep it all. Never throws. */
+function accordion(el) {
+  try {
+    if (el.querySelector(':scope > .vc-sec') || el.dataset.skill || el.dataset.cardOwn) return;
+    const nodes = [...el.children].filter((n) => /^(P|UL|OL|PRE|BLOCKQUOTE|TABLE|H[1-6])$/.test(n.tagName) && !n.classList.contains('vc-title') && !n.classList.contains('vc-route') && !n.hidden);
+    const secs = sectionsOf(nodes.map((n) => ({ heading: /^H\d$/.test(n.tagName), text: n.textContent })));
+    if (!secs.length) return;
+    el.dataset.sections = String(secs.length);
+    secs.forEach((sc, i) => {
+      const group = nodes.slice(sc.from, sc.to + 1), wrap = document.createElement('div'), head = document.createElement('button'), body = document.createElement('div'), id = 'vcs' + Math.random().toString(36).slice(2, 8);
+      wrap.className = 'vc-sec'; head.type = 'button'; head.className = 'vc-sec-head'; head.textContent = sc.title; head.setAttribute('aria-expanded', i === 0 ? 'true' : 'false'); head.setAttribute('aria-controls', id); head.dataset.nospeak = '1';
+      body.className = 'vc-sec-body'; body.id = id; body.hidden = i !== 0;
+      head.addEventListener('pointerdown', (e) => e.stopPropagation());
+      head.addEventListener('click', (e) => { e.stopPropagation(); const open = head.getAttribute('aria-expanded') !== 'true'; head.setAttribute('aria-expanded', String(open)); body.hidden = !open; });
+      group[0].before(wrap); wrap.append(head, body); for (const n of group) body.appendChild(n);
+    });
+  } catch (_) {}
 }
 
 let styled = false;

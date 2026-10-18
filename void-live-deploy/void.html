@@ -329,15 +329,53 @@
       text-transform: uppercase;
       rotate: -3deg;
     }
+    /* the list card (skills/list.js), in V01D's own look (owner, 2026-10-18: no wooden clipboard): the dark panel the other cards use,
+       a purple edge with a gold hairline on top, mono accents, a title bar, tidy checkbox rows; a colour ("make the list red") edges it */
     .list-card {
-      width: 280px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      background: #141414;
-      border: 1px solid rgba(255,255,255,0.08);
-      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-      font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
+      box-sizing: border-box; width: 300px; padding: 0 0 14px; border-radius: 12px; overflow: hidden;
+      background: linear-gradient(165deg, rgba(30,28,46,.96), rgba(12,12,20,.97));
+      border: 1px solid rgba(150,120,255,.32); border-top-color: rgba(214,178,92,.55);
+      box-shadow: 0 14px 34px rgba(0,0,0,.5), inset 0 1px 0 rgba(255,255,255,.06);
+      color: var(--ink, #e9ebf2); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif;
     }
+    .list-card > :not(.list-head) { margin-left: 16px; margin-right: 16px; }
+    .list-head { display: flex; align-items: baseline; gap: 10px; padding: 12px 16px 10px; margin-bottom: 4px; background: rgba(150,120,255,.08); border-bottom: 1px solid rgba(150,120,255,.22); }
+    .list-title { flex: 1; min-width: 0; min-height: 22px; margin: 0; color: var(--ink, #e9ebf2); font-size: 15px; font-weight: 600; letter-spacing: .01em; outline: 0; }
+    .list-title:empty::before { content: attr(data-placeholder); color: var(--muted); font-weight: 400; }
+    .list-title:focus-visible { box-shadow: 0 1px 0 rgba(214,178,92,.7); }
+    .list-count { flex: 0 0 auto; color: rgba(214,178,92,.9); font: 11px/1 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .06em; }
+    .list-entry { display: flex; gap: 10px; align-items: center; margin-top: 0; padding: 7px 0; min-width: 0; border-bottom: 1px solid rgba(255,255,255,.06); }
+    .list-entry input[type="checkbox"] {
+      appearance: none; flex: 0 0 auto; width: 16px; height: 16px; margin: 0; border: 1.5px solid rgba(150,120,255,.7); border-radius: 4px;
+      background: transparent no-repeat center / 12px 12px; cursor: pointer;
+    }
+    .list-entry input[type="checkbox"]:checked {
+      background-color: rgba(150,120,255,.18); border-color: rgba(214,178,92,.9);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8.5l3.2 3.6L13.8 2.5' fill='none' stroke='%23d6b25c' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    }
+    .list-entry input[type="checkbox"]:focus-visible, .list-add-input:focus-visible, .list-shop-store:focus-visible { outline: 2px solid rgba(214,178,92,.8); outline-offset: 2px; }
+    .list-entry .list-item-text { flex: 1; min-width: 0; word-break: break-word; }
+    .list-entry.done .list-item-text { color: var(--muted); text-decoration: line-through; }
+    .list-remove { border: 0; background: transparent; color: var(--muted); cursor: pointer; padding: 0 2px; font: inherit; }
+    .list-remove:hover { color: #ff8a8a; }
+    .list-to-note { font: 10px/1.6 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+    .list-empty { color: var(--muted); padding: 10px 0 4px; font: 12px/1.4 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; }
+    .list-add-row { display: flex; gap: 8px; margin-top: 12px; }
+    .list-add-input { flex: 1; min-width: 0; border: 1px solid rgba(255,255,255,.12); border-radius: 6px; padding: 7px 9px; outline: 0; background: rgba(0,0,0,.35); color: var(--fg); font: inherit; }
+    .list-add-input::placeholder { color: var(--muted); }
+    .list-add-input:focus { border-color: rgba(150,120,255,.6); }
+    .list-add-button { border: 1px solid rgba(150,120,255,.45); border-radius: 6px; background: rgba(150,120,255,.12); color: var(--ink, #e9ebf2); cursor: pointer; padding: 4px 12px; font: inherit; }
+    .list-add-button:hover { background: rgba(150,120,255,.26); }
+    /* "Shop this list": its own labelled group under a divider with room above it, apart from the add-item row */
+    .list-shop-group { margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(150,120,255,.28); }
+    .list-shop { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 10px; }
+    .list-shop-label { color: var(--muted); font: 11px/1.2 ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace; letter-spacing: .08em; text-transform: uppercase; }
+    .list-shop-stores { display: flex; flex-wrap: wrap; gap: 6px; }
+    .list-shop-store { font: inherit; font-size: 12px; color: var(--ink, #e9ebf2); background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.14); border-radius: 6px; padding: 4px 11px; cursor: pointer; }
+    .list-shop-store:hover { background: rgba(255,255,255,.1); }
+    .list-shop-store[aria-pressed="true"] { background: rgba(150,120,255,.22); border-color: rgba(214,178,92,.7); }
+    .list-shop-links { display: flex; flex-direction: column; gap: 4px; margin-top: 10px; font-size: 12.5px; }
+    .list-shop-links a { color: #b9a8ff; text-decoration: underline; text-underline-offset: 2px; }
     /* a pocket calculator's face (skills/calc.js): charcoal matte plastic with a little bevel, the sum and its result in one
        olive LCD window, right-aligned the way a calculator shows them, the result in big dark tabular digits; a colour
        ("make the calculator blue") edges the body */
@@ -396,94 +434,11 @@
       line-height: 36px;
       letter-spacing: 0.04em;
     }
-    .list-title {
-      min-height: 22px;
-      margin-bottom: 10px;
-      color: var(--fg);
-      font-size: 16px;
-      font-weight: 600;
-      outline: 0;
-    }
-    .list-title:empty::before {
-      content: attr(data-placeholder);
-      color: var(--muted);
-      font-weight: 400;
-    }
-    .list-entry {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      margin-top: 7px;
-      min-width: 0;
-    }
-    .list-entry input[type="checkbox"] { accent-color: #8ab4ff; flex: 0 0 auto; }
-    .list-entry .list-item-text { flex: 1; min-width: 0; word-break: break-word; }
-    .list-entry.done .list-item-text { color: var(--muted); text-decoration: line-through; }
-    .list-remove {
-      border: 0; background: transparent; color: var(--muted);
-      cursor: pointer; padding: 0 2px; font: inherit;
-    }
-    .list-remove:hover { color: var(--fg); }
-    .list-empty { color: var(--muted); margin-top: 6px; }
-    .list-add-row { display: flex; gap: 6px; margin-top: 12px; }
-    .list-shop { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin-top: 10px; font-size: 12px; color: var(--muted, #8a8a8a); }
-    .list-shop-store { font: inherit; color: var(--ink, #ddd); background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); border-radius: 999px; padding: 2px 10px; cursor: pointer; }
-    .list-shop-store[aria-pressed="true"] { background: rgba(255,255,255,.16); }
-    .list-shop-links { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; font-size: 12.5px; }
-    .list-shop-links a { color: var(--ink, #ddd); text-decoration: underline; text-underline-offset: 2px; }
-    .list-add-input {
-      flex: 1; min-width: 0; border: 1px solid var(--line); border-radius: 6px;
-      padding: 6px 8px; outline: 0; background: #0c0c0c; color: var(--fg); font: inherit;
-    }
-    .list-add-input::placeholder { color: var(--muted); }
-    .list-add-button {
-      border: 1px solid var(--line); border-radius: 6px; background: #1d1d1d;
-      color: var(--accent); cursor: pointer; padding: 4px 9px; font: inherit;
-    }
-    .list-add-button:hover { background: #2a2a2a; }
     /* "map it" on the document card (skills/pdf-card.js): each heading indented by its depth on a thin line back to its parent */
     .doc-map { list-style: none; margin: 8px 0; padding: 0; }
     .doc-map > li { margin: 3px 0 3px calc(var(--depth, 0) * 18px); padding-left: 10px; border-left: 1px solid var(--line); }
     .doc-map summary { cursor: pointer; }
     .doc-map ol { margin: 4px 0 6px; padding-left: 18px; }
-    /* the list is the clipboard its 3D view shows (skills/list.js, skills/mini/list.js): white paper on a hardboard board under a
-       steel clip, the items written in pencil in the felt-tip hand, tick boxes drawn on the paper with a pencil tick, a done
-       item crossed out in pencil; a colour ("make the list red") paints the board's edge */
-    .thing.list-card {
-      box-sizing: border-box; width: 290px; padding: 22px 16px 14px; border-radius: 4px;
-      background: #fbfaf5; border: 9px solid #9a6b3f; color: #33363d;
-      box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.06), 0 1px 0 1px rgba(60, 35, 15, 0.5), 0 14px 26px -6px rgba(0, 0, 0, 0.55);
-      font: 20px/1.25 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive;
-    }
-    .thing.list-card::before { /* the steel clip */
-      content: ''; position: absolute; left: 50%; top: -17px; width: 78px; height: 26px; margin-left: -39px; border-radius: 7px 7px 3px 3px;
-      background-image: linear-gradient(to bottom, #eef0f3, #b5bac2 45%, #7c828b 100%);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.8), inset 0 -2px 3px rgba(0, 0, 0, 0.25), 0 3px 4px rgba(0, 0, 0, 0.45);
-    }
-    .thing.list-card .list-title { color: #33363d; font: 700 24px/1.2 'Void Hand', 'Segoe Print', 'Bradley Hand', 'Marker Felt', cursive; }
-    .thing.list-card .list-title:empty::before, .thing.list-card .list-empty { color: rgba(51, 54, 61, 0.5); }
-    .thing.list-card .list-entry { margin-top: 4px; border-bottom: 1px solid rgba(90, 130, 190, 0.22); padding-bottom: 2px; }
-    .thing.list-card .list-entry .list-item-text { color: #33363d; }
-    .thing.list-card .list-entry.done .list-item-text { color: rgba(51, 54, 61, 0.55); text-decoration: line-through 2px #33363d; }
-    .thing.list-card .list-entry input[type="checkbox"] {
-      appearance: none; width: 17px; height: 17px; margin: 0; border: 1.6px solid #33363d; border-radius: 3px 2px 4px 2px;
-      background: transparent no-repeat center / 15px 15px; cursor: pointer; rotate: -2deg;
-    }
-    .thing.list-card .list-entry input[type="checkbox"]:checked {
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M2.5 8.5l3.2 3.6L13.8 2.5' fill='none' stroke='%2333363d' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
-    }
-    .thing.list-card .list-entry input[type="checkbox"]:focus-visible { outline: 2px solid #1d3a8a; outline-offset: 2px; }
-    .thing.list-card .list-remove { color: rgba(51, 54, 61, 0.45); }
-    .thing.list-card .list-remove:hover { color: #a8231f; }
-    .thing.list-card .list-add-input { background: transparent; border: 0; border-bottom: 1.5px dashed rgba(51, 54, 61, 0.45); border-radius: 0; color: #33363d; font: inherit; padding: 2px 2px; }
-    .thing.list-card .list-add-input::placeholder { color: rgba(51, 54, 61, 0.45); }
-    .thing.list-card .list-add-button { background: transparent; border: 1.5px solid rgba(51, 54, 61, 0.55); color: #33363d; border-radius: 50%; width: 30px; padding: 0; }
-    .thing.list-card .list-add-button:hover { background: rgba(51, 54, 61, 0.08); }
-    .thing.list-card .list-shop { color: rgba(51, 54, 61, 0.7); font: 13px/1.4 ui-sans-serif, system-ui, sans-serif; }
-    .thing.list-card .list-shop-store { color: #33363d; background: #fff; border-color: rgba(51, 54, 61, 0.3); }
-    .thing.list-card .list-shop-store[aria-pressed="true"] { background: #e8ecf7; border-color: #1d3a8a; color: #1d3a8a; }
-    .thing.list-card .list-shop-links { font: 13px/1.45 ui-sans-serif, system-ui, sans-serif; }
-    .thing.list-card .list-shop-links a { color: #1d3a8a; }
     #hints { max-width: 720px; margin: 0 auto 6px; padding: 0 10px; display: none; }
     #hints.on { display: block; }
     #hints div { padding: 5px 12px; border-radius: 10px; color: var(--muted); font-size: 13px; cursor: pointer; }
@@ -770,7 +725,7 @@
     .vpage h2 { font-size: var(--fs-xl); font-weight: 600; letter-spacing: -.005em; line-height: 1.25; margin: 0 0 4px; }
     .vpage .sub { font-size: var(--fs-s); color: var(--ink-3); margin-bottom: 14px; }
     .vpage p, .vpage ul { color: #d5d8e2; }
-    .vpage .src { font-size: var(--fs-xs); color: var(--ink-3); }
+    .vpage .src { font-size: var(--fs-xs); color: var(--ink-2); } /* "written by V01D, from what it knows": ink-2 on the card, ~9:1 (it was ink-3, 5.7:1 and read as too dark; owner, 2026-10-18); the answer stays brighter and larger */
     /* Void's reflection card (showVoice): section heads in the one accent, the built-of-asked bar, asks that open */
     .vpage .vh { font-size: 11px; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: rgb(var(--d-key, 158 178 255)); margin: 18px 0 6px; }
     .vpage .v-bar { height: 6px; border-radius: 999px; background: rgba(255,255,255,.08); overflow: hidden; margin: 6px 0 8px; }
@@ -780,6 +735,27 @@
     .vpage .v-asks li { border-top: 1px solid rgba(255,255,255,.06); }
     .vpage .v-asks summary { cursor: pointer; padding: 8px 0; list-style-position: outside; }
     .vpage .v-asks .v-meta { font-size: var(--fs-s); color: var(--ink-3); padding: 0 0 10px; }
+    /* the self card (lib/self-blocks.js): headings you can scan, one bullet per ask with its dates beneath, paragraphs with air between them,
+       V01D's own words in the reading font and the changelog (what got built) in monospace inside its own darker box */
+    .vpage.vc-self .vs-sec { margin-top: 18px; }
+    .vpage.vc-self .vs-h { font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid rgb(var(--d-key, 158 178 255) / .35); box-shadow: 0 1px 0 rgba(255, 210, 122, .18); }
+    .vpage.vc-self .vs-sec p { margin: 0 0 10px; }
+    .vpage.vc-self .vs-sec p:last-child { margin-bottom: 0; }
+    .vpage.vc-self .vs-lead { font-size: 16px; line-height: 1.6; color: var(--ink); }
+    .vpage.vc-self .vs-note { margin: 0 0 10px; }
+    .vpage.vc-self .vs-note[data-tight] { margin-bottom: 6px; }
+    .vpage.vc-self .vs-list { list-style: none; margin: 0; padding: 0; }
+    .vpage.vc-self .vs-list > li { position: relative; padding: 6px 0 6px 22px; border-top: 0; }
+    .vpage.vc-self .vs-list > li::before { content: ""; position: absolute; left: 6px; top: 15px; width: 6px; height: 6px; border-radius: 50%; background: rgb(255 210 122 / .85); }
+    .vpage.vc-self .vs-list summary { padding: 0; list-style: none; cursor: pointer; }
+    .vpage.vc-self .vs-list summary::-webkit-details-marker { display: none; }
+    .vpage.vc-self .vs-list .v-meta, .vpage.vc-self .vs-sub { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.45; color: var(--ink-3); padding: 2px 0 0; }
+    .vpage.vc-self .vs-list details:not([open]) .v-meta { display: none; }
+    .vpage.vc-self .vs-log { background: rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px; padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .vpage.vc-self .vs-log .vs-h { font-family: inherit; }
+    .vpage.vc-self .vs-log .vs-note, .vpage.vc-self .vs-log .vs-of, .vpage.vc-self .vs-log summary { font-size: 13px; }
+    .vpage.vc-self .vs-of { color: var(--ink-3); }
+    @media (prefers-reduced-motion: no-preference) { .vpage.vc-self .vs-sec { animation: vs-in .35s ease both; } @keyframes vs-in { from { opacity: 0; transform: translateY(4px); } } }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     @media (max-width: 480px) {
       .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
@@ -990,6 +966,10 @@
       opacity: .45; transition: opacity .35s ease; }
     #row:focus-within::after { opacity: 1; }
     #row:focus-within { box-shadow: var(--d-lift), 0 0 0 4px rgb(var(--d-key) / .10), 0 0 60px rgb(var(--d-key) / .16); }
+    /* the ask bar's focus glow in the card's own palette (owner, 2026-10-18): a purple rim with a faint gold bloom and an inner shadow; only the glow eases in, and not at all for reduced motion */
+    #row { transition: box-shadow .3s ease, border-color .3s ease; }
+    #row:focus-within { border-color: rgba(190,150,255,.78); box-shadow: var(--d-lift), inset 0 0 16px rgba(167,120,255,.20), 0 0 0 3px rgba(167,120,255,.18), 0 0 34px rgba(167,120,255,.30), 0 0 72px rgba(255,210,122,.12); }
+    @media (prefers-reduced-motion: reduce) { #row { transition: none; } }
     #input { font-size: 17px; letter-spacing: -.005em; color: var(--d-ink); }
     #input::placeholder { color: var(--d-ink-3); }
     #go { transition: background .25s ease, box-shadow .25s ease, color .25s ease; }
@@ -2030,9 +2010,19 @@ say('nothing selected to remove');
       window.addEventListener('pointermove', move); window.addEventListener('pointerup', up); window.addEventListener('pointercancel', up); stage.addEventListener('pointerdown', down);
     }
     stage.addEventListener('wheel', (e) => { if (e.target === stage && worldCur && worldCur.inst && worldCur.inst.zoom) { e.preventDefault(); worldCur.inst.zoom(e.deltaY > 0 ? 1.1 : 0.9); } }, { passive: false });
+    // an answer card that is replaced leaves its header and words in this browser (skills/recent.js shows them as "earlier answers"; owner, 2026-10-18)
+    function trailKeep(el) {
+      try {
+        if (!el.querySelector('.src') || el.dataset.noTrail || /^(?:unlock\s*)+\S{16,}\s*$/i.test(String(el._ask || ''))) return;
+        const h = el.querySelector('h2'), c = el.cloneNode(true); c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, script, h2').forEach((x) => x.remove());
+        const t = (h ? h.textContent : '').replace(/\s+/g, ' ').trim().slice(0, 160), x = (c.textContent || '').replace(/\s+/g, ' ').trim().slice(0, 700); if (!t || !x) return;
+        let list = []; try { list = JSON.parse(localStorage.getItem('a2m.void.trail.v1') || '[]'); } catch (_) {} if (!Array.isArray(list)) list = [];
+        localStorage.setItem('a2m.void.trail.v1', JSON.stringify([{ t, x, at: Date.now() }].concat(list.filter((e) => e && e.t !== t)).slice(0, 12)));
+      } catch (_) {}
+    }
     function closePage() {
       if (!vpageEl) return false;
-      const el = vpageEl; vpageEl = null; closeWorld();
+      const el = vpageEl; vpageEl = null; trailKeep(el); closeWorld();
       if (el._slogan && el._slogan.parentNode) el._slogan.parentNode.removeChild(el._slogan);
       el._slogan = null;
       document.querySelectorAll('.vslogan').forEach((n) => n.remove());
@@ -2208,7 +2198,10 @@ say('nothing selected to remove');
       return el;
     }
     // a "copy" button under an answer: copies the heading and the text (not the buttons), says "copied"
-    function addCopy(el) {
+    // (owner, 2026-10-18, UI polish: an answer card keeps one set of buttons: its card frame's "copy text" does what this pill did, lib/card-share.js,
+    // so an answer calls addCopy(el, false) and gets only the side panel's "into the page"; the stage's own things still get the pill)
+    function addCopy(el, pill) {
+      if (pill !== false) {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'tr-copy vcopy'; b.textContent = 'copy'; b.style.marginTop = '10px';
       b.addEventListener('click', async () => {
         const c = el.cloneNode(true); c.querySelectorAll('button, .src').forEach((x) => x.remove());
@@ -2217,6 +2210,7 @@ say('nothing selected to remove');
         b.textContent = ok ? 'copied' : 'select and copy'; setTimeout(() => { b.textContent = 'copy'; }, 1600);
       });
       el.appendChild(b);
+      }
       if (!inPanel) return; // in the extension's side panel, an answer can also go straight into the page you pointed Void at
       const p = document.createElement('button'); p.type = 'button'; p.className = 'tr-copy vcopy vput'; p.textContent = 'into the page'; p.style.cssText = 'margin-top:10px;margin-left:8px';
       p.addEventListener('pointerdown', (e) => e.stopPropagation()); // on a stage card a press starts a drag, which redraws the card before the click lands
@@ -2350,7 +2344,7 @@ say('nothing selected to remove');
       // genuinely matched, not a claim that nothing else went into the answer
       el.innerHTML = '<h2>' + esc(text) + '</h2>' + about + fixHtml(j.answer)
         + '<div class="src">' + (page ? 'from the page you were on' + (pageHost(page.url) ? ' (' + esc(pageHost(page.url)) + ')' : '') + ' · written by V01D' : j.told ? 'from what you told me · written by V01D' + (srcs ? ' · Source: ' + srcs : '') : srcs ? 'Source: ' + srcs + ' · written by V01D' : 'written by V01D, from what it knows') + '</div>';
-      addCopy(el);
+      addCopy(el, false);
       say('');
       return 'answer';
     }
@@ -2388,39 +2382,21 @@ say('nothing selected to remove');
       if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p><div class="vh">Correct me</div><div data-v-correct></div>'; mountCorrect(el, said); return; }
       const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
       const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
-      let h = '<h2>What I think of myself</h2><div class="sub">My own words, kept as I said them. The people who build me read them first.</div>';
-      if (daily) h += '<p><b>' + esc(daily.thoughts) + '</b></p>'
-        + (daily.weakest ? '<p><span style="color:#8a8a8a">Weakest right now:</span> ' + esc(daily.weakest) + '</p>' : '')
-        + (daily.next_game ? '<p><span style="color:#8a8a8a">Next game I want to learn:</span> ' + esc(daily.next_game) + '</p>' : '')
-        + (daily.better ? '<p><span style="color:#8a8a8a">How I\'d get better:</span> ' + esc(daily.better) + '</p>' : '');
-      if (build) h += '<div class="vh">On what just shipped</div>' + (build.shipped ? '<div class="sub" style="margin-bottom:6px">' + esc(build.shipped) + '</div>' : '')
-        + '<p>' + esc(build.thoughts) + '</p>' + (build.better ? '<p><span style="color:var(--ink-3)">What I\'d add:</span> ' + esc(build.better) + '</p>' : '');
-      const asks = (v.asks || []).slice(0, 4);
-      // each ask opens to what is known about it: when Void asked, after what, and whether it called it small (nothing invented)
-      if (asks.length) h += '<div class="vh">What I\'ve asked for</div><ul class="v-asks">' + asks.map((a) => '<li><details><summary>' + esc(a.ask) + '</summary><div class="v-meta">'
-        + 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + esc(String(a.at).slice(0, 10)) : '') + (a.small ? ' · I called it small' : '') + ' · not built yet</div></details></li>').join('') + '</ul>';
-      // what came of it, on evidence only (functions/api/reflect.js): a will that cannot see its effects is only talk
-      const f = v.follow;
-      if (f && f.total) {
-        const pct = Math.max(0, Math.min(100, Math.round(100 * f.built / f.total)));
-        h += '<div class="vh">What got built</div><div><span class="v-num">' + esc(f.built) + '</span> <span style="color:var(--ink-3)">of my ' + esc(f.total) + ' asks</span></div>'
-          + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
-          // the divergence tracker (asked by Void three times): each built ask opens to my words beside what the builders wrote in the
-          // ledger, so a build that drifted from the ask is plain to see
-          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s);margin-bottom:4px">Most recently, my words and what was built:</p>'
-            // root cause or surface (asked by Void): sorted by the ledger line that built each ask (lib/voice.js depthOf), six shown at a time
-            + '<div class="v-depth" role="group" aria-label="Which builds to show">' + [['all', 'All', f.recent.length], ['root', 'Root cause', f.recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', f.recent.filter((r) => r.depth === 'surface').length]].map(([k, l, n], i) => '<button type="button" class="tr-copy" data-v-depth="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + l + ' · ' + n + '</button>').join(' ') + '</div>'
-            + '<div class="sub" style="margin:2px 0 4px">Root cause: a fix or a build that changed how I work underneath. Surface: something new on the stage.</div><ul class="v-asks v-built">' + f.recent.map((r, i) => '<li data-depth="' + esc(r.depth || '') + '"' + (i >= 6 ? ' hidden' : '') + '><details><summary>' + esc(r.ask) + (r.times > 1 ? ' <span style="color:var(--ink-3)">(asked ' + esc(r.times) + ' times)</span>' : '') + '</summary><div class="v-meta"><b>I asked:</b> ' + esc(r.ask) + '<br><b>What was built' + (r.at ? ' (' + esc(String(r.at).slice(0, 10)) + ')' : '') + ':</b> ' + esc(r.what || '(the ledger line is not in this view)') + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' <a href="' + esc(r.ref) + '" rel="noopener">link</a>' : '') + '</div></details></li>').join('') + '</ul>' : '');
-      }
+      // the card's body is structured blocks (lib/self-blocks.js): V01D's own words in the reading font, the changelog in monospace,
+      // real headings, one bullet per ask; a failed import falls back to the plain sentence so the card never opens empty
+      el.classList.add('vc-self');
+      const SB = await import('/lib/self-blocks.js').catch(() => null);
+      if (vpageEl !== el) return;
+      let h = '<h2>What I think of myself</h2>' + (SB ? SB.selfHtml(SB.selfSections(v), esc) : '<p>' + esc((daily || build || {}).thoughts || '') + '</p>');
       // talking back (owner, 2026-10-16): the owner replies or corrects, V01D answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
       // corrections from anyone (asked by Void): kept on this device in a store of its own (lib/corrections.js), never in the look's state
-      h += '<div class="vh">Correct me</div><div data-v-correct></div>';
-      if (owner) h += '<div class="vh">Talk to me</div><div class="v-talk" data-v-talk></div>'
+      h += '<section class="vs-sec"><h3 class="vs-h">Correct me</h3><div data-v-correct></div></section>';
+      if (owner) h += '<section class="vs-sec"><h3 class="vs-h">Talk to me</h3><div class="v-talk" data-v-talk></div>'
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
-        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div>';
+        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></section>';
       el.innerHTML = h + '<div data-v-pulse></div><div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
       mountCorrect(el, said); mountPulse(el);
       el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.vDepth; let shown = 0;
@@ -2583,7 +2559,7 @@ say('nothing selected to remove');
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
-        addCopy(el);
+        addCopy(el, false);
         // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
         el.dataset.cardDesc = j.description || ''; el.dataset.cardExtract = (j.extract || '').slice(0, 160); keepCard(el);
         import('/lib/card-kinds.js').then((k) => k.fetchAlso(j.title || hit.title)).then((also) => { if (also.length && vpageEl === el) { el.dataset.cardAlso = also.join(','); keepCard(el); } }).catch(() => {});
@@ -3758,7 +3734,9 @@ say('nothing selected to remove');
         let target = null;
         const hol = lower.match(/\b(christmas|xmas|new\s*year|halloween|thanksgiving)\b/);
         if (hol) target = CALC_HOLIDAYS[hol[1].toLowerCase()];
-        const dm = lower.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})\b/i);
+        // an ordinal reads as its number: "january 1st", "jan 2nd", "the 1st of march" (owner, 2026-10-18)
+        const dlow = lower.replace(/\b(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+of\s+([a-z]{3,9})\b/, '$2 $1').replace(/\b(\d{1,2})(?:st|nd|rd|th)\b/g, '$1');
+        const dm = dlow.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+(\d{1,2})\b/i);
         if (dm) target = { m: CALC_MONTHS[dm[1].toLowerCase()], d: parseInt(dm[2], 10) };
         // "how many days until friday", "days until the weekend": the next one, never today
         const wd = !target && /\b(until|till|before)\b/.test(lower) && lower.match(/\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday|weekend)\b/);
@@ -4315,7 +4293,8 @@ say('nothing selected to remove');
       const all = Object.values(things); return all[all.length - 1] || null;
     }
     function handleMetaAsk(text, lower) {
-      if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower)
+      // "remove blank lines: <pasted text>" is a text tool (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills
+      if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
           && /\b(all|every|each|both)\b|\b(notes|stickies|notepads|timers|countdowns|clocks|shapes|circles|squares|lines|counters|lists|checklists|images|pictures|photos|links|cards|maps|calculators|calcs)\b/.test(lower)) {
         const kinds = /\bcards?\b/.test(lower) ? Array.from(new Set(['link', 'kept', ...batchKinds(lower.replace(/\ball\s+(?:the\s+)?cards?\b|\bcards?\b/g, ' ')).filter((k) => k !== 'link' || /\blinks?\b/.test(lower))])) : batchKinds(lower);
         if (kinds.length) {
@@ -5114,7 +5093,7 @@ say('nothing selected to remove');
         // "egg timer": how long each kind of boiled egg takes, so the person picks
         .replace(/^(?:an?\s+)?egg\s+timer\s*[.!]*$/i, 'how long to boil an egg')
         .replace(/^(?:to\s*-?\s*do|todo)(?:\s+list)?\s*:\s*(.+)$/i, 'make a to-do list with $1')
-        .replace(/^(capital|currency|population)\s+(?!of\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
+        .replace(/^(capital|currency|population)\s+(?!of\b|converters?\b|calculators?\b|city\b|gains?\b|letters?\b|one\b|punishment\b|cities\b|growth\b|density\b)([a-z][a-z ]{2,30}?)\s*[?.!]*$/i, '$1 of $2')
         .replace(new RegExp('^(?:time\\s+(?:in\\s+|at\\s+)?(' + CITIES + ')|(' + CITIES + ')\\s+time)(?:\\s+now|\\s+right\\s+now)?\\s*[?.!]*$', 'i'), (_, a, b) => 'what time is it in ' + (a || b))
         .replace(new RegExp('^(' + CODES + ')\\s+(?:to|in|into)\\s+(' + CODES + ')\\s*[?.!]*$', 'i'), '1 $1 to $2');
     }

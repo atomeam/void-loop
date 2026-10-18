@@ -5,6 +5,7 @@
 // (skills/guide.json). A check that matches nothing is listed as unmapped. Counts are counts of failing checks recorded in the file; nothing is
 // estimated. Incident text is untrusted: it is shown only through esc. Pure: data in, data and markup out. No network, no model, no key.
 import { familyMap } from './corrections.js';
+import { WARNING_LOCK } from './art-rules.js';
 
 export const RECENT = 8; // incidents listed
 const norm = (t) => String(t == null ? '' : t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
@@ -35,17 +36,30 @@ export function skillOfCheck(check, names, pages) {
   return null;
 }
 
-/** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }] }. Pure. */
-export function autopsy(incidentsJson, fam, guide) {
-  const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [];
-  const counts = new Map(), un = new Map();
-  const placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
-    const skill = skillOfCheck(text, names, pages), f = skill && map.get(skill) || null;
-    if (f) counts.set(f.id, { id: f.id, name: f.name, count: (counts.get(f.id) || { count: 0 }).count + 1 }); else un.set(text, (un.get(text) || 0) + 1);
-    return { text, skill: f ? skill : null, family: f ? f.id : null };
+/** the "Go against V01D" log (asked by Void: "Connect the 'Go against V01D' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
+ *  of the Go games against V01D (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
+ *  offered back as the ask that replays one. Matched by words in the check's name; nothing is guessed. Pure. */
+export const GO_LOG = { id: 'go-against-void', name: 'Go against V01D', replay: 'play go against void' };
+export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
+
+/** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }],
+ *  goLog: [{ sha, at, text }] (every failing Go-against-V01D check), focus }. `focus` (a family id; asked by Void: a drill-down from the stability sparklines) keeps only
+ *  that family's failing checks, and only the incidents that have one. Pure. */
+export function autopsy(incidentsJson, fam, guide, focus = '') {
+  const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
+  const counts = new Map(), un = new Map(), goLog = [];
+  let placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
+    const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-V01D check belongs to the go skill (its name is too short to match by words)
+    return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
   }) }));
+  if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);
+  for (const i of placed) for (const c of i.checks) {
+    if (isGoLog(c.text)) goLog.push({ sha: i.sha, at: i.at, text: c.text });
+    if (c.family) counts.set(c.family, { id: c.family, name: c.name, count: (counts.get(c.family) || { count: 0 }).count + 1 }); else un.set(c.text, (un.get(c.text) || 0) + 1);
+  }
+  placed = placed.map((i) => ({ ...i, checks: i.checks.map(({ text, skill, family }) => ({ text, skill, family })) }));
   return {
-    total: inc.length, failing: placed.reduce((n, i) => n + i.checks.length, 0), recent: placed.slice(0, RECENT),
+    total: inc.length, failing: placed.reduce((n, i) => n + i.checks.length, 0), recent: placed.slice(0, RECENT), focus: want, goLog,
     families: [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
     unmapped: [...un].map(([text, count]) => ({ text, count })).sort((a, b) => b.count - a.count || a.text.localeCompare(b.text)),
   };
@@ -70,17 +84,21 @@ export function incidentCases(a, guide, show = 5) {
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 /** the card's body (below the title). An empty file says "no incidents recorded". Pure; every word from the file goes through esc. */
 export function autopsyHtml(a, esc = escHtml) {
-  if (!a.total) return '<p data-autopsy-empty="1">No incidents recorded.</p>';
-  const top = a.families.length ? a.families.filter((f) => f.count === a.families[0].count) : [];
-  return '<div data-autopsy="1"><p class="lead">' + (top.length ? 'Most failing checks recorded: <b>' + top.map((f) => esc(f.name)).join('</b>, <b>') + '</b> (' + esc(top[0].count) + ' of ' + esc(a.failing) + ').' : 'No failing check could be placed in a family.')
-    + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>'
-    + (a.families.length ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><b>' + esc(f.name) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
+  // the warning style lock (lib/art-rules.js WARNING_LOCK; asked by Void): error reports are amber on black with a hazard stripe, whatever they say
+  const L = WARNING_LOCK, frame = (attr, inner) => '<div ' + attr + ' data-style-lock="' + L.id + '" style="' + L.css + '"><div style="' + L.stripe + '"></div><div style="padding:6px 12px 0">' + inner + '</div></div>';
+  if (!a.total) return frame('data-autopsy-empty="1"', '<p>No incidents recorded.</p>');
+  const top = a.families.length ? a.families.filter((f) => f.count === a.families[0].count) : [], fam = a.focus && a.families[0];
+  return '<style>[data-style-lock=warning] .sub,[data-style-lock=warning] .src{color:' + L.sub + '}[data-style-lock=warning] a{color:#ffd45e}</style>' + frame('data-autopsy="1"',
+    (a.focus ? '<p class="lead" data-autopsy-focus="' + esc(a.focus) + '">Only <b>' + esc(fam ? fam.name : a.focus) + '</b>: ' + esc(a.failing) + ' failing check' + (a.failing === 1 ? '' : 's') + ' in the logs. <a href="#" data-ask="incident autopsy">all families</a></p>'
+      : '<p class="lead">' + (top.length ? 'Most failing checks recorded: <b>' + top.map((f) => esc(f.name)).join('</b>, <b>') + '</b> (' + esc(top[0].count) + ' of ' + esc(a.failing) + ').' : 'No failing check could be placed in a family.')
+      + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>')
+    + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
+    + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
+      + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul></li>').join('') + '</ul>'
-    + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : '')
-    + '</div>';
+    + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
-
 /** the health pulse (self card): the latest incident, its commit and the families its checks map to; null when none is recorded. Pure. */
 export function pulseOf(a) {
   const l = a && a.recent && a.recent[0]; if (!l) return null;

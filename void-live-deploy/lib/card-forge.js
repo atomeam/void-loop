@@ -4,9 +4,10 @@
 // skill, game or miniature), it paints it ONCE by itself (one POST per subject per page; the server's daily cap, rate limit and kill switch bound the spend) and the plate stays until the picture lands. ?art=button offers a "paint this card" button instead; ?art=off never asks.
 // The picture is kept on the card element (el._vcForge) so a rebuilt frame shows it again, and the saved card picture (lib/card-image.js) includes it.
 import { safeImg } from './art-rules.js';
+import { artSource } from './art-source.js';
 
 export const FORGE_CSS = [
-  '.vcard .vc-art{position:relative}.vcard .vc-art .vc-forge-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;animation:vc-forge-in .25s ease-out 1}',
+  '.vcard .vc-art{position:relative}.vpage.vcard .vc-art img.vc-forge-img{position:absolute!important;inset:0;float:none!important;margin:0!important;max-width:none!important;max-height:none!important;width:100%!important;height:100%!important;object-fit:cover;object-position:50% 50%;display:block;border-radius:0!important;animation:vc-forge-in .25s ease-out 1}',
   '.vcard .vc-art.vc-forged::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(ellipse at 50% 50%,transparent 55%,rgba(0,0,0,.55) 100%),linear-gradient(180deg,rgba(255,215,140,.10),transparent 30%,rgba(0,0,0,.28));box-shadow:inset 0 0 22px rgba(0,0,0,.6)}',
   '.vcard .vc-forge-btn{position:absolute;right:6px;bottom:6px;z-index:3;font:inherit;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:6px;border:1px solid var(--edge);background:rgba(10,10,16,.72);color:hsl(var(--h) 55% 80%);cursor:pointer}',
   '.vcard .vc-forge-btn:hover{background:rgba(10,10,16,.9);box-shadow:0 0 10px var(--edge)}.vcard .vc-forge-btn[disabled]{cursor:default;opacity:.8}',
@@ -22,7 +23,12 @@ const land = (key, img) => { for (const e of waiting.get(key) || []) { if (e.isC
 /** what to paint: the answer's own nouns (card-subject.js), or the card's key when the answer says too little. */
 // kept on the card from its first ask: a frame rebuilt mid-paint (its stats arrive, a merged card gains data-skill="merge") must not become a
 // new subject, or a slow paint is asked for twice and spends two of the day's paintings on one card
-const subjectFor = (el, c) => el._vcArtKey || (el._vcArtKey = (el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key));
+const subjectFor = (el, c) => {
+  if (el._vcArtKey) return el._vcArtKey;
+  const k = el.dataset && el.dataset.skill ? el.dataset.skill.replace(/[-_]+/g, ' ') : el._vcSubject || c.key;
+  if (!/^(?:looking|loading|thinking|searching)\b/i.test(String(k || ''))) el._vcArtKey = k; // a "thinking ..." frame is not the subject: the answer's own words are, once they arrive
+  return k;
+};
 export const RETRY_S = [25, 50, 100]; const tries = new Map(); // a subject's retries after a busy or slow paint
 /** a paint worth trying again later: no answer, a model timeout, a rate limit or an HTTP error; never the cap or the switch. Pure. */
 export const retryable = (got) => !got || ['busy', 'slow', 'http'].includes(got.why);
@@ -52,9 +58,11 @@ function painting(el, on) {
 }
 function show(el, img) {
   const art = el.querySelector(':scope > .vc-art'); if (!art) return; painting(el, false);
+  if (artSource({ photo: (art.querySelector('.vc-art-photo') || {}).src || '' }) === 'photo') return; // a real photo is the art: a painting never goes over it
   const url = safeImg(img); if (!url) return;
   for (const n of art.querySelectorAll('.vc-forge-btn, .vc-forge-img')) n.remove();
   const im = document.createElement('img'); im.className = 'vc-forge-img'; im.alt = ''; im.decoding = 'async'; im.src = url;
+  for (const n of art.querySelectorAll(':scope > .vc-seal, :scope > svg')) n.remove(); art.classList.remove('vc-sealed'); // the painting is the one picture: no seal or plate left under it (lib/art-source.js)
   art.appendChild(im); art.classList.add('vc-forged'); el.dataset.forged = '1'; // the painting simply replaces the seal; no badge, button or flash (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
 }
 async function ask(method, el, c, again = false) {

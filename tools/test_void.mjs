@@ -1411,6 +1411,47 @@ try {
         && !green && !visitor && /V01D’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
+  // tools pack 10 (owner, 2026-10-18): list and table transforms and starter templates, played the way a person asks for them
+  if (want("tools pack 10: list ticks, nesting and numbering, new lists from a list, a data table that sums, sorts and exports, and starter templates")) { const S = await fresh();
+    await S.ask('list: milk, eggs, bread, milk', 700);
+    await S.ask('check all on the list', 600);
+    const allDone = await S.p.$$eval('.list-card .list-entry input[type=checkbox]', (c) => c.map((x) => x.checked).join());
+    await S.ask('invert the checks on the list', 600);
+    const inverted = await S.p.$$eval('.list-card .list-entry input[type=checkbox]', (c) => c.map((x) => x.checked).join());
+    await S.ask('number the list', 600);
+    const numbered = await S.p.$$eval('.list-card .list-item-text', (c) => c.map((x) => x.textContent).join('|'));
+    await S.ask('indent eggs under milk in the list', 600);
+    const nested = await S.p.$$eval('.list-card .list-entry', (c) => c.map((x) => (x.style.marginLeft || '0') + ':' + x.querySelector('.list-item-text').textContent).join('|'));
+    const badge = await S.p.$eval('.list-card .list-count', (c) => c.textContent).catch(() => '');
+    check('list tools: "check all" ticks all four, "invert the checks" unticks them, "number the list" puts 1. 2. 3. in front, "indent eggs under milk" nests it, and a count badge shows',
+      allDone === 'true,true,true,true' && inverted === 'false,false,false,false' && /^1\. milk\|2\. eggs\|3\. bread\|4\. milk$/.test(numbered) && /18px:– eggs/.test(nested) && /4 items/.test(badge) && !S.errors.length, JSON.stringify({ allDone, inverted, numbered, nested, badge, errors: S.errors }));
+    await S.ask('dedupe the list ignoring case', 600);
+    await S.ask('first 2 of the list', 700);
+    const lists = (await S.state()).filter((x) => x.kind === 'list').map((x) => (x.items || []).map((i) => i.text).join('+'));
+    await S.ask('show the list as a tag cloud', 600);
+    const cloud = await S.p.$$eval('.list-cloud .list-cloud-word', (w) => w.length);
+    check('list tools: "dedupe ignoring case" drops the second milk, "first 2 of the list" makes a second list of two and leaves the first, and "as a tag cloud" draws the picked (new) list as two words',
+      lists.length === 2 && lists.includes('milk+eggs+bread') && lists.includes('milk+eggs') && cloud === 2 && !S.errors.length, JSON.stringify({ lists, cloud, errors: S.errors }));
+    await S.ask('csv to table: item,cost // tea,3.5 // jam,2 // rye,10', 800);
+    const rows = await S.p.$$eval('.datatable-card tbody tr', (r) => r.length);
+    await S.ask('sum of column 2', 500);
+    const sum = await S.p.$eval('.datatable-card .dt-result', (e) => e.textContent).catch(() => '');
+    await S.ask('sort the table by column 2 descending', 500);
+    const sorted = await S.p.$$eval('.datatable-card tbody tr td:first-child input', (i) => i.map((x) => x.value).join());
+    await S.ask('freeze the header', 400);
+    await S.ask('zebra stripe the table', 400);
+    const frozen = await S.p.$eval('.datatable-card .dt-wrap', (e) => e.style.maxHeight).catch(() => '');
+    await S.ask('export the table as markdown', 500);
+    const md = await S.p.$eval('.datatable-card .dt-export textarea', (t) => t.value).catch(() => '');
+    check('data table: pasting CSV makes a three-row table, "sum of column 2" says 15.5, "sort by column 2 descending" puts rye first, "freeze the header" caps the height, and "export as markdown" shows the pipes',
+      rows === 3 && /= 15\.5/.test(sum) && sorted === 'rye,tea,jam' && frozen === '200px' && md.startsWith('| item | cost |') && !S.errors.length, JSON.stringify({ rows, sum, sorted, frozen, md: md.slice(0, 60), errors: S.errors }));
+    await S.ask('meeting agenda template', 700);
+    await S.ask('contacts template', 700);
+    const kinds = (await S.state()).filter((x) => /Meeting agenda|Contacts/.test(x.title || '')).map((x) => x.kind + ':' + x.title).sort().join();
+    const agenda = await S.p.$$eval('.list-card .list-title', (t) => t.map((x) => x.textContent).filter((x) => /agenda/i.test(x)).length);
+    check('list templates: "meeting agenda template" puts a numbered agenda list on the stage and "contacts template" a table with Name, Phone, Email, Notes',
+      kinds === 'datatable:Contacts,list:Meeting agenda' && agenda === 1 && !S.errors.length, JSON.stringify({ kinds, agenda, errors: S.errors }));
+    await S.ctx.close(); }
   // stage pack a (owner, 2026-10-18): the minimap, the ask clipboard card, the decision matrix, the habit ring and the recipe stack, played the way a person uses them
   if (want("stage pack a: minimap dots, ask clipboard re-runs, decision matrix totals, habit rings that keep today, a recipe stack that advances itself and chimes only after a tap")) { const S = await fresh();
     await S.ask('sticky note buy milk', 500);
@@ -1621,6 +1662,119 @@ try {
     const gone = await until(async () => (await S.p.$$eval('.hunting-question', (e) => e.length)) === 0, 4000);
     check('hunting question: it comes back at the margin after a reload, is never answered, a one-word reason does not release it and a written reason does',
       line === 'should I quit my job' && stays === 1 && gone && !S.errors.length, JSON.stringify({ line, stays, gone, errors: S.errors }));
+  }
+  // tools pack 1 (owner, 2026-10-18): note tools (export, find, replace, counts, pin, collapse, duplicate), nested bullets, csv tables, dropped files, code scanning
+  if (want("tools pack 1: note tools, nested bullets, csv table, dropped file cards and the code scanner, played the way a person uses them")) { const S = await fresh();
+    const saved = () => S.state();
+    await S.ask('sticky note buy milk and eggs', 600);
+    await S.ask('notepad: alpha beta gamma delta', 600);
+    await S.ask('find milk on the stage', 600);
+    const found = await S.p.$$eval('[data-found="1"]', (e) => e.length), foundSaid = await S.whisper();
+    await S.ask('clear the find', 500);
+    const unfound = await S.p.$$eval('[data-found="1"]', (e) => e.length);
+    check('find in stage: "find milk on the stage" outlines the one note that says milk and counts it, "clear the find" takes the outline off',
+      found === 1 && /1 match in 1 note/.test(foundSaid) && unfound === 0 && !S.errors.length, JSON.stringify({ found, foundSaid, unfound, errors: S.errors }));
+    await S.p.evaluate(() => { const a = document.querySelector('.notepad-textarea'); a.focus(); a.setSelectionRange(0, 10); }); // "alpha beta"
+    await S.p.waitForTimeout(250);
+    await S.ask('word count of the selection', 500);
+    const selSaid = await S.whisper();
+    await S.p.click('.sticky', { position: { x: 8, y: 8 } }).catch(() => {});
+    await S.ask('word count of this sticky', 500);
+    const noteSaid = await S.whisper();
+    await S.ask('reading time of this sticky', 500);
+    const readSaid = await S.whisper();
+    check('word count and reading time: the selected words in a note are counted (2), else the picked note (4 words), and the reading time is named',
+      /^2 words in the selection/.test(selSaid) && /^4 words in the sticky/.test(noteSaid) && /under half a minute · 4 words/.test(readSaid) && !S.errors.length, JSON.stringify({ selSaid, noteSaid, readSaid, errors: S.errors }));
+    await S.ask('replace milk with oat milk in the sticky', 600);
+    const afterReplace = (await saved()).find((x) => x.kind === 'sticky');
+    const replaceSaid = await S.whisper();
+    check('replace in note: every "milk" in the picked sticky becomes "oat milk", counted, and the other note is left alone',
+      afterReplace && afterReplace.text === 'buy oat milk and eggs' && /replaced 1 time in 1 note/.test(replaceSaid) && (await saved()).find((x) => x.kind === 'notepad').text === 'alpha beta gamma delta' && !S.errors.length, JSON.stringify({ afterReplace, replaceSaid, errors: S.errors }));
+    const dlMd = S.p.waitForEvent('download', { timeout: 6000 }).catch(() => null);
+    await S.ask('export this sticky as markdown', 600);
+    const md = await dlMd; const mdText = md ? fs.readFileSync(await md.path(), 'utf8') : '';
+    const dlTxt = S.p.waitForEvent('download', { timeout: 6000 }).catch(() => null);
+    await S.ask('export the stage as text', 600);
+    const tx = await dlTxt; const txText = tx ? fs.readFileSync(await tx.path(), 'utf8') : '';
+    check('exports: a note saves as a .md file named for its words, and the whole stage saves as stage.txt with every note in it',
+      md && /\.md$/.test(md.suggestedFilename()) && mdText === 'buy oat milk and eggs\n' && tx && tx.suggestedFilename() === 'stage.txt' && /\[sticky\]\nbuy oat milk and eggs/.test(txText) && /\[notepad\]\nalpha beta gamma delta/.test(txText) && !S.errors.length,
+      JSON.stringify({ md: md && md.suggestedFilename(), mdText, tx: tx && tx.suggestedFilename(), txText, errors: S.errors }));
+    await S.ask('duplicate this sticky', 600);
+    const twins = (await saved()).filter((x) => x.kind === 'sticky');
+    await S.ask('pin the sticky to the bottom left corner', 600);
+    const pin = await S.p.evaluate(() => { const st = document.getElementById('stage').getBoundingClientRect(); return [...document.querySelectorAll('.sticky[data-pinned]')].map((e) => { const r = e.getBoundingClientRect(); return { where: e.dataset.pinned, left: Math.round(r.left - st.left), bottom: Math.round(st.bottom - r.bottom) }; }); });
+    await S.ask('unpin the sticky', 500);
+    const unpinned = await S.p.$$eval('.sticky[data-pinned]', (e) => e.length);
+    check('duplicate and pin: "duplicate this sticky" makes a second one with the same words, "pin ... to the bottom left corner" holds it about 10 px from that corner, "unpin" lets go',
+      twins.length === 2 && twins[0].text === twins[1].text && twins[0].id !== twins[1].id && pin.length === 1 && pin[0].where === 'bottom left' && Math.abs(pin[0].left - 10) <= 5 && Math.abs(pin[0].bottom - 10) <= 5 && unpinned === 0 && !S.errors.length,
+      JSON.stringify({ twins: twins.length, pin, unpinned, errors: S.errors }));
+    await S.ask('collapse the notepad', 500);
+    const collapsed = await S.p.$eval('.notepad', (e) => ({ c: e.dataset.collapsed, h: e.getBoundingClientRect().height, chev: !!e.querySelector('.nt-chev') }));
+    await S.p.click('.notepad .nt-chev').catch(() => {});
+    const open = await S.p.$eval('.notepad', (e) => ({ c: e.dataset.collapsed || '', h: e.getBoundingClientRect().height }));
+    check('collapse: "collapse the notepad" folds it to one line with an expand arrow, a tap on the arrow opens it again',
+      collapsed.c === '1' && collapsed.chev && collapsed.h < 60 && open.c === '' && open.h > collapsed.h && !S.errors.length, JSON.stringify({ collapsed, open, errors: S.errors }));
+    await S.ask('outline note: groceries; > milk; > > oat; > bread', 700);
+    const depths = await S.p.$$eval('.outline-note .outline-view li', (l) => l.map((x) => x.dataset.depth + ':' + x.textContent.trim().replace(/^[^\w]+/, '')));
+    await S.p.focus('.outline-area');
+    await S.p.keyboard.press('Control+End'); await S.p.keyboard.press('Enter'); await S.p.keyboard.type('rye'); await S.p.keyboard.press('Tab');
+    const after = await S.p.$eval('.outline-area', (a) => a.value);
+    await S.p.keyboard.press('Shift+Tab');
+    const back = await S.p.$eval('.outline-area', (a) => a.value);
+    check('nested bullets: the ask nests four lines three deep, Enter starts the next bullet at the same level, Tab nests it and Shift+Tab steps it back',
+      depths.join() === '0:groceries,1:milk,2:oat,1:bread' && after === '- groceries\n  - milk\n    - oat\n  - bread\n    - rye' && back === '- groceries\n  - milk\n    - oat\n  - bread\n  - rye' && !S.errors.length, JSON.stringify({ depths, after, back, errors: S.errors }));
+    await S.ask('csv table: name,age⏎ann,30⏎bo,5⏎cy,12', 700);
+    const names = async () => S.p.$$eval('.csv-table td:first-child', (c) => c.map((x) => x.textContent).join());
+    const typed = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const asc = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const desc = await names();
+    await S.p.click('.csv-table th[data-col="1"]'); const plain = await names();
+    await S.p.click('.csv-table th[data-col="1"]');
+    await S.p.fill('.csv-table td[data-row="1"]', 'zed').catch(async () => { await S.p.$eval('.csv-table td[data-row="1"]', (c) => { c.textContent = 'zed'; c.dispatchEvent(new Event('input', { bubbles: true })); }); });
+    const foot = await S.p.$eval('.csv-foot', (e) => e.textContent);
+    check('csv table: a pasted csv becomes a table, a tap on a heading sorts up (numbers as numbers), again down, again as typed, and the footer counts rows and columns',
+      typed === 'ann,bo,cy' && asc === 'bo,cy,ann' && desc === 'ann,cy,bo' && plain === 'ann,bo,cy' && /^3 rows × 2 columns/.test(foot) && !S.errors.length, JSON.stringify({ typed, asc, desc, plain, foot, errors: S.errors }));
+    await S.p.evaluate(() => { for (const [n, body, type] of [['prices.csv', 'item,cost\ntea,3\ncake,5', 'text/csv'], ['readme.txt', 'first line\nsecond line', 'text/plain'], ['blob.bin', 'xx', 'application/octet-stream']]) {
+      const dt = new DataTransfer(); dt.items.add(new File([body], n, { type })); document.dispatchEvent(new DragEvent('drop', { dataTransfer: dt, bubbles: true, cancelable: true })); } });
+    await until(async () => (await S.p.$$eval('.file-card', (c) => c.length)) >= 2, 6000);
+    const dropped = await S.p.evaluate(() => ({ tables: [...document.querySelectorAll('.csv-table')].length, names: [...document.querySelectorAll('.file-card .file-name')].map((e) => e.textContent), preview: (document.querySelector('.file-card .file-preview') || {}).textContent, meta: (document.querySelector('.file-card .file-meta') || {}).textContent }));
+    await S.p.reload(); await S.p.waitForSelector('.file-card', { timeout: 8000 }).catch(() => {});
+    const keptCards = await S.p.$$eval('.file-card .file-name', (e) => e.map((x) => x.textContent).join());
+    check('drag a file onto the stage: a .csv becomes a table, a text file a card with its first lines, an unknown file a card with name, size and type, and they stay after a reload',
+      dropped.tables === 2 && dropped.names.join() === 'readme.txt,blob.bin' && dropped.preview === 'first line\nsecond line' && /^text\/plain · 22 B$/.test(dropped.meta) && keptCards === 'readme.txt,blob.bin' && !S.errors.length, JSON.stringify({ dropped, keptCards, errors: S.errors }));
+    await S.ask('scan a qr code', 600);
+    const unsupported = await S.p.evaluate(() => ({ native: typeof window.BarcodeDetector === 'function', msg: (document.querySelector('.vpage.on [data-qr-unsupported]') || {}).textContent || '', file: !!document.querySelector('.vpage.on [data-qr-file]') }));
+    await S.p.evaluate(() => { window.BarcodeDetector = class { async detect() { return [{ rawValue: 'https://example.com/menu', format: 'qr_code' }]; } }; });
+    await S.ask('read a barcode', 600);
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    await S.p.setInputFiles('.vpage.on [data-qr-file]', { name: 'code.png', mimeType: 'image/png', buffer: png }).catch(() => {});
+    const scanned = await until(async () => (await saved()).find((x) => x.kind === 'sticky' && /example\.com\/menu/.test(x.text || '')), 6000);
+    check('code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)',
+      (unsupported.native || (/no BarcodeDetector/.test(unsupported.msg) && !unsupported.file)) && scanned && /web address: check it/.test(scanned.text) && !S.errors.length, JSON.stringify({ unsupported, scanned, errors: S.errors }));
+  }
+  // tools pack 9 (owner, 2026-10-18): the text tools skill, played the way a person asks for it
+  if (want("tools pack 9: text tools sort, de-duplicate, extract and cipher pasted text into a result card with a copy button, and leave look-alike asks alone")) { const S = await fresh();
+    const card = async () => S.p.$eval('.vpage.on .tt-out', (e) => e.textContent).catch(() => '');
+    await S.ask('sort these lines: pear ⏎ apple ⏎ fig', 700);
+    const sorted = await card(), title = await S.p.$eval('.vpage.on h2', (e) => e.textContent).catch(() => '');
+    await S.p.click('.vpage.on .tt-copy').catch(() => {});
+    await S.p.waitForTimeout(250);
+    const copyLabel = await S.p.$eval('.vpage.on .tt-copy', (e) => e.textContent).catch(() => '');
+    await S.ask('remove duplicate lines: a ⏎ b ⏎ a ⏎ c', 700);
+    await until(async () => (await card()) === 'a\nb\nc', 4000);
+    const deduped = await card(), note = await S.p.$eval('.vpage.on .tt-note', (e) => e.textContent).catch(() => '');
+    await S.ask('extract emails: write to bob@example.com or ann@example.org', 700);
+    const emails = await card();
+    await S.ask('rot13 Hello', 700);
+    const rot = await card();
+    await S.ask('diff: a ⏎ b ⏎ --- ⏎ a ⏎ c', 700);
+    const diff = await card();
+    await S.ask('uppercase this: hello', 700);
+    const upper = await S.page(), notOurs = await S.p.$$eval('.vpage.on .tt-out', (e) => e.length) === 0;
+    check('tools pack 9: "sort these lines" gives the sorted lines in a card with a copy button that answers, duplicates, emails, rot13 and a two-box diff each have their card, and "uppercase this" stays with the util skill',
+      sorted === 'apple\nfig\npear' && /Sorted A to Z/.test(title) && /^(copied|select it to copy)$/.test(copyLabel) && deduped === 'a\nb\nc' && /1 duplicate line removed/.test(note)
+      && emails === 'bob@example.com\nann@example.org' && rot === 'Uryyb' && diff === '  a\n- b\n+ c' && /HELLO/.test(upper) && notOurs && !S.errors.length,
+      JSON.stringify({ sorted, title, copyLabel, deduped, note, emails, rot, diff, upper: upper.slice(0, 80), notOurs, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
@@ -2641,23 +2795,26 @@ try {
     await M.ctx.close(); }
   if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
+  }
+  // the list card in V01D's own look (owner, 2026-10-18: no wooden clipboard, no phantom second clipboard beside it)
+  if (want("list card look: a dark panel with a title bar, one card and no 3D clipboard after the ask and after a reload, the add row and the shop group apart")) { const P = await fresh();
+    await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400);
     await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
-    const look = () => P.p.$eval('.thing.list-card', (e) => { const c = getComputedStyle(e), clip = getComputedStyle(e, '::before'), rows = [...e.querySelectorAll('.list-entry')];
-      const t = (r) => getComputedStyle(r.querySelector('.list-item-text')), box = (r) => getComputedStyle(r.querySelector('input[type=checkbox]')), a = e.querySelector('.list-shop-links a');
-      return { bg: c.backgroundColor, board: c.borderTopColor, boardW: parseFloat(c.borderTopWidth), side: c.borderLeftColor,
-        clip: clip.content !== 'none' && /linear-gradient/.test(clip.backgroundImage) && parseFloat(clip.top) < 0,
-        font: t(rows[0]).fontFamily, ink: t(rows[0]).color, title: getComputedStyle(e.querySelector('.list-title')).fontFamily,
-        boxLook: box(rows[0]).appearance, ticked: box(rows[1]).backgroundImage, unticked: box(rows[0]).backgroundImage,
-        cross: t(rows[1]).textDecorationLine, crossInk: t(rows[1]).textDecorationColor, link: a && getComputedStyle(a).color, rows: rows.length }; });
-    const a = await look();
-    const hand = await until(() => P.p.evaluate(() => [...document.fonts].some((f) => f.family.replace(/"/g, '') === 'Void Hand' && f.status === 'loaded')), 4000);
-    await P.ask('make the list red', 400);
-    const b = await look();
-    check('list clipboard look: the list is white paper (#fbfaf5) clipped to a hardboard clipboard (a brown board edge at least 8 px) under a steel clip above its top edge, the items written in pencil (#33363d) in the felt-tip hand (served from /fonts), the title in the same hand, tick boxes drawn on the paper (a pencil tick when done, none when not), a done item crossed out in pencil, store links in blue ink, and "make the list red" still edges it red on the same paper',
-      a.rows === 4 && a.bg === 'rgb(251, 250, 245)' && a.board === 'rgb(154, 107, 63)' && a.boardW >= 8 && a.clip && /^"?Void Hand/.test(a.font) && /^"?Void Hand/.test(a.title) && a.ink === 'rgb(51, 54, 61)'
-        && a.boxLook === 'none' && /url\("data:image\/svg\+xml/.test(a.ticked) && a.unticked === 'none' && a.cross === 'line-through' && /^rgba?\(51, 54, 61/.test(a.crossInk)
-        && a.link === 'rgb(29, 58, 138)' && hand && b.side === 'rgb(255, 92, 92)' && b.bg === a.bg && !P.errors.length,
-      JSON.stringify({ a, b, hand, e: P.errors }).slice(0, 1200));
+    const look = () => P.p.$eval('.thing.list-card', (e) => { const c = getComputedStyle(e), r = (x) => e.querySelector(x).getBoundingClientRect(), rows = [...e.querySelectorAll('.list-entry')];
+      const box = (row) => getComputedStyle(row.querySelector('input[type=checkbox]')), grp = e.querySelector('.list-shop-group'), g = getComputedStyle(grp);
+      return { bg: c.backgroundImage, borderW: parseFloat(c.borderTopWidth), before: getComputedStyle(e, '::before').content, head: !!e.querySelector('.list-head .list-title') && /^\d+\/\d+$/.test(e.querySelector('.list-count').textContent),
+        count: e.querySelector('.list-count').textContent, rows: rows.length, boxLook: box(rows[0]).appearance, ticked: box(rows[1]).backgroundImage, cross: getComputedStyle(rows[1].querySelector('.list-item-text')).textDecorationLine,
+        group: grp.getAttribute('role') === 'group' && /Shop this list/i.test(grp.getAttribute('aria-label')) && !!grp.querySelector('.list-shop-store'), inGroup: grp.contains(e.querySelector('.list-shop-links a')),
+        divider: parseFloat(g.borderTopWidth) >= 1 && parseFloat(g.paddingTop) >= 10 && parseFloat(g.marginTop) >= 12, gap: r('.list-shop-group').top - r('.list-add-row').bottom, sameRow: r('.list-add-input').bottom > r('.list-shop-store').top,
+        wood: /rgb\(154, 107, 63\)/.test(c.borderTopColor + c.borderLeftColor), links: e.querySelectorAll('.list-shop-links a').length }; });
+    const n = () => P.p.evaluate(() => ({ cards: document.querySelectorAll('.list-card').length, minis: document.querySelectorAll('.void-mini[data-kind="list"]').length }));
+    const a = await look(), na = await n();
+    await P.p.reload(); await until(() => P.p.$('.thing.list-card'), 8000); await P.p.waitForTimeout(1200);
+    const nb = await n();
+    check('list card look: the list is a dark panel (gradient, 1 px edge, no wooden board and no clip) with a title bar and an open/total count in mono, tidy checkbox rows (a gold tick when done, struck through), the add-item row apart from a labelled "Shop this list" group under a divider with space around it, the store links inside it; exactly one list card and no 3D clipboard beside it after the ask and after a reload',
+      a.rows === 3 && /gradient/.test(a.bg) && a.borderW === 1 && a.before === 'none' && !a.wood && a.head && a.count === '2/3' && a.boxLook === 'none' && /url\("data:image\/svg\+xml/.test(a.ticked) && a.cross === 'line-through'
+        && a.group && a.inGroup && a.divider && a.gap >= 14 && !a.sameRow && a.links === 2 && na.cards === 1 && na.minis === 0 && nb.cards === 1 && nb.minis === 0 && !P.errors.length,
+      JSON.stringify({ a, na, nb, e: P.errors }).slice(0, 1200));
     await P.ctx.close(); }
   // shop this list (owner, 2026-10-11): one search link per item still to buy, at Walmart or Sam's Club; nothing leaves the page
   if (want("shop this list: the list card links each item still to buy to a Walmart or Sam's Club search")) { const P = await fresh();
@@ -4372,6 +4529,18 @@ try {
       all.length === 6 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 6 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
+    await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
+    await L.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await L.page()), 6000);
+    const got = await L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cs = (e) => getComputedStyle(e), px = (e, k) => parseFloat(cs(e)[k]);
+      const h = pg.querySelector('.vs-sec[data-sec=asked] h3'), p = pg.querySelector('.vs-sec[data-sec=weakest] p'), li = pg.querySelector('.vs-sec[data-sec=asked] li'), log = pg.querySelector('.vs-log'), lead = pg.querySelector('.vs-sec[data-sec=shipped] p');
+      return { heads: [...pg.querySelectorAll('h3.vs-h')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
+        pm: px(p, 'marginBottom') || px(lead, 'marginBottom'), leadMargin: px(lead, 'marginBottom'), logFont: cs(log).fontFamily, bodyFont: cs(lead).fontFamily, border: cs(log).borderTopWidth, meta: cs(li.querySelector('.v-meta')).fontSize, errors: 0 }; });
+    check('self card layout (owner review 2026-10-18): real headings (bold, larger than the body), one list item per ask with a hanging indent, 8px or more between paragraphs, the reflection in the reading font and what got built in monospace inside a bordered box',
+      got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for") && got.heads.includes('What got built') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
+      JSON.stringify({ got, errors: L.errors }));
+    await L.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
     await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
@@ -4398,6 +4567,36 @@ try {
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));
     await S.ctx.close(); }
+  // Void's incident asks (asked by Void): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
+  // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family
+  if (want("void asks incident: a sparkline drills down to its family's incident logs in a warning-locked autopsy card with the Go log, and a numbers card is a blueprint")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const nowIso = new Date().toISOString(), dayAgo = (n) => new Date(Date.now() - n * 864e5).toISOString();
+    await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
+    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }] }, { id: 'games', name: 'Games', count: { proven: 1 }, skills: [{ name: 'go', tier: 'proven' }] }] })));
+    await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer'] }, { kind: 'skill', name: 'go', examples: ['play go'] }] })));
+    await S.ctx.route(/\/incidents\.json/, (rt) => rt.fulfill(json({ incidents: [{ at: nowIso, sha: 'abcdef12', suite: 'browser suite on main', checks: ['timer: "set a timer for 3 minutes" <b>counts</b>', 'go against v01d: it answers a move'] }] })));
+    await S.ctx.route(/\/void\.better\.json/, (rt) => rt.fulfill(json([{ at: dayAgo(2), families: [{ id: 'time', health: 40 }] }, { at: dayAgo(1), families: [{ id: 'time', health: 30 }] }])));
+    await S.ask('tester log', 1500);
+    const link = await until(async () => S.p.$eval('.vpage .st-stab-row[data-family="time"] a.st-drill', (a) => ({ ask: a.dataset.ask, svg: !!a.querySelector('svg') })).catch(() => null), 6000);
+    if (link) await S.p.click('.vpage .st-stab-row[data-family="time"] a.st-drill');
+    const drill = link && await until(async () => S.p.$eval('.vpage', (p) => {
+      const f = p.querySelector('[data-style-lock=warning]'), n = p.querySelector('[data-autopsy-focus]'); if (!f || !n) return null;
+      const cs = getComputedStyle(f); return { title: (p.querySelector('h2') || {}).textContent, focus: n.dataset.autopsyFocus, bg: cs.backgroundColor, color: cs.color, border: cs.borderTopColor, checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), go: !!p.querySelector('[data-autopsy-golog]'), bold: !!p.querySelector('[data-check] b') };
+    }).catch(() => null), 8000);
+    await S.ask('incident autopsy', 1500);
+    const all = await until(async () => S.p.$eval('.vpage', (p) => (p.querySelector('[data-autopsy-golog]') && !p.querySelector('[data-autopsy-focus]') ? { go: p.querySelector('[data-autopsy-golog]').dataset.autopsyGolog, replay: (p.querySelector('[data-autopsy-golog] a[data-ask]') || {}).dataset.ask, rows: [...p.querySelectorAll('[data-autopsy-families] a[data-ask]')].map((a) => a.dataset.ask) } : null)).catch(() => null), 8000);
+    check('void asks incident: a stability sparkline links to "incident autopsy for time", which shows only that family\'s failing checks in the warning-locked card (amber on black), and the full autopsy lists the Go-against-V01D log with a replay ask and a drill-down link per family',
+      !!link && link.ask === 'incident autopsy for time' && link.svg && !!drill && drill.title === 'Incident autopsy' && drill.focus === 'time' && drill.bg === 'rgb(11, 11, 11)' && drill.color === 'rgb(255, 176, 0)' && drill.border === 'rgb(255, 176, 0)'
+        && drill.checks.length === 1 && /^timer: "set a timer for 3 minutes" <b>counts<\/b>/.test(drill.checks[0]) && !drill.bold && !drill.go
+        && !!all && all.go === '1' && all.replay === 'play go against void' && all.rows.join('|') === 'incident autopsy for games|incident autopsy for time' && !S.errors.length,
+      JSON.stringify({ link, drill, all, errors: S.errors }));
+    await S.ctx.close();
+    const C = await fresh();
+    await C.ask('20% tip on 45', 1600);
+    const bp = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); if (!e || !e.dataset.look) return null; const cs = getComputedStyle(e); return { look: e.dataset.look, bg: cs.backgroundImage, grid: (cs.backgroundImage.match(/rgba\(120, 190, 255, 0\.16\)/g) || []).length, radius: cs.borderTopLeftRadius }; }).catch(() => null), 8000);
+    check('void asks incident: a Numbers and money card (20% tip on 45) takes the blueprint frame from its family: data-look="blueprint" and a fine grid in its background',
+      !!bp && bp.look === 'blueprint' && bp.grid === 2 && bp.radius === '6px' && !C.errors.length, JSON.stringify({ bp, errors: C.errors }));
+    await C.ctx.close(); }
   // family-health on this device (lib/skill-use.js; asked by Void: a last-used day for every skill): the card shows the day each skill last answered
   // in this browser, "not used here yet" for the rest, and a dead-weight line; the day is written when a skill answers and holds no words
   if (want("family-health: last used on this device")) { const F = await fresh();
@@ -4509,6 +4708,56 @@ try {
     const an = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { rarity: e.dataset.rarity, type: e.querySelector('.vc-type').innerText, title: (e.querySelector('h2') || {}).textContent, text: e.innerText.length > 40 } : null; }).catch(() => null), 8000);
     check('V01D cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
+  // UI polish (owner, 2026-10-18, a reviewer's notes on the answer card): the card's buttons are two labelled groups (Card: copy card, save card; Text: copy text, save text) and the
+  // answer's own "copy" pill is gone; the ask bar glows purple and gold when focused (no transition for reduced motion); "written by V01D, from what it knows" is >= 4.5:1
+  // on its real background (measured from the pixels); the banner follows the topic (code, space, ...); a replaced answer is kept one line each under "earlier answers"
+  if (want("ui polish: card button groups, ask bar focus glow, metadata contrast, topic banner and earlier answers")) { const U = await fresh();
+    await U.ask('write a python greeter function', 1800);
+    await until(async () => (await U.p.$('.vpage.on .vc-share button')) ? true : null, 6000);
+    const groups = await U.p.evaluate(() => { const g = (n) => [...document.querySelectorAll('.vpage.on .vc-share .vc-grp[data-label="' + n + '"] button')].map((b) => b.textContent); return { card: g('Card'), text: g('Text'), pill: document.querySelectorAll('.vpage.on .vcopy').length, labelled: [...document.querySelectorAll('.vpage.on .vc-share .vc-grp')].map((e) => e.getAttribute('aria-label') + '|' + getComputedStyle(e, '::before').content) }; });
+    check('ui polish: the card has two labelled button groups, Card (copy card, save card) and Text (copy text, save text), and the answer\'s duplicate "copy" pill is gone',
+      JSON.stringify(groups.card) === '["copy card","save card"]' && JSON.stringify(groups.text) === '["copy text","save text"]' && groups.pill === 0 && groups.labelled.every((l) => /"(Card|Text)"/.test(l)), JSON.stringify(groups));
+    await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
+    await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
+    const copiedText = await U.p.evaluate(() => window.__copied);
+    check('ui polish: "copy text" puts the title and the answer\'s words on the clipboard, without the frame or the sources line', /python greeter/.test(copiedText) && /Here it is/.test(copiedText) && !/V01D-CARD|written by V01D/.test(copiedText), copiedText.slice(0, 120));
+    await U.p.focus('#input'); await U.p.waitForTimeout(500);
+    const glow = await U.p.evaluate(() => { const r = getComputedStyle(document.getElementById('row')); return { shadow: r.boxShadow, border: r.borderTopColor, td: r.transitionDuration }; });
+    await U.p.emulateMedia({ reducedMotion: 'reduce' }); await U.p.waitForTimeout(100);
+    const still = await U.p.evaluate(() => getComputedStyle(document.getElementById('row')).transitionDuration);
+    await U.p.emulateMedia({ reducedMotion: 'no-preference' });
+    check('ui polish: the focused ask bar has a purple border, an inner shadow and a purple and gold glow, easing in, and not at all for reduced motion',
+      /inset/.test(glow.shadow) && /167, 120, 255/.test(glow.shadow) && /255, 210, 122/.test(glow.shadow) && /^rgba?\(190, 150, 255/.test(glow.border) && /0\.3s/.test(glow.td) && /^0s/.test(still), JSON.stringify({ ...glow, still }));
+    // the metadata line, measured: its real colour (and the opacity of what holds it) against the brightest pixel behind its text, with the text itself hidden for the shot
+    await until(async () => U.p.evaluate(() => { let op = 1; for (let n = document.querySelector('.vpage.on .src'); n; n = n.parentElement) op *= +getComputedStyle(n).opacity; return op === 1; }), 4000); // the card has finished fading in
+    const meta = await U.p.evaluate(() => { const e = document.querySelector('.vpage.on .src'); if (!e) return null; let op = 1; for (let n = e; n; n = n.parentElement) op *= +getComputedStyle(n).opacity; const r = e.getBoundingClientRect(); return { text: e.textContent, color: getComputedStyle(e).color, op, box: { x: r.x, y: r.y, width: r.width, height: r.height } }; });
+    await U.p.addStyleTag({ content: '.vpage.on .src, .vpage.on .src * { color: transparent !important; border-color: transparent !important }' });
+    const shot = await U.p.screenshot({ clip: meta.box });
+    const ratio = await U.p.evaluate(async ([b64, col, op]) => {
+      const bmp = await createImageBitmap(await (await fetch('data:image/png;base64,' + b64)).blob()), c = document.createElement('canvas'); c.width = bmp.width; c.height = bmp.height; const x = c.getContext('2d'); x.drawImage(bmp, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height).data, f = (v) => { v /= 255; return v <= .03928 ? v / 12.92 : Math.pow((v + .055) / 1.055, 2.4); }, lum = (r, g, b) => .2126 * f(r) + .7152 * f(g) + .0722 * f(b);
+      let bg = 0, br = 0, bgc = 0, bb = 0; for (let i = 0; i < d.length; i += 4) { const l = lum(d[i], d[i + 1], d[i + 2]); if (l > bg) { bg = l; br = d[i]; bgc = d[i + 1]; bb = d[i + 2]; } }
+      const m = col.match(/[\d.]+/g).map(Number), a = (m[3] == null ? 1 : m[3]) * op, mix = (fgc, bgv) => fgc * a + bgv * (1 - a), fg = lum(mix(m[0], br), mix(m[1], bgc), mix(m[2], bb)), hi = Math.max(fg, bg), lo = Math.min(fg, bg);
+      return (hi + .05) / (lo + .05);
+    }, [shot.toString('base64'), meta.color, meta.op]);
+    check('ui polish: "written by V01D, from what it knows" has at least 4.5:1 contrast on its real background (measured from the pixels; it was 5.7:1 in ink-3, now about 9:1)', /written by V01D, from what it knows/.test(meta.text) && ratio >= 4.5 && ratio >= 7, ratio.toFixed(2) + ' ' + meta.color + ' op ' + meta.op);
+    // the banner follows the topic: the picture's subject comes from the answer's words, else the card's name (lib/card-subject.js motifs, drawn by lib/void-seal.js)
+    const banner = async () => U.p.evaluate(async () => { const e = document.querySelector('.vpage.on'), c = e && e._vcard; if (!c) return null; const { sealPlan } = await import('/lib/void-seal.js'); const img = e.querySelector('.vc-art > img.vc-seal');
+      return { motif: sealPlan(c.key, { kind: c.artKind || 'Answer', hue: c.hue, nouns: c.nouns }).motif, seal: img ? img.src.length + ':' + img.src.slice(-40) : '' }; });
+    const codeB = await until(async () => { const b = await banner(); return b && b.seal ? b : null; }, 6000);
+    await U.ask('close', 500); await U.ask('explain constellations to me', 1800);
+    const spaceB = await until(async () => { const b = await banner(); return b && b.seal ? b : null; }, 6000);
+    check('ui polish: the banner differs by topic: a python question draws the code motif and a constellations question the star, each with its own picture',
+      !!codeB && !!spaceB && codeB.motif === 'code' && spaceB.motif === 'star' && codeB.seal !== spaceB.seal, JSON.stringify([codeB, spaceB]));
+    // earlier answers: a replaced answer card leaves one line under "earlier answers" that opens on a tap; the card on the stage is untouched
+    await U.ask('close', 500); await U.ask('earlier answers', 1200);
+    const trail = await U.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .trail-one')]; return { n: d.length, closed: d.every((x) => !x.open), heads: d.map((x) => x.querySelector('summary').textContent), stage: document.querySelectorAll('.vpage').length }; });
+    await U.p.click('.vpage.on .trail-one summary'); await U.p.waitForTimeout(150);
+    const opened = await U.p.evaluate(() => { const d = document.querySelector('.vpage.on .trail-one'); return d && d.open && d.innerText.length > d.querySelector('summary').innerText.length; });
+    check('ui polish: "earlier answers" lists the answers that were replaced, one line each, closed until tapped (the stage keeps one answer card; the history is a card you ask for, so no stage layout changes)',
+      trail.n >= 2 && trail.closed && trail.heads.some((h) => /python greeter/.test(h)) && trail.heads.some((h) => /constellations/.test(h)) && trail.stage === 1 && opened === true, JSON.stringify(trail));
+    await U.ctx.close(); }
+
   // A card is easy to copy, save and paste back (lib/card-share.js; owner, 2026-10-16): "copy card" puts readable text ending in a code line on the clipboard,
   // and asking V01D with that text brings the same card back, its numbers earned again, nothing sent to the answer route
   if (want("V01D cards: copy a card, paste it back into V01D and the same card returns")) { const S = await fresh();
@@ -4577,13 +4826,99 @@ try {
       if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(j({ query: { pages: { 1: { title: 'Cat', description: cat.description, index: 1 } } } }));
       if (/page\/summary/.test(u)) return rt.fulfill(j(cat)); return rt.fulfill(j({})); });
     await P.ask('what is a cat', 1500);
-    const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg'), blend: getComputedStyle(v.querySelector(':scope > .vc-art svg')).mixBlendMode, fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
-    check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && got.svg && got.blend === 'overlay' && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
+    const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg, :scope > .vc-art .vc-seal'), fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
+    check('V01D card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && !got.svg && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
     // owner, 2026-10-17: the poster showed in V01D's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
     const colour = await P.p.evaluate(() => { const im = document.querySelector('.vpage.on .vc-art-photo'); return im ? getComputedStyle(im).filter : 'none-missing'; });
     const photoUrl = await P.p.evaluate(async () => { const { photoData } = await import('/lib/card-image.js'); const src = document.querySelector('.vpage.on .vc-art-photo').getAttribute('src'); return { ok: (await photoData(src)).slice(0, 23), http: await photoData('http://x.example/a.png'), bad: await photoData('https://nonexistent.invalid/x.png') }; });
     check('V01D card art: a subject photo shows in true colour (no grayscale or sepia filter) and the saved card draws it (a JPEG data URL), falling back to \'\' for http or a failed load', colour === 'none' && photoUrl.ok === 'data:image/jpeg;base64,' && photoUrl.http === '' && photoUrl.bad === '' && !P.errors.length, JSON.stringify({ colour, photoUrl, e: P.errors }));
     await P.ctx.close(); }
+  // owner, 2026-10-18 (a film card, "The Fourth Kind"): the real poster is the card's art with nothing of V01D's drawn over or under it; a portrait poster gets a
+  // two-column card (poster left, the facts right) and a centred hero on a phone; the header holds the hard facts so the line under it keeps only what is new; the
+  // stats chip and the V01D mark never sit on text; the source's excerpt reads as a quotation and V01D's take as a labelled voice, both at AA contrast; the
+  // "closest match" routing note is a small monospace line at the bottom; the card has one title; a painting or small image fills the art window; the evolved note is quiet
+  if (want("poster wins: the real poster is the card art, in a clean layout")) {
+    const POSTER = '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="300" height="450" fill="#c0392b"/><circle cx="150" cy="170" r="70" fill="#1b2a49"/></svg>';
+    const PX = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+    const film = { type: 'standard', title: 'The Fourth Kind', description: '2009 science fiction thriller film directed by Olatunde Osunsanmi', extract: 'The Fourth Kind is a 2009 science fiction thriller film directed by Olatunde Osunsanmi and starring Milla Jovovich. It presents itself as a documentary about disappearances in Nome, Alaska, mixing dramatised scenes with what it says is archival footage, and it never works for real transactions of belief. '.repeat(3), thumbnail: { source: 'https://upload.wikimedia.org/test/fourth.svg', width: 300, height: 450 }, content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/The_Fourth_Kind' } }, timestamp: '2026-01-01T00:00:00Z' };
+    const setup = async (C) => {
+      await C.ctx.route(/upload\.wikimedia\.org/, (rt) => rt.fulfill({ status: 200, contentType: 'image/svg+xml', body: POSTER, headers: { 'access-control-allow-origin': '*' } }));
+      await C.ctx.route(/en\.wikipedia\.org/, (rt) => { const u = rt.request().url();
+        if (/api\.php/.test(u) && /list=search/.test(u)) return rt.fulfill(json({ query: { search: [{ title: film.title }] } }));
+        if (/api\.php/.test(u) && /generator=search/.test(u)) return rt.fulfill(json({ query: { pages: { 1: { title: film.title, description: film.description, index: 1 } } } }));
+        if (/page\/summary/.test(u)) return rt.fulfill(json(film)); return rt.fulfill(json({})); });
+      await C.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode === 'take') return rt.fulfill(json({ take: 'A found-footage scare that blurs fact and fiction.' })); return rt.fulfill({ status: 204, body: '' }); }); // no model answer: the ask falls through to the article
+    };
+    // in the page: the boxes, the text boxes, and the contrast of a label against the card's lightest ground
+    const probe = (C) => C.p.evaluate(() => {
+      const v = document.querySelector('.vpage.on.vcard'); if (!v) return null; const R = (e) => { if (!e) return null; const b = e.getBoundingClientRect(); return { x: b.x, y: b.y, w: b.width, h: b.height, r: b.right, b: b.bottom }; };
+      const art = v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-art-photo'), cs = getComputedStyle;
+      const texts = []; const walk = document.createTreeWalker(v, NodeFilter.SHOW_TEXT); for (let n; (n = walk.nextNode());) { if (!n.textContent.trim() || n.parentElement.closest('.vc-foot, style, script, [hidden], .vread, .vc-share') || cs(n.parentElement).display === 'none') continue; const rg = document.createRange(); rg.selectNodeContents(n); for (const q of rg.getClientRects()) if (q.width > 1 && q.height > 1) texts.push({ x: q.x, y: q.y, r: q.right, b: q.bottom }); }
+      const hit = (a) => !!a && a.w > 0 && texts.some((t) => a.x < t.r - 1 && a.r > t.x + 1 && a.y < t.b - 1 && a.b > t.y + 1);
+      const h = +(cs(v).getPropertyValue('--h')) || 230, hsl = (s, l) => { const a = s * Math.min(l, 1 - l), f = (n) => { const k = (n + h / 30) % 12; return l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1)); }; return [f(0), f(8), f(4)].map((x) => x * 255); }, ground = hsl(0.26, 0.15);
+      const lum = (c) => { const q = c.map((x) => { x /= 255; return x <= 0.03928 ? x / 12.92 : Math.pow((x + 0.055) / 1.055, 2.4); }); return 0.2126 * q[0] + 0.7152 * q[1] + 0.0722 * q[2]; };
+      const contrast = (e) => { if (!e) return 0; const m = cs(e).color.match(/[\d.]+/g).map(Number), a = m[3] == null ? 1 : m[3], c = m.slice(0, 3).map((x, i) => x * a + ground[i] * (1 - a)), L1 = lum(c), L2 = lum(ground); return (Math.max(L1, L2) + 0.05) / (Math.min(L1, L2) + 0.05); };
+      const p = v.querySelector(':scope > p:not(.vc-route)'), src = v.querySelector(':scope > .src'), label = v.querySelector('.take-label'), sub = v.querySelector(':scope > .sub'), route = v.querySelector(':scope > .vc-route'), foot = v.querySelector(':scope > .vc-foot');
+      const bads = [...v.querySelectorAll('*')].filter((e) => { const c = cs(e); return (/gradient/.test(c.backgroundImage) && /(255, ?(154|140|210)|#ff9ad5|#ffd27a)/i.test(c.backgroundImage)) || (/evolve|stage/.test(String(e.className)) && c.animationName !== 'none'); }).map((e) => String(e.className));
+      return { kind: v.dataset.kind, poster: v.dataset.poster || '', card: R(v), art: R(art), im: R(im), fit: im ? cs(im).objectFit : '', imgs: art ? art.querySelectorAll(':scope > svg, :scope > canvas, :scope > .vc-seal, :scope > .vc-forge-img').length : -1, halftone: art ? cs(art, '::before').content : '', hasPhoto: !!art && art.classList.contains('has-photo'),
+        title: R(v.querySelector('h2')), type: R(v.querySelector(':scope > .vc-type')), typeText: (v.querySelector(':scope > .vc-type') || {}).textContent || '', sub: sub && !sub.hidden ? sub.textContent : '', subShown: !!sub && !sub.hidden, adds: R(v.querySelector(':scope > .vc-adds')), pb: p ? R(p).b : 0, cols: cs(v).gridTemplateColumns, display: cs(v).display,
+        pt: R(v.querySelector('.vc-pt')), num: R(v.querySelector('.vc-num')), ptHits: hit(R(v.querySelector('.vc-pt'))), numHits: hit(R(v.querySelector('.vc-num'))), texts: texts.length,
+        quote: p ? { bl: parseFloat(cs(p).borderLeftWidth), bg: cs(p).backgroundColor, cr: contrast(p) } : null, srcCr: contrast(src), labelCr: contrast(label), labelWeight: label ? +cs(label).fontWeight : 0, labelText: label ? label.textContent : '',
+        route: route ? { text: route.textContent, mono: /mono|consol|menlo/i.test(cs(route).fontFamily), belowSrc: !!src && route.getBoundingClientRect().y > src.getBoundingClientRect().y, aboveFoot: !!foot && R(route).b <= R(foot).y + 2, beforeBody: !!p && route.getBoundingClientRect().y < p.getBoundingClientRect().y } : null, bads };
+    });
+    // desktop: a film with a poster, a loose match ("fourth step of the web"), V01D's take
+    const D = await fresh(); await setup(D); await D.ask('fourth step of the web', 2200);
+    const d = await until(async () => { const x = await probe(D); return x && x.im && x.im.w > 50 && x.labelText ? x : null; }, 12000), dd = d || await probe(D);
+    check('poster wins: a film card with a thumbnail has the poster as its art (an image in the art box, no plate, seal, painting or texture over or under it)', !!dd && dd.kind === 'film' && dd.hasPhoto && dd.imgs === 0 && dd.halftone === 'none' && !D.errors.length, JSON.stringify({ dd: dd && { kind: dd.kind, hasPhoto: dd.hasPhoto, imgs: dd.imgs, halftone: dd.halftone }, e: D.errors }));
+    check('poster wins: at desktop width the film card is two columns: a portrait poster (taller than wide, whole, never cropped) on the left and the title, kind and facts to its right, with no big empty region', !!dd && dd.poster === '1' && dd.display === 'grid' && dd.art.h > dd.art.w * 1.3 && dd.fit === 'contain' && dd.title.x >= dd.art.r - 2 && dd.type.x >= dd.art.r - 2 && (!dd.adds || dd.adds.y >= dd.art.b - 2) && (dd.pb >= dd.art.b - 40 || (dd.adds && dd.adds.y - dd.art.b < 120)), JSON.stringify(dd && { art: dd.art, title: dd.title, type: dd.type, adds: dd.adds, pb: dd.pb, card: dd.card, cols: dd.cols }));
+    check('poster wins: the header box holds the year and director and the line under it keeps only what is new (the genre), not "2009 ... directed by Olatunde Osunsanmi" again', !!dd && /2009/.test(dd.typeText) && /Olatunde Osunsanmi/i.test(dd.typeText) && dd.subShown && /^Science fiction thriller$/.test(dd.sub), JSON.stringify(dd && { t: dd.typeText, sub: dd.sub }));
+    check('poster wins: the stats chip and the V01D mark never overlap any text of the card', !!dd && dd.texts > 5 && !!dd.pt && !!dd.num && dd.ptHits === false && dd.numHits === false, JSON.stringify(dd && { pt: dd.pt, num: dd.num, texts: dd.texts }));
+    check('poster wins: the source excerpt is a quotation (left rule, darker ground) and V01D\'s take has a bold bright label, both at AA 4.5:1 or better', !!dd && !!dd.quote && dd.quote.bl >= 3 && !/rgba\(0, 0, 0, 0\)/.test(dd.quote.bg) && dd.srcCr >= 4.5 && dd.quote.cr >= 4.5 && dd.labelCr >= 4.5 && dd.labelWeight >= 600 && /take/i.test(dd.labelText), JSON.stringify(dd && { q: dd.quote, src: dd.srcCr, label: dd.labelCr, w: dd.labelWeight }));
+    check('poster wins: the "closest match" routing note is a small monospace line at the bottom of the card above the stats, not above the film data', !!dd && !!dd.route && /Closest match I found/.test(dd.route.text) && dd.route.mono && dd.route.belowSrc && dd.route.aboveFoot && !dd.route.beforeBody, JSON.stringify(dd && dd.route));
+    check('poster wins: no pink or orange gradient sticker and no animated evolve chrome anywhere on the card', !!dd && dd.bads.length === 0, JSON.stringify(dd && dd.bads));
+    const saved = await D.p.evaluate(async () => { const { cardSvg } = await import('/lib/card-image.js'); const png = 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQ=='; const s = cardSvg({ title: 'The Fourth Kind', typeLine: 'Film — 2009', kind: 'Film', text: 'x', poster: true, sub: 'Science fiction thriller', photo: png, hue: 190 }); return { whole: /preserveAspectRatio="xMidYMid meet" href="data:image\/jpeg/.test(s), noPlate: !/mix-blend-mode|opacity="\.28"/.test(s), narrow: /<image x="40" y="122" width="293" height="440"/.test(s) }; });
+    check('poster wins: the saved card image draws the same portrait layout (poster whole at 293 wide, no plate over it)', saved.whole && saved.noPlate && saved.narrow, JSON.stringify(saved));
+    await D.ctx.close();
+    // a phone: a centred hero poster with the metadata below it
+    const M = await fresh({ phone: true }); await setup(M); await M.ask('fourth step of the web', 2200);
+    const m = await until(async () => { const x = await probe(M); return x && x.im && x.im.w > 40 ? x : null; }, 12000) || await probe(M);
+    check('poster wins: at phone width the film card is one column: the poster is a centred hero (portrait) and the kind and facts sit below it, and the chip and mark still touch no text', !!m && m.poster === '1' && m.display === 'grid' && m.art.h > m.art.w * 1.3 && Math.abs((m.art.x + m.art.w / 2) - (m.card.x + m.card.w / 2)) < 10 && m.art.w < m.card.w * 0.6 && m.type.y >= m.art.b - 2 && m.ptHits === false && m.numHits === false && !M.errors.length, JSON.stringify(m && { art: m.art, card: m.card, type: m.type, cols: m.cols }));
+    await M.ctx.close();
+    // an answer with a long body: one title, and a small painting fills its art window
+    const A = await fresh(); const ANS = '## Site Test Card (Visa)\n\nA site test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
+    await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
+    await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
+    await A.ask('show me the site test card', 2200);
+    const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
+    check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me the site test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
+    await A.ctx.close();
+    // a text-only reply: the seal is the one picture, centred and filling the window
+    const S = await fresh(); await S.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'plate', why: 'off' }))); await S.ask('20% tip on 45', 1600);
+    const sl = await until(async () => S.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector(':scope > .vc-seal'); if (!im || !im.complete || im.naturalWidth < 100) return null; const a = art.getBoundingClientRect(), b = im.getBoundingClientRect(); return { dx: Math.abs((a.x + a.width / 2) - (b.x + b.width / 2)), dy: Math.abs((a.y + a.height / 2) - (b.y + b.height / 2)), fw: b.width / a.width, fh: b.height / a.height, n: art.querySelectorAll('.vc-seal').length }; }), 9000);
+    check('poster wins: a text-only card has one seal, centred and filling the whole art window (never in a corner over dead space)', !!sl && sl.n === 1 && sl.dx < 3 && sl.dy < 3 && sl.fw > 0.97 && sl.fh > 0.97 && !S.errors.length, JSON.stringify({ sl, e: S.errors }));
+    await S.ctx.close();
+    // a very long answer is an accordion (first section open, aria-expanded, the whole text still in the page); the speaker button shares the title bar's row
+    for (const [label, opt] of [['desktop', null], ['phone', { phone: true }]]) {
+      const L = opt ? await fresh(opt) : await fresh(); const BODY = ['Boot', 'Network', 'Disk errors', 'Services'].map((h) => '## ' + h + '\n\n' + ('line of the log for ' + h.toLowerCase() + ' that goes on. ').repeat(30)).join('\n\n');
+      await L.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: BODY, sources: [] })); });
+      await L.ask('show me the system log', 2200);
+      const l = await until(async () => L.p.evaluate(async () => { const v = document.querySelector('.vpage.on.vcard'); const secs = v && [...v.querySelectorAll(':scope > .vc-sec')]; if (!secs || secs.length < 2) return null;
+        const heads = secs.map((s) => s.querySelector('.vc-sec-head')), state = () => heads.map((h) => h.getAttribute('aria-expanded')).join(','), first = state(); heads[1].click(); const after = state(), open2 = !secs[1].querySelector('.vc-sec-body').hidden;
+        const t = v.querySelector('h2').getBoundingClientRect(), s = v.querySelector(':scope > .vread').getBoundingClientRect(), all = v.textContent;
+        return { n: secs.length, first, after, open2, whole: ['boot', 'network', 'disk errors', 'services'].every((w) => all.toLowerCase().includes('log for ' + w)), key: heads[0].tagName === 'BUTTON', inRow: s.top >= t.top - 1 && s.bottom <= t.bottom + 1 && s.right <= t.right + 1 && s.right >= t.right - 30 }; }), 12000);
+      check('poster wins: a very long answer (' + label + ') is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar\'s row at its right edge', !!l && l.n === 4 && l.first === 'true,false,false,false' && l.after === 'true,true,false,false' && l.open2 && l.whole && l.key && l.inRow && !L.errors.length, JSON.stringify({ l, e: L.errors }));
+      await L.ctx.close();
+    }
+    // a skill card (rarity row, stats chip, V01D mark): the chip touches no text, the rarity and collector row included, at desktop and phone width
+    for (const [label, opt] of [['desktop', null], ['phone', { phone: true }]]) {
+      const K = opt ? await fresh(opt) : await fresh(); await K.ask('20% tip on 45', 1800);
+      const k = await until(async () => K.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard[data-skill]'); const pt = v && v.querySelector('.vc-pt'); if (!pt) return null;
+        const boxes = []; const walk = document.createTreeWalker(v, NodeFilter.SHOW_TEXT); for (let n; (n = walk.nextNode());) { const pe = n.parentElement; if (!n.textContent.trim() || pe.closest('.vc-pt, style, script, [hidden]') || getComputedStyle(pe).display === 'none') continue; let clipped = false; for (let e = pe; e && e !== v; e = e.parentElement) { const cs = getComputedStyle(e); if (cs.overflow !== 'visible' && e.getBoundingClientRect().height < 2) clipped = true; } if (clipped) continue; const rg = document.createRange(); rg.selectNodeContents(n); for (const q of rg.getClientRects()) if (q.width > 1 && q.height > 1) boxes.push({ x: q.x, y: q.y, r: q.right, b: q.bottom, t: n.textContent.trim().slice(0, 24), c: pe.className }); }
+        const a = pt.getBoundingClientRect(); return { hits: boxes.filter((t) => a.x < t.r - 1 && a.right > t.x + 1 && a.y < t.b - 1 && a.bottom > t.y + 1).map((t) => t.t + '@' + t.c), n: boxes.length }; }), 9000);
+      check('poster wins: on a skill card (' + label + ') the stats chip touches no text, the rarity and collector row included', !!k && k.hits.length === 0 && k.n > 3 && !K.errors.length, JSON.stringify({ k, e: K.errors }));
+      await K.ctx.close();
+    }
+  }
   // the card's frame and the page's own last line (a product line) each wanted to be the last thing on the card, and moved past each other for ever:
   // the page hung (main's shard 3, "check timeout" on the first product ask). The frame now sits before the lines the page keeps last.
   if (want("V01D cards: a product line kept last and the card frame leave each other in place (no endless loop)")) {
@@ -4659,7 +4994,7 @@ try {
     const glowing = () => A.p.evaluate(() => { const a = document.querySelector('.vpage.on.vcard > .vc-art'); return !!a && a.classList.contains('vc-painting') && getComputedStyle(a).animationName === 'vc-paint'; });
     const pending = await until(glowing, 8000).catch(() => false); // asked by Void: a pulsing glow while the painting is pending
     const shown = await until(async () => { const f = await forged(A); return f && f.img ? f : null; }, 20000), glowAfter = await glowing();
-    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind, rarity, family and V01D\'s take (they steer the Art Director), its art box glows while the paint is pending, then the picture fills the art box over the plate and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'family,kind,rarity,subject,take' && typeof posts[0].family === 'string' && posts[0].family.length < 40 && typeof posts[0].take === 'string' && posts[0].take.length <= 300 && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
+    check('V01D art forge: an uncached answer (merged) card paints once by itself: one POST with the subject, its kind, rarity, family and V01D\'s take (they steer the Art Director), its art box glows while the paint is pending, then the picture fills the art box alone (no plate or seal left under it) and the glow stops', !!pending && glowAfter === false && !!shown && shown.img === PX && !shown.plate && !shown.btn && posts.length === 1 && /pizza/i.test(posts[0].subject) && posts[0].kind === 'merge' && Object.keys(posts[0]).sort().join() === 'family,kind,rarity,subject,take' && typeof posts[0].family === 'string' && posts[0].family.length < 40 && typeof posts[0].take === 'string' && posts[0].take.length <= 300 && !A.errors.length, JSON.stringify({ pending, glowAfter, shown, posts, errors: A.errors }));
     await A.ask('close', 400); await A.ask('20% tip on 45', 1600);
     const sk = await until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); return e && e.querySelector('.vc-art') && e.querySelector('.vc-forge-img') ? { forge: !e.querySelector('.vc-forge-btn') } : null; }).catch(() => null), 8000);
     check('V01D art forge: a skill card (a tip calculator) is painted too: one POST of kind skill with its name, never a button', !!sk && sk.forge === true && posts.length === 2 && posts[1].kind === 'skill' && /^[a-z ]+$/.test(posts[1].subject), JSON.stringify({ sk, posts })); await A.ctx.close();
@@ -4672,17 +5007,17 @@ try {
     await D.ask('merge a pizza and a black hole', 900);
     const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
     check('V01D art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
-  if (want("V01D cards: a skill that earned a higher rating glows once and says so, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
+  if (want("V01D cards: a skill that earned a higher rating says so in one quiet line, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
-    const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on.vc-evolving'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
+    const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on[data-evolved]'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
     await E.p.evaluate((n) => { localStorage.setItem('a2m.void.tiers.v1', JSON.stringify({ [n]: 'experiment' })); }, name);
     await E.ask('close', 500); await E.ask('20% tip on 45', 1600);
-    const up = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vc-evolving'); return e ? { to: e.dataset.evolved, note: (e.querySelector('.vc-evolved-note') || {}).textContent || '', anim: getComputedStyle(e).animationName } : null; }).catch(() => null), 6000);
+    const up = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on[data-evolved]'); const n = e && e.querySelector('.vc-evolved-note'); return e && n ? { to: e.dataset.evolved, note: n.textContent || '', anim: getComputedStyle(e).animationName + '|' + getComputedStyle(n).animationName, bg: getComputedStyle(n).backgroundImage, color: getComputedStyle(n).color } : null; }).catch(() => null), 6000);
     await E.ask('close', 500); await E.ask('tell me about the ocean', 1800);
     const an = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { kind: e.dataset.kind || '', type: e.querySelector('.vc-type').innerText.split(/[\s\u2014]/)[0].toLowerCase() } : null; }).catch(() => null), 8000);
-    check('V01D cards: a first sight of a skill does not evolve it, but a skill whose remembered rating was lower glows once ("Evolved: ... -> ...") and is remembered at its new rating; an answer card carries its kind (data-kind) so its layout can differ',
-      !!name && first.evolving === false && !!up && /^(Uncommon|Rare|Mythic)$/.test(up.to) && /^Evolved: Common/.test(up.note) && /vc-evolve/.test(up.anim) && !!an && an.kind === an.type && !E.errors.length,
+    check('V01D cards: a first sight of a skill does not evolve it, but a skill whose remembered rating was lower says so once in one quiet line ("Evolved: ... -> ...": no glow, no animation, no gradient) and is remembered at its new rating; an answer card carries its kind (data-kind) so its layout can differ',
+      !!name && first.evolving === false && !!up && /^(Uncommon|Rare|Mythic)$/.test(up.to) && /^Evolved: Common/.test(up.note) && /\|none$/.test(up.anim) && !/vc-evolve/.test(up.anim) && up.bg === 'none' && !/255, 210, 122|255, 154, 213/.test(up.color) && !!an && an.kind === an.type && !E.errors.length,
       JSON.stringify({ name, first, up, an, errors: E.errors }));
     await E.ctx.close(); }
   if (want("type filter: show only one kind of thing on the stage, then all of them again")) { const T = await fresh(); // asked by Void
@@ -8017,6 +8352,67 @@ try {
       fast: document.querySelector('.health-habits[data-type="fasting"]')?.dataset.fast }));
     check('a reload keeps every card as it was: the writing mode, the packing tick, today\'s cups, the habit streak and the running fast',
       kept.mode === 'steps' && kept.packed === '1 of 18 packed' && /^3 of 8 cups today/.test(kept.water || '') && kept.streak === '1 day' && kept.fast === 'running' && !S.errors.length, JSON.stringify({ kept, errors: S.errors }));
+  }
+  // tools pack 3 (owner, 2026-10-18, list items 41 to 60): the answers that were missing (pixels at a DPI, a currency at a typed rate, tip with tax,
+  // an "84 dollar bill" split) and the seven decision cards, played the way a person uses them
+  if (want("tools pack 3: pixels and a typed-rate currency answer, tip with tax, and the decision cards (rank, pros and cons, votes, eliminate, pairwise, 2x2, must/should/could) on the stage")) { const S = await fresh();
+    const tap = (sel) => S.p.$eval(sel, (e) => e.click()); // a card sits over another where they share a spot: click the element itself
+    const said = async (a, ms = 700) => { await S.ask(a, ms); return S.page(); };
+    const px = await said('300 px in cm at 150 dpi'), px2 = await said('5 cm to pixels at 300 dpi');
+    const fx = await said('convert 100 usd to eur at 0.92'), fxNo = await said('convert 5 kgs to lbs at 2.2');
+    const tax = await said('45 with 8% tax and 20% tip'), split = await said('split an 84 dollar bill 4 ways');
+    check('calc-more and tip: "300 px in cm at 150 dpi" is 5.08 cm, "5 cm to pixels at 300 dpi" is 590.55 px, "100 usd to eur at 0.92" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; "45 with 8% tax and 20% tip" totals $57.60 with $3.60 tax, and "an 84 dollar bill 4 ways" is $21.00 each',
+      /5\.08/.test(px) && /590\.55/.test(px2) && /92 EUR/.test(fx) && /your rate/i.test(fx) && !/your rate/i.test(fxNo) && /57\.60/.test(tax) && /3\.60/.test(tax) && /\$21\.00/.test(split) && !S.errors.length,
+      JSON.stringify({ px: px.slice(0, 120), px2: px2.slice(0, 120), fx: fx.slice(0, 160), fxNo: fxNo.slice(0, 120), tax: tax.slice(0, 200), split: split.slice(0, 200), errors: S.errors }));
+    await S.ask('currency converter with my own rate', 600);
+    await S.p.fill('#fx-v', '10'); await S.p.fill('#fx-r', '0.5');
+    const live = await S.p.$eval('#fx-out', (e) => e.textContent).catch(() => '');
+    await S.ask('dpi converter', 600);
+    await S.p.fill('#pc-v', '96'); await S.p.selectOption('#pc-b', 'in');
+    const live2 = await S.p.$eval('#pc-out', (e) => e.textContent).catch(() => '');
+    check('calc-more openers: "currency converter with my own rate" turns 10 at a typed 0.5 into 5, and "dpi converter" turns 96 px into 1 in at 96 dpi', /10 USD = 5 EUR/.test(live) && /96 px = 1 in/.test(live2) && !S.errors.length, JSON.stringify({ live, live2, errors: S.errors }));
+    await S.ask('rank pizza, tacos, sushi', 600);
+    await tap('.dc-rank button[aria-label="move tacos up"]');
+    const order = await S.p.$$eval('.dc-rank li > span', (e) => e.map((x) => x.textContent));
+    await S.ask('weighted pros and cons for moving to Berlin', 600);
+    await S.p.fill('.dc-proscons input[aria-label="Pros 1"]', 'cheap'); await S.p.fill('.dc-proscons input[aria-label="weight of Pros 1"]', '5');
+    await S.p.fill('.dc-proscons input[aria-label="Cons 1"]', 'loud'); await S.p.fill('.dc-proscons input[aria-label="weight of Cons 1"]', '2');
+    const verdict = await S.p.$eval('.dc-proscons [data-verdict]', (e) => e.textContent + '|' + e.dataset.verdict);
+    const kept = (await S.state()).find((x) => x.kind === 'dc-proscons');
+    check('rank and pros/cons cards: "rank pizza, tacos, sushi" moves tacos to the top on a tap; a 5-weight pro against a 2-weight con says "pros lead by 3" and the rows are kept with the stage',
+      order.join() === 'tacos,pizza,sushi' && /pros lead by 3/.test(verdict) && kept && kept.pros[0].text === 'cheap' && kept.cons[0].w === 2 && !S.errors.length, JSON.stringify({ order, verdict, kept, errors: S.errors }));
+    await S.ask('vote marks for pizza, tacos', 600);
+    for (let i = 0; i < 6; i++) await tap('.dc-votes button[aria-label="one vote for tacos"]');
+    await tap('.dc-votes button[aria-label="one vote for pizza"]');
+    const marks = await S.p.$$eval('.dc-votes [data-count]', (e) => e.map((x) => x.dataset.count + ':' + x.querySelectorAll('span[style*="line-through"]').length + ':' + x.textContent));
+    const lead = await S.p.$$eval('.dc-votes [data-lead="1"]', (e) => e.map((x) => x.textContent));
+    await S.p.reload(); await S.p.waitForSelector('.dc-votes [data-count]', { timeout: 8000 }).catch(() => {});
+    const afterReload = await S.p.$$eval('.dc-votes [data-count]', (e) => e.map((x) => x.dataset.count));
+    check('vote marks: six votes for tacos show one struck group of four strokes and one more stroke, one vote for pizza one stroke, the leader is marked, and a reload keeps the counts',
+      marks[0].startsWith('1:0:') && marks[1].startsWith('6:1:') && lead.join() === 'tacos' && afterReload.join() === '1,6' && !S.errors.length, JSON.stringify({ marks, lead, afterReload, errors: S.errors }));
+    await S.ask('eliminate until one: red, green, blue', 600);
+    await tap('.dc-knockout button[aria-label="knock out red"]'); await tap('.dc-knockout button[aria-label="knock out green"]');
+    await tap('.dc-knockout button[aria-label="knock out blue"]'); // the last one standing can't go
+    const ko = await S.p.$eval('.dc-knockout', (e) => e.firstElementChild.nextElementSibling.textContent + '|' + [...e.querySelectorAll('button[data-state]')].map((b) => b.dataset.state).join());
+    await S.ask('pairwise compare pizza, tacos, sushi', 600);
+    await tap('.dc-pairwise button[data-pick="0"]'); await tap('.dc-pairwise button[data-pick="0"]'); await tap('.dc-pairwise button[data-pick="1"]');
+    const rank = await S.p.$$eval('.dc-pairwise ol[data-done] li', (e) => e.map((x) => x.textContent));
+    check('eliminate and pairwise: two taps leave "Last one standing: blue" and a third tap on blue changes nothing; three pair choices rank pizza (2 wins), tacos (1), sushi (0)',
+      /Last one standing: blue/.test(ko) && ko.endsWith('out,out,win') && rank.join() === 'pizza · 2 wins,tacos · 1 win,sushi · 0 wins' && !S.errors.length, JSON.stringify({ ko, rank, errors: S.errors }));
+    await S.ask('2x2 matrix for impact vs effort', 600);
+    await S.p.fill('.dc-buckets[data-mode="quad"] input[aria-label="add a thing"]', 'redesign'); await S.p.press('.dc-buckets[data-mode="quad"] input[aria-label="add a thing"]', 'Enter');
+    await tap('.dc-buckets[data-mode="quad"] [data-tray] button[data-item="0"]');
+    await tap('.dc-buckets[data-mode="quad"] [data-bucket="1"]');
+    const quad = await S.p.$$eval('.dc-buckets[data-mode="quad"] [data-bucket] button[data-state="placed"]', (e) => e.map((b) => b.closest('[data-bucket]').dataset.bucket + b.textContent));
+    await S.ask('must should could for the launch', 600);
+    await S.p.fill('.dc-buckets[data-mode="moscow"] input[aria-label="add a thing"]', 'ship'); await S.p.press('.dc-buckets[data-mode="moscow"] input[aria-label="add a thing"]', 'Enter');
+    await tap('.dc-buckets[data-mode="moscow"] [data-tray] button[data-item="0"]');
+    await tap('.dc-buckets[data-mode="moscow"] [data-bucket="0"]');
+    const mos = await S.p.$$eval('.dc-buckets[data-mode="moscow"] [data-bucket] button[data-state="placed"]', (e) => e.map((b) => b.closest('[data-bucket]').dataset.bucket + b.textContent));
+    const names = await S.p.$$eval('.dc-buckets[data-mode="moscow"] [data-bucket] > div:first-child', (e) => e.map((x) => x.textContent));
+    const savedB = (await S.state()).filter((x) => x.kind === 'dc-buckets').map((x) => x.mode + JSON.stringify(x.place));
+    check('2x2 matrix and must/should/could: tap an item, tap a quadrant puts "redesign" in quadrant 1 (big bets); tap "ship", tap Must puts it in Must; the buckets are Must, Should, Could; both are kept',
+      quad.join() === '1redesign' && mos.join() === '0ship' && names.join() === 'Must,Should,Could' && savedB.join() === 'quad{"0":1},moscow{"0":0}' && !S.errors.length, JSON.stringify({ quad, mos, names, savedB, errors: S.errors }));
     await S.ctx.close(); }
 
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)

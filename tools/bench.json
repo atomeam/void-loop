@@ -6038,5 +6038,18 @@
   {"ask": "how many calroies in an apple", "want": "skill:food|answer|article|calc"},
   {"ask": "calories in a bananna", "want": "skill:food"},
   {"ask": "nutriton facts of a banana", "want": "skill:food|skill:nutrition"},
-  {"ask": "countdown to chirstmas", "want": "skill:countdown"}
+  {"ask": "countdown to chirstmas", "want": "skill:countdown"},
+  {"ask": "Show me the Site Test card", "want": "skill:growth"},
+  {"ask": "the site test card", "want": "skill:growth"},
+  {"ask": "open the site test", "want": "skill:growth"},
+  {"ask": "pull up the site test card", "want": "skill:growth"},
+  {"ask": "show me the stability trend", "want": "skill:growth"},
+  {"ask": "show me the tome", "want": "skill:guide"},
+  {"ask": "open the rule registry view", "want": "skill:guide"},
+  {"ask": "pull up the status card", "want": "skill:status"},
+  {"ask": "how many days until january 1st", "want": "skill:countdown"},
+  {"ask": "days until the 1st of march", "want": "skill:countdown"},
+  {"ask": "how many days till jan 2nd", "want": "skill:countdown"},
+  {"ask": "days until dec 25th", "want": "skill:countdown"},
+  {"ask": "show me a visa test card", "want": "article"}
 ]

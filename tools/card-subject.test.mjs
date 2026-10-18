@@ -26,6 +26,14 @@ test('the plate draws the subject: a hand and a ghost instead of the generic pla
   assert.equal(motifSvg([], 100, 100, {}), '');
 });
 
+test('the banner follows the topic (owner, 2026-10-18): code words draw a terminal, geography a landscape, space the star; old words keep their motif', () => {
+  assert.deepEqual(motifsFor(subjectOf('write a python function', 'Here is a function that fixes the bug in your script.').nouns).slice(0, 1), ['code']);
+  assert.deepEqual(motifsFor(['geography', 'country']), ['landscape']);
+  assert.deepEqual(motifsFor(['telescope', 'galaxy']), ['star']);
+  assert.deepEqual(motifsFor(['mountain', 'river']), ['mountain', 'wave'], 'a word an earlier motif had keeps it');
+  for (const m of ['code', 'landscape']) assert.ok(motifSvg([m], 100, 100, { P: '#fff', L: '#ccc', G: '#fc0', ink: '#000', sw: 1 }).includes('<path'), m);
+});
+
 test('the K-pop card draws music, not the search: "void" and "match" are not its subject, and music words draw a note (owner, 2026-10-17)', () => {
   const s = subjectOf('K-pop', 'South Korean popular music genre. K-pop is a form of popular music originating in South Korea, from idol acts, girl groups and boy bands.');
   assert.ok(!s.nouns.includes('void') && !s.nouns.includes('match')); assert.equal(s.nouns[0], 'music'); assert.deepEqual(motifsFor(s.nouns), ['note']);

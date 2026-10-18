@@ -32,6 +32,28 @@ export function kindOf(description, extract = '') {
   const by = (/\bby ([A-Z][^,;()]{2,40})/.exec(d) || [])[1] || '';
   return { kind: hit[0], chapter: hit[2], detail: [year, by].filter(Boolean).join(' · ') };
 }
+/** What a source's one-line description adds to the card's header line (owner, 2026-10-18: the header said "Film - 2009 - Olatunde Osunsanmi" and the line
+ *  under it said "2009 science fiction thriller film directed by Olatunde Osunsanmi"). The year, the name after "by" and the kind word the header already
+ *  carries are dropped; what is left (the genre, the country) is the new part, or '' when the line adds nothing. Pure. */
+export function newInSub(description, header) {
+  const d = String(description || '').replace(/\s+/g, ' ').trim(), h = String(header || '').toLowerCase(); if (!d || !h) return d;
+  const [kinds, ...rest] = h.split(' \u2014 '), detail = rest.join(' '), hasWord = (w) => new RegExp('(?:^|[^a-z0-9])' + w.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '(?:$|[^a-z0-9])').test(detail);
+  let t = d.replace(/\b(?:directed |written |created |produced |composed |performed |sung |recorded |painted |founded |developed )?by ([A-Z][^,;()]{2,40})/g, (m, name) => (detail.includes(name.trim().toLowerCase()) ? ' ' : m));
+  t = t.replace(/\b(1[5-9]\d\d|20\d\d)\b/g, (m) => (hasWord(m) ? ' ' : m));
+  for (const k of kinds.split(' \u00b7 ').map((x) => x.trim()).filter(Boolean)) t = t.replace(new RegExp('\\b' + k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + 's?\\b', 'gi'), ' ');
+  const left = t.replace(/\b(?:a|an|the|of|and|in|by|directed|written|from|is|was)\b/gi, ' ').replace(/[\s,;:.\u2013\u2014-]+/g, ' ').trim();
+  if (!/[A-Za-z]{2}/.test(left)) return '';
+  t = t.replace(/\s+/g, ' ').replace(/^(?:an?|the)\s+/i, '').replace(/[\s,;:.\u2013\u2014-]+$/, '').replace(/^[\s,;:.\u2013\u2014-]+/, '').trim();
+  return t ? t[0].toUpperCase() + t.slice(1) : '';
+}
+/** Does a heading inside an answer only repeat the card's title (owner, 2026-10-18: "Show me the Site Test card" over "Site Test Card (Visa)")? The ask's
+ *  lead-in words ("show me", "what is") and a trailing parenthesis are ignored; it repeats when every word of the heading is already in the title. Pure. */
+export function repeatsTitle(title, heading) {
+  const words = (x, paren) => String(x || '').toLowerCase().replace(paren ? /\([^)]*\)/g : /$^/, ' ').replace(/[^a-z0-9\u00c0-\uffff]+/g, ' ').split(' ').filter(Boolean);
+  const stop = new Set(['show', 'me', 'the', 'a', 'an', 'what', 'is', 'are', 'whats', 'tell', 'about', 'of', 'to', 'please', 'give', 'find']);
+  const t = new Set(words(title, true).filter((w) => !stop.has(w))), h = words(heading, true).filter((w) => !stop.has(w));
+  return h.length > 0 && h.every((w) => t.has(w));
+}
 /** the kind a parenthetical word names ("song", "TV series"), or '' */
 export const kindOfWord = (w) => WORD[String(w || '').trim().toLowerCase()] || '';
 /** the other kinds a name is, from the titles of its sister pages: "What's New Pussycat? (song)" -> Song. Pure. */

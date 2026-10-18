@@ -105,6 +105,7 @@ for (const [name, file] of [
   ['growth', 'growth.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
+  ['own-parts', 'own-parts.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
   ['tagteam', 'tagteam.test.mjs'],
@@ -218,6 +219,9 @@ for (const [name, file] of [
   ['tools pack 11 dates', 'date-pack.test.mjs'],
   ['stage pack j', 'stage-pack-j.test.mjs'],
   ['stage pack l', 'stage-pack-l.test.mjs'],
+  ['tools pack 1', 'tools-pack-1.test.mjs'],
+  ['text tools', 'text-tools.test.mjs'],
+  ['tools pack 10', 'tools-pack-10.test.mjs'],
   ['together', 'together.test.mjs'],
   ['tools pack 6', 'tools-pack-6.test.mjs'],
   ['plan', 'plan.test.mjs'],
@@ -256,6 +260,8 @@ for (const [name, file] of [
   ['tome', 'tome.test.mjs'],
   ['rule-registry', 'rule-registry.test.mjs'],
   ['card-frame', 'card-frame.test.mjs'],
+  ['card-look', 'card-look.test.mjs'],
+  ['autopsy-asks', 'autopsy-asks.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],
   ['merge-route', 'merge-route.test.mjs'],
@@ -277,6 +283,7 @@ for (const [name, file] of [
   ['review-main', 'review-main.test.mjs'],
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
   ['thinking math', 'thinking-math.test.mjs'],
+  ['tools pack 3', 'tools-pack3.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }

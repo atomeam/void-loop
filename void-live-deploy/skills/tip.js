@@ -20,14 +20,23 @@ function moneyFmt(n, currency) {
   }
 }
 
-function tipOf(text) {
+export function tipOf(text) {
   const raw = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const t = raw.toLowerCase();
+  let t = raw.toLowerCase();
   if (/\b(mortgage|loan\s+payment|gas\s+cost|fuel\s+for|mpg|interest\s+rate|tip\s+of\s+the\s+(?:day|ice)|taxi\s+tip\s+culture|what\s+is\s+a\s+tip)\b/.test(t)) return null;
 
+  // tools pack 3 (owner, 2026-10-18, item 43): "45 with 8% tax and 20% tip", "tip and tax on 45 at 8% tax". The tax rate is cut out of the
+  // text first so its percent is never read as the tip. Tax on its own needs "add / plus / with / including" in front of it.
+  let taxPct = NaN, taxLead = false;
+  const tx = /(?:\b(add|plus|with|incl\w*)\s+)?(\d+(?:\.\d+)?)\s*(?:%|percent|per\s*cent)\s*(?:sales\s+)?(?:tax|vat)\b/.exec(t)
+    || /\b(add|plus|with|incl\w*)?\s*(?:sales\s+)?(?:tax|vat)\s+(?:of\s+|at\s+|@\s*)?(\d+(?:\.\d+)?)\s*(?:%|percent|per\s*cent)/.exec(t);
+  if (tx) { taxPct = num(tx[2]); taxLead = !!tx[1]; t = t.replace(tx[0], ' '); }
+  const taxWord = /\b(?:tax|vat)\b/.test(t);
+  if (Number.isFinite(taxPct) && (taxPct < 0 || taxPct > 60)) return null;
   const wantsTip = /\btip\b/.test(t) || /\bgratuity\b/.test(t);
   const wantsSplit = /\bsplit\b/.test(t) || /\bbetween\s+\d+\s+people\b/.test(t) || /\b(?:two|three|four|five|six)\s+ways?\b/.test(t) || /\bper\s+person\b/.test(t);
-  if (!wantsTip && !wantsSplit) return null;
+  const taxOnly = Number.isFinite(taxPct) && taxLead;
+  if (!wantsTip && !wantsSplit && !taxOnly) return null;
 
   let pct = NaN;
   let m = t.match(/(\d+(?:\.\d+)?)\s*%/)
@@ -42,13 +51,15 @@ function tipOf(text) {
   m = t.match(/(?:\$|usd\s*)(\d+(?:\.\d+)?)/)
     || t.match(/(?:\u20ac|eur\s*)(\d+(?:\.\d+)?)/)
     || t.match(/(?:\u00a3|gbp\s*)(\d+(?:\.\d+)?)/)
-    || t.match(/(?:on|for|of|bill(?:\s+of)?|check(?:\s+of)?|total(?:\s+of)?)\s+\$?\s*(\d+(?:\.\d+)?)\b/)
+    || t.match(/\b(\d+(?:\.\d+)?)\s*(?:dollars?|bucks|euros?|pounds?)\b/) // "an 84 dollar bill"
+    || t.match(/(?:on|for|of|to|bill(?:\s+of)?|check(?:\s+of)?|total(?:\s+of)?)\s+\$?\s*(\d+(?:\.\d+)?)\b(?!\s*(?:ways?|people|persons|guests))/)
     || t.match(/\bsplit\s+\$?\s*(\d+(?:\.\d+)?)\b/)
-    || t.match(/\b(\d+(?:\.\d+)?)\s+(?:between|among|with|for)\b/);
+    || t.match(/\b(\d+(?:\.\d+)?)\s+(?:between|among|with|for)\b/)
+    || t.match(/^\$?\s*(\d+(?:\.\d+)?)\b(?!\s*%)/); // "45 with 8% tax and 20% tip": the bill leads
   if (m) {
     bill = num(m[1]);
-    if (/\u20ac|\beur\b/.test(t)) currency = 'EUR';
-    else if (/\u00a3|\bgbp\b/.test(t)) currency = 'GBP';
+    if (/\u20ac|\beur\b|\beuros?\b/.test(t)) currency = 'EUR';
+    else if (/\u00a3|\bgbp\b|\bpounds?\b/.test(t)) currency = 'GBP';
   }
   if (!Number.isFinite(bill) || bill <= 0 || bill > 1e6) return null;
 
@@ -63,12 +74,14 @@ function tipOf(text) {
   }
   if (wantsSplit && !Number.isFinite(people)) return null;
   if (Number.isFinite(people) && (people < 2 || people > 100 || !Number.isInteger(people))) return null;
-  if (!wantsTip && !Number.isFinite(people)) return null;
+  if (!wantsTip && !Number.isFinite(people) && !taxOnly) return null;
   if (wantsTip && !Number.isFinite(pct)) return null;
 
   return {
     bill,
     pct: Number.isFinite(pct) ? pct : 0,
+    taxPct: Number.isFinite(taxPct) ? taxPct : 0,
+    taxWord: taxWord && !Number.isFinite(taxPct),
     people: Number.isFinite(people) ? people : 1,
     currency,
     wantsTip: !!wantsTip || (Number.isFinite(pct) && pct > 0),
@@ -77,13 +90,14 @@ function tipOf(text) {
   };
 }
 
-function compute(q) {
-  const tip = q.bill * (q.pct / 100);
-  const total = q.bill + tip;
+export function compute(q) {
+  const tip = q.bill * (q.pct / 100); // the tip is on the bill before tax, as most guides say
+  const tax = q.bill * ((q.taxPct || 0) / 100);
+  const total = q.bill + tax + tip;
   const per = total / q.people;
   const billEach = q.bill / q.people;
   const tipEach = tip / q.people;
-  return { tip, total, per, billEach, tipEach };
+  return { tip, tax, total, per, billEach, tipEach };
 }
 
 // "tip calculator": a small live calculator (bill, tip %, people) when no bill was given
@@ -110,10 +124,12 @@ async function run(text, api) {
   if (!q) return 'none';
   const r = compute(q);
   if (!Number.isFinite(r.total)) return 'none';
-  const title = q.wantsSplit && q.wantsTip ? 'Tip and split'
-    : q.wantsSplit ? 'Split the bill'
-    : 'Tip';
+  const title = q.taxPct > 0 && !q.wantsTip && !q.wantsSplit ? 'Bill with tax'
+    : q.wantsSplit && q.wantsTip ? (q.taxPct > 0 ? 'Tip, tax and split' : 'Tip and split')
+    : q.wantsSplit ? (q.taxPct > 0 ? 'Split with tax' : 'Split the bill')
+    : (q.taxPct > 0 ? 'Tip and tax' : 'Tip');
   const subBits = [moneyFmt(q.bill, q.currency)];
+  if (q.taxPct > 0) subBits.push((Math.round(q.taxPct * 100) / 100) + '% tax');
   if (q.pct > 0) subBits.push((Math.round(q.pct * 10) / 10) + '% tip');
   if (q.people >= 2) subBits.push(q.people + ' people');
   const page = showPage((el) => {
@@ -125,10 +141,11 @@ async function run(text, api) {
         + '<span style="font-size:18px;color:#8a8a8a"> / person</span></div>';
     } else {
       html += '<div style="font-size:48px;font-weight:300;line-height:1.15;margin:6px 0 4px">'
-        + esc(moneyFmt(r.tip, q.currency))
-        + '<span style="font-size:18px;color:#8a8a8a"> tip</span></div>';
+        + esc(moneyFmt(q.wantsTip ? r.tip : r.total, q.currency))
+        + '<span style="font-size:18px;color:#8a8a8a">' + (q.wantsTip ? ' tip' : ' with tax') + '</span></div>';
     }
     html += '<ul>';
+    if (q.taxPct > 0) html += '<li><b>Tax</b> ' + esc(moneyFmt(r.tax, q.currency)) + '</li>';
     if (q.pct > 0) html += '<li><b>Tip</b> ' + esc(moneyFmt(r.tip, q.currency)) + '</li>';
     html += '<li><b>Total</b> ' + esc(moneyFmt(r.total, q.currency)) + '</li>';
     if (q.wantsSplit) {
@@ -136,19 +153,20 @@ async function run(text, api) {
       if (q.pct > 0) html += '<li><b>Tip each</b> ' + esc(moneyFmt(r.tipEach, q.currency)) + '</li>';
     }
     html += '</ul>';
+    if (q.taxWord) html += '<p style="color:#8a8a8a">Tax rates differ by place: say it as a percent (for example “8% tax”) to include it.</p>';
     if (q.pct > 0) {
       html += '<p style="color:#8a8a8a">US sit-down service often lands around 15\u201320% before tax; use whatever fits the place and service. Not a rule.</p>';
     } else {
       html += '<p style="color:#8a8a8a">Even split of the bill you gave. Add a tip percent if you want that included.</p>';
     }
-    html += '<div class="src">Formula: tip = bill \u00d7 pct / 100; total = bill + tip; per person = total \u00f7 people \u00b7 as of Oct 2026</div>';
+    html += '<div class="src">Formula: tip = bill \u00d7 pct / 100; tax = bill \u00d7 rate / 100; total = bill + tax + tip; per person = total \u00f7 people \u00b7 as of Oct 2026</div>';
     el.innerHTML = html;
   });
   // the receipt and each person's coins (skills/mini/tip.js); where WebGL can't run the page stays as it is
   if (page && api.stage && api.stage.miniature) {
     const slot = document.createElement('div'); slot.className = 'tip-mini'; slot.style.cssText = 'height:170px;margin:10px 0 4px;border-radius:10px;overflow:hidden';
     const list = page.querySelector('ul'); if (list) list.after(slot); else page.appendChild(slot);
-    api.stage.miniature(slot, 'tip', { bill: q.bill, tip: r.tip, total: r.total, people: q.people, pct: q.pct, currency: (moneyFmt(0, q.currency).match(/^[^\d]*/) || [''])[0] || '$' }, { key: 'tip-page', place: 'inside', label: '3D receipt and coins' }).catch(() => slot.remove());
+    api.stage.miniature(slot, 'tip', { bill: q.bill + r.tax, tip: r.tip, total: r.total, people: q.people, pct: q.pct, currency: (moneyFmt(0, q.currency).match(/^[^\d]*/) || [''])[0] || '$' }, { key: 'tip-page', place: 'inside', label: '3D receipt and coins' }).catch(() => slot.remove());
   }
   return 'tip';
 }
@@ -160,7 +178,9 @@ export default {
     'tip on $67.50 at 18%',
     'split 120 between 4 people',
     'split $85 three ways with 20% tip',
-    'how much tip for a $52 bill at 15%'
+    'how much tip for a $52 bill at 15%',
+    '45 with 8% tax and 20% tip',
+    'split an 84 dollar bill 4 ways'
   ],
   nearMisses: [
     'what is a tip',

@@ -5,8 +5,10 @@
  * Fetches only the site's own files; no model, no key. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { autopsy, autopsyHtml } from '../lib/autopsy.js';
-const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
+const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy(?:\s+(?:for|of|in)\s+(?:the\s+)?([a-z0-9][a-z0-9 -]{0,40}?))?|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
+// a family named after the autopsy ("incident autopsy for time", the link on a stability sparkline, asked by Void): its id or its name, from families.json; '' for any other word
+const famOf = (text, fam) => { const m = WHEN.exec(norm(text)), w = m && m[1] ? m[1].trim() : '', f = w && ((fam && fam.families) || []).find((x) => x && (String(x.id).toLowerCase() === w || String(x.name || '').toLowerCase() === w)); return f ? String(f.id) : ''; };
 
 async function run(text, api) {
   const { showPage, esc, _pageStill } = api;
@@ -15,7 +17,7 @@ async function run(text, api) {
   const get = async (u) => { try { const r = await fetch(u, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
   const [inc, fam, guide] = await Promise.all([get('/incidents.json'), get('/skills/families.json'), get('/skills/guide.json')]);
   if (!el || (_pageStill && !_pageStill(el))) return 'incident-autopsy';
-  el.innerHTML = head + autopsyHtml(autopsy(inc, fam, guide), esc) + '<div class="src">Source: incidents.json, written by tools/incident-log.mjs when a browser suite on main fails · families from skills/families.json</div>'; // void-review: ok: autopsyHtml escapes every word with esc
+  el.innerHTML = head + autopsyHtml(autopsy(inc, fam, guide, famOf(text, fam)), esc) + '<div class="src">Source: incidents.json, written by tools/incident-log.mjs when a browser suite on main fails · families from skills/families.json</div>'; // void-review: ok: autopsyHtml escapes every word with esc
   return 'incident-autopsy';
 }
 
@@ -32,7 +34,7 @@ export function suite() {
 
 export default {
   name: 'incident-autopsy',
-  examples: ['incident autopsy', 'which skill family is unhealthy', 'autopsy of the failed suites', 'which family is failing', 'show me the incident autopsy'],
+  examples: ['incident autopsy', 'which skill family is unhealthy', 'autopsy of the failed suites', 'which family is failing', 'show me the incident autopsy', 'incident autopsy for time'],
   nearMisses: ['autopsy of a frog', 'what is an incident report', 'family health', 'show me your skill families', 'which family is the oldest', 'incident'],
   suite,
   match(lower, text) { return WHEN.test(norm(text || lower)); },
