@@ -1,10 +1,10 @@
-// Void's will engine: Void decides what it wants to become next.
-// GET  (public)  -> Void's current wants, in its own words ("what do you want to be?")
-// POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents?, source? }] } -> Void chooses, saves its will, queues its top want for the builders.
-// Void's earnings (plan item 12: every Gumroad sale, net of refunds) are its budget: the will reads them when it ranks, and a
+// Verse's will engine: Verse decides what it wants to become next.
+// GET  (public)  -> Verse's current wants, in its own words ("what do you want to be?")
+// POST (owner)   { candidates: [{ kind, title, why, weight, cost_cents?, source? }] } -> Verse chooses, saves its will, queues its top want for the builders.
+// Verse's earnings (plan item 12: every Gumroad sale, net of refunds) are its budget: the will reads them when it ranks, and a
 // candidate whose monthly cost the budget covers weighs more. Money never shows in the public will; real spend needs the confirm line.
 // Rule for every want: if an existing tool or feature already does it, use that instead of building it.
-// `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Void); it is kept on the want.
+// `source` names where an idea came in (e.g. growth-ledger-backlog: input that passed through Verse); it is kept on the want.
 import { PERSONA } from '../../lib/persona.js';
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
@@ -50,7 +50,7 @@ export async function onRequestPost({ request, env }) {
     const txt = String(pick(r)); const m = txt.match(/\{[\s\S]*\}/);
     chosen = m ? JSON.parse(m[0]) : null;
   } catch (e) { await recordShortfall(env, 'will', reasonOf(e)); }
-  // if the model is busy, Void still wills: highest weight wins
+  // if the model is busy, Verse still wills: highest weight wins
   let wants = (chosen && chosen.wants || []).map((w) => ({ ...w, c: cands.find((c) => c.id === +w.id) })).filter((w) => w.c).slice(0, 3);
   if (!wants.length) wants = cands.slice().sort((a, b) => b.weight - a.weight).slice(0, 3).map((c) => ({ c, i_want: 'I want to ' + c.title.replace(/^./, (x) => x.toLowerCase()) + '.', because: c.why }));
   const at = new Date().toISOString();
@@ -70,7 +70,7 @@ export async function onRequestPost({ request, env }) {
     // the execution record (lib/actions.js): written before the job is queued; no record, no job
     await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
       await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(id, w.title, target, 'queued', 'Void chose this: ' + w.because, at, at).run();
+        .bind(id, w.title, target, 'queued', 'Verse chose this: ' + w.because, at, at).run();
       return 'queued ' + id + ': ' + w.title;
     });
     queued = id;

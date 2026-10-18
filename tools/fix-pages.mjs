@@ -1,4 +1,4 @@
-// The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Void's free
+// The fix pages: one page per common automation error (Zapier, Make, n8n, Power Automate, GitHub Actions), each answering it properly, with Verse's free
 // diagnosis one tap away and the One-Time Fix for when it should just be done. People search the exact error text;
 // these pages are where they land. Data: tools/fix-pages.json (claims paraphrased from each platform's own help
 // center, linked on the page). Writes void-live-deploy/fix/index.html and fix/<slug>/index.html.
@@ -16,7 +16,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const fix = productById('one-time-fix');
 const BUY = 'https://moonbeam846.gumroad.com/l/' + fix.gumroad.slug;
 
-/** what a person would type into Void about this error; must be something Void's fixer takes. Pure. */
+/** what a person would type into Verse about this error; must be something Verse's fixer takes. Pure. */
 export function askOf(p) {
   if (p.ask) return p.ask;
   const err = p.error.split(' · ').filter((x) => !/^(Zap |run on hold|Zapier has)/.test(x)).join(' ');

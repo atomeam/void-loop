@@ -85,21 +85,21 @@ light, blurred contact shadows. A miniature redraws only when it is on screen an
 `update`, a `tick` that returned true). The empty page loads none of this: `scene3d.js` and three.js load on the first
 `miniature(...)` call.
 
-When a miniature has drawn its first frame it says so (asked by Void, 2026-10-14: a rendered signal): its wrapper goes
+When a miniature has drawn its first frame it says so (asked by Verse, 2026-10-14: a rendered signal): its wrapper goes
 from `data-rendered="false"` to `"true"`, its canvas from `aria-busy="true"` to `"false"` and fades in from transparent,
 and one `void:mini-rendered` event bubbles up with `{ key, kind }`; `liveMiniatures()` lists `rendered`. Before that the card
 shows a low-poly wire shape turning slowly on its own small canvas (`.void-mini-wire`, plain 2D, there the moment the card asks and
 before three.js has loaded; still with reduced motion), never a half-built scene; it fades out as the first frame fades in (asked by
-Void, 2026-10-14: a progressive loading state during 3D card transitions). A test or a skill that must wait for the 3D can wait on
+Verse, 2026-10-14: a progressive loading state during 3D card transitions). A test or a skill that must wait for the 3D can wait on
 `.void-mini[data-rendered="true"]` or the event instead of polling `draws`.
 
 A model that fails (its module missing, its build throwing, three.js not loading on a device that has WebGL) leaves a small status
 card where the empty space would have been (`.void-mini-status`: "3D <kind> did not load", why in plain words, "Ask for it again to
 retry"), marks the wrap `data-rendered="failed"` and bubbles one `void:mini-failed` event with `{ key, kind, why }`; the mount still
-rejects, so a card that shows its flat version on rejection still does (asked by Void, 2026-10-12). Without WebGL nothing is put in and
+rejects, so a card that shows its flat version on rejection still does (asked by Verse, 2026-10-12). Without WebGL nothing is put in and
 the rejection alone tells the card to go flat, as before.
 
-**Detail (asked by Void, 2026-10-15: a low-poly toggle for older hardware).** One setting, `a2m.void.3d.v1`: `low` draws every
+**Detail (asked by Verse, 2026-10-15: a low-poly toggle for older hardware).** One setting, `a2m.void.3d.v1`: `low` draws every
 miniature at 1x pixels (`REGRESS_DPR`) with no key-light or contact shadows and keeps the stage figures at their light mesh tier;
 `full` never steps down; unset is auto, where the quality governor, having reached its lowest pixel step and still running late,
 takes low-poly as the step below it and climbs back once frames keep up (`governStep`, pure, `tools/scene3d.test.mjs`). "low poly 3d",
@@ -166,9 +166,9 @@ yourself instead of asserting `idleDraws === 0`.
 | `notepad` | the notepad stage card ("make a notepad") | yellow legal pad with gummed red binding, ruled sheet and red margin; the card's title and text are handwritten on it and rewrite as you type; a sharpened pencil beside it |
 | `piggybank` | savings goals ("how long to save 50000 if i save 500 a month", "how much to save a month for 1 million in 30 years", "savings calculator") | blown-glass piggy bank filling with coins from where you start to the goal while coins drop through the slot; silver paid in, gold growth (the colours of the `savings` coin stacks); the calculator's piggy follows its inputs |
 | `go` | the Go board ("play go", "play baduk") | a 9×9 kaya goban standing in the void with slate and shell stones; the newest stone drops in and wears a red ring; dead stones go translucent once play ends; its card is separate (`skills/side-card.js`) |
-| `battleship` | Battleship ("play battleship") | the folding case: your ocean flat with your grey fleet and Void's pegs, your target board upright with yours; Void's fleet is never in the data, so it can't be drawn |
-| `poker` | Poker ("play poker") | a felt card table: your cards face up, Void's face down across from you (they are only in the data after a showdown), the board in the middle, the stacks and pot as clay chips |
-| `fireworks` | Fireworks, co-op ("play fireworks", "play hanabi") | Void's cards stand facing you, yours face Void with what hints told you chalked on their backs; the five rows in the middle, blue hint tokens and red mistakes at the sides |
+| `battleship` | Battleship ("play battleship") | the folding case: your ocean flat with your grey fleet and Verse's pegs, your target board upright with yours; Verse's fleet is never in the data, so it can't be drawn |
+| `poker` | Poker ("play poker") | a felt card table: your cards face up, Verse's face down across from you (they are only in the data after a showdown), the board in the middle, the stacks and pot as clay chips |
+| `fireworks` | Fireworks, co-op ("play fireworks", "play hanabi") | Verse's cards stand facing you, yours face Verse with what hints told you chalked on their backs; the five rows in the middle, blue hint tokens and red mistakes at the sides |
 | `connect4` | Connect Four ("play connect 4") | the upright blue frame with real holes; discs drop down the column and settle; the winning four ringed in light |
 | `monopoly` | Monopoly ("play monopoly") | the property board in the void: the forty spaces drawn on its top, a turned pawn per seat that walks space by space, owner markers, green houses and red hotels, the roll on two dice |
 | `rack` | the game rack ("games", "what games do you have", "play a game") | a walnut shelf of boxed board games with drawn covers; tap a box and it slides out, the rack is put away and that game opens |

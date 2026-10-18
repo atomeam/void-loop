@@ -99,7 +99,7 @@ function run(text, api) {
       + '<div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(big) + '</div>'
       + '<table style="border-collapse:collapse">' + rows + '</table>'
       + (f.alcohol ? '<p style="color:#8a8a8a">Most of its calories come from the alcohol (' + amt(f.alcohol * n) + ' g).</p>' : '')
-      + '<p class="nu-next"><a href="#" data-ask="plan my meals">plan my meals</a> <span style="color:#8a8a8a">(the day\'s calories split into meals, on the stage)</span> \u00b7 <a href="#" data-ask="how many calories should i eat a day">how many calories a day</a></p>' // asked by Void: food facts lead to a plan
+      + '<p class="nu-next"><a href="#" data-ask="plan my meals">plan my meals</a> <span style="color:#8a8a8a">(the day\'s calories split into meals, on the stage)</span> \u00b7 <a href="#" data-ask="how many calories should i eat a day">how many calories a day</a></p>' // asked by Verse: food facts lead to a plan
       + '<div class="src">Typical values from ' + (f.src || '') + SRC + '; sizes and brands vary, so a label wins.</div>';
   });
   return 'food';

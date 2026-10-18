@@ -1,13 +1,13 @@
-# Frontier #6 (Void inside every other AI): a real MCP client against the live site. After every main deploy (deploy.yml starts it),
+# Frontier #6 (Verse inside every other AI): a real MCP client against the live site. After every main deploy (deploy.yml starts it),
 # after a deploy a person or an agent's own token starts, and by hand, the official MCP SDK client (tools/mcp-probe.mjs) connects to https://a-to-mind.com/api/mcp, initializes,
-# lists the tools and calls each one with an input whose answer is known. Red means an agent can no longer use Void.
+# lists the tools and calls each one with an input whose answer is known. Red means an agent can no longer use Verse.
 # The SDK is installed in this job only (pinned); the repo does not depend on it. Read-only: the tools write nothing and need
 # no key or secret.
 name: MCP live
 
 on:
   workflow_run:
-    workflows: [Void deploy]
+    workflows: [Verse deploy]
     types: [completed]
     branches: [main]
   # no hourly re-check (owner, 2026-10-15: "cloudflare is not unlimited ... not so much on testing old thing"): deploy.yml starts
@@ -38,7 +38,7 @@ jobs:
           node-version: 22
       - name: The MCP SDK, for this job only
         run: mkdir -p /tmp/probe && cp tools/mcp-probe.mjs /tmp/probe/ && cd /tmp/probe && npm init -y >/dev/null && npm i --no-audit --no-fund @modelcontextprotocol/sdk@1.32.1
-      - name: An MCP client lists and calls Void's tools
+      - name: An MCP client lists and calls Verse's tools
         env:
           URL_IN: ${{ inputs.url }}
         run: |

@@ -12,7 +12,7 @@ import { lift3d } from './lift3d.js';
 
 export function ringerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|shoot)?\s*(?:(?:a|some)\s+)?(?:game\s+of\s+)?(?:ringer(?:\s+marbles)?|marbles(?:\s+ringer)?)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t) ? { kind: 'ringer' } : null;
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new|shoot)?\s*(?:(?:a|some)\s+)?(?:game\s+of\s+)?(?:ringer(?:\s+marbles)?|marbles(?:\s+ringer)?)(?:\s+game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t) ? { kind: 'ringer' } : null;
 }
 
 const loops = new Map(); // th.id -> the frame loop stepping a roll, so a re-render never runs two

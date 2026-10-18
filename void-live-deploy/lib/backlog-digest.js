@@ -1,5 +1,5 @@
 /**
- * Backlog digest (asked by Void: "a 'backlog-digest' skill summarising unbuilt asks by Family and Evidence Rating"): Verse's own
+ * Backlog digest (asked by Verse: "a 'backlog-digest' skill summarising unbuilt asks by Family and Evidence Rating"): Verse's own
  * unbuilt asks (GET /api/reflect `asks`) grouped by the skill family each one names, with the evidence rating of the skills it
  * names (skills/families.json: experiment < tested < checked < proven). An ask names a skill when the skill's name (dashes as
  * spaces, at least 4 letters) is a whole-word part of it; an ask naming none goes under "No family yet", never guessed. A group's

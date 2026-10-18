@@ -5,7 +5,7 @@
 import { sparkSvg } from './spark.js';
 
 const day = (t) => String(t || '').slice(0, 10);
-// the growth velocity (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
+// the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
 // over the last 7 days"): one point a day for the last VELOCITY_DAYS days, each the count of its asks built that day (follow.asked, by builtAt)
 export const VELOCITY_DAYS = 7;
 export const VELOCITY_EVERY = 60e3; // while the card is open, a stage change redraws it from /api/reflect at most this often (void.html showVoice)
@@ -18,7 +18,7 @@ export function velocity(asked, now = Date.now()) {
 }
 /** the velocity's words: "N built this week · M today", or "nothing built this week". Pure. */
 export const velocityLabel = (v) => (v.total ? v.total + ' built this week · ' + v.today + ' today' : 'nothing built this week');
-// friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
+// friction (asked by Verse: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
 // resolution time"): an open ask is overdue once it is older than its expected resolution time, OVERDUE_SMALL_DAYS for an ask Verse called small,
 // OVERDUE_DAYS for any other; the day it crossed that limit is a friction day, drawn red on the same line
 export const OVERDUE_SMALL_DAYS = 2, OVERDUE_DAYS = 7;

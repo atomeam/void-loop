@@ -1,4 +1,4 @@
-// The execution record (void-live-deploy/lib/actions.js, frontier build order step 2): every action Void takes, or
+// The execution record (void-live-deploy/lib/actions.js, frontier build order step 2): every action Verse takes, or
 // stubs, has one record with its owner, state, and result or error; nothing is done without its record.
 // Run: node --test tools/actions.test.mjs
 import { test } from 'node:test';
@@ -140,7 +140,7 @@ test('/api/queue POST queues the owner\'s job inside its record, and the builder
   assert.equal(env.DB.raw.prepare('SELECT note FROM void_queue').get().note, 'builder wake failed 500');
 });
 
-test('/api/will queues Void\'s top want inside its record (owner void, ref will:<slug>)', async () => {
+test('/api/will queues Verse\'s top want inside its record (owner void, ref will:<slug>)', async () => {
   const env = d1full(); env.READ_TOKEN = TOKEN; env.AI = { run: async () => { throw new Error('model busy'); } };
   const r = await willApi.onRequestPost({ env, request: new Request('https://x/api/will', { method: 'POST', headers: auth, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Learn tides', why: 'asked 9 times', weight: 9 }, { kind: 'idea', title: 'Backgammon', why: 'a game', weight: 2 }] }) }) });
   assert.equal(r.status, 200);

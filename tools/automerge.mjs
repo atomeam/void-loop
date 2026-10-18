@@ -23,7 +23,7 @@ const gh = (path) => JSON.parse(run(['api', path]) || 'null');
 const ex = (cmd, args, opts = {}) => execFileSync(cmd, args, { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'], ...opts });
 const here = dirname(fileURLToPath(import.meta.url));
 
-// the build-queue job a merged PR names on its last line (`Job: <id>`, tools/job-link.mjs) goes live (asked by Void); the PR list and
+// the build-queue job a merged PR names on its last line (`Job: <id>`, tools/job-link.mjs) goes live (asked by Verse); the PR list and
 // the single-PR read both carry `body`. Needs VOID_OWNER_TOKEN in the step's env; without it the line says so. Never stops the loop.
 async function markLive(p) {
   try {
@@ -59,7 +59,7 @@ for (let p of prs) {
     continue;
   }
   if (r.state !== 'merge') continue;
-  // the safety-check (asked by Void): the unit tests of the skills and libs this PR changed, run on its head, before the merge
+  // the safety-check (asked by Verse): the unit tests of the skills and libs this PR changed, run on its head, before the merge
   const sc = safety(ex, gh, { repo, pr: p.number, sha: r.sha });
   console.log(`#${p.number}: safety-check ${sc.state} (${sc.why})`);
   if (sc.state === 'fail') continue;

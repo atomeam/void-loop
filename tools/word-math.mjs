@@ -1,4 +1,4 @@
-// wordMath out of the page, for tests (asked by Void: "Refactor the 5614-line wordMath() function into smaller, manageable modules").
+// wordMath out of the page, for tests (asked by Verse: "Refactor the 5614-line wordMath() function into smaller, manageable modules").
 // void.html keeps wordMath as an ordered list of parts (wmPercentsAndUnits ... wmExpression); this loads it, with the tables it
 // reads, into a sandbox so each part can be tested on its own and the whole is pinned to tools/word-math.golden.json.
 //   node tools/word-math.mjs --write   rewrite the golden answers (only after a deliberate change to word maths)

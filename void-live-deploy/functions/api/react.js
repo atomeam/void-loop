@@ -41,7 +41,7 @@ async function knownTargets(request, env, now) {
     if (!r.ok) return seenTargets.set;
     const list = await r.json(), set = new Set();
     for (const e of Array.isArray(list) ? list : []) { const t = e && targetOf(e.at); if (t) set.add(t); }
-    // the incidents on the autopsy card (asked by Void): the site's own incidents.json, newest 30 (tools/incident-log.mjs KEEP), each under an
+    // the incidents on the autopsy card (asked by Verse): the site's own incidents.json, newest 30 (tools/incident-log.mjs KEEP), each under an
     // 'incident-' slug; unreadable means no incident targets, never an open door
     try {
       const ri = await env.ASSETS.fetch(new Request(new URL('/incidents.json', request.url)));

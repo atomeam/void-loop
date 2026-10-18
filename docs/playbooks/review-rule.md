@@ -1,6 +1,6 @@
-# A review rule: teach Void's code review a bug it missed
+# A review rule: teach Verse's code review a bug it missed
 
-**Starts when:** a probe of buggy snippets finds one the quick checks miss, or Void's closer read finds what the pattern checks didn't.
+**Starts when:** a probe of buggy snippets finds one the quick checks miss, or Verse's closer read finds what the pattern checks didn't.
 
 1. **Probe:** write 30–40 short snippets, each with one real bug, across languages; run them through `ruleReview(code, { lang })` from `void-live-deploy/lib/code-review.js` and list the ones with no finding.
 2. **Keep only real holes.** Skip what is fine in modern versions (Go loop variables since 1.22) and deliberate forms (Rust `expect` with a message). Name why in the agent log.

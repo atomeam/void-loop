@@ -1,4 +1,4 @@
-// lib/automation-fix.js ruleFix: the free diagnosis behind every "Ask Void about this error" on the /fix/ pages.
+// lib/automation-fix.js ruleFix: the free diagnosis behind every "Ask Verse about this error" on the /fix/ pages.
 import assert from 'node:assert/strict';
 import { ruleFix, platformOf, isFixAsk, hasDetails, errorEvidence, intentOf, basisOf } from '../void-live-deploy/lib/automation-fix.js';
 

@@ -1,7 +1,7 @@
 /**
- * films skill - Void's own films: where to watch them (/films/, free for everyone, no sign-in)
+ * films skill - Verse's own films: where to watch them (/films/, free for everyone, no sign-in)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Void should know whatI mean
+ * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Verse should know whatI mean
  * and help". Takes "films", "voids fillms", "void's films", "where do I watch the films", "show me your videos", "review films",
  * typos included; leaves films about anything else ("best films of 2025", "film a timer") to the skills that answer those.
  */
@@ -15,7 +15,7 @@ const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
 export const PAGE = '/films/';
 // "upload this to youtube", "post a film on tiktok", "how do i upload your videos" (owner, 2026-10-15: anyone can upload them):
 // the films page has Download, Copy for <platform> and Upload to <platform> on every film and ad clip
-const UPLOAD = /^(?:how\s+(?:do|can)\s+i\s+)?(?:upload|post|share|repost)\s+(?:this|it|that|a|one|the|your|v01d'?s?|void'?s?)?\s*(?:films?|videos?|clips?|ads?|shorts?)?\s*(?:to|on)\s+(?:youtube|yt|tiktok|reels|instagram|x|twitter)$/i;
+const UPLOAD = /^(?:how\s+(?:do|can)\s+i\s+)?(?:upload|post|share|repost)\s+(?:this|it|that|a|one|the|your|(?:verse|v01d)'?s?|(?:verse|void)'?s?)?\s*(?:films?|videos?|clips?|ads?|shorts?)?\s*(?:to|on)\s+(?:youtube|yt|tiktok|reels|instagram|x|twitter)$/i;
 export const wantsUpload = (lower) => UPLOAD.test(String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '));
 export function wantsFilms(lower) {
   const t = String(lower || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -24,7 +24,7 @@ export function wantsFilms(lower) {
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 
-// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
+// the films as data (asked by Verse, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
 // currently on the stage"): "film metadata", "films as json", "films json", "export the films". Read from /api/films, which anyone
 // may list; each film becomes { id, day, experiment, title, tags, source, watch }.
 const META = new RegExp('^(?:(?:show|give|get|export|list)\\s+(?:me\\s+)?)?(?:the\\s+)?(?:' + WHOSE + ')?(?:' + FILM + '|videos?)\\s+(?:metadata|meta|data|as\\s+json|json|info)$|^(?:export\\s+(?:the\\s+)?' + FILM + ')$', 'i');
@@ -36,8 +36,8 @@ export function filmMeta(f) {
   const tags = Array.isArray(f.tags) ? f.tags : String(f.tags || '').split(',').map((x) => x.trim()).filter(Boolean);
   return { id: f.id, day, experiment: exp, title: f.title || '', tags, source: src, watch: 'https://a-to-mind.com/films/' };
 }
-// The feed monitor (asked by Void: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
-// (asked by Void: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
+// The feed monitor (asked by Verse: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
+// (asked by Verse: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
 // v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
 // card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
 const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;

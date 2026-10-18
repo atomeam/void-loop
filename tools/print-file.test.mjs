@@ -1,4 +1,4 @@
-// The stage's 3MF is checked before it is handed over (Void's ask, 2026-10-10: "a verification step in the 'print-file'
+// The stage's 3MF is checked before it is handed over (Verse's ask, 2026-10-10: "a verification step in the 'print-file'
 // skill that checks the integrity of held-files before finalizing"): print-file.js verify3mf opens the package it just
 // built and holds it to the triangles it came from. Run: node --test tools/print-file.test.mjs
 import { test } from 'node:test';

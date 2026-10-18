@@ -1,4 +1,4 @@
-// The streak promotion (asked by Void): node --test tools/streaks.test.mjs
+// The streak promotion (asked by Verse): node --test tools/streaks.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { bump, promote, streaksOf, STREAK_PROMOTE } from './streaks.mjs';

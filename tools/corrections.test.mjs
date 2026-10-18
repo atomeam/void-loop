@@ -1,4 +1,4 @@
-// The correction channel on the self card (asked by Void). node --test tools/corrections.test.mjs
+// The correction channel on the self card (asked by Verse). node --test tools/corrections.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
 import { CORRECTIONS, clean, makeCorrection, addCorrection, readCorrections, recentAnswered, wantsCorrection, skillName, chosenAnswer, mountForm } from '../void-live-deploy/lib/corrections.js';
 import { STORES } from '../void-live-deploy/lib/state.js';

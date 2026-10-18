@@ -1,5 +1,5 @@
 // node tools/perf3d.mjs [--base URL] [--phone] [--out dir] [--only regex]
-// Profiles Void's 3D boards in installed Chrome: opens each game, waits for its first frame, then measures
+// Profiles Verse's 3D boards in installed Chrome: opens each game, waits for its first frame, then measures
 // idle (frames drawn while nothing moves) and an orbit drag (fps, frame-time p95, long tasks), plus the renderer's
 // draw calls, triangles, textures and geometries. With --trace it also saves a Chrome DevTools performance trace.
 import fs from 'node:fs';

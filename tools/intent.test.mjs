@@ -1,4 +1,4 @@
-// Summon by intent (frontier #10): an outcome with a deadline becomes a build order of asks Void already answers.
+// Summon by intent (frontier #10): an outcome with a deadline becomes a build order of asks Verse already answers.
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import skill, { intentOf, deadlineOf, stepsFor, planOf, openPlanOf, planWords } from '../void-live-deploy/skills/intent.js';
@@ -50,7 +50,7 @@ test('steps are worked back from the day, the goal last on it', () => {
   assert.ok(tight.every((x) => iso(x.date) === '2026-10-09'));
 });
 
-test('the plan is asks Void already answers, a draft only when someone is named', () => {
+test('the plan is asks Verse already answers, a draft only when someone is named', () => {
   const p = planOf('I need to prepare a talk by next week and tell Sam', FRI);
   assert.deepEqual(p.asks.map((a) => a.piece), ['countdown', 'checklist', 'calendar', 'draft']);
   assert.equal(p.asks[0].ask, 'days until prepare a talk on october 16');
@@ -131,7 +131,7 @@ test('plan asks said other ways: "i need a plan to", "create a study plan for", 
     assert.ok(!openPlanOf(a) && !planOf(a), a);
 });
 
-// Plan history (asked by Void): the last few distinct plans this browser made, listed and restored, so a wipe is never total.
+// Plan history (asked by Verse): the last few distinct plans this browser made, listed and restored, so a wipe is never total.
 import { historyAskOf, withPlanKept, restoredThings, PLANS_MAX } from '../void-live-deploy/skills/intent.js';
 test('plan history: the asks, the kept list (one per goal, newest first, five at most) and a restore with fresh ids', () => {
   assert.deepEqual(historyAskOf('plan history'), { kind: 'list' }); assert.deepEqual(historyAskOf('show me my plans'), { kind: 'list' }); assert.deepEqual(historyAskOf('my past plans'), { kind: 'list' });

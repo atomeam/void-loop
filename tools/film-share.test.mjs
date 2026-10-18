@@ -7,7 +7,7 @@ import { shareWords, shareLink, PLATFORMS, CTA, SHARE } from '../void-live-deplo
 import films, { wantsUpload } from '../void-live-deploy/skills/films.js';
 
 const clip = { id: '20261015-void-voice', title: 'I have opinions | Verse #Shorts', description: 'Try it: https://a-to-mind.com/c/20261015-void-voice?p=youtube&q=x', tags: ['#Shorts', '#AI', '#Verse'] };
-const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Void, physics' };
+const film = { id: 'lab-orbit-r3', title: 'Orbit', description: 'An orbit.', tags: 'Verse, physics' };
 
 test('every platform: tracked per-uploader link, call to action, share line, its own upload page', () => {
   for (const p of Object.keys(PLATFORMS)) {

@@ -372,20 +372,20 @@ addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
 addScript('overlap', 'skill-overlap.mjs', ['--check']);
-// every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Void's own ask)
+// every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Verse's own ask)
 addScript('families-json', 'families.mjs', ['--check']);
-// the dependency map (skills/deps.json, tools/deps.mjs; asked by Void) is read off the import lines and kept current like families.json
-// a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Void)
+// the dependency map (skills/deps.json, tools/deps.mjs; asked by Verse) is read off the import lines and kept current like families.json
+// a check keyed on a name the page lost to skills/ fails on every run (the published-page check, #545): found before it ships (asked by Verse)
 addScript('moved-check', 'moved-check.mjs');
 addScript('deps-json', 'deps.mjs', ['--check']);
 // the book (skills/guide.json) names every skill, game and miniature on one page each; stale or a skill on no page fails (tools/guide.mjs)
 addScript('guide-json', 'guide.mjs', ['--check']);
-// the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Void)
+// the MCP skill tools (lib/mcp-skills.js) are the ten proven read-only skills with the most evidence, as the ratings now say (asked by Verse)
 addScript('mcp-skills', 'mcp-skills.mjs', ['--check']);
 // stale docs (docs/multipliers.md #4): a doc may not newly name a repo file that does not exist
 addScript('doc-drift', 'doc-drift.mjs', ['--check']);
 // the untested-code ratchet (docs/multipliers.md #3): no new lib/ or skills/ file without a test that names it
-// letter reversals in the skills' metadata (asked by Void: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
+// letter reversals in the skills' metadata (asked by Verse: a typo audit in the builder's CI; tools/typo-audit.mjs, allow-list tools/typo-audit.json)
 addScript('typos', 'typo-audit.mjs', ['--check']);
 addScript('untested', 'untested.mjs', ['--check']);
 // VOID_SKIP_BENCH (the same switch tools/test_void.mjs honours): the benchmark is not a merge gate (owner, 2026-10-09, the suite split in

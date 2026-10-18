@@ -1,5 +1,5 @@
 /**
- * convert skill - a unit converter that stays on the stage (asked by Void, daily 2026-10-14 ask-20261014-1820-2:
+ * convert skill - a unit converter that stays on the stage (asked by Verse, daily 2026-10-14 ask-20261014-1820-2:
  * "a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "unit converter", "open a converter", "temperature converter", "cooking converter", "a converter for 5 miles to km".

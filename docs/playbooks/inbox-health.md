@@ -1,6 +1,6 @@
-# A growth-inbox health line: show a new fact about the skills where V01D reads its inbox
+# A growth-inbox health line: show a new fact about the skills where Verse reads its inbox
 
-**Starts when:** V01D asks for a status, metric or dashboard "in the growth inbox" or "on the owner page" about its skills (flag a failing one, map a health file, track a streak, mark a mismatch). The inbox is the growth card (`skills/growth.js`: friction, owner view, better) plus the build queue (`/api/queue`, mirrored in `domains/void.queue.md`).
+**Starts when:** Verse asks for a status, metric or dashboard "in the growth inbox" or "on the owner page" about its skills (flag a failing one, map a health file, track a streak, mark a mismatch). The inbox is the growth card (`skills/growth.js`: friction, owner view, better) plus the build queue (`/api/queue`, mirrored in `domains/void.queue.md`).
 
 1. **Find the fact in a file the repo already writes**, never a new tracker: `skills/families.json` (ratings, `smoke`, `promoted`, `streak`, `smoke_at`), `tools/skills-smoke.json` (the daily router test), `void.better.json` (day over day), `fringe/ledger.json`, the ledger (`void.growth.json`), `/api/reflect` `follow.recent` (asks beside what was built). If a new per-row fact is needed, add it to `tools/families.mjs` (`docs/playbooks/manifest-field.md`).
 2. **Write the line as a pure function in `void-live-deploy/lib/inbox-health.js`** (`skillStatus`, `familyMapHtml`, `promotedRows`, `bloomPlan`, `diverge` are the shape): data in, escaped HTML out, one `esc` on every value, an empty string when there is nothing to say.

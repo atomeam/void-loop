@@ -8,9 +8,9 @@ export const MAX_SIDE = 4096, MAX_PIXELS = 12000000;
 export function imageIntent(text) {
   const t = tidy(text).toLowerCase().replace(/[?!.\s]+$/, '');
   const IMG = '(?:an?\\s+)?(?:image|picture|png|photo|screenshot)';
-  if (new RegExp('^(?:please\\s+)?(?:copy|save|export|download|take|make)\\s+(?:the\\s+|my\\s+)?(?:whole\\s+)?(?:stage|void)\\s+(?:as|to|into)\\s+' + IMG + '$').test(t) || /^(?:please\s+)?(?:take\s+)?a\s+screenshot\s+of\s+(?:the|my)\s+(?:stage|void)$/.test(t) || /^(?:please\s+)?screenshot\s+(?:the|my)\s+(?:stage|void)$/.test(t)) return { op: 'stage' };
+  if (new RegExp('^(?:please\\s+)?(?:copy|save|export|download|take|make)\\s+(?:the\\s+|my\\s+)?(?:whole\\s+)?(?:stage|(?:verse|void))\\s+(?:as|to|into)\\s+' + IMG + '$').test(t) || /^(?:please\s+)?(?:take\s+)?a\s+screenshot\s+of\s+(?:the|my)\s+(?:stage|(?:verse|void))$/.test(t) || /^(?:please\s+)?screenshot\s+(?:the|my)\s+(?:stage|(?:verse|void))$/.test(t)) return { op: 'stage' };
   if (new RegExp('^(?:please\\s+)?(?:copy|save|export|download|make)\\s+(?:this|the\\s+(?:selected|open|picked)|that)\\s+(?:card|thing|object|sticky(?:\\s+note)?|note)\\s+(?:as|to|into)\\s+' + IMG + '$').test(t)) return { op: 'card' };
-  if (/^(?:please\s+)?(?:make|show|give\s+me|get|create)\s+(?:me\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|to)\s+(?:this|the\s+current|my\s+current)\s+(?:stage|void|view|page|stage\s+view)$/.test(t) || /^(?:please\s+)?qr(?:\s+code)?\s+(?:for|of|to)\s+(?:this|the\s+current|my\s+current)\s+(?:stage|void|view|page|stage\s+view)$/.test(t) || /^(?:please\s+)?(?:qr\s+code|qr)\s+(?:of\s+)?(?:this\s+)?stage\s+view$/.test(t)) return { op: 'qr' };
+  if (/^(?:please\s+)?(?:make|show|give\s+me|get|create)\s+(?:me\s+)?(?:a\s+)?qr(?:\s+code)?\s+(?:for|of|to)\s+(?:this|the\s+current|my\s+current)\s+(?:stage|(?:verse|void)|view|page|stage\s+view)$/.test(t) || /^(?:please\s+)?qr(?:\s+code)?\s+(?:for|of|to)\s+(?:this|the\s+current|my\s+current)\s+(?:stage|(?:verse|void)|view|page|stage\s+view)$/.test(t) || /^(?:please\s+)?(?:qr\s+code|qr)\s+(?:of\s+)?(?:this\s+)?stage\s+view$/.test(t)) return { op: 'qr' };
   return null;
 }
 

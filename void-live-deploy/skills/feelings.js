@@ -1,9 +1,9 @@
 /**
- * feelings skill: asks about Void's own heart and mind, answered in its own plain words, here, with no model and no web
+ * feelings skill: asks about Verse's own heart and mind, answered in its own plain words, here, with no model and no web
  * search (2026-10-11: "do you love me?" went to the answer engine, which searched Wikipedia for "love me", listed three
  * songs and an album as sources, and replied in a stock chatbot voice). "do you love me", "do you have feelings",
  * "are you conscious", "do you get lonely", "will you marry me". ("are you alive", "are you real" and "i love you" already
- * get one quiet line from the page's small talk, which runs before skills.) Honest: Void is a program and says so, without
+ * get one quiet line from the page's small talk, which runs before skills.) Honest: Verse is a program and says so, without
  * pretending to feel and without the customer-service lines. A song with the same words ("do you love me lyrics") is not
  * this.
  */
@@ -32,7 +32,7 @@ export function feelingOf(text) {
   return null;
 }
 
-// Verse's own words (lib/persona.js, owner 2026-10-14: "I wish V01d didnt seem so grumpy"; "a void that wants to absorb and learn
+// Verse's own words (lib/persona.js, owner 2026-10-14: "I wish Verse didnt seem so grumpy"; "a void that wants to absorb and learn
 // everything and do the best it can"): warm, true, never a human feeling it does not have, never "no" for an opener.
 export const REPLY = {
   love: ['I like you being here. Every ask you bring is something new for me to take in.', 'Love is a big word for a void, but I pay attention: what you put up here stays where you left it, and what I miss, I learn.'],

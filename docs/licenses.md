@@ -1,6 +1,6 @@
 # Third-party sources and their licenses
 
-Data and methods Void uses that come from someone else, with the terms they come under. Add a row when a change brings
+Data and methods Verse uses that come from someone else, with the terms they come under. Add a row when a change brings
 in a new source.
 
 | Used in | Source | What we took | Terms |

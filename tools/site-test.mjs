@@ -37,7 +37,7 @@ export function judge(c, r, limits = {}) {
   const fpsMin = ex.fpsMin ?? (c.fps ? limits.fpsMin : undefined);
   if (fpsMin && typeof r.fps === 'number' && r.fps < fpsMin) why.push('fps ' + r.fps + ' < ' + fpsMin);
   if (limits.loadMs && r.loadMs > limits.loadMs) why.push('load ' + r.loadMs + ' ms > ' + limits.loadMs);
-  // flags are noted, never failed (asked by Void: flag a card-stats idle wait over 500 ms): a busy runner's slow idle is not a broken site
+  // flags are noted, never failed (asked by Verse: flag a card-stats idle wait over 500 ms): a busy runner's slow idle is not a broken site
   const flags = [];
   if (limits.statsIdleMs && Number.isFinite(r.statsIdleMs) && r.statsIdleMs > limits.statsIdleMs) flags.push('stats idle ' + r.statsIdleMs + ' ms > ' + limits.statsIdleMs);
   // a console error or a broken file is the page's, not the ask's: one key for all asks, so it is filed once, not once per ask

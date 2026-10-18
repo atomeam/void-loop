@@ -1,5 +1,5 @@
 /**
- * vector-field-mind skill — F-033 of Grok's frontier ideas (asked by the owner, 2026-10-17: "all of Grok's ideas are to be added to Void"):
+ * vector-field-mind skill — F-033 of Grok's frontier ideas (asked by the owner, 2026-10-17: "all of Grok's ideas are to be added to Verse"):
  * about 320 particles are carried by an 8x6 grid of control vectors, and a small evolutionary mind (6 genomes, thinking about once a
  * second in a Worker, or on the page when there is no Worker) reshapes the grid for spread-out paths, moderate energy and particles near
  * your pointer. The field's real local divergence and curl set the card's ink density (--ink-density): sharp and high-contrast when high,

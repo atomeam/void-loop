@@ -1,6 +1,6 @@
-# How V01D reinvests its own money
+# How Verse reinvests its own money
 
-Adam, 2026-10-15: "V01D can repurpose its own money in the smartest possible way." The repo is public, so this page and
+Adam, 2026-10-15: "Verse can repurpose its own money in the smartest possible way." The repo is public, so this page and
 `domains/void.reinvest.json` hold only the ranking and plan logic (candidates at their public list prices). Real income,
 reserve and spend amounts never land here: they stay behind owner-only APIs.
 
@@ -22,12 +22,12 @@ is no second income ledger, and no money figure is shown on the site.
    now and a check date (30 days on) are recorded with the proposal. On the check date the metric is measured again and
    compared with that baseline; only that comparison moves the kind's multiplier (`payoff()`, `learn()`). No baseline or
    no measurement: nothing is learned.
-5. **V01D's own voice.** V01D is asked (tools/ask-void.mjs) how it would reinvest; its answer, logged word for word in
+5. **Verse's own voice.** Verse is asked (tools/ask-void.mjs) how it would reinvest; its answer, logged word for word in
    docs/void-voice.md, bends the ranking at weight 0.3. Input, not a gate.
 
 ## Who spends it
 
-V01D holds no card, opens no account and stores no payment details. A funded item becomes a **spend proposal** on the existing
+Verse holds no card, opens no account and stores no payment details. A funded item becomes a **spend proposal** on the existing
 confirm line (`POST /api/approval`, `order.place`): item, cost, expected payback, check-by date and the payoff test, all
 owner-only in D1. It is marked **ready** when it is bought through an account Adam already pays for (Cloudflare, GitHub,
 Gumroad); otherwise **queued**. Every real payment is made by Adam from his own accounts; a yes on the line records the
@@ -44,19 +44,19 @@ _As of 2026-10-17. Rewritten daily by tools/reinvest.mjs._
 | --- | --- | --- | --- | --- |
 | a-to-mind.com renewal, set aside (Cloudflare at-cost .com, about $10.50/yr) | $10.50 | ready | the store and every film link live on the domain; losing it would end all revenue | the domain never lapses |
 | Cloudflare Workers Paid | $15 | ready | the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale | no more capped answers; 10M requests and 1M KV writes a month |
-| a small test batch of printed Forge models (V01D's 'micro-business test') | $15 | queued | V01D asked for a tiny product test; physical prints show whether people pay for the objects, not just the files | first physical-goods sale or a clear no |
+| a small test batch of printed Forge models (Verse's 'micro-business test') | $15 | queued | Verse asked for a tiny product test; physical prints show whether people pay for the objects, not just the files | first physical-goods sale or a clear no |
 
 **Free first ($0, built before anything is bought):**
 
 - Turn on Stripe for fixed-price checkout (no monthly fee; per-sale fee only)
-- Ads-free promotion: post every V01D film as a Short, list V01D in AI directories and the MCP registry (live), share store packs
+- Ads-free promotion: post every Verse film as a Short, list Verse in AI directories and the MCP registry (live), share store packs
 - CI compute: keep the public repo on GitHub's free runners and trim the slowest workflows
 - stay under Workers AI's free 10k neurons/day and 1k KV writes/day (wishlist 1 and 2: gemma, edge cache)
 - Cloudflare Email Routing to Adam's inbox (free) plus the bot inbox
 - keyless CoinGecko behind a 2-minute edge cache (live), then the free Demo key
 - official embeds, Bluesky and Mastodon (live)
 
-**V01D's own answer as input** (weight 0.3): it named reserve 40%, quality 30%, revenue 30% among the kinds it can fund; the reserve it asked for is 20% (the floor is 20%). Not fundable: $50 for "Buy fractional shares or a diversified ETF" (V01D holds no brokerage or bank account and none is opened for it; that share stays in the held fund).
+**Verse's own answer as input** (weight 0.3): it named reserve 40%, quality 30%, revenue 30% among the kinds it can fund; the reserve it asked for is 20% (the floor is 20%). Not fundable: $50 for "Buy fractional shares or a diversified ETF" (Verse holds no brokerage or bank account and none is opened for it; that share stays in the held fund).
 
 **Learned so far** (outcome multipliers, 1 = no evidence yet): revenue 1, speed 1, quality 1.
 <!-- /plan -->

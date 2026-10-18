@@ -32,7 +32,7 @@ export default async function build(ctx, data) {
     words.forEach((w, k) => g.fillText(w, x + cp / 2, y + cp * 0.5 + (k - (words.length - 1) / 2) * fs * 1.1));
     if (sp.p) { g.font = `${Math.round(fs * 0.9)}px Arial, sans-serif`; g.fillText(String(sp.p), x + cp / 2, y + cp * 0.86); }
   });
-  // Void's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
+  // Verse's own lid in the middle (not the original's logo): THE LANDLORD'S GAME, set like a vintage box
   g.fillStyle = '#2b4a33'; g.textAlign = 'center';
   g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; if (!data.lid) g.fillText('THE', px / 2, px / 2 - cp * 0.62);
   g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText(data.lid || 'LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
@@ -44,8 +44,8 @@ export default async function build(ctx, data) {
   const edgeM = new THREE.MeshPhysicalMaterial({ color: '#2b4a33', roughness: 0.6 });
   const board = new THREE.Mesh(new THREE.BoxGeometry(B, H, B), [edgeM, edgeM, topM, edgeM, edgeM, edgeM]);
   board.position.y = H / 2; board.castShadow = board.receiveShadow = true; board.userData.isBoard = true; root.add(board);
-  // tokens: die-cast pewter pieces, Void's own set (a lantern, a teapot, an anchor, a house key; Adam: "the pieces should
-  // all be accurate", in Void's brand), each on a plinth ringed with its seat's enamel colour so you can tell them apart
+  // tokens: die-cast pewter pieces, Verse's own set (a lantern, a teapot, an anchor, a house key; Adam: "the pieces should
+  // all be accurate", in Verse's brand), each on a plinth ringed with its seat's enamel colour so you can tell them apart
   const pewter = new THREE.MeshStandardMaterial({ color: '#c3c7cd', metalness: 0.9, roughness: 0.32 });
   const amber = new THREE.MeshStandardMaterial({ color: '#ffcf7a', emissive: '#ff9a2e', emissiveIntensity: 0.35, roughness: 0.4 });
   const geos = [];

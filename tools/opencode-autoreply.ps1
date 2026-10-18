@@ -32,7 +32,7 @@ function New-RoleBrief([string]$slug, [string]$role, [string]$polishSkill) {
   $base = @"
 You are $slug. Work in C:\Users\adamm\a-to-mind-loop. Read AGENTS.md and the top of domains\void.frontier.md first (the one build order since 2026-10-11). hold\AGENTS.md does not govern this folder.
 
-Public face: blank Void only (void.html -> https://a-to-mind.com). No homepage, scoreboard, Gumroad, or business Domains on the public face.
+Public face: blank Verse only (void.html -> https://a-to-mind.com). No homepage, scoreboard, Gumroad, or business Domains on the public face.
 
 "@
   switch ($role) {

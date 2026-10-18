@@ -1,4 +1,4 @@
-// The sweep door of Void learning by itself (void-live-deploy/lib/learn.js has the brain and the miss-time door):
+// The sweep door of Verse learning by itself (void-live-deploy/lib/learn.js has the brain and the miss-time door):
 // reads the whole miss board (/api/misses), ranks what people typed in the last week, and queues the top ones for the
 // builders at /api/queue as `miss:<slug>` jobs, at most OPEN_MAX open at once. Misses already queued, built, or beaten
 // (tools/grown.json, tools/bench.json) are skipped.

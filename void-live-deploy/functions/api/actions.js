@@ -1,7 +1,7 @@
 // The execution record (lib/actions.js): GET -> { actions } newest first, owner token only. ?limit=N (up to 500),
 // ?offset=N to skip the newest N (the card's Show more), ?owner=... to filter by who an action was for.
-// Nothing here takes an action; it only shows what Void did.
-// POST (owner only) writes the record of an action the Void extension takes in the owner's tab (B3), which can't run inside
+// Nothing here takes an action; it only shows what Verse did.
+// POST (owner only) writes the record of an action the Verse extension takes in the owner's tab (B3), which can't run inside
 // track(): { op: 'begin', kind, ref } -> { id } (running, before the action); { op: 'end', id, state: 'done' | 'failed', text };
 // { op: 'stub', kind, ref, text } (the owner said no: nothing happened). Only extension.* kinds: the server's own actions
 // keep writing their records through track(), and nothing posted here can pose as one of them.

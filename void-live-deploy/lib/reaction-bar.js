@@ -23,7 +23,7 @@ const BURST_CSS = '.rx-b{position:absolute;pointer-events:none;font-size:18px;an
 
 /** Build the bar for `target` (a ledger slug). Returns the element, or null when the target is not a slug; the element stays hidden until the counts have been
  *  read once, so a dead endpoint shows nothing. opts: fetchFn, doc, reduceMotion, now, tint ({ id: css } added to those buttons' style: the autopsy's
- *  warning look on 'confused' and 'pity', asked by Void). */
+ *  warning look on 'confused' and 'pity', asked by Verse). */
 export function reactionBar(target, opts = {}) {
   const doc = opts.doc || (typeof document !== 'undefined' ? document : null), f = opts.fetchFn || (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
   if (!doc || !f || !targetOk(target)) return null;

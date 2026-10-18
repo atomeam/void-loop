@@ -55,7 +55,7 @@ test('snake: Verse alone survives a long game (it keeps room to move)', () => {
   assert.ok(s.void.alive || s.void.body.length > 12, 'length ' + s.void.body.length);
 });
 
-// the ghost (asked by Void): play against your own best Pong game or Snake run
+// the ghost (asked by Verse): play against your own best Pong game or Snake run
 import * as G from '../void-live-deploy/lib/arcade-ghost.js';
 const mem = () => { const m = {}; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); } }; };
 

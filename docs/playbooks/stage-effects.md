@@ -3,7 +3,7 @@
 Written 2026-10-18 after building stage pack E, the Opposite Era (`skills/riot.js`, `skills/mutate.js`, `skills/sudden-death.js`, `skills/overload.js`, `skills/extinction.js`, shared `lib/opposite-era.js`), five skills that move, change, flood or remove what is already on the stage. A stage bridge (`stage-bridge.md`) hands text between two kinds; an effect acts on every kind at once, so the rules are different.
 
 ## What starts it
-The owner or V01D asks for a set of named effects on the stage ("start the riot", "mutate this card", "sudden death in 60 seconds", "overload me", "mass extinction"). Build them as one pack: one shared lib, one unit test file, one browser section, one PR.
+The owner or Verse asks for a set of named effects on the stage ("start the riot", "mutate this card", "sudden death in 60 seconds", "overload me", "mass extinction"). Build them as one pack: one shared lib, one unit test file, one browser section, one PR.
 
 ## The shape that worked
 1. **Scaffold every skill first** so the routing order and index are generated, never hand-edited: `node tools/new-skill.mjs riot --ask "start the riot" --ask "end the riot" --near "riot games"` (one per skill, each with its look-alikes as `--near`). `node tools/skills-check.mjs` must say clean before any code is written.

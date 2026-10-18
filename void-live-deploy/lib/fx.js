@@ -24,7 +24,7 @@ export function fxIntent(text) {
   }
   if (new RegExp('^' + P + '(?:' + OFF + '\\s+(?:the\\s+)?undo\\s+toasts?|undo\\s+toasts?\\s+off)$').test(t)) return { op: 'toast', on: false };
   if (new RegExp('^' + P + '(?:(?:' + ON + '\\s+|show\\s+(?:me\\s+)?)?(?:an\\s+|the\\s+)?undo\\s+toasts?(?:\\s+on)?|show\\s+(?:me\\s+)?(?:an\\s+)?undo\\s+(?:button|toast)\\s+(?:when|after)\\s+(?:i\\s+)?(?:remove|delete|clear)(?:\\s+\\w+)?)$').test(t)) return { op: 'toast', on: true };
-  if (new RegExp('^' + P + '(?:(?:give\\s+me|take|start|show\\s+me|begin|run)\\s+(?:a\\s+|the\\s+|my\\s+)?(?:first[\\s-]?run\\s+|quick\\s+|60[\\s-]?second\\s+)?(?:tour|walk[\\s-]?through\\s+of\\s+(?:the\\s+)?(?:stage|void|v01d|verse))|(?:first[\\s-]?run|quick)\\s+tour|(?:tour|show\\s+me\\s+around)(?:\\s+(?:the\\s+)?(?:stage|void))?)$').test(t)) return { op: 'tour' };
+  if (new RegExp('^' + P + '(?:(?:give\\s+me|take|start|show\\s+me|begin|run)\\s+(?:a\\s+|the\\s+|my\\s+)?(?:first[\\s-]?run\\s+|quick\\s+|60[\\s-]?second\\s+)?(?:tour|walk[\\s-]?through\\s+of\\s+(?:the\\s+)?(?:stage|(?:verse|void)|(?:verse|v01d)|verse))|(?:first[\\s-]?run|quick)\\s+tour|(?:tour|show\\s+me\\s+around)(?:\\s+(?:the\\s+)?(?:stage|(?:verse|void)))?)$').test(t)) return { op: 'tour' };
   return null;
 }
 
@@ -117,7 +117,7 @@ export function playIntent(text) {
   const t = tidy(text);
   let m;
   if (new RegExp('^' + P + 'flip\\s+(?:it|this|that|the|my|selected)(?:\\s+(?:card|note|thing|one))?(?:\\s+over)?$|^' + P + 'flip\\s+(?:the\\s+)?card$').test(t)) return { op: 'flip' };
-  if ((m = new RegExp('^' + P + 'stamp\\s+(?:(?:it|this|that|the\\s+card|the\\s+note|this\\s+card)\\s+)?(?:as\\s+|with\\s+)?["“\']?(approved|rejected|paid|draft|done|urgent|confidential|void|received|checked|final|top\\s+secret)["”\']?$').exec(t))) return { op: 'stamp', word: m[1].replace(/\s+/g, ' ') };
+  if ((m = new RegExp('^' + P + 'stamp\\s+(?:(?:it|this|that|the\\s+card|the\\s+note|this\\s+card)\\s+)?(?:as\\s+|with\\s+)?["“\']?(approved|rejected|paid|draft|done|urgent|confidential|(?:verse|void)|received|checked|final|top\\s+secret)["”\']?$').exec(t))) return { op: 'stamp', word: m[1].replace(/\s+/g, ' ') };
   if ((m = /^(?:please\s+)?stamp\s+(?:it|this|that|the\s+card|this\s+card)\s+(?:as|with)\s+["“']?([a-z0-9][a-z0-9 !-]{0,15})["”']?$/.exec(t))) return { op: 'stamp', word: m[1].trim() };
   if (new RegExp('^' + P + '(?:remove|clear|take\\s+off|peel\\s+off|unstamp)\\s+(?:the\\s+|this\\s+|that\\s+)?stamps?(?:\\s+(?:off|from)\\s+(?:it|this|the\\s+card))?$|^unstamp(?:\\s+it)?$').test(t)) return { op: 'unstamp' };
   if (new RegExp('^' + P + '(?:' + OFF + '\\s+(?:the\\s+)?(?:sticky\\s+|note\\s+)?tape|(?:sticky\\s+|note\\s+)?tape\\s+off|peel\\s+(?:the\\s+)?tape\\s+off(?:\\s+my\\s+(?:notes|stickies))?|remove\\s+(?:the\\s+)?tape\\s+from\\s+(?:my\\s+)?(?:notes|stickies|stickys))$').test(t)) return { op: 'tape', on: false };
@@ -130,6 +130,6 @@ export function playIntent(text) {
 /** the colour and mood of a stamp word. Pure. */
 export function stampStyle(word) {
   const w = String(word || '').toLowerCase();
-  const good = /^(approved|paid|done|received|checked|final)$/.test(w), bad = /^(rejected|void|urgent)$/.test(w);
+  const good = /^(approved|paid|done|received|checked|final)$/.test(w), bad = /^(rejected|(?:verse|void)|urgent)$/.test(w);
   return { text: w.toUpperCase().slice(0, 16), color: good ? '#1f9d55' : bad ? '#d1332e' : '#2b6cb0' };
 }

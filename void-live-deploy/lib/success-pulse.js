@@ -1,4 +1,4 @@
-// success-pulse — a brief green pulse on the stage when something the Status card showed failing is working again (asked by Void,
+// success-pulse — a brief green pulse on the stage when something the Status card showed failing is working again (asked by Verse,
 // 2026-10-16: "a 'Success Pulse' animation on the stage that triggers briefly when a failed action in the Status card is
 // successfully converted into a proven skill"). skills/status.js keeps the names of what failed last time on this device; when a
 // later check finds one of them fine, that is the recovery: a skill that failed to load and now does is the converted skill. Pure

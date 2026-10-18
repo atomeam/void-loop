@@ -1,6 +1,6 @@
-// Void's code review as a product (functions/api/review.js, the page at /code-review/, the GitHub Action in review/).
+// Verse's code review as a product (functions/api/review.js, the page at /code-review/, the GitHub Action in review/).
 // Free: the instant checks (lib/code-review.js), for anyone, no account: findings with line numbers in milliseconds.
-// Pro: a paid Void (the Gumroad membership, void_accounts.tier = 'paid') mints review keys; a request with one also gets
+// Pro: a paid Verse (the Gumroad membership, void_accounts.tier = 'paid') mints review keys; a request with one also gets
 // the model's closer read (it confirms the real findings, drops wrong ones and adds what the patterns missed), up to
 // PRO_DAILY a day per key. Keys look like "vr1.<43 chars>"; only their SHA-256 is stored, and the tier is read from the
 // account on every call, so a refund or a cancelled membership turns a key back into a free one at once.

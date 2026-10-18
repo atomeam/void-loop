@@ -45,7 +45,7 @@ const d = (daysAgo) => new Date(now - daysAgo * 864e5).toISOString();
 const miss = (ask, count, daysAgo, fallback = 'none', variants = [], sameDay = false) => ({
   id: targetOf(ask), ask, count, first: d(sameDay ? daysAgo : daysAgo + 1), last: d(daysAgo), fallback, variants,
 });
-// the ask Void actually missed: counted 3 times across two days, redacted, no key, no noise
+// the ask Verse actually missed: counted 3 times across two days, redacted, no key, no noise
 const TARGET = 'learn to handle "tide tables"';
 
 test('miss time queues the ask and never twice', async () => {

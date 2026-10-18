@@ -16,7 +16,7 @@ test('the review of main reports bugs and risks in skill files, waived lines and
   assert.deepEqual(findings({ 'a.js': 'x' }, () => ({ findings: [{ line: 1, kind: 'style', rule: 'x', message: 'm' }, { line: 1, kind: 'bug', rule: 'conflict-markers', message: 'm' }] })), []);
 });
 
-test('a finding becomes one job: review:<skill>, the ask Void\'s own line (file, line, kind, rule, message), within the queue\'s limits', () => {
+test('a finding becomes one job: review:<skill>, the ask Verse\'s own line (file, line, kind, rule, message), within the queue\'s limits', () => {
   const j = jobOf({ file: 'mini/chess.js', line: 12, kind: 'risk', rule: 'inner-html', message: 'putting a variable into innerHTML lets any HTML in it run' });
   assert.equal(j.target, 'review:chess');
   assert.equal(j.ask, 'review skills/mini/chess.js:12 (risk, inner-html): putting a variable into innerHTML lets any HTML in it run');

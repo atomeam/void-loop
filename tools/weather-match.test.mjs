@@ -21,7 +21,7 @@ test('weather: look-alikes it leaves alone', () => {
     assert.ok(!takes(a), a);
 });
 
-// The actionable prompt (asked by Void): rain, snow, frost or heat in the next hours offers one ask the timer skill takes.
+// The actionable prompt (asked by Verse): rain, snow, frost or heat in the next hours offers one ask the timer skill takes.
 import { weatherPrompt } from '../void-live-deploy/skills/weather.js';
 import { wantsCreate } from '../void-live-deploy/skills/timer.js';
 const H = (over) => ({ time: Array.from({ length: 8 }, (_, i) => '2026-10-16T' + String(13 + i).padStart(2, '0') + ':00'), temperature_2m: Array(8).fill(12), precipitation_probability: Array(8).fill(5), weather_code: Array(8).fill(1), ...over });

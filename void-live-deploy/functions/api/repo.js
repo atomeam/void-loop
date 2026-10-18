@@ -1,7 +1,7 @@
 // See a public GitHub repository (lib/repo-look.js has the reading, skills/repo.js is the card). GET /api/repo?r=owner/name or a github.com URL.
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open GET. The most a caller can do is:
-//   - make Void's server read one public repo's facts from api.github.com: the name must match ^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$
+//   - make Verse's server read one public repo's facts from api.github.com: the name must match ^[A-Za-z0-9_.-]{1,100}/[A-Za-z0-9_.-]{1,100}$
 //     after parsing, every path is built here from that name (a caller picks no host, path, query or header), a redirect is followed only
 //     when it stays on api.github.com/repositories/<number>, each body is cut at 200 KB, and the card lists at most 60 files and 5 commits (no SSRF);
 //   - spend the shared unauthenticated GitHub allowance: a repeat inside 10 minutes is answered from the edge cache and costs nothing, a miss

@@ -1,4 +1,4 @@
-// Void learns skills by itself (its own want, domains/void.will.md #1; frontier item 2): an ask people typed that Void
+// Verse learns skills by itself (its own want, domains/void.will.md #1; frontier item 2): an ask people typed that Verse
 // could not answer becomes a job for the builders, with no one in between. Two doors into the same brain:
 //   - at miss time: functions/api/miss.js calls learnFromMiss() after it records a miss; once the same ask has been
 //     missed MIN_COUNT times across at least two different days, it is queued at once. Only what the server counted
@@ -15,7 +15,7 @@ import { isNoise } from './noise.js';
 export const OPEN_MAX = 3; // open miss jobs at once
 export const DAYS = 7; // how far back a sweep reads the board
 export const MIN_COUNT = 3; // misses before an ask is queued at miss time, spread over two days at least
-const MAX_WORDS = 12, MAX_CHARS = 80; // what a person types in Void's input; longer is pasted text, not an ask
+const MAX_WORDS = 12, MAX_CHARS = 80; // what a person types in Verse's input; longer is pasted text, not an ask
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/; // same as tools/misses.mjs
 
 export const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34);
@@ -44,7 +44,7 @@ export function learnable(r) {
 export const peopleCount = (c) => Math.max(0, (+c.count || 0) - (+c.agent || 0));
 export const originOf = (c) => (!(+c.agent > 0) ? 'people' : +c.agent >= (+c.count || 1) ? 'agent' : 'mixed');
 
-// rank: asked more (by people), asked recently, and a game or a thing Void itself said it hasn't built yet
+// rank: asked more (by people), asked recently, and a game or a thing Verse itself said it hasn't built yet
 export function score(c, now = Date.now()) {
   const age = (now - Date.parse(c.last || 0)) / 864e5;
   return peopleCount(c) + (c.variants.length ? 1 : 0) + (age < 2 ? 2 : age < 4 ? 1 : 0) + (unbuilt(c.fallback) ? 2 : 0);
@@ -65,7 +65,7 @@ export function plan(rows, queue, { known = new Set(), now = Date.now(), days = 
     const t = targetOf(c.ask);
     if (known.has(c.ask.toLowerCase()) || taken.has(t) || asked.has(`learn to handle "${c.ask.toLowerCase()}"`)) { skipped.push({ ask: c.ask, why: taken.has(t) ? 'already a job' : 'already beaten or benched' }); continue; }
     // every source was read for it and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to build a skill for, so the sweep
-    // never queues it (asked by Void: turn the daily miss list into jobs; the same rule tools/will.py has for its wants)
+    // never queues it (asked by Verse: turn the daily miss list into jobs; the same rule tools/will.py has for its wants)
     if (readAndUnknown(c.fallback)) { skipped.push({ ask: c.ask, why: 'every source was read and none knew it' }); continue; }
     if (originOf(c) === 'agent') { quarantined.push({ ask: c.ask, count: c.count }); continue; } // only visiting agents asked it: seen, never queued
     cands.push({ ...c, target: t, score: score(c, now) });
@@ -88,7 +88,7 @@ export const jobOf = (c) => ({
   ].filter(Boolean).join('; ').slice(0, 300),
 });
 
-// the lane a missed ask goes down (asked by Void: the missed asks are a structured skill-building queue that creates the propose-fix job by
+// the lane a missed ask goes down (asked by Verse: the missed asks are a structured skill-building queue that creates the propose-fix job by
 // itself): the router named a skill that should have caught it -> "lane: propose-fix" (tools/propose-fix.mjs takes the job and proposes the
 // matcher change); no skill near -> "lane: new skill" (a builder, docs/UPGRADING.md). Fixed words only.
 export const laneOf = (r) => (r && r.route === 'skill' && /^[a-z0-9_-]{1,24}$/.test(String(r.skill || '')) ? 'propose-fix' : 'new skill');

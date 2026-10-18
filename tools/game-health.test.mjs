@@ -1,4 +1,4 @@
-// Game health (asked by Void): the Elo rating on the Games family of the skill-health card. node --test tools/game-health.test.mjs
+// Game health (asked by Verse): the Elo rating on the Games family of the skill-health card. node --test tools/game-health.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { gameHealth, gameHealthHtml, MIN } from '../void-live-deploy/lib/game-health.js';
 import { healthHtml } from '../void-live-deploy/skills/family-health.js';
@@ -21,6 +21,6 @@ test('five matches are needed before it says climbing, level or slipping', () =>
 test('the Games family shows the ratings, other families do not, and text is escaped', () => {
   const fam = { families: [{ id: 'games', name: 'Games <x>', skills: [{ name: 'chess', tier: 'proven' }] }, { id: 'sky', name: 'Sky', skills: [{ name: 'moon', tier: 'tested' }] }] };
   const h = healthHtml(esc, fam, null, Date.now(), null, gameHealth({ pong: { void: 2, you: 0, draw: 0 } }, []));
-  assert.equal((h.match(/class="sub fh-ratings"/g) || []).length, 1); assert.match(h, /data-ratings="pong:1032"/); assert.match(h, /Void Pong 1032 \(\+32 from the start, 2 matches\)/);
+  assert.equal((h.match(/class="sub fh-ratings"/g) || []).length, 1); assert.match(h, /data-ratings="pong:1032"/); assert.match(h, /Verse Pong 1032 \(\+32 from the start, 2 matches\)/);
   assert.ok(!healthHtml(esc, fam).includes('fh-ratings')); assert.ok(!h.includes('Games <x>'));
 });

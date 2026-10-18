@@ -1,4 +1,4 @@
-// Void learns by itself (void-live-deploy/lib/learn.js, tools/learn.mjs): misses become builder jobs, and only the right
+// Verse learns by itself (void-live-deploy/lib/learn.js, tools/learn.mjs): misses become builder jobs, and only the right
 // ones. node --test tools/learn.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -23,7 +23,7 @@ test('the most-asked, most recent misses are queued first, up to the open limit'
   const p = plan(rows, { items: [] }, { now });
   assert.equal(p.open, 0);
   assert.equal(p.queue.length, OPEN_MAX);
-  assert.equal(p.queue[0].ask, 'play sorry', 'asked twice, today, two phrasings, and Void said it is not built yet');
+  assert.equal(p.queue[0].ask, 'play sorry', 'asked twice, today, two phrasings, and Verse said it is not built yet');
   assert.ok(p.later.length >= 1, 'the rest wait for the next run');
   assert.equal(p.queue.map((c) => c.target).every((t) => t.startsWith('miss:') && t.length <= 40), true);
 });
@@ -170,7 +170,7 @@ test('origin: the owner\'s board merges agent counts across wordings, and leaves
   assert.equal('agent' in m.find((r) => r.ask === 'connect 4'), false);
 });
 
-// asked by Void: the daily miss list becomes the top 3 jobs, and never a made-up word (a miss every source was read for and none knew)
+// asked by Verse: the daily miss list becomes the top 3 jobs, and never a made-up word (a miss every source was read for and none knew)
 test('the daily sweep queues the top 3 learnable asks and never a word every source read and none knew', () => {
   assert.equal(readAndUnknown('none:wikipedia,wiktionary'), true);
   assert.equal(readAndUnknown('none'), false, 'a plain none read nothing');

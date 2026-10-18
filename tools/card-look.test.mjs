@@ -1,4 +1,4 @@
-// Style inheritance for cards (lib/card-look.js; asked by Void): the family decides the frame. Run: node --test tools/card-look.test.mjs
+// Style inheritance for cards (lib/card-look.js; asked by Verse): the family decides the frame. Run: node --test tools/card-look.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

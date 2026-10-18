@@ -1,11 +1,11 @@
 ---
 name: paid-media
-description: How to put big files (videos, audio, downloads) on Void's site for people who pay only, beyond what D1 and Pages hold. Store in Cloudflare R2, check who pays with payer(), hand out short-lived signed links (a <video> cannot send a key), and refuse strangers' uploads before reading them. First used for Void's films (/films/, functions/api/films.js).
+description: How to put big files (videos, audio, downloads) on Verse's site for people who pay only, beyond what D1 and Pages hold. Store in Cloudflare R2, check who pays with payer(), hand out short-lived signed links (a <video> cannot send a key), and refuse strangers' uploads before reading them. First used for Verse's films (/films/, functions/api/films.js).
 ---
 
-# Paid-only media on Void's site
+# Paid-only media on Verse's site
 
-Owner, 2026-10-14: "we need to scale up . just because we use cloudflare we can use whatever it takes on top of that to support our needs", and "we should learn that workaround for all if we pull this off save it as skills". Void's films (`functions/api/films.js`, `/films/`) are the working example. Copy them.
+Owner, 2026-10-14: "we need to scale up . just because we use cloudflare we can use whatever it takes on top of that to support our needs", and "we should learn that workaround for all if we pull this off save it as skills". Verse's films (`functions/api/films.js`, `/films/`) are the working example. Copy them.
 
 ## When
 
@@ -20,7 +20,7 @@ Something people pay for is too big for D1 (rows max out near 2 MB) or must not 
    bucket_name = "void-films"
    ```
    R2 is free up to 10 GB stored, with no charge for egress. Past that it costs money: the owner's call (`STANDING.md`, Money). Keep the words (title, description) next to the file as `<id>.json` in the same bucket. No table is needed.
-2. **Who may see it: `payer(request, env)`** from `functions/api/support.js`. It accepts the owner, a Void Pro key, a Code Review Pro license, or a paid account's session, and returns `null` for anyone else. Reuse it; don't write a second rule.
+2. **Who may see it: `payer(request, env)`** from `functions/api/support.js`. It accepts the owner, a Verse Pro key, a Code Review Pro license, or a paid account's session, and returns `null` for anyone else. Reuse it; don't write a second rule.
 3. **A signed link, because a `<video>`, `<audio>` or `<img>` cannot send a Bearer header.** The list endpoint checks `payer()` and returns, for each file, `src: /api/<route>?id=&exp=&sig=`. `sig` is an HMAC-SHA256 of `id|exp` keyed from `READ_TOKEN` + `SALT` (`sign()` / `watchLink()` in films.js). It lasts hours (`WATCH_MS`), and rotating either secret kills every link. Compare signatures in constant time.
 4. **Stream with Range**, so a film starts at once and seeks: `env.FILMS.get(key, { range: { offset, length } })` returns 206 with `content-range`, and a range past the end returns 416. Send `accept-ranges: bytes` and `cache-control: private` so no shared cache keeps a member's copy.
 5. **Only the owner writes, and a stranger's upload is refused before a byte is read.** Add the route to `OWNER_WRITES` in `lib/guard.js`; the guard buffers bodies, so this matters at tens of MB. Then give it a `LIMITS` entry with a body cap that fits the files and enough rpm for the many Range GETs one video makes.

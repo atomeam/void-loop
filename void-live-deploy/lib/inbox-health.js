@@ -1,4 +1,4 @@
-// The growth inbox's skill health, drawn from files the repo already writes (asked by Void; each function names its ask). Pure: no DOM
+// The growth inbox's skill health, drawn from files the repo already writes (asked by Verse; each function names its ask). Pure: no DOM
 // reads, no fetch; the growth card (skills/growth.js) hands in skills/families.json, the ledger and void.better.json.
 //   skillStatus      "Implement a 'skill-health' status in the growth inbox that uses the new auto-registration to flag if a skill is
 //                    registered but failing its router test"

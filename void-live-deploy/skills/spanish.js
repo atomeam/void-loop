@@ -1,6 +1,6 @@
 /**
- * spanish skill — answer this ask in Spanish (plan item 9, Void in other languages)
- * Uses the translator already in Void (Google gtx, MyMemory fallback, no key).
+ * spanish skill — answer this ask in Spanish (plan item 9, Verse in other languages)
+ * Uses the translator already in Verse (Google gtx, MyMemory fallback, no key).
  * Does not publish, rename, or send. Empty surface stays empty until asked.
  * "answer me in Spanish", "answer me in Spanish: what is a void".
  */

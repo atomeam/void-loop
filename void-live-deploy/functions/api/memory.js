@@ -1,4 +1,4 @@
-// Void's memory: GET /api/memory?q=react&limit=20 · ?id=<record id> (with its stored digest) · ?ask=what did I build with react · ?view=topics · ?related=<record id> · POST { source, records: [...] } (up to 200) · DELETE /api/memory?id=...
+// Verse's memory: GET /api/memory?q=react&limit=20 · ?id=<record id> (with its stored digest) · ?ask=what did I build with react · ?view=topics · ?related=<record id> · POST { source, records: [...] } (up to 200) · DELETE /api/memory?id=...
 // Owner token, or a paid member's session (their own memory only). Records come from tools such as tools/ouroboros.py (`ouroboros.py push`); each is validated and re-redacted
 // (lib/memory-core.js), and the tables are created on first use. Without D1 this answers 503 and changes nothing.
 import { scopeOf } from '../../lib/memory-scope.js';
@@ -8,7 +8,7 @@ import { ensure, upsert, search, ask, byId, topics, related, forget, exportAll, 
 const guard = (fn) => async (ctx) => {
   const who = await scopeOf(ctx);
   if (!who) return new Response('no', { status: 401 });
-  if (who.free) return new Response('Void memory is for the owner and paid members: ' + who.why, { status: 403 });
+  if (who.free) return new Response('Verse memory is for the owner and paid members: ' + who.why, { status: 403 });
   if (!ctx.env.DB) return new Response('memory needs the database', { status: 503 });
   try { await ensure(ctx.env); return await fn(ctx, who.scope); } catch (_) { return new Response('memory error', { status: 500 }); }
 };

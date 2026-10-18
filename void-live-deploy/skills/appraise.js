@@ -10,7 +10,7 @@ import { isPersonAsk, complimentFor, makeableIn } from '../lib/appraise-photo.js
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const THING = "(?:(?:this|that|these|those|my|our|an?|the) [a-z]+(?: [a-z]+)?|this|that|it|these|those)";
-const ASK_RE = new RegExp('^(?:hey |yo |please |v01d |void )?(?:'
+const ASK_RE = new RegExp('^(?:hey |yo |please |(?:verse|v01d) |(?:verse|void) )?(?:'
   + "what(?:'s| is| are) " + THING + ' worth'
   + '|how much (?:is|are) ' + THING + ' worth'
   + '|how much (?:could|can|would|should) i (?:sell|get for|ask for|list) ' + THING + '(?: for)?'
@@ -67,7 +67,7 @@ async function run(text, api) {
       out.innerHTML = (v.person ? '<p class="ap-person">' + esc(j.text) + '</p>'
         : '<div style="font-size:40px;font-weight:300;line-height:1.1;margin:8px 0 4px" class="ap-value">' + esc(v.text || '') + '</div><p class="ap-text">' + esc(j.text || '') + '</p>')
         + (j.seen ? '<p class="sub ap-seen">What I saw: ' + esc(j.seen) + '</p>' : '');
-      // what Verse saw is a thing its forge can model: one tap makes it (asked by Void, ask-20261015-2008-1); the mesher loads only then
+      // what Verse saw is a thing its forge can model: one tap makes it (asked by Verse, ask-20261015-2008-1); the mesher loads only then
       if (!v.person && j.seen) import('./forge-rules.js').then((F) => {
         const m = makeableIn(j.seen, F.THINGS); if (!m || !out.isConnected) return;
         const line = document.createElement('p'), a = document.createElement('a');

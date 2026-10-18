@@ -1,6 +1,6 @@
 // node tools/review-post.mjs <comments.json> --repo owner/name --pr N --sha HEAD_SHA
-// Posts Void's inline review (the JSON from `review-pr.mjs --inline`) as one GitHub review of kind COMMENT on the PR's
-// head commit. A line that already has Void's comment for the same checks is skipped, so a re-run on every push adds
+// Posts Verse's inline review (the JSON from `review-pr.mjs --inline`) as one GitHub review of kind COMMENT on the PR's
+// head commit. A line that already has Verse's comment for the same checks is skipped, so a re-run on every push adds
 // only what is new. Needs GH_TOKEN (pull-requests: write); uses the gh CLI. Never fails the build: errors are printed.
 import { execFileSync } from 'node:child_process';
 import { readFileSync } from 'node:fs';
@@ -9,7 +9,7 @@ const arg = (k) => { const i = process.argv.indexOf(k); return i > 0 ? process.a
 const repo = arg('--repo'), pr = arg('--pr'), sha = arg('--sha');
 const gh = (args, input) => execFileSync('gh', args, { encoding: 'utf8', input, maxBuffer: 64 << 20 });
 
-// which (path, line, checks) already carry Void's comment: the marker holds the check names
+// which (path, line, checks) already carry Verse's comment: the marker holds the check names
 export function postedKeys(existing) {
   const keys = new Set();
   for (const c of existing || []) { const m = String(c.body || '').match(/<!-- void-review-inline ([\w -]+) -->/); if (m && c.path) keys.add(c.path + ':' + (c.line || c.original_line) + ':' + m[1].trim()); }

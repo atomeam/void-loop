@@ -1,5 +1,5 @@
 /**
- * A standing watch (frontier build order step 4, first piece): one thing Void can already fetch and a condition, asked
+ * A standing watch (frontier build order step 4, first piece): one thing Verse can already fetch and a condition, asked
  * for in plain words. "tell me when it's below 0 in Oslo", "let me know if https://… says sold out", "alert me when the
  * price on https://… drops below 50", "tell me when it's 9am in Tokyo", "watch https://… for changes". This is the
  * pure half: the asks, what a watch may say, how a fetched sample is judged against it, and the words the card and the
@@ -99,7 +99,7 @@ export function validateWatch(input) {
     if (out.kind === 'page') { out.op = PAGE_OPS.includes(w.op) ? w.op : ''; if (!out.op) bad('a page watch says contains, not-contains or changes'); if (out.op !== 'changes') { out.value = clean(w.value).slice(0, 120); if (!out.value) bad('what text to look for'); } }
     else { out.op = w.op === '<' ? '<' : w.op === '>' ? '>' : ''; if (!out.op) bad('a price watch says < or >'); out.value = Number(w.value); if (!Number.isFinite(out.value) || out.value < 0) bad('a price watch needs an amount'); }
   } else if (out.kind === 'time') {
-    out.zone = zoneOf(w.zone || w.place); if (!out.zone) bad('a time zone Void knows (a city it knows, or Europe/Oslo)');
+    out.zone = zoneOf(w.zone || w.place); if (!out.zone) bad('a time zone Verse knows (a city it knows, or Europe/Oslo)');
     out.at = timeOf(w.at); if (!out.at) bad('a time of day');
     if (w.place) out.place = clean(w.place).slice(0, 60);
   }

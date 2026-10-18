@@ -72,7 +72,7 @@ test('a long card keeps its whole answer, up to 8000 characters (the self card s
   assert.equal(d.b, long); assert.equal(BODY_MAX, 8000);
   const back = parse(shareText(d)); assert.equal(back.b, long, 'a pasted copy restores all of it'); assert.ok(codeOf(d).length < 600, 'the code line stays short');
 });
-test('the full-content badge (asked by Void): nothing on a short card, "whole text kept" past 2400 characters, and past the cap only what is true', async () => {
+test('the full-content badge (asked by Verse): nothing on a short card, "whole text kept" past 2400 characters, and past the cap only what is true', async () => {
   const { fullNote, BODY_MAX } = await import('../void-live-deploy/lib/card-share.js');
   assert.equal(fullNote(0), ''); assert.equal(fullNote(2400), ''); assert.equal(fullNote(2401), 'whole text kept'); assert.equal(fullNote(BODY_MAX), 'whole text kept');
   assert.equal(fullNote(BODY_MAX + 500), 'first ' + BODY_MAX + ' of ' + (BODY_MAX + 500) + ' characters kept'); assert.equal(fullNote('x'), '');

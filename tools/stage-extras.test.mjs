@@ -1,4 +1,4 @@
-// the pulse, friction, collision, bench, success pulse and shared-state pieces (asked by Void, 2026-10-16). node --test tools/stage-extras.test.mjs
+// the pulse, friction, collision, bench, success pulse and shared-state pieces (asked by Verse, 2026-10-16). node --test tools/stage-extras.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import * as P from '../void-live-deploy/lib/pulse.js';
 import { frictionOf, factorOf } from '../void-live-deploy/skills/friction.js';

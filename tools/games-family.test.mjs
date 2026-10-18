@@ -1,4 +1,4 @@
-// The games family (skills/games.js): every old name still opens its own game, the picker answers, and the shared Void
+// The games family (skills/games.js): every old name still opens its own game, the picker answers, and the shared Verse
 // strength (skills/game-level.js) slips only at the easy levels. Run: node --test tools/games-family.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
