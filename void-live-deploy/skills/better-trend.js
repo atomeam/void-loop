@@ -1,44 +1,43 @@
 /**
- * better-trend skill — surface void.better.json on the growth card as a one-line trend.
- * "show the better trend", "growth score trend", "is void getting better".
- * Reads /void.better.json and shows the one-line Better score with day and week trend.
- * Empty surface stays empty.
+ * better-trend skill — surfaces void.better.json as a one-line trend on the growth card.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * "show the better trend", "void better json trend", "growth trend one line".
+ * Reads /void.better.json if present. Empty surface stays empty.
  */
-import { betterHtml, compare } from '../lib/better.js';
-
 export function trendOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:show|open|what(?:'s| is))\s+(?:the\s+)?(?:better|growth)\s+(?:trend|score|scorecard)|is\s+(?:void|v01d)\s+getting\s+better|better\s+trend$/.test(t);
+  return /(?:show|surface|display)\s+(?:the\s+)?(?:void\s+)?better(?:\.json)?\s+(?:on\s+(?:the\s+)?growth\s+card|as\s+a\s+one-line\s+trend|trend)|growth\s+card\s+trend|better\s+trend/.test(t) ? true : null;
 }
 
 async function run(text, api) {
-  const { showPage, esc, _pageStill } = api;
+  const { showPage, esc } = api;
   if (!trendOf(text)) return 'none';
-  const el = showPage((p) => { p.innerHTML = '<h2>Better trend</h2><div class="sub">reading the scorecard…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Growth card · better trend</h2><div class="sub">loading void.better.json…</div>'; });
   try {
-    const r = await fetch('/void.better.json', { cache: 'no-cache' });
-    if (!r.ok) throw new Error('HTTP ' + r.status);
-    const rows = await r.json();
-    if (_pageStill && !_pageStill(el)) return 'better-trend';
-    const html = betterHtml(esc, rows);
-    const c = compare(rows);
-    el.innerHTML = '<h2>Better trend</h2>' + (html || '<p>No better score yet.</p>')
-      + (c ? '<div class="src">From <a href="/void.better.json" target="_blank" rel="noopener">void.better.json</a> · score ' + esc(c.score) + (c.day != null ? ', ' + (c.day > 0 ? '+' : '') + esc(c.day) + ' since yesterday' : '') + (c.week != null ? ', ' + (c.week > 0 ? '+' : '') + esc(c.week) + ' on the week' : '') + '</div>' : '');
+    const r = await fetch('/void.better.json');
+    if (!api._pageStill || !api._pageStill(el)) return 'better-trend';
+    if (!r.ok) {
+      el.innerHTML = '<h2>Growth card · better trend</h2><p>void.better.json not available yet. The one-line trend will appear here once the scorecard lands.</p>';
+      return 'better-trend';
+    }
+    const data = await r.json();
+    const line = data.trend || data.oneLine || JSON.stringify(data).slice(0, 80) + '…';
+    el.innerHTML = '<h2>Growth card · better trend</h2><p class="sub">' + esc(line) + '</p><div class="src">From void.better.json · empty stage stays empty</div>';
     return 'better-trend';
   } catch (_) {
-    if (_pageStill && !_pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Better trend</h2><p>The scorecard could not be read just now. Ask again in a moment.</p>';
+    el.innerHTML = '<h2>Growth card · better trend</h2><p>Could not read the better scorecard just now.</p>';
     return 'none';
   }
 }
 
 export default {
   name: 'better-trend',
-  examples: ['show the better trend', 'growth score trend', 'is void getting better', 'better trend'],
-  nearMisses: ['growth', 'how have you grown', 'what is better', 'trend the growth'],
-  match(lower, text) { return trendOf(text); },
+  examples: ['show the better trend', 'void better json trend', 'surface void.better.json on the growth card as a one-line trend', 'growth card trend'],
+  nearMisses: ['what is better', 'void better', 'growth', 'scorecard'],
+  match(lower, text) { return !!trendOf(text || lower); },
   run,
   suite() {
-    return { ok: trendOf('show the better trend') && !trendOf('hello world') };
+    const ok = !!trendOf('show the better trend') && trendOf('hello') === null;
+    return { ok, got: 'better-trend match' };
   },
 };
