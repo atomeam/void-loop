@@ -126,9 +126,9 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "kind": "family",
    "count": {
-    "experiment": 3,
-    "tested": 29,
-    "checked": 51,
+    "experiment": 1,
+    "tested": 30,
+    "checked": 52,
     "proven": 11
    },
    "from": 168,
@@ -3715,8 +3715,8 @@
     "summon everything except urgency",
     "summon everything except noise"
    ],
-   "tier": "tested",
-   "why": "1 browser-suite mention",
+   "tier": "checked",
+   "why": "a self-test, 1 browser-suite mention",
    "n": 203
   },
   {
@@ -3730,8 +3730,8 @@
     "keep the echo",
     "what would the echo say should i learn to code"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 204
   },
   {
@@ -3744,8 +3744,8 @@
     "show the near choir",
     "what almost answered that"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 205
   },
   {
