@@ -1,38 +1,16 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T09:04:42.358Z",
-   "sha": "80963b89e9dcc90f60333501f993f374016b0513",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39113610347",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    ".claude/skills/learn-from-video/SKILL.md",
-    ".claude/skills/paid-media/SKILL.md",
-    ".claude/skills/steward/SKILL.md",
-    ".claude/skills/void-run/SKILL.md",
-    ".github/actions/void-test/action.yml",
-    ".github/workflows/arena.yml",
-    ".github/workflows/automerge.yml",
-    ".github/workflows/bench.yml",
-    ".github/workflows/build-miss.yml",
-    ".github/workflows/deploy.yml",
-    ".github/workflows/dispatcher.yml",
-    ".github/workflows/gaps.yml",
-    ".github/workflows/learn.yml",
-    ".github/workflows/mcp-live.yml",
-    ".github/workflows/mcp-registry.yml"
-   ]
-  },
-  {
-   "at": "2026-10-18T08:59:14.617Z",
+   "at": "2026-10-18T09:04:48.244Z",
    "sha": "e18a912b6823ed01643149a1b8393bf5dae4d3ce",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39113265435",
    "suite": "browser suite on main",
    "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
    ],
    "touched": [
@@ -737,6 +715,28 @@
     "tools/site-test.log.json",
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json"
+   ]
+  },
+  {
+   "at": "2026-10-17T22:25:09.356Z",
+   "sha": "3bf19cdaaf54f18cfe2ec00063efd2416b620d59",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39074012082",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/growth.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/growth.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   }
  ]
