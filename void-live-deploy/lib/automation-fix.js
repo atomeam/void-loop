@@ -14,7 +14,7 @@ const PLATFORMS = [
 // about how replies should work was answered as a broken automation, "a field it expects is empty", and labelled "from the error
 // itself" with no error in it). Each kind at most once, with the words that showed it. Pure.
 const EVIDENCE = [
-  ['status', /\b(?:https?\/?[\d.]*\s+|status(?:\s+code)?[:=]?\s*|(?:error|code)\s+|returned\s+(?:an?\s+)?|got\s+(?:an?\s+)?|with\s+(?:an?\s+)?|responded\s+with\s+)[45]\d\d\b|\b[45]\d\d\s+(?:bad request|unauthori[sz]ed|forbidden|not found|method not allowed|conflict|gone|unprocessable|too many requests|internal server error|bad gateway|service unavailable|gateway time-?out)\b/i],
+  ['status', /\b(?:https?\/?[\d.]*\s+|status(?:\s+code)?[:=]?\s*|(?:error|code)\s+|returned\s+(?:an?\s+)?|got\s+(?:an?\s+)?|with\s+(?:an?\s+)?|responded\s+with\s+)(?:4[0-4]\d|5(?:[01]\d|2[0-6]))\b(?!\s+(?:of|misses|characters?|ideas?|items?|files?|tests?|asks?|lines?|words?|users?|rows?|checks?|skills?|pages?|times|ms|bytes|kb|mb)\b)|\b[45]\d\d\s+(?:bad request|unauthori[sz]ed|forbidden|not found|method not allowed|conflict|gone|unprocessable|too many requests|internal server error|bad gateway|service unavailable|gateway time-?out)\b/i],
   ['message', /\b[A-Z]\w*(?:Error|Exception)\s*:\s*\S.{0,160}|^\s*(?:Error|Exception|Traceback \(most recent call last\)|fatal|panic|ERR!?)\b\s*[:!].{0,160}$/m],
   ['stack', /^\s+at\s+\S.*:\d+(?::\d+)?\)?\s*$|File "[^"]+", line \d+/m],
   ['code', /\b(?:ECONN\w+|ENOTFOUND|ETIMEDOUT|EACCES|ENOENT|EPIPE|EAI_AGAIN)\b|\bexit(?:ed)? (?:with )?(?:code|status) [1-9]\d*\b|"error"\s*:\s*["{]/i],
