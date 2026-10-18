@@ -164,6 +164,30 @@ function evaluate(s) { // from the side to move
     const v = VAL[t] + (t === 'k' && endgame ? PST.ke : PST[t])[idx]; mg += w ? v : -v; }
   return s.turn === 'w' ? mg : -mg;
 }
+// a position's worth once the captures on the board have played out, from the side to move (a short quiescence: a move
+// that hangs a piece reads as losing it, not as the material still on the board)
+function settled(p, a = -MATE, b = MATE, qd = 4) {
+  const stand = evaluate(p); if (stand >= b) return b; if (stand > a) a = stand; if (qd <= 0) return a;
+  for (const m of pseudo(p, true)) { const n = apply(p, m); if (inCheck(n, p.turn)) continue; const v = -settled(n, -b, -a, qd - 1); if (v >= b) return b; if (v > a) a = v; }
+  return a;
+}
+export const VERDICTS = { best: 'best move', good: 'good', inaccuracy: 'inaccuracy', mistake: 'mistake', blunder: 'blunder', mate: 'checkmate' };
+/** How good a move was (the match replay's annotations, asked by Void: "step through the moves with engine annotations"):
+ * { label, verdict: best|good|inaccuracy|mistake|blunder|mate, loss (centipawns given up against the engine's own choice; 0 when it is a
+ * mate), allowsMate (the other side mates at once), best (that choice's label, when it differs) }. A shallow search: a quick read, not a grandmaster's. */
+export function moveVerdict(s, mv, { depth = 2, ms = 150 } = {}) {
+  const n = play(s, mv), m = n.last, label = moveLabel(s, m);
+  if (status(n) === 'checkmate') return { label, verdict: 'mate', loss: 0, best: null };
+  const top = bestMove(s, { depth, ms, rng: () => 0 });
+  const same = top && top.from === m.from && top.to === m.to && (top.promo || null) === (m.promo || null);
+  // a move that lets the other side mate at once is the worst there is, whatever the material says (2.g4 in Fool's mate)
+  const allowsMate = (c) => legalMoves(c).some((r) => status(apply(c, r)) === 'checkmate');
+  const worth = (x) => { const c = apply(s, x); return status(c) === 'checkmate' ? MATE : allowsMate(c) ? -MATE : -settled(c); };
+  const mine = worth(m), loss = same || !top ? 0 : Math.max(0, worth(top) - mine);
+  const verdict = same ? 'best' : loss <= 40 ? 'good' : loss <= 100 ? 'inaccuracy' : loss <= 250 ? 'mistake' : 'blunder';
+  // a loss that is a mate, not material, is said as one (never "1000 pawns")
+  return { label, verdict, loss: loss >= MATE / 2 ? 0 : Math.round(loss), allowsMate: mine <= -MATE / 2, best: same || !top ? null : moveLabel(s, top) };
+}
 /** The card's line while Void searches: how deep it has looked, how many positions, the move it leans to (asked by Void). */
 export function thinkingLine(info, s) {
   if (!info || !info.best) return 'V01D is thinking…';

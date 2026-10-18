@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 660,
+ "counted": 661,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -664,6 +664,12 @@
   },
   {
    "file": "lib/calc-more.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/chess-replay.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2491,6 +2497,12 @@
     "skills/oracle.js",
     "skills/own-parts.js",
     "skills/showcase.js"
+   ]
+  },
+  "lib/chess-replay.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/about-skill.js"
    ]
   },
   "lib/cite.js": {
@@ -5026,7 +5038,8 @@
    "imports": [
     "lib/about-skill.js",
     "lib/card-frame.js",
-    "lib/match-history.js"
+    "lib/match-history.js",
+    "lib/chess-replay.js"
    ],
    "importedBy": []
   },

@@ -70,6 +70,19 @@ async function run(text, api) {
     el.classList.add('about-skill'); el.dataset.skillName = a.name;
     el.innerHTML = cardHtml(a, esc);
     el.querySelectorAll('button[data-ask]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); api.stage.ask(b.dataset.ask); }));
+    // ▶ Replay on a chess game in the history steps through its moves with the engine's read of each (asked by Void, lib/chess-replay.js)
+    el.addEventListener('click', async (e) => {
+      const b = e.target.closest && e.target.closest('.mh-replay'); if (!b) return; e.stopPropagation();
+      const g = loadGames().find((x) => x.at === b.dataset.at && x.line); if (!g) return;
+      const table = el.querySelector('.match-history'); let host = el.querySelector('.mh-replay-host');
+      // under the history block, not inside it: the table scrolls sideways on a phone, and a panel inside it went with it
+      if (!host) { host = document.createElement('div'); host.className = 'mh-replay-host'; host.tabIndex = -1; if (table) table.insertAdjacentElement('afterend', host); else el.appendChild(host); }
+      const [R, { mountReplay }] = await Promise.all([import('./chess-rules.js'), import('../lib/chess-replay.js')]);
+      mountReplay(host, R, g.line, esc); host.focus({ preventScroll: true });
+      // the board's top comes into view: the nearest box that scrolls (the card, or the frame a look wraps it in) moves, the page never does
+      let box = host.parentElement; while (box && box !== document.body && !(/(auto|scroll)/.test(getComputedStyle(box).overflowY) && box.scrollHeight > box.clientHeight)) box = box.parentElement;
+      if (box && box !== document.body) box.scrollTo({ top: box.scrollTop + host.getBoundingClientRect().top - box.getBoundingClientRect().top - 6, behavior: 'smooth' });
+    });
   });
   api.say(h && sum ? a.title + ' · your record against V01D on this device: ' + summaryLine(sum) : a.title + (a.family ? ' · ' + a.family.name : '') + ' · ' + a.tier);
   return 'about-skill';

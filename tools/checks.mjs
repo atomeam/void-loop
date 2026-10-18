@@ -160,6 +160,7 @@ for (const [name, file] of [
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
   ['take', 'take.test.mjs'],
+  ['chess-replay', 'chess-replay.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
