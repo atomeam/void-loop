@@ -22,6 +22,7 @@ export const STORES = {
   corrections: { key: 'a2m.void.corrections.v1', what: 'what you told V01D it got wrong (kept apart from how your V01D looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },
   camera:   { key: 'a2m.void.camera.v1',   what: 'where the stage camera is and whether you are flying ("fly around")' },
+  eclipse:  { key: 'a2m.void.eclipse.v1',  what: 'which families of skills you eclipsed (hidden from routing) and until when' },
 };
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 524,
+ "counted": 530,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -51,16 +51,16 @@
    "dependants": 27
   },
   {
+   "file": "lib/state.js",
+   "skills": 9,
+   "direct": 2,
+   "dependants": 23
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
    "dependants": 9
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 8,
-   "direct": 2,
-   "dependants": 21
   },
   {
    "file": "lib/rts.js",
@@ -447,7 +447,19 @@
    "dependants": 1
   },
   {
+   "file": "lib/contradict.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/duel-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/eclipse.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -502,6 +514,12 @@
   },
   {
    "file": "lib/heat-dose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/linediff.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2080,6 +2098,12 @@
     "skills/tab.js"
    ]
   },
+  "lib/contradict.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/contradiction-lamp.js"
+   ]
+  },
   "lib/cook-flow.js": {
    "imports": [],
    "importedBy": [
@@ -2188,6 +2212,14 @@
     "functions/api/routes.js",
     "lib/bench-asks.js",
     "lib/clef.js"
+   ]
+  },
+  "lib/eclipse.js": {
+   "imports": [
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/skill-eclipse.js"
    ]
   },
   "lib/eclipses.js": {
@@ -2611,6 +2643,12 @@
    "importedBy": [
     "functions/api/miss.js",
     "lib/refusal.js"
+   ]
+  },
+  "lib/linediff.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/ask-diff.js"
    ]
   },
   "lib/mcp-skills.js": {
@@ -3545,6 +3583,7 @@
   "lib/state.js": {
    "imports": [],
    "importedBy": [
+    "lib/eclipse.js",
     "lib/ladder.js",
     "skills/memory.js",
     "skills/state.js"
@@ -3567,6 +3606,7 @@
     "skills/mini/growthtree.js",
     "skills/pong.js",
     "skills/showcase.js",
+    "skills/skill-eclipse.js",
     "skills/snake.js"
    ]
   },
@@ -3891,6 +3931,12 @@
    ],
    "importedBy": []
   },
+  "skills/ask-diff.js": {
+   "imports": [
+    "lib/linediff.js"
+   ],
+   "importedBy": []
+  },
   "skills/attention-field-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -4108,6 +4154,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/contradiction-lamp.js": {
+   "imports": [
+    "lib/contradict.js"
+   ],
+   "importedBy": []
   },
   "skills/convert.js": {
    "imports": [],
@@ -5747,6 +5799,12 @@
     "skills/sorry.js",
     "skills/tictactoe.js"
    ]
+  },
+  "skills/skill-eclipse.js": {
+   "imports": [
+    "lib/eclipse.js"
+   ],
+   "importedBy": []
   },
   "skills/sky-card-rules.js": {
    "imports": [

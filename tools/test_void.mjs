@@ -1935,6 +1935,34 @@ try {
     const left = await P.state(), line = await P.p.$eval('.vpage.on .ext-line', (e) => e.textContent).catch(() => '');
     check('stage pack e extinction: "mass extinction" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked',
       !!asked && /not confirmed/.test(refused) && n3 === n2 && n2 === 2 && marked === 1 && left.length === 1 && left[0].survivor === true && /1 gone · survivor: the/.test(line) && !P.errors.length, JSON.stringify({ asked: !!asked, refused, n2, n3, marked, left: left.map((t) => t.kind + (t.survivor ? '*' : '')), line, e: P.errors }));
+  // stage pack G (asked by the owner, 2026-10-18): the contradiction lamp, ask diff and skill eclipse (tools/stage-pack-g.test.mjs has the pure parts)
+  if (want("stage pack g: the contradiction lamp, ask diff and skill eclipse on one stage")) { const P = await fresh();
+    // the lamp: a quiet stage has no clash; two stickies that disagree about one day light one lamp and one line; dismiss puts both out
+    await P.ask('add a sticky that says dentist on friday', 600); await P.ask('what contradicts', 700);
+    const quiet = await P.p.$eval('.vpage.on .contra-none', (e) => e.textContent).catch(() => ''), lampsQuiet = await P.p.$$eval('.contra-lamp', (l) => l.length);
+    await P.ask('add another sticky that says dentist on thursday', 700); await P.ask('which of my notes contradict each other', 900);
+    const texts = (await P.state()).filter((t) => t.kind === 'sticky').map((t) => t.text), lines = await P.p.$$eval('.vpage.on .contra-line', (l) => l.map((e) => e.textContent)), lit = await P.p.$$eval('.contra-lamp', (l) => l.length), lampLabel = await P.p.$eval('.contra-lamp-label', (e) => e.textContent).catch(() => '');
+    const dis = await P.p.$('.vpage.on .contra-dismiss'); if (dis) await dis.click(); await P.p.waitForTimeout(500);
+    const after = await P.p.$eval('.vpage.on .contra-body', (e) => e.textContent), lampsAfter = await P.p.$$eval('.contra-lamp', (l) => l.length), kept = (await P.state()).filter((t) => t.kind === 'sticky').length;
+    check('stage pack g lamp: a quiet stage says nothing contradicts, two notes with two days for the dentist light one lamp and one plain line, and dismiss puts the line and the lamp out',
+      /nothing contradicts/.test(quiet) && lampsQuiet === 0 && lines.length === 1 && /dentist.*two days/.test(lines[0]) && lit === 1 && lampLabel === 'two days' && /every clash is dismissed/.test(after) && lampsAfter === 0 && kept === 2 && !P.errors.length, JSON.stringify({ quiet, lampsQuiet, texts, lines, lit, lampLabel, after, lampsAfter, kept, e: P.errors }));
+    // ask diff: both asks run, the stage is left as it was, and one card shows the two asks
+    const before = (await P.state()).length;
+    await P.ask('diff "make a timer" and "make a focus timer for writing"', 4500);
+    const card = await P.p.$eval('.vpage.on', (e) => ({ t: e.innerText, rows: e.querySelectorAll('.ad-row').length, none: e.querySelectorAll('.ad-none').length, same: e.querySelectorAll('.ad-same').length })).catch(() => null), stateAfter = (await P.state()).length;
+    check('stage pack g ask diff: diff of "make a timer" and "make a focus timer for writing" runs both asks, shows one Ask diff card with rows or an honest same, and leaves the stage with no timer left over',
+      !!card && /Ask diff/.test(card.t) && /make a timer/.test(card.t) && /focus timer for writing/.test(card.t) && card.none === 0 && (card.rows > 0 || card.same === 1) && stateAfter === before && !P.errors.length, JSON.stringify({ card, before, stateAfter, e: P.errors }));
+    // skill eclipse: games are hidden for an hour (a chip says so), tic tac toe no longer routes to its skill, a tap on the chip lifts it
+    await P.ask('eclipse games skills for an hour', 900);
+    const chip = await P.p.$eval('.eclipse-chip', (e) => e.textContent).catch(() => ''), kept1 = await P.p.evaluate(() => localStorage.getItem('a2m.void.eclipse.v1') || '');
+    await P.ask('tic tac toe', 700); const hiddenTo = await P.whisper(), tttThings = (await P.state()).filter((t) => /tictac|tic-tac|ttt/.test(t.kind)).length;
+    const lifted0 = await P.p.$$eval('.eclipse-chip', (l) => l.length); await P.p.click('.eclipse-chip'); await P.p.waitForTimeout(300);
+    const chipsGone = await P.p.$$eval('.eclipse-chip', (l) => l.length); await P.ask('let\'s play tic tac toe', 700); const back = await P.whisper();
+    await P.ask('eclipse stage skills for an hour', 600); const refused = await P.page(), stageChip = await P.p.$$eval('.eclipse-chip', (l) => l.length);
+    await P.ask('eclipse money skills until friday', 700); const chips2 = await P.p.$eval('.eclipse-chip', (e) => e.textContent).catch(() => ''); await P.ask('lift the eclipse', 600);
+    const none = await P.p.$$eval('.eclipse-chip', (l) => l.length);
+    check('stage pack g eclipse: "eclipse games skills for an hour" shows the chip "eclipsed: games" and tic tac toe stops routing to its skill, a tap on the chip lifts it, the stage family is refused, "until friday" says so on its chip and "lift the eclipse" clears all',
+      /^eclipsed: games · \d+ min left$/.test(chip) && /games/.test(kept1) && !/tic-tac-toe/.test(hiddenTo) && tttThings === 0 && lifted0 === 1 && chipsGone === 0 && /tic-tac-toe/.test(back) && /stage skills stay/.test(refused) && stageChip === 0 && chips2 === 'eclipsed: money · until fri' && none === 0 && !P.errors.length, JSON.stringify({ chip, hiddenTo, tttThings, lifted0, chipsGone, back, refused, stageChip, chips2, none, e: P.errors }));
     await P.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);

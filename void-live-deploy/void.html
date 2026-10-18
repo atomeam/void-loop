@@ -4170,7 +4170,9 @@ say('nothing selected to remove');
     }
     async function firstSkill(lower0, text, deadline) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
-      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
+      let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
       if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
         const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
