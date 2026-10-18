@@ -21,15 +21,7 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 6a04b90 | 2026-10-03 | make my void light | board later, light look (checked: no light-theme preset exists; LOOK_DEFAULT is dark-only. genuinely open, not stale) |
 | shipped d40bd25 | 2026-10-03 | what did you do today | plan item 8, ledger as a skill (correction: row was stuck "open"; wantsToday/showToday already shipped) |
 | shipped 4ee2383 | 2026-10-03 | dismiss this | figures-first, send it away (skill on main at 4ee2383) |
-| shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; Motelet's whole personality is "it sits whenever it finds a chair", same commit as "spin the figure") |
-| shipped 7293ca7 | 2026-10-04 | download the print file | export-to-print, file stays valid offline (print-download on main at 7293ca7; empty stage stays empty) |
-| shipped f249d1a | 2026-10-04 | cartoon version of a hard subject | two-part summons, funny not grim (cartoon on main at f249d1a) |
-| shipped 6af476e | 2026-10-04 | zoom in on the figure | collector detail, progressive (zoom-figure on main at 6af476e) |
-| shipped 231840b | 2026-10-04 | what can this figure do | figure stays on brand (figure-can on main at 231840b) |
-| shipped 4f5f122 | 2026-10-04 | show the countdown | days until a date (show-countdown on main at 4f5f122) |
-| shipped 6139fda | 2026-10-07 | bring the clock to the front | board Next #3, grouped objects / layers (z-order half: "send the note to the back", "send it to the back", "bring all the notes to the front"; grouping still open) |
-| shipped ef995a7 | 2026-10-07 | group the clock and the note | board Next #3, grouping half: drag one and they all move, "move the group to the top left", "make the group bigger", "bring the group to the front", "ungroup" (Next #3 complete) |
-| shipped 7ea644b | 2026-10-07 | label the clock kitchen | board Later, text annotation / labels: tags that ride with a thing, free labels ("add a label that says to do"), arrows that follow a drag ("draw an arrow from the clock to the note", "connect the timer to the counter", by label name too), "remove the arrows", "remove the labels" |
+| shipped 3b6bbea | 2026-10-03 | a figure that sits on the chair | figures-first, use what is already there (correction: row was stuck "open"; sitting pose already in figures) |
 | shipped check | 2026-10-10 | before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran a minute later (domains/void.voice.md); check `gh run list --workflow void-voice.yml --limit 3` and learn.yml and void-tick.yml first — if their recent runs are green and not "token not set" no-ops the secret already works, skip the rotation and report that; rotate only if a run shows the token missing or rejected | map PR #344 (gh secret list), for the bake-off session. Checked: void-voice.yml recent runs green (token set, 503 model busy on latest); void-tick.yml green but 401 (token set yet rejected by Pages READ_TOKEN); learn.yml no runs. Secret is set but does not match; do not rotate, rematch the Pages secret. |
 | shipped | 2026-10-15 | video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (official embeds), search with cards, platform switcher, queue, skip to a time, speed, captions, recently watched | asked by the owner (2026-10-15) |
 | shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Void (ask-20261014-1820-2, daily) |
@@ -42,3 +34,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Void asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
 | open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
+| building | 2026-10-18 | dice roller: roll a die, 2d6, d20 and NdS+B on a card | new idea, asked by growth agent 2026-10-18 |
+| building | 2026-10-18 | haiku skill: write a short haiku about the void or rain on a card | new idea, asked by growth agent 2026-10-18 |
