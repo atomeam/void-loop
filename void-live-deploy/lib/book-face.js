@@ -90,7 +90,10 @@ export function layoutFace(page, book, side, measure) {
     footer(); return out;
   }
   if (page.kind === 'opener') {
-    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40; t(page.title, x0, y, '700 32px ' + SERIF, INK); y += 16;
+    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40;
+    // a long chapter name ("Safety and small delights") steps the title down until it fits the sheet, never off it
+    let ts = 32; while (ts > 18 && measure(page.title, '700 ' + ts + 'px ' + SERIF) > w - 8) ts -= 2;
+    t(page.title, x0, y, '700 ' + ts + 'px ' + SERIF, INK); y += 16;
     ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - 80, y: y + 6, size: 160 }); y += 190;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 4)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const n = (page.skills || []).length;
