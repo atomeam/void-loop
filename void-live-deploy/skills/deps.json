@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 660,
+ "counted": 661,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -40,21 +40,21 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 0,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 1,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 13,
+   "skills": 14,
    "direct": 0,
-   "dependants": 33
+   "dependants": 34
   },
   {
    "file": "lib/sky-math.js",
@@ -93,28 +93,28 @@
    "dependants": 11
   },
   {
+   "file": "lib/corrections.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 25
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 25
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 9,
+   "direct": 4,
+   "dependants": 22
+  },
+  {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
    "dependants": 9
-  },
-  {
-   "file": "lib/corrections.js",
-   "skills": 8,
-   "direct": 0,
-   "dependants": 24
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 8,
-   "direct": 1,
-   "dependants": 24
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 8,
-   "direct": 3,
-   "dependants": 21
   },
   {
    "file": "lib/ladder.js",
@@ -664,6 +664,12 @@
   },
   {
    "file": "lib/calc-more.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/chess-replay.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2004,7 +2010,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/art-source.js": {
@@ -2191,7 +2198,8 @@
    "importedBy": [
     "skills/error-garden.js",
     "skills/growth.js",
-    "skills/incident-autopsy.js"
+    "skills/incident-autopsy.js",
+    "skills/status.js"
    ],
    "reachedBy": [
     "functions/api/answer.js",
@@ -2493,6 +2501,12 @@
     "skills/showcase.js"
    ]
   },
+  "lib/chess-replay.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/about-skill.js"
+   ]
+  },
   "lib/cite.js": {
    "imports": [],
    "importedBy": [
@@ -2622,7 +2636,8 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/council-law.js": {
@@ -3185,7 +3200,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/ladder.js": {
@@ -3397,7 +3413,8 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
-    "skills/showcase.js"
+    "skills/showcase.js",
+    "skills/status.js"
    ]
   },
   "lib/misskey.js": {
@@ -4003,7 +4020,8 @@
     "skills/guide.js",
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
-    "skills/own-parts.js"
+    "skills/own-parts.js",
+    "skills/status.js"
    ]
   },
   "lib/reefwatch.js": {
@@ -5026,7 +5044,8 @@
    "imports": [
     "lib/about-skill.js",
     "lib/card-frame.js",
-    "lib/match-history.js"
+    "lib/match-history.js",
+    "lib/chess-replay.js"
    ],
    "importedBy": []
   },
@@ -7549,6 +7568,7 @@
   "skills/status.js": {
    "imports": [
     "lib/ask-text.js",
+    "lib/autopsy.js",
     "lib/success-pulse.js"
    ],
    "importedBy": [

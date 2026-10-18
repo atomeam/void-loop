@@ -1276,5 +1276,12 @@
   "of": 61,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
+ },
+ {
+  "at": "2026-10-18T07:27:02Z",
+  "passed": 52,
+  "of": 62,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
  }
 ]
