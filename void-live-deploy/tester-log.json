@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 46,
- "runsTotal": 160,
+ "cases": 47,
+ "runsTotal": 161,
  "kinds": {
-  "grow": 39,
+  "grow": 40,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T04:16:45Z",
+   "passed": 48,
+   "of": 50,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
+  },
   {
    "at": "2026-10-18T04:03:13Z",
    "passed": 46,
@@ -142,13 +149,6 @@
    "of": 31,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"bench icon\" (skill:bench)"
-  },
-  {
-   "at": "2026-10-17T19:47:49Z",
-   "passed": 29,
-   "of": 31,
-   "kind": "file",
-   "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
   }
  ],
  "seen": {
@@ -313,6 +313,10 @@
   "skill:collectible": "2026-10-18T03:06:28Z",
   "skill:nca-mind": "2026-10-18T03:06:28Z",
   "skill:resonance-mind": "2026-10-18T03:06:28Z",
-  "skill:swarm-mind": "2026-10-18T04:03:13Z"
+  "skill:swarm-mind": "2026-10-18T04:03:13Z",
+  "skill:anneal-ambition": "2026-10-18T04:16:45Z",
+  "skill:archive-of-one": "2026-10-18T04:16:45Z",
+  "skill:ask-clipboard": "2026-10-18T04:16:45Z",
+  "skill:ask-diff": "2026-10-18T04:16:45Z"
  }
 }

@@ -1192,5 +1192,12 @@
   "of": 48,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"swarm mind\" (skill:swarm-mind)"
+ },
+ {
+  "at": "2026-10-18T04:16:45Z",
+  "passed": 48,
+  "of": 50,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
  }
 ]

@@ -164,6 +164,9 @@
     },
     {
       "ask": "swarm mind"
+    },
+    {
+      "ask": "set my ambition temperature for the podcast"
     }
   ],
   "candidates": [],
