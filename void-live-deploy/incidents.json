@@ -2,38 +2,35 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:50:29.624Z",
-   "sha": "00c1e8a96cd1b1d088e57a6f566385f470343e37",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39108642366",
+   "at": "2026-10-18T07:50:56.057Z",
+   "sha": "7812eee09046bf21efe1c74068e40eee7e5f749f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39108049297",
    "suite": "browser suite on main",
    "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
-    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "void-live-deploy/skills/deps.json",
+    "docs/MAP.md",
     "domains/void.agents.log.md",
     "tools/checks.mjs",
-    "tools/chess-replay.test.mjs",
+    "tools/error-garden-incidents.test.mjs",
     "tools/test_void.mjs",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/chess-replay.js",
-    "void-live-deploy/lib/match-history.js",
-    "void-live-deploy/skills/about-skill.js",
-    "void-live-deploy/skills/chess-rules.js",
-    "void-live-deploy/skills/chess.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/void.growth.json"
+    "void-live-deploy/lib/autopsy.js",
+    "void-live-deploy/skills/error-garden.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
    ]
   },
   {
-   "at": "2026-10-18T07:38:37.900Z",
-   "sha": "9296a694c1b89305475255c9bdee029da6f08335",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39107784143",
+   "at": "2026-10-18T07:31:32.608Z",
+   "sha": "5bdb7a18402dfd7ba04e9418ff81fb57b171d432",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39107361136",
    "suite": "browser suite on main",
    "checks": [
     "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
@@ -42,23 +39,6 @@
     "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
     "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
     "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/autopsy.test.mjs",
-    "void-live-deploy/lib/autopsy.js",
-    "void-live-deploy/skills/status.js",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T07:26:03.122Z",
-   "sha": "5bdb7a18402dfd7ba04e9418ff81fb57b171d432",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39107361136",
-   "suite": "browser suite on main",
-   "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
     "suite ran to the end"
    ]
   },
@@ -338,6 +318,16 @@
    "run": "https://github.com/atomeam/void-loop/actions/runs/39054961820",
    "suite": "browser suite on main",
    "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T14:03:53.003Z",
+   "sha": "1e76fbc06270aab044fed964c94fc75631f829c0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39037988055",
+   "suite": "browser suite on main",
+   "checks": [
+    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
     "check timeout: no check finished within 300 s"
    ]
   }
