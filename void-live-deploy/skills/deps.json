@@ -6317,6 +6317,9 @@
    "imports": [
     "lib/memory-graph.js"
    ],
+   "external": [
+    " takes it away again.</p>"
+   ],
    "importedBy": []
   },
   "skills/memory.js": {
