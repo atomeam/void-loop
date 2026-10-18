@@ -2,11 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T06:14:43.024Z",
+   "at": "2026-10-18T06:14:50.221Z",
    "sha": "3ba7f7a2f88137be60936ef0e616753a9e917750",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39103092985",
    "suite": "browser suite on main",
    "checks": [
+    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
+    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
+    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
     "suite ran to the end"
    ]
   },
