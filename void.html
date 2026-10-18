@@ -735,6 +735,27 @@
     .vpage .v-asks li { border-top: 1px solid rgba(255,255,255,.06); }
     .vpage .v-asks summary { cursor: pointer; padding: 8px 0; list-style-position: outside; }
     .vpage .v-asks .v-meta { font-size: var(--fs-s); color: var(--ink-3); padding: 0 0 10px; }
+    /* the self card (lib/self-blocks.js): headings you can scan, one bullet per ask with its dates beneath, paragraphs with air between them,
+       V01D's own words in the reading font and the changelog (what got built) in monospace inside its own darker box */
+    .vpage.vc-self .vs-sec { margin-top: 18px; }
+    .vpage.vc-self .vs-h { font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid rgb(var(--d-key, 158 178 255) / .35); box-shadow: 0 1px 0 rgba(255, 210, 122, .18); }
+    .vpage.vc-self .vs-sec p { margin: 0 0 10px; }
+    .vpage.vc-self .vs-sec p:last-child { margin-bottom: 0; }
+    .vpage.vc-self .vs-lead { font-size: 16px; line-height: 1.6; color: var(--ink); }
+    .vpage.vc-self .vs-note { margin: 0 0 10px; }
+    .vpage.vc-self .vs-note[data-tight] { margin-bottom: 6px; }
+    .vpage.vc-self .vs-list { list-style: none; margin: 0; padding: 0; }
+    .vpage.vc-self .vs-list > li { position: relative; padding: 6px 0 6px 22px; border-top: 0; }
+    .vpage.vc-self .vs-list > li::before { content: ""; position: absolute; left: 6px; top: 15px; width: 6px; height: 6px; border-radius: 50%; background: rgb(255 210 122 / .85); }
+    .vpage.vc-self .vs-list summary { padding: 0; list-style: none; cursor: pointer; }
+    .vpage.vc-self .vs-list summary::-webkit-details-marker { display: none; }
+    .vpage.vc-self .vs-list .v-meta, .vpage.vc-self .vs-sub { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; line-height: 1.45; color: var(--ink-3); padding: 2px 0 0; }
+    .vpage.vc-self .vs-list details:not([open]) .v-meta { display: none; }
+    .vpage.vc-self .vs-log { background: rgba(0, 0, 0, .28); border: 1px solid rgba(255, 255, 255, .12); border-radius: 8px; padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; }
+    .vpage.vc-self .vs-log .vs-h { font-family: inherit; }
+    .vpage.vc-self .vs-log .vs-note, .vpage.vc-self .vs-log .vs-of, .vpage.vc-self .vs-log summary { font-size: 13px; }
+    .vpage.vc-self .vs-of { color: var(--ink-3); }
+    @media (prefers-reduced-motion: no-preference) { .vpage.vc-self .vs-sec { animation: vs-in .35s ease both; } @keyframes vs-in { from { opacity: 0; transform: translateY(4px); } } }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     @media (max-width: 480px) {
       .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
@@ -2361,39 +2382,21 @@ say('nothing selected to remove');
       if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p><div class="vh">Correct me</div><div data-v-correct></div>'; mountCorrect(el, said); return; }
       const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
       const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
-      let h = '<h2>What I think of myself</h2><div class="sub">My own words, kept as I said them. The people who build me read them first.</div>';
-      if (daily) h += '<p><b>' + esc(daily.thoughts) + '</b></p>'
-        + (daily.weakest ? '<p><span style="color:#8a8a8a">Weakest right now:</span> ' + esc(daily.weakest) + '</p>' : '')
-        + (daily.next_game ? '<p><span style="color:#8a8a8a">Next game I want to learn:</span> ' + esc(daily.next_game) + '</p>' : '')
-        + (daily.better ? '<p><span style="color:#8a8a8a">How I\'d get better:</span> ' + esc(daily.better) + '</p>' : '');
-      if (build) h += '<div class="vh">On what just shipped</div>' + (build.shipped ? '<div class="sub" style="margin-bottom:6px">' + esc(build.shipped) + '</div>' : '')
-        + '<p>' + esc(build.thoughts) + '</p>' + (build.better ? '<p><span style="color:var(--ink-3)">What I\'d add:</span> ' + esc(build.better) + '</p>' : '');
-      const asks = (v.asks || []).slice(0, 4);
-      // each ask opens to what is known about it: when Void asked, after what, and whether it called it small (nothing invented)
-      if (asks.length) h += '<div class="vh">What I\'ve asked for</div><ul class="v-asks">' + asks.map((a) => '<li><details><summary>' + esc(a.ask) + '</summary><div class="v-meta">'
-        + 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + esc(String(a.at).slice(0, 10)) : '') + (a.small ? ' · I called it small' : '') + ' · not built yet</div></details></li>').join('') + '</ul>';
-      // what came of it, on evidence only (functions/api/reflect.js): a will that cannot see its effects is only talk
-      const f = v.follow;
-      if (f && f.total) {
-        const pct = Math.max(0, Math.min(100, Math.round(100 * f.built / f.total)));
-        h += '<div class="vh">What got built</div><div><span class="v-num">' + esc(f.built) + '</span> <span style="color:var(--ink-3)">of my ' + esc(f.total) + ' asks</span></div>'
-          + '<div class="v-bar" role="progressbar" aria-label="My asks that were built" aria-valuemin="0" aria-valuemax="' + esc(f.total) + '" aria-valuenow="' + esc(f.built) + '"><i style="width:' + pct + '%"></i></div>'
-          // the divergence tracker (asked by Void three times): each built ask opens to my words beside what the builders wrote in the
-          // ledger, so a build that drifted from the ask is plain to see
-          + (f.recent && f.recent.length ? '<p style="font-size:var(--fs-s);margin-bottom:4px">Most recently, my words and what was built:</p>'
-            // root cause or surface (asked by Void): sorted by the ledger line that built each ask (lib/voice.js depthOf), six shown at a time
-            + '<div class="v-depth" role="group" aria-label="Which builds to show">' + [['all', 'All', f.recent.length], ['root', 'Root cause', f.recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', f.recent.filter((r) => r.depth === 'surface').length]].map(([k, l, n], i) => '<button type="button" class="tr-copy" data-v-depth="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + l + ' · ' + n + '</button>').join(' ') + '</div>'
-            + '<div class="sub" style="margin:2px 0 4px">Root cause: a fix or a build that changed how I work underneath. Surface: something new on the stage.</div><ul class="v-asks v-built">' + f.recent.map((r, i) => '<li data-depth="' + esc(r.depth || '') + '"' + (i >= 6 ? ' hidden' : '') + '><details><summary>' + esc(r.ask) + (r.times > 1 ? ' <span style="color:var(--ink-3)">(asked ' + esc(r.times) + ' times)</span>' : '') + '</summary><div class="v-meta"><b>I asked:</b> ' + esc(r.ask) + '<br><b>What was built' + (r.at ? ' (' + esc(String(r.at).slice(0, 10)) + ')' : '') + ':</b> ' + esc(r.what || '(the ledger line is not in this view)') + (r.ref && /^https:\/\/github\.com\//.test(r.ref) ? ' <a href="' + esc(r.ref) + '" rel="noopener">link</a>' : '') + '</div></details></li>').join('') + '</ul>' : '');
-      }
+      // the card's body is structured blocks (lib/self-blocks.js): V01D's own words in the reading font, the changelog in monospace,
+      // real headings, one bullet per ask; a failed import falls back to the plain sentence so the card never opens empty
+      el.classList.add('vc-self');
+      const SB = await import('/lib/self-blocks.js').catch(() => null);
+      if (vpageEl !== el) return;
+      let h = '<h2>What I think of myself</h2>' + (SB ? SB.selfHtml(SB.selfSections(v), esc) : '<p>' + esc((daily || build || {}).thoughts || '') + '</p>');
       // talking back (owner, 2026-10-16): the owner replies or corrects, V01D answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
       // corrections from anyone (asked by Void): kept on this device in a store of its own (lib/corrections.js), never in the look's state
-      h += '<div class="vh">Correct me</div><div data-v-correct></div>';
-      if (owner) h += '<div class="vh">Talk to me</div><div class="v-talk" data-v-talk></div>'
+      h += '<section class="vs-sec"><h3 class="vs-h">Correct me</h3><div data-v-correct></div></section>';
+      if (owner) h += '<section class="vs-sec"><h3 class="vs-h">Talk to me</h3><div class="v-talk" data-v-talk></div>'
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
-        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div>';
+        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></section>';
       el.innerHTML = h + '<div data-v-pulse></div><div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
       mountCorrect(el, said); mountPulse(el);
       el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.vDepth; let shown = 0;

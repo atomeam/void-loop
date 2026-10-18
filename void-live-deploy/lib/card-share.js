@@ -59,6 +59,7 @@ export function textOf(n) {
   if (tag === 'STYLE' || tag === 'SCRIPT') return '';
   let out = '';
   for (const k of n.childNodes || []) { const t = textOf(k); if (k.nodeType === 1 && out && t && !/\s$/.test(out) && !/^\s/.test(t)) out += ' '; out += t; }
+  if (tag === 'LI' && n.getAttribute && n.getAttribute('data-bullet')) out = '- ' + out.replace(/^\s+/, ''); // a list that asks for bullets (the self card) is saved as "- " lines
   return BLOCK.test(tag) ? '\n' + out + '\n' : out;
 }
 /** textOf tidied: spaces collapsed inside a line, no empty lines but one between blocks that were apart. Pure. */

@@ -77,3 +77,21 @@ test('the full-content badge (asked by Void): nothing on a short card, "whole te
   assert.equal(fullNote(0), ''); assert.equal(fullNote(2400), ''); assert.equal(fullNote(2401), 'whole text kept'); assert.equal(fullNote(BODY_MAX), 'whole text kept');
   assert.equal(fullNote(BODY_MAX + 500), 'first ' + BODY_MAX + ' of ' + (BODY_MAX + 500) + ' characters kept'); assert.equal(fullNote('x'), '');
 });
+
+test('self card (owner review 2026-10-18): saved text keeps a blank line between sections and "- " bullets, and the sections are structured blocks', async () => {
+  const { selfSections, selfHtml } = await import('../void-live-deploy/lib/self-blocks.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const v = { entries: [{ kind: 'daily', at: '2026-10-18T08:00:00Z', thoughts: 'I am thin on maps.', weakest: 'Maps <b>.', next_game: 'Backgammon', better: '' }, { kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts' }],
+    asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T01:00:00Z' }], follow: { total: 73, built: 35, recent: [{ ask: 'Go', what: 'a board', at: '2026-10-08T00:00:00Z', times: 3, depth: 'root', ref: 'javascript:x' }] } };
+  const secs = selfSections(v);
+  assert.deepEqual(secs.map((s) => s.id), ['words', 'weakest', 'next', 'shipped', 'asked', 'built']); // empty "better" is left out
+  assert.equal(secs.find((s) => s.id === 'built').log, true); assert.equal(secs.find((s) => s.id === 'words').log, false);
+  const asked = secs.find((s) => s.id === 'asked').blocks[0].items[0]; assert.match(asked.sub, /^Asked in my daily reflection, 2026-10-08 · not built yet$/);
+  const built = secs.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items[0]; assert.equal(built.sub, '2026-10-08 · asked 3 times'); assert.equal(built.detail.ref, '');
+  const html = selfHtml(secs, esc); assert.ok(!html.includes('<b>.') && html.includes('Maps &lt;b&gt;.'), 'text is escaped'); assert.match(html, /<h3 class="vs-h">What got built<\/h3>/);
+  // a DOM-like tree for textOf: sections are blocks, li[data-bullet] is a "- " line
+  const T = (s) => ({ nodeType: 3, nodeValue: s }), E = (tagName, kids, attr = {}) => ({ nodeType: 1, tagName, childNodes: kids.map((k) => (typeof k === 'string' ? T(k) : k)), getAttribute: (a) => attr[a] || null });
+  const sec = (h, li) => E('SECTION', [E('H3', [h]), E('UL', li.map((x) => E('LI', [E('DIV', [x[0]]), E('DIV', [x[1]])], { 'data-bullet': '1' })))]);
+  const body = [sec('What I have asked for', [['Terrain', 'Asked 2026-10-08 · not built yet']]), sec('What got built', [['Go', '2026-10-08']])].map((x) => tidy(textOf(x))).join('\n\n');
+  assert.equal(body, 'What I have asked for\n- Terrain\nAsked 2026-10-08 · not built yet\n\nWhat got built\n- Go\n2026-10-08');
+});

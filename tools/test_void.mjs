@@ -4529,6 +4529,18 @@ try {
       all.length === 6 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 6 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
+  if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
+    await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
+    await L.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await L.page()), 6000);
+    const got = await L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cs = (e) => getComputedStyle(e), px = (e, k) => parseFloat(cs(e)[k]);
+      const h = pg.querySelector('.vs-sec[data-sec=asked] h3'), p = pg.querySelector('.vs-sec[data-sec=weakest] p'), li = pg.querySelector('.vs-sec[data-sec=asked] li'), log = pg.querySelector('.vs-log'), lead = pg.querySelector('.vs-sec[data-sec=shipped] p');
+      return { heads: [...pg.querySelectorAll('h3.vs-h')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
+        pm: px(p, 'marginBottom') || px(lead, 'marginBottom'), leadMargin: px(lead, 'marginBottom'), logFont: cs(log).fontFamily, bodyFont: cs(lead).fontFamily, border: cs(log).borderTopWidth, meta: cs(li.querySelector('.v-meta')).fontSize, errors: 0 }; });
+    check('self card layout (owner review 2026-10-18): real headings (bold, larger than the body), one list item per ask with a hanging indent, 8px or more between paragraphs, the reflection in the reading font and what got built in monospace inside a bordered box',
+      got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for") && got.heads.includes('What got built') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
+      JSON.stringify({ got, errors: L.errors }));
+    await L.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
     await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
