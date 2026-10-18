@@ -85,5 +85,9 @@
   {"check": "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the", "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4", "at": "2026-10-18T08:05:03Z"},
   {"check": "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, a", "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4", "at": "2026-10-18T08:05:03Z"},
   {"check": "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one f", "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4", "at": "2026-10-18T08:05:03Z"},
-  {"check": "check timeout: no check finished within 300 s", "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4", "at": "2026-10-18T08:05:03Z"}
+  {"check": "check timeout: no check finished within 300 s", "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4", "at": "2026-10-18T08:05:03Z"},
+  {"check": "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, a", "sha": "5d587a25718577c1cf95a30221b85cc3c7294103", "at": "2026-10-18T08:39:53Z"},
+  {"check": "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one f", "sha": "5d587a25718577c1cf95a30221b85cc3c7294103", "at": "2026-10-18T08:39:53Z"},
+  {"check": "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer", "sha": "5d587a25718577c1cf95a30221b85cc3c7294103", "at": "2026-10-18T08:39:53Z"},
+  {"check": "check timeout: no check finished within 300 s", "sha": "5d587a25718577c1cf95a30221b85cc3c7294103", "at": "2026-10-18T08:39:53Z"}
 ]

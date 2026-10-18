@@ -27,6 +27,9 @@ const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|kee
 
 // a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
 const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
+// a failure the builder caused on purpose to prove a check bites ("with the mutation it fails, as expected", "without the refusal, the check fails",
+// "with the line taken out, the new check fails") is the check working, not something failing (2026-10-18 card: two such lines read as failures)
+const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that)\s+[\w-]+(?:\s+[\w-]+)?\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {
@@ -34,7 +37,7 @@ export function failuresOf(text) {
   for (const raw of String(text || '').split(/\n+|\s*⏎\s*|(?<=[.;!?])\s+(?=[A-Z-])/)) {
     const l = clean(raw);
     const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
-    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l)) continue;
+    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l) || PLANNED.test(l)) continue;
     if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
     const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
     out.push(l.length > 110 ? l.slice(0, 107) + '...' : l);

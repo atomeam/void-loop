@@ -76,4 +76,10 @@ test('a builder\'s report that quotes a timeout is a report, not a broken automa
   assert.equal(isBuildersReport(report), true); assert.equal(intentOf(report).intent, 'report'); assert.equal(isFixAsk(report), false);
   const zap = 'my zap keeps failing with 429 Too Many Requests and the workflow stops on every single run, here is the log: {"status":429,"error":"rate limit"} on the webhook step, how do I fix it?';
   assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
+test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
+  assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
+  assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
+  assert.deepEqual(failuresOf('With the refusal taken out of the code, the new check fails, so it really tests the refusal.'), []);
+  assert.equal(failuresOf('The extension check fails on main since the merge.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails without warning on plain origin/main').length, 1, '"without" alone is not a planned failure');
 });
