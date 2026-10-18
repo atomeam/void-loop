@@ -2,9 +2,11 @@
 // order, stopping at the first that fails, so no run forgets one and none is done by hand.
 //   node tools/finish.mjs <kind> "what changed, in plain words" [--log "the agent-log line, if it should say more"]
 //        [--by claude] [--title "commit and PR title"] [--brief "who it is for; the problem; what it will not build"] [--body "more commit message"]
-//        [--test "<browser-suite words>"]... [--show "the change in plain words"] [--try "an ask that shows it"] [--asked ask-…] [--dry] [--from N]
+//        [--test "<browser-suite words>"]... [--show "the change in plain words"] [--try "an ask that shows it"] [--asked ask-…] [--job <id>] [--dry] [--from N]
 // --show and --try go on the ledger line, so the "look what I made" walkthrough can put the change on the stage the next
 // time someone comes back (skills/showcase.js); a grow or build that reaches the site without --try is reminded.
+// --job <id> (a build-queue job this run claimed, tools/job-link.mjs): the PR body ends with `Job: <id>`, the job moves to
+// `building` with the PR's address when the PR opens, and to `live` when it merges (tools/automerge.mjs, upkeep.yml).
 // kinds are the ledger's: grow, build, fix, retire, idea, finding (tools/grow.mjs).
 //   0. first shot (owner, 2026-10-11: automerge lands a PR before the full suite runs on main, so it has to be right before
 //      the push): when the change touches the page or anything the site runs (void.html, void-live-deploy/), each --test
@@ -22,6 +24,7 @@ import { appendFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { KINDS } from './grow.mjs';
+import { jobLine, ID_RE as JOB_ID } from './job-link.mjs';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const LOG = resolve(root, 'domains', 'void.agents.log.md');
@@ -38,7 +41,8 @@ export function parseArgs(argv) {
   // so it read "0 of my 45 asks" while they were built (2026-10-17). Name the ask: its id, or V01D's own words (a few of its key words are enough).
   if (/\basked by void\b/i.test(what) && !opt('--asked')) return { error: 'this says "asked by Void": name the ask so the self page counts it built: --asked ask-… (its id) or --asked "V01D\'s words for it"' };
   const tests = rest.flatMap((x, i) => (x === '--test' && rest[i + 1] && !rest[i + 1].startsWith('--') ? [rest[i + 1]] : []));
-  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), show: opt('--show'), try: opt('--try'), asked: opt('--asked'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
+  if (rest.includes('--job') && !JOB_ID.test(opt('--job'))) return { error: '--job is the queue job\'s id (4 to 16 lowercase letters and digits, as /api/queue shows it)' };
+  return { kind, what, by: opt('--by') || 'claude', log: opt('--log') || what, title: opt('--title') || what, brief: opt('--brief'), body: opt('--body'), show: opt('--show'), try: opt('--try'), asked: opt('--asked'), job: opt('--job'), tests, dry: rest.includes('--dry'), from: Math.max(0, Number.isFinite(Number(opt('--from'))) && opt('--from') !== '' ? Number(opt('--from')) : 0) };
 }
 
 /** the changed files that reach the site: the page and its copies, skills, the server and its shared code. Pure. */
@@ -86,12 +90,12 @@ export function tryProblem(report) {
 /** the agent-log line, in the log's own shape. Pure. */
 export const logLine = ({ by, kind, log }, at = new Date()) => `${at.toISOString().replace(/\.\d+Z$/, 'Z')} | ${by} | ${kind} | ${log.replace(/\s+/g, ' ').trim()}`;
 
-/** the PR body: AGENTS.md's B.I.T.E. headings, filled from what the run said. Pure. */
-export function prBody({ what, brief, kind, tests }) {
+/** the PR body: AGENTS.md's B.I.T.E. headings, filled from what the run said; with --job its last line is `Job: <id>`. Pure. */
+export function prBody({ what, brief, kind, tests, job }) {
   return ['## Brief (B.I.T.E.)', brief || '- **For:** \n- **Problem:** \n- **First version:** ' + what + '\n- **Will not build:** ', '',
     '## Implement', `${kind}: ${what}`, '', '## Test', ...(tests && tests.length ? tests.map((t) => '- in a real browser before the push: `node tools/test_void.mjs --only "' + t + '"` passes') : []),
     '- `VOID_SKIP_BENCH=1 node tools/checks.mjs` passes (run by tools/finish.mjs)', '- Used as a person would: ', '',
-    '## Evolve', '- '].join('\n');
+    '## Evolve', '- ', ...(job ? ['', jobLine(job)] : [])].join('\n');
 }
 
 /** the steps, as [label, command | function]. Pure apart from what the functions do when run. */
@@ -126,12 +130,14 @@ function openPr(a) {
   const pr = url && /\/pull\/(\d+)/.exec(url);
   if (!pr) { console.error('could not open or find the PR for ' + branch); return 1; }
   console.log('PR: ' + url);
+  // the job this run claimed follows its PR (tools/job-link.mjs): building now, live when it merges; without the owner token it says so and goes on
+  if (a.job) run(...node('job-link.mjs', 'building', '--id', a.job, '--url', url));
   return run(...node('automerge.mjs', pr[1], '--label'));
 }
 
 function main(argv) {
   const a = parseArgs(argv.slice(2));
-  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--asked ask-…] [--dry] [--from N]'); return 2; }
+  if (a.error) { console.error('finish: ' + a.error + '\nusage: node tools/finish.mjs <kind> "what changed" [--log "..."] [--by claude] [--title "..."] [--brief "..."] [--body "..."] [--test "<words>"]... [--show "..."] [--try "..."] [--asked ask-…] [--job <id>] [--dry] [--from N]'); return 2; }
   if (!a.try && (a.kind === 'grow' || a.kind === 'build') && a.from === 0) console.log('finish: no --try: the "look what I made" walkthrough cannot show this one on the stage (add --show "plain words" --try "an ask that shows it" if people can see it)');
   for (const [i, [label, step]] of steps(a).entries()) {
     const shown = typeof step === 'function' ? '' : ': ' + [step[0] === process.execPath ? 'node' : step[0], ...step[1].map((x) => x.replace(root + '/', ''))].join(' ');

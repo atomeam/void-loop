@@ -8,8 +8,13 @@
  * Two bridges (asked by Void, 2026-10-16): drop any stage thing onto the list card and its words become a new entry (the page
  * says 'void:dropped' when a drag sets something down; lib/bridges.js entryFor says what the entry reads); the small "→ note"
  * on every entry copies it as a line into the notepad (skills/notepad.js append).
+ * A goal (asked by Void, 2026-10-18, the "density-indicator"): "set a goal of 10 on the list", "goal: 10 items", "aim for 5 on my
+ * shopping list", "the list is full at 8" keep a `goal` on the list thing (lib/list-goal.js reads the ask); the head then shows
+ * "7 of 10" in mono and a 3px density bar runs under it (violet, amber within one of the goal, a quiet green at or past it), redrawn
+ * with every add, tick or removal because the card mounts again on each render. "clear the goal" takes both off; no goal, nothing shows.
  */
 import { append as noteAppend } from './notepad.js';
+import { goalOf, density } from '../lib/list-goal.js';
 import { soundOf } from './soundscape.js'; // "add soft rain" is a sound for the soundscape, not a list item
 import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 import { markerOf, cloudOf, reorder, PRIORITY } from '../lib/list-ops.js';
@@ -129,6 +134,21 @@ export function ask(lower, text, stageApi) {
     list.items = [];
     return done('list-cleared', list);
   }
+  // a goal on the list (asked by Void; lib/list-goal.js): kept on the thing, so it survives a reload; a set with no list makes one to count
+  const goal = goalOf(text);
+  if (goal) {
+    if (goal.clear) {
+      const list = find(stageApi);
+      if (!list) return 'no list';
+      delete list.goal;
+      stageApi.say('goal cleared');
+      return done('list-goal-cleared', list);
+    }
+    const list = ensure(stageApi);
+    list.goal = goal.goal;
+    stageApi.say('goal: ' + density(list.items.length, list.goal).label);
+    return done('list-goal', list);
+  }
   // an ask about a "task" is the task board's (skills/task-board.js: "add task x", "mark task x done"); a list that already holds an item with that word keeps it
   const forBoard = /\btasks?\b/i.test(text) && !((find(stageApi) || { items: [] }).items || []).some((item) => /\btasks?\b/i.test(item && item.text));
   const off = forBoard ? '' : removeOf(text);
@@ -179,8 +199,19 @@ function mount(th, stageApi) {
   title.addEventListener('input', () => { th.title = title.textContent || ''; stageApi.save(); });
   const items = Array.isArray(th.items) ? th.items : (th.items = []);
   const head = make('div', 'list-head'); // the title bar: the typed title, and how many are still to do in mono
-  head.append(title, make('span', 'list-count', { textContent: items.filter((i) => i && !i.done).length + '/' + items.length }));
+  // the goal's count ("7 of 10") beside the open/total count, and the density bar under the head: only when a goal is set (asked by Void)
+  const dense = density(items.length, th.goal);
+  head.appendChild(title);
+  if (dense) { const g = make('span', 'list-goal', { textContent: dense.label, title: 'goal: ' + th.goal + ' items' }); g.dataset.state = dense.state; head.appendChild(g); }
+  head.appendChild(make('span', 'list-count', { textContent: items.filter((i) => i && !i.done).length + '/' + items.length }));
   el.appendChild(head);
+  if (dense) {
+    const bar = make('div', 'list-density'); bar.dataset.state = dense.state;
+    bar.setAttribute('role', 'progressbar'); bar.setAttribute('aria-label', 'goal'); bar.setAttribute('aria-valuemin', '0'); bar.setAttribute('aria-valuemax', String(th.goal)); bar.setAttribute('aria-valuenow', String(items.length)); bar.setAttribute('aria-valuetext', dense.label);
+    const fill = make('div', 'list-density-fill'); fill.style.width = Math.round(dense.ratio * 100) + '%';
+    bar.appendChild(fill);
+    el.appendChild(bar);
+  }
   // tools pack 10 (owner, 2026-10-18; lib/list-ops.js, skills/list-tools.js): a count badge, numbered or lettered items, a priority dot,
   // nested sub-items, columns, a tag cloud and drag-to-reorder by the grip. All of it is only drawn when the list carries the setting.
   let host = el, top = 0;
@@ -286,9 +317,10 @@ if (typeof document !== 'undefined' && !globalThis.__voidListDrop) { globalThis.
 export default {
   name: 'list',
   decorate,
-  examples: ['make a list', 'list', 'todo list'],
-  nearMisses: ['list my routines', 'add a clock', 'what is a linked list'],
-  match(lower) { return plainList(lower); },
+  examples: ['make a list', 'list', 'todo list', 'set a goal of 10 on the list', 'goal: 10 items', 'the list is full at 8', 'clear the goal'],
+  nearMisses: ['list my routines', 'add a clock', 'what is a linked list', 'set a goal to run 5k', 'my goals', 'set a 10 minute timer'],
+  // the goal asks are claimed here (before the calendar reads "at 8" as a time); every other list ask reaches `ask` at the page's place
+  match(lower) { return plainList(lower) || !!goalOf(lower); },
   async run(text, api) { const d = ask(String(text || '').toLowerCase(), text, api.stage); return d && d !== 'no list' && d !== 'list-item-not-found' ? 'list' : 'none'; },
   // askAt: the page asks this kind's ask at its own place, after the calculator and before the notepad, as it always ran
   stageKinds: { list: { mount, ensure: (stageApi) => ensure(stageApi), ask, askAt: 'list' } },

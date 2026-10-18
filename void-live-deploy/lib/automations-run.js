@@ -38,12 +38,15 @@ const slugId = (name) => (String(name).toLowerCase().replace(/[^a-z0-9]+/g, '-')
 
 export async function ensure(env) { for (const t of TABLES) await env.DB.prepare(t).run(); try { await env.DB.prepare(ADD_SCOPE).run(); } catch (_) {} }
 
-/** the rules of one scope ('' = the owner's; a paid member's watches live under their account id) and the last runs */
-export async function list(env, { scope = '' } = {}) {
+/** the rules of one scope ('' = the owner's; a paid member's watches live under their account id) and the last runs: the 30 newest
+ * across all rules, or, with `rule`, that one rule's 100 newest (an approve card reads a night of runs; skills/approve-card.js) */
+export async function list(env, { scope = '', rule = '' } = {}) {
   await ensure(env);
   const rules = (await env.DB.prepare('SELECT id, name, enabled, rule, hook, created, updated, scope FROM void_automations WHERE scope = ? ORDER BY created').bind(scope).all()).results || [];
   const ids = new Set(rules.map((r) => r.id));
-  const runs = ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs ORDER BY at DESC LIMIT 60').all()).results || []).filter((r) => ids.has(r.rule_id)).slice(0, 30);
+  const runs = rule
+    ? ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs WHERE rule_id = ? ORDER BY at DESC LIMIT 100').bind(String(rule)).all()).results || []).filter((r) => ids.has(r.rule_id))
+    : ((await env.DB.prepare('SELECT id, rule_id, at, trigger, ok, log FROM void_automation_runs ORDER BY at DESC LIMIT 60').all()).results || []).filter((r) => ids.has(r.rule_id)).slice(0, 30);
   return {
     rules: rules.map((r) => ({ ...JSON.parse(r.rule), id: r.id, enabled: !!r.enabled, hasHook: !!r.hook, created: r.created, updated: r.updated, scope: r.scope || '' })),
     runs: runs.map((r) => ({ id: r.id, rule: r.rule_id, at: r.at, trigger: r.trigger, ok: !!r.ok, log: JSON.parse(r.log) })),

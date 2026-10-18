@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 7,
   "tested": 96,
-  "checked": 96,
+  "checked": 97,
   "proven": 88
  },
  "families": [
@@ -386,9 +386,9 @@
     {
      "name": "chess",
      "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test"
+     "why": "a self-test, 8 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     },
     {
      "name": "checkers",
@@ -1752,7 +1752,7 @@
     {
      "name": "list",
      "tier": "proven",
-     "why": "a self-test, 11 browser-suite mentions, 17 real asks in the benchmark",
+     "why": "a self-test, 12 browser-suite mentions, 17 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2377,7 +2377,7 @@
    "count": {
     "experiment": 0,
     "tested": 9,
-    "checked": 12,
+    "checked": 13,
     "proven": 15
    },
    "skills": [
@@ -2683,8 +2683,14 @@
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "promoted": "2026-10-18"
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "approve-card",
+     "tier": "checked",
+     "why": "a self-test, 4 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },
