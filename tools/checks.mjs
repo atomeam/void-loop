@@ -276,6 +276,7 @@ for (const [name, file] of [
   ['moved-check', 'moved-check.test.mjs'],
   ['inbox-health', 'inbox-health.test.mjs'],
   ['skill-use', 'skill-use.test.mjs'],
+  ['memory-graph', 'memory-graph.test.mjs'],
   ['fringe-novelty', 'fringe-novelty.test.mjs'],
   ['skills-unlisted', 'skills-unlisted.test.mjs'],
   ['skill-family', 'skill-family.test.mjs'],
