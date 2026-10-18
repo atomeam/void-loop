@@ -12,6 +12,9 @@ import { routeOutside, voidApiReply } from './fixtures/outside.mjs';
 import { acquire as acquireHeavy } from './heavy.mjs';
 await acquireHeavy('3D frame budget (perf3d.test.mjs)'); // one heavy browser job at a time on this machine (tools/heavy.mjs); released when this process exits
 
+// pointer moves in the orbit. Each one drives about 16 drawn frames (the orbit eases out), and a software-rendered frame takes about 0.7 s: 30 moves cost
+// 350 s a board (11 minutes in all, the longest of the fast checks, measured 2026-10-18 with 485 and 560 frames, 0 shadow passes); 10 still draw 100+
+export const ORBIT_MOVES = 10;
 export const BUDGET = { calls: 60, triangles: 120000, shadowPassesPerOrbitFrame: 0.1, maxDpr: 1.5 };
 const root = path.resolve(path.dirname(new URL(import.meta.url).pathname), '..', 'void-live-deploy');
 const exe = [process.env.VOID_TEST_BROWSER, '/usr/bin/google-chrome', '/opt/pw-browsers/chromium'].find((p) => p && fs.existsSync(p));
@@ -35,7 +38,7 @@ try {
     const tag = phone ? 'phone' : 'desktop';
     if (!up) { check('3D frame budget (' + tag + '): the chess board draws', false, 'no frame'); await ctx.close(); continue; }
     await p.waitForTimeout(2500);
-    const m = await p.evaluate(async () => {
+    const m = await p.evaluate(async (ORBIT_MOVES) => {
       const S = await import('/skills/scene3d.js'), E = await S.engine(), R = E.renderer;
       const me = () => S.liveMiniatures().find((x) => x.kind === 'chess');
       const wait = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -46,13 +49,13 @@ try {
       R.render = (sc, cam) => { const main = R.getRenderTarget() === null, sh = R.shadowMap.needsUpdate || R.shadowMap.autoUpdate; orig(sc, cam); if (main) { mains++; if (sh) shadows++; calls = Math.max(calls, R.info.render.calls); tris = Math.max(tris, R.info.render.triangles); } };
       const ev = (type, x, y) => c.dispatchEvent(new PointerEvent(type, { clientX: x, clientY: y, pointerId: 1, pointerType: 'mouse', isPrimary: true, bubbles: true, button: 0, buttons: type === 'pointerup' ? 0 : 1 }));
       const cx = r.left + r.width / 2, cy = r.top + r.height / 2; ev('pointerdown', cx, cy);
-      for (let k = 1; k <= 30; k++) { ev('pointermove', cx + k * 3, cy); await new Promise((res) => requestAnimationFrame(res)); }
-      ev('pointerup', cx + 90, cy); await wait(600); R.render = orig;
+      for (let k = 1; k <= ORBIT_MOVES; k++) { ev('pointermove', cx + k * 9, cy); await new Promise((res) => requestAnimationFrame(res)); }
+      ev('pointerup', cx + 9 * ORBIT_MOVES, cy); await wait(600); R.render = orig;
       const q = await S.quality();
       return { idle, mains, shadows, calls, tris, dprUsed: c.width / r.width, maxDpr: S.MAX_DPR, steps: S.QUALITY_STEPS, q };
-    });
+    }, ORBIT_MOVES);
     check('3D frame budget (' + tag + '): an idle chess board draws nothing', m.idle === 0, m);
-    check('3D frame budget (' + tag + '): an orbit redraws the view without redrawing the shadow map', m.mains >= 3 && m.shadows / m.mains <= BUDGET.shadowPassesPerOrbitFrame, m);
+    check('3D frame budget (' + tag + '): an orbit redraws the view without redrawing the shadow map', m.mains >= 10 && m.shadows / m.mains <= BUDGET.shadowPassesPerOrbitFrame, m);
     check('3D frame budget (' + tag + '): at most ' + BUDGET.maxDpr + 'x pixels per CSS pixel', m.maxDpr <= BUDGET.maxDpr && m.dprUsed <= BUDGET.maxDpr + 0.02, m);
     check('3D frame budget (' + tag + '): at most ' + BUDGET.calls + ' draw calls and ' + BUDGET.triangles + ' triangles a frame', m.calls > 0 && m.calls <= BUDGET.calls && m.tris <= BUDGET.triangles, m);
     check('3D frame budget (' + tag + '): the quality governor is running (steps down when frames run late)', Array.isArray(m.steps) && m.steps[0] === 1 && m.q && typeof m.q.quality === 'number', m);
