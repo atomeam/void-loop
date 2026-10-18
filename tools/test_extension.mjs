@@ -81,7 +81,10 @@ await ctx.route(/^https?:\/\//, (r) => {
   if (u.origin === 'https://fixture.test') {
     return r.fulfill({ contentType: 'text/html', body: '<!doctype html><title>Fixture page</title><p id="p">' + SECRET + '</p>'
       + '<form id="f" onsubmit="window.submitted=true;return false"><textarea id="reply" aria-label="Reply"></textarea><button>send</button></form>'
-      + '<button type="button" id="save" onclick="window.saved=(window.saved||0)+1">Save</button>' });
+      + '<button type="button" id="save" onclick="window.saved=(window.saved||0)+1">Save</button>'
+      // plain buttons (no form) that delete or move money; the last is asked for by its id and only its aria-label says what it does
+      + ['Delete', 'Pay now', 'Transfer funds', 'Supprimer'].map((t) => '<button type="button" onclick="window.risky=(window.risky||0)+1">' + t + '</button>').join('')
+      + '<button type="button" id="tidy" aria-label="L&ouml;schen" onclick="window.risky=(window.risky||0)+1">&#128465;</button>' });
   }
   if (u.origin === 'https://a-to-mind.com') {
     if (u.pathname === '/api/actions' && r.request().method() === 'POST') { // the execution record, in memory (lib/actions.js keeps it in D1)
@@ -324,6 +327,27 @@ const fullRun = { page: await pageNow(), recs: records.slice(n0), said: await ac
 check('B3 run: with a Yes at every step the whole run happens, each step with its own done record',
   fullRun.page.reply === 'Both done' && fullRun.page.saved === saved0 + 1 && fullRun.recs.length === 2 && fullRun.recs.every((r) => r.state === 'done') && /all 2 steps done on fixture\.test/.test(fullRun.said),
   fullRun);
+
+// gap 2: a plain button that deletes or moves money is refused after Yes, like a submit button: Delete, Pay, Transfer, the same
+// in French, and one asked for by another name whose aria-label says Löschen. Each leaves a failed record and clicks nothing.
+const riskyRuns = [];
+for (const label of ['Delete', 'Pay now', 'Transfer funds', 'Supprimer', 'tidy']) {
+  n0 = records.length;
+  await propose('click ' + label);
+  await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+  await press('.act-yes', async () => !(await cardOn()));
+  await waitSaid(/deletes something or moves money/);
+  riskyRuns.push({ label, recs: records.slice(n0), said: await actSaid() });
+}
+check('gap 2: even after Yes, a plain button that deletes or moves money (Delete, Pay now, Transfer funds, Supprimer, and one named "tidy" whose aria-label is Löschen) is refused: nothing clicked, a failed record, "press it yourself"',
+  !(await page.evaluate(() => window.risky)) && riskyRuns.every((x) => x.recs.length === 1 && x.recs[0].state === 'failed' && /destructive/.test(x.recs[0].result || '') && /moves money: press it yourself/.test(x.said)),
+  { risky: await page.evaluate(() => window.risky), riskyRuns });
+n0 = records.length;
+await propose('click Save');
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+await press('.act-yes', async () => !(await cardOn()));
+await waitSaid(/recorded/);
+check('gap 2: a harmless button on the same page (Save) is still clicked after Yes', (await pageNow()).saved === saved0 + 2 && (records[n0] || {}).state === 'done', { saved: await pageNow(), rec: records[n0] });
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
