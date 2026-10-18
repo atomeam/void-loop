@@ -46,3 +46,20 @@ test('touchedBy lists the paths one commit changed, and nothing for a bad sha (a
   assert.deepEqual(touchedBy('nonsense; rm -rf', d), []); assert.deepEqual(touchedBy('0'.repeat(40), d), []);
   assert.deepEqual(incidentOf({ sha, output: 'FAIL x', touched: ['a.txt'] }).touched, ['a.txt']); assert.deepEqual(incidentOf({ sha, output: 'FAIL x' }).touched, []);
 });
+
+test('a green suite closes the open incidents: closedAt, closedBy, minutes; a closed one and a later one are left alone', async () => {
+  const { closeOpen, openCount } = await import('./incident-log.mjs');
+  const open = { at: '2026-10-18T12:00:00Z', sha: 'aaa', checks: ['x'] }, done = { at: '2026-10-17T12:00:00Z', sha: 'bbb', checks: ['y'], closedAt: '2026-10-17T12:30:00Z', closedBy: 'ccc', minutes: 30 }, later = { at: '2026-10-18T14:00:00Z', sha: 'ddd', checks: ['z'] };
+  const out = closeOpen([later, open, done], { sha: 'f'.repeat(40), run: 'https://github.com/atomeam/void-loop/actions/runs/9', at: '2026-10-18T12:25:00Z' });
+  assert.deepEqual([out[1].closedAt, out[1].closedBy === 'f'.repeat(40), out[1].minutes], ['2026-10-18T12:25:00Z', true, 25]);
+  assert.equal(out[0].closedAt, undefined, 'an incident that began after the green run stays open');
+  assert.deepEqual(out[2], done, 'a closed incident is not touched');
+  assert.equal(openCount([later, open, done]), 2); assert.equal(openCount(out), 1);
+  assert.equal(closeOpen([open], { sha: 'x', run: 'javascript:1', at: '2026-10-18T13:00:00Z' })[0].closedRun, '');
+  assert.deepEqual(closeOpen(null, {}), []);
+});
+
+test('the incident page says fixed after N min, or still open', () => {
+  const h = incidentsHtml((s) => String(s), [{ at: '2026-10-18T12:00:00Z', sha: 'aaaaaaaa', checks: ['x'], closedAt: '2026-10-18T12:25:00Z', closedBy: 'fffffff0', minutes: 25 }, { at: '2026-10-18T14:00:00Z', sha: 'bbbbbbbb', checks: ['y'] }]);
+  assert.match(h, /fixed after 25 min by fffffff/); assert.match(h, /not marked fixed yet/);
+});

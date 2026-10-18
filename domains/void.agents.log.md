@@ -916,3 +916,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-18T15:52:55Z | claude | fix | the will no longer queues the same want again and again: a want whose earlier jobs were set aside or failed twice in the last 14 days waits, the next want is queued instead and the job's note says which waited (lib/will-guard.js); a history that cannot be read means no guard, not no will
 2026-10-18T16:13:18Z | claude | grow | A verifiable growth ledger: hash per line, root hash, Atom feed
 2026-10-18T16:22:50Z | claude | grow | The approval gate as tested functions
+2026-10-18T16:41:46Z | claude | grow | Incidents that close

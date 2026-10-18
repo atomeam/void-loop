@@ -3698,7 +3698,7 @@ try {
     await P.p.click('.vpage.on a[data-ask^="incident brief: monopoly"]').catch(() => {}); await P.p.waitForTimeout(800);
     const prefilled = await P.p.$eval('.vpage.on .inc-md', (e) => e.textContent).catch(() => '');
     check('incident: "what broke lately" lists the suite\'s incidents (when, commit, the checks, the run) and one tap opens the brief titled after the first failed check',
-      /f382286/.test(lately) && /2 failed: monopoly: Roll moves the pawn · countdown: a leaf flips/.test(lately.replace(/\s+/g, ' ')) && /^# Incident brief: Monopoly: Roll moves the pawn/.test(prefilled) && !P.errors.length,
+      /f382286/.test(lately) && /not marked fixed yet/.test(lately) && /2 failed: monopoly: Roll moves the pawn · countdown: a leaf flips/.test(lately.replace(/\s+/g, ' ')) && /^# Incident brief: Monopoly: Roll moves the pawn/.test(prefilled) && !P.errors.length,
       [lately.replace(/\s+/g, ' ').slice(0, 200), prefilled.slice(0, 80), P.errors.join(';')].join(' | '));
     check('incident: "incident report for the login outage" opens a blameless brief titled "Login outage"; times give 12 min to detect and 2 h 5 min to resolve, the Markdown carries severity, impact, "Not known yet" and the owner, the draft survives a reload, and clear empties it',
       /^# Incident brief: Login outage/.test(md) && /SEV2/.test(md) && /12 min to detect/.test(md) && /2 h 5 min to resolve/.test(md) && /All sign-ins failed/.test(md) && /_Not known yet\._/.test(md) && /Add a canary \(owner: Sam\)/.test(md)
