@@ -3953,7 +3953,7 @@ try {
   }
   if (want("chess match history: a game's about card carries your record on this device, 'my chess record' and 'tell me about the chess skill' show three seeded games as a summary line and a table, and an empty device says no games yet")) { // asked by Void (2026-10-18): a Match History table from the game logs, an Elo against the owner
     const seed = () => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }, { at: '2026-10-17T11:00:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 41, minutes: 12.5 }, { at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 28, minutes: 5 }, { at: '2026-10-18T09:45:00.000Z', game: 'othello', vs: 'v01d', result: 'loss', moves: 30, minutes: 4 }])); } catch (_) {} };
-    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
+    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].slice(0, 5).map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
     const cardOf = (P, name) => until(async () => { const c = await block(P); return c && c.name === name && c.rows ? c : null; }, 8000);
     const H = await fresh(seed);
     await H.ask('tell me about the chess skill', 600); const b = await cardOf(H, 'chess'); // the about card carries the block, and the chess module's own line carries the record
@@ -3966,6 +3966,31 @@ try {
       && !!b && b.played === '3' && b.rows.length === 3 && /Your record against V01D on this device: 3 played · 2–1–0 · 67%/.test(b.line)
       && !!c && c.played === '0' && /^no games on this device yet · finish a game of Chess/.test(c.sum) && c.rows.length === 0 && !H.errors.length && !E.errors.length, JSON.stringify({ a, b, c, errors: H.errors.concat(E.errors) }));
   }
+  // the match replay (asked by Void, 2026-10-18: "a 'match-replay' button on the chess history table that lets the user step through
+  // the moves with engine annotations"): a finished chess game keeps its moves, its row gets ▶ Replay, and the replay steps through
+  // the positions with the engine's read of each move (Fool's mate: 2…Qh4# is checkmate, 2.g4 loses at once), by button and by arrow key
+  if (want("match replay: a chess game in the history replays move by move with the engine's read of each move")) {
+    const P = await fresh(() => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 2, minutes: 1, line: ['f2f3', 'e7e5', 'g2g4', 'd8h4'] }, { at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }])); } catch (_) {} });
+    await P.ask('my chess record', 600);
+    await until(async () => !!(await P.p.$('.vpage.on .mh-replay')), 8000);
+    const buttons = await P.p.$$eval('.vpage.on .mh-replay', (bs) => bs.length);
+    await P.p.click('.vpage.on .mh-replay');
+    await until(async () => !!(await P.p.$('.vpage.on .chess-replay')), 6000);
+    const view = () => P.p.$eval('.vpage.on .chess-replay', (e) => ({ count: e.querySelector('.cr-count').textContent, note: e.querySelector('.cr-note').textContent, verdict: e.querySelector('.cr-note').dataset.verdict || '',
+      pieces: e.querySelectorAll('.cr-sq').length, filled: [...e.querySelectorAll('.cr-sq')].filter((c) => c.textContent).length, lit: e.querySelectorAll('.cr-sq.lit').length }));
+    const start = await view();
+    for (let k = 0; k < 3; k++) await P.p.click('.vpage.on .cr-btn[data-step="next"]');
+    const third = await until(async () => { const v = await view(); return v.verdict ? v : null; }, 6000) || await view();
+    await P.p.focus('.vpage.on .mh-replay-host'); await P.p.keyboard.press('ArrowRight');
+    const mate = await until(async () => { const v = await view(); return v.verdict === 'mate' ? v : null; }, 6000) || await view();
+    await P.p.click('.vpage.on .cr-btn[data-step="first"]'); const back = await view();
+    await P.p.click('.vpage.on .cr-btn[data-step="close"]'); const closed = !(await P.p.$('.vpage.on .chess-replay'));
+    check("match replay: a chess game in the history replays move by move with the engine's read of each move",
+      buttons === 1 && start.count === '0 / 4' && start.pieces === 64 && start.filled === 32 && start.lit === 0
+      && third.count === '3 / 4' && /^2\. g4/.test(third.note) && third.verdict === 'blunder' && third.lit === 2
+      && mate.count === '4 / 4' && /2… Qh4# · checkmate/.test(mate.note) && back.count === '0 / 4' && closed && !P.errors.length,
+      JSON.stringify({ buttons, start, third, mate, back, closed, errors: P.errors }));
+    await P.ctx.close(); }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
     const r = await F.p.evaluate(async () => {
