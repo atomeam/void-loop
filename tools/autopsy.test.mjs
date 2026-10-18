@@ -85,3 +85,13 @@ test('a test case from each recent failure (asked by Void): the ask the check qu
   assert.deepEqual(c.map((x) => [x.skill, x.ask, x.sha]), [['timer', 'set a timer for 2 minutes', 'aaaaaaa'], ['label', 'label the clock kitchen', 'aaaaaaa']], 'the quoted ask wins; one case per skill, from its newest failure; the timeout matches no skill');
   assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
 });
+
+test('stability gauge: red suites in the last week lower the score; none is steady (asked by Void)', async () => {
+  const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
+  const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
+  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1 });
+  const g = stabilityOf(mk('2026-10-18T06:00:00Z', '2026-10-15T00:00:00Z', '2026-10-01T00:00:00Z'), now); assert.deepEqual([g.score, g.label, g.week, g.day], [76, 'wobbly', 2, 1]);
+  assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).score, 0); assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).label, 'shaky');
+  assert.equal(stabilityOf(mk('2027-01-01T00:00:00Z'), now).week, 0, 'a time in the future is not counted');
+  assert.match(stabilityHtml(g), /data-stability="wobbly"/); assert.match(stabilityHtml(stabilityOf(null, now)), /data-stability="none"/); assert.match(stabilityHtml(g), /width:76%/);
+});
