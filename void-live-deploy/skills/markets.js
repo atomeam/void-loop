@@ -1,5 +1,5 @@
 /**
- * markets skill - V01D's crypto board: live prices and 7-day sparklines for the top coins, from V01D's own edge-cached
+ * markets skill - Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached
  * /api/markets (CoinGecko underneath, two-minute cache, no KV), and a read-only Bitcoin address lookup by public address
  * (mempool.space public API). Read-only by design: no wallets held, no keys or seed phrases, no trades, no advice.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }. Single-coin asks ("bitcoin price") stay with crypto.js.

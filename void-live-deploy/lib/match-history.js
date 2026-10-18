@@ -1,15 +1,15 @@
-// match-history — the games you finished against V01D on this device, and your record from them (asked by Void: "Expand the chess
+// match-history — the games you finished against Verse on this device, and your record from them (asked by Void: "Expand the chess
 // skill page to include a 'Match History' table that pulls from my recent game logs", and "I want the page to show my current Elo
 // or win-rate against the owner to make the 'Games' family feel competitive and real"). A game card (chess, checkers, othello)
 // calls finish() when a game ends on the board (checkmate, stalemate, a draw, a win on discs or men; a board thrown off mid-game
 // is not a game); the about card for that game ("tell me about the chess skill", "my chess record") shows the summary line and
 // the last ten games. Nothing leaves the device: the log is a2m.void.games.v1 (lib/state.js), capped at 100 games, oldest out.
-// The Elo is an estimate: you and V01D both start at 1200 and move by K = 32 a game, computed from the log each time, never kept.
+// The Elo is an estimate: you and Verse both start at 1200 and move by K = 32 a game, computed from the log each time, never kept.
 // Pure over the log; the storage helpers at the end take the storage handed in (default localStorage) and never throw.
 //
 //   record(log, game)                -> the log with one more game, newest last, at most MAX kept
 //   summary(log, { game })           -> { game, played, wins, losses, draws, winRate, streak, elo: { you, void } }
-//   summaryLine(sum)                 -> "12 played · 7–4–1 · 58% · you ~1240, V01D ~1160 (estimated)" or "no games on this device yet"
+//   summaryLine(sum)                 -> "12 played · 7–4–1 · 58% · you ~1240, Verse ~1160 (estimated)" or "no games on this device yet"
 //   historyAsk(text)                 -> { game } for "chess match history", "my chess record", "my record against void"; null otherwise
 //   historyHtml(esc, sum, log)       -> the Match History block for the about card (summary line, the last ten as a table)
 //   load(s) / save(log, s) / finish(game, result, { moves, minutes, vs, line }, s)   line: a chess game's moves ('e2e4'…), for the replay
@@ -37,7 +37,7 @@ export function record(log, game) {
   if (!g) return l.slice(-MAX);
   return l.concat([g]).slice(-MAX);
 }
-/** the Elo of you and V01D after the games against V01D in the log, in order, from START with K. Pure. */
+/** the Elo of you and Verse after the games against Verse in the log, in order, from START with K. Pure. */
 export function elo(games) {
   let you = START, me = START;
   for (const g of games) {

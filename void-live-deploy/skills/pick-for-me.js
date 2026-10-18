@@ -1,6 +1,6 @@
 /**
- * pick-for-me skill — "pick for me", "surprise me" (owner, 2026-10-17: Netflix's Max picked for you and was tedious; "V01D will be way better than Max").
- * V01D picks the kind (your thumbs-ups, else the day) and ONE found title, says it with its why in one line, and shows its card (movie or song) with
+ * pick-for-me skill — "pick for me", "surprise me" (owner, 2026-10-17: Netflix's Max picked for you and was tedious; "Verse will be way better than Max").
+ * Verse picks the kind (your thumbs-ups, else the day) and ONE found title, says it with its why in one line, and shows its card (movie or song) with
  * a way to play what is legal. Taste is optional and never blocks: a mood chip (cozy, thrilling, funny, curious, calm), a thumb on the pick, "something
  * else" (never a repeat), "forget my taste". Taste lives in this browser (lib/taste.js); the server hears the mood word only. Spoken: a pick asked by voice
  * is read out by the page's own voice path, only the pick line (data-nospeak hides the rest); "something else", "funnier", "yes play it" work by voice or

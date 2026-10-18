@@ -1,5 +1,5 @@
-// V01D the appraiser (Adam, 2026-10-15: "V01D can decide, it's an appraiser, it's supposed to be an expert in value").
-// V01D prices its own products, no per-item approval. Inputs come only from store data and V01D's own pipeline, never chat
+// Verse the appraiser (Adam, 2026-10-15: "Verse can decide, it's an appraiser, it's supposed to be an expert in value").
+// Verse prices its own products, no per-item approval. Inputs come only from store data and Verse's own pipeline, never chat
 // (lib/price-lock.js). The result carries a short public "why this price" note for the store log.
 //   item: { name, kind, effortHours, files: [{ bytes, type }] }
 //   comps: similar products [{ name, cents }]; demand: topic ask count (lib/product-gap.js); sales: units sold so far

@@ -1,4 +1,4 @@
-// V01D proposes the fix for an ask its own probe missed (frontier #28, step 3; lib/propose-fix.js). Owner only; nothing is stored.
+// Verse proposes the fix for an ask its own probe missed (frontier #28, step 3; lib/propose-fix.js). Owner only; nothing is stored.
 // POST { ask, skill, source, mode?, said? }   mode 'narrow': the skill answered an ask that is not its own (a routing correction)   the missed ask, the owning skill's name and its file as it stands (tools/propose-fix.mjs sends it)
 //   -> { edits: [{ find, replace }], why, confidence, evidence: [{ file, line, was }], model }   exact line replacements that passed the gate; the caller applies and tests them
 // 400 when the ask, the skill name or the source is missing or malformed; 503 when no model is bound or it did not answer; 502 when

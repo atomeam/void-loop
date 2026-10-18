@@ -1,4 +1,4 @@
-// V01D cards (lib/card-frame.js): every page is a card with stats from the skill's own evidence. Run: node --test tools/card-frame.test.mjs
+// Verse cards (lib/card-frame.js): every page is a card with stats from the skill's own evidence. Run: node --test tools/card-frame.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

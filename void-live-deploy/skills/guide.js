@@ -1,5 +1,5 @@
 /**
- * guide skill — the book: everything V01D can do, one page each, read like a Skyrim book. "open the book", "the guide",
+ * guide skill — the book: everything Verse can do, one page each, read like a Skyrim book. "open the book", "the guide",
  * "show me everything you can do", "the book at chess". Say it and the stage dims, a worn leather tome comes up to fill the
  * screen, its cover swings open in half a second (Skyrim's fBookOpenTime) and you are reading two parchment pages set in a
  * serif: a running head, a title with a rule under it, a drop capital, the asks as lines of italic ink, the folio in the outer

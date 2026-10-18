@@ -2,7 +2,7 @@
  * list skill — the checklist on the stage: "make a list", "list: eggs, milk", "a shopping list with eggs, milk and bread",
  * "add bread to the list", "add milk", "check off milk", "mark milk as done", "remove bread from the list", "clear the list",
  * "remove the list"; "make the list red" edges it through the page's shared colours. The card adds, ticks and removes in
- * place, its title is typed on it, it links what is left to buy to a store's search, and it is V01D's own dark panel (no clipboard;
+ * place, its title is typed on it, it links what is left to buy to a store's search, and it is Verse's own dark panel (no clipboard;
  * the old 3D clipboard, skills/mini/list.js, no longer mounts beside it). Moved out of void.html in cleanup step 6, the last of the built-ins. The page asks `ask`
  * at the place its list code always ran (`askAt`), and the shared targeting reaches the list through `ensure`.
  * Two bridges (asked by Void, 2026-10-16): drop any stage thing onto the list card and its words become a new entry (the page
@@ -280,7 +280,7 @@ function mount(th, stageApi) {
     group.append(shop, links);
     el.appendChild(group);
   }
-  // no 3D clipboard beside the card any more (owner, 2026-10-18): the card is V01D's own dark panel, and the miniature drew a
+  // no 3D clipboard beside the card any more (owner, 2026-10-18): the card is Verse's own dark panel, and the miniature drew a
   // second faded clipboard in the dead space beside it. skills/mini/list.js stays on the salvage shelf.
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);

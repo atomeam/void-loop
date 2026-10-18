@@ -3,7 +3,7 @@
 // a Creature, a Band, a Book, a Show, a Game, an Organisation, a Concept, and a name that is several things at once carries all of them
 // ("Film · Song"). The type comes from the short description Wikipedia gives each page ("1965 film by Clive Donner") and, for a name with
 // sister pages, from their titles ("What's New Pussycat? (song)"). Pure here; fetchAlso() is the one network call. Work in progress by design:
-// every kind below is a seed V01D grows (frontier #32).
+// every kind below is a seed Verse grows (frontier #32).
 
 /** [kind, test, chapter for its glyph and colour] in the order they are tried */
 export const KINDS = [

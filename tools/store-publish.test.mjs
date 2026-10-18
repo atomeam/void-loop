@@ -1,4 +1,4 @@
-// V01D self-publishing (tools/store-publish.mjs): the guardrails, the one catalog, and every product getting an ad clip.
+// Verse self-publishing (tools/store-publish.mjs): the guardrails, the one catalog, and every product getting an ad clip.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';

@@ -1,6 +1,6 @@
 /**
  * about-skill skill - "tell me about the chess skill", "what is the forge skill", "how does your weather skill work": a card about any
- * skill of V01D's, from its own page of the book (asked by Void: "Learn how to handle 'tell me about zorbleflux' (asked 156 times)";
+ * skill of Verse's, from its own page of the book (asked by Void: "Learn how to handle 'tell me about zorbleflux' (asked 156 times)";
  * the zorbleflux ask itself is answered by skills/zorbleflux.js, and "tell me about <a skill of mine>" used to go to Wikipedia and be
  * noted as a miss). The card: the skill's title, its one line (the module's own `about` text when it exports one), its example asks as
  * tap-to-ask chips, its family and tier (skills/families.json), related skills as chips and a "try it" button that asks the first

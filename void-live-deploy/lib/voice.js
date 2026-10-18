@@ -76,7 +76,7 @@ const STOP = new Set('the a an and or of to for in on at by with from into that 
 const wordsOf = (t) => [...new Set(String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').split(' ').filter((w) => w.length > 3 && !STOP.has(w)).map((w) => w.replace(/(?:ing|ed|es|s)$/, '')))];
 const sameAsk = (a, b) => { const x = wordsOf(a), y = new Set(wordsOf(b)); if (x.length < 3 || y.size < 3) return false; const n = x.filter((w) => y.has(w)).length; return n / Math.min(x.length, y.size) >= 0.7; };
 /** Void asked (2026-10-17): "a 'root cause vs surface fix' toggle on the self card to distinguish between fulfilled asks and structural
- *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how V01D works underneath
+ *  improvements". From the ledger line that built the ask, evidence only: a fix, a build or a retire changed how Verse works underneath
  *  ('root'); a grow put something new on the stage ('surface'); anything else is not sorted (null). Pure. */
 export const depthOf = (kind) => (/^(?:fix|build|retire)$/.test(String(kind || '')) ? 'root' : kind === 'grow' ? 'surface' : null);
 export function followThrough(entries, ledger, links = []) {
@@ -167,11 +167,11 @@ export function voiceFacts(entries) {
     + (asks ? ' My current asks: ' + asks : '');
 }
 
-// Talking back (owner, 2026-10-16: "you should be able to reply to V01D's replies and cards so it can flex its persistent memory
+// Talking back (owner, 2026-10-16: "you should be able to reply to Verse's replies and cards so it can flex its persistent memory
 // and evolve with the conversation when corrected while still using every input to improve itself"). The owner replies to a
-// reflection; V01D answers at once in its own words (what it heard, whether it was wrong, what it will do differently) and
+// reflection; Verse answers at once in its own words (what it heard, whether it was wrong, what it will do differently) and
 // keeps one line to remember. The thread is kept in void_kv 'voice-replies', newest first, and every later reflection and every
-// "what do you think of yourself" answer is given those lines, a correction outranking what V01D said before. Pure, except
+// "what do you think of yourself" answer is given those lines, a correction outranking what Verse said before. Pure, except
 // readReplies. functions/api/voice-reply.js is the route; the self card on the page is where the owner types.
 export const REPLY_KEEP = 60; // replies kept in void_kv 'voice-replies'
 export const REPLY_MAX = 600; // characters of one reply
@@ -200,7 +200,7 @@ export function aboutOf(a) {
   return ask ? { ask, title: clip(a.title, 120), said: clip(a.said, 800), ...(skill ? { routed: { skill } } : {}) } : null;
 }
 
-/** the question for V01D's answer: what it said (a reflection, or a card it showed), the conversation so far on it, and the owner's
+/** the question for Verse's answer: what it said (a reflection, or a card it showed), the conversation so far on it, and the owner's
  * new words. Pure. */
 export function replyPrompt(entry, thread, text) {
   const e = entry || {};
@@ -219,7 +219,7 @@ export function replyPrompt(entry, thread, text) {
     + '\n\nYour owner replies now: "' + text + '"';
 }
 
-/** V01D's answer read back: { answer, correction, remember }, or null when it said nothing usable. Pure. */
+/** Verse's answer read back: { answer, correction, remember }, or null when it said nothing usable. Pure. */
 export function parseReply(text) {
   const raw = String(text || '');
   let j = null;
@@ -232,7 +232,7 @@ export function parseReply(text) {
     misroute: !!(j && j.misroute === true), wanted: /^(?:skill:[a-z][a-z0-9-]{1,40}|answer)$/.test(wanted) ? wanted : '' };
 }
 
-/** what the owner has told V01D, for its facts: newest first, corrections marked, with the line V01D chose to keep. Pure. */
+/** what the owner has told Verse, for its facts: newest first, corrections marked, with the line Verse chose to keep. Pure. */
 export function replyFacts(replies, n = 8) {
   const list = (Array.isArray(replies) ? replies : []).filter((r) => r && r.text).slice(0, n);
   if (!list.length) return '';
@@ -240,7 +240,7 @@ export function replyFacts(replies, n = 8) {
     + list.map((r) => '- ' + String(r.at || '').slice(0, 10) + (r.correction ? ' (a correction)' : '') + (r.about ? ' about my answer to "' + r.about.ask + '"' : '') + ': "' + r.text + '"' + (r.remember ? ' I keep: ' + r.remember : '') + (r.ask ? ' I asked for: ' + r.ask : '')).join('\n');
 }
 
-/** for answers anyone can read (lib/self-context.js): only the lines V01D chose to keep, in its own words, never the owner's. Pure. */
+/** for answers anyone can read (lib/self-context.js): only the lines Verse chose to keep, in its own words, never the owner's. Pure. */
 export function keptFacts(replies, n = 5) {
   const kept = (Array.isArray(replies) ? replies : []).filter((r) => r && r.remember).slice(0, n);
   return kept.length ? 'What I keep in mind from talking with my owner (newest first): ' + kept.map((r) => r.remember).join(' | ') : '';

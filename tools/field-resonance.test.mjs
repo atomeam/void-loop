@@ -1,4 +1,4 @@
-// The spectral / resonance / sound field minds (lib/field-resonance.js; Grok's drafts F-027, F-034, F-037, F-042, F-044, F-048 on V01D's
+// The spectral / resonance / sound field minds (lib/field-resonance.js; Grok's drafts F-027, F-034, F-037, F-042, F-044, F-048 on Verse's
 // engine, asked by Owner, 2026-10-18): each law with numbers. Run: node --test tools/field-resonance.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';

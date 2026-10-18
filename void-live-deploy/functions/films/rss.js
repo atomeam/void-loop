@@ -1,4 +1,4 @@
-// V01D Tube's RSS feed (owner, 2026-10-15: "an RSS feed so others can subscribe"): /films/rss, newest first, each item linking
+// Verse Tube's RSS feed (owner, 2026-10-15: "an RSS feed so others can subscribe"): /films/rss, newest first, each item linking
 // its watch page /films/?v=<id> (the film's own play link is signed and runs out, so the feed never carries it).
 import { onRequestGet as list } from '../api/films.js';
 const SITE = 'https://a-to-mind.com';

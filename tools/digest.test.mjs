@@ -1,4 +1,4 @@
-// V01D reads a video's words (lib/digest.js, functions/api/digest.js, skills/digest.js, tools/learn-tricks.mjs). Run: node --test tools/digest.test.mjs
+// Verse reads a video's words (lib/digest.js, functions/api/digest.js, skills/digest.js, tools/learn-tricks.mjs). Run: node --test tools/digest.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

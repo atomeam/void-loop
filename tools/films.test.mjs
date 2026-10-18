@@ -128,7 +128,7 @@ test('members and the owner review a film; a member sees the totals and their ow
   assert.ok(!kept.includes('Z'.repeat(43)), 'a key typed into a note is never kept');
 });
 
-// the films as data (asked by Void, 2026-10-15: "extract structured JSON from any V01D FILM")
+// the films as data (asked by Void, 2026-10-15: "extract structured JSON from any Verse FILM")
 test('film metadata: the asks it takes, and each film as { id, day, experiment, title, tags, source, watch }', async () => {
   const { wantsFilmMeta, filmMeta } = await import('../void-live-deploy/skills/films.js');
   for (const a of ['film metadata', 'films as json', 'show me the films json', 'export the films', 'v01d films metadata', 'film data']) assert.ok(wantsFilmMeta(a), a);

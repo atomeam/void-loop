@@ -1,4 +1,4 @@
-// The tome: the V01D Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
+// The tome: the Verse Book read the way Skyrim's books are read (owner, 2026-10-16: "research how the books on Skyrim work and
 // make it like that ... its supposed to be the graphic style and visuals of the way they do books"). In Skyrim a book you pick
 // up fills the screen: the world dims behind it, a worn leather tome lies open on two parchment pages set in a serif with the
 // text of the book and nothing else (no menu, no tabs, no chrome), and your only controls are turning the page and closing it.
@@ -134,7 +134,7 @@ export function pageHtml(p, book, esc) {
     return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
       + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>'
       + (p.core || []).map((c) => '<p class="tome-note"><b>' + esc(c.name) + '</b> · ' + esc(c.line) + '</p><ul class="tome-try gb-try">' + c.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>').join('')
-      // the store, named where a first visit reads (owner, 2026-10-18: the corner "support V01D" link is gone, "but make the store easy to find")
+      // the store, named where a first visit reads (owner, 2026-10-18: the corner "support Verse" link is gone, "but make the store easy to find")
       + '<p class="tome-note tome-store"><b>The store</b> · what Verse sells, and how to support it.</p><ul class="tome-try gb-try"><li><a href="#" data-ask="open the store">open the store</a></li><li><a href="#" data-ask="support void">support void</a></li></ul></div>';
   }
   if (p.kind === 'legend') {
@@ -195,7 +195,7 @@ export function backCoverHtml(book, esc) {
 }
 export function coverHtml(book, esc) {
   const t = book.totals || {};
-  // the cover carries V01D's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
+  // the cover carries Verse's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
   let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The Verse Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
   return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The Verse Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
 }

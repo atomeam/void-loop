@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Secret scan (owner, 2026-10-15: "make V01D the best at keeping secrets ever made"). Every line a change adds, in every file
+// Secret scan (owner, 2026-10-15: "make Verse the best at keeping secrets ever made"). Every line a change adds, in every file
 // type (docs, logs, JSON and the deploy copies included: tools/review-pr.mjs skips those, and a log or a note is exactly where
 // a pasted key lands), checked for the shapes of real keys: private key blocks, JWTs, provider-prefixed tokens (GitHub, Google,
 // AWS, Slack, Stripe-style sk_/pk_/rk_, OpenAI/Anthropic-style sk-, Hugging Face, npm, GitLab, webhook secrets), credentials in a

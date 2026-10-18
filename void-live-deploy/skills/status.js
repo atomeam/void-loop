@@ -27,9 +27,9 @@ const CLEAN = cleanLower; // shared: lib/ask-text.js
 const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+void))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+void\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
 export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
 
-// News about V01D's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs
+// News about Verse's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs
 // every few hours and empties the lists got back only a list of run times). A long statement, not a question, that names one of
-// V01D's own parts and a change to it is news about V01D: it answers the substance first, in its own voice, and does any time math
+// Verse's own parts and a change to it is news about Verse: it answers the substance first, in its own voice, and does any time math
 // only as an aside.
 const PART_RE = /\b(routines?|automations?|workflows?|cron|deploy(?:s|ment)?|tester|site tester|queues?|lists?|board|skills?|store|films?|pipeline|loop|reviewer|code review|builders?|agents?)\b/;
 const SELF_RE = /\b(v01d|void|verse|your|yourself)\b|^(?:update|heads up|fyi|news|status update|new)\b/;
@@ -39,7 +39,7 @@ export function newsOf(text) {
   if (words < 8 || /^(what|how|why|when|where|who|which|can|could|should|is|are|do|does)\b/.test(t) || /\?\s*$/.test(String(text))) return false;
   return PART_RE.test(t) && SELF_RE.test(t) && CHANGE_RE.test(t);
 }
-/** What the news means for V01D: { part, take, aside } (aside: run times when it says every N hours from a time). Pure. */
+/** What the news means for Verse: { part, take, aside } (aside: run times when it says every N hours from a time). Pure. */
 export function takeOf(text) {
   const t = CLEAN(text), part = (t.match(PART_RE) || ['system'])[1] || 'system';
   const take = [];
@@ -131,7 +131,7 @@ export function fixOf(check) {
   if (!words) return { words: '', cmd: 'VOID_TRACE=1 node tools/heavy.mjs node tools/test_void.mjs --only core', ship: 'node tools/finish.mjs fix "what the timeout was" --test "core"', note: 'a stall: the trace names the check that hung' };
   return { words, cmd: 'node tools/heavy.mjs node tools/test_void.mjs --only "' + words + '"', ship: 'node tools/finish.mjs fix "repair ' + words + '" --test "' + words + '"', note: '' };
 }
-/** the skill of V01D's own family that fits these failed checks best: the most name words found in them; v01d-fixes when none. Pure. */
+/** the skill of Verse's own family that fits these failed checks best: the most name words found in them; v01d-fixes when none. Pure. */
 export function recoverSkill(checks, pool = SELF_SKILLS) {
   const t = (Array.isArray(checks) ? checks.join(' ') : String(checks || '')).toLowerCase();
   let best = 'v01d-fixes', top = 0;

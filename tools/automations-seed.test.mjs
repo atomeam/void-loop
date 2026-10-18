@@ -1,5 +1,5 @@
-// automations/hourly.json and tools/automations-seed.mjs: ten hourly automations, each one a rule V01D's own engine accepts
-// (owner, 2026-10-14: "make sure V01D has 10 new automations hourly so that it starts to really utilize all it can to progress").
+// automations/hourly.json and tools/automations-seed.mjs: ten hourly automations, each one a rule Verse's own engine accepts
+// (owner, 2026-10-14: "make sure Verse has 10 new automations hourly so that it starts to really utilize all it can to progress").
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { load, check, seed } from './automations-seed.mjs';

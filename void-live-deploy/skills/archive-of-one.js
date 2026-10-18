@@ -1,7 +1,7 @@
 /**
  * archive-of-one - "walk the archive": a full-screen guided gallery of everything you have kept on this device (the kept cards and answers,
  * figures, notes, lists, links), one at a time. Next / Back (or the arrow keys), soft fades (none under reduced motion), Escape closes.
- * Asked by the owner, 2026-10-18 (stage pack D). It is the quiet cousin of skills/showcase.js ("show me everything you made" walks what V01D
+ * Asked by the owner, 2026-10-18 (stage pack D). It is the quiet cousin of skills/showcase.js ("show me everything you made" walks what Verse
  * BUILT; this walks what YOU kept): it reads only the stage the page already keeps in this browser, sends nothing, and an empty stage
  * says so instead of opening an empty gallery. "internet archive" and "archive this email" stay where they go now.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }

@@ -1,5 +1,5 @@
 /**
- * go-ai — V01D's Go opponent for the 9×9 board in skills/go.js (asked by Void: "Next game I want to learn: Go").
+ * go-ai — Verse's Go opponent for the 9×9 board in skills/go.js (asked by Void: "Next game I want to learn: Go").
  * The proven approach of the classic 9×9 programs before deep learning: Monte Carlo playouts. For each legal move it
  * plays the game out many times with light random moves that never fill their own single-point eyes, scores each
  * finished board by area with komi, and picks the move that won most often (UCB1 spreads the playouts over the moves

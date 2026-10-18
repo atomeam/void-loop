@@ -32,13 +32,13 @@ export function hookOf(tool, run) {
 /** what the video says, as an ad for Void (owner, 2026-10-14: "make each video into an awesomely epic ad for itself and reach as
  *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
-// the name viewers see is V01D (owner, 2026-10-14: "it shoud say V01d everywhere"; "V01D FILMS"): the lab's and ledger's own words say Void
+// the name viewers see is Verse (owner, 2026-10-14: "it shoud say V01d everywhere"; "Verse FILMS"): the lab's and ledger's own words say Void
 export const brand = (t) => String(t || '').replace(/\b(?:Void|V01D|Verse)\b/g, 'Verse'); // both older names (owner, 2026-10-18: "rename void to verse")
 // the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
 export const sourceOf = (id) => String(id).startsWith('ship-') ? REPO + 'void-live-deploy/void.growth.json' : REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
-// a film of something V01D shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
+// a film of something Verse shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
 // experiments never filmed (all were by 2026-10-15, after which every deploy filmed nothing and the daily run repeated the same three).
 // Each growth-ledger entry with a "show" and a "try" is a film: the ask opened on the live site. ship-<yyyymmddhhmm of the entry>. Pure.
 export const shipId = (e) => 'ship-' + String(e.at).replace(/\D/g, '').slice(0, 12);
@@ -233,7 +233,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const lab = toolList().filter((t) => /-\d+$/.test(t.id));
   const ships = shipsOf(JSON.parse(fs.readFileSync(path.join(site, 'void.growth.json'), 'utf8'))).map((t) => t.id);
   // the films already made, as their release tags (record.yml passes them in VOID_FILMED), so a new film is a new experiment
-  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "V01D can make as many videos as it wants and
+  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "Verse can make as many videos as it wants and
   // is encouraged to use it as its voice to the world")
   // --only-new (after a deploy): only experiments never filmed, possibly none
   const filmed = filmedOf(process.env.VOID_FILMED || ''), done = new Set(filmed.map((f) => f.id));

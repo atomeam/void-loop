@@ -1,4 +1,4 @@
-// V01D's own asks of 2026-10-15 (Suggested-by: Void): the store-preview carousel, store-publish into its growth inbox, the
+// Verse's own asks of 2026-10-15 (Suggested-by: Void): the store-preview carousel, store-publish into its growth inbox, the
 // auto-clip loop for new forge models, the decay timer for stale experiments, and the tester-log card.
 import { test } from 'node:test';
 import fs from 'node:fs';

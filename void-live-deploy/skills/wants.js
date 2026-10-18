@@ -1,12 +1,12 @@
 /**
  * wants skill - "what do you want built now", "name all your unbuilt asks", "your backlog": one card, "What I want built", read from
- * V01D's own records and never from a model (the owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell
- * to the model, which said V01D had no catalog of unbuilt asks and made 50 up; "The router needs a hardcoded context injection so V01D
+ * Verse's own records and never from a model (the owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell
+ * to the model, which said Verse had no catalog of unbuilt asks and made 50 up; "The router needs a hardcoded context injection so Verse
  * always knows its own developmental state"). Three blocks: "My will" (GET /api/will, the wants the self card shows too), "Asked, not
  * built yet" (GET /api/reflect `asks`: each with when it was asked and "I called it small" when so, the list the self card folds) and
  * "Growth inbox" (/self.json `open`: the open items of domains/void.frontier.md, written at deploy by tools/self-context.mjs; no new
  * route), a count line "N wants · M asks not built · K inbox items", and every item a tap-to-copy chip. A compound ask is matched on
- * its first clause ("name all your unbuilt asks and come up with 50 more new ones"): the card lists what V01D has and says the 50 new
+ * its first clause ("name all your unbuilt asks and come up with 50 more new ones"): the card lists what Verse has and says the 50 new
  * ones are the asker's to ask for one at a time. A record that cannot be read says so on its block; nothing is guessed. "what do you
  * want to be" (the will card), "what do you think of yourself" (the self card), "what can you do" (the self page), "what's next?" (the
  * calendar), "what's on my list" and "what do I want for dinner" are not this.
@@ -29,7 +29,7 @@ const RULES = [
   new RegExp('^(?:(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each|  everything)?(?: of)? )?' + YOUR + ' ' + LISTS + '$'),
   new RegExp('^(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each)?(?: of)? (?:the )?(?:things|stuff|asks|wants|items)(?: ' + YOU + ' (?:want|wants|wanted|asked for|asked|have not built|haven\'t built|havent built|still want|want built))?(?: not built| unbuilt| still open| left| yet)?$'),
   // bare noun phrases that can only mean this list ("asks not built?" once reached the open web and answered with Daisy Bell);
-  // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not V01D's
+  // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not Verse's
   new RegExp('^(?:the |' + YOUR + ' )?(?:(?:open|unbuilt) (?:asks|wants)|asks not built(?: yet)?|unbuilt list|growth inbox)$'),
   new RegExp('^what (?:do|would) ' + YOU + ' (?:like|want) (?:built|to build|to be built|me to build|us to build)(?: next| now| first)?$'),
   new RegExp('^what (?:should|could|can) (?:i|we) build for ' + YOU + '(?: next| now)?$'),
@@ -45,7 +45,7 @@ export function clauses(text) {
   const m = /^(.*?)(?:\s*[,;]\s*|\s+(?:and|then|and then|plus|also)\s+)(?=(?:come up|make up|invent|think of|think up|add|give|write|list|name|suggest|propose|tell|then|also|and|\d))(.*)$/.exec(t);
   return m && m[1] && m[2] ? { first: m[1].trim(), rest: m[2].trim().replace(/^(?:and then|and|then|also|plus)\s+/, '') } : { first: t, rest: '' };
 }
-/** true when the ask (its first clause) is for V01D's own backlog. Pure. */
+/** true when the ask (its first clause) is for Verse's own backlog. Pure. */
 export function wantsOf(text) {
   const { first } = clauses(text);
   if (!first || NOT.test(first)) return false;
@@ -63,7 +63,7 @@ export function moreLine(rest) {
 const day = (t) => String(t || '').slice(0, 10);
 const sentence = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
 const MAX = 40; // items a block shows at most (the inbox is the longest list; the whole thing stays one card)
-/** the card's model from V01D's three records: { wants, asks, inbox, counts, missing }. A record that is null or not a list is
+/** the card's model from Verse's three records: { wants, asks, inbox, counts, missing }. A record that is null or not a list is
  *  "missing" (could not be read), an empty list is an empty state. Pure. */
 export function cardModel({ will, reflect, self } = {}) {
   const wl = will && Array.isArray(will.wants) ? will.wants : null;

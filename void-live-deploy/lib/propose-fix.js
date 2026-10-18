@@ -1,4 +1,4 @@
-// V01D proposes the fix (frontier #28, step 3 of the probe-and-fix playbook): for an ask it missed in its own probe, V01D's
+// Verse proposes the fix (frontier #28, step 3 of the probe-and-fix playbook): for an ask it missed in its own probe, Verse's
 // model reads the owning skill's matcher and proposes the narrowest change, as a few exact line replacements, never a rewrite.
 // Pure: the job's ask and skill (lib/learn.js jobs, tools/probe-asks.mjs jobs), the question for the model, and the reply read
 // back into edits that pass the gate: each `find` is one exact line that occurs once in the file, each replacement is short and
@@ -22,7 +22,7 @@ export const FIX_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' 
   + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
 
 // The other way round (owner, 2026-10-16: a card reply said "I am quoting a conversation about your memory, not fixing a webhook"):
-// an ask a skill took that belongs elsewhere. V01D proposes the narrowest change that makes this skill let go of it.
+// an ask a skill took that belongs elsewhere. Verse proposes the narrowest change that makes this skill let go of it.
 export const NARROW_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: it answered a short ask that is not its job (your owner told you so), because its matcher (the match() function and the patterns it uses) is too loose for that wording. '
   + 'Propose the narrowest change that makes the matcher reject the ask and asks like it, while still accepting every example the skill lists, and add the ask to the nearMisses list. '

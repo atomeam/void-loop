@@ -1,4 +1,4 @@
-// V01D's own store (lib/store.js, functions/api/store/[[path]].js): tokens, license keys, Stripe signatures, the adapter
+// Verse's own store (lib/store.js, functions/api/store/[[path]].js): tokens, license keys, Stripe signatures, the adapter
 // falling back to Gumroad without keys, and the routes end to end with a fake env.
 import assert from 'node:assert/strict';
 import { createHmac } from 'node:crypto';
@@ -30,7 +30,7 @@ const body = '{"id":"evt_1"}', t = Math.floor(Date.now() / 1000), sig = createHm
 assert.equal(await verifyStripe('whsec', `t=${t},v1=${sig}`, body), true);
 assert.equal(await verifyStripe('whsec', `t=${t},v1=${sig}`, body + ' '), false);
 assert.equal(await verifyStripe('whsec', `t=${t - 1000},v1=${sig}`, body), false, 'too old');
-// V01D answers "what can I buy"
+// Verse answers "what can I buy"
 for (const a of ['tip', 'buy', 'pricing', 'support void']) assert.ok(storeAsk(a), a);
 assert.ok(!storeAsk('20% tip on 45') && !storeAsk('buy milk'));
 assert.ok(buyAnswer().rows.length === 8 && buyAnswer().rows.every((r) => /utm_source=a-to-mind/.test(r.url)));

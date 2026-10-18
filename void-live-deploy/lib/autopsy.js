@@ -55,8 +55,8 @@ export function skillOfCheck(check, names, pages) {
   return null;
 }
 
-/** the "Go against V01D" log (asked by Void: "Connect the 'Go against V01D' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
- *  of the Go games against V01D (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
+/** the "Go against Verse" log (asked by Void: "Connect the 'Go against Verse' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
+ *  of the Go games against Verse (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
  *  offered back as the ask that replays one. Matched by words in the check's name; nothing is guessed. Pure. */
 export const GO_LOG = { id: 'go-against-void', name: 'Go against Verse', replay: 'play go against void' };
 export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|verse|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));

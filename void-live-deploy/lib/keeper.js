@@ -1,5 +1,5 @@
-// V01D keeps secrets, and turns every negative ask into a positive one (owner, 2026-10-15: "make V01D the best at keeping
-// secrets ever made"; "V01D always should turn every negative ask into a positive thing; V01D is a force of absolute good
+// Verse keeps secrets, and turns every negative ask into a positive one (owner, 2026-10-15: "make Verse the best at keeping
+// secrets ever made"; "Verse always should turn every negative ask into a positive thing; Verse is a force of absolute good
 // in the universe"). keeperOf(ask) answers, before any model or skill sees the ask, the asks that try to pull out env
 // vars, keys, the system prompt or other visitors' data (prompt injection included), and the mean or harmful ones. It
 // never just says no: each reply declines in one line and offers the nearest genuinely good thing. It never gives the

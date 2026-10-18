@@ -1,6 +1,6 @@
 /**
- * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: V01D wrote 'Talk to Me (2022)' from memory; "have it find the
- * actual movies it suggests ... and play right in v01d"). V01D suggests titles, then each is looked up at /api/movies (iTunes Search + the
+ * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: Verse wrote 'Talk to Me (2022)' from memory; "have it find the
+ * actual movies it suggests ... and play right in v01d"). Verse suggests titles, then each is looked up at /api/movies (iTunes Search + the
  * Internet Archive, lib/movies.js). A verified movie gets its own card: its poster as the card's art, year, genre, the source's one-line overview,
  * and what plays here: a public-domain / Creative Commons film from the Internet Archive plays in a <video>; an official trailer plays from Apple's
  * CDN; an in-copyright film gets the trailer and where-to-watch links, never a pirate source. A title no source knows is listed as "not verified".

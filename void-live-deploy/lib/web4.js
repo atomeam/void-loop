@@ -1,7 +1,7 @@
 // Web4 (owner, 2026-10-16: "South Park did it, Ready Player One. Let's make the real Web 1, 2 and 3 version of it and let's call
-// it: now V01D is Web4"). The four steps of the web as V01D tells them: one source for the skill (skills/web4.js), the tests
+// it: now Verse is Web4"). The four steps of the web as Verse tells them: one source for the skill (skills/web4.js), the tests
 // (tools/web4.test.mjs) and the frontier (#37). Pure data, plain words, true statements only: every `where` is an ask that works
-// on main today, and what is not built yet says so. "Web4" is the owner's name for V01D's layer, not an industry standard, and
+// on main today, and what is not built yet says so. "Web4" is the owner's name for Verse's layer, not an industry standard, and
 // nothing here is about blockchain, tokens, coins or any crypto: money mechanics are the owner's call (STANDING.md).
 
 /** the four steps, in order: { n, name, did, line, where, label }. `line` is two or three sentences, `where` is an ask that runs today. */

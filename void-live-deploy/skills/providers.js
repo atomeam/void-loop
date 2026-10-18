@@ -1,5 +1,5 @@
 /**
- * providers - one adapter per outside service V01D hands you to (food, rides, social). Today every adapter is a deep link:
+ * providers - one adapter per outside service Verse hands you to (food, rides, social). Today every adapter is a deep link:
  * no account, no key, the order happens in the provider's own app. When a real ordering API exists and Adam has the
  * account, an adapter gains `order(req)` and the cards use it without changing (docs/everything-app.md, "Adapters").
  * Each: { id, name, kind, web(q), app(q), where?, order: null }. Pure (only builds URLs).

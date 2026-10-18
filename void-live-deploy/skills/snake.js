@@ -1,11 +1,11 @@
 /**
- * snake skill — Void Snake against V01D (skills/snake-rules.js): "snake", "play snake", "void snake", "snake game".
- * Steer with arrow keys / WASD (card focused) or swipe or tap a side of the board. Each V01D move says why.
+ * snake skill — Void Snake against Verse (skills/snake-rules.js): "snake", "play snake", "void snake", "snake game".
+ * Steer with arrow keys / WASD (card focused) or swipe or tap a side of the board. Each Verse move says why.
  */
 import * as S from './snake-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { snakeRecorder, snakeGhostBody, submit, load, words } from '../lib/arcade-ghost.js';
-import { finish } from '../lib/ladder.js'; // a finished match goes on V01D's arcade ladder (asked by Void)
+import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Void)
 
 export function snakeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');

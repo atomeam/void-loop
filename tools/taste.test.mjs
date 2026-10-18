@@ -1,4 +1,4 @@
-// node --test tools/taste.test.mjs: V01D's pick algorithm (lib/taste.js): never the same pick twice, mostly the strongest taste with some exploring, the Takeout parser, honest whys.
+// node --test tools/taste.test.mjs: Verse's pick algorithm (lib/taste.js): never the same pick twice, mostly the strongest taste with some exploring, the Takeout parser, honest whys.
 // Every sample here is synthetic (made up for the test).
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

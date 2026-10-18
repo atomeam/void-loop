@@ -2,7 +2,7 @@
  * crowd skill - the crowd engine (owner, 2026-10-18, the Opposite Era; made with tools/new-skill.mjs). "summon the crowd" fills
  * the layer behind the stage (the page's world layer, as the night sky uses) with anonymous particles that react to what you do:
  * they cheer (rise) when a thing is added, flee from the spot where one is removed, swarm toward a thing you drag, and after
- * 10 s with nothing happening they spell V01D. The crowd grows with how many things changed in the last minute (sizeFor).
+ * 10 s with nothing happening they spell Verse. The crowd grows with how many things changed in the last minute (sizeFor).
  * "dismiss the crowd" clears it. Nothing is saved and nothing leaves the device. The particle law (create, step, moodOf,
  * sizeFor, spellPoints) is pure and seeded; tested in tools/stage-pack-f.test.mjs. One world at a time: the crowd replaces the sky.
  */

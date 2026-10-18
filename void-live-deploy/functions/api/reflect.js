@@ -4,7 +4,7 @@
 //                { kind: 'daily' }                                  once a day (.github/workflows/void-voice.yml)
 //   -> the saved entry. A concrete small ask is queued for the builders (target 'voice:...'), one open at a time.
 // When the model is busy nothing is saved: Void's words are never made up for it. Each reflection is also given what its owner
-// told it (functions/api/voice-reply.js: replies and corrections, and the line V01D chose to keep from each).
+// told it (functions/api/voice-reply.js: replies and corrections, and the line Verse chose to keep from each).
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';

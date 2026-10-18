@@ -1,5 +1,5 @@
 {
- "note": "The V01D Book: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site's own data. Do not edit by hand.",
+ "note": "The Verse Book: every skill, game and 3D miniature, one page each, written by tools/guide.mjs from the site's own data. Do not edit by hand.",
  "chapters": [
   {
    "id": "front",
@@ -25,7 +25,7 @@
   {
    "id": "games",
    "name": "Games",
-   "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
+   "for": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "kind": "games",
    "count": {
     "experiment": 0,
@@ -356,7 +356,7 @@
    "chapter": "make",
    "name": "music",
    "title": "Music",
-   "line": "\"make me a song\", \"make a beat\", \"a lullaby\", \"music for a rainy day\": V01D composes an original short piece",
+   "line": "\"make me a song\", \"make a beat\", \"a lullaby\", \"music for a rainy day\": Verse composes an original short piece",
    "examples": [
     "make me a song",
     "make me a lullaby",
@@ -763,7 +763,7 @@
    "chapter": "make",
    "name": "rts",
    "title": "Rts",
-   "line": "V01D's world as a real-time strategy game",
+   "line": "Verse's world as a real-time strategy game",
    "examples": [
     "start a camp",
     "gather wood",
@@ -778,7 +778,7 @@
    "chapter": "make",
    "name": "nca-mind",
    "title": "Nca mind",
-   "line": "V01D's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and",
+   "line": "Verse's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and",
    "examples": [
     "nca mind",
     "show me a living lattice",
@@ -793,7 +793,7 @@
    "chapter": "make",
    "name": "resonance-mind",
    "title": "Resonance mind",
-   "line": "The spectral / resonance / sound field minds of Grok's drafts on V01D's shared engine: one card, six laws from lib/field-resonance.js, each citing its draft…",
+   "line": "The spectral / resonance / sound field minds of Grok's drafts on Verse's shared engine: one card, six laws from lib/field-resonance.js, each citing its draft…",
    "examples": [
     "resonance mind",
     "spectral mind",
@@ -808,7 +808,7 @@
    "chapter": "make",
    "name": "swarm-mind",
    "title": "Swarm mind",
-   "line": "Swarms, trajectories and implicit fields: seven of Grok's drafts on V01D's field kit",
+   "line": "Swarms, trajectories and implicit fields: seven of Grok's drafts on Verse's field kit",
    "examples": [
     "swarm mind",
     "thought gravity",
@@ -864,7 +864,7 @@
    "kind": "opener",
    "chapter": "games",
    "title": "Games",
-   "line": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
+   "line": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "skills": [
     "aggravation",
     "sorry",
@@ -1295,7 +1295,7 @@
    "chapter": "games",
    "name": "pong",
    "title": "Pong",
-   "line": "Void Pong against V01D: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",
+   "line": "Void Pong against Verse: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",
    "examples": [
     "pong",
     "play pong",
@@ -1310,7 +1310,7 @@
    "chapter": "games",
    "name": "snake",
    "title": "Snake",
-   "line": "Void Snake against V01D: \"snake\", \"play snake\", \"void snake\", \"snake game\"",
+   "line": "Void Snake against Verse: \"snake\", \"play snake\", \"void snake\", \"snake game\"",
    "examples": [
     "snake",
     "play snake",
@@ -1325,7 +1325,7 @@
    "chapter": "games",
    "name": "duel",
    "title": "Duel",
-   "line": "The V01D card game: \"duel\", \"play cards\", \"card duel\", \"play the card game\" put a table on the stage: your Root against V01D's, V01D cards with their arrows…",
+   "line": "The Verse card game: \"duel\", \"play cards\", \"card duel\", \"play the card game\" put a table on the stage: your Root against Verse's, Verse cards with their arrows…",
    "examples": [
     "duel",
     "play cards",
@@ -1340,7 +1340,7 @@
    "chapter": "games",
    "name": "merge",
    "title": "Merge",
-   "line": "Two ideas make one V01D card",
+   "line": "Two ideas make one Verse card",
    "examples": [
     "merge a pizza and a black hole",
     "what do you get if you merge a pizza and a black hole",
@@ -1355,7 +1355,7 @@
    "chapter": "games",
    "name": "zorbleflux",
    "title": "Zorbleflux",
-   "line": "V01D's own game: pilot a glowing zorb through a flux field for 45 seconds: collect motes to grow, dodge the dark bleeds",
+   "line": "Verse's own game: pilot a glowing zorb through a flux field for 45 seconds: collect motes to grow, dodge the dark bleeds",
    "examples": [
     "zorbleflux",
     "play zorbleflux",
@@ -2182,7 +2182,7 @@
    "chapter": "numbers",
    "name": "markets",
    "title": "Markets",
-   "line": "V01D's crypto board: live prices and 7-day sparklines for the top coins, from V01D's own edge-cached /api/markets",
+   "line": "Verse's crypto board: live prices and 7-day sparklines for the top coins, from Verse's own edge-cached /api/markets",
    "examples": [
     "crypto prices",
     "crypto board",
@@ -2297,7 +2297,7 @@
    "chapter": "numbers",
    "name": "appraise",
    "title": "Appraise",
-   "line": "V01D values anything from a photo",
+   "line": "Verse values anything from a photo",
    "examples": [
     "what is this worth",
     "value this",
@@ -2563,7 +2563,7 @@
    "chapter": "words",
    "name": "repo",
    "title": "Repo",
-   "line": "V01D can see a public GitHub repository",
+   "line": "Verse can see a public GitHub repository",
    "examples": [
     "look at atomeam/void-loop",
     "what is in github.com/atomeam/void-loop",
@@ -2578,7 +2578,7 @@
    "chapter": "words",
    "name": "digest",
    "title": "Digest",
-   "line": "V01D reads a video's words",
+   "line": "Verse reads a video's words",
    "examples": [
     "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon",
     "summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f",
@@ -2593,7 +2593,7 @@
    "chapter": "words",
    "name": "movie",
    "title": "Movie",
-   "line": "\"pick a movie to watch with me\" finds REAL movies (owner, 2026-10-17: V01D wrote 'Talk to Me",
+   "line": "\"pick a movie to watch with me\" finds REAL movies (owner, 2026-10-17: Verse wrote 'Talk to Me",
    "examples": [
     "pick a movie to watch with me",
     "movie night",
@@ -2623,7 +2623,7 @@
    "chapter": "words",
    "name": "video",
    "title": "Video",
-   "line": "V01D plays any video from YouTube, Rumble, Vimeo, Dailymotion, the Internet Archive, PeerTube, Odysee and Twitch right on the stage",
+   "line": "Verse plays any video from YouTube, Rumble, Vimeo, Dailymotion, the Internet Archive, PeerTube, Odysee and Twitch right on the stage",
    "examples": [
     "play the moon landing video",
     "show me the video of the apollo 11 launch",
@@ -3037,7 +3037,7 @@
    "chapter": "life",
    "name": "social",
    "title": "Social",
-   "line": "V01D's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each network's official embed or open public API",
+   "line": "Verse's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each network's official embed or open public API",
    "examples": [
     "social feed",
     "bsky.app.bsky.social feed",
@@ -3052,7 +3052,7 @@
    "chapter": "life",
    "name": "dating",
    "title": "Dating",
-   "line": "The beginning of V01D's dating track: a profile builder and an icebreaker coach that run entirely on the page",
+   "line": "The beginning of Verse's dating track: a profile builder and an icebreaker coach that run entirely on the page",
    "examples": [
     "dating profile",
     "dating profile builder",
@@ -3185,7 +3185,7 @@
    "chapter": "stage",
    "name": "telemetry-route",
    "title": "Telemetry route",
-   "line": "Paste a CI report, build log or status update and V01D reads it as the builders' own telemetry instead of answering it like a coding question",
+   "line": "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of answering it like a coding question",
    "examples": [
     "CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAIL fly stars move: the streak never showed. 159/162 passed, unit tests pass, the rest are unconfirmed."
    ],
@@ -4631,7 +4631,7 @@
    "chapter": "self",
    "name": "backlog-digest",
    "title": "Backlog digest",
-   "line": "\"digest your backlog\": V01D's unbuilt asks grouped by skill family with the weakest evidence rating of the skills they name",
+   "line": "\"digest your backlog\": Verse's unbuilt asks grouped by skill family with the weakest evidence rating of the skills they name",
    "examples": [
     "digest your backlog",
     "backlog digest",
@@ -4646,7 +4646,7 @@
    "chapter": "self",
    "name": "guide",
    "title": "Guide",
-   "line": "The book: everything V01D can do, one page each, read like a Skyrim book",
+   "line": "The book: everything Verse can do, one page each, read like a Skyrim book",
    "examples": [
     "open the book",
     "the guide",
@@ -4680,7 +4680,7 @@
    "chapter": "self",
    "name": "v01d-fixes",
    "title": "V01d fixes",
-   "line": "The owner previews the fixes V01D's own model opened",
+   "line": "The owner previews the fixes Verse's own model opened",
    "examples": [
     "Verse's fixes",
     "show Verse's fixes",
@@ -4758,7 +4758,7 @@
    "chapter": "self",
    "name": "know",
    "title": "Know",
-   "line": "V01D's self-knowledge, readable: \"what is voidquest\", \"which games do you know\", \"which miniatures do you have\", \"show me your canon\" open one card read from…",
+   "line": "Verse's self-knowledge, readable: \"what is voidquest\", \"which games do you know\", \"which miniatures do you have\", \"show me your canon\" open one card read from…",
    "examples": [
     "what is voidquest",
     "which games do you know",
@@ -4773,7 +4773,7 @@
    "chapter": "self",
    "name": "state",
    "title": "State",
-   "line": "The one place that says what V01D keeps on this device",
+   "line": "The one place that says what Verse keeps on this device",
    "examples": [
     "what do you keep on this device",
     "show my state",
@@ -4923,7 +4923,7 @@
    "chapter": "self",
    "name": "store",
    "title": "Store",
-   "line": "\"what can I buy\" -> V01D's store, from the same catalog the /store page and /api/store use",
+   "line": "\"what can I buy\" -> Verse's store, from the same catalog the /store page and /api/store use",
    "examples": [
     "what's new in the store",
     "store preview",
@@ -4953,7 +4953,7 @@
    "chapter": "self",
    "name": "web4",
    "title": "Web4",
-   "line": "The four steps of the web, in V01D's plain words: Web 1 read, Web 2 write and share, Web 3 own, Web 4 ask and it appears",
+   "line": "The four steps of the web, in Verse's plain words: Web 1 read, Web 2 write and share, Web 3 own, Web 4 ask and it appears",
    "examples": [
     "what is web4",
     "are you web4",
@@ -5034,7 +5034,7 @@
    "chapter": "self",
    "name": "app",
    "title": "App",
-   "line": "V01D as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't",
+   "line": "Verse as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't",
    "examples": [
     "get the app",
     "install void",
@@ -5185,7 +5185,7 @@
    "chapter": "self",
    "name": "own-parts",
    "title": "Own parts",
-   "line": "V01D's own components by name",
+   "line": "Verse's own components by name",
    "examples": [
     "show me the site test card",
     "the site test card",
@@ -5200,7 +5200,7 @@
    "chapter": "self",
    "name": "about-skill",
    "title": "About skill",
-   "line": "\"tell me about the chess skill\", \"what is the forge skill\", \"how does your weather skill work\": a card about any skill of V01D's, from its own page of the book…",
+   "line": "\"tell me about the chess skill\", \"what is the forge skill\", \"how does your weather skill work\": a card about any skill of Verse's, from its own page of the book…",
    "examples": [
     "play chess",
     "chess"
@@ -5437,7 +5437,7 @@
    "chapter": "minis",
    "name": "book",
    "title": "Book",
-   "line": "The V01D Book as a real book",
+   "line": "The Verse Book as a real book",
    "card": "Book",
    "examples": [
     "books by octavia butler",

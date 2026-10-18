@@ -1,5 +1,5 @@
 /**
- * resonance-mind skill — the spectral / resonance / sound field minds of Grok's drafts on V01D's shared engine (asked by Owner,
+ * resonance-mind skill — the spectral / resonance / sound field minds of Grok's drafts on Verse's shared engine (asked by Owner,
  * 2026-10-18: "all of groks builds should be what v01ds engine is built on"): one card, six laws from lib/field-resonance.js, each
  * citing its draft: F-034 spectral resonance (the default), F-027 spectral phase, F-044 resonance lattice (band portals), F-037 resonant
  * voice, F-048 spatial audio, F-042 predictive audio. The pointer plucks the lattice (move to stir it, press to pluck); a small

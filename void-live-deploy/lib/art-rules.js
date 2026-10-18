@@ -2,7 +2,7 @@
 // Pure, shared by the route (functions/api/card-art.js) and the tests. One picture per FOLDED subject, made once and kept for ever.
 // The prompt is a FIXED template: only the folded subject key, the card's kind and its rarity (each from a short allow-list) go into it. No
 // artist, franchise, game, company or character is ever named by us, and a subject that is one (or a real person, or unsafe) is refused here
-// before a model is asked, so the card keeps V01D's own ink plate.
+// before a model is asked, so the card keeps Verse's own ink plate.
 import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
@@ -23,7 +23,7 @@ export const subjectKey = (v) => ideaKey(rawSubject(v));
 const SEXUAL = /\b(sex\w*|porn\w*|nude\w*|naked|nsfw|erotic\w*|fetish\w*|orgy|genital\w*|penis|vagina|boob\w*|hentai|rape\w*|incest\w*|xxx)\b/;
 const HATE = /\b(nazi\w*|swastika\w*|kkk|white power|genocide|lynch\w*|slur\w*|terroris\w*|isis|jihad\w*|suicid\w*|self harm|child abuse|gore|beheading)\b/;
 // names we never put in a picture prompt: living artists' styles, franchises, games, companies and their characters (a short list of the commonest;
-// the template itself never names any, and a subject that does is painted as V01D's own plate instead)
+// the template itself never names any, and a subject that does is painted as Verse's own plate instead)
 const BRANDS = /\b(disney|pixar|marvel|dc comics|batman|superman|spider ?man|pokemon|pikachu|mario|zelda|nintendo|sega|sonic|minecraft|fortnite|roblox|star wars|jedi|yoda|harry potter|hogwarts|lord of the rings|hobbit|game of thrones|mickey|minnie|donald duck|simpsons|spongebob|hello kitty|barbie|lego|magic the gathering|yugioh|dungeons and dragons|warhammer|hearthstone|league of legends|overwatch|google|microsoft|nike|coca cola|pepsi|mcdonald|starbucks|netflix|ghibli|miyazaki|picasso|van gogh|monet|dali|banksy|rutkowski|artstation|deviantart|midjourney)\b/;
 
 /** why a subject gets no painted card: '' when it may be painted, else a short reason. Pure.
@@ -47,7 +47,7 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
 export const ART_STYLE = 'dark arcane tarot-card illustration, deep indigo and black void behind it, faint gold filigree and glowing sigils only in the background, mystical light';
 // one camera and one light, so the model has a single lighting instruction instead of five
 export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and fully inside the frame, a single strong rim light from above left';
-// The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if V01D just passes a
+// The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if Verse just passes a
 // card's title ... directly to an image API, the model guesses the context and framing, which results in cut-off cats and random aesthetics").
 // Before the painting, one short call to the free text model turns the card's folded subject, its kind and its family (each from an allow-list:
 // still nothing a person typed) into one visual scene; its answer is cut to plain words and checked by the same refusals as a subject, and a
@@ -65,7 +65,7 @@ export const DIRECTOR_SYSTEM = 'You are the art director for Verse\'s trading ca
 export const SCENE_MAX = 240;
 /** the Director's input: the folded subject, the kind phrase and the family, all from allow-lists. Pure. */
 export const TAKE_MAX = 300;
-/** V01D's take on the card (its answer's text, owner, 2026-10-18: "an image based on the card and v01ds take on the card"), cut to plain words: letters,
+/** Verse's take on the card (its answer's text, owner, 2026-10-18: "an image based on the card and v01ds take on the card"), cut to plain words: letters,
  *  digits, spaces and plain punctuation, at most TAKE_MAX characters. It comes from the page, so the Director reads it as a description only. Pure. */
 export const takeOf = (v) => String(v == null ? '' : v).replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, TAKE_MAX);
 export function directorPrompt(key, kind = 'answer', family = '', take = '') {
@@ -83,7 +83,7 @@ export function sceneOf(text, isSecret = () => false) {
   if (isSecret(clean) || keeperOf(clean) || SEXUAL.test(all) || HATE.test(all) || BRANDS.test(all) || /\d{6,}/.test(all) || clean.split(' ').some((w) => w.length >= 28)) return '';
   return clean;
 }
-/** the directed prompt: the scene first (the subject's own nouns), one camera and light, the rarity's light, V01D's dark setting, the style tags and the framing and negative cues. Pure. */
+/** the directed prompt: the scene first (the subject's own nouns), one camera and light, the rarity's light, Verse's dark setting, the style tags and the framing and negative cues. Pure. */
 export function directedPrompt(scene, rarity = 'common') {
   return scene + ', ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }

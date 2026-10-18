@@ -1,7 +1,7 @@
 /**
- * v01d-fixes skill — the owner previews the fixes V01D's own model opened (owner, 2026-10-16: "confidence > 0.8 might auto-merge,
- * < 0.8 diff-preview for Adam"; lib/v01d-fixes.js). The card lists the open pull requests labelled "made by V01D", the ones that
- * wait for the owner first: V01D's confidence, the file and lines it changes, its reason, and the changed lines themselves; Approve
+ * v01d-fixes skill — the owner previews the fixes Verse's own model opened (owner, 2026-10-16: "confidence > 0.8 might auto-merge,
+ * < 0.8 diff-preview for Adam"; lib/v01d-fixes.js). The card lists the open pull requests labelled "made by Verse", the ones that
+ * wait for the owner first: Verse's confidence, the file and lines it changes, its reason, and the changed lines themselves; Approve
  * (owner only, /api/v01d-fixes) lets a waiting one merge once Void's review is clean. Read from GitHub's public API; owner-only:
  * without the owner's key the card says so and fetches nothing.
  * "Verse's fixes", "show Verse's fixes", "fixes waiting for me", "what fixes did Verse propose".

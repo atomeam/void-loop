@@ -1,7 +1,7 @@
-// V01D card art (owner, 2026-10-16: "no art exists yet ... commit to V01D's style: every card needs art"; "V01D is scary like AI is scary, but it's for
-// all ages ... Plus it's Halloween, so go extra scary this month"; "V01D cards should have their own magic or Todd McFarlane style art signature").
-// The signature is V01D's own and copies no artist, character or logo: heavy black ink on a field tinted with the card's family hue, thick contour
-// lines, crosshatch shading, torn-paper edges, chain and cloak line work, ink splatters, and the one motif that makes it V01D: the void looks back
+// Verse card art (owner, 2026-10-16: "no art exists yet ... commit to Verse's style: every card needs art"; "Verse is scary like AI is scary, but it's for
+// all ages ... Plus it's Halloween, so go extra scary this month"; "Verse cards should have their own magic or Todd McFarlane style art signature").
+// The signature is Verse's own and copies no artist, character or logo: heavy black ink on a field tinted with the card's family hue, thick contour
+// lines, crosshatch shading, torn-paper edges, chain and cloak line work, ink splatters, and the one motif that makes it Verse: the void looks back
 // (eyes opening in the dark, static and glitch tears, a face that is an empty frame, a doorway that is a screen). Scary the way AI is scary, for
 // every age: uncanny and storybook-spooky, never gore, weapons, real faces or real tragedy. Every kind has its own plate (a Film is an aperture
 // and a strip, a Person a cloaked bust with an empty frame for a face, a Place a door on a horizon ...); a skill, game or miniature is its guide

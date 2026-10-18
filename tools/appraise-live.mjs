@@ -1,5 +1,5 @@
 // The live appraiser, checked from outside (.github/workflows/appraise-live.yml, manual): POST one small test image to
-// /api/appraise on the live site and read what came back: the status, the kind V01D saw, whether the text is V01D's own
+// /api/appraise on the live site and read what came back: the status, the kind Verse saw, whether the text is Verse's own
 // valuation line, and whether the vision model answered at all (a 503 means the deploy has no vision model bound, a 502 that
 // the model did not answer). Prints a Markdown table for the job summary: status, kind and yes/no only; never the image, never a
 // visitor's photo (this one is a tiny test picture made here). Exit 1 when the route did not value it, 3 when the site cannot be reached.

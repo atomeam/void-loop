@@ -7,8 +7,8 @@ import { grip, sideCard } from './side-card.js';
 import { LEVELS, getLevel, setLevel } from './game-level.js';
 import PARODY from '../lib/parody.js';
 
-// V01D's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
-// From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and V01D's own version.
+// Verse's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
+// From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.
 // "parody of monopoly", "your version of clue", "is reversi public domain", "make a v01d version of risk", "parody games". Pure.
 const PARODY_RE = /^(?:(?:what(?:'s| is)|whats|show(?: me)?|tell me|make(?: me)?|forge|build|give me)\s+)?(?:the\s+|a\s+|an\s+)?(?:v01d|void|verse|your|ur)?\s*(?:parody|version|take|spin|remake|knock-?off)\s+(?:of|on)\s+(.+)$|^parody[\s-]forge\s+(.+)$|^is\s+(.+?)\s+(?:in\s+the\s+)?public\s+domain$|^can\s+(?:v01d|void|verse|you)\s+(?:copy|make|clone)\s+(.+)$/;
 export function parodyOf(text) {

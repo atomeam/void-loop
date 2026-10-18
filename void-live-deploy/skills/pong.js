@@ -1,11 +1,11 @@
 /**
- * pong skill — Void Pong against V01D (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
+ * pong skill — Void Pong against Verse (skills/pong-rules.js): "pong", "play pong", "void pong", "table tennis game".
  * Move your paddle with the mouse or a finger on the court, or W/S and the arrow keys with the card focused. First to 7.
  */
 import * as P from './pong-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { pongRecorder, pongGhostY, submit, load, words } from '../lib/arcade-ghost.js';
-import { finish } from '../lib/ladder.js'; // a finished match goes on V01D's arcade ladder (asked by Void)
+import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Void)
 
 export function pongOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');

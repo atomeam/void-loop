@@ -1,5 +1,5 @@
 /**
- * dating skill - the beginning of V01D's dating track: a profile builder and an icebreaker coach that run entirely on
+ * dating skill - the beginning of Verse's dating track: a profile builder and an icebreaker coach that run entirely on
  * the page. Nothing is sent anywhere, no matching, no other people's data; adults only (an 18+ check before it opens).
  * The real dating service needs auth, verification, block/report and moderation first (docs/everything-app.md).
  * Contract: { name, examples, nearMisses, match, run }.

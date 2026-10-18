@@ -1,5 +1,5 @@
 /**
- * social skill - V01D's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each
+ * social skill - Verse's social feed card: public posts from X, Bluesky and Mastodon by link or handle, through each
  * network's official embed or open public API (no login, no keys, nothing stored). X: the official blockquote embed with
  * platform.twitter.com/widgets.js (posts by link). Bluesky: embed.bsky.app for a post link; the public AppView
  * (public.api.bsky.app, app.bsky.feed.getAuthorFeed) for a handle. Mastodon: the server's own /embed for a post link;

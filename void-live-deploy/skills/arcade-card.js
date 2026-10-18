@@ -1,6 +1,6 @@
 /**
- * arcade-card — the shared card for V01D's arcade games (skills/pong.js, skills/snake.js): a title bar, a canvas, a status
- * line with V01D's reason, and New game. The game loop runs only while the card is on the page and the tab is visible.
+ * arcade-card — the shared card for Verse's arcade games (skills/pong.js, skills/snake.js): a title bar, a canvas, a status
+ * line with Verse's reason, and New game. The game loop runs only while the card is on the page and the tab is visible.
  */
 export function arcadeCard(th, stageApi, { cls, title, sub, w, h }) {
   const el = document.createElement('div');

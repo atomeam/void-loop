@@ -1,7 +1,7 @@
 // POST /api/appraise { image: data URL (PNG, JPEG or WebP, downsized by the page), note?: what the person typed }
-// -> { seen, value: { kind, cents, text, says, expert, person }, text }. V01D values anything from a photo (frontier #30):
+// -> { seen, value: { kind, cents, text, says, expert, person }, text }. Verse values anything from a photo (frontier #30):
 // the vision model (lib/models.js path 'vision', the site's own Workers AI binding) describes the photo, and lib/appraise-photo.js
-// turns the description into V01D's valuation. The photo is read for this answer and dropped: nothing is stored or logged.
+// turns the description into Verse's valuation. The photo is read for this answer and dropped: nothing is stored or logged.
 // People are never priced: a person in the photo, or an ask about one, gets a compliment (owner, 2026-10-15). 503 with no AI
 // binding (a deploy without the model), 502 when the model does not answer, 400 for anything that is not a small image.
 import { models, VISION_FALLBACK } from '../../lib/models.js';

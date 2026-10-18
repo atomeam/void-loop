@@ -1,4 +1,4 @@
-// The faces of the 3D V01D Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
+// The faces of the 3D Verse Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
 // things to draw plus the places a tap lands. Pure, so it runs without a browser: the caller gives it a measure(text, font)
 // function (a canvas' measureText in the page, a fixed width in the tests) and paints the result with paint(). The same page data
 // the flat book reads (lib/guide.js, tools/guide.mjs), so the 3D book can never show a different page.

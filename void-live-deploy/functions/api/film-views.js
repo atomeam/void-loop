@@ -1,4 +1,4 @@
-// V01D Tube view counts (owner, 2026-10-15: "V01D should be its own version of YouTube"): one D1 row per film, one upsert per
+// Verse Tube view counts (owner, 2026-10-15: "Verse should be its own version of YouTube"): one D1 row per film, one upsert per
 // view (the page counts a film once per tab), no KV. GET ?ids=a,b -> { views: { a: 3 } }; POST ?id= -> { id, views }.
 import { ID_RE } from './films.js';
 const TABLE = 'CREATE TABLE IF NOT EXISTS void_film_views (id TEXT PRIMARY KEY, n INTEGER NOT NULL DEFAULT 0)';

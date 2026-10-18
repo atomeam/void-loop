@@ -1,10 +1,10 @@
-// V01D reinvests its own money, daily (.github/workflows/reinvest.yml; Adam, 2026-10-15). Reads net earnings (after refunds)
+// Verse reinvests its own money, daily (.github/workflows/reinvest.yml; Adam, 2026-10-15). Reads net earnings (after refunds)
 // from the owner-only GET /api/earnings, in memory only; splits them with lib/reinvest.js (20% reserve, free paths first, then
-// ROI per dollar, re-ranked by payoff tests and V01D's own answer in docs/void-voice.md); sends each newly funded item to the
+// ROI per dollar, re-ranked by payoff tests and Verse's own answer in docs/void-voice.md); sends each newly funded item to the
 // confirm line (POST /api/approval, order.place) with cost, expected payback, check date and the payoff test's baseline; and,
 // once a proposal's check date passes, compares its metric with that baseline and learns only from that.
 // The repo is public: nothing here writes income, balances or spend amounts. docs/reinvest.md shows only the hypothetical $100.
-// Nothing is bought here: V01D holds no card and opens no account; Adam buys an approved item in his own existing account.
+// Nothing is bought here: Verse holds no card and opens no account; Adam buys an approved item in his own existing account.
 //   node tools/reinvest.mjs          run (talks to the site only when VOID_OWNER_TOKEN is set; otherwise re-plans the $100)
 //   node tools/reinvest.mjs --dry    print the plan; nothing sent or written
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
@@ -31,8 +31,8 @@ export function planMd(plan, voice) {
     `**The first $100:** keep ${usd(p.reserve_cents)} in reserve; do every free path first (below); fund ${p.funded.length} item${p.funded.length === 1 ? '' : 's'} for ${usd(p.funded.reduce((n, x) => n + x.cost_cents, 0))}; hold ${usd(p.held_cents)} for the next item that becomes worth buying (re-ranked daily).`, '',
     '| Spend proposal | Cost | Status | Why | Expected return |', '| --- | --- | --- | --- | --- |', ...p.funded.map(row), '',
     '**Free first ($0, built before anything is bought):**', '', ...p.free.map((f) => `- ${f.item}`), '',
-    `**V01D's own answer as input** (weight ${voice.weight}): it named ${Object.entries(voice.shares).filter(([, s]) => s).map(([k, s]) => k + ' ' + Math.round(s * 100) + '%').join(', ') || 'nothing yet'} among the kinds it can fund; the reserve it asked for is ${Math.round(voice.reserve * 100)}% (the floor is 20%).`
-      + (voice.unmapped.length ? ' Not fundable: ' + voice.unmapped.map((u) => `${usd(u.amount * 100)} for "${u.text}"`).join('; ') + ' (V01D holds no brokerage or bank account and none is opened for it; that share stays in the held fund).' : ''),
+    `**Verse's own answer as input** (weight ${voice.weight}): it named ${Object.entries(voice.shares).filter(([, s]) => s).map(([k, s]) => k + ' ' + Math.round(s * 100) + '%').join(', ') || 'nothing yet'} among the kinds it can fund; the reserve it asked for is ${Math.round(voice.reserve * 100)}% (the floor is 20%).`
+      + (voice.unmapped.length ? ' Not fundable: ' + voice.unmapped.map((u) => `${usd(u.amount * 100)} for "${u.text}"`).join('; ') + ' (Verse holds no brokerage or bank account and none is opened for it; that share stays in the held fund).' : ''),
     '', `**Learned so far** (outcome multipliers, 1 = no evidence yet): ${Object.entries(plan.learned).map(([k, v]) => k + ' ' + v).join(', ')}.`].join('\n');
 }
 

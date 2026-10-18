@@ -1,4 +1,4 @@
-// V01D card merges, the rules (frontier #34 step 1; owner, 2026-10-16: "research merge games so V01D can experiment with card merges").
+// Verse card merges, the rules (frontier #34 step 1; owner, 2026-10-16: "research merge games so Verse can experiment with card merges").
 // Two cards go in, one card comes out. PURE and DETERMINISTIC: no clock, no randomness, no network. The page (skills/merge.js) and the
 // server route (functions/api/merge.js) share this file, so both mean the same thing by "the same pair".
 //
@@ -46,7 +46,7 @@ export function freshCard(name) {
   return { name: clean, key: ideaKey(name), kinds: ['Idea'], power: 1, resistance: 1, income: 0, cost: 1, depth: 0 };
 }
 
-/** a card for something V01D really is (a skill): its stats from card-frame's cardOf(), depth 0. Pure. */
+/** a card for something Verse really is (a skill): its stats from card-frame's cardOf(), depth 0. Pure. */
 export function cardFromStats(name, c) {
   const kind = String((c && c.typeLine) || '').split(/\s+[\u2014-]\s+/)[0].trim();
   return { name: sanitiseName(name) || freshCard(name).name, key: ideaKey(name), kinds: [kind || 'Skill'],

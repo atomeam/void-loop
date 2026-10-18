@@ -1,4 +1,4 @@
-// The V01D card duel's rules (frontier #33): pure, no DOM, no network, no randomness. Two sides see the same table and choose.
+// The Verse card duel's rules (frontier #33): pure, no DOM, no network, no randomness. Two sides see the same table and choose.
 // Each side has a Root (Power 5, Resistance 8, two open arrows) and a Treasury (starts 6). A turn: collect Income (2 + the Income of
 // your cards in play that are not neutralised), then up to two actions: summon a card onto an open arrow of one of your cards for its
 // cost, attack an enemy card with one of yours (coins can be pledged by both sides), or pass (bank two coins and end the turn).
@@ -31,7 +31,7 @@ export function statsFor(name, families, deps) {
 
 const mk = (id, side, def, parent, slot, root) => ({ id, side, name: def.name, power: def.power, resistance: def.resistance, income: def.income, arrows: def.arrows, parent, slot, root: !!root, neutralised: false });
 
-/** a new duel. pool: the cards V01D may summon, e.g. { void: [card(...)] }; with none it summons fresh ideas. Pure. */
+/** a new duel. pool: the cards Verse may summon, e.g. { void: [card(...)] }; with none it summons fresh ideas. Pure. */
 export function newState({ pool = null } = {}) {
   const root = { name: 'Root', power: 5, resistance: 8, income: 0, arrows: 2 };
   return { turn: 0, side: 'you', actions: ACTIONS, due: true, treasury: { you: START_TREASURY, void: START_TREASURY }, nextId: 3, over: null, log: [],
@@ -143,7 +143,7 @@ export function apply(s0, action) {
   return s.actions < 1 ? endTurn(s) : s;
 }
 
-/** V01D's next action, always the same for the same state: a safe attack if one is good, else the strongest affordable summon, else pass. Pure. */
+/** Verse's next action, always the same for the same state: a safe attack if one is good, else the strongest affordable summon, else pass. Pure. */
 export function opponentMove(s0) {
   const s = s0.due ? collectIncome(s0) : s0, side = s.side, foe = other(side);
   if (s.over) return null;

@@ -1,5 +1,5 @@
 /**
- * rts skill — V01D's world as a real-time strategy game (owner, 2026-10-16: "the world of V01D itself should become a working RTS
+ * rts skill — Verse's world as a real-time strategy game (owner, 2026-10-16: "the world of Verse itself should become a working RTS
  * game so if a background is added the floating figures are grounded and can interact and build. gather wood supplies all with
  * whatever the user has summoned. so new summons are treated as new resources for the chosen backdrop or scene"). The loop is Age of
  * Empires', taken whole: what you summon is the resource (a tree is wood, a rock is stone, every food thing is food), a villager
