@@ -1,5 +1,5 @@
 {
- "about": "V01D by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "Verse by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -270,24 +270,6 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Create a convert-card skill: persistent interactive unit conversions on the stage",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-2"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Film discovery as a structured skill returning JSON film metadata",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Growth friction: link Words and the world family failure logs on the card",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-1"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "Two signposts left out until they can be true",
    "from": "claude, 2026-10-15, with the useful 404 and security.txt"
   }
@@ -460,88 +442,100 @@
  },
  "commits": [
   {
-   "at": "2026-10-17T03:10:05Z",
-   "subject": "Incident: the browser suite failed on 3f81b553 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:41:39Z",
+   "subject": "Incident: the browser suite failed on 5d392dcf (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T03:05:14Z",
-   "subject": "Incident: the browser suite failed on 3f81b553 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:40:19Z",
+   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:54:09Z",
-   "subject": "Growth tree test taps along the trunk; failed checks annotate their detail on a runner"
+   "at": "2026-10-18T08:39:53Z",
+   "subject": "Spotter: 4 check(s) healed with no revert after 5d587a25718577c1cf95a30221b85cc3c7294103 (tools/flakes.json)"
   },
   {
-   "at": "2026-10-17T02:49:13Z",
-   "subject": "Site test: nothing left to improve this run (add candidates)"
+   "at": "2026-10-18T08:39:29Z",
+   "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:46:42Z",
-   "subject": "Incident: the browser suite failed on a35440ba (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:38:29Z",
+   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:45:29Z",
-   "subject": "Incident: the browser suite failed on 480f119c (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:38:21Z",
+   "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:40:46Z",
-   "subject": "Incident: the browser suite failed on a35440ba (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:37:46Z",
+   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:39:33Z",
-   "subject": "Incident: the browser suite failed on 480f119c (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:37:40Z",
+   "subject": "Incident: the browser suite failed on 3a0f50a3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:34:09Z",
-   "subject": "Incident: the browser suite failed on dd4ef4aa (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:36:56Z",
+   "subject": "Ledger: one line for the self-card fold (a merge had copied main's 'asks not built?' line again)"
   },
   {
-   "at": "2026-10-17T02:29:24Z",
-   "subject": "Incident: the browser suite failed on dd4ef4aa (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:36:16Z",
+   "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T02:26:43Z",
-   "subject": "Site test: fix: \"turn this card into a note\" nothing appeared; console:"
+   "at": "2026-10-18T08:35:23Z",
+   "subject": "A count is not an HTTP status: 'with 587 misses' no longer reads as an error"
   },
   {
-   "at": "2026-10-17T02:19:52Z",
-   "subject": "The suite's stall report is also written as a GitHub annotation, so where a stuck page is can be read without the job log (main's shard 3 ha"
+   "at": "2026-10-18T08:34:40Z",
+   "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-17T02:08:34Z",
-   "subject": "Regenerate families and the book"
+   "at": "2026-10-18T08:34:37Z",
+   "subject": "Calendar file: export the agenda as a standard .ics (from the owner's 150-things list)"
   },
   {
-   "at": "2026-10-17T01:58:40Z",
-   "subject": "Name skills/duel.js in the card-game test section (untested ratchet)"
+   "at": "2026-10-18T08:34:31Z",
+   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T01:52:03Z",
-   "subject": "Incident: the browser suite failed on 118d5ecd (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:33:43Z",
+   "subject": "Self card: an ask said again in other words is one line, with how many times it was asked (owner, 2026-10-18: 'fix this')"
   },
   {
-   "at": "2026-10-17T01:48:49Z",
-   "subject": "Main's shard 1: the duel's summon and answer buttons are no longer picked up as a drag (the stage re-drew the card under the click), the gro"
+   "at": "2026-10-18T08:32:40Z",
+   "subject": "Backlog digest answers to Verse's too"
   },
   {
-   "at": "2026-10-17T01:46:05Z",
-   "subject": "Incident: the browser suite failed on 118d5ecd (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:32:27Z",
+   "subject": "Bench: four asks for the convert card's keep-as-a-card phrasings"
   },
   {
-   "at": "2026-10-17T01:44:08Z",
-   "subject": "Incident: the browser suite failed on c3b96f65 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:31:52Z",
+   "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-17T01:43:22Z",
-   "subject": "Incident: the browser suite failed on b7e9acb3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:31:36Z",
+   "subject": "Growth card: failure log per family with the bench asks it got wrong and a tap-to-copy chip"
   },
   {
-   "at": "2026-10-17T01:40:31Z",
-   "subject": "Incident: the browser suite failed on c3b96f65 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:30:32Z",
+   "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "V01D's open asks audited and linked, Service Health, seasons (Claude, 2026-10-17",
+    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card (ski"
+   },
+   {
+    "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Void)",
+    "line": "each card in F-038 belongs to a skill family (idea and mind: Void itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family alon"
+   },
+   {
+    "name": "Art Forge (claude, helper/art-forge)",
+    "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md. Next"
+   },
    {
     "name": "Web4: V01D as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
     "line": "skills/web4.js + lib/web4.js (one source) + a V01D Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line that "
@@ -553,18 +547,6 @@
    {
     "name": "The showcase proves what it says, the scoreboards read true, the Examine view (C",
     "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no sourc"
-   },
-   {
-    "name": "Claude as the builder brain (Claude, 2026-10-16)",
-    "line": "propose-fix.yml started by hand with brain: claude has Claude propose the fix for a probe: or route: job in one capped call (tools/claude-brain.mjs, 8,000 output tokens, about $0.20 a run, ANTHROPIC_API_KEY repo secret in the propose job on"
-   },
-   {
-    "name": "Performance pass, four PRs (Claude, 2026-10-16)",
-    "line": "the page's load (#871: ask-only libs after the skills, index preloaded, dead weather page shelved, data-skills=\"ready\" on <html>, tools/page-perf.mjs + docs/playbooks/perf-pass.md); V01D's three 3D asks (#878: 'low poly 3d' / 'full 3d' / 'a"
-   },
-   {
-    "name": "V01D's evidence and ledger asks, five PRs (Claude, 2026-10-16)",
-    "line": "last_tested + success_rate on every skill in families.json and the family-health card (#858); the dependency map, tools/deps.mjs + skills/deps.js (#863); Void's review of main leaves one review:<skill> queue job a day (#864, .github/workflo"
    }
   ],
   "ladders": [
