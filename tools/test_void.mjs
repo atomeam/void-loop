@@ -4570,18 +4570,18 @@ try {
   // card's art box under the foil frame; an uncached answer card paints once by itself (one POST); a skill card paints by its name; the route down leaves the plate
   // the void seal (owner, 2026-10-18: the ink plates "suck"): every card gets V01D's procedural art, the same picture for the same card
   // a collectible card (owner, 2026-10-18): "make a collectible card of a dragon" mints the subject's card with variants and a print sheet;
-  // it starts unevolved (V01D's void art) and evolves when its painting lands, by itself after a few seconds open
-  if (want("collectible card: mint, variants, evolve")) {
+  // it shows V01D's void art quietly (no badge, no evolve or again button) and the painting replaces it when it lands (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
+  if (want("collectible card: mint, variants, quiet art")) {
     const C = await fresh(); const posts = []; const IMG = 'data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(9000);
     await C.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, 2500)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: IMG, cached: false }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
     await C.ask('make a collectible card of a dragon', 1200);
     const read = () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-collect]'); if (!e) return null; const a = e.querySelector(':scope > .vc-art');
-      return { title: e.dataset.collect, collect: e.classList.contains('vc-collect'), variant: e.dataset.variant || '', strip: [...e.querySelectorAll('.vc-variants button')].map((b) => b.textContent).join('|'), stage: a && a.dataset.stage, seal: !!(a && a.querySelector('.vc-seal')), forged: !!(a && a.querySelector('.vc-forge-img')) }; });
+      return { title: e.dataset.collect, collect: e.classList.contains('vc-collect'), variant: e.dataset.variant || '', strip: [...e.querySelectorAll('.vc-variants button')].map((b) => b.textContent).join('|'), chrome: !!(e.querySelector('.vc-stage, .vc-again, .vc-forge-btn') || /evolve/i.test((a && a.textContent) || '') || (a && a.dataset.stage)), seal: !!(a && a.querySelector('.vc-seal')), forged: !!(a && a.querySelector('.vc-forge-img')) }; });
     const first = await until(async () => { const r = await read(); return r && r.seal && r.strip ? r : null; }, 9000).catch(() => null);
     await C.p.click('.vc-variants [data-variant=full]'); const full = await read();
-    const evolved = await until(async () => { const r = await read(); return r && r.forged && r.stage === 'evolved' ? r : null; }, 9000).catch(() => null);
-    check('collectible card: "make a collectible card of a dragon" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), unevolved under V01D\'s void art, and it evolves into its painting by itself, with one paint asked for the dragon',
-      !!first && /dragon/i.test(first.title) && first.collect && first.variant === 'foil' && /Normal\|Foil\|Full art\|Print sheet of 9/.test(first.strip) && first.stage === 'unevolved'
+    const evolved = await until(async () => { const r = await read(); return r && r.forged && !r.chrome ? r : null; }, 9000).catch(() => null);
+    check('collectible card: "make a collectible card of a dragon" mints the dragon card as a collectible (foil first, Normal / Foil / Full art / Print sheet of 9), under V01D\'s void art with no evolve badge or button, and its painting replaces the art when it lands (still no badge or button), with one paint asked for the dragon',
+      !!first && /dragon/i.test(first.title) && first.collect && first.variant === 'foil' && /Normal\|Foil\|Full art\|Print sheet of 9/.test(first.strip) && first.chrome === false
         && full.variant === 'full' && !!evolved && posts.length >= 1 && posts.every((p) => /dragon/.test(p.subject)) && !C.errors.length, JSON.stringify({ first, full, evolved, posts, errors: C.errors }).slice(0, 800));
     await C.ctx.close(); }
   if (want("void seal: every card's art box carries V01D's procedural art, the same for the same card")) {

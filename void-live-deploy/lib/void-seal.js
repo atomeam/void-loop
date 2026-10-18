@@ -194,7 +194,6 @@ export function sealArt(box, { key = '', kind = 'Idea', hue = null, rarity = nul
       const url = sealUrl(sealPlan(key, { kind, hue, rarity, nouns }), w, h); if (!url) return;
       const im = document.createElement('img'); im.className = 'vc-seal'; im.alt = ''; im.decoding = 'async'; im.src = url;
       box.insertBefore(im, box.querySelector(':scope > .vc-forge-img, :scope > .vc-forge-btn')); box.classList.add('vc-sealed');
-      if (!box.dataset.stage) { box.dataset.stage = 'unevolved'; const t = document.createElement('span'); t.className = 'vc-stage'; t.textContent = 'unevolved'; box.appendChild(t); } // the painting is its evolved form (lib/card-forge.js show)
     };
     if (typeof requestIdleCallback === 'function') requestIdleCallback(go, { timeout: 400 }); else setTimeout(go, 0);
   } catch (_) {}

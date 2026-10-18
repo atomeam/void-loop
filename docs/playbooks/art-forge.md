@@ -6,7 +6,7 @@
 
 **Money guard (owner, 2026-10-17: V01D spends only what it has earned; no earnings, no budget):** the cap is clamped to the free allowance (`FREE_CAP` 30), no setting goes past it; a higher cap later must read `/api/earnings` and log each paid painting publicly (not built).
 
-**Detail:** a daily cap of new pictures stored in D1 (default 30, `ART_DAILY_CAP` overrides, 0 paints nothing), a per-connection limit of 3 paints a minute (`rateLimited()`, its own bucket), the kill switch `ART_OFF=1`, a cached picture never made again, and any failure or the cap returns `{ state: 'plate' }` so the card keeps its plate and nothing is cached.
+**Detail:** a daily cap of new pictures stored in D1 (default 30, `ART_DAILY_CAP` overrides, 0 paints nothing), a per-connection limit of 3 paints a minute (`rateLimited()`, its own bucket), the kill switch `ART_OFF=1`, a cached picture never made again, and any failure or the cap returns `{ state: 'plate' }` so the card keeps its plate and nothing is cached. The card shows no evolve chrome (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art"): no stage badge, no Evolve or Evolve-again button, no dwell wait or flash; the seal is the quiet placeholder, the painting replaces it with a short opacity fade, and the seal stays if no painting arrives. The route still accepts `again` (one regeneration a day per subject) but the page does not send it.
 
 **Prompt rules:** a fixed template (`ART_STYLE` in `lib/art-rules.js`) plus the folded key, the kind and the rarity, each from an allow-list. No artist, franchise, game, company or character is named by us; a subject that is one, a person, sexual or hateful, secret-shaped or refused by the keeper gets no model call.
 
