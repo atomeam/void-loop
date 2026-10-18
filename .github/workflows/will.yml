@@ -10,6 +10,12 @@ on:
     - cron: '7 13-23/3 * * *' # 13:07 to 22:07 UTC, every three hours: 9 AM to 6 PM New York in summer, an hour earlier in winter
     - cron: '7 1 * * *' # 9 PM New York in summer
   workflow_dispatch:
+  # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
+  # otherwise leave it on the card until the next three-hour slot. One Workers AI call per merge, and only when the deploy passed.
+  workflow_run:
+    workflows: ['Void deploy']
+    types: [completed]
+    branches: [main]
 
 concurrency:
   group: void-will
@@ -20,6 +26,7 @@ permissions:
 
 jobs:
   will:
+    if: github.event_name != 'workflow_run' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
