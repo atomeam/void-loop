@@ -6093,5 +6093,41 @@
   {
     "ask": "decision matrix for moving to berlin",
     "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "certainty budget",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "certainty budget of 3",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "refill certainty",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "show stale work",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "note that I edited the pitch",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "note that I decided the pitch",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "set priority deep",
+    "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "set priority interruptible",
+    "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "show deferred",
+    "want": "skill:interrupt-priority"
   }
 ]

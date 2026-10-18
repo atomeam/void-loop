@@ -127,9 +127,9 @@
    "kind": "family",
    "count": {
     "experiment": 3,
-    "tested": 32,
+    "tested": 29,
     "checked": 51,
-    "proven": 7
+    "proven": 10
    },
    "from": 168,
    "to": 261
@@ -4058,8 +4058,10 @@
     "note that I edited the pitch",
     "note that I decided the pitch"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Say the words below and it answers.",
+   "glow": 100,
    "n": 227
   },
   {
@@ -4073,8 +4075,10 @@
     "certainty budget of 3",
     "refill certainty"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the stage. Turn the page when you are done.",
+   "glow": 100,
    "n": 228
   },
   {
@@ -4088,8 +4092,10 @@
     "set priority interruptible",
     "show deferred"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "glow": 100,
    "n": 229
   },
   {

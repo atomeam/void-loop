@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-18",
  "totals": {
   "experiment": 7,
-  "tested": 94,
+  "tested": 91,
   "checked": 98,
-  "proven": 96
+  "proven": 99
  },
  "families": [
   {
@@ -1701,9 +1701,9 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 3,
-    "tested": 32,
+    "tested": 29,
     "checked": 51,
-    "proven": 7
+    "proven": 10
    },
    "skills": [
     {
@@ -2188,26 +2188,32 @@
     },
     {
      "name": "stale-work",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
      "name": "certainty-budget",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
      "name": "interrupt-priority",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
