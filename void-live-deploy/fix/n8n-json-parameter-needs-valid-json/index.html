@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>n8n &quot;JSON parameter needs to be valid JSON&quot;: what it means and how to fix it</title>
+  <meta name="description" content="A node (usually HTTP Request or Set) has a JSON field whose text is not valid JSON once n8n has filled in any expressions. What it means and the steps to fix it.">
+  <link rel="canonical" href="https://a-to-mind.com/fix/n8n-json-parameter-needs-valid-json/">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <meta property="og:title" content="n8n &quot;JSON parameter needs to be valid JSON&quot;: what it means and how to fix it">
+  <meta property="og:description" content="A node (usually HTTP Request or Set) has a JSON field whose text is not valid JSON once n8n has filled in any expressions. What it means and the steps to fix it.">
+  <meta property="og:url" content="https://a-to-mind.com/fix/n8n-json-parameter-needs-valid-json/">
+  <meta property="og:image" content="https://a-to-mind.com/og.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "TechArticle",
+  "headline": "n8n \"JSON parameter needs to be valid JSON\": what it means and how to fix it",
+  "description": "A node (usually HTTP Request or Set) has a JSON field whose text is not valid JSON once n8n has filled in any expressions. What it means and the steps to fix it.",
+  "url": "https://a-to-mind.com/fix/n8n-json-parameter-needs-valid-json/",
+  "about": "n8n",
+  "publisher": {
+    "@type": "Organization",
+    "name": "A-to-Mind",
+    "url": "https://a-to-mind.com/"
+  }
+}
+  </script>
+  <style>
+    :root { --bg: #0a0a0a; --ink: #ededed; --muted: #9a9a9a; --line: #262626; --card: #141414; --accent: #7aa7ff; }
+    @media (prefers-color-scheme: light) { :root { --bg: #fafafa; --ink: #161616; --muted: #5a5a5a; --line: #e2e2e2; --card: #ffffff; --accent: #2457c5; } }
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.6 system-ui, -apple-system, sans-serif; }
+    main { max-width: 760px; margin: 0 auto; padding: 24px 16px 64px; }
+    a { color: var(--accent); }
+    h1 { font-size: clamp(26px, 5.5vw, 38px); line-height: 1.15; margin: 18px 0 10px; }
+    h2 { font-size: 21px; margin: 34px 0 8px; }
+    .lead { font-size: 18px; color: var(--muted); }
+    code { font: 14px ui-monospace, Menlo, Consolas, monospace; background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 1px 6px; overflow-wrap: anywhere; }
+    ol, ul { padding-left: 22px; } li { margin: 8px 0; }
+    .help { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); margin: 34px 0 8px; }
+    .box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 16px 18px; }
+    .box h2 { margin: 0 0 4px; font-size: 18px; }
+    .box p { margin: 0 0 12px; color: var(--muted); font-size: 15px; }
+    .btn { font: 600 15px system-ui, sans-serif; border-radius: 8px; border: 1px solid var(--accent); padding: 9px 16px; text-decoration: none; display: inline-block; }
+    .btn.solid { background: var(--accent); color: #fff; }
+    .muted { color: var(--muted); font-size: 14px; }
+  </style>
+</head>
+<body>
+<main>
+  <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
+  <h1>n8n &quot;JSON parameter needs to be valid JSON&quot;: what it means and how to fix it</h1>
+  <p class="lead">You see: <code>JSON parameter needs to be valid JSON</code></p>
+
+  <h2>What it means</h2>
+  <p>A node (usually HTTP Request or Set) has a JSON field whose text is not valid JSON once n8n has filled in any expressions. The usual causes are a trailing comma, single quotes, an expression that puts a value with quotes or line breaks inside a string, or a value that is empty so the field reads {&quot;name&quot;: }.</p>
+
+  <h2>How to fix it</h2>
+  <ol>
+    <li>Open the failing node and look at the JSON field. Copy what the field resolves to (run the node once, or hover over the expression) into a JSON checker and read where it breaks.</li>
+    <li>Wrap any expression that fills in text in JSON.stringify so quotes and line breaks are escaped for you, for example {{ JSON.stringify($json.message) }}, and leave the quotes off around it.</li>
+    <li>Remove trailing commas and use double quotes only. If a value can be empty, give it a default, for example {{ $json.name ?? '' }}.</li>
+    <li>Run the node again with Execute node, then run the whole workflow.</li>
+  </ol>
+
+  <h2>If it keeps coming back</h2>
+  <p>If it only breaks for some items, one of them has a value you did not plan for (an empty field, a line break, a quote). Pin that item's data on the node and test with it.</p>
+
+  <div class="help">
+    <div class="box">
+      <h2>Still stuck? Ask Verse, free</h2>
+      <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
+      <a class="btn" data-fix="ask" href="/?q=my%20n8n%20workflow%20is%20failing%20with%20JSON%20parameter%20needs%20to%20be%20valid%20JSON">Ask Verse about this error</a>
+    </div>
+    <div class="box">
+      <h2>Or have it fixed: <span id="fix-price">$25</span></h2>
+      <p>One broken automation, diagnosed and repaired, with proof it runs again. Reply to the receipt with what stopped.</p>
+      <a class="btn solid" id="fix-buy" data-fix="buy" href="https://moonbeam846.gumroad.com/l/eozcma" rel="noopener">Get the One-Time Fix</a>
+    </div>
+  </div>
+  <p class="muted">The One-Time Fix covers one workflow. <a href="/one-time-fix/">What you send and what you get back</a>.</p>
+
+  <h2>Sources</h2>
+  <ul class="muted">
+    <li><a href="https://docs.n8n.io/code/expressions/" rel="noopener">Expressions (n8n docs)</a></li>
+  </ul>
+</main>
+<script>
+(function () {
+  'use strict';
+  const SLUG = "eozcma";
+  function money(x) { return '$' + (x.price_cents / 100).toFixed(x.price_cents % 100 ? 2 : 0); }
+  fetch('/api/catalog').then(function (r) { return r.json(); }).then(function (j) {
+    const row = (j.products || []).find(function (x) { return x.slug === SLUG || String(x.url || '').split('/l/')[1] === SLUG; });
+    if (!row) return; // the page's own price and link stand
+    const price = document.getElementById('fix-price'), buy = document.getElementById('fix-buy');
+    if (row.price_cents && price) price.textContent = money(row);
+    if (row.available === false && buy) { buy.href = '/one-time-fix/'; return; }
+    if (/^https:\/\//.test(row.url || '') && buy) buy.href = row.url;
+  }).catch(function (e) { console.warn('[fix] the live price could not load; the page\'s own price and link stand', e); });
+})();
+</script>
+</body>
+</html>

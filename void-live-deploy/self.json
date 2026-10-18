@@ -270,24 +270,6 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Create a convert-card skill: persistent interactive unit conversions on the stage",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-2"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Film discovery as a structured skill returning JSON film metadata",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-3"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Growth friction: link Words and the world family failure logs on the card",
-   "from": "asked by Void, daily 2026-10-14 ask-20261014-1820-1"
-  },
-  {
-   "state": "open",
-   "date": "",
    "ask": "Two signposts left out until they can be true",
    "from": "claude, 2026-10-15, with the useful 404 and security.txt"
   }
@@ -464,6 +446,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T08:46:19Z",
+   "subject": "grow: log the Verse rename"
+  },
+  {
+   "at": "2026-10-18T08:35:37Z",
+   "subject": "regenerate self.json and guide.json on the merged sources"
+  },
+  {
    "at": "2026-10-18T08:28:01Z",
    "subject": "the product is Verse (owner, 2026-10-18: \"rename Verse everywhere\")"
   },
@@ -534,14 +524,6 @@
   {
    "at": "2026-10-18T08:08:07Z",
    "subject": "Service Health: a stability dial for V01D's own suite (asked by Void)"
-  },
-  {
-   "at": "2026-10-18T08:07:57Z",
-   "subject": "Verse: the name everywhere people see it (owner: \"rename void to verse\"); code, routes and storage keys stay void, and license keys, card co"
-  },
-  {
-   "at": "2026-10-18T08:06:53Z",
-   "subject": "Incident: the browser suite failed on 200e56d5 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

@@ -57,6 +57,26 @@ export function shortLine(t) {
 }
 const sentence = (s) => String(s == null ? '' : s).trim();
 
+// one ask said twice in other words is one ask (owner, 2026-10-18, "fix this" on a self card listing 'report-to-growth', the Zorbleflux
+// throttle and 'dependency-health' twice each): two asks are the same when they quote the same name, or share most of their words
+const STOP = new Set('a an the to of in on for and or so that this it its my me i as by with from into is be can when which what'.split(' '));
+const quoted = (t) => { const m = /['‘"“]([^'’"”]{3,40})['’"”]/.exec(t); return m ? m[1].toLowerCase().replace(/[\s_-]+/g, '-') : ''; };
+const words = (t) => new Set(String(t).toLowerCase().replace(/[^a-z0-9\s-]/g, ' ').split(/\s+/).filter((w) => w.length > 2 && !STOP.has(w)));
+export function sameAsk(a, b) {
+  const qa = quoted(a), qb = quoted(b);
+  if (qa && qb && qa !== qb) return false;
+  const wa = words(a), wb = words(b); if (Math.min(wa.size, wb.size) < 3) return false; // too few words to call two asks one
+  let n = 0; for (const w of wa) if (wb.has(w)) n++;
+  // the same quoted name with a few more words in common is the same ask; two asks about one skill that want different things are not
+  return n / Math.min(wa.size, wb.size) >= (qa && qb ? 0.4 : 0.7);
+}
+/** the asks with each one said again in other words folded into its first telling, which carries how many times it was asked. Pure. */
+export function foldAsks(asks) {
+  const out = [];
+  for (const a of asks || []) { const t = sentence(a && a.ask); if (!t) continue; const same = out.find((o) => sameAsk(o.ask, t)); if (same) same.times++; else out.push({ ...a, ask: t, times: 1 }); }
+  return out;
+}
+
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
@@ -80,9 +100,9 @@ export function selfSections(v, now = Date.now()) {
     if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + sentence(build.better) });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
-  const asks = ((v && v.asks) || []).slice(0, 12);
+  const asks = foldAsks((v && v.asks) || []).slice(0, 12);
   if (asks.length) out.push({ id: 'asked', title: "What I've asked for", count: asks.length + ' waiting', log: false, blocks: [{ t: 'list', cls: 'v-asks', items: asks.map((a, i) => ({
-    text: sentence(a.ask), open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
+    text: a.ask, open: i < FOLD, more: i >= FOLD, sub: 'Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : 'after a build') + (a.at ? ', ' + day(a.at) : '') + (a.times > 1 ? ' · asked ' + a.times + ' times' : '') + (a.small ? ' · I called it small' : '') + ' · not built yet' })) }] });
   const f = v && v.follow;
   if (f && f.total) {
     const recent = Array.isArray(f.recent) ? f.recent : [];

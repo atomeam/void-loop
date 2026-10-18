@@ -1283,5 +1283,13 @@
   "of": 62,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
+ },
+ {
+  "at": "2026-10-18T08:43:06Z",
+  "passed": 52,
+  "of": 63,
+  "kind": "file",
+  "key": "what are you? | missing text /V#D/",
+  "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
  }
 ]
