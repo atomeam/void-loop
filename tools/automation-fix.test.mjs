@@ -55,6 +55,9 @@ for (const [t, kind] of [['the job exited with code 2', 'code'], ['fetch failed:
   assert.ok(errorEvidence(t).some((e) => e.kind === kind), t + ' -> ' + kind);
 // numbers that are not statuses are not evidence
 assert.deepEqual(errorEvidence('I pasted 500 characters about 404 ideas for the 400-page manual'), []);
+// a count is not a status: "with 587 misses" is not HTTP 587 (owner, 2026-10-18: a builder's bench note was answered as a fix)
+assert.deepEqual(errorEvidence('the bench finished with 587 misses out of 2388, and the run came back with 404 asks'), []);
+assert.ok(errorEvidence('the API returned 503 Service Unavailable').some((e) => e.kind === 'status')); assert.ok(errorEvidence('the call came back with 502').some((e) => e.kind === 'status'));
 // a short symptom is still a fix ask, from the description, honestly labelled
 assert.equal(isFixAsk('my zap stopped firing'), true); assert.equal(basisOf('my zap stopped firing').from, 'description');
 assert.match(ruleFix('my zap stopped firing'), /trigger isn't reaching it/);
