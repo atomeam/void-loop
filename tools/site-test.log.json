@@ -1149,5 +1149,13 @@
   "of": 43,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
+ },
+ {
+  "at": "2026-10-18T00:19:50Z",
+  "passed": 42,
+  "of": 44,
+  "kind": "file",
+  "key": "site | console: Access to fetch at 'https://restcountries#com/v#/na",
+  "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
  }
 ]

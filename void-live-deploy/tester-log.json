@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 41,
- "runsTotal": 154,
+ "runsTotal": 155,
  "kinds": {
   "grow": 34,
-  "file": 66,
+  "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T00:19:50Z",
+   "passed": 42,
+   "of": 44,
+   "kind": "file",
+   "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
+  },
   {
    "at": "2026-10-18T00:02:54Z",
    "passed": 32,
@@ -142,13 +149,6 @@
    "of": 26,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
-  },
-  {
-   "at": "2026-10-17T11:42:36Z",
-   "passed": 16,
-   "of": 25,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"is waymo in austin\" (skill:rides)"
   }
  ],
  "seen": {
@@ -173,9 +173,9 @@
   "skill:checkers": "2026-10-15T08:58:55Z",
   "skill:connect4": "2026-10-15T10:30:49Z",
   "skill:convert": "2026-10-18T00:02:54Z",
-  "skill:coral": "2026-10-17T07:48:48Z",
-  "skill:counter": "2026-10-17T07:56:04Z",
-  "skill:country": "2026-10-17T07:56:04Z",
+  "skill:coral": "2026-10-18T00:19:50Z",
+  "skill:counter": "2026-10-18T00:19:50Z",
+  "skill:country": "2026-10-18T00:19:50Z",
   "skill:crypto": "2026-10-17T07:56:04Z",
   "skill:dark-look": "2026-10-17T08:05:32Z",
   "skill:dates": "2026-10-17T08:05:32Z",
