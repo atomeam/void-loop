@@ -1291,5 +1291,26 @@
   "kind": "file",
   "key": "what are you? | missing text /V#D/",
   "note": "fix: \"what are you?\" missing text /V01D/; console: script /vendor/three-r180/build/three.module.min.js served as text/html; charset=utf-8 (200)"
+ },
+ {
+  "at": "2026-10-18T09:26:58Z",
+  "passed": 62,
+  "of": 63,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T10:02:42Z",
+  "passed": 54,
+  "of": 64,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T10:17:16Z",
+  "passed": 55,
+  "of": 65,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
  }
 ]
