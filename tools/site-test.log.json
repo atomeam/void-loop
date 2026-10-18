@@ -1234,5 +1234,12 @@
   "of": 55,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
+ },
+ {
+  "at": "2026-10-18T06:02:59Z",
+  "passed": 54,
+  "of": 56,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
  }
 ]

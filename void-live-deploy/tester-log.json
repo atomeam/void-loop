@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 52,
- "runsTotal": 166,
+ "cases": 53,
+ "runsTotal": 167,
  "kinds": {
-  "grow": 45,
+  "grow": 46,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T06:02:59Z",
+   "passed": 54,
+   "of": 56,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
+  },
   {
    "at": "2026-10-18T05:30:07Z",
    "passed": 54,
@@ -142,13 +149,6 @@
    "of": 37,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"toss it off the screen\" (skill:throw-off)"
-  },
-  {
-   "at": "2026-10-17T22:18:36Z",
-   "passed": 36,
-   "of": 36,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"are you web4\" (skill:web4)"
   }
  ],
  "seen": {
@@ -337,6 +337,10 @@
   "skill:decision-matrix": "2026-10-18T05:30:07Z",
   "skill:deep-work": "2026-10-18T05:30:07Z",
   "skill:dev-tools": "2026-10-18T05:30:07Z",
-  "skill:draft-triad": "2026-10-18T05:30:07Z"
+  "skill:draft-triad": "2026-10-18T05:30:07Z",
+  "skill:bookmarks": "2026-10-18T06:02:59Z",
+  "skill:copy-stack": "2026-10-18T06:02:59Z",
+  "skill:dismissed-pile": "2026-10-18T06:02:59Z",
+  "skill:echo-chamber": "2026-10-18T06:02:59Z"
  }
 }

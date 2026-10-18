@@ -2,6 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T05:56:19.675Z",
+   "sha": "d51b4c4911bfd80e0b5c3f4307f508b9019f0fb9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39101990663",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ]
+  },
+  {
    "at": "2026-10-18T05:32:41.622Z",
    "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39099926163",
@@ -287,15 +296,6 @@
    "suite": "browser suite on main",
    "checks": [
     "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them"
-   ]
-  },
-  {
-   "at": "2026-10-17T10:43:04.266Z",
-   "sha": "f3793bbc3dc344680fff6367ee52206aaf978052",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39024814443",
-   "suite": "browser suite on main",
-   "checks": [
-    "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage"
    ]
   }
  ]
