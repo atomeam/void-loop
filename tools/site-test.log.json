@@ -1355,5 +1355,13 @@
   "of": 70,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T18:45:56Z",
+  "passed": 59,
+  "of": 71,
+  "kind": "file",
+  "key": "yo film metadata for ikiru | refused: don't know this yet",
+  "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
  }
 ]

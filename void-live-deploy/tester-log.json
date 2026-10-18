@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 67,
- "runsTotal": 183,
+ "runsTotal": 184,
  "kinds": {
   "grow": 60,
-  "file": 69,
+  "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T18:45:56Z",
+   "passed": 59,
+   "of": 71,
+   "kind": "file",
+   "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-18T18:18:28Z",
    "passed": 68,
@@ -142,13 +149,6 @@
    "of": 54,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
-  },
-  {
-   "at": "2026-10-18T05:01:15Z",
-   "passed": 52,
-   "of": 53,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T18:18:28Z",
+  "skill:film-metadata": "2026-10-18T18:45:56Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -396,6 +396,9 @@
   "skill:stage-export": "2026-10-18T16:03:13Z",
   "skill:notebook": "2026-10-18T18:18:28Z",
   "skill:stage-find": "2026-10-18T18:18:28Z",
-  "skill:stage-fx": "2026-10-18T18:18:28Z"
+  "skill:stage-fx": "2026-10-18T18:18:28Z",
+  "skill:stage-image": "2026-10-18T18:45:56Z",
+  "skill:stage-organize": "2026-10-18T18:45:56Z",
+  "skill:stage-print": "2026-10-18T18:45:56Z"
  }
 }
