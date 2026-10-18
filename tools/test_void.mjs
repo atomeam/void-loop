@@ -3840,6 +3840,21 @@ try {
       out.every((o) => o.ph0 === 'ready' && o.score >= 10 && o.slow === o.reduce && +o.best >= o.score && /Round over/.test(o.st) && o.fresher && !o.errors.length)
       && about === 'A zorbleflux is the thing V01D got asked about 154 times and could not answer, so it made it a game.', JSON.stringify({ out, about }));
   }
+  if (want("about-skill, the about a skill card: 'tell me about the chess skill' gives a card from the skill's own page with its title, example chips, family and a try button, a tapped chip asks, and 'tell me about tokyo' keeps the article path")) { // asked by Void (2026-10-18)
+    const A = await fresh(); await A.ask('tell me about the chess skill', 600); await until(async () => !!(await A.p.$('.vpage.on.about-skill')), 8000);
+    const card = await A.p.$eval('.vpage.on.about-skill', (e) => ({ name: e.dataset.skillName, title: (e.querySelector('h2') || {}).textContent, sub: (e.querySelector('.sub') || {}).textContent,
+      chips: [...e.querySelectorAll('[data-role="examples"] .about-chip')].map((b) => b.dataset.ask), rel: e.querySelectorAll('.about-chip.rel').length, tryAsk: (e.querySelector('.about-try') || { dataset: {} }).dataset.ask })).catch(() => null);
+    const chipAsk = card && card.chips[0];
+    if (chipAsk) await A.p.click('.vpage.on.about-skill [data-role="examples"] .about-chip');
+    const went = !!chipAsk && !!(await until(() => A.p.evaluate((q) => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => x.ask === q && /skill:/.test(x.note || '')), chipAsk), 8000));
+    await A.ask('tell me about tokyo', 800);
+    const tokyo = await until(() => A.p.evaluate(() => { const x = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').filter((e) => e.ask === 'tell me about tokyo').pop(); return x ? x.note : ''; }), 8000);
+    const noCard = !(await A.p.$('.vpage.on.about-skill'));
+    check("about-skill, the about a skill card: 'tell me about the chess skill' is a card from the chess page (title Chess, the Games family and its tier, 'play chess' among the chips, a related chip, Try it: play chess), tapping the first chip runs that ask through its skill, and 'tell me about tokyo' takes the article path with no such card",
+      !!card && card.name === 'chess' && card.title === 'Chess' && /Games/.test(card.sub) && /experiment|tested|checked|proven/.test(card.sub) && card.chips.includes('play chess') && card.rel >= 1 && card.tryAsk === 'play chess'
+      && went && tokyo === 'article' && noCard && !A.errors.length, JSON.stringify({ card, chipAsk, went, tokyo, noCard, errors: A.errors }));
+    await A.ctx.close();
+  }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
     const r = await F.p.evaluate(async () => {
