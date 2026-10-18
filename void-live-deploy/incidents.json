@@ -2,13 +2,11 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T06:16:45.643Z",
+   "at": "2026-10-18T06:17:42.602Z",
    "sha": "57ab1f2eeef74f44b0d70482b481db1d438dacbe",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39103252070",
    "suite": "browser suite on main",
    "checks": [
-    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
-    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
     "suite ran to the end"
    ]
   },
