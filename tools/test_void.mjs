@@ -7730,6 +7730,84 @@ try {
     check('stage pack i: "set priority deep" is kept and "show deferred" shows it; "show deferred revenue accounting" is left to the normal path', /priority: deep/.test(ip) && (await Q.p.$$('.sph-card[data-sph="interrupt-priority"]')).length === 1 && !Q.errors.length, JSON.stringify({ ip: ip.slice(0, 80), errs: Q.errors }));
     await Q.ctx.close();
   }
+  // tools pack 6 (owner, 2026-10-18, items 121 to 150): the writing aids card, the template lists and the health trackers, played the way a person uses them
+  if (want("tools pack 6: writing aids on one card, template lists that keep their ticks and dates, health trackers that keep today and a timer that runs by itself")) { const S = await fresh();
+    const click = (sel) => S.p.$eval(sel, (e) => e.click()); // the cards fan from one corner: click through the DOM, not the pointer
+    const txt = (sel) => S.p.$eval(sel, (e) => e.textContent).catch(() => null);
+    await S.ask('shorten this: In order to finish the report I basically just need to check the numbers', 700);
+    const shortened = await txt('.writing-aids .wa-out'), shortNote = await txt('.writing-aids .wa-note');
+    await S.p.fill('.writing-aids textarea', 'The cat sat on the mat. It was a sunny day. We went out to play.');
+    await click('.writing-aids button[data-mode="bullets"]');
+    const bullets = await txt('.writing-aids .wa-out');
+    await click('.writing-aids button[data-mode="level"]');
+    const level = await txt('.writing-aids .wa-out');
+    await click('.writing-aids button[data-mode="steps"]');
+    const stepsOut = await txt('.writing-aids .wa-out');
+    check('writing aids: "shorten this: ..." opens one card with the text, the result and how much shorter; the chips switch the tool on the same text (bullets, reading level, steps) and the card keeps its mode and text',
+      shortened === 'To finish the report I need to check the numbers' && /\d+% shorter/.test(shortNote || '') && bullets === '- The cat sat on the mat\n- It was a sunny day\n- We went out to play'
+        && /^Reading ease \d+ · /.test(level || '') && stepsOut === '1. The cat sat on the mat\n2. It was a sunny day\n3. We went out to play'
+        && (await S.state()).some((x) => x.kind === 'writing' && x.mode === 'steps' && /cat sat/.test(x.text)) && !S.errors.length,
+      JSON.stringify({ shortened, shortNote, bullets, level, stepsOut, errors: S.errors }));
+    await S.ask('packing list for a beach trip', 700);
+    const boxes = await S.p.$$eval('.template-list[data-tpl="packing"] input[type=checkbox]', (b) => b.length);
+    await click('.template-list[data-tpl="packing"] input[aria-label="tick Sunscreen"]');
+    const packed = await txt('.template-list[data-tpl="packing"] .tl-sum');
+    await S.ask('chore wheel for dishes, trash with Sam and Alex', 700);
+    const who0 = await S.p.$$eval('.template-list[data-tpl="chores"] .tl-who', (e) => e.map((x) => x.textContent).join());
+    await click('.template-list[data-tpl="chores"] button:not([aria-label])');
+    const who1 = await S.p.$$eval('.template-list[data-tpl="chores"] .tl-who', (e) => e.map((x) => x.textContent).join());
+    await S.ask('guest list for the party: Sam, Alex', 700);
+    await click('.template-list[data-tpl="guests"] button[aria-label^="rsvp of Sam"]');
+    const guests = await txt('.template-list[data-tpl="guests"] .tl-sum');
+    await S.ask('bill due list: rent 2026-01-01, water 2999-01-01', 700);
+    const whens = await S.p.$$eval('.template-list[data-tpl="bills"] .tl-when', (e) => e.map((x) => x.textContent));
+    await S.ask('plant watering: fern every 7 days', 700);
+    const dueNow = await txt('.template-list[data-tpl="plants"] .tl-when');
+    await click('.template-list[data-tpl="plants"] button[aria-label="watered fern"]');
+    const later = await txt('.template-list[data-tpl="plants"] .tl-when');
+    check('template lists: the beach packing list has its 18 boxes and a tick counts ("1 of 18 packed"); the chore wheel gives dishes to Sam and trash to Alex and Rotate swaps them; the guest list counts a yes; a past bill says overdue and a far one does not; a new plant is due today and "Watered" pushes it a week',
+      boxes === 18 && packed === '1 of 18 packed' && who0 === 'Sam,Alex' && who1 === 'Alex,Sam' && /^1 yes · 0 maybe · 0 no · 1 waiting · 1 coming/.test(guests || '')
+        && /overdue/.test(whens[0] || '') && /^2999-01-01 · in \d+ months/.test(whens[1] || '') && dueNow === 'water today' && later === 'next in 7 days' && !S.errors.length,
+      JSON.stringify({ boxes, packed, who0, who1, guests, whens, dueNow, later, errors: S.errors }));
+    await S.ask('water tracker', 600);
+    await click('.health-habits[data-type="water"] button[data-cup="3"]');
+    const water = await txt('.health-habits[data-type="water"] .hh-sum');
+    await S.ask('weekly habit grid for read, run', 600);
+    await S.p.$$eval('.health-habits[data-type="habitgrid"] button[data-habit="read"]', (b) => b[b.length - 1].click());
+    const streak = await txt('.health-habits[data-type="habitgrid"] .hh-streak');
+    await S.ask('mood tracker', 600);
+    await click('.health-habits[data-type="mood"] button[data-mood="4"]');
+    const mood = await txt('.health-habits[data-type="mood"] .hh-sum');
+    await S.ask('meds checklist: vitamin D, iron', 600);
+    await click('.health-habits[data-type="meds"] input[aria-label="taken vitamin D"]');
+    const meds = await txt('.health-habits[data-type="meds"] .hh-sum');
+    await S.ask('fasting timer 16:8', 600);
+    const fastIdle = await S.p.$eval('.health-habits[data-type="fasting"]', (e) => e.dataset.fast);
+    await click('.health-habits[data-type="fasting"] button:last-of-type');
+    await S.p.waitForTimeout(1300);
+    const fastRun = await S.p.$eval('.health-habits[data-type="fasting"]', (e) => e.dataset.fast + ' ' + e.querySelector('.hh-left').textContent);
+    check('health: the third cup reads "3 of 8 cups today"; one tap on today in the habit grid reads a 1 day streak; mood good reads "today: good"; ticking vitamin D reads "1 of 2 taken today"; the fasting timer is idle until Start fast and then counts down by itself',
+      water === '3 of 8 cups today' && streak === '1 day' && mood === 'today: good' && meds === '1 of 2 taken today' && fastIdle === 'idle' && /^running 15:59:\d\d left$/.test(fastRun || '') && !S.errors.length,
+      JSON.stringify({ water, streak, mood, meds, fastIdle, fastRun, errors: S.errors }));
+    await S.ask('stretch timer 5 seconds', 600);
+    const stretch0 = await S.p.$eval('.health-habits[data-type="stretch"]', (e) => e.dataset.step);
+    await click('.health-habits[data-type="stretch"] button');
+    const stretchMoved = await until(async () => (await S.p.$eval('.health-habits[data-type="stretch"]', (e) => e.dataset.step).catch(() => '')) === '1', 9000);
+    await S.ask('posture nudge every 3 seconds', 600);
+    const nudge0 = await S.p.$eval('.health-habits[data-type="posture"]', (e) => e.dataset.nudge);
+    await S.p.$$eval('.health-habits[data-type="posture"] button', (b) => b.find((x) => /Turn on/.test(x.textContent)).click());
+    const nudgeDue = await until(async () => (await S.p.$eval('.health-habits[data-type="posture"]', (e) => e.dataset.nudge).catch(() => '')) === 'due', 9000);
+    const nudgeTip = await txt('.health-habits[data-type="posture"] .hh-msg');
+    check('health: the stretch timer waits for Start and then moves to the next stretch by itself; the posture nudge is off until turned on, then comes due on its own with the tip',
+      stretch0 === '0' && stretchMoved && nudge0 === 'off' && nudgeDue && /Sit tall/.test(nudgeTip || '') && !S.errors.length, JSON.stringify({ stretch0, stretchMoved, nudge0, nudgeDue, nudgeTip, errors: S.errors }));
+    await S.p.reload(); await S.p.waitForSelector('.writing-aids', { timeout: 8000 }).catch(() => {});
+    const kept = await S.p.evaluate(() => ({
+      mode: document.querySelector('.writing-aids .wa-out')?.dataset.mode, packed: document.querySelector('.template-list[data-tpl="packing"] .tl-sum')?.textContent,
+      water: document.querySelector('.health-habits[data-type="water"] .hh-sum')?.textContent, streak: document.querySelector('.health-habits[data-type="habitgrid"] .hh-streak')?.textContent,
+      fast: document.querySelector('.health-habits[data-type="fasting"]')?.dataset.fast }));
+    check('a reload keeps every card as it was: the writing mode, the packing tick, today\'s cups, the habit streak and the running fast',
+      kept.mode === 'steps' && kept.packed === '1 of 18 packed' && /^3 of 8 cups today/.test(kept.water || '') && kept.streak === '1 day' && kept.fast === 'running' && !S.errors.length, JSON.stringify({ kept, errors: S.errors }));
+    await S.ctx.close(); }
 
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;

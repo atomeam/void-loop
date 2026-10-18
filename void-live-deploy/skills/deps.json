@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 566,
+ "counted": 572,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/stage-pack.js",
-   "skills": 20,
-   "direct": 20,
-   "dependants": 20
+   "skills": 23,
+   "direct": 23,
+   "dependants": 23
   },
   {
    "file": "lib/field-kit.js",
@@ -549,6 +549,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/health-habits.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
@@ -633,6 +639,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/template-list.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/term-orbits-law.js",
    "skills": 1,
    "direct": 1,
@@ -658,6 +670,12 @@
   },
   {
    "file": "lib/web4.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2616,6 +2634,12 @@
     "lib/products.js"
    ]
   },
+  "lib/health-habits.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/health-habits.js"
+   ]
+  },
   "lib/heat-dose.js": {
    "imports": [],
    "importedBy": [
@@ -3704,6 +3728,7 @@
     "skills/eigenwork.js",
     "skills/gauge-feedback.js",
     "skills/habit-ring.js",
+    "skills/health-habits.js",
     "skills/homotopy-edit.js",
     "skills/minimap.js",
     "skills/plan-stability.js",
@@ -3713,8 +3738,10 @@
     "skills/stale-work.js",
     "skills/task-board.js",
     "skills/task-diagram.js",
+    "skills/template-list.js",
     "skills/time-math.js",
-    "skills/witness-claims.js"
+    "skills/witness-claims.js",
+    "skills/writing-aids.js"
    ]
   },
   "lib/stale-tab.js": {
@@ -3866,6 +3893,12 @@
    "imports": [],
    "importedBy": [
     "skills/technical-context.js"
+   ]
+  },
+  "lib/template-list.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/template-list.js"
    ]
   },
   "lib/term-orbits-law.js": {
@@ -4057,6 +4090,14 @@
    ],
    "reachedBy": [
     "skills/time.js"
+   ]
+  },
+  "lib/writing-aids.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": [
+    "skills/writing-aids.js"
    ]
   },
   "lib/zorbleflux.js": {
@@ -4913,6 +4954,13 @@
   "skills/habit-ring.js": {
    "imports": [
     "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/health-habits.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/health-habits.js"
    ],
    "importedBy": []
   },
@@ -6332,6 +6380,13 @@
    ],
    "importedBy": []
   },
+  "skills/template-list.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/template-list.js"
+   ],
+   "importedBy": []
+  },
   "skills/term-orbits.js": {
    "imports": [
     "lib/term-orbits-law.js"
@@ -6436,7 +6491,12 @@
   },
   "skills/util.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/writing-aids.js"
+   ],
+   "reachedBy": [
+    "skills/writing-aids.js"
+   ]
   },
   "skills/uv.js": {
    "imports": [],
@@ -6542,6 +6602,13 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/writing-aids.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/writing-aids.js"
+   ],
+   "importedBy": []
   },
   "skills/zoom-figure.js": {
    "imports": [

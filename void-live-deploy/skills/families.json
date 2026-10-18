@@ -13,8 +13,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 100,
-  "checked": 103,
+  "tested": 102,
+  "checked": 104,
   "proven": 131
  },
  "families": [
@@ -1419,7 +1419,7 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 0,
     "proven": 8
    },
@@ -1503,6 +1503,13 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "streak": 1
+    },
+    {
+     "name": "health-habits",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -1513,7 +1520,7 @@
    "count": {
     "experiment": 1,
     "tested": 11,
-    "checked": 4,
+    "checked": 5,
     "proven": 9
    },
    "sources": {
@@ -2004,6 +2011,13 @@
       "points": 2,
       "words": "source 2 of 3: conventionalcommits.org, keepachangelog.com; named on the card; a second source; no kept live answer yet"
      }
+    },
+    {
+     "name": "writing-aids",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -2058,7 +2072,7 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 3,
-    "tested": 17,
+    "tested": 18,
     "checked": 38,
     "proven": 7
    },
@@ -2550,6 +2564,13 @@
      "name": "task-board",
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "template-list",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     }
