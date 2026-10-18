@@ -1,6 +1,6 @@
 """Verse's will engine, laptop side: gather everything that exists, let Verse choose, queue its top want.
 
-  python tools/will.py        (.github/workflows/will.yml runs this every 3 hours, 9 AM - 9 PM New York; the laptop task "\\A2M void_will" did before)
+  python tools/will.py        (.github/workflows/will.yml runs this every hour, and again after every deploy; the laptop task "\\A2M void_will" did before)
 
 Candidates come from: what people asked that Verse couldn't do (the miss list), the open items of
 domains/void.frontier.md (the one build order since 2026-10-11), every project on Victus the ingest classified as a capability, upgrades
