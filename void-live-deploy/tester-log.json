@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 45,
- "runsTotal": 159,
+ "cases": 46,
+ "runsTotal": 160,
  "kinds": {
-  "grow": 38,
+  "grow": 39,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T04:03:13Z",
+   "passed": 46,
+   "of": 48,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"swarm mind\" (skill:swarm-mind)"
+  },
   {
    "at": "2026-10-18T03:06:28Z",
    "passed": 42,
@@ -142,13 +149,6 @@
    "of": 31,
    "kind": "file",
    "note": "fix: \"nfl team chiefs\" console: Access to fetch at 'https://www.thesportsdb.com/api/v1/json/3/searchteams.php?t=chiefs' from origin 'https://a-to-mind.c"
-  },
-  {
-   "at": "2026-10-17T17:36:35Z",
-   "passed": 20,
-   "of": 30,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
   }
  ],
  "seen": {
@@ -184,7 +184,7 @@
   "skill:dismiss": "2026-10-18T02:53:48Z",
   "skill:distance": "2026-10-18T02:53:48Z",
   "skill:draw": "2026-10-18T02:53:48Z",
-  "skill:feelings": "2026-10-17T08:24:25Z",
+  "skill:feelings": "2026-10-18T04:03:13Z",
   "skill:figure": "2026-10-17T08:24:25Z",
   "skill:figure-can": "2026-10-17T08:24:25Z",
   "skill:figures": "2026-10-17T08:31:36Z",
@@ -283,7 +283,7 @@
   "skill:work": "2026-10-17T23:19:19Z",
   "skill:zoom-figure": "2026-10-17T23:49:12Z",
   "skill:deps": "2026-10-18T00:52:54Z",
-  "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
+  "skill:fringe-to-skill": "2026-10-18T04:03:13Z",
   "skill:bench": "2026-10-17T20:35:41Z",
   "skill:collide": "2026-10-17T20:35:41Z",
   "skill:duel": "2026-10-17T20:35:41Z",
@@ -312,6 +312,7 @@
   "skill:attention-field-mind": "2026-10-18T03:06:28Z",
   "skill:collectible": "2026-10-18T03:06:28Z",
   "skill:nca-mind": "2026-10-18T03:06:28Z",
-  "skill:resonance-mind": "2026-10-18T03:06:28Z"
+  "skill:resonance-mind": "2026-10-18T03:06:28Z",
+  "skill:swarm-mind": "2026-10-18T04:03:13Z"
  }
 }
