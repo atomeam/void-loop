@@ -2,12 +2,21 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-17T23:58:42.652Z",
+   "at": "2026-10-18T00:08:39.042Z",
+   "sha": "1c0f91d66301f11d9afbb9bb2df1aad1225d0b33",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39080848377",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-17T23:54:39.439Z",
    "sha": "fd7255a4a6b27c3da752a4407a567958187d4b9c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39079951660",
    "suite": "browser suite on main",
    "checks": [
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
+    "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
     "check timeout: no check finished within 300 s"
    ]
   },
@@ -280,15 +289,6 @@
    "suite": "browser suite on main",
    "checks": [
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage"
-   ]
-  },
-  {
-   "at": "2026-10-17T08:02:31.210Z",
-   "sha": "6904d474134befdcdf2d9a96c8e593909a702d26",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39015145330",
-   "suite": "browser suite on main",
-   "checks": [
-    "3D countdown: \"days until december 25\" puts a desk flip-calendar miniature inside the card, the card saves its target date (and no live handle), daysTo counts local days, and a changed count flips a leaf (several redraws)"
    ]
   }
  ]
