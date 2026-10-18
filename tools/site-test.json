@@ -191,6 +191,9 @@
     },
     {
       "ask": "approve later: keep morning-digest running every 2 hours"
+    },
+    {
+      "ask": "fly around"
     }
   ],
   "candidates": [],
