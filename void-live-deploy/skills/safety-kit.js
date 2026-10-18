@@ -128,7 +128,7 @@ async function lockNow() {
   const rec = read().pin;
   const o = doc.createElement('div'); o.id = 'sf-lock'; o.setAttribute('role', 'dialog'); o.setAttribute('aria-modal', 'true'); o.setAttribute('aria-label', 'Locked');
   o.style.cssText = 'position:fixed;inset:0;z-index:2147483000;background:#0a0a0d;color:#e8e8e8;display:flex;align-items:center;justify-content:center;font:16px system-ui,sans-serif';
-  o.innerHTML = '<form style="display:flex;flex-direction:column;gap:10px;align-items:center"><div>Locked</div>'
+  o.innerHTML = '<form style="display:flex;flex-direction:column;gap:10px;align-items:center"><div>Locked</div>' // void-review: ok (static markup; nothing from the person goes in)
     + (rec ? '<input type="password" inputmode="numeric" autocomplete="off" aria-label="PIN" style="font:inherit;padding:8px 10px;border-radius:8px;border:1px solid #666;background:#15151c;color:#fff;text-align:center">' : '')
     + '<button type="submit" style="font:inherit;padding:8px 16px;border-radius:8px;border:1px solid #666;background:#1d1d27;color:#fff;cursor:pointer">Unlock</button><div class="sf-err" role="alert" style="min-height:1.2em;color:#ff9a9a;font-size:13px"></div></form>';
   for (const el of Array.from(doc.body.children)) if (!el.inert) { el.inert = true; inertSaved.push(el); }
@@ -171,7 +171,7 @@ const onShow = () => { leaving = false; };
 function armEph() { if (ephArmed || !doc) return; ephArmed = true; addEventListener('pagehide', onHide); doc.addEventListener('visibilitychange', onVis); addEventListener('pageshow', onShow); }
 function ephRestore() {
   try {
-    const snap = JSON.parse(sessionStorage.getItem(EPH) || 'null'); if (!snap) return;
+    const snap = JSON.parse(sessionStorage.getItem(EPH) || 'null'); if (!snap) return; // void-review: ok (inside the try just above)
     for (const [k, v] of [[STATE_KEY, snap.state], [UNDO_KEY, snap.undo]]) { if (v == null) localStorage.removeItem(k); else localStorage.setItem(k, v); }
   } catch (_) {}
 }
@@ -199,7 +199,7 @@ function mountPin(th, stageApi) {
   const el = cardEl(th, stageApi, 'pin-card');
   const has = !!read().pin, cur = read().autolock || 0;
   const btn = 'font:inherit;font-size:13px;padding:6px 10px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:#e8e8e8;cursor:pointer';
-  el.innerHTML = '<div style="font-weight:600;margin-bottom:6px">PIN lock</div>'
+  el.innerHTML = '<div style="font-weight:600;margin-bottom:6px">PIN lock</div>' // void-review: ok (static markup and two fixed sentences)
     + '<div class="pin-state" style="font-size:13px;opacity:.85;margin-bottom:8px">' + (has ? 'A PIN is set on this device.' : 'No PIN yet: lock now only needs a tap.') + '</div>'
     + '<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input class="pin-new" type="password" inputmode="numeric" autocomplete="off" maxlength="12" placeholder="new PIN, 4 to 12" aria-label="new PIN" style="width:150px;font:inherit;font-size:13px;padding:6px 8px;border-radius:8px;border:1px solid rgba(255,255,255,.25);background:rgba(0,0,0,.3);color:#e8e8e8">'
     + '<button type="button" class="pin-set" style="' + btn + '">Set PIN</button>' + (has ? '<button type="button" class="pin-clear" style="' + btn + '">Remove PIN</button>' : '') + '</div>'

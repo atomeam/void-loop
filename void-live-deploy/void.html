@@ -49,8 +49,8 @@
       if (L && L.bg) { d.style.setProperty('--void-bg', L.bg); d.style.backgroundColor = L.bg; }
       if (L && L.glow) d.style.setProperty('--void-glow', L.glow);
       if (localStorage.getItem('a2m.void.entered.v1')) d.classList.add('void-entered');
-      var A = JSON.parse(localStorage.getItem('a2m.void.a11y.v1') || 'null'), AC = { keys: 'a11y-keys', trap: 'a11y-trap', motion: 'a11y-motion', dyslexia: 'a11y-dyslexia', colorblind: 'a11y-cb', targets: 'a11y-targets', outline: 'a11y-outline' }; // accessibility switches (skills/accessibility-modes.js): their classes are on before the first paint (the look is in the style block below)
-      if (A) for (var ak in AC) if (A[ak] === true) d.classList.add(AC[ak]);
+      var A = JSON.parse(localStorage.getItem('a2m.void.a11y.v1') || 'null'), AC = { keys: 'a11y-keys', trap: 'a11y-trap', motion: 'a11y-motion', dyslexia: 'a11y-dyslexia', colorblind: 'a11y-cb', targets: 'a11y-targets', outline: 'a11y-outline' }; // accessibility switches (skills/accessibility-modes.js): their classes are on before the first paint (the look is in the style block below) void-review: ok (inside the try above, like the look)
+      if (A) for (var ak in AC) if (A[ak] === true) d.classList.add(AC[ak]); // void-review: ok (AC is a plain object of switch names, not an array)
       var K = JSON.parse(localStorage.getItem('a2m.void.sky.v1') || 'null'); // the last sky this device saw, so the first frame is already tinted; void-review: ok (inside the try above, like the look)
       if (K && K.glow && K.bg) { d.style.setProperty('--sky-glow', K.glow); d.style.setProperty('--sky-bg', K.bg); if (!(L && L.glow)) d.classList.add('sky-on'); }
       d.classList.add('void-first');

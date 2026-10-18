@@ -52,7 +52,7 @@ export function regexTest(pattern, flags, text) {
   if (regexRisky(p)) return { ok: false, err: 'a repeat inside a repeat, like (a+)+, can hang the page: I left it alone' };
   const fl = Array.from(new Set(String(flags || '').replace(/[^dgimsuy]/g, '').split('').filter((f) => f !== 'g'))).join('') + 'g';
   let re;
-  try { re = new RegExp(p, fl); } catch (e) { return { ok: false, err: String((e && e.message) || e).replace(/^Invalid regular expression: /, '').replace(/^\/.*\/[a-z]*: /, '').slice(0, 160) }; }
+  try { re = new RegExp(p, fl); } catch (e) { return { ok: false, err: String((e && e.message) || e).replace(/^Invalid regular expression: /, '').replace(/^\/.*\/[a-z]*: /, '').slice(0, 160) }; } // void-review: ok (the person's own pattern for their own regex tester; nested repeats are refused before this line)
   const matches = [];
   for (const m of t.matchAll(re)) {
     matches.push({ index: m.index, text: m[0], groups: m.slice(1).map((g) => (g == null ? '' : g)) });
