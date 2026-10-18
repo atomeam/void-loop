@@ -2399,8 +2399,8 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 13 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-17",
+     "why": "a self-test, 14 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
