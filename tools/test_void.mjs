@@ -378,6 +378,7 @@ function memoryStoreD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
     if (/^SELECT place, reason, SUM\(n\) AS n FROM void_shortfalls WHERE day >= \? GROUP BY place, reason$/.test(sql)) { need('void_shortfalls'); const g = new Map(); for (const r of T.shortfalls.values()) if (r.day >= a[0]) { const k = r.place + '|' + r.reason; g.set(k, { place: r.place, reason: r.reason, n: (g.get(k) ? g.get(k).n : 0) + r.n }); } return { results: [...g.values()] }; }
+    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
     if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
@@ -6586,6 +6587,29 @@ try {
       kept && kept.state === 'set aside' && /^set aside: untouched for 3 days, a newer want takes its place · Verse chose this$/.test(kept.note) && sa.queued && fresh1 && fresh1.state === 'queued' && fresh1.target === 'will:answer-tide-questions' && !sa.open
       && sb.open === 'newjob' && !sb.queued && Q.get('newjob').state === 'building' && Q.size === 1,
       JSON.stringify([kept, sa.queued, sa.open, sb.open, sb.queued]).slice(0, 300));
+  }
+
+  // The guard on Verse's own build loop (lib/will-guard.js; the frontier's "absorb and connect every repo"): the will runs every hour and a want whose jobs were set aside or failed
+  // twice in 14 days waits, so the next want is queued, instead of the same top want being queued again and again
+  if (want("Verse's will does not queue a want again whose jobs were set aside or failed twice")) {
+    const mk = () => ({ DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }, { id: 2, i_want: 'I want to answer moon questions.', because: 'people ask for the moon' }] }) }) } });
+    const post = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }, { kind: 'people asked', title: 'Answer moon questions', why: 'asked about the moon', weight: 10 }] }) }), env });
+    const ago = (days) => new Date(Date.now() - days * 864e5).toISOString();
+    const jobs = (env) => [...env.DB.queue.values()].filter((q) => q.state === 'queued');
+    const A = mk(); A.DB.queue.set('a1', { id: 'a1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(8), updated: ago(5) });
+    const one = await (await post(A)).json(), oneQ = jobs(A);
+    const B = mk(); B.DB.queue.set('b1', { id: 'b1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(9), updated: ago(6) }); B.DB.queue.set('b2', { id: 'b2', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'failed', note: '', at: ago(4), updated: ago(2) });
+    const two = await (await post(B)).json(), twoQ = jobs(B);
+    const C = mk(); C.DB.queue.set('c1', { id: 'c1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(40), updated: ago(30) }); C.DB.queue.set('c2', { id: 'c2', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(20), updated: ago(16) });
+    const old = await (await post(C)).json(), oldQ = jobs(C);
+    const E = mk(); E.DB.prepare = ((p) => (sql) => (/FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\)/.test(sql) ? { bind: () => ({ all: async () => { throw new Error('D1 unavailable'); } }) } : p(sql)))(E.DB.prepare);
+    const down = await (await post(E)).json(), downQ = jobs(E);
+    check("will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+      one.queued && oneQ.length === 1 && oneQ[0].target === 'will:answer-tide-questions' && !one.skipped
+      && two.queued && twoQ.length === 1 && twoQ[0].target === 'will:answer-moon-questions' && JSON.stringify(two.skipped) === '[{"title":"Answer tide questions","tries":2}]' && /^Verse chose this: people ask for the moon · 1 want above it waits: its jobs were set aside or failed 2 times in 14 days$/.test(twoQ[0].note) && two.wants[0].title === 'Answer tide questions'
+      && old.queued && oldQ[0].target === 'will:answer-tide-questions' && !old.skipped
+      && down.queued && downQ[0].target === 'will:answer-tide-questions',
+      JSON.stringify({ one: [one.queued, oneQ.map((q) => q.target), one.skipped], two: [two.queued, twoQ.map((q) => [q.target, q.note]), two.skipped], old: [old.queued, oldQ.map((q) => q.target)], down: [down.queued, downQ.map((q) => q.target)] }).slice(0, 700));
   }
 
   // The lab (2026-10-13): the newest working fringe draft of each family is live; each opens from a plain ask and passes its own self-test there

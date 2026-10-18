@@ -206,6 +206,7 @@ for (const [name, file] of [
   ['public-quotes', 'public-quotes.test.mjs'],
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
+  ['will-guard', 'will-guard.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],

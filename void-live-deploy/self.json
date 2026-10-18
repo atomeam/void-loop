@@ -290,6 +290,12 @@
    "date": "",
    "ask": "Lift the two shared libs the dependency health card still marks weak",
    "from": "lib/rts.js, lib/stage-pack-h.js"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the n",
+   "from": "claude 2026-10-18"
   }
  ],
  "games": [
@@ -464,6 +470,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T15:49:52Z",
+   "subject": "notebook: build the mention pattern in one place with its flags (Verse's review flagged a pattern rebuilt from a source); titles with regex "
+  },
+  {
+   "at": "2026-10-18T15:47:18Z",
+   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T15:40:31Z",
+   "subject": "Notebook: linked notes with backlinks, a daily note, and what am I missing"
+  },
+  {
+   "at": "2026-10-18T15:40:18Z",
+   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T15:33:39Z",
+   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-18T15:20:46Z",
    "subject": "Fast checks: perf3d takes 4 min instead of 11; the extension test's B2 case waits for the card to arrive"
   },
@@ -522,26 +548,6 @@
   {
    "at": "2026-10-18T13:49:52Z",
    "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:48:20Z",
-   "subject": "Site test: fix: \"find me a sc-ifi film from the 80s\" refused: don't kno"
-  },
-  {
-   "at": "2026-10-18T13:45:07Z",
-   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:39:07Z",
-   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:38:44Z",
-   "subject": "dependency-health: the dependency map held against two stability requirements"
-  },
-  {
-   "at": "2026-10-18T13:34:19Z",
-   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
