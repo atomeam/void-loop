@@ -1206,5 +1206,12 @@
   "of": 51,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
+ },
+ {
+  "at": "2026-10-18T04:39:06Z",
+  "passed": 42,
+  "of": 52,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
  }
 ]

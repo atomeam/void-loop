@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 48,
- "runsTotal": 162,
+ "cases": 49,
+ "runsTotal": 163,
  "kinds": {
-  "grow": 41,
+  "grow": 42,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T04:39:06Z",
+   "passed": 42,
+   "of": 52,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
+  },
   {
    "at": "2026-10-18T04:27:19Z",
    "passed": 41,
@@ -142,13 +149,6 @@
    "of": 33,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"which games do you know\" (skill:know)"
-  },
-  {
-   "at": "2026-10-17T21:02:03Z",
-   "passed": 21,
-   "of": 32,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"drag friction\" (skill:friction)"
   }
  ],
  "seen": {
@@ -321,6 +321,10 @@
   "skill:accessibility-modes": "2026-10-18T04:27:19Z",
   "skill:ask-immune": "2026-10-18T04:27:19Z",
   "skill:busy-blocks": "2026-10-18T04:27:19Z",
-  "skill:calc-more": "2026-10-18T04:27:19Z"
+  "skill:calc-more": "2026-10-18T04:27:19Z",
+  "skill:card-play": "2026-10-18T04:39:06Z",
+  "skill:causal-scars": "2026-10-18T04:39:06Z",
+  "skill:certainty-budget": "2026-10-18T04:39:06Z",
+  "skill:codex": "2026-10-18T04:39:06Z"
  }
 }
