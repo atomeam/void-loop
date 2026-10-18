@@ -105,9 +105,10 @@ function mount(th, stageApi) {
     if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([before]).slice(-60); // take back needs the positions before
     st().s = R.play(before, m); st().moves.push(label); st().sel = -1;
+    st().line = (st().line || []).concat([R.sqName(m.from) + R.sqName(m.to) + (m.promo ? m.promo.toLowerCase() : '')]); // the moves as coordinates, for the match replay (asked by Void)
     // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
     const code = R.status(st().s);
-    if (R.isOver(code) && !st().logged) { st().logged = true; finish('chess', code === 'checkmate' ? (st().s.turn === 'w' ? 'loss' : 'win') : 'draw', { moves: Math.ceil(st().moves.length / 2), minutes: minutesSince(st().started) }); }
+    if (R.isOver(code) && !st().logged) { st().logged = true; finish('chess', code === 'checkmate' ? (st().s.turn === 'w' ? 'loss' : 'win') : 'draw', { moves: Math.ceil(st().moves.length / 2), minutes: minutesSince(st().started), line: (st().line || []).length === st().moves.length ? st().line : null }); }
     save(); paint();
   }
   function voidTurn() {
@@ -172,7 +173,7 @@ function mount(th, stageApi) {
   again.addEventListener('click', (e) => { e.stopPropagation(); thinking.delete(th.id); th.state = freshState(); picker.style.display = 'none'; save(); paint(); });
   back.addEventListener('click', (e) => { e.stopPropagation(); const h = st().hist || []; if (!h.length) return; thinking.delete(th.id);
     // undo your move and Void's reply together, so it is your turn again
-    let n = st().s.turn === 'w' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().moves = st().moves.slice(0, -n); st().sel = -1; save(); paint(); voidTurn(); });
+    let n = st().s.turn === 'w' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().moves = st().moves.slice(0, -n); st().line = (st().line || []).slice(0, -n); st().sel = -1; save(); paint(); voidTurn(); });
 
   let card = null;
   if (free) {

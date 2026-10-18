@@ -86,6 +86,15 @@ test('a test case from each recent failure (asked by Void): the ask the check qu
   assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
 });
 
+test('stability gauge: red suites in the last week lower the score; none is steady (asked by Void)', async () => {
+  const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
+  const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
+  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1 });
+  const g = stabilityOf(mk('2026-10-18T06:00:00Z', '2026-10-15T00:00:00Z', '2026-10-01T00:00:00Z'), now); assert.deepEqual([g.score, g.label, g.week, g.day], [76, 'wobbly', 2, 1]);
+  assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).score, 0); assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).label, 'shaky');
+  assert.equal(stabilityOf(mk('2027-01-01T00:00:00Z'), now).week, 0, 'a time in the future is not counted');
+  assert.match(stabilityHtml(g), /data-stability="wobbly"/); assert.match(stabilityHtml(stabilityOf(null, now)), /data-stability="none"/); assert.match(stabilityHtml(g), /width:76%/);
+});
 test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Void)', () => {
   assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);
   const sus = suspectsOf(['tools/x.mjs', 'void-live-deploy/skills/clock.js', 'void-live-deploy/skills/convert.js'], [{ skill: 'convert' }, { skill: null }]);
@@ -95,4 +104,19 @@ test('culprit pointer: a changed skill file whose skill has a failing check is t
   assert.match(h, /data-culprit="likely"/); assert.match(h, /Likely cause: <code>skills\/convert\.js<\/code> \(has a failing check\)/); assert.ok(!h.includes('a<b'));
   h = autopsyHtml(autopsy(inc(['domains/x.md']), FAM, GUIDE)); assert.match(h, /data-culprit="none"/); assert.match(h, /No skill file changed/);
   h = autopsyHtml(autopsy(inc(undefined), FAM, GUIDE)); assert.ok(!h.includes('data-culprit'), 'paths never recorded say nothing');
+});
+
+test('the suite\'s own stalls and end-of-run flags are counted apart, never unmapped, never in a family or the garden', async () => {
+  const { isSuiteMeta, failurePlants } = await import('../void-live-deploy/lib/autopsy.js');
+  const J = { incidents: [
+    { at: '2026-10-17T09:00:00Z', sha: 'aaaaaaa1', suite: 's', checks: ['check timeout: no check finished within 300 s', 'clock: "set it" fails', 'suite ran to the end'] },
+    { at: '2026-10-17T08:00:00Z', sha: 'bbbbbbb2', suite: 's', checks: ['check timeout: no check finished within 300 s'] },
+  ] };
+  assert.ok(isSuiteMeta('check timeout: no check finished within 300 s') && isSuiteMeta('suite ran to the end') && !isSuiteMeta('clock: check timeout') && !isSuiteMeta(''));
+  const a = autopsy(J, FAM, GUIDE);
+  assert.deepEqual(a.suite, { timeouts: 2, ended: 1, incidents: 2 }); assert.equal(a.failing, 1); assert.deepEqual(a.unmapped, []);
+  assert.equal(a.recent[0].checks.filter((c) => c.meta).length, 2);
+  const h = autopsyHtml(a, (s) => String(s)); assert.ok(h.includes('data-autopsy-suite') && h.includes('2 stalled checks') && h.includes('(the suite itself)'));
+  assert.deepEqual(failurePlants(J).map((x) => x.text), ['clock']);
+  assert.ok(!autopsyHtml(autopsy(SAMPLE, FAM, GUIDE), (s) => String(s)).includes('data-autopsy-suite'));
 });

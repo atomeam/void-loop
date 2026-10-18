@@ -1356,8 +1356,8 @@ try {
     await O.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
     await O.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
     await O.p.reload(); await O.p.waitForTimeout(600);
-    await O.ask('publish my void as @neo', 500); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first();
-    await O.ask('yes', 900); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    await O.ask('publish my void as @neo', 300); await until(async () => /Put your V01D at/.test(await O.whisper()), 15000); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first(); // the line comes once the skills are in: wait for it, not a guessed half second
+    await O.ask('yes', 300); await until(async () => /Your V01D is public/.test(await O.page()), 15000); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     await O.ask('unpublish', 700); const gone = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     const C = await mk('userC', 'paid'); await pub(C, 'POST', { handle: 'cee', look, cards });
     const up = (await render('@cee')).status;
@@ -1874,6 +1874,19 @@ try {
     const phase3 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), open = await S.p.$eval('.sp-confirm', (b) => b.disabled);
     check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
       phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
+  }
+  // the site's red checks grow in the error garden by themselves (asked by Void, 2026-10-18): the served incidents.json is the real file, so an opened garden plants its newest incident
+  if (want("error garden: the site's red checks are planted from incidents.json when the garden opens, once, and opening it again adds nothing")) { const S = await fresh();
+    await S.ask('show my error garden', 900);
+    await S.p.waitForSelector('.error-garden .eg-plant[data-from=incident]', { timeout: 6000 }).catch(() => {});
+    const planted = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const head = await S.p.$eval('.error-garden', (e) => e.textContent).catch(() => '');
+    const shas = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => /failed on [0-9a-f]{7}/.test(x.textContent)));
+    await S.ask('show my error garden', 900);
+    const again = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    check("error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
+      planted.length >= 1 && planted.every((p) => p === 'sprout1') && /from red checks/.test(head) && shas.every(Boolean) && again.join() === planted.join() && !S.errors.length,
+      JSON.stringify({ planted, shas, again, errors: S.errors }));
   }
   // the error garden grown from the incident autopsy (asked by Void and the owner, 2026-10-18): "plant my test failures" plants incidents.json's failing checks
   if (want("error garden from incidents: plant my test failures plants the failing checks, repeats are weeds, and asking again adds nothing twice")) { const S = await fresh();
@@ -2507,7 +2520,7 @@ try {
     await G.ctx.close(); }
   if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
     const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
-      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; window.__saidAtCancel = window.__said.length; }; window.__saidAtCancel = 0; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > window.__saidAtCancel }); } }); // speaking until the next cancel: the start's own cancel() used to make it read as silent, so a slow second tap met a button the page had already turned off
     let sent = null, bytes = 0;
     await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
     const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
@@ -3964,7 +3977,7 @@ try {
   }
   if (want("chess match history: a game's about card carries your record on this device, 'my chess record' and 'tell me about the chess skill' show three seeded games as a summary line and a table, and an empty device says no games yet")) { // asked by Void (2026-10-18): a Match History table from the game logs, an Elo against the owner
     const seed = () => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }, { at: '2026-10-17T11:00:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 41, minutes: 12.5 }, { at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 28, minutes: 5 }, { at: '2026-10-18T09:45:00.000Z', game: 'othello', vs: 'v01d', result: 'loss', moves: 30, minutes: 4 }])); } catch (_) {} };
-    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
+    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].slice(0, 5).map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
     const cardOf = (P, name) => until(async () => { const c = await block(P); return c && c.name === name && c.rows ? c : null; }, 8000);
     const H = await fresh(seed);
     await H.ask('tell me about the chess skill', 600); const b = await cardOf(H, 'chess'); // the about card carries the block, and the chess module's own line carries the record
@@ -3977,6 +3990,31 @@ try {
       && !!b && b.played === '3' && b.rows.length === 3 && /Your record against V01D on this device: 3 played · 2–1–0 · 67%/.test(b.line)
       && !!c && c.played === '0' && /^no games on this device yet · finish a game of Chess/.test(c.sum) && c.rows.length === 0 && !H.errors.length && !E.errors.length, JSON.stringify({ a, b, c, errors: H.errors.concat(E.errors) }));
   }
+  // the match replay (asked by Void, 2026-10-18: "a 'match-replay' button on the chess history table that lets the user step through
+  // the moves with engine annotations"): a finished chess game keeps its moves, its row gets ▶ Replay, and the replay steps through
+  // the positions with the engine's read of each move (Fool's mate: 2…Qh4# is checkmate, 2.g4 loses at once), by button and by arrow key
+  if (want("match replay: a chess game in the history replays move by move with the engine's read of each move")) {
+    const P = await fresh(() => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 2, minutes: 1, line: ['f2f3', 'e7e5', 'g2g4', 'd8h4'] }, { at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }])); } catch (_) {} });
+    await P.ask('my chess record', 600);
+    await until(async () => !!(await P.p.$('.vpage.on .mh-replay')), 8000);
+    const buttons = await P.p.$$eval('.vpage.on .mh-replay', (bs) => bs.length);
+    await P.p.click('.vpage.on .mh-replay');
+    await until(async () => !!(await P.p.$('.vpage.on .chess-replay')), 6000);
+    const view = () => P.p.$eval('.vpage.on .chess-replay', (e) => ({ count: e.querySelector('.cr-count').textContent, note: e.querySelector('.cr-note').textContent, verdict: e.querySelector('.cr-note').dataset.verdict || '',
+      pieces: e.querySelectorAll('.cr-sq').length, filled: [...e.querySelectorAll('.cr-sq')].filter((c) => c.textContent).length, lit: e.querySelectorAll('.cr-sq.lit').length }));
+    const start = await view();
+    for (let k = 0; k < 3; k++) await P.p.click('.vpage.on .cr-btn[data-step="next"]');
+    const third = await until(async () => { const v = await view(); return v.verdict ? v : null; }, 6000) || await view();
+    await P.p.focus('.vpage.on .mh-replay-host'); await P.p.keyboard.press('ArrowRight');
+    const mate = await until(async () => { const v = await view(); return v.verdict === 'mate' ? v : null; }, 6000) || await view();
+    await P.p.click('.vpage.on .cr-btn[data-step="first"]'); const back = await view();
+    await P.p.click('.vpage.on .cr-btn[data-step="close"]'); const closed = !(await P.p.$('.vpage.on .chess-replay'));
+    check("match replay: a chess game in the history replays move by move with the engine's read of each move",
+      buttons === 1 && start.count === '0 / 4' && start.pieces === 64 && start.filled === 32 && start.lit === 0
+      && third.count === '3 / 4' && /^2\. g4/.test(third.note) && third.verdict === 'blunder' && third.lit === 2
+      && mate.count === '4 / 4' && /2… Qh4# · checkmate/.test(mate.note) && back.count === '0 / 4' && closed && !P.errors.length,
+      JSON.stringify({ buttons, start, third, mate, back, closed, errors: P.errors }));
+    await P.ctx.close(); }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
     const r = await F.p.evaluate(async () => {
@@ -4418,12 +4456,14 @@ try {
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
       const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
+    await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
     const { ok: heldD, v: mid, streak } = await holdD(P.p, -120);
     await P.p.keyboard.press('Escape');
     const back = await until(async () => atRest(await stars(P.p)) && !(await P.p.evaluate(() => window.__voidFly.state().landing)), 6000);
     const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' });
     await R.ask('fly around', 500);
+    await until(async () => (await stars(R.p)).lib, 10000);
     const { ok: heldR, v: rMid, streak: rStreak } = await holdD(R.p, -300);
     await R.p.keyboard.press('Escape');
     const rBack = await until(async () => atRest(await stars(R.p)), 3000);

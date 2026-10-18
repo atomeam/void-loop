@@ -61,24 +61,32 @@ export function skillOfCheck(check, names, pages) {
 export const GO_LOG = { id: 'go-against-void', name: 'Go against V01D', replay: 'play go against void' };
 export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
 
+/** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Void and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
+export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
+
 /** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }],
  *  goLog: [{ sha, at, text }] (every failing Go-against-V01D check), focus }. `focus` (a family id; asked by Void: a drill-down from the stability sparklines) keeps only
  *  that family's failing checks, and only the incidents that have one. Pure. */
 export function autopsy(incidentsJson, fam, guide, focus = '') {
   const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
-  const counts = new Map(), un = new Map(), goLog = [];
+  const counts = new Map(), un = new Map(), goLog = [], suite = { timeouts: 0, ended: 0, incidents: 0 };
   let placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
+    if (isSuiteMeta(text)) return { text, skill: null, family: null, name: null, meta: true };
     const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-V01D check belongs to the go skill (its name is too short to match by words)
     return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
   }) }));
   if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);
-  for (const i of placed) for (const c of i.checks) {
+  for (const i of placed) {
+    const m = i.checks.filter((c) => c.meta); if (m.length) suite.incidents += 1;
+    for (const c of m) { if (/^check timeout/i.test(c.text)) suite.timeouts += 1; else suite.ended += 1; }
+  }
+  for (const i of placed) for (const c of i.checks.filter((x) => !x.meta)) {
     if (isGoLog(c.text)) goLog.push({ sha: i.sha, at: i.at, text: c.text });
     if (c.family) counts.set(c.family, { id: c.family, name: c.name, count: (counts.get(c.family) || { count: 0 }).count + 1 }); else un.set(c.text, (un.get(c.text) || 0) + 1);
   }
-  placed = placed.map((i) => { const checks = i.checks.map(({ text, skill, family }) => ({ text, skill, family })); return { ...i, checks, suspects: suspectsOf(i.touched, checks) }; });
+  placed = placed.map((i) => { const checks = i.checks.map(({ text, skill, family, meta }) => (meta ? { text, skill, family, meta: true } : { text, skill, family })); return { ...i, checks, suspects: suspectsOf(i.touched, checks) }; });
   return {
-    total: inc.length, failing: placed.reduce((n, i) => n + i.checks.length, 0), recent: placed.slice(0, RECENT), focus: want, goLog,
+    total: inc.length, failing: placed.reduce((n, i) => n + i.checks.filter((c) => !c.meta).length, 0), recent: placed.slice(0, RECENT), focus: want, goLog, suite,
     families: [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
     unmapped: [...un].map(([text, count]) => ({ text, count })).sort((a, b) => b.count - a.count || a.text.localeCompare(b.text)),
   };
@@ -111,12 +119,31 @@ export function autopsyHtml(a, esc = escHtml) {
     (a.focus ? '<p class="lead" data-autopsy-focus="' + esc(a.focus) + '">Only <b>' + esc(fam ? fam.name : a.focus) + '</b>: ' + esc(a.failing) + ' failing check' + (a.failing === 1 ? '' : 's') + ' in the logs. <a href="#" data-ask="incident autopsy">all families</a></p>'
       : '<p class="lead">' + (top.length ? 'Most failing checks recorded: <b>' + top.map((f) => esc(f.name)).join('</b>, <b>') + '</b> (' + esc(top[0].count) + ' of ' + esc(a.failing) + ').' : 'No failing check could be placed in a family.')
       + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>')
+    + (!a.focus && a.suite && (a.suite.timeouts || a.suite.ended) ? '<p class="sub" data-autopsy-suite="1"><b>The suite itself:</b> ' + esc(a.suite.timeouts) + ' stalled check' + (a.suite.timeouts === 1 ? '' : 's') + ' (no check finished within 300 s) and ' + esc(a.suite.ended) + ' end-of-run flag' + (a.suite.ended === 1 ? '' : 's') + ' in ' + esc(a.suite.incidents) + ' of the ' + esc(a.total) + ' red suites: the runner stalling, not a skill failing, so none of it is counted in a family.</p>' : '')
     + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
-      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
+      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
+}
+/**
+ * the stability gauge (Status card, asked by Void): how often the browser suite went red on main in the last 7 days, from incidents.json.
+ * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Pure.
+ */
+export function stabilityOf(incidentsJson, now = Date.now()) {
+  const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
+  const day = recent.filter((i) => now - Date.parse(i.at) < 864e5).length;
+  const score = Math.max(0, 100 - 12 * recent.length);
+  return { score, label: !recent.length ? 'steady' : recent.length <= 3 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length };
+}
+/** the gauge as markup: a bar and one sentence. Pure. */
+export function stabilityHtml(g, esc = escHtml) {
+  if (!g || !g.known) return '<div class="status-stability sub" data-stability="none">No red suite recorded yet, so there is nothing to gauge.</div>';
+  const col = g.label === 'steady' ? '#3fbf6a' : g.label === 'wobbly' ? '#d9a441' : '#e0584a';
+  return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
+    + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
+    + '<span class="sub">' + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day), from <code>incidents.json</code>.</span></div>';
 }
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
 export function culpritHtml(i, esc) {
@@ -152,7 +179,7 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
 export function failurePlants(incidentsJson, max = 12) {
   const by = new Map();
   for (const inc of parseIncidents(incidentsJson).slice(0, 30)) {
-    for (const t of new Set(inc.checks.map(titleOf).filter((x) => x.length >= 3))) {
+    for (const t of new Set(inc.checks.filter((c) => !isSuiteMeta(c)).map(titleOf).filter((x) => x.length >= 3))) {
       const e = by.get(t) || { text: t.slice(0, 120), count: 0, last: Date.parse(inc.at) };
       e.count += 1; by.set(t, e);
     }
