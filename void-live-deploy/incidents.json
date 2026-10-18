@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T13:03:08.579Z",
+   "sha": "8322451d1c0c9b28668141581c884cf94be716d4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39129540983",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/asks-link.json",
+    "tools/bench.json",
+    "tools/families.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-18T12:51:34.812Z",
    "sha": "c37395be46dfb31126ebe40ac7ea1a81416ca136",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39128381934",
@@ -681,33 +701,6 @@
     "tools/typo-audit.json",
     "void-live-deploy/index.html",
     "void-live-deploy/lib/a11y-modes.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T04:08:54.198Z",
-   "sha": "9e29a06db436bae99f4e0e43dfe39ad2be3dd002",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39095142987",
-   "suite": "browser suite on main",
-   "checks": [
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/playbooks/README.md",
-    "docs/playbooks/art-forge.md",
-    "docs/playbooks/open-endpoint-closed-list.md",
-    "docs/playbooks/stage-effects.md",
-    "docs/playbooks/stage-mode.md",
-    "docs/playbooks/stage-pack.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/date-pack.test.mjs",
-    "tools/families.mjs",
-    "tools/learn.test.mjs",
-    "tools/math-transplants.test.mjs",
-    "tools/openapi-check.mjs"
    ]
   }
  ]
