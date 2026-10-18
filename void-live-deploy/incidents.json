@@ -2,6 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T11:48:40.992Z",
+   "sha": "ca08b95ed13d417b99936ea183ffa517cf20ba42",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39124436172",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/SALVAGE.md",
+    "domains/void.agents.log.md",
+    "tools/bench-load.test.mjs",
+    "tools/bench.mjs",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/zorbleflux.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/tester-log.json",
+    "void-live-deploy/trialwatch.json"
+   ]
+  },
+  {
    "at": "2026-10-18T11:14:06.603Z",
    "sha": "c57b4a6c416ee91a8585dc9e94fae929e56978b1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39121231161",
@@ -690,33 +714,6 @@
     "void-live-deploy/lib/go-ai.js",
     "void-live-deploy/lib/guide.js",
     "void-live-deploy/lib/rule-registry.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T00:13:30.339Z",
-   "sha": "1c0f91d66301f11d9afbb9bb2df1aad1225d0b33",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39080848377",
-   "suite": "browser suite on main",
-   "checks": [
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/field-cards.test.mjs",
-    "tools/growth.test.mjs",
-    "tools/label.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/field-cards.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/growth.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/label.js",
-    "void-live-deploy/skills/living-cards-mind.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json"
    ]
   }
  ]

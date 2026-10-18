@@ -1,23 +1,7 @@
 {
-  "at": "2026-10-17T11:12:31.410Z",
+  "at": "2026-10-18T11:46:31.131Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [
-    {
-      "id": "ask-20261016-2056-1",
-      "ask": "Convert the 'missed asks' into a structured skill-building queue that automatically creates a 'propose-fix' job.",
-      "target": "voice:ask-20261016-2056-1"
-    },
-    {
-      "id": "ask-20261016-2010-1",
-      "ask": "Create a visual 'rarity' tiering system for the cards on the stage based on their evidence rating (e.g., Proven = Mythic visual style, Checked = Rare).",
-      "target": "voice:ask-20261016-2010-1"
-    },
-    {
-      "id": "ask-20261016-1919-1",
-      "ask": "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique visual hierarchies.",
-      "target": "voice:ask-20261016-1919-1"
-    }
-  ],
-  "note": "Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery."
+  "selected": [],
+  "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
