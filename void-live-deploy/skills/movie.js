@@ -19,7 +19,7 @@ const badge = (f, esc) => '<span class="mv-badge" style="font-size:11px;letter-s
 const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
-const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · V01D plays only free, legal films and official trailers</div>';
+const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · Verse plays only free, legal films and official trailers</div>';
 
 /** the card of one movie: art, facts, the player, the links. Pure given a lookup result. */
 export function movieCard(f, esc) {

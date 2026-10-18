@@ -18,7 +18,7 @@ for (const inc of [0, 1, 999, 10000, 123457]) {
   assert.equal(spent + a.reserve_cents, inc, 'every cent accounted for on ' + inc);
 }
 assert.equal(allocate(10000, C, { reserve: 0.05 }).reserve_cents, 2000, 'a lower asked reserve never goes below the 20% floor');
-assert.equal(allocate(10000, C, { reserve: 0.4 }).reserve_cents, 4000, "V01D's higher reserve is kept");
+assert.equal(allocate(10000, C, { reserve: 0.4 }).reserve_cents, 4000, "Verse's higher reserve is kept");
 // free first: free items and unused free paths come before anything paid; a paid item waits for its free path unless urgent
 const a = allocate(10000, C, { owned: ['cloudflare'] });
 assert.deepEqual(a.free.map((f) => f.id), ['free', 'pathfirst', 'urgent'], 'free items and every unused free path (even an urgent one), $0');

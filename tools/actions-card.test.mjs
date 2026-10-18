@@ -16,7 +16,7 @@ test('the card opens on the ways people ask for the record, and not on look-alik
 test('the tally counts each state and reads as a sentence; an empty record says so', () => {
   const rows = [{ state: 'done' }, { state: 'done' }, { state: 'failed' }, { state: 'stubbed' }, { state: 'running' }, { state: 'odd' }, null];
   assert.deepEqual(tally(rows), { done: 2, failed: 1, stubbed: 1, running: 1 });
-  assert.equal(tallyText(tally(rows)), '2 done · 1 failed · 1 stubbed (nothing left V01D) · 1 still running or never reported back');
+  assert.equal(tallyText(tally(rows)), '2 done · 1 failed · 1 stubbed (nothing left Verse) · 1 still running or never reported back');
   assert.match(tallyText(tally([])), /^No actions recorded yet/);
 });
 

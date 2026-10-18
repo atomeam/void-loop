@@ -40,7 +40,7 @@ export function parseAsk(text) {
   raw = raw.replace(OWN, '').replace(/^(?:the|a|an)\s+/, '').trim();
   if (MARK.test(raw)) { named = true; raw = raw.replace(MARK, ''); } else if (TAG.test(raw)) { tagged = true; raw = raw.replace(TAG, ''); }
   raw = raw.replace(/^(?:the|a|an)\s+/, '').trim();
-  if (!raw || /^(?:you|yourself|v01d|void|it|this|that|me|myself)$/.test(raw)) return null;
+  if (!raw || /^(?:you|yourself|v01d|void|verse|it|this|that|me|myself)$/.test(raw)) return null;
   return { topic: raw, named, tagged };
 }
 

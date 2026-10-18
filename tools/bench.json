@@ -6068,5 +6068,9 @@
   {"ask": "name all your unbuilt asks", "want": "skill:wants"},
   {"ask": "your backlog", "want": "skill:wants"},
   {"ask": "what have you not built yet", "want": "skill:wants"},
-  {"ask": "asks not built?", "want": "skill:wants"}
+  {"ask": "asks not built?", "want": "skill:wants"},
+  {"ask": "keep a converter for miles and km", "want": "skill:convert"},
+  {"ask": "keep 5 miles to km as a card", "want": "skill:convert"},
+  {"ask": "convert card for 72 f to c", "want": "skill:convert"},
+  {"ask": "72 f to c as a converter card", "want": "skill:convert"}
 ]

@@ -17,7 +17,7 @@ test('rea-study: REA runs pinned, with its passive web commands only', () => {
   assert.deepEqual([...ALLOWED].sort(), ['analyze-web-bundle', 'list-browser-targets']);
 });
 
-test('rea-study: a pending and a finished study both fit V01D\'s memory (owner-only), the request kept out of the public summary', () => {
+test('rea-study: a pending and a finished study both fit Verse\'s memory (owner-only), the request kept out of the public summary', () => {
   const p = cleanRecord(studyRecord({ url: 'https://example.org/value', question: 'how does it value a coin from a photo' }));
   assert.ok(p); assert.equal(p.kind, 'study'); assert.match(p.summary, /^pending example\.org$/); assert.match(p.body, /how does it value a coin/);
   const d = cleanRecord(studyRecord({ url: 'https://example.org/value', question: 'q', digest: '# Study', counts: { scripts: 3, endpoints: 2, modules: 3 } }));

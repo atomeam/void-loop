@@ -54,7 +54,7 @@ export const CHECK_DAYS = 30; // the honest payoff test: each spend is checked a
 export function proposal(c, owned = []) {
   const ready = !!c.account && owned.includes(c.account);
   return { id: c.id, item: c.item, cost_cents: c.cost, why: c.why, expected: c.expected, kind: c.kind, account: c.account || null, metric: c.metric || null,
-    status: ready ? 'ready' : 'queued', how: ready ? 'Adam buys it in his existing ' + c.account + ' account' : 'needs Adam: no account V01D may use yet (none is opened for it)' };
+    status: ready ? 'ready' : 'queued', how: ready ? 'Adam buys it in his existing ' + c.account + ' account' : 'needs Adam: no account Verse may use yet (none is opened for it)' };
 }
 
 /** Learning: a spend's measured outcome (after / before of its metric, higher is better) moves its kind's multiplier. Pure. */

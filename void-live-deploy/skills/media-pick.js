@@ -10,7 +10,7 @@ import { runPick as pickMovie } from './movie.js';
 
 const PROMPT = 'Suggest 5 well-loved songs for someone to listen to right now, a mix of eras and genres. Reply with only a numbered list, one per line, exactly like: 1. Song Title - Artist';
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
-const SRC = (esc) => '<div class="src">Source: iTunes Search API · V01D plays only the 30 s official preview; the full song is on Apple Music or wherever you listen</div>';
+const SRC = (esc) => '<div class="src">Source: iTunes Search API · Verse plays only the 30 s official preview; the full song is on Apple Music or wherever you listen</div>';
 const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 
@@ -76,7 +76,7 @@ export function showCard(f, esc) {
     + (no ? '<p class="mv-no"><b>' + (f.availability === 'region' ? 'Not available here' : 'Not verified as available') + '.</b> ' + esc(f.why || '') + ' Official links only, no search or stream.</p>' : '')
     + '<dl class="mv-facts" style="display:grid;grid-template-columns:auto 1fr;gap:2px 12px;margin:6px 0">' + facts.map((x) => '<dt style="color:var(--muted,#9a9aa2)">' + x[0] + '</dt><dd style="margin:0">' + esc(x[1]) + '</dd>').join('') + '</dl>'
     + (f.overview ? '<p>' + esc(f.overview) + '</p>' : '')
-    + (no ? '' : '<div class="sub">V01D does not stream shows: watch it where it is legally offered.</div>')
+    + (no ? '' : '<div class="sub">Verse does not stream shows: watch it where it is legally offered.</div>')
     + '<div class="mv-links" style="margin-top:6px">' + (f.links || []).map((l) => '<a href="' + esc(safeUrl(l.url)) + '" target="_blank" rel="noopener">' + esc(l.label) + '</a>').join(' · ') + '</div>'
     + '<div class="src">Source: TVMaze</div>';
 }

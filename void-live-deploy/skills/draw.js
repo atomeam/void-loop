@@ -230,7 +230,7 @@ function run(text, api) {
   if (q.brush) { brushes = brushes.filter((x) => x.name !== q.brush.name).concat([q.brush]); keep(brushes); }
   let cur = q.brush || brushes[brushes.length - 1] || brushFrom('pencil'), color = (q.brush && q.brush.color) || '#111111';
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Draw</h2><div class="sub">Describe a brush in your own words and V01D makes it: "dry charcoal that catches the paper grain", "thick wet ink", "faint pencil".</div>' // void-review: ok (fixed text; the brush row below is built with esc)
+    p.innerHTML = '<h2>Draw</h2><div class="sub">Describe a brush in your own words and Verse makes it: "dry charcoal that catches the paper grain", "thick wet ink", "faint pencil".</div>' // void-review: ok (fixed text; the brush row below is built with esc)
       + '<div class="vdraw"><canvas width="900" height="600" style="width:100%;touch-action:none;background:#fbfaf6;border-radius:10px;cursor:crosshair"></canvas>'
       + '<form class="vd-make" style="display:flex;gap:6px;margin:8px 0"><input class="vd-words" placeholder="describe a brush, or tell the layers what to do…" aria-label="describe a brush, or tell the layers what to do" style="flex:1;font:inherit;padding:6px 10px;border-radius:999px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit"><button type="submit">Make it</button></form>'
       + '<div class="vd-said sub" aria-live="polite"></div><div class="vd-layers" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0;align-items:center"></div><div class="vd-steady sub"></div><div class="vd-brushes" style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0"></div>'
@@ -269,7 +269,7 @@ function run(text, api) {
       const src = backdropSrc(); if (!src) return 'That picture is too big to keep as a backdrop.';
       if (!layers.some((x) => !x.hidden && x.c.getContext('2d').getImageData(0, 0, cv.width, cv.height).data.some((v, i) => i % 4 === 3 && v > 0))) return 'Draw something first: the canvas is empty.';
       window.dispatchEvent(new CustomEvent('void-backdrop', { detail: { src } }));
-      return 'Your drawing is now your V01D\'s backdrop, kept with your V01D (signed in, it follows you to your other devices). Say "remove my backdrop" to take it off.';
+      return 'Your drawing is now your Verse\'s backdrop, kept with your Verse (signed in, it follows you to your other devices). Say "remove my backdrop" to take it off.';
     }
     if (c.op === 'missing') return 'There is no layer called "' + c.name + '". The layers are: ' + layers.map((x) => x.name).join(', ') + '.';
     if (c.op === 'cannot') return 'Cannot do that: ' + c.why + '.';

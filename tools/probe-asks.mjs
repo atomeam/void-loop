@@ -41,7 +41,7 @@ export const freshOnly = (asks, bench) => { const have = new Set((bench || []).m
 export const jobOf = (m, family) => ({
   ask: ('learn to handle "' + m.ask + '"').slice(0, 120),
   target: 'probe:' + slug(m.ask),
-  note: ('V01D wrote this ask for its ' + family + ' family and missed it (wanted ' + m.want + '); from the daily probe (tools/probe-asks.mjs), not a visitor\'s words').slice(0, 300),
+  note: ('Verse wrote this ask for its ' + family + ' family and missed it (wanted ' + m.want + '); from the daily probe (tools/probe-asks.mjs), not a visitor\'s words').slice(0, 300),
 });
 
 /** the things a probe asked the forge to make and it missed (frontier #14): the misses that wanted the forge, "make me a giraffe" ->
@@ -62,12 +62,12 @@ export function plan(misses, queue, family, { openMax = PROBE_OPEN_MAX } = {}) {
 }
 
 export const summary = ({ family, wrote, probed, misses, queued, dry }) => [
-  '### V01D probed its ' + family + ' family',
+  '### Verse probed its ' + family + ' family',
   '',
   '| What | How many |', '|:--|--:|',
-  '| asks V01D wrote | ' + wrote + ' |', '| new to the benchmark, probed | ' + probed + ' |', '| missed | ' + misses.length + ' |',
+  '| asks Verse wrote | ' + wrote + ' |', '| new to the benchmark, probed | ' + probed + ' |', '| missed | ' + misses.length + ' |',
   '| queued for the builders | ' + (dry ? 'none (dry)' : queued.length) + ' |',
-  ...(misses.length ? ['', 'Missed (V01D\'s own words, as data): ' + misses.map((m) => '"' + m.ask + '" (wanted ' + m.want + ')').join('; ')] : []),
+  ...(misses.length ? ['', 'Missed (Verse\'s own words, as data): ' + misses.map((m) => '"' + m.ask + '" (wanted ' + m.want + ')').join('; ')] : []),
 ].join('\n');
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -89,7 +89,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       const r = await api('/api/probe-asks', 'POST', req);
       family = (r.family && r.family.id) || req.family; asks = r.asks || [];
     }
-  } catch (e) { console.error('probe-asks: V01D did not write asks: ' + e.message); process.exit(3); }
+  } catch (e) { console.error('probe-asks: Verse did not write asks: ' + e.message); process.exit(3); }
   const fresh = freshOnly(asks, bench);
   if (noProbe) { console.log(JSON.stringify({ family, asks }, null, 1)); process.exit(0); }
   // one record per run in V01D's probe ledger (lib/probe-log.js, the growth card's "My probes"): counts only, never the asks

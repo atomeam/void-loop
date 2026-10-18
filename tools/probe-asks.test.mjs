@@ -64,7 +64,7 @@ test('the model\'s reply becomes at most 25 bench-shaped asks; repeats, examples
   assert.deepEqual(parseAsks('nothing here', wants), []); assert.deepEqual(parseAsks('{"asks":"no"}', wants), []); assert.deepEqual(parseAsks(JSON.stringify([{ ask: 'opposite of brave', want: 'skill:words' }]), wants).length, 1, 'a bare list is read too');
 });
 
-test('the route is owner-only, picks the family, sends only builder data, and returns V01D\'s asks without storing anything', async () => {
+test('the route is owner-only, picks the family, sends only builder data, and returns Verse\'s asks without storing anything', async () => {
   const calls = [], env = { AI: ai(WROTE, calls), READ_TOKEN: OWNER, ASSETS };
   assert.equal((await post(env, {}, 'wrong')).status, 401);
   assert.equal((await post(env, {}, '')).status, 401);
@@ -81,7 +81,7 @@ test('the route is owner-only, picks the family, sends only builder data, and re
   assert.doesNotMatch(sent, /calc|drop table/, 'a want this family does not answer with is not offered');
   assert.match(sent, /Wants you may use: skill:define, skill:joke, skill:translate, skill:words, skill:words\|skill:define\|answer\./);
   assert.equal(calls[0].o.messages[0].content, PROBE_SYSTEM);
-  const n = await post(env, { family: 'numbers' }); assert.equal(n.status, 502, 'V01D wrote asks for words, none of them a numbers want: nothing usable');
+  const n = await post(env, { family: 'numbers' }); assert.equal(n.status, 502, 'Verse wrote asks for words, none of them a numbers want: nothing usable');
   const busy = await post({ AI: ai(new Error('429 busy')), READ_TOKEN: OWNER, ASSETS, DB: { prepare: () => ({ bind: () => ({ run: async () => {} }) }) } }, {});
   assert.equal(busy.status, 503);
 });
@@ -93,13 +93,13 @@ test('the tool: the request from repo data, fresh asks only, probe: jobs within 
   assert.deepEqual(freshOnly([{ ask: 'Define Serendipity', want: 'skill:define' }, { ask: 'opposite of brave', want: 'skill:words' }], BENCH), [{ ask: 'opposite of brave', want: 'skill:words' }]);
   const misses = [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'thank you in japanese', want: 'skill:translate' }, { ask: 'Opposite of brave!', want: 'skill:words' }, { ask: 'tell me a joke about cats', want: 'skill:joke' }];
   const j = jobOf(misses[0], 'words');
-  assert.equal(j.ask, 'learn to handle "opposite of brave"'); assert.equal(j.target, 'probe:opposite-of-brave'); assert.match(j.note, /V01D wrote this ask for its words family and missed it \(wanted skill:words\)/); assert.match(j.note, /not a visitor's words/);
+  assert.equal(j.ask, 'learn to handle "opposite of brave"'); assert.equal(j.target, 'probe:opposite-of-brave'); assert.match(j.note, /Verse wrote this ask for its words family and missed it \(wanted skill:words\)/); assert.match(j.note, /not a visitor's words/);
   const p = plan(misses, { items: [{ target: 'probe:thank-you-in-japanese', state: 'done' }, { target: 'probe:old-one', state: 'queued' }] }, 'words');
   assert.equal(p.open, 1); assert.equal(p.room, PROBE_OPEN_MAX - 1);
   assert.deepEqual(p.queue.map((x) => x.target), ['probe:opposite-of-brave'], 'one slot left; the Japanese one was queued before; the repeat of brave is one job');
   assert.deepEqual(p.later.map((x) => x.target), ['probe:tell-me-a-joke-about-cats']);
   const s = summary({ family: 'words', wrote: 25, probed: 22, misses: misses.slice(0, 1), queued: [j], dry: false });
-  assert.match(s, /\| asks V01D wrote \| 25 \|/); assert.match(s, /\| missed \| 1 \|/); assert.match(s, /\| queued for the builders \| 1 \|/); assert.match(s, /"opposite of brave" \(wanted skill:words\)/);
+  assert.match(s, /\| asks Verse wrote \| 25 \|/); assert.match(s, /\| missed \| 1 \|/); assert.match(s, /\| queued for the builders \| 1 \|/); assert.match(s, /"opposite of brave" \(wanted skill:words\)/);
   assert.match(summary({ family: 'words', wrote: 3, probed: 0, misses: [], queued: [], dry: true }), /none \(dry\)/);
   assert.match(againFile('/x/tools'), /void-probe-misses-[0-9a-f]{10}\.json$/);
 });

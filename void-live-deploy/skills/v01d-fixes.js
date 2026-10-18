@@ -4,7 +4,7 @@
  * wait for the owner first: V01D's confidence, the file and lines it changes, its reason, and the changed lines themselves; Approve
  * (owner only, /api/v01d-fixes) lets a waiting one merge once Void's review is clean. Read from GitHub's public API; owner-only:
  * without the owner's key the card says so and fetches nothing.
- * "V01D's fixes", "show V01D's fixes", "fixes waiting for me", "what fixes did V01D propose".
+ * "Verse's fixes", "show Verse's fixes", "fixes waiting for me", "what fixes did Verse propose".
  */
 import { REPO, fixesOf, diffLines } from '../lib/v01d-fixes.js';
 
@@ -14,8 +14,8 @@ const GH = 'https://api.github.com/repos/' + REPO;
 
 export function fixesAsk(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:show|list|open)\s+(?:me\s+)?)?(?:v01d'?s|void'?s|your)\s+(?:own\s+)?(?:fixes|proposed fixes|fix proposals|pull requests)$/.test(t)
-    || /^(?:what|which)\s+fixes\s+(?:did|has)\s+(?:v01d|void|you)\s+propos(?:e|ed)$/.test(t)
+  return /^(?:(?:show|list|open)\s+(?:me\s+)?)?(?:v01d'?s|void'?s|verse'?s|your)\s+(?:own\s+)?(?:fixes|proposed fixes|fix proposals|pull requests)$/.test(t)
+    || /^(?:what|which)\s+fixes\s+(?:did|has)\s+(?:v01d|void|verse|you)\s+propos(?:e|ed)$/.test(t)
     || /^(?:v01d\s+)?fixes\s+(?:waiting|that wait)\s+(?:for|on)\s+me$/.test(t);
 }
 
@@ -25,16 +25,16 @@ const readFiles = (n) => fetch(GH + '/pulls/' + n + '/files', { headers: { accep
 async function run(text, api) {
   if (!fixesAsk(text)) return 'none';
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>V01D\'s fixes</h2><div class="sub">…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Verse\'s fixes</h2><div class="sub">…</div>'; });
   const tok = ownerToken();
-  if (!tok) { el.innerHTML = '<h2>V01D\'s fixes</h2><p>Only my owner reviews the fixes I propose.</p>'; return 'v01d-fixes'; }
+  if (!tok) { el.innerHTML = '<h2>Verse\'s fixes</h2><p>Only my owner reviews the fixes I propose.</p>'; return 'v01d-fixes'; }
   let prs = null;
   try { const r = await fetch(GH + '/pulls?state=open&per_page=30', { headers: { accept: 'application/vnd.github+json' } }); prs = r.ok ? await r.json() : null; } catch (_) {}
   if (!el.isConnected) return 'v01d-fixes';
-  if (!Array.isArray(prs)) { el.innerHTML = '<h2>V01D\'s fixes</h2><p>GitHub did not answer just now. Ask again in a moment.</p>'; return 'v01d-fixes'; }
+  if (!Array.isArray(prs)) { el.innerHTML = '<h2>Verse\'s fixes</h2><p>GitHub did not answer just now. Ask again in a moment.</p>'; return 'v01d-fixes'; }
   const fixes = fixesOf(prs);
   const pct = (c) => (c === null ? 'no confidence given' : 'confidence ' + c.toFixed(2));
-  el.innerHTML = '<h2>V01D\'s fixes</h2><div class="sub">' + (fixes.length ? fixes.length + ' open · ' + fixes.filter((f) => f.waits).length + ' waiting for you (V01D was under 0.8 sure)' : 'None open: every fix I proposed has merged or been closed.') + '</div>'
+  el.innerHTML = '<h2>Verse\'s fixes</h2><div class="sub">' + (fixes.length ? fixes.length + ' open · ' + fixes.filter((f) => f.waits).length + ' waiting for you (Verse was under 0.8 sure)' : 'None open: every fix I proposed has merged or been closed.') + '</div>'
     + fixes.map((f) => '<div class="vfix" data-pr="' + esc(f.number) + '" style="margin:12px 0;padding-top:10px;border-top:1px solid rgba(255,255,255,.1)">'
       + '<div><a href="' + esc(f.url) + '" target="_blank" rel="noopener">#' + esc(f.number) + '</a> ' + esc(f.title) + '</div>'
       + '<div class="sub">' + esc(pct(f.confidence)) + (f.where ? ' · ' + esc(f.where) : '') + ' · ' + (f.draft ? 'a draft on the board, not asking to merge' : f.waits ? 'waits for you' : f.merges ? 'merges itself on review' : 'open') + '</div>'
@@ -68,7 +68,7 @@ async function run(text, api) {
 export default {
   name: 'v01d-fixes',
   fixesAsk,
-  examples: ["V01D's fixes", "show V01D's fixes", 'fixes waiting for me', 'what fixes did V01D propose'],
+  examples: ["Verse's fixes", "show Verse's fixes", 'fixes waiting for me', 'what fixes did Verse propose'],
   nearMisses: ['fix my code', 'fix this', 'my fixes', 'quick fixes for a leaky tap', 'show my pull requests', 'how do I fix a webhook'],
   match(lower, text) { return fixesAsk(text); },
   run,

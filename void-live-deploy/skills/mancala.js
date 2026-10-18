@@ -64,7 +64,7 @@ function settle(state) {
 export function resolveMove(state, pit) {
   if (state.over) throw new Error('game over');
   const player = state.turn;
-  if (!owns(player, pit)) throw new Error(`pit ${pit} is not ${player === 0 ? 'yours' : "V01D's"}`);
+  if (!owns(player, pit)) throw new Error(`pit ${pit} is not ${player === 0 ? 'yours' : "Verse's"}`);
   const sown = state.pits[pit];
   if (sown < 1) throw new Error(`pit ${pit} is empty`);
 
@@ -191,8 +191,8 @@ function mount(th, stageApi) {
     stores[0].setAttribute('aria-label', `your store: ${s.store[0]}`);
     stores[1].setAttribute('aria-label', `Void store: ${s.store[1]}`);
     status.textContent = s.over
-      ? (s.result === 'you_win' ? `You win ${s.store[0]}–${s.store[1]}!` : s.result === 'void_wins' ? `V01D wins ${s.store[1]}–${s.store[0]}` : `Drawn ${s.store[0]}–${s.store[1]}`)
-      : (s.turn === 0 ? 'Your move · tap one of your pits' : 'V01D is thinking…');
+      ? (s.result === 'you_win' ? `You win ${s.store[0]}–${s.store[1]}!` : s.result === 'void_wins' ? `Verse wins ${s.store[1]}–${s.store[0]}` : `Drawn ${s.store[0]}–${s.store[1]}`)
+      : (s.turn === 0 ? 'Your move · tap one of your pits' : 'Verse is thinking…');
   }
   // Void replies on a short delay so the card reads as a turn, not a jump.
   function schedule() {

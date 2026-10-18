@@ -43,7 +43,7 @@ async function run(text, api) {
   if (!q) return 'none';
   const { showPage, esc } = api;
   if (q.person) {
-    showPage((p) => { p.innerHTML = '<h2>What you are worth</h2><p>' + esc(complimentFor('', String(text || '').length)) + '</p><div class="src">V01D values coins, cards and chairs. Never people.</div>'; });
+    showPage((p) => { p.innerHTML = '<h2>What you are worth</h2><p>' + esc(complimentFor('', String(text || '').length)) + '</p><div class="src">Verse values coins, cards and chairs. Never people.</div>'; });
     return 'appraise';
   }
   const el = showPage((p) => {

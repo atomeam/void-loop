@@ -31,7 +31,7 @@ export function drop(s0, col, why) {
   if (r < 0) return s0;
   const s = { ...s0, board: s0.board.slice(), log: s0.log.slice(-80) }, p = s.turn;
   s.board[r * C + col] = p; s.last = r * C + col;
-  s.log.push({ who: p === 1 ? 'You' : 'V01D', text: 'dropped in column ' + (col + 1), ...(why ? { why } : {}) });
+  s.log.push({ who: p === 1 ? 'You' : 'Verse', text: 'dropped in column ' + (col + 1), ...(why ? { why } : {}) });
   if (winLine(s.board, p)) s.over = p === 1 ? 'you' : 'void';
   else if (full(s.board)) s.over = 'draw';
   else s.turn = 3 - p;

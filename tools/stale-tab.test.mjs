@@ -17,5 +17,5 @@ test('a check is due after the interval, and the first one always', () => {
   assert.equal(checkDue(1000, 1000 + CHECK_MS - 1), false);
   assert.equal(checkDue(1000, 1000 + CHECK_MS), true);
   assert.equal(checkDue(undefined, 5), true);
-  assert.match(NOTICE, /newer V01D is ready/);
+  assert.match(NOTICE, /newer Verse is ready/);
 });

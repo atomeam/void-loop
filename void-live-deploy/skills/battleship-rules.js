@@ -51,8 +51,8 @@ function shoot(s, side, cell) {
   let result = ship ? 'hit' : 'miss';
   if (ship && sunk(ship, shots)) { result = 'sunk'; for (const c of ship.cells) shots[c] = 'sunk'; }
   const sank = result === 'sunk' ? ship.name : null;
-  s.log.push({ who: side === 'you' ? 'You' : 'V01D', text: 'fired at ' + cellName(cell) + ': ' + (sank ? 'sank the ' + sank : result) });
-  if (s.fleet[foe].every((sh) => sunk(sh, shots))) { s.over = side; s.log.push({ who: side === 'you' ? 'You' : 'V01D', text: 'sank the whole fleet' }); }
+  s.log.push({ who: side === 'you' ? 'You' : 'Verse', text: 'fired at ' + cellName(cell) + ': ' + (sank ? 'sank the ' + sank : result) });
+  if (s.fleet[foe].every((sh) => sunk(sh, shots))) { s.over = side; s.log.push({ who: side === 'you' ? 'You' : 'Verse', text: 'sank the whole fleet' }); }
   else if (result === 'miss') s.turn = foe; // a hit fires again
   return { result, sank, cell };
 }

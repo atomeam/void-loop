@@ -126,7 +126,7 @@ export function improve(results, suite, filed = []) {
   // a new wording or activity V01D did not understand: teach it (one alias item with its regression case), before anything else
   const unheard = (r) => r.variant && r.why.every((w) => /^(refused|nothing appeared|no skill caught)/.test(w)); // V01D did not understand the wording
   const miss = results.find((r) => !r.ok && unheard(r) && !done.has('teach | ' + r.ask));
-  if (miss) return { kind: 'teach', key: 'teach | ' + miss.ask, note: 'teach V01D "' + miss.ask + '" (means "' + miss.base + '", ' + miss.feature + '): ' + miss.why.join('; '),
+  if (miss) return { kind: 'teach', key: 'teach | ' + miss.ask, note: 'teach Verse "' + miss.ask + '" (means "' + miss.base + '", ' + miss.feature + '): ' + miss.why.join('; '),
     suite: { ...suite, teach: (suite.teach || []).concat({ ask: miss.ask, means: miss.base, feature: miss.feature }) } };
   const fail = results.find((r) => !r.ok && !unheard(r) && !done.has(r.key));
   if (fail) return { kind: 'file', key: fail.key, note: 'fix: "' + fail.ask + '" ' + fail.why.join('; '), suite };

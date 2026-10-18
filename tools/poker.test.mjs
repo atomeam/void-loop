@@ -31,7 +31,7 @@ test('Void\'s estimate uses only what it can see: the same cards and board give 
   const a = P.create({ seed: 9 }), b = P.create({ seed: 9 });
   b.cards.you = a.cards.void.includes(c('A♠')) ? hand('K♦', 'K♣') : hand('A♠', 'A♣'); // you hold something else entirely
   const toVoid = (s) => (s.toAct === 'void' ? s : P.act(s, s.toAct === 'you' ? P.legal(s).includes('call') ? 'call' : 'check' : 'check'));
-  const lastVoid = (s) => s.log.filter((l) => l.who === 'V01D' && l.why).at(-1);
+  const lastVoid = (s) => s.log.filter((l) => l.who === 'Verse' && l.why).at(-1);
   const va = lastVoid(P.voidAct(toVoid(a))), vb = lastVoid(P.voidAct(toVoid(b)));
   assert.equal(va.text, vb.text); assert.equal(va.why, vb.why);
   assert.match(va.why, /to win/);
@@ -54,5 +54,5 @@ test('a whole session plays out: chips are never made or lost, and every Void ch
     const L = P.legal(s); s = P.act(s, L.includes('check') ? 'check' : 'call');
     assert.equal(s.stacks.you + s.stacks.void + s.pot, 400);
   }
-  for (const l of s.log.filter((x) => x.who === 'V01D' && /folds|checks|calls|bets|raises/.test(x.text))) assert.ok(l.why, l.text);
+  for (const l of s.log.filter((x) => x.who === 'Verse' && /folds|checks|calls|bets|raises/.test(x.text))) assert.ok(l.why, l.text);
 });

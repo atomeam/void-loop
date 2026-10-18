@@ -11,7 +11,7 @@
 import { ideaKey, freshCard, cardFromStats, mergeKinds, mergeStats, fallbackName, fallbackLine, sanitiseName, sanitiseLine } from '../lib/merge-rules.js';
 import { cardOf, lookup, loadStats } from '../lib/card-frame.js';
 
-const LEAD = /^(?:(?:please|hey|v01d|void|can you|could you|would you|will you|let'?s|lets|i want to|i'?d like to|i would like to|try to|try and)\s+)+/;
+const LEAD = /^(?:(?:please|hey|v01d|void|verse|can you|could you|would you|will you|let'?s|lets|i want to|i'?d like to|i would like to|try to|try and)\s+)+/;
 const WHAT = /^(?:what|who|which)\s+(?:(?:do|would|will|might|could|can|should)\s+(?:you|we|i)\s+(?:get|make|have|see)|happens|if)\s+(?:if|when)?\s*(?:you|we|i)?\s*(?:were to\s+|did\s+|tried to\s+)?/;
 const VERB = /^(?:merge|combine|fuse|smash together|mash together|blend)\s+(.+)$/;
 const SPLIT = /\s+(?:and|with|plus|into|&|\+)\s+/;
@@ -53,9 +53,9 @@ export function mergedCard(pa, pb, words = {}) {
 }
 
 export const SRC = {
-  pending: 'Naming it… the plain blend shows until V01D has a name.',
-  fresh: "Named once by V01D's model; everyone who merges this pair gets this name.",
-  cached: "Named by V01D's model and kept: everyone who merges this pair gets this name.",
+  pending: 'Naming it… the plain blend shows until Verse has a name.',
+  fresh: "Named once by Verse's model; everyone who merges this pair gets this name.",
+  cached: "Named by Verse's model and kept: everyone who merges this pair gets this name.",
   offline: 'Named offline, the plain blend of the two names: the model could not be reached, so this name is not kept.',
 };
 export const CSS = '.mg-parents{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:4px 0 8px}.mg-p{flex:1 1 130px;min-width:0;padding:6px 10px;border:1px solid var(--edge,#556);border-radius:8px;background:rgba(255,255,255,.04)}.mg-p b{display:block;overflow-wrap:anywhere}.mg-p span{font-size:11.5px;opacity:.8}.mg-plus{font-size:18px;opacity:.7}.mg-rule{font-size:12px;opacity:.8;margin:4px 0}';

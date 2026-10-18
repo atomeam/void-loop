@@ -22,7 +22,7 @@ function flatNote(el, kind, stageApi) {
   n.style.cssText = 'margin-top:8px;padding:8px 10px;border-radius:10px;background:rgba(255,190,120,.08);border:1px solid rgba(255,190,120,.25)';
   const line = document.createElement('div'); line.textContent = 'Playing on the flat board: the 3D board stopped last time, so this one always works.';
   const detail = document.createElement('div'); detail.style.cssText = 'margin-top:4px;font-size:11px;opacity:.75;user-select:text';
-  if (c) detail.textContent = 'What happened (send this to V01D’s builders): ' + [c.why, c.gpu && 'graphics: ' + c.gpu, c.ua].filter(Boolean).join(' · ');
+  if (c) detail.textContent = 'What happened (send this to Verse’s builders): ' + [c.why, c.gpu && 'graphics: ' + c.gpu, c.ua].filter(Boolean).join(' · ');
   const again = document.createElement('button'); again.type = 'button'; again.className = 'g-btn'; again.textContent = 'Try 3D again'; again.style.marginTop = '6px';
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); guard.retry(kind); stageApi.render && stageApi.render(); });

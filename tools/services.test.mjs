@@ -65,5 +65,5 @@ test('the card reads the live store: a matched row shows the catalog price and l
   // url matching: a catalog row known only by its /l/ url still matches
   assert.ok(liveRowFor(withSlug, [{ url: 'https://moonbeam846.gumroad.com/l/full-stack-audit', price_cents: 1 }]));
   // the whole card falls back cleanly with no catalog at all
-  assert.match(cardHtml(esc, null), /What V01D sells/);
+  assert.match(cardHtml(esc, null), /What Verse sells/);
 });

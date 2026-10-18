@@ -92,3 +92,21 @@ test('friction: the self card gives the spark block the open asks\' friction, so
   assert.match(html, /<span class="vs-overdue"> · 3 overdue<\/span>/);
   assert.ok(!selfHtml(selfSections({ ...v, asks: [] }, NOW), esc).includes('vs-overdue'), 'no open asks: no friction');
 });
+
+test('one ask said again in other words is one line, with how many times it was asked (the self card of 2026-10-18)', async () => {
+  const { foldAsks, sameAsk, selfSections } = await import('../void-live-deploy/lib/self-blocks.js');
+  const said = ["Implement the 'report-to-growth' automation to parse builder notes for wishlist items and pipe them to the growth inbox.",
+    "Create the 'Zorbleflux' throttle to regulate visual motion during user interaction.",
+    "Build the 'dependency-health' skill to audit deps.json against stability-gauge requirements.",
+    "Create a 'report-to-growth' automation that parses builder progress notes for 'wishlist' items and adds them to the growth inbox.",
+    "Implement the 'Zorbleflux' throttle to prevent visual chaos during user interaction, as it has been requested four times and remains open.",
+    "Build a 'dependency-health' skill that compares the current deps.json against the stability gauge."];
+  const f = foldAsks(said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })));
+  assert.deepEqual(f.map((a) => a.times), [2, 2, 2]);
+  assert.match(f[0].ask, /^Implement the 'report-to-growth'/, 'the first telling is kept');
+  assert.ok(!sameAsk("Create a 'memory-export' skill", "Create a 'backlog-digest' skill"), 'different names stay apart');
+  assert.ok(!sameAsk('Add a tooltip on the confidence badge', 'Add a sparkline to each skill family'), 'different asks stay apart');
+  assert.ok(!sameAsk("Add a replay button to the 'chess' history table", "Teach the 'chess' engine to resign lost games"), 'one skill, two different asks');
+  const sec = selfSections({ entries: [], asks: said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })) }).find((s) => s.id === 'asked');
+  assert.equal(sec.count, '3 waiting'); assert.match(sec.blocks[0].items[0].sub, /asked 2 times/);
+});

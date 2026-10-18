@@ -67,7 +67,7 @@ const ownerKey = () => { try { return (typeof localStorage !== 'undefined' && lo
 // the owner's card: each offer that waits, its asks, and Approve / Reject (POST /api/routines with the owner's key)
 async function pending(api, log) {
   const tok = ownerKey();
-  if (!tok) { card(api, 'Offered routines are the owner\'s to review', [], 'Unlock V01D first (unlock <key>), then ask again.'); log('pending-locked'); return 'routine'; }
+  if (!tok) { card(api, 'Offered routines are the owner\'s to review', [], 'Unlock Verse first (unlock <key>), then ask again.'); log('pending-locked'); return 'routine'; }
   let list = null;
   try { const r = await fetch('/api/routines?pending=1', { headers: { authorization: 'Bearer ' + tok } }); if (r.ok) list = await r.json(); } catch (_) {}
   if (!Array.isArray(list)) { card(api, 'Could not read offered routines', [], 'The key was refused or the list is unreachable. Try again in a minute.'); log('pending-failed'); return 'routine'; }

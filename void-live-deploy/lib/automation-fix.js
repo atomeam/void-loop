@@ -2,6 +2,7 @@
 // Zapier, Make, n8n, IFTTT, Power Automate, cron, GitHub Actions, Apps Script, a script, a webhook, anything: Void reads what was
 // pasted (error, config, steps), names the likely cause and gives the concrete fix or the corrected config. The fix is the answer.
 // Nothing here names or prices a product; any product line comes afterwards, from the live catalog (lib/gumroad.js).
+import { isBuildersReport } from './telemetry.js';
 
 const TROUBLE = /\b(broken|broke|breaks|breaking|fail(s|ed|ing|ure)?|not (working|running|firing|triggering|sending|syncing)|stopped (working|running|firing|triggering|sending|syncing)|(isn'?t|is not|aren'?t|doesn'?t|does not|won'?t|didn'?t|never) (work|run|fire|trigger|send|sync|start)s?|errors?|erroring|crash(es|ed|ing)?|stuck|dead|keeps? (failing|breaking|erroring|timing out)|times? out|timed out|timing out|returns? (a )?[45]\d\d|[45]\d\d error|fix|debug|repair|troubleshoot|double[- ]send(s|ing)?|duplicat(e|es|ing))\b/i;
 const THING = /\b(automations?|automated|workflows?|integrations?|webhooks?|web hooks?|scripts?|cron( jobs?)?|crontab|jobs?|scenarios?|zaps?|zapier|flows?|power automate|pipelines?|github actions?|actions? (workflow|run)|triggers?|bots?|syncs?|n8n|make\.com|make scenario|ifttt|applets?|apps script|lambdas?|cloud functions?|scheduled tasks?|task scheduler|macros?|api calls?|endpoints?|recipes?|pipedream|workato|tray\.io|airflow|dags?)\b/i;
@@ -14,7 +15,7 @@ const PLATFORMS = [
 // about how replies should work was answered as a broken automation, "a field it expects is empty", and labelled "from the error
 // itself" with no error in it). Each kind at most once, with the words that showed it. Pure.
 const EVIDENCE = [
-  ['status', /\b(?:https?\/?[\d.]*\s+|status(?:\s+code)?[:=]?\s*|(?:error|code)\s+|returned\s+(?:an?\s+)?|got\s+(?:an?\s+)?|with\s+(?:an?\s+)?|responded\s+with\s+)[45]\d\d\b|\b[45]\d\d\s+(?:bad request|unauthori[sz]ed|forbidden|not found|method not allowed|conflict|gone|unprocessable|too many requests|internal server error|bad gateway|service unavailable|gateway time-?out)\b/i],
+  ['status', /\b(?:https?\/?[\d.]*\s+|status(?:\s+code)?[:=]?\s*|(?:error|code)\s+|returned\s+(?:an?\s+)?|got\s+(?:an?\s+)?|with\s+(?:an?\s+)?|responded\s+with\s+)(?:4[0-4]\d|5(?:[01]\d|2[0-6]))\b(?!\s+(?:of|misses|characters?|ideas?|items?|files?|tests?|asks?|lines?|words?|users?|rows?|checks?|skills?|pages?|times|ms|bytes|kb|mb)\b)|\b[45]\d\d\s+(?:bad request|unauthori[sz]ed|forbidden|not found|method not allowed|conflict|gone|unprocessable|too many requests|internal server error|bad gateway|service unavailable|gateway time-?out)\b/i],
   ['message', /\b[A-Z]\w*(?:Error|Exception)\s*:\s*\S.{0,160}|^\s*(?:Error|Exception|Traceback \(most recent call last\)|fatal|panic|ERR!?)\b\s*[:!].{0,160}$/m],
   ['stack', /^\s+at\s+\S.*:\d+(?::\d+)?\)?\s*$|File "[^"]+", line \d+/m],
   ['code', /\b(?:ECONN\w+|ENOTFOUND|ETIMEDOUT|EACCES|ENOENT|EPIPE|EAI_AGAIN)\b|\bexit(?:ed)? (?:with )?(?:code|status) [1-9]\d*\b|"error"\s*:\s*["{]/i],
@@ -30,6 +31,7 @@ export function errorEvidence(text) {
 const DESIGN = /\b(?:should|would|could|propos(?:e|al)|design|i think|we need|in order of|leverage|the point|the gap|i'?d (?:suggest|recommend)|rules?|router|routing|intent|types?|loop|feedback|correct(?:ion)?s?)\b/gi;
 export function intentOf(text) {
   const s = String(text || '').trim(), evidence = errorEvidence(s);
+  if (isBuildersReport(s)) return { intent: 'report', evidence }; // a builder's report on CI and pull requests that quotes a timeout is the telemetry route's, not a fix (owner, 2026-10-18)
   if (evidence.length) return { intent: 'incident', evidence };
   const sentences = (s.match(/[.!?](?:\s|$)/g) || []).length, design = (s.match(DESIGN) || []).length;
   if (s.length >= 400 && sentences >= 4 && design >= 3) return { intent: 'discussion', evidence };

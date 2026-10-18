@@ -21,7 +21,7 @@ export function mergedOf(prs, n = SHOW) {
     .sort((a, b) => String(b.merged_at).localeCompare(String(a.merged_at))).slice(0, n)
     .map((p) => { const labels = (p.labels || []).map((l) => (l && l.name) || '');
       return { number: p.number, title: String(p.title || '').slice(0, 160), at: String(p.merged_at).slice(0, 16).replace('T', ' '), url: /^https:\/\/github\.com\//.test(String(p.html_url || '')) ? p.html_url : 'https://github.com/' + REPO + '/pull/' + p.number,
-        how: labels.includes('made by V01D') ? 'made by V01D' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Void\'s review' : 'merged by hand' }; });
+        how: labels.includes('made by V01D') ? 'made by Verse' + (labels.includes('automerge') ? ', merged itself' : ', approved by the owner') : labels.includes('automerge') ? 'merged itself on Void\'s review' : 'merged by hand' }; });
 }
 
 /** the card's list. Pure. */

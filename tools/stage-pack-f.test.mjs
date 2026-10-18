@@ -82,13 +82,13 @@ test('crowd: the asks route, three near misses each do not', () => {
   routes(crowd, ['summon the crowd', 'dismiss the crowd', 'bring the crowd in', 'disperse the crowd'], ['crowdfunding', 'crowd control tips', 'how big is the crowd at wembley', 'a crowded train', 'summon a figure']);
   assert.equal(C.crowdOf('Summon the crowd!'), 'summon'); assert.equal(C.crowdOf('send the crowd home'), 'dismiss');
 });
-test('crowd: the size follows the last minute, the mood follows the last event, and V01D is spelt in points', () => {
+test('crowd: the size follows the last minute, the mood follows the last event, and Verse is spelt in points', () => {
   assert.equal(C.sizeFor(0), C.MIN); assert.equal(C.sizeFor(2), C.MIN + 50); assert.equal(C.sizeFor(1000), C.MAX); assert.equal(C.sizeFor(-3), C.MIN);
   assert.equal(C.recent([1000, 10000, 50000, 70000], 65000), 2, 'the one 64 s ago and the one still to come are out');
   assert.equal(C.moodOf({ type: 'added', at: 1000 }, 1500), 'cheer'); assert.equal(C.moodOf({ type: 'removed', at: 1000 }, 3000), 'flee');
   assert.equal(C.moodOf({ type: 'added', at: 1000 }, 5000), 'idle'); assert.equal(C.moodOf({ type: 'drag', at: 1000 }, 1500), 'swarm'); assert.equal(C.moodOf({ type: 'drag', at: 1000 }, 2500), 'idle');
   assert.equal(C.moodOf({ type: 'added', at: 1000 }, 1000 + C.IDLE_MS), 'spell'); assert.equal(C.moodOf(null, 99999999), 'idle'); assert.equal(C.moodOf({ type: 'start', at: 0 }, 500), 'idle');
-  const pts = C.spellPoints('V01D'); assert.ok(pts.length > 40 && pts.every((p) => p.x > 0 && p.x < 1 && p.y > 0 && p.y < 1));
+  const pts = C.spellPoints('Verse'); assert.ok(pts.length > 40 && pts.every((p) => p.x > 0 && p.x < 1 && p.y > 0 && p.y < 1));
   assert.equal(C.spellPoints('V').length, 13); assert.equal(C.spellPoints('1').length, 10);
 });
 test('crowd: the law: seeded; cheering rises; fleeing leaves the spot; swarming gathers; spelling lands on the word', () => {

@@ -16,7 +16,7 @@ export function checkersOf(text) {
   return null;
 }
 
-const STATUS = { 'dark-wins': 'You win', 'light-wins': 'V01D wins', draw: 'A draw · forty moves without progress' };
+const STATUS = { 'dark-wins': 'You win', 'light-wins': 'Verse wins', draw: 'A draw · forty moves without progress' };
 const thinking = new Map(); // th.id -> pending reply, so a re-render never starts a second one
 const freshState = () => ({ s: K.create(), sel: -1, hops: [], moves: 0 });
 const btnCss = 'font:inherit;font-size:12px;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.2);border-radius:12px;padding:3px 12px;cursor:pointer';
@@ -63,7 +63,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = st().s, code = K.status(s), n = K.count(s);
     const forced = s.turn === 'd' && K.legalMoves(s).some((m) => m.captures.length);
-    status.textContent = STATUS[code] || (thinking.has(th.id) ? 'V01D is thinking…' : s.turn === 'd' ? (forced ? 'Your move · a capture is forced' : 'Your move') : 'V01D to move');
+    status.textContent = STATUS[code] || (thinking.has(th.id) ? 'Verse is thinking…' : s.turn === 'd' ? (forced ? 'Your move · a capture is forced' : 'Your move') : 'Verse to move');
     status.textContent += ' · ' + (n.d + n.D) + '–' + (n.l + n.L);
     const h = st().hist || []; back.disabled = !h.length; back.style.opacity = h.length ? '1' : '.4';
     if (mini) mini.update(data()); else if (flat) flat();
@@ -123,7 +123,7 @@ function mount(th, stageApi) {
           m.style.cssText = 'width:76%;height:76%;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:' + Math.round(cell * 0.4) + 'px;color:#e8c26a;box-shadow:inset 0 -3px 0 rgba(0,0,0,.35),0 2px 3px rgba(0,0,0,.4);background:' + (dark ? 'radial-gradient(circle at 40% 35%,#8a3b2a,#4a1a12)' : 'radial-gradient(circle at 40% 35%,#f6e2bd,#c9a46e)');
           if (p === 'D' || p === 'L') m.textContent = '♛'; b.appendChild(m); }
         b.style.boxShadow = sq === d.selected ? 'inset 0 0 0 3px #ffd36b' : tg.has(sq) ? 'inset 0 0 0 3px #9fe08a' : d.hops.includes(sq) ? 'inset 0 0 0 99px rgba(159,224,138,.3)' : d.movable.includes(sq) ? 'inset 0 0 0 2px rgba(255,211,107,.6)' : 'none';
-        b.setAttribute('aria-label', 'abcdefgh'[sq & 7] + ((sq >> 3) + 1) + (p ? { d: ' your man', D: ' your king', l: ' V01D man', L: ' V01D king' }[p] : '')); });
+        b.setAttribute('aria-label', 'abcdefgh'[sq & 7] + ((sq >> 3) + 1) + (p ? { d: ' your man', D: ' your king', l: ' Verse man', L: ' Verse king' }[p] : '')); });
     };
   }
   again.addEventListener('click', (e) => { e.stopPropagation(); thinking.delete(th.id); th.state = freshState(); save(); paint(); });

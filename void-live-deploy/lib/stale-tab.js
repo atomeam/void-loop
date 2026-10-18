@@ -4,7 +4,7 @@
 // Pure functions here; the wiring is in void.html. Tests: tools/stale-tab.test.mjs.
 
 export const CHECK_MS = 10 * 60 * 1000;
-export const NOTICE = 'A newer V01D is ready — tap to reload';
+export const NOTICE = 'A newer Verse is ready — tap to reload';
 
 /** this deploy's id, from what one tiny request reads: the commit the deploy wrote to /build.json (changes on every deploy, page or skill code or neither), else the
  *  page's own ETag or Last-Modified (changes when the page itself does); '' when neither is there, which never raises the notice. Pure. */

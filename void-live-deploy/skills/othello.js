@@ -169,8 +169,8 @@ function mount(th, stageApi) {
     const { black, white } = countDiscs(th.state.board), s = th.state.status;
     score.innerHTML = '<span class="oth-chip black"></span>' + black + '<span class="oth-chip white"></span>' + white;
     status.textContent = s === 'playing'
-      ? (th.state.turn === 1 ? (th.state.passed ? 'V01D had no move · ' : '') + 'Your move' : 'V01D is thinking…')
-      : s === 'draw' ? 'A draw' : s === 'black_wins' ? 'You win!' : 'V01D wins';
+      ? (th.state.turn === 1 ? (th.state.passed ? 'Verse had no move · ' : '') + 'Your move' : 'Verse is thinking…')
+      : s === 'draw' ? 'A draw' : s === 'black_wins' ? 'You win!' : 'Verse wins';
   }
   again.addEventListener('pointerdown', (e) => e.stopPropagation());
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); prev = null; paint(); stageApi.save && stageApi.save(); });
@@ -191,7 +191,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'othello');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'othello'; } // one board at a time
   api.summon('othello', { state: createOthelloState(), center: true });
-  api.say('Reversi (plays like Othello) · you are black · tap a dotted square to flip V01D’s discs');
+  api.say('Reversi (plays like Othello) · you are black · tap a dotted square to flip Verse’s discs');
   return 'othello';
 }
 

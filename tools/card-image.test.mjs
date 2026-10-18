@@ -12,7 +12,7 @@ test('a card is 63 x 88 mm: 744 x 1039 at 300 dpi, and bleed adds 35 px (3 mm) o
 test('it is a standalone, inert picture holding the frame, art, type line, text, stats and number', () => {
   const s = cardSvg(d);
   assert.ok(!/<script|<foreignObject|<image|javascript:|href="(?!#)/i.test(s)); assert.ok(!/https?:\/\/(?!www\.w3\.org)/.test(s));
-  for (const w of ['Casablanca', 'FILM', '012/221', 'Adds to V01D', 'vc-art-svg|<svg x="40"']) assert.match(s, new RegExp(w));
+  for (const w of ['Casablanca', 'FILM', '012/221', 'Adds to Verse', 'vc-art-svg|<svg x="40"']) assert.match(s, new RegExp(w));
   assert.ok(s.length < 40000, String(s.length));
 });
 test('every text field is escaped', () => {
@@ -25,7 +25,7 @@ test('long text is wrapped and cut with an ellipsis', () => {
   assert.deepEqual(wrap('', 50, 5), []);
 });
 test('a long title is never cut: it shrinks or takes two lines, whole', () => {
-  const t = "I've widened the movies agent's job to find real films and play the free ones in V01D";
+  const t = "I've widened the movies agent's job to find real films and play the free ones in Verse";
   const svg = cardSvg({ ...d, title: t, cost: 3 });
   const shown = [...svg.matchAll(/font-weight="700" font-size="(\d+)" fill="#f3efe2">([^<]*)</g)].filter((m) => +m[1] !== 34).map((m) => m[2]).join(' ');
   assert.ok(!shown.includes('…')); assert.equal(shown.replace(/&#39;/g, "'"), t);
