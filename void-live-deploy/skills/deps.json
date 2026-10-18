@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 576,
+ "counted": 581,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -16,9 +16,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 18,
+   "skills": 19,
    "direct": 2,
-   "dependants": 32
+   "dependants": 33
   },
   {
    "file": "lib/state.js",
@@ -351,6 +351,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/field-cards.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
@@ -361,6 +367,12 @@
    "skills": 2,
    "direct": 2,
    "dependants": 2
+  },
+  {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 22
   },
   {
    "file": "lib/gumroad.js",
@@ -421,6 +433,18 @@
    "skills": 1,
    "direct": 1,
    "dependants": 8
+  },
+  {
+   "file": "lib/noise.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/learn.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3
   },
   {
    "file": "lib/rules-engine.js",
@@ -520,12 +544,6 @@
   },
   {
    "file": "lib/field-attention.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/field-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -729,12 +747,6 @@
    "dependants": 23
   },
   {
-   "file": "lib/actions.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 21
-  },
-  {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
@@ -861,12 +873,6 @@
    "dependants": 5
   },
   {
-   "file": "lib/noise.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
    "file": "lib/film-reviews.js",
    "skills": 0,
    "direct": 0,
@@ -892,12 +898,6 @@
   },
   {
    "file": "lib/keep-going.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
-  },
-  {
-   "file": "lib/learn.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2
@@ -1618,7 +1618,8 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/miss.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
    ]
   },
   "lib/alt-pay.js": {
@@ -2398,6 +2399,7 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "skills/family-gravity.js",
     "skills/living-cards-mind.js"
    ]
   },
@@ -2432,6 +2434,7 @@
     "lib/field-vector-worker.js",
     "skills/attention-field-mind.js",
     "skills/extinction.js",
+    "skills/family-gravity.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
     "skills/mutate.js",
@@ -2796,7 +2799,8 @@
    ],
    "importedBy": [
     "functions/api/miss.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
    ]
   },
   "lib/linediff.js": {
@@ -2980,7 +2984,8 @@
    ],
    "reachedBy": [
     "functions/api/probe-asks.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
    ]
   },
   "lib/observations.js": {
@@ -4547,6 +4552,12 @@
    ],
    "importedBy": []
   },
+  "skills/deep-work.js": {
+   "imports": [
+    "skills/type-filter.js"
+   ],
+   "importedBy": []
+  },
   "skills/define.js": {
    "imports": [],
    "importedBy": []
@@ -4648,6 +4659,13 @@
   "skills/extinction.js": {
    "imports": [
     "lib/opposite-era.js"
+   ],
+   "importedBy": []
+  },
+  "skills/family-gravity.js": {
+   "imports": [
+    "lib/field-cards.js",
+    "skills/type-filter.js"
    ],
    "importedBy": []
   },
@@ -5192,6 +5210,7 @@
   "skills/list.js": {
    "imports": [
     "skills/notepad.js",
+    "skills/soundscape.js",
     "lib/bridges.js"
    ],
    "importedBy": []
@@ -5533,6 +5552,12 @@
   "skills/minimap.js": {
    "imports": [
     "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/miss-jobs.js": {
+   "imports": [
+    "lib/learn.js"
    ],
    "importedBy": []
   },
@@ -6288,6 +6313,12 @@
     "skills/games.js"
    ]
   },
+  "skills/soundscape.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/list.js"
+   ]
+  },
   "skills/spanish.js": {
    "imports": [],
    "importedBy": []
@@ -6318,6 +6349,10 @@
    "importedBy": []
   },
   "skills/sport.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/stage-print.js": {
    "imports": [],
    "importedBy": []
   },
@@ -6529,7 +6564,10 @@
   },
   "skills/type-filter.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "skills/deep-work.js",
+    "skills/family-gravity.js"
+   ]
   },
   "skills/unkeepable.js": {
    "imports": [],

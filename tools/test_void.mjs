@@ -4585,6 +4585,69 @@ try {
         && swapped.filter((e) => e.hidden).length === clocks.length && afterDraw.some((e) => e.hidden) && all.every((e) => !e.hidden) && !gone && !T.errors.length,
       JSON.stringify({ before: before.length, only, bar, swapped, afterDraw: afterDraw.length, all: all.length, gone: !!gone, errors: T.errors }));
     await T.ctx.close(); }
+  // asked by the owner, 2026-10-18: five stage skills (skills/family-gravity.js, deep-work.js, soundscape.js, stage-print.js, miss-jobs.js)
+  if (want("stage pack b: family gravity draws a family together, the deep-work shield dims and lifts, a soundscape layers and stops")) { const T = await fresh();
+    const places = () => T.state().then((l) => l.map((t) => ({ id: t.id, kind: t.kind, x: t.x, y: t.y })));
+    await T.ctx.addInitScript(() => { try { if (!sessionStorage.getItem('far')) return; sessionStorage.removeItem('far'); const k = 'a2m.void.state.v1', s = JSON.parse(localStorage.getItem(k)), c = ['sticky', 'notepad'].map((n) => Object.values(s).find((t) => t.kind === n)); c[0].x = 60; c[0].y = 300; c[1].x = 1100; c[1].y = 300; localStorage.setItem(k, JSON.stringify(s)); } catch (_) {} }); // the page saves its own places as it unloads, so the far places are put in as it loads
+    const farApart = async () => { await T.p.evaluate(() => { sessionStorage.setItem('far', '1'); }); await T.p.reload(); await skillsUp(T.p, 200); };
+    const gap = (l) => { const c = ['sticky', 'notepad'].map((k) => l.find((t) => t.kind === k)); return Math.hypot(c[0].x - c[1].x, c[0].y - c[1].y); };
+    await T.ask('a sticky that says alpha', 700); await T.ask('make a notepad', 700); await T.ask('make a clock', 700);
+    await farApart(); const b0 = await places(), clock0 = b0.find((t) => t.kind === 'clock');
+    await T.ask('turn on family gravity', 500);
+    const settled = await until(() => T.p.evaluate(() => document.documentElement.dataset.familyGravity === 'settled'), 12000); const b1 = await places();
+    const clock1 = b1.find((t) => t.kind === 'clock');
+    await T.ask('family gravity off', 400); const off = await T.p.evaluate(() => document.documentElement.dataset.familyGravity);
+    check('stage pack b: "turn on family gravity" draws the sticky and the notepad (one family) together until they settle (saved by the stage), leaves the clock where it was, and "family gravity off" stops it',
+      gap(b0) > 900 && !!settled && gap(b1) < gap(b0) * 0.5 && clock1.x === clock0.x && clock1.y === clock0.y && off === 'off' && !T.errors.length, JSON.stringify({ g0: gap(b0), g1: gap(b1), settled, off, errors: T.errors }));
+    await T.p.emulateMedia({ reducedMotion: 'reduce' }); await farApart();
+    await T.ask('turn on family gravity', 900); const snapped = await places();
+    check('stage pack b: with reduced motion the family snaps together at once, with no animation loop', gap(snapped) < 400 && !T.errors.length, JSON.stringify({ g: gap(snapped), errors: T.errors }));
+    await T.ask('family gravity off', 300);
+    await T.p.emulateMedia({ reducedMotion: 'no-preference' });
+    const dimmed = () => T.p.$$eval('#stage > [data-id]', (l) => l.map((e) => ({ id: e.dataset.id, o: getComputedStyle(e).opacity })));
+    const kinds = await places(), clockId = kinds.find((t) => t.kind === 'clock').id;
+    await T.ask('shield everything except the clock for 25 minutes', 700);
+    const sh = await dimmed(), bar = await T.p.$eval('#deep-work-bar', (e) => e.innerText).catch(() => '');
+    await T.ask('lift the shield', 600); await until(async () => (await dimmed()).every((e) => e.o === '1'), 6000); const lifted = await dimmed(), barGone = await T.p.$('#deep-work-bar'), liftSaid = await T.whisper().catch(() => '');
+    check('stage pack b: "shield everything except the clock for 25 minutes" dims every other thing to 0.15 under a 25:00 focus bar, the clock stays clear, and "lift the shield" restores everything and removes the bar',
+      sh.length >= 3 && sh.filter((e) => e.id === clockId).every((e) => e.o === '1') && sh.filter((e) => e.id !== clockId).every((e) => Math.abs(+e.o - 0.15) < 0.02) && /25:0\d/.test(bar) && lifted.every((e) => e.o === '1') && !barGone && !T.errors.length, JSON.stringify({ sh, bar, lifted, barGone: !!barGone, liftSaid, errors: T.errors }));
+    await T.ask('shield everything except the weekend', 500); const noShield = await T.p.$('#deep-work-bar');
+    await T.p.clock.install({ time: Date.now() }); await T.ask('shield everything except the clock for 1 minute', 600);
+    await T.p.clock.fastForward(61000); await T.p.waitForTimeout(300); await until(async () => (await dimmed()).every((e) => e.o === '1'), 6000);
+    const ended = await dimmed(), endBar = await T.p.$('#deep-work-bar');
+    check('stage pack b: a shield made of words that name no kind is not taken, and when the focus timer ends the shield lifts by itself', !noShield && ended.every((e) => e.o === '1') && !endBar && !T.errors.length, JSON.stringify({ ended, endBar: !!endBar, errors: T.errors }));
+    const snd = () => T.p.evaluate(() => document.documentElement.dataset.soundscape || '');
+    await T.ask('quieter', 500); const idle = await snd(), idleBar = await T.p.$('#soundscape-bar');
+    await T.ask('add soft rain', 600); const s1 = await snd(); await T.ask('add a low drone', 600); const s2 = await snd();
+    await T.ask('quieter', 500); const s3 = await snd(); await T.ask('only the drone', 500); const s4 = await snd();
+    await T.ask('mute soundscape', 500); const mutedTxt = await T.p.$eval('#soundscape-bar', (e) => e.innerText).catch(() => '');
+    const noList = (await places()).every((t) => t.kind !== 'list');
+    await T.ask('add milk to my list', 700); const withList = (await places()).some((t) => t.kind === 'list'), s5 = await snd();
+    await T.ask('stop the soundscape', 500); const s6 = await snd(), gone = await T.p.$('#soundscape-bar');
+    check('stage pack b: "add soft rain" and "add a low drone" layer a soundscape (a bar names the layers), "quieter" and "only the drone" and "mute soundscape" change it, "add milk to my list" still goes to the list, and "stop the soundscape" ends it; a bare "quieter" with nothing playing makes no sound',
+      idle === '' && !idleBar && s1 === 'rain' && s2 === 'rain,drone' && s3 === 'rain,drone' && s4 === 'drone' && /muted/.test(mutedTxt) && noList && withList && s5 === 'drone' && s6 === '' && !gone && !T.errors.length, JSON.stringify({ idle, s1, s2, s3, s4, mutedTxt, noList, withList, s5, s6, gone: !!gone, errors: T.errors }));
+    await T.ctx.close(); }
+  if (want("stage pack b: the stage prints as one sheet and the misses become jobs only for the owner")) { const T = await fresh();
+    await T.ask('print this stage as a one-page sheet', 600); const emptySaid = await T.whisper().catch(() => ''), emptyCard = await T.p.$('.stage-sheet-preview');
+    await T.ask('a sticky that says buy bread and <b>milk</b>', 600); await T.ask('make a clock', 600);
+    await T.p.evaluate(() => { window.__printed = 0; window.print = () => { window.__printed++; }; });
+    const dl = T.p.waitForEvent('download', { timeout: 8000 }).catch(() => null);
+    await T.ask('print this stage as a one-page sheet', 900); const d = await dl;
+    const png = d ? await d.path().then((f) => import('node:fs').then((fs) => fs.readFileSync(f).subarray(0, 8).toString('hex'))).catch(() => '') : '';
+    const preview = await T.p.$eval('.stage-sheet-preview', (e) => ({ src: e.src.slice(0, 22), alt: e.alt })).catch(() => null);
+    await T.p.click('.stage-sheet-print'); const printed = await T.p.evaluate(() => window.__printed);
+    check('stage pack b: an empty stage says so and makes nothing; with things, "print this stage as a one-page sheet" downloads a PNG (void-stage-sheet.png), shows it and the Print button calls the print dialog',
+      /empty/i.test(emptySaid) && !emptyCard && !!d && d.suggestedFilename() === 'void-stage-sheet.png' && png === '89504e470d0a1a0a' && !!preview && preview.src === 'data:image/png;base64,' && /2 things/.test(preview.alt) && printed === 1 && !T.errors.length, JSON.stringify({ emptySaid, emptyCard: !!emptyCard, name: d && d.suggestedFilename(), png, preview, printed, errors: T.errors }));
+    const now = Date.now(), iso = (ms) => new Date(now - ms).toISOString(), posts = [], reads = [];
+    const rows = [{ ask: 'draw a mandala', count: 5, first: iso(2 * 864e5), last: iso(3600e3), fallback: 'none:x' }, { ask: 'sing <i>me</i> a song', count: 3, first: iso(2 * 864e5), last: iso(3600e3), fallback: '' }];
+    await T.ctx.route(/\/api\/(misses|queue)/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push({ auth: q.headers().authorization, body: JSON.parse(q.postData() || '{}') }); return r.fulfill({ status: 200, contentType: 'application/json', body: '{"item":{"id":"q1"}}' }); } reads.push(q.url()); return r.fulfill({ status: 200, contentType: 'application/json', body: /misses/.test(q.url()) ? JSON.stringify(rows) : '{"items":[]}' }); });
+    await T.ask('close', 400); await T.ask("turn today's misses into jobs", 900); const dry = await T.page();
+    await T.ask('close', 400); await T.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'test-owner-key'));
+    await T.ask("turn today's misses into jobs", 1200); const card = await T.page(), html = await T.p.$eval('.vpage.on', (e) => e.innerHTML).catch(() => ''), before = posts.length;
+    await T.p.click('.vpage.on .miss-jobs-go >> nth=0'); await T.p.waitForTimeout(600);
+    check('stage pack b: "turn today\'s misses into jobs" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key',
+      /Dry run/.test(dry) && /only the owner/.test(dry) && /ready to queue/.test(card) && /draw a mandala/.test(card) && !/<i>me<\/i>/.test(html) && reads.length === 2 && before === 0 && posts.length === 1 && posts[0].auth === 'Bearer test-owner-key' && posts[0].body.target === 'miss:draw-a-mandala' && /^learn to handle/.test(posts[0].body.ask) && !T.errors.length, JSON.stringify({ dry, card: card.slice(0, 200), reads: reads.length, before, posts, errors: T.errors }));
+    await T.ctx.close(); }
   // The book (skills/guide.js, lib/tome.js, lib/guide.js, skills/guide.json from tools/guide.mjs): "open the book" is read like a
   // Skyrim book (owner, 2026-10-16): the stage dims, a leather tome fills the screen with no card and no menu, its cover swings
   // open, two parchment pages set in a serif with a drop capital; ← → / the wheel / a swipe / a page's outer edge turn a leaf,

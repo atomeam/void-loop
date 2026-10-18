@@ -10,6 +10,7 @@
  * on every entry copies it as a line into the notepad (skills/notepad.js append).
  */
 import { append as noteAppend } from './notepad.js';
+import { soundOf } from './soundscape.js'; // "add soft rain" is a sound for the soundscape, not a list item
 import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
 
 const uid = (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 9);
@@ -57,7 +58,7 @@ export function addOf(raw, isThing = () => false) {
   if (match) return cleanText(match[1]);
   // bare "add milk": onto the open list (or a new one), unless it names a stage thing, a look, a number or a link
   match = t.match(/^\s*add\s+([a-z][a-z' -]{0,40}?)\s*[.!]?\s*$/i);
-  if (match && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
+  if (match && !soundOf(t) && !isThing(match[1].toLowerCase()) && !/\b(a|an|another|some|more|the|my|stars?|glow|sparkles?|clock|timer|sticky|note|notepad|list|counter|calc(ulator)?|shape|circle|square|line|image|picture|photo|link|card|item)\b/i.test(match[1])) return cleanText(match[1]);
   return '';
 }
 

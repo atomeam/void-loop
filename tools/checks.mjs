@@ -15,6 +15,7 @@ const results = [];
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
+  ['stage-pack-b', 'stage-pack-b.test.mjs'],
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],
   ['stage-pack-d', 'stage-pack-d.test.mjs'],
