@@ -258,6 +258,7 @@ for (const [name, file] of [
   ['well-known', 'well-known.test.mjs'],
   ['deps', 'deps.test.mjs'],
   ['review-main', 'review-main.test.mjs'],
+  ['stage-pack-f', 'stage-pack-f.test.mjs'],
 ]) {
   const r = run([resolve(here, file)]); results.push([name, r.ok, r.out[r.out.length - 1] || '']);
 }

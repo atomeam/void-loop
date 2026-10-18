@@ -7213,6 +7213,77 @@ try {
       JSON.stringify({ sub, thinking, replied, after, sub2, status2, errs: G.errors.concat(H.errors) }));
     await G.ctx.close(); await H.ctx.close(); }
 
+  // stage pack F, the Opposite Era (owner, 2026-10-18; skills/feud.js, oracle.js, crowd.js, unkeepable.js, spectators.js; pure laws in tools/stage-pack-f.test.mjs)
+  if (want("stage pack f: the blood feud drains two things and settles, the glitch oracle corrupts a real answer and reveals it, the crowd cheers an added thing, the unkeepable shatters on keep and is never saved, a spectator link opens a read-only snapshot")) { const Q = await fresh();
+    await Q.ask('make a clock', 500); await Q.ask('sticky note hello there', 500); await Q.ask('make a counter', 500);
+    const kinds = () => Q.state().then((s) => s.map((t) => t.kind).sort());
+    const before = await kinds();
+    // the feud: both bars drain each second, the card is never saved, "end the feud" leaves both standing
+    await Q.ask('start a blood feud between the clock and the note', 500);
+    const card0 = await Q.p.$eval('.feud-card', (e) => ({ a: +e.querySelector('.feud-bar[data-side="a"]').dataset.life, b: +e.querySelector('.feud-bar[data-side="b"]').dataset.life, text: e.innerText })).catch(() => null);
+    await Q.p.waitForTimeout(2300);
+    const card1 = await Q.p.$eval('.feud-card', (e) => ({ a: +e.querySelector('.feud-bar[data-side="a"]').dataset.life, b: +e.querySelector('.feud-bar[data-side="b"]').dataset.life })).catch(() => null);
+    const rivals = await Q.p.$$eval('.feud-rival', (e) => e.length), feudSaved = (await kinds()).includes('feud');
+    await Q.ask('end the feud', 500);
+    const ended = !(await Q.p.$('.feud-card')) && JSON.stringify(await kinds()) === JSON.stringify(before);
+    // again, with the counter bet on the clock: within 20 s the loser is gone and the counter went with its side or moved beside the winner
+    await Q.ask('start a blood feud between the clock and the note', 400); await Q.ask('bet the counter on the clock', 400);
+    const betSaid = await Q.whisper();
+    const over = await until(async () => !(await Q.p.$('.feud-card')), 20000), overSaid = await Q.whisper();
+    const after = await Q.state(), afterKinds = after.map((t) => t.kind).sort();
+    const loserGone = afterKinds.length < before.length && (afterKinds.includes('clock') !== afterKinds.includes('sticky'));
+    const clockWon = afterKinds.includes('clock'), counter = after.find((t) => t.kind === 'counter'), clock = after.find((t) => t.kind === 'clock');
+    const betOk = clockWon ? !!counter && !!clock && counter.x === clock.x + 36 && counter.y === clock.y + 72 : !counter;
+    check('stage pack f feud: "start a blood feud between the clock and the note" puts a card with two full life bars up and outlines both rivals, 2 s later both bars have drained, the feud card is never in the saved stage, "end the feud" leaves every thing standing; with the counter bet on the clock the feud settles within 20 s: one rival dissolves, and the counter either stands beside the winning clock or dissolved with the note',
+      card0 && card0.a === 100 && card0.b === 100 && /the clock/.test(card0.text) && /the note/.test(card0.text) && card1 && card1.a < 100 && card1.b < 100 && rivals === 2 && !feudSaved && ended
+      && /counter is bet on the clock/.test(betSaid) && over && /wins the feud/.test(overSaid) && loserGone && betOk && Q.errors.length === 0,
+      JSON.stringify({ card0, card1, rivals, feudSaved, ended, betSaid, over, overSaid, afterKinds, betOk, errs: Q.errors }));
+    // the glitch oracle: the normal answer card comes first, then the corrupted one; reveal gives the stubbed answer back word for word
+    await Q.ask('ask the glitch oracle why is the sky blue', 600);
+    const oracle = await until(() => Q.p.$eval('.vpage[data-oracle="glitched"]', (e) => ({ flick: e.querySelectorAll('.gl-flicker').length, redact: e.querySelectorAll('.gl-redact').length, wrong: e.querySelectorAll('[data-o="w"]').length, mark: !!e.querySelector('.gl-body [class*="wrong"]'), hint: (e.querySelector('.gl-hint') || {}).textContent || '' })).catch(() => null), 15000);
+    await Q.p.click('.vpage .gl-reveal').catch(() => {});
+    const revealed = await until(() => Q.p.$eval('.vpage[data-oracle="revealed"] .gl-body', (e) => e.textContent).catch(() => ''), 3000);
+    check('stage pack f oracle: "ask the glitch oracle why is the sky blue" answers through the normal ask path and shows it glitched (at least one flickering word, one blacked out, one wrong word marked only by data-o) with a piece-it-together hint, and "reveal the true answer" gives the real answer back word for word',
+      oracle && oracle.flick >= 1 && oracle.redact >= 1 && oracle.wrong >= 1 && !oracle.mark && /piece it together/.test(oracle.hint) && /Sunlight scatters off air molecules, and blue light scatters most/.test(revealed || '') && Q.errors.length === 0,
+      JSON.stringify({ oracle, revealed, errs: Q.errors }));
+    // the crowd: a layer behind the stage, cheering when a note is added, gone on "dismiss the crowd"
+    await Q.ask('summon the crowd', 600);
+    const crowd0 = await until(() => Q.p.evaluate(() => (document.querySelector('#void-world canvas.crowd') && window.__voidCrowd && window.__voidCrowd.n >= 40) ? window.__voidCrowd : null), 4000);
+    await Q.ask('another note', 300);
+    const cheer = await until(() => Q.p.evaluate(() => (window.__voidCrowd && window.__voidCrowd.mood === 'cheer') ? window.__voidCrowd : null), 3000);
+    await Q.ask('dismiss the crowd', 600);
+    const crowdGone = !(await Q.p.$('#void-world canvas.crowd'));
+    check('stage pack f crowd: "summon the crowd" draws a canvas of at least 40 particles on the layer behind the stage, adding a note turns the crowd\'s mood to cheer, and "dismiss the crowd" clears the layer',
+      !!crowd0 && !!cheer && crowdGone && Q.errors.length === 0, JSON.stringify({ crowd0, cheer, crowdGone, errs: Q.errors }));
+    // the unkeepable: never in the saved stage; its keep button shatters it; Ctrl+C while it is picked shatters the next one
+    await Q.ask('make me something unkeepable', 600);
+    const unk = await Q.p.$eval('.unkeepable-card', (e) => ({ words: e.querySelector('.unkeepable-words').textContent, left: e.querySelector('.unkeepable-left').textContent, opacity: +getComputedStyle(e).opacity })).catch(() => null);
+    const unkSaved = (await kinds()).includes('unkeepable');
+    await Q.p.click('.unkeepable-card .unkeepable-keep').catch(() => {});
+    const shattered = await until(async () => !(await Q.p.$('.unkeepable-card')), 3000), shatterSaid = await Q.whisper();
+    await Q.ask('make me something unkeepable', 600);
+    await Q.p.click('.unkeepable-card .unkeepable-words').catch(() => {}); await Q.p.keyboard.press('Control+c');
+    const shattered2 = await until(async () => !(await Q.p.$('.unkeepable-card')), 3000);
+    check('stage pack f unkeepable: "make me something unkeepable" puts a fading card up that says how long it has and is never in the saved stage, its own keep button shatters it (the page says so), and Ctrl+C on the next one shatters that too',
+      unk && unk.words.length > 5 && /gone in \d+ s/.test(unk.left) && unk.opacity > 0.9 && !unkSaved && shattered && /shattered/.test(shatterSaid) && shattered2 && Q.errors.length === 0,
+      JSON.stringify({ unk, unkSaved, shattered, shatterSaid, shattered2, errs: Q.errors }));
+    // spectators: the link carries the snapshot; a second tab opens it read-only over its own V01D and writes nothing; "close the stage"
+    const nowKinds = (await kinds()).filter((k) => k !== 'unkeepable'); // what the link carries: the stage as it is now (the crowd step added a note)
+    await Q.ask('open the stage to spectators', 600);
+    const link = await Q.p.$eval('.vpage .spectate-link', (a) => a.href).catch(() => ''), ownerState = await Q.p.evaluate(() => localStorage.getItem('a2m.void.state.v1'));
+    const V = await Q.ctx.newPage(); V.on('pageerror', (e) => Q.errors.push('viewer: ' + e.message));
+    await V.goto(link); await skillsUp(V, 300);
+    const view = await until(() => V.$eval('#void-spectate', (e) => ({ kinds: [...e.querySelectorAll('.spectate-thing')].map((t) => t.dataset.kind).sort(), text: e.innerText })).catch(() => null), 6000);
+    const viewerState = await V.evaluate(() => localStorage.getItem('a2m.void.state.v1'));
+    await V.click('#void-spectate .spectate-leave').catch(() => {});
+    const left = !(await V.$('#void-spectate')) && await V.evaluate(() => !location.search.includes('spectate'));
+    await V.close();
+    await Q.ask('close the stage', 400); const closed = await Q.whisper();
+    check('stage pack f spectators: "open the stage to spectators" shows a ?spectate= link that carries the stage\'s things as words; opened in another tab it draws a read-only spectator layer with those things over that tab\'s own V01D and writes nothing to its saved stage; "leave" closes the layer and drops the parameter; "close the stage" closes it here',
+      /\?spectate=[A-Za-z0-9_-]{8,}/.test(link) && view && view.kinds.length >= 1 && JSON.stringify(view.kinds) === JSON.stringify(nowKinds) && /read-only/.test(view.text) && viewerState === ownerState && left && /closed to spectators/.test(closed) && Q.errors.length === 0,
+      JSON.stringify({ link: link.slice(0, 80), view: view && { kinds: view.kinds, text: view.text.slice(0, 160) }, nowKinds, same: viewerState === ownerState, left, closed, errs: Q.errors }));
+    await Q.ctx.close(); }
+
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

@@ -13,8 +13,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 2,
-  "tested": 65,
-  "checked": 43,
+  "tested": 66,
+  "checked": 47,
   "proven": 85
  },
  "families": [
@@ -1573,8 +1573,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 1,
-    "tested": 7,
-    "checked": 12,
+    "tested": 8,
+    "checked": 16,
     "proven": 7
    },
    "skills": [
@@ -1793,6 +1793,41 @@
     },
     {
      "name": "extinction",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "feud",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "oracle",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "crowd",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "unkeepable",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "spectators",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",

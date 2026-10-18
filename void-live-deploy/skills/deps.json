@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 503,
+ "counted": 508,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/field-kit.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 22
+   "skills": 14,
+   "direct": 2,
+   "dependants": 24
   },
   {
    "file": "lib/sky-math.js",
@@ -33,6 +33,30 @@
    "dependants": 9
   },
   {
+   "file": "lib/rule-registry.js",
+   "skills": 8,
+   "direct": 0,
+   "dependants": 30
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 8,
+   "direct": 1,
+   "dependants": 29
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 8,
+   "direct": 0,
+   "dependants": 28
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 8,
+   "direct": 0,
+   "dependants": 26
+  },
+  {
    "file": "lib/state.js",
    "skills": 8,
    "direct": 2,
@@ -51,28 +75,10 @@
    "dependants": 8
   },
   {
-   "file": "lib/rule-registry.js",
+   "file": "lib/bridges.js",
    "skills": 7,
-   "direct": 0,
-   "dependants": 29
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 28
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 27
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 25
+   "direct": 4,
+   "dependants": 9
   },
   {
    "file": "lib/field-stage.js",
@@ -91,12 +97,6 @@
    "skills": 6,
    "direct": 3,
    "dependants": 18
-  },
-  {
-   "file": "lib/bridges.js",
-   "skills": 6,
-   "direct": 3,
-   "dependants": 8
   },
   {
    "file": "lib/field-worker.js",
@@ -147,6 +147,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 17
+  },
+  {
    "file": "lib/probe-log.js",
    "skills": 4,
    "direct": 1,
@@ -165,28 +171,34 @@
    "dependants": 16
   },
   {
+   "file": "lib/merge-rules.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 12
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 10
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 7
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 6
+  },
+  {
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
    "dependants": 4
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 16
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 11
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 9
   },
   {
    "file": "lib/movies.js",
@@ -195,19 +207,7 @@
    "dependants": 7
   },
   {
-   "file": "lib/card-image.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 6
-  },
-  {
    "file": "lib/card-forge.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 5
-  },
-  {
-   "file": "lib/card-share.js",
    "skills": 3,
    "direct": 1,
    "dependants": 5
@@ -1589,7 +1589,8 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/ask-text.js": {
@@ -1822,6 +1823,7 @@
     "lib/arena-say.js",
     "skills/kept.js",
     "skills/list.js",
+    "skills/spectators.js",
     "skills/together.js"
    ],
    "reachedBy": [
@@ -1863,6 +1865,7 @@
     "skills/guide.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -1910,7 +1913,8 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/card-kinds.js": {
@@ -1930,7 +1934,8 @@
    ],
    "importedBy": [
     "lib/card-frame.js",
-    "skills/collectible.js"
+    "skills/collectible.js",
+    "skills/oracle.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
@@ -1969,6 +1974,7 @@
     "skills/guide.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -2210,7 +2216,9 @@
     "lib/field-stage.js",
     "lib/field-swarm.js",
     "lib/field-vector.js",
-    "lib/opposite-era.js"
+    "lib/opposite-era.js",
+    "skills/crowd.js",
+    "skills/feud.js"
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
@@ -2413,6 +2421,7 @@
     "skills/growth.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -2529,7 +2538,8 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/ladder.js": {
@@ -2656,7 +2666,8 @@
     "lib/card-share.js",
     "lib/duel-rules.js",
     "skills/collectible.js",
-    "skills/duel.js"
+    "skills/duel.js",
+    "skills/oracle.js"
    ]
   },
   "lib/misskey.js": {
@@ -3230,6 +3241,7 @@
     "skills/merge.js",
     "skills/mini/book.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -4038,6 +4050,12 @@
    ],
    "importedBy": []
   },
+  "skills/crowd.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": []
+  },
   "skills/crypto.js": {
    "imports": [],
    "importedBy": []
@@ -4156,6 +4174,12 @@
   },
   "skills/feelings.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/feud.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
    "importedBy": []
   },
   "skills/figure-can.js": {
@@ -5084,6 +5108,12 @@
     "skills/heart.js"
    ]
   },
+  "skills/oracle.js": {
+   "imports": [
+    "lib/card-share.js"
+   ],
+   "importedBy": []
+  },
   "skills/othello.js": {
    "imports": [
     "skills/game-level.js",
@@ -5664,6 +5694,12 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/spectators.js": {
+   "imports": [
+    "lib/bridges.js"
+   ],
+   "importedBy": []
+  },
   "skills/splat-core.js": {
    "imports": [],
    "importedBy": [
@@ -5832,6 +5868,10 @@
    "importedBy": []
   },
   "skills/type-filter.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/unkeepable.js": {
    "imports": [],
    "importedBy": []
   },
