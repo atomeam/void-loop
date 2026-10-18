@@ -2,32 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:29:49.489Z",
-   "sha": "5d587a25718577c1cf95a30221b85cc3c7294103",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111133589",
+   "at": "2026-10-18T08:30:31.435Z",
+   "sha": "419a1261859017c962aad3d7b057abc09b7e45ce",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111047602",
    "suite": "browser suite on main",
    "checks": [
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
     "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
     "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage extras collision: a clock set down on a sticky outlines both and says they overlap, \"any collisions\" says it again, and moved apart the flags go",
+    "stage pack e sudden death: \"sudden death in 2 seconds\" puts one counting banner up and at zero one thing is gone with the banner, \"sudden death in 60 seconds\" arms one and \"cancel sudden death\" takes it down with nothing lost",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
    ],
    "touched": [
-    "docs/MAP.md",
-    "domains/void.frontier.md",
-    "tools/checks.mjs",
-    "tools/convert-math.test.mjs",
-    "void-live-deploy/lib/convert-math.js",
-    "void-live-deploy/skills/convert.js",
-    "void-live-deploy/skills/deps.json",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
     "tools/bench.json",
-    "tools/service-health.test.mjs",
-    "tools/test_void.mjs",
     "tools/wants.test.mjs",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/service-health.js"
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
    ]
   },
   {
