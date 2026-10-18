@@ -20,7 +20,7 @@ export function signalsOf(text) { return SIGNALS.filter(([, re]) => re.test(text
 
 // a builder telling what they did ("I'm making it opt-in so red checks…", "Committing the fix…", "Pushing the changes…") is not a failure, however
 // many failure words it carries (2026-10-18: a pasted run report came back as "6 things still failing", all six the builder's own sentences)
-const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|let me|now|next|then|so|also|first|took|pushed|committed|merged|shipped|opened|made|fixed|added|wrote|[a-z]+ing)\b/i;
+const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|my|our|let me|now|next|then|so|also|first|took|pushed|committed|merged|shipped|opened|made|fixed|added|wrote|it\s+(?:then|also|now)|[a-z]+ing)\b|^(?:criterion|reviewed|found|remainder)\s*:/i; // "my report quoted a timeout" and the closing check's own Found: line are the builder's, not the build's
 // "red" is a failure only as a state ("is red", "went red", "red on main", "red since", "red:"), not as a name ("red checks grow in the garden"),
 // and "failing" only as a state too ("still failing", "is failing", "3 failing", "failing:"), not as a word before a noun ("each failing check")
 const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|\bred\s*[:,.]/i;
@@ -29,7 +29,7 @@ const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|kee
 const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
 // a failure the builder caused on purpose to prove a check bites ("with the mutation it fails, as expected", "without the refusal, the check fails",
 // "with the line taken out, the new check fails") is the check working, not something failing (2026-10-18 card: two such lines read as failures)
-const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that)\s+[\w-]+(?:\s+[\w-]+)?\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
+const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that|it)(?:\s+[\w-]+){0,2}\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {

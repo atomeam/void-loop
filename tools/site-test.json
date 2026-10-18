@@ -203,6 +203,15 @@
     },
     {
       "ask": "play a local audio file"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "films by Kurosawa"
+    },
+    {
+      "ask": "film metadata for Ikiru"
     }
   ],
   "candidates": [],

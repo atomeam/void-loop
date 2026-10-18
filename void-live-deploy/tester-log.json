@@ -1,15 +1,36 @@
 {
- "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 59,
- "runsTotal": 174,
+ "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
+ "cases": 62,
+ "runsTotal": 177,
  "kinds": {
-  "grow": 52,
+  "grow": 55,
   "file": 68,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T10:17:16Z",
+   "passed": 55,
+   "of": 65,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T10:02:42Z",
+   "passed": 54,
+   "of": 64,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T09:26:58Z",
+   "passed": 62,
+   "of": 63,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T08:43:06Z",
    "passed": 52,
@@ -128,27 +149,6 @@
    "of": 46,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
-  },
-  {
-   "at": "2026-10-18T00:52:54Z",
-   "passed": 35,
-   "of": 45,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
-  },
-  {
-   "at": "2026-10-18T00:31:24Z",
-   "passed": 42,
-   "of": 44,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
-  },
-  {
-   "at": "2026-10-18T00:19:50Z",
-   "passed": 42,
-   "of": 44,
-   "kind": "file",
-   "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-15T08:17:23Z",
+  "skill:film-metadata": "2026-10-18T10:17:16Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -369,6 +369,15 @@
   "skill:backlog-digest": "2026-10-18T08:43:06Z",
   "skill:mutate": "2026-10-18T08:43:06Z",
   "skill:near-choir": "2026-10-18T08:43:06Z",
-  "skill:negative-summons": "2026-10-18T08:43:06Z"
+  "skill:negative-summons": "2026-10-18T08:43:06Z",
+  "skill:calendar-file": "2026-10-18T09:26:58Z",
+  "skill:night-ritual": "2026-10-18T09:26:58Z",
+  "skill:note-tools": "2026-10-18T09:26:58Z",
+  "skill:noun-heat": "2026-10-18T10:02:42Z",
+  "skill:oracle": "2026-10-18T10:02:42Z",
+  "skill:outline-note": "2026-10-18T10:02:42Z",
+  "skill:overload": "2026-10-18T10:17:16Z",
+  "skill:own-parts": "2026-10-18T10:17:16Z",
+  "skill:partial-answer": "2026-10-18T10:17:16Z"
  }
 }
