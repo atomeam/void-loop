@@ -2,33 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:53:20.084Z",
-   "sha": "2ee6d7e6020fd2799dba1fd9cb156f9c49f04905",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39109074305",
-   "suite": "browser suite on main",
-   "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/game-health.test.mjs",
-    "void-live-deploy/lib/game-health.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/family-health.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T07:47:48.978Z",
+   "at": "2026-10-18T07:53:57.631Z",
    "sha": "cf0b383384d9f2f9de323c93656f19ca7a00639d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39108740971",
    "suite": "browser suite on main",
    "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
    ],
    "touched": [
@@ -741,6 +722,22 @@
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
+   "at": "2026-10-17T17:59:26.762Z",
+   "sha": "1e053b8295693e98a943c0d8162e692e34c6bfa8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39054961820",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
    ]
   }
  ]
