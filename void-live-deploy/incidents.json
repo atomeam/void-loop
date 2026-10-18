@@ -2,30 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T18:09:38.213Z",
-   "sha": "9751b0ba87fd260705444d7a5baa2cfe1178c92f",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39152537703",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/stage-pack-h.test.mjs",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T17:59:40.177Z",
+   "at": "2026-10-18T18:13:05.936Z",
    "sha": "c7d982fee291a5855755fab25bc57ae1b268d4fd",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39151773112",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "docs/MAP.md",
@@ -693,6 +677,29 @@
     "void-live-deploy/void.growth.json",
     "domains/void.agents.log.md",
     "extension/README.md"
+   ]
+  },
+  {
+   "at": "2026-10-18T07:43:30.157Z",
+   "sha": "f0aa2cae253b11b08af02d819ce3b12e2e137d03",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39107565902",
+   "suite": "browser suite on main",
+   "checks": [
+    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "calc-more and tip: \"300 px in cm at 150 dpi\" is 5.08 cm, \"5 cm to pixels at 300 dpi\" is 590.55 px, \"100 usd to eur at 0.92\" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; \"45 with 8% tax and 20% tip\" totals $57.60 with $3.60 tax, and \"an 84 dollar bill 4 ways\" is $21.00 each",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/autopsy.test.mjs",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/autopsy.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/void.growth.json"
    ]
   }
  ]
