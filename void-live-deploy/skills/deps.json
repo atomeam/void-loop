@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 656,
+ "counted": 657,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -27,16 +27,16 @@
    "dependants": 24
   },
   {
+   "file": "lib/state.js",
+   "skills": 19,
+   "direct": 2,
+   "dependants": 38
+  },
+  {
    "file": "lib/field-kit.js",
    "skills": 19,
    "direct": 2,
    "dependants": 33
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 15,
-   "direct": 2,
-   "dependants": 32
   },
   {
    "file": "lib/sky-math.js",
@@ -240,6 +240,12 @@
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/match-history.js",
+   "skills": 5,
+   "direct": 4,
    "dependants": 6
   },
   {
@@ -3242,6 +3248,21 @@
     "skills/list-templates.js"
    ]
   },
+  "lib/match-history.js": {
+   "imports": [
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/about-skill.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/othello.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/games.js"
+   ]
+  },
   "lib/mcp-skills.js": {
    "imports": [],
    "importedBy": [
@@ -4601,6 +4622,7 @@
     "lib/anchor-density.js",
     "lib/eclipse.js",
     "lib/ladder.js",
+    "lib/match-history.js",
     "lib/stage-pack-c.js",
     "skills/memory.js",
     "skills/state.js"
@@ -4615,16 +4637,21 @@
     "functions/api/repo.js",
     "functions/api/voice-reply.js",
     "lib/about-skill.js",
+    "lib/arena.js",
     "lib/bench-asks.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/checkers.js",
+    "skills/chess.js",
     "skills/codex.js",
     "skills/echo-chamber.js",
+    "skills/games.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/mini/growthtree.js",
+    "skills/othello.js",
     "skills/own-parts.js",
     "skills/pong.js",
     "skills/showcase.js",
@@ -4980,7 +5007,8 @@
   "skills/about-skill.js": {
    "imports": [
     "lib/about-skill.js",
-    "lib/card-frame.js"
+    "lib/card-frame.js",
+    "lib/match-history.js"
    ],
    "importedBy": []
   },
@@ -5243,7 +5271,8 @@
    "imports": [
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/checkers-rules.js"
+    "skills/checkers-rules.js",
+    "lib/match-history.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -5269,7 +5298,8 @@
    "imports": [
     "skills/game-level.js",
     "skills/side-card.js",
-    "skills/chess-rules.js"
+    "skills/chess-rules.js",
+    "lib/match-history.js"
    ],
    "importedBy": [
     "skills/games.js"
@@ -6718,7 +6748,8 @@
    "imports": [
     "skills/game-level.js",
     "skills/lift3d.js",
-    "lib/arena-say.js"
+    "lib/arena-say.js",
+    "lib/match-history.js"
    ],
    "importedBy": [
     "lib/arena.js",

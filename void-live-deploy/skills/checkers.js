@@ -8,6 +8,7 @@
 import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as K from './checkers-rules.js';
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
 
 export function checkersOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -68,8 +69,12 @@ function mount(th, stageApi) {
     if (mini) mini.update(data()); else if (flat) flat();
   }
   function doMove(m) {
+    if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([st().s]).slice(-60);
     st().s = K.apply(st().s, m); st().sel = -1; st().hops = []; st().moves++;
+    // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
+    const code = K.status(st().s);
+    if (code !== 'playing' && !st().logged) { st().logged = true; finish('checkers', code === 'dark-wins' ? 'win' : code === 'light-wins' ? 'loss' : 'draw', { moves: Math.ceil(st().moves / 2), minutes: minutesSince(st().started) }); }
     save(); paint();
   }
   function voidTurn() {

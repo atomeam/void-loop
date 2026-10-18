@@ -19,6 +19,7 @@ export const STORES = {
   entered:  { key: 'a2m.void.entered.v1',  what: 'that you have been here before' },
   used:     { key: 'a2m.void.used.v1',     what: 'which parts of V01D you have used' },
   ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against V01D in Pong and Snake' },
+  games:    { key: 'a2m.void.games.v1',    what: 'the chess, checkers and reversi games you finished against V01D (when, result, moves, minutes), the last 100' },
   corrections: { key: 'a2m.void.corrections.v1', what: 'what you told V01D it got wrong (kept apart from how your V01D looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },
   camera:   { key: 'a2m.void.camera.v1',   what: 'where the stage camera is and whether you are flying ("fly around")' },
