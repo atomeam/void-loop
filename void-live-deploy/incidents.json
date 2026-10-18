@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:15:59.715Z",
-   "sha": "9fc1a05edddfb1c1a4e6e88a35bd4cd983788897",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39106737911",
+   "at": "2026-10-18T07:26:03.122Z",
+   "sha": "5bdb7a18402dfd7ba04e9418ff81fb57b171d432",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39107361136",
    "suite": "browser suite on main",
    "checks": [
     "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
@@ -12,12 +12,14 @@
    ]
   },
   {
-   "at": "2026-10-18T07:06:54.535Z",
+   "at": "2026-10-18T07:21:02.656Z",
    "sha": "a823219cec2e64a8edd9beb76f1d2a3ff291d06e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39106213834",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "check timeout: no check finished within 300 s"
    ]
   },
   {

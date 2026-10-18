@@ -355,8 +355,42 @@ await V.waitForFunction(() => /Order flow/.test((document.querySelector('.tab-ca
 const proposalPosts = () => out.filter((x) => /\/api\/answer/.test(x) && /"mode":"proposal"/.test(x));
 const lastProposal = () => V.evaluate(() => { const c = [...document.querySelectorAll('.proposal-card')].pop(); if (!c) return null;
   const f = {}; c.querySelectorAll('[data-field]').forEach((e) => { f[e.dataset.field] = e.value; }); return { ...f, to: c.querySelector('.proposal-to').value, n: document.querySelectorAll('.proposal-card').length }; });
+const sendOn = () => panel.evaluate(() => document.getElementById('send').classList.contains('on'));
 const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
+  await panel.waitForFunction(() => document.getElementById('send').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+  await press('.send-yes', async () => !(await sendOn())); // the page is read only after this Yes, in the panel
   await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+// Gap 1: reading the page for Void needs a Yes in the extension's own panel. The frame only asks; until that Yes nothing is read
+// from the tab and nothing is sent, and a No reads nothing. The same holds for an ask the frame makes by itself (a page on
+// a-to-mind.com gone wrong): it gets the card too, a second ask while it is open is refused, and No sends back no page text.
+const g0 = proposalPosts().length;
+await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
+await panel.waitForFunction(() => document.getElementById('send').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
+await page.waitForTimeout(600);
+const asked = { card: await panel.evaluate(() => document.getElementById('send').innerText), sent: proposalPosts().length - g0, said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '') };
+await press('.send-no', async () => !(await sendOn()));
+await V.waitForFunction(() => /you said no in the panel/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+const declined = { sent: proposalPosts().length - g0, said: await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '') };
+check('gap 1: "draft for me: proposal" asks in the extension\'s panel first ("send this page", the site, what goes); nothing is read or sent until Yes there, and No reads nothing and says so',
+  /send this page/i.test(asked.card) && asked.card.includes('fixture.test') && /visible text/.test(asked.card) && asked.sent === 0 && /asking you in the panel/.test(asked.said)
+  && declined.sent === 0 && /you said no in the panel · nothing was read or sent/.test(declined.said),
+  { asked, declined });
+const forged = await V.evaluate(async (ext) => { // what a broken page in the frame could try: ask the panel for the tab's text on its own
+  const got = window.__forgedGot = {}; const on = (e) => { if (e.data && e.data.type === 'void-ext:threaded' && (e.data.id === 9001 || e.data.id === 9002)) got[e.data.id] = e.data; };
+  addEventListener('message', on);
+  parent.postMessage({ type: 'void-ext:thread', id: 9001 }, ext); parent.postMessage({ type: 'void-ext:thread', id: 9002 }, ext);
+  for (let i = 0; i < 30 && !got[9002]; i++) await new Promise((r) => setTimeout(r, 100));
+  return { second: got[9002] || null, firstYet: got[9001] || null };
+}, 'chrome-extension://' + id);
+const forgedCard = await sendOn();
+await press('.send-no', async () => !(await sendOn()));
+const forgedFirst = await V.evaluate(async () => { for (let i = 0; i < 30; i++) { const r = window.__forgedGot && window.__forgedGot[9001]; if (r) return r; await new Promise((x) => setTimeout(x, 100)); } return null; });
+check('gap 1: an ask the frame makes by itself gets the same panel card; a second ask while it is open is refused as busy; No sends back no page text',
+  forgedCard && !forged.firstYet && forged.second && forged.second.why === 'busy' && !forged.second.text
+  && forgedFirst && forgedFirst.ok === false && forgedFirst.why === 'said-no' && !forgedFirst.text && proposalPosts().length === g0,
+  { forged, forgedCard, forgedFirst });
+await page.waitForTimeout(300);
+
 const p0 = proposalPosts().length, r0 = records.length;
 await pressProposal(1); await page.waitForTimeout(800); // the allow list is empty here
 const offP = { on: await cardOn(), card: await lastProposal(), box: await page.evaluate(() => document.getElementById('body').textContent), recs: records.length - r0,
