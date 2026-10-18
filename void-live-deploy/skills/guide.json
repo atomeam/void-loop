@@ -1355,12 +1355,8 @@
    "chapter": "games",
    "name": "zorbleflux",
    "title": "Zorbleflux",
-   "line": "Verse's own game: pilot a glowing zorb through a flux field for 45 seconds: collect motes to grow, dodge the dark bleeds",
-   "examples": [
-    "zorbleflux",
-    "play zorbleflux",
-    "a zorbleflux game"
-   ],
+   "line": "A skill of Verse.",
+   "examples": [],
    "tier": "checked",
    "why": "a self-test, 3 browser-suite mentions",
    "n": 64
@@ -6300,7 +6296,7 @@
     {
      "rank": 5,
      "name": "zorbleflux",
-     "catches": "zorbleflux"
+     "catches": ""
     },
     {
      "rank": 6,
