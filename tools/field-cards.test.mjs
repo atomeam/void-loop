@@ -27,7 +27,7 @@ test('dragging a card seeds the field where it is and raises the ask for rules t
   s.dragging = 4; run(s, 10); assert.ok(F.sample(s.u, 0.5, 0.5) > before, 'more energy under the dragged card'); assert.ok(s.boost > 0);
   assert.equal(c.x, 0.5, 'a held card does not drift'); s.dragging = -1;
 });
-test('family gravity (asked by Void): cards of one family draw together and stop REST apart, a lone family feels nothing, a held card brings its family', () => {
+test('family gravity (asked by Verse): cards of one family draw together and stop REST apart, a lone family feels nothing, a held card brings its family', () => {
   const s = F.create(4); assert.deepEqual(s.cards.map((c) => c.family), F.LABELS.map((l) => F.FAMILIES[l]));
   const [idea, , , mind, you] = s.cards, gap = () => Math.hypot(idea.x - mind.x, idea.y - mind.y), d0 = gap(), y0 = { x: you.x, y: you.y };
   s.u.fill(0); s.v.fill(1); for (let i = 0; i < 2000; i++) F.driftCards(s.u, s.cards, 1); // a flat field: only gravity moves them
@@ -52,14 +52,14 @@ test('the skill (skills/living-cards-mind.js) takes its asks and leaves the look
   for (const a of skill.nearMisses) assert.ok(!skill.match(a.toLowerCase(), a), a);
   assert.ok(skill.stageKinds['living-cards-mind']);
 });
-test('the velocity trail (asked by Void): a card keeps its last TRAIL positions, and a moving card has speed where a still one has none', () => {
+test('the velocity trail (asked by Verse): a card keeps its last TRAIL positions, and a moving card has speed where a still one has none', () => {
   const t = []; for (let i = 0; i < F.TRAIL + 10; i++) F.trailPush(t, { x: 0.1 + i * 0.01, y: 0.5 });
   assert.equal(t.length, F.TRAIL); assert.ok(Math.abs(F.trailSpeed(t) - 0.01) < 1e-9, 'one hundredth of the field a frame');
   const still = []; for (let i = 0; i < 5; i++) F.trailPush(still, { x: 0.3, y: 0.3 });
   assert.equal(F.trailSpeed(still), 0); assert.equal(F.trailSpeed([]), 0);
 });
 
-test('displacement ripple (asked by Void): a moving card drops a ripple every RIPPLE_EVERY ms, a still one none; a ripple grows, fades and is gone after RIPPLE_LIFE', async () => {
+test('displacement ripple (asked by Verse): a moving card drops a ripple every RIPPLE_EVERY ms, a still one none; a ripple grows, fades and is gone after RIPPLE_LIFE', async () => {
   const F = await import('../void-live-deploy/lib/field-cards.js');
   const moving = [{ x: 0.1, y: 0.1 }, { x: 0.2, y: 0.1 }], still = [{ x: 0.5, y: 0.5 }, { x: 0.5, y: 0.5 }];
   const cards = [{ x: 0.2, y: 0.1 }, { x: 0.5, y: 0.5 }], rs = [];

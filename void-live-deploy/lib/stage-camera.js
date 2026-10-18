@@ -92,7 +92,7 @@ export function fromStored(text) {
   } catch (_) { return { cam: { ...HOME }, flying: false }; }
 }
 
-// Dynamic scale (asked by Void, 2026-10-18: "posters and paintings ... subtly enlarge or gain depth when the fly camera passes near them"): how near
+// Dynamic scale (asked by Verse, 2026-10-18: "posters and paintings ... subtly enlarge or gain depth when the fly camera passes near them"): how near
 // a picture's centre is to the middle of the screen, 0 (NEAR_R of the shorter side away or more) to 1 (dead centre), eased so it swells softly;
 // and what that looks like: up to NEAR_SCALE bigger and a soft drop shadow that deepens with it. Off under reduced motion (skills/fly.js).
 export const NEAR_SCALE = 1.08, NEAR_R = 0.55;

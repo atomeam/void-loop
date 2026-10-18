@@ -1,4 +1,4 @@
-# The public miss snapshot (tools/misses-snapshot.mjs), daily: what Void could not answer, as terms and counts seen in at
+# The public miss snapshot (tools/misses-snapshot.mjs), daily: what Verse could not answer, as terms and counts seen in at
 # least three different asks, committed to main as domains/void.misses.json so a session without the owner token (any
 # cloud session) can pick the next skill or forge thing from it. No ask text is ever written. When the board can't be read
 # the step says exactly why (no secret, or the HTTP status) and the file is left as it was.

@@ -95,7 +95,7 @@ function homeOf(text) {
   const paint = PAINT_RE.test(t), floor = FLOOR_RE.test(t);
   if (!paint && !floor) return null;
   if (!ASK_RE.test(t) && !/\bfor\s+\d/.test(t) && !/\b(?:room|bedroom|kitchen|bathroom|hallway|office|walls?|basement)\b/.test(t)) return null;
-  if (paint && /\bpaint\s+(?:the|it|this|that|my|everything|all)\s+(?:clock|note|notes|sticky|timer|counter|shape|circle|square|list|image|stage|void|background)\b/.test(t)) return null;
+  if (paint && /\bpaint\s+(?:the|it|this|that|my|everything|all)\s+(?:clock|note|notes|sticky|timer|counter|shape|circle|square|list|image|stage|(?:verse|void)|background)\b/.test(t)) return null;
 
   // a tile size comes out first so it is not read as the room
   let tile = null, rest = t;

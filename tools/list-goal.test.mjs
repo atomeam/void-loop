@@ -1,4 +1,4 @@
-// A goal on a list and its density bar (lib/list-goal.js, drawn by skills/list.js; asked by Void, 2026-10-18: "Create a
+// A goal on a list and its density bar (lib/list-goal.js, drawn by skills/list.js; asked by Verse, 2026-10-18: "Create a
 // 'density-indicator' for the lists that count, showing at a glance how close a list is to a specific threshold or goal").
 // Run: node --test tools/list-goal.test.mjs
 import { test } from 'node:test';

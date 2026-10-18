@@ -1,4 +1,4 @@
-// lib/chess-replay.js + skills/chess-rules.js moveVerdict + lib/match-history.js line: the match replay (asked by Void, 2026-10-18:
+// lib/chess-replay.js + skills/chess-rules.js moveVerdict + lib/match-history.js line: the match replay (asked by Verse, 2026-10-18:
 // "a 'match-replay' button on the chess history table that lets the user step through the moves with engine annotations")
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

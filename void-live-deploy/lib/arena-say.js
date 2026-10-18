@@ -77,7 +77,7 @@ export function showArena(api, url, game) {
     const delta = arenaDelta(a && a.history); // day over day, from the daily run's history
     el.querySelector('[data-arena-delta]').textContent = delta ? 'Day over day: ' + delta + '.' : '';
     el.querySelector('[data-arena-trend]').innerHTML = arenaTrend(a && a.history); // void-review: ok: arenaTrend writes only day labels it built and numbers
-    arenaNoteForm(el, api, game, a); // asked by Void, 2026-10-16: write down why a self-play run failed or worked
+    arenaNoteForm(el, api, game, a); // asked by Verse, 2026-10-16: write down why a self-play run failed or worked
     api.say('');
   });
 }

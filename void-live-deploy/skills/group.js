@@ -84,7 +84,7 @@ export function groupOf(text) {
 }
 
 function placeOf(rest) {
-  const r = rest.replace(/\s+(?:of\s+the\s+(?:screen|stage|page|void))$/, '').trim();
+  const r = rest.replace(/\s+(?:of\s+the\s+(?:screen|stage|page|(?:verse|void)))$/, '').trim();
   const corner = [['top left', /^(?:top[\s-]*left|left[\s-]*top|upper[\s-]*left)(?:\s+corner)?$/], ['top right', /^(?:top[\s-]*right|right[\s-]*top|upper[\s-]*right)(?:\s+corner)?$/],
     ['bottom left', /^(?:bottom[\s-]*left|left[\s-]*bottom|lower[\s-]*left)(?:\s+corner)?$/], ['bottom right', /^(?:bottom[\s-]*right|right[\s-]*bottom|lower[\s-]*right)(?:\s+corner)?$/]].find(([, re]) => re.test(r));
   if (corner) return corner[0];

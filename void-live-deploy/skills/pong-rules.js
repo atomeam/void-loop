@@ -1,5 +1,5 @@
 /**
- * pong-rules — Void Pong in plain JS (no DOM), shared by the card (skills/pong.js) and its tests.
+ * pong-rules — Verse Pong in plain JS (no DOM), shared by the card (skills/pong.js) and its tests.
  * A table tennis classic (the 1972 game's mechanics; name and look are Verse's own). You are the left paddle; Verse plays
  * the right one: it reads the ball's path off the walls and moves there at a capped speed with a small aim error, so it
  * is beatable. First to 7 wins. Units: the court is W x H, the ball moves in units per second.

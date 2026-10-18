@@ -1,4 +1,4 @@
-# V01D by A-to-Mind (https://a-to-mind.com). Found a security problem? Tell us.
+# Verse by A-to-Mind (https://a-to-mind.com). Found a security problem? Tell us.
 # This file does not give permission to test or scan this site (RFC 9116, section 5.5).
 # Email reaches us privately. GitHub issues are public: use them only for problems that are safe to describe in the open.
 Contact: mailto:atom@a-to-mind.com

@@ -1,4 +1,4 @@
-// lib/refusal.js: every "I cannot" carries what is missing (asked by Void, domains/void.voice.md)
+// lib/refusal.js: every "I cannot" carries what is missing (asked by Verse, domains/void.voice.md)
 import assert from 'node:assert/strict';
 import { refusalOf, refusalLine, kindOf, sourcesOf } from '../void-live-deploy/lib/refusal.js';
 

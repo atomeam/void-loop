@@ -46,7 +46,7 @@ export function jobAsk(job) {
   const skill = w ? skillOf(w[1]) : null;
   if (skill) return { ask: m[1], skill, want: w[1], mode: 'learn' };
   // a missed ask (lib/learn.js, target miss:<slug>) that the router says a skill should have caught: "router skill:rides 0.78" in its note
-  // is a propose-fix job too (asked by Void: the missed asks are a structured queue that creates the propose-fix job by itself)
+  // is a propose-fix job too (asked by Verse: the missed asks are a structured queue that creates the propose-fix job by itself)
   const r = /\brouter skill:([a-z][a-z0-9_-]{1,24})\b/.exec(String(job.note || ''));
   return r && /^miss:/.test(String(job.target || '')) ? { ask: m[1], skill: r[1], want: 'skill:' + r[1], mode: 'learn' } : null;
 }
@@ -98,10 +98,10 @@ export function parseEdits(text, source) {
   return { edits: out, why, confidence: confidenceOf(j && j.confidence) };
 }
 
-/** the model's own confidence in its proposal (asked by Void), 0 to 1 with two decimals, or null when it gave none. Pure. */
+/** the model's own confidence in its proposal (asked by Verse), 0 to 1 with two decimals, or null when it gave none. Pure. */
 export const confidenceOf = (v) => { const n = typeof v === 'string' ? parseFloat(v) : v; return typeof n === 'number' && Number.isFinite(n) ? Math.round(Math.min(1, Math.max(0, n)) * 100) / 100 : null; };
 
-/** the evidence for a proposal (asked by Void: "a specific file/line reference that justifies why ... translates to that specific code
+/** the evidence for a proposal (asked by Verse: "a specific file/line reference that justifies why ... translates to that specific code
  * change"): for each edit, the file and the line number it changes, and that line as it stood. Pure. */
 export function evidenceOf(source, edits, skill) {
   const lines = String(source || '').split('\n'), file = 'void-live-deploy/skills/' + skill + '.js';
@@ -110,7 +110,7 @@ export function evidenceOf(source, edits, skill) {
 /** the evidence in a few words: "void-live-deploy/skills/rides.js lines 42, 57". Pure. */
 export const whereOf = (ev) => (ev && ev.length ? ev[0].file + (ev.length > 1 ? ' lines ' : ' line ') + ev.map((e) => e.line).join(', ') : '');
 
-/** how much a proposal changes (asked by Void: "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of
+/** how much a proposal changes (asked by Verse: "Implement a 'risk-level' metadata field in the automation fix proposal schema to warn users of
  * high-impact structural changes"): { level: 'low'|'medium'|'high', why }. Worked out here from the edits and the source, never from what the
  * model says about itself. low: only the examples or nearMisses lists, or one short addition to a pattern. medium: several pattern edits, a long
  * one, or one that removes more than it keeps. high: an edit on a structural line (an export, import, function, run(), stageKinds, the skill's

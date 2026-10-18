@@ -1,4 +1,4 @@
-# Void 3D: making the games look better (research, 2026-10-09)
+# Verse 3D: making the games look better (research, 2026-10-09)
 
 What exists today (from the code): one shared WebGLRenderer (`skills/scene3d.js`) draws each miniature only when it changes ("dirty") and copies the frame into the card's own 2D canvas. It uses ACES tone mapping, a PMREM `RoomEnvironment`, PCFSoft shadows (1024 on phones, 2048 on desktop) and blurred contact shadows. Pixel ratio is 1 on phones and up to 2 on desktop. Chess and checkers use the Poly Haven chess set with CC0 veneer textures. Every other mini (go, othello, mancala, poker, monopoly, connect4, aggravation, battleship, fireworks) uses flat-colour `MeshPhysicalMaterial`s on plain `BoxGeometry`/`CylinderGeometry`. Only `GLTFLoader`, meshopt and KTX2 (with the basis transcoder, 576 KB) are vendored. There is no post-processing, no Draco and no HDR loader. The vendored add-ons already import `../build/three.module.min.js` by relative path, so any new add-on can be vendored the same way: copy the file and rewrite `from 'three'`. No build step and no importmap are needed.
 

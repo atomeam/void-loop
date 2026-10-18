@@ -7,13 +7,13 @@ import { grip, sideCard } from './side-card.js';
 import { LEVELS, getLevel, setLevel } from './game-level.js';
 import PARODY from '../lib/parody.js';
 
-// Verse's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
+// Verse's parody of any classic game (asked by Verse: a searchable games matrix and a "parody-forge" card), folded into the game rack.
 // From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.
 // "parody of monopoly", "your version of clue", "is reversi public domain", "make a v01d version of risk", "parody games". Pure.
 const PARODY_RE = /^(?:(?:what(?:'s| is)|whats|show(?: me)?|tell me|make(?: me)?|forge|build|give me)\s+)?(?:the\s+|a\s+|an\s+)?(?:v01d|void|verse|your|ur)?\s*(?:parody|version|take|spin|remake|knock-?off)\s+(?:of|on)\s+(.+)$|^parody[\s-]forge\s+(.+)$|^is\s+(.+?)\s+(?:in\s+the\s+)?public\s+domain$|^can\s+(?:v01d|void|verse|you)\s+(?:copy|make|clone)\s+(.+)$/;
 export function parodyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|list)(?: me)?\s+)?(?:the\s+|your\s+|v01d'?s?\s+|void'?s?\s+)?(?:parody|parodies)(?:\s+games?)?$|^(?:v01d|void|verse)\s+parod(?:y|ies)$|^parody[\s-]forge$/.test(t)) return { all: true };
+  if (/^(?:(?:show|list)(?: me)?\s+)?(?:the\s+|your\s+|(?:verse|v01d)'?s?\s+|(?:verse|void)'?s?\s+)?(?:parody|parodies)(?:\s+games?)?$|^(?:v01d|(?:verse|void)|verse)\s+parod(?:y|ies)$|^parody[\s-]forge$/.test(t)) return { all: true };
   const m = PARODY_RE.exec(t); if (!m) return null;
   const name = (m[1] || m[2] || m[3] || m[4] || '').replace(/^(?:the|a|an)\s+/, '').replace(/\s+(?:board\s+)?game$/, '').replace(/[^a-z0-9 &']+/g, '').trim();
   const row = PARODY.find((r) => r.names.includes(name) || r.generic.toLowerCase() === name || r.parody.toLowerCase() === name);
@@ -33,7 +33,7 @@ function parodyCard(q, api) {
 }
 
 
-// one entry per board game Void plays; `ask` is what opening it types
+// one entry per board game Verse plays; `ask` is what opening it types
 export const GAMES = [
   { id: 'chess', title: 'Chess', ask: 'play chess', color: '#2c2f38', ink: '#f4e9d2', motif: 'chess' },
   { id: 'checkers', title: 'Checkers', ask: 'play checkers', color: '#8f2d22', ink: '#fff3e0', motif: 'checkers' },
@@ -58,14 +58,14 @@ export function rackOf(text) {
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+)?(?:games?\s+(?:card|picker|menu|list)|board\s+games?\s+card)$|^(?:pick|choose)\s+a\s+(?:board\s+)?game$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
-  // a board game Void can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
+  // a board game Verse can't play yet, asked for as a game ("play scrabble", "scrabble board game"): say so plainly, record
   // the request, and show the rack. A bare name ("scrabble") stays a question about the word.
-  const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
+  const m = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open)\s+(?:a\s+|an\s+|some\s+)?(?:game\s+of\s+)?([a-z][a-z' ]{1,24}?)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$|^([a-z][a-z' ]{1,24}?)\s+board\s*game$/.exec(t);
   const name = m && (m[1] || m[2]);
   if (name && SOON[name]) return { kind: 'rack', wanted: SOON[name] };
   return null;
 }
-// board games people ask for that Void doesn't play yet; each ask is recorded
+// board games people ask for that Verse doesn't play yet; each ask is recorded
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
@@ -99,7 +99,7 @@ function mount(th, stageApi) {
     list.appendChild(b);
   }
   card.appendChild(list);
-  // game strength (asked by Void twice): each game's evidence rating from skills/families.json, proven to experiment, as a mark on its
+  // game strength (asked by Verse twice): each game's evidence rating from skills/families.json, proven to experiment, as a mark on its
   // button and in its title; nothing shows until the file is read, and a game with no skill of its own gets none
   fetch('/skills/families.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
     if (!fam || !list.isConnected) return;
@@ -111,7 +111,7 @@ function mount(th, stageApi) {
       m.textContent = { proven: '●●●', checked: '●●○', tested: '●○○', experiment: '○○○' }[s.tier] || ''; m.setAttribute('aria-label', s.tier); b.appendChild(m);
     }
   }).catch(() => {});
-  // one Void strength for every game (skills/game-level.js): the games read it before Void moves
+  // one Verse strength for every game (skills/game-level.js): the games read it before Verse moves
   const lv = document.createElement('div'); lv.className = 'rack-level'; lv.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)';
   lv.append('Verse plays:');
   const paintLv = () => lv.querySelectorAll('button').forEach((x) => { x.style.opacity = x.dataset.level === getLevel() ? '1' : '.5'; x.setAttribute('aria-pressed', String(x.dataset.level === getLevel())); });

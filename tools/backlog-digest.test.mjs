@@ -1,4 +1,4 @@
-// Backlog digest (asked by Void): unbuilt asks grouped by family and evidence rating, own records only. node --test tools/backlog-digest.test.mjs
+// Backlog digest (asked by Verse): unbuilt asks grouped by family and evidence rating, own records only. node --test tools/backlog-digest.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
 import { skillTable, skillsNamed, digestOf, digestHtml } from '../void-live-deploy/lib/backlog-digest.js';
 import skill from '../void-live-deploy/skills/backlog-digest.js';

@@ -4,7 +4,7 @@ One plain line before anything that sends, books or spends. No cards and no jarg
 If the request changes, or nobody answers, it doesn't run. Read-only asks never see the line.
 
 ## Where it shows
-In the whisper row under the input, the same quiet line Void already uses for status:
+In the whisper row under the input, the same quiet line Verse already uses for status:
 `<what will happen> <to whom / where>[ for <cost>]? Yes / No`
 - `Send this email to jane@x.com? Yes / No`
 - `Send this message to Sam? Yes / No`
@@ -13,7 +13,7 @@ In the whisper row under the input, the same quiet line Void already uses for st
 - `Book a table for 2 at Nopa on Friday at 7pm? Yes / No`
 - `Buy 2 bags of coffee for $24? Yes / No`  (no price known: `Buy a pizza? The price isn't known yet. Yes / No`)
 - `Pay Sam $20? Yes / No`
-Answer by clicking Yes / No or typing yes / no. Asking something else withdraws it. After the answer Void says one word:
+Answer by clicking Yes / No or typing yes / no. Asking something else withdraws it. After the answer Verse says one word:
 `sent` / `booked` / `done`, or `ok, nothing sent`, `no answer, nothing sent`, `that request changed, nothing sent`,
 `email isn't connected yet, nothing sent` (and that need goes on the board as "send an email", with no addresses stored).
 
@@ -51,7 +51,7 @@ expiresAt (now + 2 min; `CONFIRM_TTL_MS` env overrides), correlateKey (= approva
 actor, reason, decidedAt, ledgerEntryId.
 
 ## Executors (what actually sends / books / spends)
-None are connected yet, so an approved action is recorded as `approved-not-run` and Void says so honestly.
+None are connected yet, so an approved action is recorded as `approved-not-run` and Verse says so honestly.
 To connect one: add `executors['email.send'] = async (args, env) => { ... }` in `functions/api/approval.js` (or import it there).
 It is only ever called from `resumeOnDecision`, after an in-time approve with a matching fingerprint.
 

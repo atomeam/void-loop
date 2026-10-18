@@ -48,7 +48,7 @@ test('a summary that names no date: the lead, then the infobox release line give
   assert.equal(announcedFrom({ extract, wikitext: '| released = {{Video game release|WW|May 26, 2026}}' }, now), null, 'a release already past is not a countdown');
 });
 
-test('the card says which part of the page gave the date, and is less sure of an infobox field (asked by Void)', async () => {
+test('the card says which part of the page gave the date, and is less sure of an infobox field (asked by Verse)', async () => {
   const { announcedFrom, confidenceOf } = await import('../void-live-deploy/lib/event-date.js');
   const now = new Date('2026-10-17T11:00:00Z'), s = 'It is scheduled to be released on 19 November 2026.';
   assert.equal(announcedFrom({ extract: s }, now).from, 'summary');
@@ -58,7 +58,7 @@ test('the card says which part of the page gave the date, and is less sure of an
   assert.match(confidenceOf('infobox').label, /infobox/);
 });
 
-test('the badge shows the raw text the date was read from: the infobox wikitext line, or the sentence (asked by Void, twice)', async () => {
+test('the badge shows the raw text the date was read from: the infobox wikitext line, or the sentence (asked by Verse, twice)', async () => {
   const { announcedFrom, rawSnippet } = await import('../void-live-deploy/lib/event-date.js');
   const now = new Date('2026-10-17T00:00:00Z');
   const box = announcedFrom({ extract: 'A game.', lead: 'A game by a studio.', wikitext: '| released = {{Video game release|WW|{{Start date|2026|11|19}}}}' }, now);

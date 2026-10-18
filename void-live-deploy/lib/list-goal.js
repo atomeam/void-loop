@@ -1,5 +1,5 @@
 /**
- * list-goal — a goal (or threshold) on a list, and how dense the list is against it. Asked by Void (2026-10-18): "Create a
+ * list-goal — a goal (or threshold) on a list, and how dense the list is against it. Asked by Verse (2026-10-18): "Create a
  * 'density-indicator' for the lists that count, showing at a glance how close a list is to a specific threshold or goal."
  * goalOf(text) reads what an ask sets: { goal: n } for "set a goal of 10 on the list", "goal: 10 items", "aim for 5 on my
  * shopping list", "the list is full at 8" (a threshold is a goal), { clear: true } for "clear the goal", and null for anything

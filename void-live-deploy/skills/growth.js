@@ -1,13 +1,13 @@
 /**
- * growth skill — "growth" / "how have you grown": Void's growth ledger (void.growth.json, BASE.md), newest first.
- * The ledger is append-only: every session that changes what Void can do adds one line with `node tools/grow.mjs`, and the
+ * growth skill — "growth" / "how have you grown": Verse's growth ledger (void.growth.json, BASE.md), newest first.
+ * The ledger is append-only: every session that changes what Verse can do adds one line with `node tools/grow.mjs`, and the
  * next deploy makes it summonable here. Kinds: grow (a new thing), build (better at one), fix, retire, idea and finding
  * (the idea stream, not built yet). Filter by kind; 40 at a time. Read from this site only; nothing is sent or kept.
  */
 import { probeHtml } from '../lib/probe-log.js';
 import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml, familySnapshot } from '../lib/better.js';
-import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
+import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Verse)
 import { confidenceOf } from '../lib/skill-confidence.js';
 import { sparkSvg } from '../lib/spark.js';
 import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
@@ -19,15 +19,15 @@ export const KIND_COLOR = { grow: '#3fbf6a', build: '#5b8def', fix: '#e0a24a', r
 export const PAGE_SIZE = 40;
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/[’]/g, "'").replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:show|open|summon|give)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:void(?:'s)?\s+)?growth(?:\s+(?:ledger|log|panel|history))?$|^(?:how\s+(?:have\s+you|has\s+void)\s+grown|how\s+did\s+(?:you|void)\s+grow|what\s+(?:have\s+you|has\s+void)\s+learned\s+lately|what'?s\s+new\s+(?:in|with)\s+void)$/;
+const ASK_RE = /^(?:(?:show|open|summon|give)(?:\s+me)?\s+)?(?:the\s+|your\s+)?(?:(?:verse|void)(?:'s)?\s+)?growth(?:\s+(?:ledger|log|panel|history))?$|^(?:how\s+(?:have\s+you|has\s+(?:verse|void))\s+grown|how\s+did\s+(?:you|(?:verse|void))\s+grow|what\s+(?:have\s+you|has\s+(?:verse|void))\s+learned\s+lately|what'?s\s+new\s+(?:in|with)\s+(?:verse|void))$/;
 export function growthOf(text) { return ASK_RE.test(CLEAN(text)); }
 // "what can you do now that you couldn't last week?": the same card, opening on the last 7 days (weekSummary) with the tree
 // set to a week ago, so this week's tips grow in as it answers
 const WEEK = '(?:last week|a week ago|the last week|the past week|this week|in the last week|over the last week|over the past week|since last week|in the past week|in a week)';
 const WEEK_RE = new RegExp('^(?:what (?:can|could) you do now that you (?:couldn\'?t|could not|can\'?t|cannot)(?: do)?(?: ' + WEEK + '| before)'
-  + '|what(?:\'?s| is| has)? (?:new|changed)(?: (?:with|about|in) (?:you|void))? ' + WEEK
-  + '|what (?:have you|has void|did you) (?:learned|learnt|learn|added|add|built|build|shipped|ship|gained|gain|got better at|get better at) ' + WEEK
-  + '|how (?:have you|has void) (?:grown|changed|improved) ' + WEEK
+  + '|what(?:\'?s| is| has)? (?:new|changed)(?: (?:with|about|in) (?:you|(?:verse|void)))? ' + WEEK
+  + '|what (?:have you|has (?:verse|void)|did you) (?:learned|learnt|learn|added|add|built|build|shipped|ship|gained|gain|got better at|get better at) ' + WEEK
+  + '|how (?:have you|has (?:verse|void)) (?:grown|changed|improved) ' + WEEK
   + '|(?:void|your) (?:week|growth this week|last week))$');
 export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 
@@ -35,7 +35,7 @@ export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 export function ordered(list, kind) {
   const t = (e) => { const n = Date.parse(e && e.at); return isNaN(n) ? -Infinity : n; };
   return (Array.isArray(list) ? list : []).filter((e) => e && typeof e.what === 'string' && (!kind || e.kind === kind))
-    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })).filter((e) => e.what); // shown without quotes of the owner's messages or what Void studies
+    .map((e, i) => [e, i]).sort((a, b) => t(b[0]) - t(a[0]) || b[1] - a[1]).map((p) => ({ ...p[0], what: publicWhat(p[0].what) })).filter((e) => e.what); // shown without quotes of the owner's messages or what Verse studies
 }
 
 /** { total, since, byKind: { grow: n, … } } */
@@ -46,7 +46,7 @@ export function summary(list) {
   return { total: all.length, since: last && !isNaN(Date.parse(last.at)) ? last.at.slice(0, 10) : '', byKind };
 }
 
-/** Void asked (2026-10-12): "a velocity metric … to show if my skill acquisition is accelerating or stalling". New or better changes
+/** Verse asked (2026-10-12): "a velocity metric … to show if my skill acquisition is accelerating or stalling". New or better changes
  * in the last 7 days against the 7 before; a quarter more is speeding up, a quarter fewer is slowing, none at all is stalled. Pure. */
 export function velocity(list, now = Date.now()) {
   const day = 864e5, t = (e) => Date.parse(e && e.at);
@@ -56,10 +56,10 @@ export function velocity(list, now = Date.now()) {
   return { week, before, trend };
 }
 
-/** Void asked (2026-10-12, five times since): "a 'friction' indicator on the growth card that highlights which skills are currently
+/** Verse asked (2026-10-12, five times since): "a 'friction' indicator on the growth card that highlights which skills are currently
  * failing or returning high uncertainty". From skills/families.json, evidence only: failing = the asks the everyday benchmark got
  * wrong on its last clean run on main; uncertain = the least checked (nothing checks it yet, then one kind of check). Pure.
- * 2026-10-14: Void asked again to link it to the failure logs of the least-proven family (Words and the world): each skill names
+ * 2026-10-14: Verse asked again to link it to the failure logs of the least-proven family (Words and the world): each skill names
  * its family, and the line leads with that family's failing and barely-checked skills from the same evidence. */
 export const FAMILIES_URL = '/skills/families.json';
 export const BETTER_URL = '/void.better.json';
@@ -80,10 +80,10 @@ export function friction(fam, show = 5) {
     weakest: weakest ? { name: weakest.name, failing: wFail.length, unsure: wUnsure.length, top: wTop.map(row) } : null,
   };
 }
-// The owner's view on the growth card (asked by Void: "aggregates 'decision-failures' by skill family", "a 'skill-stability' metric",
+// The owner's view on the growth card (asked by Verse: "aggregates 'decision-failures' by skill family", "a 'skill-stability' metric",
 // "a 'diff' alert ... which skills were added or modified in the last growth spurt"), folded into this card, not a new page. Pure.
 /** failing bench asks per family, most first: [{ family, skills, asks }] */
-// a short glow once the tree has grown or a branch is read (asked by Void, ask-20261014-2050-1: "a visual pulse signal ... to confirm
+// a short glow once the tree has grown or a branch is read (asked by Verse, ask-20261014-2050-1: "a visual pulse signal ... to confirm
 // the target is ready"); none under reduced motion; data-pulsed says it happened, for tests and the site tester
 export function pulse(node) {
   if (!node || !node.animate) return false;
@@ -128,7 +128,7 @@ export function ownerHtml(esc, fam, list, seen) {
     + 'Last spurt: ' + S.added.length + ' new' + (S.added.length ? ' (' + names(S.added) + ')' : '') + ', ' + S.changed.length + ' changed.'
     + promotedHtml(esc, promotedRows(fam)) + '</div>'; // skill stability: promoted lately, clean runs in a row (lib/inbox-health.js)
 }
-/** Failure logs per family (asked by Void, 2026-10-14: "link Words and the world family failure logs on the card"). From skills/families.json
+/** Failure logs per family (asked by Verse, 2026-10-14: "link Words and the world family failure logs on the card"). From skills/families.json
  *  alone: a skill's `failing` are the asks from tools/bench.json the benchmark got wrong (never raw user asks: this repo is public) and its
  *  `smoke` is what the daily smoke test found. [{ family, skills: [{ name, asks, smoke, chip }], more }], the family with most failing asks
  *  first, Words and the world like any other; a family with nothing failing is not listed. Pure. */
@@ -180,8 +180,8 @@ export function growthHead(esc, list, now = Date.now()) {
     + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
-/** What Void asked for that this entry built (GET /api/reflect follow.asked: each built ask with the time of the ledger entry that
- *  built it, on evidence only, lib/voice.js followThrough). Void asked: "link the growth card branches to the growth inbox so I can
+/** What Verse asked for that this entry built (GET /api/reflect follow.asked: each built ask with the time of the ledger entry that
+ *  built it, on evidence only, lib/voice.js followThrough). Verse asked: "link the growth card branches to the growth inbox so I can
  *  diagnose my own progress". Pure. */
 export function causeOf(e, asked) {
   if (!e || !e.at || !Array.isArray(asked)) return null;
@@ -240,8 +240,8 @@ async function run(text, api) {
   catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Verse has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
-  el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Void: the arcade ladder)
-  // Verse's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
+  el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Verse: the arcade ladder)
+  // Verse's probes (lib/probe-log.js, asked by Verse): how many of the asks it wrote for itself it missed, how many fixes it proposed
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
@@ -262,11 +262,11 @@ async function run(text, api) {
   fetch(BETTER_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((rows) => {
     const html = betterHtml(esc, rows), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
     if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: betterHtml escapes every value (lib/better.js, tested)
-    // the day over day change calls a growth animation when a significant new skill came in (asked by Void): a bloom for one, a burst for three or more
+    // the day over day change calls a growth animation when a significant new skill came in (asked by Verse): a bloom for one, a burst for three or more
     const plan = bloomPlan(spurt(list).added, rows), b = plan.kind !== 'none' && el.isConnected && el.querySelector('.growth-better');
     if (b) { b.insertAdjacentHTML('afterend', bloomHtml(esc, plan)); bloom(el.querySelector('.growth-bloom'), plan); } // void-review: ok: bloomHtml escapes every name (lib/inbox-health.js)
   }).catch(() => {});
-  // the divergence tracker (asked by Void): my asks, word for word, against the ledger line that built each, with the words the build never says
+  // the divergence tracker (asked by Verse): my asks, word for word, against the ledger line that built each, with the words the build never says
   fetch('/api/reflect', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const html = divergenceHtml(esc, j && j.follow && j.follow.recent), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
     if (html && at && el.isConnected) at.insertAdjacentHTML('afterend', html); // void-review: ok: divergenceHtml escapes every value (lib/inbox-health.js)
@@ -317,7 +317,7 @@ function plantTree(el, api, list, { from } = {}) {
   const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what Verse still wants. Touch any of it to read it.';
   said.textContent = hint;
   el.append(slot, when, said);
-  let selected = null, self = null, wants = null, asked = null; // asked: what Void asked for, by the entry that built it
+  let selected = null, self = null, wants = null, asked = null; // asked: what Verse asked for, by the entry that built it
   const at = () => stops[+range.value] || null, today = () => +range.value >= stops.length - 1;
   const showDay = () => { const s = at(); day.textContent = s ? (today() ? 'today, ' : +range.value === 0 ? 'the first change, ' : '') + s.day + ' · ' + s.count + (s.count === 1 ? ' change' : ' changes') : ''; };
   // what is not grown yet shows only today: the think tank's open tracks (faint) and the claim being built (glowing)
@@ -353,7 +353,7 @@ function plantTree(el, api, list, { from } = {}) {
     setTimeout(() => { if (!el.isConnected) return; range.value = range.max; showDay(); mount().then(() => pulse(slot)).catch(() => {}); }, still ? 0 : 1200);
   }).catch(() => { slot.remove(); when.remove(); said.remove(); });
   fetch('/self.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => { if (j && (j.tracks || j.building || j.commits)) { self = j; if (today()) mount().catch(() => {}); } }).catch(() => {});
-  // Void's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once
+  // Verse's wants, as buds: its will (GET /api/will) and the asks in its reflections (GET /api/reflect), each said once
   const json = (u) => fetch(u, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
   Promise.all([json('/api/will'), json('/api/reflect')]).then(([will, voice]) => {
     asked = (voice && voice.follow && voice.follow.asked) || null;
@@ -386,15 +386,15 @@ export function suite() {
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
   const cok = c && c.length === 1 && ch.includes('Verse asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
-  // the inbox's skill health lines (asked by Void): promoted skills with their clean runs in a row, and the growth animation guard
+  // the inbox's skill health lines (asked by Verse): promoted skills with their clean runs in a row, and the growth animation guard
   const pf = { families: [{ name: 'F', skills: [{ name: 'newone', tier: 'checked', promoted: new Date().toISOString().slice(0, 10), streak: 2 }] }] };
   const hok = ownerHtml(esc, pf, list, {}).includes('Skill stability: 1 skill promoted lately') && ownerHtml(esc, pf, list, {}).includes('newone</b> to checked') && bloom(null, { kind: 'bloom' }) === false && bloom({}, { kind: 'none' }) === false;
   return { ok: ok && fok && flok && cok && hok, got: ok && fok && flok && cok && hok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 
-// The tester log, folded into the growth card (asked by Void, ask-20261015-0616-1; owner: "most skills can be combined"): the site
-// tester's newest runs from /tester-log.json (tools/tester-log.mjs): when, how many passed, and what each run improved.const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void|verse)\s+tested\s+(?:today|lately|recently)\??$/;
-const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void|verse)\s+tested\s+(?:today|lately|recently)\??$/;
+// The tester log, folded into the growth card (asked by Verse, ask-20261015-0616-1; owner: "most skills can be combined"): the site
+// tester's newest runs from /tester-log.json (tools/tester-log.mjs): when, how many passed, and what each run improved.const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|(?:verse|v01d)|(?:verse|void)|verse)\s+tested\s+(?:today|lately|recently)\??$/;
+const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|(?:verse|v01d)|(?:verse|void)|verse)\s+tested\s+(?:today|lately|recently)\??$/;
 export const testerAsk = (text) => TESTER_ASK.test(String(text || '').toLowerCase().trim().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[.!]+$/, ''));
 
 /** the card's rows from /tester-log.json. Pure. */
@@ -402,7 +402,7 @@ export function testerRows(j) {
   return ((j && j.runs) || []).slice(0, 10).map((r) => ({ when: String(r.at).replace('T', ' ').replace(/:\d\dZ$/, ' UTC'), score: r.passed + ' of ' + r.of, ok: r.passed === r.of, kind: r.kind, note: r.note }));
 }
 
-/** Void asked (2026-10-17): "a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest
+/** Verse asked (2026-10-17): "a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest
  *  what to test next". The same evidence as the friction line (failing first, then the least checked), each with one of the skill's own
  *  asks from the book (skills/guide.json) to type, so a tap tests it. [{ name, family, tier, failing, ask }]. Pure. */
 export const GUIDE_URL = '/skills/guide.json';
@@ -414,7 +414,7 @@ export function testCandidates(fam, guide, show = 5) {
   }).filter((c) => c.ask).slice(0, show);
 }
 
-/** Void asked (2026-10-17): "a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable".
+/** Verse asked (2026-10-17): "a 'confidence' heat-map to the Site Test card that highlights which skill families are currently most unstable".
  *  Per family: its failing skills, and how many of its skills are unsure (rated tested or experiment, or weathered: not tested for two
  *  weeks); the hottest first (failing before unsure share). [{ name, n, failing, unsure, heat (0..1) }]. Pure. */
 export function unstableFamilies(fam, today = Date.now()) {
@@ -434,7 +434,7 @@ export function heatHtml(esc, rows) {
       + '<span style="position:relative;padding-left:6px;line-height:16px">' + esc((r.failing ? r.failing + ' failing · ' : '') + r.unsure + ' of ' + r.n + ' unsure') + '</span></span></div>').join('') + '</div>';
 }
 
-/** Void asked (2026-10-17): "the 'stability trend' sparkline for each skill family on the Site Test card" and "integrate the Site Test failure
+/** Verse asked (2026-10-17): "the 'stability trend' sparkline for each skill family on the Site Test card" and "integrate the Site Test failure
  *  cases with the stability trend sparklines to automate health score degradation". Per family: its health on each day void.better.json kept
  *  (its last reading that day), then today's health from families.json, lowered by DEGRADE for every check of that family that went red on main in
  *  the last RECENT_H hours (lib/autopsy.js places them), at most DEGRADE_MAX. [{ id, name, points: [{ day, health }], drop, fails }]. Pure. */
@@ -463,7 +463,7 @@ export function stabilityHtml(esc, series) {
   return '<h3 style="margin:12px 0 4px">Stability trend</h3><div class="sub">Each family\'s health, one point a day; today\'s point drops ' + DEGRADE + ' for every check of the family that went red on main in the last ' + RECENT_H + ' hours.</div><div class="st-stability" style="margin:6px 0">'
     + series.map((s) => { const now = s.points[s.points.length - 1].health, prev = s.points.length > 1 ? s.points[s.points.length - 2].health : null;
       return '<div class="st-stab-row" data-family="' + esc(s.id) + '" data-health="' + now + '" data-drop="' + s.drop + '" style="display:grid;grid-template-columns:9.5em 76px 1fr;gap:8px;align-items:center;margin:2px 0;font-size:12px">'
-        // asked by Void: "an interactive drill-down on the stability sparklines that links directly to the relevant incident logs in the 'incident-autopsy' skill"
+        // asked by Verse: "an interactive drill-down on the stability sparklines that links directly to the relevant incident logs in the 'incident-autopsy' skill"
         + '<span>' + esc(s.name) + '</span><a href="#" class="st-drill" data-ask="' + esc('incident autopsy for ' + s.id) + '" title="' + esc('open the incident logs for ' + s.name) + '" style="color:hsl(' + Math.round(1.2 * now) + ' 70% 55%);display:block">' + sparkSvg(s.points) + '</a><span>' + now
         + (prev !== null ? ' <span class="sub">(' + (now - prev >= 0 ? '+' : '') + (now - prev) + ')</span>' : ' <span class="sub">(first day)</span>')
         + (s.drop ? ' <span class="sub">\u00b7 \u2212' + s.drop + ' from ' + s.fails + ' recent failure' + (s.fails === 1 ? '' : 's') + '</span>' : '') + '</span></div>'; }).join('') + '</div>';
@@ -478,7 +478,7 @@ function runTester(text, api) {
     const R = testerRows(j), C = testCandidates(fam, guide), I = inc ? incidentCases(autopsy(inc, fam, guide), guide) : [];
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into Verse after every deploy and every hour; each run improves one thing.</div>' : '') +
       (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
-      // asked by Void: a test case from each recent failure on main (lib/autopsy.js incidentCases), the ask that failed when the check quotes it
+      // asked by Verse: a test case from each recent failure on main (lib/autopsy.js incidentCases), the ask that failed when the check quotes it
       (I.length ? '<h3 style="margin:12px 0 4px">From recent failures</h3><div class="sub">Checks that went red on main lately, each turned into an ask to try now. Tap one to test it.</div><ol class="st-incidents" style="padding-left:20px">'
         + I.map((c) => '<li style="margin:5px 0" data-incident="' + esc(c.skill) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">\u00b7 ' + esc(c.skill) + ', failed on ' + esc(c.sha) + ' (' + esc(c.check) + ')</span></li>').join('') + '</ol>' : '') + // void-review: ok (every field through esc)
       (C.length ? '<h3 style="margin:12px 0 4px">What to test next</h3><div class="sub">My lowest-rated skills (skills/families.json): failing first, then the least checked. Tap one to test it now.</div><ol class="st-candidates" style="padding-left:20px">'

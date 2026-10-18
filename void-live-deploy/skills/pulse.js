@@ -1,5 +1,5 @@
 /**
- * pulse skill - the live rhythm of the living arrows (asked by Void, 2026-10-16: "a 'pulse' visualizer card that shows the live
+ * pulse skill - the live rhythm of the living arrows (asked by Verse, 2026-10-16: "a 'pulse' visualizer card that shows the live
  * rhythm of added living arrows on the stage", and "integrate the pulse recording data with the 'incident' skill so that irregular
  * pulses automatically generate a status report"). skills/label.js records each hand-over along an arrow the moment it happens
  * (lib/pulse.js); this card draws the last minute as twelve bars, says how many and whether the rhythm is steady, and when it

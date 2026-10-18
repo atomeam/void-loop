@@ -1,4 +1,4 @@
-// node --test tools/share.test.mjs: bring someone into your Void (frontier #11, first piece). One Durable Object per invite
+// node --test tools/share.test.mjs: bring someone into your Verse (frontier #11, first piece). One Durable Object per invite
 // relays stage changes between the tabs on it, and each tab shows the others' cursors as a faint presence.
 // lib/share.js is the room (who is in it, what may pass, how fast); share-worker/index.js is the Durable Object around it;
 // functions/api/share/ makes an invite (a signed-in member only) and hands a tab's WebSocket to the room.
@@ -102,7 +102,7 @@ test('an invite is made for a signed-in member only', async () => {
   assert.equal(typeof j.live, 'boolean');
 });
 
-test('a tab joins a room only with a real invite, from Void itself, by WebSocket; without the relay it is told so', async () => {
+test('a tab joins a room only with a real invite, from Verse itself, by WebSocket; without the relay it is told so', async () => {
   const room = await mintRoom(SECRET);
   const ws = (r, origin = 'https://a-to-mind.com', up = 'websocket') => new Request('https://a-to-mind.com/api/share/' + r, { headers: { upgrade: up, origin } });
   const forwarded = [];
@@ -118,7 +118,7 @@ test('a tab joins a room only with a real invite, from Void itself, by WebSocket
   assert.deepEqual(forwarded, ['id:' + room], 'one Durable Object per invite');
 });
 
-test('Void\'s guard hands an upgraded WebSocket through untouched', async () => {
+test('Verse\'s guard hands an upgraded WebSocket through untouched', async () => {
   resetGuard();
   const up = { status: 101, webSocket: {}, headers: new Headers() };
   const out = await guard({ request: new Request('https://a-to-mind.com/api/share/x'), env: {}, next: async () => up });
@@ -126,7 +126,7 @@ test('Void\'s guard hands an upgraded WebSocket through untouched', async () => 
 });
 
 test('"invite someone" is the ask; sharing a card stays the share skill', () => {
-  for (const a of ['invite someone', 'invite a friend', 'Invite someone into my Void', 'bring someone in', 'bring a friend into my void', 'share my void live'])
+  for (const a of ['invite someone', 'invite a friend', 'Invite someone into my Verse', 'bring someone in', 'bring a friend into my void', 'share my void live'])
     assert.ok(inviteSkill.match(a.toLowerCase(), a), a);
   for (const a of ['share this card', 'who invented the telephone', 'invite', 'how do i invite someone to a zoom call', 'send an invite to the party'])
     assert.ok(!inviteSkill.match(a.toLowerCase(), a), a);

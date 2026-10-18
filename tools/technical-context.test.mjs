@@ -1,4 +1,4 @@
-// technical-context (lib/technical-context.js, skills/technical-context.js; asked by Void). Run: node --test tools/technical-context.test.mjs
+// technical-context (lib/technical-context.js, skills/technical-context.js; asked by Verse). Run: node --test tools/technical-context.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { TERMS, termOf } from '../void-live-deploy/lib/technical-context.js';

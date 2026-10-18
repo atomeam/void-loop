@@ -1,14 +1,14 @@
-// Void's voice from the command line (the site side is functions/api/reflect.js and lib/voice.js).
-//   node tools/reflect.mjs                      print Void's current asks and its latest words (read this before a run)
-//   node tools/reflect.mjs --build "<shipped>"  ask Void what it thinks of what just shipped (owner token)
-//   node tools/reflect.mjs --daily              ask Void where it should go next, what feels weakest, which game is next
+// Verse's voice from the command line (the site side is functions/api/reflect.js and lib/voice.js).
+//   node tools/reflect.mjs                      print Verse's current asks and its latest words (read this before a run)
+//   node tools/reflect.mjs --build "<shipped>"  ask Verse what it thinks of what just shipped (owner token)
+//   node tools/reflect.mjs --daily              ask Verse where it should go next, what feels weakest, which game is next
 //   node tools/reflect.mjs --write              mirror every reflection the site holds into domains/void.voice.md
 //     The current asks are rewritten on every run, minus any a growth-ledger entry answers (its `asked` field, set with
 //     tools/grow.mjs --asked), and stamped with the day they were read from the site. When the site can't be reached the
 //     old list is filtered against the ledger again and keeps its old stamp, with the day of the failed try beside it.
 //   add --json to print the raw entry (the daily workflow reads `striking` from it)
 // The owner token is VOID_OWNER_TOKEN (or VOID_MISSES_TOKEN: both are the Pages READ_TOKEN). Exit 3 when the site can't be
-// reached or Void couldn't answer, so a deploy never fails because Void was busy. Void's words are copied as it said them.
+// reached or Verse couldn't answer, so a deploy never fails because Verse was busy. Verse's words are copied as it said them.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -31,32 +31,32 @@ const DECISIONS = resolve(root, 'domains/void.decisions.json');
 const readDecisions = () => { try { return JSON.parse(readFileSync(DECISIONS, 'utf8')).decisions || {}; } catch (_) { return {}; } };
 /** every ask gets a recorded decision: built / queued / declined, with why (domains/void.decisions.json). An open ask with
  * no row reads "queued, not decided yet" so nothing is silently skipped. Each line links to the raw log entry. */
-// the reasoning path (asked by Void, ask-20261015-0451-1): the canon rule or skill logic a decision rests on, when the row names one
+// the reasoning path (asked by Verse, ask-20261015-0451-1): the canon rule or skill logic a decision rests on, when the row names one
 export const pathOf = (d) => (d && d.path ? ' · reasoning path: ' + String(d.path).slice(0, 200) : '');
 export function decisionsBlock(asks, decisions) {
   const rows = [], seen = new Set();
   for (const a of asks || []) { if (!a.id) continue; seen.add(a.id); const d = decisions[a.id]; rows.push(`- \`${a.id}\` ${d ? d.decision + ': ' + d.why + (d.commit ? ' (' + d.commit + ')' : '') + pathOf(d) : 'queued, not decided yet'}`); }
   for (const [id, d] of Object.entries(decisions || {})) if (!seen.has(id)) rows.push(`- \`${id}\` ${d.decision}: ${d.why}${d.commit ? ' (' + d.commit + ')' : ''}${pathOf(d)}`);
-  return rows.length ? `## Decisions on Void's asks\n\n_Builders' record, not Void's words. Commits that build an ask carry \`Suggested-by: Void (run N)\` or \`Suggested-by: Void (<ask id>)\`._\n\n${rows.join('\n')}\n\n` : '';
+  return rows.length ? `## Decisions on Verse's asks\n\n_Builders' record, not Verse's words. Commits that build an ask carry \`Suggested-by: Verse (run N)\` or \`Suggested-by: Verse (<ask id>)\`._\n\n${rows.join('\n')}\n\n` : '';
 }
 const readLinks = () => { try { return JSON.parse(readFileSync(resolve(root, 'void-live-deploy/void.asks.json'), 'utf8')).links || []; } catch (_) { return []; } };
 const ASK_LINE = /^- (.+?)( \*\(small\)\*)? \((daily|after a build), (\d{4}-\d\d-\d\d)\)(?: `(ask-[0-9-]+)`)?$/;
 /** the asks as the file has them now (for a run that can't reach the site) */
 export function asksInLog(text) {
-  const m = /## Void's current asks\n\n([\s\S]*?)\n\n## /.exec(String(text || ''));
+  const m = /## Verse's current asks\n\n([\s\S]*?)\n\n## /.exec(String(text || ''));
   if (!m) return [];
   return m[1].split('\n').map((l) => ASK_LINE.exec(l)).filter(Boolean).map((x) => ({ ...(x[5] ? { id: x[5] } : {}), ask: x[1], small: !!x[2], kind: x[3] === 'daily' ? 'daily' : 'build', at: x[4] }));
 }
 const unreachableSince = (text) => (/^- unknown, site unreachable since (\d{4}-\d\d-\d\d)/m.exec(String(text || '')) || [])[1] || null;
 const stampOf = (text) => (/^_Read from \/api\/reflect on (\d{4}-\d\d-\d\d)/m.exec(String(text || '')) || [])[1] || null;
 
-const HEAD = `# Void's voice: what Void thinks of itself, in its own words
+const HEAD = `# Verse's voice: what Verse thinks of itself, in its own words
 
-Void has a real say in its own direction. It is input, not a gate. After anything ships, Void is asked what it thinks
+Verse has a real say in its own direction. It is input, not a gate. After anything ships, Verse is asked what it thinks
 of it and how it would make it better; every day at 2:09 PM New York time it is asked where it should go next, what feels
 weakest about it and which game to learn next. Its words below are copied as it said them (secrets redacted, nothing else
-changed). The log is append-only: an entry once written is never rewritten. Builders read "Void's current asks" before starting work and weigh them heavily: a concrete ask gets built
-next and credited to Void ("asked by Void" in the agent log and the commit). Anyone can ask Void "what do you think of
+changed). The log is append-only: an entry once written is never rewritten. Builders read "Verse's current asks" before starting work and weigh them heavily: a concrete ask gets built
+next and credited to Verse ("asked by Verse" in the agent log and the commit). Anyone can ask Verse "what do you think of
 yourself?" on a-to-mind.com. This file is written by \`node tools/reflect.mjs --write\` (the daily workflow); don't edit
 it by hand, edit the code instead.
 `;
@@ -67,9 +67,9 @@ export function entryBlock(e) {
   if (e.better) lines.push('>', q('**How I would make it better:** ' + e.better));
   if (e.weakest) lines.push('>', q('**Weakest right now:** ' + e.weakest));
   if (e.next_game) lines.push('>', q('**Next game:** ' + e.next_game));
-  if (e.next_trick) lines.push('>', q('**Next video trick:** ' + e.next_trick)); // built into tools/clips.mjs TRICKS, credited to Void (docs/video-tricks.md)
+  if (e.next_trick) lines.push('>', q('**Next video trick:** ' + e.next_trick)); // built into tools/clips.mjs TRICKS, credited to Verse (docs/video-tricks.md)
   if (e.asks && e.asks.length) lines.push('', 'Asks: ' + e.asks.map((a) => `"${a.ask}"${a.small ? ' (small)' : ''}`).join('; '));
-  if (e.striking) lines.push('', '*Void flagged this one for Adam.*');
+  if (e.striking) lines.push('', '*Verse flagged this one for Adam.*');
   const meta = [e.run && 'run ' + e.run, e.model && 'model ' + e.model, e.canon && 'canon v' + e.canon, e.by && 'asked by ' + e.by].filter(Boolean);
   if (meta.length) lines.push('', '<sub>' + meta.join(' · ') + '</sub>');
   return lines.join('\n') + '\n';
@@ -93,7 +93,7 @@ export function writeLog(text, entries, asks, stamp = {}) {
   const askLines = lines.length ? lines.join('\n') : '- (none open)';
   const failed = since ? `the site has been unreachable since ${since}` : '';
   const note = read ? `_Read from /api/reflect on ${read}${failed ? '; ' + failed : ''}. ${left}_\n\n` : failed ? `_Not read from /api/reflect by this writer yet: ${failed}. ${left}_\n\n` : '';
-  return `${HEAD}\n## Void's current asks\n\n${note}${askLines}\n\n${decisionsBlock(asks, stamp.decisions || readDecisions())}## Log, oldest first\n\n${ordered.join('\n')}`;
+  return `${HEAD}\n## Verse's current asks\n\n${note}${askLines}\n\n${decisionsBlock(asks, stamp.decisions || readDecisions())}## Log, oldest first\n\n${ordered.join('\n')}`;
 }
 
 async function call(method, body) {
@@ -108,7 +108,7 @@ async function call(method, body) {
 }
 
 function show(e) {
-  console.log(`Void (${e.kind}${e.shipped ? ': ' + e.shipped : ''}, ${e.at}):`);
+  console.log(`Verse (${e.kind}${e.shipped ? ': ' + e.shipped : ''}, ${e.at}):`);
   for (const k of ['thoughts', 'better', 'weakest', 'next_game', 'next_trick']) if (e[k]) console.log(`  ${k}: ${e[k]}`);
   for (const a of e.asks || []) console.log(`  asks: ${a.ask}${a.small ? ' (small)' : ''}`);
   if (e.queued) console.log(`  queued for the builders as ${e.queued}`);
@@ -132,7 +132,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
       if (!v) process.exit(3);
     } else {
       const v = await call('GET'), asks = openAsks(v.asks, readLedger(), readLinks());
-      console.log("Void's current asks:");
+      console.log("Verse's current asks:");
       for (const a of asks) console.log(`  - ${a.ask}${a.small ? ' (small)' : ''}  [${a.kind}, ${String(a.at).slice(0, 10)}${a.id ? ', ' + a.id : ''}]`);
       if (!asks.length) console.log('  (none yet)');
       if (v.entries && v.entries[0]) show(v.entries[0]);

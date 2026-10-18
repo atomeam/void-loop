@@ -1,7 +1,7 @@
 /**
- * watch skill — "watch this for me" (frontier build order step 4, first piece). One thing Void can already fetch and a
+ * watch skill — "watch this for me" (frontier build order step 4, first piece). One thing Verse can already fetch and a
  * condition: "tell me when it's below 0 in Oslo", "let me know if https://… says sold out", "alert me when the price on
- * https://… drops below 50", "watch https://… for changes" (a time in a zone is the calendar's reminder on the page). Void keeps the watch
+ * https://… drops below 50", "watch https://… for changes" (a time in a zone is the calendar's reminder on the page). Verse keeps the watch
  * (/api/watch, the owner's or a paid member's own), checks it on its 15-minute clock, keeps every check as a watch.check
  * record, and tells a match on the stage. "my watches" lists them with the last check, the evidence, pause and stop.
  * The card keeps itself live (skills/live.js) so a check that lands while it is up shows by itself. Nothing is watched

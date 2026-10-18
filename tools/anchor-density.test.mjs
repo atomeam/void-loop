@@ -1,4 +1,4 @@
-// lib/anchor-density.js: the ghost anchor's heart fills with how much is on your stage to go back to (asked by Void, 2026-10-18: "Integrate the
+// lib/anchor-density.js: the ghost anchor's heart fills with how much is on your stage to go back to (asked by Verse, 2026-10-18: "Integrate the
 // 'density-indicator' logic into the ghost anchor so it visually shows how much 'navigation depth' or history is available"). Drawn in void.html;
 // the browser check is "empty state and input bar" (7). Run: node --test tools/anchor-density.test.mjs
 import test from 'node:test';

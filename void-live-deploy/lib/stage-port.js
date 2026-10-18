@@ -7,7 +7,7 @@ import { thingText, thingLabel } from './stage-find.js';
 export const EXPORT_VERSION = 1, HISTORY_MAX = 20, COPIES_MAX = 5, IMPORT_MAX_BYTES = 2000000, IMPORT_MAX_THINGS = 300;
 export const PAPERS = { A4: { w: 210, h: 297 }, Letter: { w: 215.9, h: 279.4 } };
 
-const STAGE = '(?:the\\s+|my\\s+)?(?:stage|void)';
+const STAGE = '(?:the\\s+|my\\s+)?(?:stage|(?:verse|void))';
 /**
  * What an export ask wants, or null:
  *  { op: 'json' } "export my stage as json", "back up my stage"   { op: 'import' } "import a stage from json"
@@ -20,7 +20,7 @@ export function exportIntent(text) {
   const paper = /\ba4\b/.test(t) ? 'A4' : /\b(?:us\s+)?letter\b/.test(t) ? 'Letter' : null;
   if (new RegExp('^(?:please\\s+)?(?:export|download|back\\s*up|backup)\\s+' + STAGE + '(?:\\s+(?:as|to|in)\\s+(?:a\\s+)?(?:json|json\\s+file|file|backup))?$').test(t) || new RegExp('^(?:please\\s+)?save\\s+' + STAGE + '\\s+(?:as|to|in)\\s+(?:a\\s+)?(?:json|json\\s+file|file|backup)$').test(t)) return { op: 'json' };
   if (new RegExp('^(?:please\\s+)?(?:make\\s+(?:me\\s+)?a\\s+)?(?:json\\s+)?backup\\s+of\\s+' + STAGE + '$').test(t)) return { op: 'json' };
-  if (new RegExp('^(?:please\\s+)?(?:import|load|restore)\\s+(?:a\\s+|my\\s+)?(?:stage|void)(?:\\s+(?:from|as)\\s+(?:a\\s+)?(?:json|json\\s+file|file|backup))?$').test(t) || /^(?:please\s+)?import\s+(?:a\s+)?(?:stage\s+)?json(?:\s+(?:stage|file))?$/.test(t)) return { op: 'import' };
+  if (new RegExp('^(?:please\\s+)?(?:import|load|restore)\\s+(?:a\\s+|my\\s+)?(?:stage|(?:verse|void))(?:\\s+(?:from|as)\\s+(?:a\\s+)?(?:json|json\\s+file|file|backup))?$').test(t) || /^(?:please\s+)?import\s+(?:a\s+)?(?:stage\s+)?json(?:\s+(?:stage|file))?$/.test(t)) return { op: 'import' };
   if (new RegExp('^(?:please\\s+)?(?:(?:email|mail)[- ]ready|plain[- ]text|text)\\s+(?:dump|copy|version)\\s+of\\s+' + STAGE + '$').test(t) || new RegExp('^(?:please\\s+)?(?:copy|export|give\\s+me)\\s+' + STAGE + '\\s+as\\s+(?:plain\\s+)?text$').test(t) || new RegExp('^(?:please\\s+)?(?:email|mail)[- ]ready\\s+(?:plain\\s+)?text\\s+(?:of|for)\\s+' + STAGE + '$').test(t)) return { op: 'text' };
   if (new RegExp('^(?:please\\s+)?(?:print[- ]friendly\\s+(?:view|layout|page)(?:\\s+of\\s+' + STAGE + ')?|print\\s+view(?:\\s+of\\s+' + STAGE + ')?|print\\s+' + STAGE + '|(?:open\\s+)?the\\s+print\\s+layout)(?:\\s+(?:on|for|in|as)\\s+(?:a4|(?:us\\s+)?letter)(?:\\s+(?:paper|size))?)?$').test(t)) return { op: 'print', paper };
   if (/^(?:please\s+)?(?:use|set|switch\s+to|print\s+on)\s+(?:a4|(?:us\s+)?letter)(?:\s+(?:paper|size|layout))?(?:\s+(?:for|when)\s+print(?:ing)?)?$/.test(t) || /^(?:please\s+)?(?:a4|letter)\s+(?:print\s+)?layout$/.test(t)) return { op: 'paper', paper };
@@ -98,7 +98,7 @@ const wrap = (s, n = 72, indent = '  ') => {
 /** the stage as plain text for an email: a heading, then one wrapped line or block per thing. ASCII bullets, no markup. Pure. */
 export function stageTextDump(things, now = Date.now()) {
   const list = Object.values(things || {}).filter((t) => t && t.kind).sort((a, b) => (+a.y || 0) - (+b.y || 0) || (+a.x || 0) - (+b.x || 0));
-  const lines = ['My Void stage, ' + new Date(now).toISOString().slice(0, 10) + ' (' + list.length + ' thing' + (list.length === 1 ? '' : 's') + ')', ''];
+  const lines = ['My Verse stage, ' + new Date(now).toISOString().slice(0, 10) + ' (' + list.length + ' thing' + (list.length === 1 ? '' : 's') + ')', ''];
   if (!list.length) lines.push('(nothing on the stage)');
   for (const th of list) {
     const label = thingLabel(th), all = thingText(th);

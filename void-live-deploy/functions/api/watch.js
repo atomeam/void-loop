@@ -1,4 +1,4 @@
-// A standing watch (lib/watch.js, frontier build order step 4): one thing Void can already fetch and a condition, asked
+// A standing watch (lib/watch.js, frontier build order step 4): one thing Verse can already fetch and a condition, asked
 // for in plain words. Owner token, or a paid member's session (their own watches only), the same way as /api/memory.
 //   GET            -> { watches: [{ id, name, enabled, watch, tell, every, created, last: { at, matchedAt }, checks: [records] }] }
 //   POST { ask, tell? }  the ask in plain words -> the watch is kept (an automation of kind watch on the 15-minute clock)
@@ -51,7 +51,7 @@ export const onRequestPost = guard(async ({ request, env }, scope) => {
   const rule = watchRule(ask.watch, TELLS.includes(b.tell) ? b.tell : 'note');
   const saved = await save(env, rule, { scope });
   if (!saved.ok) return Response.json({ error: saved.errors.join(' · ') }, { status: 400 });
-  // the first check now, so the card shows what Void saw; a failed fetch is a failed record, not a lost watch
+  // the first check now, so the card shows what Verse saw; a failed fetch is a failed record, not a lost watch
   let check = null;
   try { const got = await get(env, saved.rule.id, scope); check = await run(env, got.rule, { tick: true, at: new Date().toISOString() }, 'manual'); } catch (_) {}
   return Response.json({ saved: saved.rule, check, ...(await view(env, scope)) });

@@ -1,4 +1,4 @@
-// The patch guard: model-written code is checked before Void saves it, queues it or shows it as a fix. A model that runs out
+// The patch guard: model-written code is checked before Verse saves it, queues it or shows it as a fix. A model that runs out
 // of room writes "rest of the code unchanged" or "...existing code..." where the code should be; one that loses its place
 // drops half a file or a function; one that guesses writes code that does not parse; a find-and-replace patch whose anchor
 // matches twice (or never) lands in the wrong place. Each of those is rejected here, with the reason in plain words, and the
@@ -102,7 +102,7 @@ function scan(code) {
     }
     if (/[\w$]/.test(c)) {
       let w = ''; while (i < s.length && /[\w$]/.test(s[i])) w += s[i++];
-      last = /^(?:return|typeof|instanceof|in|of|new|delete|void|throw|case|do|else|yield|await)$/.test(w) ? 'o' : 'v'; continue;
+      last = /^(?:return|typeof|instanceof|in|of|new|delete|(?:verse|void)|throw|case|do|else|yield|await)$/.test(w) ? 'o' : 'v'; continue;
     }
     i++; last = 'o';
   }

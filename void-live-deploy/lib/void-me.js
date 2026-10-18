@@ -1,10 +1,10 @@
-// Your Void follows you (plan item 6): shared server bits for /api/passkey and /api/mine.
+// Your Verse follows you (plan item 6): shared server bits for /api/passkey and /api/mine.
 // Tables are made on first use (same SQL as tools/d1/void_passkeys.sql) because the deploy doesn't run D1 SQL.
 // If they can't be made, every call answers 503: no sign-in, no sync, nothing half-written.
 import { randomB64u, sha256, b64u } from './webauthn.js';
 import { PAGE_TABLE } from './pages.js';
 
-export const RP_NAME = 'Void';
+export const RP_NAME = 'Verse';
 export const CHALLENGE_TTL_MS = 5 * 60e3;
 export const SESSION_TTL_MS = 180 * 864e5;
 export const MAX_DATA = 900000; // chars of JSON; D1 rows top out at 2 MB
@@ -25,11 +25,11 @@ const TABLES = [
   // Owner login: passkeys the owner bound with the key itself (/api/passkey 'owner-bind'). Signing in with one brings an owner session.
   'CREATE TABLE IF NOT EXISTS void_owner_passkeys (id TEXT PRIMARY KEY, at TEXT NOT NULL)',
   'CREATE TABLE IF NOT EXISTS void_mine (user_id TEXT PRIMARY KEY, data TEXT NOT NULL, rev INTEGER NOT NULL, updated TEXT NOT NULL)',
-  // Plan item 12 (paid Void): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
-  // Void Pro code review keys (lib/review-api.js, /api/review): only the SHA-256 of a key; made here so 'forget me' can always remove them
+  // Plan item 12 (paid Verse): a passkey account's tier. No row = 'free'. Only /api/gumroad writes it, after Gumroad's API confirms the sale.
+  // Verse Pro code review keys (lib/review-api.js, /api/review): only the SHA-256 of a key; made here so 'forget me' can always remove them
   'CREATE TABLE IF NOT EXISTS void_review_keys (hash TEXT PRIMARY KEY, user_id TEXT NOT NULL, prefix TEXT NOT NULL, at TEXT NOT NULL, used TEXT, day TEXT, uses INTEGER NOT NULL DEFAULT 0, total INTEGER NOT NULL DEFAULT 0)',
   'CREATE INDEX IF NOT EXISTS void_review_keys_user ON void_review_keys (user_id)',
-  PAGE_TABLE, // a published Void (/@name): made here too so 'forget me' can always remove it
+  PAGE_TABLE, // a published Verse (/@name): made here too so 'forget me' can always remove it
   "CREATE TABLE IF NOT EXISTS void_accounts (user_id TEXT PRIMARY KEY, tier TEXT NOT NULL DEFAULT 'free' CHECK (tier IN ('free', 'paid')), sale_id TEXT UNIQUE, subscription_id TEXT, updated TEXT NOT NULL)",
 ];
 // The account's tier. Fails closed: a missing row, an unknown value or any read error is 'free' (never paid by accident).

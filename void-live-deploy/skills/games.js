@@ -1,6 +1,6 @@
 /**
  * games skill — every board and table game as one family (Adam, 2026-10-15: "board games can all be combined"): one place in
- * the routing order, one picker (rack: "games", "play a game", "games card"), one Void strength for all of them
+ * the routing order, one picker (rack: "games", "play a game", "games card"), one Verse strength for all of them
  * (skills/game-level.js, set on the picker), one 3D renderer (skills/scene3d.js, each board a miniature in skills/mini/) and
  * one card frame (skills/side-card.js). Every old name still opens its game ("play chess", "connect 4", "play solar quest" ->
  * VoidQuest), asked in the members' old order (lib/skill-family.js), and the page still logs skill:<member>.

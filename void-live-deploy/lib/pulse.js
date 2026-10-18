@@ -1,4 +1,4 @@
-// pulse — the rhythm of living arrows (asked by Void, 2026-10-16). Every time a thing hands a value along an arrow, skills/label.js
+// pulse — the rhythm of living arrows (asked by Verse, 2026-10-16). Every time a thing hands a value along an arrow, skills/label.js
 // records that pulse at the moment it is added (not when something polls and happens to look) and says 'void:pulse'. The pulse
 // card (skills/pulse.js) draws the live rhythm from this record; when the rhythm turns irregular the incident skill gets a status
 // report drafted for it (reportOf, saved by skills/pulse.js into the incident skill's draft). Pure over the list handed in.

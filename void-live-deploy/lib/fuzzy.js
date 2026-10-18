@@ -1,4 +1,4 @@
-// The fuzzy layer for skill activation (asked by Void three times, domains/void.voice.md, 2026-10-14: "Implement the
+// The fuzzy layer for skill activation (asked by Verse three times, domains/void.voice.md, 2026-10-14: "Implement the
 // fuzzy-matching layer for all skill triggers to replace my current dependency on specific typo patterns."). The page's
 // typo map (TYPO_WORDS in void.html) knows a few dozen slips by hand; this layer knows every word the skills answer to.
 //

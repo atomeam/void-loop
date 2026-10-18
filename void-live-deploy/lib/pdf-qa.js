@@ -68,7 +68,7 @@ export function sectionsOf(blocks) {
   return { pages, titles, levels };
 }
 
-/** "map it" (asked by Void, 2026-10-11): the sections as a heading tree, [{ title, depth, lines, page }] in reading order. A
+/** "map it" (asked by Verse, 2026-10-11): the sections as a heading tree, [{ title, depth, lines, page }] in reading order. A
  *  heading nests under the nearest heading above it of a higher level, one step at a time however many levels it skips; the
  *  untitled opening ("the opening") stays at the top when it holds text. page is the section's number, as ask() reports it. */
 export function outlineOf({ pages = [], titles = [], levels = [] } = {}) {

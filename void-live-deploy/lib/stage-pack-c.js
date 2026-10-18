@@ -15,7 +15,7 @@ const cut = (s, n) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim().sli
 
 /** what a codex ask means: null, or { op: 'file' } | { op: 'open', topic } | { op: 'about', topic }. Pure. */
 export function codexOf(text) {
-  const t = low(text).replace(/^(?:please|void),?\s+/, '');
+  const t = low(text).replace(/^(?:please|(?:verse|void)),?\s+/, '');
   if (/^(?:file|add|put|save|store|keep)\s+(?:this|that|it|the\s+(?:last\s+|current\s+)?(?:card|answer))\s+(?:in|into|to)\s+(?:the|my)\s+codex$/.test(t)) return { op: 'file' };
   let m = /^(?:open|show|browse)\s+(?:the|my)\s+codex(?:\s+(?:on|about|for)\s+(.+))?$/.exec(t);
   if (m) return { op: 'open', topic: cut(m[1] || '', 60) };
@@ -86,7 +86,7 @@ export function rangeOf(phrase, now = Date.now()) {
 
 /** an echo ask: null, or { kind: 'best' | 'decide', range: {from,to}|null, label }. A range word it cannot read makes it not this ask. Pure. */
 export function echoOf(text, now = Date.now()) {
-  const t = low(text).replace(/^(?:please|void),?\s+/, '');
+  const t = low(text).replace(/^(?:please|(?:verse|void)),?\s+/, '');
   let m = /^replay\s+my\s+(?:best\s+|top\s+|kept\s+)?answers(?:\s+(?:from\s+)?(.+))?$/.exec(t);
   let kind = 'best';
   if (!m) { m = /^what\s+did\s+i\s+(?:decide|choose|conclude)(?:\s+(.+))?$/.exec(t); kind = 'decide'; }
@@ -141,7 +141,7 @@ export function dateOf(s) {
 
 /** a capsule ask: null, { op:'seal', until: ms } | { op:'seal', word } | { op:'open', word } | { op:'due' }. Pure. */
 export function capsuleOf(text) {
-  const raw = clean(text).replace(/^(?:please|void),?\s+/i, ''), t = raw.toLowerCase();
+  const raw = clean(text).replace(/^(?:please|(?:verse|void)),?\s+/i, ''), t = raw.toLowerCase();
   let m = /^seal\s+(?:a\s+|my\s+)?(?:time\s+)?capsule\s+until\s+(.+)$/.exec(t);
   if (m) { const until = dateOf(m[1]); return isNaN(until) ? null : { op: 'seal', until }; }
   m = /^seal\s+(?:a\s+|my\s+)?(?:time\s+)?capsule\s+for\s+the\s+word\s+["'“]?([^\s"'”]{2,40})["'”]?$/.exec(t);

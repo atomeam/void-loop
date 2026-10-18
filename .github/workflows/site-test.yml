@@ -9,7 +9,7 @@ on:
   schedule:
     - cron: '41 * * * *'
   workflow_run:
-    workflows: [Void deploy]
+    workflows: [Verse deploy]
     types: [completed]
   workflow_dispatch:
 
@@ -21,7 +21,7 @@ permissions:
   contents: write # the suite, seen-set and run log on main
   issues: write   # one fix item per distinct failure
   pull-requests: write # the teach PR (tools/site-teach.mjs)
-  actions: write  # start Void's review on the teach PR (a PR opened with this token starts no pull_request run)
+  actions: write  # start Verse's review on the teach PR (a PR opened with this token starts no pull_request run)
 
 jobs:
   test:
@@ -63,7 +63,7 @@ jobs:
         run: node tools/claims-verify.mjs --live || echo "::warning title=Claims::some built claims fall through to the fallback; they show as in progress"
       - name: Keep the suite, seen-set and run log
         run: |
-          node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Void)
+          node tools/tester-log.mjs # the stage's tester-log card reads this public view (asked by Verse)
           git diff --quiet -- tools/site-test.json tools/site-test.seen.json tools/site-test.log.json void-live-deploy/tester-log.json void-live-deploy/claims-verified.json && exit 0
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"

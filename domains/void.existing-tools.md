@@ -7,9 +7,9 @@ Add a row whenever an input or a run finds a tool worth reaching for. Rows are n
 | Tool | What it covers | Check before building | Where it came from |
 |---|---|---|---|
 | Claude Marketplace (2,000+ connectors) | ready-made connectors to other services | any integration or connector | ai-landscape-2026-09-late (2026-09-27, unverified) |
-| Workers AI model catalog | models Void can call without hosting anything | any model change (answer engine, fixes, routing) | Void runs on it today (Gemma 4 26B) |
+| Workers AI model catalog | models Verse can call without hosting anything | any model change (answer engine, fixes, routing) | Verse runs on it today (Gemma 4 26B) |
 | Gumroad's Agent tab | store changes by Gumroad's own assistant | any store tooling | plan item 12 (opens after the first payout) |
-| Void's confirm line (void_approvals, void_ledger) | a person's yes before any send, book or spend; a record of each yes | any approval, attestation or audit trail | plan item 7 |
+| Verse's confirm line (void_approvals, void_ledger) | a person's yes before any send, book or spend; a record of each yes | any approval, attestation or audit trail | plan item 7 |
 | Paperclip (MIT) | org chart and coordination for an agent team | an agent coordinator | growth-ledger-backlog |
 | Hermes Agent (MIT) | an agent that grows skills from use | a skill-growing loop | growth-ledger-backlog |
 | Hindsight (MIT) | agent memory that learns | a memory store | growth-ledger-backlog |
@@ -22,5 +22,5 @@ Add a row whenever an input or a run finds a tool worth reaching for. Rows are n
 | Cloudflare edge cache + Pages middleware (lib/guard.js) | per-connection limits, size caps, wrong-key brake | any new /api route | defences check 2026-09-28 |
 | Cloudflare WAF rate-limiting rule (dashboard) | a global outer limit | stronger rate limits | defences check 2026-09-28 (left for Atom) |
 | Workers AI bge-m3 embeddings (multilingual) | a cheap nearest-neighbour classifier (Workers AI has no intent classifier) | any routing or "which skill is this" question | router 2026-09-28 (lib/router.js) |
-| MCP Skills extension (SEP-2640, `skill://`, skills/list + skills/get) | a standard package for agent skills (a directory with SKILL.md) that MCP servers expose and clients discover | plan Now #3 (skill packaging for queued skill jobs) and Next #11 (Void's public MCP server) | report 2026-09-29 (Final per the report, 2026-09-13; unverified: sources unreachable from the Linux box) |
-| Cloudflare Kitesurf (agent browser on Workers) with WebMCP | lists and calls tools a page registers with document.modelContext | testing plan Now #5 (Void's void_* tools) without an origin-trial browser | report 2026-09-29 (Cloudflare blog, 2026-09-28; unverified) |
+| MCP Skills extension (SEP-2640, `skill://`, skills/list + skills/get) | a standard package for agent skills (a directory with SKILL.md) that MCP servers expose and clients discover | plan Now #3 (skill packaging for queued skill jobs) and Next #11 (Verse's public MCP server) | report 2026-09-29 (Final per the report, 2026-09-13; unverified: sources unreachable from the Linux box) |
+| Cloudflare Kitesurf (agent browser on Workers) with WebMCP | lists and calls tools a page registers with document.modelContext | testing plan Now #5 (Verse's void_* tools) without an origin-trial browser | report 2026-09-29 (Cloudflare blog, 2026-09-28; unverified) |

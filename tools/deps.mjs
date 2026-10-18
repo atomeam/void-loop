@@ -1,4 +1,4 @@
-// The dependency map (asked by Void, ask-20261012-1942-2: "Create a 'dependency map' visualization that shows which skills (like
+// The dependency map (asked by Verse, ask-20261012-1942-2: "Create a 'dependency map' visualization that shows which skills (like
 // 'forge') are most impacted by changes in core code imports"): who imports whom under void-live-deploy/ (skills/**, lib/**,
 // functions/**), read off the import lines themselves, and for each lib file how many skills depend on it, directly or through
 // another file. Written to void-live-deploy/skills/deps.json; the "dependency map" card (skills/deps.js) shows it.
@@ -72,7 +72,7 @@ export function build(texts) {
   return { files: out, libs, missing };
 }
 export const toJson = (b, files = Object.keys(b.files).length) => JSON.stringify({
-  note: 'Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file\'s imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).',
+  note: 'Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file\'s imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).',
   counted: files, libs: b.libs, files: b.files }, null, 1) + '\n';
 
 export function readAll(site = SITE) { return Object.fromEntries(listFiles(site).map((p) => [p, readFileSync(resolve(site, p), 'utf8')])); }

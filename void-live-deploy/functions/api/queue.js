@@ -1,4 +1,4 @@
-// Void's build queue (D1): the owner asks Void to update itself; the laptop builder picks it up.
+// Verse's build queue (D1): the owner asks Verse to update itself; the laptop builder picks it up.
 // GET -> { items, heartbeat } · POST { ask, target } · POST { op: 'draft-from-thread', from, request } · PATCH { id?, state?, note?, heartbeat? } — all owner token.
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';

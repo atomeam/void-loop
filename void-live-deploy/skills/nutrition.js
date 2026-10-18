@@ -15,7 +15,7 @@
  *   pregnancy, breastfeeding and children, plus more for each hour of sweaty exercise.
  * Leaves food lookups ("calories in a banana": skills/food.js), exercise burns ("calories burned running"), BMI (calc) and
  * "how many calories to lose a pound" (calc: 3,500) to the skills that already answer them.
- * Asked by Void (2026-10-14): the BMI card keeps a weight trend, but only when the person taps "save this" (dated entries in
+ * Asked by Verse (2026-10-14): the BMI card keeps a weight trend, but only when the person taps "save this" (dated entries in
  * this browser's localStorage, nothing saved otherwise: no behaviour tracking), and links its band to the calorie card with the
  * same height and weight ("daily calories for overweight"). "plan my meals" (ask-20261014-1453-1) splits the day's target
  * into breakfast, lunch, dinner and snacks the way dietitians do (25 / 30 / 35 / 10 %) and puts the list on the stage; the
@@ -215,7 +215,7 @@ export function bmiOf(kg, cm) {
   const m2 = (cm / 100) ** 2, bmi = kg / m2;
   return { bmi, band: bmi < 18.5 ? 'underweight' : bmi < 25 ? 'healthy weight' : bmi < 30 ? 'overweight' : 'obesity', lo: 18.5 * m2, hi: 24.9 * m2 };
 }
-// The weight trend (asked by Void, ask-20261014-2248-1): dated entries saved only when "save this" is tapped, in this browser.
+// The weight trend (asked by Verse, ask-20261014-2248-1): dated entries saved only when "save this" is tapped, in this browser.
 export const BMI_KEY = 'a2m.void.bmi.v1', BMI_MAX = 60;
 export function bmiEntries() { try { const a = JSON.parse(localStorage.getItem(BMI_KEY) || '[]'); return Array.isArray(a) ? a.filter((e) => e && e.kg > 0 && e.cm > 0 && e.at) : []; } catch (_) { return []; } }
 export function bmiSave(kg, cm, at = new Date().toISOString()) {
@@ -233,7 +233,7 @@ export function bmiTrend(entries) {
   const dKg = +last.kg - +first.kg, dBmi = +last.bmi - +first.bmi;
   return { n: e.length, first, last, days, dBmi: Math.round(dBmi * 10) / 10, dKg: Math.round(dKg * 10) / 10, kgWeek: days >= 3 ? Math.round(dKg / days * 7 * 100) / 100 : null };
 }
-/** the calorie ask for a BMI band, carrying the height and weight (asked by Void, ask-20261014-2248-2). Pure. */
+/** the calorie ask for a BMI band, carrying the height and weight (asked by Verse, ask-20261014-2248-2). Pure. */
 export function bandAsk(band, kg, cm, metric) {
   const goal = band === 'underweight' ? 'to gain weight' : /healthy/.test(band || '') ? 'a day' : 'to lose weight';
   const body = metric ? Math.round(cm) + ' cm ' + Math.round(kg) + ' kg' : Math.floor(cm / 2.54 / 12) + "'" + (Math.round(cm / 2.54) % 12) + ' ' + Math.round(kg / LB) + ' lb';
@@ -280,7 +280,7 @@ function bmiForm(el, esc) {
   upd();
 }
 
-// "plan my meals" (asked by Void, ask-20261014-1453-1): the day's calories split the way dietitians plan a day (breakfast 25%,
+// "plan my meals" (asked by Verse, ask-20261014-1453-1): the day's calories split the way dietitians plan a day (breakfast 25%,
 // lunch 30%, dinner 35%, snacks 10%: the usual starting split in clinical meal planning), each with its protein when the
 // weight is known. The target: the number in the ask, else the last calorie card's goal row (page memory), else 2,000.
 const MEALS = [['Breakfast', 0.25], ['Lunch', 0.30], ['Dinner', 0.35], ['Snacks', 0.10]];

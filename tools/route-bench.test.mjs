@@ -164,7 +164,7 @@ test('/api/answer: Clef never holds the answer; its pick reaches the route log a
 });
 
 
-test('Void\'s ask: every none says which skill it came closest to, how close, and what held it back', async () => {
+test('Verse\'s ask: every none says which skill it came closest to, how close, and what held it back', async () => {
   // three examples on unit axes, so each dot product is the ask's coordinate on that axis
   const ex = [{ kind: 'skill', skill: 'timer' }, { kind: 'skill', skill: 'weather' }, { kind: 'simple' }, { kind: 'hard' }, { kind: 'near' }];
   const axis = (k) => Array.from({ length: 5 }, (_, d) => (d === k ? 1 : 0));
@@ -204,7 +204,7 @@ test('Void\'s ask: every none says which skill it came closest to, how close, an
   assert.match(noneTable(noneConfidence([{ ask: 'x', want: [NONE] }], [{ embed: { skill: null } }])), /does not send the nearest skill yet/);
 });
 
-test('Void\'s ask: the route log keeps the nearest skill, and readRoutes groups the close nones by the skill they nearly were', async () => {
+test('Verse\'s ask: the route log keeps the nearest skill, and readRoutes groups the close nones by the skill they nearly were', async () => {
   const { readRoutes, CLOSE } = await import('../void-live-deploy/lib/router.js');
   const ex = [{ kind: 'skill', skill: 'timer' }, { kind: 'skill', skill: 'weather' }, { kind: 'simple' }, { kind: 'hard' }, { kind: 'near' }];
   const vecs = ex.map((_, i) => Array.from({ length: 5 }, (_, d) => (d === i ? 1 : 0)));

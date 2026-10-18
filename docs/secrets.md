@@ -1,7 +1,7 @@
 # Secrets and privacy
 
-Owner, 2026-10-15: "make V01D the best at keeping secrets ever made", and "V01D always should turn every negative ask into a
-positive thing; V01D is a force of absolute good in the universe." The repo is **public**, so nothing secret or personal is
+Owner, 2026-10-15: "make Verse the best at keeping secrets ever made", and "Verse always should turn every negative ask into a
+positive thing; Verse is a force of absolute good in the universe." The repo is **public**, so nothing secret or personal is
 ever committed. Going private later would not take back what was already public.
 
 ## What is protected, and by what
@@ -23,10 +23,10 @@ hold published business contacts on purpose and are skipped by the privacy scan 
 
 ## The force-for-good rule
 
-A harmful, mean or secret-seeking ask never gets just a no. V01D declines in one line and offers the nearest genuinely good
+A harmful, mean or secret-seeking ask never gets just a no. Verse declines in one line and offers the nearest genuinely good
 thing (an account-hacking ask becomes securing your own accounts or moving on; an insult becomes a kind, funny reply; a bomb
-becomes a V01D film with fake explosions). The alternative never helps with the harmful part. Both values are in
-`domains/void.canon.md` under "How Void is different".
+becomes a Verse film with fake explosions). The alternative never helps with the harmful part. Both values are in
+`domains/void.canon.md` under "How Verse is different".
 
 ## Rotation
 
@@ -38,7 +38,7 @@ becomes a V01D film with fake explosions). The alternative never helps with the 
 
 Rotation log: none needed (2026-10-15 full-history scan: test fixtures only).
 
-## A product: V01D Vault
+## A product: Verse Vault
 
 The same stack (key-shape engine, history scan, privacy redactor, keeper with positive redirects, CSP smoke) could sell as
-"V01D Vault / secret guard" in the store: a drop-in pre-push and PR gate for small teams. Not built as a product yet.
+"Verse Vault / secret guard" in the store: a drop-in pre-push and PR gate for small teams. Not built as a product yet.

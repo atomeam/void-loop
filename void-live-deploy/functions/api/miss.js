@@ -1,8 +1,8 @@
-// void-misses: collects asks Void could not answer, so agents know what to build next.
+// void-misses: collects asks Verse could not answer, so agents know what to build next.
 // Stores only the words typed (normalized, max 200 chars), counts, first/last time, and which fallback ran.
 // No IPs, cookies or user agents are stored. The connection is hashed only for a 60s rate-limit window.
 // Storage: D1 (void_misses). Older rows still in KV are merged in by /api/misses until they expire.
-// Void learns from it by itself (lib/learn.js): an ask missed 3 times over at least two days becomes a `miss:<slug>`
+// Verse learns from it by itself (lib/learn.js): an ask missed 3 times over at least two days becomes a `miss:<slug>`
 // job in the build queue at once, so the builders see it without anyone in between. The browser-sent fallback never
 // queues a job by itself: this endpoint is open to anyone. `{ kind: 'used', id }` counts one open of a lab experiment instead
 // (lib/used.js): only an id naming a live /fringe/ page, nothing typed, one per connection per experiment per day. `origin: 'agent'` (sent by the page for a WebMCP call) is counted
@@ -35,7 +35,7 @@ export async function onRequestPost({ request: req, env, waitUntil }) {
     try { const cat = await loadCatalog(env); await recordGap(env, a, (cat && cat.products) || cat || []); } catch (_) {}
     return new Response(null, { status: 204 });
   }
-  const ask = redactPersonal(norm(body.ask)); // a key typed into Void never lands on the miss list
+  const ask = redactPersonal(norm(body.ask)); // a key typed into Verse never lands on the miss list
   const fallback = String(body.fallback || '').slice(0, 40);
   const fromAgent = body.origin === 'agent'; // the page's label for a miss a visiting agent's tool call caused; anything else is people
   if (!ask || ask.length < 2) return new Response('empty', { status: 400 });

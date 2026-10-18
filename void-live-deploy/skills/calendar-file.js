@@ -6,7 +6,7 @@
 import { icsOf, eventsOf } from '../lib/ics.js';
 const KEY = 'a2m.void.agenda.v1';
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const WHAT = "(?:(?:my|the|your|verse's|void's) )?(?:calendar|calender|agenda)(?: events)?";
+const WHAT = "(?:(?:my|the|your|verse's|(?:verse|void)'s) )?(?:calendar|calender|agenda)(?: events)?";
 const WHEN = new RegExp('^(?:please )?(?:(?:export|download|save|get|give me|send me|make|create) ' + WHAT + '(?: (?:as|to|into|in|for) (?:an? )?(?:ics|ical|icalendar|calendar file|file|google calendar|outlook|apple calendar))?|' + '(?:download|get|make|export) (?:an? )?(?:ics|ical|calendar) file(?: of ' + WHAT + ')?|calendar file|ics file|ical file)$');
 
 function load() { try { return JSON.parse(localStorage.getItem(KEY) || '[]'); } catch (_) { return []; } }

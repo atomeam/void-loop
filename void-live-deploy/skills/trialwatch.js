@@ -59,7 +59,7 @@ export function changes(prev, next) {
   }
   return out;
 }
-/** of two kept checks ({ at, rows }), the newer real one, or null: this browser's last check and Void's own daily one (served at
+/** of two kept checks ({ at, rows }), the newer real one, or null: this browser's last check and Verse's own daily one (served at
  * /trialwatch.json by tools/trial-changes.mjs); one with no rows or no readable date is not a check. Pure. */
 export function newerSnap(a, b) {
   const ok = (s) => !!(s && s.rows && typeof s.rows === 'object' && Object.keys(s.rows).length && !isNaN(Date.parse(s.at)));
@@ -92,7 +92,7 @@ async function run(text, api) {
   try { data = await check(); } catch (_) { data = null; }
   const live = data && Object.keys(data.rows).length > 0;
   if (live) { saveSnap({ at: data.at, rows: data.rows }); el.innerHTML = trialwatchHtml(esc, data, 'live'); return 'trialwatch'; }
-  // the registry is out of reach from this browser: the newer of its own last check and Void's daily one (the trial watch workflow)
+  // the registry is out of reach from this browser: the newer of its own last check and Verse's daily one (the trial watch workflow)
   const mine = loadSnap(), daily = await fetch('/trialwatch.json').then((r) => (r.ok ? r.json() : null)).catch(() => null);
   const snap = newerSnap(mine, daily);
   if (snap) { el.innerHTML = trialwatchHtml(esc, snap, snap === mine ? 'snapshot' : 'daily'); return 'trialwatch'; }

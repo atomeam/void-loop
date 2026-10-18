@@ -1,5 +1,5 @@
-# Void's code review for any GitHub repository: a walkthrough of what the pull request changes, the bugs and risks in
-# the lines it adds (the same checks a-to-mind.com runs when someone asks Void to review code), and each one as an
+# Verse's code review for any GitHub repository: a walkthrough of what the pull request changes, the bugs and risks in
+# the lines it adds (the same checks a-to-mind.com runs when someone asks Verse to review code), and each one as an
 # inline comment on its line with a one-click suggested fix where a safe one exists. No account, no credits.
 #
 #   on: pull_request
@@ -14,9 +14,9 @@
 #           with:
 #             gate: 'true'                                 # optional: fail the check on bugs and risks (a merge gate)
 #             void-key: ${{ secrets.VOID_REVIEW_KEY }}     # optional: Code Review Pro, the AI closer read on every PR
-# Free: the instant checks (a whole PR in about a second). Void Code Review Pro (on its own, or in paid Void) adds the closer read:
+# Free: the instant checks (a whole PR in about a second). Verse Code Review Pro (on its own, or in paid Verse) adds the closer read:
 # https://a-to-mind.com/code-review/
-name: Void code review
+name: Verse code review
 description: Walkthrough, bugs and risks in the added lines, and inline comments with one-click fixes, on every pull request.
 branding: { icon: eye, color: gray-dark }
 inputs:
@@ -30,14 +30,14 @@ inputs:
     description: 'Fail this step when the added lines carry a bug or a risk ("true" or "false"); a line marked "void-review: ok" is left out' 
     default: 'false'
   void-key:
-    description: A Void Code Review Pro license key, or a key from paid Void (https://a-to-mind.com/code-review/#pro), for the AI closer read; leave empty for the free checks
+    description: A Verse Code Review Pro license key, or a key from paid Verse (https://a-to-mind.com/code-review/#pro), for the AI closer read; leave empty for the free checks
     default: ''
 runs:
   using: composite
   steps:
     - uses: actions/setup-node@v4
       with: { node-version: 22 }
-    - name: Void reviews the lines this pull request adds
+    - name: Verse reviews the lines this pull request adds
       if: github.event_name == 'pull_request' || github.event_name == 'pull_request_target'
       shell: bash
       env:
@@ -70,4 +70,4 @@ runs:
         HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         TOOLS: ${{ github.action_path }}/../tools
       run: |
-        node "$TOOLS/review-pr.mjs" --base "origin/$BASE" --head "$HEAD_SHA" --gate > /dev/null || { echo "::error title=Void review::bugs or risks in the added lines (see Void's review comment)"; exit 1; }
+        node "$TOOLS/review-pr.mjs" --base "origin/$BASE" --head "$HEAD_SHA" --gate > /dev/null || { echo "::error title=Verse review::bugs or risks in the added lines (see Verse's review comment)"; exit 1; }

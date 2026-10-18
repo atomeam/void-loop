@@ -44,7 +44,7 @@ t('a wording keeps the example it came from', () => { const inv3 = inventory([{ 
   const p = plan(inv3, { asks: ['play despacito', 'watch the moon landing'] }, 1)[0]; assert.equal(p.base, 'play despacito');
   const all = variants('play despacito'); const q = plan(inv3, { asks: ['play despacito', 'watch the moon landing', ...all] }, 1)[0]; assert.equal(q.base, 'watch the moon landing'); });
 t('an answer that replaces a status line in the middle of the page counts as something appearing', () => {
-t('a card-stats idle wait over the limit is flagged, never failed (asked by Void: flag an idle wait over 500 ms)', () => {
+t('a card-stats idle wait over the limit is flagged, never failed (asked by Verse: flag an idle wait over 500 ms)', () => {
   const c = { ask: 'what are you?', expect: { text: 'Verse' } }, r = { text: 'I am Verse', errors: [] }, lim = { statsIdleMs: 500 };
   const slow = judge(c, { ...r, statsIdleMs: 812 }, lim), quick = judge(c, { ...r, statsIdleMs: 120 }, lim), none = judge(c, { ...r, statsIdleMs: null }, lim);
   assert.deepEqual(slow.flags, ['stats idle 812 ms > 500']); assert.equal(slow.ok, true, 'a flag is not a failure');

@@ -1,4 +1,4 @@
-// The Zorbleflux throttle (asked by Void, 2026-10-18: "Create a 'Zorbleflux' throttle that slows down chaotic motion when a user is actively
+// The Zorbleflux throttle (asked by Verse, 2026-10-18: "Create a 'Zorbleflux' throttle that slows down chaotic motion when a user is actively
 // interacting with a card's input."). While a person types in a card (an input, textarea, select or contenteditable inside a stage card has focus) or
 // holds the pointer down on a card, the moving things on the stage (the Zorbleflux field, the living field cards: lib/field-stage.js) run at SLOW of
 // their speed, eased there and back so nothing jerks, and come back to full speed IDLE_MS after the person lets go. The card being used is never

@@ -1,6 +1,6 @@
 # Performance pass: make the page, the 3D or the suite measurably faster
 
-**Starts when:** the owner or V01D says something is slow ("choppy on my phone", "the page takes a while", the suite near its budget), or `tools/page-perf.mjs` shows a number worse than the last pass.
+**Starts when:** the owner or Verse says something is slow ("choppy on my phone", "the page takes a while", the suite near its budget), or `tools/page-perf.mjs` shows a number worse than the last pass.
 
 **The one rule:** measure first, change one thing, measure again, put both numbers in the PR. A change with no number is upkeep, not growth (owner, 2026-10-15). Nothing here changes what the page does: an ask answers the same, in the same order.
 

@@ -1,9 +1,9 @@
-# Void films its own experiments (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"). Step 1 of the
+# Verse films its own experiments (owner, 2026-10-14: "Verse should use my Youtube channel to make its own Videos"). Step 1 of the
 # broadcast loop: tools/record.mjs opens a lab experiment in a real browser, runs it, and films it with the run's own words from
 # the fringe ledger as a caption. Each film is then posted as a GitHub Release (an MP4 and a text file with its title, description
 # and tags), so the owner can watch it and upload it in YouTube Studio by hand (owner, 2026-10-14: review each video before it goes
 # up; "all we need is the videos"). The automatic upload (tools/youtube.mjs) runs only when the repo variable YT_UPLOAD is 1.
-name: Void records itself
+name: Verse records itself
 
 on:
   schedule:
@@ -11,7 +11,7 @@ on:
   # and whenever Verse ships something (owner, 2026-10-15: "let Verse make films whenever it wants or does anything"): after each
   # deploy of main, one film of an experiment never filmed before, or none (a deploy never re-films an old one)
   workflow_run:
-    workflows: ['Void deploy']
+    workflows: ['Verse deploy']
     types: [completed]
     branches: [main]
   workflow_dispatch:
@@ -110,7 +110,7 @@ jobs:
             node tools/film-post.mjs "$(ls "$d"/*.mp4 | head -1)" "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
             gh release edit "$tag" --draft=true
           done
-      # every film's words in today's name (owner, 2026-10-14: "it shoud say V01d everywhere"): tools/film-post.mjs brands them Verse
+      # every film's words in today's name (owner, 2026-10-14: "it shoud say Verse everywhere"): tools/film-post.mjs brands them Verse
       - name: Refresh every film's words on the site
         if: steps.film.outputs.made != '0'
         env:
@@ -123,9 +123,9 @@ jobs:
             gh release download "$tag" --dir "$d" --pattern '*.txt' --clobber
             node tools/film-post.mjs --words-only "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
           done
-      # optional: straight to Void's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
+      # optional: straight to Verse's channel (tools/youtube.mjs refuses any other), only when the repo variable YT_UPLOAD is 1 and
       # the owner's YouTube OAuth client is in the repo secrets. Private unless the repo variable YT_PRIVACY says otherwise.
-      - name: Upload to Void's YouTube channel
+      - name: Upload to Verse's YouTube channel
         if: vars.YT_UPLOAD == '1' && steps.film.outputs.made != '0'
         env:
           YT_CLIENT_ID: ${{ secrets.YT_CLIENT_ID }}

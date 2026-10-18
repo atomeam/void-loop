@@ -17,7 +17,7 @@ const esc = (s) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000
 function rng(seed) { let a = seed >>> 0; return () => { a = (a + 0x6D2B79F5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; }
 
 /** the rarity's ink: weight, colour, how much the line wobbles and its default density, plus the foil; only these change between rarities, never the subject.
- *  Asked by Void: the ink follows the evidence rating, a proven skill (Mythic) is sharp and high-contrast, an experiment (Common) a light charcoal sketch.
+ *  Asked by Verse: the ink follows the evidence rating, a proven skill (Mythic) is sharp and high-contrast, an experiment (Common) a light charcoal sketch.
  *  The plate's opacity reads the CSS custom property --ink-density (0..1) from the svg or any ancestor, so a mini can drive it live (field divergence, curl);
  *  with none set, `dens` is the rarity's own. */
 export const RARITY_LOOK = {

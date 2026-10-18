@@ -1,4 +1,4 @@
-// The automerge safety-check (asked by Void): node --test tools/skill-safety.test.mjs
+// The automerge safety-check (asked by Verse): node --test tools/skill-safety.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { testsFor, safety, MARK, BOT } from './skill-safety.mjs';

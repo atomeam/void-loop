@@ -1,10 +1,10 @@
-"""Void's build queue, laptop side.
+"""Verse's build queue, laptop side.
 
   python tools/void_queue.py            sync: heartbeat + write domains/void.queue.md (the task runs this every 10 min)
   python tools/void_queue.py claim      mark the oldest queued item 'building' and print it (builders run this first)
   python tools/void_queue.py claim TARGET   claim that job (e.g. step:5) if it is queued and nobody holds it; else print
                                         who holds it (or that there is none) and exit 1
-  python tools/void_queue.py done ID live|needs-you [note]   report the result so Void's status line shows it
+  python tools/void_queue.py done ID live|needs-you [note]   report the result so Verse's status line shows it
 
 A claim is atomic on the server (/api/queue moves a job from 'queued' to 'building' in one statement), so of two
 builders claiming at once exactly one gets the job, and the job's note then starts "claimed by <you>" (VOID_BUILDER, or
@@ -32,7 +32,7 @@ def call(method, body=None):
 
 def write(view):
     now = datetime.datetime.now().astimezone().isoformat(timespec="minutes")
-    lines = ["# void.queue: builds the owner asked Void for", "", f"Synced {now}. Builders: run `python tools/void_queue.py claim` (or `claim <target>`) first; when done, `python tools/void_queue.py done <id> live` (or `needs-you \"why\"`).", "",
+    lines = ["# void.queue: builds the owner asked Verse for", "", f"Synced {now}. Builders: run `python tools/void_queue.py claim` (or `claim <target>`) first; when done, `python tools/void_queue.py done <id> live` (or `needs-you \"why\"`).", "",
              "| id | target | state | asked | note |", "| --- | --- | --- | --- | --- |"]
     for i in reversed(view["items"]):
         lines.append(f"| {i['id']} | {i['target']} | {i['state']} | {i['at'][:16]} | {i.get('note','').replace('|','/')} |")

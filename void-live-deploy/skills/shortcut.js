@@ -1,5 +1,5 @@
 /**
- * shortcut skill — a contextual shortcut (asked by Void: "a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and
+ * shortcut skill — a contextual shortcut (asked by Verse: "a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and
  * mind' family and suggests one of the new 'everything' services (e.g., suggesting food if it's dinner time)").
  * "what should I do now", "suggest something for right now": it reads the clock on this device (nothing is sent, no place is
  * asked) and offers ONE next thing from the time family (timer, today) or the body and mind family (sleep, breathing, food),
@@ -8,7 +8,7 @@
  * runs anything by itself and it never orders or pays (food and rides only open the services card).
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK = /^(?:(?:hey\s+)?void,?\s+)?(?:please\s+)?(?:what\s+should\s+i\s+do(?:\s+(?:now|next|right\s+now))|what\s+(?:do\s+you\s+suggest|now)(?:\s+for\s+me)?|(?:suggest|give\s+me|show\s+me)\s+(?:me\s+)?(?:something|a\s+shortcut|one\s+thing)(?:\s+(?:for\s+(?:right\s+)?now|to\s+do(?:\s+now)?|for\s+this\s+time))?|(?:a\s+)?(?:contextual\s+)?shortcut|something\s+for\s+right\s+now)$/;
+const ASK = /^(?:(?:hey\s+)?(?:verse|void),?\s+)?(?:please\s+)?(?:what\s+should\s+i\s+do(?:\s+(?:now|next|right\s+now))|what\s+(?:do\s+you\s+suggest|now)(?:\s+for\s+me)?|(?:suggest|give\s+me|show\s+me)\s+(?:me\s+)?(?:something|a\s+shortcut|one\s+thing)(?:\s+(?:for\s+(?:right\s+)?now|to\s+do(?:\s+now)?|for\s+this\s+time))?|(?:a\s+)?(?:contextual\s+)?shortcut|something\s+for\s+right\s+now)$/;
 export const shortcutOf = (text) => ASK.test(CLEAN(text));
 
 /** the suggestions for an hour (0-23), best first: { ask, line, family }. Pure. */

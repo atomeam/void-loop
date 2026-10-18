@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import { siteOf, sitesIn, routesIn, namesSource, scanSkill, reliabilityOf, reliabilityWords, familySources, familySourcesWords, SOURCE_FAMILIES } from './source-reliability.mjs';
 import { build, ratingOf } from './families.mjs';
 
-test('a source is a site: hosts group by site, placeholders and Void itself are not sources', () => {
+test('a source is a site: hosts group by site, placeholders and Verse itself are not sources', () => {
   assert.equal(siteOf('api.tvmaze.com'), 'tvmaze.com'); assert.equal(siteOf('www.tvmaze.com'), 'tvmaze.com');
   assert.equal(siteOf('news.bbc.co.uk'), 'bbc.co.uk'); assert.equal(siteOf('en.wiktionary.org'), 'wiktionary.org');
   assert.deepEqual(sitesIn("fetch('https://api.tvmaze.com/x?q=' + q); '<a href=\"https://www.tvmaze.com/shows/1\">' https://example.org https://a-to-mind.com/x http://w3.org"), ['tvmaze.com']);

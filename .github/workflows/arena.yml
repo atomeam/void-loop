@@ -1,4 +1,4 @@
-# Void learns its games by playing itself (frontier #5, the learning half; tools/arena.mjs --learn), daily: replay the rating
+# Verse learns its games by playing itself (frontier #5, the learning half; tools/arena.mjs --learn), daily: replay the rating
 # ladders (Connect Four by look-ahead depth, Othello by player), then one more day of self-play tuning at depth 2 that starts
 # from the champion the earlier days kept (arena.json's champion) and keeps a challenger only when it clearly beats it; the
 # champion is rated against the card's own weights. Commits void-live-deploy/arena.json and arena-othello.json to main, so
@@ -36,7 +36,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add void-live-deploy/arena.json void-live-deploy/arena-othello.json
-          git commit -m "Arena: Void played itself again; the records and the self-play champion"
+          git commit -m "Arena: Verse played itself again; the records and the self-play champion"
           for i in 1 2 3 4; do
             git push origin HEAD:main && exit 0
             sleep $((2 ** i)); git pull --rebase origin main

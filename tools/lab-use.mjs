@@ -7,7 +7,7 @@
 //   test first  opened that often but no self-test runs on main: a want to add one
 // Use only ever adds. Nothing is retired or shelved for going unused (owner, 2026-10-13: "Remember no one knows about our site
 // yet, so don't throw out skills just because no one uses them; that's a disaster."; docs/RULES.md).
-// Wants only: tools/will.py adds them to Void's will, and a builder still takes each through a PR, Verse's review and the suite.
+// Wants only: tools/will.py adds them to Verse's will, and a builder still takes each through a PR, Verse's review and the suite.
 // With no count to read (no token, the endpoint down) nothing is judged.
 //   node tools/lab-use.mjs            the verdicts, in words
 //   node tools/lab-use.mjs --json     the same, for tools/will.py

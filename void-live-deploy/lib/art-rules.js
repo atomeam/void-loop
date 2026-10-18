@@ -54,7 +54,7 @@ export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and 
 // scene that fails any of it is dropped for the fixed template. The style lock wraps whatever the scene is, so every card on the stage shares
 // one look (the owner's words: "dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus, 8k resolution. --no text,
 // watermarks, cropped edges, out of frame"; the image model takes no negative prompt, so the --no list is written as words).
-export const FAMILIES = ['Making things', 'Games', 'Sky and earth', 'Time', 'Numbers and money', 'Body and mind', 'Words and the world', 'Out in the world', 'The stage', 'Void itself'];
+export const FAMILIES = ['Making things', 'Games', 'Sky and earth', 'Time', 'Numbers and money', 'Body and mind', 'Words and the world', 'Out in the world', 'The stage', 'Verse itself'];
 export const familyOf = (v) => { const k = String(v == null ? '' : v).trim().toLowerCase(); return FAMILIES.find((f) => f.toLowerCase() === k) || ''; };
 export const STYLE_LOCK = 'epic, cinematic, photoreal detail, a faint chosen-one aura, otherworldly void-mind energy, dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus'; // owner, 2026-10-18: "the cinimatic real version"; "cinimatic chosen and epic and v01d and mind"
 export const FRAMING = 'no text, no letters, no words, no watermark, no frame, no border, no cropped edges, nothing out of frame, no logos, no signature';
@@ -107,7 +107,7 @@ export function imageOf(r) {
 /** the only image sources a card may show or save: a small data URL of a jpeg, png or webp. Pure. */
 export const safeImg = (u) => (typeof u === 'string' && u.length <= IMG_MAX + 40 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(u) ? u : '');
 
-// A second style lock for error reports (asked by Void: "Integrate the Art Forge style-lock with the 'incident-autopsy' skill so that error reports are rendered with a
+// A second style lock for error reports (asked by Verse: "Integrate the Art Forge style-lock with the 'incident-autopsy' skill so that error reports are rendered with a
 // specific, high-contrast 'warning' aesthetic."). Like STYLE_LOCK it is fixed words, never typed ones: `prompt` is what the Art Forge appends when it paints a warning
 // plate, the rest is the same look for the incident-autopsy card (amber on black, a hazard-stripe bar, a solid border; amber #ffb000 on #0b0b0b is about 11:1). Pure data.
 export const WARNING_LOCK = {

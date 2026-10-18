@@ -1,4 +1,4 @@
-// node --test tools/review-api.test.mjs: Void's code review API (functions/api/review.js, lib/review-api.js) on a real
+// node --test tools/review-api.test.mjs: Verse's code review API (functions/api/review.js, lib/review-api.js) on a real
 // SQLite standing in for D1: the free instant checks, Pro keys (minted only by a paid account, stored as a hash, refused
 // once the account is free again), the closer read and its daily cap, revoking, and "forget me" taking the keys too.
 import test from 'node:test';
@@ -84,7 +84,7 @@ test('the daily cap, five keys at most, revoking, and forget me', async () => {
   assert.equal(env.DB.db.prepare('SELECT COUNT(*) AS n FROM void_review_keys').get().n, 0, 'forget me removes the review keys');
 });
 
-test('Void Code Review Pro on its own: a Gumroad license key, checked with Gumroad and remembered; refunds turn it off', async () => {
+test('Verse Code Review Pro on its own: a Gumroad license key, checked with Gumroad and remembered; refunds turn it off', async () => {
   const LIC = 'A1B2C3D4-E5F60718-293A4B5C-6D7E8F90', asked = [];
   let purchase = { refunded: false, test: false };
   const gumroad = async (url, init) => { asked.push(String(init.body)); const k = new URLSearchParams(init.body).get('license_key'); return k === LIC ? Response.json({ success: true, purchase }) : Response.json({ success: false, message: 'That license does not exist for the provided product.' }, { status: 404 }); };
@@ -93,7 +93,7 @@ test('Void Code Review Pro on its own: a Gumroad license key, checked with Gumro
   // the store catalog knows the product by its permalink (dkmcjk) and holds Gumroad's long id for it
   const { ensureStoreTables } = await import('../void-live-deploy/lib/store-db.js');
   await ensureStoreTables(env);
-  env.DB.db.prepare("INSERT INTO void_catalog (slug, data, available, updated) VALUES ('dkmcjk', ?, 1, 'now')").run(JSON.stringify({ id: 'prod123==', short: 'dkmcjk', name: 'Void Code Review Pro' }));
+  env.DB.db.prepare("INSERT INTO void_catalog (slug, data, available, updated) VALUES ('dkmcjk', ?, 1, 'now')").run(JSON.stringify({ id: 'prod123==', short: 'dkmcjk', name: 'Verse Code Review Pro' }));
   const r = await (await call(api.onRequestPost, env, { code: BUGGY }, LIC)).json();
   assert.equal(r.tier, 'pro'); assert.equal(r.review, 'model'); assert.ok(r.left > 0);
   assert.match(asked[0], /product_id=prod123/); assert.ok(!/product_permalink/.test(asked[0])); assert.match(asked[0], /increment_uses_count=false/);

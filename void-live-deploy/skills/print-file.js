@@ -119,7 +119,7 @@ export function stage3mf(things) {
   ]);
 }
 
-/** Before the stage's print file is handed over (Void's ask: check the held file's integrity before finalizing): open the
+/** Before the stage's print file is handed over (Verse's ask: check the held file's integrity before finalizing): open the
  *  package just built and hold it to the triangles it came from. A whole zip (its end record, every local header where the
  *  directory says), each part's bytes matching their CRC-32 and size, the three parts a slicer needs, and a model with one
  *  triangle per stage triangle, every coordinate a number, every corner a vertex that exists, no triangle collapsed to a
@@ -195,7 +195,7 @@ async function run(text, api, verify = verify3mf) {
     return 'print-file';
   }
   save3mf(file);
-  // the print ledger (lib/prints.js, asked by Void: print-file feeds the inventory): the file that left, so "what have I printed" knows it
+  // the print ledger (lib/prints.js, asked by Verse: print-file feeds the inventory): the file that left, so "what have I printed" knows it
   try { if (storeOf()) recordPrint(storeOf(), { kind: '3mf', file: 'void-stage.3mf', label: 'The stage', triangles: v.triangles, figures: Object.values(things).filter((t) => t && t.kind === 'fig3d').length }); } catch (_) {}
   if (api.say) api.say('Checked: void-stage.3mf · ' + Object.values(things).filter((t) => t && t.kind === 'fig3d').length + ' on the stage · ' + v.triangles + ' triangles, every part whole');
   return 'print-file';

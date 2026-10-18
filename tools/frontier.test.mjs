@@ -15,8 +15,8 @@ const sample = `# The frontier
 ---
 
 **Folded in from the old lists (2026-10-11), still open, each with where it came from:**
-- **Void as a tool inside other AIs:** a public MCP server (\`void.plan.md\` Next #11). Nothing serves MCP yet.
-- **Paid Void** (\`void.plan.md\` Next #12): built on a helper branch.
+- **Verse as a tool inside other AIs:** a public MCP server (\`void.plan.md\` Next #11). Nothing serves MCP yet.
+- **Paid Verse** (\`void.plan.md\` Next #12): built on a helper branch.
 
 **Checked and already live** (not part of the list)
 `;
@@ -24,8 +24,8 @@ const sample = `# The frontier
 test('open items: title, why and where each came from; the list ends at the first blank line', () => {
   const o = openItems(sample);
   assert.equal(o.length, 2);
-  assert.deepEqual(o[0], { title: 'Void as a tool inside other AIs', why: 'a public MCP server (void.plan.md Next #11). Nothing serves MCP yet.', from: 'void.plan.md Next #11' });
-  assert.deepEqual(o[1], { title: 'Paid Void', why: 'built on a helper branch.', from: 'void.plan.md Next #12' });
+  assert.deepEqual(o[0], { title: 'Verse as a tool inside other AIs', why: 'a public MCP server (void.plan.md Next #11). Nothing serves MCP yet.', from: 'void.plan.md Next #11' });
+  assert.deepEqual(o[1], { title: 'Paid Verse', why: 'built on a helper branch.', from: 'void.plan.md Next #12' });
   assert.deepEqual(openItems('# nothing here'), []);
 });
 

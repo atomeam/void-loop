@@ -10,7 +10,7 @@ import { gamesOf, playTurns, playLines } from '../lib/rules-play.js';
 
 export function duelOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' '), l = t.toLowerCase();
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play\s+)?(?:a\s+)?(?:(?:card\s+)?duel|cards|the card game|(?:a\s+)?card game)(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(l) || /^play (?:a )?(?:card duel|cards|the card game)$/.test(l)) return { kind: 'open' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play\s+)?(?:a\s+)?(?:(?:card\s+)?duel|cards|the card game|(?:a\s+)?card game)(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(l) || /^play (?:a )?(?:card duel|cards|the card game)$/.test(l)) return { kind: 'open' };
   const games = gamesOf(t); if (games) return { kind: 'rules', games };
   let m = /^summon (.{1,40})$/i.exec(t); if (m) return { kind: 'summon', idea: m[1] };
   m = /^attack (.{1,40}?) with (.{1,40})$/i.exec(t); if (m) return { kind: 'attack', target: m[1], mine: m[2] };

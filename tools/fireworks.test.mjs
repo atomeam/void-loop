@@ -19,10 +19,10 @@ test('a hint is information, not a move: it marks the other hand and spends a to
   s = F.hint(s, { color: c0.c });
   assert.equal(s.hints, 7); assert.equal(s.turn, 'void');
   assert.equal(F.view(s, 'void').own[0].known.c, c0.c);
-  assert.equal(s.hands.void.length, 5, 'nothing was played for Void');
+  assert.equal(s.hands.void.length, 5, 'nothing was played for Verse');
   const youBefore = s.hands.you.map((c) => c.id).join();
-  const r = F.play(s, 0); assert.equal(r.hands.you.map((c) => c.id).join(), youBefore, 'it is Void\'s turn: playing changes Void\'s hand, never yours');
-  assert.ok(!r.hands.void.some((c) => c.id === c0.id), 'the card Void played left its hand');
+  const r = F.play(s, 0); assert.equal(r.hands.you.map((c) => c.id).join(), youBefore, 'it is Verse\'s turn: playing changes Verse\'s hand, never yours');
+  assert.ok(!r.hands.void.some((c) => c.id === c0.id), 'the card Verse played left its hand');
 });
 
 test('playing: a card that fits extends its row; one that does not costs a mistake; three mistakes end the game', () => {
@@ -34,14 +34,14 @@ test('playing: a card that fits extends its row; one that does not costs a mista
   assert.equal(s.over, 'boom');
 });
 
-test('Void acts from what it can see only, and says why: it points you to a card of yours that fits now', () => {
+test('Verse acts from what it can see only, and says why: it points you to a card of yours that fits now', () => {
   let s = F.create({ seed: 5 }); s.turn = 'void'; s.hands.you[2] = { id: 500, c: 1, r: 0, known: { c: null, r: null } };
   s = F.voidAct(s);
   const l = s.log.at(-1); assert.match(l.text, /told you/); assert.match(l.why, /your card 3 is yellow 1 and fits now/);
   assert.equal(s.hands.you[2].known.r, 0);
 });
 
-test('a whole game together ends (perfect, the deck, or three mistakes), and every Void choice says why', () => {
+test('a whole game together ends (perfect, the deck, or three mistakes), and every Verse choice says why', () => {
   let s = F.create({ seed: 8 });
   for (let k = 0; k < 400 && !s.over; k++) {
     if (s.turn === 'void') { s = F.voidAct(s); continue; }

@@ -1,12 +1,12 @@
-# V01D design system
+# Verse design system
 
-Owner, 2026-10-15: "I wouldn't mind if V01D became unrecognizably good looking."
+Owner, 2026-10-15: "I wouldn't mind if Verse became unrecognizably good looking."
 
 The idea in one line: **a dark stage lit from above, with glass that catches the light**. The page stays empty until you ask (that rule does not change); what changes is that the emptiness is a place: deep space, a breathing event-horizon glow, a pool of light where answers stand, and everything that appears stands in it.
 
 ## Benchmarks (what we take from whom)
 
-| Site | What it does best | What V01D takes |
+| Site | What it does best | What Verse takes |
 | --- | --- | --- |
 | [linear.app](https://linear.app) | Near-black surfaces, a single cool accent, hairline borders lit from the top edge, motion that is fast and never bouncy on content | the 1px top highlight (`inset 0 1px 0`), restraint: one accent colour |
 | [stripe.com](https://stripe.com) | Gradients with depth, layered ambient shadows, display numerals | multi-layer shadows (contact + ambient + coloured bloom), numerals as display type |
@@ -53,9 +53,9 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 3. The stage reacts: the key light follows the active card, miniatures cast their glow on the floor, a horizon that tints with the real sky (`sky-rules.js`).
 4. Type and motion pass on every skill's inline styles, moved into tokens.
 
-## The default look: the Void (owner, 2026-10-15)
+## The default look: the Verse (owner, 2026-10-15)
 
-"V01D should be a beautiful Void by default, something impressive to look at that puts people in awe."
+"Verse should be a beautiful Verse by default, something impressive to look at that puts people in awe."
 
 - Deep space, never a flat colour: two star-dust canvases with cursor parallax (`#void-stars-far`, `#void-stars`).
 - At the centre a dark event horizon ringed by a slowly breathing glow (11s cycle) that turns once every ~160s; a faint nebula drifts behind it (`#void-depth::before/::after`).
@@ -69,10 +69,10 @@ The idea in one line: **a dark stage lit from above, with glass that catches the
 - **No perspective grids, grid floors, synthwave horizons or tron lines.** Adam called it "the ugly every-AI-website grid" and it was removed. A check in `tools/checks.mjs` fails on `rotateX(` paired with `repeating-linear-gradient` in a page background.
 - No generic SaaS feature-tile grids on the empty stage. The stage stays empty until you ask.
 
-### The Void, pass 2 (2026-10-15: "too dim to put people in awe")
+### The Verse, pass 2 (2026-10-15: "too dim to put people in awe")
 - Star dust is on by default: two canvases, DPR capped at 2, count scales with screen area, warm/cool tints, about 14% twinkle, brightest stars get a soft halo. They stop drawing when the tab is hidden and pick up again when it's visible. With reduced motion they're drawn once and held still.
 - Accretion ring: a white-hot inner edge into key/warm, plus a conic band that brings the colour round as it turns. `#void-lens` is a thin arc of lensing shimmer (7s).
 - A visible nebula: two colour clouds plus the real sky's glow (`--sky-glow`), drifting over 70s.
-- **celestial-sync** (V01D's ask): `html[data-phase]` is dawn/day/dusk/night from the device's local hour, and it tints the nebula and ring. The weather and sky come from the existing client-side sky-rules (`--sky-glow`). Nothing is sent or stored.
+- **celestial-sync** (Verse's ask): `html[data-phase]` is dawn/day/dusk/night from the device's local hour, and it tints the nebula and ring. The weather and sky come from the existing client-side sky-rules (`--sky-glow`). Nothing is sent or stored.
 - **Thinking**: `html.void-thinking` is set while the open card says "thinking…", "looking up" or "reading the page". The ring brightens and spins up (1.6s breathe, 14s turn) and the lens quickens.
-- **light-reactive cards** (V01D's ask): the active card picks up a lit top rim and a nebula-coloured bloom from the horizon, stronger while thinking.
+- **light-reactive cards** (Verse's ask): the active card picks up a lit top rim and a nebula-coloured bloom from the horizon, stronger while thinking.

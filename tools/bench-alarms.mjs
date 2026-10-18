@@ -1,4 +1,4 @@
-// The Bench icon's numbers (asked by Void, 2026-10-16: "a functional 'Bench' icon on the stage that counts active false alarms").
+// The Bench icon's numbers (asked by Verse, 2026-10-16: "a functional 'Bench' icon on the stage that counts active false alarms").
 // A false alarm is a finding Verse's review raised that a person read at its commit and found wrong (tools/review-noise.json,
 // verdict "false"); "active" is every one still on record. Writes void-live-deploy/bench-alarms.json, which skills/bench.js reads:
 // the count, the alarms (file, line, why), the review findings not read yet, and the everyday bench's last score (bench.misses.json).
@@ -17,7 +17,7 @@ export function buildAlarms(noise, misses) {
   const alarms = rows.filter((r) => r && r.verdict === 'false').map((r) => ({ file: clip(r.file, 120), line: +r.line || 0, why: clip(r.why, 200) }));
   const real = rows.filter((r) => r && r.verdict === 'real').length, unread = rows.filter((r) => r && !r.verdict).length;
   const bench = misses && Number.isFinite(misses.score) ? { score: misses.score, total: misses.total, missed: Array.isArray(misses.misses) ? misses.misses.length : misses.total - misses.score, at: clip(misses.at, 30) } : null;
-  return { note: 'Written by tools/bench-alarms.mjs from tools/review-noise.json and tools/bench.misses.json (asked by Void). Files and reasons only.', falseAlarms: alarms.length, real, unread, alarms, ...(bench ? { bench } : {}) };
+  return { note: 'Written by tools/bench-alarms.mjs from tools/review-noise.json and tools/bench.misses.json (asked by Verse). Files and reasons only.', falseAlarms: alarms.length, real, unread, alarms, ...(bench ? { bench } : {}) };
 }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {

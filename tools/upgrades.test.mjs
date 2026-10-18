@@ -1,4 +1,4 @@
-// tools/upgrades.mjs: Void's own architectural upgrades, from measured friction to a component and a change, ranked.
+// tools/upgrades.mjs: Verse's own architectural upgrades, from measured friction to a component and a change, ranked.
 import assert from 'node:assert/strict';
 import { largestFunction, propose } from './upgrades.mjs';
 

@@ -11,10 +11,10 @@ const CLEAN = cleanLower; // shared: lib/ask-text.js
 
 export function lightOf(text) {
   const t = CLEAN(text);
-  if (/^(?:please\s+)?make my void light$/.test(t)) return { theme: 'light' };
+  if (/^(?:please\s+)?make my (?:verse|void) light$/.test(t)) return { theme: 'light' };
   if (/^(?:please\s+)?light look$/.test(t)) return { theme: 'light' };
-  if (/^(?:please\s+)?switch (?:my void|the void) to light$/.test(t)) return { theme: 'light' };
-  if (/^(?:please\s+)?make the void light$/.test(t)) return { theme: 'light' };
+  if (/^(?:please\s+)?switch (?:my (?:verse|void)|the (?:verse|void)) to light$/.test(t)) return { theme: 'light' };
+  if (/^(?:please\s+)?make the (?:verse|void) light$/.test(t)) return { theme: 'light' };
   if (/^(?:please\s+)?light$/.test(t)) return { theme: 'light' };
   return null;
 }

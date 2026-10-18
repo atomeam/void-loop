@@ -1,4 +1,4 @@
-name: Void test suite
+name: Verse test suite
 description: Mirror tools/deploy.ps1 before it deploys. Sync the void.html copies, then run node tools/test_void.mjs (Chromium via Playwright, Python for will.py).
 inputs:
   bench:
@@ -105,7 +105,7 @@ runs:
       run: |
         set -o pipefail
         node tools/test_void.mjs 2>&1 | tee test-output.txt
-        echo "### Void tests: $(tail -n 1 test-output.txt)" >> "$GITHUB_STEP_SUMMARY"
+        echo "### Verse tests: $(tail -n 1 test-output.txt)" >> "$GITHUB_STEP_SUMMARY"
     - name: node tools/bench.mjs --score (everyday benchmark, not below tools/bench.best.json)
       if: inputs.bench == 'only' || inputs.bench == 'with'
       shell: bash

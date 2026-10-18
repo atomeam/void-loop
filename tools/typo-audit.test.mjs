@@ -1,4 +1,4 @@
-// The typo audit (tools/typo-audit.mjs; asked by Void): a word one neighbour-swap from a commoner word is flagged, a known or allowed real word
+// The typo audit (tools/typo-audit.mjs; asked by Verse): a word one neighbour-swap from a commoner word is flagged, a known or allowed real word
 // is not. Run: node --test tools/typo-audit.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';

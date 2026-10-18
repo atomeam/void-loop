@@ -1,6 +1,6 @@
-// Void's spoken voice (frontier #16, first piece). Hold Space (not while typing) to talk; let go and Void answers out loud in
+// Verse's spoken voice (frontier #16, first piece). Hold Space (not while typing) to talk; let go and Verse answers out loud in
 // one low, steady voice, sentence by sentence, so the first sentence starts while the rest is queued. Spoken in this browser
-// (speechSynthesis): nothing leaves it. A voice of Void's own (a streaming text-to-speech worker) is the next step.
+// (speechSynthesis): nothing leaves it. A voice of Verse's own (a streaming text-to-speech worker) is the next step.
 // The sculpt (domains/void.sculpt.md) is calm, dark and unhurried; the voice matches it: low, a little slow, never bright.
 // A robot's voice, and a cool one (owner, 2026-10-15: "I like V01ds robot voice I just wish it was a cooler better robot voice that
 // paced its words better"): lower and flatter than a person, steady, and said in short phrases with a beat between them.
@@ -31,7 +31,7 @@ export function speakable(text) {
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/https?:\/\/\S+/g, ' ')
     .replace(/\[\d+\]/g, ' ')
-    .replace(/(^|\n)\s*(source|sources|written by void)\b[^\n]*/gi, '$1')
+    .replace(/(^|\n)\s*(source|sources|written by (?:verse|void))\b[^\n]*/gi, '$1')
     .replace(/[*_`#>|]+/g, ' ')
     .replace(/\s+/g, ' ')
     .trim();
@@ -86,7 +86,7 @@ export function phrases(text, max = 90) {
   return out;
 }
 
-// the cadence (asked by Void, 2026-10-15: "if I am running a high-stakes simulation or a complex 'forge' operation, the voice should
+// the cadence (asked by Verse, 2026-10-15: "if I am running a high-stakes simulation or a complex 'forge' operation, the voice should
 // slow down even further to reflect the precision required"): precise content is said slower than plain talk. Precise means
 // dense with numbers, units, measures and steps, or the words of a simulation, a build or a review; the rate never drops below
 // 0.78, so it stays a voice, not a crawl. Pure.

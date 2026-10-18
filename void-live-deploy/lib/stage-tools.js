@@ -176,7 +176,7 @@ export function styleOf(text) {
   if ((m = /^(?:drop )?shadow (on|off)(?: (?:on|for|of) (.+))?$/.exec(t)) && (who = ofWho(m[2]))) return { op: 'fx', prop: 'shadow', value: m[1] === 'on', who };
   if ((m = /^(?:reset|clear|undo)(?: the)? (?:styles?|styling|look)(?: (?:of|on|for) (.+))?$/.exec(t)) && (who = ofWho(m[1]))) return { op: 'reset', who };
   // the stage itself
-  if ((m = new RegExp('^(?:set |make |change |turn )?(?:the |my )?(?:stage |void )?background(?: colou?r)?(?: to| is| =)? ' + COLOR_RE + '$').exec(t)) || (m = new RegExp('^(?:make|turn) the (?:stage |void )?background ' + COLOR_RE + '$').exec(t))) return { op: 'bg', color: colorOf(m[1]) };
+  if ((m = new RegExp('^(?:set |make |change |turn )?(?:the |my )?(?:stage |(?:verse|void) )?background(?: colou?r)?(?: to| is| =)? ' + COLOR_RE + '$').exec(t)) || (m = new RegExp('^(?:make|turn) the (?:stage |(?:verse|void) )?background ' + COLOR_RE + '$').exec(t))) return { op: 'bg', color: colorOf(m[1]) };
   if (/^(?:reset|restore|clear|default)(?: the| my)? (?:stage )?background(?: colou?r)?$|^background (?:colou?r )?(?:default|reset)$/.test(t)) return { op: 'bg', color: '' };
   if (/^(?:set |use |choose |pick |add |change )?(?:a |an |my |the )?(?:local |own )?(?:image|picture|photo)(?: from (?:my )?(?:files|computer|device|phone))?(?: file)? (?:as|for) (?:the |my )?(?:stage )?background$|^(?:stage )?background (?:image|picture|photo)$|^(?:set|use|choose|pick|change) (?:a |the |my )?(?:stage )?background (?:image|picture|photo)(?: from (?:my )?(?:files|computer|device|phone))?$/.test(t)) return { op: 'bgimage' };
   if ((m = /^blur(?: the| my)?(?: stage)? background(?: (?:by |to )?(\d{1,2}) ?(?:px)?)?$/.exec(t))) return { op: 'blur', px: m[1] ? PX(m[1], 0, 30) : 8 };
