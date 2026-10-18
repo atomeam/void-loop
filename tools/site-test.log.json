@@ -1312,5 +1312,12 @@
   "of": 65,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T11:21:11Z",
+  "passed": 56,
+  "of": 66,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
  }
 ]

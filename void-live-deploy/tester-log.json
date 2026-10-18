@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 62,
- "runsTotal": 177,
+ "cases": 63,
+ "runsTotal": 178,
  "kinds": {
-  "grow": 55,
+  "grow": 56,
   "file": 68,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T11:21:11Z",
+   "passed": 56,
+   "of": 66,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T10:17:16Z",
    "passed": 55,
@@ -142,13 +149,6 @@
    "of": 48,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"attention field\" (skill:attention-field-mind)"
-  },
-  {
-   "at": "2026-10-18T02:53:48Z",
-   "passed": 44,
-   "of": 46,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T10:17:16Z",
+  "skill:film-metadata": "2026-10-18T11:21:11Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -378,6 +378,9 @@
   "skill:outline-note": "2026-10-18T10:02:42Z",
   "skill:overload": "2026-10-18T10:17:16Z",
   "skill:own-parts": "2026-10-18T10:17:16Z",
-  "skill:partial-answer": "2026-10-18T10:17:16Z"
+  "skill:partial-answer": "2026-10-18T10:17:16Z",
+  "skill:photo-scrub": "2026-10-18T11:21:11Z",
+  "skill:plan-stability": "2026-10-18T11:21:11Z",
+  "skill:qr-scan": "2026-10-18T11:21:11Z"
  }
 }

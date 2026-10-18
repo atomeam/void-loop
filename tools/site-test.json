@@ -212,6 +212,9 @@
     },
     {
       "ask": "film metadata for Ikiru"
+    },
+    {
+      "ask": "yo find me a sci-fi film from the 80s"
     }
   ],
   "candidates": [],
