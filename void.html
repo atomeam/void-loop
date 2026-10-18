@@ -1098,10 +1098,16 @@
     /* offline: calm, not alarming. The halo takes a faint amber tint; asks that need no network keep working */
     html.void-offline #void-lens { background: radial-gradient(closest-side, transparent 35.2%, rgba(255,190,100,.30) 36.4%, rgba(255,160,70,.12) 46%, transparent 60%); }
     html.void-offline #void-depth::before { opacity: calc(.62 * var(--ring)); }
-    /* the support link: readable (AA on the dark stage), a quiet footer line at the bottom right */
-    /* no corner "support V01D" link (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the store answers "open the store",
-       "support void", "tip", "buy", and the book's Start here page names it */
-    @media (max-width: 700px) { #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
+    /* the corner anchor (asked by Void, 2026-10-18, after the text link went: "a subtle, ghosted icon that only becomes fully opaque when the user's
+       mouse approaches the edge of the stage"): a ghost of a heart at the bottom right that opens the store; it wakes when the pointer comes within
+       90 px of the corner (html.void-edge), on hover, or on keyboard focus. The store still answers "open the store", "support void", "tip", "buy". */
+    #void-anchor { position: fixed; right: 12px; bottom: 12px; z-index: 6; width: 28px; height: 28px; display: grid; place-items: center; color: #d7d2ff;
+      opacity: .12; transition: opacity .2s ease, transform .2s ease; border-radius: 50%; text-decoration: none; }
+    #void-anchor svg { width: 16px; height: 16px; display: block; }
+    html.void-edge #void-anchor, #void-anchor:hover, #void-anchor:focus-visible { opacity: 1; transform: scale(1.1); }
+    #void-anchor:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+    @media (prefers-reduced-motion: reduce) { #void-anchor { transition: none; } html.void-edge #void-anchor, #void-anchor:hover { transform: none; } }
+    @media (max-width: 700px) { #void-anchor { right: 8px; bottom: calc(6px + env(safe-area-inset-bottom, 0px)); opacity: .22; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
 </head>
 <body>
@@ -1125,6 +1131,7 @@
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
+  <a id="void-anchor" href="/store/" aria-label="support V01D: the store" title="support V01D"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Void">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
@@ -1162,6 +1169,9 @@
     // The empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js): the halo shows one real ask at a time while the stage is empty (fading,
     // never the same twice in a row, still for reduced motion, gone with the first card or the first keystroke); the bar lifts above an on-screen keyboard;
     // offline is shown calmly (amber halo, one plain line in the bar) and never locks an ask that needs no network; a mouse gets the bar focused and a touch screen does not.
+    // the corner anchor wakes as the pointer nears the bottom-right corner (asked by Void, 2026-10-18); a touch screen never sets it.
+    // Registered here, not after an import: it has to be listening from the first frame, not once the empty-state module has loaded.
+    addEventListener('pointermove', (e) => { if (e.pointerType === 'touch') return; document.documentElement.classList.toggle('void-edge', innerWidth - e.clientX < 90 && innerHeight - e.clientY < 90); }, { passive: true });
     (async function emptyState() {
       let E; try { E = await import('/lib/empty-state.js'); } catch (_) { return; }
       const root = document.documentElement, dock = document.getElementById('dock');

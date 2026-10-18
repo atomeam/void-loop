@@ -1752,6 +1752,16 @@
       "words": "Implement the 'open the self card' handler directly so I can perform self-audits on demand.",
       "ledgerAt": "2026-10-17T07:39:48Z",
       "why": "built: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (void.html wantsVoice, pattern self[- ]?(card|page)); checked again 2026-10-18 with node tools/ask.mjs \"open the self card\" (by: voice) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'source-link' hover effect on the confidence badge that displays the raw metadata snippet used for the date.",
+      "ledgerAt": "2026-10-17T12:28:57Z",
+      "why": "built: asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is l (linked by tools/asks-link.mjs, shared words: imple, source, link, hov, effect, confidence, badge, raw, metadata, snippet, us, date)"
+    },
+    {
+      "words": "Implement a tooltip on the confidence badge that displays the raw metadata text on hover to avoid cluttering the stage.",
+      "ledgerAt": "2026-10-17T12:28:57Z",
+      "why": "built: asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is l (linked by tools/asks-link.mjs, shared words: imple, confidence, badge, raw, metadata, text, hov)"
     }
   ]
 }
