@@ -1663,7 +1663,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 live findings, 2026-10-17",
+     "why": "a self-test, 2 browser-suite mentions, 4 live findings, 2026-10-18",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "streak": 2
