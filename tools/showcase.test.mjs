@@ -7,9 +7,9 @@ import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, eve
 const e = (at, kind, what, extra = {}) => ({ at, by: 'claude', kind, what, ...extra });
 
 test('the asks it answers, and the look-alikes it leaves', () => {
-  for (const a of ['show me what you made', "what's new", 'whats new', 'What is new?', 'what did you make for me', 'look what you did', 'show me what you built while i was away', 'void, what’s new'])
+  for (const a of ['show me what you made', "what's new", 'whats new', 'What is new?', 'what did you make for me', 'look what you did', 'show me what you built while i was away', 'void, what’s new', "what's new pussycat", 'whats new, pussy cat?', 'Verse, what is new pussycat'])
     assert.ok(showcaseOf(a), a);
-  for (const a of ["what's new in the news", 'show me what you can do', 'what did you make for dinner', 'what is new york like'])
+  for (const a of ["what's new in the news", 'show me what you can do', 'what did you make for dinner', 'what is new york like', 'whats new pussycat recipe', 'a pussycat'])
     assert.ok(!showcaseOf(a), a);
 });
 
