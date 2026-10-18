@@ -116,14 +116,23 @@ export function nearChoir(ask, skills, accepts, max = 3) {
   const taker = takerAt >= 0 ? list[takerAt].name : '';
   const rows = [];
   list.forEach((s, i) => {
-    if (i === takerAt || /^(?:near-choir|echo-disagrees|negative-summons)$/.test(s.name)) return;
+    if (i === takerAt || META.test(s.name)) return;
     const o = overlapScore(text, s);
     if (acc[i]) rows.push({ s, rank: 1000 + o.score, why: 'its own matcher also takes this ask' });
     else if (o.score > 0) rows.push({ s, rank: o.score, why: 'shares ' + o.shared.slice(0, 3).join(', ') });
   });
   rows.sort((a, b) => b.rank - a.rank);
-  const near = rows.slice(0, max).map((r) => ({ name: r.s.name, ask: r.s.examples[0], why: r.why }));
+  const near = rows.slice(0, max).map((r) => ({ name: r.s.name, ask: nearestExample(text, r.s), why: r.why }));
   return { taker, near };
+}
+/** skills whose own examples run other asks (a diff of two asks, a re-run of a recent one) or are this pack's: a tap on them would not show the skill, so they are never in the choir */
+const META = /^(?:near-choir|echo-disagrees|negative-summons|ask-diff|ask-clipboard)$/;
+/** the skill's example that shares the most words with the ask (the first on a tie), so the tap runs the example the choir named it for. Pure. */
+export function nearestExample(ask, skill) {
+  const a = new Set(content(ask)), ex = (skill && skill.examples) || [];
+  let best = ex[0], bestN = -1;
+  for (const e of ex) { const n = content(e).filter((w) => a.has(w)).length; if (n > bestN) { best = e; bestN = n; } }
+  return best;
 }
 
 // ---- browser side: the skills as the page loaded them (the browser caches the modules, so this costs no network after the first ask) ----

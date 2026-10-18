@@ -9,7 +9,9 @@
 import { parseCsv, rowsFromAsk, sortedRows } from '../lib/note-tools.js';
 import { addThing, cardEl, keepOut } from '../lib/stage-pack.js';
 
-const MAKE = /^(?:please\s+)?(?:(?:make|build|create|show|give)\s+(?:me\s+)?(?:a\s+|an\s+)?)?(?:paste\s+csv|csv\s+(?:table|paste)|table\s+(?:from|of)\s+(?:a\s+)?csv|csv\s+to\s+(?:a\s+)?table|csv)\s*:\s*([\s\S]+)$/i;
+// "csv to table: a,b // 1,2" is list-tools' form (its data table card, tools pack 10) and is left to it: this skill takes "csv table:",
+// "paste csv:", "table from csv:" and a bare "csv:" (the two skills shipped the same day and the shorter rank took both until 2026-10-18)
+const MAKE = /^(?:please\s+)?(?:(?:make|build|create|show|give)\s+(?:me\s+)?(?:a\s+|an\s+)?)?(?:paste\s+csv|csv\s+(?:table|paste)|table\s+(?:from|of)\s+(?:a\s+)?csv|csv)\s*:\s*([\s\S]+)$/i;
 const SHOW_DROP = /^show\s+the\s+dropped\s+files?$/i;
 const HOW_DROP = /^(?:drop|drag)\s+(?:a\s+)?file\s+(?:on|onto)\s+(?:the\s+)?stage$|^(?:how\s+do\s+i\s+)?(?:drop|drag)\s+(?:a\s+)?file\s+(?:onto?\s+)?(?:the\s+stage|here)$/i;
 

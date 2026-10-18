@@ -822,7 +822,7 @@ try {
     await E.ctx.setOffline(false); await E.p.waitForTimeout(500);
     const back = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline') }));
     check('empty state: offline shows a calm amber halo and one plain line in the bar, locks nothing (a calculation still answers), and clears the moment the connection returns',
-      !online0.off && online0.ph === 'Ask V01D' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Ask V01D', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
+      !online0.off && online0.ph === 'Command the Verse' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Command the Verse', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
     // 2) the on-screen keyboard: with a mocked visual viewport 300 px shorter, the bar sits above it
     const vh = (await E.p.evaluate(() => innerHeight));
     await E.p.evaluate(() => { window.__vv.height = innerHeight - 300; window.__vv.dispatchEvent(new Event('resize')); }); await E.p.waitForTimeout(300);
@@ -1673,7 +1673,7 @@ try {
     const nested = await S.p.$$eval('.list-card .list-entry', (c) => c.map((x) => (x.style.marginLeft || '0') + ':' + x.querySelector('.list-item-text').textContent).join('|'));
     const badge = await S.p.$eval('.list-card .list-count', (c) => c.textContent).catch(() => '');
     check('list tools: "check all" ticks all four, "invert the checks" unticks them, "number the list" puts 1. 2. 3. in front, "indent eggs under milk" nests it, and a count badge shows',
-      allDone === 'true,true,true,true' && inverted === 'false,false,false,false' && /^1\. milk\|2\. eggs\|3\. bread\|4\. milk$/.test(numbered) && /18px:– eggs/.test(nested) && /4 items/.test(badge) && !S.errors.length, JSON.stringify({ allDone, inverted, numbered, nested, badge, errors: S.errors }));
+      allDone === 'true,true,true,true' && inverted === 'false,false,false,false' && /^1\. milk\|2\. eggs\|3\. bread\|4\. milk$/.test(numbered) && /18px:– eggs/.test(nested) && badge === '4/4' && !S.errors.length, JSON.stringify({ allDone, inverted, numbered, nested, badge, errors: S.errors })); // the badge is open/total since the list goal (asked by Void): all four unticked again, so 4/4
     await S.ask('dedupe the list ignoring case', 600);
     await S.ask('first 2 of the list', 700);
     const lists = (await S.state()).filter((x) => x.kind === 'list').map((x) => (x.items || []).map((i) => i.text).join('+'));
@@ -1834,8 +1834,8 @@ try {
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
     await S.p.click('.counterfactual-draft summary');
     await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
-    const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim());
-    const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent);
+    const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim()).catch(() => '(no fracture line marked)'); // a miss is one red check, not a dead shard
+    const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent).catch(() => '');
     check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
       closed === 'false:0' && fracture === 'People want speed, so we skip polish.' && /It is not the case that people want speed/.test(shadow) && !S.errors.length, JSON.stringify({ closed, fracture, shadow, errors: S.errors }));
     await S.ask('proof-carrying claims: revenue grew @ data: q3.csv; launch is easy', 700);
@@ -2188,6 +2188,7 @@ try {
     await S.ask('clear', 500);
     await S.ask('sticky note left', 400); await S.ask('another sticky note right', 400);
     await S.ask('rubber band select', 400);
+    await until(() => S.p.evaluate(() => document.getElementById('stage').dataset.rubberBand === 'on'), 8000); // armed before the drag (on a slow runner the skill was still loading at 400 ms and the drag picked nothing)
     const vp = S.p.viewportSize();
     await S.p.mouse.move(4, 4); await S.p.mouse.down(); await S.p.mouse.move(vp.width / 2, vp.height / 2, { steps: 4 }); await S.p.mouse.move(vp.width - 6, vp.height - 90, { steps: 4 }); await S.p.mouse.up();
     const count = await until(() => S.p.$eval('.rb-bar .rb-count', (e) => e.textContent).catch(() => ''), 3000);
@@ -4021,7 +4022,8 @@ try {
       await F.p.fill(card + ' .sw-thought', 'a quiet idea'); await F.p.press(card + ' .sw-thought', 'Enter'); const wells = (await read()).wells;
       const laws = []; for (let i = 0; i < 8; i++) { await F.p.click(card + ' .sw-law'); await F.p.waitForTimeout(250); const r = await read(); laws.push(r.law + ':' + r.agents + ':' + r.status.split(' · ')[0]); }
       await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal || '')), 4000).catch(() => {});
-      const kept = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const all = q.result.transaction('seals').objectStore('seals').getAll(); all.onsuccess = () => { q.result.close(); res(JSON.stringify(all.result.filter((x) => x.idea === 'swarm-mind'))); }; }; q.onerror = () => res('[]'); }));
+      const kept = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res('[]'), 8000); // a store that is missing or a blocked open never hangs the suite (the 300 s stall)
+        try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const all = q.result.transaction('seals').objectStore('seals').getAll(); all.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(all.result.filter((x) => x.idea === 'swarm-mind'))); }; all.onerror = () => { clearTimeout(done); res('[]'); }; } catch (_) { clearTimeout(done); res('[]'); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res('[]'); }; } catch (_) { clearTimeout(done); res('[]'); } }));
       let gravity = null; if (!noWorker) { await F.ask('thought gravity', 700); gravity = await read(); }
       out.push({ noWorker, a, b, wells, laws, kept, gravity, errors: F.errors.slice() }); await F.ctx.close();
     }
@@ -4087,7 +4089,8 @@ try {
       await F.p.click(card + ' .af-law'); laws.push((await read()).law); await F.p.click(card + ' .af-law'); laws.push((await read()).law);
       await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal).catch(() => '')), 4000);
       const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
-      const rows = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { q.result.close(); res(JSON.stringify(g.result)); }; }; q.onerror = () => res(''); }));
+      const rows = await F.p.evaluate(() => new Promise((res) => { const done = setTimeout(() => res(''), 8000); // never an unbounded wait (the 300 s stall)
+        try { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { try { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { clearTimeout(done); q.result.close(); res(JSON.stringify(g.result)); }; g.onerror = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }; q.onerror = q.onblocked = () => { clearTimeout(done); res(''); }; } catch (_) { clearTimeout(done); res(''); } }));
       out.push({ bare, a, lat, laws, sealed, sealHasWord: /"cluster"/.test(rows), errors: F.errors.slice() }); await F.ctx.close();
     }
     const good = (o) => o.a.law === 'affinity' && o.a.words === 1 && o.a.answer > 0.5 && o.a.gen > 0 && o.a.clusters > 0 && /^affinity \(frontier-webgpu-attention-field\) · 1 word · \d+ clusters/.test(o.a.status)
@@ -9317,12 +9320,13 @@ try {
     const cUp = await until(() => C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => /you might have meant/.test(e.innerText)).catch(() => false), 20000);
     const cCard = await C.p.$eval('.sph-card[data-sph="near-choir"]', (e) => e.innerText).catch(() => '');
     const cBtns = await C.p.$$eval('.sph-card[data-sph="near-choir"] .nc-go', (b) => b.map((x) => x.getAttribute('data-ask'))).catch(() => []);
+    const choirCalls = choirNet; // the choir itself: none. The tapped skill's own card may paint its art (/api/card-art), which is that skill's, not the choir's
     await C.p.click('.sph-card[data-sph="near-choir"] .nc-go').catch(() => {});
     await C.p.waitForTimeout(500);
     const recent = await C.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]')[0]);
     check('stage pack h: "what almost answered that" lists up to 3 other skills for the last ask ("make a clock") as "you might have meant", one tap each runs that skill\'s first example; no network call; "choir practice near me" does not open it',
-      cUp && /for: make a clock/.test(cCard) && cBtns.length >= 1 && cBtns.length <= 3 && recent === cBtns[0] && choirNet === 0 && (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0 && !C.errors.length,
-      JSON.stringify({ cUp, cCard: cCard.slice(0, 200), cBtns, recent, choirNet, errs: C.errors }));
+      cUp && /for: make a clock/.test(cCard) && cBtns.length >= 1 && cBtns.length <= 3 && recent === cBtns[0] && choirCalls === 0 && (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0 && !C.errors.length,
+      JSON.stringify({ cUp, cCard: cCard.slice(0, 200), cBtns, recent, choirCalls, choirNet, errs: C.errors }));
     await C.ask('choir practice near me', 800);
     check('stage pack h: "choir practice near me" goes where it went (no near-choir card)', (await C.p.$$('.sph-card[data-sph="near-choir"]')).length === 0);
     await C.ctx.close();

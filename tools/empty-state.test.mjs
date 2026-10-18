@@ -41,7 +41,7 @@ test('offline state: the browser flag, or two failed same-origin requests in a r
   assert.equal(offlineView(true).placeholder, OFFLINE_PLACEHOLDER);
   assert.equal(offlineView(true).halo, 'amber');
   assert.equal(offlineView(false).halo, null);
-  assert.equal(offlineView(false).placeholder, 'Ask V01D');
+  assert.equal(offlineView(false).placeholder, 'Command the Verse');
 });
 
 test('keyboard inset: how much of the bottom the keyboard covers; browser-chrome wobble is not a keyboard', () => {
