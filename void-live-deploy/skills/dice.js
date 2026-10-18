@@ -1,47 +1,42 @@
 /**
- * dice skill — roll dice: "roll a d20", "roll 2d6", "roll 1d4 + 2".
+ * dice skill - roll dice on the stage (new idea from growth, 2026-10-17).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Empty surface stays empty: only shows when matched.
+ * "roll a die", "roll 2d6", "dice", "flip a coin".
+ * Pure roll function for the suite check.
  */
-export function diceOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:roll|throw)\s+(?:a\s+|an\s+)?(\d+)?d(\d+)(?:\s*\+\s*(\d+))?$/i)
-    || t.match(/^(?:roll|throw)\s+(?:a\s+)?die(?:\s+of\s+(\d+))?$/i);
-  if (!m) return null;
-  const count = m[1] ? parseInt(m[1], 10) : 1;
-  const sides = m[2] ? parseInt(m[2], 10) : (m[4] ? parseInt(m[4], 10) : 6);
-  const mod = m[3] ? parseInt(m[3], 10) : 0;
-  if (count < 1 || count > 20 || sides < 2 || sides > 100) return null;
-  return { count, sides, mod };
+export function roll(n = 1, sides = 6) {
+  n = Math.max(1, Math.min(20, Math.floor(n) || 1));
+  sides = Math.max(2, Math.min(100, Math.floor(sides) || 6));
+  const rolls = Array.from({ length: n }, () => 1 + Math.floor(Math.random() * sides));
+  const sum = rolls.reduce((a, b) => a + b, 0);
+  return { n, sides, rolls, sum };
 }
 
-function roll({ count, sides, mod }) {
-  const rolls = [];
-  for (let i = 0; i < count; i++) rolls.push(1 + Math.floor(Math.random() * sides));
-  const total = rolls.reduce((a, b) => a + b, 0) + mod;
-  return { rolls, total, mod };
-}
+const WHEN = /^(?:(?:please\s+)?(?:roll|throw|dice|flip)\s+(?:a\s+|the\s+|some\s+)?(?:die|dice|coin|d\d+|\d+d\d+)(?:\s+please)?|roll\s+\d+d\d+|dice|flip\s+a\s+coin)$/i;
 
-async function run(text, api) {
-  const spec = diceOf(text);
-  if (!spec) return 'none';
+function run(text, api) {
   const { showPage, esc } = api;
-  const result = roll(spec);
-  const el = showPage((p) => {
-    p.innerHTML = '<h2>Dice roll</h2><div class="sub">' + esc(`${spec.count}d${spec.sides}${spec.mod ? ' + ' + spec.mod : ''}`) + '</div>'
-      + '<p style="font-size:24px;font-weight:600">' + esc(result.total.toString()) + '</p>'
-      + '<p>Rolls: ' + esc(result.rolls.join(', ')) + (spec.mod ? ' + ' + spec.mod : '') + '</p>';
+  const t = String(text || '').toLowerCase().trim();
+  let n = 1, sides = 6, label = 'a die';
+  if (/coin/.test(t)) { sides = 2; label = 'a coin'; }
+  else {
+    const m = t.match(/(\d+)d(\d+)/);
+    if (m) { n = +m[1]; sides = +m[2]; label = `${n}d${sides}`; }
+    else if (/dice/.test(t) && !/die/.test(t)) { n = 2; label = 'two dice'; }
+  }
+  const r = roll(n, sides);
+  const faces = r.rolls.join(', ');
+  showPage((el) => {
+    el.innerHTML = '<h2>Roll</h2><p>' + esc(label) + ': ' + esc(faces) + (r.n > 1 ? ' (sum ' + r.sum + ')' : '') + '</p><div class="src">Rolled in this browser · nothing is sent</div>';
   });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a d20', 'roll 2d6', 'roll 1d4 + 2', 'roll a die'],
-  nearMisses: ['what is a d20', 'dice games', 'roll of the dice'],
-  match(lower, text) { return !!diceOf(text || lower); },
+  examples: ['roll a die', 'roll 2d6', 'dice', 'flip a coin'],
+  nearMisses: ['what is a die', 'board game', 'random number'],
+  match(lower) { return WHEN.test(lower.trim()); },
   run,
-  suite() {
-    return { ok: diceOf('roll a d20') && diceOf('roll 2d6').count === 2 && diceOf('hello') === null };
-  },
+  suite() { const r = roll(3, 6); return { ok: r.n === 3 && r.sides === 6 && r.rolls.length === 3 && r.sum >= 3 && r.sum <= 18 }; }
 };
