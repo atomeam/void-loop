@@ -128,6 +128,7 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['family-logs', 'family-logs.test.mjs'],
   ['spark', 'spark.test.mjs'],
   ['self-blocks', 'self-blocks.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],

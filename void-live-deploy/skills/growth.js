@@ -128,6 +128,31 @@ export function ownerHtml(esc, fam, list, seen) {
     + 'Last spurt: ' + S.added.length + ' new' + (S.added.length ? ' (' + names(S.added) + ')' : '') + ', ' + S.changed.length + ' changed.'
     + promotedHtml(esc, promotedRows(fam)) + '</div>'; // skill stability: promoted lately, clean runs in a row (lib/inbox-health.js)
 }
+/** Failure logs per family (asked by Void, 2026-10-14: "link Words and the world family failure logs on the card"). From skills/families.json
+ *  alone: a skill's `failing` are the asks from tools/bench.json the benchmark got wrong (never raw user asks: this repo is public) and its
+ *  `smoke` is what the daily smoke test found. [{ family, skills: [{ name, asks, smoke, chip }], more }], the family with most failing asks
+ *  first, Words and the world like any other; a family with nothing failing is not listed. Pure. */
+export function familyLogs(fam, show = 5) {
+  const clip = (a) => String(a).slice(0, 120);
+  return ((fam && fam.families) || []).filter((f) => f && f.name).map((f) => {
+    const skills = (f.skills || []).filter((s) => s && s.name && ((Array.isArray(s.failing) && s.failing.length) || (Array.isArray(s.smoke) && s.smoke.length)))
+      .map((s) => ({ name: String(s.name), asks: (Array.isArray(s.failing) ? s.failing : []).slice(0, 3).map(clip), smoke: (Array.isArray(s.smoke) ? s.smoke : []).slice(0, 2).map(clip), chip: 'tell me about the ' + s.name + ' skill' }))
+      .sort((a, b) => b.asks.length - a.asks.length || a.name.localeCompare(b.name));
+    return { family: String(f.name), skills: skills.slice(0, show), more: Math.max(0, skills.length - show) };
+  }).filter((x) => x.skills.length).sort((a, b) => b.skills.reduce((n, s) => n + s.asks.length, 0) - a.skills.reduce((n, s) => n + s.asks.length, 0) || a.family.localeCompare(b.family));
+}
+/** the logs as HTML, under the friction line: each family, its failing skills, the asks the bench got wrong and a tap-to-copy chip. */
+export function familyLogsHtml(esc, logs) {
+  if (!Array.isArray(logs) || !logs.length) return '';
+  const chip = '#8a8a92';
+  return '<div class="sub growth-family-logs" data-family-logs="' + logs.length + '" style="line-height:1.5;margin-top:4px">' + logs.map((l) =>
+    '<div data-family-log="' + esc(l.family) + '"><b style="font-weight:600">' + esc(l.family) + '</b> failure log'
+    + l.skills.map((s) => '<div style="margin-left:12px" data-failing-skill="' + esc(s.name) + '"><span style="color:#e06a5a">' + esc(s.name) + '</span>'
+      + (s.asks.length ? ': the bench got ' + s.asks.map((a) => '\u201c' + esc(a) + '\u201d').join(', ') + ' wrong' : '')
+      + (s.smoke.length ? (s.asks.length ? '; ' : ': ') + 'the smoke test found ' + s.smoke.map(esc).join(', ') : '')
+      + ' <a href="#" data-copy="' + esc(s.chip) + '" title="tap to copy" style="border:1px solid ' + chip + ';border-radius:10px;padding:0 7px;color:' + chip + '">' + esc(s.chip) + '</a></div>').join('')
+    + (l.more ? '<div style="margin-left:12px">and ' + l.more + ' more</div>' : '') + '</div>').join('') + '</div>';
+}
 export function frictionHtml(esc, f) {
   if (!f || !f.top.length) return '';
   const item = (s) => '<b style="font-weight:600">' + esc(s.name) + '</b>'
@@ -225,7 +250,8 @@ async function run(text, api) {
   // the friction line under the velocity: which skills are failing or least checked (skills/families.json); without it, no line
   fetch(FAMILIES_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
     const html = frictionHtml(esc, friction(fam)), v = el.querySelector('[data-velocity]');
-    if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html);
+    if (html && v && el.isConnected) v.insertAdjacentHTML('afterend', html + familyLogsHtml(esc, familyLogs(fam))); // void-review: ok: familyLogsHtml escapes every value
+    if (!el._copyChips) { el._copyChips = true; el.addEventListener('click', (ev) => { const c = ev.target && ev.target.closest && ev.target.closest('[data-copy]'); if (!c) return; ev.preventDefault(); try { navigator.clipboard.writeText(c.getAttribute('data-copy')); c.dataset.copied = '1'; } catch (_) {} }); }
     fetch('/tester-log.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).catch(() => null).then((t) => {
       const o = ownerHtml(esc, fam, list, (t && t.seen) || {}), at = el.querySelector('.growth-friction') || v;
       if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o + statusHtml(esc, skillStatus(fam)) + familyMapHtml(esc, fam)); // void-review: ok: every value is escaped (lib/inbox-health.js, tested with markup in a skill name)
@@ -355,13 +381,15 @@ export function suite() {
     && f.weakest && f.weakest.name === 'Words and the world' && f.weakest.failing === 1 && f.weakest.unsure === 2
     && fh.includes('q &lt;i&gt;') && fh.includes('Words and the world') && fh.includes('data-weakest-family') && !fh.includes('<i>')
     && frictionHtml(esc, friction(null)) === '';
+  const fl = familyLogs(fam), flh = familyLogsHtml(esc, fl);
+  const flok = fl.length === 1 && fl[0].family === 'Words and the world' && fl[0].skills[0].chip === 'tell me about the d skill' && flh.includes('q &lt;i&gt;') && flh.includes('data-copy="tell me about the d skill"') && !flh.includes('<i>') && familyLogsHtml(esc, familyLogs(null)) === '';
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
   const cok = c && c.length === 1 && ch.includes('Verse asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
   // the inbox's skill health lines (asked by Void): promoted skills with their clean runs in a row, and the growth animation guard
   const pf = { families: [{ name: 'F', skills: [{ name: 'newone', tier: 'checked', promoted: new Date().toISOString().slice(0, 10), streak: 2 }] }] };
   const hok = ownerHtml(esc, pf, list, {}).includes('Skill stability: 1 skill promoted lately') && ownerHtml(esc, pf, list, {}).includes('newone</b> to checked') && bloom(null, { kind: 'bloom' }) === false && bloom({}, { kind: 'none' }) === false;
-  return { ok: ok && fok && cok && hok, got: ok && fok && cok && hok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
+  return { ok: ok && fok && flok && cok && hok, got: ok && fok && flok && cok && hok ? '' : o + ' ' + JSON.stringify(s) + ' ' + JSON.stringify(f) + ' ' + ch };
 }
 
 // The tester log, folded into the growth card (asked by Void, ask-20261015-0616-1; owner: "most skills can be combined"): the site
