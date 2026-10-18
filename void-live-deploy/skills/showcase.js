@@ -350,7 +350,7 @@ async function run(text, api) {
   if (!fresh.steps.length) {
     const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
     api.say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
-    return 'none';
+    return 'showcase'; // it answered (the count and how to see it all): 'none' let the ask fall through to the encyclopedia, so claims-verify dropped "what's new"
   }
   markShown(fresh.steps);
   start(stageApi, fresh.steps, { label: 'Built while you were away' + wip });
