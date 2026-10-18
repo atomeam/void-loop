@@ -124,7 +124,9 @@ export function evidence(names, read = (p) => readFileSync(resolve(root, p), 'ut
     const label = n.length >= 6 ? '[^\'"`]{0,60}\\b' : '(?:3d:\\s*)?(?:[a-z]+ and )?';
     const browser = (suiteText.match(new RegExp('skills/' + esc(n) + '\\.js|skill:' + esc(n) + '\\b|(?:check|want)\\(\\s*[\'"`]' + label + word + '\\b', 'gi')) || []).length;
     // its own tests: suite() in the skill, or a unit test in tools/ that imports the skill's file
-    const unit = unitTexts.some((t) => new RegExp('skills/' + esc(n) + '(?:-rules)?\\.js[\'"`]').test(t)); // a game's rules are often their own file
+    // a test may also load the skill from the skills folder it names ("resolve(dir, 'suntimes.js')" in a file that points dir at void-live-deploy/skills, as tools/sky-skills.test.mjs does): the same test, written differently
+    const viaDir = (t) => /['"]void-live-deploy['"]\s*,\s*['"]skills['"]/.test(t) && new RegExp('resolve\\(\\s*\\w+\\s*,\\s*[\'"]' + esc(n) + '\\.js[\'"]\\s*\\)').test(t);
+    const unit = unitTexts.some((t) => new RegExp('skills/' + esc(n) + '(?:-rules)?\\.js[\'"`]').test(t) || viaDir(t)); // a game's rules are often their own file
     // real asks: a benchmark ask whose wanted answer is this skill ("skill:weather", or "calc" / "calc|answer" for the core ones)
     const routed = bench.filter((b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n)).length;
     const wants = (b) => b && typeof b.want === 'string' && b.want.split('|').some((w) => w === 'skill:' + n || w === n);
