@@ -2,22 +2,24 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T04:17:13.491Z",
-   "sha": "9b4595d5cf5577bea0bfdb813c4b74862dbf1095",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39096333993",
+   "at": "2026-10-18T04:19:53.180Z",
+   "sha": "3a8217ea9415f1a22b58f1532e873903e72d9485",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39095746718",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-18T04:08:54.198Z",
+   "at": "2026-10-18T03:56:19.377Z",
    "sha": "9e29a06db436bae99f4e0e43dfe39ad2be3dd002",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39095142987",
    "suite": "browser suite on main",
    "checks": [
-    "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
-    "check timeout: no check finished within 300 s"
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "suite ran to the end"
    ]
   },
   {
