@@ -1157,5 +1157,12 @@
   "kind": "file",
   "key": "site | console: Access to fetch at 'https://restcountries#com/v#/na",
   "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
+ },
+ {
+  "at": "2026-10-18T00:31:24Z",
+  "passed": 42,
+  "of": 44,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
  }
 ]

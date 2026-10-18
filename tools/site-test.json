@@ -149,6 +149,9 @@
     },
     {
       "ask": "turn the questions i missed into a five-minute challenge"
+    },
+    {
+      "ask": "yo bitcoin price"
     }
   ],
   "candidates": [],

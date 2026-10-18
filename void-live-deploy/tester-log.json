@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 41,
- "runsTotal": 155,
+ "cases": 42,
+ "runsTotal": 156,
  "kinds": {
-  "grow": 34,
+  "grow": 35,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T00:31:24Z",
+   "passed": 42,
+   "of": 44,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
+  },
   {
    "at": "2026-10-18T00:19:50Z",
    "passed": 42,
@@ -142,13 +149,6 @@
    "of": 27,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"draw a line\" (skill:shape)"
-  },
-  {
-   "at": "2026-10-17T11:53:29Z",
-   "passed": 24,
-   "of": 26,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"how much do i need to save a month to have 1 million in 30 years at 7%\" (skill:savings)"
   }
  ],
  "seen": {
@@ -176,9 +176,9 @@
   "skill:coral": "2026-10-18T00:19:50Z",
   "skill:counter": "2026-10-18T00:19:50Z",
   "skill:country": "2026-10-18T00:19:50Z",
-  "skill:crypto": "2026-10-17T07:56:04Z",
-  "skill:dark-look": "2026-10-17T08:05:32Z",
-  "skill:dates": "2026-10-17T08:05:32Z",
+  "skill:crypto": "2026-10-18T00:31:24Z",
+  "skill:dark-look": "2026-10-18T00:31:24Z",
+  "skill:dates": "2026-10-18T00:31:24Z",
   "skill:dating": "2026-10-17T08:05:32Z",
   "skill:different": "2026-10-17T08:11:24Z",
   "skill:dismiss": "2026-10-17T08:11:24Z",
