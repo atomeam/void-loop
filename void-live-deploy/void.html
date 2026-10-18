@@ -833,7 +833,15 @@
     ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
     ::-webkit-scrollbar-thumb { background: rgba(190,170,255,.22); border-radius: 6px; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(190,170,255,.4); }
-    .vpage .tr-copy[aria-pressed="true"] { background: rgba(150,110,255,.28); border-color: rgba(190,170,255,.6); color: #fff; }
+    /* asked by Void (2026-10-18): the pressed pill sinks 2px and keeps a soft violet halo; a scrollbar stays a hairline until the pointer is on it */
+    .vpage .tr-copy { transition: transform .12s ease, box-shadow .2s ease, background-color .2s ease; }
+    .vpage .tr-copy[aria-pressed="true"] { background: rgba(150,110,255,.28); border-color: rgba(190,170,255,.6); color: #fff; transform: translateY(2px); box-shadow: 0 0 10px rgba(150,110,255,.45), inset 0 1px 2px rgba(0,0,0,.35); }
+    .vpage .tr-copy:active { transform: translateY(2px); }
+    @media (prefers-reduced-motion: reduce) { .vpage .tr-copy { transition: none; } }
+    ::-webkit-scrollbar { width: 4px; height: 4px; } :hover::-webkit-scrollbar { width: 10px; height: 10px; }
+    ::-webkit-scrollbar-thumb { border: 2px solid transparent; background-clip: padding-box; }
+    :hover::-webkit-scrollbar-thumb { border-width: 1px; }
+    *:hover { scrollbar-color: rgba(190,170,255,.55) transparent; } /* Chrome draws the standard bar (thin or full only; a width change on hover would reflow the text): it brightens instead */
     @media (max-width: 480px) {
       .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
       .vpage h2 { font-size: 20px; }
