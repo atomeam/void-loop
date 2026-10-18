@@ -323,6 +323,7 @@ for (const [name, file] of [
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
   ['thinking math', 'thinking-math.test.mjs'],
   ['tools pack 3', 'tools-pack3.test.mjs'],
+  ['convert-math', 'convert-math.test.mjs'],
 ]) {
   addScript(name, file);
 }

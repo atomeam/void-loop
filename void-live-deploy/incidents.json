@@ -2,6 +2,40 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T08:19:40.157Z",
+   "sha": "57c01f522894cbd8b16adc12f056518c215025ae",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39110000209",
+   "suite": "browser suite on main",
+   "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
+    "void-live-deploy/void.growth.json",
+    "tools/automation-fix.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/automation-fix.js"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:02:35.721Z",
+   "sha": "200e56d541283389e47fa1ce10207a9236113dc3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39109636216",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/automation-fix.test.mjs",
+    "void-live-deploy/lib/automation-fix.js"
+   ]
+  },
+  {
    "at": "2026-10-18T07:56:29.677Z",
    "sha": "910c92721fee52d22d10220ba9fafcc2aaaccf40",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39108913625",
@@ -712,50 +746,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/1260-service-health"
-   ]
-  },
-  {
-   "at": "2026-10-17T20:46:06.453Z",
-   "sha": "9b1e44e13ab43a10aa9beaf01d26de32171fdf1a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39066819200",
-   "suite": "browser suite on main",
-   "checks": [
-    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/field-cards.test.mjs",
-    "tools/skill-contract.test.mjs",
-    "tools/test_void.mjs",
-    "tools/untested.json",
-    "void-live-deploy/lib/field-cards.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/living-cards-mind.js",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T17:59:26.762Z",
-   "sha": "1e053b8295693e98a943c0d8162e692e34c6bfa8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39054961820",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]

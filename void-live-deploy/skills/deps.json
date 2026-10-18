@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 664,
+ "counted": 665,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -40,21 +40,21 @@
   },
   {
    "file": "lib/keeper.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 0,
-   "dependants": 35
+   "dependants": 36
   },
   {
    "file": "lib/merge-rules.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 1,
-   "dependants": 35
+   "dependants": 36
   },
   {
    "file": "lib/art-rules.js",
-   "skills": 14,
+   "skills": 15,
    "direct": 0,
-   "dependants": 34
+   "dependants": 35
   },
   {
    "file": "lib/sky-math.js",
@@ -87,34 +87,34 @@
    "dependants": 30
   },
   {
+   "file": "lib/corrections.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 26
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 10,
+   "direct": 1,
+   "dependants": 26
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 10,
+   "direct": 5,
+   "dependants": 23
+  },
+  {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
    "dependants": 11
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 9,
-   "direct": 0,
-   "dependants": 25
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 9,
-   "direct": 1,
-   "dependants": 25
-  },
-  {
    "file": "lib/ladder.js",
    "skills": 9,
    "direct": 4,
    "dependants": 23
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 9,
-   "direct": 4,
-   "dependants": 22
   },
   {
    "file": "lib/skyfacts.js",
@@ -694,6 +694,12 @@
   },
   {
    "file": "lib/contradict.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/convert-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2022,6 +2028,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -2211,6 +2218,7 @@
     "skills/error-garden.js",
     "skills/growth.js",
     "skills/incident-autopsy.js",
+    "skills/service-health.js",
     "skills/status.js"
    ],
    "reachedBy": [
@@ -2603,6 +2611,12 @@
     "skills/contradiction-lamp.js"
    ]
   },
+  "lib/convert-math.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/convert.js"
+   ]
+  },
   "lib/cook-flow.js": {
    "imports": [],
    "importedBy": [
@@ -2654,6 +2668,7 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -3227,6 +3242,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -3444,6 +3460,7 @@
     "skills/mini/growthtree.js",
     "skills/oracle.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/showcase.js",
     "skills/status.js"
    ]
@@ -4052,6 +4069,7 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/service-health.js",
     "skills/status.js"
    ]
   },
@@ -5451,7 +5469,9 @@
    "importedBy": []
   },
   "skills/convert.js": {
-   "imports": [],
+   "imports": [
+    "lib/convert-math.js"
+   ],
    "importedBy": []
   },
   "skills/copy-stack.js": {
@@ -7253,7 +7273,8 @@
   "skills/service-health.js": {
    "imports": [
     "skills/providers.js",
-    "lib/service-health.js"
+    "lib/service-health.js",
+    "lib/autopsy.js"
    ],
    "importedBy": []
   },
