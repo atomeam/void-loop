@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 97,
+  "tested": 98,
   "checked": 98,
   "proven": 90
  },
@@ -691,11 +691,18 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 9,
     "checked": 3,
     "proven": 6
    },
    "skills": [
+    {
+     "name": "calendar-file",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "timer",
      "tier": "proven",
