@@ -1248,5 +1248,12 @@
   "of": 57,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
+ },
+ {
+  "at": "2026-10-18T06:32:52Z",
+  "passed": 55,
+  "of": 58,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"approve later: keep morning-digest running every 2 hours\" (skill:approve-card)"
  }
 ]

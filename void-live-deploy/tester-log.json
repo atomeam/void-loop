@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 54,
- "runsTotal": 168,
+ "cases": 55,
+ "runsTotal": 169,
  "kinds": {
-  "grow": 47,
+  "grow": 48,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T06:32:52Z",
+   "passed": 55,
+   "of": 58,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"approve later: keep morning-digest running every 2 hours\" (skill:approve-card)"
+  },
   {
    "at": "2026-10-18T06:18:56Z",
    "passed": 55,
@@ -142,13 +149,6 @@
    "of": 39,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"longevity trial watch\" (skill:trialwatch)"
-  },
-  {
-   "at": "2026-10-17T22:46:32Z",
-   "passed": 36,
-   "of": 38,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"what are the figures doing\" (skill:together)"
   }
  ],
  "seen": {
@@ -345,6 +345,10 @@
   "skill:echo-disagrees": "2026-10-18T06:18:56Z",
   "skill:eigenwork": "2026-10-18T06:18:56Z",
   "skill:error-garden": "2026-10-18T06:18:56Z",
-  "skill:extinction": "2026-10-18T06:18:56Z"
+  "skill:extinction": "2026-10-18T06:18:56Z",
+  "skill:about-skill": "2026-10-18T06:32:52Z",
+  "skill:approve-card": "2026-10-18T06:32:52Z",
+  "skill:family-gravity": "2026-10-18T06:32:52Z",
+  "skill:feud": "2026-10-18T06:32:52Z"
  }
 }

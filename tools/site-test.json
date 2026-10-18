@@ -188,6 +188,9 @@
     },
     {
       "ask": "echo this"
+    },
+    {
+      "ask": "approve later: keep morning-digest running every 2 hours"
     }
   ],
   "candidates": [],
