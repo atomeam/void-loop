@@ -8,7 +8,7 @@
 import { summary, sessionToken } from '../lib/state.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:please\s+)?(?:show|open)\s+(?:me\s+)?(?:my|the|your)\s+state(?:\s+card)?|what\s+(?:do\s+you\s+|does\s+(?:void|v01d)\s+)?(?:keep|store|save|remember)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what(?:'s| is)\s+(?:kept|stored|saved)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what\s+state\s+do\s+you\s+keep)$/;
+const ASK_RE = /^(?:(?:please\s+)?(?:show|open)\s+(?:me\s+)?(?:my|the|your)\s+state(?:\s+card)?|what\s+(?:do\s+you\s+|does\s+(?:void|v01d|verse)\s+)?(?:keep|store|save|remember)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what(?:'s| is)\s+(?:kept|stored|saved)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what\s+state\s+do\s+you\s+keep)$/;
 /** the ask wants the list of what is kept on this device. Pure. */
 export const stateOf = (text) => ASK_RE.test(CLEAN(text));
 

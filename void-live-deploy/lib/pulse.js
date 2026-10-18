@@ -50,8 +50,8 @@ export function reportOf(irr, list, now = Date.now()) {
   const L = (list || []).slice(-8), r = rhythm(list, now);
   return {
     title: 'Irregular pulse on the stage: ' + irr.kind, status: 'investigating', severity: 'SEV4', started: iso(L.length ? L[0].at : now), detected: iso(now), mitigated: '', resolved: '',
-    impact: 'The living arrows on the stage pulsed unevenly: ' + irr.why + '. ' + r.perMin + ' pulse' + (r.perMin === 1 ? '' : 's') + ' in the last minute. Drafted by V01D from its own pulse record.',
-    cause: '', timeline: L.map((p, i) => ({ at: iso(p.at), what: 'pulse ' + (i + 1) + ' of the last ' + L.length + (p.from ? ' (' + p.from + ' to ' + p.to + ')' : '') })).concat([{ at: iso(now), what: 'V01D noticed: ' + irr.why }]),
+    impact: 'The living arrows on the stage pulsed unevenly: ' + irr.why + '. ' + r.perMin + ' pulse' + (r.perMin === 1 ? '' : 's') + ' in the last minute. Drafted by Verse from its own pulse record.',
+    cause: '', timeline: L.map((p, i) => ({ at: iso(p.at), what: 'pulse ' + (i + 1) + ' of the last ' + L.length + (p.from ? ' (' + p.from + ' to ' + p.to + ')' : '') })).concat([{ at: iso(now), what: 'Verse noticed: ' + irr.why }]),
     next: [{ what: 'Check the timer or thing at the start of the arrow', owner: '', due: '' }, { what: 'Decide whether the arrow should be there at all', owner: '', due: '' }],
   };
 }

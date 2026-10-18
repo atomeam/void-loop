@@ -204,8 +204,8 @@
   {
    "kind": "cover",
    "chapter": "front",
-   "title": "The V01D Book",
-   "line": "Everything V01D can do, one page each, nothing left out.",
+   "title": "The Verse Book",
+   "line": "Everything Verse can do, one page each, nothing left out.",
    "n": 1
   },
   {
@@ -4667,8 +4667,8 @@
    "title": "V01d fixes",
    "line": "The owner previews the fixes V01D's own model opened",
    "examples": [
-    "V01D's fixes",
-    "show V01D's fixes",
+    "Verse's fixes",
+    "show Verse's fixes",
     "fixes waiting for me"
    ],
    "tier": "checked",
@@ -7258,7 +7258,7 @@
     {
      "rank": 170,
      "name": "v01d-fixes",
-     "catches": "V01D's fixes"
+     "catches": "Verse's fixes"
     },
     {
      "rank": 171,

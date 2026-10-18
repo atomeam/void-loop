@@ -14,7 +14,7 @@ test('an article offers what Void can do about its subject', () => {
 test("Void's take is escaped, and nothing shows when there is nothing to add", () => {
   const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
   const h = takeHtml(esc, 'a <b>take</b>', [{ ask: 'play "x"', label: 'Play' }]);
-  assert.ok(h.includes('V01D’s take') && h.includes('&lt;b&gt;') && h.includes('data-ask="play &quot;x&quot;"'));
+  assert.ok(h.includes('Verse’s take') && h.includes('&lt;b&gt;') && h.includes('data-ask="play &quot;x&quot;"'));
   assert.equal(takeHtml(esc, '', []), '');
 });
 

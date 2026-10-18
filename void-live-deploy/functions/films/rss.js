@@ -5,7 +5,7 @@ const SITE = 'https://a-to-mind.com';
 export const esc = (s) => String(s || '').replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]);
 export function rss(films) {
   const items = films.map((f) => `<item><title>${esc(f.title)}</title><link>${SITE}/films/?v=${encodeURIComponent(f.id)}</link><guid isPermaLink="false">${esc(f.id)}</guid><pubDate>${new Date(f.at).toUTCString()}</pubDate><description>${esc(f.description)}</description></item>`).join('');
-  return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>V01D Tube</title><link>${SITE}/films/</link><description>Short films and ads V01D makes of itself. Free to watch, free to repost.</description>${items}</channel></rss>`;
+  return `<?xml version="1.0" encoding="UTF-8"?><rss version="2.0"><channel><title>Verse Tube</title><link>${SITE}/films/</link><description>Short films and ads Verse makes of itself. Free to watch, free to repost.</description>${items}</channel></rss>`;
 }
 export async function onRequestGet(ctx) {
   let films = [];

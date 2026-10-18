@@ -15,7 +15,7 @@ const PX = 16, TICK = 0.13;
 
 function mount(th, stageApi) {
   th.state = S.create((Date.now() & 0xffff) || 7);
-  const c = arcadeCard(th, stageApi, { cls: 'snake-card', title: 'Void Snake', sub: 'you are green · V01D is violet', w: S.N * PX, h: S.N * PX });
+  const c = arcadeCard(th, stageApi, { cls: 'snake-card', title: 'Void Snake', sub: 'you are green · Verse is violet', w: S.N * PX, h: S.N * PX });
   const K = { arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down', arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right' };
   c.el.addEventListener('keydown', (e) => { const d = K[e.key.toLowerCase()]; if (d) { S.turn(th.state, d); go = true; e.preventDefault(); } });
   let start = null, go = false;
@@ -42,8 +42,8 @@ function mount(th, stageApi) {
       g.globalAlpha = 1;
     }
     g.shadowBlur = 0;
-    c.status.textContent = !go ? 'Press an arrow key or swipe to start' : s.over === 'you' ? 'You win! (' + s.you.body.length + ' long)' : s.over === 'void' ? 'V01D wins (' + s.void.body.length + ' long)' : s.over === 'draw' ? 'A draw' : 'You ' + s.you.body.length + ' · V01D ' + s.void.body.length;
-    c.why.textContent = (s.why ? 'V01D: ' + s.why + ' · ' : '') + words(ghost);
+    c.status.textContent = !go ? 'Press an arrow key or swipe to start' : s.over === 'you' ? 'You win! (' + s.you.body.length + ' long)' : s.over === 'void' ? 'Verse wins (' + s.void.body.length + ' long)' : s.over === 'draw' ? 'A draw' : 'You ' + s.you.body.length + ' · Verse ' + s.void.body.length;
+    c.why.textContent = (s.why ? 'Verse: ' + s.why + ' · ' : '') + words(ghost);
     if (s.over && !s._counted) { s._counted = true; finish('snake', s.over); }
   });
 }
@@ -53,7 +53,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'snake');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'snake'; }
   api.summon('snake', { x: Math.max(10, Math.round(innerWidth / 2 - 180)), y: 50 });
-  api.say('Void Snake (plays like the classic) · you are green, V01D is violet · arrows, WASD or swipe');
+  api.say('Void Snake (plays like the classic) · you are green, Verse is violet · arrows, WASD or swipe');
   return 'snake';
 }
 

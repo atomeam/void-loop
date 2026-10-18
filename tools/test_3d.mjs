@@ -290,7 +290,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
     check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'V01D asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
@@ -666,7 +666,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^V01D is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });

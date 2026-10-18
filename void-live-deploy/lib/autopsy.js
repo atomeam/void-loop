@@ -58,8 +58,8 @@ export function skillOfCheck(check, names, pages) {
 /** the "Go against V01D" log (asked by Void: "Connect the 'Go against V01D' logs to the 'incident-autopsy' skill for automated error analysis."): the failing checks
  *  of the Go games against V01D (the browser suite "go against v01d", tools/go-ai.test.mjs, lib/go-ai.js) are told apart from the rest of the incidents, counted, and
  *  offered back as the ask that replays one. Matched by words in the check's name; nothing is guessed. Pure. */
-export const GO_LOG = { id: 'go-against-void', name: 'Go against V01D', replay: 'play go against void' };
-export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
+export const GO_LOG = { id: 'go-against-void', name: 'Go against Verse', replay: 'play go against void' };
+export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|verse|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
 
 /** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Void and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
 export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
@@ -121,7 +121,7 @@ export function autopsyHtml(a, esc = escHtml) {
       + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>')
     + (!a.focus && a.suite && (a.suite.timeouts || a.suite.ended) ? '<p class="sub" data-autopsy-suite="1"><b>The suite itself:</b> ' + esc(a.suite.timeouts) + ' stalled check' + (a.suite.timeouts === 1 ? '' : 's') + ' (no check finished within 300 s) and ' + esc(a.suite.ended) + ' end-of-run flag' + (a.suite.ended === 1 ? '' : 's') + ' in ' + esc(a.suite.incidents) + ' of the ' + esc(a.total) + ' red suites: the runner stalling, not a skill failing, so none of it is counted in a family.</p>' : '')
     + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
-    + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
+    + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'

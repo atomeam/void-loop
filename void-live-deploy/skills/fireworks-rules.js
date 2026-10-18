@@ -28,7 +28,7 @@ export function create({ seed = (Math.random() * 4294967296) >>> 0 } = {}) {
 }
 export const score = (s) => s.rows.reduce((a, b) => a + b, 0);
 const playable = (s, card) => s.rows[card.c] === card.r;
-const say = (s, p, text, why) => { s.log.push({ who: p === 'you' ? 'You' : 'V01D', text, ...(why ? { why } : {}) }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
+const say = (s, p, text, why) => { s.log.push({ who: p === 'you' ? 'You' : 'Verse', text, ...(why ? { why } : {}) }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
 
 function draw(s, p) { if (s.deck.length) s.hands[p].push({ ...s.deck.shift(), known: { c: null, r: null } }); }
 function endTurn(s) {
@@ -63,7 +63,7 @@ export function hint(s0, h, why) {
   for (const i of which) { if (h.color != null) hand[i].known.c = h.color; else hand[i].known.r = h.rank; }
   s.hints--;
   const what = h.color != null ? COLORS[h.color] : String(h.rank + 1) + 's';
-  say(s, p, 'told ' + (q === 'you' ? 'you' : 'V01D') + ': card' + (which.length > 1 ? 's ' : ' ') + which.map((i) => i + 1).join(', ') + (which.length > 1 ? ' are ' : ' is ') + what, why);
+  say(s, p, 'told ' + (q === 'you' ? 'you' : 'Verse') + ': card' + (which.length > 1 ? 's ' : ' ') + which.map((i) => i + 1).join(', ') + (which.length > 1 ? ' are ' : ' is ') + what, why);
   return endTurn(s);
 }
 

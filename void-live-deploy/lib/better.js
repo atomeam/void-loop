@@ -16,7 +16,7 @@ const r1 = (n) => Math.round(n * 10) / 10;
 const median = (xs) => { const s = xs.slice().sort((a, b) => a - b); return s.length ? (s.length % 2 ? s[(s.length - 1) / 2] : (s[s.length / 2 - 1] + s[s.length / 2]) / 2) : null; };
 const OWNER = /\b(?:the\s+)?owner\b|\bAdam\b/;
 // a fix that came out of a probe (a `probe:` job, "from a probe", "a probe miss"), not a line about the probe tooling itself
-const PROBE = /\bprobe:|\bfrom (?:a |my |its |one of my |V01D's )?probes?\b|\bprobes? (?:miss|found|caught|wrote)|\bprobed\b/i;
+const PROBE = /\bprobe:|\bfrom (?:a |my |its |one of my |Verse's )?probes?\b|\bprobes? (?:miss|found|caught|wrote)|\bprobed\b/i;
 
 /** the time an ask id names: ask-YYYYMMDD-HHMM-N -> ms, or null */
 export function askTime(id) {

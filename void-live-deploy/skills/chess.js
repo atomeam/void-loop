@@ -17,7 +17,7 @@ export function chessOf(text) {
 }
 
 const GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '♚', q: '♛', r: '♜', b: '♝', n: '♞', p: '♟' };
-const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · V01D wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
+const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · Verse wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
 const thinking = new Map(); // th.id -> pending search, so a re-render never starts a second one
 let worker = null, seq = 0;
 const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Void thinks
@@ -87,7 +87,7 @@ function mount(th, stageApi) {
   }
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
-    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'V01D to move';
+    status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'Verse to move';
     // the one "working" look (void.html .vc-working, shared with the approve card): a shimmer under the line while V01D thinks
     status.classList.toggle('vc-working', busy); if (busy) status.setAttribute('aria-busy', 'true'); else status.removeAttribute('aria-busy');
     const list = st().moves; let txt = '';
@@ -97,7 +97,7 @@ function mount(th, stageApi) {
     back.disabled = !list.length; back.style.opacity = list.length ? '1' : '.4';
     const say = (ts) => ts.slice(0, 3).map((t) => t.piece + ' ' + t.square + (t.piece === 'king' ? ' (check)' : t.defended ? '' : ', undefended')).join(', ');
     const mine = R.threats(s, 'w'), theirs = R.threats(s, 'b');
-    underAttack.textContent = mine.length || theirs.length ? 'Under attack · yours: ' + (say(mine) || 'none') + ' · V01D’s: ' + (say(theirs) || 'none') : 'Nothing is under attack';
+    underAttack.textContent = mine.length || theirs.length ? 'Under attack · yours: ' + (say(mine) || 'none') + ' · Verse’s: ' + (say(theirs) || 'none') : 'Nothing is under attack';
     if (mini) mini.update(data()); else if (flat) flat();
   }
   function doMove(m) {
@@ -212,7 +212,7 @@ export default {
   name: 'chess',
   chessOf,
   /** the about card's line (skills/about-skill.js aboutText): what the game is, and your record on this device when there is one */
-  get about() { const sum = summary(loadGames(), { game: 'chess' }); return 'A real wooden chess set on the stage, played against V01D: you are white; tap a piece, then a square. Every rule is in (castling, en passant, promotion, check, mate, the draws).' + (sum.played ? ' Your record against V01D on this device: ' + summaryLine(sum) + '.' : ''); },
+  get about() { const sum = summary(loadGames(), { game: 'chess' }); return 'A real wooden chess set on the stage, played against Verse: you are white; tap a piece, then a square. Every rule is in (castling, en passant, promotion, check, mate, the draws).' + (sum.played ? ' Your record against Verse on this device: ' + summaryLine(sum) + '.' : ''); },
   examples: ['play chess', 'chess', 'lets play chess', 'a game of chess', 'play chess against void', 'new chess game', 'start a chess game', '3d chess'],
   nearMisses: ['who invented chess', 'chess rules', 'chess openings', 'magnus carlsen', 'play checkers', 'chess.com'],
   match(lower, text) { return !!chessOf(text); },

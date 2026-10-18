@@ -83,16 +83,16 @@ ${JSON.stringify(ld, null, 2)}
 </head>
 <body>
 <main>
-  <p><a href="/">&larr; V01D &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
+  <p><a href="/">&larr; Verse &middot; A-to-Mind</a> &middot; <a href="/fix/">Fix an automation</a></p>
 `;
 }
 
 function helpBoxes(ask) {
   return `  <div class="help">
     <div class="box">
-      <h2>Still stuck? Ask V01D, free</h2>
-      <p>Paste the error and what the automation does. V01D names the likely cause and the fix, in seconds, no account.</p>
-      <a class="btn" data-fix="ask" href="/?q=${encodeURIComponent(ask)}">Ask V01D about this error</a>
+      <h2>Still stuck? Ask Verse, free</h2>
+      <p>Paste the error and what the automation does. Verse names the likely cause and the fix, in seconds, no account.</p>
+      <a class="btn" data-fix="ask" href="/?q=${encodeURIComponent(ask)}">Ask Verse about this error</a>
     </div>
     <div class="box">
       <h2>Or have it fixed: <span id="fix-price">${esc(fix.price)}</span></h2>
@@ -139,7 +139,7 @@ export function hubOf(pages) {
   const platforms = [...new Set(pages.map((p) => p.platform))]; // in the order the data lists them
   const named = platforms.length > 1 ? platforms.slice(0, -1).join(', ') + ' and ' + platforms[platforms.length - 1] : platforms.join('');
   const title = 'Fix a broken automation: ' + named + ' errors, explained';
-  const desc = 'The errors that stop ' + named + ' automations, each with what it means and the steps to fix it. Ask V01D free, or have it fixed.';
+  const desc = 'The errors that stop ' + named + ' automations, each with what it means and the steps to fix it. Ask Verse free, or have it fixed.';
   const ld = { '@context': 'https://schema.org', '@type': 'CollectionPage', name: title, description: desc, url: SITE + '/fix/',
     hasPart: pages.map((p) => ({ '@type': 'TechArticle', headline: p.title, url: SITE + '/fix/' + p.slug + '/' })) };
   const group = (name) => pages.filter((p) => p.platform === name)
@@ -164,7 +164,7 @@ export function build() {
   const pages = JSON.parse(readFileSync(resolve(root, 'tools/fix-pages.json'), 'utf8'));
   const out = new Map([['void-live-deploy/fix/index.html', hubOf(pages)]]);
   for (const p of pages) {
-    if (!isFixAsk(askOf(p))) throw new Error('V01D would not take the ask for ' + p.slug + ': ' + askOf(p));
+    if (!isFixAsk(askOf(p))) throw new Error('Verse would not take the ask for ' + p.slug + ': ' + askOf(p));
     out.set('void-live-deploy/fix/' + p.slug + '/index.html', pageOf(p));
   }
   return { pages, out };

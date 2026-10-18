@@ -33,5 +33,5 @@ test('a whole game against Void ends, and every Void move says why', () => {
     s = K.drop(s, [0, 1, 2, 3, 4, 5, 6].find((c) => K.rowFor(s.board, c) >= 0));
   }
   assert.ok(s.over);
-  for (const l of s.log.filter((x) => x.who === 'V01D')) assert.ok(l.why, l.text);
+  for (const l of s.log.filter((x) => x.who === 'Verse')) assert.ok(l.why, l.text);
 });

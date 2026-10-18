@@ -1,8 +1,8 @@
 {
   "id": "/",
-  "name": "V01D",
-  "short_name": "V01D",
-  "description": "V01D by A-to-Mind: ask for anything and it appears. The weather, a timer, a list, a game, a page about anything.",
+  "name": "Verse",
+  "short_name": "Verse",
+  "description": "Verse by A-to-Mind: ask for anything and it appears. The weather, a timer, a list, a game, a page about anything.",
   "lang": "en",
   "dir": "ltr",
   "categories": ["productivity", "utilities"],
@@ -19,7 +19,7 @@
     { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
   ],
   "shortcuts": [
-    { "name": "V01D FILMS", "short_name": "Films", "description": "Watch and review V01D FILMS", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "VERSE FILMS", "short_name": "Films", "description": "Watch and review VERSE FILMS", "url": "/films/?source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
     { "name": "What's new", "short_name": "New", "url": "/?q=what%27s%20new&source=app", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
   ],
   "share_target": {

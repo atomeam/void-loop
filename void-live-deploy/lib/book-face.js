@@ -60,7 +60,7 @@ export function layoutFace(page, book, side, measure) {
   if (page.kind === 'cover') {
     t('a-to-mind.com', x0 + w / 2, y + 10, '13px ' + SANS, SOFT, 'center'); y += 36;
     ops.push({ k: 'glyph', name: 'v01d', chapter: 'front', x: x0 + w / 2 - 90, y: y, size: 180 }); y += 214;
-    t(page.title || 'The V01D Book', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
+    t(page.title || 'The Verse Book', x0 + w / 2, y, '700 30px ' + SERIF, INK, 'center'); y += 34;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 3)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const tot = (book && book.totals) || {};
     y += 12; t([tot.skills + ' skills', tot.games + ' games', tot.minis + ' 3D miniatures', tot.pages + ' pages'].join(' · '), x0 + w / 2, y, '13px ' + SANS, SOFT, 'center');
@@ -106,7 +106,7 @@ export function layoutFace(page, book, side, measure) {
   }
   if (page.kind === 'legend') {
     t('Start here', x0, y, '13px ' + SANS, SOFT); y += 34; t(page.title, x0, y, '700 26px ' + SERIF, INK); y += 22;
-    para('Each page is one thing V01D does. The rating is earned from evidence, never claimed:', 15, INK, 4, 3);
+    para('Each page is one thing Verse does. The rating is earned from evidence, never claimed:', 15, INK, 4, 3);
     TIERS.slice().reverse().forEach((k, i) => {
       const col = ['hsl(150,45%,32%)', 'hsl(225,50%,42%)', 'hsl(40,60%,36%)', 'hsl(0,0%,40%)'][i];
       t(k, x0, y, '700 16px ' + SANS, col); y += 20;

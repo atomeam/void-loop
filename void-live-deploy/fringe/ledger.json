@@ -38,7 +38,7 @@
      "id": "correlation-view",
      "run": 7,
      "at": "2026-10-02",
-     "label": "V01D growth",
+     "label": "Verse growth",
      "sub": "The benchmark score round by round, and what moved it."
     }
    ],
@@ -61,7 +61,7 @@
      "run": 71,
      "at": "2026-10-10",
      "label": "Its side of the table",
-     "sub": "Answer only the green dots. Does sharing the task with V01D slow you on its side?"
+     "sub": "Answer only the green dots. Does sharing the task with Verse slow you on its side?"
     }
    ],
    "hypothesis": "",
@@ -207,14 +207,14 @@
      "run": 65,
      "at": "2026-10-09",
      "label": "What it hasn't heard yet",
-     "sub": "How much of what people will ask has V01D already seen? Good and Turing's estimate."
+     "sub": "How much of what people will ask has Verse already seen? Good and Turing's estimate."
     },
     {
      "id": "miss-board",
      "run": 4,
      "at": "2026-10-02",
      "label": "Miss board",
-     "sub": "Asks V01D could not answer yet, and what it learned from them."
+     "sub": "Asks Verse could not answer yet, and what it learned from them."
     }
    ],
    "hypothesis": "",

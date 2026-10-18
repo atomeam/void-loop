@@ -13,8 +13,8 @@ test('long pasted prose is not a keyword ask; short asks and long-text instructi
   assert.ok(!isLongProse('summarize this transcript: ' + PASTE));
   assert.ok(!LONG_OK.has('air') && !LONG_OK.has('weather') && !LONG_OK.has('country') && LONG_OK.has('digest'));
 });
-test('notes about V01D\'s own cards and fixes are self asks', () => {
-  for (const a of ['V01D\'s air quality card misrouted a pasted note; is the fix shipped?', 'the weather card fell through to the wrong card again', 'did the void routing fix get merged']) {
+test('notes about Verse\'s own cards and fixes are self asks', () => {
+  for (const a of ['Verse\'s air quality card misrouted a pasted note; is the fix shipped?', 'the weather card fell through to the wrong card again', 'did the void routing fix get merged']) {
     assert.ok(isOwnWorkAsk(a), a); assert.ok(isSelfAsk(a), a);
   }
   for (const a of ['what is a void pointer in c', 'air quality in Tokyo', 'how do I fix my bike']) assert.ok(!isOwnWorkAsk(a), a);

@@ -13,7 +13,7 @@ import { appraise } from '../void-live-deploy/lib/appraise.js';
 import { secretsIn } from './secret-scan.mjs';
 
 export const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
-export const title = (t) => 'V01D ' + String(t).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + ' Starter Kit';
+export const title = (t) => 'Verse ' + String(t).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + ' Starter Kit';
 const enc = (s) => new TextEncoder().encode(s);
 
 /** the pack's files from V01D's own answers. ask(q) -> text */
@@ -26,7 +26,7 @@ export async function gapFiles(topic, ask) {
   ];
   const out = [];
   for (const [name, q] of parts) { const body = String((await ask(q)) || '').trim(); out.push({ name, data: enc('# ' + title(topic) + ': ' + name.replace('.md', '') + '\n\n' + body + '\n'), origin: 'v01d', text: body }); }
-  out.push({ name: 'README.txt', data: enc(title(topic) + '\n\nWritten by V01D (a-to-mind.com) because people kept asking for it. Personal use; share with credit "V01D · a-to-mind.com".\n'), origin: 'v01d', text: 'readme' });
+  out.push({ name: 'README.txt', data: enc(title(topic) + '\n\nWritten by Verse (a-to-mind.com) because people kept asking for it. Personal use; share with credit "Verse · a-to-mind.com".\n'), origin: 'v01d', text: 'readme' });
   return out;
 }
 /** file tests beyond store-publish's guard: real content, no trademarks, no secrets */

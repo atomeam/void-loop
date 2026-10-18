@@ -105,7 +105,7 @@ export function appraisalText(v) {
   if (!v) return '';
   if (v.unknown) return v.says[0];
   if (v.person) return v.says[0];
-  const lines = ['V01D values this at ' + v.text + '.', 'Why: ' + v.says.join('; ') + '.'];
+  const lines = ['Verse values this at ' + v.text + '.', 'Why: ' + v.says.join('; ') + '.'];
   if (v.expert) lines.push('This kind can be worth far more or far less than a photo shows: have it looked at in hand before you sell or insure it.');
   lines.push('An estimate from one photo, not a certified appraisal or an authentication; no comparable sales were checked.');
   return lines.join(' ');

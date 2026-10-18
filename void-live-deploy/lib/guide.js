@@ -187,12 +187,12 @@ export function compose({ names = [], read = () => '', families = { families: []
   const skillPage = (name, chap) => {
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
     const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
-    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of V01D.',
+    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of Verse.',
       examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
-  page({ kind: 'cover', chapter: 'front', title: 'The V01D Book', line: 'Everything V01D can do, one page each, nothing left out.' });
+  page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
   page({ kind: 'how', chapter: 'front', title: 'How to ask', core: core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })) });
   page({ kind: 'legend', chapter: 'front', title: 'How to read a page' });
   page({ kind: 'toc', chapter: 'front', title: 'Contents' });

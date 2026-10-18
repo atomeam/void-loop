@@ -8,7 +8,7 @@
 import { LAYERS, HONEST, WHOSE } from '../lib/web4.js';
 
 const WHEN = /^(?:(?:what(?:'s|s| is)|whats|explain|tell me about)\s+)?(?:are\s+you\s+)?(?:the\s+)?(?:web\s?4|web\s+(?:1\s*,?\s*2\s*,?\s*3\s*,?\s*(?:and\s+)?4|four))(?:\s+(?:is|means?))?(?:\s+v01d)?$/i;
-const ALSO = /^(?:is\s+(?:v01d|void)\s+web\s?4|(?:v01d|void)\s+(?:is\s+)?web\s?4)$/i;
+const ALSO = /^(?:is\s+(?:v01d|void|verse)\s+web\s?4|(?:v01d|void|verse)\s+(?:is\s+)?web\s?4)$/i;
 
 /** the ladder card's HTML: four stacked plates, the first at the bottom. Pure. */
 export function web4Html(esc) {
@@ -18,7 +18,7 @@ export function web4Html(esc) {
     + '<a href="#" data-ask="' + esc(l.where) + '">' + esc(l.label) + '</a></li>').join('');
   return '<h2>Web4</h2><ol class="w4-ladder" style="padding:0;margin:6px 0 10px;display:flex;flex-direction:column">' + plates + '</ol>'
     + '<p class="w4-honest"><b>' + esc(HONEST) + '</b> ' + esc(WHOSE) + '</p>'
-    + '<div class="src">Source: V01D’s own pages, this site · as of 2026-10</div>';
+    + '<div class="src">Source: Verse’s own pages, this site · as of 2026-10</div>';
 }
 
 function run(text, api) {

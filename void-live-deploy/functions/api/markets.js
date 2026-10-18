@@ -26,7 +26,7 @@ export async function onRequestGet({ request }) {
   if (cache) { const hit = await cache.match(key); if (hit) return hit; }
   let body, status = 200;
   try {
-    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=' + vs + '&ids=' + ids + '&sparkline=true&price_change_percentage=24h', { headers: { accept: 'application/json', 'user-agent': 'V01D (a-to-mind.com)' } });
+    const r = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=' + vs + '&ids=' + ids + '&sparkline=true&price_change_percentage=24h', { headers: { accept: 'application/json', 'user-agent': 'Verse (a-to-mind.com)' } });
     if (!r.ok) throw new Error('upstream ' + r.status);
     const rows = await r.json();
     body = { ok: true, vs, source: 'CoinGecko', at: new Date().toISOString(), coins: (Array.isArray(rows) ? rows : []).map(slim) };

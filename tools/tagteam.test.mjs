@@ -26,7 +26,7 @@ test('the real board parses and stays trimmed', () => {
 });
 
 test('"what did your builders learn?" is a self ask, answered from the board', () => {
-  for (const a of ['what did your builders learn?', 'How were you built lately?', 'who builds you?', 'what have V01D\'s builders been doing']) assert.ok(isSelfAsk(a), a);
+  for (const a of ['what did your builders learn?', 'How were you built lately?', 'who builds you?', 'what have Verse\'s builders been doing']) assert.ok(isSelfAsk(a), a);
   for (const a of ['who built the pyramids?', 'builders near me', 'who were the builders of Stonehenge?']) assert.ok(!isSelfAsk(a), a);
   const self = { about: 'A blank stage.', builders: readTagteam(BOARD) };
   assert.match(builderFacts(self), /What my builders learned.*Wrangler: copied folder dropped Functions/);
@@ -34,15 +34,15 @@ test('"what did your builders learn?" is a self ask, answered from the board', (
   assert.equal(builderFacts({}), '');
 });
 
-test('ask-void keeps V01D\'s answer word for word', () => {
+test('ask-void keeps Verse\'s answer word for word', () => {
   const b = entry('2026-10-15T05:00:00.000Z', 'Q?', 'line one\nline two');
   assert.match(b, /> line one\n> line two/);
   const t = append('', b);
-  assert.ok(t.startsWith('# V01D on its builders') && t.endsWith(b));
+  assert.ok(t.startsWith('# Verse on its builders') && t.endsWith(b));
   assert.equal(append(t, b), t + b);
 });
 
-test('V01D may only cite the board for its builders\' lessons', () => {
+test('Verse may only cite the board for its builders\' lessons', () => {
   const ex = (f) => f === 'void.assimilate.md';
   assert.deepEqual(checkCites('Codified in void.assimilate.md / void.plan2.md', ex), ['void.assimilate.md exists, but the builders\' lessons are kept only in domains/handoff.md', 'void.plan2.md does not exist']);
   assert.deepEqual(checkCites('They live in domains/handoff.md.', ex), []);

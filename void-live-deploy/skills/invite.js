@@ -16,7 +16,7 @@ async function run(text, api) {
   if (!inviteOf(text)) return 'none';
   let me = null; try { me = JSON.parse(localStorage.getItem(ME_KEY) || 'null'); } catch (_) {}
   if (!me || !me.token) {
-    showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>An invite comes from a signed-in V01D. Say <b>remember me</b> first, then <b>invite someone</b>.</p>'; });
+    showPage((p) => { p.innerHTML = '<h2>Invite someone</h2><p>An invite comes from a signed-in Verse. Say <b>remember me</b> first, then <b>invite someone</b>.</p>'; });
     return 'invite';
   }
   let j = null;
@@ -26,8 +26,8 @@ async function run(text, api) {
     return 'none';
   }
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your V01D as a faint presence, and what either of you summons shows on both.</p>'
-      + '<p><a target="_blank" rel="noopener"></a></p><p>Close the tab to end it. Your own V01D stays yours: nothing of theirs is saved here.</p><div class="src"></div>';
+    p.innerHTML = '<h2>Invite someone</h2><p>Whoever opens this link appears in your Verse as a faint presence, and what either of you summons shows on both.</p>'
+      + '<p><a target="_blank" rel="noopener"></a></p><p>Close the tab to end it. Your own Verse stays yours: nothing of theirs is saved here.</p><div class="src"></div>';
   });
   const a = el && el.querySelector('a');
   if (a) { a.href = j.link; a.textContent = j.link; el.querySelector('.src').textContent = j.live ? 'Live across devices.' : 'The live relay is not on yet: for now, tabs in this browser share.'; }

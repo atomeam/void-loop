@@ -60,7 +60,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = th.state, line = s.over && s.over !== 'draw' ? K.winLine(s.board, s.over === 'you' ? 1 : 2) || [] : [];
     s.board.forEach((v, i) => { holes[i].style.background = v === 1 ? '#e0303e' : v === 2 ? '#f2c230' : '#0d1a33'; holes[i].style.boxShadow = line.includes(i) ? '0 0 0 3px #fff' : ''; });
-    status.textContent = s.over === 'you' ? 'You win! Four in a row' : s.over === 'void' ? 'V01D wins this one' : s.over === 'draw' ? 'A draw' : s.turn === 1 ? 'Your move: pick a column' : 'V01D is thinking…';
+    status.textContent = s.over === 'you' ? 'You win! Four in a row' : s.over === 'void' ? 'Verse wins this one' : s.over === 'draw' ? 'A draw' : s.turn === 1 ? 'Your move: pick a column' : 'Verse is thinking…';
     const entry = (l) => { const d = document.createElement('div'); d.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; d.appendChild(w); } return d; };
     const moves = s.log.slice(-10).reverse();
     latest.textContent = ''; past.textContent = '';
