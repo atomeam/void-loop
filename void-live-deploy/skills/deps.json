@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 664,
+ "counted": 665,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -694,6 +694,12 @@
   },
   {
    "file": "lib/contradict.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/convert-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2601,6 +2607,12 @@
    "imports": [],
    "importedBy": [
     "skills/contradiction-lamp.js"
+   ]
+  },
+  "lib/convert-math.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/convert.js"
    ]
   },
   "lib/cook-flow.js": {
@@ -5451,7 +5463,9 @@
    "importedBy": []
   },
   "skills/convert.js": {
-   "imports": [],
+   "imports": [
+    "lib/convert-math.js"
+   ],
    "importedBy": []
   },
   "skills/copy-stack.js": {
