@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 66,
- "runsTotal": 182,
+ "cases": 67,
+ "runsTotal": 183,
  "kinds": {
-  "grow": 59,
+  "grow": 60,
   "file": 69,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T18:18:28Z",
+   "passed": 68,
+   "of": 70,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T16:03:13Z",
    "passed": 59,
@@ -142,13 +149,6 @@
    "of": 53,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
-  },
-  {
-   "at": "2026-10-18T04:39:06Z",
-   "passed": 42,
-   "of": 52,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T16:03:13Z",
+  "skill:film-metadata": "2026-10-18T18:18:28Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -393,6 +393,9 @@
   "skill:spectators": "2026-10-18T14:06:18Z",
   "skill:spectral-review": "2026-10-18T16:03:13Z",
   "skill:stage-arrange": "2026-10-18T16:03:13Z",
-  "skill:stage-export": "2026-10-18T16:03:13Z"
+  "skill:stage-export": "2026-10-18T16:03:13Z",
+  "skill:notebook": "2026-10-18T18:18:28Z",
+  "skill:stage-find": "2026-10-18T18:18:28Z",
+  "skill:stage-fx": "2026-10-18T18:18:28Z"
  }
 }
