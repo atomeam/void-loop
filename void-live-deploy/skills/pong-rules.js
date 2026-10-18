@@ -45,7 +45,7 @@ export function step(s, dt, input = {}) {
   return s;
 }
 function point(s, who) {
-  s[who].score++; s.lastWhy = who === 'you' ? 'the ball got past V01D: too fast after a ' + s.rally + '-hit rally' : 'V01D angled it past you';
+  s[who].score++; s.lastWhy = who === 'you' ? 'the ball got past Verse: too fast after a ' + s.rally + '-hit rally' : 'Verse angled it past you';
   if (s[who].score >= WIN) { s.over = who; return s; }
   s.serve = who === 'you' ? 1 : -1; serve(s); return s;
 }

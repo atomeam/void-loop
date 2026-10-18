@@ -34,7 +34,7 @@ async function run(text, api) {
   showPage((el) => {
     el.innerHTML = '<h2>' + esc(String(text).trim()) + '</h2>'
       + (got ? got.rows.map((x) => '<p><b>' + esc(x.name) + '.</b> ' + esc(x.line) + '</p>').join('')
-        + '<div class="src">from V01D\'s canon, version ' + esc(String(got.version)) + '</div>'
+        + '<div class="src">from Verse\'s canon, version ' + esc(String(got.version)) + '</div>'
         : '<p>My canon has no answer to that yet, so I won\'t make one up.</p>');
   });
   return 'different';

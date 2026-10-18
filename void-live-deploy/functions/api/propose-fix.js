@@ -12,7 +12,7 @@ const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices
 
 export async function onRequestPost(ctx) {
   // one catch around everything: a failure anywhere answers JSON with its reason category, never the platform's HTML page
-  try { return await propose(ctx); } catch (e) { try { await recordShortfall(ctx.env, 'propose-fix', reasonOf(e)); } catch (_) {} return Response.json({ error: 'V01D could not propose a fix: ' + reasonOf(e) }, { status: 502 }); }
+  try { return await propose(ctx); } catch (e) { try { await recordShortfall(ctx.env, 'propose-fix', reasonOf(e)); } catch (_) {} return Response.json({ error: 'Verse could not propose a fix: ' + reasonOf(e) }, { status: 502 }); }
 }
 
 async function propose({ request, env }) {
@@ -28,8 +28,8 @@ async function propose({ request, env }) {
   try {
     const r = await env.AI.run(models('will'), { messages: [{ role: 'system', content: mode === 'narrow' ? NARROW_SYSTEM : FIX_SYSTEM }, { role: 'user', content: fixPrompt(ask, skill, source, mode, note) }], max_tokens: 900, chat_template_kwargs: { enable_thinking: false } });
     said = pick(r); if (said && typeof said !== 'string') said = JSON.stringify(said);
-  } catch (e) { await recordShortfall(env, 'propose-fix', reasonOf(e)); return Response.json({ error: 'V01D could not propose a fix just now: ' + reasonOf(e) }, { status: 503 }); }
+  } catch (e) { await recordShortfall(env, 'propose-fix', reasonOf(e)); return Response.json({ error: 'Verse could not propose a fix just now: ' + reasonOf(e) }, { status: 503 }); }
   const { edits, why, confidence } = parseEdits(said, source);
-  if (!edits.length) return new Response('V01D proposed nothing that passes the gate', { status: 502 });
+  if (!edits.length) return new Response('Verse proposed nothing that passes the gate', { status: 502 });
   return Response.json({ edits, why, confidence, evidence: evidenceOf(source, edits, skill), model: models('will') });
 }

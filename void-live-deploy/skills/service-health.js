@@ -27,9 +27,9 @@ function run(text, api) {
   if (!document.getElementById('sh-css')) { const st = document.createElement('style'); st.id = 'sh-css'; st.textContent = CSS; document.head.appendChild(st); }
   const services = servicesOf(PROVIDERS);
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Service health</h2><div class="sub">Each service V01D hands you to, reached from your browser just now. A link-only adapter is timed reaching its site; an API is asked for its health answer.</div>'
+    p.innerHTML = '<h2>Service health</h2><div class="sub">Each service Verse hands you to, reached from your browser just now. A link-only adapter is timed reaching its site; an API is asked for its health answer.</div>'
       + '<div data-sh-gauge></div><div data-sh-out></div><p><button type="button" data-sh-again>Check again</button></p>'
-      + '<div class="src">Checked only when you open this card or tap Check again; the stability dial reads the site\'s own incidents.json again every minute while the card is open; nothing is kept or sent to V01D.</div>'; // void-review: ok (constant text)
+      + '<div class="src">Checked only when you open this card or tap Check again; the stability dial reads the site\'s own incidents.json again every minute while the card is open; nothing is kept or sent to Verse.</div>'; // void-review: ok (constant text)
   });
   const out = el.querySelector('[data-sh-out]'), again = el.querySelector('[data-sh-again]'), dial = el.querySelector('[data-sh-gauge]');
   const still = () => !_pageStill || _pageStill(el);

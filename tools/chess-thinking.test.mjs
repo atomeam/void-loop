@@ -17,7 +17,7 @@ test('the search reports each depth it finishes: deeper each time, more position
 
 test('the line names the depth, the positions and the move in chess notation; with nothing yet it just thinks', () => {
   const s = play(create(), 'e2e4'), best = legalMoves(s).find((x) => x.to === 36 && x.piece === 'p'); // e7-e5
-  assert.equal(thinkingLine(null, s), 'V01D is thinking…');
-  assert.equal(thinkingLine({ depth: 1, nodes: 20, best }, s), 'V01D is thinking… 1 move deep · 20 positions · leaning e5');
-  assert.equal(thinkingLine({ depth: 3, nodes: 4812, best }, s), 'V01D is thinking… 3 moves deep · 4,812 positions · leaning e5');
+  assert.equal(thinkingLine(null, s), 'Verse is thinking…');
+  assert.equal(thinkingLine({ depth: 1, nodes: 20, best }, s), 'Verse is thinking… 1 move deep · 20 positions · leaning e5');
+  assert.equal(thinkingLine({ depth: 3, nodes: 4812, best }, s), 'Verse is thinking… 3 moves deep · 4,812 positions · leaning e5');
 });

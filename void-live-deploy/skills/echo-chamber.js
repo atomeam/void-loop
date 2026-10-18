@@ -15,7 +15,7 @@ async function run(text, api) {
   showPage((el) => {
     const head = q.kind === 'best' ? 'Your best answers' : 'What you decided';
     if (!rows.length) {
-      el.innerHTML = '<h2>' + esc(head) + '</h2><p>' + esc('Nothing on this device matches ' + q.label + ' yet.') + '</p><div class="sub">V01D only reads what this browser kept. File an answer with "file this in the codex" and it leads here.</div>';
+      el.innerHTML = '<h2>' + esc(head) + '</h2><p>' + esc('Nothing on this device matches ' + q.label + ' yet.') + '</p><div class="sub">Verse only reads what this browser kept. File an answer with "file this in the codex" and it leads here.</div>';
       return;
     }
     el.innerHTML = '<h2>' + esc(head) + '</h2><div class="sub">' + esc(q.label) + ' · ' + rows.length + ' from this device, never sent anywhere</div><ol style="margin:10px 0 0 18px;padding:0;list-style:none">'

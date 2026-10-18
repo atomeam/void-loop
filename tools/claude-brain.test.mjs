@@ -12,7 +12,7 @@ const MISS = { ask: 'opposite of brave', skill: 'words', source: SOURCE, mode: '
 const GOOD = JSON.stringify({ why: 'opposite of was not known', confidence: 0.9, edits: [{ find: LINE, replace: "  return /^(?:rhymes? (?:with|for) |opposite of )\\S+/.test(t);" }] });
 const fake = (reply, calls = []) => ({ beta: { messages: { create: async (req) => { calls.push(req); return { model: BRAIN_MODEL, stop_reason: 'end_turn', usage: { input_tokens: 2000, output_tokens: 500 }, content: [{ type: 'text', text: GOOD }], ...reply }; } } } });
 
-test('one call, capped output, the same question V01D\'s own model gets', async () => {
+test('one call, capped output, the same question Verse\'s own model gets', async () => {
   const calls = [], p = await proposeWithClaude(MISS, { client: fake({}, calls) });
   assert.equal(calls.length, 1);
   assert.equal(calls[0].model, BRAIN_MODEL);

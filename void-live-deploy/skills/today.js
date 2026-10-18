@@ -52,7 +52,7 @@ async function run(text, api) {
   const shown = todays.slice(-20).reverse();
   const el = showPage((p) => {
     if (!shown.length) {
-      p.innerHTML = '<h2>Today</h2><p>Nothing is logged on this device yet.</p><div class="sub">V01D writes a line here each time it answers on this browser.</div>';
+      p.innerHTML = '<h2>Today</h2><p>Nothing is logged on this device yet.</p><div class="sub">Verse writes a line here each time it answers on this browser.</div>';
       return;
     }
     const rows = shown.map((e) => {

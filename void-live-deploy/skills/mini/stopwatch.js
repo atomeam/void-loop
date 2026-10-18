@@ -20,7 +20,7 @@ function dialTexture(THREE) {
   for (let i = 0; i < 30; i++) { g.save(); g.rotate(i / 30 * Math.PI * 2); g.fillStyle = '#2a2a30'; g.fillRect(i % 5 ? -0.8 : -2, -r * 0.24, i % 5 ? 1.6 : 4, r * (i % 5 ? 0.025 : 0.045)); g.restore(); }
   g.font = '600 ' + Math.round(r * 0.055) + 'px Arial, sans-serif'; for (const m of [5, 10, 15, 20, 25, 30]) { const a = m / 30 * Math.PI * 2; g.fillText(String(m), Math.sin(a) * r * 0.165, -Math.cos(a) * r * 0.165); }
   g.restore();
-  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('V01D', 0, r * 0.28);
+  g.font = 'italic ' + Math.round(r * 0.07) + 'px Georgia, serif'; g.fillStyle = '#44444c'; g.fillText('Verse', 0, r * 0.28);
   g.font = '600 ' + Math.round(r * 0.045) + 'px Arial, sans-serif'; g.fillText('1/5 SECOND', 0, r * 0.4);
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }

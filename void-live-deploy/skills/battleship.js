@@ -29,10 +29,10 @@ function mount(th, stageApi) {
   el.className = 'thing kept-card game-card battleship-card';
   el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="g-head"><span class="g-title">Sea Battle</span><span class="g-sub">you against V01D</span></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Sea Battle</span><span class="g-sub">you against Verse</span></div>';
   const wrap = document.createElement('div'); wrap.className = 'g-board';
   const boards = document.createElement('div'); boards.className = 'bs-boards'; boards.style.cssText = 'display:grid;grid-template-columns:1fr 1fr;gap:10px';
-  const target = grid('bs-target', 'V01D’s waters: tap to fire'), ocean = grid('bs-ocean', 'your fleet');
+  const target = grid('bs-target', 'Verse’s waters: tap to fire'), ocean = grid('bs-ocean', 'your fleet');
   const tCells = [], oCells = [];
   for (let c = 0; c < 100; c++) {
     const b = document.createElement('button'); b.type = 'button'; b.dataset.i = c; b.className = 'bs-cell';
@@ -44,7 +44,7 @@ function mount(th, stageApi) {
   }
   const cap = (t) => { const d = document.createElement('div'); d.style.cssText = 'font-size:11px;color:var(--muted,#8a8a8a);margin-bottom:3px'; d.textContent = t; return d; };
   const left = document.createElement('div'), right = document.createElement('div');
-  left.append(cap('V01D’s waters · tap to fire'), target); right.append(cap('Your fleet'), ocean);
+  left.append(cap('Verse’s waters · tap to fire'), target); right.append(cap('Your fleet'), ocean);
   boards.append(left, right); wrap.appendChild(boards);
   const status = document.createElement('div'); status.className = 'g-status bs-status'; status.setAttribute('aria-live', 'polite'); status.style.display = 'block';
   const fleets = document.createElement('div'); fleets.style.cssText = 'font-size:12px;margin:4px 0';
@@ -69,8 +69,8 @@ function mount(th, stageApi) {
     tCells.forEach((b, c) => { b.style.background = sunkCells.has(c) ? '#4b5b66' : '#1d6a93'; });
     const shipAt = new Map(); v.own.ships.forEach((sh) => sh.cells.forEach((c) => shipAt.set(c, sh)));
     oCells.forEach((o, c) => { o.textContent = ''; o.style.background = shipAt.has(c) ? (shipAt.get(c).sunk ? '#4b5b66' : '#8e9aa3') : '#1d6a93'; const r = v.own.shotsAt[c]; if (r) peg(o, r === 'miss' ? 'miss' : 'hit'); });
-    status.textContent = v.over ? (v.over === 'you' ? 'You sank V01D’s whole fleet. You win!' : 'V01D sank your fleet.') : v.turn === 'you' ? 'Your shot · a hit fires again' : 'V01D is aiming…';
-    fleets.textContent = 'V01D still has: ' + (v.target.afloat.join(', ') || 'nothing') + ' · you still have: ' + (v.own.ships.filter((x) => !x.sunk).map((x) => x.name).join(', ') || 'nothing');
+    status.textContent = v.over ? (v.over === 'you' ? 'You sank Verse’s whole fleet. You win!' : 'Verse sank your fleet.') : v.turn === 'you' ? 'Your shot · a hit fires again' : 'Verse is aiming…';
+    fleets.textContent = 'Verse still has: ' + (v.target.afloat.join(', ') || 'nothing') + ' · you still have: ' + (v.own.ships.filter((x) => !x.sunk).map((x) => x.name).join(', ') || 'nothing');
     redeal.hidden = Object.keys(s.shots.you).length + Object.keys(s.shots.void).length > 0;
     log.textContent = '';
     for (const l of s.log.slice(-12).reverse()) { const line = document.createElement('div'); line.textContent = l.who + ' ' + l.text; if (l.why) { const w = document.createElement('span'); w.style.color = 'var(--ink,#ddd)'; w.textContent = ' · because ' + l.why; line.appendChild(w); } log.appendChild(line); }
@@ -89,7 +89,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'battleship');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'battleship'; }
   api.summon('battleship', { state: B.create(), x: Math.max(10, Math.round(innerWidth / 2 - 400)), y: 40 });
-  api.say('Sea Battle (plays like Battleship) · your ships are placed · tap V01D’s waters to fire; a hit fires again');
+  api.say('Sea Battle (plays like Battleship) · your ships are placed · tap Verse’s waters to fire; a hit fires again');
   return 'battleship';
 }
 

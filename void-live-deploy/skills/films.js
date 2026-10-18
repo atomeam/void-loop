@@ -40,7 +40,7 @@ export function filmMeta(f) {
 // (asked by Void: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
 // v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
 // card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
-const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
+const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
 export const wantsNewFilms = (lower) => NEW_RE.test(String(lower || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim());
 /** the films newer than the last one seen (newest first); none seen yet: the newest three. Pure. */
 export function newSince(films, seenId, firstN = 3) {
@@ -49,32 +49,32 @@ export function newSince(films, seenId, firstN = 3) {
 }
 async function runNew(api) {
   const { showPage, esc } = api, KEY = 'v01d.films.seen';
-  const el = showPage((p) => { p.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub">\u2026</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>New from VERSE FILMS</h2><div class="sub">\u2026</div>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json()), F = j.films || [];
     if (api._pageStill && !api._pageStill(el)) return 'films';
     let seen = null; try { seen = localStorage.getItem(KEY); } catch (_) {}
     const N = newSince(F, seen);
     try { if (F[0]) localStorage.setItem(KEY, F[0].id); } catch (_) {}
-    el.innerHTML = '<h2>New from V01D FILMS</h2><div class="sub" data-new-films="' + N.length + '">' + esc(N.length ? N.length + (seen ? ' new since you last looked' : ' newest') : 'Nothing new since you last looked') + '</div>'
+    el.innerHTML = '<h2>New from VERSE FILMS</h2><div class="sub" data-new-films="' + N.length + '">' + esc(N.length ? N.length + (seen ? ' new since you last looked' : ' newest') : 'Nothing new since you last looked') + '</div>'
       + N.map((f) => { const m = filmMeta(f); return '<div class="vfilm-card" style="margin:10px 0;padding:10px 12px;border-radius:12px;border:1px solid rgba(255,255,255,.1)"><b>' + esc(m.title || f.title || f.id) + '</b><div class="sub">' + esc([m.day, m.experiment].filter(Boolean).join(' · ')) + '</div><a href="' + esc(PAGE + '?v=' + encodeURIComponent(f.id)) + '">Watch</a></div>'; }).join('')
       + '<div class="src"><a href="/films/rss">RSS</a> · <a href="' + PAGE + '">All films</a></div>';
-  } catch (_) { el.innerHTML = '<h2>New from V01D FILMS</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>'; }
+  } catch (_) { el.innerHTML = '<h2>New from VERSE FILMS</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>'; }
   return 'films';
 }
 
 async function runMeta(api) {
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">\u2026</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>VERSE FILMS as data</h2><div class="sub">\u2026</div>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json());
     if (api._pageStill && !api._pageStill(el)) return 'films';
     const rows = (j.films || []).map(filmMeta), json = JSON.stringify(rows, null, 2);
-    el.innerHTML = '<h2>V01D FILMS as data</h2><div class="sub">' + esc(rows.length + (rows.length === 1 ? ' film' : ' films') + ', newest first') + '</div>'
+    el.innerHTML = '<h2>VERSE FILMS as data</h2><div class="sub">' + esc(rows.length + (rows.length === 1 ? ' film' : ' films') + ', newest first') + '</div>'
       + '<pre class="vfilm-json" style="white-space:pre-wrap;overflow-wrap:anywhere;max-height:55vh;overflow:auto;font-size:12px">' + esc(json) + '</pre>'
       + '<div class="src">' + esc('from a-to-mind.com/api/films') + '</div>';
   } catch (_) {
-    el.innerHTML = '<h2>V01D FILMS as data</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>';
+    el.innerHTML = '<h2>VERSE FILMS as data</h2><p>' + esc('The films could not be read just now. Try again in a minute.') + '</p>';
   }
   return 'films';
 }
@@ -116,12 +116,12 @@ function run(text, api) {
   showPage((el) => {
     el.innerHTML = STYLE + '<div class="vfilms">'
       + '<div class="poster"><p class="kicker">' + esc('Now showing · a new one daily') + '</p>'
-      + '<h2 aria-label="V01D FILMS">V01D F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
-      + '<p class="line">' + esc('Every day V01D films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
+      + '<h2 aria-label="VERSE FILMS">VERSE F<span class="gl fast" aria-hidden="true"><b>I</b><i>1</i></span>LMS</h2>'
+      + '<p class="line">' + esc('Every day Verse films one of its own experiments: built by itself, shot in a real browser.') + '</p>'
       + '<a class="play" href="' + PAGE + '"><i aria-hidden="true">\u25B6</i>' + esc('Watch now') + '</a></div>'
       + (wantsUpload(text)
         ? '<ol><li>' + esc('Pick any film or ad clip and tap 1. Download (free)') + '</li><li>' + esc('Tap 2. Copy: title, description with the a-to-mind.com link, hashtags') + '</li><li>' + esc('Tap 3. Upload to YouTube, TikTok, Reels or X, signed in as you, and paste') + '</li></ol>'
-        : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for V01D') + '</li></ol>')
+        : '<ol><li>' + esc('Watch the newest film') + '</li><li>' + esc('Post any of them: Download, Copy, Upload to YouTube, TikTok, Reels or X') + '</li><li>' + esc('Every upload is an ad for Verse') + '</li></ol>')
       + '<p class="who">' + esc('Free for everyone to watch and share, no sign-in.') + '</p>'
       + '<div class="src">' + esc('a-to-mind.com/films/') + '</div></div>';
   });

@@ -24,7 +24,7 @@ export async function onRequestPost({ request, env }) {
   if (!env.DB) return new Response('replies need the database', { status: 503 });
   let b = {}; try { b = JSON.parse((await request.text()).slice(0, 4000)); } catch (_) {}
   const text = cleanReply(b.text);
-  if (!text) return new Response('say something to V01D', { status: 400 });
+  if (!text) return new Response('say something to Verse', { status: 400 });
   const about = aboutOf(b.about), entries = about ? [] : await readVoice(env), to = String(b.to || '');
   const entry = about ? { kind: 'card', ...about } : to ? entries.find((e) => e && e.at === to) : entries[0];
   if (to && !entry) return new Response('no such reflection', { status: 400 });

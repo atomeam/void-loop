@@ -213,7 +213,7 @@ export function importInto(graph, json) {
     if (json.length > IMPORT_MAX) return { ok: false, why: 'that file is over 2 MB' };
     try { j = JSON.parse(json); } catch (_) { return { ok: false, why: 'that is not a JSON file' }; }
   }
-  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a V01D memory file (schema ' + SCHEMA + ')' };
+  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a Verse memory file (schema ' + SCHEMA + ')' };
   if (j.v !== 1) return { ok: false, why: 'that file is version ' + String(j.v).slice(0, 12) + ', this page reads version 1' };
   if (!plain(j.nodes)) return { ok: false, why: 'that file has no nodes' };
   const g = copy(graph && plain(graph) && plain(graph.nodes) ? graph : empty());

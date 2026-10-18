@@ -44,13 +44,13 @@ const CSS = '.about-skill .about-chips{display:flex;flex-wrap:wrap;gap:6px;margi
 export function cardHtml(a, esc) {
   const chip = (text, ask, cls) => '<button type="button" class="about-chip' + (cls ? ' ' + cls : '') + '" data-ask="' + esc(ask) + '">' + esc(text) + '</button>';
   return '<style>' + CSS + '</style><h2>' + esc(a.title) + '</h2>'
-    + '<div class="sub">a skill of V01D’s' + (a.family ? ' · ' + esc(a.family.name) : '') + ' · ' + esc(a.tier) + (a.why ? ' (' + esc(a.why) + ')' : '') + '</div>'
+    + '<div class="sub">a skill of Verse’s' + (a.family ? ' · ' + esc(a.family.name) : '') + ' · ' + esc(a.tier) + (a.why ? ' (' + esc(a.why) + ')' : '') + '</div>'
     + (a.line ? '<p>' + esc(a.line) + '</p>' : '')
     + (a.history || '')
     + (a.examples.length ? '<div class="about-h">Ask it</div><div class="about-chips" data-role="examples">' + a.examples.map((e) => chip(e, e)).join('') + '</div>' : '')
     + (a.related.length ? '<div class="about-h">Related</div><div class="about-chips" data-role="related">' + a.related.map((r) => chip(r.title, r.ask, 'rel')).join('') + '</div>' : '')
     + '<button type="button" class="about-try" data-ask="' + esc(a.tryAsk) + '">Try it: ' + esc(a.tryAsk) + '</button>'
-    + '<div class="src">Source: V01D’s own book (skills/guide.json) and skill ratings (skills/families.json) · as of ' + new Date().toISOString().slice(0, 7) + '</div>';
+    + '<div class="src">Source: Verse’s own book (skills/guide.json) and skill ratings (skills/families.json) · as of ' + new Date().toISOString().slice(0, 7) + '</div>';
 }
 
 async function run(text, api) {
@@ -84,7 +84,7 @@ async function run(text, api) {
       if (box && box !== document.body) box.scrollTo({ top: box.scrollTop + host.getBoundingClientRect().top - box.getBoundingClientRect().top - 6, behavior: 'smooth' });
     });
   });
-  api.say(h && sum ? a.title + ' · your record against V01D on this device: ' + summaryLine(sum) : a.title + (a.family ? ' · ' + a.family.name : '') + ' · ' + a.tier);
+  api.say(h && sum ? a.title + ' · your record against Verse on this device: ' + summaryLine(sum) : a.title + (a.family ? ' · ' + a.family.name : '') + ' · ' + a.tier);
   return 'about-skill';
 }
 

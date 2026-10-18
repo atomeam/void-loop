@@ -85,7 +85,7 @@ export function describe(p) {
 
 /** the notes as text, bar by bar, to copy. Pure. */
 export function notesText(p) {
-  const L = [p.title + ' (V01D, ' + p.key + ' ' + p.scale + ', ' + p.bpm + ' bpm, ' + p.bars + ' bars; 16 steps a bar, step 1 first)', 'ask: ' + p.ask, ''];
+  const L = [p.title + ' (Verse, ' + p.key + ' ' + p.scale + ', ' + p.bpm + ' bpm, ' + p.bars + ' bars; 16 steps a bar, step 1 first)', 'ask: ' + p.ask, ''];
   for (let b = 0; b < p.bars; b++) {
     const lo = b * p.stepsPerBar, hi = lo + p.stepsPerBar;
     const m = p.melody.filter((n) => n.step >= lo && n.step < hi).map((n) => noteName(n.midi) + '@' + (n.step - lo + 1) + 'x' + n.len).join(' ');

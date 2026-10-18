@@ -29,7 +29,7 @@ test('state: one list of keys, secrets never shown, the memory session reads fro
   assert.ok(!stateHtml(esc, rows, 'owner').includes('own-t'));
   assert.equal(read('stage', s), null);
 });
-test('ladder: V01D moves 16 a match, never under 400, draws and nonsense do not move it', () => {
+test('ladder: Verse moves 16 a match, never under 400, draws and nonsense do not move it', () => {
   let l = null;
   for (const w of ['void', 'void', 'you']) l = record(l, 'pong', w);
   assert.equal(rating(l, 'pong'), 1016); assert.equal(played(l, 'pong'), 3); assert.equal(rating(l, 'snake'), 1000);

@@ -71,7 +71,7 @@ function mount(th, stageApi) {
     btn('Copy', 'proposal-copy', async () => { let ok = false; try { await navigator.clipboard.writeText(md()); ok = true; } catch (_) {} status.textContent = ok ? 'copied as Markdown' : 'select the text and copy'; }),
     btn('Download .md', 'proposal-download', () => { const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([md()], { type: 'text/markdown' })); a.download = fileNameOf(th.fields); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); status.textContent = 'downloaded ' + a.download; }),
     btn('Send to the customer', 'proposal-send', () => {
-      if (!ownerToken()) { status.textContent = 'Sending is the owner\'s, and it stops on the confirm line. Unlock V01D first.'; return; }
+      if (!ownerToken()) { status.textContent = 'Sending is the owner\'s, and it stops on the confirm line. Unlock Verse first.'; return; }
       if (!addressIn(to.value).to) { status.textContent = 'Add the customer\'s address first.'; to.focus(); return; }
       status.textContent = 'asking the confirm line…';
       // the exact draft rides the ask: the fingerprint covers it, so the yes is on this text and no other

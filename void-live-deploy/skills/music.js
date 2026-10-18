@@ -33,7 +33,7 @@ function run(text, api) {
     el.dataset.cardKind = 'Song';
     el.innerHTML = '<h2>' + esc(p.title) + '</h2><p>' + esc(describe(p)) + '</p>' + rollSvg(p)
       + '<p class="mu-btns" style="display:flex;gap:8px;flex-wrap:wrap;margin:10px 0"><button type="button" class="mu-play">Play</button><button type="button" class="mu-wav">Save as WAV</button><button type="button" class="mu-copy">Copy the notes</button><span class="mu-msg" role="status" style="align-self:center;color:var(--ink-3)"></span></p>'
-      + '<div class="src">Made by V01D from the words of your ask, synthesised in this browser (Web Audio). Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
+      + '<div class="src">Made by Verse from the words of your ask, synthesised in this browser (Web Audio). Evidence: experiment, a new skill. Rows below the roll: kick, snare, hat.</div>';
     const q = (s) => el.querySelector(s), msg = (t) => { const m = q('.mu-msg'); if (m) m.textContent = t; };
     for (const ev of ['pointerdown', 'keydown']) for (const b of el.querySelectorAll('button')) b.addEventListener(ev, (e) => e.stopPropagation());
     let ac = null, timer = 0, raf = 0, t0 = 0, dur = 0;

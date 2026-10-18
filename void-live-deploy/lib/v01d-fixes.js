@@ -4,6 +4,7 @@
 // (skills/v01d-fixes.js) shows each open one with its confidence, where it changes, and the diff; Approve
 // (functions/api/v01d-fixes.js, owner only) swaps "waits for owner" for automerge, so it merges once Void's review is clean. Pure.
 export const REPO = 'atomeam/void-loop';
+// LABEL is the GitHub label's name, an identifier the workflows make (people see Verse)
 export const LABEL = 'made by V01D', WAITS = 'waits for owner', MERGES = 'automerge';
 export const MAX_LINES = 40;
 
@@ -13,7 +14,7 @@ export function fixOf(pr) {
   const labels = (pr.labels || []).map((l) => (l && l.name) || '').filter(Boolean);
   if (!labels.includes(LABEL)) return null;
   const body = String(pr.body || '');
-  const c = /V01D's confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in V01D's words: ([^\n]*?)\. (?:V01D's confidence|Labelled)/.exec(body);
+  const c = /(?:V01D|Verse)'s confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in (?:V01D|Verse)'s words: ([^\n]*?)\. (?:(?:V01D|Verse)'s confidence|Labelled)/.exec(body);
   const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Void: how much the fix changes, worked out by tools/propose-fix.mjs
   const conf = c && c[1] !== 'none given' && Number.isFinite(parseFloat(c[1])) ? Math.round(parseFloat(c[1]) * 100) / 100 : null;
   return {

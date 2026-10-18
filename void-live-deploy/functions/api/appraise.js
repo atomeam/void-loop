@@ -39,7 +39,7 @@ export async function onRequestPost({ request, env }) {
   if (isPersonAsk(note)) { const v = { kind: 'person', cents: 0, text: '', says: [complimentFor(note, note.length)], expert: false, person: true }; return json({ seen: '', value: v, text: appraisalText(v) }); }
   const bytes = imageBytes(body && body.image);
   if (!bytes) return json({ error: 'a PNG, JPEG or WebP photo, under 800 KB' }, 400);
-  if (!env || !env.AI) return json({ error: 'V01D cannot see photos from this deploy yet (no vision model bound)' }, 503);
+  if (!env || !env.AI) return json({ error: 'Verse cannot see photos from this deploy yet (no vision model bound)' }, 503);
   let seen = '';
   try { seen = await describe(env, bytes, String(body.image).trim()); } catch (e) { return json({ error: 'the vision model did not answer; try again in a moment', reason: String((e && e.message) || e).replace(/\s+/g, ' ').slice(0, 200) }, 502); }
   const value = valueFrom(seen, note);

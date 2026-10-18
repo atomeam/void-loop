@@ -8,10 +8,10 @@
 const APP = '(?:app|apps|application)';
 const WHAT = "(?:void|v0id|v01d|this|the|your|a)";
 const WHEN = new RegExp('^(?:'
-  + '(?:get|download|install|add)\\s+(?:' + WHAT + '\\s+)?(?:' + APP + '|void|v01d)(?:\\s+(?:on|to)\\s+(?:my\\s+)?(?:phone|iphone|android|home\\s*screen|desktop|computer|mac|pc))?'
+  + '(?:get|download|install|add)\\s+(?:' + WHAT + '\\s+)?(?:' + APP + '|void|v01d|verse)(?:\\s+(?:on|to)\\s+(?:my\\s+)?(?:phone|iphone|android|home\\s*screen|desktop|computer|mac|pc))?'
   + '|(?:is\\s+there|do\\s+you\\s+have|where.?s|where\\s+is|wheres)\\s+(?:a|an|the|my|your)?\\s*(?:' + WHAT + '\\s+)?(?:mobile\\s+|phone\\s+|iphone\\s+|android\\s+|desktop\\s+)?' + APP
   + '|(?:' + WHAT + '\\s+)?(?:mobile|phone|iphone|ios|android|desktop)\\s+' + APP
-  + '|(?:void|v01d)\\s+' + APP
+  + '|(?:void|v01d|verse)\\s+' + APP
   + '|add\\s+to\\s+home\\s*screen'
   + '|' + APP
   + ')$', 'i');
@@ -48,7 +48,7 @@ export function placeOf(w = typeof window !== 'undefined' ? window : {}) {
 const STEPS = {
   ios: ['Open a-to-mind.com in Safari.', 'Tap the Share button (the square with the arrow).', 'Tap “Add to Home Screen”, then Add.'],
   android: ['Open a-to-mind.com in Chrome.', 'Tap the ⋮ menu.', 'Tap “Install app” (or “Add to Home screen”).'],
-  desktop: ['Open a-to-mind.com in Chrome or Edge.', 'Click the install icon at the right of the address bar (or ⋮ menu → “Install V01D”).', 'V01D opens in its own window, with its own icon.'],
+  desktop: ['Open a-to-mind.com in Chrome or Edge.', 'Click the install icon at the right of the address bar (or ⋮ menu → “Install Verse”).', 'Verse opens in its own window, with its own icon.'],
 };
 
 function run(text, api) {
@@ -57,11 +57,11 @@ function run(text, api) {
   showPage((el) => {
     const top = place === 'installed' ? 'You’re in the app.' : 'On your phone and your computer.';
     let body = '';
-    if (place === 'installed') body = '<p>' + esc('V01D is installed here. Long-press its icon for Films and What’s new.') + '</p>';
-    else if (place === 'prompt') body = '<button class="go" type="button">' + esc('Install V01D') + '</button><div class="said" aria-live="polite"></div>';
+    if (place === 'installed') body = '<p>' + esc('Verse is installed here. Long-press its icon for Films and What’s new.') + '</p>';
+    else if (place === 'prompt') body = '<button class="go" type="button">' + esc('Install Verse') + '</button><div class="said" aria-live="polite"></div>';
     else body = '<ol>' + STEPS[place].map((s) => '<li>' + esc(s) + '</li>').join('') + '</ol>';
     el.innerHTML = STYLE + '<div class="vapp">'
-      + '<div class="head"><img src="/icon-192.png" alt=""><div><h2>' + esc('Get the V01D app') + '</h2><p class="sub">' + esc(top) + '</p></div></div>'
+      + '<div class="head"><img src="/icon-192.png" alt=""><div><h2>' + esc('Get the Verse app') + '</h2><p class="sub">' + esc(top) + '</p></div></div>'
       + body
       + '<div class="why"><div><b>' + esc('Its own icon') + '</b>' + esc('One tap from your home screen or dock.') + '</div>'
       + '<div><b>' + esc('Its own window') + '</b>' + esc('No tabs, no address bar: just the stage.') + '</div>'
@@ -72,9 +72,9 @@ function run(text, api) {
     const go = el.querySelector('.go');
     if (go) go.addEventListener('click', async () => {
       const e = window.__v01dInstall, said = el.querySelector('.said');
-      if (!e) { said.textContent = 'Your browser took the offer back: use its menu → Install V01D.'; return; }
-      try { await e.prompt(); const c = await e.userChoice; window.__v01dInstall = null; said.textContent = c && c.outcome === 'accepted' ? 'Installed. Find V01D on your home screen or in your apps.' : 'Not installed. Ask “get the app” again any time.'; }
-      catch (_) { said.textContent = 'Your browser didn’t open the install: use its menu → Install V01D.'; }
+      if (!e) { said.textContent = 'Your browser took the offer back: use its menu → Install Verse.'; return; }
+      try { await e.prompt(); const c = await e.userChoice; window.__v01dInstall = null; said.textContent = c && c.outcome === 'accepted' ? 'Installed. Find Verse on your home screen or in your apps.' : 'Not installed. Ask “get the app” again any time.'; }
+      catch (_) { said.textContent = 'Your browser didn’t open the install: use its menu → Install Verse.'; }
     });
   });
   return 'app';

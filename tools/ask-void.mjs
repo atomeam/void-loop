@@ -13,7 +13,7 @@ export const LOG = resolve(root, 'docs/void-voice.md');
 export const QUESTION = 'What did your builders learn lately, and what would you do differently?';
 // --ask "<question>" asks something else (a track's own question, e.g. how to make its video card better than YouTube's) and logs it the same way
 const ASKED = (() => { const i = process.argv.indexOf('--ask'); return i > 0 && process.argv[i + 1] ? String(process.argv[i + 1]).slice(0, 500) : QUESTION; })();
-const HEAD = '# V01D on its builders, in its own words\n\nOnce per run `node tools/ask-void.mjs` asks V01D what it learned from its builders (domains/handoff.md) and what it\nwould do differently. Its answers are copied as it gave them, newest last. Input, not a gate.\n';
+const HEAD = '# Verse on its builders, in its own words\n\nOnce per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it\nwould do differently. Its answers are copied as it gave them, newest last. Input, not a gate.\n';
 
 export function entry(at, question, answer, sources = []) {
   const quoted = String(answer).replace(/\r/g, '').split('\n').map((l) => ('> ' + l).trimEnd()).join('\n');

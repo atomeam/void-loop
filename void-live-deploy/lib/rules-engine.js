@@ -180,7 +180,7 @@ function context(st, ev) {
   return x;
 }
 
-const lab = (side) => (side === 'you' ? 'You' : side === 'void' ? 'V01D' : side[0].toUpperCase() + side.slice(1)), poss = (side) => (side === 'you' ? 'your' : lab(side) + '\'s');
+const lab = (side) => (side === 'you' ? 'You' : side === 'void' ? 'Verse' : side[0].toUpperCase() + side.slice(1)), poss = (side) => (side === 'you' ? 'your' : lab(side) + '\'s');
 const act = (side, verb) => lab(side) + ' ' + (side === 'you' ? verb : verb + (/(s|ch|sh|x)$/.test(verb) ? 'es' : 's'));
 const things = (n, word) => n + ' ' + (n === 1 ? word.replace(/s$/, '') : word);
 const plainName = (e) => ({ deny: 'forbids', allow: 'allows' }[e.do]);

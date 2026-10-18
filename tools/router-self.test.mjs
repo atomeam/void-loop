@@ -5,7 +5,7 @@ import assert from 'node:assert/strict';
 import { SKILLS } from '../void-live-deploy/lib/router.js';
 const CORRECT = ['tell void what it got wrong', 'open your self card, I want to correct you', 'correct void on its self card',
   // V01D's will, 2026-10-18, its top two wants: the look skill must never take these (people typed them and look answered)
-  'open the self card and tell void what it got wrong', 'open the self card and tell V01D what it got wrong', 'show the self card and correct it'];
+  'open the self card and tell void what it got wrong', 'open the self card and tell Verse what it got wrong', 'show the self card and correct it'];
 test('corrections are examples of the self card and near misses of look, never the other way round', () => {
   for (const q of CORRECT) {
     assert.ok(SKILLS.self.examples.includes(q), 'self has: ' + q);

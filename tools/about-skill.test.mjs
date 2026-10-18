@@ -41,7 +41,7 @@ test('every example of the skill resolves to the skill it names', () => {
   for (const [ask, name] of Object.entries(history)) { assert.equal(nameOf(ask), null, ask + ': not an about-ask'); assert.equal(historyAsk(ask).game, name, ask); assert.ok(skill.match(ask, ask), ask + ' matches'); }
 });
 
-test('every near miss resolves to nothing: the world keeps its route, V01D its self page', () => {
+test('every near miss resolves to nothing: the world keeps its route, Verse its self page', () => {
   for (const ask of skill.nearMisses) if (ask !== 'tell me about zorbleflux') assert.equal(nameOf(ask), null, ask);
   // "tell me about zorbleflux" is zorbleflux's own (ranked first); the rule would also leave it: a bare one-word name
   assert.equal(nameOf('tell me about zorbleflux'), null);

@@ -9,7 +9,7 @@
 import { eventAsk, searchWords, announcedFrom, confidenceOf, rawSnippet, left } from '../lib/event-date.js';
 
 const WIKI = 'https://en.wikipedia.org';
-const UA = { headers: { 'Api-User-Agent': 'V01D/1.0 (https://a-to-mind.com)' } };
+const UA = { headers: { 'Api-User-Agent': 'Verse/1.0 (https://a-to-mind.com)' } };
 
 /** the summary of the page that best names the event: the exact title first, then the top search hit. { title, extract, url } or null */
 async function summaryOf(words) {

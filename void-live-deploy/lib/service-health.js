@@ -63,9 +63,9 @@ export function gaugeHtml(esc, g) {
   const known = !!(g && g.known), score = known ? g.score : 100, label = known ? g.label : 'none', deg = needleOf(score);
   const col = label === 'steady' ? '#3fb950' : label === 'wobbly' ? '#d29922' : label === 'shaky' ? '#f85149' : '#888';
   const said = !known ? 'no red suite recorded yet' : g.week + ' red suite' + (g.week === 1 ? '' : 's') + ' on main in 7 days' + (g.day ? ', ' + g.day + ' in the last day' : '');
-  return '<div class="sh-gauge" data-stability="' + esc(label) + '" data-score="' + esc(score) + '" role="img" aria-label="' + esc('V01D stability ' + score + ' of 100: ' + label + ', ' + said) + '">'
+  return '<div class="sh-gauge" data-stability="' + esc(label) + '" data-score="' + esc(score) + '" role="img" aria-label="' + esc('Verse stability ' + score + ' of 100: ' + label + ', ' + said) + '">'
     + '<svg viewBox="0 0 120 70" width="120" height="70" aria-hidden="true"><path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="rgba(128,128,128,.3)" stroke-width="8" stroke-linecap="round"/>'
     + '<path d="M10 62 A50 50 0 0 1 110 62" fill="none" stroke="' + col + '" stroke-width="8" stroke-linecap="round" stroke-dasharray="' + esc(Math.round(157 * score / 100)) + ' 157"/>'
     + '<g class="sh-needle" style="transform-origin:60px 62px;transform:rotate(' + esc(deg) + 'deg)"><line x1="60" y1="62" x2="60" y2="20" stroke="currentColor" stroke-width="3" stroke-linecap="round"/><circle cx="60" cy="62" r="4" fill="currentColor"/></g></svg>'
-    + '<div><b>V01D itself</b> <span class="sh-kind">the browser suite on main</span><br><span class="sh-said" data-sh-label>' + esc(label === 'none' ? 'nothing to gauge' : label + ' · ' + score + '/100') + '</span> <span class="sh-kind">' + esc(said) + '</span></div></div>';
+    + '<div><b>Verse itself</b> <span class="sh-kind">the browser suite on main</span><br><span class="sh-said" data-sh-label>' + esc(label === 'none' ? 'nothing to gauge' : label + ' · ' + score + '/100') + '</span> <span class="sh-kind">' + esc(said) + '</span></div></div>';
 }

@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
-  "name": "V01D",
+  "name": "Verse",
   "version": "0.7.4",
-  "description": "V01D by A-to-Mind in your side panel. Reads the tab you point it at and drafts into it in the browser; asks about a page by sending it to V01D; acts one step at a time on sites you allow, after your yes.",
+  "description": "Verse by A-to-Mind in your side panel. Reads the tab you point it at and drafts into it in the browser; asks about a page by sending it to Verse; acts one step at a time on sites you allow, after your yes.",
   "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAsNpgl7NZmpRXbp0RRKu03RpjATZCqDAWe3TubMc8H/81fEk7qMadNQ506e4BGE8o2AwNYV7SqIhQjFYP0EsYJt3bOe7Tjg8iHxPXwwdrksxUL3P6t2EghQ8GD1sNxJY+PSp3s4j5kJL9yWvuPRcwk5un+eSxuZBIPy0GcDYEF2lqdigbJQFmcU/0HTVLiz2uGm1FAPjAnTVygtSww11yiBGiWaeQm6QbkzBMZ4wm2vjIMJUZ3Ws/FJ06pkZpn41oadqrt+XTrOLq8lMbO/7BTppwy+CWRyY7AI/mfKxH4OLUWfty+s6/U4vPP5TDT+2x7bbZrm9eBqfTmJ1HtFZfewIDAQAB",
   "icons": {
     "16": "icon-16.png",
@@ -11,7 +11,7 @@
     "128": "icon-128.png"
   },
   "action": {
-    "default_title": "Open V01D"
+    "default_title": "Open Verse"
   },
   "side_panel": {
     "default_path": "sidepanel.html"
@@ -31,7 +31,7 @@
       "suggested_key": {
         "default": "Alt+Shift+V"
       },
-      "description": "Read this tab into V01D"
+      "description": "Read this tab into Verse"
     }
   },
   "omnibox": {
