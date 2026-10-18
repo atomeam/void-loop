@@ -835,6 +835,7 @@
     .vpage.vc-self .vs-velocity { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; color: rgb(170 140 255 / .95); }
     .vpage.vc-self .vs-velocity .vs-spark { flex: none; display: block; overflow: visible; }
     .vpage.vc-self .vs-vel-label { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--ink-3); }
+    .vpage.vc-self .vs-overdue { color: rgba(214,178,92,.95); } /* friction (asked by Void): " · N overdue" in the warning amber; the red segments are in the svg itself */
     @media (prefers-reduced-motion: no-preference) { .vpage.vc-self .vs-sec { animation: vs-in .35s ease both; } @keyframes vs-in { from { opacity: 0; transform: translateY(4px); } } }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     /* the browser's own look stays out (owner, 2026-10-18: "protecting the aesthetic perimeter"): selected text takes V01D's violet, every scrolling
@@ -1122,6 +1123,10 @@
     #void-anchor { position: fixed; right: 12px; bottom: 12px; z-index: 6; width: 28px; height: 28px; display: grid; place-items: center; color: #d7d2ff;
       opacity: .12; transition: opacity .2s ease, transform .2s ease; border-radius: 50%; text-decoration: none; }
     #void-anchor svg { width: 16px; height: 16px; display: block; }
+    /* the heart fills from the bottom with how much is on your stage to go back to (asked by Void, 2026-10-18, lib/anchor-density.js: "navigation
+       depth"): violet by the share of the goal, the quiet green of the list bar when the goal is met; nothing else about the anchor changes */
+    #void-anchor .void-anchor-fill { fill: rgba(150,120,255,.95); }
+    #void-anchor[data-state="met"] .void-anchor-fill { fill: rgba(120,200,150,.9); }
     html.void-edge #void-anchor, #void-anchor:hover, #void-anchor:focus-visible { opacity: 1; transform: scale(1.1); }
     #void-anchor:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
     @media (prefers-reduced-motion: reduce) { #void-anchor { transition: none; } html.void-edge #void-anchor, #void-anchor:hover { transform: none; } }
@@ -1149,7 +1154,7 @@
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
-  <a id="void-anchor" href="/store/" aria-label="support V01D: the store" title="support V01D"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
+  <a id="void-anchor" href="/store/" aria-label="support V01D: the store" title="support V01D" data-depth="0" data-goal="12" data-state="under"><svg viewBox="0 0 24 24" aria-hidden="true" fill="currentColor"><defs><clipPath id="void-anchor-clip"><rect x="0" y="21" width="24" height="0"/></clipPath></defs><path d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/><path class="void-anchor-fill" clip-path="url(#void-anchor-clip)" d="M12 21s-7.2-4.6-9.6-9A5.4 5.4 0 0 1 12 6.2 5.4 5.4 0 0 1 21.6 12c-2.4 4.4-9.6 9-9.6 9z"/></svg></a>
   <div id="dock" role="search" aria-label="Ask Void">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
@@ -1278,6 +1283,16 @@
       // snapshot takers (the quiz, the challenge) took one copy and never listen
       try { dispatchEvent(new CustomEvent('void:stage-change')); } catch (_) {}
     }
+    // the corner anchor's heart fills with how much is on this stage to go back to (asked by Void, 2026-10-18: "navigation depth"; lib/anchor-density.js):
+    // the things on the stage, kept cards among them, against a goal of 12; redrawn on every void:stage-change from the stage's own map, no timer
+    (async function anchorDepth() {
+      const a = document.getElementById('void-anchor'); if (!a) return;
+      let A; try { A = await import('/lib/anchor-density.js'); } catch (_) { return; }
+      const rect = a.querySelector('clipPath rect');
+      const draw = () => { try { const d = A.anchorDensity(things); a.dataset.depth = d.count; a.dataset.goal = d.goal; a.dataset.state = d.state; a.title = d.title;
+        if (rect) { rect.setAttribute('y', d.fill.y); rect.setAttribute('height', d.fill.h); } } catch (_) {} };
+      draw(); addEventListener('void:stage-change', draw);
+    })();
     function loopLog(attempt) {
       // an ask read with its typos fixed is logged as it was typed, so the miss board and the bench see the real ask
       if (typoFix && attempt && attempt.ask === typoFix.to) attempt = { ...attempt, ask: typoFix.from };
@@ -2676,7 +2691,7 @@ say('nothing selected to remove');
         const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
           if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
           try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
-            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
+            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc, SB.friction(nv.asks)); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
           velBusy = false; };
         addEventListener('void:stage-change', onStage); }
       if (owner) talkBack(el, owner, list[0].at);

@@ -25,3 +25,14 @@ test('spark: options read another field, scale to another top, name the class an
   assert.match(sparkSvg([{ n: 0 }, { n: 0 }], 84, 18, { key: 'n', max: 1 }), /points="3\.0,16\.0 81\.0,16\.0"/, 'a week of nothing is a flat line along the bottom');
   assert.match(sparkSvg(days, 72, 18, { key: 'n', max: 0 }), /points="3\.0,16\.0 36\.0,15\.7 69\.0,15\.9"/, 'a top of 0 falls back to 100: counts stay in the box');
 });
+
+test('spark: segmentColors draws a coloured line over each segment given a colour (none for null), after the polyline and before the dot; extra entries are ignored and a quote in a colour never reaches the markup', () => {
+  const days = [{ n: 0 }, { n: 2 }, { n: 1 }, { n: 1 }], base = sparkSvg(days, 84, 18, { key: 'n', max: 2, cls: 'vs-spark', ticks: true });
+  assert.equal(sparkSvg(days, 84, 18, { key: 'n', max: 2, cls: 'vs-spark', ticks: true, segmentColors: null }), base, 'null: byte-identical');
+  assert.equal(sparkSvg(days, 84, 18, { key: 'n', max: 2, cls: 'vs-spark', ticks: true, segmentColors: [null, null, null] }), base, 'all null: byte-identical');
+  const svg = sparkSvg(days, 84, 18, { key: 'n', max: 2, cls: 'vs-spark', ticks: true, segmentColors: [null, 'rgb(255,120,110)', '#f00', 'extra'] });
+  assert.equal((svg.match(/<line class="sp-seg"/g) || []).length, 2);
+  assert.match(svg, /stroke-linejoin="round"\/><line class="sp-seg" x1="29\.0" y1="2\.0" x2="55\.0" y2="9\.0" stroke="rgb\(255,120,110\)" stroke-width="1\.5" stroke-linecap="round"\/><line class="sp-seg" x1="55\.0" y1="9\.0" x2="81\.0" y2="9\.0" stroke="#f00"[^>]*\/><circle/);
+  assert.equal(sparkSvg(days, 84, 18, { key: 'n', max: 2, segmentColors: ['"><script>'] }).includes('<script'), false);
+  assert.equal(sparkSvg([{ n: 1 }], 84, 18, { key: 'n', max: 2, segmentColors: ['red'] }).includes('sp-seg'), false, 'one point has no segment');
+});

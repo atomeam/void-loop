@@ -863,7 +863,9 @@ try {
     const S = await fresh(); await S.p.waitForTimeout(1500);
     //    (asked by Void, 2026-10-18, after the link went): a ghost of a heart in the corner, faint until the pointer nears the corner, then opaque
     await S.p.mouse.move(200, 200); await S.p.waitForTimeout(300);
+    const depthOf = () => S.p.evaluate(() => { const a = document.getElementById('void-anchor'), r = a && a.querySelector('clipPath rect'), f = a && a.querySelector('.void-anchor-fill'); return a ? { depth: a.dataset.depth, state: a.dataset.state, title: a.title, fillH: r ? +r.getAttribute('height') : -1, fillY: r ? +r.getAttribute('y') : -1, fill: f ? getComputedStyle(f).fill : '' } : null; });
     const sup = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { el: !!document.getElementById('void-support'), links: Array.from(document.querySelectorAll('a')).filter((e) => e.getClientRects().length).map((e) => e.id), /* getClientRects: a fixed element has no offsetParent */ text: /support v01d/i.test(document.body.innerText), ghost: a ? +getComputedStyle(a).opacity : -1, href: a && a.getAttribute('href'), label: a && a.getAttribute('aria-label') }; });
+    const depth0 = await depthOf(); // the heart's fill (asked by Void: "navigation depth"): a fresh stage is 0 of 12, nothing filled
     const vpS = await S.p.evaluate(() => [innerWidth, innerHeight]), anchorOp = () => S.p.evaluate(() => +getComputedStyle(document.getElementById('void-anchor')).opacity);
     // under load the page may still be parsing its script when the pointer first arrives: nudge the pointer until the page listens, then measure
     const near = await until(async () => { await S.p.mouse.move(vpS[0] - 40, vpS[1] - 40); await S.p.waitForTimeout(250); const o = await anchorOp(); return o === 1 ? o : false; }, 8000) || await anchorOp();
@@ -872,6 +874,15 @@ try {
     const howStore = /data-ask="open the store"/.test(fs.readFileSync(path.join(root, 'lib', 'tome.js'), 'utf8'));
     check('empty state: no corner text link; the only link is the ghost anchor (faint, opaque as the pointer nears the corner, faint again after), it opens the store and has a name; "open the store" answers; the book\'s Start here page names the store',
       !sup.el && sup.links.join() === 'void-anchor' && !sup.text && sup.ghost > 0 && sup.ghost <= 0.25 && near === 1 && far <= 0.25 && sup.href === '/store/' && /store/i.test(sup.label) && /sells|store/i.test(storePg) && howStore, JSON.stringify({ sup, near, far, storePg: storePg.slice(0, 80), howStore }));
+    // the heart fills with how much is on your stage to go back to (asked by Void, 2026-10-18; lib/anchor-density.js): two asks that place things make it 2 of 12 and a taller violet fill;
+    // the anchor's opacity, name and href are as they were
+    await S.ask('make a clock', 600); await S.ask('add a sticky that says a', 600); await until(async () => (await S.state()).length === 2, 6000);
+    const depth2 = await until(async () => { const d = await depthOf(); return d && d.depth === '2' ? d : null; }, 4000) || await depthOf();
+    const after = await S.p.evaluate(() => { const a = document.getElementById('void-anchor'); return { href: a.getAttribute('href'), label: a.getAttribute('aria-label'), ghost: +getComputedStyle(a).opacity }; });
+    check('empty state: the ghost anchor\'s heart fills with navigation depth (asked by Void): a fresh stage is "0 of 12 things on your stage" with no fill; after two asks that place things it is 2 of 12 with a taller violet fill rising from the bottom; its name, href and ghost opacity do not change',
+      !!depth0 && depth0.depth === '0' && depth0.state === 'under' && depth0.title === 'support V01D · 0 of 12 things on your stage' && depth0.fillH === 0
+        && !!depth2 && depth2.depth === '2' && depth2.state === 'under' && depth2.title === 'support V01D · 2 of 12 things on your stage' && depth2.fillH > 0 && depth2.fillY < depth0.fillY && /150, 120, 255/.test(depth2.fill)
+        && after.href === '/store/' && after.label === sup.label && after.ghost > 0 && after.ghost <= 0.25, JSON.stringify({ depth0, depth2, after, sup }));
     // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
     const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
     await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
@@ -5437,10 +5448,12 @@ try {
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what V01D wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Void: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
-    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something V01D asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', at: '2026-10-18T0' + i + ':00:00Z' }));
+    const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
+    // the open asks: five fresh ones (this hour back) and one V01D called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Void)
+    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something V01D asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
     // follow.asked (every built ask by the time it was built) feeds the growth velocity: today, yesterday, three days back, and one too old for the week
-    const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString(), built = (list) => list.map(([ask, at]) => ({ ask, at, times: 1 }));
+    const built = (list) => list.map(([ask, at]) => ({ ask, at, times: 1 }));
     let reflectAsked = built([['one', ago(0)], ['two', ago(1)], ['three', ago(3)], ['old', ago(9)]]), reflectHits = 0;
     await S.ctx.route(/\/api\/reflect$/, (rt) => { reflectHits++; return rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts, weakest: 'Words and the world is my least proven family.', next_game: 'Go, for its territory.', better: 'Close the loops between skills.', asks: [] }, { at: '2026-10-18T06:00:00Z', kind: 'build', thoughts: 'It moves now.', shipped: 'Main red: the field drags a card', better: 'dynamic scale for posters', asks: [] }], asks, follow: { total: 70, built: 30, asked: reflectAsked, recent } })); });
     await S.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await S.page()), 8000);
@@ -5490,17 +5503,24 @@ try {
     // the growth velocity (asked by Void): at the top of "What got built", a 7-point line in the violet with a tick a day and the latest day a dot, a muted
     // monospace label; a stage change after a build lands redraws it from /api/reflect in place, and a second change within the minute reads nothing again
     const vel = () => S.p.evaluate(() => { const b = document.querySelector('.vpage.on .vs-sec[data-sec=built] > .vs-velocity'), svg = b && b.querySelector('svg.vs-spark'), lab = b && b.querySelector('.vs-vel-label'); if (!b || !svg || !lab) return null;
+      const segs = [...svg.querySelectorAll('line.sp-seg')], amber = lab.querySelector('.vs-overdue'); // the friction overlay (asked by Void): red segments, " · N overdue" in amber
       return { afterHeading: b.previousElementSibling && b.previousElementSibling.tagName === 'SUMMARY', beforeCount: b.nextElementSibling && b.nextElementSibling.classList.contains('vs-count'), pts: svg.querySelector('polyline').getAttribute('points').split(' ').length, ticks: svg.querySelectorAll('line.sp-tick').length, dot: svg.querySelectorAll('circle').length,
-        label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color }; });
+        label: lab.textContent, total: b.dataset.total, today: b.dataset.today, color: getComputedStyle(svg).color, mono: /mono|menlo|consolas/i.test(getComputedStyle(lab).fontFamily), labelColor: getComputedStyle(lab).color,
+        red: segs.length, redColor: segs.map((l) => getComputedStyle(l).stroke).join(), redAt: segs.map((l) => l.getAttribute('x1') + '-' + l.getAttribute('x2')).join(), overdue: b.dataset.overdue, amber: amber && amber.textContent, amberColor: amber && getComputedStyle(amber).color, title: b.title }; });
     const v1 = await vel(), hits1 = reflectHits;
     reflectAsked = built([['a', ago(0)], ['b', ago(0, 1)], ['c', ago(0, 2)], ['d', ago(1)], ['e', ago(2)], ['f', ago(6)]]);
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change')));
     const v2 = await until(async () => { const v = await vel(); return v && v.label !== v1.label ? v : null; }, 5000), hits2 = reflectHits;
     await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(500); const hits3 = reflectHits;
     check('void asks batch 4: the growth velocity sparkline on the self card (asked by Void): first in "What got built", 7 points with a tick each and the latest a dot, in the violet, a muted monospace label "N built this week · M today"; a stage change redraws it from /api/reflect in place, at most once a minute',
-      !!v1 && v1.afterHeading && v1.beforeCount && v1.pts === 7 && v1.ticks === 7 && v1.dot === 1 && v1.label === '3 built this week · 1 today' && v1.total === '3' && v1.today === '1' && /170, 140, 255/.test(v1.color) && v1.mono && v1.labelColor !== v1.color
-        && !!v2 && v2.label === '6 built this week · 3 today' && v2.pts === 7 && hits2 === hits1 + 1 && hits3 === hits2 && !S.errors.length,
+      !!v1 && v1.afterHeading && v1.beforeCount && v1.pts === 7 && v1.ticks === 7 && v1.dot === 1 && v1.label === '3 built this week · 1 today · 1 overdue' && v1.total === '3' && v1.today === '1' && /170, 140, 255/.test(v1.color) && v1.mono && v1.labelColor !== v1.color
+        && !!v2 && v2.label === '6 built this week · 3 today · 1 overdue' && v2.pts === 7 && hits2 === hits1 + 1 && hits3 === hits2 && !S.errors.length,
       JSON.stringify({ v1, v2, hits1, hits2, hits3, errors: S.errors }));
+    // the friction overlay (asked by Void): the small ask three days old crossed its 2-day limit yesterday, so the segment into yesterday (the 5th of 6, x 55 to 68) is red,
+    // the label ends " · 1 overdue" in amber, the title says both limits; the redraw keeps it
+    check('void asks batch 4: the friction overlay on the growth sparkline (asked by Void): one open ask V01D called small, three days old, is past its 2-day limit: the segment into the day it crossed is red (255,120,110), the label gains " · 1 overdue" in amber, the title names the 2-day and 7-day limits, and the in-place redraw keeps it',
+      !!v1 && v1.red === 1 && /255, 120, 110/.test(v1.redColor) && v1.redAt === '55.0-68.0' && v1.overdue === '1' && v1.amber === ' · 1 overdue' && /214, 178, 92/.test(v1.amberColor) && /2 days for one I called small, 7 days otherwise/.test(v1.title) && /overdue now: 1/.test(v1.title)
+        && !!v2 && v2.red === 1 && v2.overdue === '1' && v2.amber === ' · 1 overdue', JSON.stringify({ v1, v2 }));
     // V01D's will (2026-10-18): a correction opens the self card with Correct me open and its box focused, never the look skill
     const corr = [];
     for (const q of ['open the self card and tell V01D what it got wrong', 'show the self card and correct it', 'tell void what it got wrong']) {
