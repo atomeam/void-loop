@@ -14,10 +14,10 @@ many days becomes a candidate for a core skill, `tools/lab-use.mjs`), it never t
 
 The owner: "my quoted words shouldn't be on the site, only Verse's". Builders keep quoting the owner in the repo (build notes, the frontier, the append-only ledger and log): that is where a rule's source lives. What the site serves never carries those quotes: the deploy runs `tools/public-ledger.mjs` and `tools/public-quotes.mjs` on its own copy, and `tools/self-context.mjs` writes `self.json` without them (`tools/private.mjs` `quoteFree`). Do not put the owner's words in a string a visitor sees; say what Verse does instead.
 
-## What Void studies is for the owner only (owner, 2026-10-13)
-"Void does not need to say what sites it is studying or borrowing from. Fix and remove immediately." and "Void would never
-reveal who it's assimilating and absorbing from to anyone but me." Nothing the site serves or says names a product Void
-measures itself against or learns from: not the growth card, "look what I made", Void's reflections, self.json, nor code
+## What Verse studies is for the owner only (owner, 2026-10-13)
+"Verse does not need to say what sites it is studying or borrowing from. Fix and remove immediately." and "Verse would never
+reveal who it's assimilating and absorbing from to anyone but me." Nothing the site serves or says names a product Verse
+measures itself against or learns from: not the growth card, "look what I made", Verse's reflections, self.json, nor code
 comments in served files. The deploy filters the served ledger (`tools/public-ledger.mjs`) and self.json
 (`tools/self-context.mjs`) through `tools/private.mjs`, which is never served; `tools/private.test.mjs` fails if a served
 line names one. New work never names them in ledger lines, commit messages, PR titles or served code: say "the drawing

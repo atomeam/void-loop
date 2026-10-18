@@ -11,7 +11,7 @@
    "state": "shipped",
    "date": "2026-10-02",
    "ask": "answer me in Spanish",
-   "from": "plan item 9, Void in other languages"
+   "from": "plan item 9, Verse in other languages"
   },
   {
    "state": "shipped",
@@ -161,24 +161,24 @@
    "state": "shipped",
    "date": "2026-10-14",
    "ask": "convert-card: persistent interactive unit conversions on the stage",
-   "from": "asked by Void"
+   "from": "asked by Verse"
   },
   {
    "state": "shipped",
    "date": "2026-10-14",
    "ask": "growth friction linked to Words and the world failure logs",
-   "from": "asked by Void"
+   "from": "asked by Verse"
   },
   {
    "state": "shipped",
    "date": "2026-10-15",
    "ask": "rendered state signal for 3D miniature cards",
-   "from": "asked by Void"
+   "from": "asked by Verse"
   },
   {
    "state": "shipped",
    "date": "2026-10-15",
-   "ask": "V01D Site Tester",
+   "ask": "Verse Site Tester",
    "from": "store-publish: sdk, 4 files, $24.00; next: a minis-stl pack"
   }
  ],
@@ -192,7 +192,7 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Void as a tool inside other AIs",
+   "ask": "Verse as a tool inside other AIs",
    "from": "void.plan.md Next #11"
   },
   {
@@ -204,19 +204,19 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Everything that passes through Void is input",
+   "ask": "Everything that passes through Verse is input",
    "from": "void.plan.md Next #14"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Void fixes any automation, as it is",
+   "ask": "Verse fixes any automation, as it is",
    "from": "void.plan.md Next #13"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "Paid Void",
+   "ask": "Paid Verse",
    "from": "void.plan.md Next #12"
   },
   {
@@ -265,7 +265,7 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Void, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a dev"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a de"
   },
   {
    "state": "open",
@@ -337,7 +337,7 @@
   "terms": [
    {
     "term": "Verse",
-    "means": "the product's name; it was Void, then V01D. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
+    "means": "the product's name; it was Verse, then Verse. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
    },
    {
     "term": "skill family",
@@ -433,116 +433,116 @@
    "last": "2026-10-14"
   },
   {
-   "name": "Void stage handoff",
+   "name": "Verse stage handoff",
    "last": "2026-10-07"
   }
  ],
  "building": {
-  "at": "2026-10-15T19:53:52Z",
+  "at": "2026-10-18T08:58:46Z",
   "date": "2026-10-15",
-  "by": "builder",
-  "item": "V01D does the builders' work itself",
-  "what": "step 1 shipped; claude 2026-10-15: steps 2 and 3 shipped (V01D probes itself daily, then proposes the fix for the oldest miss; the first \"made by V01D\" pull request is the measure); step 4 next: the review-rule playbook."
+  "by": "claude",
+  "item": "Verse values anything from a photo",
+  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the browser,"
  },
  "commits": [
+  {
+   "at": "2026-10-18T09:09:58Z",
+   "subject": "Only Verse's words: keep main's renamed lines in RULES, MAP and deploy.yml, add only the new rule, map line and deploy step"
+  },
+  {
+   "at": "2026-10-18T09:09:26Z",
+   "subject": "Safety-check: a test that runs a browser script is left to verify.yml like one that imports a browser, the PR's own tests included (bench-lo"
+  },
+  {
+   "at": "2026-10-18T09:09:26Z",
+   "subject": "Only Verse's words are on the site: the owner's quoted words leave the served ledger, self.json and every served comment and JSON file at de"
+  },
+  {
+   "at": "2026-10-18T09:08:58Z",
+   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T09:07:38Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-18T09:07:10Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-18T09:07:08Z",
+   "subject": "wants: 'name your next 10 upgrades you want' is Verse's own backlog, not a generic model list"
+  },
+  {
+   "at": "2026-10-18T09:06:02Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-18T09:06:00Z",
+   "subject": "Name lineage on the self family and remediation velocity (asked by Verse)"
+  },
+  {
+   "at": "2026-10-18T09:05:57Z",
+   "subject": "bench-load: its wait change moves to the next PR with the safety-check fix (the bot's checkout has no browser, and this test spawns one)"
+  },
+  {
+   "at": "2026-10-18T09:04:52Z",
+   "subject": "film discovery: regenerate the book and the MCP skill list after merging main"
+  },
+  {
+   "at": "2026-10-18T09:04:49Z",
+   "subject": "Incident: the browser suite failed on e18a912b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T09:04:42Z",
+   "subject": "Incident: the browser suite failed on 80963b89 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T09:02:03Z",
+   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:59:14Z",
+   "subject": "Incident: the browser suite failed on e18a912b (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:58:46Z",
+   "subject": "Void and V01D are now Verse everywhere people and builders read: the page, skill answers, card titles, tests, tools, workflows and docs (own"
+  },
+  {
+   "at": "2026-10-18T08:57:43Z",
+   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+  },
   {
    "at": "2026-10-18T08:52:37Z",
    "subject": "Incident: the browser suite failed on b95dc3a3 (void-live-deploy/incidents.json)"
   },
   {
+   "at": "2026-10-18T08:52:33Z",
+   "subject": "film discovery: settle the merge of main (bench asks kept, generated files regenerated)"
+  },
+  {
    "at": "2026-10-18T08:51:53Z",
    "subject": "book: a long chapter name steps its opener title down to fit the sheet"
-  },
-  {
-   "at": "2026-10-18T08:51:34Z",
-   "subject": "Incident: the browser suite failed on a0711aed (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:46:19Z",
-   "subject": "grow: log the Verse rename"
-  },
-  {
-   "at": "2026-10-18T08:45:21Z",
-   "subject": "Incident: the browser suite failed on f74e9b8a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:45:10Z",
-   "subject": "Forge keeps 'what can you 3d print for me' (its test pins it); the bare 'what can you 3d print' is inventory's"
-  },
-  {
-   "at": "2026-10-18T08:44:54Z",
-   "subject": "Site test: fix: \"what are you?\" missing text /V01D/; console: script /v"
-  },
-  {
-   "at": "2026-10-18T08:44:23Z",
-   "subject": "self.json regenerated after the merge"
-  },
-  {
-   "at": "2026-10-18T08:44:14Z",
-   "subject": "Six more /fix/ pages (n8n, Power Automate, GitHub Actions); three finished asks leave the growth inbox"
-  },
-  {
-   "at": "2026-10-18T08:43:58Z",
-   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:43:32Z",
-   "subject": "Incident: the browser suite failed on d2238803 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:43:28Z",
-   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:42:41Z",
-   "subject": "Incident: the browser suite failed on 582c0d4d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:41:39Z",
-   "subject": "Incident: the browser suite failed on 5d392dcf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:41:37Z",
-   "subject": "Telemetry test: close the report test again after the merge; deps map regenerated"
-  },
-  {
-   "at": "2026-10-18T08:40:56Z",
-   "subject": "A builder's report that quotes a timeout is read as telemetry, not answered as a broken automation to fix"
-  },
-  {
-   "at": "2026-10-18T08:40:19Z",
-   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:39:53Z",
-   "subject": "Spotter: 4 check(s) healed with no revert after 5d587a25718577c1cf95a30221b85cc3c7294103 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-18T08:39:29Z",
-   "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:38:29Z",
-   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "V01D's open asks audited and linked, Service Health, seasons (Claude, 2026-10-17",
+    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude, 2026-10-1",
     "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card (ski"
    },
    {
-    "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Void)",
-    "line": "each card in F-038 belongs to a skill family (idea and mind: Void itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family alon"
+    "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Verse)",
+    "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family alo"
    },
    {
     "name": "Art Forge (claude, helper/art-forge)",
     "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md. Next"
    },
    {
-    "name": "Web4: V01D as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
-    "line": "skills/web4.js + lib/web4.js (one source) + a V01D Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line that "
+    "name": "Web4: Verse as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
+    "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line that"
    },
    {
     "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16, helper/bo",
@@ -575,7 +575,7 @@
     "line": "node tools/site-test.mjs (add --improve to grow the suite); any site: --url <u> --steps <file.json>."
    },
    {
-    "name": "Ask V01D your own question",
+    "name": "Ask Verse your own question",
     "line": "node tools/ask-void.mjs --ask \"…\" logs its answer word for word like the builders' question."
    }
   ],
@@ -589,7 +589,7 @@
     "line": "tools/skills-check.mjs imports every skill, so a top-level addEventListener or document call must be guarded with typeof."
    },
    {
-    "name": "\"your videos\" is V01D's films",
+    "name": "\"your videos\" is Verse's films",
     "line": "a video skill ranked early took \"show me your videos\" from the films skill; skills-check caught it."
    },
    {
@@ -657,7 +657,7 @@
   },
   {
    "rank": 7,
-   "item": "Rides and food ordering inside V01D",
+   "item": "Rides and food ordering inside Verse",
    "free": "deep links to Waymo, Uber, Lyft, Uber Eats, DoorDash through adapters (live)",
    "cost": "Waymo: no public API at any price; Uber Ride Request: partner approval",
    "value": "high if it existed",
@@ -665,7 +665,7 @@
   },
   {
    "rank": 8,
-   "item": "Delivery backend (for V01D's own goods: prints, miniatures)",
+   "item": "Delivery backend (for Verse's own goods: prints, miniatures)",
    "free": "local pickup, mail via the print shop",
    "cost": "DoorDash Drive $9.75/delivery within 5 mi +$0.75/mi (DoorDash)",
    "value": "medium, once there are goods to deliver",
@@ -690,10 +690,10 @@
   {
    "rank": 11,
    "item": "Shopping search",
-   "free": "deep links; V01D's own Gumroad store",
+   "free": "deep links; Verse's own Gumroad store",
    "cost": "Amazon PA-API needs an Associates account with sales (docs)",
    "value": "low now",
-   "why": "wait until V01D sells more"
+   "why": "wait until Verse sells more"
   }
  ],
  "clips": {

@@ -99,7 +99,7 @@ jobs:
           node tools/bench-alarms.mjs # the Bench icon's count of checked false alarms (skills/bench.js)
           node tools/families.mjs > /dev/null || true # the book's pages are generated: a merge that left them stale still deploys a current book
           node tools/guide.mjs > /dev/null || true
-          node tools/public-ledger.mjs # the served ledger leaves out what Void studies (tools/private.mjs); the repo's stays append-only
+          node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
           node tools/public-quotes.mjs # only Verse's words are served: the owner's quoted words leave every served comment and JSON file (the repo keeps them)
 
       # Verse's review of the PR runs in its own fast workflow and is a merge gate there (.github/workflows/void-review.yml).
