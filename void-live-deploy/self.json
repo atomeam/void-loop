@@ -1,5 +1,5 @@
 {
- "about": "V01D by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
+ "about": "Verse by A-to-Mind is a blank stage with one quiet input. Ask for something and it appears. Nothing is shown until someone asks, and there is nothing to sign up for.",
  "shipped": [
   {
    "state": "shipped",
@@ -464,84 +464,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-18T07:50:06Z",
-   "subject": "Incident: the browser suite failed on 8a5a0b01 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:28:01Z",
+   "subject": "the product is Verse (owner, 2026-10-18: \"rename Verse everywhere\")"
   },
   {
-   "at": "2026-10-18T07:49:54Z",
-   "subject": "Incident: the browser suite failed on 906d2982 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:26:19Z",
+   "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:47:49Z",
-   "subject": "Incident: the browser suite failed on cf0b3833 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:26:04Z",
+   "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:47:40Z",
-   "subject": "Games family on the skill-health card shows V01D's Elo rating (asked by Void)"
+   "at": "2026-10-18T08:24:48Z",
+   "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:46:28Z",
-   "subject": "Incident: the browser suite failed on 00c1e8a9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:23:35Z",
+   "subject": "Incident: the browser suite failed on 3a0f50a3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:43:35Z",
-   "subject": "Backlog digest: unbuilt asks by family and weakest evidence rating (asked by Void)"
+   "at": "2026-10-18T08:20:47Z",
+   "subject": "Developer-log card: bulleted narration and self-resolved failures are not still failing"
   },
   {
-   "at": "2026-10-18T07:43:31Z",
-   "subject": "Incident: the browser suite failed on f0aa2cae (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:19:40Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:42:57Z",
-   "subject": "Incident: the browser suite failed on 906d2982 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:19:04Z",
+   "subject": "Convert card: refresh deps.json for the new lib import"
   },
   {
-   "at": "2026-10-18T07:42:41Z",
-   "subject": "the incident autopsy tells the runner stalling from a skill failing: 'check timeout' and 'suite ran to the end' lines are counted on their o"
+   "at": "2026-10-18T08:19:01Z",
+   "subject": "grow: log the asks-not-built fix"
   },
   {
-   "at": "2026-10-18T07:42:35Z",
-   "subject": "Incident: the browser suite failed on 7812eee0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:18:23Z",
+   "subject": "fix: \"asks not built?\" reaches the wants card, not the open web"
   },
   {
-   "at": "2026-10-18T07:41:15Z",
-   "subject": "deps.json: status.js now imports lib/autopsy.js"
+   "at": "2026-10-18T08:17:48Z",
+   "subject": "deps.json: the Service Health skill now reads lib/autopsy.js (regenerated with tools/deps.mjs)"
   },
   {
-   "at": "2026-10-18T07:38:38Z",
-   "subject": "Incident: the browser suite failed on 9296a694 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:16:43Z",
+   "subject": "Incident: the browser suite failed on 200e56d5 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:38:14Z",
-   "subject": "Incident: the browser suite failed on 906d2982 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:14:09Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:38:12Z",
-   "subject": "Incident: the browser suite failed on 5bdb7a18 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:13:48Z",
+   "subject": "Convert card: keep a one-off conversion as a card; maths moved to lib/convert-math.js (asked by Void)"
   },
   {
-   "at": "2026-10-18T07:36:23Z",
-   "subject": "Incident: the browser suite failed on 7812eee0 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:11:44Z",
+   "subject": "Verse: the name everywhere people see it (owner, 2026-10-18: \"rename void to verse\"); the page, the intro wordmark, the share image, the fil"
   },
   {
-   "at": "2026-10-18T07:34:40Z",
-   "subject": "Incident: the browser suite failed on f0aa2cae (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:09:42Z",
+   "subject": "Incident: the browser suite failed on 59a6bc6a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:33:18Z",
-   "subject": "Incident: the browser suite failed on 9296a694 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:08:19Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T07:31:33Z",
-   "subject": "Incident: the browser suite failed on 5bdb7a18 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:08:07Z",
+   "subject": "Service Health: a stability dial for V01D's own suite (asked by Void)"
   },
   {
-   "at": "2026-10-18T07:31:30Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T08:07:57Z",
+   "subject": "Verse: the name everywhere people see it (owner: \"rename void to verse\"); code, routes and storage keys stay void, and license keys, card co"
   },
   {
-   "at": "2026-10-18T07:29:37Z",
-   "subject": "Incident: the browser suite failed on 9fc1a05e (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:06:53Z",
+   "subject": "Incident: the browser suite failed on 200e56d5 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

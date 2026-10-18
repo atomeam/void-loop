@@ -25,7 +25,7 @@
   {
    "id": "games",
    "name": "Games",
-   "for": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
+   "for": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "kind": "games",
    "count": {
     "experiment": 0,
@@ -865,7 +865,7 @@
    "kind": "opener",
    "chapter": "games",
    "title": "Games",
-   "line": "board games, card games and play: one picker (\"games\"), one V01D strength, one 3D stage",
+   "line": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "skills": [
     "aggravation",
     "sorry",
@@ -4665,7 +4665,7 @@
    "chapter": "self",
    "name": "v01d-fixes",
    "title": "V01d fixes",
-   "line": "The owner previews the fixes Verse's own model opened",
+   "line": "The owner previews the fixes V01D's own model opened",
    "examples": [
     "Verse's fixes",
     "show Verse's fixes",
