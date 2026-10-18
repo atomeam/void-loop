@@ -176,6 +176,9 @@
     },
     {
       "ask": "weave a constellation called night ops"
+    },
+    {
+      "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25"
     }
   ],
   "candidates": [],

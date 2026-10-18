@@ -1220,5 +1220,12 @@
   "of": 53,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
+ },
+ {
+  "at": "2026-10-18T05:16:07Z",
+  "passed": 45,
+  "of": 54,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
  }
 ]

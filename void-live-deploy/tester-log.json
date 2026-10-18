@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 50,
- "runsTotal": 164,
+ "cases": 51,
+ "runsTotal": 165,
  "kinds": {
-  "grow": 43,
+  "grow": 44,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T05:16:07Z",
+   "passed": 45,
+   "of": 54,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
+  },
   {
    "at": "2026-10-18T05:01:15Z",
    "passed": 52,
@@ -142,13 +149,6 @@
    "of": 35,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"is unwrap risky in rust\" (skill:technical-context)"
-  },
-  {
-   "at": "2026-10-17T21:51:18Z",
-   "passed": 32,
-   "of": 34,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"what do you get if you merge a pizza and a black hole\" (skill:merge)"
   }
  ],
  "seen": {
@@ -329,6 +329,10 @@
   "skill:constellation-weaver": "2026-10-18T05:01:15Z",
   "skill:contradiction-lamp": "2026-10-18T05:01:15Z",
   "skill:counterfactual-draft": "2026-10-18T05:01:15Z",
-  "skill:crowd": "2026-10-18T05:01:15Z"
+  "skill:crowd": "2026-10-18T05:01:15Z",
+  "skill:csv-table": "2026-10-18T05:16:07Z",
+  "skill:date-calc": "2026-10-18T05:16:07Z",
+  "skill:date-grid": "2026-10-18T05:16:07Z",
+  "skill:decide-cards": "2026-10-18T05:16:07Z"
  }
 }
