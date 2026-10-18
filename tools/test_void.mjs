@@ -5695,10 +5695,10 @@ try {
     const rate = (ms) => Z.p.evaluate((ms) => new Promise((res) => { const el = document.querySelector('.zorble-card'), t0 = el._zorble().t; let n = 0; const f = () => { n++; if (!done) requestAnimationFrame(f); }; let done = false; requestAnimationFrame(f);
       setTimeout(() => { done = true; res(n ? (el._zorble().t - t0) / n : 0); }, ms); }), ms);
     const full = await rate(800);
-    await Z.p.focus('#b4-in'); await Z.p.waitForTimeout(500); const slow = await rate(800), flag = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
-    await Z.p.evaluate(() => document.activeElement.blur()); await Z.p.waitForTimeout(1500); const back = await rate(800), flagBack = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
-    check('void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go (asked by Verse)',
-      full > 0.005 && slow < full * 0.45 && slow > 0 && flag === 'slow' && back > full * 0.8 && flagBack === 'full' && !Z.errors.length, JSON.stringify({ full, slow, back, flag, flagBack, errors: Z.errors }));
+    await Z.p.focus('#b4-in'); await Z.p.waitForTimeout(500); const slow = await rate(800), flag = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle), pillOn = await Z.p.evaluate(() => { const c = getComputedStyle(document.documentElement, '::after'); return { op: Number(c.opacity), text: c.content, pe: c.pointerEvents }; });
+    await Z.p.evaluate(() => document.activeElement.blur()); await Z.p.waitForTimeout(1500); const back = await rate(800), flagBack = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle), pillOff = await Z.p.evaluate(() => Number(getComputedStyle(document.documentElement, '::after').opacity));
+    check('void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go, with a quiet "calming the field" pill showing while it is held back and gone after (asked by Verse)',
+      full > 0.005 && slow < full * 0.45 && slow > 0 && flag === 'slow' && back > full * 0.8 && flagBack === 'full' && pillOn.op > 0.5 && /calming the field/.test(pillOn.text) && pillOn.pe === 'none' && pillOff === 0 && !Z.errors.length, JSON.stringify({ full, slow, back, flag, flagBack, pillOn, pillOff, errors: Z.errors }));
     await Z.ctx.close();
 
     // dynamic scale while flying, and the quick filter on the family-health card

@@ -285,6 +285,11 @@
       "match": "decision.?matrix.*deciding family|deciding family.*decision.?matrix",
       "ledgerAt": "2026-10-18T12:43:28Z",
       "why": "decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven"
+    },
+    {
+      "match": "zorbleflux.?throttle.*(visual )?indicator|indicator.*zorbleflux.?throttle",
+      "ledgerAt": "2026-10-18T13:00:46Z",
+      "why": "a quiet 'calming the field' pill shows while the throttle holds the stage back and fades when full speed returns"
     }
   ],
   "extra": [
