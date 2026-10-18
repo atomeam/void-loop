@@ -46,9 +46,9 @@ async function run(text, api) {
     });
     return 'film-metadata';
   } catch (_) {
-    if (!api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Film metadata</h2><p>The film service did not answer just now. Ask again in a moment.</p>';
-    return 'none';
+    if (!api._pageStill(el)) return 'film-metadata';
+    el.innerHTML = '<h2>Film metadata</h2><p>The film service did not answer just now, so no film is listed. Ask again in a moment.</p>';
+    return 'film-metadata'; // the skill answered, honestly: the source was away
   }
 }
 

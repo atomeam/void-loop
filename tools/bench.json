@@ -6067,5 +6067,11 @@
   {"ask": "what do you want built now", "want": "skill:wants"},
   {"ask": "name all your unbuilt asks", "want": "skill:wants"},
   {"ask": "your backlog", "want": "skill:wants"},
-  {"ask": "what have you not built yet", "want": "skill:wants"}
+  {"ask": "what have you not built yet", "want": "skill:wants"},
+  {"ask": "find me a sci-fi film from the 80s", "want": "skill:film-metadata"},
+  {"ask": "films by Kurosawa", "want": "skill:film-metadata"},
+  {"ask": "movies directed by Hitchcock", "want": "skill:film-metadata"},
+  {"ask": "90s horror movies", "want": "skill:film-metadata"},
+  {"ask": "film metadata for Ikiru", "want": "skill:film-metadata"},
+  {"ask": "show me comedies from 1994", "want": "skill:film-metadata"}
 ]
