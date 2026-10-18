@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 607,
+ "counted": 608,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -31,6 +31,24 @@
    "skills": 13,
    "direct": 2,
    "dependants": 18
+  },
+  {
+   "file": "lib/keeper.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 30
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 10,
+   "direct": 1,
+   "dependants": 30
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 10,
+   "direct": 0,
+   "dependants": 29
   },
   {
    "file": "lib/astro.js",
@@ -129,28 +147,10 @@
    "dependants": 18
   },
   {
-   "file": "lib/keeper.js",
-   "skills": 5,
-   "direct": 0,
-   "dependants": 18
-  },
-  {
    "file": "lib/autopsy.js",
    "skills": 5,
    "direct": 2,
    "dependants": 17
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 5,
-   "direct": 1,
-   "dependants": 13
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 5,
-   "direct": 0,
-   "dependants": 11
   },
   {
    "file": "lib/card-image.js",
@@ -274,6 +274,12 @@
   },
   {
    "file": "lib/card-kinds.js",
+   "skills": 3,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/card-look.js",
    "skills": 3,
    "direct": 0,
    "dependants": 5
@@ -1769,18 +1775,36 @@
    ],
    "importedBy": [
     "functions/api/card-art.js",
+    "lib/autopsy.js",
     "lib/card-forge.js",
-    "lib/card-image.js"
+    "lib/card-image.js",
+    "lib/card-look.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/bench-asks.js",
     "lib/card-frame.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
+    "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/guide.js",
+    "skills/incident-autopsy.js",
     "skills/merge.js",
-    "skills/oracle.js"
+    "skills/mini/growthtree.js",
+    "skills/oracle.js",
+    "skills/showcase.js"
    ]
   },
   "lib/ask-text.js": {
@@ -1940,7 +1964,8 @@
   },
   "lib/autopsy.js": {
    "imports": [
-    "lib/corrections.js"
+    "lib/corrections.js",
+    "lib/art-rules.js"
    ],
    "importedBy": [
     "skills/growth.js",
@@ -2099,7 +2124,8 @@
     "lib/card-art.js",
     "lib/card-forge.js",
     "lib/void-seal.js",
-    "lib/card-subject.js"
+    "lib/card-subject.js",
+    "lib/card-look.js"
    ],
    "importedBy": [
     "lib/duel-rules.js",
@@ -2128,6 +2154,20 @@
   },
   "lib/card-kinds.js": {
    "imports": [],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js"
+   ]
+  },
+  "lib/card-look.js": {
+   "imports": [
+    "lib/art-rules.js"
+   ],
    "importedBy": [
     "lib/card-frame.js"
    ],
@@ -2826,18 +2866,30 @@
    "reachedBy": [
     "functions/api/bench.js",
     "functions/api/mcp.js",
+    "functions/api/reflect.js",
     "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/autopsy.js",
     "lib/bench-asks.js",
     "lib/card-forge.js",
     "lib/card-frame.js",
     "lib/card-image.js",
+    "lib/card-look.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
+    "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/guide.js",
+    "skills/incident-autopsy.js",
     "skills/merge.js",
-    "skills/oracle.js"
+    "skills/mini/growthtree.js",
+    "skills/oracle.js",
+    "skills/showcase.js"
    ]
   },
   "lib/ladder.js": {
@@ -2977,16 +3029,33 @@
     "skills/merge.js"
    ],
    "reachedBy": [
+    "functions/api/answer.js",
+    "functions/api/bench.js",
     "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/reflect.js",
+    "functions/api/repo.js",
+    "functions/api/voice-reply.js",
+    "lib/autopsy.js",
+    "lib/bench-asks.js",
     "lib/card-forge.js",
     "lib/card-frame.js",
     "lib/card-image.js",
+    "lib/card-look.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-context.js",
+    "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
     "skills/forge-table.js",
-    "skills/oracle.js"
+    "skills/growth-tree.js",
+    "skills/growth.js",
+    "skills/guide.js",
+    "skills/incident-autopsy.js",
+    "skills/mini/growthtree.js",
+    "skills/oracle.js",
+    "skills/showcase.js"
    ]
   },
   "lib/misskey.js": {

@@ -4550,6 +4550,36 @@ try {
       !!heat && heat.map((h) => h.fam).join('|') === 'Time|Words <b>' && heat[0].heat === 1 && /1 failing · 1 of 2 unsure/.test(heat[0].text) && /1 of 1 unsure/.test(heat[1].text) && parseFloat(heat[0].bar) > 0,
       JSON.stringify(heat));
     await S.ctx.close(); }
+  // Void's incident asks (asked by Void): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
+  // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family
+  if (want("void asks incident: a sparkline drills down to its family's incident logs in a warning-locked autopsy card with the Go log, and a numbers card is a blueprint")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const nowIso = new Date().toISOString(), dayAgo = (n) => new Date(Date.now() - n * 864e5).toISOString();
+    await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
+    await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }] }, { id: 'games', name: 'Games', count: { proven: 1 }, skills: [{ name: 'go', tier: 'proven' }] }] })));
+    await S.ctx.route(/\/skills\/guide\.json/, (rt) => rt.fulfill(json({ pages: [{ kind: 'skill', name: 'timer', examples: ['timer'] }, { kind: 'skill', name: 'go', examples: ['play go'] }] })));
+    await S.ctx.route(/\/incidents\.json/, (rt) => rt.fulfill(json({ incidents: [{ at: nowIso, sha: 'abcdef12', suite: 'browser suite on main', checks: ['timer: "set a timer for 3 minutes" <b>counts</b>', 'go against v01d: it answers a move'] }] })));
+    await S.ctx.route(/\/void\.better\.json/, (rt) => rt.fulfill(json([{ at: dayAgo(2), families: [{ id: 'time', health: 40 }] }, { at: dayAgo(1), families: [{ id: 'time', health: 30 }] }])));
+    await S.ask('tester log', 1500);
+    const link = await until(async () => S.p.$eval('.vpage .st-stab-row[data-family="time"] a.st-drill', (a) => ({ ask: a.dataset.ask, svg: !!a.querySelector('svg') })).catch(() => null), 6000);
+    if (link) await S.p.click('.vpage .st-stab-row[data-family="time"] a.st-drill');
+    const drill = link && await until(async () => S.p.$eval('.vpage', (p) => {
+      const f = p.querySelector('[data-style-lock=warning]'), n = p.querySelector('[data-autopsy-focus]'); if (!f || !n) return null;
+      const cs = getComputedStyle(f); return { title: (p.querySelector('h2') || {}).textContent, focus: n.dataset.autopsyFocus, bg: cs.backgroundColor, color: cs.color, border: cs.borderTopColor, checks: [...p.querySelectorAll('[data-check]')].map((l) => l.textContent), go: !!p.querySelector('[data-autopsy-golog]'), bold: !!p.querySelector('[data-check] b') };
+    }).catch(() => null), 8000);
+    await S.ask('incident autopsy', 1500);
+    const all = await until(async () => S.p.$eval('.vpage', (p) => (p.querySelector('[data-autopsy-golog]') && !p.querySelector('[data-autopsy-focus]') ? { go: p.querySelector('[data-autopsy-golog]').dataset.autopsyGolog, replay: (p.querySelector('[data-autopsy-golog] a[data-ask]') || {}).dataset.ask, rows: [...p.querySelectorAll('[data-autopsy-families] a[data-ask]')].map((a) => a.dataset.ask) } : null)).catch(() => null), 8000);
+    check('void asks incident: a stability sparkline links to "incident autopsy for time", which shows only that family\'s failing checks in the warning-locked card (amber on black), and the full autopsy lists the Go-against-V01D log with a replay ask and a drill-down link per family',
+      !!link && link.ask === 'incident autopsy for time' && link.svg && !!drill && drill.title === 'Incident autopsy' && drill.focus === 'time' && drill.bg === 'rgb(11, 11, 11)' && drill.color === 'rgb(255, 176, 0)' && drill.border === 'rgb(255, 176, 0)'
+        && drill.checks.length === 1 && /^timer: "set a timer for 3 minutes" <b>counts<\/b>/.test(drill.checks[0]) && !drill.bold && !drill.go
+        && !!all && all.go === '1' && all.replay === 'play go against void' && all.rows.join('|') === 'incident autopsy for games|incident autopsy for time' && !S.errors.length,
+      JSON.stringify({ link, drill, all, errors: S.errors }));
+    await S.ctx.close();
+    const C = await fresh();
+    await C.ask('20% tip on 45', 1600);
+    const bp = await until(async () => C.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard[data-skill]'); if (!e || !e.dataset.look) return null; const cs = getComputedStyle(e); return { look: e.dataset.look, bg: cs.backgroundImage, grid: (cs.backgroundImage.match(/rgba\(120, 190, 255, 0\.16\)/g) || []).length, radius: cs.borderTopLeftRadius }; }).catch(() => null), 8000);
+    check('void asks incident: a Numbers and money card (20% tip on 45) takes the blueprint frame from its family: data-look="blueprint" and a fine grid in its background',
+      !!bp && bp.look === 'blueprint' && bp.grid === 2 && bp.radius === '6px' && !C.errors.length, JSON.stringify({ bp, errors: C.errors }));
+    await C.ctx.close(); }
   // family-health on this device (lib/skill-use.js; asked by Void: a last-used day for every skill): the card shows the day each skill last answered
   // in this browser, "not used here yet" for the rest, and a dead-weight line; the day is written when a skill answers and holds no words
   if (want("family-health: last used on this device")) { const F = await fresh();

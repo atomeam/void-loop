@@ -101,3 +101,14 @@ export function imageOf(r) {
 }
 /** the only image sources a card may show or save: a small data URL of a jpeg, png or webp. Pure. */
 export const safeImg = (u) => (typeof u === 'string' && u.length <= IMG_MAX + 40 && /^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/]+={0,2}$/.test(u) ? u : '');
+
+// A second style lock for error reports (asked by Void: "Integrate the Art Forge style-lock with the 'incident-autopsy' skill so that error reports are rendered with a
+// specific, high-contrast 'warning' aesthetic."). Like STYLE_LOCK it is fixed words, never typed ones: `prompt` is what the Art Forge appends when it paints a warning
+// plate, the rest is the same look for the incident-autopsy card (amber on black, a hazard-stripe bar, a solid border; amber #ffb000 on #0b0b0b is about 11:1). Pure data.
+export const WARNING_LOCK = {
+  id: 'warning',
+  prompt: 'high-contrast hazard warning plate, amber and black, bold caution stripes, flat stark lighting, hard edges, no gradients',
+  css: 'background:#0b0b0b;color:#ffb000;border:3px solid #ffb000;border-radius:6px;padding:0 0 10px;margin:8px 0;overflow:hidden',
+  stripe: 'height:10px;background:repeating-linear-gradient(135deg,#ffb000 0 10px,#0b0b0b 10px 20px)',
+  sub: '#f2d27a',
+};

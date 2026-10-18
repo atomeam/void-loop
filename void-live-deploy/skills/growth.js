@@ -439,7 +439,8 @@ export function stabilityHtml(esc, series) {
   return '<h3 style="margin:12px 0 4px">Stability trend</h3><div class="sub">Each family\'s health, one point a day; today\'s point drops ' + DEGRADE + ' for every check of the family that went red on main in the last ' + RECENT_H + ' hours.</div><div class="st-stability" style="margin:6px 0">'
     + series.map((s) => { const now = s.points[s.points.length - 1].health, prev = s.points.length > 1 ? s.points[s.points.length - 2].health : null;
       return '<div class="st-stab-row" data-family="' + esc(s.id) + '" data-health="' + now + '" data-drop="' + s.drop + '" style="display:grid;grid-template-columns:9.5em 76px 1fr;gap:8px;align-items:center;margin:2px 0;font-size:12px">'
-        + '<span>' + esc(s.name) + '</span><span style="color:hsl(' + Math.round(1.2 * now) + ' 70% 55%)">' + sparkSvg(s.points) + '</span><span>' + now
+        // asked by Void: "an interactive drill-down on the stability sparklines that links directly to the relevant incident logs in the 'incident-autopsy' skill"
+        + '<span>' + esc(s.name) + '</span><a href="#" class="st-drill" data-ask="' + esc('incident autopsy for ' + s.id) + '" title="' + esc('open the incident logs for ' + s.name) + '" style="color:hsl(' + Math.round(1.2 * now) + ' 70% 55%);display:block">' + sparkSvg(s.points) + '</a><span>' + now
         + (prev !== null ? ' <span class="sub">(' + (now - prev >= 0 ? '+' : '') + (now - prev) + ')</span>' : ' <span class="sub">(first day)</span>')
         + (s.drop ? ' <span class="sub">\u00b7 \u2212' + s.drop + ' from ' + s.fails + ' recent failure' + (s.fails === 1 ? '' : 's') + '</span>' : '') + '</span></div>'; }).join('') + '</div>';
 }

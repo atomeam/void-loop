@@ -2397,9 +2397,9 @@
     {
      "name": "incident",
      "tier": "proven",
-     "why": "a self-test, 3 browser-suite mentions, 6 real asks in the benchmark",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
     },
