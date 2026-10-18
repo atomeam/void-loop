@@ -2,46 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:56:02.406Z",
-   "sha": "59a6bc6abaa33ee05a33e092a83567577248ea27",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39109240620",
+   "at": "2026-10-18T07:56:09.488Z",
+   "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39108891224",
    "suite": "browser suite on main",
    "checks": [
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
     "suite ran to the end"
    ],
    "touched": [
-    "tools/test_void.mjs",
+    "domains/void.agents.log.md",
+    "extension/README.md",
+    "extension/manifest.json",
+    "extension/page.js",
+    "extension/void-extension.zip",
+    "tools/test_extension.mjs",
     "void-live-deploy/index.html",
     "void-live-deploy/void.html",
-    "void.html",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T07:51:02.914Z",
-   "sha": "910c92721fee52d22d10220ba9fafcc2aaaccf40",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39108913625",
-   "suite": "browser suite on main",
-   "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/backlog-digest.test.mjs",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "void-live-deploy/lib/backlog-digest.js",
-    "void-live-deploy/skills/backlog-digest.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1713-backlog-digest",
-    "void-live-deploy/void.growth.json",
-    "domains/void.agents.log.md",
-    "extension/README.md"
+    "void.html"
    ]
   },
   {
@@ -750,6 +734,22 @@
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
+   "at": "2026-10-17T17:59:26.762Z",
+   "sha": "1e053b8295693e98a943c0d8162e692e34c6bfa8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39054961820",
+   "suite": "browser suite on main",
+   "checks": [
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
    ]
   }
  ]
