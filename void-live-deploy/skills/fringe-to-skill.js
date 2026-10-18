@@ -15,7 +15,7 @@ const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace
 const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|v01d\'?s\\s+)?'
   + '(?:fringe\\s+to\\s+skills?(?:\\s+(?:card|map|board))?|fringe\\s+(?:ledger|findings|research(?:\\s+notes)?|experiments?\\s+(?:to|into)\\s+skills?)|fringe\\s+experiments?(?:\\s+(?:findings|results|notes))?|from\\s+fringe\\s+to\\s+skills?)$'
   + '|^(?:which|what)\\s+skills?\\s+(?:came|grew|come|grows?)\\s+(?:out\\s+of|from)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?$'
-  + '|^what\\s+(?:did|have|has)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?\\s+(?:teach|taught|learn|learned|found|find)(?:\\s+(?:you|us|void|v01d))?$', 'i');
+  + '|^what\\s+(?:did|have|has)\\s+(?:the\\s+)?fringe(?:\\s+experiments?)?\\s+(?:teach|taught|learn|learned|found|find)(?:\\s+(?:you|us|void|v01d|verse))?$', 'i');
 export const asksFringe = (t) => WHEN.test(norm(t));
 
 /** the card's rows from ledger.json: each published family, newest first, with the words the card shows. Pure. */

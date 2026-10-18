@@ -32,7 +32,7 @@ export function wrap(text, cols, max) {
 
 /** the title as one line at the largest size that fits `avail` px, else as two lines at the largest size that fits: { lines, fs }. Never cut. Pure. */
 export function fitTitle(title, avail) {
-  const t = String(title || '').replace(/\s+/g, ' ').trim() || 'V01D', W = 0.6; // average glyph width in em for bold serif
+  const t = String(title || '').replace(/\s+/g, ' ').trim() || 'Verse', W = 0.6; // average glyph width in em for bold serif
   for (let fs = 38; fs >= 22; fs--) if (t.length * fs * W <= avail) return { lines: [t], fs };
   for (let fs = 28; fs >= 12; fs--) { const l = wrap(t, Math.floor(avail / (fs * W)), 99); if (l.length <= 2) return { lines: l, fs }; }
   // a long ask (owner, 2026-10-18: "make it show the whole ask"): it keeps its whole length, wrapped at a readable 16 px on as many lines as it needs
@@ -99,13 +99,13 @@ export function fitText(text, h, w = 624) {
  *  bleed: true adds the 3 mm print bleed on every side. */
 export function cardSvg(data = {}, { bleed = false } = {}) {
   const d = data || {}, rk = rarityKey(d.rarity), RL = RARITY_LOOK[rk], foil = FOIL[rk], b = bleed ? BLEED : 0;
-  const title = String(d.title || d.name || 'V01D').replace(/\s+/g, ' ').trim();
+  const title = String(d.title || d.name || 'Verse').replace(/\s+/g, ' ').trim();
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
   const { lines: tl, fs } = fitTitle(title, 620 - cost * 24), T = titleExtra(tl.length, fs); // T: how much taller a long ask makes the title bar; everything below moves down by it
   const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
   const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
-  let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — V01D card">';
+  let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — Verse card">';
   s += '<defs><linearGradient id="' + id + 'f" x1="0" y1="0" x2="1" y2="1">' + foil.map((c, i) => '<stop offset="' + (i / (foil.length - 1)).toFixed(2) + '" stop-color="' + c + '"/>').join('') + '</linearGradient>';
   s += '<linearGradient id="' + id + 'p" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="hsl(' + hue + ' 26% 15%)"/><stop offset="1" stop-color="' + dark + '"/></linearGradient>';
   s += '<linearGradient id="' + id + 's" x1="0" y1="0" x2="1" y2="1"><stop offset=".3" stop-color="#fff" stop-opacity="0"/><stop offset=".5" stop-color="#fff" stop-opacity="' + (rk === 'common' ? 0 : RL.a * 0.9) + '"/><stop offset=".7" stop-color="#fff" stop-opacity="0"/></linearGradient>';
@@ -148,9 +148,9 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   if (box.els) box.els.forEach((e) => { s += e.k === 'rect' ? '<rect x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" width="' + e.w + '" height="' + e.h + '" rx="' + (e.rx || 0) + '" fill="' + esc(e.fill) + '"/>'
     : '<text x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + e.fs + '"' + (e.bold ? ' font-weight="700"' : '') + (e.italic ? ' font-style="italic"' : '') + ' fill="' + esc(e.fill) + '">' + esc(e.text) + '</text>'; }); // the self card (selfLayout)
   else box.lines.forEach((l, i) => { s += '<text x="60" y="' + (644 + box.fs + i * box.lh) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + box.fs + '" fill="#e6e1d3">' + esc(l) + '</text>'; });
-  if (d.adds) { const a = wrap('Adds to V01D: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
+  if (d.adds) { const a = wrap('Adds to Verse: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
   // footer: collector number and the three plates
-  const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'V01D', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
+  const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'Verse', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
   s += '<text x="44" y="' + (990 + X) + '" font-family="Georgia,serif" font-size="17" letter-spacing="1.5" fill="hsl(' + hue + ' 15% 62%)">' + esc(foot.toUpperCase().slice(0, 44)) + '</text>';
   const stats = [['P', d.power], ['R', d.toughness], ['I', d.income]].filter(([, v]) => num(v) !== '');
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
@@ -161,7 +161,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
 /** a utility card's picture (data-card-plain, lib/card-frame.js): no foil, rarity, art or stats; the title, the card's own words and, when it has
  *  one, its QR code (lib/qr.js qrMatrix) at a size a phone can scan, on the plain dark page. data: { title, text, qr }. Every text field is escaped. Pure. */
 export function plainSvg(data = {}) {
-  const d = data || {}, W = CARD_W, P = 56, title = String(d.title || 'V01D').replace(/\s+/g, ' ').trim();
+  const d = data || {}, W = CARD_W, P = 56, title = String(d.title || 'Verse').replace(/\s+/g, ' ').trim();
   const tl = wrap(title, 30, 3), body = wrap(d.text, 52, 40), q = d.qr && d.qr.modules ? d.qr : null, Q = q ? 300 : 0;
   let y = P + 44, s = '';
   tl.forEach((l) => { s += '<text x="' + P + '" y="' + y + '" font-family="ui-sans-serif,system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" font-weight="700" font-size="40" fill="#f2f4fa">' + esc(l) + '</text>'; y += 50; });
@@ -174,7 +174,7 @@ export function plainSvg(data = {}) {
     y += Q + 16;
   }
   const H = y + 64;
-  s += '<text x="' + P + '" y="' + (H - 32) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="17" letter-spacing="1.5" fill="#9aa1b5">V01D \u00b7 A-TO-MIND.COM</text>';
+  s += '<text x="' + P + '" y="' + (H - 32) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="17" letter-spacing="1.5" fill="#9aa1b5">Verse \u00b7 A-TO-MIND.COM</text>';
   return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + '"><rect width="' + W + '" height="' + H + '" rx="34" fill="#12152a"/><rect x="2" y="2" width="' + (W - 4) + '" height="' + (H - 4) + '" rx="32" fill="none" stroke="#2c3252" stroke-width="2"/>' + s + '</svg>';
 }
 

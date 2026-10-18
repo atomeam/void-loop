@@ -25,7 +25,7 @@ const realEye = (s, i) => {
 };
 const legalMoves = (s) => { const out = []; for (let i = 0; i < 81; i++) { if (s.board[i]) continue; try { placeStone(s, i); out.push(i); } catch (_) {} } return out; };
 
-test('asks for a game against V01D seat it as White; plain "play go" stays two people', () => {
+test('asks for a game against Verse seat it as White; plain "play go" stays two people', () => {
   for (const t of ['play go against void', 'play go with v01d', 'go against you', 'can you play go', 'Can you play Go?', 'play go vs the computer', 'challenge void to go']) assert.deepEqual(goOf(t), { kind: 'game', vs: 'void' }, t);
   for (const t of ['play go', 'go', 'play go with a friend', 'play go with me', 'a game of go']) assert.deepEqual(goOf(t), { kind: 'game' }, t);
   for (const t of ["let's go", 'can you play go fish', 'go home']) assert.equal(goOf(t), null, t);

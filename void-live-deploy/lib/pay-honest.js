@@ -9,7 +9,7 @@ const ABOUT_US = /\b(?:can\s+i\s+pay|test(?:ing)?|try|set\s*up|accept|take|work|
 export function isPayAsk(ask) { const t = String(ask || ''); return PAY.test(t) && ABOUT_US.test(t) && !/\bhow\s+much\s+(?:is|does|do)\b/i.test(t); }
 /** the honest answer: what is verified, what is not, and where the real steps are. Pure. */
 export function payAnswer() {
-  return 'I won\'t guess here. The only checkout V01D uses today is the Gumroad link on a live product in its store; anything else (Cash App, crypto, other providers) is not live unless the store says so. '
+  return 'I won\'t guess here. The only checkout Verse uses today is the Gumroad link on a live product in its store; anything else (Cash App, crypto, other providers) is not live unless the store says so. '
     + 'I don\'t have verified fees or settlement times, so I won\'t quote any. To test, use the provider\'s own test mode, never real charges, and follow the verified steps in docs/payments.md (' + PAY_DOC + ').';
 }
 // added to the model's answer rule everywhere: no invented products, figures or live claims

@@ -55,8 +55,17 @@ for (const [t, kind] of [['the job exited with code 2', 'code'], ['fetch failed:
   assert.ok(errorEvidence(t).some((e) => e.kind === kind), t + ' -> ' + kind);
 // numbers that are not statuses are not evidence
 assert.deepEqual(errorEvidence('I pasted 500 characters about 404 ideas for the 400-page manual'), []);
+// a count is not a status: "with 587 misses" is not HTTP 587 (owner, 2026-10-18: a builder's bench note was answered as a fix)
+assert.deepEqual(errorEvidence('the bench finished with 587 misses out of 2388, and the run came back with 404 asks'), []);
+assert.ok(errorEvidence('the API returned 503 Service Unavailable').some((e) => e.kind === 'status')); assert.ok(errorEvidence('the call came back with 502').some((e) => e.kind === 'status'));
 // a short symptom is still a fix ask, from the description, honestly labelled
 assert.equal(isFixAsk('my zap stopped firing'), true); assert.equal(basisOf('my zap stopped firing').from, 'description');
 assert.match(ruleFix('my zap stopped firing'), /trigger isn't reaching it/);
 assert.equal(intentOf('why does my cron job not run?').intent, 'question');
+// a builder's progress note is a report, not a broken automation (owner, 2026-10-18: one was answered with git advice and a "fix")
+const note = "The blanket rename broke routing, so I'm reverting it and doing it in smaller pieces. I've reverted the change and redone it on 14 files. Nothing is committed or pushed yet. The fast checks are running now, and I'll update any tests that still expect the old name before I commit. The bench is still running on the branch.";
+assert.equal(intentOf(note).intent, 'report'); assert.equal(isFixAsk(note), false); assert.equal(hasDetails(note), false);
+// ...but the same words around a real error, or about an automation tool, stay a fix ask
+assert.equal(isFixAsk(note + ' My zap fails with 401 Unauthorized.'), true);
+assert.equal(intentOf('I tried the zap again and I checked it and I reran the tests on the branch and I pushed it and the commit did not change the checks, the zap still stopped firing for the whole week and nothing helps at all now').intent, 'unclear');
 console.log('automation-fix: all passed');

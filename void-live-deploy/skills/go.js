@@ -115,7 +115,7 @@ export function countPosition(state) {
 }
 
 // against V01D: "play go against void", "play go with v01d", "go against you", "can you play go", "play go vs the computer"
-const VS_VOID = /^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+|will\s+you\s+)?(?:play|start)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:go|baduk|weiqi|igo)(?:\s+game)?\s+(?:with|against|vs\.?|versus)\s+(?:void|v01d|you|the computer|the ai|an ai|a bot|the bot)$|^(?:can|could|do|will)\s+you\s+play\s+(?:go|baduk|weiqi|igo)(?:\s+with\s+me|\s+against\s+me)?$|^(?:play|challenge)\s+(?:void|v01d|you)\s+(?:at|to)\s+(?:a\s+game\s+of\s+)?(?:go|baduk)$/;
+const VS_VOID = /^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+|will\s+you\s+)?(?:play|start)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:go|baduk|weiqi|igo)(?:\s+game)?\s+(?:with|against|vs\.?|versus)\s+(?:void|v01d|verse|you|the computer|the ai|an ai|a bot|the bot)$|^(?:can|could|do|will)\s+you\s+play\s+(?:go|baduk|weiqi|igo)(?:\s+with\s+me|\s+against\s+me)?$|^(?:play|challenge)\s+(?:void|v01d|verse|you)\s+(?:at|to)\s+(?:a\s+game\s+of\s+)?(?:go|baduk)$/;
 
 export function goOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -128,7 +128,7 @@ export function goOf(text) {
 }
 
 const SEAT = { 1: 'Black', 2: 'White' };
-const VOID_SEAT = { 1: 'You', 2: 'V01D' }; // against V01D: you are Black, V01D is White
+const VOID_SEAT = { 1: 'You', 2: 'Verse' }; // against V01D: you are Black, V01D is White
 
 function mount(th, stageApi) {
   style();
@@ -150,7 +150,7 @@ function mount(th, stageApi) {
   // the card: separate, beside the board (or under it on a narrow screen), moved on its own
   const card = document.createElement('div');
   card.className = 'game-card go-card';
-  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against V01D (White)' : 'two players · Black first') + '</span></div>'; // void-review: ok (two constant strings, nothing typed)
+  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against Verse (White)' : 'two players · Black first') + '</span></div>'; // void-review: ok (two constant strings, nothing typed)
   const note = document.createElement('div'); note.className = 'go-note';
   note.textContent = 'A placed stone is a move, not a verdict. Nothing is counted until you ask.';
   const status = document.createElement('div'); status.className = 'g-status go-status'; status.setAttribute('aria-live', 'polite');
@@ -172,11 +172,11 @@ function mount(th, stageApi) {
       const st = th.state, t = think(st, { playouts: VOID_PLAYOUTS });
       if (t.move === 'pass') {
         th.state = pass(st);
-        said = th.state.status === 'ended' ? 'V01D passed too. Play has ended: tap any dead groups, then Count position.' : 'V01D passed. Your move, or pass to end play.';
+        said = th.state.status === 'ended' ? 'Verse passed too. Play has ended: tap any dead groups, then Count position.' : 'Verse passed. Your move, or pass to end play.';
       } else {
         const r = placeStone(st, t.move);
         th.state = r.nextState;
-        said = 'V01D played ' + pointName(t.move, N) + (r.captured.length ? ' and captured ' + r.captured.length + '.' : '.');
+        said = 'Verse played ' + pointName(t.move, N) + (r.captured.length ? ' and captured ' + r.captured.length + '.' : '.');
       }
       count.hidden = true; paint(); save();
     }, 450);
@@ -223,7 +223,7 @@ function mount(th, stageApi) {
     caps.textContent = 'Captured · Black ' + st.captured[1] + ' · White ' + st.captured[2];
     passBtn.textContent = st.status === 'ended' ? 'Resume play' : 'Pass';
     let line = said || (st.status === 'ended' ? 'Play has ended. Tap dead groups, then Count position.' : '');
-    if (st.status === 'playing') line = (line ? line + ' ' : '') + (vsVoid ? (st.turn === 2 ? 'V01D’s turn: thinking…' : 'Your move (Black).') : SEAT[st.turn] + ' to play.');
+    if (st.status === 'playing') line = (line ? line + ' ' : '') + (vsVoid ? (st.turn === 2 ? 'Verse’s turn: thinking…' : 'Your move (Black).') : SEAT[st.turn] + ' to play.');
     status.textContent = line;
     if (mini) mini.update(data()); else if (flat) flat();
   }
@@ -302,13 +302,13 @@ async function run(text, api) {
   if (existing) { // one board at a time
     if (api.stage.center) api.stage.center(existing.id); else api.stage.render();
     const open = existing.state && existing.state.vs === 'void' ? 'void' : undefined;
-    if (open !== asked.vs) api.say('A Go board is already open (' + (open ? 'against V01D' : 'two players') + '). Throw it off to start ' + (asked.vs ? 'one against V01D.' : 'a two-player one.'));
+    if (open !== asked.vs) api.say('A Go board is already open (' + (open ? 'against Verse' : 'two players') + '). Throw it off to start ' + (asked.vs ? 'one against Verse.' : 'a two-player one.'));
     return 'go';
   }
   const phone = Math.min(innerWidth, innerHeight) < 560, bw = phone ? Math.min(innerWidth - 20, 400) : 460;
   const both = phone ? bw : bw + 20 + 290; // the board and its card side by side
   api.summon('go', { state: asked.vs ? { ...createGoState(9), vs: 'void' } : createGoState(9), hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
-  api.say(asked.vs ? 'Go · you are Black, V01D is White · tap a point; V01D answers each move' : 'Go · two players, Black first · a stone is a move; press Count position when you want the count');
+  api.say(asked.vs ? 'Go · you are Black, Verse is White · tap a point; Verse answers each move' : 'Go · two players, Black first · a stone is a move; press Count position when you want the count');
   return 'go';
 }
 

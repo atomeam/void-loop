@@ -31,8 +31,8 @@ export async function onRequestPost({ request, env }) {
       max_tokens: 1200, chat_template_kwargs: { enable_thinking: false },
     });
     said = pick(r);
-  } catch (e) { await recordShortfall(env, 'probe-asks', reasonOf(e)); return new Response('V01D could not write asks just now', { status: 503 }); }
+  } catch (e) { await recordShortfall(env, 'probe-asks', reasonOf(e)); return new Response('Verse could not write asks just now', { status: 503 }); }
   const asks = parseAsks(said, wants, examples);
-  if (!asks.length) return new Response('V01D wrote nothing usable', { status: 502 });
+  if (!asks.length) return new Response('Verse wrote nothing usable', { status: 502 });
   return Response.json({ family: { id: family.id, name: family.name }, asks, model: models('will') });
 }

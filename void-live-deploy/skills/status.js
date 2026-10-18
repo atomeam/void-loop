@@ -9,6 +9,7 @@
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
+import { stabilityOf, stabilityHtml } from '../lib/autopsy.js';
 import { recovered, loadFailed, keepFailed, keepHealth, successPulse } from '../lib/success-pulse.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
@@ -31,7 +32,7 @@ export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
 // V01D's own parts and a change to it is news about V01D: it answers the substance first, in its own voice, and does any time math
 // only as an aside.
 const PART_RE = /\b(routines?|automations?|workflows?|cron|deploy(?:s|ment)?|tester|site tester|queues?|lists?|board|skills?|store|films?|pipeline|loop|reviewer|code review|builders?|agents?)\b/;
-const SELF_RE = /\b(v01d|void|your|yourself)\b|^(?:update|heads up|fyi|news|status update|new)\b/;
+const SELF_RE = /\b(v01d|void|verse|your|yourself)\b|^(?:update|heads up|fyi|news|status update|new)\b/;
 const CHANGE_RE = /\b(new|now|runs?|running|added|ships?|shipped|starts?|started|clears?|cleans?|empties|merged?|turned on|switched|every \d+|each (?:hour|day|night))\b/;
 export function newsOf(text) {
   const t = CLEAN(text), words = t.split(/\s+/).filter(Boolean).length;
@@ -194,17 +195,18 @@ export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerK
 }
 
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build, support, actions) {
+export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
-  return '<h2>V01D status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
+  return '<h2>Verse status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
     + '<table style="border-collapse:collapse;margin:8px 0">'
     + row(!skills.error && !skills.missing.length, 'Skills', skills.error || (skills.ok + ' of ' + skills.total + ' load' + (skills.missing.length ? '; not loading: ' + skills.missing.join(', ') : '')))
     + browser.map((b) => row(b.ok, b.name, b.note)).join('') + '</table>'
     + '<h3 style="margin:12px 0 4px;font-size:15px">Outside sources' + (sources ? ' · ' + up + ' of ' + sources.length + ' answering' : '') + '</h3>'
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
-    + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">V01D’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
+    + (stability ? stabilityHtml(stability, esc) : '')
+    + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">Verse’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
       + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>'
         + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span>'
           + '<div class="status-fix" style="margin-top:6px"><b>Suggested fix:</b> <code style="user-select:all">' + esc(fixOf(b.checks[0]).cmd) + '</code><br><span style="color:#8a8a92">then</span> <code style="user-select:all">' + esc(fixOf(b.checks[0]).ship) + '</code>' + (fixOf(b.checks[0]).note ? ' <span style="color:#8a8a92">(' + esc(fixOf(b.checks[0]).note) + ')</span>' : '')
@@ -212,9 +214,9 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + (support ? '<h3 style="margin:12px 0 4px;font-size:15px">Paying users who said it broke · ' + (support.open ? '<span style="color:#e0584a">' + support.open + ' waiting on you</span>' : 'none waiting') + '</h3>'
       + support.tickets.map((t) => '<p style="margin:4px 0"><b>' + esc(t.id) + '</b> · ' + esc(t.where) + ' · ' + esc(String(t.at).slice(0, 16).replace('T', ' ')) + '<br>' + esc(t.what) + '</p>').join('')
       + (support.open ? '<p style="color:#8a8a92;margin:4px 0">Answer one: POST /api/support { action: "answer", id, answer } with your key; the reporter reads it with theirs.</p>' : '') : '')
-    + (actions ? '<h3 style="margin:12px 0 4px;font-size:15px">Actions V01D took for you · ' + (actions.length ? '<span style="color:#e0584a">' + actions.length + ' failed in the last day</span>' : 'none failed in the last day') + '</h3>'
+    + (actions ? '<h3 style="margin:12px 0 4px;font-size:15px">Actions Verse took for you · ' + (actions.length ? '<span style="color:#e0584a">' + actions.length + ' failed in the last day</span>' : 'none failed in the last day') + '</h3>'
       + actions.map((a) => '<p style="margin:4px 0">' + dot(false) + '<b>' + esc(a.kind) + '</b>' + (a.ref ? ' · ' + esc(a.ref) : '') + ' · ' + esc(a.at) + '<br><span style="color:#8a8a92">' + esc(a.error) + '</span></p>').join('')
-      + (actions.length ? '<p style="color:#8a8a92;margin:4px 0">Each one is a record in V01D’s action log (lib/actions.js); ask “what did you do today” for the whole list.</p>' : '') : '')
+      + (actions.length ? '<p style="color:#8a8a92;margin:4px 0">Each one is a record in Verse’s action log (lib/actions.js); ask “what did you do today” for the whole list.</p>' : '') : '')
     + '<div class="src">Each source was asked once, now, because you asked; the translation service is not pinged, to save its daily quota. Nothing about you is sent or kept.</div>';
 }
 
@@ -226,11 +228,12 @@ async function run(text, api) {
   }
   if (!statusOf(text)) return 'none';
   const { showPage, esc } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>V01D status</h2><div class="sub">checking…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Verse status</h2><div class="sub">checking…</div>'; });
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
   const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions);
+  const stability = online ? await fetch('/incidents.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((j) => j ? stabilityOf(j) : null).catch(() => null) : null;
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability);
   // a Success Pulse (asked by Void): something that failed at the last check and is fine now (a skill that did not load and does)
   const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];

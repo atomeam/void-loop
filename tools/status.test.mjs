@@ -70,9 +70,9 @@ test('for the owner, the card opens by itself only when a run on main failed; th
 test('the card shows Void\'s own build with a link to a failed run, escaped', async () => {
   const { statusHtml } = await import('../void-live-deploy/skills/status.js');
   const h = statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '', [{ name: 'Checks on main', state: 'failed', note: 'failed (failure) on <b>', url: 'https://github.com/x' }, { name: 'Deploy', state: 'passed', note: 'passed' }]);
-  assert.match(h, /V01D’s own build · <span style="color:#e0584a">something on main failed<\/span>/);
+  assert.match(h, /Verse’s own build · <span style="color:#e0584a">something on main failed<\/span>/);
   assert.match(h, /Checks on main<\/td><td[^>]*>failed \(failure\) on &#60;b&#62; · <a href="https:\/\/github.com\/x"/);
-  assert.ok(!/V01D’s own build/.test(statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '')), 'no build, no section');
+  assert.ok(!/Verse’s own build/.test(statusHtml(esc, { ok: 1, total: 1, missing: [] }, [{ name: 'Online', ok: true, note: '' }], null, '')), 'no build, no section');
 });
 
 test('paying users who said it broke: read with the owner key only, shown on the card, and they open it', async () => {

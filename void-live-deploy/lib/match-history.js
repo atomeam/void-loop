@@ -12,10 +12,10 @@
 //   summaryLine(sum)                 -> "12 played · 7–4–1 · 58% · you ~1240, V01D ~1160 (estimated)" or "no games on this device yet"
 //   historyAsk(text)                 -> { game } for "chess match history", "my chess record", "my record against void"; null otherwise
 //   historyHtml(esc, sum, log)       -> the Match History block for the about card (summary line, the last ten as a table)
-//   load(s) / save(log, s) / finish(game, result, { moves, minutes, vs }, s)
+//   load(s) / save(log, s) / finish(game, result, { moves, minutes, vs, line }, s)   line: a chess game's moves ('e2e4'…), for the replay
 import { read, write } from './state.js';
 
-export const MAX = 100, START = 1200, K = 32, LAST = 10;
+export const MAX = 100, START = 1200, K = 32, LAST = 10, LINE_MAX = 600;
 export const GAMES = ['chess', 'checkers', 'othello'];
 export const TITLES = { chess: 'Chess', checkers: 'Checkers', othello: 'Reversi' };
 const RESULTS = ['win', 'loss', 'draw'], VS = ['v01d', 'self'];
@@ -27,7 +27,9 @@ export function parseGame(g) {
   const game = String(g.game || '').toLowerCase(), result = String(g.result || '').toLowerCase(), vs = VS.includes(g.vs) ? g.vs : 'v01d';
   if (!GAMES.includes(game) || !RESULTS.includes(result)) return null;
   const at = new Date(g.at || 0); const when = isNaN(at.getTime()) || !g.at ? new Date().toISOString() : at.toISOString();
-  return { at: when, game, vs, result, moves: Math.round(num(g.moves)), minutes: Math.round(num(g.minutes) * 10) / 10 };
+  // a chess game keeps its moves as coordinates ('e2e4', 'e7e8q') for the match replay (asked by Void); anything else is dropped
+  const line = game === 'chess' && Array.isArray(g.line) && g.line.length <= LINE_MAX && g.line.every((x) => typeof x === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(x)) ? g.line.slice() : null;
+  return { at: when, game, vs, result, moves: Math.round(num(g.moves)), minutes: Math.round(num(g.minutes) * 10) / 10, ...(line && line.length ? { line } : {}) };
 }
 /** the log with one more finished game, newest last, the oldest out past MAX. Pure: a new array. */
 export function record(log, game) {
@@ -57,14 +59,14 @@ export function summary(log, { game = '' } = {}) {
 /** the one line of the record. Pure. */
 export function summaryLine(sum) {
   if (!sum || !sum.played) return 'no games on this device yet';
-  return sum.played + ' played · ' + sum.wins + '–' + sum.losses + '–' + sum.draws + ' · ' + sum.winRate + '% · you ~' + sum.elo.you + ', V01D ~' + sum.elo.void + ' (estimated)';
+  return sum.played + ' played · ' + sum.wins + '–' + sum.losses + '–' + sum.draws + ' · ' + sum.winRate + '% · you ~' + sum.elo.you + ', Verse ~' + sum.elo.void + ' (estimated)';
 }
 
 const GAME_WORD = { chess: 'chess', checkers: 'checkers', draughts: 'checkers', othello: 'othello', reversi: 'othello' };
 const G = '(chess|checkers|draughts|othello|reversi)';
-const RE_GAME_HISTORY = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?(?:my\\s+)?' + G + '\\s+match\\s+history(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
-const RE_MY_GAME = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+' + G + '\\s+(?:record|history|results|match\\s+history|match\\s+record)(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
-const RE_MY_VS = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+(?:match\\s+history|record|match\\s+record)(?:\\s+(?:at|in)\\s+' + G + ')?(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|you))?$');
+const RE_GAME_HISTORY = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?(?:my\\s+)?' + G + '\\s+match\\s+history(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
+const RE_MY_GAME = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+' + G + '\\s+(?:record|history|results|match\\s+history|match\\s+record)(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
+const RE_MY_VS = new RegExp('^(?:(?:show|open|see|what\'?s|what is)\\s+)?(?:me\\s+)?my\\s+(?:match\\s+history|record|match\\s+record)(?:\\s+(?:at|in)\\s+' + G + ')?(?:\\s+(?:against|vs\\.?|with)\\s+(?:void|v01d|verse|you))?$');
 /** { game } for an ask about your record: a named game ("chess match history", "my checkers record"), or "my record against void" /
  *  "my match history" (chess, the first game with a log). A bare "match history", "my record" or "chess record" is not one. Pure. */
 export function historyAsk(text) {
@@ -75,7 +77,7 @@ export function historyAsk(text) {
   m = RE_MY_VS.exec(t);
   if (!m) return null;
   if (m[1]) return { game: GAME_WORD[m[1]] };
-  if (/\b(?:against|vs\.?|with)\s+(?:void|v01d|you)$/.test(t) || /^my match history$/.test(t)) return { game: 'chess' };
+  if (/\b(?:against|vs\.?|with)\s+(?:void|v01d|verse|you)$/.test(t) || /^my match history$/.test(t)) return { game: 'chess' };
   return null;
 }
 
@@ -86,14 +88,14 @@ export function whenLabel(at) {
   const two = (n) => String(n).padStart(2, '0');
   return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + two(d.getHours()) + ':' + two(d.getMinutes());
 }
-const WORD = { win: 'you won', loss: 'V01D won', draw: 'a draw' };
+const WORD = { win: 'you won', loss: 'Verse won', draw: 'a draw' };
 /** the Match History block: the summary line and the last LAST games of that game, newest first; every value escaped. Pure. */
 export function historyHtml(esc, sum, log) {
   const game = sum && sum.game || '', games = (Array.isArray(log) ? log : []).map(parseGame).filter((g) => g && (!game || g.game === game)).slice(-LAST).reverse();
-  const rows = games.map((g) => '<tr><td>' + esc(whenLabel(g.at)) + '</td><td>' + esc(g.vs === 'self' ? 'yourself' : 'V01D') + '</td><td data-result="' + esc(g.result) + '">' + esc(WORD[g.result]) + '</td><td>' + esc(g.moves) + '</td><td>' + esc(g.minutes) + '</td></tr>').join('');
+  const rows = games.map((g) => '<tr><td>' + esc(whenLabel(g.at)) + '</td><td>' + esc(g.vs === 'self' ? 'yourself' : 'Verse') + '</td><td data-result="' + esc(g.result) + '">' + esc(WORD[g.result]) + '</td><td>' + esc(g.moves) + '</td><td>' + esc(g.minutes) + '</td><td>' + (g.line ? '<button type="button" class="mh-replay" data-at="' + esc(g.at) + '" aria-label="Replay this game move by move">\u25B6 Replay</button>' : '') + '</td></tr>').join('');
   return '<div class="about-h">Match history</div><div class="match-history" data-game="' + esc(game) + '" data-played="' + esc(sum ? sum.played : 0) + '">'
     + '<p class="mh-sum">' + esc(summaryLine(sum)) + (sum && sum.played ? '' : ' · finish a game of ' + esc(TITLES[game] || 'chess') + ' on the stage and it shows here') + '</p>'
-    + (rows ? '<table class="mh-table"><thead><tr><th>when</th><th>vs</th><th>result</th><th>moves</th><th>minutes</th></tr></thead><tbody>' + rows + '</tbody></table>' : '')
+    + (rows ? '<table class="mh-table"><thead><tr><th>when</th><th>vs</th><th>result</th><th>moves</th><th>minutes</th><th aria-label="replay"></th></tr></thead><tbody>' + rows + '</tbody></table>' : '')
     + '<div class="src">from games finished on this device only (a2m.void.games.v1, the last ' + MAX + ') · Elo estimated: both start at ' + START + ', K = ' + K + '</div></div>';
 }
 
@@ -101,8 +103,8 @@ export function historyHtml(esc, sum, log) {
 export function load(s) { try { return record(JSON.parse(read('games', s) || '[]'), null); } catch (_) { return []; } }
 export function save(log, s) { return write('games', JSON.stringify(record(log, null)), s); }
 /** keep one finished game: result from your side ('win', 'loss', 'draw'); returns the new log. Never throws. */
-export function finish(game, result, { moves = 0, minutes = 0, vs = 'v01d', at = null } = {}, s) {
-  const log = record(load(s), { at: at || new Date().toISOString(), game, vs, result, moves, minutes });
+export function finish(game, result, { moves = 0, minutes = 0, vs = 'v01d', at = null, line = null } = {}, s) {
+  const log = record(load(s), { at: at || new Date().toISOString(), game, vs, result, moves, minutes, line });
   save(log, s);
   return log;
 }

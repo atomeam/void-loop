@@ -43,7 +43,7 @@ export async function verifyToken(key, token, now = Date.now()) {
 // a license key for one order and product: V01D-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
 export async function licenseKey(key, order, product) {
   const h = hex(await hmac(key, 'license:' + order + ':' + product)).toUpperCase().slice(0, 16);
-  return 'V01D-' + h.match(/.{4}/g).join('-');
+  return 'V01D-' + h.match(/.{4}/g).join('-'); // license keys keep their V01D- prefix through the rename to Verse: keys already sold must keep working
 }
 export const LICENSE_V01D_RE = /^V01D-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
 
@@ -87,5 +87,5 @@ export const orderCode = (id) => String(id).slice(-8).toUpperCase();
 export function buyAnswer() {
   const live = STORE_PRODUCTS.filter((p) => p.gumroad && !p.soon);
   const made = STORE_PRODUCTS.filter((p) => !p.gumroad && !p.soon && p.files).map((p) => ({ id: p.id, name: p.name, price: p.pwyw ? 'Free · pay what you want' : price(p), blurb: p.blurb, url: '/store/#' + p.id }));
-  return { lead: 'What V01D sells · support V01D', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
+  return { lead: 'What Verse sells · support Verse', rows: live.map((p) => ({ id: p.id, name: p.tip ? p.name + ' (tip jar)' : p.name, price: price(p), blurb: p.blurb, url: gumroadUrl(p, 'void-card') })), made, more: 'Everything is at a-to-mind.com/store.' };
 }

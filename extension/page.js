@@ -63,9 +63,21 @@ function voidPutDraft(text) {
 
 // B3: one step you said yes to, on a site you allowed: fill a field with text, or click a button, each named by its visible
 // label. It never submits a form or presses Enter: a field is filled the way typing would fill it, and a button that would
-// submit its form is refused (you press it yourself). Two elements matching the label is a refusal too: it acts on one thing.
+// submit its form is refused (you press it yourself), and so is a button that deletes something or moves money (Delete, Pay,
+// Transfer, in a few languages). Two elements matching the label is a refusal too: it acts on one thing.
 function voidAct(step) {
   const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+  // defined in here, not at the top: executeScript sends only this function's own source to the page
+  const RISKY = new RegExp('(?<!\\p{L})(?:' + [
+    'delete', 'remove', 'erase', 'discard', 'destroy', 'wipe', 'trash', 'empty trash', 'unsubscribe', 'cancel subscription', 'deactivate', 'close account',
+    'pay', 'payment', 'pay now', 'purchase', 'buy', 'buy now', 'checkout', 'check out', 'place order', 'order now', 'complete order', 'submit order',
+    'transfer', 'send money', 'send payment', 'withdraw', 'donate',
+    'supprimer', 'effacer', 'payer', 'acheter', 'commander', 'virement', 'transférer', // French
+    'löschen', 'entfernen', 'bezahlen', 'zahlen', 'kaufen', 'bestellen', 'überweisen', // German
+    'eliminar', 'borrar', 'pagar', 'comprar', 'transferir', // Spanish, Portuguese
+    'elimina', 'cancella', 'paga', 'acquista', 'compra', 'excluir', 'apagar', // Italian, Portuguese
+    'verwijderen', 'betalen', 'kopen', // Dutch
+  ].join('|') + ')(?!\\p{L})', 'iu');
   const want = norm(step && step.label);
   if (!want || !step || (step.action !== 'fill' && step.action !== 'click')) return { ok: false, why: 'bad-step' };
   const shown = (e) => !!(e.offsetWidth || e.offsetHeight || e.getClientRects().length) && getComputedStyle(e).visibility !== 'hidden';
@@ -108,6 +120,9 @@ function voidAct(step) {
     el = hits[0];
   }
   if (step.action === 'click') {
+    // a button that deletes something or moves money is refused too, whatever label it was asked by: many apps delete or pay
+    // with a plain button, no form to submit. Every name it has counts (its text, aria-label, title, id), in a few languages.
+    if (labelOf(el).some((n) => RISKY.test(n))) return { ok: false, why: 'destructive' };
     const submits = el.tagName === 'BUTTON' ? (el.getAttribute('type') || 'submit').toLowerCase() === 'submit' && !!el.form : false;
     if (submits) return { ok: false, why: 'submits' };
     el.click();

@@ -20,7 +20,7 @@ const P = { id: 'test-share-pack', name: 'Test pack', cents: 1000, pwyw: true, k
 assert.ok(isShareProduct(P)); assert.ok(!isShareProduct({ ...P, cents: 0 }), 'truly free stays free'); assert.ok(!isShareProduct({ ...P, pwyw: false }));
 assert.deepEqual(shareItems(P).free, ['README.txt']); assert.equal(shareItems(P).paid.length, 10);
 let s = shareFor(P, 400); assert.deepEqual(s.unlocked, ['README.txt', 'm1.stl', 'm2.stl', 'm3.stl', 'm4.stl']); assert.equal(s.upgradeCents, 600); assert.equal(s.pct, 40);
-assert.deepEqual(shareFor({ ...P, order: ['m10.stl', 'README.txt', 'm1.stl'] }, 1).unlocked, ['README.txt', 'm10.stl'], 'V01D ranking order, README first');
+assert.deepEqual(shareFor({ ...P, order: ['m10.stl', 'README.txt', 'm1.stl'] }, 1).unlocked, ['README.txt', 'm10.stl'], 'Verse ranking order, README first');
 assert.equal(shareFor(P, 1000).locked.length, 0); assert.equal(shareFor(P, 1000).upgradeCents, 0);
 // zip: valid local headers, every file present
 const z = zipStore([{ name: 'a.txt', data: new TextEncoder().encode('hi') }]); assert.equal(new DataView(z.buffer).getUint32(0, true), 0x04034b50); assert.ok(Buffer.from(z).includes('a.txt'));

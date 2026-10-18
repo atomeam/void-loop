@@ -88,7 +88,7 @@ test('forge: the STL is the model, binary, millimetres, Z up, every facet with a
     const m = F.build(k), buf = F.stl(m), dv = new DataView(buf), n = m.indices.length / 3;
     assert.equal(buf.byteLength, 84 + 50 * n);
     assert.equal(dv.getUint32(80, true), n);
-    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^V01D forge: /);
+    assert.match(String.fromCharCode(...new Uint8Array(buf, 0, 40)), /^Verse forge: /);
     assert.doesNotMatch(String.fromCharCode(...new Uint8Array(buf, 0, 5)), /^solid/, 'binary STL never starts with "solid" (slicers would read it as ASCII)');
     let maxZ = 0, minZ = Infinity;
     for (let t = 0; t < n; t++) {

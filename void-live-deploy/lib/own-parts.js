@@ -7,7 +7,7 @@
 // The self card ("what I think of myself") is a page handler (void.html wantsVoice), not a skill, and already takes its own frame.
 export const PARTS = [
   { id: 'site-test', skill: 'growth', owned: true, ask: 'site test', names: ['site[ -]?test(?:er)?(?: (?:log|results?|runs?))?', 'stability (?:trend|sparklines?|chart|graph)', 'heat ?map', 'weathered heat ?map'] },
-  { id: 'growth', skill: 'growth', ask: 'growth', names: ['growth(?: (?:ledger|log|history|inbox))?', '(?:void|v01d)(?:\'s)? growth', 'owner (?:view|inbox)'] },
+  { id: 'growth', skill: 'growth', ask: 'growth', names: ['growth(?: (?:ledger|log|history|inbox))?', '(?:void|v01d|verse)(?:\'s)? growth', 'owner (?:view|inbox)'] },
   { id: 'status', skill: 'status', ask: 'void status', names: ['(?:void |v01d |system )?status', 'health check', 'sources? status'] },
   { id: 'book', skill: 'guide', ask: 'open the book', names: ['book', 'tome', 'guide', 'leather tome', 'illuminated tome'] },
   { id: 'rule-registry', skill: 'guide', ask: 'rule registry', names: ['rules? registry', 'router rules?'] },

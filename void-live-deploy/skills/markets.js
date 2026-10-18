@@ -26,7 +26,7 @@ const money = (v) => v == null ? '–' : new Intl.NumberFormat('en-US', { style:
 async function run(text, api) {
   const { showPage, esc } = api; const q = marketsAsk(text);
   if (!q) return 'none';
-  if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, V01D included. V01D only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
+  if (q.refuse) { showPage((el) => { el.innerHTML = '<h2>Keep that to yourself</h2><p>Never type a seed phrase or private key into any site, Verse included. Verse only reads public prices and public addresses; it never holds keys or funds.</p>'; }); return 'markets'; }
   if (q.addr) {
     const el = showPage((p) => { p.innerHTML = '<h2>Bitcoin address</h2><p class="g-sub">looking up…</p>'; }) || document.querySelector('.vpage');
     try {

@@ -130,7 +130,7 @@ function mount(th, stageApi) {
   paint();
 
   const tok = ownerToken();
-  if (!tok) { line.textContent = 'the owner\'s: unlock V01D (unlock <key>, or sign in with your passkey) to approve or read it'; return; }
+  if (!tok) { line.textContent = 'the owner\'s: unlock Verse (unlock <key>, or sign in with your passkey) to approve or read it'; return; }
   let runs = [];
   const progress = () => {
     if (!runs.length) return th.status === 'pending' ? WORDS.pending : th.status === 'aborted' ? WORDS.aborted : 'no run yet · the clock ticks every 15 minutes';

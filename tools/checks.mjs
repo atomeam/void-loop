@@ -37,6 +37,7 @@ for (const [name, file] of [
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
+  ['error-garden-incidents', 'error-garden-incidents.test.mjs'],
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],
   ['stage-pack-d', 'stage-pack-d.test.mjs'],
@@ -127,6 +128,7 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['family-logs', 'family-logs.test.mjs'],
   ['spark', 'spark.test.mjs'],
   ['self-blocks', 'self-blocks.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],
@@ -159,6 +161,7 @@ for (const [name, file] of [
   ['sky-world', 'sky-world.test.mjs'],
   ['sky', 'test_sky.mjs'],
   ['take', 'take.test.mjs'],
+  ['chess-replay', 'chess-replay.test.mjs'],
   ['sorry', 'sorry.test.mjs'],
   ['voice', 'voice.test.mjs'],
   ['pr-ready', 'pr-ready.test.mjs'],
@@ -297,6 +300,9 @@ for (const [name, file] of [
   ['card-frame', 'card-frame.test.mjs'],
   ['card-look', 'card-look.test.mjs'],
   ['autopsy-asks', 'autopsy-asks.test.mjs'],
+  ['game-health', 'game-health.test.mjs'],
+  ['ics', 'ics.test.mjs'],
+  ['backlog-digest', 'backlog-digest.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],
   ['merge-route', 'merge-route.test.mjs'],
@@ -319,6 +325,7 @@ for (const [name, file] of [
   ['stage-pack-f', 'stage-pack-f.test.mjs'],
   ['thinking math', 'thinking-math.test.mjs'],
   ['tools pack 3', 'tools-pack3.test.mjs'],
+  ['convert-math', 'convert-math.test.mjs'],
 ]) {
   addScript(name, file);
 }

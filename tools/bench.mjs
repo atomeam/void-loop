@@ -108,6 +108,8 @@ async function one({ ask: a, want, says, before }) {
     if (u.includes('/feed/featured/')) return r.fulfill(json({ news: [{ story: '<b>Something</b> happened today.', links: [] }] }));
     return r.fulfill({ status: 204, body: '' }); });
   await ctx.route(/127\.0\.0\.1:\d+\/api\//, (r) => { const u = r.request().url(); if (/\/api\/miss$/.test(u) && !/"kind":"used"|"fallback":"ungrounded:/.test(r.request().postData() || '')) miss.push(1); // a lab experiment's use count (lib/used.js) and the page's own grounding report (lib/ground.js, reported apart) are no miss
+    // an open plan ("plan my garden") asks the engine for its steps (skills/intent.js engineSteps); with none the skill reports a miss (intent:no-steps), so the stub gives it three
+    if (/\/api\/answer$/.test(u) && /"mode":"plan"/.test(r.request().postData() || '')) return r.fulfill(json({ steps: ['Pick a first small step', 'Do it for a week', 'Review and adjust'] }));
     if (/\/api\/answer$/.test(u)) return r.fulfill(json({ answer: 'A generic answer.', sources: [] }));
     return r.fulfill({ status: 204, body: '' }); });
   // no fixed sleeps: goto resolves after the page's inline script has bound the input, and handle() itself waits for the skills
