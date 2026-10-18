@@ -74,6 +74,7 @@ async function run(text, api) {
 export default {
   name: 'zorbleflux',
   zorbleOf,
+  about: Z.ABOUT, // the one line "tell me about <a skill>" (skills/about-skill.js) prefers over the book's
   examples: ['zorbleflux', 'play zorbleflux', 'a zorbleflux game', 'what is a zorbleflux', 'tell me about zorbleflux', "what's a zorbleflux?"],
   nearMisses: ['zorb', 'flux capacitor', 'what is flux', 'play chess'],
   match(lower, text) { return !!zorbleOf(text); },

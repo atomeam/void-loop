@@ -32,6 +32,7 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(n
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
+  ['about-skill', 'about-skill.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],
@@ -121,6 +122,8 @@ for (const [name, file] of [
   ['revert-target', 'revert-target.test.mjs'],
   ['status', 'status.test.mjs'],
   ['growth', 'growth.test.mjs'],
+  ['spark', 'spark.test.mjs'],
+  ['self-blocks', 'self-blocks.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
   ['own-parts', 'own-parts.test.mjs'],

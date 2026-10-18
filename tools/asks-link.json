@@ -39,6 +39,7 @@
     { "match": "unanswered (user )?(questions|requests)|unrecognized user requests|make me a\\.\\.\\.' requests", "ledgerAt": "2026-10-13T16:10:28Z", "why": "a miss people repeat becomes a queued build job by itself (lib/learn.js)" },
     { "match": "wordMath", "ledgerAt": "2026-10-15T06:43:35Z", "why": "wordMath is eight named parts pinned by golden answers" },
     { "match": "^Learn Go", "ledgerAt": "2026-10-08T17:55:00Z", "why": "skills/go.js: a two-player 9x9 board with real rules" },
+    { "match": "zorbleflux", "ledgerAt": "2026-10-18T02:51:48Z", "why": "skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js" },
     { "match": "WebMCP origin trial", "ledgerAt": "2026-10-13T15:51:15Z", "why": "the page's WebMCP tools, with every refusal as data" },
     { "match": "GitHub release assets", "ledgerAt": "2026-10-14T16:28:00Z", "why": "every film is posted as a GitHub Release with its MP4" },
     { "match": "'popular'|dormancy|unused.*salvage|salvage.*archive|'unused'", "ledgerAt": "2026-10-13T18:46:26Z", "why": "going unused never throws anything out: the salvage shelf and the use thresholds" },

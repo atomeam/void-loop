@@ -822,6 +822,10 @@
     .vpage.vc-self .vs-log .vs-h { font-family: inherit; }
     .vpage.vc-self .vs-log .vs-note, .vpage.vc-self .vs-log .vs-of, .vpage.vc-self .vs-log summary { font-size: 13px; }
     .vpage.vc-self .vs-of { color: var(--ink-3); }
+    /* the growth velocity (asked by Void): a week of builds as one small line in V01D's violet, the latest day a dot, a muted monospace label beside it */
+    .vpage.vc-self .vs-velocity { display: flex; align-items: center; gap: 10px; margin: 0 0 8px; color: rgb(170 140 255 / .95); }
+    .vpage.vc-self .vs-velocity .vs-spark { flex: none; display: block; overflow: visible; }
+    .vpage.vc-self .vs-vel-label { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; color: var(--ink-3); }
     @media (prefers-reduced-motion: no-preference) { .vpage.vc-self .vs-sec { animation: vs-in .35s ease both; } @keyframes vs-in { from { opacity: 0; transform: translateY(4px); } } }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
     /* the browser's own look stays out (owner, 2026-10-18: "protecting the aesthetic perimeter"): selected text takes V01D's violet, every scrolling
@@ -2651,6 +2655,16 @@ say('nothing selected to remove');
         b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'show the newest 5' : 'show all ' + n; const ul = b.previousElementSibling; if (ul) fold(ul); }));
       el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const ul = el.querySelector('.v-built'); if (!ul) return;
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
+      // the growth velocity keeps up (asked by Void: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
+      // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
+      // the listener lets go the first time it finds the card closed
+      if (SB && el.querySelector('.vs-velocity')) { let velAt = 0, velBusy = false;
+        const onStage = async () => { if (vpageEl !== el) return removeEventListener('void:stage-change', onStage);
+          if (velBusy || Date.now() - velAt < SB.VELOCITY_EVERY) return; velBusy = true; velAt = Date.now();
+          try { const nv = await fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), box = vpageEl === el && el.querySelector('.vs-velocity');
+            if (box && nv && nv.follow) box.outerHTML = SB.velocityHtml(SB.velocity(nv.follow.asked), esc); } catch (_) {} // void-review: ok: velocityHtml escapes every value with esc
+          velBusy = false; };
+        addEventListener('void:stage-change', onStage); }
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Void, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
       Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc

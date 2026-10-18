@@ -9,6 +9,7 @@ import { load as loadLadder, ladderHtml } from '../lib/ladder.js';
 import { betterHtml, familySnapshot } from '../lib/better.js';
 import { skillStatus, statusHtml, familyMapHtml, promotedRows, promotedHtml, bloomPlan, bloomHtml, divergenceHtml } from '../lib/inbox-health.js'; // the growth inbox's skill health (asked by Void)
 import { confidenceOf } from '../lib/skill-confidence.js';
+import { sparkSvg } from '../lib/spark.js';
 import { autopsy, incidentCases } from '../lib/autopsy.js'; // test cases from recent red runs on main (the Site Test card) // weathered: untested for WEATHER_DAYS (the Site Test heat map)
 import { timeline, weekSummary, publicWhat } from './growth-tree.js'; // the time slider's stops (growth-tree.js reads KIND_COLOR from here, only when called)
 
@@ -425,14 +426,9 @@ export function stabilitySeries(rows, fam, a, now = Date.now()) {
     return { id, name: names.get(id) || id, points, drop, fails: n };
   });
 }
-/** a sparkline of a family's points: an SVG polyline, 0..100 bottom to top, the last point marked. '' with no points. Pure. */
-export function sparkSvg(points, w = 72, h = 18) {
-  if (!points || !points.length) return '';
-  const xs = (i) => (points.length === 1 ? w - 3 : 3 + (i * (w - 6)) / (points.length - 1)), ys = (v) => (h - 2 - (Math.max(0, Math.min(100, v)) * (h - 4)) / 100).toFixed(1);
-  const last = points[points.length - 1], pts = points.map((p, i) => xs(i).toFixed(1) + ',' + ys(p.health)).join(' ');
-  return '<svg class="st-spark" width="' + w + '" height="' + h + '" viewBox="0 0 ' + w + ' ' + h + '" aria-hidden="true"><polyline points="' + pts + '" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>'
-    + '<circle cx="' + xs(points.length - 1).toFixed(1) + '" cy="' + ys(last.health) + '" r="2" fill="currentColor"/></svg>';
-}
+/** a sparkline of a family's points: an SVG polyline, 0..100 bottom to top, the last point marked. '' with no points. Pure.
+ *  The drawer lives in lib/spark.js (the self card's growth velocity draws with it too; a lib never imports a skill); re-exported here for its tests and callers. */
+export { sparkSvg };
 /** the stability section: one row per family, its sparkline, today's health, and the drop recent failures took. '' with no families. Pure. */
 export function stabilityHtml(esc, series) {
   if (!series || !series.length) return '';
