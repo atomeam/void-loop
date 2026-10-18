@@ -184,7 +184,9 @@ await V.fill('#input', 'days until new year');
 await V.press('#input', 'Enter');
 await V.waitForSelector('.vput', { state: 'visible', timeout: 10000 }).catch(() => {});
 // the stage places a new card a frame after it appears (lib/placement.js): wait until the button stops moving, as a person's
-// hand would (a click in that first frame landed where the button had been, 2 runs in 4)
+// hand would (a click in that first frame landed where the button had been, 2 runs in 4). The card also has to be done arriving (its
+// "arrive" class comes off when the entrance ends): on a loaded machine the entrance outlasted the position check below and the click found the box empty
+await V.waitForFunction(() => { const c = document.querySelector('.countdown-card'); return !!c && !c.classList.contains('arrive'); }, null, { timeout: 8000 }).catch(() => {});
 for (let i = 0, last = ''; i < 20; i++) { const b = JSON.stringify(await V.evaluate(() => { const r = document.querySelector('.vput').getBoundingClientRect(); return [Math.round(r.x), Math.round(r.y)]; })); if (b === last) break; last = b; await V.waitForTimeout(150); }
 await page.evaluate(() => { const t = document.getElementById('reply'); t.value = ''; t.focus(); });
 // a real click, as a person makes it: the stage keeps the countdown card clear of the tab card (lib/placement.js). force only
