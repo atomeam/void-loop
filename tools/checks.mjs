@@ -203,6 +203,7 @@ for (const [name, file] of [
   ['learn-e2e', 'learn.e2e.test.mjs'],
   ['refusal', 'refusal.test.mjs'],
   ['private', 'private.test.mjs'],
+  ['public-quotes', 'public-quotes.test.mjs'],
   ['model-bench', 'model-bench.test.mjs'],
   ['model-switch', 'model-switch.test.mjs'],
   ['bench-route', 'bench-route.test.mjs'],

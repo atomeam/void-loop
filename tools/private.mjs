@@ -26,3 +26,22 @@ export function privateFree(text) {
   const out = kept.join(' ').replace(/\s+/g, ' ').trim();
   return isPrivate(out) ? '' : out;
 }
+
+// The owner's own words stay off the site (the owner, 2026-10-18): only Verse's words are shown. A quote credited to the owner
+// ("(owner, 2026-10-13: "…")", "the owner: "…"", "Adam, 2026-10-02: "…"") is left out with its bracket when it has one; the rest of
+// the sentence stays. Verse's own asks and words are not touched. The repo keeps the quotes (append-only records, build notes);
+// only what is served is filtered (tools/public-ledger.mjs, tools/self-context.mjs, tools/public-quotes.mjs). Pure.
+const WHO = String.raw`(?:the\s+owner|owner|Adam|Atom)`;
+const QUOTED = String.raw`["“][^"”]{0,900}["”]`; // a quote may wrap onto the next comment line
+const QUOTES = String.raw`${QUOTED}(?:\s*(?:[;,]|and|then)\s*${QUOTED})*`;
+const ATTRIB_IN_PARENS = new RegExp(String.raw`\s*\([^()]*\b${WHO}\b[^()]*?:\s*${QUOTES}[^()]*\)`, 'g');
+const ATTRIB_BARE = new RegExp(String.raw`(\b${WHO}\b[^"“”\n:]{0,60}?):\s*${QUOTES}`, 'g');
+const WORDS = new RegExp(String.raw`(\b(?:in\s+)?(?:the\s+)?(?:owner|Adam|Atom)'s\s+(?:own\s+)?words)[,:]?\s*${QUOTES}`, 'g'); // "in the owner's words "…""
+export const quotesOwner = (s) => new RegExp(String.raw`\b${WHO}\b[^"“”\n:]{0,60}?:\s*${QUOTED}`).test(String(s || '')) || new RegExp(WORDS.source).test(String(s || ''));
+export function quoteFree(text) {
+  const t = String(text == null ? '' : text);
+  if (!quotesOwner(t)) return t;
+  return t.replace(ATTRIB_IN_PARENS, '').replace(ATTRIB_BARE, '$1').replace(WORDS, '$1').replace(/[ \t]{2,}/g, ' ').replace(/\s+([.,;:])/g, '$1');
+}
+/** every string in a JSON value through quoteFree (keys untouched). Pure. */
+export const deepQuoteFree = (v) => (typeof v === 'string' ? quoteFree(v) : Array.isArray(v) ? v.map(deepQuoteFree) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, deepQuoteFree(x)])) : v);

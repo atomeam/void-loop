@@ -187,7 +187,7 @@
    "state": "open",
    "date": "",
    "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15: \"all the projects are V01D\"; \"V01D should absorb and connect everything\""
+   "from": "owner, 2026-10-15"
   },
   {
    "state": "open",
@@ -229,7 +229,7 @@
    "state": "open",
    "date": "",
    "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11: \"go if it make it a beter product, always go on improvements\""
+   "from": "owner, 2026-10-11"
   },
   {
    "state": "open",
@@ -337,7 +337,7 @@
   "terms": [
    {
     "term": "Verse",
-    "means": "the product's name (Adam, 2026-10-18: \"rename Verse everywhere\"); it was Void, then V01D. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
+    "means": "the product's name; it was Void, then V01D. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
    },
    {
     "term": "skill family",
@@ -407,11 +407,11 @@
    },
    {
     "name": "Keeps every secret",
-    "line": "Adam, 2026-10-15: \"make V01D the best at keeping secrets ever made.\" Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
+    "line": "Adam, 2026-10-15 Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
    },
    {
     "name": "A force for good",
-    "line": "Adam, 2026-10-15: \"V01D always should turn every negative ask into a positive thing; V01D is a force of absolute good in the universe.\" A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
+    "line": "Adam, 2026-10-15 A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
    }
   ]
  },
@@ -446,84 +446,84 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T08:52:37Z",
+   "subject": "Incident: the browser suite failed on b95dc3a3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:51:53Z",
+   "subject": "book: a long chapter name steps its opener title down to fit the sheet"
+  },
+  {
+   "at": "2026-10-18T08:51:34Z",
+   "subject": "Incident: the browser suite failed on a0711aed (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-18T08:46:19Z",
    "subject": "grow: log the Verse rename"
   },
   {
-   "at": "2026-10-18T08:35:37Z",
-   "subject": "regenerate self.json and guide.json on the merged sources"
+   "at": "2026-10-18T08:45:21Z",
+   "subject": "Incident: the browser suite failed on f74e9b8a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:28:01Z",
-   "subject": "the product is Verse (owner, 2026-10-18: \"rename Verse everywhere\")"
+   "at": "2026-10-18T08:45:10Z",
+   "subject": "Forge keeps 'what can you 3d print for me' (its test pins it); the bare 'what can you 3d print' is inventory's"
   },
   {
-   "at": "2026-10-18T08:26:19Z",
-   "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:44:54Z",
+   "subject": "Site test: fix: \"what are you?\" missing text /V01D/; console: script /v"
   },
   {
-   "at": "2026-10-18T08:26:04Z",
+   "at": "2026-10-18T08:44:23Z",
+   "subject": "self.json regenerated after the merge"
+  },
+  {
+   "at": "2026-10-18T08:44:14Z",
+   "subject": "Six more /fix/ pages (n8n, Power Automate, GitHub Actions); three finished asks leave the growth inbox"
+  },
+  {
+   "at": "2026-10-18T08:43:58Z",
+   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:43:32Z",
+   "subject": "Incident: the browser suite failed on d2238803 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:43:28Z",
+   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:42:41Z",
+   "subject": "Incident: the browser suite failed on 582c0d4d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:41:39Z",
+   "subject": "Incident: the browser suite failed on 5d392dcf (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:41:37Z",
+   "subject": "Telemetry test: close the report test again after the merge; deps map regenerated"
+  },
+  {
+   "at": "2026-10-18T08:40:56Z",
+   "subject": "A builder's report that quotes a timeout is read as telemetry, not answered as a broken automation to fix"
+  },
+  {
+   "at": "2026-10-18T08:40:19Z",
+   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:39:53Z",
+   "subject": "Spotter: 4 check(s) healed with no revert after 5d587a25718577c1cf95a30221b85cc3c7294103 (tools/flakes.json)"
+  },
+  {
+   "at": "2026-10-18T08:39:29Z",
    "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:24:48Z",
-   "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:23:35Z",
-   "subject": "Incident: the browser suite failed on 3a0f50a3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:20:47Z",
-   "subject": "Developer-log card: bulleted narration and self-resolved failures are not still failing"
-  },
-  {
-   "at": "2026-10-18T08:19:40Z",
-   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:19:04Z",
-   "subject": "Convert card: refresh deps.json for the new lib import"
-  },
-  {
-   "at": "2026-10-18T08:19:01Z",
-   "subject": "grow: log the asks-not-built fix"
-  },
-  {
-   "at": "2026-10-18T08:18:23Z",
-   "subject": "fix: \"asks not built?\" reaches the wants card, not the open web"
-  },
-  {
-   "at": "2026-10-18T08:17:48Z",
-   "subject": "deps.json: the Service Health skill now reads lib/autopsy.js (regenerated with tools/deps.mjs)"
-  },
-  {
-   "at": "2026-10-18T08:16:43Z",
-   "subject": "Incident: the browser suite failed on 200e56d5 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:14:09Z",
-   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:13:48Z",
-   "subject": "Convert card: keep a one-off conversion as a card; maths moved to lib/convert-math.js (asked by Void)"
-  },
-  {
-   "at": "2026-10-18T08:11:44Z",
-   "subject": "Verse: the name everywhere people see it (owner, 2026-10-18: \"rename void to verse\"); the page, the intro wordmark, the share image, the fil"
-  },
-  {
-   "at": "2026-10-18T08:09:42Z",
-   "subject": "Incident: the browser suite failed on 59a6bc6a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:08:19Z",
-   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:08:07Z",
-   "subject": "Service Health: a stability dial for V01D's own suite (asked by Void)"
+   "at": "2026-10-18T08:38:29Z",
+   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
