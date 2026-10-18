@@ -16,15 +16,22 @@ async function run(text, api) {
   const skills = await loadSkills();
   const lower = ask.toLowerCase();
   const { taker, near } = nearChoir(ask, skills, (s) => s.match(lower, ask));
-  const body = near.length
-    ? '<div style="display:grid;gap:6px;margin:8px 0">' + near.map((n) => '<button type="button" class="g-btn nc-go" data-ask="' + esc(n.ask) + '" style="text-align:left"><span>' + esc(n.ask) + '</span> <span style="opacity:.6">(' + esc(n.name) + ', ' + esc(n.why) + ')</span></button>').join('') + '</div>'
-    : '<p style="margin:6px 0 8px">Nothing else came close.</p>';
   const el = softCard('near-choir', '<strong>you might have meant</strong>' // void-review: ok (every value is escaped)
-    + '<div style="opacity:.7">for: ' + esc(ask) + (taker ? ' (answered by ' + esc(taker) + ')' : '') + '</div>' + body
+    + '<div style="opacity:.7">for: ' + esc(ask) + (taker ? ' (answered by ' + esc(taker) + ')' : '') + '</div>'
+    + (near.length ? '<div class="nc-list" style="display:grid;gap:6px;margin:8px 0"></div>' : '<p style="margin:6px 0 8px">Nothing else came close.</p>')
     + '<button type="button" class="g-btn nc-x">close</button>');
+  // the buttons are built as elements, not markup: an example ask with quotes in it (ask-diff's 'diff "make a timer" and ...') used to
+  // cut the data-ask attribute short, so the tap ran a stub ask ("diff ") instead of the skill's own example
+  const list = el.querySelector('.nc-list');
+  if (list) for (const n of near) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn nc-go'; b.style.textAlign = 'left'; b.dataset.ask = n.ask;
+    const a = document.createElement('span'); a.textContent = n.ask;
+    const w = document.createElement('span'); w.style.opacity = '.6'; w.textContent = '(' + n.name + ', ' + n.why + ')';
+    b.append(a, ' ', w); list.appendChild(b);
+  }
   el.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('.nc-go');
-    if (b) { el.remove(); api.stage.ask(b.getAttribute('data-ask')); }
+    if (b) { el.remove(); api.stage.ask(b.dataset.ask); }
     else if (e.target.closest && e.target.closest('.nc-x')) el.remove();
   });
   return 'near-choir';

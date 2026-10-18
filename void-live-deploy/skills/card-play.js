@@ -89,6 +89,7 @@ function rbEnable(stageApi) {
   if (rbOn) return;
   rbOn = true;
   const st = stageApi.stage; let start = null, box = null;
+  try { st.dataset.rubberBand = 'on'; } catch (_) {} // armed: the suite waits for this before it drags (a drag before the listener is on selects nothing)
   const local = (e) => { const r = st.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
   st.addEventListener('pointerdown', (e) => {
     if (!rbOn || e.target !== st || e.button > 0) return;

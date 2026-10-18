@@ -169,7 +169,8 @@ export default {
   nearMisses: ['what is markdown', 'find a pizza place near me', 'how many words in a novel', 'replace the battery in my phone', 'word count of hamlet', 'collapse of the roman empire',
     'duplicate the zombie', 'clone the zombie', 'pin a map of paris', 'export my data', 'reading time of war and peace', 'find me a recipe for soup'],
   noteIntent,
-  match(lower, text) { return !!noteIntent(text || lower); },
+  // "export the table as markdown" with a data table card on the stage is that card's own export (list-tools shows it in a box with Copy)
+  match(lower, text) { const i = noteIntent(text || lower); return !!i && !(i.act === 'md' && /^tables?$/.test(i.noun) && typeof document !== 'undefined' && document.querySelector('.datatable-card')); },
   async run(text, api) {
     const intent = noteIntent(text);
     if (!intent) return 'none';

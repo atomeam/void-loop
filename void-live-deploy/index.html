@@ -1159,7 +1159,7 @@
   <div id="dock" role="search" aria-label="Ask Void">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
-      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Ask V01D" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Command the Verse" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
@@ -4162,7 +4162,7 @@ say('nothing selected to remove');
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
       if (!SKY.lib) { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); return; }
       skyView();
-      if (prev && dt > 0.004 && dt < 1) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it)
+      if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
         const t = Math.min(0.25, dt);
         SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
         SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
@@ -4549,13 +4549,16 @@ say('nothing selected to remove');
     // the personal memory graph (lib/memory-graph.js, the `graph` store in lib/state.js; asked by Void, 2026-10-18: "a persistent, personal knowledge
     // graph across conversations"): which skill answered and a few object words of the ask, on this device only, never the sentence, never sent;
     // "what do you know about me" reads it back (skills/memory-graph.js). The first time anything is kept it says so once, on the card or the whisper line.
+    let graphNoteDue = false; // the once-only note, held until it can show without covering a skill's own whisper line (the sheet's "nothing on the stage", 2026-10-18)
     function graphNote(who, text, card) {
       import('/lib/memory-graph.js').then((m) => {
         const r = m.noteAskStored(localStorage, { skill: who, text, at: Date.now() });
         const fa = who === 'memory' ? m.factAsk(text) : null; // "remember that …" raises that fact's confidence, "forget that …" takes it out (asked by Void: a confidence score on each node)
         if (fa && fa.remember) m.noteFactStored(localStorage, fa.remember, Date.now()); else if (fa && fa.forget) m.forgetFactStored(localStorage, fa.forget);
-        if (!r.note) return;
-        if (card && vpageEl === card && !card.querySelector('.graph-note')) { const d = document.createElement('div'); d.className = 'src graph-note'; d.textContent = m.NOTE; card.appendChild(d); } else say(m.NOTE);
+        if (r.note) graphNoteDue = true;
+        if (!graphNoteDue) return;
+        if (card && vpageEl === card && !card.querySelector('.graph-note')) { const d = document.createElement('div'); d.className = 'src graph-note'; d.textContent = m.NOTE; card.appendChild(d); graphNoteDue = false; }
+        else if (!whisper.textContent) { say(m.NOTE); graphNoteDue = false; }
       }).catch(() => {});
     }
     function groundCheck(text, skill, el) {

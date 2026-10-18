@@ -69,13 +69,19 @@ export function chosenAnswer(recent, value) {
 
 /**
  * Put the form into `root` (a DOM element) with the document `doc`. Everything typed or read goes in with textContent. `onSaved(list)` runs
- * after a correction is kept. Returns { select, box, save }. The only thing it writes is CORRECTIONS.key.
+ * after a correction is kept. Returns { select, box, save }: `select` is the list of recent answers as one radio button each (one line per answer,
+ * so the card reads as a list, never as one run-on line of options: the owner, 2026-10-18), with a `value` like a select's ('' until one is
+ * picked, else the answer's index). The only thing it writes is CORRECTIONS.key.
  */
 export function mountForm(root, doc, { storage, log, onSaved } = {}) {
   const el = (tag, props = {}, kids = []) => { const n = doc.createElement(tag); Object.assign(n, props); for (const k of kids) n.append(k); return n; };
   const recent = recentAnswered(log);
-  const select = el('select', { ariaLabel: 'Which answer was wrong' }, [el('option', { value: '', textContent: recent.length ? 'Which answer was wrong?' : 'Nothing answered on this device yet' })]);
-  recent.forEach((r, i) => select.append(el('option', { value: String(i), textContent: r.ask + ' (answered by ' + r.skill + ')' })));
+  const radios = [], name = 'corr-which-' + Math.random().toString(36).slice(2, 8);
+  const items = recent.map((r, i) => { const radio = el('input', { type: 'radio', name, value: String(i), ariaLabel: r.ask + ' (answered by ' + r.skill + ')' }); radios.push(radio);
+    const skill = el('span', { className: 'sub', textContent: ' (answered by ' + r.skill + ')' }); skill.style && (skill.style.display = 'inline');
+    return el('li', {}, [el('label', { className: 'corr-which' }, [radio, el('span', { textContent: ' ' + r.ask }), skill])]); });
+  const select = el('ul', { className: 'v-asks corr-list', ariaLabel: 'Which answer was wrong' }, [el('li', { className: 'sub', textContent: recent.length ? 'Which answer was wrong?' : 'Nothing answered on this device yet' }), ...items]);
+  Object.defineProperty(select, 'value', { get() { const r = radios.find((x) => x.checked); return r ? r.value : ''; }, set(v) { for (const r of radios) r.checked = r.value === String(v); } });
   const box = el('textarea', { maxLength: CORRECTIONS.textMax, rows: 2, placeholder: 'What I got wrong, or what you wanted', ariaLabel: 'What V01D got wrong' });
   const note = el('div', { className: 'sub' });
   const save = el('button', { type: 'button', className: 'tr-copy', textContent: 'Tell V01D' });
