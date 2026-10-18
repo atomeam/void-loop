@@ -2629,6 +2629,30 @@ try {
     check('flow canvas: with Worker and Web Audio blocked the mind falls back to the page (it still evolves), Sound says it is unavailable, and nothing throws',
       b.mind === 'main' && b.gen >= 1 && b.soundOff && /unavailable/i.test(b.sound) && /cells painted/.test(b.status) && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
     await A.ctx.close(); await B.ctx.close(); }
+  if (want("resonance mind: a lattice the pointer plucks runs six of Grok's sound drafts, the mind evolves it in a Worker and on the page, no sound or microphone until asked")) { // asked by Owner: F-027, F-034, F-037, F-042, F-044, F-048
+    const MIC = 'window.__mic = 0; try { if (navigator.mediaDevices) { const g = navigator.mediaDevices.getUserMedia; navigator.mediaDevices.getUserMedia = function () { window.__mic++; return g ? g.apply(this, arguments) : Promise.reject(new Error("none")); }; } } catch (_) {}';
+    const rmRun = async (F, ask) => {
+      await F.ask(ask, 900); await until(async () => !!(await F.p.$('.ff-resonance-mind canvas')), 8000);
+      const card = '.ff-resonance-mind', read = () => F.p.$eval(card, (e) => ({ variant: e.dataset.variant, fid: e.dataset.fid, mind: e.dataset.mind, gen: +(e.dataset.gen || 0), entropy: e.dataset.entropy, activity: +e.dataset.activity, hue: e.dataset.hue,
+        status: e.querySelector('.ff-hud').textContent, chips: [...e.querySelectorAll('.rm-variant')].map((b) => b.dataset.variant + ':' + b.getAttribute('aria-pressed')).join(','), sound: e.querySelector('.ff-sound').textContent, soundOff: e.querySelector('.ff-sound').disabled,
+        soundPressed: e.querySelector('.ff-sound').getAttribute('aria-pressed'), mic: e.querySelector('.rm-mic-btn').textContent, micOff: e.querySelector('.rm-mic-btn').disabled, micOn: e.dataset.mic || 'off', asked: window.__mic, page: getComputedStyle(document.body).filter }));
+      const a = await read(), box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + box.width / 2, box.y + box.height / 2);
+      for (let i = 0; i < 16; i++) { await F.p.mouse.move(box.x + box.width * (0.3 + 0.4 * (i % 2)), box.y + box.height * 0.45); if (i % 5 === 0) { await F.p.mouse.down(); await F.p.mouse.up(); } } // swing and pluck
+      await until(async () => (await read()).gen >= 1, 12000).catch(() => {});
+      const b = await read(), seen = [];
+      for (const v of ['resonance', 'phase', 'bands', 'voice', 'spatial', 'predict']) { await F.p.click(card + ' .rm-variant[data-variant="' + v + '"]'); await F.p.mouse.move(box.x + box.width * 0.6, box.y + box.height * 0.4); await F.p.mouse.down(); await F.p.mouse.up(); await F.p.waitForTimeout(250); const r = await read(); seen.push(r.variant + ':' + r.fid + ':' + r.status.slice(0, 5)); }
+      return { a, b, seen, c: await read() };
+    };
+    const A = await fresh(MIC); const a = await rmRun(A, 'resonance mind');
+    const B = await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;', MIC); const b = await rmRun(B, 'resonant voice lattice mind');
+    const laws = 'resonance:F-034:F-034,phase:F-027:F-027,bands:F-044:F-044,voice:F-037:F-037,spatial:F-048:F-048,predict:F-042:F-042';
+    check('resonance mind: "resonance mind" opens F-034, plucking the lattice changes its numbers and the card\'s hue (not the page), the mind runs a generation in a Worker, each of the six laws runs from its chip with its F-id, and neither sound nor the microphone starts unasked',
+      a.a.variant === 'resonance' && a.a.fid === 'F-034' && /^F-034 spectral resonance · resonance [\d.]+ · gen \d+/.test(a.b.status) && a.b.mind === 'worker' && a.b.gen >= 1 && (a.b.hue !== a.a.hue || a.b.entropy !== a.a.entropy)
+      && a.seen.join(',') === laws && /resonance:true/.test(a.b.chips) && a.b.soundPressed === 'false' && /Use microphone \(asks permission\)/.test(a.b.mic) && a.c.micOn === 'off' && a.c.asked === 0 && a.b.page === 'none' && !A.errors.length, JSON.stringify({ a, errors: A.errors }));
+    check('resonance mind: "resonant voice lattice mind" opens on F-037; with Worker and Web Audio deleted the mind thinks on the page (it still evolves), Sound and the microphone say they are unavailable, every law still runs, and nothing throws',
+      b.a.variant === 'voice' && /^F-037/.test(b.b.status) && b.b.mind === 'main' && b.b.gen >= 1 && b.b.soundOff && /unavailable/i.test(b.b.sound) && b.b.micOff && /unavailable/i.test(b.b.mic) && b.seen.join(',') === laws && b.c.asked === 0 && b.c.page === 'none' && !B.errors.length, JSON.stringify({ b, errors: B.errors }));
+    await A.ctx.close(); await B.ctx.close(); }
   if (want("V01D's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
       { number: 901, title: 'V01D fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },

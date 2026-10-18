@@ -277,9 +277,8 @@
     "swarm",
     "vector-field-mind",
     "living-cards-mind",
-    "nca-mind",
     "flow-canvas",
-    "attention-field-mind",
+    "resonance-mind",
     "rts"
    ],
    "n": 5
@@ -699,21 +698,6 @@
   {
    "kind": "skill",
    "chapter": "make",
-   "name": "nca-mind",
-   "title": "Nca mind",
-   "line": "V01D's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and",
-   "examples": [
-    "nca mind",
-    "show me a living lattice",
-    "neural cellular automaton"
-   ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
-   "n": 32
-  },
-  {
-   "kind": "skill",
-   "chapter": "make",
    "name": "flow-canvas",
    "title": "Flow canvas",
    "line": "F-033, the Adaptive Flow-Canvas: , made with lib/field-stage.js fieldSkill",
@@ -724,6 +708,21 @@
    ],
    "tier": "tested",
    "why": "3 browser-suite mentions",
+   "n": 32
+  },
+  {
+   "kind": "skill",
+   "chapter": "make",
+   "name": "resonance-mind",
+   "title": "Resonance mind",
+   "line": "The spectral / resonance / sound field minds of Grok's drafts on V01D's shared engine: one card, six laws from lib/field-resonance.js, each citing its draft…",
+   "examples": [
+    "resonance mind",
+    "spectral mind",
+    "resonant lattice"
+   ],
+   "tier": "checked",
+   "why": "a self-test, 3 browser-suite mentions",
    "n": 33
   },
   {
@@ -972,7 +971,7 @@
     "let's play go"
    ],
    "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 44,
    "game": {
     "title": "Go",
@@ -3559,7 +3558,7 @@
     "how healthy are your skills"
    ],
    "tier": "checked",
-   "why": "a self-test, 7 browser-suite mentions",
+   "why": "a self-test, 6 browser-suite mentions",
    "n": 197
   },
   {
@@ -4395,7 +4394,7 @@
     "incident-autopsy",
     "event-countdown",
     "living-cards-mind",
-    "nca-mind"
+    "resonance-mind"
    ],
    "n": 242
   },
@@ -5305,8 +5304,8 @@
     },
     {
      "rank": 152,
-     "name": "nca-mind",
-     "catches": "nca mind"
+     "name": "resonance-mind",
+     "catches": "resonance mind"
     }
    ],
    "n": 261
@@ -5578,7 +5577,7 @@
     },
     {
      "name": "Flow canvas",
-     "page": 33
+     "page": 32
     },
     {
      "name": "Food",
@@ -5841,10 +5840,6 @@
      "page": 8
     },
     {
-     "name": "Nca mind",
-     "page": 32
-    },
-    {
      "name": "News",
      "page": 131
     },
@@ -5915,6 +5910,10 @@
     {
      "name": "Pollen",
      "page": 70
+    },
+    {
+     "name": "Pong",
+     "page": 54
     }
    ],
    "n": 265
@@ -5924,10 +5923,6 @@
    "chapter": "index",
    "title": "Index P–S",
    "entries": [
-    {
-     "name": "Pong",
-     "page": 54
-    },
     {
      "name": "Poster",
      "page": 24
@@ -5995,6 +5990,10 @@
     {
      "name": "Repo",
      "page": 120
+    },
+    {
+     "name": "Resonance mind",
+     "page": 33
     },
     {
      "name": "Reversi",
@@ -6559,7 +6558,7 @@
   },
   {
    "name": "Flow canvas",
-   "page": 33
+   "page": 32
   },
   {
    "name": "Food",
@@ -6806,10 +6805,6 @@
    "page": 8
   },
   {
-   "name": "Nca mind",
-   "page": 32
-  },
-  {
    "name": "News",
    "page": 131
   },
@@ -6952,6 +6947,10 @@
   {
    "name": "Repo",
    "page": 120
+  },
+  {
+   "name": "Resonance mind",
+   "page": 33
   },
   {
    "name": "Reversi",

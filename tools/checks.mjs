@@ -142,6 +142,7 @@ for (const [name, file] of [
   ['field-cards', 'field-cards.test.mjs'],
   ['field-attention', 'field-attention.test.mjs'],
   ['field-nca', 'field-nca.test.mjs'],
+  ['field-resonance', 'field-resonance.test.mjs'],
   ['vendor-three', 'vendor-three.test.mjs'],
   ['explainers', 'explainers.test.mjs'],
   ['learning', 'learning.test.mjs'],
