@@ -1,15 +1,29 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 43,
- "runsTotal": 157,
+ "cases": 45,
+ "runsTotal": 159,
  "kinds": {
-  "grow": 36,
+  "grow": 38,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T03:06:28Z",
+   "passed": 42,
+   "of": 48,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"attention field\" (skill:attention-field-mind)"
+  },
+  {
+   "at": "2026-10-18T02:53:48Z",
+   "passed": 44,
+   "of": 46,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
+  },
   {
    "at": "2026-10-18T00:52:54Z",
    "passed": 35,
@@ -135,20 +149,6 @@
    "of": 30,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
-  },
-  {
-   "at": "2026-10-17T14:29:51Z",
-   "passed": 19,
-   "of": 29,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
-  },
-  {
-   "at": "2026-10-17T13:52:50Z",
-   "passed": 26,
-   "of": 28,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
   }
  ],
  "seen": {
@@ -181,9 +181,9 @@
   "skill:dates": "2026-10-18T00:31:24Z",
   "skill:dating": "2026-10-18T00:52:54Z",
   "skill:different": "2026-10-18T00:52:54Z",
-  "skill:dismiss": "2026-10-17T08:11:24Z",
-  "skill:distance": "2026-10-17T08:18:35Z",
-  "skill:draw": "2026-10-17T08:18:35Z",
+  "skill:dismiss": "2026-10-18T02:53:48Z",
+  "skill:distance": "2026-10-18T02:53:48Z",
+  "skill:draw": "2026-10-18T02:53:48Z",
   "skill:feelings": "2026-10-17T08:24:25Z",
   "skill:figure": "2026-10-17T08:24:25Z",
   "skill:figure-can": "2026-10-17T08:24:25Z",
@@ -308,6 +308,10 @@
   "skill:flow-canvas": "2026-10-17T10:26:08Z",
   "skill:event-countdown": "2026-10-17T11:23:07Z",
   "skill:living-cards-mind": "2026-10-17T14:29:51Z",
-  "skill:service-health": "2026-10-17T21:02:03Z"
+  "skill:service-health": "2026-10-17T21:02:03Z",
+  "skill:attention-field-mind": "2026-10-18T03:06:28Z",
+  "skill:collectible": "2026-10-18T03:06:28Z",
+  "skill:nca-mind": "2026-10-18T03:06:28Z",
+  "skill:resonance-mind": "2026-10-18T03:06:28Z"
  }
 }
