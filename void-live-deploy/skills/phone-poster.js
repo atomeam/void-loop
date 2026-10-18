@@ -52,4 +52,7 @@ export default {
   ],
   match(lower, text) { return phonePosterOf(text || lower); },
   run,
+  suite() {
+    return { ok: phonePosterOf('phone cut posters') && phonePosterOf('generate film posters') && !phonePosterOf('hello world') };
+  },
 };
