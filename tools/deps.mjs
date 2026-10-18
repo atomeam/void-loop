@@ -57,15 +57,26 @@ export function dependants(files, path) {
   while (queue.length) { const p = queue.shift(); if (all.has(p)) continue; all.add(p); for (const q of by[p] || []) if (!all.has(q)) queue.push(q); }
   return { direct, all: [...all].sort() };
 }
+/** how many test files import each lib file directly (tools/*.test.mjs and tools/test_*.mjs, by their import lines): { 'lib/x.js': n }. Pure.
+ *  Asked by Verse (a 'dependency-health' skill that compares this map against stability requirements): the requirement it checks is that shared
+ *  code many skills depend on has a test that imports it. */
+export function testedLibs(testTexts) {
+  const n = {};
+  for (const [tp, t] of Object.entries(testTexts || {})) for (const s of specifiers(t)) {
+    const r = resolveSpec(tp, s);
+    if (r && r.startsWith('void-live-deploy/lib/')) { const f = r.slice('void-live-deploy/'.length); n[f] = (n[f] || new Set()).add(tp); }
+  }
+  return Object.fromEntries(Object.entries(n).map(([f, set]) => [f, set.size]));
+}
 const isSkill = (p) => /^skills\/[^/]+\.js$/.test(p); // a skill proper: skills/x.js (its helpers, like skills/mini/*, count as files it reaches through)
 
 /** the whole map, deterministic: the files, each with who imports it; the lib files ranked by the skills that depend on them. Pure. */
-export function build(texts) {
-  const files = graph(texts), out = {}, libs = [];
+export function build(texts, testTexts = {}) {
+  const files = graph(texts), out = {}, libs = [], tested = testedLibs(testTexts);
   for (const p of Object.keys(files)) {
     const d = dependants(files, p);
     out[p] = { imports: files[p].imports, ...(files[p].external.length ? { external: files[p].external } : {}), importedBy: d.direct, ...(d.all.length !== d.direct.length ? { reachedBy: d.all.filter((x) => !d.direct.includes(x)) } : {}) };
-    if (p.startsWith('lib/')) libs.push({ file: p, skills: d.all.filter(isSkill).length, direct: d.direct.filter(isSkill).length, dependants: d.all.length });
+    if (p.startsWith('lib/')) libs.push({ file: p, skills: d.all.filter(isSkill).length, direct: d.direct.filter(isSkill).length, dependants: d.all.length, tests: tested[p] || 0 });
   }
   libs.sort((a, b) => b.skills - a.skills || b.dependants - a.dependants || (a.file < b.file ? -1 : 1));
   const missing = [...new Set(Object.values(files).flatMap((f) => f.imports))].filter((p) => !(p in files) && !existsSync(resolve(SITE, p))).sort();
@@ -75,10 +86,15 @@ export const toJson = (b, files = Object.keys(b.files).length) => JSON.stringify
   note: 'Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file\'s imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).',
   counted: files, libs: b.libs, files: b.files }, null, 1) + '\n';
 
+/** the repo's test files, { 'tools/x.test.mjs': text } */
+export function readTests(dir = resolve(root, 'tools')) {
+  return Object.fromEntries(readdirSync(dir).filter((n) => /\.test\.mjs$|^test_[\w-]+\.mjs$/.test(n)).sort().map((n) => ['tools/' + n, readFileSync(resolve(dir, n), 'utf8')]));
+}
+
 export function readAll(site = SITE) { return Object.fromEntries(listFiles(site).map((p) => [p, readFileSync(resolve(site, p), 'utf8')])); }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
-  const b = build(readAll()), json = toJson(b), arg = process.argv[2];
+  const b = build(readAll(), readTests()), json = toJson(b), arg = process.argv[2];
   if (arg && arg !== '--check') {
     const p = arg.replace(/^void-live-deploy\//, '').replace(/^\//, ''), f = b.files[p];
     if (!f) { console.error('no such file in the map: ' + p + ' (paths look like lib/where.js)'); process.exit(1); }

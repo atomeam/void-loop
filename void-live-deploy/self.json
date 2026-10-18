@@ -272,6 +272,18 @@
    "date": "",
    "ask": "Two signposts left out until they can be true",
    "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for",
+   "from": "claude 2026-10-18"
   }
  ],
  "games": [
@@ -446,6 +458,50 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T13:34:19Z",
+   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:25:30Z",
+   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:21:11Z",
+   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:18:54Z",
+   "subject": "report-to-growth: a builder's note becomes open items on the frontier"
+  },
+  {
+   "at": "2026-10-18T13:16:34Z",
+   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:07:26Z",
+   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:03:08Z",
+   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:00:49Z",
+   "subject": "Zorbleflux throttle: a quiet 'calming the field' pill while the stage is held back"
+  },
+  {
+   "at": "2026-10-18T12:51:35Z",
+   "subject": "Incident: the browser suite failed on c37395be (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T12:45:54Z",
+   "subject": "Incident: the browser suite failed on c37395be (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T12:43:37Z",
+   "subject": "File decision-matrix under Deciding and give it benchmark evidence: Deciding 0 to 1 proven"
+  },
+  {
    "at": "2026-10-18T12:39:29Z",
    "subject": "Incident: the browser suite failed on 3afe77b7 (void-live-deploy/incidents.json)"
   },
@@ -480,50 +536,6 @@
   {
    "at": "2026-10-18T12:08:54Z",
    "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T12:06:09Z",
-   "subject": "Fix the red self-card check: the fixture's six asks were one ask"
-  },
-  {
-   "at": "2026-10-18T12:00:14Z",
-   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T11:54:45Z",
-   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T11:48:47Z",
-   "subject": "Zorbleflux throttle: a smooth velocity curve back to full speed instead of a step"
-  },
-  {
-   "at": "2026-10-18T11:48:41Z",
-   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T11:46:47Z",
-   "subject": "Arena: Verse played itself again; the records and the self-play champion"
-  },
-  {
-   "at": "2026-10-18T11:46:31Z",
-   "subject": "Better: today's measure and the pit crew's list (counts only)"
-  },
-  {
-   "at": "2026-10-18T11:44:20Z",
-   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
-  },
-  {
-   "at": "2026-10-18T11:41:08Z",
-   "subject": "Trial watch: the registry checked; what changed is in the ledger"
-  },
-  {
-   "at": "2026-10-18T11:22:22Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"yo find me a"
-  },
-  {
-   "at": "2026-10-18T11:14:53Z",
-   "subject": "Ledger and log: one line each for the Zorbleflux restore (two overlapping runs had written it twice)"
   }
  ],
  "builders": {

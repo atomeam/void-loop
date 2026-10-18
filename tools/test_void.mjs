@@ -5874,6 +5874,28 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
+  // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
+  // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
+  if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });
+    const deps = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'deps.json'), 'utf8')), fam = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'families.json'), 'utf8'));
+    const tier = {}; for (const f of fam.families) for (const k of f.skills) tier[k.name] = k.tier;
+    const heavy = deps.libs.filter((l) => l.skills >= 8).map((l) => {
+      const f = deps.files[l.file], dep = [...(f.importedBy || []), ...(f.reachedBy || [])].filter((x) => /^skills\/[^/]+\.js$/.test(x));
+      const sound = dep.filter((x) => /^(?:checked|proven)$/.test(tier[x.replace(/^skills\//, '').replace(/\.js$/, '')] || '')).length;
+      return { file: l.file, steady: l.tests > 0 && sound / Math.max(1, dep.length) >= 0.5 };
+    });
+    await D.ask('dependency health', 1200);
+    const card = await until(async () => D.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.dh-row')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, verdict: (p.querySelector('.dh-verdict') || {}).textContent, rows: rows.map((r) => [r.dataset.file, r.dataset.steady]), wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await D.p.waitForTimeout(800); await D.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'dependency-health.png') }).catch(() => {}); }
+    const steady = heavy.filter((h) => h.steady).length;
+    check('dependency health: "dependency health" lists every shared file 8 or more skills depend on with a steady / not steady verdict worked out from deps.json and families.json, and says how many meet both requirements',
+      !!card && card.title === 'How steady are the shared files?' && card.rows.length === heavy.length && heavy.every((h) => card.rows.some(([f, v]) => f === h.file && v === (h.steady ? 'yes' : 'no')))
+      && card.verdict.includes(steady + ' of ' + heavy.length) && !card.wide && !D.errors.length, JSON.stringify({ steady, heavy: heavy.length, card: card && { ...card, rows: card.rows.slice(0, 4) }, errors: D.errors }));
+    await D.ctx.close(); }
   // Verse cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
   // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to Verse" line and a
   // footer with a collector number and a stat plate; a skill's numbers come from its own evidence, an encyclopedia answer is an Answer card

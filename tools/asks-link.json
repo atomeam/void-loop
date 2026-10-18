@@ -295,6 +295,11 @@
       "match": "report.?to.?growth",
       "ledgerAt": "2026-10-18T13:18:51Z",
       "why": "tools/report-to-growth.mjs turns a builder's note into open items on the frontier, and finish.mjs --evolve runs it on each ship"
+    },
+    {
+      "match": "dependency.?health",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on"
     }
   ],
   "extra": [
