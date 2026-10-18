@@ -2,6 +2,27 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T17:08:04.717Z",
+   "sha": "b7e52007e6e65b6d4ab9f17a746a5164c53599d5",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39146847584",
+   "suite": "browser suite on main",
+   "checks": [
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/incident-log.mjs",
+    "tools/incident-log.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/incident.js",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-18T16:49:15.912Z",
    "sha": "8a85c539529d0032fd9d16b9ab638798a452f62c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39145955659",
@@ -677,32 +698,6 @@
     "void-live-deploy/skills/error-garden.js",
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T07:06:54.535Z",
-   "sha": "a823219cec2e64a8edd9beb76f1d2a3ff291d06e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39106213834",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/telemetry-route.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/ask-text.js",
-    "void-live-deploy/lib/telemetry.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0100-telemetry-route",
-    "void-live-deploy/skills/telemetry-route.js",
     "void-live-deploy/void.growth.json"
    ]
   }
