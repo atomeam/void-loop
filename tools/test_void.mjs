@@ -781,21 +781,10 @@ try {
     const kb0 = await E.p.evaluate(() => document.getElementById('row').getBoundingClientRect().bottom);
     check('empty state: when the keyboard opens (visual viewport 300 px shorter) the ask bar sits above it, and drops back when it closes; the bar pads for the safe area',
       kb.bottom <= vh - 300 + 1 && kb.kb === '300px' && kb0 > vh - 300 && /safe-area-inset-bottom/.test(fs.readFileSync(path.join(root, 'void.html'), 'utf8')), JSON.stringify({ kb, kb0, vh }));
-    // 3) the halo suggestion: one real ask, from the list, gone when typing starts, and gone once a card is on the stage
+    // 3) no "try:" suggestions on the empty stage (owner, 2026-10-18: "get rid of all that try crap")
     await E.p.reload(); await E.p.waitForTimeout(3500);
-    const sg = await E.p.evaluate(() => { const s = document.getElementById('void-suggest'); return { text: s.dataset.s, on: s.classList.contains('on') }; });
-    const listed = await E.p.evaluate(async (t) => (await import('/lib/empty-state.js')).SUGGESTIONS.some((x) => 'try: ' + x.ask === t), sg.text);
-    await E.p.fill('#input', 'wea'); await E.p.waitForTimeout(300);
-    const typing = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
-    await E.p.fill('#input', ''); await E.p.waitForTimeout(500);
-    const resumed = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
-    await E.ask('make a counter', 700); await E.p.waitForTimeout(400);
-    const carded = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
-    const RM = await fresh(); await RM.p.emulateMedia({ reducedMotion: 'reduce' }); await RM.p.reload(); await RM.p.waitForTimeout(3500);
-    const still1 = await RM.p.evaluate(() => document.getElementById('void-suggest').dataset.s); await RM.p.waitForTimeout(7000);
-    const still2 = await RM.p.evaluate(() => document.getElementById('void-suggest').dataset.s); await RM.ctx.close();
-    check('empty state: the halo shows one listed "try: ..." ask, stops while typing and with a card on the stage, comes back on an empty bar, and stays one static line for reduced motion',
-      sg.on && listed && !typing && resumed && !carded && /^try: /.test(still1) && still1 === still2, JSON.stringify({ sg, listed, typing, resumed, carded, still1, still2 }));
+    const tries = await E.p.evaluate(() => ({ el: !!document.getElementById('void-suggest'), text: /\btry:/i.test(document.body.innerText), ph: /^try/i.test(document.getElementById('input').placeholder || '') }));
+    check('empty state: no "try: ..." suggestion anywhere on the empty stage (no halo line, no placeholder hint)', !tries.el && !tries.text && !tries.ph, JSON.stringify(tries));
     // 4) the round keys: state, label and a 44 px hit area; the mic shows listening
     await E.p.evaluate(() => { document.getElementById('sound').hidden = false; });
     const keys = await E.p.evaluate(() => ['mic', 'sound', 'go'].map((id) => { const e = document.getElementById(id); if (!e) return { id, none: true }; const b = e.getBoundingClientRect(); return { id, w: Math.round(b.width), h: Math.round(b.height), label: e.getAttribute('aria-label'), title: e.title, pressed: e.getAttribute('aria-pressed') }; }));
@@ -805,13 +794,13 @@ try {
       sound.pressed === 'false' && /Turn on ambient sound/.test(sound.label) && sound.title === sound.label && sound.w >= 44 && sound.h >= 44 && go.title === 'Ask' && go.w >= 44 && go.h >= 44 && (mic.none || (mic.w >= 44 && mic.h >= 44 && mic.pressed === 'false')) && /255, 205, 110/.test(lit), JSON.stringify({ keys, lit }));
     // 5) writing assistants: the ask input carries the standard opt-outs and keeps its accessible name; other inputs are not touched
     const at = await E.p.evaluate(() => { const i = document.getElementById('input'); return ['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck', 'data-gramm', 'data-gramm_editor', 'data-enable-grammarly', 'data-lpignore', 'data-form-type'].map((a) => a + '=' + i.getAttribute(a)).concat(['data-1p-ignore=' + i.hasAttribute('data-1p-ignore'), 'name=' + i.getAttribute('aria-label')]); });
-    await E.ask('open a notepad', 700); const padSpell = await E.p.evaluate(() => { const t = document.querySelector('.notepad-textarea'); return t ? String(t.hasAttribute('data-gramm') || t.hasAttribute('data-1p-ignore')) : 'none'; });
+    await E.ask('open a notepad', 700); await until(() => E.p.evaluate(() => !!document.querySelector('.notepad-textarea')), 6000); const padSpell = await E.p.evaluate(() => { const t = document.querySelector('.notepad-textarea'); return t ? String(t.hasAttribute('data-gramm') || t.hasAttribute('data-1p-ignore')) : 'none'; }); // the first ask on a cold stage loads its skill: wait for the notepad
     check('empty state: the ask input opts out of writing assistants (autocomplete, autocorrect, autocapitalize, spellcheck, grammarly, lastpass, 1password) and keeps its name; the notepad (its own spellcheck setting) gets none of them',
       at.join(' ') === 'autocomplete=off autocorrect=off autocapitalize=off spellcheck=false data-gramm=false data-gramm_editor=false data-enable-grammarly=false data-lpignore=true data-form-type=other data-1p-ignore=true name=Ask Void' && padSpell === 'false', JSON.stringify({ at, padSpell }));
     await E.ctx.close();
     // 6) legibility over a white backdrop (the worst case), measured in the page: the bar's own pixels against its placeholder and typed text
     const C = await fresh(); await C.p.waitForTimeout(2000);
-    await C.p.evaluate(() => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:1'; document.body.appendChild(d); document.getElementById('dock').style.background = 'none'; document.getElementById('void-suggest').style.display = 'none'; document.getElementById('input').blur(); });
+    await C.p.evaluate(() => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:1'; document.body.appendChild(d); document.getElementById('dock').style.background = 'none'; document.getElementById('input').blur(); });
     await C.p.waitForTimeout(400);
     const rb = await C.p.evaluate(() => { const b = document.getElementById('row').getBoundingClientRect(), i = document.getElementById('input'); return { l: b.left, t: b.top, w: b.width, h: b.height, ph: getComputedStyle(i, '::placeholder').color, ink: getComputedStyle(i).color }; });
     const bgs = []; for (const f of [0.55, 0.7, 0.85]) bgs.push(await px(C.p, rb.l + rb.w * f, rb.t + rb.h / 2));
