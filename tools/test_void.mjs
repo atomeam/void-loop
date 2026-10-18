@@ -1494,6 +1494,36 @@ try {
     await S.p.dispatchEvent(card + '.an-del >> nth=0', 'click').catch(() => {});
     const reopened = await until(async () => await S.p.$eval(card + '.an-add', (b) => !b.disabled).catch(() => false), 3000);
     check('ambition temperature: starts hot, cooling by date refuses a new proposal at the kept size, and one delete opens it again', phaseNow === 'hot' && cooling === 'cooling' && refused && /Cooling: cut the list/.test(why) && reopened && !S.errors.length, JSON.stringify({ phaseNow, cooling, refused, why, reopened, errors: S.errors }));
+  // thought laws (owner, 2026-10-18): causal scars, counterfactual draft, witness claims, played the way a person uses them
+  if (want("thought laws: scars dim what dies with a decision and ask before deleting, a shadow document marks the fracture line, a claim without a witness cannot be committed")) { const S = await fresh();
+    await S.ask('map the scars of my decisions: A > x, y; B > y, z', 700);
+    const nodes = await S.p.$$eval('.causal-scars [data-node]', (g) => g.map((x) => x.dataset.node + ':' + x.dataset.role));
+    await S.p.hover('.causal-scars [data-node="A"]');
+    const dimmed = await S.p.$$eval('.causal-scars [data-dim="1"]', (g) => g.map((x) => x.dataset.node).sort().join());
+    await S.p.mouse.move(0, 0);
+    await S.p.click('.causal-scars button.cs-remove >> nth=0');
+    const asked = await S.p.$eval('.causal-scars .cs-msg', (e) => e.textContent);
+    const stillThere = (await S.state()).find((x) => x.kind === 'scars').nodes.length;
+    await S.p.click('.causal-scars button.cs-accept');
+    const left = (await S.state()).find((x) => x.kind === 'scars').nodes.slice().sort().join();
+    check('causal scars: hovering A dims only x (y has another cause), remove asks first (nothing deleted yet), and Accept deletes A with x',
+      nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(asked) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, asked, stillThere, left, errors: S.errors }));
+    await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
+    const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
+    await S.p.click('.counterfactual-draft summary');
+    await S.p.waitForSelector('.counterfactual-draft [data-fracture="1"]', { timeout: 3000 }).catch(() => {});
+    const fracture = await S.p.$eval('.counterfactual-draft [data-fracture="1"]', (e) => e.textContent.trim());
+    const shadow = await S.p.$eval('.counterfactual-draft .cf-shadow-text', (e) => e.textContent);
+    check('counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it',
+      closed === 'false:0' && fracture === 'People want speed, so we skip polish.' && /It is not the case that people want speed/.test(shadow) && !S.errors.length, JSON.stringify({ closed, fracture, shadow, errors: S.errors }));
+    await S.ask('proof-carrying claims: revenue grew @ data: q3.csv; launch is easy', 700);
+    await S.p.$eval('.witness-claims .wc-claim[data-i="1"] button.wc-commit', (b) => b.click());
+    const refused = await S.p.$eval('.witness-claims .wc-msg', (e) => e.textContent);
+    const draftCount = await S.p.$$eval('.witness-claims .wc-draft .wc-claim', (e) => e.length);
+    await S.p.$eval('.witness-claims .wc-claim[data-i="0"] button.wc-commit', (b) => b.click());
+    const committed = await S.p.$$eval('.witness-claims .wc-committed .wc-claim', (e) => e.map((x) => x.textContent));
+    check('witness claims: the claim with no witness is refused (stays in Draft), the one with a data pointer moves to Committed and shows it',
+      /no witness/.test(refused) && draftCount === 2 && committed.length === 1 && /data: q3\.csv/.test(committed[0]) && !S.errors.length, JSON.stringify({ refused, draftCount, committed, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();

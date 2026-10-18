@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 556,
+ "counted": 559,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -16,9 +16,9 @@
   },
   {
    "file": "lib/stage-pack.js",
-   "skills": 14,
-   "direct": 14,
-   "dependants": 14
+   "skills": 17,
+   "direct": 17,
+   "dependants": 17
   },
   {
    "file": "lib/state.js",
@@ -3652,6 +3652,8 @@
    "importedBy": [
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
+    "skills/causal-scars.js",
+    "skills/counterfactual-draft.js",
     "skills/decision-matrix.js",
     "skills/eigenwork.js",
     "skills/gauge-feedback.js",
@@ -3663,7 +3665,8 @@
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
     "skills/stale-work.js",
-    "skills/task-diagram.js"
+    "skills/task-diagram.js",
+    "skills/witness-claims.js"
    ]
   },
   "lib/stale-tab.js": {
@@ -4165,6 +4168,12 @@
    ],
    "importedBy": []
   },
+  "skills/causal-scars.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/certainty-budget.js": {
    "imports": [
     "lib/stage-pack-i.js",
@@ -4324,6 +4333,12 @@
   },
   "skills/counter.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/counterfactual-draft.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/country.js": {
@@ -6419,6 +6434,12 @@
    "imports": [
     "skills/label.js",
     "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/witness-claims.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
