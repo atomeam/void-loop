@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T16:43:27.417Z",
+   "sha": "8a85c539529d0032fd9d16b9ab638798a452f62c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39145955659",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/approval-gate.test.mjs",
+    "tools/checks.mjs",
+    "void-live-deploy/lib/approval-gate.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-18T16:37:59.904Z",
    "sha": "b0113f6749f20b329a507b61d1be400152778b90",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39144673452",
@@ -678,30 +698,6 @@
     "void-live-deploy/skills/order/0100-telemetry-route",
     "void-live-deploy/skills/telemetry-route.js",
     "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T06:58:58.171Z",
-   "sha": "e819d8d7adc8ec1b9c69347c29d877ef78ca25a2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39105712005",
-   "suite": "browser suite on main",
-   "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/empty-state.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/corrections.js",
-    "void-live-deploy/lib/empty-state.js",
-    "void-live-deploy/lib/stage-pack-h.js",
-    "void-live-deploy/skills/card-play.js",
-    "void-live-deploy/skills/csv-table.js",
-    "void-live-deploy/skills/near-choir.js",
-    "void-live-deploy/skills/note-tools.js",
-    "void-live-deploy/void.html",
-    "void.html"
    ]
   }
  ]
