@@ -48,6 +48,8 @@ test('a plain mention becomes a link where it stands: the first one, as written,
   assert.equal(linkMention('alphabet soup', 'Alpha'), 'alphabet soup');
   assert.equal(linkMention('nothing here', 'Alpha'), 'nothing here');
   assert.equal(linkMention('the big  idea works', 'big idea'), 'the [[big  idea]] works', 'spaces in a title match any run of spaces');
+  assert.equal(linkMention('what is C++ (really)? and a.b', 'C++ (really)?'), 'what is [[C++ (really)?]] and a.b', 'a title with regex characters is read as plain words');
+  assert.equal(linkMention('axb and a.b', 'a.b'), 'axb and [[a.b]]', 'a dot in a title is a dot, not any character');
 });
 
 test('notes are kept tidy: well-formed only, titles cleaned and unique by key, text capped, at most 200', () => {

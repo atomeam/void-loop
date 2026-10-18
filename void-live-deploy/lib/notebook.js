@@ -38,7 +38,8 @@ export function ensureDaily(notes, date = new Date(), make = (title) => ({ id: '
 
 const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 // a plain mention: the title as whole words, not already inside [[...]], and not part of a longer word
-const mentionRe = (title) => new RegExp('(?<![\\w\\[])' + esc(cleanTitle(title)).replace(/\s+/g, '\\s+') + '(?![\\w\\]])', 'i');
+// the title is escaped here (esc) before it is a pattern, so a title with . * ( or [ in it is read as plain words
+const mentionRe = (title, flags = 'i') => new RegExp('(?<![\\w\\[])' + esc(cleanTitle(title)).replace(/\s+/g, '\\s+') + '(?![\\w\\]])', flags);
 const stripLinks = (text) => String(text || '').replace(LINK, ' ');
 
 /** what the notebook is missing, from the notes alone:
@@ -62,10 +63,10 @@ export function missingOf(notes, today = dailyTitle()) {
 
 /** the text with the first plain mention of `title` wrapped as [[title]] (as written in the text); unchanged when there is none. Pure. */
 export function linkMention(text, title) {
-  const t = String(text || ''), re = mentionRe(title);
+  const t = String(text || '');
   // the first mention that is not inside an existing link
   const spans = [...t.matchAll(LINK)].map((x) => [x.index, x.index + x[0].length]);
-  for (const hit of t.matchAll(new RegExp(re.source, 'gi'))) if (!spans.some(([a, b]) => hit.index >= a && hit.index < b)) return t.slice(0, hit.index) + '[[' + hit[0] + ']]' + t.slice(hit.index + hit[0].length);
+  for (const hit of t.matchAll(mentionRe(title, 'gi'))) if (!spans.some(([a, b]) => hit.index >= a && hit.index < b)) return t.slice(0, hit.index) + '[[' + hit[0] + ']]' + t.slice(hit.index + hit[0].length);
   return t;
 }
 
