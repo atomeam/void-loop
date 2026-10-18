@@ -29,7 +29,7 @@ const RULES = [
   new RegExp('^(?:(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each|  everything)?(?: of)? )?' + YOUR + ' ' + LISTS + '$'),
   new RegExp('^(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each)?(?: of)? (?:the )?(?:things|stuff|asks|wants|items)(?: ' + YOU + ' (?:want|wants|wanted|asked for|asked|have not built|haven\'t built|havent built|still want|want built))?(?: not built| unbuilt| still open| left| yet)?$'),
   // bare noun phrases that can only mean this list ("asks not built?" once reached the open web and answered with Daisy Bell);
-  // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not V01D's
+  // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not Verse's
   new RegExp('^(?:the |' + YOUR + ' )?(?:(?:open|unbuilt) (?:asks|wants)|asks not built(?: yet)?|unbuilt list|growth inbox)$'),
   new RegExp('^what (?:do|would) ' + YOU + ' (?:like|want) (?:built|to build|to be built|me to build|us to build)(?: next| now| first)?$'),
   new RegExp('^what (?:should|could|can) (?:i|we) build for ' + YOU + '(?: next| now)?$'),

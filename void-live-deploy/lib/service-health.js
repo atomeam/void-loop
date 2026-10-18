@@ -6,7 +6,7 @@
 // reaching the provider's site; a public API (CoinGecko for crypto, Bluesky's AppView for social) is asked for its health answer.
 // Pure apart from `check`, which takes its fetch and clock as arguments.
 // The stability gauge (asked by Void, 2026-10-18: "a 'stability-gauge' on the Service Health card that fluctuates in real-time based on
-// the frequency of incident reports in incidents.json"): V01D's own browser suite on main is a service too; its dial reads lib/autopsy.js
+// the frequency of incident reports in incidents.json"): Verse's own browser suite on main is a service too; its dial reads lib/autopsy.js
 // stabilityOf over incidents.json (100 with no red suite in 7 days, 12 less per red one) and the card redraws it on "Check again" and once
 // a minute while open, so the needle moves as incidents land or age out.
 
@@ -57,7 +57,7 @@ export function healthHtml(esc, services, results = []) {
 /** the needle's angle for a stability score: 0 points left (-90), 100 points right (+90). Pure. */
 export const needleOf = (score) => Math.round(-90 + 1.8 * Math.max(0, Math.min(100, Number(score) || 0)));
 
-/** the stability dial for V01D's own suite from a stabilityOf() reading: a half dial, a needle turned by the score, the label and the
+/** the stability dial for Verse's own suite from a stabilityOf() reading: a half dial, a needle turned by the score, the label and the
  *  counts; a reading with no red suite recorded yet says so and rests the needle at the top. Every value is escaped. Pure. */
 export function gaugeHtml(esc, g) {
   const known = !!(g && g.known), score = known ? g.score : 100, label = known ? g.label : 'none', deg = needleOf(score);

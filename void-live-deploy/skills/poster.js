@@ -4,7 +4,7 @@
  * this browser: nothing is uploaded. Ordering it waits for a print-on-demand account (its key as a Pages secret) and a yes
  * on the confirm line, so the card says that plainly and shows no price it has no source for.
  * "make this a poster", "print this card as a poster", "turn this into a poster".
- * A V01D film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
+ * A Verse film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
  * miss-board-4" read the film's metadata (skills/films.js filmMeta, /api/films) and add a 9:16 phone-story size for promo.
  */
 import { filmMeta } from './films.js';
@@ -18,8 +18,8 @@ export function posterOf(text) {
   return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?)$/.test(t);
 }
 
-// a V01D film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
-// "order …" stays the confirm line's, and other films ("movie poster for inception") are not V01D's
+// a Verse film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
+// "order …" stays the confirm line's, and other films ("movie poster for inception") are not Verse's
 export const STORY = { w: 9, h: 16, name: 'phone story', px: [1080, 1920] };
 export function filmPosterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
