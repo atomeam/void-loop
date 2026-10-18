@@ -17,4 +17,4 @@ export function isLongProse(s) {
   return t.length > 220 || (words > 25 && sentences >= 2);
 }
 // skills that are made for long text and still run on it
-export const LONG_OK = new Set(['digest', 'translate', 'memory', 'proposal', 'notepad', 'sticky', 'list', 'automations', 'actions', 'link']);
+export const LONG_OK = new Set(['telemetry-route', 'digest', 'translate', 'memory', 'proposal', 'notepad', 'sticky', 'list', 'automations', 'actions', 'link']);

@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 7,
   "tested": 96,
-  "checked": 98,
+  "checked": 99,
   "proven": 89
  },
  "families": [
@@ -1676,10 +1676,18 @@
    "count": {
     "experiment": 3,
     "tested": 32,
-    "checked": 51,
+    "checked": 52,
     "proven": 7
    },
    "skills": [
+    {
+     "name": "telemetry-route",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-18"
+    },
     {
      "name": "sticky",
      "tier": "proven",

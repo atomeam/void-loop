@@ -32,6 +32,7 @@ const addScript = (name, file, extra = [], browser = BROWSER.has(file)) => add(n
 // The tests, one per line: add yours on its own line (a single long line made every two PRs that added a test conflict).
 for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
+  ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
