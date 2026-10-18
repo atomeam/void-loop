@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 84,
-  "checked": 90,
-  "proven": 87
+  "tested": 85,
+  "checked": 89,
+  "proven": 88
  },
  "families": [
   {
@@ -714,14 +714,14 @@
     {
      "name": "countdown",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 18 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 22 real asks in the benchmark",
      "failing": [
       "how many days until summer",
       "how many days until spring"
      ],
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
-     "success_rate": 0.889
+     "success_rate": 0.909
     },
     {
      "name": "event-countdown",
@@ -2282,23 +2282,25 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 11,
-    "proven": 14
+    "tested": 10,
+    "checked": 10,
+    "proven": 15
    },
    "skills": [
     {
      "name": "guide",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 13 browser-suite mentions, 9 real asks in the benchmark",
+     "why": "a self-test, 13 browser-suite mentions, 14 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2388,7 +2390,7 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 5 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2571,6 +2573,13 @@
      "name": "stakes-phase",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "own-parts",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     }

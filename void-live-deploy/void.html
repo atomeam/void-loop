@@ -3776,7 +3776,9 @@ say('nothing selected to remove');
         let target = null;
         const hol = lower.match(/\b(christmas|xmas|new\s*year|halloween|thanksgiving)\b/);
         if (hol) target = CALC_HOLIDAYS[hol[1].toLowerCase()];
-        const dm = lower.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\s+(\d{1,2})\b/i);
+        // an ordinal reads as its number: "january 1st", "jan 2nd", "the 1st of march" (owner, 2026-10-18)
+        const dlow = lower.replace(/\b(?:the\s+)?(\d{1,2})(?:st|nd|rd|th)?\s+of\s+([a-z]{3,9})\b/, '$2 $1').replace(/\b(\d{1,2})(?:st|nd|rd|th)\b/g, '$1');
+        const dm = dlow.match(/\b(jan(?:uary)?|feb(?:ruary)?|mar(?:ch)?|apr(?:il)?|may|jun(?:e)?|jul(?:y)?|aug(?:ust)?|sep(?:t(?:ember)?)?|oct(?:ober)?|nov(?:ember)?|dec(?:ember)?)\.?\s+(\d{1,2})\b/i);
         if (dm) target = { m: CALC_MONTHS[dm[1].toLowerCase()], d: parseInt(dm[2], 10) };
         // "how many days until friday", "days until the weekend": the next one, never today
         const wd = !target && /\b(until|till|before)\b/.test(lower) && lower.match(/\b(sunday|monday|tuesday|wednesday|thursday|friday|saturday|weekend)\b/);

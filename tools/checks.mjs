@@ -105,6 +105,7 @@ for (const [name, file] of [
   ['growth', 'growth.test.mjs'],
   ['deadlines', 'deadlines.test.mjs'],
   ['growth-tree', 'growth-tree.test.mjs'],
+  ['own-parts', 'own-parts.test.mjs'],
   ['review-learn', 'review-learn.test.mjs'],
   ['bench-floor', 'bench-floor.test.mjs'],
   ['tagteam', 'tagteam.test.mjs'],
