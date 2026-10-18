@@ -4,6 +4,7 @@
 import { routeOutside, voidApiReply } from './fixtures/outside.mjs';
 import http from 'node:http';
 import fs from 'node:fs';
+import zlib from 'node:zlib';
 import path from 'node:path';
 import { chromium } from 'playwright-core';
 import nodeOs from 'node:os';
@@ -644,6 +645,86 @@ try {
     const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' }); await R.ask('add a nebula', 800); const rd = await R.p.evaluate(() => !!document.querySelector('#void-syn.on')); await R.ctx.close();
     check('synapses: the public homepage has no network canvas; with the nebula look the aura shader linked and the network canvas is on and drawing; "calm my void" turns it off; reduced motion never turns it on',
       !pub.exists && (nb.noGl || (nb.on && nb.drawn)) && !off.on && !rd && !Y.errors.length && !R.errors.length, JSON.stringify({ pub, nb, off, rd, e: Y.errors.concat(R.errors) })); }
+  // The empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js, tools/empty-state.test.mjs): offline is calm and locks nothing, the bar sits above an
+  // on-screen keyboard, the halo suggests a real ask and stops for typing or a card, the round keys say their state, the ask input opts out of
+  // writing assistants, the bar is legible over a white backdrop, the support link is readable, and a mouse gets the bar focused while touch does not.
+  if (want("empty state and input bar")) {
+    const px = async (pg, x, y) => { const png = await pg.screenshot({ clip: { x: Math.floor(x), y: Math.floor(y), width: 1, height: 1 } }); let o = 8; const idat = []; while (o < png.length) { const n = png.readUInt32BE(o), t = png.toString('ascii', o + 4, o + 8); if (t === 'IDAT') idat.push(png.subarray(o + 8, o + 8 + n)); o += 12 + n; } const raw = zlib.inflateSync(Buffer.concat(idat)); return [raw[1], raw[2], raw[3]]; }; // a 1x1 clip: the filter byte never changes the first pixel
+    const lumOf = (c) => { const f = (v) => { v /= 255; return v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4; }; return 0.2126 * f(c[0]) + 0.7152 * f(c[1]) + 0.0722 * f(c[2]); };
+    const ratio = (a, b) => { const [x, y] = [lumOf(a), lumOf(b)].sort((m, n) => n - m); return (x + 0.05) / (y + 0.05); };
+    const rgbOf = (css) => (css.match(/[\d.]+/g) || [0, 0, 0]).slice(0, 3).map(Number);
+    const KB = () => { const vv = new EventTarget(); vv.height = innerHeight; vv.width = innerWidth; vv.offsetTop = 0; vv.offsetLeft = 0; vv.scale = 1; Object.defineProperty(window, 'visualViewport', { value: vv, configurable: true }); window.__vv = vv; };
+    const E = await fresh(KB); await E.p.waitForTimeout(2500);
+    // 1) offline: the amber halo and the plain line, an ask that needs no network still answers, and it all clears when the link returns
+    const online0 = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline') }));
+    await E.ctx.setOffline(true); await E.p.waitForTimeout(500);
+    const off = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline'), lens: getComputedStyle(document.getElementById('void-lens')).backgroundImage, dis: document.getElementById('input').disabled || document.getElementById('go').disabled }));
+    await E.ask('what is 15% of 240', 900); const calcOff = await E.p.evaluate(() => document.body.innerText);
+    await E.ctx.setOffline(false); await E.p.waitForTimeout(500);
+    const back = await E.p.evaluate(() => ({ ph: document.getElementById('input').placeholder, off: document.documentElement.classList.contains('void-offline') }));
+    check('empty state: offline shows a calm amber halo and one plain line in the bar, locks nothing (a calculation still answers), and clears the moment the connection returns',
+      !online0.off && online0.ph === 'Ask V01D' && off.off && /offline: skills that need the network will wait/.test(off.ph) && /255, 1[69]\d, \d+/.test(off.lens) && !off.dis && /\b36\b/.test(calcOff) && !back.off && back.ph === 'Ask V01D', JSON.stringify({ online0, off, back, calc: calcOff.slice(0, 120) }));
+    // 2) the on-screen keyboard: with a mocked visual viewport 300 px shorter, the bar sits above it
+    const vh = (await E.p.evaluate(() => innerHeight));
+    await E.p.evaluate(() => { window.__vv.height = innerHeight - 300; window.__vv.dispatchEvent(new Event('resize')); }); await E.p.waitForTimeout(300);
+    const kb = await E.p.evaluate(() => ({ bottom: document.getElementById('row').getBoundingClientRect().bottom, kb: document.documentElement.style.getPropertyValue('--kb') }));
+    await E.p.evaluate(() => { window.__vv.height = innerHeight; window.__vv.dispatchEvent(new Event('resize')); }); await E.p.waitForTimeout(300);
+    const kb0 = await E.p.evaluate(() => document.getElementById('row').getBoundingClientRect().bottom);
+    check('empty state: when the keyboard opens (visual viewport 300 px shorter) the ask bar sits above it, and drops back when it closes; the bar pads for the safe area',
+      kb.bottom <= vh - 300 + 1 && kb.kb === '300px' && kb0 > vh - 300 && /safe-area-inset-bottom/.test(fs.readFileSync(path.join(root, 'void.html'), 'utf8')), JSON.stringify({ kb, kb0, vh }));
+    // 3) the halo suggestion: one real ask, from the list, gone when typing starts, and gone once a card is on the stage
+    await E.p.reload(); await E.p.waitForTimeout(3500);
+    const sg = await E.p.evaluate(() => { const s = document.getElementById('void-suggest'); return { text: s.dataset.s, on: s.classList.contains('on') }; });
+    const listed = await E.p.evaluate(async (t) => (await import('/lib/empty-state.js')).SUGGESTIONS.some((x) => 'try: ' + x.ask === t), sg.text);
+    await E.p.fill('#input', 'wea'); await E.p.waitForTimeout(300);
+    const typing = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
+    await E.p.fill('#input', ''); await E.p.waitForTimeout(500);
+    const resumed = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
+    await E.ask('make a counter', 700); await E.p.waitForTimeout(400);
+    const carded = await E.p.evaluate(() => document.getElementById('void-suggest').classList.contains('on'));
+    const RM = await fresh(); await RM.p.emulateMedia({ reducedMotion: 'reduce' }); await RM.p.reload(); await RM.p.waitForTimeout(3500);
+    const still1 = await RM.p.evaluate(() => document.getElementById('void-suggest').dataset.s); await RM.p.waitForTimeout(7000);
+    const still2 = await RM.p.evaluate(() => document.getElementById('void-suggest').dataset.s); await RM.ctx.close();
+    check('empty state: the halo shows one listed "try: ..." ask, stops while typing and with a card on the stage, comes back on an empty bar, and stays one static line for reduced motion',
+      sg.on && listed && !typing && resumed && !carded && /^try: /.test(still1) && still1 === still2, JSON.stringify({ sg, listed, typing, resumed, carded, still1, still2 }));
+    // 4) the round keys: state, label and a 44 px hit area; the mic shows listening
+    await E.p.evaluate(() => { document.getElementById('sound').hidden = false; });
+    const keys = await E.p.evaluate(() => ['mic', 'sound', 'go'].map((id) => { const e = document.getElementById(id); if (!e) return { id, none: true }; const b = e.getBoundingClientRect(); return { id, w: Math.round(b.width), h: Math.round(b.height), label: e.getAttribute('aria-label'), title: e.title, pressed: e.getAttribute('aria-pressed') }; }));
+    await E.p.evaluate(() => { const m = document.getElementById('mic'); if (m) m.classList.add('listening'); }); const lit = await E.p.evaluate(() => { const m = document.getElementById('mic'); return m ? getComputedStyle(m).boxShadow : 'rgb(255, 205, 110)'; });
+    const sound = keys.find((k) => k.id === 'sound'), go = keys.find((k) => k.id === 'go'), mic = keys.find((k) => k.id === 'mic');
+    check('empty state: the speaker is aria-pressed with a label that says what a tap does, the return key has a title, every round key is at least 44 px, and the mic shows a listening state (the listening rule used to be dropped by an invalid selector)',
+      sound.pressed === 'false' && /Turn on ambient sound/.test(sound.label) && sound.title === sound.label && sound.w >= 44 && sound.h >= 44 && go.title === 'Ask' && go.w >= 44 && go.h >= 44 && (mic.none || (mic.w >= 44 && mic.h >= 44 && mic.pressed === 'false')) && /255, 205, 110/.test(lit), JSON.stringify({ keys, lit }));
+    // 5) writing assistants: the ask input carries the standard opt-outs and keeps its accessible name; other inputs are not touched
+    const at = await E.p.evaluate(() => { const i = document.getElementById('input'); return ['autocomplete', 'autocorrect', 'autocapitalize', 'spellcheck', 'data-gramm', 'data-gramm_editor', 'data-enable-grammarly', 'data-lpignore', 'data-form-type'].map((a) => a + '=' + i.getAttribute(a)).concat(['data-1p-ignore=' + i.hasAttribute('data-1p-ignore'), 'name=' + i.getAttribute('aria-label')]); });
+    await E.ask('open a notepad', 700); const padSpell = await E.p.evaluate(() => { const t = document.querySelector('.notepad-textarea'); return t ? String(t.hasAttribute('data-gramm') || t.hasAttribute('data-1p-ignore')) : 'none'; });
+    check('empty state: the ask input opts out of writing assistants (autocomplete, autocorrect, autocapitalize, spellcheck, grammarly, lastpass, 1password) and keeps its name; the notepad (its own spellcheck setting) gets none of them',
+      at.join(' ') === 'autocomplete=off autocorrect=off autocapitalize=off spellcheck=false data-gramm=false data-gramm_editor=false data-enable-grammarly=false data-lpignore=true data-form-type=other data-1p-ignore=true name=Ask Void' && padSpell === 'false', JSON.stringify({ at, padSpell }));
+    await E.ctx.close();
+    // 6) legibility over a white backdrop (the worst case), measured in the page: the bar's own pixels against its placeholder and typed text
+    const C = await fresh(); await C.p.waitForTimeout(2000);
+    await C.p.evaluate(() => { const d = document.createElement('div'); d.style.cssText = 'position:fixed;inset:0;background:#fff;z-index:1'; document.body.appendChild(d); document.getElementById('dock').style.background = 'none'; document.getElementById('void-suggest').style.display = 'none'; document.getElementById('input').blur(); });
+    await C.p.waitForTimeout(400);
+    const rb = await C.p.evaluate(() => { const b = document.getElementById('row').getBoundingClientRect(), i = document.getElementById('input'); return { l: b.left, t: b.top, w: b.width, h: b.height, ph: getComputedStyle(i, '::placeholder').color, ink: getComputedStyle(i).color }; });
+    const bgs = []; for (const f of [0.55, 0.7, 0.85]) bgs.push(await px(C.p, rb.l + rb.w * f, rb.t + rb.h / 2));
+    const worst = (fg) => Math.min(...bgs.map((b) => ratio(rgbOf(fg), b)));
+    const rPh = worst(rb.ph), rInk = worst(rb.ink);
+    check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
+    await C.ctx.close();
+    // 7) the ghost text at the bottom right is the "support V01D" link: readable now, inside the viewport, and not under the bar
+    const S = await fresh(); await S.p.waitForTimeout(1500);
+    const sup = await S.p.evaluate(() => { const a = document.getElementById('void-support'), b = a.getBoundingClientRect(), r = document.getElementById('row').getBoundingClientRect(), cs = getComputedStyle(a); return { text: a.textContent, color: cs.color, op: cs.opacity, l: b.left, t: b.top, r: b.right, b: b.bottom, rowR: r.right, vw: innerWidth, vh: innerHeight }; });
+    const supBg = await px(S.p, sup.l - 8, sup.t + 6);
+    check('empty state: the bottom-right ghost text is the "support V01D" link; it is full opacity, at least 4.5:1 on the stage, and inside the viewport clear of the bar', sup.text === 'support V01D' && sup.op === '1' && ratio(rgbOf(sup.color), supBg) >= 4.5 && sup.r <= sup.vw && sup.b <= sup.vh && sup.l > sup.rowR, JSON.stringify({ sup, supBg, ratio: ratio(rgbOf(sup.color), supBg) }));
+    // 8) ready: a mouse has the bar focused with a visible state (never a touch screen), and it is not taken from another field
+    const mouseFocus = await S.p.evaluate(() => ({ active: document.activeElement && document.activeElement.id, glow: getComputedStyle(document.getElementById('row')).boxShadow }));
+    await S.ask('open a notepad', 700); await S.p.click('.notepad-textarea'); await S.p.keyboard.type('hi'); await S.p.evaluate(() => dispatchEvent(new CustomEvent('void:stage-change'))); await S.p.waitForTimeout(400);
+    const kept = await S.p.evaluate(() => document.activeElement && document.activeElement.className);
+    await S.ctx.close();
+    const T = await fresh({ phone: true }); await T.p.waitForTimeout(2500);
+    const touchFocus = await T.p.evaluate(() => document.activeElement && document.activeElement.id); await T.ctx.close();
+    check('empty state: a mouse gets the ask bar focused with a visible glow, a field being typed in keeps its focus, and a touch screen does not auto-focus the bar',
+      mouseFocus.active === 'input' && mouseFocus.glow !== 'none' && /notepad-textarea/.test(kept || '') && touchFocus !== 'input', JSON.stringify({ mouseFocus, kept, touchFocus }));
+  }
   // Board Next #3, grouping half (skills/group.js): "group the clock and the note" ties them together, dragging one carries the
   // other the same distance, the group moves and resizes as one, "bring the group to the front" layers it, "ungroup" lets go.
   if (want("Board Next #3, grouping half (skills/group.js): \"group the clock and the note\" ties them t")) { const G = await fresh();

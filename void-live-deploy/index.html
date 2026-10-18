@@ -470,7 +470,7 @@
     #go:hover { background: #2a2a2a; }
     #mic { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; font: 13px/1.2 inherit; padding: 7px 11px; cursor: pointer; opacity: 1; }
     #mic:hover { background: #2a2a2a; }
-    #mic.listening, #mic:granted { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
+    #mic.listening, #mic[aria-pressed="true"] { color: #fff; background: #26304a; box-shadow: 0 0 18px rgba(140,166,255,.35); }
     #mic svg { width: 16px; height: 16px; vertical-align: -3px; }
     #sound { border: 0; border-radius: 999px; background: #1d1d1d; color: #d8d8d8; padding: 7px 11px; cursor: pointer; min-width: 44px; min-height: 44px; display: inline-flex; align-items: center; justify-content: center; }
     #sound[hidden] { display: none; } /* a fresh visit is the void: the speaker appears with the first touch, move or key */
@@ -515,7 +515,7 @@
     #void-card-world { position: fixed; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none; opacity: 0; transition: opacity .5s ease; }
     #void-card-world.on { opacity: 1; }
     html.has-world #stage { cursor: grab; touch-action: none; }
-    html.has-world .vpage { max-height: min(58vh, calc(100vh - 140px)); background: linear-gradient(160deg, rgba(10,14,28,0.62), rgba(10,14,28,0.40)); }
+    html.has-world .vpage { max-height: min(58vh, calc(100vh - 140px)); max-height: min(58dvh, calc(100dvh - 140px)); background: linear-gradient(160deg, rgba(10,14,28,0.62), rgba(10,14,28,0.40)); }
     @media (prefers-reduced-motion: reduce) { #void-world, #void-card-world { transition: none; } }
     /* read aloud (owner, 2026-10-15: "V01D needs a read aloud button"): a round button pinned in each card's top corner */
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
@@ -531,7 +531,7 @@
     .vpage {
       position: fixed; left: 50%; top: 46%;
       transform: translate(-50%, -46%) scale(0.98);
-      width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 140px);
+      width: min(560px, calc(100vw - 32px)); max-height: calc(100vh - 140px); max-height: calc(100dvh - 140px);
       overflow: auto; z-index: 50;
       padding: 22px 24px 18px; border-radius: 18px;
       background: linear-gradient(160deg, rgba(255,255,255,0.07), rgba(255,255,255,0.02));
@@ -686,6 +686,7 @@
       .vpage {
         width: calc(100vw - 20px);
         max-height: calc(100vh - 120px - env(safe-area-inset-bottom, 0px));
+        max-height: calc(100dvh - 120px - env(safe-area-inset-bottom, 0px));
         top: 44%;
       }
     }
@@ -993,6 +994,37 @@
     }
     @media (prefers-reduced-motion: reduce) { .vpage.on { animation: none; } #row::after { transition: none; } }
     @media (forced-colors: active) { #void-depth::before, #void-depth::after, #void-lens, #void-glow::before, #void-glow::after, #row::after { display: none; } }
+    /* ---- the empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js, tools/empty-state.test.mjs) ---- */
+    /* legible over anything bright behind it (a planet rim, the sun, a nebula): an opacity floor of .96 and a deeper blur, so the placeholder and the typed
+       text measure at least 4.5:1 against even a white backdrop (the browser suite renders the bar over #fff and measures it) */
+    #row { background: linear-gradient(165deg, rgba(40,46,70,.96) 0%, rgba(16,18,28,.97) 46%, rgba(20,22,40,.97) 100%);
+      backdrop-filter: blur(26px) saturate(1.3); -webkit-backdrop-filter: blur(26px) saturate(1.3); }
+    #input { color: #f2f4fb; caret-color: rgb(var(--d-key)); text-shadow: 0 1px 2px rgba(0,0,0,.55); }
+    #input::placeholder { color: #b4b9cb; opacity: 1; }
+    /* a ready bar: on a mouse the ask bar already has focus, and its glow (#row:focus-within) shows it */
+    /* the round keys say what state they are in: on is lit (purple), off is quiet, listening pulses gold; every one has a hover and a focus ring */
+    #mic, #go, #sound { transition: background .2s ease, box-shadow .2s ease, color .2s ease; }
+    #mic:hover, #go:hover, #sound:hover { background: #2f3550; color: #fff; }
+    #mic:focus-visible, #go:focus-visible, #sound:focus-visible { outline: 2px solid rgb(var(--d-key)); outline-offset: 2px; }
+    #sound[aria-pressed="false"] { color: var(--d-ink-3); }
+    #sound[aria-pressed="true"], #mic[aria-pressed="true"] { color: #fff; background: #3a2f6e; box-shadow: 0 0 0 1px rgb(var(--d-key) / .7), 0 0 18px rgb(var(--d-key) / .45); }
+    #mic.listening { box-shadow: 0 0 0 2px rgb(255 205 110 / .9), 0 0 20px rgb(255 190 90 / .5); animation: v-listen 1.4s ease-in-out infinite; }
+    @keyframes v-listen { 50% { box-shadow: 0 0 0 2px rgb(255 205 110 / .5), 0 0 8px rgb(255 190 90 / .25); } }
+    @media (prefers-reduced-motion: reduce) { #mic.listening { animation: none; } }
+    /* the empty stage's one-line suggestion, fading in the halo; it is generated text (never in the page's own text) */
+    #void-suggest { position: fixed; left: 50%; top: 44%; transform: translate(-50%, -50%); z-index: 1; pointer-events: none; max-width: min(80vw, 520px);
+      text-align: center; font-size: 15px; letter-spacing: .01em; color: var(--d-ink-2); opacity: 0; transition: opacity 1.1s ease; text-shadow: 0 1px 8px rgba(0,0,0,.7); }
+    #void-suggest::before { content: attr(data-s); }
+    #void-suggest.on { opacity: .8; }
+    @media (prefers-reduced-motion: reduce) { #void-suggest { transition: none; } }
+    /* offline: calm, not alarming. The halo takes a faint amber tint; asks that need no network keep working */
+    html.void-offline #void-lens { background: radial-gradient(closest-side, transparent 35.2%, rgba(255,190,100,.30) 36.4%, rgba(255,160,70,.12) 46%, transparent 60%); }
+    html.void-offline #void-depth::before { opacity: calc(.62 * var(--ring)); }
+    /* the support link: readable (AA on the dark stage), a quiet footer line at the bottom right */
+    #void-support { position: fixed; right: 12px; bottom: 10px; z-index: 6; font: 12px/1.3 var(--font, system-ui, sans-serif); color: #b4b9cb; text-decoration: none; padding: 2px 4px; border-radius: 4px; }
+    #void-support:hover, #void-support:focus-visible { color: #fff; text-decoration: underline; text-underline-offset: 2px; }
+    #void-support:focus-visible { outline: 2px solid rgb(var(--d-key)); }
+    @media (max-width: 700px) { #void-support { right: 8px; bottom: calc(2px + env(safe-area-inset-bottom, 0px)); font-size: 11px; } #dock { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); } }
   </style>
 </head>
 <body>
@@ -1012,15 +1044,15 @@
     <p>V01D by A-to-Mind is one quiet input. Ask for anything and it appears: a clock, a timer, notes, a list, a street map, the weather, a translation, a calculation, or a page about any topic. Nothing to sign up for. It needs JavaScript to run.</p>
     <p>Link straight to an answer: <a style="color:#fff" href="/?q=weather%20in%20Tokyo">a-to-mind.com/?q=weather in Tokyo</a>. More in <a style="color:#fff" href="/llms.txt">llms.txt</a>.</p>
   </main></noscript>
-  <div id="void-depth" aria-hidden="true"><div id="void-lens"></div></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
+  <div id="void-depth" aria-hidden="true"><div id="void-lens"></div></div><div id="void-suggest" aria-hidden="true" data-s=""></div><div id="void-glow" aria-hidden="true"></div><canvas id="void-stars-far" aria-hidden="true"></canvas><canvas id="void-stars" aria-hidden="true"></canvas><div id="void-backdrop" aria-hidden="true"></div>
   <div id="stage" role="region" aria-label="your stage"></div>
   <!-- screen readers hear each answer page here (its title and first lines), so asking never ends in silence -->
   <div id="sr-say" aria-live="polite" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap"></div>
   <div id="dock" role="search" aria-label="Ask Void">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
-      <input id="input" aria-label="Ask Void" autocomplete="off" spellcheck="false" placeholder="Ask V01D" autofocus />
-      <button id="go" type="button" aria-label="Ask">↵</button>
+      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ask V01D" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
     <div id="away-note" role="status" aria-live="polite"></div>
@@ -1050,20 +1082,51 @@
       return top > 0 ? top : innerHeight - 110;
     }
     dockSpace(); addEventListener('resize', dockSpace); if (window.visualViewport) visualViewport.addEventListener('resize', dockSpace);
-    // First visit: until someone has asked anything, the quiet hint text shows what Void can do, one real ask at a time.
-    // It stops for good after the first ask, while typing, and for reduced motion (then it's one static example).
-    (function firstHints() {
-      let asked = false; try { asked = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').length > 0; } catch (_) {}
-      if (asked || /[?&]q=/.test(location.search)) return;
-      const tries = ['weather in Tokyo', 'set a timer for 10 minutes', 'play othello', 'what is 15% of 240', 'translate thank you to Japanese',
-        'countdown to christmas', 'a shopping list with eggs and milk', 'define serendipity', 'news about spacex', 'make a 3d torus'];
-      const base = input.placeholder, still = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let i = 0; const show = () => { input.placeholder = 'try: ' + tries[i++ % tries.length]; };
-      setTimeout(show, 1800); if (still) return;
-      const tick = setInterval(() => { if (input.value) return; show(); }, 3200);
-      const stop = () => { clearInterval(tick); input.placeholder = base; };
-      input.addEventListener('keydown', (e) => { if (e.key === 'Enter') stop(); });
-      document.getElementById('go').addEventListener('click', stop);
+    // The empty stage and the ask bar (owner, 2026-10-18; lib/empty-state.js): the halo shows one real ask at a time while the stage is empty (fading,
+    // never the same twice in a row, still for reduced motion, gone with the first card or the first keystroke); the bar lifts above an on-screen keyboard;
+    // offline is shown calmly (amber halo, one plain line in the bar) and never locks an ask that needs no network; a mouse gets the bar focused and a touch screen does not.
+    (async function emptyState() {
+      let E; try { E = await import('/lib/empty-state.js'); } catch (_) { return; }
+      const root = document.documentElement, sug = document.getElementById('void-suggest'), dock = document.getElementById('dock');
+      const still = () => { try { return matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (_) { return false; } };
+      const isEmpty = () => !document.querySelector('#stage .thing, .vpage.on');
+      // -- the link: the browser's flag plus our own same-origin requests that never reached the network (no new requests are made)
+      const link = E.createLinkState();
+      const paint = () => { const v = E.offlineView(link.offline); root.classList.toggle('void-offline', !!v.halo); if (!input.value || link.offline) input.placeholder = v.placeholder; };
+      link.setOnline(navigator.onLine); paint();
+      addEventListener('offline', () => { link.setOnline(false); paint(); }); addEventListener('online', () => { link.setOnline(true); paint(); });
+      const f0 = window.fetch;
+      if (typeof f0 === 'function') window.fetch = function (res, init) {
+        let own = true; try { own = new URL(typeof res === 'string' ? res : res && res.url, location.href).origin === location.origin; } catch (_) {}
+        return f0.apply(this, arguments).then((r) => { if (own && link.offline && navigator.onLine !== false) { link.ok(); paint(); } return r; },
+          (e) => { if (own && e && e.name === 'TypeError') { link.fail(); paint(); } throw e; });
+      };
+      // -- the halo's suggestion
+      let last = '', timer = 0, shown = false;
+      const hide = () => { shown = false; sug.classList.remove('on'); };
+      const next = () => { sug.dataset.s = 'try: ' + (last = E.pickSuggestion(E.SUGGESTIONS, last)); sug.classList.add('on'); shown = true; };
+      const tick = () => {
+        if (document.hidden || input.value || !isEmpty()) { hide(); return; }
+        if (shown && !still()) { hide(); setTimeout(() => { if (!input.value && isEmpty() && !document.hidden) next(); }, 1200); } else if (!shown) next();
+      };
+      const start = () => { if (timer || !isEmpty() || input.value) return; setTimeout(() => { if (isEmpty() && !input.value) { next(); if (!still()) timer = setInterval(tick, 6000); } }, 1800); };
+      const sync = () => { if (!isEmpty() || input.value) { hide(); if (timer) { clearInterval(timer); timer = 0; } } else if (!timer && !still()) { if (!shown) next(); timer = setInterval(tick, 6000); } else if (!shown) next(); };
+      input.addEventListener('input', sync); addEventListener('void:stage-change', sync);
+      try { new MutationObserver(sync).observe(document.body, { childList: true }); new MutationObserver(sync).observe(stage, { childList: true }); } catch (_) {}
+      start();
+      // -- the bar above the keyboard
+      const vv = window.visualViewport;
+      if (vv && dock) {
+        const lift = () => { const k = E.keyboardInset(innerHeight, vv); dock.style.transform = k ? 'translateY(' + -k + 'px)' : ''; root.style.setProperty('--kb', k + 'px'); try { dockSpace(); } catch (_) {} };
+        vv.addEventListener('resize', lift); vv.addEventListener('scroll', lift); lift();
+      }
+      // -- ready: a mouse gets the bar focused (never a touch screen, never over a field someone is typing in or a dialog)
+      const fine = () => { try { return matchMedia('(pointer: fine)').matches; } catch (_) { return false; } };
+      const focusBar = () => { const a = document.activeElement || {}; if (E.mayAutofocus({ finePointer: fine(), activeTag: a.tagName === 'INPUT' && a === input ? 'BODY' : a.tagName, activeEditable: !!a.isContentEditable, inDialog: !!(a.closest && a.closest('[role="dialog"], dialog')) || !!document.querySelector('dialog[open], [role="dialog"]:not([hidden])') })) input.focus({ preventScroll: true }); };
+      focusBar();
+      let was = isEmpty();
+      const emptied = () => { const now = isEmpty(); if (now && !was) setTimeout(focusBar, 60); was = now; };
+      addEventListener('void:stage-change', emptied); try { new MutationObserver(emptied).observe(stage, { childList: true }); new MutationObserver(emptied).observe(document.body, { childList: true }); } catch (_) {}
     })();
     const go = document.getElementById('go');
     const whisper = document.getElementById('whisper');
@@ -5524,8 +5587,14 @@ say('nothing selected to remove');
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     let voiceRec = null, voiceStream = null, speak = null;
     import('/lib/speak.js').then((m) => { speak = m; }).catch(() => {});
+    // the mic says what it is doing: pressed while it listens, and its label says what a tap does now
+    function micState(on) {
+      const m = document.getElementById('mic'); if (!m) return;
+      const label = on ? 'Stop listening' : 'Talk';
+      for (const el of [m].concat(Array.from(m.querySelectorAll('button')))) { el.classList.toggle('listening', on); el.setAttribute('aria-pressed', on ? 'true' : 'false'); el.setAttribute('aria-label', label); el.title = on ? 'Stop listening (tap)' : 'Talk (or hold Space)'; }
+    }
     function voiceEnd() {
-      const m = document.getElementById('mic'); if (m) m.classList.remove('listening');
+      micState(false);
       if (voiceStream) { try { voiceStream.getTracks().forEach((t) => t.stop()); } catch (_) {} voiceStream = null; }
       voiceRec = null;
     }
@@ -5550,7 +5619,7 @@ say('nothing selected to remove');
         if (ask) { input.value = ''; drawHints(); loopLog({ domain: 'void.voice', ask, score: 'pass', note: 'voice' }); const sr0 = (document.getElementById('sr-say') || {}).textContent || ''; Promise.resolve(handle(ask)).then(() => replyAloud(sr0, ask), () => {}); }
       };
       voiceRec = rec;
-      const m = document.getElementById('mic'); if (m) m.classList.add('listening');
+      micState(true);
       whisper.textContent = 'listening';
       try { track ? rec.start(track) : rec.start(); } catch (_) { try { rec.start(); } catch (e2) { voiceEnd(); say('couldn\'t hear that'); } }
     }
@@ -5580,7 +5649,7 @@ say('nothing selected to remove');
         voiceListen(null);
       });
       go0.before(plain);
-      plain.title = 'Talk (or hold Space)';
+      plain.title = 'Talk (or hold Space)'; plain.setAttribute('aria-pressed', 'false');
       // hold Space to talk: a tap stays a tap (HOLD_MS), letting go asks
       let holdTimer = 0, holding = false;
       document.addEventListener('keydown', (e) => {
@@ -6088,7 +6157,7 @@ say('nothing selected to remove');
     sync();
   })();
   </script>
-<a id="void-support" href="/store/" style="position:fixed;right:12px;bottom:10px;font:12px system-ui,sans-serif;color:inherit;opacity:.35;text-decoration:none;z-index:1" onmouseover="this.style.opacity=.8" onmouseout="this.style.opacity=.35">support V01D</a>
+<a id="void-support" href="/store/">support V01D</a>
 </body>
 </html>
 
