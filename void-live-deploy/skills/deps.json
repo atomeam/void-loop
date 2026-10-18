@@ -16,9 +16,9 @@
   },
   {
    "file": "lib/placement.js",
-   "skills": 23,
-   "direct": 0,
-   "dependants": 25
+   "skills": 26,
+   "direct": 1,
+   "dependants": 28
   },
   {
    "file": "lib/panel-fit.js",
@@ -3515,7 +3515,8 @@
   "lib/placement.js": {
    "imports": [],
    "importedBy": [
-    "lib/panel-fit.js"
+    "lib/panel-fit.js",
+    "skills/showcase.js"
    ],
    "reachedBy": [
     "lib/arena.js",
@@ -3529,12 +3530,14 @@
     "skills/games.js",
     "skills/gears.js",
     "skills/go.js",
+    "skills/guide.js",
     "skills/lift3d.js",
     "skills/lock.js",
     "skills/mancala.js",
     "skills/monopoly.js",
     "skills/moon.js",
     "skills/othello.js",
+    "skills/own-parts.js",
     "skills/poker.js",
     "skills/rack.js",
     "skills/rebuild-map.js",
@@ -6819,7 +6822,8 @@
    "imports": [
     "skills/growth-tree.js",
     "lib/reaction-bar.js",
-    "lib/reactions.js"
+    "lib/reactions.js",
+    "lib/placement.js"
    ],
    "importedBy": [
     "skills/guide.js"
