@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { specifiers, resolveSpec, graph, dependants, build, toJson, listFiles, readAll } from './deps.mjs';
+import { specifiers, resolveSpec, graph, dependants, build, toJson, listFiles, readAll, testedLibs } from './deps.mjs';
 
 test('import lines are read as written: static imports, re-exports and import() with a string; comments and built paths are not', () => {
   const src = `import { a } from '../lib/a.js';\nimport * as B from "./b.js"; // import { x } from './gone.js'\nexport { c } from '/lib/c.js';\n/* import y from './gone2.js' */\nconst m = await import('./d.js');\nconst p = './' + name + '.js'; import(p);\nimport 'https://cdn.example/x.js';\nimport('../lib/a.js');\nconst s = "import { q } from './quoted.js'";`;
@@ -61,4 +61,28 @@ test('the card (skills/deps.js) reads the asks and the written map', async () =>
   assert.equal(findFile(deps, 'ask-text.js'), 'lib/ask-text.js');
   const D = dependantsOf(deps, 'lib/ask-text.js');
   assert.ok(D.skills.length >= 20 && D.skills.every((s) => /^skills\//.test(s.file)));
+});
+
+test('tests that import a lib file are counted per lib (dependency health, asked by Verse): direct imports from tools/ tests only, once per test file', () => {
+  const tests = { 'tools/a.test.mjs': "import { x } from '../void-live-deploy/lib/a.js';\nimport y from '../void-live-deploy/lib/a.js';", 'tools/b.test.mjs': "import { x } from '../void-live-deploy/lib/a.js'; import z from '../void-live-deploy/lib/b.js'; import q from '../void-live-deploy/skills/s.js';", 'tools/c.test.mjs': "import fs from 'node:fs'" };
+  assert.deepEqual(testedLibs(tests), { 'lib/a.js': 2, 'lib/b.js': 1 });
+  assert.deepEqual(testedLibs({}), {});
+  const b = build({ 'lib/a.js': '', 'lib/b.js': '', 'lib/c.js': '', 'skills/x.js': "import '../lib/a.js'" }, tests);
+  assert.deepEqual(b.libs.map((l) => [l.file, l.tests]), [['lib/a.js', 2], ['lib/b.js', 1], ['lib/c.js', 0]]);
+});
+
+test('the dependency-health card judges the real map: every heavily used lib is on it, worst first, and each verdict follows its two numbers', async () => {
+  const { healthOf, HEAVY, SOUND_SHARE } = await import('../void-live-deploy/skills/dependency-health.js');
+  const { readFileSync } = await import('node:fs');
+  const read = (f) => JSON.parse(readFileSync(new URL('../void-live-deploy/skills/' + f, import.meta.url), 'utf8'));
+  const deps = read('deps.json'), H = healthOf(deps, read('families.json'));
+  assert.equal(H.heavy, deps.libs.filter((l) => l.skills >= HEAVY).length, 'every lib that HEAVY or more skills depend on is judged');
+  assert.ok(H.heavy > 0 && H.steady <= H.heavy);
+  for (const r of H.rows) {
+    assert.equal(r.needsTest, r.tests === 0);
+    assert.equal(r.weak, r.share < SOUND_SHARE);
+    assert.equal(r.steady, !r.needsTest && !r.weak);
+  }
+  const order = H.rows.map((r) => (r.needsTest ? 2 : 0) + (r.weak ? 1 : 0));
+  assert.ok(order.every((v, i) => i === 0 || (order[i - 1] >= v) || H.rows[i - 1].needsTest === H.rows[i].needsTest), 'a missing test comes before a weak share');
 });

@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 7,
   "tested": 98,
-  "checked": 97,
+  "checked": 98,
   "proven": 92
  },
  "families": [
@@ -2482,10 +2482,18 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 14,
+    "checked": 15,
     "proven": 16
    },
    "skills": [
+    {
+     "name": "dependency-health",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-18"
+    },
     {
      "name": "backlog-digest",
      "tier": "tested",
