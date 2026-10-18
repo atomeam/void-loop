@@ -2,31 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:04:33.410Z",
-   "sha": "910c92721fee52d22d10220ba9fafcc2aaaccf40",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39108913625",
+   "at": "2026-10-18T08:04:39.693Z",
+   "sha": "8a5a0b013436967eec2a96e5a6bf05389f50adb4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39108891224",
    "suite": "browser suite on main",
    "checks": [
+    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "docs/MAP.md",
     "domains/void.agents.log.md",
-    "tools/backlog-digest.test.mjs",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "void-live-deploy/lib/backlog-digest.js",
-    "void-live-deploy/skills/backlog-digest.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1713-backlog-digest",
-    "void-live-deploy/void.growth.json",
-    "domains/void.agents.log.md",
-    "extension/README.md"
+    "extension/README.md",
+    "extension/manifest.json",
+    "extension/page.js",
+    "extension/void-extension.zip",
+    "tools/test_extension.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.html",
+    "void.html"
    ]
   },
   {
