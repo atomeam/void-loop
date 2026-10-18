@@ -284,6 +284,12 @@
    "date": "",
    "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for",
    "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Lift the two shared libs the dependency health card still marks weak",
+   "from": "lib/rts.js, lib/stage-pack-h.js"
   }
  ],
  "games": [
@@ -458,6 +464,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T13:49:52Z",
+   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:48:20Z",
+   "subject": "Site test: fix: \"find me a sc-ifi film from the 80s\" refused: don't kno"
+  },
+  {
+   "at": "2026-10-18T13:45:07Z",
+   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:39:07Z",
+   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T13:38:44Z",
+   "subject": "dependency-health: the dependency map held against two stability requirements"
+  },
+  {
    "at": "2026-10-18T13:34:19Z",
    "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
   },
@@ -516,26 +542,6 @@
   {
    "at": "2026-10-18T12:27:06Z",
    "subject": "Answer \"what's new pussycat\" as what's new, with a nod to the song"
-  },
-  {
-   "at": "2026-10-18T12:26:35Z",
-   "subject": "Incident: the browser suite failed on 3afe77b7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T12:22:02Z",
-   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T12:14:58Z",
-   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T12:09:23Z",
-   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
-  },
-  {
-   "at": "2026-10-18T12:08:54Z",
-   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

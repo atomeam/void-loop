@@ -188,3 +188,14 @@ test('the 7-day re-test (asked by Verse): a pass dates the skill, a failure join
   assert.ok(row && (row.tier === 'checked' && row.promoted === '2026-10-16' && row.streak === 4), JSON.stringify(row));
   assert.deepEqual(smokeRun(() => JSON.stringify({ at: '2026-10-16', streak: { x: 3 } })).streak, { x: 3 });
 }
+
+test('a unit test that loads the skill from the skills folder it names counts as its own test, like one that imports skills/<name>.js (tools/sky-skills.test.mjs)', () => {
+  const files = { 'tools/test_void.mjs': '', 'tools/test_3d.mjs': '', 'tools/test_extension.mjs': '', 'tools/bench.json': '[]' };
+  const sky = "const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'void-live-deploy', 'skills');\nconst s = await import(pathToFileURL(resolve(dir, 'suntimes.js')).href);";
+  const other = "const dir = resolve(here, 'fixtures');\nconst s = await import(pathToFileURL(resolve(dir, 'moontonight.js')).href);"; // a dir that is not the skills folder
+  const read = (p) => { if (p in files) return files[p]; if (p === 'tools/sky-skills.test.mjs') return sky; if (p === 'tools/other.test.mjs') return other; throw new Error('no ' + p); };
+  const ev = evidence(['suntimes', 'moontonight', 'meteors'], read, () => ['sky-skills.test.mjs', 'other.test.mjs']);
+  assert.equal(ev.suntimes.suite, true, 'loaded as resolve(dir, "suntimes.js") from the skills folder');
+  assert.equal(ev.moontonight.suite, false, 'a dir that is not the skills folder proves nothing about the skill');
+  assert.equal(ev.meteors.suite, false, 'a skill no test names has no unit test');
+});
