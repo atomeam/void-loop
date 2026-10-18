@@ -221,7 +221,7 @@
   },
   {
     "ask": "draw a circle",
-    "want": "shape-circle"
+    "want": "skill:shape"
   },
   {
     "ask": "hello",
