@@ -75,7 +75,7 @@ test('best score: only a higher whole score replaces it, junk storage is safe', 
 
 test('the asks route to the game; zorb, flux capacitor and what is flux do not', () => {
   for (const a of ['zorbleflux', 'play zorbleflux', 'a zorbleflux game', 'what is a zorbleflux', 'tell me about zorbleflux', "what's a zorbleflux?"]) assert.ok(game.match(a.toLowerCase(), a), a);
-  assert.equal(game.zorbleOf('what is a zorbleflux').kind, 'about'); assert.equal(game.zorbleOf('play zorbleflux').kind, 'game');
+  assert.equal(game.zorbleOf('what is a zorbleflux').kind, 'about'); for (const q of ['do you know zorbleflux', 'Do you know what a zorbleflux is?', 'have you heard of zorbleflux', 'are you familiar with zorbleflux', 'who is zorbleflux']) assert.equal(game.zorbleOf(q).kind, 'about', q); for (const q of ['do you know the flux capacitor', 'do you know zorb', 'do you know chess']) assert.equal(game.zorbleOf(q), null, q); assert.equal(game.zorbleOf('play zorbleflux').kind, 'game');
   for (const a of ['zorb', 'flux capacitor', 'what is flux', 'play chess', 'zorbleflux recipe']) assert.ok(!game.match(a.toLowerCase(), a), a);
   assert.match(Z.ABOUT, /154 times/);
 });

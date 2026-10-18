@@ -81,7 +81,7 @@ test('cardHtml: the title, the count line, three blocks with their counts, every
   const html = cardHtml(cardModel({ will, reflect, self }), esc, { more: moreLine('come up with 50 more new ones') });
   assert.ok(html.includes('<h2>What I want built</h2>') && html.includes('2 wants · 2 asks not built · 2 inbox items'));
   assert.ok(html.includes('<h3 class="wants-h">My will <span class="wants-n">(2)</span></h3>') && html.includes('Asked, not built yet <span class="wants-n">(2)</span>') && html.includes('Growth inbox <span class="wants-n">(2)</span>'));
-  assert.equal((html.match(/class="wants-chip" data-copy="/g) || []).length, 6);
+  assert.equal((html.match(/class="wants-chip" data-copy="/g) || []).length, 6); assert.ok(!html.includes('<button'), 'no <button>: a saved card leaves buttons out of its text');
   assert.ok(html.includes('data-copy="A &lt;b&gt;bold&lt;/b&gt; ask"') && !html.includes('<b>bold</b>'), 'escaped');
   assert.ok(html.includes('<small>Asked in my daily reflection, 2026-10-08</small>') && html.includes('<small>Asked after a build, 2026-10-17 · I called it small</small>'));
   assert.ok(html.includes('<small>asked 9 times</small>') && html.includes('<small>owner, 2026-10-15</small>'));
@@ -103,4 +103,16 @@ test('the skill: its name, an about line, examples and near misses that do not c
   assert.equal(skill.name, 'wants'); assert.ok(skill.about && skill.about.length > 20);
   assert.ok(skill.examples.length >= 5 && skill.nearMisses.length >= 5 && !skill.examples.some((e) => skill.nearMisses.includes(e)));
   assert.equal(await skill.run('weather in paris', {}), 'none');
+});
+
+test('cardHtml: the items come before the line that says where a list comes from, so a card cut to fit carries the real wants first (owner, 2026-10-18)', () => {
+  const html = cardHtml(cardModel({ will, reflect, self }), esc), text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  const first = html.indexOf('<span role="button" tabindex="0" class="wants-chip"'), sub = html.indexOf('<p class="wants-sub">');
+  assert.ok(first > 0 && sub > first, 'the first chip is before the first source line');
+  const firstSub = text.indexOf('What I chose to become next'); assert.ok(text.indexOf('answer every question about tides') > 0 && text.indexOf('answer every question about tides') < firstSub, 'the first want is read before any line about where the list comes from'); assert.ok(text.indexOf('Absorb and connect every repo') > 0 && text.indexOf('Give the map card terrain') > 0);
+});
+
+test('the saved text of the card (buttons, source lines and the frame left out, as lib/card-share.js does) carries the real wants (owner, 2026-10-18)', () => {
+  const html = cardHtml(cardModel({ will, reflect, self }), esc), kept = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<button[\s\S]*?<\/button>/g, '').replace(/<div class="src">[\s\S]*?<\/div>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
+  for (const w of ['answer every question about tides', 'Give the map card terrain', 'Absorb and connect every repo', 'WebMCP origin trial']) assert.ok(kept.includes(w), w);
 });
