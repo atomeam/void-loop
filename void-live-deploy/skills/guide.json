@@ -4173,7 +4173,7 @@
     "plant my test failures in my error garden"
    ],
    "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "why": "a self-test, 6 browser-suite mentions",
    "n": 235
   },
   {
@@ -4814,7 +4814,7 @@
     "postmortem template"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 6 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Not a boast but a record: 6 askings, each one answered. Ask, and see.",
    "glow": 100,
    "n": 275
