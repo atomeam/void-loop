@@ -34,6 +34,7 @@ for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
+  ['wants', 'wants.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],

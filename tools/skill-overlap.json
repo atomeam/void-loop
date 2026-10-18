@@ -1,6 +1,7 @@
 {
  "note": "skill pairs whose examples overlap (tools/skill-overlap.mjs); merge them, never add to this by hand without a reason",
  "pairs": [
+  "about-skill~wants",
   "anneal-ambition~weather",
   "aurora-tonight~calendar",
   "aurora-tonight~weather",
@@ -26,6 +27,7 @@
   "calendar~time-math",
   "calendar~uv",
   "calendar~video",
+  "calendar~wants",
   "calendar~weather",
   "calendar~writing-aids",
   "checkers~video-play",

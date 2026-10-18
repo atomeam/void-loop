@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 657,
+ "counted": 658,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -7807,6 +7807,10 @@
    "importedBy": [
     "skills/room.js"
    ]
+  },
+  "skills/wants.js": {
+   "imports": [],
+   "importedBy": []
   },
   "skills/watch.js": {
    "imports": [
