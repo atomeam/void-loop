@@ -103,7 +103,8 @@ export function incidentsHtml(esc, list) {
   const when = (at) => String(at || '').slice(0, 16).replace('T', ' ') + ' UTC';
   return '<h2>What broke lately</h2><div class="sub">every red browser suite on main, newest first · written by the suite itself</div>'
     + (L.length ? L.slice(0, 10).map((i) => '<div style="margin:10px 0;padding:8px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.1)"><b>' + esc(when(i.at)) + '</b> · ' + esc(String(i.sha || '').slice(0, 7))
-        + (i.run ? ' · <a href="' + esc(i.run) + '" target="_blank" rel="noopener">the run</a>' : '') + '<br><span style="color:#8a8a92">' + esc(String(i.checks.length) + ' failed: ') + '</span>' + i.checks.slice(0, 6).map((c) => esc(c)).join('<span style="color:#8a8a92"> · </span>')
+        + (i.run ? ' · <a href="' + esc(i.run) + '" target="_blank" rel="noopener">the run</a>' : '')
+        + ' · ' + (i.closedAt ? 'fixed after ' + esc(String(i.minutes)) + ' min' + (i.closedBy ? ' by ' + esc(String(i.closedBy).slice(0, 7)) : '') : 'not marked fixed yet') + '<br><span style="color:#8a8a92">' + esc(String(i.checks.length) + ' failed: ') + '</span>' + i.checks.slice(0, 6).map((c) => esc(c)).join('<span style="color:#8a8a92"> · </span>')
         + (i.checks.length > 6 ? '<span style="color:#8a8a92"> · and ' + (i.checks.length - 6) + ' more</span>' : '')
         + '<br><a href="#" data-ask="' + esc('incident brief: ' + String(i.checks[0] || 'the suite').slice(0, 80)) + '">write the incident brief</a></div>').join('')
       : '<p>Nothing has broken on main since this log began. The brief is still here: "write an incident brief".</p>')

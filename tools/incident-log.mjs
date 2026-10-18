@@ -4,6 +4,7 @@
 // that file and offers the blameless brief prefilled with the first failed check. The file is public like the repo: check names,
 // shas and run links only, never a visitor's words (the suite's asks are its own).
 //   node tools/incident-log.mjs record <sha> <run-url> <test-output.txt>   append one entry (verify.yml); nothing when no FAIL line
+//   node tools/incident-log.mjs resolve <sha> <run-url>                    close every open incident after a green suite on main: closedAt, closedBy, minutes
 //   node tools/incident-log.mjs list                                       print the entries, newest first
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { execFileSync } from 'node:child_process';
@@ -48,6 +49,18 @@ export function addIncident(list, inc, keep = KEEP) {
   return [inc, ...rest].slice(0, keep);
 }
 
+/** the list with every open incident closed by a green suite: those that began at or before `at` get closedAt, closedBy (the sha that passed), closedRun and the minutes they lasted. An incident already closed is left as it was. Pure. */
+export function closeOpen(list, { sha, run, at = new Date().toISOString() } = {}) {
+  const end = Date.parse(at);
+  return (Array.isArray(list) ? list : []).map((i) => {
+    if (!i || i.closedAt || !Number.isFinite(end) || !(Date.parse(i.at) <= end)) return i;
+    return { ...i, closedAt: at, closedBy: String(sha || '').slice(0, 40), closedRun: /^https:\/\/github\.com\//.test(String(run || '')) ? run : '', minutes: Math.max(0, Math.round((end - Date.parse(i.at)) / 60e3)) };
+  });
+}
+
+/** how many incidents are open (not closed by a green suite). Pure. */
+export const openCount = (list) => (Array.isArray(list) ? list : []).filter((i) => i && !i.closedAt).length;
+
 export function readLog(file = OUT) { try { return existsSync(file) ? JSON.parse(readFileSync(file, 'utf8')).incidents || [] : []; } catch (_) { return []; } }
 
 if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
@@ -58,11 +71,17 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const list = addIncident(readLog(), inc);
     writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
     console.log('incident-log: recorded ' + inc.checks.length + ' failed check(s) for ' + inc.sha.slice(0, 7) + ' (' + list.length + ' kept)');
+  } else if (cmd === 'resolve') { // after a green suite on main: close the incidents still open
+    const before = readLog(), list = closeOpen(before, { sha, run });
+    const n = openCount(before) - openCount(list);
+    if (!n) { console.log('incident-log: nothing open to close'); process.exit(0); }
+    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first, with the green suite that closed it (tools/incident-log.mjs; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
+    console.log('incident-log: closed ' + n + ' incident(s) at ' + String(sha || '').slice(0, 7));
   } else if (cmd === 'backfill') {
     const list = readLog().map((i) => (Array.isArray(i.touched) ? i : { ...i, touched: touchedBy(i.sha) }));
     writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names, shas and the paths the commit changed only.', incidents: list }, null, 1) + '\n');
     console.log('incident-log: backfilled ' + list.filter((i) => i.touched.length).length + ' of ' + list.length);
   } else if (cmd === 'list') {
-    for (const i of readLog()) console.log(i.at + ' ' + i.sha.slice(0, 7) + ' ' + i.checks.length + ' failed: ' + i.checks.map((c) => c.slice(0, 60)).join(' | '));
-  } else { console.error('usage: node tools/incident-log.mjs record <sha> <run-url> <test-output.txt> | backfill | list'); process.exit(2); }
+    for (const i of readLog()) console.log(i.at + ' ' + i.sha.slice(0, 7) + (i.closedAt ? ' closed after ' + i.minutes + ' min' : ' OPEN') + ' ' + i.checks.length + ' failed: ' + i.checks.map((c) => c.slice(0, 60)).join(' | '));
+  } else { console.error('usage: node tools/incident-log.mjs record <sha> <run-url> <test-output.txt> | resolve <sha> <run-url> | backfill | list'); process.exit(2); }
 }
