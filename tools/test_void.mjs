@@ -1280,6 +1280,36 @@ try {
         // which part of the check failed (diagnostics only; the assertion above is unchanged)
         parts: { two: sent.length === 2, jpeg: !!sent[0] && /^data:image\/jpeg;base64,/.test(sent[0].image), note: !!sent[0] && sent[0].note === 'from my grandfather', price: /\$540/.test(card), expert: /looked at in hand/.test(card), saw: /What I saw: A worn silver coin/.test(card), you: /What you are worth/.test(you), noNumber: !/\$|\d/.test(you.replace(/V01D/g, '')), noErrors: !A.errors.length, noCoinLink: coinMake === 0, vaseAsk: makeAsk === 'make me a vase', vaseLine: /^I can make one of these: make me a vase, a model you can turn/.test(makeLine), one: made.length === 1 } }));
     await A.ctx.close(); }
+  // tools pack 11 (owner, 2026-10-18): date math cards and the calendar grids, played the way a person uses them. The clock is faked to Sunday 2026-10-18 10:30 so every answer is fixed.
+  if (want("tools pack 11: date math cards (days after, a traffic light, a zone pair) and calendar grids (streak marks by tap and by words, export and import, timesheet total) kept across a reload")) { const D = await fresh();
+    await D.p.clock.install({ time: new Date(2026, 9, 18, 10, 30) });
+    await D.ask('30 days after 2026-03-01', 900); await until(async () => /March 31, 2026/.test(await D.page()), 8000); const added = await D.page();
+    await D.ask('deadline risk 2026-10-20', 900); await until(async () => (await D.p.$$eval('.vpage.on .dc-light', (e) => e.length)) === 1, 8000);
+    const light = await D.p.$eval('.vpage.on .dc-light', (e) => e.dataset.light).catch(() => ''), lightText = await D.page();
+    await D.ask('convert 9am new york to tokyo on 2026-10-20', 900); await until(async () => /22:00 tokyo/.test(await D.page()), 8000); const zone = await D.page();
+    check('date math: "30 days after 2026-03-01" is 31 March, "deadline risk 2026-10-20" shows a red light two days out, and "convert 9am new york to tokyo on 2026-10-20" says 22:00 in daylight-saving time',
+      /Tuesday, March 31, 2026/.test(added) && /2026-03-31/.test(added) && light === 'red' && /2 days left/.test(lightText) && /22:00 tokyo/.test(zone) && !D.errors.length, JSON.stringify({ added: added.slice(0, 200), light, lightText: lightText.slice(0, 150), zone: zone.slice(0, 150), errors: D.errors }));
+    await D.ask('streak calendar for reading', 700);
+    const mode = await D.p.$eval('.date-grid', (e) => e.dataset.mode + '|' + e.querySelector('.dg-title').textContent).catch(() => '');
+    await D.p.click('.date-grid .dg-day[data-day="2026-10-17"]'); await D.p.waitForTimeout(200);
+    await D.ask('mark today done', 700);
+    const marks = async () => D.p.$$eval('.date-grid .dg-day', (b) => b.filter((x) => x.dataset.mark).map((x) => x.dataset.day + ':' + x.dataset.mark));
+    const first = await marks(), info = await D.p.$eval('.date-grid .dg-info', (e) => e.textContent).catch(() => '');
+    await D.ask('import dates 2026-10-01 skip, 2026-10-02 done', 700); const imported = await marks();
+    await D.ask('export my dates', 700); const exported = await D.p.$eval('.date-grid .dg-text', (t) => t.value).catch(() => '');
+    await D.p.reload(); await D.p.waitForSelector('.date-grid .dg-day', { timeout: 8000 }).catch(() => {}); const kept = await marks();
+    check('streak calendar: a tap marks 17 Oct, "mark today done" marks 18 Oct (streak 2), an import adds 1 and 2 Oct, "export my dates" lists them as text, and a reload keeps them',
+      mode === 'streak|reading · October 2026' && first.join() === '2026-10-17:done,2026-10-18:done' && /Streak 2/.test(info) && imported.join() === '2026-10-01:skip,2026-10-02:done,2026-10-17:done,2026-10-18:done'
+      && exported === '2026-10-01 skip\n2026-10-02 done\n2026-10-17 done\n2026-10-18 done' && kept.join() === imported.join() && !D.errors.length, JSON.stringify({ mode, first, info, imported, exported, kept, errors: D.errors }));
+    await D.ask('timesheet row for this week', 700);
+    const inputs = await D.p.$$eval('.date-grid[data-mode="sheet"] .dg-hours', (i) => i.map((x) => x.dataset.day));
+    await D.p.fill('.date-grid[data-mode="sheet"] .dg-hours[data-day="2026-10-12"]', '8'); await D.p.fill('.date-grid[data-mode="sheet"] .dg-hours[data-day="2026-10-13"]', '7.5');
+    const total = await D.p.$eval('.date-grid[data-mode="sheet"] .dg-total', (e) => e.textContent).catch(() => '');
+    await D.ask('7x5 heatmap', 700); await D.p.click('.date-grid[data-mode="heat"] .dg-day[data-day="2026-10-18"]'); await D.p.click('.date-grid[data-mode="heat"] .dg-day[data-day="2026-10-18"]');
+    const level = await D.p.$eval('.date-grid[data-mode="heat"] .dg-day[data-day="2026-10-18"]', (b) => b.dataset.level).catch(() => ''), cells = await D.p.$$eval('.date-grid[data-mode="heat"] .dg-day', (b) => b.length);
+    check('timesheet row: seven day boxes for Monday 12 to Sunday 18 Oct add to Total 15.5 h, and the 7x5 heatmap has 35 days where two taps raise today to level 2',
+      inputs.length === 7 && inputs[0] === '2026-10-12' && inputs[6] === '2026-10-18' && total === 'Total 15.5 h' && cells === 35 && level === '2' && !D.errors.length, JSON.stringify({ inputs, total, cells, level, errors: D.errors }));
+    await D.ctx.close(); }
   // A deadline chain (skills/deadlines.js): each deadline's date in your zone, time left or since, its state, a "mark met" kept in
   // this browser, and the card keeping itself current. The clock is faked to Thursday 2026-10-15 10:30 so the states are fixed.
   if (want('deadlines: a chain from one start, each with its date, time left and state; mark met stays; it updates every minute')) { const D = await fresh();

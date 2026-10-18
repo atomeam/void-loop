@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 572,
+ "counted": 576,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -10,9 +10,9 @@
   },
   {
    "file": "lib/stage-pack.js",
-   "skills": 23,
-   "direct": 23,
-   "dependants": 23
+   "skills": 25,
+   "direct": 25,
+   "dependants": 25
   },
   {
    "file": "lib/field-kit.js",
@@ -315,6 +315,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/date-math.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
    "file": "lib/media.js",
    "skills": 2,
    "direct": 2,
@@ -478,6 +484,12 @@
   },
   {
    "file": "lib/council-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/date-ask.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2245,6 +2257,24 @@
     "skills/veto-council.js"
    ]
   },
+  "lib/date-ask.js": {
+   "imports": [
+    "lib/date-math.js"
+   ],
+   "importedBy": [
+    "skills/date-calc.js"
+   ]
+  },
+  "lib/date-math.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/date-ask.js",
+    "skills/date-grid.js"
+   ],
+   "reachedBy": [
+    "skills/date-calc.js"
+   ]
+  },
   "lib/date-words.js": {
    "imports": [],
    "importedBy": [
@@ -3724,6 +3754,8 @@
     "skills/busy-blocks.js",
     "skills/causal-scars.js",
     "skills/counterfactual-draft.js",
+    "skills/date-calc.js",
+    "skills/date-grid.js",
     "skills/decision-matrix.js",
     "skills/eigenwork.js",
     "skills/gauge-feedback.js",
@@ -4472,6 +4504,20 @@
   "skills/dark-look.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-calc.js": {
+   "imports": [
+    "lib/date-ask.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-grid.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/date-math.js"
    ],
    "importedBy": []
   },

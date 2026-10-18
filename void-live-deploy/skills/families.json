@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 102,
+  "tested": 104,
   "checked": 104,
   "proven": 131
  },
@@ -1130,7 +1130,7 @@
    "for": "timers, clocks, calendars and reminders",
    "count": {
     "experiment": 0,
-    "tested": 6,
+    "tested": 8,
     "checked": 3,
     "proven": 6
    },
@@ -1182,9 +1182,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "7 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "why": "8 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1259,6 +1259,20 @@
      "name": "busy-blocks",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "date-calc",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "date-grid",
+     "tier": "tested",
+     "why": "a self-test",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     }
