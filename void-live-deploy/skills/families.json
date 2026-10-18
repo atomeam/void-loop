@@ -873,7 +873,7 @@
     {
      "name": "convert",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
