@@ -1003,6 +1003,9 @@ try {
     await M.ask('pick a movie to watch with me', 1800);
     const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
     const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    // asked by Void (2026-10-18): every selection returns structured JSON metadata, linked to film-metadata
+    const pickJs = await M.p.$eval('.vpage.on .mv-picks-json pre', (e) => JSON.parse(e.textContent)).catch(() => null);
+    const rowJson = await M.p.$$eval('.vpage.on .mv-row .mv-json', (e) => e.map((a) => a.dataset.ask));
     await M.p.click('.vpage.on a[data-ask*="Talk to Me"]'); await M.p.waitForTimeout(1200);
     const facts = await M.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), jsonAsk = await M.p.$eval('.vpage.on .mv-json', (a) => a.dataset.ask).catch(() => '');
     await M.p.keyboard.press('Escape'); await M.ask('pick a movie to watch with me', 1800);
@@ -1010,8 +1013,8 @@ try {
     await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
     const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
     const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
-    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
-      rows.length === 2 && /Talk to Me/.test(rows[0]) && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), each with a JSON link to film metadata and the found ones as JSON (never the unfound), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && pickJs && pickJs.count === 2 && pickJs.films[0].director === 'Danny Philippou' && pickJs.films[0].runtime === '95 min' && !('description' in pickJs.films[1]) && pickJs.films.every((f) => f.title !== 'Made Up Movie Zork') && rowJson.join('|') === 'film metadata for Talk to Me|film metadata for Nosferatu' && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
   // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
   // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
@@ -3204,6 +3207,21 @@ try {
       !!before && before.length === 2 && tea(before).conf > cat(before).conf && cat(before).conf > 0 && tea(before).bar === tea(before).conf + '%' && /% sure/.test(tea(before).title)
         && !!after && cat(after).conf > cat(before).conf && stored['fact:my cat is called pixel'].n === 2 && !G.errors.length, JSON.stringify({ before, after, errors: G.errors }));
     await G.ctx.close(); }
+  // "export my memory" (the owner, 2026-10-18): the export card also hands over what "remember that …" kept on V01D's server, to whoever
+  // holds the key; without one it offers only the graph in this browser. /api/memory is stood in for.
+  if (want("export my memory: with the key the card also downloads what V01D keeps on its server")) { const X = await fresh();
+    let auth = '';
+    await X.ctx.route(/\/api\/memory\?view=export/, (r) => { auth = r.request().headers().authorization || ''; return r.fulfill(json({ v01d_memory: 1, exported: '2026-10-18T00:00:00Z', count: 2, capped: false, records: [{ id: 'note-1', name: 'I like tea' }, { id: 'note-2', name: 'my dog is Rex' }] })); });
+    await X.ask('export my memory', 700); const noKey = await X.p.$('.vpage.on .mg-kept');
+    await X.p.evaluate(() => localStorage.setItem('a2m.void.owner.v1', 'owner-k')); await X.p.keyboard.press('Escape');
+    await X.ask('export my memory', 700);
+    const dl = X.p.waitForEvent('download', { timeout: 5000 }).catch(() => null);
+    await X.p.click('.vpage.on .mg-kept').catch(() => {}); const d = await dl; const body = d ? JSON.parse(fs.readFileSync(await d.path(), 'utf8')) : null;
+    const said = await X.p.$eval('.vpage.on .mg-kept-out', (e) => e.textContent).catch(() => '');
+    check('export my memory: without a key only the browser graph is offered; with the key the card downloads what V01D keeps (v01d-kept-<date>.json, read with the key) and says how many lines',
+      !noKey && auth === 'Bearer owner-k' && !!d && /^v01d-kept-\d{4}-\d{2}-\d{2}\.json$/.test(d.suggestedFilename()) && body && body.count === 2 && body.records[1].name === 'my dog is Rex' && /saved: 2 lines/.test(said) && !X.errors.length,
+      JSON.stringify({ noKey: !!noKey, auth, file: d && d.suggestedFilename(), said, e: X.errors }));
+    await X.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

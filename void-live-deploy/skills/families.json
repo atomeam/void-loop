@@ -2499,7 +2499,7 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 10 real asks in the benchmark",
+     "why": "a self-test, 14 browser-suite mentions, 10 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
