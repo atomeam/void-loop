@@ -3927,6 +3927,21 @@ try {
       && went && tokyo === 'article' && noCard && !A.errors.length, JSON.stringify({ card, chipAsk, went, tokyo, noCard, errors: A.errors }));
     await A.ctx.close();
   }
+  if (want("chess match history: a game's about card carries your record on this device, 'my chess record' and 'tell me about the chess skill' show three seeded games as a summary line and a table, and an empty device says no games yet")) { // asked by Void (2026-10-18): a Match History table from the game logs, an Elo against the owner
+    const seed = () => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }, { at: '2026-10-17T11:00:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 41, minutes: 12.5 }, { at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 28, minutes: 5 }, { at: '2026-10-18T09:45:00.000Z', game: 'othello', vs: 'v01d', result: 'loss', moves: 30, minutes: 4 }])); } catch (_) {} };
+    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
+    const cardOf = (P, name) => until(async () => { const c = await block(P); return c && c.name === name && c.rows ? c : null; }, 8000);
+    const H = await fresh(seed);
+    await H.ask('tell me about the chess skill', 600); const b = await cardOf(H, 'chess'); // the about card carries the block, and the chess module's own line carries the record
+    await H.ask('tell me about the guide skill', 600); await until(async () => { const c = await block(H); return c && c.name === 'guide'; }, 8000); // another skill's card between, so the next is a fresh card
+    await H.ask('my chess record', 600); const a = await cardOf(H, 'chess');
+    await H.ctx.close();
+    const E = await fresh(); await E.ask('chess match history', 600); const c = await cardOf(E, 'chess'); await E.ctx.close();
+    check("chess match history (asked by Void): 'my chess record' opens the chess card with its Match History block (3 played · 2–1–0 · 67% · you ~1215, V01D ~1185 (estimated): win, loss, win from 1200 at K = 32, the othello game left out), a table of the three games newest first with when, vs, result, moves and minutes, 'tell me about the chess skill' carries the same block and the record in its line, and an empty device says no games on this device yet with no table",
+      !!a && a.game === 'chess' && a.played === '3' && a.sum === '3 played · 2–1–0 · 67% · you ~1215, V01D ~1185 (estimated)' && a.rows.length === 3 && a.rows[0].slice(1).join('|') === 'V01D|you won|28|5' && a.rows[1].slice(1).join('|') === 'V01D|V01D won|41|12.5' && a.rows[2][2] === 'you won' && /^Oct 18, \d\d:\d\d$/.test(a.rows[0][0])
+      && !!b && b.played === '3' && b.rows.length === 3 && /Your record against V01D on this device: 3 played · 2–1–0 · 67%/.test(b.line)
+      && !!c && c.played === '0' && /^no games on this device yet · finish a game of Chess/.test(c.sum) && c.rows.length === 0 && !H.errors.length && !E.errors.length, JSON.stringify({ a, b, c, errors: H.errors.concat(E.errors) }));
+  }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
     const r = await F.p.evaluate(async () => {

@@ -8,6 +8,7 @@
 import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as R from './chess-rules.js';
+import { finish, minutesSince, load as loadGames, summary, summaryLine } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
 
 export function chessOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -101,8 +102,12 @@ function mount(th, stageApi) {
   }
   function doMove(m) {
     const before = st().s; const label = R.moveLabel(before, m);
+    if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([before]).slice(-60); // take back needs the positions before
     st().s = R.play(before, m); st().moves.push(label); st().sel = -1;
+    // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
+    const code = R.status(st().s);
+    if (R.isOver(code) && !st().logged) { st().logged = true; finish('chess', code === 'checkmate' ? (st().s.turn === 'w' ? 'loss' : 'win') : 'draw', { moves: Math.ceil(st().moves.length / 2), minutes: minutesSince(st().started) }); }
     save(); paint();
   }
   function voidTurn() {
@@ -205,6 +210,8 @@ async function run(text, api) {
 export default {
   name: 'chess',
   chessOf,
+  /** the about card's line (skills/about-skill.js aboutText): what the game is, and your record on this device when there is one */
+  get about() { const sum = summary(loadGames(), { game: 'chess' }); return 'A real wooden chess set on the stage, played against V01D: you are white; tap a piece, then a square. Every rule is in (castling, en passant, promotion, check, mate, the draws).' + (sum.played ? ' Your record against V01D on this device: ' + summaryLine(sum) + '.' : ''); },
   examples: ['play chess', 'chess', 'lets play chess', 'a game of chess', 'play chess against void', 'new chess game', 'start a chess game', '3d chess'],
   nearMisses: ['who invented chess', 'chess rules', 'chess openings', 'magnus carlsen', 'play checkers', 'chess.com'],
   match(lower, text) { return !!chessOf(text); },

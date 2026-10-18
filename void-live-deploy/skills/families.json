@@ -386,7 +386,7 @@
     {
      "name": "chess",
      "tier": "checked",
-     "why": "a self-test, 8 browser-suite mentions",
+     "why": "a self-test, 10 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },
