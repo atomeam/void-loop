@@ -5474,17 +5474,17 @@ try {
     await D.ask('merge a pizza and a black hole', 900);
     const down = await until(async () => { const f = await forged(D); return f && f.title === 'Pizza Singularity' ? f : null; }, 8000); await new Promise((ok) => setTimeout(ok, 600)); const down2 = await forged(D);
     check('V01D art forge: with the route down the card keeps its plate, with no button and no page errors', !!down && !!down2 && down2.plate && !down2.img && !down2.btn && !D.errors.length, JSON.stringify({ down2, errors: D.errors })); await D.ctx.close(); }
-  if (want("V01D cards: a skill that earned a higher rating says so in one quiet line, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
+  if (want("V01D cards: no evolved note on a skill card, and an answer card takes its kind's layout")) { const E = await fresh(); // asked by Void
     await E.ask('20% tip on 45', 1600);
     const name = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.dataset.skill && e.querySelector('.vc-pt') ? e.dataset.skill : ''; }).catch(() => ''), 8000);
     const first = await E.p.evaluate(() => ({ evolving: !!document.querySelector('.vpage.on[data-evolved]'), stored: localStorage.getItem('a2m.void.tiers.v1') }));
     await E.p.evaluate((n) => { localStorage.setItem('a2m.void.tiers.v1', JSON.stringify({ [n]: 'experiment' })); }, name);
     await E.ask('close', 500); await E.ask('20% tip on 45', 1600);
-    const up = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on[data-evolved]'); const n = e && e.querySelector('.vc-evolved-note'); return e && n ? { to: e.dataset.evolved, note: n.textContent || '', anim: getComputedStyle(e).animationName + '|' + getComputedStyle(n).animationName, bg: getComputedStyle(n).backgroundImage, color: getComputedStyle(n).color } : null; }).catch(() => null), 6000);
+    await new Promise((ok) => setTimeout(ok, 800)); const up = await E.p.evaluate(() => ({ evolved: !!document.querySelector('.vpage.on[data-evolved]'), note: !!document.querySelector('.vc-evolved-note') })); // owner, 2026-10-18: "get rid of the evolved stuff"
     await E.ask('close', 500); await E.ask('tell me about the ocean', 1800);
     const an = await until(async () => E.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && e.querySelector('.vc-type') && !e.dataset.skill ? { kind: e.dataset.kind || '', type: e.querySelector('.vc-type').innerText.split(/[\s\u2014]/)[0].toLowerCase() } : null; }).catch(() => null), 8000);
-    check('V01D cards: a first sight of a skill does not evolve it, but a skill whose remembered rating was lower says so once in one quiet line ("Evolved: ... -> ...": no glow, no animation, no gradient) and is remembered at its new rating; an answer card carries its kind (data-kind) so its layout can differ',
-      !!name && first.evolving === false && !!up && /^(Uncommon|Rare|Mythic)$/.test(up.to) && /^Evolved: Common/.test(up.note) && /\|none$/.test(up.anim) && !/vc-evolve/.test(up.anim) && up.bg === 'none' && !/255, 210, 122|255, 154, 213/.test(up.color) && !!an && an.kind === an.type && !E.errors.length,
+    check('V01D cards: a skill whose remembered rating was lower shows no "Evolved" note and no evolve marker (owner: get rid of the evolved stuff); an answer card takes its kind\'s layout',
+      !!name && first.evolving === false && !!up && !up.evolved && !up.note && !!an && an.kind === an.type && !E.errors.length,
       JSON.stringify({ name, first, up, an, errors: E.errors }));
     await E.ctx.close(); }
   if (want("type filter: show only one kind of thing on the stage, then all of them again")) { const T = await fresh(); // asked by Void

@@ -117,9 +117,6 @@ export const CARD_CSS = [
   // a very long answer is an accordion (lib/card-sections.js): the first section open, the rest behind one-line summaries; the text stays in the page
   '.vcard .vc-sec{margin:6px 18px 0;border:1px solid hsl(var(--h) 25% 28%);border-radius:6px}.vcard .vc-sec-head{display:block;width:100%;text-align:left;font:inherit;font-size:13px;font-weight:600;color:hsl(var(--h) 40% 84%);background:hsl(var(--h) 22% 14%);border:0;border-radius:6px;padding:8px 12px 8px 30px;cursor:pointer;position:relative}',
   '.vcard .vc-sec-head::before{content:"\\25B8";position:absolute;left:11px;top:8px;transition:none}.vcard .vc-sec-head[aria-expanded=true]::before{content:"\\25BE"}.vcard .vc-sec-head:focus-visible{outline:2px solid hsl(var(--h) 70% 70%);outline-offset:1px}.vcard .vc-sec-body{padding:6px 12px 2px}.vcard .vc-sec-body>*{margin-left:0!important;margin-right:0!important}',
-  // a skill that just earned a higher rating says so in one quiet line in the card's own metadata ink (asked by Void: lib/card-frame.js evolved()); it never glows or moves
-  // (owner, 2026-10-18: "get rid of the distracting evolve stuff": no badge, no gradient, no animation)
-  '.vc-evolved-note{margin:6px 12px 0;text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:hsl(var(--h) 30% 72%);background:none;animation:none}',
   // a film with a real poster (owner, 2026-10-18): a clean two-column card. The poster keeps its own portrait shape on the left (never cropped or stretched,
   // a thin ink edge); the title, type line and the rest of the card stack to its right. Narrow screens centre the poster above the rest.
   '.vpage.vcard[data-poster]{display:grid!important;grid-template-columns:228px minmax(0,1fr);align-content:start}.vpage.vcard[data-poster]>*{grid-column:2}.vpage.vcard[data-poster]>.vread{grid-column:auto}',
@@ -237,12 +234,7 @@ export function keep(el, esc, stats) {
   forge(el, c, !!photo); // the Art Forge (lib/card-forge.js): painted art for an answer or merged card, or a "paint this card" button
   accordion(el); // a very long body: sections behind one-line summaries
   shareBar(el); // copy card / save card (lib/card-share.js)
-  const up = name && c.rarity ? noteTier(name, (lookup(stats, name).skill || {}).tier) : null; // a rating that rose since this browser last saw the skill
-  if (up) {
-    el.dataset.evolved = up.to;
-    const note = document.createElement('div'); note.className = 'vc-evolved-note'; note.textContent = 'Evolved: ' + up.from + ' \u2192 ' + up.to; // one quiet static line, no glow
-    const at = el.querySelector(':scope > .vc-type'); if (at) at.after(note);
-  }
+  // no "Evolved" note on cards any more (owner, 2026-10-18: "get rid of the evolved stuff"); evolved() and noteTier() stay for the ratings
 }
 
 /** a body past 3,000 characters becomes an accordion (lib/card-sections.js decides the cut). Every node stays in the page, so copy card and save text keep it all. Never throws. */
