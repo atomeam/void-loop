@@ -2,31 +2,13 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:37:46.291Z",
-   "sha": "523238b265335559b0a085e4afa0c29b6c85d230",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111884599",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "tools/bench.json",
-    "domains/void.frontier.md",
-    "tools/checks.mjs",
-    "tools/family-logs.test.mjs",
-    "void-live-deploy/skills/growth.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T08:31:51.736Z",
+   "at": "2026-10-18T08:38:20.299Z",
    "sha": "ecde9c7a12fc5ee423d0bd1ba98798037ab7ae6c",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39111158116",
    "suite": "browser suite on main",
    "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "domains/void.agents.log.md",
@@ -732,6 +714,34 @@
     "tools/site-test.json",
     "tools/site-test.log.json",
     "tools/site-test.seen.json"
+   ]
+  },
+  {
+   "at": "2026-10-17T21:32:09.232Z",
+   "sha": "bd24a1a092dce69345452966453f0cb0c620f9b1",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39070065218",
+   "suite": "browser suite on main",
+   "checks": [
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
+    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/asks-link.json",
+    "tools/card-image.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/card-forge.js",
+    "void-live-deploy/skills/event-countdown.js",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   }
  ]
