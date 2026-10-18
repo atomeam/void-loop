@@ -90,8 +90,10 @@ export function layoutFace(page, book, side, measure) {
     footer(); return out;
   }
   if (page.kind === 'opener') {
-    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40; t(page.title, x0, y, '700 32px ' + SERIF, INK); y += 16;
-    ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - 80, y: y + 6, size: 160 }); y += 190;
+    // a long chapter title wraps to two lines and the glyph gives up the room, so the page keeps its height ("Safety and small delights" ran off the sheet)
+    const tl = wrap(page.title, '700 32px ' + SERIF, w, measure, 2), extra = (tl.length - 1) * 38;
+    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40; for (const [i, l] of tl.entries()) t(l, x0, y + i * 38, '700 32px ' + SERIF, INK); y += 16 + extra;
+    ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - (160 - extra) / 2, y: y + 6, size: 160 - extra }); y += 190 - extra;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 4)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const n = (page.skills || []).length;
     t(n + (page.chapter === 'minis' ? ' miniatures' : ' skills') + (chap.from ? ' · pages ' + chap.from + '–' + chap.to : ''), x0 + w / 2, y + 8, '13px ' + SANS, SOFT, 'center');

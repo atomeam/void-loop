@@ -28,9 +28,9 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 19,
-   "direct": 2,
-   "dependants": 38
+   "skills": 20,
+   "direct": 3,
+   "dependants": 39
   },
   {
    "file": "lib/field-kit.js",
@@ -4636,6 +4636,7 @@
     "lib/ladder.js",
     "lib/match-history.js",
     "lib/stage-pack-c.js",
+    "skills/memory-graph.js",
     "skills/memory.js",
     "skills/state.js"
    ],
@@ -6334,9 +6335,11 @@
   },
   "skills/memory-graph.js": {
    "imports": [
+    "lib/state.js",
     "lib/memory-graph.js"
    ],
    "external": [
+    ", { headers: { authorization: ",
     " takes it away again.</p>"
    ],
    "importedBy": []
