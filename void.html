@@ -4170,7 +4170,9 @@ say('nothing selected to remove');
     }
     async function firstSkill(lower0, text, deadline) {
       // long pasted prose: only the skills made for long text may take it (a status paste that mentions "air quality" is not a city)
-      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
+      // skills eclipsed on this device (skills/skill-eclipse.js, lib/eclipse.js): hidden from routing until their time passes; the eclipse, guide, status and stage skills are never hidden; a family skill (lib/skill-family.js) is skipped when the member that would answer is hidden
+      let ecl = null; try { const now = Date.now(); const l = JSON.parse(localStorage.getItem('a2m.void.eclipse.v1') || '[]'); ecl = new Set(l.filter((e) => e && e.until > now && Array.isArray(e.names)).flatMap((e) => e.names)); for (const k of ['skill-eclipse', 'guide', 'status', 'stage']) ecl.delete(k); } catch (_) { ecl = null; }
+      const prose = !!(askText && askText.isLongProse(text)), fits = (sk) => !(ecl && (ecl.has(sk.name) || (sk.member && (() => { const m = sk.member(lower0, text); return !!m && ecl.has(m.name); })()))) && sk.match(lower0, text) && (!prose || askText.LONG_OK.has(sk.name));
       if (skillsLoaded || !skillSlots) return learnedSkills.find(fits) || null;
       for (const slot of skillSlots) {
         const skill = slot.done ? slot.skill : await Promise.race([slot.p, new Promise((r) => setTimeout(() => r(null), Math.max(0, deadline - Date.now())))]);
@@ -5439,18 +5441,18 @@ say('nothing selected to remove');
       return words.length && words.every((w) => hl.includes(w)) ? 1 : 0;
     }
     const ASKS_KEY = 'a2m.void.asks.v1';
-    function recentAsks() {
+    function recentAsks(n = 5) { // the box shows the newest 5; 12 are kept for the ask clipboard card (skills/ask-clipboard.js)
       try {
         const raw = JSON.parse(localStorage.getItem(ASKS_KEY) || '[]');
-        return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, 5) : [];
+        return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, n) : [];
       } catch (_) { return []; }
     }
     function rememberAsk(text) {
       const t = String(text || '').trim().slice(0, 240);
       if (!t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return;
       try {
-        const prev = recentAsks().filter((s) => s.toLowerCase() !== t.toLowerCase());
-        localStorage.setItem(ASKS_KEY, JSON.stringify([t].concat(prev).slice(0, 5)));
+        const prev = recentAsks(12).filter((s) => s.toLowerCase() !== t.toLowerCase());
+        localStorage.setItem(ASKS_KEY, JSON.stringify([t].concat(prev).slice(0, 12)));
       } catch (_) {}
     }
     let askBoxTouched = false;

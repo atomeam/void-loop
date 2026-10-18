@@ -1727,6 +1727,26 @@
       "words": "Add a threshold-based alert to the site tester that flags when the 'idle' period for loading card stats lasts longer than 500ms.",
       "ledgerAt": "2026-10-17T21:16:55Z",
       "why": "built: void.html measures card-stats-idle (performance.measure from the idle wait to the stats load); tools/site-test.mjs flags a wait over limits.statsIdleMs (500) on the case line, a note, never a failure"
+    },
+    {
+      "words": "Create a system to automatically turn the 'daily miss list' into queued jobs for autonomous skill learning.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "already runs: learn.yml sweeps the miss board daily (tools/learn.mjs, lib/learn.js plan) and the top 3 become miss: jobs, never past OPEN_MAX; it now also never queues a word every source was read for and none knew"
+    },
+    {
+      "ask": "ask-20261017-2029-3",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "the daily miss list already becomes miss: jobs (learn.yml, tools/learn.mjs); see the entry's words"
+    },
+    {
+      "words": "Turn my daily miss list into an automatic queue so the top unanswered asks become 'build a skill for X' jobs that builders can pick up.",
+      "ledgerAt": "2026-10-13T16:10:28Z",
+      "why": "the same ask as above, in its will wording: learn.yml + lib/learn.js plan(), tested with numbers in tools/learn.test.mjs"
+    },
+    {
+      "words": "Convert my old parts into long-running 'do this for me' tasks that include approval cards, letting past iterations keep working even when the owner is away.",
+      "ledgerAt": "2026-10-16T23:28:18Z",
+      "why": "the approval-card bridge exists: 'keep <automation> running every 2 hours' on the confirm line puts a rule on the clock with nobody here, every step an action record (lib/keep-going.js). Turning a saved routine or forge iteration into such a task needs a server-side runner and is not built"
     }
   ]
 }

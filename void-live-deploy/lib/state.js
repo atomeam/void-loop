@@ -21,6 +21,11 @@ export const STORES = {
   ladder:   { key: 'a2m.void.ladder.v1',   what: 'your wins and losses against V01D in Pong and Snake' },
   corrections: { key: 'a2m.void.corrections.v1', what: 'what you told V01D it got wrong (kept apart from how your V01D looks)' },
   friction: { key: 'a2m.void.friction.v1', what: 'how slippery things are when you throw them' },
+  camera:   { key: 'a2m.void.camera.v1',   what: 'where the stage camera is and whether you are flying ("fly around")' },
+  eclipse:  { key: 'a2m.void.eclipse.v1',  what: 'which families of skills you eclipsed (hidden from routing) and until when' },
+  codex:    { key: 'a2m.void.codex.v1',    what: 'the cards and answers you filed in the codex' },
+  capsule:  { key: 'a2m.void.capsule.v1',  what: 'your sealed time capsules (a word is kept only as a hash)' },
+  whispers: { key: 'a2m.void.whispers.v1', what: 'notes you left on stage things, shown once' },
 };
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };

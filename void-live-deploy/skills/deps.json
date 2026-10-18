@@ -1,24 +1,66 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 495,
+ "counted": 592,
  "libs": [
   {
+   "file": "lib/stage-pack.js",
+   "skills": 32,
+   "direct": 32,
+   "dependants": 32
+  },
+  {
    "file": "lib/ask-text.js",
-   "skills": 25,
+   "skills": 31,
    "direct": 23,
-   "dependants": 26
+   "dependants": 33
+  },
+  {
+   "file": "lib/field-kit.js",
+   "skills": 19,
+   "direct": 2,
+   "dependants": 33
+  },
+  {
+   "file": "lib/state.js",
+   "skills": 13,
+   "direct": 2,
+   "dependants": 28
   },
   {
    "file": "lib/sky-math.js",
-   "skills": 12,
+   "skills": 13,
    "direct": 2,
-   "dependants": 17
+   "dependants": 18
   },
   {
    "file": "lib/astro.js",
+   "skills": 10,
+   "direct": 9,
+   "dependants": 11
+  },
+  {
+   "file": "lib/rule-registry.js",
    "skills": 9,
-   "direct": 8,
-   "dependants": 10
+   "direct": 0,
+   "dependants": 31
+  },
+  {
+   "file": "lib/guide.js",
+   "skills": 9,
+   "direct": 1,
+   "dependants": 30
+  },
+  {
+   "file": "lib/card-subject.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 29
+  },
+  {
+   "file": "lib/card-art.js",
+   "skills": 9,
+   "direct": 0,
+   "dependants": 27
   },
   {
    "file": "lib/skyfacts.js",
@@ -27,16 +69,22 @@
    "dependants": 9
   },
   {
-   "file": "lib/state.js",
-   "skills": 8,
-   "direct": 2,
-   "dependants": 21
-  },
-  {
    "file": "lib/rts.js",
    "skills": 8,
    "direct": 3,
    "dependants": 10
+  },
+  {
+   "file": "lib/skyask.js",
+   "skills": 8,
+   "direct": 7,
+   "dependants": 8
+  },
+  {
+   "file": "lib/stage-pack-h.js",
+   "skills": 8,
+   "direct": 8,
+   "dependants": 8
   },
   {
    "file": "lib/where.js",
@@ -45,34 +93,10 @@
    "dependants": 8
   },
   {
-   "file": "lib/rule-registry.js",
+   "file": "lib/bridges.js",
    "skills": 7,
-   "direct": 0,
-   "dependants": 29
-  },
-  {
-   "file": "lib/guide.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 28
-  },
-  {
-   "file": "lib/card-subject.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 27
-  },
-  {
-   "file": "lib/card-art.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 25
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 16
+   "direct": 4,
+   "dependants": 9
   },
   {
    "file": "lib/field-stage.js",
@@ -81,22 +105,10 @@
    "dependants": 7
   },
   {
-   "file": "lib/skyask.js",
-   "skills": 7,
-   "direct": 6,
-   "dependants": 7
-  },
-  {
    "file": "lib/ladder.js",
    "skills": 6,
    "direct": 3,
    "dependants": 18
-  },
-  {
-   "file": "lib/bridges.js",
-   "skills": 6,
-   "direct": 3,
-   "dependants": 8
   },
   {
    "file": "lib/field-worker.js",
@@ -117,10 +129,40 @@
    "dependants": 18
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 5,
+   "direct": 0,
+   "dependants": 18
+  },
+  {
    "file": "lib/autopsy.js",
    "skills": 5,
    "direct": 2,
    "dependants": 17
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 13
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 5,
+   "direct": 0,
+   "dependants": 11
+  },
+  {
+   "file": "lib/card-image.js",
+   "skills": 5,
+   "direct": 1,
+   "dependants": 8
+  },
+  {
+   "file": "lib/card-share.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 7
   },
   {
    "file": "lib/hero-view.js",
@@ -138,6 +180,24 @@
    "file": "lib/observations.js",
    "skills": 5,
    "direct": 2,
+   "dependants": 5
+  },
+  {
+   "file": "lib/opposite-era.js",
+   "skills": 5,
+   "direct": 5,
+   "dependants": 5
+  },
+  {
+   "file": "lib/pulse.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 5
+  },
+  {
+   "file": "lib/stage-pack-i.js",
+   "skills": 5,
+   "direct": 5,
    "dependants": 5
   },
   {
@@ -159,28 +219,34 @@
    "dependants": 16
   },
   {
+   "file": "lib/card-forge.js",
+   "skills": 4,
+   "direct": 1,
+   "dependants": 6
+  },
+  {
+   "file": "lib/stage-math.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
+  },
+  {
+   "file": "lib/stage-pack-c.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
+  },
+  {
+   "file": "lib/stage-words.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
+  },
+  {
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
    "dependants": 4
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 16
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 3,
-   "direct": 1,
-   "dependants": 11
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 3,
-   "direct": 0,
-   "dependants": 9
   },
   {
    "file": "lib/movies.js",
@@ -189,27 +255,39 @@
    "dependants": 7
   },
   {
-   "file": "lib/card-image.js",
+   "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
    "dependants": 6
   },
   {
-   "file": "lib/card-forge.js",
+   "file": "lib/art-meta.js",
    "skills": 3,
-   "direct": 1,
+   "direct": 0,
    "dependants": 5
   },
   {
-   "file": "lib/card-share.js",
+   "file": "lib/card-kinds.js",
    "skills": 3,
-   "direct": 1,
+   "direct": 0,
+   "dependants": 5
+  },
+  {
+   "file": "lib/void-seal.js",
+   "skills": 3,
+   "direct": 0,
    "dependants": 5
   },
   {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
+   "dependants": 4
+  },
+  {
+   "file": "lib/card-frame.js",
+   "skills": 3,
+   "direct": 3,
    "dependants": 4
   },
   {
@@ -243,27 +321,15 @@
    "dependants": 5
   },
   {
-   "file": "lib/art-meta.js",
+   "file": "lib/reactions.js",
    "skills": 2,
-   "direct": 0,
+   "direct": 1,
    "dependants": 4
   },
   {
-   "file": "lib/card-kinds.js",
+   "file": "lib/date-math.js",
    "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/void-seal.js",
-   "skills": 2,
-   "direct": 0,
-   "dependants": 4
-  },
-  {
-   "file": "lib/card-frame.js",
-   "skills": 2,
-   "direct": 2,
+   "direct": 1,
    "dependants": 3
   },
   {
@@ -297,15 +363,21 @@
    "dependants": 2
   },
   {
+   "file": "lib/field-cards.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
    "dependants": 2
   },
   {
-   "file": "lib/pulse.js",
+   "file": "lib/reaction-bar.js",
    "skills": 2,
-   "direct": 2,
+   "direct": 1,
    "dependants": 2
   },
   {
@@ -313,6 +385,12 @@
    "skills": 2,
    "direct": 2,
    "dependants": 2
+  },
+  {
+   "file": "lib/actions.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 22
   },
   {
    "file": "lib/gumroad.js",
@@ -375,6 +453,18 @@
    "dependants": 8
   },
   {
+   "file": "lib/noise.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/learn.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3
+  },
+  {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
@@ -429,7 +519,37 @@
    "dependants": 1
   },
   {
+   "file": "lib/contradict.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/council-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/date-ask.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/day-blocks.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/duel-rules.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/eclipse.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -442,12 +562,6 @@
   },
   {
    "file": "lib/field-attention.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/field-cards.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -483,7 +597,19 @@
    "dependants": 1
   },
   {
+   "file": "lib/health-habits.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/heat-dose.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/linediff.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -531,6 +657,24 @@
    "dependants": 1
   },
   {
+   "file": "lib/stage-camera.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/stigmergy-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/tasks.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/taste.js",
    "skills": 1,
    "direct": 1,
@@ -538,6 +682,24 @@
   },
   {
    "file": "lib/technical-context.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/template-list.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/term-orbits-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/time-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -561,10 +723,22 @@
    "dependants": 1
   },
   {
+   "file": "lib/writing-aids.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/zorbleflux.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 42
+   "dependants": 43
   },
   {
    "file": "lib/models.js",
@@ -589,12 +763,6 @@
    "skills": 0,
    "direct": 0,
    "dependants": 23
-  },
-  {
-   "file": "lib/actions.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 21
   },
   {
    "file": "lib/code-review.js",
@@ -723,12 +891,6 @@
    "dependants": 5
   },
   {
-   "file": "lib/noise.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 5
-  },
-  {
    "file": "lib/film-reviews.js",
    "skills": 0,
    "direct": 0,
@@ -754,12 +916,6 @@
   },
   {
    "file": "lib/keep-going.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
-  },
-  {
-   "file": "lib/learn.js",
    "skills": 0,
    "direct": 0,
    "dependants": 2
@@ -1292,6 +1448,13 @@
    ],
    "importedBy": []
   },
+  "functions/api/react.js": {
+   "imports": [
+    "lib/guard.js",
+    "lib/reactions.js"
+   ],
+   "importedBy": []
+  },
   "functions/api/reflect.js": {
    "imports": [
     "lib/guard.js",
@@ -1480,7 +1643,8 @@
     "functions/api/gumroad.js",
     "functions/api/hook/[id].js",
     "functions/api/miss.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
    ]
   },
   "lib/alt-pay.js": {
@@ -1558,6 +1722,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1577,12 +1742,15 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/ask-text.js": {
    "imports": [],
    "importedBy": [
+    "lib/stage-pack-c.js",
     "skills/cartoon.js",
     "skills/coral.js",
     "skills/dark-look.js",
@@ -1608,9 +1776,15 @@
     "skills/zoom-figure.js"
    ],
    "reachedBy": [
+    "skills/codex.js",
+    "skills/constellation-weaver.js",
     "skills/dates.js",
+    "skills/echo-chamber.js",
+    "skills/forge-table.js",
     "skills/mini/pentamote.js",
-    "skills/pulse.js"
+    "skills/pulse.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
    ]
   },
   "lib/astro.js": {
@@ -1624,6 +1798,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/sky-world.js",
     "skills/sky.js",
     "skills/suntimes.js"
@@ -1810,6 +1985,7 @@
     "lib/arena-say.js",
     "skills/kept.js",
     "skills/list.js",
+    "skills/spectators.js",
     "skills/together.js"
    ],
    "reachedBy": [
@@ -1846,11 +2022,13 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -1865,6 +2043,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1882,6 +2061,7 @@
    "importedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1898,7 +2078,9 @@
     "lib/card-frame.js",
     "lib/duel-rules.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/card-kinds.js": {
@@ -1909,6 +2091,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1918,11 +2101,13 @@
    ],
    "importedBy": [
     "lib/card-frame.js",
-    "skills/collectible.js"
+    "skills/collectible.js",
+    "skills/oracle.js"
    ],
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -1952,11 +2137,13 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -2032,6 +2219,12 @@
     "skills/tab.js"
    ]
   },
+  "lib/contradict.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/contradiction-lamp.js"
+   ]
+  },
   "lib/cook-flow.js": {
    "imports": [],
    "importedBy": [
@@ -2080,6 +2273,53 @@
     "skills/incident-autopsy.js",
     "skills/mini/growthtree.js",
     "skills/showcase.js"
+   ]
+  },
+  "lib/council-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/veto-council.js"
+   ]
+  },
+  "lib/date-ask.js": {
+   "imports": [
+    "lib/date-math.js"
+   ],
+   "importedBy": [
+    "skills/date-calc.js"
+   ]
+  },
+  "lib/date-math.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/date-ask.js",
+    "skills/date-grid.js"
+   ],
+   "reachedBy": [
+    "skills/date-calc.js"
+   ]
+  },
+  "lib/date-words.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/day-blocks.js",
+    "lib/tasks.js",
+    "lib/time-math.js",
+    "skills/time-math.js"
+   ],
+   "reachedBy": [
+    "skills/busy-blocks.js",
+    "skills/task-board.js"
+   ]
+  },
+  "lib/day-blocks.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/busy-blocks.js"
    ]
   },
   "lib/digest.js": {
@@ -2142,6 +2382,14 @@
     "lib/clef.js"
    ]
   },
+  "lib/eclipse.js": {
+   "imports": [
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/skill-eclipse.js"
+   ]
+  },
   "lib/eclipses.js": {
    "imports": [],
    "importedBy": [
@@ -2176,6 +2424,7 @@
     "lib/field-kit.js"
    ],
    "importedBy": [
+    "skills/family-gravity.js",
     "skills/living-cards-mind.js"
    ]
   },
@@ -2190,6 +2439,7 @@
   "lib/field-kit.js": {
    "imports": [],
    "importedBy": [
+    "lib/council-law.js",
     "lib/field-attention.js",
     "lib/field-cards.js",
     "lib/field-flow.js",
@@ -2197,17 +2447,33 @@
     "lib/field-resonance.js",
     "lib/field-stage.js",
     "lib/field-swarm.js",
-    "lib/field-vector.js"
+    "lib/field-vector.js",
+    "lib/opposite-era.js",
+    "lib/stigmergy-law.js",
+    "lib/term-orbits-law.js",
+    "lib/zorbleflux.js",
+    "skills/crowd.js",
+    "skills/feud.js"
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
     "skills/attention-field-mind.js",
+    "skills/extinction.js",
+    "skills/family-gravity.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/mutate.js",
     "skills/nca-mind.js",
+    "skills/overload.js",
     "skills/resonance-mind.js",
+    "skills/riot.js",
+    "skills/stigmergy-board.js",
+    "skills/sudden-death.js",
     "skills/swarm-mind.js",
-    "skills/vector-field-mind.js"
+    "skills/term-orbits.js",
+    "skills/vector-field-mind.js",
+    "skills/veto-council.js",
+    "skills/zorbleflux.js"
    ]
   },
   "lib/field-nca.js": {
@@ -2330,6 +2596,7 @@
     "functions/api/probe-log.js",
     "functions/api/propose-fix.js",
     "functions/api/queue.js",
+    "functions/api/react.js",
     "functions/api/reflect.js",
     "functions/api/rehearsal.js",
     "functions/api/review.js",
@@ -2391,10 +2658,12 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/merge.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -2422,6 +2691,12 @@
     "functions/films/rss.js",
     "lib/paid-access.js",
     "lib/products.js"
+   ]
+  },
+  "lib/health-habits.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/health-habits.js"
    ]
   },
   "lib/heat-dose.js": {
@@ -2511,7 +2786,9 @@
     "lib/duel-rules.js",
     "skills/collectible.js",
     "skills/duel.js",
-    "skills/merge.js"
+    "skills/forge-table.js",
+    "skills/merge.js",
+    "skills/oracle.js"
    ]
   },
   "lib/ladder.js": {
@@ -2548,7 +2825,14 @@
    ],
    "importedBy": [
     "functions/api/miss.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
+   ]
+  },
+  "lib/linediff.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/ask-diff.js"
    ]
   },
   "lib/mcp-skills.js": {
@@ -2638,7 +2922,9 @@
     "lib/card-share.js",
     "lib/duel-rules.js",
     "skills/collectible.js",
-    "skills/duel.js"
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/oracle.js"
    ]
   },
   "lib/misskey.js": {
@@ -2724,7 +3010,8 @@
    ],
    "reachedBy": [
     "functions/api/probe-asks.js",
-    "lib/refusal.js"
+    "lib/refusal.js",
+    "skills/miss-jobs.js"
    ]
   },
   "lib/observations.js": {
@@ -2737,6 +3024,18 @@
     "skills/challenge.js",
     "skills/goal.js",
     "skills/quiz.js"
+   ]
+  },
+  "lib/opposite-era.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/extinction.js",
+    "skills/mutate.js",
+    "skills/overload.js",
+    "skills/riot.js",
+    "skills/sudden-death.js"
    ]
   },
   "lib/page-picture.js": {
@@ -3048,11 +3347,38 @@
    "importedBy": [
     "skills/label.js",
     "skills/pulse.js"
+   ],
+   "reachedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
    ]
   },
   "lib/rating-note.js": {
    "imports": [],
    "importedBy": []
+  },
+  "lib/reaction-bar.js": {
+   "imports": [
+    "lib/reactions.js"
+   ],
+   "importedBy": [
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "skills/guide.js"
+   ]
+  },
+  "lib/reactions.js": {
+   "imports": [],
+   "importedBy": [
+    "functions/api/react.js",
+    "lib/reaction-bar.js",
+    "skills/showcase.js"
+   ],
+   "reachedBy": [
+    "skills/guide.js"
+   ]
   },
   "lib/reefwatch.js": {
    "imports": [],
@@ -3194,12 +3520,14 @@
     "lib/voice.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/merge.js",
     "skills/mini/book.js",
     "skills/mini/growthtree.js",
+    "skills/oracle.js",
     "skills/showcase.js"
    ]
   },
@@ -3376,6 +3704,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/sky-card.js",
     "skills/sky-world.js",
     "skills/sky.js",
@@ -3391,6 +3720,7 @@
     "skills/eclipse.js",
     "skills/meteors.js",
     "skills/moontonight.js",
+    "skills/night-ritual.js",
     "skills/suntimes.js"
    ],
    "reachedBy": [
@@ -3419,6 +3749,102 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/stage-camera.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/fly.js"
+   ]
+  },
+  "lib/stage-math.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gauge-feedback.js",
+    "skills/sheaf-check.js",
+    "skills/spectral-review.js",
+    "skills/task-diagram.js"
+   ]
+  },
+  "lib/stage-pack-c.js": {
+   "imports": [
+    "lib/ask-text.js",
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/codex.js",
+    "skills/echo-chamber.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
+   ]
+  },
+  "lib/stage-pack-h.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/certainty-budget.js",
+    "skills/draft-triad.js",
+    "skills/echo-disagrees.js",
+    "skills/interrupt-priority.js",
+    "skills/near-choir.js",
+    "skills/negative-summons.js",
+    "skills/partial-answer.js",
+    "skills/stale-work.js"
+   ]
+  },
+  "lib/stage-pack-i.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/certainty-budget.js",
+    "skills/draft-triad.js",
+    "skills/interrupt-priority.js",
+    "skills/partial-answer.js",
+    "skills/stale-work.js"
+   ]
+  },
+  "lib/stage-pack.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/anneal-ambition.js",
+    "skills/ask-clipboard.js",
+    "skills/ask-immune.js",
+    "skills/busy-blocks.js",
+    "skills/causal-scars.js",
+    "skills/counterfactual-draft.js",
+    "skills/date-calc.js",
+    "skills/date-grid.js",
+    "skills/decision-matrix.js",
+    "skills/eigenwork.js",
+    "skills/error-garden.js",
+    "skills/four-channels.js",
+    "skills/gauge-feedback.js",
+    "skills/habit-ring.js",
+    "skills/health-habits.js",
+    "skills/homotopy-edit.js",
+    "skills/hunting-question.js",
+    "skills/idea-certificate.js",
+    "skills/minimap.js",
+    "skills/noun-heat.js",
+    "skills/plan-stability.js",
+    "skills/recipe-stack.js",
+    "skills/sheaf-check.js",
+    "skills/spectral-review.js",
+    "skills/stakes-phase.js",
+    "skills/stale-work.js",
+    "skills/task-board.js",
+    "skills/task-diagram.js",
+    "skills/template-list.js",
+    "skills/time-math.js",
+    "skills/witness-claims.js",
+    "skills/writing-aids.js"
+   ]
+  },
+  "lib/stage-words.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/error-garden.js",
+    "skills/hunting-question.js",
+    "skills/idea-certificate.js",
+    "skills/noun-heat.js"
+   ]
+  },
   "lib/stale-tab.js": {
    "imports": [],
    "importedBy": []
@@ -3437,7 +3863,9 @@
   "lib/state.js": {
    "imports": [],
    "importedBy": [
+    "lib/eclipse.js",
     "lib/ladder.js",
+    "lib/stage-pack-c.js",
     "skills/memory.js",
     "skills/state.js"
    ],
@@ -3453,13 +3881,26 @@
     "lib/bench-asks.js",
     "lib/self-context.js",
     "lib/voice.js",
+    "skills/codex.js",
+    "skills/echo-chamber.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/pong.js",
     "skills/showcase.js",
-    "skills/snake.js"
+    "skills/skill-eclipse.js",
+    "skills/snake.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
+   ]
+  },
+  "lib/stigmergy-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/stigmergy-board.js"
    ]
   },
   "lib/store-db.js": {
@@ -3533,6 +3974,14 @@
     "skills/status.js"
    ]
   },
+  "lib/tasks.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/task-board.js"
+   ]
+  },
   "lib/taste.js": {
    "imports": [
     "lib/movies.js"
@@ -3545,6 +3994,28 @@
    "imports": [],
    "importedBy": [
     "skills/technical-context.js"
+   ]
+  },
+  "lib/template-list.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/template-list.js"
+   ]
+  },
+  "lib/term-orbits-law.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/term-orbits.js"
+   ]
+  },
+  "lib/time-math.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/time-math.js"
    ]
   },
   "lib/tome-search.js": {
@@ -3649,6 +4120,7 @@
    "reachedBy": [
     "lib/duel-rules.js",
     "skills/duel.js",
+    "skills/forge-table.js",
     "skills/merge.js"
    ]
   },
@@ -3721,6 +4193,22 @@
     "skills/time.js"
    ]
   },
+  "lib/writing-aids.js": {
+   "imports": [
+    "skills/util.js"
+   ],
+   "importedBy": [
+    "skills/writing-aids.js"
+   ]
+  },
+  "lib/zorbleflux.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/zorbleflux.js"
+   ]
+  },
   "skills/actions.js": {
    "imports": [
     "skills/live.js"
@@ -3742,6 +4230,12 @@
     "skills/time.js"
    ]
   },
+  "skills/anneal-ambition.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/app.js": {
    "imports": [],
    "importedBy": []
@@ -3757,8 +4251,34 @@
    "imports": [],
    "importedBy": [
     "skills/pong.js",
-    "skills/snake.js"
+    "skills/snake.js",
+    "skills/zorbleflux.js"
    ]
+  },
+  "skills/archive-of-one.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/forge-table.js"
+   ]
+  },
+  "skills/ask-clipboard.js": {
+   "imports": [
+    "skills/recent.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/ask-diff.js": {
+   "imports": [
+    "lib/linediff.js"
+   ],
+   "importedBy": []
+  },
+  "skills/ask-immune.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/attention-field-mind.js": {
    "imports": [
@@ -3832,6 +4352,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/busy-blocks.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/day-blocks.js"
+   ],
+   "importedBy": []
+  },
   "skills/calc.js": {
    "imports": [],
    "importedBy": []
@@ -3857,6 +4384,19 @@
   "skills/cartoon.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/causal-scars.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/certainty-budget.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
@@ -3927,6 +4467,12 @@
     "skills/time.js"
    ]
   },
+  "skills/codex.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
   "skills/collectible.js": {
    "imports": [
     "lib/card-share.js",
@@ -3960,6 +4506,12 @@
     "skills/games.js"
    ]
   },
+  "skills/constellation-weaver.js": {
+   "imports": [
+    "skills/label.js"
+   ],
+   "importedBy": []
+  },
   "skills/constellation.js": {
    "imports": [
     "lib/astro.js",
@@ -3971,6 +4523,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/contradiction-lamp.js": {
+   "imports": [
+    "lib/contradict.js"
+   ],
+   "importedBy": []
   },
   "skills/convert.js": {
    "imports": [],
@@ -3996,9 +4554,21 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/counterfactual-draft.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/country.js": {
    "imports": [
     "skills/distance.js"
+   ],
+   "importedBy": []
+  },
+  "skills/crowd.js": {
+   "imports": [
+    "lib/field-kit.js"
    ],
    "importedBy": []
   },
@@ -4009,6 +4579,20 @@
   "skills/dark-look.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-calc.js": {
+   "imports": [
+    "lib/date-ask.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/date-grid.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/date-math.js"
    ],
    "importedBy": []
   },
@@ -4029,6 +4613,18 @@
   "skills/deadlines.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/decision-matrix.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/deep-work.js": {
+   "imports": [
+    "skills/type-filter.js"
    ],
    "importedBy": []
   },
@@ -4060,6 +4656,13 @@
     "skills/country.js"
    ]
   },
+  "skills/draft-triad.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
   "skills/draw.js": {
    "imports": [
     "skills/scene3d.js",
@@ -4079,6 +4682,18 @@
    ],
    "importedBy": []
   },
+  "skills/echo-chamber.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/echo-disagrees.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
   "skills/eclipse.js": {
    "imports": [
     "lib/astro.js",
@@ -4091,6 +4706,12 @@
     "skills/time.js"
    ]
   },
+  "skills/eigenwork.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/eightball.js": {
    "imports": [
     "skills/side-card.js"
@@ -4099,9 +4720,29 @@
     "skills/games.js"
    ]
   },
+  "skills/error-garden.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
   "skills/event-countdown.js": {
    "imports": [
     "lib/event-date.js"
+   ],
+   "importedBy": []
+  },
+  "skills/extinction.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
+  },
+  "skills/family-gravity.js": {
+   "imports": [
+    "lib/field-cards.js",
+    "skills/type-filter.js"
    ],
    "importedBy": []
   },
@@ -4114,6 +4755,12 @@
   },
   "skills/feelings.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/feud.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
    "importedBy": []
   },
   "skills/figure-can.js": {
@@ -4200,6 +4847,12 @@
    ],
    "importedBy": []
   },
+  "skills/fly.js": {
+   "imports": [
+    "lib/stage-camera.js"
+   ],
+   "importedBy": []
+  },
   "skills/food.js": {
    "imports": [],
    "importedBy": []
@@ -4222,11 +4875,26 @@
     "skills/ringer.js"
    ]
   },
+  "skills/forge-table.js": {
+   "imports": [
+    "skills/label.js",
+    "skills/merge.js",
+    "lib/card-frame.js",
+    "skills/archive-of-one.js"
+   ],
+   "importedBy": []
+  },
   "skills/forge.js": {
    "imports": [
     "skills/forge-rules.js",
     "lib/prints.js",
     "lib/forge-makes.js"
+   ],
+   "importedBy": []
+  },
+  "skills/four-channels.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
@@ -4278,6 +4946,13 @@
     "skills/fireworks.js",
     "skills/rack.js",
     "skills/eightball.js"
+   ],
+   "importedBy": []
+  },
+  "skills/gauge-feedback.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
    ],
    "importedBy": []
   },
@@ -4423,6 +5098,19 @@
    ],
    "importedBy": []
   },
+  "skills/habit-ring.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/health-habits.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/health-habits.js"
+   ],
+   "importedBy": []
+  },
   "skills/heart.js": {
    "imports": [
     "skills/nutrition.js"
@@ -4441,6 +5129,12 @@
     "skills/room.js",
     "skills/walls.js"
    ]
+  },
+  "skills/homotopy-edit.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/howto.js": {
    "imports": [],
@@ -4473,6 +5167,20 @@
     "skills/tictactoe.js"
    ]
   },
+  "skills/hunting-question.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
+  "skills/idea-certificate.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
   "skills/image.js": {
    "imports": [],
    "importedBy": []
@@ -4495,6 +5203,13 @@
    "imports": [
     "lib/plan.js",
     "lib/practice.js"
+   ],
+   "importedBy": []
+  },
+  "skills/interrupt-priority.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
@@ -4533,7 +5248,11 @@
     "lib/ask-text.js",
     "lib/pulse.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
+   ]
   },
   "skills/layer.js": {
    "imports": [
@@ -4542,6 +5261,11 @@
    "importedBy": [
     "skills/group.js",
     "skills/label.js"
+   ],
+   "reachedBy": [
+    "skills/constellation-weaver.js",
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
    ]
   },
   "skills/lift3d.js": {
@@ -4583,6 +5307,7 @@
   "skills/list.js": {
    "imports": [
     "skills/notepad.js",
+    "skills/soundscape.js",
     "lib/bridges.js"
    ],
    "importedBy": []
@@ -4678,7 +5403,9 @@
     "lib/merge-rules.js",
     "lib/card-frame.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/forge-table.js"
+   ]
   },
   "skills/merges.js": {
    "imports": [
@@ -4919,6 +5646,18 @@
    ],
    "importedBy": []
   },
+  "skills/minimap.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/miss-jobs.js": {
+   "imports": [
+    "lib/learn.js"
+   ],
+   "importedBy": []
+  },
   "skills/monopoly-rules.js": {
    "imports": [],
    "importedBy": [
@@ -4987,6 +5726,12 @@
    ],
    "importedBy": []
   },
+  "skills/mutate.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
+  },
   "skills/nca-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -4995,9 +5740,28 @@
    ],
    "importedBy": []
   },
+  "skills/near-choir.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
+  "skills/negative-summons.js": {
+   "imports": [
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
   "skills/news.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/night-ritual.js": {
+   "imports": [
+    "lib/astro.js",
+    "lib/skyask.js"
    ],
    "importedBy": []
   },
@@ -5024,11 +5788,24 @@
     "skills/othello.js"
    ]
   },
+  "skills/noun-heat.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
   "skills/nutrition.js": {
    "imports": [],
    "importedBy": [
     "skills/heart.js"
    ]
+  },
+  "skills/oracle.js": {
+   "imports": [
+    "lib/card-share.js"
+   ],
+   "importedBy": []
   },
   "skills/othello.js": {
    "imports": [
@@ -5040,6 +5817,12 @@
     "lib/arena.js",
     "skills/games.js"
    ]
+  },
+  "skills/overload.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
   },
   "skills/ovulation.js": {
    "imports": [
@@ -5056,6 +5839,13 @@
   "skills/part.js": {
    "imports": [
     "lib/ask-text.js"
+   ],
+   "importedBy": []
+  },
+  "skills/partial-answer.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
@@ -5089,6 +5879,12 @@
   },
   "skills/place.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/plan-stability.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/poker-rules.js": {
@@ -5237,6 +6033,14 @@
   },
   "skills/recent.js": {
    "imports": [],
+   "importedBy": [
+    "skills/ask-clipboard.js"
+   ]
+  },
+  "skills/recipe-stack.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/recipe.js": {
@@ -5294,6 +6098,12 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/riot.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
   },
   "skills/room.js": {
    "imports": [
@@ -5438,6 +6248,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/sheaf-check.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
   "skills/shortcut.js": {
    "imports": [],
    "importedBy": []
@@ -5455,7 +6272,9 @@
   },
   "skills/showcase.js": {
    "imports": [
-    "skills/growth-tree.js"
+    "skills/growth-tree.js",
+    "lib/reaction-bar.js",
+    "lib/reactions.js"
    ],
    "importedBy": [
     "skills/guide.js"
@@ -5493,6 +6312,12 @@
     "skills/sorry.js",
     "skills/tictactoe.js"
    ]
+  },
+  "skills/skill-eclipse.js": {
+   "imports": [
+    "lib/eclipse.js"
+   ],
+   "importedBy": []
   },
   "skills/sky-card-rules.js": {
    "imports": [
@@ -5594,8 +6419,27 @@
     "skills/games.js"
    ]
   },
+  "skills/soundscape.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/list.js"
+   ]
+  },
   "skills/spanish.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/spectators.js": {
+   "imports": [
+    "lib/bridges.js"
+   ],
+   "importedBy": []
+  },
+  "skills/spectral-review.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
    "importedBy": []
   },
   "skills/splat-core.js": {
@@ -5612,6 +6456,24 @@
   },
   "skills/sport.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/stage-print.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/stakes-phase.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stale-work.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack.js",
+    "lib/stage-pack-h.js"
+   ],
    "importedBy": []
   },
   "skills/state.js": {
@@ -5631,9 +6493,21 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/stigmergy-board.js": {
+   "imports": [
+    "lib/stigmergy-law.js"
+   ],
+   "importedBy": []
+  },
   "skills/store.js": {
    "imports": [
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sudden-death.js": {
+   "imports": [
+    "lib/opposite-era.js"
    ],
    "importedBy": []
   },
@@ -5678,10 +6552,37 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/task-board.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/tasks.js"
+   ],
+   "importedBy": []
+  },
+  "skills/task-diagram.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
   "skills/technical-context.js": {
    "imports": [
     "lib/technical-context.js",
     "skills/shape.js"
+   ],
+   "importedBy": []
+  },
+  "skills/template-list.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/template-list.js"
+   ],
+   "importedBy": []
+  },
+  "skills/term-orbits.js": {
+   "imports": [
+    "lib/term-orbits-law.js"
    ],
    "importedBy": []
   },
@@ -5697,6 +6598,20 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/time-capsule.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/time-math.js": {
+   "imports": [
+    "lib/time-math.js",
+    "lib/date-words.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/time.js": {
    "imports": [
@@ -5761,11 +6676,23 @@
   },
   "skills/type-filter.js": {
    "imports": [],
+   "importedBy": [
+    "skills/deep-work.js",
+    "skills/family-gravity.js"
+   ]
+  },
+  "skills/unkeepable.js": {
+   "imports": [],
    "importedBy": []
   },
   "skills/util.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/writing-aids.js"
+   ],
+   "reachedBy": [
+    "skills/writing-aids.js"
+   ]
   },
   "skills/uv.js": {
    "imports": [],
@@ -5783,6 +6710,12 @@
    "imports": [
     "lib/field-stage.js",
     "lib/field-vector.js"
+   ],
+   "importedBy": []
+  },
+  "skills/veto-council.js": {
+   "imports": [
+    "lib/council-law.js"
    ],
    "importedBy": []
   },
@@ -5839,6 +6772,19 @@
    ],
    "importedBy": []
   },
+  "skills/whisper-network.js": {
+   "imports": [
+    "skills/label.js",
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/witness-claims.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/words.js": {
    "imports": [],
    "importedBy": []
@@ -5853,10 +6799,24 @@
     "skills/time.js"
    ]
   },
+  "skills/writing-aids.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/writing-aids.js"
+   ],
+   "importedBy": []
+  },
   "skills/zoom-figure.js": {
    "imports": [
     "lib/ask-text.js",
     "skills/figures3d.js"
+   ],
+   "importedBy": []
+  },
+  "skills/zorbleflux.js": {
+   "imports": [
+    "lib/zorbleflux.js",
+    "skills/arcade-card.js"
    ],
    "importedBy": []
   }

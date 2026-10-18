@@ -1,0 +1,14 @@
+# An open endpoint with a closed list (spectator reactions)
+
+**Starts when:** strangers should be able to add something to the site with no account (a reaction, a tally, a like) and the owner has not chosen an owner token. Owner, 2026-10-18: "a strict enum of allowed reactions ... paired with a lightweight rate limit per IP".
+
+1. **Close the input before anything else.** The request carries only ids from a frozen list in a pure lib (`lib/reactions.js`: `REACTIONS`, `isReaction` with `hasOwnProperty`, not `in`, so `__proto__` and `constructor` fail) and a slug (`^[a-z0-9-]{1,40}$`) that must also be in a set the repo already owns (the growth ledger, read through `env.ASSETS`). The glyph for an id lives in code on the page; the server never returns text, only ids and integers.
+2. **Parse with fixed errors.** Content type first (415), then a byte cap well under the guard's (413), then JSON shape (400), unknown fields ignored, and an error string that never repeats the input. `parseReaction` is pure, so the unit test hits it without a server.
+3. **Rate limit in layers, cheapest first.** The `LIMITS` row in `lib/guard.js` (outer, per connection); then the route's own minute limits through `bump()` from the guard (edge cache, no D1) per client and per target; then daily limits as D1 rows (one upsert each), and a global daily ceiling that is the D1 write budget (about 3 writes a reaction). Refuse with 429 and `Retry-After` (seconds to UTC midnight for a daily limit). Reads before writes, so a refusal costs no write.
+4. **Never keep an address.** The client key is SHA-256 of address, UTC day and the `SALT` secret, cut to 16 hex: it cannot be turned back and cannot be followed across days. Counters of past days are deleted by the day's first request. A test searches the whole database, the cache and the response for the address.
+5. **Fail closed.** No D1, no `SALT` or no readable ledger means 503 "off for now", never an unguarded route. Same-origin only: no CORS header, a foreign Origin is 403.
+6. **Write the stranger paragraph** at the top of the route, including what is NOT prevented (many addresses can still push a count; the counts must never decide anything).
+7. **Client:** a bar built from the same list; counts via `textContent`; debounce, rest a pressed button, rest all buttons for the `Retry-After`, skip the burst under `prefers-reduced-motion`, and stay hidden until the first GET works.
+8. **Test:** `node --test tools/react.test.mjs` (fake D1 and a fake ledger; register in `tools/checks.mjs`), then `node tools/heavy.mjs node tools/test_void.mjs --only "spectator reactions"` with `/api/react` stubbed.
+
+**Mistakes made:** the first test expected an empty table after refusals, but every refusal comes before storage is touched, so the tables do not exist yet (the better result); an unmocked `/api/react` in the older showcase sections must leave no bar behind, which the "hidden until the first GET works" rule gives.

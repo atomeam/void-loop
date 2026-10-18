@@ -35,6 +35,28 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "eclipse",
+  "tool": "skill_eclipse",
+  "family": "sky",
+  "familyName": "Sky and earth",
+  "examples": [
+   "next eclipse",
+   "next lunar eclipse",
+   "upcoming eclipses"
+  ]
+ },
+ {
+  "skill": "recipe",
+  "tool": "skill_recipe",
+  "family": "words",
+  "familyName": "Words and the world",
+  "examples": [
+   "recipe for pancakes",
+   "how do i make guacamole",
+   "chicken recipes"
+  ]
+ },
+ {
   "skill": "swaps",
   "tool": "skill_swaps",
   "family": "words",

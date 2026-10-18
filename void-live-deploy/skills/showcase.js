@@ -17,6 +17,8 @@
  * remembers when it was (a2m.void.growthSeen.v1), so a newcomer is not told about everything ever built. Nothing is sent anywhere.
  */
 import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
+import { reactionBar } from '../lib/reaction-bar.js'; // spectator reactions under a step (the closed list, /api/react)
+import { targetOf } from '../lib/reactions.js';
 export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visited: nothing older is ever new to it (a first visit stays empty)
 export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once, then never offered again
 export const LEDGER_URL = '/void.growth.json';
@@ -183,6 +185,8 @@ async function step(stageApi) {
     button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
+  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what V01D made; hidden unless /api/react answers
+  if (rx) el.append(rx);
   const items = trayOf(tour.steps, tour.i);
   if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)
     const tray = document.createElement('span');
