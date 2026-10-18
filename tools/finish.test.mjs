@@ -67,3 +67,10 @@ test('the --try ask has to be answered by a skill: nothing logged, a page error 
   assert.match(tryProblem('> x\n  by: skill:timer\n  shows: 5:00\n  ERROR: boom'), /threw an error/);
   assert.match(tryProblem(''), /nothing answered/);
 });
+
+test('--evolve names what to build next: it fills the PR\'s Evolve heading and is kept for the growth inbox; without it the heading stays empty', () => {
+  const a = parseArgs(['build', 'x', '--evolve', 'a tide card for the harbour; a spectator mode']);
+  assert.equal(a.evolve, 'a tide card for the harbour; a spectator mode');
+  assert.match(prBody(a), /## Evolve\n- a tide card for the harbour\n- a spectator mode/);
+  assert.match(prBody(parseArgs(['build', 'x'])), /## Evolve\n- $/m);
+});
