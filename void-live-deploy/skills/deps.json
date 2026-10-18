@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 541,
+ "counted": 546,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -60,6 +60,12 @@
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
+   "dependants": 9
+  },
+  {
+   "file": "lib/stage-pack.js",
+   "skills": 9,
+   "direct": 9,
    "dependants": 9
   },
   {
@@ -183,12 +189,6 @@
    "dependants": 5
   },
   {
-   "file": "lib/stage-pack.js",
-   "skills": 5,
-   "direct": 5,
-   "dependants": 5
-  },
-  {
    "file": "lib/probe-log.js",
    "skills": 4,
    "direct": 1,
@@ -211,6 +211,12 @@
    "skills": 4,
    "direct": 1,
    "dependants": 6
+  },
+  {
+   "file": "lib/stage-math.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
   },
   {
    "file": "lib/stage-pack-c.js",
@@ -3591,6 +3597,15 @@
     "skills/fly.js"
    ]
   },
+  "lib/stage-math.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/gauge-feedback.js",
+    "skills/sheaf-check.js",
+    "skills/spectral-review.js",
+    "skills/task-diagram.js"
+   ]
+  },
   "lib/stage-pack-c.js": {
    "imports": [
     "lib/ask-text.js",
@@ -3616,9 +3631,13 @@
    "importedBy": [
     "skills/ask-clipboard.js",
     "skills/decision-matrix.js",
+    "skills/gauge-feedback.js",
     "skills/habit-ring.js",
     "skills/minimap.js",
-    "skills/recipe-stack.js"
+    "skills/recipe-stack.js",
+    "skills/sheaf-check.js",
+    "skills/spectral-review.js",
+    "skills/task-diagram.js"
    ]
   },
   "lib/stale-tab.js": {
@@ -4601,6 +4620,13 @@
     "skills/fireworks.js",
     "skills/rack.js",
     "skills/eightball.js"
+   ],
+   "importedBy": []
+  },
+  "skills/gauge-feedback.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
    ],
    "importedBy": []
   },
@@ -5835,6 +5861,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/sheaf-check.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
   "skills/shortcut.js": {
    "imports": [],
    "importedBy": []
@@ -6007,6 +6040,13 @@
    ],
    "importedBy": []
   },
+  "skills/spectral-review.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
+   "importedBy": []
+  },
   "skills/splat-core.js": {
    "imports": [],
    "importedBy": [
@@ -6097,6 +6137,13 @@
   },
   "skills/take.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/task-diagram.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-math.js"
+   ],
    "importedBy": []
   },
   "skills/technical-context.js": {

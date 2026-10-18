@@ -210,6 +210,7 @@ for (const [name, file] of [
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
   ['stage pack a', 'stage-pack-a.test.mjs'],
+  ['math transplants', 'math-transplants.test.mjs'],
   ['together', 'together.test.mjs'],
   ['plan', 'plan.test.mjs'],
   ['chess thinking', 'chess-thinking.test.mjs'],

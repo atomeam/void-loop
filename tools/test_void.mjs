@@ -1433,6 +1433,33 @@ try {
     check('recipe stack: it waits for a tap, then the second step starts by itself after the first (a soft two-note chime only once the tap has happened) and the card ends on Done',
       idle === '0 0:03' && stillIdle === '0 0:03' && second && chimedAtHandover >= 2 && done && !S.errors.length, JSON.stringify({ idle, stillIdle, second, chimedAtHandover, done, errors: S.errors }));
     await S.ctx.close(); }
+  // math transplants (owner, 2026-10-18): sheaf-check, spectral-review, task-diagram, gauge-feedback, played the way a person uses them
+  if (want("math transplants: notes that disagree show the obstruction, damping the high band strikes filler, a task square and its real blocker, feedback cleaned to the work")) { const S = await fresh();
+    await S.ask('do my notes agree: launch: friday; owner: ana | launch: monday; owner: ana', 700);
+    await S.p.waitForSelector('.sheaf-check', { timeout: 8000 }).catch(() => {});
+    const bad = await S.p.$eval('.sheaf-check', (e) => ({ v: e.querySelector('.sheaf-verdict').textContent, o: [...e.querySelectorAll('.sheaf-obstruction')].map((x) => x.textContent) })).catch(() => null);
+    await S.p.fill('.sheaf-check textarea', 'launch: friday | launch: Friday.'); await S.p.dispatchEvent('.sheaf-check textarea', 'change'); await S.p.waitForTimeout(400);
+    const good = await S.p.$eval('.sheaf-check .sheaf-verdict', (e) => e.textContent).catch(() => '');
+    check('sheaf check: two notes that disagree on launch show the one conflicting pair and say the gluing fails; once they agree it says the notes glue',
+      bad && /do not glue: 1 obstruction/.test(bad.v) && bad.o.length === 1 && /note 1.*friday.*note 2.*monday/.test(bad.o[0]) && /^The notes glue/.test(good) && !S.errors.length, JSON.stringify({ bad, good, errors: S.errors }));
+    await S.ask('spectral review of We ship Friday. It is very simple, really good, and just fine because users want it.', 700);
+    await S.p.waitForSelector('.spectral-review', { timeout: 8000 }).catch(() => {});
+    const before = await S.p.$eval('.spectral-review .spec-preview', (e) => ({ t: e.textContent, struck: e.querySelectorAll('.struck').length })).catch(() => null);
+    await S.p.$eval('.spectral-review input[data-band="high"]', (r) => { r.value = '0'; r.dispatchEvent(new Event('input', { bubbles: true })); r.dispatchEvent(new Event('change', { bubbles: true })); });
+    const after = await S.p.$eval('.spectral-review .spec-preview', (e) => ({ t: e.textContent, struck: [...e.querySelectorAll('.struck')].map((x) => x.textContent), slow: (e.querySelector('.slow') || {}).textContent })).catch(() => null);
+    check('spectral review: the preview has no struck words at first; damping the high band strikes very, really and just (the filler) while the first sentence, the slow band, stays whole',
+      before && before.struck === 0 && after && after.struck.join() === 'very,really,just' && /^We ship Friday\./.test(after.slow || '') && !S.errors.length, JSON.stringify({ before, after, errors: S.errors }));
+    await S.ask('map my tasks a -> b, b -> c, a -> d, d -> c, c -> e, a -> x; goal: e', 700);
+    await S.p.waitForSelector('.task-diagram', { timeout: 8000 }).catch(() => {});
+    const td = await S.p.$eval('.task-diagram', (e) => ({ sq: [...e.querySelectorAll('.td-square')].map((x) => x.textContent), blocker: e.querySelector('.td-blocker').textContent })).catch(() => null);
+    check('task diagram: a to c has two separate routes (one square listed) and x, which leads nowhere, is named as the real blocker with the arrow it lacks',
+      td && td.sq.length >= 1 && /a to c/.test(td.sq[0]) && /x -> e \(missing\)/.test(td.blocker) && !S.errors.length, JSON.stringify({ td, errors: S.errors }));
+    await S.ask('clean this feedback: You always miss the deadline. You are a genius! The login page is slow. | work: login page deadline', 700);
+    await S.p.waitForSelector('.gauge-feedback', { timeout: 8000 }).catch(() => {});
+    const gf = await S.p.$eval('.gauge-feedback', (e) => ({ kept: e.querySelectorAll('.gf-kept').length, struck: e.querySelectorAll('.gf-struck').length, frames: [...e.querySelectorAll('.gf-kept')[0].querySelectorAll('.gf-frame')].map((x) => x.dataset.frame), record: [...e.querySelectorAll('ul.gf-record li')].map((x) => x.textContent) })).catch(() => null);
+    check('gauge feedback: of three statements the two about the login page and the deadline stay (each in neutral, kind and blunt frames) and the praise of the person is struck out of the permanent record',
+      gf && gf.kept === 2 && gf.struck === 1 && gf.frames.join() === 'neutral,kind,blunt' && gf.record.length === 2 && !gf.record.some((x) => /genius/i.test(x)) && !S.errors.length, JSON.stringify({ gf, errors: S.errors }));
+    await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
