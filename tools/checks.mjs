@@ -23,6 +23,7 @@ for (const [name, file] of [
   ['stage-pack-e', 'stage-pack-e.test.mjs'],
   ['stage-pack-g', 'stage-pack-g.test.mjs'],
   ['taste', 'taste.test.mjs'],
+  ['stage-pack-c', 'stage-pack-c.test.mjs'],
   ['shows', 'shows.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],
   ['site-teach', 'site-teach.test.mjs'],

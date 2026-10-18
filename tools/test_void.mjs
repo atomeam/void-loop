@@ -960,6 +960,37 @@ try {
         && st.some((x) => x.kind === 'countdown') && !!list2 && /^work out the steps/.test(list2.items[0].text) && !D.errors.length,
       JSON.stringify({ sent, said, texts, kinds: st.map((x) => x.kind), list2: list2 && list2.items.map((i) => i.text), kinds2: st2.map((x) => x.kind), e: D.errors }));
     await D.ctx.close(); }
+  // stage pack c (owner, 2026-10-18): the codex files a card and finds it, the echo chamber replays it, a capsule keeps the stage behind a
+  // hashed word, and a whisper surfaces once on the next touch. All device-local (lib/stage-pack-c.js).
+  if (want('stage pack c: codex, echo chamber, time capsule, whisper network')) { const L = await fresh();
+    const card = () => L.p.$$eval('.vpage', (es) => (es.length ? es[es.length - 1].innerText : '')).catch(() => '');
+    const store = (k) => L.p.evaluate((key) => localStorage.getItem(key) || '', k);
+    await L.ask('make a clock', 500); await L.ask('what did you do today', 700);
+    await L.ask('file this in the codex', 700); const filedCard = await card(); const codexRaw = await store('a2m.void.codex.v1');
+    await L.ask('open the codex on device', 800); await until(async () => /The codex on device/.test(await card()), 4000); const codexCard = await card();
+    await L.ask('open the codex on zebra', 700); const codexNone = await card();
+    check('codex: "file this in the codex" keeps the last card on this device and "open the codex on device" lists it under a skill family, a topic with nothing filed says so',
+      /Filed in the codex/.test(filedCard) && /what did you do today/.test(codexRaw) && /The codex on device/.test(codexCard) && /Void itself|Time|The stage|Other/.test(codexCard) && /nothing about "zebra"/.test(codexNone) && !L.errors.length, JSON.stringify({ filedCard: filedCard.slice(0, 80), codexRaw: codexRaw.slice(0, 80), codexCard: codexCard.slice(0, 120), codexNone: codexNone.slice(0, 80), e: L.errors }));
+    await L.ask('replay my best answers from this week', 800); const echoCard = await card();
+    check('echo chamber: "replay my best answers from this week" shows what this device kept, the filed item first', /Your best answers/.test(echoCard) && /filed/.test(echoCard) && /what did you do today/.test(echoCard), echoCard.slice(0, 200));
+    await L.ask('seal a capsule for the word aurora', 800); const sealed = await card(); const capRaw = await store('a2m.void.capsule.v1');
+    await L.ask('seal a time capsule until 2030-01-01', 800);
+    await L.ask('open the capsule zebra', 700); const wrong = await card();
+    await L.ask('open the capsule aurora', 800); const opened = await card();
+    await L.ask('open my capsules', 700); const dueCard = await card();
+    check('time capsule: a word capsule keeps the stage with only the word\'s SHA-256 hash, the wrong word shows nothing, the right word lists the clock, a capsule sealed until 2030 stays shut',
+      /Capsule sealed/.test(sealed) && /"hash":"[0-9a-f]{64}"/.test(capRaw) && !/aurora/.test(capRaw) && /No capsule answers/.test(wrong) && /clock/.test(opened) && /still sealed/.test(dueCard) && !L.errors.length, JSON.stringify({ sealed: sealed.slice(0, 60), wrong, opened: opened.slice(0, 80), dueCard, e: L.errors }));
+    await L.ask('leave a whisper on the clock: remember milk', 800); const whispered = await card(); const wRaw = await store('a2m.void.whispers.v1');
+    await L.p.keyboard.press('Escape'); await L.p.waitForTimeout(800);
+    const box = await L.p.$eval('.clock', (e) => { const b = e.getBoundingClientRect(); return { x: b.left + b.width / 2, y: b.top + b.height / 2 }; });
+    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.up();
+    const surfaced = await until(async () => (await L.p.$$eval('.void-whisper', (es) => es.map((e) => e.textContent).join())) || false, 3000);
+    await L.p.waitForTimeout(300); await L.p.evaluate(() => document.querySelectorAll('.void-whisper').forEach((e) => e.remove()));
+    await L.p.mouse.move(box.x, box.y); await L.p.mouse.down(); await L.p.mouse.up(); await L.p.waitForTimeout(500);
+    const again = await L.p.$$eval('.void-whisper', (es) => es.length); const left = await store('a2m.void.whispers.v1');
+    check('whisper network: "leave a whisper on the clock: remember milk" keeps a note that surfaces once, on the next touch of the clock, then is gone',
+      /Whisper left/.test(whispered) && /remember milk/.test(wRaw) && /remember milk/.test(surfaced || '') && again === 0 && !/remember milk/.test(left) && !L.errors.length, JSON.stringify({ whispered: whispered.slice(0, 60), wRaw, surfaced, again, left, e: L.errors }));
+  }
   // Labels and arrows (skills/label.js, board "Later": text annotation / labels): "label the clock kitchen" tags it, an arrow
   // drawn by label names joins two things and follows a drag, a free label can be an arrow's end, "undo" and reload behave.
   if (want("Labels and arrows (skills/label.js, board \"Later\": text annotation / labels): \"label the c")) { const L = await fresh();

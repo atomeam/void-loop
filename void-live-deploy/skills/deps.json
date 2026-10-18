@@ -1,18 +1,24 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 530,
+ "counted": 535,
  "libs": [
   {
    "file": "lib/ask-text.js",
-   "skills": 27,
+   "skills": 31,
    "direct": 23,
-   "dependants": 28
+   "dependants": 33
   },
   {
    "file": "lib/field-kit.js",
    "skills": 15,
    "direct": 2,
    "dependants": 26
+  },
+  {
+   "file": "lib/state.js",
+   "skills": 13,
+   "direct": 2,
+   "dependants": 28
   },
   {
    "file": "lib/sky-math.js",
@@ -49,12 +55,6 @@
    "skills": 9,
    "direct": 0,
    "dependants": 27
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 9,
-   "direct": 2,
-   "dependants": 23
   },
   {
    "file": "lib/skyfacts.js",
@@ -177,6 +177,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/pulse.js",
+   "skills": 5,
+   "direct": 2,
+   "dependants": 5
+  },
+  {
    "file": "lib/stage-pack.js",
    "skills": 5,
    "direct": 5,
@@ -207,9 +213,9 @@
    "dependants": 6
   },
   {
-   "file": "lib/pulse.js",
+   "file": "lib/stage-pack-c.js",
    "skills": 4,
-   "direct": 2,
+   "direct": 4,
    "dependants": 4
   },
   {
@@ -1634,6 +1640,7 @@
   "lib/ask-text.js": {
    "imports": [],
    "importedBy": [
+    "lib/stage-pack-c.js",
     "skills/cartoon.js",
     "skills/coral.js",
     "skills/dark-look.js",
@@ -1659,11 +1666,15 @@
     "skills/zoom-figure.js"
    ],
    "reachedBy": [
+    "skills/codex.js",
     "skills/constellation-weaver.js",
     "skills/dates.js",
+    "skills/echo-chamber.js",
     "skills/forge-table.js",
     "skills/mini/pentamote.js",
-    "skills/pulse.js"
+    "skills/pulse.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
    ]
   },
   "lib/astro.js": {
@@ -3165,7 +3176,8 @@
    ],
    "reachedBy": [
     "skills/constellation-weaver.js",
-    "skills/forge-table.js"
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
    ]
   },
   "lib/rating-note.js": {
@@ -3547,6 +3559,18 @@
     "skills/fly.js"
    ]
   },
+  "lib/stage-pack-c.js": {
+   "imports": [
+    "lib/ask-text.js",
+    "lib/state.js"
+   ],
+   "importedBy": [
+    "skills/codex.js",
+    "skills/echo-chamber.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
+   ]
+  },
   "lib/stage-pack-h.js": {
    "imports": [],
    "importedBy": [
@@ -3585,6 +3609,7 @@
    "importedBy": [
     "lib/eclipse.js",
     "lib/ladder.js",
+    "lib/stage-pack-c.js",
     "skills/memory.js",
     "skills/state.js"
    ],
@@ -3600,6 +3625,8 @@
     "lib/bench-asks.js",
     "lib/self-context.js",
     "lib/voice.js",
+    "skills/codex.js",
+    "skills/echo-chamber.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -3607,7 +3634,9 @@
     "skills/pong.js",
     "skills/showcase.js",
     "skills/skill-eclipse.js",
-    "skills/snake.js"
+    "skills/snake.js",
+    "skills/time-capsule.js",
+    "skills/whisper-network.js"
    ]
   },
   "lib/store-db.js": {
@@ -4104,6 +4133,12 @@
     "skills/time.js"
    ]
   },
+  "skills/codex.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
   "skills/collectible.js": {
    "imports": [
     "lib/card-share.js",
@@ -4277,6 +4312,12 @@
     "lib/duel-rules.js",
     "lib/card-frame.js",
     "lib/rules-play.js"
+   ],
+   "importedBy": []
+  },
+  "skills/echo-chamber.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
    ],
    "importedBy": []
   },
@@ -4775,7 +4816,8 @@
    ],
    "importedBy": [
     "skills/constellation-weaver.js",
-    "skills/forge-table.js"
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
    ]
   },
   "skills/layer.js": {
@@ -4788,7 +4830,8 @@
    ],
    "reachedBy": [
     "skills/constellation-weaver.js",
-    "skills/forge-table.js"
+    "skills/forge-table.js",
+    "skills/whisper-network.js"
    ]
   },
   "skills/lift3d.js": {
@@ -6022,6 +6065,12 @@
     "skills/games.js"
    ]
   },
+  "skills/time-capsule.js": {
+   "imports": [
+    "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
   "skills/time.js": {
    "imports": [
     "lib/skill-family.js",
@@ -6164,6 +6213,13 @@
   "skills/web4.js": {
    "imports": [
     "lib/web4.js"
+   ],
+   "importedBy": []
+  },
+  "skills/whisper-network.js": {
+   "imports": [
+    "skills/label.js",
+    "lib/stage-pack-c.js"
    ],
    "importedBy": []
   },
