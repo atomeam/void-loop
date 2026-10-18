@@ -2,6 +2,29 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T12:45:53.770Z",
+   "sha": "c37395be46dfb31126ebe40ac7ea1a81416ca136",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39128381934",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/asks-link.json",
+    "tools/showcase.test.mjs",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/showcase.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
    "at": "2026-10-18T12:39:28.800Z",
    "sha": "3afe77b7d68a782ec72cf297f2acd09999daa61f",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39126979263",
@@ -679,33 +702,6 @@
     "tools/learn.test.mjs",
     "tools/math-transplants.test.mjs",
     "tools/openapi-check.mjs"
-   ]
-  },
-  {
-   "at": "2026-10-18T03:03:35.419Z",
-   "sha": "24db7ae2f8d293c566e9b77ecb73d4892b4c3fa1",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39091223061",
-   "suite": "browser suite on main",
-   "checks": [
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/playbooks/field-mind.md",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/card-art-route.test.mjs",
-    "tools/card-image.test.mjs",
-    "tools/checks.mjs",
-    "tools/collectible.test.mjs",
-    "tools/families.mjs",
-    "tools/field-attention.test.mjs",
-    "tools/field-nca.test.mjs",
-    "tools/field-resonance.test.mjs",
-    "tools/field-swarm.test.mjs",
-    "tools/test_void.mjs",
-    "tools/void-seal.test.mjs"
    ]
   }
  ]
