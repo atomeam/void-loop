@@ -209,6 +209,9 @@
     },
     {
       "ask": "films by Kurosawa"
+    },
+    {
+      "ask": "film metadata for Ikiru"
     }
   ],
   "candidates": [],

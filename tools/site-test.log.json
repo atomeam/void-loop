@@ -1305,5 +1305,12 @@
   "of": 64,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+ },
+ {
+  "at": "2026-10-18T10:17:16Z",
+  "passed": 55,
+  "of": 65,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
  }
 ]

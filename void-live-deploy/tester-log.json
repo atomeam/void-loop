@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 61,
- "runsTotal": 176,
+ "cases": 62,
+ "runsTotal": 177,
  "kinds": {
-  "grow": 54,
+  "grow": 55,
   "file": 68,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T10:17:16Z",
+   "passed": 55,
+   "of": 65,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T10:02:42Z",
    "passed": 54,
@@ -142,13 +149,6 @@
    "of": 46,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
-  },
-  {
-   "at": "2026-10-18T00:52:54Z",
-   "passed": 35,
-   "of": 45,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T10:02:42Z",
+  "skill:film-metadata": "2026-10-18T10:17:16Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -375,6 +375,9 @@
   "skill:note-tools": "2026-10-18T09:26:58Z",
   "skill:noun-heat": "2026-10-18T10:02:42Z",
   "skill:oracle": "2026-10-18T10:02:42Z",
-  "skill:outline-note": "2026-10-18T10:02:42Z"
+  "skill:outline-note": "2026-10-18T10:02:42Z",
+  "skill:overload": "2026-10-18T10:17:16Z",
+  "skill:own-parts": "2026-10-18T10:17:16Z",
+  "skill:partial-answer": "2026-10-18T10:17:16Z"
  }
 }
