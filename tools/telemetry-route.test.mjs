@@ -68,3 +68,11 @@ test('a builder\'s own sentence behind a list marker, and a failure that passed 
   assert.deepEqual(failuresOf('The check is still red on main and nobody has fixed it yet.').length, 1, 'a real one stays');
   assert.equal(failuresOf('- **book-face:** fails on plain origin/main too, page 305 off the sheet').length, 1, 'a bullet name line stays');
 });
+
+test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
+  assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
+  assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
+  assert.deepEqual(failuresOf('With the refusal taken out of the code, the new check fails, so it really tests the refusal.'), []);
+  assert.equal(failuresOf('The extension check fails on main since the merge.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails without warning on plain origin/main').length, 1, '"without" alone is not a planned failure');
+});
