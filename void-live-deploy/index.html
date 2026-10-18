@@ -4315,7 +4315,8 @@ say('nothing selected to remove');
       const all = Object.values(things); return all[all.length - 1] || null;
     }
     function handleMetaAsk(text, lower) {
-      if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower)
+      // "remove blank lines: <pasted text>" is a text tool (skills/text-tools.js), not the stage's lines: an ask with a colon or a pasted line break is left to the skills
+      if (/\b(clear|remove|delete|get\s+rid\s+of|take\s+off|throw\s+away|close)\b/.test(lower) && !/\beverything\b/.test(lower) && !/[:⏎\n]/.test(lower)
           && /\b(all|every|each|both)\b|\b(notes|stickies|notepads|timers|countdowns|clocks|shapes|circles|squares|lines|counters|lists|checklists|images|pictures|photos|links|cards|maps|calculators|calcs)\b/.test(lower)) {
         const kinds = /\bcards?\b/.test(lower) ? Array.from(new Set(['link', 'kept', ...batchKinds(lower.replace(/\ball\s+(?:the\s+)?cards?\b|\bcards?\b/g, ' ')).filter((k) => k !== 'link' || /\blinks?\b/.test(lower))])) : batchKinds(lower);
         if (kinds.length) {

@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 597,
+ "counted": 599,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -700,6 +700,12 @@
   },
   {
    "file": "lib/term-orbits-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/text-tools.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -4028,6 +4034,12 @@
     "skills/term-orbits.js"
    ]
   },
+  "lib/text-tools.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/text-tools.js"
+   ]
+  },
   "lib/time-math.js": {
    "imports": [
     "lib/date-words.js"
@@ -6628,6 +6640,12 @@
   "skills/term-orbits.js": {
    "imports": [
     "lib/term-orbits-law.js"
+   ],
+   "importedBy": []
+  },
+  "skills/text-tools.js": {
+   "imports": [
+    "lib/text-tools.js"
    ],
    "importedBy": []
   },

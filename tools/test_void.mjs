@@ -1709,6 +1709,29 @@ try {
     const scanned = await until(async () => (await saved()).find((x) => x.kind === 'sticky' && /example\.com\/menu/.test(x.text || '')), 6000);
     check('code scanner: a browser without BarcodeDetector says so and offers no file box; with one, a picture of a code puts its text on the stage as a note (a web address is shown, not opened)',
       (unsupported.native || (/no BarcodeDetector/.test(unsupported.msg) && !unsupported.file)) && scanned && /web address: check it/.test(scanned.text) && !S.errors.length, JSON.stringify({ unsupported, scanned, errors: S.errors }));
+  // tools pack 9 (owner, 2026-10-18): the text tools skill, played the way a person asks for it
+  if (want("tools pack 9: text tools sort, de-duplicate, extract and cipher pasted text into a result card with a copy button, and leave look-alike asks alone")) { const S = await fresh();
+    const card = async () => S.p.$eval('.vpage.on .tt-out', (e) => e.textContent).catch(() => '');
+    await S.ask('sort these lines: pear ⏎ apple ⏎ fig', 700);
+    const sorted = await card(), title = await S.p.$eval('.vpage.on h2', (e) => e.textContent).catch(() => '');
+    await S.p.click('.vpage.on .tt-copy').catch(() => {});
+    await S.p.waitForTimeout(250);
+    const copyLabel = await S.p.$eval('.vpage.on .tt-copy', (e) => e.textContent).catch(() => '');
+    await S.ask('remove duplicate lines: a ⏎ b ⏎ a ⏎ c', 700);
+    await until(async () => (await card()) === 'a\nb\nc', 4000);
+    const deduped = await card(), note = await S.p.$eval('.vpage.on .tt-note', (e) => e.textContent).catch(() => '');
+    await S.ask('extract emails: write to bob@example.com or ann@example.org', 700);
+    const emails = await card();
+    await S.ask('rot13 Hello', 700);
+    const rot = await card();
+    await S.ask('diff: a ⏎ b ⏎ --- ⏎ a ⏎ c', 700);
+    const diff = await card();
+    await S.ask('uppercase this: hello', 700);
+    const upper = await S.page(), notOurs = await S.p.$$eval('.vpage.on .tt-out', (e) => e.length) === 0;
+    check('tools pack 9: "sort these lines" gives the sorted lines in a card with a copy button that answers, duplicates, emails, rot13 and a two-box diff each have their card, and "uppercase this" stays with the util skill',
+      sorted === 'apple\nfig\npear' && /Sorted A to Z/.test(title) && /^(copied|select it to copy)$/.test(copyLabel) && deduped === 'a\nb\nc' && /1 duplicate line removed/.test(note)
+      && emails === 'bob@example.com\nann@example.org' && rot === 'Uryyb' && diff === '  a\n- b\n+ c' && /HELLO/.test(upper) && notOurs && !S.errors.length,
+      JSON.stringify({ sorted, title, copyLabel, deduped, note, emails, rot, diff, upper: upper.slice(0, 80), notOurs, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();

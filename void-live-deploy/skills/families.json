@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 6,
   "tested": 83,
-  "checked": 87,
+  "checked": 88,
   "proven": 87
  },
  "families": [
@@ -400,8 +400,8 @@
      "name": "go",
      "tier": "checked",
      "why": "a self-test, 4 browser-suite mentions",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test"
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     },
     {
      "name": "monopoly",
@@ -1094,7 +1094,7 @@
    "count": {
     "experiment": 1,
     "tested": 11,
-    "checked": 5,
+    "checked": 6,
     "proven": 9
    },
    "sources": {
@@ -1592,6 +1592,13 @@
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
+    },
+    {
+     "name": "text-tools",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -1828,7 +1835,8 @@
      "tier": "checked",
      "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-18"
     },
     {
      "name": "fly",
@@ -2222,8 +2230,7 @@
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "promoted": "2026-10-18"
+     "last_tested_by": "its tests"
     },
     {
      "name": "outline-note",
@@ -2483,7 +2490,7 @@
      "name": "family-health",
      "tier": "checked",
      "why": "a self-test, 7 browser-suite mentions",
-     "last_tested": "2026-10-17",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "streak": 1
     },
