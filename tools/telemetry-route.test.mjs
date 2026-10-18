@@ -60,3 +60,11 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   assert.deepEqual(failuresOf('the error garden grows a sprout for every red check of the suite; red checks grow in it by themselves'), [], '"red checks" as a name is not a state');
   assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since 411: the proposal card check FAILS on every head'], 'a state line stays (clean() strips the #)');
 });
+
+test('a builder\'s own sentence behind a list marker, and a failure that passed on its own, are not still failing (2026-10-18 card)', () => {
+  assert.deepEqual(failuresOf("- I didn't touch films; it failed once under load and passed on its own."), []);
+  assert.deepEqual(failuresOf("1. I did not look into it; it keeps failing on main."), [], 'narration behind a number');
+  assert.deepEqual(failuresOf('The suite failed on the first run and passed again on a re-run.'), []);
+  assert.deepEqual(failuresOf('The check is still red on main and nobody has fixed it yet.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails on plain origin/main too, page 305 off the sheet').length, 1, 'a bullet name line stays');
+});

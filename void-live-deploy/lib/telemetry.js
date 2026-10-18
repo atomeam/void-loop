@@ -25,13 +25,16 @@ const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|let me|now|next|then|s
 // and "failing" only as a state too ("still failing", "is failing", "3 failing", "failing:"), not as a word before a noun ("each failing check")
 const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|\bred\s*[:,.]/i;
 
+// a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
+const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {
   const out = [], seen = new Set();
   for (const raw of String(text || '').split(/\n+|\s*⏎\s*|(?<=[.;!?])\s+(?=[A-Z-])/)) {
     const l = clean(raw);
-    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(l)) continue;
+    const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
+    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l)) continue;
     if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
     const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
     out.push(l.length > 110 ? l.slice(0, 107) + '...' : l);
