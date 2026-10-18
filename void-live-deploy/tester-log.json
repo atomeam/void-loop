@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 44,
- "runsTotal": 158,
+ "cases": 45,
+ "runsTotal": 159,
  "kinds": {
-  "grow": 37,
+  "grow": 38,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T03:06:28Z",
+   "passed": 42,
+   "of": 48,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"attention field\" (skill:attention-field-mind)"
+  },
   {
    "at": "2026-10-18T02:53:48Z",
    "passed": 44,
@@ -142,13 +149,6 @@
    "of": 30,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"bluesky feed of jay.bsky.team\" (skill:social)"
-  },
-  {
-   "at": "2026-10-17T14:29:51Z",
-   "passed": 19,
-   "of": 29,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"living spatial cards mind\" (skill:living-cards-mind)"
   }
  ],
  "seen": {
@@ -308,6 +308,10 @@
   "skill:flow-canvas": "2026-10-17T10:26:08Z",
   "skill:event-countdown": "2026-10-17T11:23:07Z",
   "skill:living-cards-mind": "2026-10-17T14:29:51Z",
-  "skill:service-health": "2026-10-17T21:02:03Z"
+  "skill:service-health": "2026-10-17T21:02:03Z",
+  "skill:attention-field-mind": "2026-10-18T03:06:28Z",
+  "skill:collectible": "2026-10-18T03:06:28Z",
+  "skill:nca-mind": "2026-10-18T03:06:28Z",
+  "skill:resonance-mind": "2026-10-18T03:06:28Z"
  }
 }
