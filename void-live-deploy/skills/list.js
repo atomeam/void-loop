@@ -196,7 +196,7 @@ function mount(th, stageApi) {
     if (th.cols > 1) row.style.breakInside = 'avoid';
     const grip = quiet(make('span', 'list-grip', { textContent: '\u22ee\u22ee', title: 'drag to reorder', draggable: true }));
     grip.style.cssText = 'cursor:grab;opacity:.45;font-size:11px;padding:0 3px;user-select:none';
-    grip.addEventListener('dragstart', (e) => { dragId = item.id; try { e.dataTransfer.setData('text/plain', item.text || ''); e.dataTransfer.effectAllowed = 'move'; } catch (x) { /* some browsers refuse */ } });
+    grip.addEventListener('dragstart', (e) => { dragId = item.id; try { e.dataTransfer.setData('text/plain', item.text || ''); e.dataTransfer.effectAllowed = 'move'; } catch (x) { /* some browsers refuse */ } }); // void-review: ok (dataTransfer can be refused by the browser; the drag still works)
     grip.addEventListener('dragend', () => { dragId = ''; });
     row.addEventListener('dragover', (e) => { if (dragId) e.preventDefault(); });
     row.addEventListener('drop', (e) => { if (!dragId) return; e.preventDefault(); if (stageApi.snapshot) stageApi.snapshot(); th.items = reorder(th.items, dragId, item.id); dragId = ''; keep(); });
