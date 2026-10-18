@@ -1213,5 +1213,12 @@
   "of": 52,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
+ },
+ {
+  "at": "2026-10-18T05:01:15Z",
+  "passed": 52,
+  "of": 53,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
  }
 ]
