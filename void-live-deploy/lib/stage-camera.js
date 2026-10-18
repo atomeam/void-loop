@@ -91,3 +91,19 @@ export function fromStored(text) {
     return { cam: camera(o.x, o.y, o.z), flying: !!o.flying };
   } catch (_) { return { cam: { ...HOME }, flying: false }; }
 }
+
+// Dynamic scale (asked by Void, 2026-10-18: "posters and paintings ... subtly enlarge or gain depth when the fly camera passes near them"): how near
+// a picture's centre is to the middle of the screen, 0 (NEAR_R of the shorter side away or more) to 1 (dead centre), eased so it swells softly;
+// and what that looks like: up to NEAR_SCALE bigger and a soft drop shadow that deepens with it. Off under reduced motion (skills/fly.js).
+export const NEAR_SCALE = 1.08, NEAR_R = 0.55;
+/** nearness 0..1 of a point (cx, cy) to the centre of a vw x vh screen. Pure. */
+export function nearness(cx, cy, vw, vh) {
+  const R = NEAR_R * Math.max(1, Math.min(num(vw), num(vh))), d = Math.hypot(num(cx) - num(vw) / 2, num(cy) - num(vh) / 2), t = Math.max(0, 1 - d / R);
+  return t * t * (3 - 2 * t); // smoothstep: no edge where it starts
+}
+/** the look for a nearness: { scale, shadow } (shadow a CSS filter, '' far away). Pure. */
+export function nearLook(n) {
+  const k = Math.max(0, Math.min(1, num(n)));
+  if (k < 0.01) return { scale: 1, shadow: '' };
+  return { scale: Math.round((1 + (NEAR_SCALE - 1) * k) * 1000) / 1000, shadow: 'drop-shadow(0 ' + Math.round(4 + 14 * k) + 'px ' + Math.round(8 + 22 * k) + 'px rgba(0,0,0,' + (0.18 + 0.32 * k).toFixed(2) + '))' };
+}

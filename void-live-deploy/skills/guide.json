@@ -141,8 +141,8 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 10,
-    "checked": 10,
+    "tested": 9,
+    "checked": 11,
     "proven": 15
    },
    "from": 254,
@@ -1363,7 +1363,7 @@
     "a zorbleflux game"
    ],
    "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "why": "a self-test, 3 browser-suite mentions",
    "n": 64
   },
   {
@@ -4683,7 +4683,7 @@
     "postmortem template"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 6 real asks in the benchmark",
+   "why": "a self-test, 7 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Not a boast but a record: 6 askings, each one answered. Ask, and see.",
    "glow": 100,
    "n": 267
@@ -4895,7 +4895,7 @@
     "how healthy are your skills"
    ],
    "tier": "checked",
-   "why": "a self-test, 7 browser-suite mentions",
+   "why": "a self-test, 8 browser-suite mentions",
    "n": 280
   },
   {
@@ -4909,8 +4909,8 @@
     "which skill family is unhealthy",
     "autopsy of the failed suites"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 1 browser-suite mention",
    "n": 281
   },
   {

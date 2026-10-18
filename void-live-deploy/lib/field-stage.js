@@ -14,6 +14,7 @@
 // mount?(ctx) is also allowed: it adds the idea's own controls and background thinking (a Worker mind) and returns { dispose() }.
 // fieldSkill(...) makes the whole skill (routing words, examples, stage kind) from an idea so a new field mind is one small file.
 import { morphOf, morphCss, audioMap, tiltOf, pointerIn, seal } from './field-kit.js';
+import { motionThrottle } from './motion-throttle.js'; // asked by Void: chaotic motion slows to a quarter while someone types in another card
 
 const reduced = () => { try { return !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (_) { return false; } };
 
@@ -153,8 +154,8 @@ export function mountField(th, stageApi, idea) {
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
   tick(idea.warm || 0); tick(1);
-  let raf = 0, last = 0;
-  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt); raf = requestAnimationFrame(loop); };
+  let raf = 0, last = 0; const thr = motionThrottle();
+  const loop = (t) => { raf = 0; if (!el.isConnected) { endHook(); if (sound) sound.close(); try { idea.dispose && idea.dispose(th.state); } catch (_) { /* gone */ } window.removeEventListener('deviceorientation', onOrient); return; } const dt = last ? Math.min(0.05, (t - last) / 1000) : 1 / 60; last = t; if (!document.hidden && !still) tick(idea.perFrame || 1, dt * thr.scale(el)); raf = requestAnimationFrame(loop); };
   if (!still) raf = requestAnimationFrame(loop);
   why.textContent = idea.how || '';
   return { el, state: th.state, tick, input, get still() { return still; } };

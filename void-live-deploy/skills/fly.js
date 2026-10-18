@@ -10,7 +10,7 @@
  * to the page as a 'void-camera' event and void.html's sky slides its two star layers with parallax (lib/star-parallax.js).
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { HOME, camera, zoomAt, pan, fly, ease, atHome, transformOf, wheelFactor, toStored, fromStored } from '../lib/stage-camera.js';
+import { HOME, camera, zoomAt, pan, fly, ease, atHome, transformOf, wheelFactor, toStored, fromStored, nearness, nearLook } from '../lib/stage-camera.js';
 
 export const KEY = 'a2m.void.camera.v1';
 const HUD_ID = 'void-fly-hud', CLASS = 'void-flying';
@@ -39,6 +39,20 @@ function apply() {
   st.style.transformOrigin = '0 0';
   st.style.transform = transformOf(S.cam);
   tell();
+  depth(st);
+}
+// dynamic scale (asked by Void): a poster or a painting on the stage (a thing holding a picture) swells up to 8% and casts a softer, deeper shadow as
+// the camera's centre passes over it; nothing changes under reduced motion or on the ground. Uses the separate `scale` property, so a card's own
+// transform and translate are untouched; a thing that already has a filter of its own keeps it.
+const PICTURES = '.thing img, .thing canvas.vc-forge-img';
+function depth(st) {
+  const on = S.flying && !still(), vw = innerWidth, vh = innerHeight, seen = new Set();
+  if (on) for (const im of st.querySelectorAll(PICTURES)) {
+    const th = im.closest('.thing'); if (!th || seen.has(th) || (th.style.filter && !th.dataset.flyNear)) continue;
+    seen.add(th); const r = th.getBoundingClientRect(), look = nearLook(nearness(r.left + r.width / 2, r.top + r.height / 2, vw, vh));
+    th.style.scale = look.scale === 1 ? '' : String(look.scale); th.style.filter = look.shadow; th.dataset.flyNear = String(look.scale);
+  }
+  for (const th of st.querySelectorAll('.thing[data-fly-near]')) if (!seen.has(th)) { th.style.scale = ''; th.style.filter = ''; delete th.dataset.flyNear; }
 }
 // the stars behind the stage follow the eye at a fraction of its pace (void.html's sky, lib/star-parallax.js; owner, 2026-10-18:
 // "you cant tell you are flying rhe stars dont move"): every move of the camera is told to the page as 'void-camera'
@@ -50,7 +64,7 @@ function loop(t) {
   if (S.flying) ({ cam: S.cam, vel: S.vel } = fly(S.cam, S.vel, S.keys, dt, { still: still() }));
   if (S.landing) S.cam = ease(S.cam, HOME, dt, { still: still() });
   apply();
-  if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; } tell(); keep(); return; }
+  if (S.landing && atHome(S.cam)) { S.landing = false; S.cam = { ...HOME }; const st = stageEl(); if (st) { st.style.transform = ''; st.style.transformOrigin = ''; st.style.willChange = ''; depth(st); } tell(); keep(); return; }
   if (S.landing || (S.flying && !idle)) S.raf = requestAnimationFrame(loop); else { S.last = 0; keep(); }
 }
 const kick = () => { if (!S.raf) { S.last = 0; S.raf = requestAnimationFrame(loop); } };

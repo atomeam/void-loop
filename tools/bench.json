@@ -2578,6 +2578,18 @@
     "want": "self"
   },
   {
+    "ask": "open the self card and tell void what it got wrong",
+    "want": "voice"
+  },
+  {
+    "ask": "open the self card and tell V01D what it got wrong",
+    "want": "voice"
+  },
+  {
+    "ask": "show the self card and correct it",
+    "want": "voice"
+  },
+  {
     "ask": "i'm bored",
     "want": "said|self|chance|skill:joke|answer"
   },

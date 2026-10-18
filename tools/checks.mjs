@@ -165,6 +165,7 @@ for (const [name, file] of [
   ['rules-engine', 'rules-engine.test.mjs'],
   ['arcade', 'arcade.test.mjs'],
   ['zorbleflux', 'zorbleflux.test.mjs'],
+  ['motion-throttle', 'motion-throttle.test.mjs'],
   ['field-kit', 'field-kit.test.mjs'],
   ['vector-field', 'vector-field.test.mjs'],
   ['field-cards', 'field-cards.test.mjs'],

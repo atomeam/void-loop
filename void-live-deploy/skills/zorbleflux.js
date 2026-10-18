@@ -6,6 +6,7 @@
  */
 import * as Z from '../lib/zorbleflux.js';
 import { arcadeCard } from './arcade-card.js';
+import { motionThrottle } from '../lib/motion-throttle.js'; // asked by Void: the field slows while someone types in another card
 
 const BEST_KEY = 'void-zorbleflux-best';
 /** { kind: 'game' | 'about' } for "zorbleflux" asks, else null. Bare "zorb", "flux capacitor" and "what is flux" are other asks. Pure. */
@@ -22,6 +23,7 @@ function mount(th, stageApi) {
   const calm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);
   let s = Z.create((Date.now() & 0xffff) || 1, { slow: calm }), phase = 'ready', paused = false, best = bestGet(), isNew = false;
   th.state = s;
+  const thr = motionThrottle();
   const c = arcadeCard(th, stageApi, { cls: 'zorble-card', title: 'Zorbleflux', sub: 'steer the zorb · 45 seconds', w: Z.W, h: Z.H });
   c.el.dataset.phase = phase; c.again.textContent = 'Play again'; c.el._zorble = () => s; // the round, for the browser test to fast-forward
   if (th.text) { const intro = document.createElement('div'); intro.className = 'zorble-about'; intro.style.cssText = 'font-size:12.5px;margin:0 0 6px'; intro.textContent = th.text; c.el.insertBefore(intro, c.cv); }
@@ -40,7 +42,7 @@ function mount(th, stageApi) {
   c.start((dt, g) => {
     if (phase === 'play' && !paused && !s.over) {
       const dx = (keys.has('arrowright') || keys.has('d') ? 1 : 0) - (keys.has('arrowleft') || keys.has('a') ? 1 : 0), dy = (keys.has('arrowdown') || keys.has('s') ? 1 : 0) - (keys.has('arrowup') || keys.has('w') ? 1 : 0);
-      Z.step(s, dt, dx || dy ? { dx, dy } : input);
+      Z.step(s, Math.min(dt, 0.05) * thr.scale(c.el), dx || dy ? { dx, dy } : input);
       if (s.over) { const r = Z.bestOf(best, s.score); best = r.best; isNew = r.isNew; if (r.isNew) bestPut(best); phase = 'over'; c.el.dataset.phase = phase; }
     }
     c.el.dataset.score = s.score; c.el.dataset.best = best;

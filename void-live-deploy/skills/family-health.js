@@ -73,7 +73,7 @@ export function metaWords(s) {
 export function skillsHtml(esc, row, used = null, now = Date.now()) {
   return '<ul class="fh-skills" style="list-style:none;margin:6px 0 10px;padding:0">' + row.skills.map((s) => {
     const fail = Array.isArray(s.failing) && s.failing.length;
-    return '<li data-skill="' + esc(s.name) + '" style="display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid rgba(255,255,255,.05)">'
+    return '<li data-skill="' + esc(s.name) + '" data-tier="' + esc(s.tier || 'unrated') + '" style="display:flex;gap:10px;align-items:baseline;padding:5px 0;border-top:1px solid rgba(255,255,255,.05)">'
       + '<span aria-hidden="true" style="flex:none;width:8px;height:8px;border-radius:50%;background:' + (SHADE[s.tier] || SHADE.experiment) + ';box-shadow:0 0 0 1px rgba(255,255,255,.12) inset"></span>'
       + '<span style="flex:1;min-width:0"><b style="font-weight:600;color:var(--d-ink,#f2f4fb)">' + esc(s.name) + '</b> '
       + '<span class="fh-tier" style="color:var(--d-ink-2,#c3c8d8)">' + esc(s.tier || 'unrated') + '</span>'
@@ -117,6 +117,31 @@ export function velocityWords(v) {
   return 'velocity: ' + v.trend + (v.trend === 'steady' ? '' : ' (' + (d > 0 ? '+' : '\u2212') + Math.abs(d) + ' points)') + ' since about a day ago';
 }
 
+// the quick filter (asked by Void, 2026-10-18: "a 'quick-filter' toggle to the list card so users can instantly pivot between 'proven' and 'experiment'
+// skills without leaving the stage"): All / Proven / Experiment over the families' skill lists. A filter opens every family that has a skill of
+// that rating and hides the rest; All puts the card back as it was.
+export const FILTERS = [['all', 'All'], ['proven', 'Proven'], ['experiment', 'Experiment']];
+/** how many of a family's skills a filter keeps. Pure. */
+export const matchCount = (row, tier) => (tier === 'all' ? row.skills.length : row.skills.filter((s) => s && s.tier === tier).length);
+/** the filter's buttons, with each filter's count across all families. Pure. */
+export function filterHtml(esc, H) {
+  return '<div class="fh-filter" role="group" aria-label="Show skills rated" style="display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 0">' + FILTERS.map(([k, label], i) =>
+    '<button type="button" class="tr-copy" data-fh-filter="' + k + '" aria-pressed="' + (i ? 'false' : 'true') + '">' + esc(label + ' · ' + (k === 'all' ? H.skills : H.totals[k])) + '</button>').join('') + '</div>';
+}
+/** apply a filter to the card on the page: skills of other ratings hidden, families with none hidden, the rest opened. */
+export function applyFilter(el, tier) {
+  el.querySelectorAll('[data-fh-filter]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.fhFilter === tier)));
+  el.dataset.fhFilter = tier;
+  el.querySelectorAll('.fh-family').forEach((f) => {
+    let n = 0;
+    f.querySelectorAll('li[data-skill]').forEach((li) => { const on = tier === 'all' || li.dataset.tier === tier; li.hidden = !on; if (on) n++; });
+    const box = f.querySelector('.fh-open'), b = f.querySelector('button[data-open]');
+    if (tier === 'all') { f.hidden = false; if (box && f.dataset.fhWas != null) { box.hidden = f.dataset.fhWas === '1'; if (b) b.setAttribute('aria-expanded', String(!box.hidden)); delete f.dataset.fhWas; } return; }
+    if (box && f.dataset.fhWas == null) f.dataset.fhWas = box.hidden ? '1' : '0';
+    f.hidden = !n; if (box && n) { box.hidden = false; if (b) b.setAttribute('aria-expanded', 'true'); }
+  });
+}
+
 /** the whole card's body (below the title). Pure. */
 export function healthHtml(esc, fam, used = null, now = Date.now(), better = null) {
   const H = healthRows(fam), vel = velocityOf(better, fam, now).byFamily;
@@ -126,7 +151,7 @@ export function healthHtml(esc, fam, used = null, now = Date.now(), better = nul
   return '<div class="sub" style="font-size:13px;margin:2px 0 10px">' + H.skills + ' skills in ' + H.rows.length + ' families, rated from evidence alone.</div>'
     + '<div class="fh-totals" style="display:flex;gap:12px;margin:0 0 6px">' + TIERS.map(tile).join('') + '</div>'
     + bar(H.totals, H.skills, esc('all skills: ' + words(H.totals)))
-    + deadHtml(esc, H, used, now) + driversHtml(esc, fam, better)
+    + deadHtml(esc, H, used, now) + driversHtml(esc, fam, better) + filterHtml(esc, H)
     + '<div class="fh-rows" style="margin-top:14px">' + H.rows.map((r) => '<div class="fh-family" data-family="' + esc(r.id) + '">'
       + '<button type="button" aria-expanded="false" data-open="' + esc(r.id) + '" style="all:unset;box-sizing:border-box;display:block;width:100%;min-height:44px;padding:8px 0;cursor:pointer;border-top:1px solid rgba(255,255,255,.06)">'
       + '<span style="display:flex;justify-content:space-between;gap:8px;align-items:baseline;margin-bottom:6px"><b style="font-weight:600;color:var(--d-ink,#f2f4fb)">' + esc(r.name) + '</b>'
@@ -155,6 +180,7 @@ async function run(text, api) {
   if (_pageStill && !_pageStill(el)) return 'family-health';
   el.innerHTML = head + healthHtml(esc, fam, used, Date.now(), better);
   el.addEventListener('click', (e) => {
+    const q = e.target && e.target.closest && e.target.closest('button[data-fh-filter]'); if (q) { applyFilter(el, q.dataset.fhFilter); return; }
     const b = e.target && e.target.closest && e.target.closest('button[data-open]'); if (!b) return;
     const box = b.parentNode && b.parentNode.querySelector('.fh-open'); if (!box) return;
     const open = box.hidden; box.hidden = !open; b.setAttribute('aria-expanded', String(open));
@@ -179,6 +205,8 @@ export function suite() {
     && h.includes('its daily test failed: suite &lt;x&gt; failed (and 1 more)') && !h.includes('suite <x>')
     && (() => { const s = { families: [{ id: 'w', name: 'W', sources: { read: 1, words: 'Source reliability: <1>' }, skills: [{ name: 'q', tier: 'tested', why: 'a self-test', source: { points: 2, next: 'live', words: 'source 2 of 3: x.org <b>' } }, { name: 'r', tier: 'tested', why: 'one' }] }] }, sh = healthHtml(esc, s);
       return sh.includes('class="sub fh-sources" data-read="1"') && sh.includes('Source reliability: &lt;1&gt;') && sh.includes('data-next="live"') && sh.includes('source 2 of 3: x.org &lt;b&gt;') && !sh.includes('<b>') && (sh.match(/class="fh-source"/g) || []).length === 1 && !h.includes('fh-source'); })()
+    && h.includes('data-fh-filter="proven" aria-pressed="false">Proven · 1<') && h.includes('data-fh-filter="experiment" aria-pressed="false">Experiment · 1<') && h.includes('data-fh-filter="all" aria-pressed="true">All · 4<')
+    && h.includes('data-skill="e" data-tier="experiment"') && matchCount(H.rows[0], 'proven') === 1 && matchCount(H.rows[1], 'proven') === 0 && matchCount(H.rows[0], 'all') === 3
     && asksHealth('Show me your skill families?') && asksHealth('how healthy are your skills') && asksHealth('family health') && !asksHealth('family tree') && !asksHealth('healthy family meals');
   return { ok, got: ok ? '' : JSON.stringify(H) };
 }

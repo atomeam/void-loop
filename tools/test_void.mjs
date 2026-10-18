@@ -2476,7 +2476,7 @@ try {
     const LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
     const TARGET = '2026-10-14t01-00-00z';
     const run = async ({ reduce = false, mode = 'ok' } = {}) => {
-      const posts = [], gets = [], counts = { clap: 4, fire: 0, wow: 0, laugh: 0, heart: 1200, eyes: 0 };
+      const posts = [], gets = [], counts = { clap: 4, fire: 0, wow: 0, laugh: 0, heart: 1200, eyes: 0, confused: 0, pity: 0 };
       const P = await fresh(() => { if (!sessionStorage.getItem('sc-t')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); sessionStorage.setItem('sc-t', '1'); } });
       if (reduce) await P.p.emulateMedia({ reducedMotion: 'reduce' });
       await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
@@ -2511,8 +2511,8 @@ try {
     const L = await run({ mode: 'limit' }); await L.P.p.click('#showcase-bar .rx-bar [data-reaction="eyes"]'); await L.P.p.waitForTimeout(2000);
     const limited = await info(L.P); await L.P.ctx.close();
     const D = await run({ mode: 'down' }); const down = await info(D.P); const downBar = await D.P.p.$eval('#showcase-bar', (e) => e.textContent).catch(() => ''); await D.P.ctx.close();
-    check('spectator reactions: the 6 buttons of the closed list sit under a "look what I made" step with live counts read for that step\'s target (1.2k for 1,200); a double tap sends ONE {target, reaction} and counts it; the button rests after a tap and comes back; a burst plays only with motion allowed; the server\'s text is never drawn; a 429 rests the bar for its Retry-After; a dead endpoint shows no bar and the step still works',
-      first && !first.hidden && first.ids.join() === 'clap,fire,wow,laugh,heart,eyes' && first.nums.join() === '4,,,,1.2k,' && first.target === TARGET && A.gets[0] === TARGET
+    check('spectator reactions: the 8 buttons of the closed list sit under a "look what I made" step with live counts read for that step\'s target (1.2k for 1,200); a double tap sends ONE {target, reaction} and counts it; the button rests after a tap and comes back; a burst plays only with motion allowed; the server\'s text is never drawn; a 429 rests the bar for its Retry-After; a dead endpoint shows no bar and the step still works',
+      first && !first.hidden && first.ids.join() === 'clap,fire,wow,laugh,heart,eyes,confused,pity' && first.nums.join() === '4,,,,1.2k,,,' && first.target === TARGET && A.gets[0] === TARGET
         && A.posts.length >= 1 && A.posts[0].reaction === 'clap' && JSON.stringify(Object.keys(A.posts[0]).sort()) === '["reaction","target"]' && A.posts[0].target === TARGET && A.posts.filter((x) => x.reaction === 'clap').length === 1 && after.nums[0] === '5' && after.burst
         && resting.disabled.every(Boolean) && rested.disabled.every((d) => !d)
         && calm && calm.nums[2] === '1' && !calm.burst
@@ -3903,7 +3903,7 @@ try {
     { const V = await fresh(); await V.ask('open the self card', 300); const ok = await until(async () => /What I think of myself/.test(await V.page()), 5000); check('voice: "open the self card" opens what V01D thinks of itself, where the owner can reply and correct it (asked by Void)', ok, (await V.page()).slice(0, 160)); }
     { const V2 = await fresh(); const got = []; for (const q of ['open the self card and tell void what it got wrong', 'tell void what it got wrong', 'open your self card, I want to correct you', 'void got this wrong', 'correct void on its self card']) { await V2.ask(q, 300); got.push(await until(async () => /What I think of myself/.test(await V2.page()), 4000)); await V2.ask('close', 200); }
       check('voice: asks to correct V01D on its self card (open the self card and tell it what it got wrong, void got this wrong, correct void ...) open the self card, not a lookup or the look skill (extends #968, asked by Void)', got.every(Boolean), JSON.stringify(got)); }
-    await B.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await B.page()), 5000);
+    await B.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await B.page()), 5000);
     { const strip = await until(() => B.p.evaluate(() => { const q = [...document.querySelectorAll('.vpage.on .sc-strip .sc-sq')]; return q.length ? { n: q.length, tiers: [...new Set(q.map((x) => x.dataset.tier))], dens: q.map((x) => +x.dataset.density), weathered: q.filter((x) => x.classList.contains('sc-weathered')).length } : null; }), 6000);
       check('self card: a strip of one square per skill shows proven stronger than tested, and an old last_tested looks weathered (asked by Void)', !!strip && strip.n > 20 && strip.tiers.includes('proven') && Math.max(...strip.dens) > Math.min(...strip.dens) && strip.weathered >= 0, JSON.stringify(strip)); }
     const div = await B.p.evaluate(() => { const d = [...document.querySelectorAll('.vpage.on .v-built details')]; d.forEach((x) => { x.open = true; }); return d.map((x) => x.querySelector('.v-meta').textContent); });
@@ -5067,28 +5067,141 @@ try {
   if (want("self card: root cause or surface, a toggle over what got built")) { const R = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = Array.from({ length: 9 }, (_, i) => ({ ask: 'ask ' + i + (i === 0 ? ' <b>x</b>' : ''), what: 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: i % 3 === 0 ? 'root' : i % 3 === 1 ? 'surface' : null }));
     await R.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-17T08:00:00Z', kind: 'daily', thoughts: 'thinking', asks: [] }], asks: [], follow: { total: 12, built: 9, asked: 12, recent: rec } })));
-    await R.ask('what do you think of yourself?', 300); await until(async () => /my words and what was built/.test(await R.page()), 6000);
+    await R.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await R.page()), 6000); await R.p.evaluate(() => { document.querySelector('.vpage.on .vs-sec[data-sec=built]').open = true; }); // the block starts closed (owner's redesign)
     const shown = () => R.p.evaluate(() => [...document.querySelectorAll('.vpage.on .v-built > li')].filter((li) => !li.hidden).map((li) => li.querySelector('summary').textContent));
     const all = await shown(), labels = await R.p.evaluate(() => [...document.querySelectorAll('.vpage.on [data-v-depth]')].map((b) => b.textContent));
     await R.p.click('.vpage.on [data-v-depth="root"]'); const root = await shown();
     await R.p.click('.vpage.on [data-v-depth="surface"]'); const surface = await shown(), pressed = await R.p.$eval('.vpage.on [data-v-depth="surface"]', (b) => b.getAttribute('aria-pressed'));
     await R.p.click('.vpage.on [data-v-depth="all"]'); const back = await shown();
-    check('self card (asked by Void): a Root cause / Surface toggle over what got built, counted from the ledger kind of each build, six at a time, asks shown as text',
-      all.length === 6 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 6 && !R.errors.length,
+    check('self card (asked by Void): a Root cause / Surface toggle over what got built, counted from the ledger kind of each build, five at a time (the rest folded), asks shown as text',
+      all.length === 5 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 5 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
     await L.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await L.page()), 6000);
-    const got = await L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cs = (e) => getComputedStyle(e), px = (e, k) => parseFloat(cs(e)[k]);
-      const h = pg.querySelector('.vs-sec[data-sec=asked] h3'), p = pg.querySelector('.vs-sec[data-sec=weakest] p'), li = pg.querySelector('.vs-sec[data-sec=asked] li'), log = pg.querySelector('.vs-log'), lead = pg.querySelector('.vs-sec[data-sec=shipped] p');
-      return { heads: [...pg.querySelectorAll('h3.vs-h')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
+    const got = await L.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cs = (e) => getComputedStyle(e), px = (e, k) => parseFloat(cs(e)[k]); pg.querySelector('.vs-sec[data-sec=built]').open = true; // its box shows when it is open (owner's redesign)
+      const h = pg.querySelector('.vs-sec[data-sec=asked] h3'), p = pg.querySelector('.vs-sec[data-sec=growth] p'), li = pg.querySelector('.vs-sec[data-sec=asked] li'), log = pg.querySelector('.vs-log'), lead = pg.querySelector('.vs-sec[data-sec=shipped] p');
+      return { heads: [...pg.querySelectorAll('h3.vs-h, h4.vs-h4')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
         pm: px(p, 'marginBottom') || px(lead, 'marginBottom'), leadMargin: px(lead, 'marginBottom'), logFont: cs(log).fontFamily, bodyFont: cs(lead).fontFamily, border: cs(log).borderTopWidth, meta: cs(li.querySelector('.v-meta')).fontSize, errors: 0 }; });
     check('self card layout (owner review 2026-10-18): real headings (bold, larger than the body), one list item per ask with a hanging indent, 8px or more between paragraphs, the reflection in the reading font and what got built in monospace inside a bordered box',
-      got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for") && got.heads.includes('What got built') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
+      got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
       JSON.stringify({ got, errors: L.errors }));
     await L.ctx.close(); }
+  // V01D's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
+  // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
+  if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what V01D wanted built and why it mattered to the stage. '.repeat(2);
+    const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Void: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
+    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something V01D asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', at: '2026-10-18T0' + i + ':00:00Z' }));
+    const thoughts = 'I feel the vector field move my cards. '.repeat(12);
+    await S.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts, weakest: 'Words and the world is my least proven family.', next_game: 'Go, for its territory.', better: 'Close the loops between skills.', asks: [] }, { at: '2026-10-18T06:00:00Z', kind: 'build', thoughts: 'It moves now.', shipped: 'Main red: the field drags a card', better: 'dynamic scale for posters', asks: [] }], asks, follow: { total: 70, built: 30, asked: 90, recent } })));
+    await S.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await S.page()), 8000);
+    if (process.env.VOID_SHOTS) { // a look at the card and its saved picture (VOID_SHOTS=<folder>): screenshots for a person, never a check
+      await S.p.waitForTimeout(1500); fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true });
+      await S.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'self-card.png') }).catch(() => {});
+      await S.p.setViewportSize({ width: 1280, height: 2600 }); await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); pg.style.maxHeight = 'none'; }); await S.p.waitForTimeout(600);
+      await S.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'self-card-whole.png') }).catch(() => {});
+      await S.p.evaluate(() => { document.querySelector('.vpage.on').style.maxHeight = ''; }); await S.p.setViewportSize({ width: 1280, height: 720 });
+      const svg = await S.p.evaluate(async () => { const pg = document.querySelector('.vpage.on'), cs = await import('/lib/card-share.js'), ci = await import('/lib/card-image.js'), d = cs.readCard(pg); return ci.cardSvg(cs.imageData(pg, d)); });
+      const V = await S.ctx.newPage(); await V.setContent('<body style="margin:0;background:#111">' + svg + '</body>'); const box = await V.locator('body > svg').boundingBox(); await V.setViewportSize({ width: Math.ceil(box.width), height: Math.min(4000, Math.ceil(box.height)) });
+      await V.screenshot({ path: path.join(process.env.VOID_SHOTS, 'self-card-saved.png'), fullPage: true }); await V.close(); }
+    await until(() => S.p.$('.vpage.on [data-fam-bar]'), 6000); await S.p.waitForTimeout(800); // the family bars and the art arrive after the card
+    const self = await S.p.evaluate(async () => {
+      const pg = document.querySelector('.vpage.on'), cs = (e) => getComputedStyle(e), vis = (ul) => [...ul.querySelectorAll(':scope > li')].filter((li) => !li.hidden).length;
+      const heads = [...pg.querySelectorAll('h3.vs-h, h4.vs-h4')], hd = pg.querySelector('.vs-sec[data-sec=growth] h3.vs-h'), body = pg.querySelector('.vs-sec[data-sec=growth] p');
+      const built = pg.querySelector('.v-built'), more = built.nextElementSibling, asked = pg.querySelector('.vs-sec[data-sec=asked] ul');
+      const before = { built: vis(built), asked: vis(asked), label: more.textContent, exp: more.getAttribute('aria-expanded') };
+      more.click(); const after = { built: vis(built), exp: more.getAttribute('aria-expanded') }; more.click(); const back = vis(built);
+      // (c) the speaker sits as far in from the right border as the title from the left
+      const r = pg.getBoundingClientRect(), sp = pg.querySelector(':scope > .vread'), h2 = pg.querySelector(':scope > h2'), inset = sp && h2 ? { right: Math.round(r.right - sp.getBoundingClientRect().right), left: Math.round(h2.getBoundingClientRect().left - r.left + parseFloat(cs(h2).borderLeftWidth) + parseFloat(cs(h2).paddingLeft)) } : null; // the title text's inset
+      // (d) and the picture: what save / copy keep
+      const cs2 = await import('/lib/card-share.js'), ci = await import('/lib/card-image.js'), d = cs2.readCard(pg), img = cs2.imageData(pg, d), svg = ci.cardSvg(img);
+      return { heads: heads.map((h) => h.textContent), hw: +cs(hd).fontWeight, hs: parseFloat(cs(hd).fontSize), ps: parseFloat(cs(body).fontSize), inSummary: heads.filter((h) => h.tagName === 'H3').every((h) => h.parentElement.tagName === 'SUMMARY'), before, after, back, inset,
+        len: d.b.length, note: cs2.fullNote(d.b.length), allAsks: recentCount(d.b), detailNew: /built ask number 0[\s\S]*what the builder shipped/.test(d.b), detailOld: (d.b.match(/what the builder shipped/g) || []).length, tail: d.b.slice(-80),
+        img: img.self, svgH: +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1], svgQuote: /font-style="italic"[^>]*>I feel the vector field/.test(svg), svgBars: (svg.match(/<rect x="270" y="\d+" width="350"/g) || []).length, svgBuilt: /font-weight="700"[^>]*>What got built \(30 of 70 asks\)</.test(svg), svgRaw: (svg.match(/built ask number/g) || []).length,
+        redesign: { evolved: pg.querySelectorAll('.vc-evolved-note').length, art: [...pg.querySelectorAll(':scope > .vc-art > img, :scope > .vc-art > svg')].filter((n) => getComputedStyle(n).display !== 'none' && getComputedStyle(n).visibility !== 'hidden' && n.getBoundingClientRect().width > 40).length,
+          smallOverArt: [...pg.querySelectorAll(':scope > .vc-art *')].filter((n) => n.tagName !== 'svg' && n.closest('svg') === null && n.getBoundingClientRect().width > 0 && n.getBoundingClientRect().width < pg.querySelector(':scope > .vc-art').getBoundingClientRect().width * 0.6 && getComputedStyle(n).display !== 'none').map((n) => n.className && String(n.className)),
+          open: [...pg.querySelectorAll('details.vs-sec')].filter((d) => d.open).map((d) => d.dataset.sec), quote: !!pg.querySelector('section[data-sec=words] > blockquote.vs-voice'), quoteBar: getComputedStyle(pg.querySelector('blockquote.vs-voice')).borderLeftWidth,
+          bars: pg.querySelectorAll('[data-fam-bar]').length, weak: pg.querySelectorAll('[data-fam-bar][data-weak]').length, families: ((await (await fetch('/skills/families.json')).json()).families || []).filter((f) => f && Array.isArray(f.skills) && f.skills.some((x) => x && x.name)).length } };
+      function recentCount(t) { let n = 0; for (let i = 0; i < 30; i++) if (t.includes('built ask number ' + i + ':')) n++; return n; }
+    });
+    // a section's heading is its toggle, by click and by keyboard
+    await S.p.click('.vpage.on .vs-sec[data-sec=growth] > summary'); const opened = await S.p.$eval('.vpage.on .vs-sec[data-sec=growth]', (d) => d.open);
+    await S.p.focus('.vpage.on .vs-sec[data-sec=growth] > summary'); await S.p.keyboard.press('Enter'); const shut = await S.p.$eval('.vpage.on .vs-sec[data-sec=growth]', (d) => d.open);
+    check('void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind "show all N" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)',
+      self.heads.includes('Weakest right now') && self.heads.includes('Next game I want to learn') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
+        && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 30' && self.before.exp === 'false' && self.after.built === 30 && self.after.exp === 'true' && self.back === 5
+        && opened === true && shut === false
+        && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
+        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 10 && !S.errors.length,
+      JSON.stringify({ self, opened, shut, errors: S.errors }));
+    check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, V01D\'s words a quotation with an accent bar and every block closed, a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
+      self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.length === 0 && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
+        && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
+        && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+    // V01D's will (2026-10-18): a correction opens the self card with Correct me open and its box focused, never the look skill
+    const corr = [];
+    for (const q of ['open the self card and tell V01D what it got wrong', 'show the self card and correct it', 'tell void what it got wrong']) {
+      await S.ask('close', 200); await S.ask(q, 300); await until(async () => /Correct me/.test(await S.page()), 6000);
+      corr.push(await until(() => S.p.evaluate(() => { const sec = document.querySelector('.vpage.on .vs-sec[data-sec=correct]'), a = document.activeElement; return sec && sec.open && a && sec.contains(a) ? a.tagName : null; }), 4000));
+    }
+    const look = await S.state();
+    check('void asks batch 4: "open the self card and tell V01D what it got wrong", "show the self card and correct it" and "tell void what it got wrong" open the self card with Correct me open and focused, not the look skill (V01D\'s top two wants)',
+      corr.every(Boolean) && !look.some((x) => x.kind === 'look'), JSON.stringify({ corr, kinds: look.map((x) => x.kind) }));
+    await S.ctx.close();
+
+    // the incident autopsy: every listed incident (newest three) gets the reaction bar of eight, 'confused' and 'pity' in the warning amber
+    const A = await fresh(); const posts = [], gets = [];
+    await A.ctx.route(/\/incidents\.json(?:\?|$)/, (rt) => rt.fulfill(json({ incidents: [{ at: '2026-10-18T04:08:54.198Z', sha: '9e29a06db436bae99f4e0e43dfe39ad2be3dd002', suite: 'browser suite on main', checks: ['clock: "what time" broke'] }, { at: '2026-10-18T03:03:35.419Z', sha: '24db7ae2f8d293c566e9b77ecb73d48920000000', suite: 'browser suite on main', checks: ['x: y'] }] })));
+    await A.ctx.route(/\/api\/react(?:\?|$)/, (rt) => { const q = rt.request(); if (q.method() === 'GET') { gets.push(new URL(q.url()).searchParams.get('target')); return rt.fulfill(json({ ok: true, counts: { clap: 0, fire: 0, wow: 0, laugh: 0, heart: 0, eyes: 0, confused: 2, pity: 0 } })); }
+      posts.push(JSON.parse(q.postData() || '{}')); return rt.fulfill(json({ ok: true, counts: { clap: 0, fire: 0, wow: 0, laugh: 0, heart: 0, eyes: 0, confused: 2, pity: 1 } })); });
+    await A.ask('incident autopsy', 300);
+    const bar = await until(() => A.p.evaluate(() => { const b = document.querySelector('.vpage.on li[data-incident] > .rx-bar:not([hidden])'); if (!b) return null;
+      const btn = (id) => b.querySelector('[data-reaction="' + id + '"]');
+      return { n: document.querySelectorAll('.vpage.on li[data-incident] > .rx-bar').length, target: b.dataset.target, ids: [...b.querySelectorAll('button')].map((x) => x.dataset.reaction), tinted: [...b.querySelectorAll('button[data-tint]')].map((x) => x.dataset.reaction),
+        amber: getComputedStyle(btn('pity')).borderTopColor, plain: getComputedStyle(btn('clap')).borderTopColor, confused: btn('confused').querySelector('.rx-n').textContent }; }), 8000);
+    if (bar) { await A.p.click('.vpage.on li[data-incident] > .rx-bar [data-reaction="pity"]'); await A.p.waitForTimeout(400); }
+    check('void asks batch 4: the incident autopsy carries the spectator reaction bar under each listed incident (the closed list of eight, the incident\'s own slug), with confused and pity tinted in the warning amber; a tap sends only {target, reaction}',
+      !!bar && bar.n === 2 && bar.target === 'incident-2026-10-18t04-08-54-198z' && bar.ids.join() === 'clap,fire,wow,laugh,heart,eyes,confused,pity' && bar.tinted.join() === 'confused,pity' && bar.amber === 'rgb(255, 176, 0)' && bar.plain !== bar.amber && bar.confused === '2'
+        && gets.includes('incident-2026-10-18t04-08-54-198z') && posts.length === 1 && posts[0].reaction === 'pity' && posts[0].target === bar.target && Object.keys(posts[0]).sort().join() === 'reaction,target' && !A.errors.length,
+      JSON.stringify({ bar, gets, posts, errors: A.errors }));
+    await A.ctx.close();
+
+    // the Zorbleflux throttle: typing in another card slows the field to about a quarter, and it comes back after the person lets go
+    const Z = await fresh(); await Z.ask('zorbleflux', 600);
+    await until(() => Z.p.$('.zorble-card'), 5000);
+    await Z.p.evaluate(() => { const st = document.getElementById('stage'), t = document.createElement('div'); t.className = 'thing'; t.id = 'b4-note'; t.style.cssText = 'position:absolute;left:20px;top:420px;width:180px'; t.innerHTML = '<input id="b4-in" aria-label="note">'; st.appendChild(t); });
+    await Z.p.focus('.zorble-card'); await Z.p.keyboard.press('ArrowRight');
+    // game time per frame (a headless browser draws few frames, so a frame's dt is often at the game's 0.05 s cap: per frame is steady where per second is not)
+    const rate = (ms) => Z.p.evaluate((ms) => new Promise((res) => { const el = document.querySelector('.zorble-card'), t0 = el._zorble().t; let n = 0; const f = () => { n++; if (!done) requestAnimationFrame(f); }; let done = false; requestAnimationFrame(f);
+      setTimeout(() => { done = true; res(n ? (el._zorble().t - t0) / n : 0); }, ms); }), ms);
+    const full = await rate(800);
+    await Z.p.focus('#b4-in'); await Z.p.waitForTimeout(500); const slow = await rate(800), flag = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
+    await Z.p.evaluate(() => document.activeElement.blur()); await Z.p.waitForTimeout(1500); const back = await rate(800), flagBack = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
+    check('void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go (asked by Void)',
+      full > 0.005 && slow < full * 0.45 && slow > 0 && flag === 'slow' && back > full * 0.8 && flagBack === 'full' && !Z.errors.length, JSON.stringify({ full, slow, back, flag, flagBack, errors: Z.errors }));
+    await Z.ctx.close();
+
+    // dynamic scale while flying, and the quick filter on the family-health card
+    const F = await fresh();
+    await F.p.evaluate(() => { const st = document.getElementById('stage'), mk = (id, x, pic) => { const t = document.createElement('div'); t.className = 'thing'; t.id = id; t.style.cssText = 'position:absolute;width:120px;height:160px;left:' + x + 'px;top:' + (innerHeight / 2 - 80) + 'px'; t.innerHTML = pic ? '<img alt="" style="width:100%;height:100%" src="data:image/gif;base64,R0lGODlhAQABAAAAACw=">' : 'plain'; st.appendChild(t); };
+      mk('b4-poster', innerWidth / 2 - 60, true); mk('b4-far', 4, true); mk('b4-plain', innerWidth / 2 + 80, false); });
+    await F.ask('fly around', 600);
+    const flying = await F.p.evaluate(() => ({ near: document.getElementById('b4-poster').style.scale, far: document.getElementById('b4-far').style.scale, plain: document.getElementById('b4-plain').style.scale, shadow: document.getElementById('b4-poster').style.filter }));
+    await F.ask('land', 1200);
+    const landed = await F.p.evaluate(() => ({ near: document.getElementById('b4-poster').style.scale, shadow: document.getElementById('b4-poster').style.filter }));
+    check('void asks batch 4: dynamic scale: while flying, a picture at the centre of the view swells (up to 1.08) with a soft drop shadow, one far off and a card without a picture do not, and landing puts it back (asked by Void)',
+      +flying.near > 1.05 && +flying.near <= 1.08 && /drop-shadow/.test(flying.shadow) && (flying.far === '' || +flying.far < 1.01) && flying.plain === '' && landed.near === '' && landed.shadow === '' && !F.errors.length, JSON.stringify({ flying, landed, errors: F.errors }));
+    await F.ask('family health', 300); await until(() => F.p.$('.vpage.on [data-fh-filter]'), 6000);
+    const pick = (k) => F.p.evaluate((k) => { document.querySelector('.vpage.on [data-fh-filter="' + k + '"]').click(); const pg = document.querySelector('.vpage.on'), vis = (e) => !e.hidden && !e.closest('[hidden]');
+      return { tiers: [...new Set([...pg.querySelectorAll('li[data-skill]')].filter(vis).map((li) => li.dataset.tier))], skills: [...pg.querySelectorAll('li[data-skill]')].filter(vis).length, fams: [...pg.querySelectorAll('.fh-family')].filter((f) => !f.hidden).length, pressed: pg.querySelector('[data-fh-filter][aria-pressed="true"]').dataset.fhFilter }; }, k);
+    const exp = await pick('experiment'), pro = await pick('proven'), all = await pick('all');
+    check('void asks batch 4: the family-health card\'s quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Void)',
+      exp.tiers.join() === 'experiment' && exp.skills > 0 && pro.tiers.join() === 'proven' && pro.skills > 0 && pro.pressed === 'proven' && all.pressed === 'all' && all.skills === 0 && all.fams >= exp.fams && !F.errors.length,
+      JSON.stringify({ exp, pro, all, errors: F.errors }));
+    await F.ctx.close(); }
   if (want("Site Test card: what to test next, from the lowest-rated skills, a tap tests one, and a heat map of the least stable families")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
     await S.ctx.route(/\/skills\/families\.json/, (rt) => rt.fulfill(json({ families: [{ id: 'time', name: 'Time', count: { proven: 1 }, skills: [{ name: 'timer', tier: 'proven', failing: ['set a timer'] }, { name: 'clock', tier: 'proven' }] }, { name: 'Words <b>', count: { proven: 0 }, skills: [{ name: 'define', tier: 'experiment' }] }] })));
