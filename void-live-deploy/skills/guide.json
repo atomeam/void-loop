@@ -140,8 +140,8 @@
    "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 10,
+    "experiment": 0,
+    "tested": 11,
     "checked": 14,
     "proven": 16
    },
@@ -4653,8 +4653,8 @@
     "remediation velocity",
     "how quickly do you fix a miss"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "a self-test",
    "n": 265
   },
   {
