@@ -5881,8 +5881,9 @@ try {
     const tier = {}; for (const f of fam.families) for (const k of f.skills) tier[k.name] = k.tier;
     const heavy = deps.libs.filter((l) => l.skills >= 8).map((l) => {
       const f = deps.files[l.file], dep = [...(f.importedBy || []), ...(f.reachedBy || [])].filter((x) => /^skills\/[^/]+\.js$/.test(x));
-      const sound = dep.filter((x) => /^(?:checked|proven)$/.test(tier[x.replace(/^skills\//, '').replace(/\.js$/, '')] || '')).length;
-      return { file: l.file, steady: l.tests > 0 && sound / Math.max(1, dep.length) >= 0.5 };
+      const name = (x) => x.replace(/^skills\//, '').replace(/\.js$/, ''), rated = dep.filter((x) => tier[name(x)]); // a helper file with no rating is not a skill
+      const sound = rated.filter((x) => /^(?:checked|proven)$/.test(tier[name(x)])).length;
+      return { file: l.file, steady: l.tests > 0 && sound / Math.max(1, rated.length || dep.length) >= 0.5 };
     });
     await D.ask('dependency health', 1200);
     const card = await until(async () => D.p.$eval('.vpage', (p) => {
