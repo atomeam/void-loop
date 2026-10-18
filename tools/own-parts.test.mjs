@@ -1,4 +1,4 @@
-// V01D's own component names route to the component, and ordinal dates read as numbers (owner, 2026-10-18).
+// Verse's own component names route to the component, and ordinal dates read as numbers (owner, 2026-10-18).
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { partOf, PARTS } from '../void-live-deploy/lib/own-parts.js';
 import ownParts from '../void-live-deploy/skills/own-parts.js';

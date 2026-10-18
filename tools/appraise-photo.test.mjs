@@ -1,4 +1,4 @@
-// node --test tools/appraise-photo.test.mjs: V01D values anything from a photo (frontier #30). The valuation from a description
+// node --test tools/appraise-photo.test.mjs: Verse values anything from a photo (frontier #30). The valuation from a description
 // (lib/appraise-photo.js), the route (functions/api/appraise.js, the vision model stubbed) and the asks the skill takes
 // (skills/appraise.js). People are never priced, in the photo or in the ask.
 import test from 'node:test';

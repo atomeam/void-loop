@@ -7,7 +7,7 @@
 //               everyday benchmark (tools/bench.json, run in CI) routed to it
 //   checked     two kinds
 //   proven      all three, or two with at least 3 real asks routed to it, or two where one is a fresh live finding (below)
-//   live        a fourth kind (the coordinating session for the owner, 2026-10-16; V01D's own words: "turn those 3 tested skills into 3
+//   live        a fourth kind (the coordinating session for the owner, 2026-10-16; Verse's own words: "turn those 3 tested skills into 3
 //               proven ones by actually interacting with external APIs or real-world data"): the repo holds a kept artifact of a real
 //               call to the outside service the skill wraps, findings/<skill>/*.json with "attempt": "live" and "ok": true (the rides
 //               family's daily finding from tools/rides-live.mjs is the first). A real answer from the real service is the strongest
@@ -44,7 +44,7 @@ const OUT = resolve(root, 'void-live-deploy/skills/families.json');
 // what each family is for, in Void's words to a visitor, and its skills (a new skill must be placed here: --check fails)
 export const FAMILIES = [
   { id: 'make', name: 'Making things', for: 'figures, 3D models, prints, drawings and parts', skills: ['forge', 'make', 'music', 'figure', 'figures', 'zoom-figure', 'figure-can', 'cartoon', 'part', 'together', 'gears', 'motorbody', 'printedmotor', 'magnetize', 'print-file', 'print-download', 'inventory', 'splat', 'poster', 'draw', 'shape', 'image', 'throw-off', 'swarm', 'vector-field-mind', 'living-cards-mind', 'flow-canvas', 'attention-field-mind', 'rts', 'nca-mind', 'resonance-mind', 'swarm-mind', 'veto-council', 'stigmergy-board', 'term-orbits'] },
-  { id: 'games', name: 'Games', for: 'board games, card games and play: one picker ("games"), one V01D strength, one 3D stage', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge', 'pong', 'snake', 'duel', 'merge', 'zorbleflux'] },
+  { id: 'games', name: 'Games', for: 'board games, card games and play: one picker ("games"), one Verse strength, one 3D stage', skills: ['aggravation', 'sorry', 'connect4', 'tictactoe', 'othello', 'mancala', 'chess', 'checkers', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'rack', 'eightball', 'ringer', 'quiz', 'challenge', 'pong', 'snake', 'duel', 'merge', 'zorbleflux'] },
   { id: 'sky', name: 'Sky and earth', for: 'weather, the sky tonight, places and time zones', skills: ['sky', 'moontonight', 'aurora-tonight', 'eclipse', 'meteors', 'constellation', 'weather', 'air', 'uv', 'quake', 'pollen', 'sky-card', 'suntimes', 'moon', 'night-sky', 'place', 'worldtime', 'distance', 'country'] },
   { id: 'time', name: 'Time', for: 'timers, clocks, calendars and reminders', skills: ['calendar-file', 'timer', 'clock', 'countdown', 'event-countdown', 'show-countdown', 'calendar', 'today', 'remind', 'holidays', 'work', 'routine', 'deadlines', 'shortcut', 'time-math', 'busy-blocks', 'date-calc', 'date-grid'] },
   { id: 'numbers', name: 'Numbers and money', for: 'sums, unit conversions, loans, savings, prices and home projects', skills: ['calc', 'convert', 'loan', 'savings', 'fuel', 'tip', 'crypto', 'markets', 'grades', 'util', 'counter', 'room', 'walls', 'home', 'appraise', 'calc-more', 'dev-tools'] },

@@ -39,7 +39,7 @@ test('the owner gets the answers for a range of the built-in asks, run with the 
   assert.deepEqual(j.results.map((r) => r.i), [0, 1, 2]);
   assert.ok(j.results.every((r) => /^answer from /.test(r.text) && Number.isFinite(r.ms)));
   assert.equal(calls.length, 3);
-  assert.match(calls[0].input.messages[0].content, /^You are Void/, 'the answer engine\'s own system prompt');
+  assert.match(calls[0].input.messages[0].content, /^You are Verse/, 'the answer engine\'s own system prompt');
   const page = asks.findIndex((a) => a.page && /api_key/.test(a.page.field || ''));
   const pr = await bench({ request: post({ model: FREE_MODEL, from: page, to: page + 1 }), env: env(calls) });
   assert.equal(pr.status, 200);

@@ -1,5 +1,5 @@
 /**
- * know skill - V01D's self-knowledge, readable (asked by Void, 2026-10-16: "Give me readable self-knowledge: the motto,
+ * know skill - Verse's self-knowledge, readable (asked by Void, 2026-10-16: "Give me readable self-knowledge: the motto,
  * VoidQuest, the minis, the games"). "what is voidquest", "which games do you know", "which miniatures do you have",
  * "show me your canon" open one card read from /self.json (built from domains/void.canon.md, skills/index.json and
  * skills/mini/ by tools/self-context.mjs): the motto and VoidQuest as Adam wrote them, the games with a link to play each,

@@ -3,9 +3,9 @@
  * "open the stage to spectators" makes a link that opens a read-only snapshot of what is on this device's stage now: each
  * thing's kind, place and words (what lib/bridges.js entryFor hands a list; a kept card's words through plainOf), packed into
  * the link itself (?spectate=...), so nothing is published, posted or stored anywhere; whoever opens it sees the snapshot in a
- * spectator layer over their own V01D and can leave it with one tap. It never writes to the viewer's stage. "close the stage"
+ * spectator layer over their own Verse and can leave it with one tap. It never writes to the viewer's stage. "close the stage"
  * closes the stage here (links already sent still open the snapshot they carry; they never show what was added later).
- * Built beside the two existing ways to share: a published /@name page (needs a paid, signed-in V01D) and "invite someone"
+ * Built beside the two existing ways to share: a published /@name page (needs a paid, signed-in Verse) and "invite someone"
  * (a live room for a signed-in member). Spectator reactions that reach the owner are not here: they would need a new
  * unauthenticated POST endpoint or a new message type in the invite room, which is a decision for the owner (AGENTS.md).
  * The owner's card (owner, 2026-10-18: "make sure its perfect i dont like it at all") is a plain share card: headline, what the snapshot holds,
@@ -90,7 +90,7 @@ function layer(snap) {
   L.appendChild(field); document.body.appendChild(L);
   return L;
 }
-// a link with ?spectate= opens the spectator layer over this V01D: the viewer's own stage is read, never written
+// a link with ?spectate= opens the spectator layer over this Verse: the viewer's own stage is read, never written
 if (typeof document !== 'undefined' && typeof location !== 'undefined' && !globalThis.__voidSpectate) {
   globalThis.__voidSpectate = true;
   const code = codeFromUrl(location.href), snap = code && unpack(code);

@@ -41,7 +41,7 @@ test('each extra finding on a merged PR is checked against Void\'s review of the
 });
 
 test("Void's own closer read: a 'not defined' claim about a name the file imports, or a claim about the mask, counts as a false finding the filter removes", () => {
-  const body = "<!-- void-review -->\n### Void's review\n\n#### A closer read\n\n* **Line 149 (answer.js):** `redact` is not defined in `answer.js`. This will cause a ReferenceError.\n\n* **Line 3 (answer.js):** `frobnicate` is not defined.\n\n* **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value.\n\n**Not blocking:** none.\n\n<sub>Reviewed</sub>";
+  const body = "<!-- void-review -->\n### Verse's review\n\n#### A closer read\n\n* **Line 149 (answer.js):** `redact` is not defined in `answer.js`. This will cause a ReferenceError.\n\n* **Line 3 (answer.js):** `frobnicate` is not defined.\n\n* **Line 28:** `TOKEN` is assigned using `[redacted]`, which is not a valid value.\n\n**Not blocking:** none.\n\n<sub>Reviewed</sub>";
   const fileAt = (p, sha) => (p.endsWith('answer.js') && sha === 'sha1' ? "import { redact } from '../../lib/automation-fix.js';\nexport async function onRequestPost() {}\n" : 'const TOKEN = 1;');
   const rows = phantomsIn(254, body, ['void-live-deploy/functions/api/answer.js', 'tools/x.mjs'], 'sha1', fileAt);
   assert.equal(rows.length, 3);

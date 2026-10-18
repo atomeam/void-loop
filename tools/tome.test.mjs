@@ -1,4 +1,4 @@
-// The tome (lib/tome.js): the V01D Book typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
+// The tome (lib/tome.js): the Verse Book typeset for parchment, read full screen like a Skyrim book. Run: node --test tools/tome.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';

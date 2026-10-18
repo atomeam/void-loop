@@ -1,4 +1,4 @@
-// V01D writes its own probe asks (frontier #28, step 2): lib/probe-asks.js keeps only plain bench-shaped asks with a want the
+// Verse writes its own probe asks (frontier #28, step 2): lib/probe-asks.js keeps only plain bench-shaped asks with a want the
 // family answers with, the route is owner-only and stores nothing, and tools/probe-asks.mjs queues misses as probe: jobs within a limit.
 import test from 'node:test';
 import assert from 'node:assert/strict';

@@ -5,7 +5,7 @@
 // account's session. A <video> cannot send a Bearer header, so the list hands each payer a link to each film that is signed and
 // stops working after WATCH_MS; the link streams from R2 with Range, so a film plays at once and seeks, however many people watch.
 //   GET                          (anyone)              -> { films: [{ id, at, title, description, tags, bytes, src, reviews }], owner, member }
-//                                 reviews only for the owner and members (2026-10-15: the films are V01D's ads, so anyone watches)
+//                                 reviews only for the owner and members (2026-10-15: the films are Verse's ads, so anyone watches)
 //                                 reviews: lib/film-reviews.js (POST one at /api/film-review)
 //   GET ?id=&exp=&sig=           (a signed link)       -> the MP4 (206 for a Range)
 //   POST ?id= video/mp4 body     (the owner)           -> stores the film      (.github/workflows/record.yml, daily)

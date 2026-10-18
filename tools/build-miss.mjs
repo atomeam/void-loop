@@ -11,10 +11,10 @@
 //   decide    (no secret)    the repo decides, stopping at the first failure: the skill collision check, the overlap check, a unit
 //                            test written from a template (each example match()es, run() with a fake api returns the name), the ask
 //                            typed into the real page (tools/ask.mjs: `by: skill:<name>`, tools/finish.mjs tryProblem), one line in
-//                            docs/MAP.md (tools/map-coverage.test.mjs), a commit, Void's review as a gate; a pass is a patch file, and
+//                            docs/MAP.md (tools/map-coverage.test.mjs), a commit, Verse's review as a gate; a pass is a patch file, and
 //                            the tree is put back either way
 //   report    (owner token)  a failure puts the job back to `queued` with the failing step in its note, for a builder; a pass hands
-//                            the patch to the workflow's write job, which only moves bytes into a pull request labelled "made by V01D"
+//                            the patch to the workflow's write job, which only moves bytes into a pull request labelled "made by Verse"
 //                            (automerge at confidence 0.8 and up, else "waits for owner"; owner, 2026-10-18) whose last line is
 //                            `Job: <id>`, so the job goes live when it merges (tools/job-link.mjs)
 //   node tools/build-miss.mjs claim [--out <dir>] [--job <id>] [--dry]   exit 0 claimed (job.json written), 3 when there is none
@@ -42,7 +42,7 @@ export const ASK_RE = /^learn to handle "(.+)"$/;
 export const PHRASING_RE = /^[a-z0-9 ?'’,.-]{3,80}$/i; // one way people type the ask: letters, digits and the punctuation an ask has
 export const SOURCE_RE = /^[a-z0-9 ,.()&:-]{3,80}$/i; // the card's Source line sits inside a single-quoted string: no quotes, no backslashes
 export const MAX_PHRASINGS = 10, MIN_ANSWER = 20;
-export const MAP_ANCHOR = '- **Skills V01D built from the miss board'; // the one docs/MAP.md bullet this lane appends to
+export const MAP_ANCHOR = '- **Skills Verse built from the miss board'; // the one docs/MAP.md bullet this lane appends to
 const lit = (s) => JSON.stringify(String(s)), reEsc = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); // as tools/new-skill.mjs
 
 /** the skill name an ask makes: lib/learn.js's slug (the job's own target slug), clipped to what NAME_RE allows; '' when it makes none. Pure. */
@@ -108,10 +108,10 @@ export function applyFill(scaffold, { ask, answer, phrasings, source }) {
   const when = line('const WHEN = '), ans = line('const ANSWER = '), srcLine = src.split('\n').find((l) => l.includes('Source: say where the answer comes from'));
   const examples = '  examples: ' + JSON.stringify([String(ask)], null, 2).replace(/\n/g, '\n  ') + ',';
   if (!when || !ans || !srcLine || !src.includes(examples)) return { ok: false, why: 'the scaffold is not the one tools/new-skill.mjs writes' };
-  const cite = SOURCE_RE.test(source) ? String(source) : 'V01D (not yet verified)';
+  const cite = SOURCE_RE.test(source) ? String(source) : 'Verse (not yet verified)';
   const edits = [
-    { find: when, replace: "const WHEN = new RegExp('^(?:' + " + lit(all.map(reEsc).join('|')) + " + ')$', 'i'); // the ask people typed and the phrasings V01D added (tools/build-miss.mjs); widen it when a miss shows a new one" },
-    { find: ans, replace: 'const ANSWER = ' + lit(a) + '; // what the card says: V01D\'s own draft from the miss board, checked by the repo (tools/build-miss.mjs)' },
+    { find: when, replace: "const WHEN = new RegExp('^(?:' + " + lit(all.map(reEsc).join('|')) + " + ')$', 'i'); // the ask people typed and the phrasings Verse added (tools/build-miss.mjs); widen it when a miss shows a new one" },
+    { find: ans, replace: 'const ANSWER = ' + lit(a) + '; // what the card says: Verse\'s own draft from the miss board, checked by the repo (tools/build-miss.mjs)' },
     { find: examples, replace: '  examples: ' + JSON.stringify(all, null, 2).replace(/\n/g, '\n  ') + ',' },
     { find: srcLine, replace: srcLine.replace('Source: say where the answer comes from', 'Source: ' + cite) },
   ];
@@ -122,7 +122,7 @@ export function applyFill(scaffold, { ask, answer, phrasings, source }) {
 /** the unit test for a built skill: each example match()es, each near miss does not, run() with a fake api returns the name. Pure. */
 export function testFileFor(name) {
   const n = String(name).replace(/[^a-z0-9-]/g, '');
-  return `// ${n}: a skill V01D built from the miss board by itself (tools/build-miss.mjs, docs/playbooks/build-miss.md). node --test tools/${n}.test.mjs
+  return `// ${n}: a skill Verse built from the miss board by itself (tools/build-miss.mjs, docs/playbooks/build-miss.md). node --test tools/${n}.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import skill from '../void-live-deploy/skills/${n}.js';
@@ -167,15 +167,15 @@ export function allowedPaths(numstat, name) {
 
 /** the queue note after an attempt: which step stopped it, or that it is a pull request; counts and step names only. Pure. */
 export function noteFor(result) {
-  if (result.passed) return 'V01D built the ' + result.name + ' skill from the miss board: it passed ' + STEPS.join(', ') + '; see the pull request labelled "made by V01D"';
-  return 'V01D built a skill draft that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '; a builder takes it from here';
+  if (result.passed) return 'Verse built the ' + result.name + ' skill from the miss board: it passed ' + STEPS.join(', ') + '; see the pull request labelled "made by Verse"';
+  return 'Verse built a skill draft that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '; a builder takes it from here';
 }
 
 /** the fill, start to end: one model call, the reply read back, the scaffold filled. { ok, text, meta } or { ok: false, why }. */
 export async function fill(job, scaffold, { key, model = 'openrouter/auto', fetcher = fetch } = {}) {
   if (!key) return { ok: false, why: 'OPENROUTER_API_KEY is not set' };
   let r;
-  try { r = await fetcher('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', 'x-title': 'V01D builds a skill' }, body: JSON.stringify({ model, messages: fillPrompt(job), max_tokens: 1200 }) }); }
+  try { r = await fetcher('https://openrouter.ai/api/v1/chat/completions', { method: 'POST', headers: { authorization: 'Bearer ' + key, 'content-type': 'application/json', 'x-title': 'Verse builds a skill' }, body: JSON.stringify({ model, messages: fillPrompt(job), max_tokens: 1200 }) }); }
   catch (e) { return { ok: false, why: 'the model was not reached: ' + String(e && e.message || e).slice(0, 80) }; }
   if (!r.ok) return { ok: false, why: 'the model answered ' + r.status };
   let j = null; try { j = await r.json(); } catch (_) { j = null; }
@@ -278,8 +278,8 @@ async function main(argv) {
       }
       if (!result) {
         run('git', ['add', '--', ...paths]);
-        run('git', ['-c', 'user.name=V01D', '-c', 'user.email=void@a-to-mind.com', 'commit', '-q', '--no-verify', '-m', 'V01D builds a skill: learn to handle "' + job.ask + '"', '--', ...paths]);
-        committed = /V01D builds a skill/.test(run('git', ['log', '-1', '--format=%s']).stdout);
+        run('git', ['-c', 'user.name=Verse', '-c', 'user.email=void@a-to-mind.com', 'commit', '-q', '--no-verify', '-m', 'Verse builds a skill: learn to handle "' + job.ask + '"', '--', ...paths]);
+        committed = /Verse builds a skill/.test(run('git', ['log', '-1', '--format=%s']).stdout);
         if (!committed) stop('void review', 'the commit for the review was not made');
         else { const rv = run(process.execPath, [join(here, 'review-pr.mjs'), '--gate', '--base', 'HEAD~1', '--head', 'HEAD']); if (rv.status !== 0) stop('void review', 'a bug or a risk on an added line'); }
       }
@@ -301,10 +301,10 @@ async function main(argv) {
   if (cmd === 'report') {
     const r = readJson(resultFile) || fail(job, 'checks', 'no result was written');
     const conf = r.confidence ?? 'none given', san = (s, re) => String(s || '').replace(re, '');
-    console.log('### V01D built a skill from the miss board\n\n| What | |\n|:--|:--|\n| the ask | "' + job.ask + '" |\n| skill | ' + job.name + ' |\n| phrasings | ' + (r.phrasings ?? '—') + ' |\n| V01D\'s confidence | ' + conf + ' |\n| source, in the model\'s words | ' + (r.source || '—') + ' |\n| result | ' + (r.passed ? 'passed ' + STEPS.join(', ') : 'failed at ' + r.failed + (r.detail ? ': ' + r.detail : '')) + ' |');
+    console.log('### Verse built a skill from the miss board\n\n| What | |\n|:--|:--|\n| the ask | "' + job.ask + '" |\n| skill | ' + job.name + ' |\n| phrasings | ' + (r.phrasings ?? '—') + ' |\n| Verse\'s confidence | ' + conf + ' |\n| source, in the model\'s words | ' + (r.source || '—') + ' |\n| result | ' + (r.passed ? 'passed ' + STEPS.join(', ') : 'failed at ' + r.failed + (r.detail ? ': ' + r.detail : '')) + ' |');
     if (process.env.GITHUB_OUTPUT) {
       const lines = ['passed=' + (r.passed && !job.dry ? '1' : '0'), 'name=' + job.name, 'job=' + san(job.id, /[^a-z0-9]/g), 'ask=' + san(job.ask, /[^\w ,.'?!-]/g), 'confidence=' + san(conf, /[^\w .-]/g),
-        'source=' + san(r.source, /[^\w ,.()&:-]/g), 'phrasings=' + (Number(r.phrasings) || 0), 'title=V01D builds a skill: learn to handle "' + san(job.ask, /[^\w ,.'?!-]/g) + '"'];
+        'source=' + san(r.source, /[^\w ,.()&:-]/g), 'phrasings=' + (Number(r.phrasings) || 0), 'title=Verse builds a skill: learn to handle "' + san(job.ask, /[^\w ,.'?!-]/g) + '"'];
       writeFileSync(process.env.GITHUB_OUTPUT, lines.join('\n') + '\n', { flag: 'a' });
     }
     if (job.dry) { console.log('dry run: the queue note is left alone'); return 0; }

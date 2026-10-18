@@ -1,4 +1,4 @@
-// Claude as V01D's builder brain (tools/claude-brain.mjs): one call with a hard output ceiling, the same question and gate as V01D's
+// Claude as Verse's builder brain (tools/claude-brain.mjs): one call with a hard output ceiling, the same question and gate as Verse's
 // own model, and a refusal, a cut-off reply or a reply that fails the gate never becomes a proposal. A fake client: no credits spent.
 import test from 'node:test';
 import assert from 'node:assert/strict';

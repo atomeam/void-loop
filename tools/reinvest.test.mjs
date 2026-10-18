@@ -41,7 +41,7 @@ for (let i = 0; i < 3; i++) { L = learn(L, { kind: 'quality', before: 10, after:
 const roi = (r, id) => r.ranked.find((x) => x.id === id).roi;
 const r0 = allocate(6000, C), r1 = allocate(6000, C, { learned: L });
 assert.ok(roi(r0, 'cheap') > roi(r0, 'dear') && roi(r1, 'dear') > roi(r1, 'cheap'), 'measured outcomes re-rank: quality spending worked, revenue spending did not');
-// V01D's voice
+// Verse's voice
 const v = readVoice('1. **Build a tiny emergency buffer** – Put $20 aside.\n\n2. **Buy fractional shares or a diversified ETF** – $50.\n\n3. **Invest in yourself** – Spend $15 on a course.\n\n4. **Test a micro-business idea** – Reserve $15 for a product test.');
 assert.equal(v.reserve, 0.2); assert.equal(v.unmapped.length, 1); assert.ok(v.voice.reserve > v.voice.speed && v.voice.quality > v.voice.speed);
 assert.equal(voiceAnswer('<!-- ask-void:x -->\n**Asked:** If you earned your first $100, how would you reinvest it?\n\n> keep $20\n> more'), 'keep $20\nmore');

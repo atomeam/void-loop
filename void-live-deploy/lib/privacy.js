@@ -1,4 +1,4 @@
-// Privacy guard (owner, 2026-10-15: "make V01D the best at keeping secrets ever made"). Personal data is redacted before
+// Privacy guard (owner, 2026-10-15: "make Verse the best at keeping secrets ever made"). Personal data is redacted before
 // anything is stored or logged: keys and tokens (lib/automation-fix.js redact), then emails, phone numbers, IP addresses,
 // card-like numbers and street-style handles become placeholders. Pure; the miss board, the answer cache key and every
 // log line run through redactPersonal. tools/privacy-scan.mjs uses findPersonal to block commits that would carry them.

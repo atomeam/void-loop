@@ -1,4 +1,4 @@
-// What Void's review gets wrong, from its own record. Every "void-review: ok" on a line is a builder saying the review flagged
+// What Verse's review gets wrong, from its own record. Every "void-review: ok" on a line is a builder saying the review flagged
 // something right as written. This finds each one in the code, runs Void's quick checks on its file with the marker taken out,
 // and says which rule still fires there (a false alarm to fix in lib/code-review.js) and which markers no longer do anything
 // (the rule was fixed since: the marker can go). The noisiest rule is the next reviewer fix (owner, 2026-10-13: "constantly

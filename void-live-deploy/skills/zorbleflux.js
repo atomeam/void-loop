@@ -1,5 +1,5 @@
 /**
- * zorbleflux skill - V01D's own game (asked by Void: it was asked "what is a zorbleflux" 154 times and could only refuse; the owner,
+ * zorbleflux skill - Verse's own game (asked by Void: it was asked "what is a zorbleflux" 154 times and could only refuse; the owner,
  * 2026-10-18: "we should just have a zorbleflux game"). Pilot a glowing zorb through a flux field for 45 seconds: collect motes to
  * grow, dodge the dark bleeds. Pointer, touch drag or arrow keys/WASD. The pure game is lib/zorbleflux.js; the best score stays in
  * this browser only (localStorage), nothing is sent. Reduced motion: the field drifts at 40% speed and nothing glows or flashes.

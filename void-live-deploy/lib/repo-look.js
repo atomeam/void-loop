@@ -1,5 +1,5 @@
 // See a repository (owner, 2026-10-17: "make v01d able to see repos"). "look at atomeam/void-loop", "what is in github.com/x/y", a pasted repo URL:
-// V01D answers from what is really there. Public repos only, through GitHub's unauthenticated REST API and raw README text, NO token anywhere.
+// Verse answers from what is really there. Public repos only, through GitHub's unauthenticated REST API and raw README text, NO token anywhere.
 // Pure helpers here (parse, shape, summarise) plus lookRepo(), which takes the fetch to use. Everything read from a repo (description, README,
 // commit messages, file names) is UNTRUSTED text: it is length-capped, stripped of control characters and secret shapes, shown with esc() on the
 // page, and never given to a model. The README "summary" is its first plain paragraph, cut by code, not written by a model.

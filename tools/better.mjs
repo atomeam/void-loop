@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Is V01D getting better? The daily measure (lib/better.js): five parts from the repo's own evidence, one score, a trend.
+// Is Verse getting better? The daily measure (lib/better.js): five parts from the repo's own evidence, one score, a trend.
 //   node tools/better.mjs            print today's measure and the trend
 //   node tools/better.mjs --write    the same, and append today's row to void-live-deploy/void.better.json (the growth card reads it)
 //   node tools/better.mjs --json     the row and the comparison as JSON
@@ -15,7 +15,7 @@ const P = (f) => resolve(root, f);
 export const OUT = P('void-live-deploy/void.better.json'); // every row, for the growth card
 export const OUT_DOMAINS = P('domains/void.better.json'); // today's row with its trend, for the builders and tools/pit-crew.mjs
 
-/** V01D's current asks as tools/pit-crew.mjs reads them: [{ ask, id, small }] (one shape, lib/better.js asksOf). Pure. */
+/** Verse's current asks as tools/pit-crew.mjs reads them: [{ ask, id, small }] (one shape, lib/better.js asksOf). Pure. */
 export const parseVoiceAsks = (md) => asksOf(md).map((a) => ({ ask: a.words, id: a.id, small: a.small }));
 /** the ask ids a ledger line built (`asked: ask-…`, set by finish.mjs --asked). Pure. */
 export function builtAskIds(ledger) {
@@ -41,11 +41,11 @@ export function today(now = Date.now()) {
 }
 
 export const MEANS = {
-  self: 'the share of this week\'s ledger lines that do not cite the owner (V01D driving its own changes)',
-  asks: 'how fast V01D\'s own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait',
+  self: 'the share of this week\'s ledger lines that do not cite the owner (Verse driving its own changes)',
+  asks: 'how fast Verse\'s own asks ship (median days from the ask to the ledger line that built it) and how long the open ones wait',
   friction: 'skills failing the bench or barely checked, against all skills (skills/families.json)',
   bench: 'the everyday benchmark\'s score on main (tools/bench.misses.json)',
-  probes: 'fixes this week that came from V01D\'s own probes',
+  probes: 'fixes this week that came from Verse\'s own probes',
 };
 
 /** the measure in words, one line a part */

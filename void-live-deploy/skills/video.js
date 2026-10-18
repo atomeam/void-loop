@@ -1,7 +1,7 @@
 /**
- * video skill - V01D plays any video from YouTube, Rumble, Vimeo, Dailymotion, the Internet Archive, PeerTube, Odysee and Twitch
+ * video skill - Verse plays any video from YouTube, Rumble, Vimeo, Dailymotion, the Internet Archive, PeerTube, Odysee and Twitch
  * right on the stage (owner, 2026-10-15: "it should master youtube and easily pull up any video, rumble and other free platforms
- * too. V01D should be the only site you need").
+ * too. Verse should be the only site you need").
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api), stageKinds }
  * "play lofi beats", "show me the video of the moon landing", "find a rumble video about bitcoin", a pasted link from any of them,
  * then the watch tools: "skip to 2:30", "speed 1.5x", "captions on", "queue <x>", "next", "my queue", "recently watched".

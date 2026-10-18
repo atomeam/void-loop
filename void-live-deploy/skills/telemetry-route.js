@@ -1,5 +1,5 @@
 /**
- * telemetry-route skill (owner, 2026-10-18): paste a CI report, build log or status update and V01D reads it as the builders' own
+ * telemetry-route skill (owner, 2026-10-18): paste a CI report, build log or status update and Verse reads it as the builders' own
  * telemetry instead of answering it like a coding question. A card names the commits and pull requests it saw, the pass count and what
  * is still failing, with two taps: plant the failures in the error garden, or open the incident autopsy. Nothing is sent anywhere and
  * nothing lands on the stage unasked. A question or an instruction ("why is my ci red") is left alone (lib/telemetry.js).

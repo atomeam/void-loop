@@ -1,4 +1,4 @@
-// V01D's rules engine (frontier #35; owner, 2026-10-16: "V01D can combine and obey all games' rules simultaneously").
+// Verse's rules engine (frontier #35; owner, 2026-10-16: "Verse can combine and obey all games' rules simultaneously").
 // Rules are DATA, never code: { id, source, layer, when, if, then, dependsOn }. The vocabulary below is closed and validated, so a rule a
 // stranger proposes can never be code. The engine is pure: step(state, event, stack) -> { state, log, conflicts, denied }; no randomness,
 // no I/O, no eval. A stack is an ordered list of rule sets ({ name, rules }); every set in it is in force at once.

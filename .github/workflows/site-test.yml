@@ -1,6 +1,6 @@
 # The site tester (tools/site-test.mjs): live a-to-mind.com in headless Chrome, after every deploy and once an hour. It only tests:
-# every non-GET request is answered inside the browser, so nothing is submitted, posted, bought, sent or logged on V01D.
-# Every run ends in one improvement (tools/site-test.log.json): a new failure or a wording V01D missed opens ONE issue labelled
+# every non-GET request is answered inside the browser, so nothing is submitted, posted, bought, sent or logged on Verse.
+# Every run ends in one improvement (tools/site-test.log.json): a new failure or a wording Verse missed opens ONE issue labelled
 # site-test (the same title is never opened twice; an open one gets no comment spam), else the suite grows or a limit tightens,
 # committed to main as data (suite, seen-set, log: tester-made asks only, never a visitor's words). Screenshots are the artifact.
 name: Site test
@@ -74,12 +74,12 @@ jobs:
             sleep $((2 ** i)); git pull --rebase origin main
           done
           exit 1
-      - name: Teach V01D the wording it missed (a ready PR, merged on green)
+      - name: Teach Verse the wording it missed (a ready PR, merged on green)
         if: env.ISSUE != ''
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          case "$TITLE" in *"teach V01D"*) ;; *) echo "not a teach item"; exit 0;; esac
+          case "$TITLE" in *"teach Verse"*) ;; *) echo "not a teach item"; exit 0;; esac
           git config user.name "github-actions[bot]"; git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git fetch -q origin main && git checkout -q -B teach-base origin/main
           out=$(node tools/site-teach.mjs --from-title "$TITLE" --issue "$ISSUE" --pr) || exit 0

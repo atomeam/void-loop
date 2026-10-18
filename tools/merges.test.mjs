@@ -7,7 +7,7 @@ import skill, { mergedOf, mergesHtml } from '../void-live-deploy/skills/merges.j
 const pr = (n, merged_at, labels, extra = {}) => ({ number: n, title: 'PR ' + n, merged_at, html_url: 'https://github.com/atomeam/void-loop/pull/' + n, labels: labels.map((name) => ({ name })), ...extra });
 
 test('merges: merged pull requests only, newest first, with how each got in', () => {
-  const rows = mergedOf([pr(1, '2026-10-16T03:00:00Z', ['automerge']), pr(2, null, ['automerge']), pr(3, '2026-10-16T04:00:00Z', ['made by V01D', 'automerge']), pr(4, '2026-10-16T02:00:00Z', []), pr(5, '2026-10-16T01:00:00Z', ['made by V01D', 'waits for owner'], { html_url: 'https://evil.example/5' })]);
+  const rows = mergedOf([pr(1, '2026-10-16T03:00:00Z', ['automerge']), pr(2, null, ['automerge']), pr(3, '2026-10-16T04:00:00Z', ['made by Verse', 'automerge']), pr(4, '2026-10-16T02:00:00Z', []), pr(5, '2026-10-16T01:00:00Z', ['made by Verse', 'waits for owner'], { html_url: 'https://evil.example/5' })]);
   assert.deepEqual(rows.map((r) => r.number), [3, 1, 4, 5]);
   assert.equal(rows[0].how, 'made by Verse, merged itself'); assert.equal(rows[1].how, "merged itself on Void's review"); assert.equal(rows[2].how, 'merged by hand'); assert.equal(rows[3].how, 'made by Verse, approved by the owner');
   assert.equal(rows[3].url, 'https://github.com/atomeam/void-loop/pull/5', 'only GitHub links');

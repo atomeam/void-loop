@@ -48,7 +48,7 @@ console.log('record: ok');
   assert.notEqual(pickFilm(real, filmed), 'anomalous-event-timeline-4');
 }
 
-// several films in one run, all different (owner, 2026-10-15: "V01D can make as many videos as it wants")
+// several films in one run, all different (owner, 2026-10-15: "Verse can make as many videos as it wants")
 {
   const lab = ['a-1', 'b-2', 'c-3', 'd-4'];
   assert.deepEqual(picksOf(lab, filmedOf('film-20261014-d-4-r1'), 3), ['c-3', 'b-2', 'a-1'], 'three new ones, newest first');

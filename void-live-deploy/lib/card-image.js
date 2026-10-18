@@ -1,4 +1,4 @@
-// The whole V01D card as one picture (owner, 2026-10-16: "the whole card, images and all" copyable and saved; cards will be printed).
+// The whole Verse card as one picture (owner, 2026-10-16: "the whole card, images and all" copyable and saved; cards will be printed).
 // Drawn by us, not a screenshot of the page: cardSvg() builds a standalone SVG at the 63 x 88 mm card ratio (744 x 1039 px at 300 dpi; with
 // bleed 3 mm = 35 px more on every side, 814 x 1109) holding the frame, title bar and cost, the art (lib/card-art.js), the type line, the first
 // lines of the text, the Power / Resistance / Income plates, the collector number and the foil by rarity. toPng() renders it in the browser.
@@ -52,7 +52,7 @@ export function fitLong(text, h, w = 624) {
   return { lines: l, fs, lh, extra: l.length * lh - h };
 }
 // The self card's picture (owner's redesign, 2026-10-18: the saved "What I think of myself" was a tall PNG holding every ask as raw lines, 16k
-// characters). It has the live card's shape instead: V01D's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
+// characters). It has the live card's shape instead: Verse's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
 // family (the proven share; the weakest in amber), then each block's heading with its count and at most SELF_LINES lines. Nothing is a wall.
 // `self` comes from the card on the page (lib/card-share.js selfImage): { voice, bars: [{ name, share, label, weak }], sections: [{ title, lines }] }.
 export const SELF_LINES = 3, SELF_VOICE_LINES = 5;

@@ -1,7 +1,7 @@
 // The automerge bot's safety-check (asked by Void: "a 'safety-check' step to the automerge bot that runs node --test on the specific
 // affected skill files before finalizing the merge"). Before a ready PR is merged, the unit tests of the skills and libs it changed
 // run on the PR's own head: node --test on those test files only (never the suite). A failure holds the merge and says so once
-// on the PR; it adds to the gates (Void's review, the checks), it replaces none. If the check itself cannot run (no fetch, no
+// on the PR; it adds to the gates (Verse's review, the checks), it replaces none. If the check itself cannot run (no fetch, no
 // worktree) the merge goes on as before, so a broken bot never blocks the repository: the suite on main still reverts.
 //   safety(run, gh, { repo, pr, sha }) -> { state: 'pass' | 'fail' | 'skip', files, why }
 import { readdirSync, readFileSync } from 'node:fs';

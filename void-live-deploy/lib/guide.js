@@ -1,4 +1,4 @@
-// The book: everything V01D can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
+// The book: everything Verse can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
 // through that contains everything so you don't have to search ... like a BradyGames or Prima strategy guide").
 // Pure functions only, shared by the generator (tools/guide.mjs writes skills/guide.json) and the reader (skills/guide.js draws
 // it). Nothing here is a hand-written list: the chapters are skills/families.json's families in its order, the pages are every
@@ -129,7 +129,7 @@ export function miniOwners(names, read) {
 
 const title = (s) => String(s || '').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
-// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book
+// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
 // epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
 // it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.

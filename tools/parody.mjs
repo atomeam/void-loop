@@ -1,5 +1,5 @@
 // The 30-game parody matrix (domains/void.board-game-law.md §5) as data for the game rack (asked by Void: "Integrate the 30-game
-// matrix into a searchable 'Games' skill" and "a 'parody-forge' card ... instant V01D-branded game generation").
+// matrix into a searchable 'Games' skill" and "a 'parody-forge' card ... instant Verse-branded game generation").
 //   node tools/parody.mjs           write void-live-deploy/lib/parody.js from the doc
 //   node tools/parody.mjs --check   exit 1 when it is stale (tools/void-asks-store.test.mjs checks it too)
 import fs from 'node:fs'; import path from 'node:path'; import { fileURLToPath } from 'node:url';

@@ -7,7 +7,7 @@
  */
 const FILM = '(?:films?|fillms?|filmes|flims?|fimls?|fims)';
 const ASK = '(?:(?:where|how)\\s+(?:do|can|could)\\s+i\\s+(?:watch|see|find|review|get\\s+to)\\s+|(?:show\\s+me|open|watch|see|play|review|go\\s+to|take\\s+me\\s+to|where\\s+are)\\s+)?(?:the\\s+)?';
-const WHOSE = "(?:void'?s?|v0[1i]d'?s?|your|my|a-?to-?mind'?s?)\\s+";
+const WHOSE = "(?:void'?s?|(?:v0[1i]d|verse)'?s?|your|my|a-?to-?mind'?s?)\\s+";
 const MINE = new RegExp('^' + ASK + '(?:' + WHOSE + ')?' + FILM + '(?:\\s+(?:page|reviews?|to\\s+review))?$', 'i'); // "films", "voids fillms", "review films"
 const VIDEOS = new RegExp('^' + ASK + WHOSE + '(?:videos?|movies?|shorts|recordings)(?:\\s+page)?$', 'i'); // "your videos" needs the whose
 const REVIEW = new RegExp('^' + FILM + '\\s+reviews?$', 'i'); // "film review"
@@ -24,7 +24,7 @@ export function wantsFilms(lower) {
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 
-// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any V01D FILM
+// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
 // currently on the stage"): "film metadata", "films as json", "films json", "export the films". Read from /api/films, which anyone
 // may list; each film becomes { id, day, experiment, title, tags, source, watch }.
 const META = new RegExp('^(?:(?:show|give|get|export|list)\\s+(?:me\\s+)?)?(?:the\\s+)?(?:' + WHOSE + ')?(?:' + FILM + '|videos?)\\s+(?:metadata|meta|data|as\\s+json|json|info)$|^(?:export\\s+(?:the\\s+)?' + FILM + ')$', 'i');

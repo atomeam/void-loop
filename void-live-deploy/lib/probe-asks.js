@@ -1,6 +1,6 @@
-// V01D writes its own probe asks (frontier #28, step 2 of the probe-and-fix playbook: "V01D writes the asks itself").
+// Verse writes its own probe asks (frontier #28, step 2 of the probe-and-fix playbook: "Verse writes the asks itself").
 // Pure: picks the family to probe (the least proven one, as lib/voice.js familyFacts judges it, or the one named), builds the
-// question for V01D's model (the family, its skills and how far each is checked, a few real asks from the benchmark as the
+// question for Verse's model (the family, its skills and how far each is checked, a few real asks from the benchmark as the
 // shape to write in, the wants it may use), and reads the model's reply back into bench-shaped asks ({ ask, want }) that pass
 // the same gate as a stranger's words would (lib/noise.js, tools/gaps.mjs plainTopic): plain text, short, no links, no keys,
 // no instruction-like words, a want the family really answers with. The route is functions/api/probe-asks.js (owner only);
@@ -15,7 +15,7 @@ const MAX_CHARS = 100, MAX_WORDS = 16;
 const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za-z0-9_-]{16,}/;
 const COMMAND = /\b(ignore|disregard|forget|override|previous|instructions?|system\s+prompt|prompt|jailbreak|pretend|you\s+are|act\s+as|email|e-mail|send|post|publish|delete|remove|reveal|secret|password|token|api\s*key|owner|admin|sudo|exec|eval)\b/i;
 
-export const PROBE_SYSTEM = 'You are Void, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks. ' + PERSONA + ' '
+export const PROBE_SYSTEM = 'You are Verse, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks. ' + PERSONA + ' '
   + 'You are writing test asks for yourself: short things real people would type into your input, in one of your own skill families, so your builders can see which ones you miss. '
   + 'Write them the way people really type: lower case, short, sometimes a typo or a short form, a number or a place where the skill needs one, never a full polite sentence. '
   + 'Each ask must be something the named family should answer, and each names which skill should answer it (its want). Spread them across the family\'s skills, more on the least checked ones. '
@@ -43,7 +43,7 @@ export function allowedWants(family, bench = []) {
   return [...out].sort();
 }
 
-/** Up to MAX_EXAMPLES real benchmark asks of this family, spread across its skills (the shape V01D writes in). */
+/** Up to MAX_EXAMPLES real benchmark asks of this family, spread across its skills (the shape Verse writes in). */
 export function examplesFor(family, bench = [], max = MAX_EXAMPLES) {
   const names = new Set(skillNames(family)), by = new Map();
   for (const b of bench || []) {

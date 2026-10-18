@@ -1,4 +1,4 @@
-// V01D's probe ledger (lib/probe-log.js, functions/api/probe-log.js; asked by Void): records keep counts, skills, confidences and
+// Verse's probe ledger (lib/probe-log.js, functions/api/probe-log.js; asked by Void): records keep counts, skills, confidences and
 // outcomes only; the stats give the success rate and the proposals most certain first. Run: node --test tools/probe-log.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

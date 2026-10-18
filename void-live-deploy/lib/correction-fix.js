@@ -4,7 +4,7 @@
 // the page is exactly: the skill's name, the family's id (from the families file, not typed), the ask run through redact(), the skill's own public
 // file (which the route needs to read the matcher), and a fixed sentence. The visitor's own words (the correction text) are never sent.
 // The click only drafts a proposal (line edits that passed the route's gate): nothing is applied here; a builder or tools/propose-fix.mjs opens
-// the pull request, and Void's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
+// the pull request, and Verse's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
 import { redact } from './automation-fix.js';
 import { familyMap } from './corrections.js';
 export const FIX_ROUTE = '/api/propose-fix';

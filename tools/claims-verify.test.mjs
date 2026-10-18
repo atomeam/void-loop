@@ -1,4 +1,4 @@
-// node --test tools/claims-verify.test.mjs: V01D never claims a build that doesn't answer (Adam, 2026-10-15). The showcase plays a
+// node --test tools/claims-verify.test.mjs: Verse never claims a build that doesn't answer (Adam, 2026-10-15). The showcase plays a
 // ledger build only when its ask is on claims-verified.json; the rest count as in progress. Every ledger build's ask and every
 // must-pass ask ("cat", "what's new", "tester log", ...) is on that list, i.e. answered with its own card, never the fallback.
 import { test } from 'node:test';

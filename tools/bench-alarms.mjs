@@ -1,5 +1,5 @@
 // The Bench icon's numbers (asked by Void, 2026-10-16: "a functional 'Bench' icon on the stage that counts active false alarms").
-// A false alarm is a finding Void's review raised that a person read at its commit and found wrong (tools/review-noise.json,
+// A false alarm is a finding Verse's review raised that a person read at its commit and found wrong (tools/review-noise.json,
 // verdict "false"); "active" is every one still on record. Writes void-live-deploy/bench-alarms.json, which skills/bench.js reads:
 // the count, the alarms (file, line, why), the review findings not read yet, and the everyday bench's last score (bench.misses.json).
 // The deploy runs it (deploy.yml); the file holds no asks, only file names and the reasons already in the public repo.

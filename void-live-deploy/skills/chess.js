@@ -88,7 +88,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
     status.textContent = STATUS[code] ? STATUS[code](s) : busy ? R.thinkingLine(leaning.get(th.id), s) : s.turn === 'w' ? (code === 'check' ? 'Check · your move' : 'Your move') : 'Verse to move';
-    // the one "working" look (void.html .vc-working, shared with the approve card): a shimmer under the line while V01D thinks
+    // the one "working" look (void.html .vc-working, shared with the approve card): a shimmer under the line while Verse thinks
     status.classList.toggle('vc-working', busy); if (busy) status.setAttribute('aria-busy', 'true'); else status.removeAttribute('aria-busy');
     const list = st().moves; let txt = '';
     for (let i = 0; i < list.length; i += 2) txt += (i / 2 + 1) + '. ' + list[i] + (list[i + 1] ? ' ' + list[i + 1] : '') + '  ';

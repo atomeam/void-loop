@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// V01D's films get a sound (owner, 2026-10-17: "v01ds videos are not good enough to share yet . how can we make it drastically better at
+// Verse's films get a sound (owner, 2026-10-17: "v01ds videos are not good enough to share yet . how can we make it drastically better at
 // them?"; frontier #26 step 5). Every film used to be encoded silent (-an). This writes a short score for one film with ffmpeg's own
 // synthesizer: no music files, no licence, no model, no spend. The film's id picks the key, the chord progression and the tempo, so two
 // films never sound the same and the same film always sounds the same. A minor-key pad, a sub bass on the root and a soft pulse on the

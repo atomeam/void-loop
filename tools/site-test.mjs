@@ -1,12 +1,12 @@
 // The site tester (Adam's pick, 2026-10-15): drives a site in headless Chrome the way a person would and checks what comes back.
-//   node tools/site-test.mjs                       V01D: every case in tools/site-test.json on live a-to-mind.com (VOID_SITE overrides)
+//   node tools/site-test.mjs                       Verse: every case in tools/site-test.json on live a-to-mind.com (VOID_SITE overrides)
 //   node tools/site-test.mjs --url <u> --steps f   any site: a JSON list of steps (goto, click, fill, wait, expect, shot)
 //   node tools/site-test.mjs ... --json out.json   also write the results; --shots dir saves a screenshot per case (default site-test-shots/)
-//   node tools/site-test.mjs --improve             after a V01D run: pick this run's one improvement, apply it to the suite, log it
+//   node tools/site-test.mjs --improve             after a Verse run: pick this run's one improvement, apply it to the suite, log it
 // Rules (Adam, 2026-10-15): it only tests. Every request that is not a GET is answered by the tester itself with an empty 204 and never
-// leaves the browser, so it cannot submit a form, post, sign up, buy, send, or land in V01D's answer/miss logs or view counts. Each
+// leaves the browser, so it cannot submit a form, post, sign up, buy, send, or land in Verse's answer/miss logs or view counts. Each
 // run goes through the suite once, never the same ask twice, at most one ask every GAP_MS. Its traffic says who it is (user agent
-// "V01DSiteTest" and an x-void-test header). On another site it reads robots.txt first and stops if the path is disallowed.
+// "VerseSiteTest" and an x-void-test header). On another site it reads robots.txt first and stops if the path is disallowed.
 // Every run ends in exactly one improvement (lib below: improve): a new failure is filed once (deduped by key), else the suite grows
 // by one ask, else a threshold tightens, else the weakest answer is filed for a quality upgrade. tools/site-test.log.json keeps one
 // line per run so nobody has to wonder whether a run was wasted.
@@ -20,7 +20,7 @@ import { fileURLToPath } from 'node:url';
 const here = dirname(fileURLToPath(import.meta.url));
 export const SUITE = resolve(here, 'site-test.json'), LOG = resolve(here, 'site-test.log.json'), SEEN = resolve(here, 'site-test.seen.json');
 export const NEW_PER_RUN = 4;
-export const GAP_MS = 3000, UA_TAG = 'V01DSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
+export const GAP_MS = 3000, UA_TAG = 'VerseSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
 export const REFUSAL = /don.t know this yet|couldn.t find|isn.t connected|something went wrong/i;
 export const STEP_KINDS = ['goto', 'click', 'fill', 'wait', 'expect', 'shot'];
 
@@ -76,7 +76,7 @@ export function checkSteps(steps) {
   return '';
 }
 
-/** Everything V01D has that an ask can reach: every skill with its own examples, plus the pages. skills: [{ name, examples }]. Pure. */
+/** Everything Verse has that an ask can reach: every skill with its own examples, plus the pages. skills: [{ name, examples }]. Pure. */
 export function inventory(skills, pages = ['/store/', '/films/']) {
   return skills.filter((k) => k && k.name && Array.isArray(k.examples) && k.examples.length).map((k) => ({ id: 'skill:' + k.name, asks: k.examples.map(String) }))
     .concat(pages.map((p) => ({ id: 'page:' + p, path: p, asks: [] })));
@@ -84,7 +84,7 @@ export function inventory(skills, pages = ['/store/', '/films/']) {
 
 const SYN = [[/^play /, ["let's play ", 'can we play ', 'start ']], [/^open /, ['show me ', 'pull up ', 'gimme ']], [/^show me /, ['let me see ', 'i wanna see ']],
   [/^what is /, ["what's ", 'whats ']], [/\bfour\b/, ['4']], [/\bconnect 4\b/, ['connect four']], [/\bplease\b/, ['pls']]];
-/** New wordings of an ask, never the ask itself: synonyms, slang, one swapped-letter typo, a real game name V01D maps (games). Pure. */
+/** New wordings of an ask, never the ask itself: synonyms, slang, one swapped-letter typo, a real game name Verse maps (games). Pure. */
 export function variants(ask, games = {}) {
   const a = String(ask).toLowerCase().trim(), out = [];
   for (const [re, subs] of SYN) if (re.test(a)) for (const s of subs) out.push(a.replace(re, s));
@@ -123,8 +123,8 @@ export function remember(seen = {}, probes, at) {
  *  filed: keys already filed (from the log), so a failure is filed once. */
 export function improve(results, suite, filed = []) {
   const done = new Set(filed);
-  // a new wording or activity V01D did not understand: teach it (one alias item with its regression case), before anything else
-  const unheard = (r) => r.variant && r.why.every((w) => /^(refused|nothing appeared|no skill caught)/.test(w)); // V01D did not understand the wording
+  // a new wording or activity Verse did not understand: teach it (one alias item with its regression case), before anything else
+  const unheard = (r) => r.variant && r.why.every((w) => /^(refused|nothing appeared|no skill caught)/.test(w)); // Verse did not understand the wording
   const miss = results.find((r) => !r.ok && unheard(r) && !done.has('teach | ' + r.ask));
   if (miss) return { kind: 'teach', key: 'teach | ' + miss.ask, note: 'teach Verse "' + miss.ask + '" (means "' + miss.base + '", ' + miss.feature + '): ' + miss.why.join('; '),
     suite: { ...suite, teach: (suite.teach || []).concat({ ask: miss.ask, means: miss.base, feature: miss.feature }) } };

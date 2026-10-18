@@ -1,7 +1,7 @@
 // Void's code review API (lib/review-api.js). The page /code-review/ and the GitHub Action (review/action.yml) call it.
 // POST { code | diff, lang?, ask? }  -> { findings, lang, lines, ms, tier, answer?, review: 'rules' | 'model', quoted?: { kept, dropped }, left?, upgrade? }
 //   Who gets the closer read (the model's review on top of the instant checks), from the Authorization header:
-//     the owner (READ_TOKEN or an owner session)      always, free, no daily cap: Void's reviewer is ours first
+//     the owner (READ_TOKEN or an owner session)      always, free, no daily cap: Verse's reviewer is ours first
 //     a Void Pro key  vr1.…                           paid Void ($49 a month) includes it; minted below by a signed-in paid account
 //     a license key   XXXXXXXX-XXXXXXXX-…             Void Code Review Pro bought on its own (lib/products.js), checked with Gumroad
 //     nothing                                         the instant checks only, free, no account

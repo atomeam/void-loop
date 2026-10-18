@@ -1,7 +1,7 @@
 /**
  * collectible skill (owner, 2026-10-18: "make a collectible card of [anything]" ... "foil / normal / full-art variants", "a print sheet of 9";
  * "the art should be of each card's subject, like a magic card or some other really cool collectors card"): "make a collectible card of a dragon",
- * "mint a card of the moon", "collectible card of tokyo". The subject is asked like any ask, so its own answer card appears (V01D's frame,
+ * "mint a card of the moon", "collectible card of tokyo". The subject is asked like any ask, so its own answer card appears (Verse's frame,
  * stats, rarity, the void art of its subject and the Art Forge's painting); this skill then marks it a collectible and gives it a strip of
  * variants (Normal, Foil: a holographic sweep over the art, Full art: the art fills a tall window) and a print sheet of 9 (the saved card
  * picture, lib/card-image.js, tiled 3 x 3 on one PNG). Nothing is sent anywhere by this skill.

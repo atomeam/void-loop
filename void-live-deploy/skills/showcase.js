@@ -107,7 +107,7 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
 const nowIso = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-/** the asks already previewed on this device (cleaned); bounded, so it stays small however much V01D makes */
+/** the asks already previewed on this device (cleaned); bounded, so it stays small however much Verse makes */
 export function shownSet() { try { return new Set(JSON.parse(read(SHOWN_KEY) || '[]')); } catch (_) { return new Set(); } }
 export function markShown(steps) {
   const all = [...shownSet()]; for (const s of steps || []) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
@@ -233,7 +233,7 @@ async function step(stageApi) {
     button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
-  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what V01D made; hidden unless /api/react answers
+  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
   if (rx) el.append(rx);
   const items = trayOf(tour.steps, tour.i);
   if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)

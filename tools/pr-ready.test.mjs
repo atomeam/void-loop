@@ -20,8 +20,8 @@ const thread = (id, extra) => ({ id, user: { login: CR }, original_commit_id: SH
 const reply = (to) => ({ id: 900 + to, in_reply_to_id: to, user: { login: 'atomeam' }, body: 'fixed in the next push' });
 
 ok(R().state === 'merge', 'green CI, clean Void review, quiet CodeRabbit: merge');
-ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Void's review found a bug: stop");
-ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Void's review still running: wait");
+ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Verse's review found a bug: stop");
+ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Verse's review still running: wait");
 ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'merge', 'suite still running: merge, no wait (it runs again on main)');
 ok(R({ checks: [run('void-review')] }).state === 'merge', 'suite not started yet: merge, no wait');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, no wait');
@@ -70,7 +70,7 @@ ok(b.out.state === 'pushed' && b.out.sha === 'feedbead1234', 'dirty and resolvab
 ok(b.has('git', 'worktree', 'add', '--detach', 'origin/helper/x'), 'the branch is checked out detached in its own worktree');
 ok(b.has('node', '/main/tools/merge-main.mjs'), "merge-main.mjs runs from main's tools, not the branch's");
 ok(b.has('git', 'push', 'origin', 'HEAD:refs/heads/helper/x') && !b.calls.some((c) => c[0] === 'git' && c[1] === 'push' && c.some((x) => /^(-f|--force|--force-with-lease)/.test(x))), 'the merge commit is pushed to the branch, never forced');
-ok(b.has('gh', 'workflow', 'run', 'void-review.yml', '--ref', 'helper/x', 'pr=7'), "Void's review is started on the new head (a token push starts no run)");
+ok(b.has('gh', 'workflow', 'run', 'void-review.yml', '--ref', 'helper/x', 'pr=7'), "Verse's review is started on the new head (a token push starts no run)");
 ok(!b.has('gh', 'api', '-X', 'POST'), 'no comment when it resolved');
 ok(b.calls.filter((c) => c[0] === 'git' && c[1] === 'worktree' && c[2] === 'remove').length >= 1, 'the worktree is removed afterwards');
 b = bot({ mergeMain: conflict });
