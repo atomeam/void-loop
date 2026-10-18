@@ -6129,5 +6129,21 @@
   {
     "ask": "show deferred",
     "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "daily note",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "open my notebook",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "what links to Garden Plan",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "what am I missing in my notes",
+    "want": "skill:notebook"
   }
 ]

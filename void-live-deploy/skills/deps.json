@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 672,
+ "counted": 674,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 52,
-   "direct": 48,
-   "dependants": 57,
+   "skills": 53,
+   "direct": 49,
+   "dependants": 58,
    "tests": 6
   },
   {
@@ -991,6 +991,13 @@
   },
   {
    "file": "lib/memory-graph.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/notebook.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3865,6 +3872,12 @@
     "skills/qr-scan.js"
    ]
   },
+  "lib/notebook.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/notebook.js"
+   ]
+  },
   "lib/observations.js": {
    "imports": [],
    "importedBy": [
@@ -4885,6 +4898,7 @@
     "skills/list-tools.js",
     "skills/media-object.js",
     "skills/minimap.js",
+    "skills/notebook.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
     "skills/photo-scrub.js",
@@ -7166,6 +7180,13 @@
   "skills/note-tools.js": {
    "imports": [
     "lib/note-tools.js"
+   ],
+   "importedBy": []
+  },
+  "skills/notebook.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/notebook.js"
    ],
    "importedBy": []
   },

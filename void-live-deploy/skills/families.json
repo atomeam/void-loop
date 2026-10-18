@@ -15,7 +15,7 @@
   "experiment": 7,
   "tested": 91,
   "checked": 98,
-  "proven": 99
+  "proven": 100
  },
  "families": [
   {
@@ -1703,7 +1703,7 @@
     "experiment": 3,
     "tested": 29,
     "checked": 51,
-    "proven": 10
+    "proven": 11
    },
    "skills": [
     {
@@ -1723,6 +1723,14 @@
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 2
+    },
+    {
+     "name": "notebook",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1
     },
     {
      "name": "notepad",

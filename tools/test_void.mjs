@@ -5874,6 +5874,33 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
+  // notebook (the frontier's "absorb and connect every repo": linked notes with backlinks and a daily note, then what am I missing; owner, 2026-10-15: "all the projects are Verse"):
+  // today's note is made once, a [[link]] to a note that does not exist is offered as one tap, the note it points at shows the link back, and a plain mention is linked in one tap
+  if (want("notebook: the daily note, a [[link]] made into a note, the backlink, and a plain mention linked in one tap")) { const B = await fresh(), clicks = [], tap = (sel) => B.p.dispatchEvent(sel, 'click', undefined, { timeout: 5000 }).catch((e) => { clicks.push(sel + ' -> ' + String(e.message).split('\n')[0]); });
+    await B.ask('daily note', 1200);
+    const today = await B.p.evaluate(() => { const d = new Date(), z = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); });
+    const first = await until(async () => B.p.$$eval('.notebook .nb-note', (bs) => bs.map((b) => b.dataset.title)).then((l) => (l.length ? l : null)).catch(() => null), 6000);
+    await B.ask('daily note', 800); // asked again: still one
+    const again = await B.p.$$eval('.notebook .nb-note', (bs) => bs.map((b) => b.dataset.title)).catch(() => []);
+    await B.p.fill('.notebook .nb-text', 'Call [[Garden Plan]] about Zed');
+    const dangling = await until(async () => B.p.$eval('.notebook .nb-dangling[data-title="Garden Plan"]', (r) => r.textContent).catch(() => null), 4000);
+    await tap('.notebook .nb-dangling[data-title="Garden Plan"] button');
+    const made = await B.p.evaluate(() => ({ notes: [...document.querySelectorAll('.notebook .nb-note')].map((b) => b.dataset.title), shown: document.querySelector('.notebook .nb-title').value, back: [...document.querySelectorAll('.notebook .nb-back-note')].map((b) => b.dataset.title) }));
+    await B.p.fill('.notebook .nb-new', 'Zed'); await B.p.press('.notebook .nb-new', 'Enter');
+    await tap('.notebook .nb-note[data-title="Garden Plan"]');
+    await B.p.fill('.notebook .nb-text', 'ask Zed about the beds');
+    await until(async () => B.p.$('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"]').catch(() => null), 4000);
+    await tap('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"] button'); // the daily note names Zed too: the row for the note being edited
+    await B.p.waitForTimeout(300);
+    const linked = await B.p.$eval('.notebook .nb-text', (t) => t.value).catch(() => '');
+    const stillMissing = await B.p.$('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"]');
+    await B.ask('what am I missing in my notes', 800);
+    const view = await B.p.$eval('.notebook', (c) => c.dataset.view).catch(() => '');
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await B.p.waitForTimeout(600); await B.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'notebook.png') }).catch(() => {}); }
+    check('notebook: "daily note" makes today\'s note once, a [[link]] to no note is offered as "make it", the note it points at shows the backlink, a plain mention links in one tap, and "what am I missing" opens the missing view',
+      JSON.stringify(first) === JSON.stringify([today]) && JSON.stringify(again) === JSON.stringify([today]) && /Garden Plan/.test(dangling || '') && made.notes.includes('Garden Plan') && made.shown === 'Garden Plan' && made.back.includes(today)
+      && linked === 'ask [[Zed]] about the beds' && !stillMissing && view === 'missing' && !clicks.length && !B.errors.length, JSON.stringify({ first, again, today, dangling, made, linked, view, clicks, errors: B.errors }));
+    await B.ctx.close(); }
   // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
   // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
   if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });
