@@ -2,14 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T06:46:45.889Z",
-   "sha": "68beae80cf4e0338020f0612d1bbf5133a265354",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39104242714",
+   "at": "2026-10-18T06:50:42.063Z",
+   "sha": "d139d79e5b5ffee950b2ea79c49e586ea355f51b",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39104498469",
    "suite": "browser suite on main",
    "checks": [
     "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
     "intent without a day: \"plan my move\" brings the move's steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day",
     "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
+    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
@@ -17,28 +18,26 @@
    ]
   },
   {
-   "at": "2026-10-18T06:29:30.801Z",
-   "sha": "3ba7f7a2f88137be60936ef0e616753a9e917750",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39103092985",
+   "at": "2026-10-18T06:33:06.729Z",
+   "sha": "264d596f39774d22794ff6215c44f9ec53c39ff4",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39104143756",
    "suite": "browser suite on main",
    "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "V01D card art: \"save card\" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio",
-    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
+    "calendar: a visitor adds \"call Sam next Tuesday at 4\", \"add dentist to my calendar <nine days ahead> at 3pm\", \"put lunch with Ana on my calendar tomorrow at noon\"; all saved here and on the stage card; no yes, no server, no Wikipedia",
+    "dated open plan: \"make a plan to learn spanish by friday\" asks the engine and lists its steps dated back from the day (the goal last), with the countdown and the calendar; with no engine \"learn guitar by next week\" still gets its checklist",
+    "suite ran to the end"
    ]
   },
   {
-   "at": "2026-10-18T06:10:09.553Z",
+   "at": "2026-10-18T06:21:44.869Z",
    "sha": "075112f7541e1fec15fd7e20dbd37b5c3aae375a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39102853985",
    "suite": "browser suite on main",
    "checks": [
-    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
-    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
-    "suite ran to the end"
+    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
