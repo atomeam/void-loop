@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 97,
+  "tested": 96,
   "checked": 98,
-  "proven": 90
+  "proven": 91
  },
  "families": [
   {
@@ -1109,9 +1109,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 11,
+    "tested": 10,
     "checked": 7,
-    "proven": 9
+    "proven": 10
    },
    "sources": {
     "read": 20,
@@ -1415,10 +1415,12 @@
     },
     {
      "name": "film-metadata",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 6 real asks in the benchmark",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
