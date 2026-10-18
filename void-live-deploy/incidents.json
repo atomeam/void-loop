@@ -2,6 +2,22 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T15:33:39.550Z",
+   "sha": "686c6415d5372de6962fca6a6977c3c857270c41",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39140731260",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/perf3d.test.mjs",
+    "tools/test_extension.mjs",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-18T14:48:12.047Z",
    "sha": "25ad091862fb9dd334853ae4f952f6ba2e71986b",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39136320875",
@@ -683,32 +699,6 @@
     "void-live-deploy/void.growth.json",
     "void-live-deploy/void.html",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-18T05:56:19.675Z",
-   "sha": "d51b4c4911bfd80e0b5c3f4307f508b9019f0fb9",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39101990663",
-   "suite": "browser suite on main",
-   "checks": [
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/fixtures/pack5-files.mjs",
-    "tools/launch-fixes.test.mjs",
-    "tools/skill-overlap.json",
-    "tools/test_void.mjs",
-    "tools/tools-pack-5.test.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/md.js",
-    "void-live-deploy/lib/media-local.js",
-    "void-live-deploy/lib/pack5-ui.js",
-    "void-live-deploy/lib/stage-find.js",
-    "void-live-deploy/lib/stage-image.js"
    ]
   }
  ]
