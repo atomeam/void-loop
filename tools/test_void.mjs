@@ -5586,8 +5586,8 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
-    // the open asks: five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
-    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
+    // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
+    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
     // follow.asked (every built ask by the time it was built) feeds the growth velocity: today, yesterday, three days back, and one too old for the week
     const built = (list) => list.map(([ask, at]) => ({ ask, at, times: 1 }));
