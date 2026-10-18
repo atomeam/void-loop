@@ -2,15 +2,13 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T04:53:16.867Z",
+   "at": "2026-10-18T05:04:31.546Z",
    "sha": "8e94c7464ff1f20ee0215885cfd6ec6de1c784ce",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39098391302",
    "suite": "browser suite on main",
    "checks": [
-    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
-    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
-    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
-    "suite ran to the end"
+    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "check timeout: no check finished within 300 s"
    ]
   },
   {
