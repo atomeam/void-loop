@@ -6,7 +6,7 @@ import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
 import * as route from '../void-live-deploy/functions/api/card-art.js';
 import { models, ART_FALLBACK } from '../void-live-deploy/lib/models.js';
-import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
+import { artPrompt, ART_STYLE, imageOf, safeImg, subjectKey, FRAMING, STYLE_LOCK, CAMERA, IMG_MIN, sceneOf, directorPrompt, directedPrompt, familyOf } from '../void-live-deploy/lib/art-rules.js';
 import { readFileSync } from 'node:fs';
 
 const store = new Map();
@@ -58,11 +58,23 @@ test('the prompt is the fixed template with only the folded key, the kind and th
   await post(env, 'draw; "a" <b>dragon</b> in the style of Someone', 'animal', 'mythic');
   assert.equal(calls.length, 1);
   const p = calls[0].o.prompt;
-  assert.ok(p.startsWith(ART_STYLE)); assert.equal(p, artPrompt(subjectKey('draw; "a" <b>dragon</b> in the style of Someone'), 'animal', 'mythic'));
+  assert.ok(p.startsWith('draw a b dragon') && p.includes(ART_STYLE) && p.includes(CAMERA), 'the subject comes first, then one camera and light, then the dark setting'); assert.equal(p, artPrompt(subjectKey('draw; "a" <b>dragon</b> in the style of Someone'), 'animal', 'mythic'));
   assert.ok(!/[<>"';]/.test(p), p);
   assert.ok(p.endsWith(STYLE_LOCK + ', ' + FRAMING), 'the style lock and the framing close every prompt');
   assert.ok(!/\b(in the style of artist|by [A-Z]|disney|marvel|pokemon|nintendo|ghibli|picasso)\b/i.test(artPrompt('cat', 'animal', 'rare')));
   assert.deepEqual([calls[0].model, calls[0].o.width, calls[0].o.height, calls[0].o.multipart], [models('art'), 1024, 576, true], 'klein paints the card\'s 16:9 art window');
+});
+
+test('prompt round 2: concrete subject first, one light, the setting never names an eye, every negative cue is written out', () => {
+  for (const p of [artPrompt('black hole', 'idea', 'rare'), directedPrompt('A black hole bending light over a dark nebula, a ringed accretion disc', 'rare')]) {
+    assert.ok(/no text, no letters, no words, no watermark, no frame, no border/.test(p), p);
+    assert.ok(/fully inside the frame/.test(p) && /16:9/.test(p), 'the subject is kept whole and centred in the wide window');
+    assert.ok(/chosen-one aura/.test(p) && /void-mind energy/.test(p) && /cinematic/.test(p), 'the owner\'s style tags stay');
+    assert.equal((p.match(/rim light/g) || []).length, 1, 'one lighting instruction');
+    assert.ok(!/all-seeing eye/.test(p), 'the style line must not put an eye in every subject');
+  }
+  assert.ok(artPrompt('black hole', 'idea', 'rare').startsWith('black hole ('), 'the subject leads');
+  assert.ok(directedPrompt('A dragon on a tower', 'rare').startsWith('A dragon on a tower, '), 'the scene leads');
 });
 
 test('the daily cap: over it, the card keeps its plate and the model is not asked; ART_DAILY_CAP changes it', async () => {

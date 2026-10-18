@@ -23,3 +23,27 @@ test('drawing touches only the context it is handed and finishes on a recording 
   drawSeal(ctx, 520, 150, sealPlan('incident autopsy', { kind: 'Idea', rarity: 'rare' }));
   assert.ok(calls.get('stroke') > 500 && calls.get('fillRect') > 100, JSON.stringify([...calls]));
 });
+
+test('round 2: the card name picks a recognisable motif (a cat, a black hole, a skyline, a chart, a bowl, a warning, code, a dragon), drawn in its own hue, with its drawing present', async () => {
+  const { motifPaths, MOTIF_HUE, GROUNDED } = await import('../void-live-deploy/lib/card-subject.js');
+  for (const [key, m] of [['cat', 'cat'], ['black hole', 'hole'], ['tokyo', 'city'], ['stock market', 'chart'], ['recipe pancakes', 'food'], ['error report', 'warning'], ['the matrix code', 'code'], ['dragon', 'dragon'], ['the moon', 'moon']]) {
+    const p = sealPlan(key, { kind: 'Answer', hue: 100, nouns: [] });
+    assert.equal(p.motif, m, key); assert.ok(motifPaths(m) && motifPaths(m).length, m + ' has a drawing'); assert.equal(p.palette[0], MOTIF_HUE[m], key + ' is drawn in its own hue');
+  }
+  assert.equal(sealPlan('plain thing xyz', { hue: 100 }).palette[0], 100, 'no motif: the family hue leads');
+  assert.ok(sealPlan('tokyo').grounded && GROUNDED.has('wave') && !sealPlan('cat').grounded);
+  const moon = motifPaths('moon')[0][0]; assert.ok(/A40 40 0 1 0/.test(moon) && /A55 55 0 0 1/.test(moon), 'the moon is a crescent with area (the old path was a bracket)');
+});
+
+test('round 2: the motif is at most 64% of the window and its centre keeps it clear of the top and bottom edge', () => {
+  globalThis.Path2D = class { constructor(d) { this.d = d; } };
+  try {
+    for (const key of ['cat', 'dragon', 'tokyo', 'black hole']) for (let i = 0; i < 12; i++) {
+      const p = sealPlan(key + ' ' + i, { kind: 'Creature', hue: 20, nouns: [key] }); let sz = 0, cy = 0;
+      const ctx = new Proxy({ canvas: null }, { get: (t, k) => (k in t ? t[k] : () => ({ addColorStop() {} })), set: (t, k, v) => { t[k] = v; return true; } });
+      ctx.translate = (x, y) => { cy = y; }; ctx.scale = (a) => { sz = a * 100; };
+      drawSeal(ctx, 520, 293, p);
+      assert.ok(sz <= 293 * 0.64 + 0.01, key + ' size ' + sz); assert.ok(cy >= 293 * 0.06 - 0.01 && cy + sz <= 293 * 0.94 + 0.01, key + ' top ' + cy + ' size ' + sz);
+    }
+  } finally { delete globalThis.Path2D; }
+});

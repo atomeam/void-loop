@@ -5,9 +5,9 @@
 // The family's hue tints it; the rarity sets how much light it has (a Mythic burns, a Common glows). The kind picks the core's shape.
 // Pure apart from the canvas it is handed: sealPlan(seed, opts) returns plain numbers (tested), drawSeal(ctx, w, h, plan) draws them.
 
-import { motifsFor, motifPaths } from './card-subject.js';
+import { motifsFor, motifPaths, motifHue, GROUNDED } from './card-subject.js';
 
-export const VERSION = 1;
+export const VERSION = 2;
 /** FNV-1a 32-bit of a string. Pure. */
 export function seedOf(s) { let h = 0x811c9dc5; for (const ch of String(s == null ? '' : s)) { h ^= ch.codePointAt(0); h = Math.imul(h, 16777619) >>> 0; } return h >>> 0; }
 /** a seeded generator (mulberry32). Pure. */
@@ -26,15 +26,18 @@ export function sealPlan(key, { kind = 'Idea', hue = null, rarity = 'common', no
   const seed = seedOf(String(key || '').toLowerCase().trim() + '|' + kind), r = rng(seed), L = LIGHT[rarityKey(rarity)];
   const h = Number.isFinite(+hue) ? ((+hue % 360) + 360) % 360 : Math.floor(r() * 360);
   const [sides, rays] = CORE[kind] || CORE.Idea;
+  // the subject's motif: the card's own short name first ("black hole", "cat": the subject), else the answer's words, else nothing (the burning iris)
+  const keyWords = String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean), motif = (keyWords.length <= 4 && motifsFor(keyWords)[0]) || (motifsFor(nouns || [])[0]) || motifsFor(keyWords)[0] || '';
+  const mh = motifHue(motif), main = mh == null ? h : mh; // a dragon burns red and the sea is blue; the family's hue still tints the nebula and the counter-light
   return {
     seed, hue: h, kind, light: L,
-    // a palette of three lights on black: the family's hue, a cold counter-hue and (by rarity) gold
-    palette: [h, (h + 150 + Math.floor(r() * 60)) % 360, (h + 300 + Math.floor(r() * 40)) % 360],
+    // a palette of three lights on black: the subject's hue (else the family's), a cold counter-hue and a third
+    palette: [main, (h + 150 + Math.floor(r() * 60)) % 360, (h + 300 + Math.floor(r() * 40)) % 360],
     field: { scale: 1.6 + r() * 2.2, twist: 0.6 + r() * 1.6, swirl: r() < 0.5 ? 1 : -1, octaves: 3 },
     form: FORMS[Math.floor(r() * FORMS.length)],
     // the card's subject, drawn in light at the core (owner, 2026-10-18: "the art should be of each card's subject"): the answer's words
     // (lib/card-subject.js subjectOf) mapped to a motif, else the key's own words; none found keeps the burning iris
-    motif: (motifsFor(nouns || [])[0]) || (motifsFor(String(key || '').toLowerCase().split(/[^a-z]+/).filter(Boolean))[0]) || '', // the answer's words first, else the card's own name
+    motif, grounded: GROUNDED.has(motif),
     core: { x: 0.28 + r() * 0.44, y: 0.38 + r() * 0.24, sides, rays, spin: r() * Math.PI * 2, size: 0.3 + r() * 0.12 },
     nebula: Array.from({ length: 3 }, () => ({ x: r(), y: r(), r: 0.25 + r() * 0.4, c: Math.floor(r() * 3), a: 0.05 + r() * 0.08 })),
     tear: null,
@@ -56,7 +59,10 @@ const hsl = (h, s, l, a) => 'hsla(' + Math.round(h) + ',' + s + '%,' + l + '%,' 
 
 /** draw the plan on a 2D context of w x h. The only impure part: it paints. */
 export function drawSeal(ctx, w, h, p) {
-  const r = rng(p.seed ^ 0x9e3779b9), N = noise2(p.seed), L = p.light, cx = p.core.x * w, cy = p.core.y * h, m = Math.min(w, h), M = Math.max(w, h);
+  const r = rng(p.seed ^ 0x9e3779b9), N = noise2(p.seed), L = p.light, cx = p.core.x * w, m = Math.min(w, h), M = Math.max(w, h);
+  // the subject's motif is drawn whole: at most 64% of the 16:9 window's height, and its centre kept so it clears the top and the bottom edge (it was cut by the window before)
+  const msz = p.motif ? Math.min(p.core.size * m * 2.1, h * 0.64) : 0;
+  const cy = msz ? Math.max(msz / 2 + h * 0.06, Math.min(h - msz / 2 - h * 0.06, p.core.y * h)) : p.core.y * h;
   ctx.save();
   // the void
   const bg = ctx.createRadialGradient(cx, cy, 0, cx, cy, M * 0.75); bg.addColorStop(0, hsl(p.hue, 45, 7, 1)); bg.addColorStop(0.5, '#05050a'); bg.addColorStop(1, '#010103');
@@ -64,6 +70,15 @@ export function drawSeal(ctx, w, h, p) {
   ctx.globalCompositeOperation = 'lighter';
   // nebula
   for (const n of p.nebula) { const g = ctx.createRadialGradient(n.x * w, n.y * h, 0, n.x * w, n.y * h, n.r * M); g.addColorStop(0, hsl(p.palette[n.c], 80, 45, n.a)); g.addColorStop(1, hsl(p.palette[n.c], 80, 30, 0)); ctx.fillStyle = g; ctx.fillRect(0, 0, w, h); }
+  // a place for the subject to stand in: a far ridge against the glow and a floor of mist under it (houses, trees, mountains, the sea, a city, a sword, a dragon)
+  if (p.grounded && msz) {
+    const gy = Math.min(h * 0.9, cy + msz * 0.34); ctx.globalCompositeOperation = 'source-over';
+    const sky = ctx.createLinearGradient(0, 0, 0, gy); sky.addColorStop(0, hsl(p.palette[1], 60, 12, 0)); sky.addColorStop(1, hsl(p.palette[0], 70, 30, 0.28)); ctx.fillStyle = sky; ctx.fillRect(0, 0, w, gy);
+    ctx.beginPath(); ctx.moveTo(0, h); for (let i = 0; i <= 40; i++) { const x = i / 40 * w; ctx.lineTo(x, gy - h * 0.03 - Math.max(0, 0.55 + N(i / 40 * 4.2 + 3, 0.7, 3) * 1.6) * h * 0.2); } ctx.lineTo(w, h); ctx.closePath();
+    const ridge = ctx.createLinearGradient(0, gy - h * 0.25, 0, h); ridge.addColorStop(0, hsl(p.palette[1], 45, 9, 0.95)); ridge.addColorStop(1, hsl(p.palette[0], 40, 3, 1)); ctx.fillStyle = ridge; ctx.fill();
+    ctx.strokeStyle = hsl(p.palette[0], 90, 60, 0.45); ctx.lineWidth = 1; ctx.stroke(); ctx.globalCompositeOperation = 'lighter';
+    const mist = ctx.createLinearGradient(0, gy, 0, h); mist.addColorStop(0, hsl(p.palette[0], 80, 50, 0.22)); mist.addColorStop(1, hsl(p.palette[0], 80, 40, 0)); ctx.fillStyle = mist; ctx.fillRect(0, gy, w, h - gy);
+  }
   // the flow field: particles traced through the curl of the noise, swirling round the core, in additive light
   const F = p.field, steps = 46, sl = M / 260;
   ctx.lineCap = 'round';
@@ -74,7 +89,7 @@ export function drawSeal(ctx, w, h, p) {
     if ((form === 'burst' || form === 'orbit') && r() < 0.6) { const t = r() * Math.PI * 2, d = (form === 'orbit' ? 0.5 + r() * 0.9 : r() * 0.5) * m * p.core.size * 1.6; x = cx + Math.cos(t) * d; y = cy + Math.sin(t) * d; }
     if (form === 'rift' && r() < 0.5) { const t = (r() - 0.5) * M * 1.2; x = cx + Math.cos(axis) * t; y = cy + Math.sin(axis) * t * 0.6; } const c = r(), col = c < 0.55 ? 0 : c < 0.85 ? 1 : 2, lite = 48 + r() * 22, wd = r() < 0.9 ? 0.35 + r() * 0.5 : 0.9 + r() * 0.8;
     const hot = r() < 0.035; // a few bright filaments give the eye somewhere to land
-    ctx.strokeStyle = hot ? hsl(p.palette[col], 100, 80, Math.min(0.6, L.a * 5)) : hsl(p.palette[col] + (r() - 0.5) * 30, 90, lite, L.a * (0.4 + r() * 1.2));
+    ctx.strokeStyle = hot ? hsl(p.palette[col], 100, 80, Math.min(0.42, L.a * 4)) : hsl(p.palette[col] + (r() - 0.5) * 30, 90, lite, L.a * (0.4 + r() * 1.2));
     ctx.lineWidth = wd; ctx.beginPath(); ctx.moveTo(x, y);
     for (let s = 0; s < steps; s++) {
       const nx = x / M * F.scale, ny = y / M * F.scale, e = 0.01;
@@ -120,7 +135,7 @@ export function drawSeal(ctx, w, h, p) {
     out.push(pts); return out;
   };
   for (let k = 0; k < (p.bolts || 0); k++) {
-    const ang = r() * Math.PI * 2, paths = boltPaths(cx + Math.cos(ang) * R * 0.35, cy + Math.sin(ang) * R * 0.35, ang, R * (0.9 + r() * 1.3), 1, []);
+    const ang = r() * Math.PI * 2, paths = boltPaths(cx + Math.cos(ang) * R * 0.35, cy + Math.sin(ang) * R * 0.35, ang, R * (0.7 + r() * 0.8), 1, []);
     for (const [lw, li, al] of [[3.4, 62, 0.28], [0.9, 88, 0.9]]) {
       ctx.shadowBlur = lw > 2 ? 10 : 0; ctx.shadowColor = 'hsla(275,100%,65%,1)'; ctx.strokeStyle = hsl(275, 100, li, al); ctx.lineWidth = lw;
       for (const pts of paths) { ctx.beginPath(); pts.forEach(([x, y], i) => (i ? ctx.lineTo(x, y) : ctx.moveTo(x, y))); ctx.stroke(); }
@@ -130,7 +145,7 @@ export function drawSeal(ctx, w, h, p) {
   // the subject: its motif in light, a glowing silhouette with a hot neon edge, over a halo
   const paths = p.motif && typeof Path2D === 'function' ? motifPaths(p.motif) : null;
   if (paths) {
-    const sz = R * 2.1, halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 0.75);
+    const sz = msz, halo = ctx.createRadialGradient(cx, cy, 0, cx, cy, sz * 0.75);
     halo.addColorStop(0, hsl(p.palette[0], 100, 60, 0.45)); halo.addColorStop(0.5, hsl(p.palette[1], 100, 45, 0.12)); halo.addColorStop(1, hsl(p.palette[1], 100, 40, 0));
     ctx.fillStyle = halo; ctx.beginPath(); ctx.arc(cx, cy, sz * 0.75, 0, Math.PI * 2); ctx.fill();
     ctx.save(); ctx.translate(cx - sz / 2, cy - sz / 2); ctx.scale(sz / 100, sz / 100);

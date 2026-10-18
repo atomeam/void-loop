@@ -42,7 +42,11 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
   return '';
 }
 
-export const ART_STYLE = 'arcane illuminati engraving, occult tarot-card illustration, all-seeing eye and sacred geometry halo, fine etched linework and gold filigree on deep indigo and black, glowing sigils and mystical light, a single central subject';
+// The look is the setting, never the subject (round 2, owner 2026-10-18: "continue to improve the card art its not perfect"): the old line asked for an all-seeing eye and
+// a sacred-geometry halo in every picture, so every subject got an eye. Now the subject comes first in the prompt and this line only dresses the dark around it.
+export const ART_STYLE = 'dark arcane tarot-card illustration, deep indigo and black void behind it, faint gold filigree and glowing sigils only in the background, mystical light';
+// one camera and one light, so the model has a single lighting instruction instead of five
+export const CAMERA = 'wide 16:9 cinematic shot, the whole subject centered and fully inside the frame, a single strong rim light from above left';
 // The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if V01D just passes a
 // card's title ... directly to an image API, the model guesses the context and framing, which results in cut-off cats and random aesthetics").
 // Before the painting, one short call to the free text model turns the card's folded subject, its kind and its family (each from an allow-list:
@@ -52,10 +56,11 @@ export const ART_STYLE = 'arcane illuminati engraving, occult tarot-card illustr
 // watermarks, cropped edges, out of frame"; the image model takes no negative prompt, so the --no list is written as words).
 export const FAMILIES = ['Making things', 'Games', 'Sky and earth', 'Time', 'Numbers and money', 'Body and mind', 'Words and the world', 'Out in the world', 'The stage', 'Void itself'];
 export const familyOf = (v) => { const k = String(v == null ? '' : v).trim().toLowerCase(); return FAMILIES.find((f) => f.toLowerCase() === k) || ''; };
-export const STYLE_LOCK = 'epic, cinematic, photoreal detail, dramatic lighting, a chosen-one aura, otherworldly void-mind energy, dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus, 8k resolution'; // owner, 2026-10-18: "the cinimatic real version"; "cinimatic chosen and epic and v01d and mind"
-export const FRAMING = 'one central subject wholly inside the frame with dark space all around it, centered composition, no text, no letters, no watermarks, no cropped edges, nothing out of frame, no logos, no signature';
+export const STYLE_LOCK = 'epic, cinematic, photoreal detail, a faint chosen-one aura, otherworldly void-mind energy, dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus'; // owner, 2026-10-18: "the cinimatic real version"; "cinimatic chosen and epic and v01d and mind"
+export const FRAMING = 'no text, no letters, no words, no watermark, no frame, no border, no cropped edges, nothing out of frame, no logos, no signature';
 export const DIRECTOR_SYSTEM = 'You are the art director for V01D\'s trading cards. Turn the card below into ONE visual scene for a painting, in at most 30 words: '
-  + 'one central subject drawn whole and centered with space around it, what surrounds it, the light and the mood, in a dark arcane void. '
+  + 'start with the concrete things to draw (the subject itself as a plain noun phrase, then two or three real objects or surroundings it belongs to), '
+  + 'then one lighting and camera instruction, drawn whole and centered with dark space around it, in a dark arcane void. '
   + 'Never name an artist, a brand, a franchise, a character or a real person, and never put words or letters in the picture. Reply with the scene only, one line.';
 export const SCENE_MAX = 240;
 /** the Director's input: the folded subject, the kind phrase and the family, all from allow-lists. Pure. */
@@ -78,14 +83,14 @@ export function sceneOf(text, isSecret = () => false) {
   if (isSecret(clean) || keeperOf(clean) || SEXUAL.test(all) || HATE.test(all) || BRANDS.test(all) || /\d{6,}/.test(all) || clean.split(' ').some((w) => w.length >= 28)) return '';
   return clean;
 }
-/** the directed prompt: the scene, the style lock, V01D's arcane signature, the rarity's light and the framing. Pure. */
+/** the directed prompt: the scene first (the subject's own nouns), one camera and light, the rarity's light, V01D's dark setting, the style tags and the framing and negative cues. Pure. */
 export function directedPrompt(scene, rarity = 'common') {
-  return scene + ', ' + STYLE_LOCK + ', ' + ART_STYLE + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + FRAMING;
+  return scene + ', ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 
 /** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
 export function artPrompt(key, kind = 'answer', rarity = 'common') {
-  return ART_STYLE + ': ' + String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + STYLE_LOCK + ', ' + FRAMING;
+  return String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + CAMERA + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + ART_STYLE + ', ' + STYLE_LOCK + ', ' + FRAMING;
 }
 
 /** the model's reply -> a data URL, or '' when it is not a small jpeg or png. The reply is { image: '<base64>' } (or the base64 itself). The quality gate
