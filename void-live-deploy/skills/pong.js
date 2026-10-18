@@ -37,8 +37,8 @@ function mount(th, stageApi) {
     g.shadowBlur = 12; g.shadowColor = '#4ef0a0'; g.fillStyle = '#4ef0a0'; g.fillRect(0, s.you.y - P.PAD_H / 2, P.PAD_W, P.PAD_H);
     g.shadowColor = '#a070ff'; g.fillStyle = '#a070ff'; g.fillRect(P.W - P.PAD_W, s.void.y - P.PAD_H / 2, P.PAD_W, P.PAD_H);
     g.shadowColor = '#fff'; g.fillStyle = '#fff'; g.beginPath(); g.arc(s.ball.x, s.ball.y, P.BALL / 2, 0, 7); g.fill(); g.shadowBlur = 0;
-    c.status.textContent = s.over === 'you' ? 'You win ' + s.you.score + '–' + s.void.score + '!' : s.over === 'void' ? 'V01D wins ' + s.void.score + '–' + s.you.score : 'You ' + s.you.score + ' · V01D ' + s.void.score;
-    c.why.textContent = (s.lastWhy ? 'V01D: ' + s.lastWhy + ' · ' : '') + words(ghost);
+    c.status.textContent = s.over === 'you' ? 'You win ' + s.you.score + '–' + s.void.score + '!' : s.over === 'void' ? 'Verse wins ' + s.void.score + '–' + s.you.score : 'You ' + s.you.score + ' · Verse ' + s.void.score;
+    c.why.textContent = (s.lastWhy ? 'Verse: ' + s.lastWhy + ' · ' : '') + words(ghost);
     if (s.over && !s._counted) { s._counted = true; finish('pong', s.over); }
   });
 }
@@ -48,7 +48,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'pong');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'pong'; }
   api.summon('pong', { x: Math.max(10, Math.round(innerWidth / 2 - 220)), y: 50 });
-  api.say('Void Pong (plays like the arcade classic) · you are left, V01D is right · move on the court or use W/S');
+  api.say('Void Pong (plays like the arcade classic) · you are left, Verse is right · move on the court or use W/S');
   return 'pong';
 }
 

@@ -160,7 +160,7 @@ async function run(text, api) {
     try { if (bag) { if (q.mode === 'auto') bag.removeItem(DETAIL_KEY); else bag.setItem(DETAIL_KEY, q.mode); } } catch (_) {}
     if (typeof window !== 'undefined' && typeof document !== 'undefined' && document.querySelector('.void-mini, #void-3d')) import('/skills/scene3d.js').then((m) => m.setDetail(q.mode)).catch(() => {});
     say(q.mode === 'low' ? 'low-poly 3D: 1x pixels, no shadows, light figures. "full 3d" brings the detail back.'
-      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets V01D step down when frames run late.'
+      : q.mode === 'full' ? 'full 3D detail, whatever the device. "auto 3d" lets Verse step down when frames run late.'
       : 'auto 3D detail: full, stepping down to low-poly only while frames run late.');
     return 'figures';
   }

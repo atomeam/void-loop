@@ -35,7 +35,7 @@ test('every page of the real book typesets, with a title and a rule; a skill pag
 test('the running heads follow a book: the title on the left, the chapter on the right; the folio is the page number', () => {
   const p = book.pages.find((x) => x.kind === 'skill');
   const left = sheetHtml(p, book, 'left', esc), right = sheetHtml(p, book, 'right', esc);
-  assert.match(left, /tome-head"><span>The V01D Book<\/span>/); assert.match(right, /<span><\/span><span>[^<]+<\/span><\/div>/);
+  assert.match(left, /tome-head"><span>The Verse Book<\/span>/); assert.match(right, /<span><\/span><span>[^<]+<\/span><\/div>/);
   assert.match(left, new RegExp('tome-folio">' + p.n + '<'));
   assert.equal(sheetHtml(null, book, 'left', esc), '');
 });
@@ -46,7 +46,7 @@ test('the front matter and the back: a title page, how to ask with the built-in 
   assert.match(pageHtml(book.pages[2], book, esc), /nothing checks it yet/);
   assert.match(tocHtml(book, esc), /data-page="5"/);
   assert.match(pageHtml(book.pages[book.pages.length - 1], book, esc), /lead-dots/);
-  assert.match(coverHtml(book, esc), /The V01D Book/);
+  assert.match(coverHtml(book, esc), /The Verse Book/);
 });
 
 test('the stacks of unread leaves grow and shrink with the page you are on', () => {

@@ -25,6 +25,6 @@ export function anchorDensity(things) {
   const count = list.filter((t) => t && typeof t === 'object').length;
   const d = density(count, ANCHOR_GOAL);
   const h = Math.round((HEART_BOTTOM - HEART_TOP) * d.ratio * 10) / 10;
-  return { count, goal: ANCHOR_GOAL, ratio: d.ratio, state: d.state, label: d.label, title: 'support V01D · ' + d.label + ' things on your stage',
+  return { count, goal: ANCHOR_GOAL, ratio: d.ratio, state: d.state, label: d.label, title: 'support Verse · ' + d.label + ' things on your stage',
     fill: { y: Math.round((HEART_BOTTOM - h) * 10) / 10, h: h ? h + (24 - HEART_BOTTOM) : 0 } }; // past the bottom edge so the rect never leaves a sliver
 }

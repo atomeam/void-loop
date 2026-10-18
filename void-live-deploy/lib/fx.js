@@ -24,7 +24,7 @@ export function fxIntent(text) {
   }
   if (new RegExp('^' + P + '(?:' + OFF + '\\s+(?:the\\s+)?undo\\s+toasts?|undo\\s+toasts?\\s+off)$').test(t)) return { op: 'toast', on: false };
   if (new RegExp('^' + P + '(?:(?:' + ON + '\\s+|show\\s+(?:me\\s+)?)?(?:an\\s+|the\\s+)?undo\\s+toasts?(?:\\s+on)?|show\\s+(?:me\\s+)?(?:an\\s+)?undo\\s+(?:button|toast)\\s+(?:when|after)\\s+(?:i\\s+)?(?:remove|delete|clear)(?:\\s+\\w+)?)$').test(t)) return { op: 'toast', on: true };
-  if (new RegExp('^' + P + '(?:(?:give\\s+me|take|start|show\\s+me|begin|run)\\s+(?:a\\s+|the\\s+|my\\s+)?(?:first[\\s-]?run\\s+|quick\\s+|60[\\s-]?second\\s+)?(?:tour|walk[\\s-]?through\\s+of\\s+(?:the\\s+)?(?:stage|void|v01d))|(?:first[\\s-]?run|quick)\\s+tour|(?:tour|show\\s+me\\s+around)(?:\\s+(?:the\\s+)?(?:stage|void))?)$').test(t)) return { op: 'tour' };
+  if (new RegExp('^' + P + '(?:(?:give\\s+me|take|start|show\\s+me|begin|run)\\s+(?:a\\s+|the\\s+|my\\s+)?(?:first[\\s-]?run\\s+|quick\\s+|60[\\s-]?second\\s+)?(?:tour|walk[\\s-]?through\\s+of\\s+(?:the\\s+)?(?:stage|void|v01d|verse))|(?:first[\\s-]?run|quick)\\s+tour|(?:tour|show\\s+me\\s+around)(?:\\s+(?:the\\s+)?(?:stage|void))?)$').test(t)) return { op: 'tour' };
   return null;
 }
 
@@ -96,7 +96,7 @@ export const TOUR = [
   { title: 'Move things', text: 'Drag a card to move it. Flick it hard off the edge and it is gone.' },
   { title: 'Take it back', text: 'Say "undo", or press Esc twice, and the last thing comes back.' },
   { title: 'Keep what you like', text: 'When something opens as a page, say "keep this" and it stays on the stage as a card.' },
-  { title: 'Ask what I can do', text: 'Say "menu" for a list of things to try, or "what’s new" to see what V01D made lately.' },
+  { title: 'Ask what I can do', text: 'Say "menu" for a list of things to try, or "what’s new" to see what Verse made lately.' },
 ];
 
 /** the rectangle between two points. Pure. */

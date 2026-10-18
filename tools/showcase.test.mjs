@@ -97,7 +97,7 @@ test('previewed once: an ask already shown is never offered again, and the recap
 });
 
 test('"show me everything you made" is the whole walkthrough by name; nothing else is', () => {
-  for (const a of ['show me everything you made', 'everything you have made', "walk me through all the things you've built", 'Everything V01D made so far', 'all you made for me'])
+  for (const a of ['show me everything you made', 'everything you have made', "walk me through all the things you've built", 'Everything Verse made so far', 'all you made for me'])
     assert.ok(everythingOf(a), a);
   for (const a of ['show me what you made', "what's new", 'everything you can do', 'show me everything', 'all the things'])
     assert.ok(!everythingOf(a), a);

@@ -47,5 +47,5 @@ test('a whole game ends with one fleet sunk; every Void shot has a reason', () =
     const c = [...Array(100).keys()].find((x) => !s.shots.you[x]); s = B.fire(s, c).s;
   }
   assert.ok(s.over);
-  for (const l of s.log.filter((x) => x.who === 'V01D' && /fired/.test(x.text))) assert.ok(l.why, l.text);
+  for (const l of s.log.filter((x) => x.who === 'Verse' && /fired/.test(x.text))) assert.ok(l.why, l.text);
 });

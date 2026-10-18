@@ -105,5 +105,5 @@ export function parseBest(v) { const n = Math.floor(+v); return Number.isFinite(
 
 /** the one line the card shows while playing. */
 export const status = (s) => s.over ? 'Round over: ' + s.score + ' flux' : Math.ceil(ROUND - s.t) + 's · ' + s.score + ' flux · x' + s.mult.toFixed(2).replace(/\.?0+$/, '');
-export const ABOUT = 'A zorbleflux is the thing V01D got asked about 154 times and could not answer, so it made it a game.';
+export const ABOUT = 'A zorbleflux is the thing Verse got asked about 154 times and could not answer, so it made it a game.';
 export const RULES = 'Steer the zorb. Collect flux to grow and score more. Avoid the dark bleeds. 45 seconds.';

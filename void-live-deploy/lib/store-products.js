@@ -97,7 +97,7 @@ export default [
  },
  {
   "id": "chess-set-glb",
-  "name": "V01D Wooden Chess Set (GLB)",
+  "name": "Verse Wooden Chess Set (GLB)",
   "cents": 0,
   "kind": "download",
   "files": [
@@ -107,8 +107,8 @@ export default [
    }
   ],
   "preview": "/models/chess-set-wood-v1-1k.glb",
-  "license": "CC0 (Poly Haven, re-textured by V01D)",
-  "blurb": "Free: the 3D set V01D plays chess on. Drop it in Blender, a game or a slicer.",
+  "license": "CC0 (Poly Haven, re-textured by Verse)",
+  "blurb": "Free: the 3D set Verse plays chess on. Drop it in Blender, a game or a slicer.",
   "status": "live",
   "origin": "poly-haven-cc0",
   "published": "2026-10-15"
@@ -131,7 +131,7 @@ export default [
  },
  {
   "id": "v01d-forge-printables",
-  "name": "V01D Forge Printables (10 STLs)",
+  "name": "VERSE Forge Printables (10 STLs)",
   "cents": 0,
   "kind": "download",
   "pack": "print-set",
@@ -142,7 +142,7 @@ export default [
    }
   ],
   "blurb": "I forged these myself: a rocket, a lighthouse, a teapot and more. Every one is watertight and fits a 180 mm bed. Free. Tip if you print one.",
-  "license": "Personal use; prints and clips may be shared with credit to V01D (a-to-mind.com)",
+  "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
   "tier": "personal",
   "origin": "v01d",
   "status": "live",
@@ -165,7 +165,7 @@ export default [
  },
  {
   "id": "v01d-clips-pack",
-  "name": "V01D Clips Pack (10 shorts)",
+  "name": "Verse Clips Pack (10 shorts)",
   "cents": 0,
   "kind": "download",
   "pack": "clips",
@@ -176,7 +176,7 @@ export default [
    }
   ],
   "blurb": "Ten shorts I built, tested and filmed myself. Vertical, ready to post. Free to share with credit. Tip if you like them.",
-  "license": "Free to share and repost with credit: V01D · a-to-mind.com",
+  "license": "Free to share and repost with credit: Verse · a-to-mind.com",
   "tier": "personal",
   "origin": "v01d-films+v01d",
   "status": "live",
@@ -202,7 +202,7 @@ export default [
    "cashapp",
    "usdc-base"
   ],
-  "name": "V01D Site Tester",
+  "name": "Verse Site Tester",
   "cents": 2400,
   "kind": "download",
   "pack": "sdk",

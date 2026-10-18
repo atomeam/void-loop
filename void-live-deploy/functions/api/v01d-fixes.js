@@ -17,7 +17,7 @@ export async function onRequestPost({ request, env }) {
   if (!env.GITHUB_TOKEN) return Response.json({ error: 'GITHUB_TOKEN is not set in the Pages project: approve it on GitHub', url: 'https://github.com/' + REPO + '/pull/' + pr }, { status: 503 });
   const run = async () => {
     const r = await gh(env, 'GET', '/repos/' + REPO + '/pulls/' + pr); const p = r.ok ? await r.json() : null;
-    if (!p || p.state !== 'open' || !(p.labels || []).some((l) => l && l.name === LABEL)) throw new Error('not an open pull request made by V01D');
+    if (!p || p.state !== 'open' || !(p.labels || []).some((l) => l && l.name === LABEL)) throw new Error('not an open pull request made by Verse');
     const add = await gh(env, 'POST', '/repos/' + REPO + '/issues/' + pr + '/labels', { labels: [MERGES] });
     if (!add.ok) throw new Error('GitHub did not add the label (HTTP ' + add.status + ')');
     await gh(env, 'DELETE', '/repos/' + REPO + '/issues/' + pr + '/labels/' + encodeURIComponent(WAITS));

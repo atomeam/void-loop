@@ -140,7 +140,7 @@ function speed(r) {
 function captions(on) {
   S.captions = !!on; keep(); const v = S.current; const can = v ? CAN[v.platform] || {} : { captions: true };
   if (v && can.captions) { S.current = Object.assign({}, v, { start: Math.round(time) }); keep(); paint(true); } else paint();
-  return can.captions ? 'captions ' + (on ? 'on' : 'off') + (on ? ' where the video has them' : '') : PLATFORMS[v.platform].label + "'s player has no captions switch V01D can reach";
+  return can.captions ? 'captions ' + (on ? 'on' : 'off') + (on ? ' where the video has them' : '') : PLATFORMS[v.platform].label + "'s player has no captions switch Verse can reach";
 }
 function step(dir) {
   if (dir > 0) { const n = S.queue.shift(); if (!n) { keep(); paint(); return 'the queue is empty'; } play(n, 0); return 'playing ' + label(n); }

@@ -32,7 +32,7 @@ export function tallyText(n) {
   const parts = [];
   if (n.done) parts.push(n.done + ' done');
   if (n.failed) parts.push(n.failed + ' failed');
-  if (n.stubbed) parts.push(n.stubbed + ' stubbed (nothing left V01D)');
+  if (n.stubbed) parts.push(n.stubbed + ' stubbed (nothing left Verse)');
   if (n.running) parts.push(n.running + ' still running or never reported back');
   return parts.length ? parts.join(' · ') : 'No actions recorded yet. Every automation step writes one when it runs.';
 }
@@ -57,7 +57,7 @@ function mount(th, stageApi) {
   card.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(460px, calc(100vw - 20px))';
   const head = el('div'); head.className = 'g-head';
   const title = el('span', null, 'Actions'); title.className = 'g-title';
-  const sub = el('span', null, 'everything V01D did, with its record'); sub.className = 'g-sub';
+  const sub = el('span', null, 'everything Verse did, with its record'); sub.className = 'g-sub';
   head.append(title, sub);
   const status = el('div', 'margin-top:6px;' + MUTED); status.className = 'actions-status g-status'; status.setAttribute('aria-live', 'polite');
   const list = el('div', 'display:grid;gap:4px;margin-top:10px;font-size:13px'); list.className = 'actions-list';
@@ -68,7 +68,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'The record is for the owner and paid members. Unlock V01D first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'The record is for the owner and paid members. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   let rows = [], onlyFailed = false, more = true;
   const paint = () => {
@@ -81,7 +81,7 @@ function mount(th, stageApi) {
   };
   const get = async (limit, offset) => {
     const r = await fetch('/api/actions?limit=' + limit + '&offset=' + offset, { headers: { authorization: 'Bearer ' + tok } });
-    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner and paid members can read the record' : r.status === 503 ? 'no database behind this copy of V01D' : 'the record answered ' + r.status);
+    if (!r.ok) throw new Error(r.status === 401 ? 'only the owner and paid members can read the record' : r.status === 503 ? 'no database behind this copy of Verse' : 'the record answered ' + r.status);
     const data = await r.json().catch(() => ({}));
     return Array.isArray(data.actions) ? data.actions : [];
   };
@@ -112,7 +112,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'actions');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else api.summon('actions', { center: true });
-  api.say('Actions · every action V01D takes has its record: done, failed, stubbed, or still running');
+  api.say('Actions · every action Verse takes has its record: done, failed, stubbed, or still running');
   return 'actions';
 }
 

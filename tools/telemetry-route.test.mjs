@@ -60,3 +60,28 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   assert.deepEqual(failuresOf('the error garden grows a sprout for every red check of the suite; red checks grow in it by themselves'), [], '"red checks" as a name is not a state');
   assert.deepEqual(failuresOf('verify-main is red since #411: the proposal card check FAILS on every head'), ['verify-main is red since 411: the proposal card check FAILS on every head'], 'a state line stays (clean() strips the #)');
 });
+
+test('a builder\'s own sentence behind a list marker, and a failure that passed on its own, are not still failing (2026-10-18 card)', () => {
+  assert.deepEqual(failuresOf("- I didn't touch films; it failed once under load and passed on its own."), []);
+  assert.deepEqual(failuresOf("1. I did not look into it; it keeps failing on main."), [], 'narration behind a number');
+  assert.deepEqual(failuresOf('The suite failed on the first run and passed again on a re-run.'), []);
+  assert.deepEqual(failuresOf('The check is still red on main and nobody has fixed it yet.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails on plain origin/main too, page 305 off the sheet').length, 1, 'a bullet name line stays');
+});
+
+test('a builder\'s report that quotes a timeout is a report, not a broken automation; a real automation error still is one', async () => {
+  const { intentOf, isFixAsk } = await import('../void-live-deploy/lib/automation-fix.js');
+  const { isBuildersReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const report = 'I fixed three red checks on main in PR 1096 and I am watching it. The 3D block stalls with a check timeout after the voice check, the CI suite stays red, and I did not fix it. All three fixed checks failed locally and pass now after the push.';
+  assert.equal(isBuildersReport(report), true); assert.equal(intentOf(report).intent, 'report'); assert.equal(isFixAsk(report), false);
+  const zap = 'my zap keeps failing with 429 Too Many Requests and the workflow stops on every single run, here is the log: {"status":429,"error":"rate limit"} on the webhook step, how do I fix it?';
+  assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
+});
+
+test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
+  assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
+  assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);
+  assert.deepEqual(failuresOf('With the refusal taken out of the code, the new check fails, so it really tests the refusal.'), []);
+  assert.equal(failuresOf('The extension check fails on main since the merge.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('- **book-face:** fails without warning on plain origin/main').length, 1, '"without" alone is not a planned failure');
+});

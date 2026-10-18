@@ -72,7 +72,7 @@ function layer(snap) {
   L.style.cssText = 'position:fixed;inset:0;z-index:30;background:rgba(6,8,16,.92);color:#e6ecff;overflow:auto;font-size:13px';
   const head = document.createElement('div'); head.className = 'spectate-head'; head.style.cssText = 'position:sticky;top:0;display:flex;gap:12px;align-items:center;padding:10px 16px;background:rgba(6,8,16,.9);border-bottom:1px solid rgba(255,255,255,.12)';
   const when = snap.at ? new Date(snap.at).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }) : '';
-  const title = document.createElement('span'); title.textContent = 'a spectator\'s view · ' + snap.things.length + ' thing' + (snap.things.length === 1 ? '' : 's') + ' · read-only · a snapshot' + (when ? ' from ' + when : '') + ' · nothing here touches your own V01D';
+  const title = document.createElement('span'); title.textContent = 'a spectator\'s view · ' + snap.things.length + ' thing' + (snap.things.length === 1 ? '' : 's') + ' · read-only · a snapshot' + (when ? ' from ' + when : '') + ' · nothing here touches your own Verse';
   const leave = document.createElement('button'); leave.type = 'button'; leave.className = 'spectate-leave'; leave.textContent = 'leave';
   leave.style.cssText = 'margin-left:auto;font:inherit;font-size:12px;padding:4px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:inherit;cursor:pointer';
   leave.addEventListener('click', () => { L.remove(); try { const u = new URL(location.href); u.searchParams.delete('spectate'); history.replaceState(null, '', u.pathname + (u.search || '') + u.hash); } catch (_) {} });

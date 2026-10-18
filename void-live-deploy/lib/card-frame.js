@@ -46,7 +46,7 @@ export function cardOf({ skill = null, page = null, book = null, kind = '', sour
     ...(artKind && artMeta ? artLookOf(artMeta) : {}), // a film's or song's genre and decade, as the source returned them (lib/art-meta.js)
     rarity, chapter, hue: hueOf(chapter), fetched, kindName: entity && !page && !skill && entity.kind ? String(entity.kind).toLowerCase().replace(/[^a-z]/g, '') : '',
     cost: words ? Math.min(6, words) : 0,
-    typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from V01D') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
+    typeLine: entity && !page && !skill ? typeWords(entity.kind, entity.also, entity.detail) : typeKind + (typeKind === 'Answer' ? ' \u2014 ' + (fetched ? (sources === 1 ? 'from a source' : 'from ' + sources + ' sources') : 'from Verse') : chap && chap.name ? ' \u2014 ' + chap.name : ''),
     power: stats ? (sr == null ? ti * 2 : Math.round(sr * 9)) : fetched ? Math.min(9, sources) : null,
     toughness: stats ? (asks ? Math.min(99, +asks) : ti + 1) : fetched ? (ageDays == null ? 1 : Math.max(0, Math.min(99, Math.round(ageDays)))) : null,
     income: stats && deps ? (deps.importedBy || []).length : null, arrowsOut: stats && deps ? Math.min(3, (deps.imports || []).length) : 0, arrowIn: !!(stats && deps && (deps.importedBy || []).length),
@@ -71,12 +71,12 @@ const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color
 export function chromeHtml(c, esc) {
   const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: c.artKind || kindWord(c.typeLine), chapter: c.chapter, hue: c.artHue != null ? c.artHue : c.hue, ink: c.artInk || undefined, rarity: c.rarity, season: c.season, glyph: c.isSkill, nouns: c.nouns }, { w: 520, h: 150 }) + '</div>';
   const type = '<div class="vc-type"><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
-  const adds = c.adds ? '<div class="vc-adds"><b>Adds to V01D</b> ' + esc(c.adds) + '</div>' : '';
+  const adds = c.adds ? '<div class="vc-adds"><b>Adds to Verse</b> ' + esc(c.adds) + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
   const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: days since the source was edited')
     : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: real asks that proved it') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';
   const arrows = '<div class="vc-arrows" aria-hidden="true">' + (c.arrowIn ? '<i class="in">\u25bc</i>' : '') + ['r', 'b', 'l'].slice(0, c.arrowsOut).map((d) => '<i class="' + d + '">\u25b6</i>').join('') + '</div>';
-  const foot = '<div class="vc-foot"><div class="vc-num">' + (c.rarity ? esc(c.rarity.name) + ' · ' : '') + (c.number ? esc(c.number) + ' · ' : '') + 'V01D' + (c.tested ? ' · tested ' + esc(c.tested) : '') + '</div>' + plate + '</div>';
+  const foot = '<div class="vc-foot"><div class="vc-num">' + (c.rarity ? esc(c.rarity.name) + ' · ' : '') + (c.number ? esc(c.number) + ' · ' : '') + 'Verse' + (c.tested ? ' · tested ' + esc(c.tested) : '') + '</div>' + plate + '</div>';
   return { art, type, adds, foot, arrows };
 }
 

@@ -7,7 +7,7 @@
  * "what is a motto", "play voidquest" and "which games are popular" are not this.
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const YOU = '(?:you|void|v01d)';
+const YOU = '(?:you|void|v01d|verse)';
 const TOPICS = [
   ['motto', new RegExp('^(?:(?:tell|read)\\s+me\\s+(?:' + YOU + '(?:\'s)?|your)\\s+motto|' + YOU + '(?:\'s)?\\s+motto)$')],
   ['voidquest', /^(?:what(?:'s| is)\s+(?:the\s+)?void\s?quest|(?:tell|read)\s+me\s+about\s+void\s?quest|(?:what|how)\s+(?:does|do)\s+void\s?quest\s+(?:work|mean)|explain\s+void\s?quest|void\s?quest\s+(?:rules|story|text))$/],

@@ -3,7 +3,7 @@
 // Creative Commons and Blender open movies, played in a <video>). The title is untrusted: cleaned before any request, and the upstream hosts
 // are fixed here. Not found = { verified: false } with nothing else, never a guess. No D1, no KV, no model; the edge caches an answer for a day.
 import { cleanTitle, cleanYear, pickItunes, legalArchive, pickFile, archiveFileUrl, watchLinks, normTitle } from '../../lib/movies.js';
-const UA = { 'user-agent': 'V01D/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
+const UA = { 'user-agent': 'Verse/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
 async function getJson(u, ms = 5000) { const c = new AbortController(), t = setTimeout(() => c.abort(), ms); try { const r = await fetch(u, { headers: UA, signal: c.signal, cf: { cacheTtl: 86400 } }); if (!r.ok) throw new Error('upstream ' + r.status); return await r.json(); } finally { clearTimeout(t); } }
 const reply = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=86400' } });
 

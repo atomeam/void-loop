@@ -25,13 +25,19 @@ const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|let me|now|next|then|s
 // and "failing" only as a state too ("still failing", "is failing", "3 failing", "failing:"), not as a word before a noun ("each failing check")
 const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|\bred\s*[:,.]/i;
 
+// a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
+const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
+// a failure the builder caused on purpose to prove a check bites ("with the mutation it fails, as expected", "without the refusal, the check fails",
+// "with the line taken out, the new check fails") is the check working, not something failing (2026-10-18 card: two such lines read as failures)
+const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that)\s+[\w-]+(?:\s+[\w-]+)?\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {
   const out = [], seen = new Set();
   for (const raw of String(text || '').split(/\n+|\s*⏎\s*|(?<=[.;!?])\s+(?=[A-Z-])/)) {
     const l = clean(raw);
-    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(l)) continue;
+    const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
+    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l) || PLANNED.test(l)) continue;
     if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
     const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
     out.push(l.length > 110 ? l.slice(0, 107) + '...' : l);
@@ -63,4 +69,11 @@ export function summaryOf(t) {
   if (t.passed) out.push('Passed ' + t.passed.ok + ' of ' + t.passed.of);
   out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed' : 'Nothing in it names a failure');
   return out;
+}
+
+/** a builder's own report on work (first person, with pull requests or commits and the CI words around them): never a broken automation to fix, even when it quotes
+ *  an error or a timeout it is describing. lib/automation-fix.js intentOf asks this first. Pure. */
+export function isBuildersReport(text) {
+  const t = telemetryOf(text);
+  return !!t && (t.signals.includes('pr') || t.signals.includes('sha')) && (String(text).match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2;
 }

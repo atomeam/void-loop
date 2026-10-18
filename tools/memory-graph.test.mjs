@@ -269,8 +269,8 @@ test('importInto: a round trip onto an empty graph gives the same graph; the sam
 test('importInto: version, schema and shape are checked, and a file over 2 MB is refused before it is parsed', () => {
   const good = exportOf(sample(), T0);
   assert.match(importInto(empty(), JSON.stringify({ ...good, v: 2 })).why, /version 2/);
-  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: 'void.stage.v1' })).why, /not a V01D memory file/);
-  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: undefined })).why, /not a V01D memory file/);
+  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: 'void.stage.v1' })).why, /not a Verse memory file/);
+  assert.match(importInto(empty(), JSON.stringify({ ...good, schema: undefined })).why, /not a Verse memory file/);
   assert.equal(importInto(empty(), 'not json {').ok, false);
   for (const x of ['null', '[]', '5', '"x"', '{}', JSON.stringify({ ...good, nodes: [] }), JSON.stringify({ ...good, nodes: 'x' }), JSON.stringify({ ...good, nodes: {} })]) assert.equal(importInto(empty(), x).ok, false, x);
   for (const x of [null, undefined, 5, [], {}]) assert.equal(importInto(empty(), x).ok, false);

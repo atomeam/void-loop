@@ -36,7 +36,7 @@ test('recent answers come from the loop log: skills only, newest first, one per 
   assert.deepEqual(recentAnswered(null), []);
 });
 test('the correction intents', () => {
-  for (const q of ['tell void what it got wrong', 'void got this wrong', 'correct void on its self card', 'open your self card, I want to correct you', 'open the self card and tell void what it got wrong', 'open the self card and tell V01D what it got wrong', 'show the self card and correct it']) assert.ok(wantsCorrection(q), q);
+  for (const q of ['tell void what it got wrong', 'void got this wrong', 'correct void on its self card', 'open your self card, I want to correct you', 'open the self card and tell void what it got wrong', 'open the self card and tell Verse what it got wrong', 'show the self card and correct it']) assert.ok(wantsCorrection(q), q);
   for (const q of ['make my void deep blue', 'what is a clock', 'open the self card', 'correct it', 'show the self card']) assert.ok(!wantsCorrection(q), q);
 });
 

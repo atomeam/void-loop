@@ -27,7 +27,7 @@ test('rent is forced and logged as forced; a full set doubles bare rent; houses 
   assert.equal(M.rentFor(s, 3), 8);
   s = M.roll(s, [1, 2]);
   assert.equal(s.players[0].money, 1492); assert.equal(s.players[1].money, 1508);
-  assert.ok(s.log.some((l) => /paid 8 rent to V01D for Cinder Lane/.test(l.text) && l.forced));
+  assert.ok(s.log.some((l) => /paid 8 rent to Verse for Cinder Lane/.test(l.text) && l.forced));
   s.turn = 1; s.phase = 'end';
   assert.ok(M.canBuild(s, 1, 1)); s = M.build(s, 1);
   assert.equal(s.houses[1], 1); assert.ok(!M.canBuild(s, 1, 1), 'must build on Cinder Lane before a second house on Old Mill Row');
@@ -72,7 +72,7 @@ test('Void chooses like a player and says why: it buys within its reserve, decli
   // a whole Void turn: every choice in its log has a reason
   let g = fresh(); g.turn = 1; g = M.voidTurn(g);
   assert.notEqual(g.turn, 1, 'the turn passes back');
-  for (const l of g.log.filter((x) => x.who === 'V01D' && /bought|did not buy|built|chose/.test(x.text))) assert.ok(l.why, l.text);
+  for (const l of g.log.filter((x) => x.who === 'Verse' && /bought|did not buy|built|chose/.test(x.text))) assert.ok(l.why, l.text);
 });
 
 test('a trade is an offer: Void accepts a fair price and declines a low one, and says why either way', () => {

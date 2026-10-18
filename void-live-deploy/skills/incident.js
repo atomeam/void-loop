@@ -96,7 +96,7 @@ function formHtml(esc, s) {
 
 // what broke lately (asked by Void, four times: an incident entry whenever a 3D suite check fails): the list verify.yml writes to
 // /incidents.json (tools/incident-log.mjs), newest first, each with its failed checks, the commit and the run, and the brief one tap away
-const LATELY_RE = /^(?:what(?:'s|\s+has|\s+is)?\s+)?(?:broke|is\s+broken|failed|went\s+wrong|has\s+(?:broken|failed))(?:\s+(?:lately|recently|today|this\s+week|on\s+main|in\s+(?:void|v01d)))?$|^(?:(?:show|list)\s+(?:me\s+)?)?(?:the\s+)?(?:recent\s+|latest\s+|last\s+|void\s+|v01d\s+|my\s+)?incidents?(?:\s+(?:log|list|history))?$|^what\s+broke\s+lately$/i;
+const LATELY_RE = /^(?:what(?:'s|\s+has|\s+is)?\s+)?(?:broke|is\s+broken|failed|went\s+wrong|has\s+(?:broken|failed))(?:\s+(?:lately|recently|today|this\s+week|on\s+main|in\s+(?:void|v01d|verse)))?$|^(?:(?:show|list)\s+(?:me\s+)?)?(?:the\s+)?(?:recent\s+|latest\s+|last\s+|void\s+|v01d\s+|my\s+)?incidents?(?:\s+(?:log|list|history))?$|^what\s+broke\s+lately$/i;
 export const latelyOf = (text) => LATELY_RE.test(CLEAN(text)) && !incidentOf(text);
 export function incidentsHtml(esc, list) {
   const L = Array.isArray(list) ? list : [];

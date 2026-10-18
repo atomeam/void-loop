@@ -221,7 +221,7 @@ export function verifyStl(buf, model) {
 export function stl(model) {
   const P = model.positions, I = model.indices, n = I.length / 3;
   const buf = new ArrayBuffer(84 + n * 50), dv = new DataView(buf);
-  const head = 'V01D forge: ' + model.label + ' (a-to-mind.com), mm, Z up';
+  const head = 'Verse forge: ' + model.label + ' (a-to-mind.com), mm, Z up';
   for (let i = 0; i < 80; i++) dv.setUint8(i, i < head.length ? head.charCodeAt(i) & 127 : 32);
   dv.setUint32(80, n, true);
   // model (x, y, z) with y up -> STL (x, -z, y) with Z up; the swap keeps every facet's winding outward
