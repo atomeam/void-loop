@@ -2,6 +2,24 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T10:09:05.833Z",
+   "sha": "a1a572efda23f373f2e7a6dbc857070aadc6034e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39117837318",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/skills/zorbleflux.js",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
    "at": "2026-10-18T10:03:34.328Z",
    "sha": "5fd74653c8cededf0cc1e57fa42ba03345fc39df",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39117445448",
@@ -689,32 +707,6 @@
     "tools/site-test.log.json",
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T23:28:15.555Z",
-   "sha": "f129c9b42b46c4068075cdbfe42e2df996e96e61",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39077953199",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/book-news.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/book-news.js",
-    "void-live-deploy/lib/tome.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
    ]
