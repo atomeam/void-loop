@@ -1,5 +1,5 @@
-// Every Verse film and ad clip is its own ad, and anyone may repost it (owner, 2026-10-15: "put an upload to youtube button in
-// Verse Films so that anyone can easily uplad each vid"; "anyone can upload them ... the more the better"). No API, no token:
+// Every V01D film and ad clip is its own ad, and anyone may repost it (owner, 2026-10-15: "put an upload to youtube button in
+// V01D Films so that anyone can easily uplad each vid"; "anyone can upload them ... the more the better"). No API, no token:
 // download the MP4, copy the words, open the platform's own upload page signed in as yourself. Pure; used by /films/ and tests.
 export const SITE = 'https://a-to-mind.com';
 export const PLATFORMS = {
@@ -22,7 +22,7 @@ export function shareWords(film, platform = 'youtube') {
   const P = PLATFORMS[platform] || PLATFORMS.youtube, link = shareLink(film.id, platform);
   const seen = new Set(), tags = [...P.tags, ...tagList(film.tags)].filter((t) => !seen.has(t.toLowerCase()) && seen.add(t.toLowerCase())).slice(0, platform === 'x' ? 3 : 12);
   const base = String(film.title || 'Verse').replace(/\s*#Shorts\b/gi, '').trim();
-  const title = (base + (/v01d|void|verse/i.test(base) ? '' : ' | Verse') + (platform === 'youtube' ? ' #Shorts' : '')).slice(0, P.title || 150);
+  const title = (base + (/v01d|\bverse\b/i.test(base) ? '' : ' | Verse') + (platform === 'youtube' ? ' #Shorts' : '')).slice(0, P.title || 150);
   const body = String(film.description || '').replace(/https?:\/\/(?:www\.)?a-to-mind\.com\S*/gi, link).trim();
   let description;
   if (platform === 'x') description = [base, link, tags.join(' ')].join('\n');

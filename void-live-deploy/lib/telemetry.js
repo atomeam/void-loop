@@ -18,12 +18,23 @@ const clean = (s) => String(s || '').replace(/\[([^\]]+)\]\([^)]*\)/g, '$1').rep
 /** the kinds of evidence a text carries, by name. Pure. */
 export function signalsOf(text) { return SIGNALS.filter(([, re]) => re.test(text)).map(([n]) => n); }
 
-/** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts. Pure. */
+// a builder telling what they did ("I'm making it opt-in so red checks…", "Committing the fix…", "Pushing the changes…") is not a failure, however
+// many failure words it carries (2026-10-18: a pasted run report came back as "6 things still failing", all six the builder's own sentences)
+const NARRATION = /^(?:i|i'm|i've|i'll|i'd|we|we're|we've|let me|now|next|then|so|also|first|took|pushed|committed|merged|shipped|opened|made|fixed|added|wrote|[a-z]+ing)\b/i;
+// "red" is a failure only as a state ("is red", "went red", "red on main", "red since", "red:"), not as a name ("red checks grow in the garden"),
+// and "failing" only as a state too ("still failing", "is failing", "3 failing", "failing:"), not as a word before a noun ("each failing check")
+const FAILS = /\bFAIL(?:ED|S)?\b|\bfail(?:ed|s)\b|\b(?:still|is|are|was|were|keeps?|kept|started|went)\s+failing\b|\b\d+\s+failing\b|\bfailing\s*(?:[:,.]|on\b|since\b|in\s+ci\b)|\bbroke\b|\bstall(?:ed|s)?\b|\btimed? ?out\b|\bconflicts?\b|\bunconfirmed\b|\bnot fixed\b|\b(?:is|was|went|stays?|still|turned|came back|are|were)\s+red\b|\bred\s+(?:on|since|after|again|for|in)\b|\bred\s*[:,.]/i;
+
+// a failure the builder says went away on its own ("failed once under load and passed on its own", "passes alone", "passed on a re-run") is not still failing
+const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s+(?:a\s+)?re-?run|when\s+(?:run\s+)?alone)\b/i;
+/** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
+ *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {
   const out = [], seen = new Set();
-  for (const raw of String(text || '').split(/\n+|(?<=[.;])\s+(?=[A-Z-])/)) {
+  for (const raw of String(text || '').split(/\n+|\s*⏎\s*|(?<=[.;!?])\s+(?=[A-Z-])/)) {
     const l = clean(raw);
-    if (l.length < 12 || !/\b(?:FAIL(?:ED|S)?|failed|failing|red\b|broke|stall|timed? ?out|conflict|unconfirmed|not fixed)/i.test(l)) continue;
+    const body = l.replace(/^(?:[-+•\u2022\u25cf]|\d{1,2}[.)])\s+/, ''); // a list marker in front of the builder's own sentence hides it from the narration test
+    if (l.length < 12 || !FAILS.test(l) || NARRATION.test(body) || RESOLVED.test(l)) continue;
     if (/\b(?:no|nothing|zero|0)\s+(?:fail|red|conflict)|\bpassed\b.*\bnone\b/i.test(l)) continue;
     const k = l.toLowerCase().slice(0, 40); if (seen.has(k)) continue; seen.add(k);
     out.push(l.length > 110 ? l.slice(0, 107) + '...' : l);

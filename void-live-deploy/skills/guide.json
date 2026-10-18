@@ -5232,11 +5232,11 @@
    "examples": [
     "what do you want built now",
     "name all your unbuilt asks",
-    "what have you not built yet"
+    "asks not built?"
    ],
    "tier": "proven",
-   "why": "a self-test, 6 browser-suite mentions, 4 real asks in the benchmark",
-   "flavor": "Proven 4 times over by those who asked, and kept among the void itself. Turn the page when you are done.",
+   "why": "a self-test, 6 browser-suite mentions, 5 real asks in the benchmark",
+   "flavor": "Proven 5 times over by those who asked, and kept among the void itself. Turn the page when you are done.",
    "glow": 100,
    "n": 302
   },

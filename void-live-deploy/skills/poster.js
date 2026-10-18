@@ -4,7 +4,7 @@
  * this browser: nothing is uploaded. Ordering it waits for a print-on-demand account (its key as a Pages secret) and a yes
  * on the confirm line, so the card says that plainly and shows no price it has no source for.
  * "make this a poster", "print this card as a poster", "turn this into a poster".
- * A Verse film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
+ * A V01D film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
  * miss-board-4" read the film's metadata (skills/films.js filmMeta, /api/films) and add a 9:16 phone-story size for promo.
  */
 import { filmMeta } from './films.js';
@@ -18,13 +18,13 @@ export function posterOf(text) {
   return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?)$/.test(t);
 }
 
-// a Verse film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
-// "order …" stays the confirm line's, and other films ("movie poster for inception") are not Verse's
+// a V01D film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
+// "order …" stays the confirm line's, and other films ("movie poster for inception") are not V01D's
 export const STORY = { w: 9, h: 16, name: 'phone story', px: [1080, 1920] };
 export function filmPosterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^order\b/.test(t)) return null;
-  const OF = "(?:(?:v0[1i]d|verse)'?s?\\s+|void'?s?\\s+)?";
+  const OF = "(?:v0[1i]d'?s?\\s+|void'?s?\\s+|verse'?s?\\s+)?";
   let m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?poster\\s+(?:for|of)\\s+(?:the\\s+)?film\\s+([a-z0-9][a-z0-9-]{2,60}-\\d+)$'));
   if (m) return { which: m[1] };
   m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?(?:poster\\s+(?:for|of)\\s+(?:the\\s+)?(?:newest\\s+|latest\\s+|new\\s+|last\\s+)?' + OF + 'films?|' + OF + 'film\\s+poster)$'));
@@ -33,9 +33,9 @@ export function filmPosterOf(text) {
 // the poster's words for one film: its own hook as the title (without the "| an AI built this itself #Shorts" tail), then
 // where and when it shows. Pure.
 export function filmCard(meta) {
-  const title = String(meta.title || meta.experiment || 'Verse FILMS').replace(/\s*\|.*$/, '').trim() || 'Verse FILMS';
+  const title = String(meta.title || meta.experiment || 'VERSE FILMS').replace(/\s*\|.*$/, '').trim() || 'VERSE FILMS';
   const day = /^\d{4}-\d{2}-\d{2}$/.test(meta.day || '') ? new Date(meta.day + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '';
-  return { title, text: 'Verse FILMS · Now showing' + (day ? ' · ' + day : '') + '\nAn AI built this experiment by itself and filmed it.\nWatch free at a-to-mind.com/films' };
+  return { title, text: 'VERSE FILMS · Now showing' + (day ? ' · ' + day : '') + '\nAn AI built this experiment by itself and filmed it.\nWatch free at a-to-mind.com/films' };
 }
 
 // Where each line goes on a w×h poster: the title large at the top, the card's text wrapped inside the margins, a small

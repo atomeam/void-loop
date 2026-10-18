@@ -33,7 +33,7 @@ export function hookOf(tool, run) {
  *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
 // the name viewers see is Verse (owner, 2026-10-14: "it shoud say V01d everywhere"; "Verse FILMS"): the lab's and ledger's own words say Void
-export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'Verse');
+export const brand = (t) => String(t || '').replace(/\b(?:Void|Verse|Verse)\b/g, 'Verse'); // both older names (owner, 2026-10-18: "rename void to verse")
 // the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
@@ -76,12 +76,12 @@ export function script(tool0, run0) {
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
     run && Array.isArray(run.failure_modes) && run.failure_modes.length ? 'What failed:\n' + lines(run.failure_modes.map((f) => (f && f.what) || f)) : '',
     'Ask Verse for anything: https://a-to-mind.com',
-    'Verse FILMS: a new one every day.',
+    'VERSE FILMS: a new one every day.',
     'Watch them all: https://www.youtube.com/@atombomb983',
     '#Shorts #AI #Verse',
   ].filter(Boolean);
   return { source: sourceOf(tool0.id), hook, finding: findingOf(run), caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
-    tags: ['Verse', 'Verse FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
+    tags: ['Verse', 'VERSE FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
 /** which lab experiment each film was, from the film release tags (film-<yyyymmdd>-<id>-r<run>), oldest first: [{ id, day }] */

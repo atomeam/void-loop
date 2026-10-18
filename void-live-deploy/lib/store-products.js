@@ -131,7 +131,7 @@ export default [
  },
  {
   "id": "v01d-forge-printables",
-  "name": "Verse Forge Printables (10 STLs)",
+  "name": "VERSE Forge Printables (10 STLs)",
   "cents": 0,
   "kind": "download",
   "pack": "print-set",

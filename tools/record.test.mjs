@@ -17,7 +17,7 @@ assert.match(s.description, /#Shorts/); assert.ok(s.tags.includes('Shorts'));
 assert.match(s.cta, /a\u2011to\u2011mind\.com/, 'the domain never breaks across lines');
 assert.equal(hookOf({ label: 'X', sub: 'No question here.' }, { behavior: 'Does a thing.' }), 'Does a thing.', 'no question: the behavior');
 assert.equal(s.caption, 'Estimate how much of what people ask Verse has already seen.', 'the ledger behavior is the caption');
-assert.ok(!/\bVoid\b/.test(s.description) && /Verse FILMS/.test(s.description) && s.tags.includes('Verse'), 'no Void left in what a viewer reads');
+assert.ok(!/\bVoid\b/.test(s.description) && /VERSE FILMS/.test(s.description) && s.tags.includes('Verse'), 'no Void left in what a viewer reads');
 assert.match(s.description, /What it set out to show: Good-Turing says it/);
 assert.match(s.description, /What it found:\n- about 40% unseen/);
 assert.match(s.description, /What failed:\n- small samples swing/);

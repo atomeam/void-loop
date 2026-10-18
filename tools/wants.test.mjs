@@ -16,12 +16,12 @@ const m = (a) => skill.match(a.toLowerCase(), a);
 const REACH = ['what do you want built now', 'what do you want', 'what else do you want', 'name all your wants', 'name all your unbuilt asks', 'what have you not built yet',
   "what haven't you built", 'your backlog', 'what are your open asks', 'what is still open', "what's on your list", 'whats next for you', 'what do you want to learn',
   'name all your unbuilt asks and come up with 50 more new ones', 'What do you want built now?', 'show me your backlog', 'what is in your backlog', 'list your wants',
-  'what do you want next', "what's next for you?", 'what did you not build yet', 'your open asks', 'open asks', 'what are your unbuilt asks', 'what is your backlog',
+  'what do you want next', "what's next for you?", 'what did you not build yet', 'your open asks', 'open asks', 'asks not built?', 'asks not built yet', 'unbuilt wants', 'growth inbox', 'the unbuilt list', 'what are your unbuilt asks', 'what is your backlog',
   'what have you left to build', 'what is not built yet', "what's your developmental state", 'tell me your wants, then rank them'];
 const STAY = ['what do I want for dinner', "what's next?", "what's on my list", 'open asks please', 'what do you think of yourself', 'what can you do', 'what do you want to be',
   'tell me about yourself', 'what do you want to do', 'what do you want for dinner', 'what is open', 'whats open now', 'your will', 'what is your will', 'make a list',
   'what should i build', 'what do you want from me', 'name all the countries', 'what have you done', 'what have you built', 'what have you built this week', 'what is a backlog',
-  'what is a want', 'what is voidquest', 'tell me about the chess skill', 'weather in paris', ''];
+  'what is a want', 'what is voidquest', 'todo', 'inbox', 'backlog', 'my inbox', 'asks', 'not built', 'tell me about the chess skill', 'weather in paris', ''];
 
 test('match: every phrasing that must reach the card does, and every example of the skill', () => {
   for (const a of REACH) assert.equal(m(a), true, a);

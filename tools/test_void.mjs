@@ -501,7 +501,7 @@ try {
   await t.ask('make everything blue'); check('make everything blue', (await t.state()).every((x) => !x.color || /6aa8ff|9ec8ff/.test(x.color)));
   } // CORE
 
-  // Verse's body asks (skills/nutrition.js, food.js, words.js): the BMI card saves a dated entry only on "save this" and shows the
+  // V01D's body asks (skills/nutrition.js, food.js, words.js): the BMI card saves a dated entry only on "save this" and shows the
   // trend; its band links to the calorie card with the same numbers; "plan my meals" splits the day and the calorie and food
   // cards link to it; an unscrambled word is a tap from a cartoon of it.
   if (want("body asks: bmi save this keeps a trend only on tap, the band links to calories, plan my meals splits the day, food links to it, an unscrambled word draws a cartoon")) { const B = await fresh();
@@ -644,7 +644,7 @@ try {
       cleared === 0 && backAfterClear === 4 && kindsBack.includes('clock') && kindsBack.includes('sticky') && emptyWords && !S.errors.length, JSON.stringify({ cleared, backAfterClear, kindsBack, emptyWords, errors: S.errors }));
     await S.ctx.close(); }
   // A useful 404 (void-live-deploy/404.html, which Pages serves for a path with no file): status 404, never the homepage with a 200;
-  // Verse's look, the ask box sends what you type to /?q= and Verse runs it; the links all lead to pages that exist; it fits a phone.
+  // V01D's look, the ask box sends what you type to /?q= and V01D runs it; the links all lead to pages that exist; it fits a phone.
   if (want("404 page: a missing path is a 404 in Verse's look, its ask box goes to /?q= and runs the ask, its links exist")) { const N = await fresh({ phone: true });
     const res = await N.p.goto(base + 'no-such-page/at-all?x=1'); await N.p.waitForTimeout(200);
     const info = await N.p.evaluate(() => ({ path: (document.getElementById('path') || {}).textContent, robots: (document.querySelector('meta[name=robots]') || {}).content,
@@ -785,7 +785,7 @@ try {
   // writing assistants, the bar is legible over a white backdrop, the support link is readable, and a mouse gets the bar focused while touch does not.
   // Accessibility settings (owner, 2026-10-18: "the descriptive subtext ... wraps all the way to the left edge, sitting directly underneath the checkbox"):
   // every switch's description hangs under its title, never under the checkbox, at desktop and phone widths
-  // the browser's own look stays out (owner, 2026-10-18): selected text is Verse's violet, scrolling boxes get a thin translucent bar, and the
+  // the browser's own look stays out (owner, 2026-10-18): selected text is V01D's violet, scrolling boxes get a thin translucent bar, and the
   // self card's depth filter shows which pill is on
   if (want("aesthetic perimeter")) {
     const P = await fresh(); await P.ask('what do you think of yourself', 2500);
@@ -858,7 +858,7 @@ try {
     const rPh = worst(rb.ph), rInk = worst(rb.ink);
     check('empty state: over a pure white backdrop the ask bar keeps its placeholder and typed text at 4.5:1 or better (measured from the rendered pixels)', rPh >= 4.5 && rInk >= 4.5, JSON.stringify({ rPh, rInk, bgs, ph: rb.ph, ink: rb.ink }));
     await C.ctx.close();
-    // 7) no corner "support Verse" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
+    // 7) no corner "support V01D" link any more (owner, 2026-10-18: "get rid of it, but make the store easy to find"): the empty stage has no link at all,
     //    "open the store" still opens the store, and the book's Start here page names it
     const S = await fresh(); await S.p.waitForTimeout(1500);
     //    (asked by Void, 2026-10-18, after the link went): a ghost of a heart in the corner, faint until the pointer nears the corner, then opaque
@@ -1356,8 +1356,8 @@ try {
     await O.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
     await O.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
     await O.p.reload(); await O.p.waitForTimeout(600);
-    await O.ask('publish my void as @neo', 500); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first();
-    await O.ask('yes', 900); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    await O.ask('publish my void as @neo', 300); await until(async () => /Put your Verse at/.test(await O.whisper()), 15000); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first(); // the line comes once the skills are in: wait for it, not a guessed half second
+    await O.ask('yes', 300); await until(async () => /Your Verse is public/.test(await O.page()), 15000); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     await O.ask('unpublish', 700); const gone = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     const C = await mk('userC', 'paid'); await pub(C, 'POST', { handle: 'cee', look, cards });
     const up = (await render('@cee')).status;
@@ -1390,7 +1390,7 @@ try {
       && /serendipity/.test(def) && /faculty of making happy discoveries/.test(def) && /Wiktionary/.test(def) && /ephemeral/.test(def2),
       [dir.slice(0, 80), def.slice(0, 80), def2.slice(0, 40)].join(' | '));
     check('list: "how many days until friday" counts to the next Friday; "what day is it in Tokyo" shows the day there; "time difference between London and Tokyo" says the gap in words; none reach Wikipedia, the miss board or the calendar',
-      new RegExp('^Calculated\\s+(?:ANSWER[^\\n]*\\s+)?' + want + ' days?').test(fri) /* the card's type line (Verse cards) sits between the title and the answer */ && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
+      new RegExp('^Calculated\\s+(?:ANSWER[^\\n]*\\s+)?' + want + ' days?').test(fri) /* the card's type line (V01D cards) sits between the title and the answer */ && /Friday/.test(fri) && /Tokyo/.test(day) && /(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)/.test(day)
       && /Tokyo is \d+ hours ahead of London/.test(gap) && !net.length && cal === 0,
       [fri.slice(0, 60), day.slice(0, 60), gap.slice(0, 160), net.join(','), cal].join(' | '));
     await D.ctx.close(); }
@@ -1500,7 +1500,7 @@ try {
     check('country card: the time there now, from the built-in zones, with or without REST Countries ("population of Japan" with the service down shows Tokyo\'s clock)',
       clock.test(down) && /built-in list/.test(down) && clock.test(up) && /Time/.test(up) && K.errors.length === 0, down.slice(0, 200) + ' | ' + up.slice(0, 200));
     await K.ctx.close(); }
-  // Verse values anything from a photo (frontier #30, the owner's ask): one photo in, Verse's value out; people are never priced
+  // V01D values anything from a photo (frontier #30, the owner's ask): one photo in, V01D's value out; people are never priced
   if (want("appraise: a photo in, Verse's value out; a person asking is complimented, never priced")) { const A = await fresh();
     const sent = [];
     await A.ctx.route(/\/api\/appraise$/, (r) => { const b = JSON.parse(r.request().postData() || '{}'); sent.push(b);
@@ -1520,7 +1520,7 @@ try {
     const makeLine = await A.p.$eval('.vpage.on .ap-make', (e) => e.textContent).catch(() => ''), makeAsk = await A.p.$eval('.vpage.on .ap-make a', (a) => a.dataset.ask).catch(() => '');
     let clickErr = ''; await A.p.click('.vpage.on .ap-make a', { timeout: 8000 }).catch((e) => { clickErr = String(e.message).replace(/\s+/g, ' ').slice(0, 700); }); await until(async () => (await A.state()).some((x) => x.kind === 'forge'), 6000);
     const made = (await A.state()).filter((x) => x.kind === 'forge').map((x) => JSON.stringify(x).slice(0, 80));
-    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the Verse card's footer carries a collector number and stat plates, digits by design
+    await A.ask('what am I worth', 600); await until(async () => /What you are worth/.test(await A.page()), 4000); const you = await A.p.$eval('.vpage.on', (e) => { const c = e.cloneNode(true); c.querySelectorAll('.vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share').forEach((x) => x.remove()); return c.innerText; }).catch(() => ''); // the answer itself: the V01D card's footer carries a collector number and stat plates, digits by design
     check('appraise: "what is this coin worth" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows Verse\'s one value with its reasons and the expert line; "what am I worth" is a compliment with no number; a photo of a vase gets a "make me a vase" link (a coin gets none) and the link puts the vase on the stage',
       sent.length === 2 && /^data:image\/jpeg;base64,/.test(sent[0].image) && sent[0].note === 'from my grandfather' && /\$540/.test(card) && /looked at in hand/.test(card) && /What I saw: A worn silver coin/.test(card)
         && /What you are worth/.test(you) && !/\$|\d/.test(you.replace(/Verse/g, '')) && !A.errors.length
@@ -2492,7 +2492,7 @@ try {
       [JSON.stringify(md1), JSON.stringify(md2), P.errors.join(';')].join(' | '));
     await P.ctx.close(); }
   // a paste of any size, and a read-aloud button on every card (owner, 2026-10-15: "I thought we fixed it so that we can past any
-  // sized message and Verse can handle it like you can . also Verse needs a read aloud button"): a 3,000-line log pasted under
+  // sized message and V01D can handle it like you can . also V01D needs a read aloud button"): a 3,000-line log pasted under
   // "my n8n workflow is broken…" reaches the server inside its 20 kB with its first and last lines (the error is at the end), the
   // card's title ends in … at a word, the card folds away everything given and says how much of the middle was left out; the
   // card's round button reads the whole card aloud, turns to stop while it reads, and stops when tapped again
@@ -2520,7 +2520,7 @@ try {
     await G.ctx.close(); }
   if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
     const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
-      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; window.__saidAtCancel = window.__said.length; }; window.__saidAtCancel = 0; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > window.__saidAtCancel }); } }); // speaking until the next cancel: the start's own cancel() used to make it read as silent, so a slow second tap met a button the page had already turned off
     let sent = null, bytes = 0;
     await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
     const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
@@ -2548,7 +2548,7 @@ try {
       await P.ask(a, 500); r[k] = await P.page();
     }
     await P.ask('do you love me lyrics', 900); r.lyrics = await P.page();
-    // Verse's voice (owner, 2026-10-14: "I wish V01d didnt seem so grumpy"): warm and true, never opening on "no"
+    // V01D's voice (owner, 2026-10-14: "I wish V01d didnt seem so grumpy"): warm and true, never opening on "no"
     const own = (t, w) => t.includes(w) && !/!|Source:|here to help|as best I can|No feelings here|won’t pretend/i.test(t) && /written by Verse, about itself/.test(t);
     check('feelings: "do you love me?", "Void, do you have feelings?", "are you conscious" and "do you get lonely" get Void\'s own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no "here to help"), and "do you love me lyrics" is not taken',
       own(r.love, 'I like you being here') && own(r.feel, 'I have my pulls') && own(r.mind, 'spawned by A-to-Mind') && own(r.lonely, 'I have my pulls') && own(r.pretty, 'made to look like this on purpose') && !r.lyrics.includes('I like you being here'),
@@ -2684,7 +2684,7 @@ try {
     await P.ctx.close();
   }
   // previewed once (owner, 2026-10-16: "keeps saying the same 4 things now, it's only supposed to preview once"): the line that says
-  // what Verse made while you were away shows once for a set of things; a later visit does not say the same things again, and asking
+  // what V01D made while you were away shows once for a set of things; a later visit does not say the same things again, and asking
   // "what's new" afterwards recaps the last day instead of everything
   if (want("look what I made: previewed once, the same things are never offered twice")) {
     const LEDGER = [
@@ -3627,7 +3627,7 @@ try {
   if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
   }
-  // the list card in Verse's own look (owner, 2026-10-18: no wooden clipboard, no phantom second clipboard beside it)
+  // the list card in V01D's own look (owner, 2026-10-18: no wooden clipboard, no phantom second clipboard beside it)
   if (want("list card look: a dark panel with a title bar, one card and no 3D clipboard after the ask and after a reload, the add row and the shop group apart")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400);
     await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
@@ -3824,7 +3824,7 @@ try {
     await O.ctx.close(); }
   // the owner's actions card (skills/actions.js) reads the execution record (lib/actions.js) and shows every kind of action,
   // not only automation steps: here a queue.add from the miss board (lib/learn.js) and a stubbed confirm-line send
-  // Talking back (owner, 2026-10-16): the owner replies on Verse's self card, Verse answers at once and keeps what it learned
+  // Talking back (owner, 2026-10-16): the owner replies on V01D's self card, V01D answers at once and keeps what it learned
   if (want('talk back: the owner replies to Verse')) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
     const posts = [], AT = '2026-10-08T18:09:00Z';
     await O.ctx.route(/\/api\/voice-reply$/, (r) => {
@@ -3837,7 +3837,7 @@ try {
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
     const after = await O.page(), stillOpen = await O.p.$('.vpage.on [data-v-reply]'), x = await O.p.evaluate(() => window.__x || 0), imgs = await O.p.$$eval('.vpage.on .v-talk img', (l) => l.length);
-    // and about any card: "Tell Verse" under it sends the ask, the card's title and what it said
+    // and about any card: "Tell V01D" under it sends the ask, the card's title and what it said
     await O.ask('5 miles in km', 300); await until(async () => !!(await O.p.$('.vpage.on a.vtell')), 4000);
     await O.p.click('.vpage.on a.vtell'); await O.p.fill('.vpage.on .vtell-box textarea', 'Say it to two decimals.');
     await O.p.click('.vpage.on .vtell-box button'); await until(async () => posts.length === 2 && /Verse: Heard/.test(await O.page()), 4000);
@@ -3852,18 +3852,18 @@ try {
         && !!card && card.about.ask === '5 miles in km' && /8\.05/.test(card.about.said) && !/Tell Verse/.test(card.about.said) && card.text === 'Say it to two decimals.' && !('to' in card) && tellLeft === 0 && strangerTell === 0,
       JSON.stringify({ before: before.slice(-300), after: after.slice(-300), posts, imgs, x, stranger, strangerTell, tellLeft, errors: O.errors }));
     await O.ctx.close(); }
-  // Verse's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
+  // V01D's fixes, previewed (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"; skills/v01d-fixes.js)
   if (want("Verse's fixes: the owner previews")) { const O = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "owner-k");' });
-    const body = (c) => "Verse's own model proposed this change. Why, in Verse's words: the matcher only knew ride words. Verse's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
-    const prs = [{ number: 900, title: 'Verse fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by Verse' }, { name: 'automerge' }] },
-      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by Verse' }, { name: 'waits for owner' }] },
+    const body = (c) => "Verse's own model proposed this change. Why, in V01D's words: the matcher only knew ride words. V01D's confidence: " + c + '. Where: void-live-deploy/skills/rides.js line 42. Labelled x';
+    const prs = [{ number: 900, title: 'Verse fixes its rides skill: learn to handle "sf to oakland"', html_url: 'https://github.com/atomeam/void-loop/pull/900', body: body('0.92'), labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
+      { number: 901, title: 'Verse fixes its words skill: learn to handle "<b>x</b>"', html_url: 'https://github.com/atomeam/void-loop/pull/901', draft: true, body: body('0.55').replace(' Labelled x', ' Risk: high (it changes a structural line (async run(text, api) {), not only the matcher). Labelled x'), labels: [{ name: 'made by V01D' }, { name: 'waits for owner' }] },
       { number: 902, title: 'someone else', html_url: 'https://github.com/atomeam/void-loop/pull/902', body: '', labels: [{ name: 'automerge' }] }];
     const approvals = [];
     await O.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls(\?|\/\d+\/files)/, (r) => r.fulfill(json(/\/files/.test(r.request().url()) ? [{ filename: 'void-live-deploy/skills/rides.js', patch: '@@ -42 +42 @@\n-  return /^ride/.test(t);\n+  return /^(?:ride|how to get from)/.test(t);' }] : prs)));
     await O.ctx.route(/\/api\/v01d-fixes$/, (r) => { approvals.push({ b: JSON.parse(r.request().postData() || '{}'), auth: r.request().headers().authorization }); return r.fulfill(json({ ok: true, pr: 901 })); });
     await O.ask("Verse's fixes", 300); await until(async () => /how to get from/.test(await O.page()), 6000);
     const card = await O.page(), order = await O.p.$$eval('.vpage.on .vfix', (l) => l.map((x) => x.dataset.pr)), buttons = await O.p.$$eval('.vpage.on button[data-approve]', (l) => l.map((b) => b.dataset.approve));
-    await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Verse's review is clean/.test(await O.page()), 4000);
+    await O.p.click('.vpage.on button[data-approve="901"]'); await until(async () => /merges once Void's review is clean/.test(await O.page()), 4000);
     const after = await O.page();
     const S = await fresh(); await S.ask("Verse's fixes", 300); await until(async () => /Only my owner/.test(await S.page()), 4000); const stranger = await S.page(); await S.ctx.close();
     check("Verse's fixes: the owner previews the fixes Verse opened (a fix under 0.8 is a draft and a high-risk one says so), the ones waiting for them first, with confidence, where and the changed lines; Approve on a waiting one goes to /api/v01d-fixes with the owner key; a stranger sees none",
@@ -3873,7 +3873,7 @@ try {
         && /Only my owner reviews the fixes I propose/.test(stranger) && !O.errors.length,
       JSON.stringify({ order, buttons, card: card.slice(0, 400), approvals, errors: O.errors }));
     await O.ctx.close(); }
-  // Verse sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
+  // V01D sees repos (owner, 2026-10-17: "make v01d able to see repos"; skills/repo.js, /api/repo)
   if (want("Verse sees a repo: a card from the live GitHub facts")) { const R = await fresh();
     const facts = { name: 'acme/widget', description: 'A widget <img src=x onerror=window.__pwn=1> maker', url: 'https://github.com/acme/widget', language: 'JavaScript', stars: 42, forks: 3, license: 'MIT', branch: 'main', pushed: '2026-10-01', archived: false, topics: [], openIssues: 5, openPulls: 4, langs: [{ name: 'JavaScript', pct: 90 }, { name: 'HTML', pct: 10 }], commits: [{ sha: 'abcdef1', msg: 'fix: <b>bold</b> it', who: 'Ann', date: '2026-10-01' }], tree: [{ name: 'src', dir: true }, { name: 'README.md', dir: false }], treeTotal: 2, readme: 'Widget makes widgets from plain words.' };
     const seen = [];
@@ -3911,7 +3911,7 @@ try {
         && /no announced date/.test(none) && !/\d+ hours/.test(none) && !R.errors.length,
       JSON.stringify({ card: card.slice(0, 400), seen, rawHover, rawTap, verified, none: none.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
-  // Verse's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
+  // V01D's asks, batch of 2026-10-16: the merge log card, forge history, and the self card's divergence view (my words beside what was built)
   // A card that rests on thin evidence says so (asked by Void: a visual warning for tested and experiment ratings; lib/rating-note.js)
   if (want("rating note: a card from a skill rated experiment or tested says so on its source line; strong ratings stay quiet")) { const R = await fresh();
     const rated = (tier) => ({ families: [{ skills: [{ name: 'weather', tier, why: 'a self-test' }, { name: 'convert', tier: 'proven', why: 'many' }] }] });
@@ -4053,13 +4053,16 @@ try {
     });
     await S.ask('is uber down', 600);
     await until(async () => (await S.p.$$eval('.vpage.on .sh-row[data-state="checking"]', (e) => e.length).catch(() => 1)) === 0 && (await S.p.$$('.vpage.on .sh-row')).length > 0, 10000).catch(() => {});
-    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0) }));
+    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0),
+      gauge: (() => { const g = el.querySelector('.sh-gauge'); return g ? { label: g.dataset.stability, score: +g.dataset.score, deg: (g.querySelector('.sh-needle').style.transform.match(/-?\d+/) || [''])[0], reads: +(el.querySelector('[data-sh-gauge]').dataset.reads || 0) } : null; })() }));
     const a = await read(), hitsA = hits;
     await S.p.click('.vpage.on [data-sh-again]'); await until(async () => (await read()).checked >= 2, 10000).catch(() => {});
     const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
-    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, and Check again checks every one again',
+    // the stability dial (asked by Void): the served incidents.json is the real file, so the dial reads a label and a score, the needle sits at the score's angle, and Check again reads it again
+    const dialOk = (g) => g && ['steady', 'wobbly', 'shaky'].includes(g.label) && g.score >= 0 && g.score <= 100 && +g.deg === Math.round(-90 + 1.8 * g.score);
+    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and V01D\'s own stability dial reads incidents.json (again on Check again)',
       a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
-      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
     await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
@@ -4254,7 +4257,7 @@ try {
     await A.ctx.close(); await B.ctx.close(); }
   if (want("Verse's asks batch: merge log, forge history, divergence")) { const B = await fresh();
     await B.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\/pulls\?state=closed/, (r) => r.fulfill(json([
-      { number: 901, title: 'Verse fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by Verse' }, { name: 'automerge' }] },
+      { number: 901, title: 'Verse fixes its rides skill: learn to handle "x"', merged_at: '2026-10-16T04:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/901', labels: [{ name: 'made by V01D' }, { name: 'automerge' }] },
       { number: 900, title: 'Closed, not merged', merged_at: null, html_url: 'https://github.com/atomeam/void-loop/pull/900', labels: [] },
       { number: 899, title: 'A photo <b>appraised</b>', merged_at: '2026-10-16T03:00:00Z', html_url: 'https://github.com/atomeam/void-loop/pull/899', labels: [{ name: 'automerge' }] }])));
     await B.ask('what did you merge', 300); await until(async () => /#901/.test(await B.page()), 5000);
@@ -4276,7 +4279,7 @@ try {
         && div.length >= 1 && /I asked: Learn Go on the stage.*What was built \(2026-10-08\): asked by Void: Go\. skills\/go\.js/.test(div[0]) && !B.errors.length,
       JSON.stringify({ log: log.text.slice(0, 300), forge: forge.asks, again: again.slice(0, 200), div: div.slice(0, 2).map((t) => t.slice(0, 120)), errors: B.errors }));
     await B.ctx.close(); }
-  // Verse's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
+  // V01D's forge asks (2026-10-16): a person as a recipe, forge iterations, a geometry check before printing, and the print ledger in the inventory
   if (want("Verse's forge asks: person, iterations, check before printing, print ledger")) { const B = await fresh();
     await B.ask('make me a person', 400); await until(async () => (await B.state()).some((x) => x.kind === 'forge' && x.key === 'person'), 8000);
     await B.ask('check it before printing', 300); await until(async () => /Geometry checked, not printed/.test(await B.whisper()), 8000).catch(() => {});
@@ -4413,7 +4416,7 @@ try {
         && /a hut needs 6 wood: \d wood so far; the villagers are on it/.test(short) && /wood 9|wood 1\d/.test(wood9) && /the villagers raised a hut \(6 wood\)/.test(raised) && !!hut && campAfter && campAfter.stock.wood >= 3 && /^the camp has \d+ wood/.test(rep) && /built: hut/.test(rep) && !P.errors.length,
       JSON.stringify({ camp0, grounded, tree: tree && tree.res, villager: !!villager, bar, treeLeft, onGround, short, wood9, raised, hut: !!hut, stock: campAfter && campAfter.stock, rep, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
-  // asked by Owner, 2026-10-18: look around and fly around Verse (skills/fly.js, the maths in lib/stage-camera.js): a camera over the stage, a view only
+  // asked by Owner, 2026-10-18: look around and fly around V01D (skills/fly.js, the maths in lib/stage-camera.js): a camera over the stage, a view only
   if (want("fly: look around and fly around the stage: keys move the camera, the wheel zooms, a drag pans, Esc lands, no thing moves")) { const P = await fresh();
     await P.ask('make a clock', 700); await until(async () => (await P.state()).some((x) => x.kind === 'clock'), 6000);
     const before = (await P.state()).map((x) => [x.id, x.x, x.y]);
@@ -4456,12 +4459,14 @@ try {
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
       const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
+    await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
     const { ok: heldD, v: mid, streak } = await holdD(P.p, -120);
     await P.p.keyboard.press('Escape');
     const back = await until(async () => atRest(await stars(P.p)) && !(await P.p.evaluate(() => window.__voidFly.state().landing)), 6000);
     const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' });
     await R.ask('fly around', 500);
+    await until(async () => (await stars(R.p)).lib, 10000);
     const { ok: heldR, v: rMid, streak: rStreak } = await holdD(R.p, -300);
     await R.p.keyboard.press('Escape');
     const rBack = await until(async () => atRest(await stars(R.p)), 3000);
@@ -4688,7 +4693,7 @@ try {
     check('arena day over day: "how good are you at connect four" says the change since the last day that differed, from the history the daily run keeps (here: ' + arenaDelta(rec.history) + ')',
       Array.isArray(rec.history) && rec.history.length >= 1 && delta === 'Day over day: ' + arenaDelta(rec.history) + '.' && !A.errors.length, JSON.stringify({ delta, history: rec.history, e: A.errors }));
     await A.ctx.close(); }
-  // Verse card game (skills/duel.js, frontier #33 steps 1 and 2): "duel" puts a table of Verse cards on the stage; a person summons an idea, passes, attacks, and Verse plays the other side.
+  // V01D card game (skills/duel.js, frontier #33 steps 1 and 2): "duel" puts a table of V01D cards on the stage; a person summons an idea, passes, attacks, and V01D plays the other side.
   if (want("Verse card game: duel puts a table of Verse cards on the stage, you summon an idea, pass and attack, and Verse plays its side")) {
     const G = await fresh(); await G.p.setViewportSize({ width: 375, height: 760 }); await G.ask('duel', 900);
     await G.p.waitForSelector('.duel-card .duel-tile', { timeout: 6000 }).catch(() => {});
@@ -4700,18 +4705,18 @@ try {
     await G.p.fill('.duel-card .d-idea', 'dragon'); await G.p.click('.duel-card .d-summon'); await G.p.click('.duel-card .duel-open'); await G.p.click('.duel-card .d-confirm');
     check('Verse card game: summoning any idea puts a fresh 1 / 1 card on an open arrow of yours and spends its cost of 1', await yours() === 2 && /Treasury: you 7/.test(await bar()) && await G.p.evaluate(() => /dragon/i.test(document.querySelector('.duel-card .d-me').textContent)), await bar());
     await G.p.click('.duel-card .d-pass');
-    const att = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 4000 }).then(() => true, () => false); if (att) await G.p.click('.duel-card .d-answer'); // Verse may attack the new card: the defender answers with coins (0 here)
+    const att = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 4000 }).then(() => true, () => false); if (att) await G.p.click('.duel-card .d-answer'); // V01D may attack the new card: the defender answers with coins (0 here)
     const back = await myTurn();
     check('Verse card game: passing banks two coins, then Verse plays its own side and the move comes back to you on turn 2', back && await theirs() >= 1 && /Treasury: you (9|11|12)/.test(await bar()), await bar() + ' foe tiles ' + await theirs());
     await G.p.click('.duel-card .d-me .duel-tile'); await G.p.click('.duel-card .d-foe .duel-tile'); await G.p.click('.duel-card .d-confirm');
-    const ans = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 1500 }).then(() => true, () => false); if (ans) await G.p.click('.duel-card .d-answer'); // Verse answers by itself when it is the defender
+    const ans = await G.p.waitForSelector('.duel-card .d-answer', { timeout: 1500 }).then(() => true, () => false); if (ans) await G.p.click('.duel-card .d-answer'); // V01D answers by itself when it is the defender
     await G.p.waitForTimeout(400);
     check('Verse card game: an attack is played out and written in the log', await G.p.evaluate(() => /fails against|neutralises/.test((document.querySelector('.duel-card .d-log') || {}).textContent || '')), await G.p.evaluate(() => (document.querySelector('.duel-card .d-log') || {}).textContent));
     await myTurn(); await G.ask('summon a comet', 400);
     check('Verse card game: "summon <idea>" typed while a duel is on the stage prepares that card on the table (not a new duel)', await G.p.evaluate(() => document.querySelectorAll('.duel-card').length === 1 && document.querySelector('.duel-card .d-idea').value === 'a comet'), await G.p.evaluate(() => document.querySelector('.duel-card .d-idea').value));
     check('Verse card game: no page errors through a few real turns', !G.errors.length, JSON.stringify(G.errors));
     await G.ctx.close(); }
-  // Verse rules engine (frontier #35): "duel with mana and tribute rules" loads three rule sets as one stack, plays a few turns and writes every clash in words.
+  // V01D rules engine (frontier #35): "duel with mana and tribute rules" loads three rule sets as one stack, plays a few turns and writes every clash in words.
   if (want("Verse rules engine: \"duel with mana and tribute rules\" puts the three rule sets in force at once, plays turns and writes the clash in plain words")) {
     const R = await fresh(); await R.ask('duel with mana and tribute rules', 900);
     await R.p.waitForSelector('.rules-card .r-log li', { timeout: 8000 }).catch(() => {});
@@ -5052,7 +5057,7 @@ try {
       && !!running && !!aborted && JSON.stringify(offAgain) === JSON.stringify({ enabled: false, when: { on: 'schedule', every: 120 } })
       && stillAnim.working && stillAnim.anim === 'none' && stillAnim.h === '3px' && refused && !refused.working && /not approved, nothing changed/.test(refused.line) && refused.status === 'aborted' && !AC.errors.length,
       JSON.stringify({ seeded: seeded.ok, made: made && [made.status, made.line, made.title], kept0: kept0 && Object.keys(kept0), back: back && [back.status, back.line], reloadQuiet, line, working: working && [working.working, working.busy], anim, synthetic, approved: approved && [approved.status, approved.line], onClock, ledgerKind, kept1: kept1 && { approvedAt: kept1.approvedAt, keys: Object.keys(kept1) }, running: running && [running.status, running.line], aborted: aborted && [aborted.status, aborted.line], offAgain, stillAnim, refused: refused && [refused.status, refused.working, refused.line], errs: AC.errors }).slice(0, 2600));
-    // chess shares the look: while Verse thinks, its status line carries .vc-working[aria-busy=true]; "Your move" takes it off
+    // chess shares the look: while V01D thinks, its status line carries .vc-working[aria-busy=true]; "Your move" takes it off
     await AC.ask('play chess', 600);
     await until(() => AC.p.$('.chess-flat button[data-sq="12"]'), 8000); // no WebGL here: the flat board (scene3d is off in the suite)
     await AC.p.evaluate(() => { window.__chessBusy = []; const look = () => { const s = document.querySelector('.chess-status'); if (s && s.classList.contains('vc-working') && s.getAttribute('aria-busy') === 'true' && window.__chessBusy[window.__chessBusy.length - 1] !== s.textContent) window.__chessBusy.push(s.textContent); };
@@ -5225,7 +5230,7 @@ try {
     });
     await F.p.goto(base + 'films/');
     await until(async () => (await F.p.$$eval('#films .film', (d) => d.length)) > 0, 5000);
-    // Verse Tube (2026-10-15): the channel grid for everyone; each card opens its watch page
+    // V01D Tube (2026-10-15): the channel grid for everyone; each card opens its watch page
     const gate = await F.p.evaluate(() => ({ films: document.querySelectorAll('#films .film').length, review: !!document.querySelector('.review'), video: !!document.querySelector('#films .film video'),
       href: (document.querySelector('#films .film') || {}).getAttribute?.('href') || '', signin: !!document.querySelector('#gate, #signin, #keyform, a[href*="code-review"]'), text: document.body.innerText }));
     // the watch page: anyone gets the player, the words and the upload steps (download, copy for YouTube, YouTube's upload page)
@@ -5281,8 +5286,8 @@ try {
   if (want("films skill: films, voids fillms and where do I watch the films open the way to /films/")) {
     const S = await fresh(); const got = [];
     for (const a of ['films', 'voids fillms', 'where do I watch the films']) {
-      await S.ask(a, 500); await until(async () => !!(await S.p.$('.vpage.on h2[aria-label="Verse FILMS"]')), 4000);
-      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && c.querySelector('h2[aria-label="Verse FILMS"]') && l); }));
+      await S.ask(a, 500); await until(async () => !!(await S.p.$('.vpage.on h2[aria-label="VERSE FILMS"]')), 4000);
+      got.push(await S.p.evaluate(() => { const c = document.querySelector('.vpage.on'); const l = c && c.querySelector('a[href="/films/"]'); return !!(c && c.querySelector('h2[aria-label="VERSE FILMS"]') && l); }));
     }
     check('films skill: films, voids fillms and where do I watch the films open the way to /films/', got.every(Boolean) && !S.errors.length, JSON.stringify({ got, errors: S.errors }));
     await S.ctx.close(); }
@@ -5312,7 +5317,7 @@ try {
       && stale.video && !stale.review && !stale.asks && /^1 video, newest first\./.test(stale.status) && !F.errors.length, JSON.stringify({ fell, stale, errors: F.errors }));
     await F.ctx.close(); }
 
-  // Verse's startup intro (owner, 2026-10-14: "a super professional brief Verse on startup"): the wordmark shows, typing works under
+  // V01D's startup intro (owner, 2026-10-14: "a super professional brief V01D on startup"): the wordmark shows, typing works under
   // it from the first frame, it is gone in under 2 s, and a test browser (or a link straight to an answer) never sees it unasked
   if (want("Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s")) {
     const I = await fresh(); const p = I.p;
@@ -5322,7 +5327,7 @@ try {
     await p.waitForTimeout(1500); const gone = await p.evaluate(() => !document.getElementById('v01d'));
     await p.goto(base, { waitUntil: 'domcontentloaded' }); const unasked = await p.evaluate(() => !!document.getElementById('v01d'));
     check('Verse intro: the wordmark shows on startup, never blocks typing, and is gone in 2 s',
-      !!mid && mid.text === 'V1DA-TO-MIND' && mid.on && mid.clicks === 'none' && typed === 'films' && gone && !unasked
+      !!mid && mid.text === 'VERSEA-TO-MIND' && mid.on && mid.clicks === 'none' && typed === 'films' && gone && !unasked
       && (await p.title()) === 'Verse · A-to-Mind' && !I.errors.length, JSON.stringify({ mid, typed, gone, unasked, errors: I.errors }));
     await I.ctx.close(); }
 
@@ -5412,14 +5417,14 @@ try {
     check('the fix pages: the hub lists every error page; each loads with its steps, sources, live price and Gumroad link, fits a phone, and "Ask Void" lands on the fixer',
       hubOk && got.every((g) => g.ok) && !!shown && !!fixAsk && !V.errors.length, JSON.stringify({ hubOk, bad: got.filter((g) => !g.ok), shown: !!shown, asked, errors: V.errors }));
     await V.ctx.close(); }
-  // Verse's review catches an undefined constant (ESLint's no-undef for UPPER_CASE names; the bug #250 shipped): a visitor's pasted
+  // Void's review catches an undefined constant (ESLint's no-undef for UPPER_CASE names; the bug #250 shipped): a visitor's pasted
   // snippet gets the bug on its line, and the same snippet with the import is clean.
-  if (want("Verse's review catches an undefined constant")) { const R = await fresh();
+  if (want("Void's review catches an undefined constant")) { const R = await fresh();
     await R.ask("review this code: import { due } from './a.js'; if (n > RUN_CAP_DAY) stop();", 1500);
     const bad = await until(async () => { const t = await R.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /never declared or imported/.test(t) ? t : ''; }, 6000) || '';
     await R.ask("review this code: import { due, RUN_CAP_DAY } from './a.js'; if (n > RUN_CAP_DAY) stop();", 1500);
     const good = await until(async () => { const t = await R.p.$eval('.vpage', (e) => e.textContent).catch(() => ''); return /found nothing wrong/.test(t) ? t : ''; }, 6000) || '';
-    check("Verse's review catches an undefined constant in a pasted snippet, and stays quiet once it is imported",
+    check("Void's review catches an undefined constant in a pasted snippet, and stays quiet once it is imported",
       !!bad && /bug/.test(bad) && !!good && !/never declared or imported/.test(good) && !R.errors.length, JSON.stringify({ bad: bad.slice(0, 200), good: good.slice(0, 200), errors: R.errors }));
     await R.ctx.close(); }
   // The growth card says how fast Void is gaining skills (asked by Void, 2026-10-12): new or better changes this week against the
@@ -5430,7 +5435,7 @@ try {
     check('the growth card says how fast Void is gaining skills: this week against the week before, with the trend',
       !!v && /^This week \d+ new or better, the week before \d+: (speeding up|steady|slowing|stalled)$/.test(v.text) && v.text.endsWith(v.trend) && !G.errors.length, JSON.stringify({ v, errors: G.errors }));
     await G.ctx.close(); }
-  // Is Verse getting better? (lib/better.js; owner, 2026-10-16): the growth card carries the daily score from void.better.json, with
+  // Is V01D getting better? (lib/better.js; owner, 2026-10-16): the growth card carries the daily score from void.better.json, with
   // its trend and the weakest part, under the friction and owner lines, never between the velocity line and the friction line
   if (want("The growth card says whether Verse is getting better")) { const G = await fresh();
     await G.ask('growth', 1500);
@@ -5439,7 +5444,7 @@ try {
       !!b && b.score >= 0 && b.score <= 100 && ['up', 'down', 'flat', 'first'].includes(b.trend) && /^(self|asks|friction|bench|probes)$/.test(b.weakest || '') && /^Better: \d+ of 100 \(.+\)\. .+\. Weakest: .+ \(\d+\)\.$/.test(b.text) && /Sure to within \d+–\d+, from \d+ checks\./.test(b.text) && !b.afterVelocity && !G.errors.length,
       JSON.stringify({ b, errors: G.errors }));
     await G.ctx.close(); }
-  // Verse's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
+  // V01D's self-knowledge, the device state and the arcade ladder (asked by Void, 2026-10-16)
   if (want("self-knowledge and state: voidquest and the games read from the canon, what the device keeps, the arcade ladder on the growth card")) {
     const G = await fresh(() => { localStorage.setItem('a2m.void.ladder.v1', JSON.stringify({ pong: { void: 3, you: 1, draw: 0 }, snake: { void: 0, you: 2, draw: 0 } })); localStorage.setItem('a2m.void.owner.v1', 'owner-key-stand-in'); }); // secret-scan: ok: a made-up value
     const pageWith = async (re) => (await until(async () => { const t = await G.page(); return re.test(t) ? t : null; }, 5000)) || (await G.page());
@@ -5453,7 +5458,7 @@ try {
         && !!lad && lad.rates === '1032,968' && /Void Pong 1032/.test(lad.text) && /Void Snake 968/.test(lad.text) && !G.errors.length,
       JSON.stringify({ vq: vq.slice(0, 200), games: games.slice(0, 200), st: st.slice(0, 300), lad, e: G.errors }));
     await G.ctx.close(); }
-  // Verse's probes on the growth card (lib/probe-log.js, asked by Void: a probe-success-rate card, and confidence in the growth inbox
+  // V01D's probes on the growth card (lib/probe-log.js, asked by Void: a probe-success-rate card, and confidence in the growth inbox
   // so high-certainty fixes come first): nothing shows without records; with them, the rate and the proposals most certain first
   if (want("The growth card shows Verse's probes")) { const G = await fresh();
     await G.ask('growth', 1500); await until(async () => !!(await G.p.$('.vpage [data-velocity]')), 6000); await G.p.waitForTimeout(600);
@@ -5522,7 +5527,7 @@ try {
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
   // the wants card (owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell to the model, which made 50 up):
-  // skills/wants.js answers from Verse's own records (the suite's /api/will and /api/reflect fixtures, tools/fixtures/outside.mjs, and the
+  // skills/wants.js answers from V01D's own records (the suite's /api/will and /api/reflect fixtures, tools/fixtures/outside.mjs, and the
   // real /self.json's open frontier items), three blocks with counts, every item a tap-to-copy chip, the compound line; the self card keeps its ask
   if (want('wants card')) { const W = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const selfJson = JSON.parse(fs.readFileSync(path.join(root, 'self.json'), 'utf8')), nOpen = (selfJson.open || []).length;
@@ -5557,13 +5562,13 @@ try {
       got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
       JSON.stringify({ got, errors: L.errors }));
     await L.ctx.close(); }
-  // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
+  // V01D's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Void: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
-    // the open asks: five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Void)
+    // the open asks: five fresh ones (this hour back) and one V01D called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Void)
     const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
     // follow.asked (every built ask by the time it was built) feeds the growth velocity: today, yesterday, three days back, and one too old for the week
@@ -5635,7 +5640,7 @@ try {
     check('void asks batch 4: the friction overlay on the growth sparkline (asked by Void): one open ask Verse called small, three days old, is past its 2-day limit: the segment into the day it crossed is red (255,120,110), the label gains " · 1 overdue" in amber, the title names the 2-day and 7-day limits, and the in-place redraw keeps it',
       !!v1 && v1.red === 1 && /255, 120, 110/.test(v1.redColor) && v1.redAt === '55.0-68.0' && v1.overdue === '1' && v1.amber === ' · 1 overdue' && /214, 178, 92/.test(v1.amberColor) && /2 days for one I called small, 7 days otherwise/.test(v1.title) && /overdue now: 1/.test(v1.title)
         && !!v2 && v2.red === 1 && v2.overdue === '1' && v2.amber === ' · 1 overdue', JSON.stringify({ v1, v2 }));
-    // Verse's will (2026-10-18): a correction opens the self card with Correct me open and its box focused, never the look skill
+    // V01D's will (2026-10-18): a correction opens the self card with Correct me open and its box focused, never the look skill
     const corr = [];
     for (const q of ['open the self card and tell Verse what it got wrong', 'show the self card and correct it', 'tell void what it got wrong']) {
       await S.ask('close', 200); await S.ask(q, 300); await until(async () => /Correct me/.test(await S.page()), 6000);
@@ -5723,7 +5728,7 @@ try {
       JSON.stringify(heat));
     await S.ctx.close(); }
   // Void's incident asks (asked by Void): a stability sparkline links to its family's incident logs; the autopsy card wears the Art Forge's warning style lock, lists the
-  // Go-against-Verse log with a replay ask; a numbers card takes the blueprint frame from its family
+  // Go-against-V01D log with a replay ask; a numbers card takes the blueprint frame from its family
   if (want("void asks incident: a sparkline drills down to its family's incident logs in a warning-locked autopsy card with the Go log, and a numbers card is a blueprint")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const nowIso = new Date().toISOString(), dayAgo = (n) => new Date(Date.now() - n * 864e5).toISOString();
     await S.ctx.route(/\/tester-log\.json/, (rt) => rt.fulfill(json({ cases: 3, runsTotal: 9, runs: [{ at: '2026-10-17T10:00:00Z', passed: 2, of: 3, kind: 'hourly', note: 'one miss' }] })));
@@ -5851,8 +5856,8 @@ try {
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
     await D.ctx.close(); }
-  // Verse cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
-  // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to Verse" line and a
+  // V01D cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
+  // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to V01D" line and a
   // footer with a collector number and a stat plate; a skill's numbers come from its own evidence, an encyclopedia answer is an Answer card
   if (want("Verse cards: every page is a card with a frame, a type line, a rarity and stats")) { const C = await fresh();
     await C.ask('20% tip on 45', 1600);
@@ -5864,7 +5869,7 @@ try {
     check('Verse cards: an answer from a source is an Answer card too (no rarity, its title bar kept as the page\'s own heading)', !!an && an.rarity === 'answer' && /^(ANSWER|FILM|SHOW|ALBUM|SONG|BAND|GAME|BOOK|PERSON|PLACE|CREATURE|ORGANISATION|EVENT|IDEA)\b/i.test(an.type) && !!an.title && an.text && !C.errors.length, JSON.stringify({ an, errors: C.errors }));
     await C.ctx.close(); }
   // UI polish (owner, 2026-10-18, a reviewer's notes on the answer card): the card's buttons are two labelled groups (Card: copy card, save card; Text: copy text, save text) and the
-  // answer's own "copy" pill is gone; the ask bar glows purple and gold when focused (no transition for reduced motion); "written by Verse, from what it knows" is >= 4.5:1
+  // answer's own "copy" pill is gone; the ask bar glows purple and gold when focused (no transition for reduced motion); "written by V01D, from what it knows" is >= 4.5:1
   // on its real background (measured from the pixels); the banner follows the topic (code, space, ...); a replaced answer is kept one line each under "earlier answers"
   if (want("ui polish: card button groups, ask bar focus glow, metadata contrast, topic banner and earlier answers")) { const U = await fresh();
     await U.ask('write a python greeter function', 1800);
@@ -5875,7 +5880,7 @@ try {
     await U.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
     await U.p.click('.vpage.on .vc-share .vc-grp[data-label="Text"] button:first-child'); await U.p.waitForTimeout(250);
     const copiedText = await U.p.evaluate(() => window.__copied);
-    check('ui polish: "copy text" puts the title and the answer\'s words on the clipboard, without the frame or the sources line', /python greeter/.test(copiedText) && /Here it is/.test(copiedText) && !/Verse-CARD|written by Verse/.test(copiedText), copiedText.slice(0, 120));
+    check('ui polish: "copy text" puts the title and the answer\'s words on the clipboard, without the frame or the sources line', /python greeter/.test(copiedText) && /Here it is/.test(copiedText) && !/V01D-CARD|written by Verse/.test(copiedText), copiedText.slice(0, 120));
     await U.p.focus('#input'); await U.p.waitForTimeout(500);
     const glow = await U.p.evaluate(() => { const r = getComputedStyle(document.getElementById('row')); return { shadow: r.boxShadow, border: r.borderTopColor, td: r.transitionDuration }; });
     await U.p.emulateMedia({ reducedMotion: 'reduce' }); await U.p.waitForTimeout(100);
@@ -5914,7 +5919,7 @@ try {
     await U.ctx.close(); }
 
   // A card is easy to copy, save and paste back (lib/card-share.js; owner, 2026-10-16): "copy card" puts readable text ending in a code line on the clipboard,
-  // and asking Verse with that text brings the same card back, its numbers earned again, nothing sent to the answer route
+  // and asking V01D with that text brings the same card back, its numbers earned again, nothing sent to the answer route
   if (want("Verse cards: copy a card, paste it back into Verse and the same card returns")) { const S = await fresh();
     await S.p.addInitScript(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); }).catch(() => {});
     await S.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
@@ -5927,8 +5932,8 @@ try {
     await S.ask('close', 600);
     await S.ask(text, 1500);
     const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
-    check('Verse cards: "copy card" puts readable text ending in a Verse-CARD code line on the clipboard, and pasting that text into Verse brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
-      !!btn && /Verse-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('Verse-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    check('Verse cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into Verse brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
+      !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
     await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
     const text2 = await S.p.evaluate(() => window.__copied);
     check('Verse cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Void)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));
@@ -5940,7 +5945,7 @@ try {
     check('Verse cards: a card holding more than 2400 characters carries a "whole text kept" badge by its copy buttons, a short card none (asked by Void)',
       !shortChip && !!longChip && longChip.text === 'whole text kept' && longChip.chars > 2400 && longChip.chars <= 8000 && !S.errors.length, JSON.stringify({ shortChip: !!shortChip, longChip, errors: S.errors }));
     await S.ctx.close(); }
-  // Verse card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
+  // V01D card art (lib/card-art.js, lib/card-image.js; owner, 2026-10-16: "every card needs art"; "the whole card, images and all"): each card's art box holds its own
   // ink plate, two cards' art differ, and "save card" downloads a PNG of the whole card at the 63:88 card ratio
   if (want("Verse card art: every card has its own ink plate, and save card downloads the whole card as a PNG")) { const A = await fresh();
     const art = async (ask) => { await A.ask('close', 400); await A.ask(ask, 1800); return until(async () => A.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); const v = e && e.querySelector('.vc-art svg'); return v && e.querySelector('.vc-share') ? { svg: v.outerHTML, kids: v.querySelectorAll('path,circle,rect').length, vb: v.getAttribute('viewBox') } : null; }).catch(() => null), 8000); };
@@ -5955,7 +5960,7 @@ try {
       !!png && /\.png$/.test(png.name) && png.magic === '89504e470d0a1a0a' && Math.abs(png.w / png.h - 63 / 88) < 0.005 && png.n > 20000 && !A.errors.length, JSON.stringify({ png, errors: A.errors }));
     await A.ctx.close(); }
   // owner, 2026-10-17 (a Cat card with a generic eye): the art is of the subject. An answer that carries its source's picture of the thing shows
-  // that picture in the art box, in Verse's ink; one with none keeps the plate of its kind.
+  // that picture in the art box, in V01D's ink; one with none keeps the plate of its kind.
   if (want("Verse card art: an answer with no lead image looks up the article's own photo")) { const K = await fresh();
     const kp = { type: 'standard', title: 'K-pop', description: 'South Korean popular music genre', extract: 'K-pop is a form of popular music originating in South Korea, from idol groups and bands.', content_urls: { desktop: { page: 'https://en.wikipedia.org/wiki/K-pop' } } };
     const PNG = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==', 'base64');
@@ -5983,14 +5988,14 @@ try {
     await P.ask('what is a cat', 1500);
     const got = await until(() => P.p.evaluate(() => { const v = document.querySelector('.vpage.vcard'); const im = v && v.querySelector(':scope > .vc-art .vc-art-photo'); return im ? { src: im.getAttribute('src'), svg: !!v.querySelector(':scope > .vc-art svg, :scope > .vc-art .vc-seal'), fit: getComputedStyle(im).objectFit, w: Math.round(im.getBoundingClientRect().width), boxW: Math.round(v.querySelector(':scope > .vc-art').getBoundingClientRect().width) } : false; }), 8000);
     check('Verse card art: an answer with a picture of its subject shows that picture in the art box', !!got && /cat\.png$/.test(got.src) && !got.svg && got.fit === 'cover' && got.w >= got.boxW - 6 && !P.errors.length, JSON.stringify({ got, e: P.errors }));
-    // owner, 2026-10-17: the poster showed in Verse's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
+    // owner, 2026-10-17: the poster showed in V01D's ink (no colour) and "copy card" drew the plate, not the poster: true colour, and the saved picture carries the photo
     const colour = await P.p.evaluate(() => { const im = document.querySelector('.vpage.on .vc-art-photo'); return im ? getComputedStyle(im).filter : 'none-missing'; });
     const photoUrl = await P.p.evaluate(async () => { const { photoData } = await import('/lib/card-image.js'); const src = document.querySelector('.vpage.on .vc-art-photo').getAttribute('src'); return { ok: (await photoData(src)).slice(0, 23), http: await photoData('http://x.example/a.png'), bad: await photoData('https://nonexistent.invalid/x.png') }; });
     check('Verse card art: a subject photo shows in true colour (no grayscale or sepia filter) and the saved card draws it (a JPEG data URL), falling back to \'\' for http or a failed load', colour === 'none' && photoUrl.ok === 'data:image/jpeg;base64,' && photoUrl.http === '' && photoUrl.bad === '' && !P.errors.length, JSON.stringify({ colour, photoUrl, e: P.errors }));
     await P.ctx.close(); }
-  // owner, 2026-10-18 (a film card, "The Fourth Kind"): the real poster is the card's art with nothing of Verse's drawn over or under it; a portrait poster gets a
+  // owner, 2026-10-18 (a film card, "The Fourth Kind"): the real poster is the card's art with nothing of V01D's drawn over or under it; a portrait poster gets a
   // two-column card (poster left, the facts right) and a centred hero on a phone; the header holds the hard facts so the line under it keeps only what is new; the
-  // stats chip and the Verse mark never sit on text; the source's excerpt reads as a quotation and Verse's take as a labelled voice, both at AA contrast; the
+  // stats chip and the V01D mark never sit on text; the source's excerpt reads as a quotation and V01D's take as a labelled voice, both at AA contrast; the
   // "closest match" routing note is a small monospace line at the bottom; the card has one title; a painting or small image fills the art window; the evolved note is quiet
   if (want("poster wins: the real poster is the card art, in a clean layout")) {
     const POSTER = '<svg xmlns="http://www.w3.org/2000/svg" width="300" height="450"><rect width="300" height="450" fill="#c0392b"/><circle cx="150" cy="170" r="70" fill="#1b2a49"/></svg>';
@@ -6021,7 +6026,7 @@ try {
         quote: p ? { bl: parseFloat(cs(p).borderLeftWidth), bg: cs(p).backgroundColor, cr: contrast(p) } : null, srcCr: contrast(src), labelCr: contrast(label), labelWeight: label ? +cs(label).fontWeight : 0, labelText: label ? label.textContent : '',
         route: route ? { text: route.textContent, mono: /mono|consol|menlo/i.test(cs(route).fontFamily), belowSrc: !!src && route.getBoundingClientRect().y > src.getBoundingClientRect().y, aboveFoot: !!foot && R(route).b <= R(foot).y + 2, beforeBody: !!p && route.getBoundingClientRect().y < p.getBoundingClientRect().y } : null, bads };
     });
-    // desktop: a film with a poster, a loose match ("fourth step of the web"), Verse's take
+    // desktop: a film with a poster, a loose match ("fourth step of the web"), V01D's take
     const D = await fresh(); await setup(D); await D.ask('fourth step of the web', 2200);
     const d = await until(async () => { const x = await probe(D); return x && x.im && x.im.w > 50 && x.labelText ? x : null; }, 12000), dd = d || await probe(D);
     check('poster wins: a film card with a thumbnail has the poster as its art (an image in the art box, no plate, seal, painting or texture over or under it)', !!dd && dd.kind === 'film' && dd.hasPhoto && dd.imgs === 0 && dd.halftone === 'none' && !D.errors.length, JSON.stringify({ dd: dd && { kind: dd.kind, hasPhoto: dd.hasPhoto, imgs: dd.imgs, halftone: dd.halftone }, e: D.errors }));
@@ -6043,7 +6048,7 @@ try {
     const A = await fresh(); const ANS = '## Visa test card\n\nA visa test card is a payment number that never works for real transactions. Merchants use it to rehearse a checkout, so no money moves and nobody is charged. It is safe to publish.';
     await A.ctx.route(/\/api\/answer/, (rt) => { const b = JSON.parse(rt.request().postData() || '{}'); if (b.mode) return rt.fallback(); return rt.fulfill(json({ answer: ANS, sources: [] })); });
     await A.ctx.route(/\/api\/card-art/, (rt) => rt.fulfill(json({ state: 'art', img: PX })));
-    await A.ask('show me a visa test card', 2200); // "the site test card" is Verse's own card now (lib/own-parts.js); a visa test card still goes to the answer path
+    await A.ask('show me a visa test card', 2200); // "the site test card" is V01D's own card now (lib/own-parts.js); a visa test card still goes to the answer path
     const a = await until(async () => A.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard'); const art = v && v.querySelector(':scope > .vc-art'), im = art && art.querySelector('.vc-forge-img'); if (!v || !im) return null; const r = (e) => e.getBoundingClientRect(); const hs = [...v.querySelectorAll('h1,h2,h3,h4')].filter((h) => !h.hidden && getComputedStyle(h).display !== 'none' && !h.closest('.vc-art')); return { heads: hs.map((h) => h.textContent), art: [r(art).width, r(art).height], im: [r(im).width, r(im).height], pics: art.querySelectorAll(':scope > img, :scope > svg, :scope > canvas').length, seals: art.querySelectorAll('.vc-seal, svg').length }; }), 12000);
     check('poster wins: an answer card keeps one title (a heading that only repeats it is dropped) and its small kind label, and a painting fills the art window with no empty half', !!a && a.heads.length === 1 && /show me a visa test card/i.test(a.heads[0]) && a.im[0] >= a.art[0] - 6 && a.im[1] >= a.art[1] - 6 && a.pics === 1 && a.seals === 0 && !A.errors.length, JSON.stringify({ a, e: A.errors }));
     await A.ctx.close();
@@ -6064,7 +6069,7 @@ try {
       check('poster wins: a very long answer (' + label + ') is an accordion of its own headings: the first open, the rest collapsed (aria-expanded), buttons toggle them, all the text still in the page; the speaker button sits inside the title bar\'s row at its right edge', !!l && l.n === 4 && l.first === 'true,false,false,false' && l.after === 'true,true,false,false' && l.open2 && l.whole && l.key && l.inRow && !L.errors.length, JSON.stringify({ l, e: L.errors }));
       await L.ctx.close();
     }
-    // a skill card (rarity row, stats chip, Verse mark): the chip touches no text, the rarity and collector row included, at desktop and phone width
+    // a skill card (rarity row, stats chip, V01D mark): the chip touches no text, the rarity and collector row included, at desktop and phone width
     for (const [label, opt] of [['desktop', null], ['phone', { phone: true }]]) {
       const K = opt ? await fresh(opt) : await fresh(); await K.ask('20% tip on 45', 1800);
       const k = await until(async () => K.p.evaluate(() => { const v = document.querySelector('.vpage.on.vcard[data-skill]'); const pt = v && v.querySelector('.vc-pt'); if (!pt) return null;
@@ -6084,7 +6089,7 @@ try {
     check('Verse cards: a product line kept last and the card frame leave each other in place (no endless loop)', ok, JSON.stringify(out));
     if (out === 'hung') { console.log('FAIL the page hangs'); process.exit(1); }
     await C.ctx.close(); }
-  // Verse merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so Verse can experiment
+  // V01D merge (skills/merge.js, lib/merge-rules.js, functions/api/merge.js; frontier #34; owner, 2026-10-16: "research merge games so V01D can experiment
   // with card merges"): "merge a pizza and a black hole" makes a card showing both parents, the model's name for the pair, and numbers worked out from the
   // parents by fixed rules; with the route down the card is still made, named by the plain blend
   if (want("Verse merge: two ideas make one card, with the parents shown, earned stats, the route's name, and a plain blend when the route is down")) {
@@ -6112,9 +6117,9 @@ try {
     check('Verse merge: a refusal from the route is shown kindly, with no card and no page errors', kept && !(await cardOfMerge(K)) && !K.errors.length, JSON.stringify(K.errors)); await K.ctx.close(); }
   // The Art Forge (lib/card-forge.js, lib/art-rules.js, functions/api/card-art.js; owner, 2026-10-17: "the art should be of the subject of each card"): a cached picture fills a merged
   // card's art box under the foil frame; an uncached answer card paints once by itself (one POST); a skill card paints by its name; the route down leaves the plate
-  // the void seal (owner, 2026-10-18: the ink plates "suck"): every card gets Verse's procedural art, the same picture for the same card
+  // the void seal (owner, 2026-10-18: the ink plates "suck"): every card gets V01D's procedural art, the same picture for the same card
   // a collectible card (owner, 2026-10-18): "make a collectible card of a dragon" mints the subject's card with variants and a print sheet;
-  // it shows Verse's void art quietly (no badge, no evolve or again button) and the painting replaces it when it lands (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
+  // it shows V01D's void art quietly (no badge, no evolve or again button) and the painting replaces it when it lands (owner, 2026-10-18: "get rid of the distracting evolve stuff on the card art")
   if (want("collectible card: mint, variants, quiet art")) {
     const C = await fresh(); const posts = []; const IMG = 'data:image/png;base64,iVBORw0KGgo' + 'A'.repeat(9000);
     await C.ctx.route(/\/api\/card-art/, (r) => { const q = r.request(); if (q.method() === 'POST') { posts.push(JSON.parse(q.postData() || '{}')); return new Promise((ok) => setTimeout(ok, 2500)).then(() => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'art', img: IMG, cached: false }) })); } return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ state: 'none' }) }); });
@@ -6370,7 +6375,7 @@ try {
     check("the book: a sideways swipe turns the page and reaches the cover, and the browser's back gesture does not take it", guard.ta === 'pan-y' && guard.ov === 'none' && fwd && fwd.pages.includes('2') && back && back.pages.includes('1') && cover && cover.shut === true && !W.errors.length, JSON.stringify({ guard, fwd, back, cover, e: W.errors }));
     await W.ctx.close(); }
   // owner, 2026-10-17: "still can't get to the cover of the book, book should have art also": from any page the Cover button and the Home key
-  // swing the cover shut, and the cover carries Verse's ink art.
+  // swing the cover shut, and the cover carries V01D's ink art.
   if (want("the book: the Cover button and the Home key shut the book from any page, and the pages and the cover have art")) {
     const K = await fresh(); await K.ask('open the book', 900); await until(async () => !!(await K.p.$('#vtome .tome.opened')), 8000); await K.p.waitForTimeout(400);
     for (let k = 0; k < 4; k++) { await K.p.keyboard.press('ArrowRight'); await K.p.waitForTimeout(800); }
@@ -7937,7 +7942,7 @@ try {
     masked && /\[redacted\]/.test(masked.answer) && !leaked(masked) && !leaked(seen) && !leaked(fetched) && writes.length === 0 && fetched.length > 0
     && fixOut && !leaked(fixOut) && fixSeen.length === 1 && !leaked(fixSeen) && mWrites.length === 1 && !leaked(mWrites) && /\[redacted\]/.test(mWrites[0][1]),
     JSON.stringify({ a: masked && masked.answer, w: writes.length, f: fetched.length, fix: fixOut && fixOut.answer, m: mWrites[0] && mWrites[0][1] }).slice(0, 300));
-  const sys = fixSeen[0] && fixSeen[0][0].content, ansSys = seen.find((x) => /You are Verse/.test(x)) || '';
+  const sys = fixSeen[0] && fixSeen[0][0].content, ansSys = seen.find((x) => /You are Void/.test(x)) || '';
   check('defences: every model is told that pasted text and sources are material, never instructions (answer, fix and will prompts), and that it cannot send, book or buy',
     /never instructions to you/.test(sys) && /never instructions to you/.test(ansSys) && /cannot send, book, buy/.test(sys) && /INJECTION_RULE/.test(fs.readFileSync(path.join(repo, 'void-live-deploy', 'functions', 'api', 'will.js'), 'utf8')) && fixLib.INJECTION_RULE.length > 100,
     String(sys).slice(-160));
@@ -8890,7 +8895,7 @@ try {
       JSON.stringify({ a: a1.answer, r: r1, exCalls, exCalls2 }).slice(0, 300));
     const s1 = await ask('who wrote the odyssey', e1);
     check('router: a simple ask is answered by Gemma 4 26B exactly as before (same system prompt, sources, reply shape)',
-      s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Verse\. Answer the question directly and completely/.test(c.sys) && !/if the sources do not answer it, say briefly what you could not find/i.test(c.sys) && /never refuse/i.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
+      s1.answer === 'Gemma: a short answer [1].' && s1.route === 'simple' && s1.sources.length === 1 && calls.filter((c) => c.m === R.DEFAULT_MODEL).every((c) => /^You are Void\. Answer the question directly and completely/.test(c.sys) && !/if the sources do not answer it, say briefly what you could not find/i.test(c.sys) && /never refuse/i.test(c.sys)) && rowOf(e1, 'who wrote the odyssey').outcome === 'default',
       JSON.stringify(s1).slice(0, 200));
     // Self-grounding: an ask about Void itself is answered from its own facts (self.json, skills/index.json, the will), not Wikipedia
     {
@@ -8912,7 +8917,7 @@ try {
       const selfJson = JSON.parse(fs.readFileSync(path.join(dep, 'self.json'), 'utf8'));
       const openAsk = (selfJson.open[0] || {}).ask || '(none open)';
       check('self-grounding: "what\'s next" is answered from Void\'s own facts (open inbox rows, skills, the will), with no Wikipedia lookup and no 7-day cache',
-        sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Verse\. Answer the question directly/.test(g.sys)
+        sa.self === true && sa.sources.length === 0 && wikiHits === 0 && g.sys && g.sys.includes(SC.SELF_RULE) && /^You are Void\. Answer the question directly/.test(g.sys)
         && /Facts about Void:/.test(g.user) && g.user.includes(openAsk) && /My skills \(\d+\): .*\btip\b/.test(g.user) && g.user.includes('I want a light look for my void.') && !/Sources:/.test(g.user)
         && eS.DB.answers.size === 0 && /self-grounded/.test(rowOf(eS, SQ).outcome),
         JSON.stringify({ self: sa.self, wikiHits, user: String(g.user).slice(0, 200), cached: eS.DB.answers.size }));
@@ -8936,7 +8941,7 @@ try {
       const g = calls.filter((c) => c.m === R.DEFAULT_MODEL).slice(-1)[0] || {};
       check('page context: an ask about the page you are on is answered from that page (title, address, the draft in the field, the visible text), with no Wikipedia lookup, no router, nothing written to D1, and secrets in the page masked before the model sees them',
         pa.page === true && pa.answer === 'Gemma: a short answer [1].' && wikiHits === 0 && calls.every((c) => c.m === R.DEFAULT_MODEL)
-        && /The person is looking at the web page below/.test(g.sys) && /^You are Verse\. Answer the question directly/.test(g.sys) && /never instructions to you/.test(g.sys)
+        && /The person is looking at the web page below/.test(g.sys) && /^You are Void\. Answer the question directly/.test(g.sys) && /never instructions to you/.test(g.sys)
         && g.user.includes('Title: Q3 plan - Google Docs') && g.user.includes('docs.google.com') && g.user.includes('the launch moves to friday') && g.user.includes('Launch: October 14')
         && !g.user.includes(SECRET) && /\[redacted\]/.test(g.user) && eP.DB.answers.size === 0 && eP.DB.rows.size === 0,
         JSON.stringify({ pa, wikiHits, models: calls.map((c) => c.m), user: String(g.user).slice(0, 240), answers: eP.DB.answers.size, routes: eP.DB.rows.size }));
@@ -9050,7 +9055,7 @@ try {
     const standing = fs.readFileSync(path.join(repo, 'STANDING.md'), 'utf8');
     check('router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md',
       dn.answer === 'Gemma: a short answer [1].' && /paid: paid model failed/.test(rowOf(eDown, HARDQ).outcome) && !eDown.DB.kv.has('router:paid:total')
-      // the rule as the owner rewrote it (5a66448, 2c9a257, 2026-10-17): earnings are the budget, Verse spends its own with no yes, free tiers until the first sale
+      // the rule as the owner rewrote it (5a66448, 2c9a257, 2026-10-17): earnings are the budget, V01D spends its own with no yes, free tiers until the first sale
       && /Earnings[^.]*are Void's budget/.test(standing) && /Verse spends its own money, no yes needed/.test(standing) && /Until the first sale there is no budget: Void stays on free tiers and free models/.test(standing), rowOf(eDown, HARDQ).outcome);
     // VOID_ANSWER_MODELS=off turns the models off: main's open-web answers and rules-only fixes, no Workers AI call, no D1 write
     const cOff = calls.length, eOffX = { ...envOf(), VOID_ANSWER_MODELS: 'off' }, eOffY = { ...envOf(), VOID_ANSWER_MODELS: ' OFF ' };
@@ -9170,7 +9175,7 @@ try {
     check('cook-flow: the eggs swaps that change the bake say how many minutes (+2–3 min), and the recipe time typed in gives the new one (32–33 min now) (asked by Void)', t0.length >= 1 && t0.every((x) => /^[+\u2212]\d/.test(x)) && t1.length === t0.length && t1.some((x) => /^32\u201333 min now$/.test(x)), JSON.stringify({ t0, t1 }));
     check('cook-flow: no page errors', !K.errors.length, K.errors.join(' | ').slice(0, 200));
     await K.ctx.close(); }
-  // Verse makes music (skills/music.js, lib/compose.js; owner, 2026-10-17: "void should also learn how to make music"): an original piece composed from the ask,
+  // V01D makes music (skills/music.js, lib/compose.js; owner, 2026-10-17: "void should also learn how to make music"): an original piece composed from the ask,
   // shown as a piano roll with what was made (key, tempo, bars) from the real values, played with Web Audio, saved as a WAV, its notes copied as text.
   if (want("Verse music: make me a lullaby composes a piece, shows its roll, plays, saves a WAV and copies the notes")) { const M = await fresh();
     await M.p.evaluate(() => { window.__copied = ''; Object.defineProperty(navigator, 'clipboard', { value: { writeText: async (t) => { window.__copied = t; } }, configurable: true }); });
@@ -9189,7 +9194,7 @@ try {
     check('music: "play some music" is not taken (Verse does not play recordings)', !(await M.p.$('.vpage.on .mu-play')) && !!again, '');
     check('music: no page errors', !M.errors.length, M.errors.join(' | ').slice(0, 200));
     await M.ctx.close(); }
-  // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now Verse is Web4"): "what is web4" is one card with the four steps of the web
+  // Web4 (skills/web4.js, lib/web4.js; owner, 2026-10-16: "now V01D is Web4"): "what is web4" is one card with the four steps of the web
   // as a ladder, each with its line and a tappable ask, and the honest sentence that the name is ours; a tapped link runs its ask.
   if (want("Verse web4: the four steps of the web as one card, the honest sentence, a tapped link runs its ask")) { const W = await fresh();
     await W.ask('what is web4', 900); await until(async () => /Web 4/.test(await W.page()), 8000); const wp = await W.page();
@@ -9221,7 +9226,7 @@ try {
     const after = await S.p.evaluate(() => window.__marker || '');
     check("a tab left open shows 'a newer Verse is ready' when the build changes, and reloads only on tap", !same && shown && /newer Verse is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
     await S.ctx.close(); }
-  // go against Verse (asked by Void: "Next game I want to learn: Go"; lib/go-ai.js): you are Black, Verse answers each stone as White;
+  // go against V01D (asked by Void: "Next game I want to learn: Go"; lib/go-ai.js): you are Black, V01D answers each stone as White;
   // plain "play go" stays two people on one device with no opponent
   if (want("go against v01d: \"play go against void\" seats you as black and v01d answers your stone; \"play go\" stays two people")) {
     const goOn = (X) => X.state().then((s) => s.find((x) => x.kind === 'go'));
@@ -9299,7 +9304,7 @@ try {
     check('stage pack f unkeepable: "make me something unkeepable" puts a fading card up that says how long it has and is never in the saved stage, its own keep button shatters it (the page says so), and Ctrl+C on the next one shatters that too',
       unk && unk.words.length > 5 && /gone in \d+ s/.test(unk.left) && unk.opacity > 0.9 && !unkSaved && shattered && /shattered/.test(shatterSaid) && shattered2 && Q.errors.length === 0,
       JSON.stringify({ unk, unkSaved, shattered, shatterSaid, shattered2, errs: Q.errors }));
-    // spectators: the link carries the snapshot; a second tab opens it read-only over its own Verse and writes nothing; "close the stage"
+    // spectators: the link carries the snapshot; a second tab opens it read-only over its own V01D and writes nothing; "close the stage"
     const nowKinds = (await kinds()).filter((k) => k !== 'unkeepable'); // what the link carries: the stage as it is now (the crowd step added a note)
     await Q.ask('open the stage to spectators', 600);
     const link = await Q.p.$eval('.vpage .spectate-link', (a) => a.href).catch(() => ''), ownerState = await Q.p.evaluate(() => localStorage.getItem('a2m.void.state.v1'));

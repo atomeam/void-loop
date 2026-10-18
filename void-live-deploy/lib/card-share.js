@@ -1,10 +1,10 @@
-// A Verse card is easy to copy, save and paste back (owner, 2026-10-16: "each card should be easily copyable and saved and pasted").
+// A V01D card is easy to copy, save and paste back (owner, 2026-10-16: "each card should be easily copyable and saved and pasted").
 // Copy gives readable text that ends in one code line; save downloads the same text as a file; pasting that text (or only the code line)
-// into Verse reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
+// into V01D reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
-export const MARK = 'VERSE-CARD:'; // old V01D-CARD codes still open (CODE_RE accepts both)
-const CODE_RE = /(?:V01D|VERSE)-CARD:([A-Za-z0-9_-]{8,12000})/;
+export const MARK = 'V01D-CARD:'; // an identifier, kept through the rename to Verse (2026-10-18) so every card already shared still pastes
+const CODE_RE = /(?:V01D|Verse)-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const httpsOnly = (u) => (/^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u).slice(0, 300) : '');
 
@@ -35,8 +35,8 @@ export function parse(text) {
   const m = CODE_RE.exec(String(text || '')); if (!m) return null;
   try {
     const j = JSON.parse(unb64(m[1])); if (!j || j.v !== 1 || !clip(j.t, 120)) return null;
-    // the readable part (title, kind, blank line, the body, then "Verse card from a-to-mind.com") restores the whole body and every source
-    const pre = String(text).slice(0, m.index).split(/\n?Verse card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
+    // the readable part (title, kind, blank line, the body, then "V01D card from a-to-mind.com") restores the whole body and every source
+    const pre = String(text).slice(0, m.index).split(/\n?(?:V01D|Verse) card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
     let body = j.b, src = j.src;
     if (at >= 0) { const rest = lines.slice(at + 1).join('\n'), cut = rest.search(/\n?Sources:\n/); const full = (cut >= 0 ? rest.slice(0, cut) : rest).trim(); if (full.length > String(j.b || '').length && full.startsWith(String(j.b || '').slice(0, 40))) body = full;
       if (cut >= 0) { const found = [...rest.slice(cut).matchAll(/^\[\d+\] (.*?)(?: (https:\/\/\S+))?$/gm)].map((x) => ({ t: x[1], u: x[2] || '' })); if (found.length > (src || []).length) src = found; } }

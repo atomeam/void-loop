@@ -51,7 +51,7 @@ test('film posters: the asks, which film, and a card from its metadata with a ph
   const meta = { id: '20261015-miss-board-4-r9', day: '2026-10-15', experiment: 'miss-board-4', title: "What hasn't Verse heard yet? | an AI built this itself #Shorts", tags: ['Verse'], source: 'https://github.com/x', watch: 'https://a-to-mind.com/films/' };
   const c = filmCard(meta);
   assert.equal(c.title, "What hasn't Verse heard yet?", 'the #Shorts tail is not a poster title');
-  assert.match(c.text, /Verse FILMS/); assert.match(c.text, /a-to-mind\.com\/films/); assert.match(c.text, /Oct|2026/);
+  assert.match(c.text, /VERSE FILMS/); assert.match(c.text, /a-to-mind\.com\/films/); assert.match(c.text, /Oct|2026/);
   assert.deepEqual([STORY.px[0], STORY.px[1]], [1080, 1920], 'a 9:16 phone story, the size the films are cut to');
   const measure = (t, size) => t.length * size * 0.55;
   const L = layoutPoster(c, STORY.px[0], STORY.px[1], measure);

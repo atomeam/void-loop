@@ -43,7 +43,7 @@ export async function verifyToken(key, token, now = Date.now()) {
 // a license key for one order and product: Verse-XXXX-XXXX-XXXX-XXXX, recomputable from the order, so it needs no lookup to check
 export async function licenseKey(key, order, product) {
   const h = hex(await hmac(key, 'license:' + order + ':' + product)).toUpperCase().slice(0, 16);
-  return 'Verse-' + h.match(/.{4}/g).join('-');
+  return 'Verse-' + h.match(/.{4}/g).join('-'); // license keys keep their Verse- prefix through the rename to Verse: keys already sold must keep working
 }
 export const LICENSE_Verse_RE = /^Verse-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/;
 

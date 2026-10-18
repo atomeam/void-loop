@@ -994,11 +994,12 @@
        0 drawn as a ring of light; it never takes a click or a key, so the input works underneath from the first frame */
     #v01d { position: fixed; inset: 0; z-index: 2147483000; display: grid; place-content: center; justify-items: center; gap: 18px; pointer-events: none;
       background: radial-gradient(60% 50% at 50% 45%, #14112c 0%, #050505 72%); animation: v01d-out .5s ease 1.25s forwards; }
-    #v01d .v01d-mark { display: flex; align-items: center; gap: .06em; font: 200 clamp(56px, 15vw, 128px)/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .04em; color: #f4f2ff; }
+    /* VERSE (owner, 2026-10-18: "rename void to verse"): the letters arrive one by one and the ring of light (the 0 of V01D) is drawn as an orbit round the word */
+    #v01d .v01d-mark { position: relative; display: flex; align-items: center; gap: .06em; font: 200 clamp(48px, 13vw, 112px)/1 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; letter-spacing: .04em; color: #f4f2ff; }
     #v01d .v01d-mark > * { opacity: 0; transform: translateY(10px); animation: v01d-in .55s cubic-bezier(.2, .7, .2, 1) forwards; }
-    #v01d .v01d-mark > :nth-child(2) { animation-delay: .08s; } #v01d .v01d-mark > :nth-child(3) { animation-delay: .16s; } #v01d .v01d-mark > :nth-child(4) { animation-delay: .24s; } #v01d .v01d-mark > :nth-child(5) { animation-delay: .32s; }
-    #v01d .v01d-o { height: .74em; width: auto; overflow: visible; }
-    #v01d .v01d-o ellipse { fill: none; stroke: #fff; stroke-width: 3; stroke-linecap: round; stroke-dasharray: 125; stroke-dashoffset: 125;
+    #v01d .v01d-mark > :nth-child(3) { animation-delay: .07s; } #v01d .v01d-mark > :nth-child(4) { animation-delay: .14s; } #v01d .v01d-mark > :nth-child(5) { animation-delay: .21s; } #v01d .v01d-mark > :nth-child(6) { animation-delay: .28s; }
+    #v01d .v01d-o { position: absolute; left: -14%; top: -28%; width: 128%; height: 156%; overflow: visible; opacity: 1; transform: none; animation: none; }
+    #v01d .v01d-o ellipse { fill: none; stroke: #fff; stroke-width: 1.4; stroke-linecap: round; stroke-dasharray: 520; stroke-dashoffset: 520; vector-effect: non-scaling-stroke;
       filter: drop-shadow(0 0 6px rgba(255, 61, 127, .85)) drop-shadow(0 0 14px rgba(122, 92, 255, .8)); animation: v01d-draw .75s cubic-bezier(.6, 0, .2, 1) .1s forwards; }
     #v01d .v01d-line { width: min(240px, 52vw); height: 1px; background: linear-gradient(90deg, transparent, #ff3d7f, #7a5cff, transparent); transform: scaleX(0); animation: v01d-line .6s ease .45s forwards; }
     #v01d .v01d-by { font: 500 11px/1 system-ui, -apple-system, sans-serif; letter-spacing: .48em; padding-left: .48em; color: #8d89a6; opacity: 0; animation: v01d-fade .5s ease .6s forwards; }
@@ -1135,9 +1136,9 @@
   </style>
 </head>
 <body>
-  <div id="v01d" aria-hidden="true"><div class="v01d-mark"><span>V</span><span>E</span><span>R</span><span>S</span><span>E</span></div><div class="v01d-line"></div><div class="v01d-by">A-TO-MIND</div></div>
+  <div id="v01d" aria-hidden="true"><div class="v01d-mark"><svg class="v01d-o" viewBox="0 0 200 60" preserveAspectRatio="none"><ellipse cx="100" cy="30" rx="96" ry="26" /></svg><span>V</span><span>E</span><span>R</span><span>S</span><span>E</span></div><div class="v01d-line"></div><div class="v01d-by">A-TO-MIND</div></div>
   <script>
-    // Verse's intro: once a visit; not for a link straight to an answer (?q=), a published page (/@name), reduced motion, or a test
+    // V01D's intro: once a visit; not for a link straight to an answer (?q=), a published page (/@name), reduced motion, or a test
     // browser (navigator.webdriver) unless it asks with ?intro=1
     (function () {
       var e = document.getElementById('v01d'), q = location.search, skip = false;
@@ -2332,9 +2333,9 @@ say('nothing selected to remove');
     // so a button copied by innerHTML += still works
     const READ_ICON = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5v5h3.5L12 19V5L7.5 9.5z" fill="currentColor" stroke="none"/>'
       + '<g class="vread-on"><path d="M15.5 9a4 4 0 0 1 0 6"/><path d="M18.2 6.4a7.6 7.6 0 0 1 0 11.2"/></g><g class="vread-off"><rect x="15" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/><rect x="19" y="9" width="2.4" height="6" rx=".6" fill="currentColor" stroke="none"/></g></svg>';
-    // telling Verse about any card (owner, 2026-10-16: "reply to Verse's replies and cards so it can flex its persistent memory and
+    // telling V01D about any card (owner, 2026-10-16: "reply to V01D's replies and cards so it can flex its persistent memory and
     // evolve with the conversation when corrected"): the owner's link under each card opens a box; the reply goes to
-    // /api/voice-reply with the ask, the card's title and what it said, and Verse answers under it in its own words and keeps the lesson
+    // /api/voice-reply with the ask, the card's title and what it said, and V01D answers under it in its own words and keeps the lesson
     function ownerKey() { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } } // hoisted: no TDZ
     function keepTell(el) {
       if (!ownerKey() || el.querySelector(':scope > .vtell, :scope > .vtell-box') || el.querySelector('[data-v-reply]')) return;
@@ -2350,7 +2351,7 @@ say('nothing selected to remove');
       const m = /^skill:([a-z][a-z0-9-]{1,40})$/.exec(String(hit.note || ''));
       return m ? { skill: m[1], via: 'skill' } : null;
     }
-    function tellVerse(el, a) {
+    function tellV01D(el, a) {
       const box = document.createElement('div'); box.className = 'vtell-box';
       const ta = document.createElement('textarea'); ta.maxLength = 600; ta.rows = 2; ta.placeholder = 'Was this wrong, or could it be better? Tell me.'; ta.setAttribute('aria-label', 'What you want to tell Verse about this card');
       const send = document.createElement('button'); send.type = 'button'; send.className = 'tr-copy'; send.textContent = 'Send';
@@ -2416,7 +2417,7 @@ say('nothing selected to remove');
       if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
       if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+void)?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
       if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|void))?$/.test(l)) return 'quiet and ready. what do you need?';
-      if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Verse (said “void”), by A-to-Mind. ask for anything';
+      if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Verse, by A-to-Mind. ask for anything';
       if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';
       if (/^(?:are\s+you\s+(?:an?\s+)?(?:ai|bot|robot|human|real|a\s+person|alive|chatgpt|sentient))$/.test(l)) return 'software, not a person: I make things appear when you ask';
       if (/^(?:good\s*night|night\s+night|nighty\s+night|sleep\s+well|bye|goodbye|see\s+you|see\s+ya|later)(?:\s+void)?$/.test(l)) return /night/.test(l) ? 'good night' : 'see you';
@@ -2460,7 +2461,7 @@ say('nothing selected to remove');
       if (pageTail && pageTail.ask === currentAsk) el._tail = pageTail.html;
       stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el);
       new MutationObserver(() => { stampSources(el); keepTail(el); keepRead(el); keepTell(el); keepCard(el); }).observe(el, { childList: true, subtree: true });
-      el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellVerse(el, t); });
+      el.addEventListener('click', (e) => { const t = e.target.closest && e.target.closest('a.vtell'); if (!t) return; e.preventDefault(); e.stopPropagation(); tellV01D(el, t); });
       el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('.vread'); if (!b) return; e.preventDefault(); e.stopPropagation(); readCard(el, b); });
       requestAnimationFrame(() => el.classList.add('on'));
       // what it covers steps aside, once it is up and again whenever it grows (an answer arriving); not on a phone-wide card
@@ -2510,7 +2511,7 @@ say('nothing selected to remove');
     function wantsSelfPage(lower) {
       return /^(what|who)\s+(are|r)\s+(you|u)\b|^what\s+(is|'s)\s+(this|void|a-to-mind)\b|^what\s+can\s+(you|i|void)\s+do\b|^(help|\?)\s*$|^tell\s+me\s+about\s+(yourself|you|void)\b/.test(lower);
     }
-    // "what are you?" / "who are you" / "what is void" / "tell me about yourself": Verse says what it is and its motto first, then
+    // "what are you?" / "who are you" / "what is void" / "tell me about yourself": V01D says what it is and its motto first, then
     // the page (launch audit, 2026-10-15: the bare page read as a sign-in menu). MOTTO is the canon's, word for word
     // (domains/void.canon.md ## Motto; tools/launch-fixes.test.mjs keeps them the same).
     const MOTTO = 'You name it, Verse learns it and does it better.';
@@ -2664,13 +2665,13 @@ say('nothing selected to remove');
       if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p><div class="vh">Correct me</div><div data-v-correct></div>'; mountCorrect(el, said); return; }
       const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
       const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
-      // the card's body is structured blocks (lib/self-blocks.js): Verse's own words in the reading font, the changelog in monospace,
+      // the card's body is structured blocks (lib/self-blocks.js): V01D's own words in the reading font, the changelog in monospace,
       // real headings, one bullet per ask; a failed import falls back to the plain sentence so the card never opens empty
       el.classList.add('vc-self');
       const SB = await import('/lib/self-blocks.js').catch(() => null);
       if (vpageEl !== el) return;
       let h = '<h2>What I think of myself</h2>' + (SB ? SB.selfHtml(SB.selfSections(v), esc) : '<p>' + esc((daily || build || {}).thoughts || '') + '</p>');
-      // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
+      // talking back (owner, 2026-10-16): the owner replies or corrects, V01D answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
       // corrections from anyone (asked by Void): kept on this device in a store of its own (lib/corrections.js), never in the look's state
@@ -2940,7 +2941,7 @@ say('nothing selected to remove');
     // Every "I cannot" carries what is missing (lib/refusal.js, asked by Void): the page shows one line under the answer,
     // the event `void-refusal` and window.voidRefusals hold the object, and the agent door returns it with its answer.
     const refusalReady = import('/lib/refusal.js').catch(() => null);
-    // Verse keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
+    // V01D keeps secrets and turns every negative ask positive (lib/keeper.js, the same rule /api/answer runs first): asked on the page too,
     // before any local skill, so an env/key/prompt/other-visitor/harmful/mean ask gets the kind answer, never a skill's guess
     const keeperReady = import('/lib/keeper.js').catch(() => null);
     const refusals = []; window.voidRefusals = refusals;
@@ -4158,12 +4159,14 @@ say('nothing selected to remove');
       const still = reduceMotion.matches;
       SKY.near = L.layerView(SKY.cam, L.NEAR, innerWidth, innerHeight, { still }); SKY.far = L.layerView(SKY.cam, L.FAR, innerWidth, innerHeight, { still });
     }
+    const warmSky = () => { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); };
+    (window.requestIdleCallback || setTimeout)(() => setTimeout(warmSky, 1500)); // loaded before the first flight, so the first move already streaks (a first move used to wait on this file and, on a slow link, ended before it came)
     const kickStars = () => { if (voidLook.stars !== 'off' && !starRAF && !document.hidden) starRAF = requestAnimationFrame(drawStars); };
     window.addEventListener('void-camera', (e) => {
       const d = e && e.detail; if (!d) return;
       const now = performance.now(), prev = SKY.cam, was = SKY.near, dt = SKY.at ? (now - SKY.at) / 1000 : 0;
       SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
-      if (!SKY.lib) { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); return; }
+      if (!SKY.lib) { warmSky(); return; }
       skyView();
       if (prev && dt > 0.004) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it: a one-second frame on a loaded machine still gets its speed, so the streak shows on the first move)
         const t = Math.min(0.25, dt);
@@ -4172,7 +4175,7 @@ say('nothing selected to remove');
       }
       SKY.at = now; SKY.fresh = true; kickStars();
     });
-    try { window.__voidStars = () => ({ near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
+    try { window.__voidStars = () => ({ lib: !!SKY.lib, near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
     function skyTick(now) { // the streak fades once the camera stops telling (a drag let go, the keys up): a frame with no move since the last one
       const dt = SKY.drawAt ? Math.min(0.25, (now - SKY.drawAt) / 1000) : 0; SKY.drawAt = now;
       if (SKY.fresh) SKY.fresh = false; else { const k = Math.exp(-9 * dt); SKY.vx *= k; SKY.vy *= k; SKY.zr *= k; if (Math.hypot(SKY.vx, SKY.vy) < 2) SKY.vx = SKY.vy = 0; if (Math.abs(SKY.zr) < 0.05) SKY.zr = 0; }
@@ -4248,7 +4251,7 @@ say('nothing selected to remove');
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;
       if (/^(?:remove|clear|take off|no|hide)\s+(?:my\s+|the\s+)?(?:backdrop|background\s+drawing|drawing\s+backdrop)\s*[.!]?$/.test(lower)) { voidLook.backdrop = ''; applyLook(true); say('backdrop off'); return true; }
-      if (!FX.test(lower) && !/\b(my void|the void|void)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
+      if (!FX.test(lower) && !/\b(my void|the void|void|verse)\b.*\b(deep blue|blue|purple|warmer|warm|darker|dark)\b|\b(add|slow|no|remove|hide)\s+(the\s+)?stars\b|\bquieter\s+(font|text)\b|\b(bigger|larger|smaller)\s+text\b|^reset\s+my\s+void$/.test(lower)) return false;
       enterVoid();
       if (/^reset\s+my\s+void$/.test(lower)) voidLook = { ...LOOK_DEFAULT };
       const c = (lower.match(/\b(deep blue|purple|warmer|darker|blue)\b/) || [])[1] || (/\bwarm\b/.test(lower) ? 'warmer' : /\bdark\b/.test(lower) ? 'darker' : '');
@@ -4516,8 +4519,8 @@ say('nothing selected to remove');
     // shown to the person), so the learning loop (lib/learn.js) turns a repeated one into a job. window.voidUngrounded keeps the
     // last 20 for the tests and the console.
     // a card from a skill rated "experiment" or "tested" says so on its source line (asked by Void; lib/rating-note.js, ratings from skills/families.json)
-    // every page is a Verse card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
-    // with a rarity gem, an "adds to Verse" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
+    // every page is a V01D card (lib/card-frame.js; owner, 2026-10-16: cards like magic cards, with stats): a frame, a title bar with a cost, a type line
+    // with a rarity gem, an "adds to V01D" line and a footer with a collector number and a power/toughness plate, all from the skill's own evidence
     let cardLib = null, cardStats = null;
     const shareReady = import('/lib/card-share.js').catch(() => null);
     // a card brought back from a pasted code: its words and its https links, escaped; its stats are earned again by the frame, never read from the paste
@@ -5696,15 +5699,15 @@ say('nothing selected to remove');
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Void; one that came from it does not go back
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
-      // the name is Verse (owner, 2026-10-14); every skill still reads "void", so "make my Verse blue" and "share my v01d live" reach them
-      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\b(?:v0[1i]d|verse)\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
+      // the name is V01D (owner, 2026-10-14); every skill still reads "void", so "make my V01D blue" and "share my v01d live" reach them
+      const text = aliasOf(typed.toLowerCase()) || aliasOf(fixed.toLowerCase()) || fixed.replace(/\bv0[1i]d\b/gi, (m) => (m === m.toUpperCase() ? 'Void' : 'void')); // a taught wording runs as the ask it means
       const lower0 = text.toLowerCase();
       // the owner key goes first: nothing before this line may send it anywhere (skills, the answer model, the miss board)
       { const u = text.match(/^(?:unlock\s*)+(\S{16,})\s*$/i); if (u) { if (await ownerCheck(u[1])) { try { localStorage.setItem(OWNER_KEY, u[1]); } catch (_) {} say('unlocked'); showBoard(); return; } return handle('unlock'); } }
       // ^ the server checks the key first; a wrong one carries on as a plain "unlock" (the key dropped), with no sign an owner mode exists
       if (OWNER_BIND_RE.test(lower0) && rawOwnerKey()) { await ownerBindAsk(); return; }
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
-      // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
+      // a pasted V01D card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
       { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
       rememberAsk(text);
       if (pendingForget && forgetAnswer(lower0)) return;
