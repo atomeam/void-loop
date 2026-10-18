@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 65,
- "runsTotal": 181,
+ "cases": 66,
+ "runsTotal": 182,
  "kinds": {
-  "grow": 58,
+  "grow": 59,
   "file": 69,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T16:03:13Z",
+   "passed": 59,
+   "of": 69,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T14:06:18Z",
    "passed": 67,
@@ -142,13 +149,6 @@
    "of": 52,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
-  },
-  {
-   "at": "2026-10-18T04:27:19Z",
-   "passed": 41,
-   "of": 51,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T14:06:18Z",
+  "skill:film-metadata": "2026-10-18T16:03:13Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -390,6 +390,9 @@
   "skill:skill-eclipse": "2026-10-18T13:46:58Z",
   "skill:dependency-health": "2026-10-18T14:06:18Z",
   "skill:soundscape": "2026-10-18T14:06:18Z",
-  "skill:spectators": "2026-10-18T14:06:18Z"
+  "skill:spectators": "2026-10-18T14:06:18Z",
+  "skill:spectral-review": "2026-10-18T16:03:13Z",
+  "skill:stage-arrange": "2026-10-18T16:03:13Z",
+  "skill:stage-export": "2026-10-18T16:03:13Z"
  }
 }
