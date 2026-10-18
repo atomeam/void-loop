@@ -2,58 +2,49 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T09:29:06.178Z",
-   "sha": "6cd1c283be0d9df4c8e3165c0cc9c6b42cfc8f9a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39114830643",
+   "at": "2026-10-18T09:30:42.547Z",
+   "sha": "98e047113217a561057260b4ab7f0098bc18e335",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114428914",
    "suite": "browser suite on main",
    "checks": [
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "tools/telemetry-route.test.mjs",
-    "void-live-deploy/lib/telemetry.js",
+    "domains/void.agents.log.md",
+    "tools/wants.test.mjs",
+    "tools/zorbleflux.test.mjs",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/skills/zorbleflux.js",
+    "void-live-deploy/void.growth.json",
     "void-live-deploy/incidents.json"
    ]
   },
   {
-   "at": "2026-10-18T09:18:00.174Z",
-   "sha": "74238086e71d24d854c72443c9ac94533bd9f0c0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39114167283",
+   "at": "2026-10-18T09:11:42.038Z",
+   "sha": "c53adfce08747cb63caae0b1a02d2a67714f2d23",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114090393",
    "suite": "browser suite on main",
    "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
-    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
    ],
    "touched": [
+    "docs/MAP.md",
     "domains/void.agents.log.md",
-    "tools/memory.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/functions/api/memory.js",
-    "void-live-deploy/lib/memory-core.js",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/lineage.test.mjs",
+    "tools/remediation-velocity.mjs",
+    "tools/remediation-velocity.test.mjs",
+    "void-live-deploy/lib/card-frame.js",
+    "void-live-deploy/lib/lineage.js",
+    "void-live-deploy/remediation.json",
     "void-live-deploy/skills/deps.json",
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/memory-graph.js",
-    "void-live-deploy/skills/movie.js",
-    "void-live-deploy/void.growth.json",
-    "docs/MAP.md",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "tools/film-discovery.test.mjs"
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1715-remediation-velocity"
    ]
   },
   {
