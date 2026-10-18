@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T13:58:13.024Z",
+   "sha": "ab4a12527df671d9cf7c2ff4f31cb3ac5a31ecf0",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39133572592",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/asks-link.json",
+    "tools/deps.mjs",
+    "tools/deps.test.mjs",
+    "tools/families.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/dependency-health.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1725-dependency-health"
+   ]
+  },
+  {
    "at": "2026-10-18T13:49:51.621Z",
    "sha": "255679dc548bc7eaab911d48e09b2a20a5b67c87",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39132157735",
@@ -678,22 +704,6 @@
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T04:41:48.484Z",
-   "sha": "ce39a8ac72503de9d64bdc3f9422788ed4bc4ddb",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39097124483",
-   "suite": "browser suite on main",
-   "checks": [
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/card-frame.js",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
