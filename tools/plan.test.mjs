@@ -226,7 +226,7 @@ test('a skill to learn opens with finding a teacher or a course, once, and only 
   }
 });
 
-// Void's ask (2026-10-13, twice): stickies a plan puts up say what they are, so a note is never taken for an order; the
+// Verse's ask (2026-10-13, twice): stickies a plan puts up say what they are, so a note is never taken for an order; the
 // note to self and the unsent draft carry a role, and the page shows it as a tab on the paper
 test('a plan marks the stickies it puts up: its note to self as a note, a message to someone as an unsent draft', async () => {
   const asked = [], things = {};

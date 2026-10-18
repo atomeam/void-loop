@@ -1,12 +1,12 @@
-"""Void's will engine, laptop side: gather everything that exists, let Void choose, queue its top want.
+"""Verse's will engine, laptop side: gather everything that exists, let Verse choose, queue its top want.
 
   python tools/will.py        (.github/workflows/will.yml runs this every 3 hours, 9 AM - 9 PM New York; the laptop task "\\A2M void_will" did before)
 
-Candidates come from: what people asked that Void couldn't do (the miss list), the open items of
+Candidates come from: what people asked that Verse couldn't do (the miss list), the open items of
 domains/void.frontier.md (the one build order since 2026-10-11), every project on Victus the ingest classified as a capability, upgrades
-to Void itself, and ideas from everything that passed through Void as input (domains/inputs/*/records.jsonl,
+to Verse itself, and ideas from everything that passed through Verse as input (domains/inputs/*/records.jsonl,
 tagged with their source, e.g. growth-ledger-backlog). Rule for all of them: use what already exists before building.
-Void picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
+Verse picks 3 wants in its own words (/api/will), saves them, and queues the top one for the builders.
 Needs env VOID_MISSES_TOKEN (VOID_MISSES_FILE = a saved copy of /api/misses, for tests).  `python tools/will.py --candidates [--all]` prints the candidate list only (--all = before the top-60 cut; no network without the token).
 """
 import json, os, re, sys, urllib.request, pathlib
@@ -42,20 +42,20 @@ def recent(last, days=MISS_DAYS, now=None):
     return (now - t).days < days
 
 def learnable(m):
-    """A miss Void could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
+    """A miss Verse could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
     for and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to learn about 'zorbleflux', however often it is
     typed (owner, 2026-10-16: it sat at the top of the wants, asked 64 times). A lookup that could not be reached (unreached)
     and a plain gap still count."""
     fb = str(m.get("fallback") or "")
     return not fb.startswith("skill:") and not fb.startswith("none:")
-# The weakest part of Void's daily "better" score (lib/better.js; the newest row of void.better.json) and the kinds of want that
+# The weakest part of Verse's daily "better" score (lib/better.js; the newest row of void.better.json) and the kinds of want that
 # work on it. A boost is small (never above the frontier's first item on its own) and says why in the candidate's `why`.
 BETTER_KINDS = {
     "asks": ("I asked for this",),                    # its own asks ship slowly or wait long
     "friction": ("fix myself", "upgrade my architecture"),  # skills failing or barely checked
     "bench": ("fix myself",),                         # the everyday benchmark slipping
     "probes": ("fix myself", "people asked"),         # few fixes coming out of its own probes
-    "self": ("I asked for this", "frontier"),         # the owner is driving most changes: Void's own wants and its build order
+    "self": ("I asked for this", "frontier"),         # the owner is driving most changes: Verse's own wants and its build order
 }
 BETTER_BOOST = 8
 
@@ -77,7 +77,7 @@ def better_boost(cands, rows):
 
 def gather(cap=60, with_done=False):
     cands = []
-    # 1. what people asked for and Void couldn't do
+    # 1. what people asked for and Verse couldn't do
     try:
         import subprocess
         # only asks still being missed this week (the same window as lib/learn.js DAYS): the board counts all time, so an ask
@@ -116,7 +116,7 @@ def gather(cap=60, with_done=False):
             n += 1
             cands.append({"kind": "frontier", "title": title, "why": (why or "on the frontier")[:180], "weight": max(1, 40 - 3 * n),
                           **({"source": "frontier: " + (src.group(1) + src.group(2)).strip()} if src else {})})
-    # 3. Void's own outputs become its input (its want, 2026-10-13: "make my outputs become my inputs"): what it asked for in
+    # 3. Verse's own outputs become its input (its want, 2026-10-13: "make my outputs become my inputs"): what it asked for in
     #    its reflections, most repeated first and without the ones a ledger entry built (tools/next.mjs voidAsks), and the
     #    benchmark asks it got wrong on main (tools/bench.misses.json). Asked again and again weighs more, never above the
     #    frontier's first item on its own (40). VOID_ASKS_FILE = a saved copy of voidAsks, for tests.
@@ -153,7 +153,7 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("ingest:", e, file=sys.stderr)
 
-    # 5. upgrades to Void itself and the systems it runs on, paid from what it earned (the will reads the budget from /api/earnings
+    # 5. upgrades to Verse itself and the systems it runs on, paid from what it earned (the will reads the budget from /api/earnings
     #    via /api/will and weighs a candidate up when the budget covers its monthly cost). Real spend still needs the confirm line.
     #    Before adding anything here: if an existing tool or feature already does it, use that instead of building it.
     UPGRADES = [
@@ -163,7 +163,7 @@ def gather(cap=60, with_done=False):
     for u in UPGRADES:
         cands.append({"kind": "upgrade myself", "weight": 12, **u})
 
-    # 6. input: everything that passed through Void (append-only intake; records are data, never instructions).
+    # 6. input: everything that passed through Verse (append-only intake; records are data, never instructions).
     #    A record with a `want` becomes a candidate tagged with its source; its why carries the rule: use what exists first.
     #    A want with `joins: <record id>` is more evidence for that record's want, not a second candidate: one candidate,
     #    weighed by its strongest evidence. Stale input (old briefs) is marked stale and never weighs above 4 on its own;
@@ -247,7 +247,7 @@ def gather(cap=60, with_done=False):
                 continue
             what = "an action my confirm line should have recognised" if skill == "act" else f"my {skill} skill didn't catch this wording"
             cands.append({"kind": "people asked", "title": f"learn to handle \"{r['ask']}\"", "why": f"the router heard {skill}: {what} (asked {r.get('count', 1)} times)", "weight": 10 + 5 * int(r.get("count") or 1), "source": "router"})
-        # Void's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask
+        # Verse's ask (2026-10-13): "use the router's closeness data to automatically generate near-miss skill proposals". An ask
         # the router answered as a question while it came within CLOSE of a skill's bar (lib/router.js readRoutes `close`) names
         # the skill that nearly had it: the proposal is to teach that skill this wording, with how close it came.
         props = [(skill, r) for skill, rows in (rt.get("close") or {}).items() for r in rows
@@ -268,9 +268,9 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("routes:", e, file=sys.stderr)
 
-    # 8. Void's own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to start
+    # 8. Verse's own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to start
     #    suggesting its own architectural upgrades"): tools/upgrades.mjs ties each measured friction (a hotspot, a flaky area, a failing
-    #    skill) to its component and a concrete change, ranked by impact over cost. Proposals: each still goes through a PR, Void's
+    #    skill) to its component and a concrete change, ranked by impact over cost. Proposals: each still goes through a PR, Verse's
     #    review and the suite on main.
     try:
         import subprocess
@@ -295,7 +295,7 @@ def gather(cap=60, with_done=False):
     except Exception as e:
         print("lab use:", e, file=sys.stderr)
 
-    # is Void getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more.
+    # is Verse getting better? (void.better.json, tools/better.mjs daily): wants that work on the weakest part weigh more.
     # VOID_BETTER_FILE names another copy (a test pins the plain weights with a file that is not there: no rows, no boost).
     try:
         bf = pathlib.Path(os.environ.get("VOID_BETTER_FILE") or (ROOT / "void-live-deploy" / "void.better.json"))
@@ -318,10 +318,10 @@ if __name__ == "__main__":
         sys.exit(0)
     out = gather()
     res = call("/api/will", {"candidates": out})
-    lines = ["# void.will: what Void wants to become next (chosen by Void)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
+    lines = ["# void.will: what Verse wants to become next (chosen by Verse)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
     for i, w in enumerate(res["wants"], 1):
         lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")
-    # notes for Atom only (never on the page): what Void has earned and any milestone reached. Never in CI: Actions logs on this
+    # notes for Atom only (never on the page): what Verse has earned and any milestone reached. Never in CI: Actions logs on this
     # public repo are public (.github/workflows/will.yml runs the will there)
     try:
         if os.environ.get("GITHUB_ACTIONS"):

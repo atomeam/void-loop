@@ -2,7 +2,7 @@
  * make skill — things that materialize: a playable Connect 4, and 3D objects
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "play connect 4", "make a 3d torus", "a gold 3d diamond".
- * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Void's data)
+ * Each runs in a sandboxed frame (scripts only: no network, no cookies, no access to the page or to Verse's data)
  * and arrives with a materialize animation. Everything is drawn here: no libraries, no downloads.
  * Tools: the fringe drafts wired live (tools/fringe.mjs --publish writes void-live-deploy/fringe/<family>.html);
  * "timing game", "what did void get wrong", "idea vault", "uap timeline"… open the page in a frame.
@@ -20,10 +20,10 @@ const COLORS = { red: [235, 70, 70], orange: [245, 150, 60], gold: [235, 190, 80
 const OPEN = '(?:(?:show|open|play|start|launch|give)\\s+(?:me\\s+)?)?(?:the\\s+|my\\s+|a\\s+)?';
 const TOOLS = [
   ['(?:timing game|interval timing|time sense game|test my (?:sense of time|timing))', 'interval-timing', 'Timing game', 'How well do you feel time pass? Stop the clock by feel.'],
-  ['(?:miss board|what did void get wrong|what has void (?:missed|got wrong))', 'miss-board', 'Miss board', 'Asks Verse could not answer yet, and what it learned from them.'],
+  ['(?:miss board|what did (?:verse|void) get wrong|what has void (?:missed|got wrong))', 'miss-board', 'Miss board', 'Asks Verse could not answer yet, and what it learned from them.'],
   ['(?:quiet(?:[\\s-]signal)? filter|headline filter|news without the noise)', 'quiet-signal-filter', 'Quiet filter', 'Paste headlines; the loud ones fade, the quiet signal stays.'],
   ['(?:idea vault|incubation log|incubate an idea|seal an idea)', 'private-incubation-log', 'Idea vault', 'Seal a half-formed idea; it comes back to you later. Kept on this device only.'],
-  ['(?:void(?:\'s)? (?:growth chart|progress|growth)|void progress|how is void growing)', 'correlation-view', 'Verse growth', 'The benchmark score round by round, and what moved it.'],
+  ['(?:void(?:\'s)? (?:growth chart|progress|growth)|(?:verse|void) progress|how is (?:verse|void) growing)', 'correlation-view', 'Verse growth', 'The benchmark score round by round, and what moved it.'],
   ['(?:hypothesis ledger|weak signal ledger|weak signals)', 'weak-signal-hypothesis-ledger', 'Hypothesis ledger', 'Weak signals held as hypotheses, each with its confidence and source.'],
   ['(?:(?:uap|ufo) (?:disclosure )?timeline|uap disclosure)', 'anomalous-event-timeline', 'UAP timeline', 'Public steps in US UAP disclosure, each with its confidence. Releases are events; the cases stay unresolved.'],
   // the lab: the newest working draft of each fringe family, each a real experiment with its own self-test (2026-10-13)
@@ -37,7 +37,7 @@ const TOOLS = [
   ['(?:cusum|change detector|when did it start|change[\\s-]point(?: test)?)', 'quiet-signal-filter-5', 'When did it start', 'Paste a series of numbers; a cumulative-sum test finds when a small lasting change began.'],
   ['(?:base[\\s-]rate(?: fallacy| test| check)?|one in a hundred|how likely is it really)', 'weak-signal-hypothesis-ledger-7', 'One in a hundred', 'A positive test, an alarm, a strong hunch: how likely is the thing behind it, really?'],
   ['(?:remote associates(?: test)?|three[\\s-]word puzzles?|word puzzles?|the wrong lead)', 'private-incubation-log-6', 'The wrong lead', 'Three words, one word that goes with all of them. Some come with a misleading hint.'],
-  ['(?:good[\\s-]turing|unseen asks|what hasn\'?t void heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has Verse already seen? Good and Turing\'s estimate.'],
+  ['(?:good[\\s-]turing|unseen asks|what hasn\'?t (?:verse|void) heard(?: yet)?)', 'miss-board-4', 'What it hasn\'t heard yet', 'How much of what people will ask has Verse already seen? Good and Turing\'s estimate.'],
   ['(?:odd moments?(?: log)?|something odd (?:just )?happened|weirdness log)', 'anomalous-event-timeline-4', 'Odd moments', 'Log each odd moment; over days it asks whether they come in bursts more than chance would.'],
 ].map(([re, id, label, sub]) => [new RegExp('^' + OPEN + re + '$'), id, label, sub]);
 // drafts the fringe ledger published with a lab entry (tools/fringe.mjs --publish writes /fringe/lab.json): they join the lab
@@ -67,7 +67,7 @@ export function noteUse(id, { store = globalThis.localStorage, send = (b) => fet
 
 export function makeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:show (?:me )?|open )?(?:the |void'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
+  if (/^(?:show (?:me )?|open )?(?:the |(?:verse|void)'?s )?(?:lab|experiments?|fringe lab)$|^what experiments (?:can i try|do you have)$/.test(t)) return { kind: 'lab' };
   for (const [re, id, label, sub] of TOOLS) if (re.test(t)) return { kind: 'tool', id, label, sub };
   for (const [, id, label, sub] of TOOLS) if (label.toLowerCase().replace(/[^a-z' ]/g, '') === t.replace(/[^a-z' ]/g, '')) return { kind: 'tool', id, label, sub }; // the lab's own titles
   let m = t.match(/^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+)?(?:play|make|build|create|start|open|give\s+me|code)\s+(?:me\s+)?(?:a\s+|an\s+)?(?:game\s+of\s+|round\s+of\s+)?(.+?)(?:\s+game|\s+app)?$/);

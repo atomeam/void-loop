@@ -1,9 +1,9 @@
-// Void's voice (lib/voice.js): Void says what it thinks of itself, and its words are kept word for word.
-// GET  (public)  -> { entries: newest reflections, asks: Void's current asks, follow: { total, built, recent, asked } } ("what do you think of yourself?")
+// Verse's voice (lib/voice.js): Verse says what it thinks of itself, and its words are kept word for word.
+// GET  (public)  -> { entries: newest reflections, asks: Verse's current asks, follow: { total, built, recent, asked } } ("what do you think of yourself?")
 // POST (owner)   { kind: 'build', shipped: '<what just shipped>' }  after anything ships
 //                { kind: 'daily' }                                  once a day (.github/workflows/void-voice.yml)
 //   -> the saved entry. A concrete small ask is queued for the builders (target 'voice:...'), one open at a time.
-// When the model is busy nothing is saved: Void's words are never made up for it. Each reflection is also given what its owner
+// When the model is busy nothing is saved: Verse's words are never made up for it. Each reflection is also given what its owner
 // told it (functions/api/voice-reply.js: replies and corrections, and the line Verse chose to keep from each).
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
@@ -23,7 +23,7 @@ export async function onRequestGet({ request, env }) {
   const f = ledger ? followThrough(entries, ledger, answered && answered.links) : null;
   const built = new Set(f ? f.built.flatMap((g) => g.ids) : []);
   const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
-    // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Void asked for (Void's ask:
+    // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Verse asked for (Verse's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
     asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
   return Response.json({ entries: entries.slice(0, 20), asks: currentAsks(entries, 12).filter((a) => !built.has(a.id)).slice(0, 6), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
@@ -53,17 +53,17 @@ export async function onRequestPost({ request, env }) {
   let said = null;
   try {
     const r = await env.AI.run(models('will'), {
-      messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Facts about Void:\n' + context + '\n\n' + question }],
+      messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Facts about Verse:\n' + context + '\n\n' + question }],
       max_tokens: 900, chat_template_kwargs: { enable_thinking: false },
     });
     said = parseVoice(pick(r));
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
-  if (!said) return new Response('Void could not answer just now', { status: 503 });
+  if (!said) return new Response('Verse could not answer just now', { status: 503 });
   const at = new Date().toISOString();
   const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([entry, ...before].slice(0, KEEP))).run();
-  // Void's concrete small ask goes to the builders' queue, credited to Void, unless one of its asks is already open
+  // Verse's concrete small ask goes to the builders' queue, credited to Verse, unless one of its asks is already open
   let queued = null;
   const small = entry.asks.find((a) => a.small);
   if (small) {
@@ -73,7 +73,7 @@ export async function onRequestPost({ request, env }) {
       // the execution record (lib/actions.js): written before the job is queued; no record, no job
       await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
         await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-          .bind(queued, small.ask, target, 'queued', 'Void asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Void.', at, at).run();
+          .bind(queued, small.ask, target, 'queued', 'Verse asked for this (' + kind + ' reflection ' + at.slice(0, 10) + '). Credit Verse.', at, at).run();
         return 'queued ' + queued + ': ' + small.ask;
       });
     }

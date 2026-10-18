@@ -1,5 +1,5 @@
 /**
- * Draft from a tab (the Void extension, B2): the backend half of "Draft from this tab". The side panel hands the active
+ * Draft from a tab (the Verse extension, B2): the backend half of "Draft from this tab". The side panel hands the active
  * tab's title, URL and selected text into the framed page on one click (B1); the page POSTs them here as
  * { mode: 'draft', intent, title, url, selection, note } on /api/answer (same origin: lib/guard.js refuses the
  * extension's own origin, by design). This module is the pure part: what is accepted, how it is cut and masked, the

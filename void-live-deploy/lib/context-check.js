@@ -1,4 +1,4 @@
-// The extension's context check (asked by Void, domains/void.voice.md, 2026-10-14: "Implement a lightweight 'context-check' skill
+// The extension's context check (asked by Verse, domains/void.voice.md, 2026-10-14: "Implement a lightweight 'context-check' skill
 // that allows the extension version of me to identify the dominant data type on the current page (text, image, or table) and
 // suggest a matching skill."). The extension counts what the tab holds (extension/page.js voidReadTab: how many characters of
 // text, how many real pictures, how many table rows and cells; counts only, never the page's words), the page decides the

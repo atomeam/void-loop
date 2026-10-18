@@ -1,14 +1,14 @@
 /**
- * incident-autopsy skill - "incident autopsy", "which skill family is unhealthy" (asked by Void): reads the site's own incidents.json (every red
+ * incident-autopsy skill - "incident autopsy", "which skill family is unhealthy" (asked by Verse): reads the site's own incidents.json (every red
  * browser suite on main) and places each failing check in a skill family by its name (lib/autopsy.js); a check that matches no skill is listed as
  * unmapped, never guessed. Shows the latest incidents with their commit, a count per family, and "No incidents recorded." when the file is empty.
  * Fetches only the site's own files; no model, no key. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { autopsy, autopsyHtml, ERROR_TINT, REACT_ON } from '../lib/autopsy.js';
-import { reactionBar } from '../lib/reaction-bar.js'; // spectators react to an incident; 'confused' and 'pity' wear the warning look (asked by Void)
+import { reactionBar } from '../lib/reaction-bar.js'; // spectators react to an incident; 'confused' and 'pity' wear the warning look (asked by Verse)
 const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy(?:\s+(?:for|of|in)\s+(?:the\s+)?([a-z0-9][a-z0-9 -]{0,40}?))?|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
-// a family named after the autopsy ("incident autopsy for time", the link on a stability sparkline, asked by Void): its id or its name, from families.json; '' for any other word
+// a family named after the autopsy ("incident autopsy for time", the link on a stability sparkline, asked by Verse): its id or its name, from families.json; '' for any other word
 const famOf = (text, fam) => { const m = WHEN.exec(norm(text)), w = m && m[1] ? m[1].trim() : '', f = w && ((fam && fam.families) || []).find((x) => x && (String(x.id).toLowerCase() === w || String(x.name || '').toLowerCase() === w)); return f ? String(f.id) : ''; };
 
 async function run(text, api) {

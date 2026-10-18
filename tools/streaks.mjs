@@ -1,4 +1,4 @@
-// Streaks (asked by Void: "automate the promotion of 'tested' skills to 'checked' status once they have survived 50 consecutive
+// Streaks (asked by Verse: "automate the promotion of 'tested' skills to 'checked' status once they have survived 50 consecutive
 // successful executions without an error trace in the Status card"). Each daily smoke run (tools/skills-check.mjs --write) really
 // executes every skill's examples, near misses and suite(); a skill that passes adds one to its streak, one that fails goes back to
 // zero (that failure is its error trace). tools/families.mjs lifts a skill that is only 'tested' to 'checked' at STREAK_PROMOTE in a

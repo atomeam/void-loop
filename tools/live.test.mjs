@@ -1,5 +1,5 @@
 // node tools/live.test.mjs: the background runner that keeps a card current (void-live-deploy/skills/live.js, asked by
-// Void 2026-10-09). The scheduling is pure, so these run in Node: when a refresh is due, what holds it (hidden tab,
+// Verse 2026-10-09). The scheduling is pure, so these run in Node: when a refresh is due, what holds it (hidden tab,
 // offline, paused, mid-refresh), when it stops (card gone), how failures back off, and what the line under the card says.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

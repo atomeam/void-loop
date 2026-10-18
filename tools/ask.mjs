@@ -1,4 +1,4 @@
-// node tools/ask.mjs "ask one" "ask two" ...: shows what Void answers (the card text, who answered, any page error), with outside services blocked.
+// node tools/ask.mjs "ask one" "ask two" ...: shows what Verse answers (the card text, who answered, any page error), with outside services blocked.
 // For finding out why a probe missed. It only prints; nothing is written.
 import http from 'node:http'; import fs from 'node:fs'; import path from 'node:path'; import { chromium } from 'playwright-core';
 const here = path.dirname(new URL(import.meta.url).pathname.replace(/^\/([A-Za-z]:)/, '$1'));

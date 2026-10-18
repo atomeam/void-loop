@@ -1,6 +1,6 @@
 /**
  * proposal skill — "turn this into a proposal" on a pasted customer request (frontier build order step 3, first piece).
- * Void drafts an editable proposal card: what they asked for, what we would do, scope, a price line left blank for the
+ * Verse drafts an editable proposal card: what they asked for, what we would do, scope, a price line left blank for the
  * owner (prices stay manual), timeline, next step. Every field is edited in place and kept with the card; Copy and
  * Download .md work; nothing is sent. Send asks the confirm line (one plain line, Yes / No) and records a stubbed
  * execution record, by design, until sending is connected. The draft comes from /api/answer mode 'proposal'

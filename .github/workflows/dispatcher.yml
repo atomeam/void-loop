@@ -1,9 +1,9 @@
-# Persistent tasks: Void's build queue inspected on a schedule and gated on the owner's yes.
+# Persistent tasks: Verse's build queue inspected on a schedule and gated on the owner's yes.
 #
 # A scheduled run is always a dry run: it builds and prints the envelopes and stops. Reaching the
 # bridge needs an owner decision, and only a person can start that, so approval mode is manual only.
 # There is no setting that makes an unattended run deliver anything.
-name: Void dispatcher
+name: Verse dispatcher
 
 on:
   schedule:

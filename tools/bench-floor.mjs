@@ -23,7 +23,7 @@ export function missesOf(result) {
 
 // the floor the result earns, or null when the floor stays (the result is not above it, or something is not a number)
 export function nextFloor(result, floor, margin = MARGIN) {
-  if (result && result.inconclusive) return null; // a run the machine's load disturbed says nothing about Void (tools/bench-load.mjs)
+  if (result && result.inconclusive) return null; // a run the machine's load disturbed says nothing about Verse (tools/bench-load.mjs)
   const score = Number(result && result.score), total = Number(result && result.total);
   const fScore = Number(floor && floor.score), fTotal = Number(floor && floor.total);
   if (![score, total, fScore, fTotal].every(Number.isFinite) || score > total) return null;

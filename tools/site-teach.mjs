@@ -17,7 +17,7 @@ export const keyOf = (s) => String(s || '').toLowerCase().trim().replace(/[\s?!.
 
 /** "site-test: teach Verse "x" (means "y", skill:z): ..." -> { ask, means, skill }. Pure. */
 export function fromTitle(t) {
-  const m = String(t).match(/teach (?:Verse|Verse) "([^"]+)" \(means "([^"]+)", skill:([a-z0-9-]+)\)/i);
+  const m = String(t).match(/teach (?:Verse|V01D) "([^"]+)" \(means "([^"]+)", skill:([a-z0-9-]+)\)/i);
   return m ? { ask: m[1], means: m[2], skill: m[3] } : null;
 }
 /** Can this wording be taught? skills: [{ name, match }] in routing order. '' when it can, else why not. Pure. */

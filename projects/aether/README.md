@@ -97,7 +97,7 @@ The bridge will:
 3. Track state via Durable Objects or D1
 4. Report back to void-loop when a job is claimed/completed
 
-This turns Void from reactive (responds to asks when online) to persistent (work continues asynchronously).
+This turns Verse from reactive (responds to asks when online) to persistent (work continues asynchronously).
 
 ## Troubleshooting
 

@@ -4,7 +4,7 @@
 // POST { about, text }      or to any card Verse showed: about = { ask, title, said } (the page sends what the card said)
 //   -> the kept reply, with Verse's answer. When the model is busy the reply is still kept (Verse reads it at its next
 //      reflection) and `answer` is null: Verse's words are never made up for it. When the reply leads Verse to something to
-//      build (`ask`), that goes to the builders' queue as a voice: job credited to Void, as its reflections' asks do (one open at a time).
+//      build (`ask`), that goes to the builders' queue as a voice: job credited to Verse, as its reflections' asks do (one open at a time).
 // 400 when the text is empty or `to` names no reflection; 503 without the database.
 import { ownerOk } from '../../lib/guard.js';
 import { track } from '../../lib/actions.js';
@@ -55,7 +55,7 @@ export async function onRequestPost({ request, env }) {
       }
     } catch (_) {} // the correction is still kept on the reply and in Verse's memory
   }
-  // every input improves it (owner, 2026-10-16): what the conversation made Verse want built goes to the builders, credited to Void
+  // every input improves it (owner, 2026-10-16): what the conversation made Verse want built goes to the builders, credited to Verse
   if (reply.ask) {
     try {
       const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'voice:%' AND state IN ('queued','building') LIMIT 1").first();
@@ -63,7 +63,7 @@ export async function onRequestPost({ request, env }) {
         const id = Date.now().toString(36), target = 'voice:' + reply.ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
         await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
           await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-            .bind(id, reply.ask, target, 'queued', 'Void asked for this when its owner replied to it (' + reply.at.slice(0, 10) + '). Credit Void.', reply.at, reply.at).run();
+            .bind(id, reply.ask, target, 'queued', 'Verse asked for this when its owner replied to it (' + reply.at.slice(0, 10) + '). Credit Verse.', reply.at, reply.at).run();
           return 'queued ' + id + ': ' + reply.ask;
         });
         reply.queued = id;

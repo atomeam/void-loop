@@ -1,16 +1,16 @@
 /**
- * take — Void's own input on top of an article page (Adam, 2026-10-09: "Void should have input on everything on top of
+ * take — Verse's own input on top of an article page (Adam, 2026-10-09: "Verse should have input on everything on top of
  * the wikipedia article"). Not a skill: void.html's article page imports it.
- *   relatedAsks(card)  what Void can do about this subject, at once, from the summary alone: [{ ask, label }]
- *   takeHtml(esc, take, asks)  the block shown above the summary ("Void's take"), or '' when there is nothing to add
+ *   relatedAsks(card)  what Verse can do about this subject, at once, from the summary alone: [{ ask, label }]
+ *   takeHtml(esc, take, asks)  the block shown above the summary ("Verse's take"), or '' when there is nothing to add
  * The take itself comes from the answer engine (/api/answer, mode 'take'), which reads the summary and says what the
  * encyclopedia doesn't: a sharper point, a practical angle, a common mistake, what to look at next.
  */
 
-// games Void plays, and the family each belongs to: an article about a cousin offers Void's own game
+// games Verse plays, and the family each belongs to: an article about a cousin offers Verse's own game
 const GAMES = [
   { re: /^sorry!?(?: \(game\))?$/i, ask: 'play sorry', label: () => 'Play Back to Start with Verse (plays like Sorry!)' },
-  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Star Marbles with Void (plays like Aggravation)' : 'Play Star Marbles with Verse (same family: race your marbles home, send others back)' },
+  { re: /\b(?:ludo|parcheesi|pachisi|chaupar|trouble \(board game\)|frustration|mensch ärgere dich nicht|uckers|aggravation)\b/i, ask: 'play aggravation', label: (t) => /aggravation/i.test(t) ? 'Play Star Marbles with Verse (plays like Aggravation)' : 'Play Star Marbles with Verse (same family: race your marbles home, send others back)' },
   { re: /\bchess\b/i, ask: 'play chess', label: () => 'Play chess with Verse' },
   { re: /\b(?:checkers|draughts)\b/i, ask: 'play checkers', label: () => 'Play checkers with Verse' },
   { re: /\bgo \(game\)|\bweiqi\b|\bbaduk\b/i, ask: 'play go', label: () => 'Play Go with Verse' },
@@ -24,7 +24,7 @@ const GAMES = [
   { re: /\bhanabi\b/i, ask: 'play fireworks', label: () => 'Play Fireworks (Hanabi) with Verse' },
 ];
 
-/** What Void can do about the subject, from the title and the one-line description (the summary's first words help). */
+/** What Verse can do about the subject, from the title and the one-line description (the summary's first words help). */
 export function relatedAsks(card) {
   const title = String((card && card.title) || '').trim(), desc = String((card && card.description) || '').trim();
   const lead = String((card && card.extract) || '').slice(0, 160), out = [];
@@ -43,7 +43,7 @@ export function relatedAsks(card) {
   return out.slice(0, 4);
 }
 
-/** The block above the summary: Void's take (a few sentences, plain text) and what Void can do about it. */
+/** The block above the summary: Verse's take (a few sentences, plain text) and what Verse can do about it. */
 export function takeHtml(esc, take, asks) {
   const t = String(take || '').trim(), a = Array.isArray(asks) ? asks : [];
   if (!t && !a.length) return '';

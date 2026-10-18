@@ -4,7 +4,7 @@ import { parseUsed, markUsed, noteUsed, readUsed, usedWords, deadWeight, idleDay
 
 const NOW = Date.parse('2026-10-16T12:00:00Z');
 const store = (init = {}) => { const m = { ...init }; return { getItem: (k) => (k in m ? m[k] : null), setItem: (k, v) => { m[k] = String(v); }, m }; };
-test('a skill that answers is dated, on this device only (asked by Void)', () => {
+test('a skill that answers is dated, on this device only (asked by Verse)', () => {
   const st = store();
   assert.equal(noteUsed(st, 'skill:weather', NOW), true);
   assert.deepEqual(JSON.parse(st.m[USED_KEY]), { weather: '2026-10-16' });

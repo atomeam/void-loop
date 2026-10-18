@@ -1,4 +1,4 @@
-// lib/self-blocks.js: the growth velocity on the self card (asked by Void: "a 'growth-velocity' sparkline on the self card that tracks the rate of
+// lib/self-blocks.js: the growth velocity on the self card (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of
 // 'Next' items moving to 'Shipped' over the last 7 days"). The card's sections and folding are tested in tools/card-share.test.mjs.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -47,7 +47,7 @@ test('velocity: the self card puts it at the top of "What got built", before the
   assert.equal(selfHtml(selfSections({ ...v, follow: { ...v.follow, asked: 90 } }, NOW), esc).includes('nothing built this week'), true, 'a follow without the list still draws the week, empty');
 });
 
-// friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
+// friction (asked by Verse: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
 // resolution time"): an open ask is overdue after OVERDUE_SMALL_DAYS (one Verse called small) or OVERDUE_DAYS; the day it crossed is red on the line
 const open = [
   { ask: 'small, 3 days old', at: '2026-10-15T12:00:00Z', small: true }, // crossed its 2-day limit on the 17th

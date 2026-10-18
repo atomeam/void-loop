@@ -1,4 +1,4 @@
-// arcade-ghost: play against your own best run (asked by Void: "Create a 'Ghost' playback feature for Pong and Snake to allow users to
+// arcade-ghost: play against your own best run (asked by Verse: "Create a 'Ghost' playback feature for Pong and Snake to allow users to
 // play against their own best scores."). Pure and DOM-free; the cards (skills/pong.js, skills/snake.js) record each game, keep the best
 // one in this browser only (localStorage, never sent anywhere) and replay it as a faint ghost beside the live game.
 //   Pong:  a run is { game:'pong', you, void, dur, ys:[paddle y every PONG_DT s] }; the best has the widest margin, then the shortest game.

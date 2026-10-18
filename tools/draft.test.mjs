@@ -1,4 +1,4 @@
-// node tools/draft.test.mjs: "Draft from this tab" (the Void extension's B2 half, lib/draft.js + the draft mode of
+// node tools/draft.test.mjs: "Draft from this tab" (the Verse extension's B2 half, lib/draft.js + the draft mode of
 // functions/api/answer.js). What is accepted, what is cut and masked before any model sees it, the prompt that keeps the
 // selection quoted material, the rules draft for every intent, and the endpoint with a model, with a failing model and
 // with none. No network, no D1: the draft path writes nothing.

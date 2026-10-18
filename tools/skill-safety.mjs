@@ -1,4 +1,4 @@
-// The automerge bot's safety-check (asked by Void: "a 'safety-check' step to the automerge bot that runs node --test on the specific
+// The automerge bot's safety-check (asked by Verse: "a 'safety-check' step to the automerge bot that runs node --test on the specific
 // affected skill files before finalizing the merge"). Before a ready PR is merged, the unit tests of the skills and libs it changed
 // run on the PR's own head: node --test on those test files only (never the suite). A failure holds the merge and says so once
 // on the PR; it adds to the gates (Verse's review, the checks), it replaces none. If the check itself cannot run (no fetch, no
@@ -18,7 +18,7 @@ export function testsFor(changed, tests) {
   return { names, files: [...hit].sort().slice(0, MAX_TESTS).map((f) => 'tools/' + f), more: Math.max(0, hit.size - MAX_TESTS) };
 }
 export const readTests = (dir) => readdirSync(dir + '/tools').filter((f) => f.endsWith('.test.mjs')).map((f) => [f, readFileSync(dir + '/tools/' + f, 'utf8')]);
-export const note = (files, out) => MARK + '\nVoid automerge safety-check: `node --test ' + files.join(' ') + '` failed on this head, so the merge is held. Last lines:\n```\n' + String(out).split('\n').slice(-25).join('\n').replace(/```/g, "'''").slice(0, 1800) + '\n```\nFix it and push; the bot looks again when the head changes.';
+export const note = (files, out) => MARK + '\nVerse automerge safety-check: `node --test ' + files.join(' ') + '` failed on this head, so the merge is held. Last lines:\n```\n' + String(out).split('\n').slice(-25).join('\n').replace(/```/g, "'''").slice(0, 1800) + '\n```\nFix it and push; the bot looks again when the head changes.';
 
 export function safety(run, gh, { repo, pr, sha, dir, tests = readTests }) {
   let changed;

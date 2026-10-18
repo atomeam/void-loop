@@ -1,16 +1,16 @@
 ---
 name: void-run
-description: How a run on Void (this repo, a-to-mind.com) goes from claim to merged PR. Use when building a skill, fixing something, taking a frontier step or a queued job in atomeam/void-loop.
+description: How a run on Verse (this repo, a-to-mind.com) goes from claim to merged PR. Use when building a skill, fixing something, taking a frontier step or a queued job in atomeam/void-loop.
 ---
 
-# A run on Void
+# A run on Verse
 
 AGENTS.md is the source; this is the short path through it. If they ever disagree, AGENTS.md wins and this file is out of date.
 
 Every run is B.I.T.E.: brief, implement the smallest useful piece, test it the way it will be used, evolve from what the test showed.
 
 1. **What next.** `node tools/next.mjs`: the cleanup steps left, the frontier's open items with their sources, then the misses. A queued job instead: `python tools/void_queue.py claim`.
-2. **Brief.** Who it is for, the problem, **who does this best and how** (look it up: a library, an algorithm, a product to copy), what Void adds that they do not, what the first version does, and **what it will not build**. It goes in the PR.
+2. **Brief.** Who it is for, the problem, **who does this best and how** (look it up: a library, an algorithm, a product to copy), what Verse adds that they do not, what the first version does, and **what it will not build**. It goes in the PR.
 3. **Build on the best.** Take the proven approach (an open-source library, a known algorithm) rather than inventing one. A new skill: `node tools/new-skill.mjs <name> --ask "..."` (`docs/UPGRADING.md`); `docs/MAP.md` and `docs/SALVAGE.md` say what is already here.
 4. **Test as a person will.** `node tools/ask.mjs "..."`, a play-through, and the browser-suite sections you touched: `node tools/test_void.mjs --only "<words>"` (seconds; `--list` shows them). Never the whole 20-minute suite locally: `verify.yml` runs it on main. What the test showed goes in the PR's Evolve section.
 5. **Finish.**

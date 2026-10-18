@@ -16,7 +16,7 @@ picture (AI models as the robots; the K.O.T.S.-style underground league; the car
 - Ways in: free matches on a-to-mind.com; paid entry to enter your own prompt/strategy as a fighter; sponsored or
   branded fighters; replays and clips; later the figures and the show carry the same roster.
 
-**What Void already has toward it:** live AI models through Workers AI; a turn-based game with an AI opponent
+**What Verse already has toward it:** live AI models through Workers AI; a turn-based game with an AI opponent
 (Connect 4 in `void-live-deploy/skills/make.js`); 3D objects that materialize; a router that knows which model answered.
 
 **Open questions:** which arena first (turn-based board game is cheapest and fair; real-time is costlier); how to keep

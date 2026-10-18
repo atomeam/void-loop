@@ -19,13 +19,13 @@ const crReview = (n, at = '2026-10-09T12:01:00Z') => ({ user: { login: CR }, com
 const thread = (id, extra) => ({ id, user: { login: CR }, original_commit_id: SHA, body: 'a finding', ...extra });
 const reply = (to) => ({ id: 900 + to, in_reply_to_id: to, user: { login: 'atomeam' }, body: 'fixed in the next push' });
 
-ok(R().state === 'merge', 'green CI, clean Void review, quiet CodeRabbit: merge');
+ok(R().state === 'merge', 'green CI, clean Verse review, quiet CodeRabbit: merge');
 ok(R({ checks: [run('test-and-deploy'), run('void-review', 'failure')] }).state === 'stop', "Verse's review found a bug: stop");
 ok(R({ checks: [run('test-and-deploy'), run('void-review', null, 'in_progress')] }).state === 'wait', "Verse's review still running: wait");
 ok(R({ checks: [run('test-and-deploy', null, 'in_progress'), run('void-review')] }).state === 'merge', 'suite still running: merge, no wait (it runs again on main)');
 ok(R({ checks: [run('void-review')] }).state === 'merge', 'suite not started yet: merge, no wait');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', null, 'in_progress')] }).state === 'merge', 'bench still running: merge, no wait');
-ok(R({ checks: [] }).state === 'wait', 'no check reported yet: wait for Void\'s review');
+ok(R({ checks: [] }).state === 'wait', 'no check reported yet: wait for Verse\'s review');
 ok(R({ checks: [run('test-and-deploy', 'failure'), run('void-review')] }).state === 'stop', 'suite failed: stop');
 ok(R({ checks: [run('test-and-deploy'), run('void-review'), run('bench', 'failure')] }).state === 'stop', 'bench failed: stop');
 ok(R({ checks: [run('test-and-deploy')] }).state === 'merge', 'a PR from before the void-review check: the suite decides');
@@ -37,7 +37,7 @@ ok(R({ comments: [{ user: { login: CR }, body: 'review in progress by coderabbit
 ok(R({ comments: [{ user: { login: 'atomeam' }, body: '@coderabbitai review', created_at: '2026-10-09T12:00:30Z' }] }).state === 'merge', 'a review asked for and not posted yet: merge, no wait');
 ok(R({ comments: [{ user: { login: CR }, body: '> [!WARNING]\n> ## Review limit reached' }] }).state === 'merge', 'CodeRabbit rate-limited: merge, no wait');
 ok(R({ reviews: [crReview(0)] }).state === 'merge', 'a clean CodeRabbit review: merge');
-ok(R({ reviews: [crReview(1)], threads: [thread(1)] }).state === 'merge', 'a CodeRabbit finding with no answer: merge, Void decides');
+ok(R({ reviews: [crReview(1)], threads: [thread(1)] }).state === 'merge', 'a CodeRabbit finding with no answer: merge, Verse decides');
 ok(/1 finding.*1 thread/.test(R({ reviews: [crReview(1)], threads: [thread(1)] }).extra), 'the CodeRabbit finding is reported as an extra');
 ok(R({ reviews: [crReview(1)], threads: [thread(1), reply(1)] }).state === 'merge', 'a CodeRabbit finding answered on its thread: merge');
 ok(R({ reviews: [crReview(2)], threads: [thread(1), reply(1)] }).state === 'merge', 'a finding outside any thread: merge, reported');

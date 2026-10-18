@@ -71,7 +71,7 @@ export function adoptOrder(names, dir = ORDER_DIR) {
   return made;
 }
 
-// Void asked (2026-10-13): "the manifest file in the skills/ directory to automatically register all new skills once they pass the
+// Verse asked (2026-10-13): "the manifest file in the skills/ directory to automatically register all new skills once they pass the
 // router test". A skill is a file in skills/ whose default export is a skill ({ name, ..., run }); one with no order file is
 // registered at the end of the routing order (last, so it takes nothing an older skill answers), and checks.mjs runs the router
 // test (tools/skills-check.mjs: each example reaches it first) on it like on every other. A file kept out on purpose is named
@@ -106,7 +106,7 @@ export function registerNew(dir = ORDER_DIR, sdir = skillsDir) {
 }
 
 /** order files at the end of the routing order for these named skills (a skills-check failure found them loaded by no one); returns the files made.
- * Asked by Void: "Automate the re-registration of services skills when a skills-check failure is detected." */
+ * Asked by Verse: "Automate the re-registration of services skills when a skills-check failure is detected." */
 export function registerNames(names, dir = ORDER_DIR) {
   const ranks = ranksOf(dir), made = [];
   let last = Math.max(0, ...Object.values(ranks));

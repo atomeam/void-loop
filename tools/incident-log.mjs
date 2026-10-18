@@ -1,4 +1,4 @@
-// Incidents (asked by Void, four times: "an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check
+// Incidents (asked by Verse, four times: "an automatic trigger that creates an 'incident' skill entry whenever a 3D suite check
 // fails"): every red browser suite on main becomes one entry in void-live-deploy/incidents.json, written by verify.yml right
 // after the suite fails (the commit tested, the run, the checks that failed). skills/incident.js answers "what broke lately" from
 // that file and offers the blameless brief prefilled with the first failed check. The file is public like the repo: check names,
@@ -56,11 +56,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const inc = incidentOf({ sha, run, output: file && existsSync(file) ? readFileSync(file, 'utf8') : '', touched: touchedBy(sha) });
     if (!inc) { console.log('incident-log: no FAIL line, nothing recorded'); process.exit(0); }
     const list = addIncident(readLog(), inc);
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.', incidents: list }, null, 1) + '\n');
+    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.', incidents: list }, null, 1) + '\n');
     console.log('incident-log: recorded ' + inc.checks.length + ' failed check(s) for ' + inc.sha.slice(0, 7) + ' (' + list.length + ' kept)');
   } else if (cmd === 'backfill') {
     const list = readLog().map((i) => (Array.isArray(i.touched) ? i : { ...i, touched: touchedBy(i.sha) }));
-    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names, shas and the paths the commit changed only.', incidents: list }, null, 1) + '\n');
+    writeFileSync(OUT, JSON.stringify({ note: 'Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names, shas and the paths the commit changed only.', incidents: list }, null, 1) + '\n');
     console.log('incident-log: backfilled ' + list.filter((i) => i.touched.length).length + ' of ' + list.length);
   } else if (cmd === 'list') {
     for (const i of readLog()) console.log(i.at + ' ' + i.sha.slice(0, 7) + ' ' + i.checks.length + ' failed: ' + i.checks.map((c) => c.slice(0, 60)).join(' | '));

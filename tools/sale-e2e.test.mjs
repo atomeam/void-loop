@@ -1,6 +1,6 @@
 // A sale end to end, through the real handlers on an in-memory D1 (owner, 2026-10-11: "verified revenue is the only metric",
 // so the money path is proven, not assumed): Gumroad's ping (functions/api/gumroad.js) -> the sale recorded once ->
-// a job on the board (lib/sale-jobs.js) -> what Void has earned and may spend (functions/api/earnings.js, lib/earnings.js:
+// a job on the board (lib/sale-jobs.js) -> what Verse has earned and may spend (functions/api/earnings.js, lib/earnings.js:
 // budget_cents) -> a milestone recorded once. And the doors stay shut: no key, a wrong key, a replayed ping, a test ping,
 // another seller, the earnings read without the owner's token, and a refund taking the money back off the budget.
 // Run: node --test tools/sale-e2e.test.mjs
@@ -37,7 +37,7 @@ test('the doors: no key configured, no key, a wrong key, and the earnings read w
   assert.equal((await read(envOf(DB), 'not-the-token')).status, 401, 'earnings with a wrong token');
 });
 
-test('a sale: recorded once, one job, counted once in what Void earned and may spend; a replay changes nothing', async () => {
+test('a sale: recorded once, one job, counted once in what Verse earned and may spend; a replay changes nothing', async () => {
   const DB = d1(), env = envOf(DB);
   const first = await (await send(env, sale(1))).json();
   assert.ok(first.ok, JSON.stringify(first));

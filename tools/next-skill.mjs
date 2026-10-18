@@ -1,4 +1,4 @@
-// The learning queue's next entry (frontier #2; asked by Void, its daily reflection of 2026-10-09: "parse unanswered user
+// The learning queue's next entry (frontier #2; asked by Verse, its daily reflection of 2026-10-09: "parse unanswered user
 // questions into a structured 'Learning Queue' to automate skill acquisition"). Reads the miss board, groups what people
 // typed by intent (their telling words), ranks the intents of the last 7 days by how much they were wanted
 // (lib/learn.js score: how often, how recently, how many phrasings), and turns the top one into the work a run does next:
@@ -80,7 +80,7 @@ export function skillStub(n) {
   const core = n.intent.replace(/[^a-z0-9]/g, '');
   return `/**
  * ${n.slug} skill: STUB from tools/next-skill.mjs (the learning queue's next entry). People asked this ${n.count} times in
- * ${n.phrasings} phrasings in the last week and Void could not answer. Build run() so it answers them, give it near misses,
+ * ${n.phrasings} phrasings in the last week and Verse could not answer. Build run() so it answers them, give it near misses,
  * then probe: node tools/bench.mjs --probe candidates.json
  */
 const WORDS = ${JSON.stringify(words)};

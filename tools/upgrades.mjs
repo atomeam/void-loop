@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// Void proposes its own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to
+// Verse proposes its own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to
 // start suggesting its own architectural upgrades"). Each proposal ties a measured friction to the component that causes it and a
-// concrete change, ranked by impact over cost. Proposals only: they reach Void's will (tools/will.py) and a builder, and every
+// concrete change, ranked by impact over cost. Proposals only: they reach Verse's will (tools/will.py) and a builder, and every
 // change still goes through a PR, Verse's review and the full suite on main, which reverts what breaks (the sandbox and the
-// canary Void asked for already exist; nothing here changes code on its own).
+// canary Verse asked for already exist; nothing here changes code on its own).
 //   node tools/upgrades.mjs            the ranked proposals, in words
 //   node tools/upgrades.mjs --json     the same, for tools/will.py
 // Evidence, all read from the repo:
@@ -65,7 +65,7 @@ export function propose({ churn = {}, files = {}, flakes = [], families = null }
   }
   // flaky areas: the check's own label up to its colon, red on main twice or more
   const areas = {};
-  for (const x of Array.isArray(flakes) ? flakes : []) { const a = String((x && x.check) || '').toLowerCase().split(/[:(]/)[0].trim().slice(0, 50); if (a && a !== 'suite ran to the end') (areas[a] = areas[a] || []).push(x); } // the suite's own crash check is no area of Void
+  for (const x of Array.isArray(flakes) ? flakes : []) { const a = String((x && x.check) || '').toLowerCase().split(/[:(]/)[0].trim().slice(0, 50); if (a && a !== 'suite ran to the end') (areas[a] = areas[a] || []).push(x); } // the suite's own crash check is no area of Verse
   for (const [a, xs] of Object.entries(areas).filter(([, xs]) => xs.length >= 2).sort((p, q) => q[1].length - p[1].length).slice(0, 3))
     out.push({ kind: 'flaky', component: 'the "' + a + '" checks', evidence: `red on main ${xs.length} times (tools/flakes.json), last ${String(xs[xs.length - 1].at || '').slice(0, 10)}`,
       action: 'find what those checks wait on (a fixed timeout, an animation, a race with a fetch) and make them wait on the state they assert, so a slow machine cannot turn main red', impact: Math.min(10, 3 + 2 * xs.length), cost: 2 });
@@ -91,6 +91,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const ps = propose(evidence());
   if (process.argv.includes('--json')) { console.log(JSON.stringify(ps)); process.exit(0); }
   if (!ps.length) { console.log('No upgrade proposals: no hotspot, flaky area or failing skill in the evidence (is the git history there?).'); process.exit(0); }
-  console.log('Void\'s architectural upgrades, ranked by impact over cost (proposals: each goes through a PR, Void\'s review and the suite on main):\n');
+  console.log('Verse\'s architectural upgrades, ranked by impact over cost (proposals: each goes through a PR, Verse\'s review and the suite on main):\n');
   ps.forEach((p, i) => console.log(`${i + 1}. [${p.kind}] ${p.component}  (impact ${p.impact}, cost ${p.cost}, score ${p.score})\n   why: ${p.evidence}\n   do:  ${p.action}\n`));
 }

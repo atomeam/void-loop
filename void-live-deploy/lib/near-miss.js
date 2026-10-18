@@ -1,5 +1,5 @@
-// A near miss becomes a visible proposal (asked by Void twice, domains/void.voice.md, 2026-10-14: "Create a visual 'near-miss'
-// skill proposal when a user ask fails to map to an existing skill."). When an ask maps to no skill and Void says "I don't
+// A near miss becomes a visible proposal (asked by Verse twice, domains/void.voice.md, 2026-10-14: "Create a visual 'near-miss'
+// skill proposal when a user ask fails to map to an existing skill."). When an ask maps to no skill and Verse says "I don't
 // know this yet", and the router (lib/router.js) found a skill whose asks scored near its bar, the card adds
 // "Did you mean <that skill's first example>?" as a data-ask link, so one tap runs the ask the skill answers. The server side
 // (functions/api/answer.js) turns the router's decision into `near` with nearOf; the page turns `near` into the line with

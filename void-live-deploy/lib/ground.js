@@ -1,5 +1,5 @@
 // The semantic validator, first step (owner, 2026-10-14: "it needs a tighter grounding mechanism" and "maybe it needs a 'semantic
-// validator' loop"; Void, 2026-10-13: its 'Words and the world' family struggles "to ground language into the stage reliably").
+// validator' loop"; Verse, 2026-10-13: its 'Words and the world' family struggles "to ground language into the stage reliably").
 // Routing is measured (the everyday benchmark: the right skill answered), but whether the card is about what was asked was checked
 // for only the asks that carry a "says" pattern. This checks every answer the same way: an ask's subject is what is left once the
 // skill's own trigger words and the small words are taken out ("recipe for banana bread" -> banana, bread), and a grounded card

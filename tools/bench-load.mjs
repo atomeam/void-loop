@@ -1,5 +1,5 @@
 // Can this benchmark run be trusted? The bench waits for each answer on a timer (4 s), so a machine under load misses answers
-// that Void gives fine: the same code scores lower. So every miss is replayed by itself, one page at a time, after the parallel
+// that Verse gives fine: the same code scores lower. So every miss is replayed by itself, one page at a time, after the parallel
 // run (assess below): a miss that passes alone was load; a miss that misses alone is real, whatever the latency says. A run with
 // any load miss is "inconclusive": it says so and exits 0 unless the real misses alone take it below the floor, and nothing it
 // measured is kept (no bench.last.json, no pass cache, no floor, no baseline).

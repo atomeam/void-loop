@@ -12,7 +12,7 @@ export const FORGE_CSS = [
   '.vcard .vc-forge-btn{position:absolute;right:6px;bottom:6px;z-index:3;font:inherit;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 9px;border-radius:6px;border:1px solid var(--edge);background:rgba(10,10,16,.72);color:hsl(var(--h) 55% 80%);cursor:pointer}',
   '.vcard .vc-forge-btn:hover{background:rgba(10,10,16,.9);box-shadow:0 0 10px var(--edge)}.vcard .vc-forge-btn[disabled]{cursor:default;opacity:.8}',
   '@keyframes vc-forge-in{from{opacity:0}to{opacity:1}}@media (prefers-reduced-motion:reduce){.vcard .vc-art .vc-forge-img{animation:none}}',
-  // paint status (asked by Void): a subtle glow pulses round the art box while its painting is pending; a still glow when motion is reduced
+  // paint status (asked by Verse): a subtle glow pulses round the art box while its painting is pending; a still glow when motion is reduced
   '.vcard .vc-art.vc-painting{animation:vc-paint 1.6s ease-in-out infinite alternate}@keyframes vc-paint{from{box-shadow:inset 0 0 4px hsl(var(--h,260) 70% 70% / .15)}to{box-shadow:inset 0 0 20px hsl(var(--h,260) 75% 70% / .6)}}',
   '@media (prefers-reduced-motion:reduce){.vcard .vc-art.vc-painting{animation:none;box-shadow:inset 0 0 14px hsl(var(--h,260) 75% 70% / .45)}}',
 ].join('');

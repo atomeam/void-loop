@@ -70,7 +70,7 @@ test('appraise: the asks that open the card, and the money and abstraction asks 
     assert.equal(appraiseOf(a), null, a);
 });
 
-test('appraise: a photo of something the forge can model links to its make recipe (asked by Void, ask-20261015-2008-1)', () => {
+test('appraise: a photo of something the forge can model links to its make recipe (asked by Verse, ask-20261015-2008-1)', () => {
   assert.deepEqual(makeableIn('A blue glass vase sitting on a wooden table. It has a narrow neck.', THINGS), { key: 'vase', label: 'Vase', ask: 'make me a vase' });
   assert.equal(makeableIn('A small white sailboat in a harbor.', THINGS).ask, 'make me a boat', 'a synonym makes its recipe');
   assert.equal(makeableIn('A brass kettle on a stove.', THINGS).key, 'teapot');

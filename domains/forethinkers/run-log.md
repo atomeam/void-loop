@@ -57,7 +57,7 @@ Read `convergence.md`, every track, `index.md`, and the growth board. No earlier
 
 Read `convergence.md`, every track, `index.md`, and the growth board. No open think-tank PRs; the 14:16 worktree was left behind after its PR #158 merged, so it was removed and its branch deleted. Picked life-extension: it was least recently advanced (2026-10-03 10:08), and its registry question could be answered with live primary data.
 
-- Answered: ClinicalTrials.gov API v2 is browser-readable (CORS `*`), and PubMed E-utilities and GEO cover papers and methylomes, so Void can show live trial status.
+- Answered: ClinicalTrials.gov API v2 is browser-readable (CORS `*`), and PubMed E-utilities and GEO cover papers and methylomes, so Verse can show live trial status.
 - Found: no follow-on senolytic MASH trial is registered (2026-10-07); NCT05506488 has no posted results. Registry enrollment is 30, while the earlier note said 31 from the paper; both are now cited with their sources.
 - Established: senescent-cell burden picks D+Q responders (Farr et al. Nat Med 2024; Aging Cell 2025 p16 variant 5; plasma SASP panel as substitute).
 - Logged: three prospective GLP-1 DNA-methylation-age trials reading out 2027, 13 active mTOR aging trials, and a 5 Oct 2026 systematic review that classes senolytics as investigational.
@@ -67,7 +67,7 @@ Read `convergence.md`, every track, `index.md`, and the growth board. No open th
 
 Read `convergence.md`, every track, `index.md`, and the growth board. No earlier `forethinkers/*` branches or open think-tank PRs to fold. Picked export-to-print: the printing and void-stage tracks were least recently advanced (2026-10-03 08:07), and the open question could be answered by experiment on the box.
 
-- Established: the 3MF layout that gives five named material slots. Seven variants packed with Void's own `zipStore`, all lib3mf 2.5.0 strict-valid, round-tripped through the OrcaSlicer 2.4.2 CLI. Only "one build item per part, each with its own one-color `m:colorgroup`" kept five names on extruders 1-5.
+- Established: the 3MF layout that gives five named material slots. Seven variants packed with Verse's own `zipStore`, all lib3mf 2.5.0 strict-valid, round-tripped through the OrcaSlicer 2.4.2 CLI. Only "one build item per part, each with its own one-color `m:colorgroup`" kept five names on extruders 1-5.
 - From source: OrcaSlicer 2.4.2 has no basematerials handler and keys extruders by object pid; Bambu Studio master (2026-09-22) maps pid/pindex pairs; PrusaSlicer 2.9.6 (2026-06-25) reads extruders only from `Metadata/Slic3r_PE_model.config`, and 3.0's basematerials branch is commented out; Cura uses its own `extruder_nr` metadata.
 - Corrected: five basematerials alone do not give five slots.
 - Board: rewrote the free "multi-material 3MF download" row with the tested layout and an OrcaSlicer CLI done-check.
@@ -96,7 +96,7 @@ Read `convergence.md`, every track, and the 10:08 stack. Picked **planet-restora
 - Established (open data): USGS carbonate-budget / SfM release DOI [10.5066/P13HMEON](https://www.usgs.gov/data/carbonate-budgets-structure-motion-products-and-topographic-complexity-measurements-restored) (2025-06-24, CC0); imagery [10.5066/P1WHKTRD](https://doi.org/10.5066/P1WHKTRD).
 - Established (soil companion ledgers): GSOCS-LULCC 8,748 SOC records ([Scientific Data](https://www.nature.com/articles/s41597-026-07749-4); Zenodo [10.5281/zenodo.20774640](https://doi.org/10.5281/zenodo.20774640)); Australia SOC-M 308-site resample ([Scientific Data](https://www.nature.com/articles/s41597-026-07850-8)).
 - Neighbour context: Wales ERW reforestation +27% broadleaf aboveground C by 2024 ([Communications Sustainability](https://www.nature.com/articles/s44458-026-00103-0)).
-- Next open question: Void summonable reef-accretion card (dated sources + local action framing) ranked first among restoration explainers.
+- Next open question: Verse summonable reef-accretion card (dated sources + local action framing) ranked first among restoration explainers.
 
 [think-tank] Summon a Florida Keys reef-accretion card: cite Toth et al. Scientific Reports DOI 10.1038/s41598-025-04818-3 and USGS 10.5066/P13HMEON, show −0.84 → +2.80 mm y⁻¹ offshore flip and >16× carbonate production, state inshore null and 2023 bleach survival caveat; link GSOCS-LULCC as soil companion; no unverified planet-save claim.
 
@@ -158,7 +158,7 @@ closed shells). Browser test covers sit, hold, stand, spin, the file, the throw 
 
 ## 2026-10-03 talking cycle: one part, end to end
 
-Linemote-1 is live in Void as a skill (void-live-deploy/skills/part.js): "summon linemote-1" shows the page (what it is,
+Linemote-1 is live in Verse as a skill (void-live-deploy/skills/part.js): "summon linemote-1" shows the page (what it is,
 rail 22 x 6 x 5 mm, slider 8 x 4 x 3.6 mm, stroke 3.5 mm, coil channel, 2 x 1.2 mm mount holes, PLA/PETG + 3 x 1 x 1 mm
 magnet + 0.15 mm copper, the one post-step: magnetize, the three dated sources, safety) and Download STL saves
 linemote-1.stl (rail and slider on one plate, 20 closed shells, 372 mm3). Original name and design; not yet printed or
@@ -174,6 +174,6 @@ Advanced the shared body part.
 - Established: stamped multi-direction skeletal muscle. Raman group, MIT News 17 Mar 2025.
 - Established: electrofluidic fiber muscle, under 2 mm, about 50 W/kg. Afsar and Cacucciolo, Zenodo 11 Dec 2025.
 
-These three are one part family. A figure joint, a wearable, and a field robot can use the same actuator class. Void's missing stage is still summon to a printable spec.
+These three are one part family. A figure joint, a wearable, and a field robot can use the same actuator class. Verse's missing stage is still summon to a printable spec.
 
 [think-tank] Summon a printable actuator spec from the three dated sources above. Original name and original shape only.

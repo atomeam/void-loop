@@ -1,4 +1,4 @@
-// A last-used date for every skill, kept on this device only (asked by Void, twice: "Create a 'last-used' timestamp for every skill in the
+// A last-used date for every skill, kept on this device only (asked by Verse, twice: "Create a 'last-used' timestamp for every skill in the
 // directory to identify which parts of my 135 skills are becoming dead weight", "Implement a 'last used' timestamp in the skill manifest
 // to enable visibility into skill decay"). The owner's rule is no behaviour tracking, so nothing is counted on a server and nothing is
 // sent: when a skill answers, the page writes the day into a small map in this browser's own storage ({ skill: 'YYYY-MM-DD' }, no words

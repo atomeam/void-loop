@@ -1,4 +1,4 @@
-// tools/youtube.mjs: Void's films go to Void's channel and nowhere else.
+// tools/youtube.mjs: Verse's films go to Verse's channel and nowhere else.
 import assert from 'node:assert/strict';
 import { accessToken, checkChannel, videoResource, upload, CHANNEL_ID } from './youtube.mjs';
 
@@ -19,9 +19,9 @@ const refuse = (error) => async () => new Response(JSON.stringify({ error }), { 
 await assert.rejects(accessToken({ clientId: 'c', clientSecret: 's', refreshToken: 'r' }, refuse('unauthorized_client')), /401: unauthorized_client\): .*Use your own OAuth credentials/);
 await assert.rejects(accessToken({ clientId: 'c', clientSecret: 's', refreshToken: 'r' }, refuse('invalid_grant')), /expired or was revoked/);
 assert.equal(await checkChannel('at-1', f), CHANNEL_ID);
-await assert.rejects(checkChannel('at-1', google('UCsomeoneelse')), /not Void's/, 'a token for another channel uploads nothing');
-await assert.rejects(checkChannel('at-1', google(null)), /not Void's/);
-const meta = { title: 'T'.repeat(120), description: 'D', tags: ['Void', 'Shorts'] };
+await assert.rejects(checkChannel('at-1', google('UCsomeoneelse')), /not Verse's/, 'a token for another channel uploads nothing');
+await assert.rejects(checkChannel('at-1', google(null)), /not Verse's/);
+const meta = { title: 'T'.repeat(120), description: 'D', tags: ['Verse', 'Shorts'] };
 const r = videoResource(meta, 'public');
 assert.equal(r.snippet.title.length, 100); assert.equal(r.status.privacyStatus, 'public'); assert.equal(r.status.selfDeclaredMadeForKids, false);
 assert.equal(videoResource(meta, 'whatever').status.privacyStatus, 'private', 'anything unknown stays private');

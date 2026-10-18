@@ -1,12 +1,12 @@
 # Item 3 harness — multilingual asks (Adam 2026-09-27)
 
-Everything that passes through counts as input for Void.
-The daily language rotation belongs in Void's loop, not only in a Grok chat automation.
+Everything that passes through counts as input for Verse.
+The daily language rotation belongs in Verse's loop, not only in a Grok chat automation.
 
 ## Routing
 - Asks in any language go to the skill that matches intent, not the skill that matched an English color/word fragment.
 - When no skill covers the ask, the will engine treats it like any other miss: board + `/api/miss`, same as English.
-- Next item 9 (Void in other languages) stays Next. This file is the collision/harness requirement for item 3 now.
+- Next item 9 (Verse in other languages) stays Next. This file is the collision/harness requirement for item 3 now.
 
 ## Collision set (must be in the item 3 harness)
 English-only collisions are not enough. Include at least:

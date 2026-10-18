@@ -1,11 +1,11 @@
-# V01D payments: every rail, its state, and what comes next
+# Verse payments: every rail, its state, and what comes next
 
-Owner, 2026-10-15: V01D may sell special items through Cash App or crypto, revive Stripe (easier with V01D's business email),
-and look at the new AI/agent payment rails so V01D can have its own everything. Audited 2026-10-15 (live calls were dry:
+Owner, 2026-10-15: Verse may sell special items through Cash App or crypto, revive Stripe (easier with Verse's business email),
+and look at the new AI/agent payment rails so Verse can have its own everything. Audited 2026-10-15 (live calls were dry:
 status reads, a checkout handoff with a forged price, an unsigned webhook. No money moved).
 
 Rules that hold for every rail: the server owns the price (`lib/store.js` catalog, `lib/price-lock.js`); the client sends
-product ids only. Nothing unlocks on a buyer's claim. V01D never sends, signs or holds money or crypto, creates accounts or
+product ids only. Nothing unlocks on a buyer's claim. Verse never sends, signs or holds money or crypto, creates accounts or
 keys, or commits an address/cashtag (they are Pages variables Adam sets). Spending stays approval-gated (`docs/reinvest.md`).
 
 ## Rail matrix
@@ -14,7 +14,7 @@ keys, or commits an address/cashtag (they are Pages variables Adam sets). Spendi
 | --- | --- | --- | --- | --- | --- | --- |
 | **Gumroad** (primary) | `/store` → hosted Gumroad link per item; `functions/api/gumroad.js` keyed ping → `void_sales`; pay-a-share claim | `POST /api/store/checkout {"items":["void-monthly"],"price":0}` → Gumroad `yinmj` link, price ignored; product page 200 | No: link is the catalog permalink; amount set on Gumroad; share unlock reads the ping/API amount only | Unknown/soon item → 400 "nothing to buy"; refund/dispute ping kills download links | Gumroad dashboard vs `void_sales` | Working. Paid items marked `needs-gumroad` still need Adam to list them |
 | **Stripe** (dormant) | Checkout Session adapter, `POST /api/store/webhook/stripe`, receipt page | `/api/store/status` → `stripe_keys:false`, provider gumroad; unsigned webhook → 400 | No: line items built server-side from catalog cents (`price_data`), currency fixed `usd`; client price/coupon ignored (price-lock test) | No keys or Stripe error → falls back to Gumroad links; bad signature → 400; `charge.refunded` → order revoked | Stripe dashboard vs D1 `store_orders` | 2 secrets + webhook + `STORE_PROVIDER` (below) |
-| **Cash App** (special items, new) | `POST /api/store/special/start` → $cashtag link + note "V01D <code>"; `special/confirm` with the Cash App reference; owner `special/queue`, `special/approve` | Built and tested offline (`tools/alt-pay.test.mjs`); off live until `CASHAPP_CASHTAG` is set | No: amount from catalog; recipient from env; product must opt in with `special`; fulfillment only by owner approval (`ownerOk`) | Unsupported rail/item → 400; missing reference → 400; buyer claim → stays `awaiting`, no downloads | **Always manual**: Adam matches the reference/note in Cash App, then approves (or rejects) | Cash App **Business** account and its $cashtag (selling via a personal account breaks Cash App's terms) |
+| **Cash App** (special items, new) | `POST /api/store/special/start` → $cashtag link + note "Verse <code>"; `special/confirm` with the Cash App reference; owner `special/queue`, `special/approve` | Built and tested offline (`tools/alt-pay.test.mjs`); off live until `CASHAPP_CASHTAG` is set | No: amount from catalog; recipient from env; product must opt in with `special`; fulfillment only by owner approval (`ownerOk`) | Unsupported rail/item → 400; missing reference → 400; buyer claim → stays `awaiting`, no downloads | **Always manual**: Adam matches the reference/note in Cash App, then approves (or rejects) | Cash App **Business** account and its $cashtag (selling via a personal account breaks Cash App's terms) |
 | **Crypto: USDC on Base** (special items, new) | same routes, rail `usdc-base` | Built and tested offline with a fake chain; public RPC `mainnet.base.org` answers; off live until `CRYPTO_USDC_BASE_ADDR` is set | No: exact amount = price + a 1–9999 micro-unit memo from the order id; token (Circle USDC on Base), network and address fixed server-side | Wrong token/network/address/amount, failed tx, bad hash → 400 with reason; unconfirmed (<5 blocks) or RPC down → 202 retry; a tx reused for a second order → 409; owner can't hand-approve crypto | On-chain is the proof; `special/queue` lists stuck orders; a mismatched payment is refunded by Adam by hand | A receive-only 0x address Adam already controls, set as a Pages variable |
 | Other crypto / BTC / Lightning | none (`skills/crypto.js` is price lookup only) | n/a | n/a | n/a | n/a | Not built; add only if buyers ask |
 
@@ -28,18 +28,18 @@ straight to `paid`; refunds → `refunded`. Only `paid` and `free` produce downl
 ## What the buyer sees (special items)
 
 1. Picks a `special` product, a rail, and gives an email → gets an order code and exact instructions.
-2. Cash App: pays the $cashtag link with note "V01D <code>", submits the payment reference → "awaiting confirmation".
+2. Cash App: pays the $cashtag link with note "Verse <code>", submits the payment reference → "awaiting confirmation".
    USDC: sends the exact amount on Base, submits the tx hash → unlocks after 5 confirmations.
 3. Order lookup (email + code) shows downloads once `paid`.
 
-First special item: **V01D Site Tester ($24)**, which was stuck as `needs-gumroad`. A product opts in with
+First special item: **Verse Site Tester ($24)**, which was stuck as `needs-gumroad`. A product opts in with
 `"special": ["cashapp","usdc-base"]` in `domains/store.products.json`.
 
 ## Stripe revival: exactly what's missing
 
 Code is complete (adapter, signed webhook, refunds, receipt, pay-a-share). Missing is config only:
 
-1. Stripe account in good standing. V01D's business email helps here as the account's login/support email and the
+1. Stripe account in good standing. Verse's business email helps here as the account's login/support email and the
    public support address Stripe requires on the account profile and receipts. It doesn't replace the identity and bank
    verification Stripe asks of Adam.
 2. In Stripe (test mode first): Developers → Webhooks → endpoint `https://a-to-mind.com/api/store/webhook/stripe`, events
@@ -55,7 +55,7 @@ replace the hand-rolled crypto rail.
 
 ## Emerging AI / agent payments (checked 2026-10-15)
 
-| Option | Status | Fees | Signup | Fit: receiving | Fit: V01D spending (future, approval-gated) |
+| Option | Status | Fees | Signup | Fit: receiving | Fit: Verse spending (future, approval-gated) |
 | --- | --- | --- | --- | --- | --- |
 | Stripe Agentic Commerce (ACP + Shared Payment Tokens) | ACP open spec (Apache-2.0); Stripe's Agentic Commerce Suite lets merchants pick agents from the dashboard. ChatGPT Instant Checkout was discontinued March 2026 | Normal Stripe rate; SPT card floor $0.50; no separate agentic fee ([agenticcommerce.dev](https://www.agenticcommerce.dev/), [stripe.com/pricing](https://stripe.com/pricing)) | Stripe account | High once Stripe is on: same integration | Via Stripe/Link only |
 | Coinbase x402 (CDP facilitator) | Production; x402 Foundation under the Linux Foundation since April 2026; Base, Polygon, Arbitrum, World, Solana | 1,000 settlements/month free, then $0.001; no chargebacks ([docs](https://docs.cdp.coinbase.com/x402/welcome)) | Free CDP API key (Adam) for the hosted facilitator; receive to any address he controls | High for pay-per-call APIs (code review, site tester runs) with agent buyers | Best fit: CDP SDK spend caps and payee allowlists |

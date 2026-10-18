@@ -1,4 +1,4 @@
-// Void's service worker: lets the installed app open offline. Network first, always,
+// Verse's service worker: lets the installed app open offline. Network first, always,
 // so every deploy shows up on the next load; the cache is only a fallback. /api is never touched.
 const CACHE = 'void-shell-v1';
 const SHELL = ['/', '/manifest.webmanifest', '/icon-192.png', '/icon.svg', '/skills/index.json'];

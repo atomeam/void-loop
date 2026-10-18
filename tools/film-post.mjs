@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Puts one of Void's films on the site, for people who pay (functions/api/films.js; owner, 2026-10-14: "just put void films
+// Puts one of Verse's films on the site, for people who pay (functions/api/films.js; owner, 2026-10-14: "just put void films
 // right onto the sight , with only paid access"). .github/workflows/record.yml runs it after each daily film, and once for each
 // older film that was still a public GitHub release.
 //   node tools/film-post.mjs <film.mp4> <words> --id <id>
@@ -17,10 +17,10 @@ export function parseWords(text) {
   const part = (name) => { const m = t.match(new RegExp('(?:^|\\n)' + name + '\\n([\\s\\S]*?)(?=\\n(?:TITLE|DESCRIPTION|TAGS)\\n|$)')); return m ? m[1].trim() : ''; };
   return { title: part('TITLE'), description: part('DESCRIPTION'), tags: part('TAGS') };
 }
-// what a viewer reads says Verse (owner, 2026-10-14: "it shoud say V01d everywhere"); films made before the name keep working
+// what a viewer reads says Verse (owner, 2026-10-14: "it shoud say Verse everywhere"); films made before the name keep working
 export function branded(w) {
-  const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Void' || t === 'Verse' ? 'Verse' : t));
-  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|Verse|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
+  const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Verse' || t === 'Verse' ? 'Verse' : t));
+  return { title: brand(w.title), description: brand(w.description).replace(/#(?:Void|V01D|Verse)\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
 }
 
 export async function post({ mp4, words: raw, id, site = 'https://a-to-mind.com', token, fetchImpl = fetch, wordsOnly = false }) {

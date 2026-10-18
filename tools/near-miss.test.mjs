@@ -1,4 +1,4 @@
-// lib/near-miss.js: a near miss becomes a visible proposal (asked by Void twice, 2026-10-14). The router's nearest skill,
+// lib/near-miss.js: a near miss becomes a visible proposal (asked by Verse twice, 2026-10-14). The router's nearest skill,
 // when it scored near its bar, gives the card "Did you mean <that skill's first example>?" as a data-ask link.
 import assert from 'node:assert/strict';
 import { nearOf, proposalOf, proposalHtml, CLOSE } from '../void-live-deploy/lib/near-miss.js';

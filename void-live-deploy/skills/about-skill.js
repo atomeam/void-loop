@@ -1,20 +1,20 @@
 /**
  * about-skill skill - "tell me about the chess skill", "what is the forge skill", "how does your weather skill work": a card about any
- * skill of Verse's, from its own page of the book (asked by Void: "Learn how to handle 'tell me about zorbleflux' (asked 156 times)";
+ * skill of Verse's, from its own page of the book (asked by Verse: "Learn how to handle 'tell me about zorbleflux' (asked 156 times)";
  * the zorbleflux ask itself is answered by skills/zorbleflux.js, and "tell me about <a skill of mine>" used to go to Wikipedia and be
  * noted as a miss). The card: the skill's title, its one line (the module's own `about` text when it exports one), its example asks as
  * tap-to-ask chips, its family and tier (skills/families.json), related skills as chips and a "try it" button that asks the first
  * example. Wikipedia topics keep their route: "tell me about tokyo", "what is a black hole", "explain photosynthesis" never come here
  * (lib/about-skill.js resolveSkill: a bare one-word topic is the world's even when a skill shares the word). The book and the ratings
  * are fetched once per session, shared with the card frame (lib/card-frame.js loadStats), at idle time so a first visit is not slowed.
- * A game's card (chess, checkers, reversi) carries a Match History block (asked by Void: "a 'Match History' table that pulls from my
+ * A game's card (chess, checkers, reversi) carries a Match History block (asked by Verse: "a 'Match History' table that pulls from my
  * recent game logs", an Elo or win rate against the owner): your record on this device and the last ten games, from a2m.void.games.v1
  * (lib/match-history.js); "chess match history", "my chess record", "my record against void" open it straight.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { parseAsk, resolveSkill, aboutOf } from '../lib/about-skill.js';
 import { loadStats } from '../lib/card-frame.js';
-import { historyAsk, historyHtml, summary, summaryLine, load as loadGames, GAMES, TITLES } from '../lib/match-history.js'; // a game's card carries your match history on this device (asked by Void)
+import { historyAsk, historyHtml, summary, summaryLine, load as loadGames, GAMES, TITLES } from '../lib/match-history.js'; // a game's card carries your match history on this device (asked by Verse)
 
 let stats = null; // { book, fam, deps } once read; until then only a named ask ("the chess skill") can be matched
 let overlapsP = null; // tools/skill-overlap.json is not served today; when /skills/overlap.json is, its pairs come first in "related"
@@ -56,7 +56,7 @@ export function cardHtml(a, esc) {
 async function run(text, api) {
   const { showPage, esc } = api;
   const s = stats || await load();
-  // "my chess record", "chess match history": the game's own card, opened for its Match History block (asked by Void); the book's page when it has one
+  // "my chess record", "chess match history": the game's own card, opened for its Match History block (asked by Verse); the book's page when it has one
   const h = historyAsk(text), bookPage = (name) => (s && s.book && Array.isArray(s.book.pages) ? s.book.pages.find((p) => p && (p.kind === 'skill' || p.kind === 'game') && p.name === name) : null);
   const playAsk = h ? ['play ' + h.game] : []; // for a stand-in page when the book is not in; kept out of a literal list on the page object, since the book reads this file's first literal list of asks as this skill's own (lib/guide.js listOf)
   const page = h ? bookPage(h.game) || { kind: 'skill', name: h.game, title: TITLES[h.game], line: '', examples: playAsk, n: 0 } : s && s.book ? resolveSkill(text, s.book) : null;
@@ -70,7 +70,7 @@ async function run(text, api) {
     el.classList.add('about-skill'); el.dataset.skillName = a.name;
     el.innerHTML = cardHtml(a, esc);
     el.querySelectorAll('button[data-ask]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); api.stage.ask(b.dataset.ask); }));
-    // ▶ Replay on a chess game in the history steps through its moves with the engine's read of each (asked by Void, lib/chess-replay.js)
+    // ▶ Replay on a chess game in the history steps through its moves with the engine's read of each (asked by Verse, lib/chess-replay.js)
     el.addEventListener('click', async (e) => {
       const b = e.target.closest && e.target.closest('.mh-replay'); if (!b) return; e.stopPropagation();
       const g = loadGames().find((x) => x.at === b.dataset.at && x.line); if (!g) return;

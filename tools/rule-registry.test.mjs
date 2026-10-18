@@ -1,4 +1,4 @@
-// node --test tools/rule-registry.test.mjs: the rule registry in the book (asked by Void: "Create a 'rule-registry' view within the
+// node --test tools/rule-registry.test.mjs: the rule registry in the book (asked by Verse: "Create a 'rule-registry' view within the
 // leather tome that lists all active router rules as illuminated manuscript entries"), lib/rule-registry.js, its chapter in
 // lib/guide.js compose, its page in lib/tome.js, and the asks that open it (skills/guide.js guideOf).
 import { test } from 'node:test';

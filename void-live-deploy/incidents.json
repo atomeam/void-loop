@@ -2,6 +2,36 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T09:02:02.758Z",
+   "sha": "f98d4cbc1e8583dcef8fed3eadae8041669fe8b7",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39113169092",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/appraise-live.yml",
+    ".github/workflows/ask-void.yml",
+    ".github/workflows/automations-seed.yml",
+    ".github/workflows/better.yml",
+    ".github/workflows/build-miss.yml",
+    ".github/workflows/clips.yml",
+    ".github/workflows/deploy.yml",
+    ".github/workflows/probe-asks.yml",
+    ".github/workflows/propose-fix.yml",
+    ".github/workflows/rea-study.yml",
+    ".github/workflows/record.yml",
+    ".github/workflows/reinvest.yml",
+    ".github/workflows/site-test.yml",
+    ".github/workflows/store-check.yml",
+    ".github/workflows/store-gap.yml"
+   ]
+  },
+  {
    "at": "2026-10-18T08:52:37.130Z",
    "sha": "b95dc3a3d4aaa0cf8d38957c1ab643a500f40cb3",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39112830224",
@@ -706,31 +736,6 @@
     "tools/site-test.json",
     "tools/site-test.log.json",
     "tools/site-test.seen.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T22:10:41.425Z",
-   "sha": "149bb4d15579bb95a029293bb51d00076d2cf3b6",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39073068014",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
-    "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
    ]

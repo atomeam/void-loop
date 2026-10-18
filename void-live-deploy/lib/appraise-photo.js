@@ -118,7 +118,7 @@ export function subjectOf(desc) {
   return first.split(/\b(?:sitting|resting|lying|placed|standing|set|displayed|photographed|shown|on|in front of|beside|next to|against|near|under|behind|atop|inside|in|with|and|held)\b/)[0].replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
-/** the thing in a photo that Verse's forge can model, for a "make me one" link (asked by Void, ask-20261015-2008-1: connect an
+/** the thing in a photo that Verse's forge can model, for a "make me one" link (asked by Verse, ask-20261015-2008-1: connect an
  * appraised photo to its make recipe): the longest forge name (skills/forge-rules.js THINGS, passed in so this file never loads the
  * mesher) found as whole words in the description's subject, as { key, label, ask }; null for none, and never for a person. Pure. */
 export function makeableIn(desc, things) {

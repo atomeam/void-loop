@@ -18,17 +18,17 @@ test('summary reads the real frontier', () => {
 
 test('there is always a next thing: never "nothing to do"', () => {
   assert.match(takeNext({ steps: [{ n: 3, title: 'The salvage shelf' }], open: [{ title: 'A' }] }), /^cleanup step 3/);
-  assert.match(takeNext({ open: [{ title: 'Paid Void' }] }), /^Paid Void/);
+  assert.match(takeNext({ open: [{ title: 'Paid Verse' }] }), /^Paid Verse/);
   assert.match(takeNext({ targets: [{ title: 'Verification loop' }] }), /^Verification loop/);
-  assert.match(takeNext({}), /Void's top ask/);
+  assert.match(takeNext({}), /Verse's top ask/);
   const s = summary(readFrontier());
   assert.ok(s.targets.length >= 5 && s.targets[0].title === 'Verification loop' && s.take.length > 0, JSON.stringify(s.targets));
 });
 
-test("Void's asks, most repeated first, without the ones built (the menu a run takes from when the queue is empty)", async () => {
+test("Verse's asks, most repeated first, without the ones built (the menu a run takes from when the queue is empty)", async () => {
   const { repeatedAsks } = await import('./next.mjs');
   const voice = [
-    '## Void\'s current asks', '', '- Learn backgammon. (daily, 2026-10-12) `ask-20261012-1-1`', '', '## Older',
+    '## Verse\'s current asks', '', '- Learn backgammon. (daily, 2026-10-12) `ask-20261012-1-1`', '', '## Older',
     'Asks: "Add a refusal object to every I cannot." (small); "Learn backgammon now please."',
     'Asks: "Add a refusal object to every I cannot." (small)',
     'Asks: "add a REFUSAL object to every I cannot"; "Learn backgammon."',

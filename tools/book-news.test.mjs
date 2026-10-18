@@ -78,7 +78,7 @@ test('withNews on the real ledger: a new entry shows with no regeneration, and t
   assert.deepEqual(guideOf("what's new in the book"), { at: 'what’s new' });
   assert.equal(guideOf("what's new"), null, 'a bare what\'s new stays the growth skill\'s');
 });
-test('an entry with no try of its own gets one from tryOf (the showcase), its own try still wins, and a throwing tryOf is ignored (asked by Void)', async () => {
+test('an entry with no try of its own gets one from tryOf (the showcase), its own try still wins, and a throwing tryOf is ignored (asked by Verse)', async () => {
   const { newsEntries } = await import('../void-live-deploy/lib/book-news.js');
   const L = [{ at: '2026-10-17T10:00:00Z', kind: 'grow', what: 'a clock', try: 'make a clock' }, { at: '2026-10-17T11:00:00Z', kind: 'grow', what: 'a timer' }, { at: '2026-10-17T12:00:00Z', kind: 'fix', what: 'a fix' }];
   const tryOf = (e) => (e.what === 'a timer' ? 'set a 5 minute timer' : '');

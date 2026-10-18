@@ -1,7 +1,7 @@
 /**
- * tab skill — the card the Void extension's side panel shows for the tab you point it at (Alt+Shift+V): its title,
+ * tab skill — the card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title,
  * address and selection, a draft box with "put in the page", "draft for me" (reply, summary, notes, rewrite,
- * proposal: sent to Void once, said so on the card), and a step for Void to propose (fill / click, up to three; the
+ * proposal: sent to Verse once, said so on the card), and a step for Verse to propose (fill / click, up to three; the
  * extension's panel asks Yes / No and acts only on a site you allowed). Moved out of void.html in cleanup step 6. The
  * page keeps the extension bridge itself (the messages, what was read, drafting into the page, the execution record);
  * the card reaches it through stageApi.ext. The card never serializes: it is not in the saved stage, /api/mine or undo.
@@ -30,10 +30,10 @@ function mount(th, stageApi) {
       + '<div class="tab-host">' + lock + bridge.esc(host) + '</div>'
       + (t.selection ? '<blockquote class="tab-sel"><mark>' + bridge.esc(t.selection) + '</mark></blockquote>' : '<p style="margin:0 0 8px;color:var(--muted)">nothing selected</p>')
       + (t.readable ? '' : '<p style="margin:0 0 8px;color:var(--muted)">Chrome keeps extensions out of this page: only its title and address came through.</p>')
-      // the context check (asked by Void): what the page mostly is, from the extension's counts, and one skill for it (lib/context-check.js)
+      // the context check (asked by Verse): what the page mostly is, from the extension's counts, and one skill for it (lib/context-check.js)
       + suggestionHtml(bridge.esc, contentOf(t.content))
       + '<textarea class="tab-draft" rows="3" placeholder="a draft for the page" style="width:100%;box-sizing:border-box;background:transparent;color:inherit;border:1px solid var(--line);border-radius:8px;padding:6px;font:inherit"></textarea>'
-      // draft for me (sends it to Void): the title, address and selection go to Void's answer engine once (mode draft, lib/draft.js), the draft
+      // draft for me (sends it to Verse): the title, address and selection go to Verse's answer engine once (mode draft, lib/draft.js), the draft
       // comes back into the box above for "put in the page" or copy, and the card says what left. What is in the box goes along as a note.
       + '<div class="tab-ask" style="display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-top:6px;color:var(--muted);font-size:12px">draft for me:'
       + ['reply', 'summary', 'notes', 'rewrite', 'proposal'].map((k) => '<button type="button" class="tab-ask-' + k + ' vcopy" data-intent="' + k + '"' + (k === 'rewrite' && !t.selection ? ' disabled title="select the text to rewrite first"' : '') + '>' + k + '</button>').join('')

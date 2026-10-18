@@ -1,12 +1,12 @@
-# Void reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a
-# visitor asks Void to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds. It keeps one PR comment
+# Verse reviews every pull request first, in seconds: tools/review-pr.mjs runs the code checks a-to-mind.com runs when a
+# visitor asks Verse to review code (void-live-deploy/lib/code-review.js) on the lines the PR adds. It keeps one PR comment
 # (marked <!-- void-review -->) up to date, puts each bug or risk on its line with a one-click fix where a safe one exists
 # (tools/review-post.mjs), and then is a merge gate: the "void-review" check fails while the added lines carry a bug or a
 # risk. A line that is right as written says so with a "void-review: ok" comment. No npm install, no browser: the whole
 # job is a checkout and one node script, so it reports long before the suite (test-and-deploy) does.
 # It is the main review and the one check a PR waits on before it merges (automerge.yml); the suite runs on main after the
 # deploy. Every other reviewer (CodeRabbit) is an extra: reported, never waited on, never blocking.
-name: Void review
+name: Verse review
 
 on:
   pull_request:
@@ -59,7 +59,7 @@ jobs:
           ref: ${{ steps.pr.outputs.sha }}
           fetch-depth: 0 # the diff needs the base
 
-      - name: Void reviews the lines this PR adds
+      - name: Verse reviews the lines this PR adds
         env:
           GH_TOKEN: ${{ github.token }}
           PR: ${{ steps.pr.outputs.number }}

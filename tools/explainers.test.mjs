@@ -1,4 +1,4 @@
-// node tools/explainers.test.mjs: the required tests for Void's explainer cards (domains/void.explainers.md), one per
+// node tools/explainers.test.mjs: the required tests for Verse's explainer cards (domains/void.explainers.md), one per
 // acceptance example, named explainer.<kind>/<case>. Written before the geometry: the rules modules must pass these
 // before any 3D is built on them. The observation contract itself is checked by lib/observations.js.
 import { test } from 'node:test';
@@ -233,7 +233,7 @@ test('moon card: the Earth-view drawing is exactly the region the rules call lit
   }
 });
 
-test('moon card: "Tonight" agrees with the moon-phase answer Void already gives', async () => {
+test('moon card: "Tonight" agrees with the moon-phase answer Verse already gives', async () => {
   const { tonightAngle } = await import('../void-live-deploy/skills/moon.js');
   const { moonPhase } = await import('../void-live-deploy/skills/util.js');
   for (const d of [new Date('2026-10-09T19:00:00Z'), new Date('2026-01-03T10:00:00Z'), new Date('2025-06-11T07:44:00Z')]) {

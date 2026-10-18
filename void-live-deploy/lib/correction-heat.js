@@ -1,4 +1,4 @@
-// The family-health heat-map on the self card (asked by Void): error density per family, from the real correction log and the families file,
+// The family-health heat-map on the self card (asked by Verse): error density per family, from the real correction log and the families file,
 // nothing else. A family's density is its kept corrections divided by its skill count (familyDrivers in lib/better.js supplies the skill counts,
 // so a family with no corrections still shows, cold). Each cell's heat is its density against the hottest family's. With no corrections it says
 // so and draws no number; corrections whose skill is in no family are counted apart, never spread over the families. Pure; all text escaped.
@@ -18,7 +18,7 @@ export function heatRows(list, fam) {
 
 const escHtml = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 /**
- * The correction to ask a fix for when the owner clicks a family's cell (asked by Void): of the skill with the most corrections in that family
+ * The correction to ask a fix for when the owner clicks a family's cell (asked by Verse): of the skill with the most corrections in that family
  * (ties by name), its newest correction that names an ask. null when the family has none. Pure.
  */
 export function hotEntry(list, fam, familyId) {

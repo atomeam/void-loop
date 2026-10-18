@@ -1,9 +1,9 @@
-# V01D, the everything app: what works, what's legal, what's next
+# Verse, the everything app: what works, what's legal, what's next
 
-Owner, 2026-10-15: "V01D should be the only site you need ... social, dating, crypto, food delivery via waymo, you name it,
-get it all working." Motto: *You name it, Void learns it and does it better.*
+Owner, 2026-10-15: "Verse should be the only site you need ... social, dating, crypto, food delivery via waymo, you name it,
+get it all working." Motto: *You name it, Verse learns it and does it better.*
 
-This file is the honest map. Each vertical lists what V01D does **now** (live, legal, no keys), the **official** routes
+This file is the honest map. Each vertical lists what Verse does **now** (live, legal, no keys), the **official** routes
 that exist (APIs, embeds, deep links, cited), what Adam would need (accounts, keys, money), and the **next step**.
 Paid items, with their free paths, are ranked in [`docs/wishlist.md`](wishlist.md). Checked 2026-10-15.
 
@@ -42,8 +42,8 @@ Paid items, with their free paths, are ranked in [`docs/wishlist.md`](wishlist.m
 - **Waymo + food:** Uber Eats via Waymo in Phoenix **ended** when Waymo and Uber parted ways in Phoenix, June 2026
   ([TechCrunch](https://techcrunch.com/2026/06/29/waymo-and-uber-quietly-part-ways-in-phoenix/)). Waymo now delivers in
   metro Phoenix **through DoorDash** ([KJZZ](https://www.kjzz.org/business/2025-12-03/waymo-and-doordash-now-offering-grocery-and-meal-delivery-to-phoenix-area-homes));
-  the customer can't pick a Waymo, DoorDash assigns one. So V01D's honest route is the DoorDash deep link.
-- **Next:** a delivery backend only if V01D sells its own goods (prints, miniatures): DoorDash Drive adapter, ~$9.75/drop.
+  the customer can't pick a Waymo, DoorDash assigns one. So Verse's honest route is the DoorDash deep link.
+- **Next:** a delivery backend only if Verse sells its own goods (prints, miniatures): DoorDash Drive adapter, ~$9.75/drop.
 
 ## Rides and Waymo — live (deep links + "where does Waymo run")
 
@@ -67,9 +67,9 @@ Paid items, with their free paths, are ranked in [`docs/wishlist.md`](wishlist.m
   [Mastodon API](https://docs.joinmastodon.org/methods/accounts/) and [oEmbed](https://docs.joinmastodon.org/methods/oembed/).
   X timelines, search and posting need the paid X API ([pricing](https://docs.x.com/x-api/getting-started/pricing)).
 - **Needs before more:** posting and your own timeline need OAuth per network (Bluesky app passwords/OAuth and Mastodon
-  OAuth are free). A V01D-native social layer needs accounts (passkeys exist), moderation, block/report, rate limits and
+  OAuth are free). A Verse-native social layer needs accounts (passkeys exist), moderation, block/report, rate limits and
   a D1 schema; designed first, not built here.
-- **Next:** Bluesky OAuth sign-in to read your own timeline; a V01D "follow list" kept on the device.
+- **Next:** Bluesky OAuth sign-in to read your own timeline; a Verse "follow list" kept on the device.
 
 ## Dating — the beginning (on-page only)
 
@@ -83,18 +83,18 @@ Paid items, with their free paths, are ranked in [`docs/wishlist.md`](wishlist.m
 
 ## Shopping, maps, music, news, email, payments
 
-| Vertical | Now in V01D | Official routes | Adam needs | Next |
+| Vertical | Now in Verse | Official routes | Adam needs | Next |
 | --- | --- | --- | --- | --- |
-| Shopping | nothing native | Amazon PA-API needs an Associates account with qualifying sales ([docs](https://webservices.amazon.com/paapi5/documentation/)); Gumroad for V01D's own goods (already wired) | Associates account | product search by deep link; V01D's own store first |
+| Shopping | nothing native | Amazon PA-API needs an Associates account with qualifying sales ([docs](https://webservices.amazon.com/paapi5/documentation/)); Gumroad for Verse's own goods (already wired) | Associates account | product search by deep link; Verse's own store first |
 | Maps | map skill (`skills/map.js`) on OpenStreetMap | OSM tiles under the [tile usage policy](https://operations.osmfoundation.org/policies/tiles/); Nominatim ([policy](https://operations.osmfoundation.org/policies/nominatim/)) | nothing | Waymo service area overlay |
 | Music | YouTube embeds via the video track | Spotify Web API needs OAuth and Premium for playback ([docs](https://developer.spotify.com/documentation/web-api)); Internet Archive audio is free | Spotify app (free) | Spotify embed by link (official, no key) |
 | News | news skill (`skills/news.js`) | RSS from publishers; NewsAPI free tier is dev-only | nothing | more RSS sources |
-| Email | V01D's email worker (owner) | Gmail API OAuth | already connected for Adam | nothing public |
-| Payments | Gumroad links for V01D's goods | Stripe Checkout (Adam's account) | Stripe account | no peer-to-peer money; ever: no custody |
+| Email | Verse's email worker (owner) | Gmail API OAuth | already connected for Adam | nothing public |
+| Payments | Gumroad links for Verse's goods | Stripe Checkout (Adam's account) | Stripe account | no peer-to-peer money; ever: no custody |
 
 ## What is not possible (today)
 
-- Ordering a Waymo ride or a Waymo food delivery from V01D: no public API. Deep links only.
-- Ordering from Uber Eats or DoorDash inside V01D: no consumer API. Deep links only.
+- Ordering a Waymo ride or a Waymo food delivery from Verse: no public API. Deep links only.
+- Ordering from Uber Eats or DoorDash inside Verse: no consumer API. Deep links only.
 - Real matching or a real social graph without auth, verification and moderation: not safe, not built.
 - Any crypto action beyond reading: not done, by rule.

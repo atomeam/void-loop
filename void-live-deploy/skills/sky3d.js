@@ -1,5 +1,5 @@
 /**
- * sky3d — the clouds, rain, snow and sun glow Void draws, in one place. The weather card's diorama (skills/mini/weather.js)
+ * sky3d — the clouds, rain, snow and sun glow Verse draws, in one place. The weather card's diorama (skills/mini/weather.js)
  * and the clouds summoned onto the stage (skills/figures3d.js) both build from here, so an improvement lands in both.
  * Nothing imports three.js here: the caller passes its THREE. Sizes are in the caller's units (metres in a miniature,
  * CSS px on the stage): a cloud is about `size` across, precipitation falls through the box it is given.

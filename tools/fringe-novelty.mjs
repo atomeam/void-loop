@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// A novelty score for the fringe ledger, and a growth-inbox proposal when a run's behavior matches no skill (asked by Void: "Create a
+// A novelty score for the fringe ledger, and a growth-inbox proposal when a run's behavior matches no skill (asked by Verse: "Create a
 // 'novelty score' for skills that triggers a growth inbox proposal whenever a behavior is logged in the fringe ledger that doesn't match
 // an existing skill pattern"). The score is 0 to 1: the share of a run's behavior words that NO single skill's pattern (its name and
 // its example asks) holds; 0 means one skill already says it all, 1 means no skill says any of it. A run at or over NOVEL becomes one
@@ -52,7 +52,7 @@ export function jobOf(s) {
   return {
     target: PREFIX + id,
     ask: ('novelty ' + s.score.toFixed(2) + ' · fringe run ' + s.run + ' (' + s.family + '): ' + s.text + (s.skill ? ' [closest skill: ' + s.skill + ']' : '') + (s.near.length ? ' [input: ' + s.near.join(', ') + ']' : '')).slice(0, 200),
-    note: 'A behavior logged in the fringe ledger that no skill pattern holds (tools/fringe-novelty.mjs; asked by Void). Extend the closest skill, or write a new one with tools/new-skill.mjs.',
+    note: 'A behavior logged in the fringe ledger that no skill pattern holds (tools/fringe-novelty.mjs; asked by Verse). Extend the closest skill, or write a new one with tools/new-skill.mjs.',
   };
 }
 /** what to queue: the most novel run at or over `bar` whose job is not in the queue yet, while no novelty job is open. Pure. */

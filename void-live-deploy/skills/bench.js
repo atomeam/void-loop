@@ -1,5 +1,5 @@
 /**
- * bench skill - the Bench icon (asked by Void, 2026-10-16: "a functional 'Bench' icon on the stage that counts active false
+ * bench skill - the Bench icon (asked by Verse, 2026-10-16: "a functional 'Bench' icon on the stage that counts active false
  * alarms"). "show the bench" puts a small bench on the stage with a number on it: how many of Verse's review findings a person
  * read and found wrong and that are still on record (tools/review-noise.json, written to /bench-alarms.json by
  * tools/bench-alarms.mjs at each deploy). Tap it and it lists them, file and line and why. The everyday bench's last score sits

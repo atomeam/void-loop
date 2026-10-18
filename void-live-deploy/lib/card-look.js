@@ -1,4 +1,4 @@
-// Style inheritance for cards (asked by Void: "Sky and earth cards should feel organic and atmospheric, while Numbers and money cards should adopt a clean, technical
+// Style inheritance for cards (asked by Verse: "Sky and earth cards should feel organic and atmospheric, while Numbers and money cards should adopt a clean, technical
 // blueprint aesthetic to prevent visual noise."). The skill's family (skills/families.json, the names in lib/art-rules.js FAMILIES) decides a frame look: 'organic'
 // for Sky and earth, 'blueprint' for Numbers and money, nothing for the rest (they keep the plain foil frame). The look is a data attribute on the card
 // (data-look) and the tint and pattern are CSS only (CARD_CSS in lib/card-frame.js). Pure: no network, no model.

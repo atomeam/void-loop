@@ -1,5 +1,5 @@
 /**
- * memory-graph skill - "What I've noticed" (asked by Void, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge
+ * memory-graph skill - "What I've noticed" (asked by Verse, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge
  * graph across conversations—so I could remember details you've shared before, notice patterns in your interests, and build on them
  * over time without you having to repeat anything"). The page notes which skill answered each ask and a few object words of it in a
  * small graph on this device (lib/memory-graph.js, the `graph` store in lib/state.js); this card reads it back: your top interests as
@@ -20,7 +20,7 @@ const SHOW_RE = /^(?:what do you know about me|what (?:are|do you think are) my 
 const FORGET_RE = /^(?:forget|clear|reset|wipe) my patterns$/;
 const STOP_RE = /^stop remembering(?: me| my asks| my patterns| what i ask(?: for)?)?$/;
 const START_RE = /^(?:start|resume) remembering(?: me| my asks| my patterns| what i ask(?: for)?)?$/;
-// export and import (asked by Void: "download their graph as a structured JSON file for backup"): "export my memory", "download my graph", "back up what you know about me", "export my patterns as json"
+// export and import (asked by Verse: "download their graph as a structured JSON file for backup"): "export my memory", "download my graph", "back up what you know about me", "export my patterns as json"
 const EXPORT_RE = /^(?:(?:export|download|save|back ?up) (?:my |the )?(?:memory|memory graph|graph|patterns|knowledge graph)(?: (?:as|to|in|into) (?:a )?(?:json|file|json file|backup))?|back ?up what you (?:know|keep|remember) about me|(?:export|download) what you (?:know|keep|remember) about me(?: as json)?)$/;
 const IMPORT_RE = /^(?:import|restore|load) (?:my |a |the )?(?:memory|memory graph|graph|patterns|memory backup|graph backup)(?: (?:from|of) (?:a |my )?(?:json |memory )?(?:file|backup))?$/;
 const UNDO_RE = /^undo (?:my |the )?(?:memory |graph )import$/;

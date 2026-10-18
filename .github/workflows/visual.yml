@@ -1,7 +1,7 @@
 # Weekly visual regression of the live site (tools/visual.mjs): the homepage, a typed ask and two answers at desktop and phone
 # size, compared with last week's screenshots (the previous run's artifact). A page that changed by more than 2% of its pixels
 # is a warning with both pictures attached; it never fails anything, since a redesign changes pixels on purpose.
-name: Void visual diff
+name: Verse visual diff
 
 on:
   schedule:
@@ -25,7 +25,7 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          id=$(gh run list -w "Void visual diff" -s success -L 1 --json databaseId -q '.[0].databaseId' || true)
+          id=$(gh run list -w "Verse visual diff" -s success -L 1 --json databaseId -q '.[0].databaseId' || true)
           [ -n "$id" ] && gh run download "$id" -n visual -D prev || echo "no earlier run"
       - name: Screenshots and diff
         run: node tools/visual.mjs --out shots --prev prev/shots

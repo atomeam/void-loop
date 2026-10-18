@@ -1,7 +1,7 @@
 /**
- * battleship skill — Battleship against Void (skills/battleship-rules.js): "play battleship", "battleship board game".
- * The game of hidden state: the card draws only what you may see (rules view()): your own fleet with Void's shots at it,
- * and of Void's waters only your own shot results and the ships you have sunk. Void's fleet never reaches the screen.
+ * battleship skill — Battleship against Verse (skills/battleship-rules.js): "play battleship", "battleship board game".
+ * The game of hidden state: the card draws only what you may see (rules view()): your own fleet with Verse's shots at it,
+ * and of Verse's waters only your own shot results and the ships you have sunk. Verse's fleet never reaches the screen.
  * The board stands in the void in 3D (mini/battleship.js: the folding case, your ocean flat, your target board upright),
  * lifted by skills/lift3d.js with this card beside it; the flat grids here are the fallback.
  */
@@ -10,7 +10,7 @@ import { lift3d } from './lift3d.js';
 
 export function battleshipOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+)?(?:game\s+of\s+)?(?:battleships?|sea battle)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)\s+(?:a\s+)?(?:game\s+of\s+)?(?:battleships?|sea battle)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
   if (/^(?:a\s+)?game\s+of\s+battleships?$|^(?:a\s+)?battleships?\s+(?:board\s*)?game$/.test(t)) return { kind: 'game' };
   return null;
 }

@@ -1,9 +1,9 @@
-# Void's will, every three hours from 9 AM to 9 PM New York time (tools/will.py): it gathers everything that exists (what people
-# asked that Void still misses, the frontier's open items, ideas from its inputs), Void chooses three wants in its own words
+# Verse's will, every three hours from 9 AM to 9 PM New York time (tools/will.py): it gathers everything that exists (what people
+# asked that Verse still misses, the frontier's open items, ideas from its inputs), Verse chooses three wants in its own words
 # (/api/will), the card "what do you want to become?" shows them, and the top one goes to the builders' queue. It used to run only
-# from a scheduled task on the owner's laptop, so the card kept wants Void had already built ("add milk", 2026-10-12).
+# from a scheduled task on the owner's laptop, so the card kept wants Verse had already built ("add milk", 2026-10-12).
 # Owner-only notes (earnings) are left out here: Actions logs on this public repo are public. Needs VOID_OWNER_TOKEN.
-name: Void's will
+name: Verse's will
 
 on:
   schedule:
@@ -13,7 +13,7 @@ on:
   # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
   # otherwise leave it on the card until the next three-hour slot. One Workers AI call per merge, and only when the deploy passed.
   workflow_run:
-    workflows: ['Void deploy']
+    workflows: ['Verse deploy']
     types: [completed]
     branches: [main]
 
@@ -37,9 +37,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Void chooses what it wants to become
+      - name: Verse chooses what it wants to become
         env:
           VOID_MISSES_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
-          if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Void's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
+          if [ -z "$VOID_MISSES_TOKEN" ]; then echo "::warning title=Verse's will did not run::Repo secret VOID_OWNER_TOKEN is not set."; exit 0; fi
           python3 tools/will.py | tee -a "$GITHUB_STEP_SUMMARY"

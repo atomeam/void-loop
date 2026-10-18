@@ -1,4 +1,4 @@
-// Void's facts about itself, for the answer engine (void-live-deploy/lib/self-context.js): what it is (llms.txt), and the
+// Verse's facts about itself, for the answer engine (void-live-deploy/lib/self-context.js): what it is (llms.txt), and the
 // growth inbox (domains/growth-inbox.md: what shipped, what is still open), its games and the cards that have a 3D miniature
 // (so its opinions of itself are informed: lib/voice.js), and for the growth tree the think tank's open tracks, the claim
 // being built now (domains/forethinkers/index.md, domains/void.frontier.md) and the last commits on main (git log). Skills, the will and its reflections are read live at answer time.
@@ -17,19 +17,19 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'void-live-deploy/self.json');
 const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
 
-// skills that are games Void plays with you (names as in skills/index.json)
+// skills that are games Verse plays with you (names as in skills/index.json)
 export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'connect4'];
 
-// domains/void.canon.md: Adam's words about what Void is (motto, VoidQuest) and Void's terms for its parts, versioned;
+// domains/void.canon.md: Adam's words about what Verse is (motto, VoidQuest) and Verse's terms for its parts, versioned;
 // '(not written yet)' stays unknown
 export function readCanon(text) {
   const t = String(text || ''), sec = (h) => clip((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1], 600);
   const known = (v) => (v && !/^\(not written yet\)$/i.test(v) ? v : null);
-  // terms: '- **name**: what it is' lines under ## Terms (Void's names for its own parts); left out when there are none
+  // terms: '- **name**: what it is' lines under ## Terms (Verse's names for its own parts); left out when there are none
   const terms = [...String((new RegExp('^## Terms\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ term: m[1].trim().slice(0, 60), means: clip(m[2], 400) })).slice(0, 20);
-  // how Void is different: Adam's '- **name**: line' lines under ## How Void is different (2026-10-11); left out when there are none
-  const different = [...String((new RegExp('^## How (?:Void|Verse) is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+  // how Verse is different: Adam's '- **name**: line' lines under ## How Verse is different (2026-10-11); left out when there are none
+  const different = [...String((new RegExp('^## How (?:Verse|V01D) is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ name: m[1].trim().slice(0, 60), line: clip(m[2], 400) })).slice(0, 8);
   return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}), ...(different.length ? { different } : {}) };
 }
@@ -99,7 +99,7 @@ export function buildSelf(llms, inbox, { skills = [], minis = [], canon = null, 
     // the note in brackets is for agents (corrections, checks); the public line keeps only the source's first clause
     rows.push({ state: shipped ? 'shipped' : clip(status.split(/\s/)[0], 20).toLowerCase(), date: clip(date, 10), ask: clip(ask, 120), from: clip(source.replace(/\s*\(.*$/, ''), 120) });
   }
-  // what Void studies stays off the site (tools/private.mjs): self.json is served, and the answer engine reads it
+  // what Verse studies stays off the site (tools/private.mjs): self.json is served, and the answer engine reads it
   const pub = (r) => !isPrivate(r.ask) && !isPrivate(r.from) && !isPrivate(r.subject) && !isPrivate(r.title);
   if (commits) commits = commits.filter(pub);
   if (open) open = open.filter(pub);

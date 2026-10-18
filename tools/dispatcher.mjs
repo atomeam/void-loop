@@ -1,4 +1,4 @@
-// Persistent tasks: Void's build queue becomes a2m-bridge task envelopes, released by the owner.
+// Persistent tasks: Verse's build queue becomes a2m-bridge task envelopes, released by the owner.
 //
 // Three states: dry-run -> awaiting-approval -> posted. dry-run is the default, like
 // domains/forethinkers/think-tank.mjs.

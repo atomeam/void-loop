@@ -3,7 +3,7 @@
  * mistake again (same content words) turns it into a weed that grows with each repeat; writing a rule next to it ("write a rule
  * for my mistake: <words> => <rule>", or the box on the card) turns it into compost and shows the rule. "show my error garden"
  * brings the card back; "plant my test failures" plants every distinct failing check of incidents.json (a check that failed in two incidents is a weed). Kept with the stage on this device; nothing is sent anywhere. Asked for by the owner (2026-10-18).
- * The red checks also grow here by themselves (asked by Void, 2026-10-18: "any new red browser check automatically generates a summary card in the
+ * The red checks also grow here by themselves (asked by Verse, 2026-10-18: "any new red browser check automatically generates a summary card in the
  * error-garden"): when the garden is shown or mounted it reads incidents.json (every red browser suite on main, tools/incident-log.mjs) and plants
  * each failing check of the incidents it has not seen, by the check's title, the same plants "plant my test failures" makes; the same check failing
  * again is a weed, and a rule written beside it (the fix) is compost. The first time a garden meets the file only the newest incident is planted, so

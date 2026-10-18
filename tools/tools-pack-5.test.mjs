@@ -180,7 +180,7 @@ test('export: the file, the asks, and what an import lets in', () => {
 
 test('export: plain text for an email, the print sheet, the history', () => {
   const txt = stageTextDump(stage, Date.UTC(2026, 9, 18));
-  assert.match(txt, /^My Void stage, 2026-10-18 \(4 things\)/);
+  assert.match(txt, /^My Verse stage, 2026-10-18 \(4 things\)/);
   assert.match(txt, /- list: Groceries\n    \* \[ \] milk\n    \* bread/);
   assert.match(txt, /- sticky: buy milk and eggs/);
   assert.ok(!/[<>]|&nbsp;/.test(txt) && txt.split('\n').every((l) => l.length <= 80), 'plain text, wrapped');

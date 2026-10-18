@@ -1,17 +1,17 @@
-// Toolbar icon opens the side panel. "void <ask>" in the address bar opens Void.
-// In the browser only (B1, B2): Alt+Shift+V, or right-click "Void: read this tab", reads the tab you are on into Void
-// (title, address, selection, the box you were in: extension/page.js); Void can then draft into that box. Nothing leaves the browser.
-// Sent to Void (#134): right-click "Ask Void about this page" / "Help me with this draft" read the page you are on and send it to
-// Void's answer engine as the material for that one answer (title, address, selection, the focused field, the visible text, capped).
+// Toolbar icon opens the side panel. "void <ask>" in the address bar opens Verse.
+// In the browser only (B1, B2): Alt+Shift+V, or right-click "Verse: read this tab", reads the tab you are on into Verse
+// (title, address, selection, the box you were in: extension/page.js); Verse can then draft into that box. Nothing leaves the browser.
+// Sent to Verse (#134): right-click "Ask Verse about this page" / "Help me with this draft" read the page you are on and send it to
+// Verse's answer engine as the material for that one answer (title, address, selection, the focused field, the visible text, capped).
 // Both are activeTab only: Chrome lets the extension into a tab when you press the shortcut or use the menu there, and only that tab.
 importScripts('page.js');
 const VOID = 'https://a-to-mind.com/';
 const TEXT_MAX = 8000;
 chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true }).catch(() => {});
 chrome.runtime.onInstalled.addListener(() => chrome.contextMenus.removeAll(() => { // an update keeps the old menus: start clean
-  chrome.contextMenus.create({ id: 'read-tab', title: 'Void: read this tab (stays in your browser)', contexts: ['page', 'selection', 'editable'] });
-  chrome.contextMenus.create({ id: 'void-page', title: 'Ask Void about this page (sends it to Void)', contexts: ['page', 'frame', 'link', 'image', 'selection'] });
-  chrome.contextMenus.create({ id: 'void-draft', title: 'Help me with this draft (sends it to Void)', contexts: ['editable'] });
+  chrome.contextMenus.create({ id: 'read-tab', title: 'Verse: read this tab (stays in your browser)', contexts: ['page', 'selection', 'editable'] });
+  chrome.contextMenus.create({ id: 'void-page', title: 'Ask Verse about this page (sends it to Verse)', contexts: ['page', 'frame', 'link', 'image', 'selection'] });
+  chrome.contextMenus.create({ id: 'void-draft', title: 'Help me with this draft (sends it to Verse)', contexts: ['editable'] });
 }));
 
 // B1: the panel must be opened inside the user's gesture (Chrome refuses it after an await), so it opens first and the read follows.
@@ -33,7 +33,7 @@ chrome.commands.onCommand.addListener((cmd, tab) => {
   readTab(tab);
 });
 
-// #134: runs inside the page (chrome.scripting): only reads, never changes anything. What it returns goes to Void's answer engine.
+// #134: runs inside the page (chrome.scripting): only reads, never changes anything. What it returns goes to Verse's answer engine.
 function readPage(max) {
   const clip = (s, n) => String(s || '').replace(/\s+\n/g, '\n').replace(/[ \t]+/g, ' ').trim().slice(0, n);
   const a = document.activeElement;
@@ -60,12 +60,12 @@ chrome.contextMenus.onClicked.addListener(async (info, tab) => {
   try {
     const [res] = await chrome.scripting.executeScript({ target: { tabId: tab.id, frameIds: [info.frameId || 0] }, func: readPage, args: [TEXT_MAX] });
     page = res && res.result;
-  } catch (_) {} // chrome:// pages, the Web Store and PDFs can't be read; Void says so instead
+  } catch (_) {} // chrome:// pages, the Web Store and PDFs can't be read; Verse says so instead
   const q = draft ? 'Help me improve this draft' : (info.selectionText ? 'Explain this from the page: ' + info.selectionText.trim().slice(0, 200) : 'What is this page about?');
   chrome.storage.session.set({ ask: { q, page: page || { title: tab.title || '', url: tab.url || '', unreadable: true }, at: Date.now() } });
 });
 
-// B2: a draft from Void (through the panel) goes only into the tab that was last read, and only while Chrome still lets us in there.
+// B2: a draft from Verse (through the panel) goes only into the tab that was last read, and only while Chrome still lets us in there.
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (sender.id !== chrome.runtime.id || !msg || msg.type !== 'draft' || typeof msg.text !== 'string') return;
   (async () => {
@@ -80,7 +80,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
 });
 
 // "draft for me: proposal": the thread text of the tab that was last read, only when you press it in the tab card (through the
-// panel), and only while Chrome still lets us in there. Void sends it once to its answer engine for the proposal draft.
+// panel), and only while Chrome still lets us in there. Verse sends it once to its answer engine for the proposal draft.
 chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   if (sender.id !== chrome.runtime.id || !msg || msg.type !== 'thread') return;
   (async () => {
@@ -94,7 +94,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   return true;
 });
 
-// B3: one step you said yes to in the panel's card, on the tab you last pointed Void at, and only when that site is on your
+// B3: one step you said yes to in the panel's card, on the tab you last pointed Verse at, and only when that site is on your
 // allow list (chrome.storage.local "allow", hosts, empty until you add one in the panel). The panel checks the list before it
 // shows the card; this checks it again before anything runs, so nothing but the list and your yes decides.
 const hostOf = (u) => { try { return new URL(u).host; } catch (_) { return ''; } };
@@ -115,7 +115,7 @@ chrome.runtime.onMessage.addListener((msg, sender, reply) => {
   return true;
 });
 
-chrome.omnibox.setDefaultSuggestion({ description: 'Ask Void: %s' });
+chrome.omnibox.setDefaultSuggestion({ description: 'Ask Verse: %s' });
 chrome.omnibox.onInputEntered.addListener((text, disposition) => {
   const url = VOID + '?q=' + encodeURIComponent(text.trim());
   if (disposition === 'currentTab') chrome.tabs.update({ url });

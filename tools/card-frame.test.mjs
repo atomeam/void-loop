@@ -68,7 +68,7 @@ test('an unknown tier word never gives a negative stat', () => {
   assert.ok(c.power >= 0 && c.toughness >= 1);
 });
 
-// skill evolution and type-specific layouts (asked by Void)
+// skill evolution and type-specific layouts (asked by Verse)
 import { evolved, noteTier, EVO_KEY, cardOf as cardOf2 } from '../void-live-deploy/lib/card-frame.js';
 test('evolution: only a higher rating than the one this browser last saw evolves a card; a first sight, the same or a lower rating does not', () => {
   assert.deepEqual(evolved('checked', 'proven'), { from: 'Rare', to: 'Mythic' });

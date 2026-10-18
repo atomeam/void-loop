@@ -4,7 +4,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * A built-in table of the usual kitchen equivalents, so the answer is instant. An ingredient not in the table ("instead of
  * google", "substitute teacher") is left to the other skills; weights and conversions are calc's, recipes are recipe's.
- * Each swap says what else to adjust (asked by Void, ask-20261015-0250-2: "when a user selects a swap, the stage can suggest
+ * Each swap says what else to adjust (asked by Verse, ask-20261015-0250-2: "when a user selects a swap, the stage can suggest
  * relevant adjustments to other ingredients (e.g., adding more liquid if swapping flour)"): IMPACT, one line per swap, from
  * what the swap changes (water, fat, acid, sugar, salt), and the card ends with the cook-flow timer chip (lib/cook-flow.js).
  */
@@ -78,7 +78,7 @@ export function impactOf(item, i) { const r = IMPACT[item && item.name]; return 
 
 /** the time a swap's "then" line moves the cook by, read off the line itself (no number is made up here): { lo, hi, sign: 1 longer | -1 sooner }, or null.
  *  "bake 2–3 minutes longer" -> 2..3 longer; "take it out 1–2 minutes sooner" -> 1..2 sooner; "cook a minute less" -> 1 sooner. Pure.
- *  Asked by Void: "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitution." */
+ *  Asked by Verse: "Integrate the 'cook-flow' logic into the 'swaps' card to automate time-change calculations during ingredient substitution." */
 export function timeShift(line) {
   const t = String(line || '').toLowerCase().replace(/\s+/g, ' ');
   const m = t.match(/\b(?:(\d+)(?:\s?[–-]\s?(\d+))?|a)\s+minutes?\s+(longer|more|sooner|earlier|less)\b/);

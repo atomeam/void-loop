@@ -174,7 +174,7 @@ test('last place: a thing advance() has just moved keeps advance\'s place until 
   assert.deepEqual(things.a.at, { x: 702, y: 301 });
 });
 
-// ---- asked by Void: "Connect 'frontier #4' to the 'automations' and 'actions' skills": what advance() did is one execution record, in the asker's scope ----
+// ---- asked by Verse: "Connect 'frontier #4' to the 'automations' and 'actions' skills": what advance() did is one execution record, in the asker's scope ----
 const TOKEN = 'owner-token-for-tests-1234567890';
 function d1() {
   const db = new DatabaseSync(':memory:');
