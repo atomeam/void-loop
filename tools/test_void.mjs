@@ -9576,6 +9576,17 @@ try {
       quad.join() === '1redesign' && mos.join() === '0ship' && names.join() === 'Must,Should,Could' && savedB.join() === 'quad{"0":1},moscow{"0":0}' && !S.errors.length, JSON.stringify({ quad, mos, names, savedB, errors: S.errors }));
     await S.ctx.close(); }
 
+  // telemetry route (owner, 2026-10-18): a pasted CI report is read as the builders' own telemetry, not answered as a coding question
+  if (want("telemetry route: a pasted CI report is read as a developer log, a question about CI is not")) { const S = await fresh();
+    await S.ask('CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAIL fly stars move: the streak never showed. 159/162 passed, unit tests pass, the rest are unconfirmed.', 900);
+    const card = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((t) => /Developer log absorbed/.test(t) ? t : '').catch(() => ''), 15000);
+    const failing = await S.p.$$eval('.vpage.on [data-tel-fail] li', (l) => l.map((x) => x.innerText)).catch(() => []);
+    await S.ask('why is my ci red', 700);
+    const q = await S.p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
+    check('telemetry route: a pasted CI report shows "Developer log absorbed" with the commit, the pull request, "Passed 159 of 162" and what is still failing; "why is my ci red" is not taken',
+      /57ab1f2e/.test(card) && /#1083/.test(card) && /Passed 159 of 162/.test(card) && failing.some((f) => /fly stars/.test(f)) && !/Developer log absorbed/.test(q) && !S.errors.length, JSON.stringify({ card: card.slice(0, 300), failing, q: q.slice(0, 80), errors: S.errors }));
+    await S.ctx.close(); }
+
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

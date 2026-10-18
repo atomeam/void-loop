@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 658,
+ "counted": 660,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -892,6 +892,12 @@
   },
   {
    "file": "lib/technical-context.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/telemetry.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -4773,6 +4779,12 @@
     "skills/technical-context.js"
    ]
   },
+  "lib/telemetry.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/telemetry-route.js"
+   ]
+  },
   "lib/template-list.js": {
    "imports": [],
    "importedBy": [
@@ -7624,6 +7636,12 @@
    "imports": [
     "lib/technical-context.js",
     "skills/shape.js"
+   ],
+   "importedBy": []
+  },
+  "skills/telemetry-route.js": {
+   "imports": [
+    "lib/telemetry.js"
    ],
    "importedBy": []
   },
