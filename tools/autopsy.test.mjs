@@ -1,6 +1,6 @@
 // Incident autopsy: parser, mapping, counts, escaping (lib/autopsy.js). node --test tools/autopsy.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict'; import { readFileSync } from 'node:fs';
-import { parseIncidents, titleOf, skillOfCheck, autopsy, autopsyHtml } from '../void-live-deploy/lib/autopsy.js';
+import { parseIncidents, titleOf, skillOfCheck, autopsy, autopsyHtml, skillOfPath, suspectsOf } from '../void-live-deploy/lib/autopsy.js';
 import skill from '../void-live-deploy/skills/incident-autopsy.js';
 const FAM = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'clock' }, { name: 'countdown' }, { name: 'family-health' }] }, { id: 'make', name: 'Making <things>', skills: [{ name: 'appraise' }, { name: 'convert' }] }] };
 const GUIDE = { pages: [{ name: 'appraise', examples: ['what is this coin worth'] }, { name: 'clock', examples: ['what time is it'] }, { name: 'convert', examples: ['what time is it'] }] };
@@ -84,4 +84,15 @@ test('a test case from each recent failure (asked by Void): the ask the check qu
   const c = incidentCases(autopsy(inc, fam, guide), guide);
   assert.deepEqual(c.map((x) => [x.skill, x.ask, x.sha]), [['timer', 'set a timer for 2 minutes', 'aaaaaaa'], ['label', 'label the clock kitchen', 'aaaaaaa']], 'the quoted ask wins; one case per skill, from its newest failure; the timeout matches no skill');
   assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
+});
+
+test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Void)', () => {
+  assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);
+  const sus = suspectsOf(['tools/x.mjs', 'void-live-deploy/skills/clock.js', 'void-live-deploy/skills/convert.js'], [{ skill: 'convert' }, { skill: null }]);
+  assert.deepEqual(sus.map((s) => [s.skill, s.likely]), [['convert', true], ['clock', false]]);
+  const inc = (touched) => ({ incidents: [{ at: '2026-10-17T09:51:08Z', sha: '95164ec9caef', suite: 's', checks: ['convert card: maths'], touched }] });
+  let h = autopsyHtml(autopsy(inc(['void-live-deploy/skills/convert.js', 'a<b.js']), FAM, GUIDE));
+  assert.match(h, /data-culprit="likely"/); assert.match(h, /Likely cause: <code>skills\/convert\.js<\/code> \(has a failing check\)/); assert.ok(!h.includes('a<b'));
+  h = autopsyHtml(autopsy(inc(['domains/x.md']), FAM, GUIDE)); assert.match(h, /data-culprit="none"/); assert.match(h, /No skill file changed/);
+  h = autopsyHtml(autopsy(inc(undefined), FAM, GUIDE)); assert.ok(!h.includes('data-culprit'), 'paths never recorded say nothing');
 });

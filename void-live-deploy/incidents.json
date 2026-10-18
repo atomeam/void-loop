@@ -1,5 +1,5 @@
 {
- "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
+ "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names, shas and the paths the commit changed only.",
  "incidents": [
   {
    "at": "2026-10-18T07:21:38.455Z",
@@ -13,6 +13,17 @@
     "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
     "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/error-garden-failures.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/autopsy.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/error-garden.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -22,6 +33,23 @@
    "suite": "browser suite on main",
    "checks": [
     "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/telemetry-route.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/ask-text.js",
+    "void-live-deploy/lib/telemetry.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/0100-telemetry-route",
+    "void-live-deploy/skills/telemetry-route.js",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -32,6 +60,20 @@
    "checks": [
     "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
     "suite ran to the end"
+   ],
+   "touched": [
+    "tools/empty-state.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/corrections.js",
+    "void-live-deploy/lib/empty-state.js",
+    "void-live-deploy/lib/stage-pack-h.js",
+    "void-live-deploy/skills/card-play.js",
+    "void-live-deploy/skills/csv-table.js",
+    "void-live-deploy/skills/near-choir.js",
+    "void-live-deploy/skills/note-tools.js",
+    "void-live-deploy/void.html",
+    "void.html"
    ]
   },
   {
@@ -48,6 +90,23 @@
     "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/skill-overlap.json",
+    "tools/test_void.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/lib/router.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/0069-wants",
+    "void-live-deploy/skills/wants.js"
    ]
   },
   {
@@ -59,6 +118,23 @@
     "calendar: a visitor adds \"call Sam next Tuesday at 4\", \"add dentist to my calendar <nine days ahead> at 3pm\", \"put lunch with Ana on my calendar tomorrow at noon\"; all saved here and on the stage card; no yes, no server, no Wikipedia",
     "dated open plan: \"make a plan to learn spanish by friday\" asks the engine and lists its steps dated back from the day (the goal last), with the countdown and the calendar; with no engine \"learn guitar by next week\" still gets its checklist",
     "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/playbooks/README.md",
+    "docs/playbooks/game.md",
+    "domains/void.agents.log.md",
+    "tools/anchor-density.test.mjs",
+    "tools/asks-link.json",
+    "tools/self-blocks.test.mjs",
+    "tools/spark.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/anchor-density.js",
+    "void-live-deploy/lib/self-blocks.js",
+    "void-live-deploy/lib/spark.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json"
    ]
   },
   {
@@ -71,6 +147,16 @@
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/asks-link.json",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html"
    ]
   },
   {
@@ -80,6 +166,23 @@
    "suite": "browser suite on main",
    "checks": [
     "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/fixtures/pack5-files.mjs",
+    "tools/launch-fixes.test.mjs",
+    "tools/skill-overlap.json",
+    "tools/test_void.mjs",
+    "tools/tools-pack-5.test.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/md.js",
+    "void-live-deploy/lib/media-local.js",
+    "void-live-deploy/lib/pack5-ui.js",
+    "void-live-deploy/lib/stage-find.js",
+    "void-live-deploy/lib/stage-image.js"
    ]
   },
   {
@@ -95,6 +198,14 @@
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "calc-more and tip: \"300 px in cm at 150 dpi\" is 5.08 cm, \"5 cm to pixels at 300 dpi\" is 590.55 px, \"100 usd to eur at 0.92\" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; \"45 with 8% tax and 20% tip\" totals $57.60 with $3.60 tax, and \"an 84 dollar bill 4 ways\" is $21.00 each",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html"
    ]
   },
   {
@@ -105,6 +216,20 @@
    "checks": [
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -115,6 +240,12 @@
    "checks": [
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/card-frame.js",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -125,6 +256,16 @@
    "checks": [
     "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
     "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/will.yml",
+    "domains/void.agents.log.md",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -134,6 +275,23 @@
    "suite": "browser suite on main",
    "checks": [
     "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/empty-state.test.mjs",
+    "tools/families.mjs",
+    "tools/pool.mjs",
+    "tools/pool.test.mjs",
+    "tools/skill-overlap.json",
+    "tools/stage-tools.test.mjs",
+    "tools/test_void.mjs",
+    "tools/tools-pack-7.test.mjs",
+    "tools/tools-pack-8.test.mjs",
+    "tools/typo-audit.json",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/a11y-modes.js"
    ]
   },
   {
@@ -144,6 +302,23 @@
    "checks": [
     "stage pack b: \"turn today's misses into jobs\" is a dry run without the owner key (nothing read, nothing queued); with it the card lists the asks as ready to queue (escaped), queues nothing by itself, and one tap posts exactly one job with the owner key",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/playbooks/README.md",
+    "docs/playbooks/art-forge.md",
+    "docs/playbooks/open-endpoint-closed-list.md",
+    "docs/playbooks/stage-effects.md",
+    "docs/playbooks/stage-mode.md",
+    "docs/playbooks/stage-pack.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/date-pack.test.mjs",
+    "tools/families.mjs",
+    "tools/learn.test.mjs",
+    "tools/math-transplants.test.mjs",
+    "tools/openapi-check.mjs"
    ]
   },
   {
@@ -154,6 +329,23 @@
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/playbooks/field-mind.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/card-art-route.test.mjs",
+    "tools/card-image.test.mjs",
+    "tools/checks.mjs",
+    "tools/collectible.test.mjs",
+    "tools/families.mjs",
+    "tools/field-attention.test.mjs",
+    "tools/field-nca.test.mjs",
+    "tools/field-resonance.test.mjs",
+    "tools/field-swarm.test.mjs",
+    "tools/test_void.mjs",
+    "tools/void-seal.test.mjs"
    ]
   },
   {
@@ -163,6 +355,23 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/playbooks/field-mind.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/card-art-route.test.mjs",
+    "tools/field-cards.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/functions/api/card-art.js",
+    "void-live-deploy/lib/art-rules.js",
+    "void-live-deploy/lib/card-forge.js",
+    "void-live-deploy/lib/field-cards.js",
+    "void-live-deploy/skills/living-cards-mind.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json"
    ]
   },
   {
@@ -172,6 +381,23 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/go-ai.test.mjs",
+    "tools/guide.test.mjs",
+    "tools/rule-registry.test.mjs",
+    "tools/showcase.test.mjs",
+    "tools/source-reliability.mjs",
+    "tools/source-reliability.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/lib/go-ai.js",
+    "void-live-deploy/lib/guide.js",
+    "void-live-deploy/lib/rule-registry.js"
    ]
   },
   {
@@ -182,6 +408,23 @@
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/field-cards.test.mjs",
+    "tools/growth.test.mjs",
+    "tools/label.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/field-cards.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/growth.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/label.js",
+    "void-live-deploy/skills/living-cards-mind.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json"
    ]
   },
   {
@@ -192,6 +435,21 @@
    "checks": [
     "the book: What's new follows the contents, read live from the growth ledger, with a try-it ask and a new-since badge",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/typo-audit.json",
+    "tools/typo-audit.mjs",
+    "tools/typo-audit.test.mjs",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -201,6 +459,23 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/book-news.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/book-news.js",
+    "void-live-deploy/lib/tome.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -210,6 +485,21 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/autopsy.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/autopsy.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/growth.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -221,6 +511,23 @@
     "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "tools/tome.test.mjs",
+    "void-live-deploy/lib/success-pulse.js",
+    "void-live-deploy/lib/tome.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/status.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json"
    ]
   },
   {
@@ -230,6 +537,19 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/growth.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/growth.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -239,6 +559,22 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -248,6 +584,23 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/card-share.test.mjs",
+    "tools/site-test.json",
+    "tools/site-test.mjs",
+    "tools/site-test.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/card-share.js",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json"
    ]
   },
   {
@@ -260,6 +613,22 @@
     "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Void), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/asks-link.json",
+    "tools/card-image.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/card-forge.js",
+    "void-live-deploy/skills/event-countdown.js",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -270,6 +639,23 @@
    "checks": [
     "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/event-date.test.mjs",
+    "tools/families.mjs",
+    "tools/service-health.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/event-date.js",
+    "void-live-deploy/lib/service-health.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/event-countdown.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1260-service-health"
    ]
   },
   {
@@ -281,6 +667,23 @@
     "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/field-cards.test.mjs",
+    "tools/skill-contract.test.mjs",
+    "tools/test_void.mjs",
+    "tools/untested.json",
+    "void-live-deploy/lib/field-cards.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/living-cards-mind.js",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/tester-log.json"
    ]
   },
   {
@@ -290,6 +693,13 @@
    "suite": "browser suite on main",
    "checks": [
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -300,6 +710,23 @@
    "checks": [
     "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/field-cards.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/field-cards.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/living-cards-mind.js",
+    "void-live-deploy/skills/order/1450-living-cards-mind",
+    "void-live-deploy/void.growth.json"
    ]
   },
   {
@@ -310,6 +737,11 @@
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/test_void.mjs",
+    "void-live-deploy/void.growth.json"
    ]
   }
  ]
