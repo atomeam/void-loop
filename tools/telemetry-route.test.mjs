@@ -69,6 +69,15 @@ test('a builder\'s own sentence behind a list marker, and a failure that passed 
   assert.equal(failuresOf('- **book-face:** fails on plain origin/main too, page 305 off the sheet').length, 1, 'a bullet name line stays');
 });
 
+test('a builder\'s report that quotes a timeout is a report, not a broken automation; a real automation error still is one', async () => {
+  const { intentOf, isFixAsk } = await import('../void-live-deploy/lib/automation-fix.js');
+  const { isBuildersReport } = await import('../void-live-deploy/lib/telemetry.js');
+  const report = 'I fixed three red checks on main in PR 1096 and I am watching it. The 3D block stalls with a check timeout after the voice check, the CI suite stays red, and I did not fix it. All three fixed checks failed locally and pass now after the push.';
+  assert.equal(isBuildersReport(report), true); assert.equal(intentOf(report).intent, 'report'); assert.equal(isFixAsk(report), false);
+  const zap = 'my zap keeps failing with 429 Too Many Requests and the workflow stops on every single run, here is the log: {"status":429,"error":"rate limit"} on the webhook step, how do I fix it?';
+  assert.equal(isBuildersReport(zap), false); assert.equal(isFixAsk(zap), true);
+});
+
 test('a failure caused on purpose to prove a check bites is not still failing (2026-10-18 card: a gap 2 report)', () => {
   assert.deepEqual(failuresOf('The check bites: with the mutation it fails, and the zip check also fails, as expected. page.js is restored.'), []);
   assert.deepEqual(failuresOf('- Found: Without the refusal, the gap 2 check fails.'), []);

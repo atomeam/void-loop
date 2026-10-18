@@ -9639,6 +9639,10 @@ try {
     const q = await S.p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
     check('telemetry route: a pasted CI report shows "Developer log absorbed" with the commit, the pull request, "Passed 159 of 162" and what is still failing; "why is my ci red" is not taken',
       /57ab1f2e/.test(card) && /#1083/.test(card) && /Passed 159 of 162/.test(card) && failing.some((f) => /fly stars/.test(f)) && !/Developer log absorbed/.test(q) && !S.errors.length, JSON.stringify({ card: card.slice(0, 300), failing, q: q.slice(0, 80), errors: S.errors }));
+    // a builder's own report that quotes a timeout used to go to the automation fixer ("I read this as a broken automation")
+    await S.ask('I fixed three red checks on main in PR 1096 and I am watching it. The 3D block stalls with a check timeout after the voice check, the CI pipeline stays red and the workflow keeps failing, and I did not fix it. All three fixed checks failed locally and pass now after the push, and the webhook step is not involved.', 900);
+    const rep = await until(() => S.p.$eval('.vpage.on', (e) => e.innerText).then((t) => /Developer log absorbed/.test(t) ? t : '').catch(() => ''), 15000);
+    check('telemetry route: a builder\'s report that quotes a check timeout is read as a developer log, not answered as a broken automation to fix', /Developer log absorbed/.test(String(rep)) && !/broken automation/.test(String(rep)) && !S.errors.length, JSON.stringify({ rep: String(rep).slice(0, 200), errors: S.errors }));
     await S.ctx.close(); }
 
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
