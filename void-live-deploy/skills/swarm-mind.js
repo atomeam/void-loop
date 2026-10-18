@@ -88,7 +88,7 @@ const idea = {
     const big = s.n <= 40, tribes = S.VARIANTS[s.variant].tribes;
     for (let i = 0; i < s.n; i++) {
       const lead = tribes && s.tribe[i] === s.dominant, a = tribes ? (lead ? 0.95 : 0.55) : 0.85;
-      g.fillStyle = s.variant === 'resonance' ? 'hsla(' + Math.round(((s.phase[i] % 6.2832) + 6.2832) % 6.2832 * 57) + ',80%,65%,.9)' : s.variant === 'probes' ? 'hsla(' + Math.round(180 + s.connect[i] * 120) + ',80%,62%,.95)' : tribes ? TRIBE[s.tribe[i]] + a + ')' : 'hsla(195,85%,70%,.85)';
+      g.fillStyle = s.variant === 'resonance' ? 'hsla(' + Math.round(((s.phase[i] % 6.2832) + 6.2832) % 6.2832 * 57) + ',80%,65%,.9)' : s.variant === 'probes' ? 'hsla(' + Math.round(180 + s.connect[i] * 120) + ',80%,62%,.95)' : tribes ? TRIBE[s.tribe[i]] + a + ')' : 'hsla(195,85%,70%,.85)'; // void-review: ok (string comparisons of the variant name; the decimals are hue math, never compared for equality)
       const r = big ? 3 + (s.variant === 'resonance' ? s.energy[i] * 5 : 2) : lead ? 2.4 : 1.8;
       if (big) { g.beginPath(); g.arc(s.x[i] * W, s.y[i] * H, r, 0, Math.PI * 2); g.fill(); } else g.fillRect(s.x[i] * W - r / 2, s.y[i] * H - r / 2, r, r);
     }
