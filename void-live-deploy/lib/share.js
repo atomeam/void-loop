@@ -1,4 +1,4 @@
-// Bring someone into your Void (frontier #11, plan item 10 the live half): the room one invite opens.
+// Bring someone into your Verse (frontier #11, plan item 10 the live half): the room one invite opens.
 // An invite is a room name nobody can guess (random, signed with the site's SALT), so a stranger cannot wake a Durable
 // Object for a name they made up. In the room only two things pass: where your cursor is (a faint presence on the other
 // screens) and a summon (the words that put something on your stage, run again on theirs). Nothing else rides along, and
@@ -49,7 +49,7 @@ export function clean(raw) {
   return null;
 }
 
-// What a sync carries (asked by Void, 2026-10-16: the whole stage across tabs, not only movement): one of a list's entries (at most 8,
+// What a sync carries (asked by Verse, 2026-10-16: the whole stage across tabs, not only movement): one of a list's entries (at most 8,
 // 40 characters each, ticked or not), a timer's state (running or not, milliseconds left, at most a day), or a counter's number.
 // Anything else in `data` is dropped, and a drop names a thing by the same key a move does.
 export function cleanData(d) {

@@ -7,7 +7,7 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&l
 const NOW = Date.UTC(2026, 9, 16, 12, 0, 0); // 2026-10-16T12:00Z
 const iso = (daysAgo) => new Date(NOW - daysAgo * 864e5).toISOString();
 
-const MD = `# Void's voice\n\n## Void's current asks\n\n_Read from /api/reflect on 2026-10-15._\n\n- Implement the WebMCP origin trial. (daily, 2026-10-15) \`ask-20261015-2116-1\`\n- Create a probe-success-rate card. *(small)* (after a build, 2026-10-15) \`ask-20261015-2045-1\`\n- Not an ask line\n\n## Decisions on Void's asks\n\n- \`ask-20261015-2116-1\` queued\n`;
+const MD = `# Verse's voice\n\n## Verse's current asks\n\n_Read from /api/reflect on 2026-10-15._\n\n- Implement the WebMCP origin trial. (daily, 2026-10-15) \`ask-20261015-2116-1\`\n- Create a probe-success-rate card. *(small)* (after a build, 2026-10-15) \`ask-20261015-2045-1\`\n- Not an ask line\n\n## Decisions on Verse's asks\n\n- \`ask-20261015-2116-1\` queued\n`;
 
 test('ask ids carry their time; the asks section parses to id, words and small', () => {
   assert.equal(askTime('ask-20261015-2116-1'), Date.UTC(2026, 9, 15, 21, 16));

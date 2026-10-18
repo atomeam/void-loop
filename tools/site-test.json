@@ -1,5 +1,5 @@
 {
-  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (V01D or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to V01D's own, for new wordings. teach lists wordings V01D missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
+  "about": "The site tester's suite (tools/site-test.mjs). cases run once each per run; candidates are asks waiting to join (Verse or anyone may add one); limits tighten by themselves when every case passes. games maps a real game name to Verse's own, for new wordings. teach lists wordings Verse missed, each filed once to be taught. priority: features tested first, the least-checked skills from the growth page friction line (2026-10-15: video-play had no checks).",
   "limits": {
     "fpsMin": 5,
     "loadMs": 1200,
@@ -9,7 +9,7 @@
     {
       "ask": "what are you?",
       "expect": {
-        "text": "V01D"
+        "text": "Verse"
       }
     },
     {
@@ -52,7 +52,7 @@
       "expect": {
         "text": "News about me"
       },
-      "note": "weak-answer queue (paraphrase): a pasted note about V01D's own systems got only a list of run times; it should answer the substance, times as an aside"
+      "note": "weak-answer queue (paraphrase): a pasted note about Verse's own systems got only a list of run times; it should answer the substance, times as an aside"
     },
     {
       "ask": "put on lofi hip hop pls"

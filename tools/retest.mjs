@@ -1,4 +1,4 @@
-// The 7-day re-test (asked by Void, its reflection on #858: "Implement an automated 're-test' trigger: if a skill hasn't been
+// The 7-day re-test (asked by Verse, its reflection on #858: "Implement an automated 're-test' trigger: if a skill hasn't been
 // last_tested in 7 days, queue a small, non-destructive validation task to refresh its success_rate."). Once a day, after the smoke
 // test, every skill whose last_tested in skills/families.json is missing or older than RETEST_DAYS is re-tested here, non-destructively:
 // its module loaded, each of its examples routed through the whole skill order (it must come first), none of its near misses taken,
@@ -61,7 +61,7 @@ export function plan(results, queue, mods = {}) {
 
 export const summary = ({ due, results, queued, dry }) => {
   const bad = Object.entries(results).filter(([, r]) => !r.ok);
-  return ['### Void re-tested its stale skills', '', '| What | How many |', '|:--|--:|', '| skills due (no test in ' + RETEST_DAYS + ' days) | ' + due.length + ' |',
+  return ['### Verse re-tested its stale skills', '', '| What | How many |', '|:--|--:|', '| skills due (no test in ' + RETEST_DAYS + ' days) | ' + due.length + ' |',
     '| re-tested | ' + Object.keys(results).length + ' |', '| failed | ' + bad.length + ' |', '| queued for the builders | ' + (dry ? 'none (dry)' : queued.map((j) => '`' + j.target + '`').join(', ') || 0) + ' |',
     ...(bad.length ? ['', ...bad.map(([n, r]) => '- ' + n + ': ' + r.failing.join('; '))] : [])].join('\n');
 };
@@ -84,6 +84,6 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (!dry && tok) { try { q = await api('/api/queue'); } catch (e) { console.error('retest: could not read the queue: ' + e.message); } }
   const p = plan(results, q, byName);
   if (!dry && tok) for (const job of p.queue) { try { const r = await api('/api/queue', 'POST', { ask: job.ask, target: job.target }), it = r.item || {}; if (it.id && it.ask === job.ask) { await api('/api/queue', 'PATCH', { id: it.id, note: job.note }); queued.push(job); } } catch (e) { console.error('retest: could not queue ' + job.target + ': ' + e.message); } }
-  if (!dry) writeFileSync(OUT, JSON.stringify({ note: 'the daily re-test of skills not tested in ' + RETEST_DAYS + ' days (tools/retest.mjs; asked by Void): each loaded, its examples routed, its near misses kept out, its own unit test run. Read by tools/families.mjs: a passing skill was tested that day, a failing one has no passing self-test.', at: today, retested: results }, null, 1) + '\n');
+  if (!dry) writeFileSync(OUT, JSON.stringify({ note: 'the daily re-test of skills not tested in ' + RETEST_DAYS + ' days (tools/retest.mjs; asked by Verse): each loaded, its examples routed, its near misses kept out, its own unit test run. Read by tools/families.mjs: a passing skill was tested that day, a failing one has no passing self-test.', at: today, retested: results }, null, 1) + '\n');
   console.log(summary({ due, results, queued: dry ? p.queue : queued, dry }));
 }

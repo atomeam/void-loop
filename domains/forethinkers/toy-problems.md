@@ -1,6 +1,6 @@
 # Toy that talks, loves, and moves
 
-The product is a Toy Story kind of toy: a cute, highly detailed little character that talks, remembers the kid, acts glad they are there, and moves on its own. Void summons it, the body prints, the mind stays with that toy. Work until each problem below is solved, not described.
+The product is a Toy Story kind of toy: a cute, highly detailed little character that talks, remembers the kid, acts glad they are there, and moves on its own. Verse summons it, the body prints, the mind stays with that toy. Work until each problem below is solved, not described.
 
 Status: `open`, `partial`, or `solved`. A row is solved only with a thing a person can hold or run.
 
@@ -12,11 +12,11 @@ Status: `open`, `partial`, or `solved`. A row is solved only with a thing a pers
 | 4 | It loves, meaning it stays | open | Moxie stored conversation memory and kids noticed when the story reset. Xander, 10, still used his as someone to talk to, and knew it was not human. | Memory of this kid on this toy: name, last play, what they care about. Gladness has to be in the behavior, not a claim of a feeling. Survives a reboot. Survives the maker. Path found 2026-10-15: the AX630C mind runs 1,024-token builds and caches a fixed prefix, so a five-line memory file on the module rides in every prompt (see `tracks/living-figures.md`); not benched yet. |
 | 5 | It moves by itself | partial | Otto DIY: printed biped, 4 micro servos, about 100 g PLA, walks. Trotter: 56 printed parts, one rubber band, 5.1 oz, walks, no brain. MIT printed motor: 318 μm, a joint, not a walk. Georgia Tech fully printed wave-wound motors (all but magnets) run a waving arm and a multi-legged walking robot, 7.62 N mm/A (Adv Mater Technol, 20 Apr 2026, doi 10.1002/admt.70994). | One character body, one gait, driven by the same mind that talks. Not a wind-up with no one home. |
 | 6 | Power lasts a play session | open | Otto uses a 16340 or a 9 V pack. Servos and a speaker drain a coin cell. The mind module draws 0.5 W idle and 1.5 W full load, so a 2,000 mAh cell runs it about 4 h flat out (derived 2026-10-07). ASTM F963-23 section 4.25 wants a tool-only battery door with a captive fastener. | A session of talk and walking on one charge a parent can replace or refill. |
-| 7 | Void hands it over | open | Void summons pages and skills. No miniature, no print file, no brain image. | Ask, see the character, spin, download the body and the mind. Own it. |
+| 7 | Verse hands it over | open | Verse summons pages and skills. No miniature, no print file, no brain image. | Ask, see the character, spin, download the body and the mind. Own it. |
 
 ## Order
 
-1 stays first. A toy that loves and then goes silent is the failure already on record. 3 and 4 can be a voice and a memory on a bench before the legs. 5 attaches to that same mind. 2 and 7 are the Void page for the original character. 6 is sized to the gait that 5 actually uses.
+1 stays first. A toy that loves and then goes silent is the failure already on record. 3 and 4 can be a voice and a memory on a bench before the legs. 5 attaches to that same mind. 2 and 7 are the Verse page for the original character. 6 is sized to the gait that 5 actually uses.
 
 ## This cycle
 

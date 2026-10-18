@@ -1,5 +1,5 @@
 /**
- * keep-going — the bridge from an approval card to a task that keeps running after the person has left (asked by Void:
+ * keep-going — the bridge from an approval card to a task that keeps running after the person has left (asked by Verse:
  * "Define the technical bridge between an 'approval card' and a task that keeps running after a user leaves", "a mechanism where an
  * 'approval card' can trigger a task that persists after the user session ends", and "Connect frontier #4 to the 'automations' and
  * 'actions' skills to allow for state changes without direct user input").

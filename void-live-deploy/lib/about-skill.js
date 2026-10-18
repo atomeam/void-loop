@@ -1,4 +1,4 @@
-// about-skill - the pure half of "tell me about <a skill of Verse's>" (asked by Void: "Learn how to handle 'tell me about zorbleflux'
+// about-skill - the pure half of "tell me about <a skill of Verse's>" (asked by Verse: "Learn how to handle 'tell me about zorbleflux'
 // (asked 156 times)"; the zorbleflux ask itself is answered by skills/zorbleflux.js, this is the gap behind it: "tell me about the
 // chess skill" went to Wikipedia and was noted as a miss). An ask of the shape "tell me about X", "what is X", "what's X",
 // "explain X", "how does X work", "how do i use X" is about a skill when X resolves to a page of Verse's own book (skills/guide.json,
@@ -24,7 +24,7 @@ const PHRASES = [
   /^how do (?:i|you|we) use (.+)$/,
   /^how to use (.+)$/,
 ];
-const OWN = /^(?:(?:the|a|an)\s+)?(?:(?:your|v01d'?s?|void'?s?|its)\s+)/; // "your chess", "v01d's forge": named as Verse's own
+const OWN = /^(?:(?:the|a|an)\s+)?(?:(?:your|(?:v01d|verse)'?s?|void'?s?|its)\s+)/; // "your chess", "v01d's forge": named as Verse's own
 const MARK = /\s+(?:skill|ability|feature)$/; // "the chess skill": the one Verse has, not the thing in the world
 const TAG = /\s+(?:card|game|tool|thing|page)$/; // "the weather card", "the chess game": Verse's if it has exactly that, else the world's ("a sim card")
 
@@ -40,7 +40,7 @@ export function parseAsk(text) {
   raw = raw.replace(OWN, '').replace(/^(?:the|a|an)\s+/, '').trim();
   if (MARK.test(raw)) { named = true; raw = raw.replace(MARK, ''); } else if (TAG.test(raw)) { tagged = true; raw = raw.replace(TAG, ''); }
   raw = raw.replace(/^(?:the|a|an)\s+/, '').trim();
-  if (!raw || /^(?:you|yourself|v01d|void|verse|it|this|that|me|myself)$/.test(raw)) return null;
+  if (!raw || /^(?:you|yourself|v01d|verse|void|verse|it|this|that|me|myself)$/.test(raw)) return null;
   return { topic: raw, named, tagged };
 }
 

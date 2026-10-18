@@ -1,9 +1,9 @@
 /**
- * feelings skill: asks about Void's own heart and mind, answered in its own plain words, here, with no model and no web
+ * feelings skill: asks about Verse's own heart and mind, answered in its own plain words, here, with no model and no web
  * search (2026-10-11: "do you love me?" went to the answer engine, which searched Wikipedia for "love me", listed three
  * songs and an album as sources, and replied in a stock chatbot voice). "do you love me", "do you have feelings",
  * "are you conscious", "do you get lonely", "will you marry me". ("are you alive", "are you real" and "i love you" already
- * get one quiet line from the page's small talk, which runs before skills.) Honest: Void is a program and says so, without
+ * get one quiet line from the page's small talk, which runs before skills.) Honest: Verse is a program and says so, without
  * pretending to feel and without the customer-service lines. A song with the same words ("do you love me lyrics") is not
  * this.
  */

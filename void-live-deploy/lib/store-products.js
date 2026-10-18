@@ -2,19 +2,19 @@
 export default [
  {
   "id": "void-monthly",
-  "name": "Void Monthly",
+  "name": "Verse Monthly",
   "cents": 4900,
   "every": "month",
   "kind": "membership",
   "gumroad": "yinmj",
-  "blurb": "Paid Void: every pro skill, films, code review, priority.",
+  "blurb": "Paid Verse: every pro skill, films, code review, priority.",
   "status": "live",
   "origin": "v01d",
   "published": "2026-10-15"
  },
  {
   "id": "code-review-pro",
-  "name": "Void Code Review Pro",
+  "name": "Verse Code Review Pro",
   "cents": 1000,
   "every": "month",
   "kind": "license",
@@ -131,7 +131,7 @@ export default [
  },
  {
   "id": "v01d-forge-printables",
-  "name": "VERSE Forge Printables (10 STLs)",
+  "name": "Verse Forge Printables (10 STLs)",
   "cents": 0,
   "kind": "download",
   "pack": "print-set",

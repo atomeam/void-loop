@@ -1,15 +1,15 @@
 /**
- * othello skill — Othello (Reversi) on the stage, against Void. Same shape as tictactoe: a pure engine and a card.
+ * othello skill — Othello (Reversi) on the stage, against Verse. Same shape as tictactoe: a pure engine and a card.
  * "play othello", "lets play reversi" summons the board; it stays until thrown off.
- * The engine is a flat 64-cell board (0 empty, 1 black = you, 2 white = Void). A move must flip at least one disc,
+ * The engine is a flat 64-cell board (0 empty, 1 black = you, 2 white = Verse). A move must flip at least one disc,
  * along any of the 8 directions; a side with no legal move passes; the game ends when neither side can move,
  * and the side with more discs wins.
- * Void plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
+ * Verse plays by a position table (corners high, the squares next to corners low) plus the discs it flips.
  */
 import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
-import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -74,7 +74,7 @@ const WEIGHTS = [
   -20, -50, -2, -2, -2, -2, -50, -20,
   100, -20, 10, 5, 5, 10, -20, 100,
 ];
-// Void's pick: the best position value plus discs flipped, minus the best reply the opponent then has
+// Verse's pick: the best position value plus discs flipped, minus the best reply the opponent then has
 export function voidMove(board, p = 2) {
   let best = -1, bestScore = -Infinity;
   for (const i of legalMoves(board, p)) {
@@ -131,7 +131,7 @@ function mount(th, stageApi) {
     cells.push(b);
     grid.appendChild(b);
   }
-  // the position after a move keeps the clock the first move started; a game that ended on the board goes on this device's match history (asked by Void), once
+  // the position after a move keeps the clock the first move started; a game that ended on the board goes on this device's match history (asked by Verse), once
   function settle(next) {
     th.state = { ...next, started: th.state.started || Date.now() };
     if (next.status === 'playing' || th.state.logged) return;
@@ -147,7 +147,7 @@ function mount(th, stageApi) {
       const m = levelPick(voidMove(th.state.board, 2), legalMoves(th.state.board, 2));
       if (m >= 0) settle(resolveMove(th.state, m).nextState);
       paint(); stageApi.save && stageApi.save();
-      voidTurn(); // you had no move, so Void goes again
+      voidTurn(); // you had no move, so Verse goes again
     }, 520);
   }
   let prev = null;
@@ -176,7 +176,7 @@ function mount(th, stageApi) {
   again.addEventListener('click', (e) => { e.stopPropagation(); clearTimeout(thinking); thinking = null; th.state = createOthelloState(); prev = null; paint(); stageApi.save && stageApi.save(); });
   el.append(wrap, bar);
   paint();
-  voidTurn(); // a board reloaded mid-game on Void's turn picks up where it was
+  voidTurn(); // a board reloaded mid-game on Verse's turn picks up where it was
   stageApi.bindDrag(el, th);
   stageApi.stage.appendChild(el);
   // the board stands in the void in 3D (skills/mini/othello.js), the rest of the card beside it; the 2D board stays the fallback

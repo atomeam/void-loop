@@ -45,7 +45,7 @@ test('the skill takes its example and leaves its near misses; the card escapes w
 
 test('a builder\'s own report of a run is not a list of failures: narration and "red checks" as a name are left out, a real "fails on main" stays (the card of 2026-10-18)', () => {
   const report = ["I'm making it opt-in so red checks only grow on their own after the garden's test failures have been shown. ⏎ Committing the opt-in fix and running the remaining finish steps (fast checks, push, PR body). ⏎ Confirmed the merge commit 92189bd.",
-    'Pushing the changes and opening the PR now. ⏎ Took Void\'s first open ask from the card and shipped it as PR #1090, labelled for automerge.',
+    'Pushing the changes and opening the PR now. ⏎ Took Verse\'s first open ask from the card and shipped it as PR #1090, labelled for automerge.',
     'Once a garden has been shown or asked for its test failures, every mount reads incidents.json and plants each failing check of the incidents it has not seen.',
     'The same check failing again becomes a weed, a rule written beside it compost. First contact plants only the newest incident, so an old stage is not flooded.',
     'Three garden browser checks pass in a real browser. The fast checks are clean apart from four reds that are not this branch\'s: book-face fails identically on main (page 304 runs off its sheet), claude-brain needs an npm package the container never installed.',
@@ -53,7 +53,7 @@ test('a builder\'s own report of a run is not a list of failures: narration and 
   const f = failuresOf(report);
   assert.ok(f.some((l) => /book-face fails identically/.test(l)), 'the real failure stays: ' + JSON.stringify(f));
   assert.ok(f.some((l) => /went red on main/.test(l)), 'a commit that went red stays: ' + JSON.stringify(f));
-  for (const bad of [/^I'm making/, /^Committing/, /^Pushing/, /^Took Void/, /^Once a garden/, /^First contact/, /^Three garden/]) assert.ok(!f.some((l) => bad.test(l)), 'narration left out: ' + bad + ' in ' + JSON.stringify(f));
+  for (const bad of [/^I'm making/, /^Committing/, /^Pushing/, /^Took Verse/, /^Once a garden/, /^First contact/, /^Three garden/]) assert.ok(!f.some((l) => bad.test(l)), 'narration left out: ' + bad + ' in ' + JSON.stringify(f));
   const t = telemetryOf(report);
   assert.ok(t && t.prs.includes('1090') && t.shas.includes('92189bd'), 'still read as a report');
   assert.equal(t.failures.length, 2, 'two real ones, not six: ' + JSON.stringify(t.failures));

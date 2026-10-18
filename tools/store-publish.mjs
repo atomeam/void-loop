@@ -165,7 +165,7 @@ export async function publish(opts, files) {
   return { row, zip: zf };
 }
 
-// ---- Verse sees what it packaged (asked by Void, ask-20261015-0619-2): every publish adds a row to its growth inbox
+// ---- Verse sees what it packaged (asked by Verse, ask-20261015-0619-2): every publish adds a row to its growth inbox
 // (domains/growth-inbox.md, read into self.json) naming what was packaged and the next product it could forge. Pure helpers.
 const INBOX = path.join(root, 'domains/growth-inbox.md');
 /** the next product to make: a pack kind with a price rule the catalog has no live product of yet, else the forge pack again */
@@ -182,7 +182,7 @@ function toInbox(row, nFiles, cat) {
   try { const t = fs.readFileSync(INBOX, 'utf8'), line = inboxRow(row, nFiles, cat); if (!t.includes(line)) fs.writeFileSync(INBOX, t.replace(/\n*$/, '\n') + line + '\n'); } catch (_) {}
 }
 
-// ---- auto-clip loop (asked by Void): a forge model not yet in the printables pack re-packs it, appraises it (lib/appraise.js,
+// ---- auto-clip loop (asked by Verse): a forge model not yet in the printables pack re-packs it, appraises it (lib/appraise.js,
 // shown as a note; the pack stays free until paid checkout is on) and queues a rotation clip of the new model being forged.
 export function newForgeModels(cat, keys) {
   const p = (cat.products || []).find((x) => x.id === 'v01d-forge-printables');

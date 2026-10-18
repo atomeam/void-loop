@@ -1,4 +1,4 @@
-// Practice sessions that say whether they worked (lib/practice.js; asked by Void). Run: node --test tools/practice.test.mjs
+// Practice sessions that say whether they worked (lib/practice.js; asked by Verse). Run: node --test tools/practice.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { record, entryOf, weigh, rateWords, goalKey, readLog, writeLog, GOALS_MAX } from '../void-live-deploy/lib/practice.js';

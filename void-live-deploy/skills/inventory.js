@@ -1,8 +1,8 @@
 /**
- * inventory skill — assimilate row 6 (Inventory orchestrator → Void)
+ * inventory skill — assimilate row 6 (Inventory orchestrator → Verse)
  * Feeds agents and anyone who asks with "already built" rows so they reuse before rebuilding.
  * Skill ids come from skills/index.json so the list cannot drift from the registry.
- * No network. Tessl / BoardKit exist outside Void; this is Void's own form.
+ * No network. Tessl / BoardKit exist outside Verse; this is Verse's own form.
  */
 import skillNames from './index.json' with { type: 'json' };
 import familyList from './families.json' with { type: 'json' };
@@ -84,7 +84,7 @@ export function inventoryOf(text) {
   if (!t) return null;
   if (/^(?:what\s+(?:can|could)\s+(?:you|i|void|the\s+forge)\s+(?:3d[\s-]?)?(?:print|make)(?:\s+for\s+me)?|show\s+(?:me\s+)?what\s+you\s+can\s+(?:3d[\s-]?)?print|list\s+(?:the\s+)?printable\s+things|what\s+physical\s+things\s+can\s+you\s+make|what\s+(?:things\s+)?(?:are|is)\s+printable)$/i.test(t)
     && !/^what\s+can\s+(?:you|i|void)\s+make$/i.test(t)) return { kind: 'printable' };
-  // the print ledger (asked by Void: a feedback loop between print-file and inventory): what has actually left for a printer
+  // the print ledger (asked by Verse: a feedback loop between print-file and inventory): what has actually left for a printer
   if (/^(?:what\s+(?:have\s+(?:i|we|you)\s+printed|(?:physical\s+)?(?:things|assets|objects)\s+(?:do\s+(?:i|we|you)\s+have|exist)|physical\s+assets\s+exist)|(?:show\s+(?:me\s+)?)?(?:my|the)\s+(?:print\s+ledger|printed\s+things|physical\s+inventory)|physical\s+inventory)$/i.test(t)) return { kind: 'printed' };
   let m = t.match(/^(?:have\s+we\s+built|did\s+we\s+build|is\s+there\s+already|do\s+we\s+already\s+have|already\s+built)\s+(.+)$/i);
   if (m) {
@@ -97,7 +97,7 @@ export function inventoryOf(text) {
   return null;
 }
 
-/** What Void can make in the world right now: every forge thing whose file passes the same check "print it" runs
+/** What Verse can make in the world right now: every forge thing whose file passes the same check "print it" runs
  *  (forge-rules.js verifyStl, the file read back and held to its model), with its size and solid-PLA weight; one that
  *  fails is held back with the reason. Computed from the recipes on each ask: nothing about anyone is kept. */
 export async function printable(verify) {

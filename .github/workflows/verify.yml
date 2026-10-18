@@ -11,7 +11,7 @@
 # glyphs, calendar, growth suites) and browser-suite (tools/test_void.mjs), each reporting on its own, so one unrelated test
 # can no longer hide the suite's result (a held-file test red on the runner kept every head of main unverified for an hour).
 # The revert reads the browser-suite job (and older verdicts, named verify-main) and names the job it decided from.
-name: Void verify
+name: Verse verify
 
 on:
   push:
@@ -113,7 +113,7 @@ jobs:
         if: failure() && steps.test.outcome == 'failure'
         run: node tools/revert-target.mjs --annotate test-output.txt || true
 
-      - name: Write the incident (asked by Void; skills/incident.js shows it as "what broke lately")
+      - name: Write the incident (asked by Verse; skills/incident.js shows it as "what broke lately")
         if: failure() && steps.test.outcome == 'failure'
         run: |
           node tools/incident-log.mjs record "$(git rev-parse HEAD)" "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" test-output.txt || true
@@ -198,7 +198,7 @@ jobs:
           fi
           # the ledger says what was taken back, so "growth" never shows a change the site no longer has without saying so
           node tools/grow.mjs retire "Taken back off the site: \"$subject\" ($sha) failed the browser suite on main ($why)." --by void-verify --ref "${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}" && git add void-live-deploy/void.growth.json || true
-          git commit -q -m "Revert \"$subject\"" -m "It shipped and the browser suite failed on main (job browser-suite in Void verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
+          git commit -q -m "Revert \"$subject\"" -m "It shipped and the browser suite failed on main (job browser-suite in Verse verify, run ${{ github.run_id }}, testing $tested): $why. So it is taken back off the site." -m "Void-auto-revert: $sha"
           git push origin main
           gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true
           echo "::error title=Reverted::$sha broke the suite ($why); it is reverted on main ($(git rev-parse --short HEAD)) and main is deploying again."

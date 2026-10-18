@@ -95,7 +95,7 @@ items:
 
 1. **Tolerance is absolute, in the item's own unit.** Each explainer sets it per item (void.explainers.md). The test
    `learning.quiz/numeric-answer-respects-unit-and-tolerance` asserts it.
-2. **The quiz and the challenge are ephemeral by default.** Void saves every stage card with its state in the browser
+2. **The quiz and the challenge are ephemeral by default.** Verse saves every stage card with its state in the browser
    (`a2m.void.state.v1`), and for someone signed in with a passkey the stage syncs to their other devices through the
    server. These two cards opt out of both. Only an explicit request from the visitor keeps (and syncs) the state of the
    one card they chose; keeping one card never silently keeps another learning card. Explainers keep their state like
@@ -217,7 +217,7 @@ state:
 | Finish now | Ends with the results so far |
 | Restart | Clears the attempt, back to ready |
 
-**Scene:** a small activity tray with three progress tokens and a timer. Reuse Void's existing timer card presentation
+**Scene:** a small activity tray with three progress tokens and a timer. Reuse Verse's existing timer card presentation
 rather than a second timing engine. The source miniature stays open to inspect.
 
 **Behaviour:** ready → active ↔ paused → completed, time-ended or ended-early.

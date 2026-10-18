@@ -102,7 +102,7 @@ test('with the models off, a matching note is the answer, said plainly; with no 
   assert.equal(b.told, undefined); assert.equal(b.answer, null);
 });
 
-test('a member\'s machine-pushed projects (Ouroboros, by Void key) answer through "what you told me", for them alone', async () => {
+test('a member\'s machine-pushed projects (Ouroboros, by Verse key) answer through "what you told me", for them alone', async () => {
   const { env, calls } = world(); const ann = await member(env, 'annAnnAnnAnnAnnAnnAnn'), bob = await member(env, 'bobBobBobBobBobBobBob');
   const key = newKey();
   await env.DB.prepare('INSERT INTO void_review_keys (hash, user_id, prefix, at) VALUES (?, ?, ?, ?)').bind(await keyHash(key), 'annAnnAnnAnnAnnAnnAnn', key.slice(0, 10), new Date().toISOString()).run();
@@ -118,7 +118,7 @@ test('a member\'s machine-pushed projects (Ouroboros, by Void key) answer throug
 });
 test.after(() => { globalThis.fetch = realFetch; });
 
-test('a visitor\'s ask (no bearer) never reaches D1 for what they told Void: no tables made, no lookup', async () => {
+test('a visitor\'s ask (no bearer) never reaches D1 for what they told Verse: no tables made, no lookup', async () => {
   const DB = d1();
   const r = await answerApi.toldMe(new Request('https://a-to-mind.com/api/answer', { method: 'POST' }), { DB, READ_TOKEN: TOKEN }, 'why is the sky blue');
   assert.equal(r, null);

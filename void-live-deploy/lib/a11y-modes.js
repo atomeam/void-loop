@@ -12,7 +12,7 @@ export const MODES = [
   { id: 'dyslexia', cls: 'a11y-dyslexia', label: 'Dyslexia-friendly font', does: 'A clearer face (OpenDyslexic, Atkinson Hyperlegible or Verdana if your device has one) with wider spacing.' },
   { id: 'colorblind', cls: 'a11y-cb', label: 'Colorblind-safe palette', does: 'Done / not done and right / wrong use blue and orange from the Okabe-Ito palette, and carry a ✓ or ✗ as well.' },
   { id: 'targets', cls: 'a11y-targets', label: 'Click targets of at least 44px', does: 'Buttons, fields and checkboxes grow to a 44 by 44 pixel touch size.' },
-  { id: 'captions', cls: '', label: 'Captions for system speech', does: 'When Void reads aloud, the words appear at the bottom of the screen.' },
+  { id: 'captions', cls: '', label: 'Captions for system speech', does: 'When Verse reads aloud, the words appear at the bottom of the screen.' },
   { id: 'haptic', cls: '', label: 'Haptic tick on keep (mobile)', does: 'A short vibration when something is kept, on phones that can.' },
   { id: 'outline', cls: 'a11y-outline', label: 'Sticky focus outline', does: 'A thick outline stays on whatever has focus, however it got it.' },
 ];

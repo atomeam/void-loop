@@ -1,25 +1,25 @@
 /**
- * snake skill — Void Snake against Verse (skills/snake-rules.js): "snake", "play snake", "void snake", "snake game".
+ * snake skill — Verse Snake against Verse (skills/snake-rules.js): "snake", "play snake", "void snake", "snake game".
  * Steer with arrow keys / WASD (card focused) or swipe or tap a side of the board. Each Verse move says why.
  */
 import * as S from './snake-rules.js';
 import { arcadeCard } from './arcade-card.js';
 import { snakeRecorder, snakeGhostBody, submit, load, words } from '../lib/arcade-ghost.js';
-import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Void)
+import { finish } from '../lib/ladder.js'; // a finished match goes on Verse's arcade ladder (asked by Verse)
 
 export function snakeOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:void\s+|v01d\s+)?snake(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|void|you))?$/.test(t) ? { kind: 'game' } : null;
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|new)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:void\s+|(?:v01d|verse)\s+|verse\s+)?snake(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|void|you))?$/.test(t) ? { kind: 'game' } : null;
 }
 const PX = 16, TICK = 0.13;
 
 function mount(th, stageApi) {
   th.state = S.create((Date.now() & 0xffff) || 7);
-  const c = arcadeCard(th, stageApi, { cls: 'snake-card', title: 'Void Snake', sub: 'you are green · Verse is violet', w: S.N * PX, h: S.N * PX });
+  const c = arcadeCard(th, stageApi, { cls: 'snake-card', title: 'Verse Snake', sub: 'you are green · Verse is violet', w: S.N * PX, h: S.N * PX });
   const K = { arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down', arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right' };
   c.el.addEventListener('keydown', (e) => { const d = K[e.key.toLowerCase()]; if (d) { S.turn(th.state, d); go = true; e.preventDefault(); } });
   let start = null, go = false;
-  // the ghost (asked by Void): your best run so far, replayed as a faint outline snake; a longer run replaces it
+  // the ghost (asked by Verse): your best run so far, replayed as a faint outline snake; a longer run replaces it
   let ghost = load('snake'), rec = snakeRecorder(), saved = false;
   c.cv.addEventListener('pointerdown', (e) => { start = c.local(e); c.el.focus({ preventScroll: true }); });
   c.cv.addEventListener('pointerup', (e) => {
@@ -53,7 +53,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'snake');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'snake'; }
   api.summon('snake', { x: Math.max(10, Math.round(innerWidth / 2 - 180)), y: 50 });
-  api.say('Void Snake (plays like the classic) · you are green, Verse is violet · arrows, WASD or swipe');
+  api.say('Verse Snake (plays like the classic) · you are green, Verse is violet · arrows, WASD or swipe');
   return 'snake';
 }
 

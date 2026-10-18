@@ -1,5 +1,5 @@
 {
- "note": "the daily smoke test of every skill (tools/skills-check.mjs --write; asked by Void): each loaded, each of its examples reaching it first, none of its near misses, its suite() passing. failing: the skills that did not, with what failed. Read by tools/families.mjs.",
+ "note": "the daily smoke test of every skill (tools/skills-check.mjs --write; asked by Verse): each loaded, each of its examples reaching it first, none of its near misses, its suite() passing. failing: the skills that did not, with what failed. Read by tools/families.mjs.",
  "at": "2026-10-17",
  "checked": 149,
  "streak": {

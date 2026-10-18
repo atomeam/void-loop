@@ -225,7 +225,7 @@ function onOutput(e) {
   if (!took.length) return;
   if (st.save) st.save();
   if (st.render) st.render();
-  for (const id of took) notePulse(d.id, id); // the pulse is recorded the moment it is added, not when a poll looks (lib/pulse.js; asked by Void)
+  for (const id of took) notePulse(d.id, id); // the pulse is recorded the moment it is added, not when a poll looks (lib/pulse.js; asked by Verse)
   requestAnimationFrame(() => { for (const id of took) pulse(st.stage, d.id, id); });
 }
 if (typeof document !== 'undefined' && !globalThis.__voidLivingArrows) { globalThis.__voidLivingArrows = true; document.addEventListener('void:output', onOutput); }
@@ -243,7 +243,7 @@ function boxOf(root, t) {
   if (!el) return null;
   return { el, x: el.offsetLeft, y: el.offsetTop, w: el.offsetWidth || 1, h: el.offsetHeight || 1 };
 }
-// Ghosting on restore (asked by Void, twice: "a 'visual ghosting' effect for labels and arrows during stage restoration to make memory recovery
+// Ghosting on restore (asked by Verse, twice: "a 'visual ghosting' effect for labels and arrows during stage restoration to make memory recovery
 // feel intentional"): the first time labels and arrows are drawn in the moments after a page load, they come back as ghosts (faint, blurred,
 // dashed) and settle solid over about a second. Anything labelled later in the visit appears at once. Nothing moves under reduced motion.
 export const GHOST_WINDOW_MS = 6000, GHOST_MS = 1100;

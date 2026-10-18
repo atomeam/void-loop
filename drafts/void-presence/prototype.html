@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Void · presence prototype</title>
+<title>Verse · presence prototype</title>
 <!--
   Prototype only: nothing here is wired into void.html. Four mechanics on one page, tuned for a deep-blue minimal void:
     1. Attentional gravity  the nebula leans toward the pointer; typing tightens and darkens it around the pill; idle, it exhales and finally stops drawing
@@ -47,7 +47,7 @@
 <canvas id="syn" aria-hidden="true"></canvas>
 <div id="stage">
   <form id="row" role="search" autocomplete="off">
-    <input id="input" type="text" placeholder="Ask the Void" aria-label="Ask the Void" enterkeyhint="go" autocomplete="off" spellcheck="false">
+    <input id="input" type="text" placeholder="Ask the Verse" aria-label="Ask the Verse" enterkeyhint="go" autocomplete="off" spellcheck="false">
     <button id="go" type="submit">Ask</button>
   </form>
 </div>
@@ -134,7 +134,7 @@
       return true; });
   };
 
-  // ---- the loop: ~30 fps while anything is alive, and it stops drawing completely once the Void has been left alone a while
+  // ---- the loop: ~30 fps while anything is alive, and it stops drawing completely once the Verse has been left alone a while
   let raf = 0, t0 = performance.now(), lastDraw = 0;
   const pillCenter = () => { const b = row.getBoundingClientRect(); return [(b.left + b.width / 2 - innerWidth / 2) / innerHeight, (innerHeight / 2 - (b.top + b.height / 2)) / innerHeight, b]; };
   const draw = (now) => {
@@ -144,7 +144,7 @@
       lastDraw = now;
       S.attn *= Math.exp(-dt / 4);                                       // typing focus fades over a few seconds
       const calm = reduce ? 0 : 1 - smooth(6, 20, idle) * .85;           // the exhale: time itself slows when left alone
-      S.px += (S.mx - S.px) * .035; S.py += (S.my - S.py) * .035;        // heavy damping: the Void is slow to look
+      S.px += (S.mx - S.px) * .035; S.py += (S.my - S.py) * .035;        // heavy damping: the Verse is slow to look
       const [cx, cy] = pillCenter(), a = clamp(S.attn + (document.activeElement === input ? .12 : 0), 0, 1) * calm;
       if (S.ripple >= 0) { S.ripple += dt; if (S.ripple > 3.2) S.ripple = -1; }
       if (gl && U) {
@@ -177,7 +177,7 @@
   row.addEventListener('submit', (e) => {
     e.preventDefault();
     const text = input.value.trim(); if (!text) return;
-    status.textContent = 'Void received: ' + text; input.value = '';
+    status.textContent = 'Verse received: ' + text; input.value = '';
     if (reduce || K === 0) { wake(); return; }
     const b = input.getBoundingClientRect(), ghost = document.createElement('div'), cs = getComputedStyle(input);
     ghost.className = 'eaten'; ghost.textContent = text; ghost.style.left = b.left + 'px'; ghost.style.top = b.top + 'px'; ghost.style.height = b.height + 'px'; ghost.style.lineHeight = b.height + 'px';

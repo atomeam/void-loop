@@ -1,7 +1,7 @@
 // What a run takes next, in one place (cleanup step 4, 2026-10-11; it replaces reading several lists): the cleanup steps
 // not done yet, then the open items on the frontier with where each came from, then the miss board grouped into skills
 // (tools/next-skill.mjs, needs VOID_MISSES_TOKEN or VOID_OWNER_TOKEN; without one, the public snapshot domains/void.misses.json
-// that misses-snapshot.yml commits daily). Void's own asks are in domains/void.voice.md.
+// that misses-snapshot.yml commits daily). Verse's own asks are in domains/void.voice.md.
 //   node tools/next.mjs          print it
 //   node tools/next.mjs --json   the same as JSON (no miss board)
 import { spawnSync } from 'node:child_process';
@@ -26,9 +26,9 @@ export function snapshotLines(snap, top = 10) {
 
 const VOICE = new URL('../domains/void.voice.md', import.meta.url);
 const normAsk = (t) => String(t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-/** Void's asks across all its reflections, most repeated first, without the ones a ledger entry built. voice: the text of
+/** Verse's asks across all its reflections, most repeated first, without the ones a ledger entry built. voice: the text of
  *  domains/void.voice.md; ledger: void.growth.json entries; links: void.asks.json links. A builder or an automation
- *  that finds the queue empty takes the top one: Void asked for it again and again, so it is wanted, and it is unique by
+ *  that finds the queue empty takes the top one: Verse asked for it again and again, so it is wanted, and it is unique by
  *  construction (one row per wording). Pure. */
 export function repeatedAsks(voice, ledger = [], links = []) {
   const rows = new Map();
@@ -60,7 +60,7 @@ export function takeNext({ steps = [], open = [], targets: after = [] }) {
   if (steps.length) return 'cleanup step ' + steps[0].n + ': ' + steps[0].title;
   if (open.length) return open[0].title + ' (the first open item nobody has claimed; check open PRs and the agent log)';
   if (after.length) return after[0].title + ' (the first target after the cleanup)';
-  return "Void's top ask in domains/void.voice.md, then write the next targets on the frontier";
+  return "Verse's top ask in domains/void.voice.md, then write the next targets on the frontier";
 }
 
 function main(argv) {
@@ -73,9 +73,9 @@ function main(argv) {
   for (const o of s.open) console.log(`  - ${o.title}${o.from ? '  [' + o.from + ']' : ''}`);
   if (s.targets.length) console.log(`\nTargets after the cleanup (${s.targets.length}):`);
   for (const t of s.targets) console.log('  - ' + t.title);
-  try { // the site Void has set its sights on, and the next feature to build one notch past it (tools/targets.mjs)
+  try { // the site Verse has set its sights on, and the next feature to build one notch past it (tools/targets.mjs)
     for (const t of loadTargets()) { const sc = scoreOf(t); if (sc.done) continue;
-      console.log(`\nTarget: ${sc.site}, beats ${sc.beats} of ${sc.total}.` + (sc.next ? ` Next: ${sc.next.id}. They: ${sc.next.theirs}. Void, one notch past: ${sc.next.plus_one}` : '')); }
+      console.log(`\nTarget: ${sc.site}, beats ${sc.beats} of ${sc.total}.` + (sc.next ? ` Next: ${sc.next.id}. They: ${sc.next.theirs}. Verse, one notch past: ${sc.next.plus_one}` : '')); }
   } catch (_) {}
   try { // Verse's review: where builders overrode it, by rule; the noisiest rule is the next reviewer fix (tools/review-overrides.mjs)
     const o = overrideSummary(reviewOverrides());
@@ -94,7 +94,7 @@ function main(argv) {
   } else console.log('\nThe miss board needs VOID_MISSES_TOKEN (node tools/next-skill.mjs); the public snapshot domains/void.misses.json is not written yet (misses-snapshot.yml, daily).');
   const va = voidAsks();
   if (va.length) console.log(`\nVoid asks for, most repeated first (${va.length} not built yet; build the top one and pass --asked to finish.mjs):\n` + va.slice(0, 8).map((a) => `  - ${a.times}× ${a.ask}${a.small ? ' (small)' : ''}`).join('\n'));
-  else console.log("Void's own asks: the top of domains/void.voice.md.");
+  else console.log("Verse's own asks: the top of domains/void.voice.md.");
   return 0;
 }
 

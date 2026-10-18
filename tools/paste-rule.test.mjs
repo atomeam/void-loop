@@ -10,12 +10,12 @@ test('a long pasted discussion is a paste; a question is not', () => {
   assert.match(PASTE_RULE, /not a question/);
 });
 
-test('the initial self route keeps a paste off the ask-about-Void path', async () => {
+test('the initial self route keeps a paste off the ask-about-Verse path', async () => {
   const src = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8');
   assert.match(src, /const self = isSelfAsk\(ask\) && !isPaste\(ask\)/);
 });
 
-test('the semantic self route also keeps a paste off the ask-about-Void path', async () => {
+test('the semantic self route also keeps a paste off the ask-about-Verse path', async () => {
   const src = (await import('node:fs')).readFileSync(new URL('../void-live-deploy/functions/api/answer.js', import.meta.url), 'utf8');
   assert.match(src, /if \(!self && !isPaste\(ask\) && route\.kind === 'skill' && route\.skill === 'self'/);
 });

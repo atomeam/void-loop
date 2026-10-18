@@ -1,13 +1,13 @@
-// What A-to-Mind can do next for the people whose pull requests Void reviews (owner, 2026-10-13: "the Void code reviewer should
+// What A-to-Mind can do next for the people whose pull requests Verse reviews (owner, 2026-10-13: "the Verse code reviewer should
 // offer upgrades and be extra helpful ... it could also be trying to sell people on the side our products and expertise").
-// Shown only on other people's repositories, never on Void's own, and only when it fits what the PR holds: at most two
+// Shown only on other people's repositories, never on Verse's own, and only when it fits what the PR holds: at most two
 // lines, each naming one product and its page, no price (the live store sets those) and no claim the review didn't show.
 import { productById, buyUrl } from '../void-live-deploy/lib/products.js';
 
 export const HOME = 'atomeam/void-loop';
 const AUTOMATION = /^\.github\/workflows\/|(?:^|\/)(?:zap|zapier|make|n8n|power-?automate|ifttt|cron)[\w.-]*\.(?:json|ya?ml)$|(?:^|\/)crontab$/i;
 
-/** the lines to add at the end of a review, or [] (Void's own repo, or nothing that fits). Pure. */
+/** the lines to add at the end of a review, or [] (Verse's own repo, or nothing that fits). Pure. */
 export function offerLines({ repo = '', files = [], blocking = 0, deep = false, upgrades = 0 } = {}) {
   if (!repo || repo.toLowerCase() === HOME) return [];
   const out = [], auto = files.filter((f) => AUTOMATION.test(f));

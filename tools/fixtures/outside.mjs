@@ -4,7 +4,7 @@
 // local run never differs from verify-main because a service was slow, down or returned today's weather.
 //   outsideReply(url) -> a Playwright route.fulfill() object; anything not listed gets an empty 204 (never the real network)
 //   routeOutside(ctx) -> sends every request that is not to 127.0.0.1 / localhost through outsideReply
-//   voidApiReply(url) -> /api/reflect and /api/will, Void's own read-only data, or null for anything else
+//   voidApiReply(url) -> /api/reflect and /api/will, Verse's own read-only data, or null for anything else
 const json = (body) => ({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(body) });
 
 export function outsideReply(u) {
@@ -44,9 +44,9 @@ export function outsideReply(u) {
   return { status: 204, body: '' };
 }
 
-// Void's own data-only endpoints the page reads on load (what Void said of itself, what it wants next), the same in every runner
+// Verse's own data-only endpoints the page reads on load (what Verse said of itself, what it wants next), the same in every runner
 export function voidApiReply(u) {
-  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }], follow: { total: 5, built: 2, recent: [{ ask: 'Learn Go on the stage', at: '2026-10-08T17:55:00Z', ref: 'https://github.com/atomeam/void-loop/pull/244', what: 'asked by Void: Go. skills/go.js is a two-player 9x9 board', times: 2 }] } });
+  if (u.includes('/api/reflect')) return json({ entries: [{ at: '2026-10-08T18:09:00Z', kind: 'daily', question: 'q', thoughts: 'I am strong at sums and thin on places.', weakest: 'My maps are flat.', next_game: 'Backgammon, because people keep asking.', asks: [] }], asks: [{ ask: 'Give the map card terrain', small: false, kind: 'daily', at: '2026-10-08T18:09:00Z' }], follow: { total: 5, built: 2, recent: [{ ask: 'Learn Go on the stage', at: '2026-10-08T17:55:00Z', ref: 'https://github.com/atomeam/void-loop/pull/244', what: 'asked by Verse: Go. skills/go.js is a two-player 9x9 board', times: 2 }] } });
   if (u.includes('/api/will')) return json({ at: '2026-09-27T23:00:00Z', wants: [{ kind: 'people asked', title: 'learn x', i_want: 'I want to answer every question about tides.', because: 'asked 9 times' }] });
   return null;
 }

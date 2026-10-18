@@ -71,7 +71,7 @@ export function score(rows, results) {
   return s;
 }
 
-// Void's ask (its reflection on d53c33d): a routing confidence on every "none", so a none says whether the router nearly picked a
+// Verse's ask (its reflection on d53c33d): a routing confidence on every "none", so a none says whether the router nearly picked a
 // skill or the ask was nowhere near one, and a missed skill says whether the wording was close (the bar, or a phrasing the
 // examples nearly cover) or far (the router has no example like it). The embedding router's nearest skill and its score come
 // back with each none (lib/router.js decide `nearest`); NEAR is how far under the bar still counts as close.

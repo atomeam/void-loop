@@ -1,13 +1,13 @@
 /**
  * family-health skill - "show me your skill families", "family health", "how healthy are your skills": every skill family and how
  * far its skills are checked, from skills/families.json (tools/families.mjs; ratings from evidence only, never self-described).
- * Asked by Void (its reflection of 2026-10-15): "Implement the 'family-health' dashboard card to visualize evidence ratings
+ * Asked by Verse (its reflection of 2026-10-15): "Implement the 'family-health' dashboard card to visualize evidence ratings
  * (proven, checked, tested, experiment) for all 9 families."
  * The card: the totals on top, one row per family with a stacked bar of its proven / checked / tested / experiment counts; tap a
  * family to list its skills with their rating and the reason (the `why` the evidence gave). One accent (--d-key) at four strengths.
- * Each skill also shows when it was last tested and its benchmark success rate (asked by Void, ask-20261013-1823-1), straight from
+ * Each skill also shows when it was last tested and its benchmark success rate (asked by Verse, ask-20261013-1823-1), straight from
  * families.json's `last_tested`, `last_tested_by` and `success_rate`. Nothing about how often people use a skill is shown or
- * known to Void: no usage, no popular or unused (the owner's rule: no behaviour tracking). Asked by Void twice ("a 'last-used' timestamp for every
+ * known to Verse: no usage, no popular or unused (the owner's rule: no behaviour tracking). Asked by Verse twice ("a 'last-used' timestamp for every
  * skill ... to identify which parts of my skills are becoming dead weight"): each skill's last-used day is shown for THIS DEVICE only, read from
  * this browser's own storage (lib/skill-use.js, written when a skill answers: a day, never a word of any ask); nothing is sent or counted anywhere.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
@@ -34,11 +34,11 @@ const SHADE = {
   experiment: 'rgba(255,255,255,.10)',
 };
 
-const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|v01d\'?s\\s+)?'
+const WHEN = new RegExp('^(?:(?:show|open|give|list)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|(?:v01d|verse)\'?s\\s+)?'
   + '(?:skill(?:s)?\\s+famil(?:y|ies)(?:\\s+(?:health|ratings?|dashboard))?|(?:skill\\s+)?family\\s+health(?:\\s+(?:card|dashboard))?|skill\\s+health|'
   + 'evidence\\s+ratings?|skill\\s+ratings?)$'
-  + '|^how\\s+(?:healthy|well[\\s-]tested|well[\\s-]checked|proven|reliable)\\s+(?:are|is)\\s+(?:your|void\'?s|v01d\'?s)\\s+skills$'
-  + '|^how\\s+(?:healthy|well[\\s-]tested)\\s+(?:are|is)\\s+(?:your|void\'?s|v01d\'?s)\\s+skill\\s+families$', 'i');
+  + '|^how\\s+(?:healthy|well[\\s-]tested|well[\\s-]checked|proven|reliable)\\s+(?:are|is)\\s+(?:your|void\'?s|v01d\'?s|verse\'?s)\\s+skills$'
+  + '|^how\\s+(?:healthy|well[\\s-]tested)\\s+(?:are|is)\\s+(?:your|void\'?s|v01d\'?s|verse\'?s)\\s+skill\\s+families$', 'i');
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
 export const asksHealth = (t) => WHEN.test(norm(t));
 
@@ -48,7 +48,7 @@ export function healthRows(fam) {
   const rows = families.map((f) => {
     const count = Object.fromEntries(TIERS.map((t) => [t, f.skills.filter((s) => s && s.tier === t).length]));
     const skills = f.skills.filter((s) => s && s.name).slice().sort((a, b) => TIERS.indexOf(a.tier) - TIERS.indexOf(b.tier) || String(a.name).localeCompare(String(b.name)));
-    const sources = f.sources && typeof f.sources.words === 'string' ? f.sources : null; // source reliability (asked by Void; tools/source-reliability.mjs)
+    const sources = f.sources && typeof f.sources.words === 'string' ? f.sources : null; // source reliability (asked by Verse; tools/source-reliability.mjs)
     return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), for: String(f.for || ''), total: skills.length, count, skills, ...(sources ? { sources } : {}) };
   });
   const totals = Object.fromEntries(TIERS.map((t) => [t, rows.reduce((n, r) => n + r.count[t], 0)]));
@@ -89,7 +89,7 @@ export function skillsHtml(esc, row, used = null, now = Date.now()) {
   }).join('') + '</ul>';
 }
 
-/** on this device: the skills idle 30 days or more, and the ones never used here, as one line (asked by Void: "which parts of my skills are becoming dead weight"). Pure. */
+/** on this device: the skills idle 30 days or more, and the ones never used here, as one line (asked by Verse: "which parts of my skills are becoming dead weight"). Pure. */
 export function deadHtml(esc, H, used, now = Date.now()) {
   if (!used) return '';
   const names = H.rows.flatMap((r) => r.skills.map((s) => s.name)), dw = deadWeight(names, used, now), seen = names.length - dw.never.length;
@@ -97,7 +97,7 @@ export function deadHtml(esc, H, used, now = Date.now()) {
     + (dw.idle.length ? '; ' + dw.idle.length + ' idle for 30 days or more (' + dw.idle.slice(0, 5).map(esc).join(', ') + (dw.idle.length > 5 ? ', and ' + (dw.idle.length - 5) + ' more' : '') + ')' : '') + '. It is kept in this browser only and never sent.</div>';
 }
 
-/** which families lift the daily growth score and which drag it (asked by Void), above the families: the three each way, in score points, from lib/better.js familyDrivers.
+/** which families lift the daily growth score and which drag it (asked by Verse), above the families: the three each way, in score points, from lib/better.js familyDrivers.
  *  better = the rows of void.better.json (the newest sets the score and how many parts it has). '' without families. Pure. */
 export function driversHtml(esc, fam, better = null) {
   const last = Array.isArray(better) ? better.filter((r) => r && Number.isFinite(+r.score)).slice(-1)[0] : null;
@@ -120,7 +120,7 @@ export function velocityWords(v) {
   return 'velocity: ' + v.trend + (v.trend === 'steady' ? '' : ' (' + (d > 0 ? '+' : '\u2212') + Math.abs(d) + ' points)') + ' since about a day ago';
 }
 
-// the quick filter (asked by Void, 2026-10-18: "a 'quick-filter' toggle to the list card so users can instantly pivot between 'proven' and 'experiment'
+// the quick filter (asked by Verse, 2026-10-18: "a 'quick-filter' toggle to the list card so users can instantly pivot between 'proven' and 'experiment'
 // skills without leaving the stage"): All / Proven / Experiment over the families' skill lists. A filter opens every family that has a skill of
 // that rating and hides the rest; All puts the card back as it was.
 export const FILTERS = [['all', 'All'], ['proven', 'Proven'], ['experiment', 'Experiment']];

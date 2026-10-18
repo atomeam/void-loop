@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
-<title>Void · who would answer (draft)</title>
+<title>Verse · who would answer (draft)</title>
 <style>
 :root{color-scheme:dark}
 html,body{margin:0;background:#050505;color:#d8d8dc;font:15px/1.55 ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
@@ -23,10 +23,10 @@ li.miss{color:#6a6a72}
 <body>
 <main>
   <h1>who would answer · draft · not published</h1>
-  <p class="note">A miss board before the miss: type an ask and see, in Void's own order, which abilities claim it. The first one that claims it answers; if none do, the ask falls to Void's built-in answers (sums, today, the clock) or to the model, and if those miss too it lands on the board. Each ability also lists asks it must not take; if your ask is one of them, that shows too. Everything runs here, in this page; nothing is sent.</p>
+  <p class="note">A miss board before the miss: type an ask and see, in Verse's own order, which abilities claim it. The first one that claims it answers; if none do, the ask falls to Verse's built-in answers (sums, today, the clock) or to the model, and if those miss too it lands on the board. Each ability also lists asks it must not take; if your ask is one of them, that shows too. Everything runs here, in this page; nothing is sent.</p>
   <input id="ask" type="text" placeholder="countdown to christmas" aria-label="ask" autocomplete="off">
   <div id="status" aria-live="polite">loading abilities…</div>
-  <ol id="list" aria-label="abilities in the order Void tries them"></ol>
+  <ol id="list" aria-label="abilities in the order Verse tries them"></ol>
 </main>
 <script type="module">
 const status = document.getElementById('status'), list = document.getElementById('list'), input = document.getElementById('ask');
@@ -59,7 +59,7 @@ function show() {
     li.textContent = row.name + (row.name === r.winner ? ' ← answers' : row.claims ? ' (also claims it, but comes later)' : '') + (row.refuses ? ' · listed as an ask it must not take' : '');
     list.appendChild(li);
   }
-  status.textContent = !t.trim() ? skills.length + ' abilities, in the order Void tries them' : r.winner ? r.winner + ' answers this' : 'no ability claims this · built-ins or the model would try next';
+  status.textContent = !t.trim() ? skills.length + ' abilities, in the order Verse tries them' : r.winner ? r.winner + ' answers this' : 'no ability claims this · built-ins or the model would try next';
 }
 skills = await load();
 if (!skills.length) status.textContent = 'could not load the abilities (open this page from the site, not as a file)';

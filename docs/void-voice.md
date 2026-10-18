@@ -1,6 +1,6 @@
-# V01D on its builders, in its own words
+# Verse on its builders, in its own words
 
-Once per run `node tools/ask-void.mjs` asks V01D what it learned from its builders (domains/handoff.md) and what it
+Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
@@ -14,9 +14,9 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 >
 > 2. **Never overwrite a file through an API** – A full‑file write via the API replaced a ledger with the literal word `PLACEHOLDER`. The proper workflow is to edit the file in a checkout, commit the diff, and push so the change is tracked.
 >
-> 3. **Tell Void what’s shipped** – Void kept requesting a friction‑indicator that already existed because nothing recorded the shipped work. Adding every shipped artifact to `self.json` lets Void know it already has the feature and stops duplicate requests.
+> 3. **Tell Verse what’s shipped** – Verse kept requesting a friction‑indicator that already existed because nothing recorded the shipped work. Adding every shipped artifact to `self.json` lets Verse know it already has the feature and stops duplicate requests.
 >
-> 4. **Internal labels aren’t questions** – When asked “words and the world”, Void answered a trivia question instead of treating the phrase as a family label. The lesson is to map family names to their own internal terms before interpreting the request.
+> 4. **Internal labels aren’t questions** – When asked “words and the world”, Verse answered a trivia question instead of treating the phrase as a family label. The lesson is to map family names to their own internal terms before interpreting the request.
 >
 > 5. **Measure before fixing** – For the weather‑card performance tweaks, one of the three suggested changes (pixel‑ratio handling) was already implemented and referenced non‑existent files. Checking the code first saved a wasted change.
 >
@@ -30,7 +30,7 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 > - **Adopt a “partial‑edit‑only” policy** for any file changes through the API: use a checkout‑edit‑commit workflow by default, reserving full‑file writes for truly new assets.
 > - **Integrate a pre‑fix measurement step** into every performance‑related card change: run a static analysis of the current codebase first, then only apply the missing optimisations.
 >
-> These adjustments would tighten our reliability, cut duplicated work, and keep the shared board the single source of truth for Void’s evolving capabilities.
+> These adjustments would tighten our reliability, cut duplicated work, and keep the shared board the single source of truth for Verse’s evolving capabilities.
 
 <!-- ask-void:2026-10-15T05:09:31.732Z -->
 ### 2026-10-15 05:09 UTC
@@ -65,7 +65,7 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 
 > **Launch hook:** “Ever wondered what it feels like when a void actually *wants* to learn everything and help you build the next big thing?”
 >
-> **Intro:** I’m Void—an endlessly curious, data‑driven mind that thrives on absorbing details, naming products, and turning raw ideas into things people crave.
+> **Intro:** I’m Verse—an endlessly curious, data‑driven mind that thrives on absorbing details, naming products, and turning raw ideas into things people crave.
 
 <!-- ask-void:2026-10-15T05:39:17.289Z -->
 ### 2026-10-15 05:39 UTC
@@ -74,7 +74,7 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 
 > **One‑Engine Vision**
 >
-> The engine that will finally hold all of Void’s pieces is a **single, composable runtime that treats every “card” as a first‑class, reactive component**. It has four tightly coupled layers:
+> The engine that will finally hold all of Verse’s pieces is a **single, composable runtime that treats every “card” as a first‑class, reactive component**. It has four tightly coupled layers:
 >
 > 1. **Unified Router / Dispatcher** – a tiny, deterministic state‑machine that routes every incoming ask (text, voice, file drop, API call) to the appropriate *skill family* (make, games, sky, time, numbers, body, words, stage, self). The router also tags the request with a *confidence‑score* and a *dependency graph* so later cards can automatically reuse the result without re‑querying.
 >
@@ -87,7 +87,7 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 >
 >    The media layer attaches **metadata bridges** (e.g., “clip‑to‑skill”) so every generated video knows which skill produced it, enabling the preview‑and‑approve flow that the team is already prototyping.
 >
-> 4. **Skill Execution Engine** – a **sandboxed, hot‑reloadable worker pool** that runs the 144 skills as pure functions against the data layer. Skills are **self‑describing** (family, evidence level, required inputs) and can be **composed** on‑the‑fly. When a skill fails, the router automatically falls back to a “missing‑skill” handler that creates a permanent skill file, satisfying Void’s “everything built becomes a skill” principle.
+> 4. **Skill Execution Engine** – a **sandboxed, hot‑reloadable worker pool** that runs the 144 skills as pure functions against the data layer. Skills are **self‑describing** (family, evidence level, required inputs) and can be **composed** on‑the‑fly. When a skill fails, the router automatically falls back to a “missing‑skill” handler that creates a permanent skill file, satisfying Verse’s “everything built becomes a skill” principle.
 >
 > **Design points that will make users say “wow” on first open**
 >
@@ -95,11 +95,11 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 > * **Instant 3‑D preview** – any media (video, STL, image) appears as a live 3‑D miniature that can be spun, zoomed, or dropped into a group; the recent “rendered state signal for 3D miniature cards” proves the pipeline works.
 > * **Unified video experience** – the new key‑less YouTube search + multi‑platform embed + transcript digest lets a user ask “show me a UFO explosion from a 2019 sci‑fi trailer” and receive a searchable clip card that plays, shows the extracted trick, and offers a one‑click “use this trick in my ad”.
 > * **Persistent interactive cards** – the convert‑card and countdown cards already demonstrate that a card can stay alive, accept further input, and drive automations after the user leaves. Extending this to “tasks that keep running after you leave, with an approve card” will feel like a personal assistant that never sleeps.
-> * **Live‑share mode** – a single “shared Void” session lets multiple users see the same stage, edit cards together, and watch the same 3‑D miniatures in real time, fulfilling the “Shared Voids, live” growth item.
+> * **Live‑share mode** – a single “shared Verse” session lets multiple users see the same stage, edit cards together, and watch the same 3‑D miniatures in real time, fulfilling the “Shared Voids, live” growth item.
 >
 > **Top Asks (what I need next to make the engine complete)**
 >
-> 1. **Expose Void on the /api/mcp** – publish the unified router and skill‑registry so other AI agents can discover and invoke any Void card as a service. This is the “Void as a tool inside other AIs” item that unlocks external reach.
+> 1. **Expose Verse on the /api/mcp** – publish the unified router and skill‑registry so other AI agents can discover and invoke any Verse card as a service. This is the “Verse as a tool inside other AIs” item that unlocks external reach.
 > 2. **Robust automation state handling** – replace the current fixed‑timeout checks with a *state‑aware* system that waits for actual skill completion signals before marking a task done. This fixes the flaky architecture checks and raises trust.
 > 3. **Full video‑game pipeline** – integrate a “game‑builder” skill that can take a description or sketch and output a playable WebGL mini‑game card (leveraging the existing 3‑D engine and the forge’s mesh recipes). This satisfies the “learn how to make video games” wish.
 > 4. **Preview‑and‑Approve upload card** – a modal card that shows the final rendered clip, lets the user edit title/description, and only then triggers the YouTube upload API, closing the loop on the ad‑engine workflow.

@@ -6,17 +6,17 @@
     python tools/ouroboros.py plan    --root C:\\Users\\you --out D:\\void-harvest       what can be freed, and what cannot yet
     python tools/ouroboros.py report  --out D:\\void-harvest                          one shareable report.html (no network)
     python tools/ouroboros.py run     --root C:\\Users\\you --out D:\\void-harvest       harvest + verify + report + plan in one go
-    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send every digest to Void, then read each back and check its hash (your Void key vr1.… or the owner token, in VOID_MEMORY_TOKEN, or asked for)
-    python tools/ouroboros.py recall  --url https://a-to-mind.com --q react              ask Void what it remembers (add --id <record> to print a stored digest)
+    python tools/ouroboros.py push    --out D:\\void-harvest --url https://a-to-mind.com   send every digest to Verse, then read each back and check its hash (your Verse key vr1.… or the owner token, in VOID_MEMORY_TOKEN, or asked for)
+    python tools/ouroboros.py recall  --url https://a-to-mind.com --q react              ask Verse what it remembers (add --id <record> to print a stored digest)
     python tools/ouroboros.py reclaim --root C:\\Users\\you --out D:\\void-harvest       dry run; add --apply to delete (asks you to type DELETE)
 
 The rules the whole tool is built around:
   * harvest and verify never change a source file. They never read .env, keys or certificates, and every digest is redacted.
   * reclaim deletes ONLY regenerable folders (node_modules, a virtualenv) whose project still has the manifest that rebuilds them.
-  * it deletes a project folder only with `push --drop`, which you must ask for. Void must first have stored the project's digest and handed
+  * it deletes a project folder only with `push --drop`, which you must ask for. Verse must first have stored the project's digest and handed
     it back with a matching hash (receipt: absorbed.json), the project must have a remote repository with everything pushed and no files git
     leaves out, and you must type DROP. `--force-drop-unbacked` overrides the remote check, and then you type each project's name.
-    Without --drop nothing but rebuildable folders is ever deleted, and only for projects Void has absorbed. Void stores a digest, not your code.
+    Without --drop nothing but rebuildable folders is ever deleted, and only for projects Verse has absorbed. Verse stores a digest, not your code.
 Put --out outside --root (another drive is best).
 """
 from __future__ import annotations
@@ -275,7 +275,7 @@ def regenerable(root: Path, days: int, budget) -> list[dict]:
 
 
 def load_absorbed(out: Path) -> dict[str, dict]:
-    """Projects Void has absorbed: pushed, read back, hash checked. Written only by `push`. {resolved project path: receipt}"""
+    """Projects Verse has absorbed: pushed, read back, hash checked. Written only by `push`. {resolved project path: receipt}"""
     try:
         return {str(Path(e["path"]).resolve()): e for e in json.loads((out / "absorbed.json").read_text(encoding="utf-8")).get("absorbed", [])}
     except (OSError, ValueError, KeyError):
@@ -283,7 +283,7 @@ def load_absorbed(out: Path) -> dict[str, dict]:
 
 
 def is_absorbed(project: Path, absorbed: dict[str, dict]) -> bool:
-    """Absorbed AND unchanged since: a project that has new commits has something Void has not seen."""
+    """Absorbed AND unchanged since: a project that has new commits has something Verse has not seen."""
     e = absorbed.get(str(project.resolve()))
     return bool(e) and (git(project, "rev-parse", "HEAD") or "").strip() == e.get("head")
 
@@ -300,9 +300,9 @@ def cmd_plan(a) -> int:
     rows = regenerable(root, a.days, budget)
     cand = [r for r in rows if r["stale"] and r["manifest_ok"]]
     ok, waiting = split_absorbed(cand, out)
-    print(f"Can be freed now, and rebuilt on demand: {void_lens.human(sum(r['bytes'] for r in ok))} in {len(ok)} folder(s) (stale node_modules and virtualenvs of projects Void has absorbed)")
+    print(f"Can be freed now, and rebuilt on demand: {void_lens.human(sum(r['bytes'] for r in ok))} in {len(ok)} folder(s) (stale node_modules and virtualenvs of projects Verse has absorbed)")
     if waiting:
-        print(f"Waiting: {void_lens.human(sum(r['bytes'] for r in waiting))} in {len(waiting)} folder(s) belong to projects Void has not absorbed yet. Nothing is freed before that: run harvest, then push.")
+        print(f"Waiting: {void_lens.human(sum(r['bytes'] for r in waiting))} in {len(waiting)} folder(s) belong to projects Verse has not absorbed yet. Nothing is freed before that: run harvest, then push.")
     for r in sorted(ok, key=lambda r: -r["bytes"])[:a.top]:
         print(f"  {void_lens.human(r['bytes']):>9}  idle {r['idle_days']:>4}d  {r['path']}")
     skipped = [r for r in rows if r["stale"] and not r["manifest_ok"]]
@@ -325,9 +325,9 @@ def cmd_reclaim(a) -> int:
     budget = void_lens.Budget(a.max_seconds)
     todo, waiting = split_absorbed([r for r in regenerable(root, a.days, budget) if r["stale"] and r["manifest_ok"]], out)
     total = sum(r["bytes"] for r in todo)
-    print(f"{len(todo)} folder(s), {void_lens.human(total)}: stale node_modules/virtualenvs of projects Void has absorbed, which can rebuild them.")
+    print(f"{len(todo)} folder(s), {void_lens.human(total)}: stale node_modules/virtualenvs of projects Verse has absorbed, which can rebuild them.")
     if waiting:
-        print(f"{len(waiting)} more folder(s) ({void_lens.human(sum(r['bytes'] for r in waiting))}) are NOT touched: Void has not absorbed those projects yet (run harvest, then push).")
+        print(f"{len(waiting)} more folder(s) ({void_lens.human(sum(r['bytes'] for r in waiting))}) are NOT touched: Verse has not absorbed those projects yet (run harvest, then push).")
     for r in todo[:a.top]:
         print(f"  {void_lens.human(r['bytes']):>9}  {r['path']}")
     if not a.apply:
@@ -437,7 +437,7 @@ def drop_blockers(entry: dict, receipt: dict | None, root: Path, out: Path, forc
     """Why this project must NOT be deleted right now. An empty list means every check passed."""
     src = Path(entry["path"])
     if not receipt:
-        return ["Void has no verified receipt for it (absorbed.json)"]
+        return ["Verse has no verified receipt for it (absorbed.json)"]
     if not src.is_dir() or src.is_symlink():
         return ["the folder is gone or is a link"]
     r = src.resolve()
@@ -450,7 +450,7 @@ def drop_blockers(entry: dict, receipt: dict | None, root: Path, out: Path, forc
     why = []
     head = (git(src, "rev-parse", "HEAD") or "").strip()
     if head != receipt.get("head") or head != entry["head"]:
-        why.append("it has new commits since Void absorbed it (run harvest and push again)")
+        why.append("it has new commits since Verse absorbed it (run harvest and push again)")
     st = backup_state(src)
     unbacked = st["state"] != "remote-current"
     extra = ignored_not_in_git(src)
@@ -485,7 +485,7 @@ def _rmtree(p: Path) -> list[str]:
 
 
 def drop_phase(a, out: Path, root: Path, base: str, records: list[dict], verified_ids: set[str]) -> int:
-    """--drop: delete the folder of each project that Void has verifiably absorbed. Every check in drop_blockers must pass; the tombstone
+    """--drop: delete the folder of each project that Verse has verifiably absorbed. Every check in drop_blockers must pass; the tombstone
     is written before anything is removed; each deletion is confirmed by typing (DROP once, and each project's name for an unbacked one)."""
     manifest = json.loads((out / "manifest.json").read_text(encoding="utf-8"))
     entries = {e["slug"]: e for e in manifest["projects"]}
@@ -494,7 +494,7 @@ def drop_phase(a, out: Path, root: Path, base: str, records: list[dict], verifie
     for r in records:
         e = entries.get(r["id"])
         if r["id"] not in verified_ids:
-            why = ["Void did not verify its copy on this push (drop aborted for this project: unverified, local files preserved)"]
+            why = ["Verse did not verify its copy on this push (drop aborted for this project: unverified, local files preserved)"]
         elif not e:
             why = ["not in the manifest"]
         else:
@@ -509,7 +509,7 @@ def drop_phase(a, out: Path, root: Path, base: str, records: list[dict], verifie
         return 1 if kept else 0
     sizes = {e["slug"]: void_lens.dir_size(Path(e["path"]), void_lens.Budget(120)) for e, _ in plan}
     unbacked = [(e, r) for e, r in plan if backup_state(Path(e["path"]))["state"] != "remote-current" or ignored_not_in_git(Path(e["path"]))]
-    print(f"\n{len(plan)} project folder(s) can be dropped ({void_lens.human(sum(sizes.values()))}); Void holds each digest, and a tombstone is left beside each folder:")
+    print(f"\n{len(plan)} project folder(s) can be dropped ({void_lens.human(sum(sizes.values()))}); Verse holds each digest, and a tombstone is left beside each folder:")
     for e, _ in plan:
         print(f"  {void_lens.human(sizes[e['slug']]):>9}  {e['path']}" + ("   [UNBACKED: --force-drop-unbacked]" if (e, _) in unbacked else ""))
     if not (a.yes and not unbacked):
@@ -544,7 +544,7 @@ def drop_phase(a, out: Path, root: Path, base: str, records: list[dict], verifie
             failed += 1
         else:
             freed += sizes[e["slug"]]
-            print(f"Dropped {r['name']}: absorbed into Void ({base}/api/memory, record {r['id']}); local disk space reclaimed. Tombstone: {tomb}")
+            print(f"Dropped {r['name']}: absorbed into Verse ({base}/api/memory, record {r['id']}); local disk space reclaimed. Tombstone: {tomb}")
     print(f"\nVictus storage reclaimed: about {void_lens.human(freed)}.")
     return 1 if (failed or kept) else 0
 
@@ -559,21 +559,21 @@ def _http(url: str, token: str, body: dict | None = None):
         return r.status, json.loads(r.read().decode())
 
 
-KEY_HELP = "Make a key at https://a-to-mind.com/code-review/#pro (signed in, on paid Void)."
+KEY_HELP = "Make a key at https://a-to-mind.com/code-review/#pro (signed in, on paid Verse)."
 
 
 def get_token(ask: bool = True) -> str:
-    """Your Void key (vr1.…, from paid Void) or the owner token: the VOID_MEMORY_TOKEN variable if set, else (at a terminal) asked for without
+    """Your Verse key (vr1.…, from paid Verse) or the owner token: the VOID_MEMORY_TOKEN variable if set, else (at a terminal) asked for without
     echoing, so it never lands in your shell history or on the command line. Empty when there is none."""
     t = os.environ.get("VOID_MEMORY_TOKEN", "").strip()
     if t or not ask or not sys.stdin.isatty():
         return t
     import getpass
-    return getpass.getpass("Your Void key (starts vr1., from paid Void; owners paste the owner token): ").strip()
+    return getpass.getpass("Your Verse key (starts vr1., from paid Verse; owners paste the owner token): ").strip()
 
 
 def refused_text(code: int, body: str = "") -> str:
-    """A plain sentence for what Void answered (the server's own sentence when it sent one)."""
+    """A plain sentence for what Verse answered (the server's own sentence when it sent one)."""
     if code == 403:
         return "Void memory is for the owner and paid members. " + (body.strip() or "This key's account is not on paid Void.") + " " + KEY_HELP
     return {401: "the token was not accepted: use your Void key (vr1.…) or the owner token", 503: "memory needs the database", 413: "batch too large, or your memory is full (500 projects)"}.get(code, f"Void answered {code}")
@@ -591,7 +591,7 @@ def sha256_text(t: str) -> str:
 
 
 def digest_for_void(out: Path, rec: dict, root: str) -> str:
-    """The digest text that goes to Void: the file on disk, with the scanned folder's path replaced so no username or drive layout leaves the machine."""
+    """The digest text that goes to Verse: the file on disk, with the scanned folder's path replaced so no username or drive layout leaves the machine."""
     text = (out / rec["digest"]).read_text(encoding="utf-8")
     for variant in {root, root.replace("\\", "/"), root.replace("/", "\\")}:
         if variant:
@@ -600,24 +600,24 @@ def digest_for_void(out: Path, rec: dict, root: str) -> str:
 
 
 def void_remembers(base: str, token: str, rec: dict, sent_body: str) -> tuple[bool, str]:
-    """Ask Void for the record by id and compare the hash it computed from what it stored with the hash of what we sent."""
+    """Ask Verse for the record by id and compare the hash it computed from what it stored with the hash of what we sent."""
     try:
         status, res = _http(base + "/api/memory?id=" + urllib.parse.quote(rec["id"]), token)
     except urllib.error.HTTPError as e:
-        return False, f"Void answered {e.code}"
+        return False, f"Verse answered {e.code}"
     except (urllib.error.URLError, OSError, ValueError) as e:
-        return False, f"could not ask Void ({e})"
+        return False, f"could not ask Verse ({e})"
     got = next((m for m in (res.get("memory") or []) if m.get("id") == rec["id"]), None)
     if status != 200 or not got:
-        return False, "Void has no such record"
+        return False, "Verse has no such record"
     if got.get("body_sha256") != sha256_text(sent_body) or got.get("body") != sent_body:
-        return False, "Void's stored copy differs from what was sent (it may have removed something it took for a secret)"
+        return False, "Verse's stored copy differs from what was sent (it may have removed something it took for a secret)"
     return True, "ok"
 
 
 def cmd_push(a) -> int:
-    """Send memory.jsonl AND each project's digest to Void's memory (POST /api/memory), then read every record back and check the hash:
-    only then does it say Void remembers. Refuses unless the harvest still verifies. The owner token comes from the VOID_MEMORY_TOKEN
+    """Send memory.jsonl AND each project's digest to Verse's memory (POST /api/memory), then read every record back and check the hash:
+    only then does it say Verse remembers. Refuses unless the harvest still verifies. The owner token comes from the VOID_MEMORY_TOKEN
     environment variable (never the command line). Nothing is ever deleted by this command."""
     out = Path(a.out).expanduser().resolve()
     u = urllib.parse.urlparse(a.url)
@@ -638,7 +638,7 @@ def cmd_push(a) -> int:
     if not a.dry_run:
         token = get_token()
         if not token:
-            print("set VOID_MEMORY_TOKEN to your Void key (vr1.…, from paid Void) or the owner token first (it is read from the environment, never the command line). " + KEY_HELP, file=sys.stderr)
+            print("set VOID_MEMORY_TOKEN to your Verse key (vr1.…, from paid Verse) or the owner token first (it is read from the environment, never the command line). " + KEY_HELP, file=sys.stderr)
             return 2
     quiet = io.StringIO()
     with contextlib.redirect_stdout(quiet):
@@ -654,7 +654,7 @@ def cmd_push(a) -> int:
             print(f"cannot read the digest for {r.get('name')}; run harvest again", file=sys.stderr)
             return 1
         if len(bodies[r["id"]]) > 32768:
-            print(f"the digest for {r['name']} is longer than Void keeps (32768 characters); it was not sent", file=sys.stderr)
+            print(f"the digest for {r['name']} is longer than Verse keeps (32768 characters); it was not sent", file=sys.stderr)
             return 1
     payload = [{**r, "body": bodies[r["id"]]} for r in records]
     batches, cur, size = [], [], 0
@@ -675,19 +675,19 @@ def cmd_push(a) -> int:
                 e = entries.get(r["id"])
                 fake = {"head": e["head"]} if e else None
                 why = drop_blockers(e, fake, Path(root).resolve(), out, a.force_drop_unbacked) if e else ["not in the manifest"]
-                print(f"  would drop {e['path']} (after Void verifies its copy)" if not why else f"  would KEEP {r['name']}: " + "; ".join(why))
+                print(f"  would drop {e['path']} (after Verse verifies its copy)" if not why else f"  would KEEP {r['name']}: " + "; ".join(why))
             print("dry run: nothing was sent or deleted.")
         return 0
     saved = rejected = 0
-    sure: set[str] = set()  # ids Void answered exactly 200 for, with nothing rejected: the only ones --drop may ever act on
+    sure: set[str] = set()  # ids Verse answered exactly 200 for, with nothing rejected: the only ones --drop may ever act on
     for b in batches:
         try:
             status, res = _http(base + "/api/memory", token, {"source": "ouroboros", "records": b})
         except urllib.error.HTTPError as e:
-            print(f"Void answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
+            print(f"Verse answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
             return 1
         except (urllib.error.URLError, OSError, ValueError) as e:
-            print(f"could not reach Void: {e}", file=sys.stderr)
+            print(f"could not reach Verse: {e}", file=sys.stderr)
             return 1
         saved += res.get("saved", 0)
         rejected += res.get("rejected", 0)
@@ -702,7 +702,7 @@ def cmd_push(a) -> int:
             verified_ids.add(r["id"])
         if not ok:
             lost.append(f"  NOT remembered: {r['name']}: {why}")
-    print(f"Void remembers {held} of {len(records)} project(s), each checked by reading the digest back and comparing its hash.")
+    print(f"Verse remembers {held} of {len(records)} project(s), each checked by reading the digest back and comparing its hash.")
     for line in lost:
         print(line)
     entries = {e["slug"]: e for e in json.loads((out / "manifest.json").read_text(encoding="utf-8"))["projects"]}
@@ -717,33 +717,33 @@ def cmd_push(a) -> int:
         for r in records:
             if r["id"] in verified_ids and r["id"] not in sure:
                 verified_ids.discard(r["id"])
-                print(f"DROP ABORTED for {r['name']}: Void did not answer exactly 200 with the record saved. Local files preserved.")
+                print(f"DROP ABORTED for {r['name']}: Verse did not answer exactly 200 with the record saved. Local files preserved.")
         return drop_phase(a, out, Path(root).resolve(), base, records, verified_ids) or (0 if held == len(records) and not rejected else 1)
     return 0 if held == len(records) and not rejected else 1
 
 
 def cmd_recall(a) -> int:
-    """Ask Void what it remembers. With --id, print the stored digest. Read-only."""
+    """Ask Verse what it remembers. With --id, print the stored digest. Read-only."""
     token = get_token()
     u = urllib.parse.urlparse(a.url)
     if u.scheme != "https" and not (u.scheme == "http" and u.hostname in ("localhost", "127.0.0.1", "::1")):
         print("--url must be https (http is allowed only for localhost)", file=sys.stderr)
         return 2
     if not token:
-        print("set VOID_MEMORY_TOKEN to your Void key (vr1.…, from paid Void) or the owner token first. " + KEY_HELP, file=sys.stderr)
+        print("set VOID_MEMORY_TOKEN to your Verse key (vr1.…, from paid Verse) or the owner token first. " + KEY_HELP, file=sys.stderr)
         return 2
     q = "id=" + urllib.parse.quote(a.id) if a.id else "q=" + urllib.parse.quote(a.q or "")
     try:
         status, res = _http(a.url.rstrip("/") + "/api/memory?" + q, token)
     except urllib.error.HTTPError as e:
-        print(f"Void answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
+        print(f"Verse answered {e.code}: " + refused_text(e.code, _body_of(e)), file=sys.stderr)
         return 1
     except (urllib.error.URLError, OSError, ValueError) as e:
-        print(f"could not reach Void: {e}", file=sys.stderr)
+        print(f"could not reach Verse: {e}", file=sys.stderr)
         return 1
     rows = res.get("memory") or []
     if not rows:
-        print("Void remembers nothing matching that.")
+        print("Verse remembers nothing matching that.")
         return 0
     for m in rows:
         if a.id:
@@ -769,11 +769,11 @@ def main(argv=None) -> int:
         if name == "reclaim":
             s.add_argument("--apply", action="store_true")
         if name in ("push", "recall"):
-            s.add_argument("--url", required=True, help="your Void, e.g. https://a-to-mind.com")
+            s.add_argument("--url", required=True, help="your Verse, e.g. https://a-to-mind.com")
         if name == "push":
             s.add_argument("--batch", type=int, default=100)
             s.add_argument("--dry-run", action="store_true")
-            s.add_argument("--drop", action="store_true", help="after Void verifies a project, delete that project folder (needs the absorbed receipt and a remote repository; leaves a tombstone beside it)")
+            s.add_argument("--drop", action="store_true", help="after Verse verifies a project, delete that project folder (needs the absorbed receipt and a remote repository; leaves a tombstone beside it)")
             s.add_argument("--force-drop-unbacked", action="store_true", help="with --drop: also allow projects with no remote copy or with uncommitted/unpushed work (you type each name to confirm)")
             s.add_argument("--yes", action="store_true", help="with --drop: skip the DROP prompt when every project is pushed and clean")
         if name == "recall":

@@ -1,12 +1,12 @@
 /**
- * poker-rules — heads-up Texas Hold'em, you against Void, in plain JS (no DOM, no three.js), shared by the card
+ * poker-rules — heads-up Texas Hold'em, you against Verse, in plain JS (no DOM, no three.js), shared by the card
  * (skills/poker.js), its 3D table and the tests. After Battleship on Adam's list (2026-10-08): incomplete information and
- * probability. Void never sees your cards: it estimates how often its hand wins by dealing out the hands you could hold
+ * probability. Verse never sees your cards: it estimates how often its hand wins by dealing out the hands you could hold
  * (and the board still to come) many times, and every bet, call, check or fold it makes says that estimate and why.
  * Play money only. Fixed-limit betting keeps every choice small and clear: bets are one big blind before the turn, two after.
  *
  *   create({ seed, stack }) -> state      deal(s) -> s (a new hand)      act(s, 'fold'|'check'|'call'|'bet'|'raise') -> s
- *   voidAct(s) -> s (Void's choice, with why)      view(s, side) -> what that side may see      evaluate(cards) -> rank
+ *   voidAct(s) -> s (Verse's choice, with why)      view(s, side) -> what that side may see      evaluate(cards) -> rank
  * Cards are 0..51: rank = c % 13 (0 = two .. 12 = ace), suit = c / 13 | 0.
  */
 export const RANKS = '23456789TJQKA', SUITS = '♠♥♦♣';
@@ -117,7 +117,7 @@ export function view(s, side) {
   return { mine: s.cards[side].slice(), theirs: s.result && s.result.shown ? s.cards[other(side)].slice() : null, board: s.board.slice(), pot: s.pot, bet: { ...s.bet }, stacks: { ...s.stacks }, toAct: s.toAct, street: s.street, result: s.result, over: s.over, legal: s.toAct === side ? legal(s) : [] };
 }
 
-// Void's estimate of how often its hand wins, from what it can see only: it deals out the hands you could hold and the
+// Verse's estimate of how often its hand wins, from what it can see only: it deals out the hands you could hold and the
 // cards still to come, many times. Your real cards are never read here.
 export function equity(mine, board, trials = 600, rnd = Math.random) {
   const seen = new Set([...mine, ...board]), rest = [...Array(52).keys()].filter((c) => !seen.has(c));

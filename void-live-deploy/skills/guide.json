@@ -136,8 +136,8 @@
   },
   {
    "id": "self",
-   "name": "Void itself",
-   "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
+   "name": "Verse itself",
+   "for": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "kind": "family",
    "count": {
     "experiment": 0,
@@ -242,7 +242,7 @@
     },
     {
      "name": "look",
-     "line": "Change the person's own Void (kept in their browser, and on every device once they say \"remember me\" and make a passkey).",
+     "line": "Change the person's own Verse (kept in their browser, and on every device once they say \"remember me\" and make a passkey).",
      "examples": [
       "make my void deep blue",
       "add stars",
@@ -388,7 +388,7 @@
    "chapter": "make",
    "name": "figures",
    "title": "Figures",
-   "line": "A small 3D friend that roams your own Void, notices your cursor, and leaves when you send it away",
+   "line": "A small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away",
    "examples": [
     "summon a sprite",
     "bring a friend",
@@ -627,7 +627,7 @@
    "chapter": "make",
    "name": "draw",
    "title": "Draw",
-   "line": "A drawing card where you describe a brush in words and Void makes it",
+   "line": "A drawing card where you describe a brush in words and Verse makes it",
    "examples": [
     "let me draw",
     "open a canvas",
@@ -673,7 +673,7 @@
    "chapter": "make",
    "name": "throw-off",
    "title": "Throw off",
-   "line": "Figures-first dismiss: click a Void object or person to pick it up",
+   "line": "Figures-first dismiss: click a Verse object or person to pick it up",
    "examples": [
     "throw it off the screen",
     "throw this off the screen",
@@ -688,7 +688,7 @@
    "chapter": "make",
    "name": "swarm",
    "title": "Swarm",
-   "line": "\"swarm\", \"void agents\", \"show me the swarm\", \"watch the agents\": Void's agents on the stage, a field of small minds that cluster near your pointer, explore when…",
+   "line": "\"swarm\", \"void agents\", \"show me the swarm\", \"watch the agents\": Verse's agents on the stage, a field of small minds that cluster near your pointer, explore…",
    "examples": [
     "swarm",
     "void agents",
@@ -945,7 +945,7 @@
    "chapter": "games",
    "name": "connect4",
    "title": "Four in a Row",
-   "line": "Connect Four against Void: \"play connect 4\", \"connect four\", \"four in a row\"",
+   "line": "Connect Four against Verse: \"play connect 4\", \"connect four\", \"four in a row\"",
    "examples": [
     "play connect 4",
     "connect four",
@@ -993,7 +993,7 @@
    "chapter": "games",
    "name": "othello",
    "title": "Reversi",
-   "line": "Othello (Reversi) on the stage, against Void",
+   "line": "Othello (Reversi) on the stage, against Verse",
    "examples": [
     "play othello",
     "lets play othello",
@@ -1017,7 +1017,7 @@
    "chapter": "games",
    "name": "mancala",
    "title": "Mancala",
-   "line": "Kalah on the stage, against Void",
+   "line": "Kalah on the stage, against Verse",
    "examples": [
     "play mancala",
     "mancala",
@@ -1041,7 +1041,7 @@
    "chapter": "games",
    "name": "chess",
    "title": "Chess",
-   "line": "A real wooden chess set on the stage, played against Void",
+   "line": "A real wooden chess set on the stage, played against Verse",
    "examples": [
     "play chess",
     "chess",
@@ -1063,7 +1063,7 @@
    "chapter": "games",
    "name": "checkers",
    "title": "Checkers",
-   "line": "Wooden draughts on the same board and table as chess, played against Void",
+   "line": "Wooden draughts on the same board and table as chess, played against Verse",
    "examples": [
     "play checkers",
     "checkers",
@@ -1107,7 +1107,7 @@
    "chapter": "games",
    "name": "monopoly",
    "title": "The Landlord’s Game",
-   "line": "A property-trading board game with Monopoly's rules, you against 1-3 Void seats",
+   "line": "A property-trading board game with Monopoly's rules, you against 1-3 Verse seats",
    "examples": [
     "play monopoly",
     "play voidquest",
@@ -1131,7 +1131,7 @@
    "chapter": "games",
    "name": "battleship",
    "title": "Sea Battle",
-   "line": "Battleship against Void: \"play battleship\", \"battleship board game\"",
+   "line": "Battleship against Verse: \"play battleship\", \"battleship board game\"",
    "examples": [
     "play battleship",
     "let's play battleship",
@@ -1155,7 +1155,7 @@
    "chapter": "games",
    "name": "poker",
    "title": "Poker",
-   "line": "Heads-up Texas Hold'em against Void for play money: \"play poker\", \"texas hold'em\"",
+   "line": "Heads-up Texas Hold'em against Verse for play money: \"play poker\", \"texas hold'em\"",
    "examples": [
     "play poker",
     "let's play poker",
@@ -1177,7 +1177,7 @@
    "chapter": "games",
    "name": "fireworks",
    "title": "Fireworks",
-   "line": "A cooperative card game in the style of Hanabi, you and Void on the same side: \"play fireworks\", \"play hanabi\", \"a co-op game\"",
+   "line": "A cooperative card game in the style of Hanabi, you and Verse on the same side: \"play fireworks\", \"play hanabi\", \"a co-op game\"",
    "examples": [
     "play fireworks",
     "play hanabi",
@@ -1295,7 +1295,7 @@
    "chapter": "games",
    "name": "pong",
    "title": "Pong",
-   "line": "Void Pong against Verse: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",
+   "line": "Verse Pong against Verse: \"pong\", \"play pong\", \"void pong\", \"table tennis game\"",
    "examples": [
     "pong",
     "play pong",
@@ -1310,7 +1310,7 @@
    "chapter": "games",
    "name": "snake",
    "title": "Snake",
-   "line": "Void Snake against Verse: \"snake\", \"play snake\", \"void snake\", \"snake game\"",
+   "line": "Verse Snake against Verse: \"snake\", \"play snake\", \"void snake\", \"snake game\"",
    "examples": [
     "snake",
     "play snake",
@@ -1867,7 +1867,7 @@
    "chapter": "time",
    "name": "today",
    "title": "Today",
-   "line": "\"what did you do today\": Void's own recent actions from this device's loop log",
+   "line": "\"what did you do today\": Verse's own recent actions from this device's loop log",
    "examples": [
     "what did you do today",
     "what have you done today",
@@ -2394,7 +2394,7 @@
    "chapter": "body",
    "name": "period",
    "title": "Period",
-   "line": "A period log kept in your own Void (this browser only), and the predictions it unlocks",
+   "line": "A period log kept in your own Verse (this browser only), and the predictions it unlocks",
    "examples": [
     "my period started today",
     "my period started on october 1",
@@ -2496,7 +2496,7 @@
    "chapter": "body",
    "name": "feelings",
    "title": "Feelings",
-   "line": "Asks about Void's own heart and mind, answered in its own plain words, here, with no model and no web search",
+   "line": "Asks about Verse's own heart and mind, answered in its own plain words, here, with no model and no web search",
    "examples": [
     "do you love me",
     "do you have feelings",
@@ -3067,7 +3067,7 @@
    "chapter": "life",
    "name": "service-health",
    "title": "Service health",
-   "line": "(asked by Void, 2026-10-16: \"Create a 'Service Health' dashboard card that monitors the connectivity and response speed of the new adapters",
+   "line": "(asked by Verse, 2026-10-16: \"Create a 'Service Health' dashboard card that monitors the connectivity and response speed of the new adapters",
    "examples": [
     "service health",
     "are the services up",
@@ -3338,7 +3338,7 @@
    "chapter": "stage",
    "name": "tab",
    "title": "Tab",
-   "line": "The card the Void extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\"…",
+   "line": "The card the Verse extension's side panel shows for the tab you point it at (Alt+Shift+V): its title, address and selection, a draft box with \"put in the page\"…",
    "examples": [
     "put in the page",
     "draft for me"
@@ -3482,7 +3482,7 @@
    "chapter": "stage",
    "name": "showcase",
    "title": "Showcase",
-   "line": "\"look what I made\": void puts what it built since you were last here on the real stage, one thing at a time, instead of a changelog to read",
+   "line": "\"look what I made\": verse puts what it built since you were last here on the real stage, one thing at a time, instead of a changelog to read",
    "examples": [
     "show me what you made",
     "what's new",
@@ -4580,8 +4580,8 @@
   {
    "kind": "opener",
    "chapter": "self",
-   "title": "Void itself",
-   "line": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
+   "title": "Verse itself",
+   "line": "how Verse grows, what it wants, what it can do and sell, and acting on your behalf",
    "skills": [
     "backlog-digest",
     "guide",
@@ -4654,7 +4654,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. Ask, and see.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Ask, and see.",
    "glow": 100,
    "n": 265
   },
@@ -4663,7 +4663,7 @@
    "chapter": "self",
    "name": "growth",
    "title": "Growth",
-   "line": "\"growth\" / \"how have you grown\": Void's growth ledger, newest first",
+   "line": "\"growth\" / \"how have you grown\": Verse's growth ledger, newest first",
    "examples": [
     "tester log",
     "what is the site tester testing",
@@ -4735,7 +4735,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 13 browser-suite mentions, 37 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. The void remembers each asking.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. The void remembers each asking.",
    "n": 270
   },
   {
@@ -4788,7 +4788,7 @@
    "chapter": "self",
    "name": "memory",
    "title": "Memory",
-   "line": "Void answers from what it remembers, on the page",
+   "line": "Verse answers from what it remembers, on the page",
    "examples": [
     "what did I build with react",
     "privacy",
@@ -4805,7 +4805,7 @@
    "chapter": "self",
    "name": "watch",
    "title": "Watch",
-   "line": "\"watch this for me\": one thing Void can already fetch and a condition: \"tell me when it's below 0 in Oslo\", \"let me know if https://… says sold out\", \"alert me…",
+   "line": "\"watch this for me\": one thing Verse can already fetch and a condition: \"tell me when it's below 0 in Oslo\", \"let me know if https://… says sold out\", \"alert me…",
    "examples": [
     "tell me when it's below 0 in Oslo",
     "let me know if https://shop.example/x says sold out",
@@ -4822,7 +4822,7 @@
    "chapter": "self",
    "name": "status",
    "title": "Status",
-   "line": "\"void status\" / \"system status\" / \"is void working\": each part of Void checked on the spot, in this browser",
+   "line": "\"void status\" / \"system status\" / \"is void working\": each part of Verse checked on the spot, in this browser",
    "examples": [
     "void status",
     "system status",
@@ -4830,7 +4830,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. Say the words below and it answers.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Say the words below and it answers.",
    "glow": 100,
    "n": 276
   },
@@ -4897,7 +4897,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
-   "flavor": "Among the void itself it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. Say the words below and it answers.",
    "glow": 100,
    "n": 280
   },
@@ -4906,7 +4906,7 @@
    "chapter": "self",
    "name": "services",
    "title": "Services",
-   "line": "What Void sells, with prices, and a Buy link for what is on sale",
+   "line": "What Verse sells, with prices, and a Buy link for what is on sale",
    "examples": [
     "what do you sell",
     "hire you",
@@ -4914,7 +4914,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 9 real asks in the benchmark",
-   "flavor": "Keep this page; the void itself are built on it. The void remembers each asking.",
+   "flavor": "Keep this page; the verse itself are built on it. The void remembers each asking.",
    "glow": 100,
    "n": 281
   },
@@ -4968,11 +4968,11 @@
    "chapter": "self",
    "name": "invite",
    "title": "Invite",
-   "line": "Bring someone into your Void",
+   "line": "Bring someone into your Verse",
    "examples": [
     "invite someone",
     "invite a friend",
-    "invite someone into my Void"
+    "invite someone into my Verse"
    ],
    "tier": "checked",
    "why": "a self-test, 1 browser-suite mention",
@@ -5008,7 +5008,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 browser-suite mentions, 4 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the void itself. Let the stage be the proof.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Let the stage be the proof.",
    "glow": 100,
    "n": 287
   },
@@ -5017,7 +5017,7 @@
    "chapter": "self",
    "name": "films",
    "title": "Films",
-   "line": "Void's own films: where to watch them",
+   "line": "Verse's own films: where to watch them",
    "examples": [
     "films",
     "voids fillms",
@@ -5042,7 +5042,7 @@
    ],
    "tier": "proven",
    "why": "3 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "Proven 3 times over by those who asked, and kept among the void itself. Turn the page when you are done.",
+   "flavor": "Proven 3 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
    "n": 289
   },
@@ -5126,7 +5126,7 @@
    "chapter": "self",
    "name": "miss-jobs",
    "title": "Miss jobs",
-   "line": "Today's misses as jobs: \"turn today's misses into jobs\" lists the top asks Void could not answer that the build queue would take (\"ready to queue\"), ranked and…",
+   "line": "Today's misses as jobs: \"turn today's misses into jobs\" lists the top asks Verse could not answer that the build queue would take (\"ready to queue\"), ranked and…",
    "examples": [
     "turn today's misses into jobs",
     "turn the misses into jobs"
@@ -5251,7 +5251,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 5 real asks in the benchmark",
-   "flavor": "Proven 5 times over by those who asked, and kept among the void itself. Turn the page when you are done.",
+   "flavor": "Proven 5 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
    "n": 303
   },
@@ -5422,7 +5422,7 @@
    "chapter": "minis",
    "name": "battleship",
    "title": "Battleship",
-   "line": "The classic folding case standing in the void: your ocean lies flat with your grey ships on it and Void's pegs where it has fired, and your target board stands…",
+   "line": "The classic folding case standing in the void: your ocean lies flat with your grey ships on it and Verse's pegs where it has fired, and your target board stands…",
    "card": "Battleship",
    "examples": [
     "play battleship",
@@ -5482,7 +5482,7 @@
    "chapter": "minis",
    "name": "checkers",
    "title": "Checkers",
-   "line": "Turned wooden draughts (rosewood for you, oak for Void) on the same maple and walnut board and wooden table as chess",
+   "line": "Turned wooden draughts (rosewood for you, oak for Verse) on the same maple and walnut board and wooden table as chess",
    "card": "Checkers",
    "examples": [
     "play checkers",
@@ -5587,7 +5587,7 @@
    "chapter": "minis",
    "name": "fireworks",
    "title": "Fireworks",
-   "line": "The co-op table standing in the void: Void's five cards stand facing you across the table (you can read them, Void can't), your five stand facing Void",
+   "line": "The co-op table standing in the void: Verse's five cards stand facing you across the table (you can read them, Verse can't), your five stand facing Verse",
    "card": "Fireworks",
    "examples": [
     "play fireworks",
@@ -5602,7 +5602,7 @@
    "chapter": "minis",
    "name": "forge",
    "title": "Forge",
-   "line": "The thing you asked Void to make, standing on a small turntable in the void",
+   "line": "The thing you asked Verse to make, standing on a small turntable in the void",
    "card": "Forge",
    "examples": [
     "forge history",
@@ -5647,7 +5647,7 @@
    "chapter": "minis",
    "name": "growthtree",
    "title": "Growthtree",
-   "line": "Void's growth tree, standing in the growth card: one branch per ledger entry, laid out by skills/growth-tree.js",
+   "line": "Verse's growth tree, standing in the growth card: one branch per ledger entry, laid out by skills/growth-tree.js",
    "card": "Growth",
    "examples": [
     "tester log",
@@ -5822,7 +5822,7 @@
    "chapter": "minis",
    "name": "poker",
    "title": "Poker",
-   "line": "A felt card table standing in the void: your two cards face up in front of you, Void's two face down across the table",
+   "line": "A felt card table standing in the void: your two cards face up in front of you, Verse's two face down across the table",
    "card": "Poker",
    "examples": [
     "play poker",
@@ -5894,7 +5894,7 @@
    "chapter": "minis",
    "name": "swarm",
    "title": "Swarm",
-   "line": "Void's agents: a field of glowing agents, each running its own small state machine from where the pointer is and how many neighbours it has, with separation…",
+   "line": "Verse's agents: a field of glowing agents, each running its own small state machine from where the pointer is and how many neighbours it has, with separation…",
    "card": "Swarm",
    "examples": [
     "swarm",
@@ -5964,7 +5964,7 @@
    "chapter": "minis",
    "name": "void",
    "title": "Void",
-   "line": "Void's own body, shown only where Void shows itself (its self page)",
+   "line": "Verse's own body, shown only where Verse shows itself (its self page)",
    "card": "",
    "examples": [],
    "n": 350

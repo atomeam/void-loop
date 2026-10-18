@@ -1,27 +1,27 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Void by A-to-Mind",
+    "title": "Verse by A-to-Mind",
     "version": "1.0.0",
-    "summary": "Void's public API: code review, Void as an MCP server, and the list of what Void can do.",
-    "description": "Void (https://a-to-mind.com) is a blank stage where anything someone asks for appears. Everything a person sees runs in the browser; open https://a-to-mind.com/?q={ask} to run any ask in plain words. The operations below are the ones meant for other programs. Every other /api route is Void's own (the page, the owner, signed-in accounts) and is left out on purpose. Calls from other websites' pages are refused (no CORS): call from a server, a CLI or an agent. Each connection gets 60 requests a minute per route.",
+    "summary": "Verse's public API: code review, Verse as an MCP server, and the list of what Verse can do.",
+    "description": "Verse (https://a-to-mind.com) is a blank stage where anything someone asks for appears. Everything a person sees runs in the browser; open https://a-to-mind.com/?q={ask} to run any ask in plain words. The operations below are the ones meant for other programs. Every other /api route is Verse's own (the page, the owner, signed-in accounts) and is left out on purpose. Calls from other websites' pages are refused (no CORS): call from a server, a CLI or an agent. Each connection gets 60 requests a minute per route.",
     "contact": { "url": "https://a-to-mind.com/code-review/" },
     "x-logo": { "url": "https://a-to-mind.com/icon-512.png" },
     "x-apisguru-categories": ["developer_tools", "machine_learning"]
   },
   "servers": [{ "url": "https://a-to-mind.com" }],
   "security": [{}],
-  "externalDocs": { "description": "What Void does, for agents and crawlers", "url": "https://a-to-mind.com/llms.txt" },
+  "externalDocs": { "description": "What Verse does, for agents and crawlers", "url": "https://a-to-mind.com/llms.txt" },
   "tags": [
-    { "name": "review", "description": "Void's code review: instant pattern checks free, a closer read by an AI reviewer with a key." },
-    { "name": "mcp", "description": "Void as an MCP server (streamable HTTP, JSON replies)." },
-    { "name": "discovery", "description": "What Void can do and what is on sale." }
+    { "name": "review", "description": "Verse's code review: instant pattern checks free, a closer read by an AI reviewer with a key." },
+    { "name": "mcp", "description": "Verse as an MCP server (streamable HTTP, JSON replies)." },
+    { "name": "discovery", "description": "What Verse can do and what is on sale." }
   ],
   "paths": {
     "/api/films": {
       "get": {
-        "tags": ["review"], "operationId": "listFilms", "summary": "Void's films (paying users)",
-        "description": "For people who pay for Void: send your Void Pro key, your Code Review Pro license key or a signed-in paid account as Bearer. Lists Void's daily films, newest first; each src is a signed link that plays the MP4 (with Range) for 6 hours. Opening a src streams the film. Without a paying credential: 401 with where to buy.",
+        "tags": ["review"], "operationId": "listFilms", "summary": "Verse's films (paying users)",
+        "description": "For people who pay for Verse: send your Verse Pro key, your Code Review Pro license key or a signed-in paid account as Bearer. Lists Verse's daily films, newest first; each src is a signed link that plays the MP4 (with Range) for 6 hours. Opening a src streams the film. Without a paying credential: 401 with where to buy.",
         "security": [{ "reviewKey": [] }],
         "responses": {
           "200": { "description": "The films.", "content": { "application/json": { "schema": { "type": "object", "properties": {
@@ -36,7 +36,7 @@
         "tags": ["review"],
         "operationId": "reportProblem",
         "summary": "Tell the owner something broke (paying users)",
-        "description": "For people who pay for Void: send your Void Pro key, your Code Review Pro license key or a signed-in paid account as Bearer, and say what broke. The answer carries a ticket id; the owner sees every report the same day and answers it. Keys typed into the report are masked before it is kept. Without a paying credential: 401 with where to buy.",
+        "description": "For people who pay for Verse: send your Verse Pro key, your Code Review Pro license key or a signed-in paid account as Bearer, and say what broke. The answer carries a ticket id; the owner sees every report the same day and answers it. Keys typed into the report are masked before it is kept. Without a paying credential: 401 with where to buy.",
         "security": [{ "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -65,7 +65,7 @@
         "tags": ["review"],
         "operationId": "reviewCode",
         "summary": "Review code or a diff",
-        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Void Pro key, a Void Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
+        "description": "Send code or a unified diff. The instant checks (bugs, security holes, risky habits, with line numbers) are free and need no key. With a Verse Pro key, a Verse Code Review Pro license key, or the owner's token in Authorization, the answer also carries the closer read by an AI reviewer (`review: 'model'`), up to a daily cap. For a diff, only the added lines are reviewed and line numbers are in the new file. Code over 60,000 characters is cut there. The free GitHub Action atomeam/void-loop/review@main calls this for every pull request.",
         "security": [{}, { "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -96,13 +96,13 @@
                   "ms": 14,
                   "tier": "free",
                   "review": "rules",
-                  "upgrade": "Void Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
+                  "upgrade": "Verse Code Review Pro adds a closer read by an AI reviewer: https://a-to-mind.com/code-review/"
                 }
               }
             }
           },
           "400": { "$ref": "#/components/responses/BadRequest" },
-          "401": { "description": "The Authorization header carries a review key or license key Void does not know.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "ok": false, "error": "unknown review key" } } } },
+          "401": { "description": "The Authorization header carries a review key or license key Verse does not know.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Error" }, "example": { "ok": false, "error": "unknown review key" } } } },
           "403": { "$ref": "#/components/responses/CrossSite" },
           "413": { "$ref": "#/components/responses/TooBig" },
           "429": { "$ref": "#/components/responses/SlowDown" }
@@ -112,17 +112,17 @@
         "tags": ["review", "discovery"],
         "operationId": "reviewOffer",
         "summary": "What the closer read costs and where to buy it",
-        "description": "Only with the `offer` query parameter. Without it this path lists a signed-in account's own review keys, which needs a Void session and is not part of the public API.",
+        "description": "Only with the `offer` query parameter. Without it this path lists a signed-in account's own review keys, which needs a Verse session and is not part of the public API.",
         "parameters": [
           { "name": "offer", "in": "query", "required": true, "allowEmptyValue": true, "schema": { "type": "string" }, "description": "Present with any value (`?offer`)." }
         ],
         "responses": {
           "200": {
-            "description": "The offer. `standalone` is null whenever Void Code Review Pro is not sold on its own.",
+            "description": "The offer. `standalone` is null whenever Verse Code Review Pro is not sold on its own.",
             "content": {
               "application/json": {
                 "schema": { "$ref": "#/components/schemas/ReviewOffer" },
-                "example": { "product": "Void Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Void Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
+                "example": { "product": "Verse Code Review Pro", "adds": "the closer read: an AI reviewer on every pull request, on top of the free instant checks", "included": { "in": "Verse Pro", "url": "https://moonbeam846.gumroad.com/l/yinmj" }, "standalone": { "url": "https://moonbeam846.gumroad.com/l/dkmcjk" } }
               }
             }
           },
@@ -135,7 +135,7 @@
         "tags": ["mcp"],
         "operationId": "mcpMessage",
         "summary": "Send one MCP JSON-RPC message",
-        "description": "Void's MCP server: the streamable HTTP transport, answered as plain JSON (no event stream). Methods: `initialize`, `tools/list`, `tools/call`, `ping`. The tools are read-only: `review_code` (the instant checks), `review_code_closer` (the closer read; send the same Authorization header /api/review takes), `moon_phase`, `meteor_showers`, a `skill_<name>` tool for each of Void's ten proven read-only skills with the most evidence (answered the way `ask_void` is, with a link to the skill itself) and `skill_health` (the skill-family health metrics from /skills/families.json). A JSON-RPC notification (no `id`) gets 202 with no body. Unparseable JSON still gets 200 with JSON-RPC error -32700. GET answers 405.",
+        "description": "Verse's MCP server: the streamable HTTP transport, answered as plain JSON (no event stream). Methods: `initialize`, `tools/list`, `tools/call`, `ping`. The tools are read-only: `review_code` (the instant checks), `review_code_closer` (the closer read; send the same Authorization header /api/review takes), `moon_phase`, `meteor_showers`, a `skill_<name>` tool for each of Verse's ten proven read-only skills with the most evidence (answered the way `ask_void` is, with a link to the skill itself) and `skill_health` (the skill-family health metrics from /skills/families.json). A JSON-RPC notification (no `id`) gets 202 with no body. Unparseable JSON still gets 200 with JSON-RPC error -32700. GET answers 405.",
         "security": [{}, { "reviewKey": [] }],
         "requestBody": {
           "required": true,
@@ -162,10 +162,10 @@
       "get": {
         "tags": ["discovery"],
         "operationId": "listTools",
-        "summary": "Everything Void can do, with asks to try",
-        "description": "Built live from Void's skills, so it never drifts. Each tool is used by opening https://a-to-mind.com/?q={ask} in a browser; `mcp` describes the MCP endpoint and its tools. This is the one response other websites may read (CORS open).",
+        "summary": "Everything Verse can do, with asks to try",
+        "description": "Built live from Verse's skills, so it never drifts. Each tool is used by opening https://a-to-mind.com/?q={ask} in a browser; `mcp` describes the MCP endpoint and its tools. This is the one response other websites may read (CORS open).",
         "responses": {
-          "200": { "description": "Void's tools.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ToolList" } } } }
+          "200": { "description": "Verse's tools.", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ToolList" } } } }
         }
       }
     },
@@ -176,7 +176,7 @@
         ],
         "operationId": "skillHealth",
         "summary": "How far each skill is checked: proven, checked, tested or experiment",
-        "description": "Every skill Void has, in its family, with a rating earned from evidence only: its own tests, the browser suite, and real asks in the everyday benchmark (proven: all three, or two with 3+ real asks; checked: two; tested: one; experiment: none). `failing` lists the benchmark asks a skill got wrong on the last clean run on main, when there are any. Generated by tools/families.mjs and served as a static file. Void asked for it (2026-10-13): \"a machine-readable 'skill-health' endpoint that returns the 'proven' vs 'tested' status for each skill\".",
+        "description": "Every skill Verse has, in its family, with a rating earned from evidence only: its own tests, the browser suite, and real asks in the everyday benchmark (proven: all three, or two with 3+ real asks; checked: two; tested: one; experiment: none). `failing` lists the benchmark asks a skill got wrong on the last clean run on main, when there are any. Generated by tools/families.mjs and served as a static file. Verse asked for it (2026-10-13): \"a machine-readable 'skill-health' endpoint that returns the 'proven' vs 'tested' status for each skill\".",
         "responses": {
           "200": {
             "description": "The families and each skill's rating.",
@@ -240,7 +240,7 @@
       "reviewKey": {
         "type": "http",
         "scheme": "bearer",
-        "description": "Optional. A Void Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Void Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
+        "description": "Optional. A Verse Pro review key (`vr1.…`, made by a signed-in paid account on a-to-mind.com) or a Verse Code Review Pro license key. It unlocks the closer read; without it the instant checks run free."
       }
     },
     "responses": {
@@ -283,7 +283,7 @@
         "properties": {
           "ok": { "const": true },
           "findings": { "type": "array", "items": { "$ref": "#/components/schemas/Finding" } },
-          "lang": { "type": ["string", "null"], "description": "The language Void read the code as." },
+          "lang": { "type": ["string", "null"], "description": "The language Verse read the code as." },
           "lines": { "type": "integer" },
           "ms": { "type": "integer", "description": "How long the instant checks took." },
           "tier": { "enum": ["free", "pro", "owner"] },

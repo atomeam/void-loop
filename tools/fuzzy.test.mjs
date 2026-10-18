@@ -1,4 +1,4 @@
-// lib/fuzzy.js: the fuzzy layer for skill activation (asked by Void three times, 2026-10-14). A slip of a skill's trigger
+// lib/fuzzy.js: the fuzzy layer for skill activation (asked by Verse three times, 2026-10-14). A slip of a skill's trigger
 // word is corrected from the skills' own examples; numbers, units, quoted names, real words and the word after a place
 // preposition are never touched; a tie or a far word is left alone; the page only runs the corrected ask when the skill
 // that takes it owns the corrected word.

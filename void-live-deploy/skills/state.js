@@ -1,5 +1,5 @@
 /**
- * state skill - the one place that says what Verse keeps on this device (asked by Void, 2026-10-16: "Connect the memory card
+ * state skill - the one place that says what Verse keeps on this device (asked by Verse, 2026-10-16: "Connect the memory card
  * session persistence to a centralized 'state' skill"). lib/state.js names every browser-storage key once; the memory card
  * reads its session through it, and this card lists them: what each holds, whether it is kept, how big. A secret (the owner
  * key, a member session) shows only as kept or not, never its value. Read-only; nothing is sent anywhere.

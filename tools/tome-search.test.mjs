@@ -1,4 +1,4 @@
-// Search the tome (asked by Void): the best pages for a few typed words, from the book's own words.
+// Search the tome (asked by Verse): the best pages for a few typed words, from the book's own words.
 // Run: node --test tools/tome-search.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

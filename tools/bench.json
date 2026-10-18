@@ -2582,7 +2582,7 @@
     "want": "voice"
   },
   {
-    "ask": "open the self card and tell V01D what it got wrong",
+    "ask": "open the self card and tell Verse what it got wrong",
     "want": "voice"
   },
   {
@@ -5490,11 +5490,11 @@
   {"ask": "make a changelog", "want": "skill:releasenotes", "says": "Unreleased"},
   {"ask": "draft release notes ⏎ feat: add search ⏎ fix: crash on save", "want": "skill:releasenotes", "says": "### Fixed"},
   {"ask": "changelog from these commits ⏎ a1b2c3d Add dark mode ⏎ 9f8e7d6 Remove the old export", "want": "skill:releasenotes", "says": "### Removed"},
-  {"ask": "void status", "want": "skill:status", "says": "V01D status"},
+  {"ask": "void status", "want": "skill:status", "says": "Verse status"},
   {"ask": "system status", "want": "skill:status", "says": "Skills"},
   {"ask": "is void working", "want": "skill:status", "says": "Outside sources"},
   {"ask": "health check", "want": "skill:status", "says": "Storage in this browser"},
-  {"ask": "are the sources up", "want": "skill:status", "says": "V01D status"},
+  {"ask": "are the sources up", "want": "skill:status", "says": "Verse status"},
   {"ask": "growth", "want": "skill:growth"},
   {"ask": "how have you grown", "want": "skill:growth"},
   {"ask": "void growth", "want": "skill:growth"},
@@ -5586,10 +5586,10 @@
   {"ask": "what do you offer", "want": "skill:services"},
   {"ask": "can i hire you", "want": "skill:services"},
   {"ask": "what's for sale", "want": "skill:services"},
-  {"ask": "pricing", "want": "skill:services", "says": "Paid V01D"},
-  {"ask": "price list", "want": "skill:services", "says": "Paid V01D"},
-  {"ask": "what does void cost", "want": "skill:services", "says": "Paid V01D"},
-  {"ask": "how much is void", "want": "skill:services", "says": "Paid V01D"},
+  {"ask": "pricing", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "price list", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "what does void cost", "want": "skill:services", "says": "Paid Verse"},
+  {"ask": "how much is void", "want": "skill:services", "says": "Paid Verse"},
   {"ask": "give me five minutes with this", "want": "skill:challenge"},
   {"ask": "give me 5 minutes with that", "want": "skill:challenge"},
   {"ask": "turn the questions i missed into a five-minute challenge", "want": "skill:challenge"},

@@ -1,5 +1,5 @@
 /**
- * scene3d — Void's shared realistic 3D: one WebGL renderer for every miniature on the page, and the mount API cards use
+ * scene3d — Verse's shared realistic 3D: one WebGL renderer for every miniature on the page, and the mount API cards use
  * to show a small, detailed 3D version of themselves. Not a skill: nothing imports this file until a card asks for a
  * miniature, so the empty page loads zero 3D bytes. API and how-to for builders: docs/miniatures.md.
  *
@@ -42,7 +42,7 @@ export function motionStill() { let mine = false; try { mine = localStorage.getI
 /** Can this browser draw WebGL at all? (cheap; no three.js needed) */
 export function webglOk() { try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (_) { return false; } }
 
-// ---------- detail: low-poly for older hardware (asked by Void, ask-20261015-0347-2: "a 'low-poly' toggle for 3D miniatures to
+// ---------- detail: low-poly for older hardware (asked by Verse, ask-20261015-0347-2: "a 'low-poly' toggle for 3D miniatures to
 // further optimize the 'smoother 3D on phones' shipment for older hardware") ----------
 // Three settings in one key: 'low' (always), 'full' (never), or unset = auto, where the governor below turns low-poly on when
 // a device still runs late at its lowest pixel step, and off again once it has kept up for a while. Low-poly draws every
@@ -179,7 +179,7 @@ const live = new Map(); // key -> handle
 // with the same key; it waits for that load and takes it over instead of building a second one (verify flake: two boards
 // under one key, and the first one, freed off the page, took the key with it, so the board on screen was not in the list)
 const loading = new Map();
-/** Teach Void a miniature: build(ctx, data) sets up ctx.root and returns { update(data), tick(dt, t), dispose() }. */
+/** Teach Verse a miniature: build(ctx, data) sets up ctx.root and returns { update(data), tick(dt, t), dispose() }. */
 export function registerMiniature(kind, build) {
   if (!KIND_RE.test(String(kind))) throw new Error('miniature kind must be lowercase letters, digits and dashes: ' + kind);
   if (typeof build !== 'function') throw new Error('registerMiniature(' + kind + '): build must be a function');
@@ -349,7 +349,7 @@ function wireFrame(wrap) {
   draw(t0);
   return { el: c, stop(now) { gone = true; if (raf) cancelAnimationFrame(raf); if (now) c.remove(); else { c.style.opacity = '0'; setTimeout(() => c.remove(), 320); } } };
 }
-// A 3D model that could not be built or drawn leaves a small status card in its place (asked by Void, ask-20261012-0856-1:
+// A 3D model that could not be built or drawn leaves a small status card in its place (asked by Verse, ask-20261012-0856-1:
 // "a visual 'error state' for 3D models that fail their self-check, replacing the empty space with a clear status card"):
 // the kind, what went wrong in plain words, and how to retry. Only where WebGL works: without it the card's flat version is the
 // answer, not an error. The wrap is marked data-rendered="failed" and one void:mini-failed event bubbles up with { key, kind, why }.
@@ -404,7 +404,7 @@ export async function mountMiniature(host, kind, data = {}, opts = {}) {
 async function mountFresh(host, kind, data, opts, key) {
   const wrap = document.createElement('div');
   wrap.className = 'void-mini'; wrap.dataset.kind = kind; wrap.dataset.key = key;
-  wrap.dataset.rendered = 'false'; // until its first frame (asked by Void: a rendered signal checks and people can wait for)
+  wrap.dataset.rendered = 'false'; // until its first frame (asked by Verse: a rendered signal checks and people can wait for)
   const place = opts.place || 'inside';
   wrap.style.cssText = place === 'beside'
     ? 'position:absolute;left:calc(100% + 14px);top:0;width:' + (opts.width || 220) + 'px;height:' + (opts.height || 220) + 'px;pointer-events:auto'
@@ -416,7 +416,7 @@ async function mountFresh(host, kind, data, opts, key) {
   wrap.appendChild(canvas);
   for (const ev of ['pointerdown', 'mousedown', 'touchstart']) canvas.addEventListener(ev, (e) => e.stopPropagation(), { passive: true }); // orbit, not a card drag
   // Where WebGL exists the wrap goes in now, with a wire placeholder on it, before three.js, the kind's module or its model
-  // have loaded (asked by Void, ask-20261014-1025-1: "a progressive mesh loading state where a low-poly wireframe appears
+  // have loaded (asked by Verse, ask-20261014-1025-1: "a progressive mesh loading state where a low-poly wireframe appears
   // instantly during 3D card transitions"); the real canvas stays transparent until its first frame, as before. Where WebGL
   // is missing nothing is put in and the mount rejects as it always did, so the card shows its flat version.
   const canDraw = webglOk();

@@ -1,8 +1,8 @@
 # Playbook: a game that feels good to play
 
 From a video the owner shared by Duncan Rogoff ("I Turned Claude Code Into a Game Studio", 2026-10-17): five moves that take a game from
-flat coloured shapes to something people want to play. Where V01D already does a move, the file that does it is named; the rest is the
-loop a builder (or V01D, frontier #5) follows for any game on the rack (`skills/rack.js`, `docs/miniatures.md`).
+flat coloured shapes to something people want to play. Where Verse already does a move, the file that does it is named; the rest is the
+loop a builder (or Verse, frontier #5) follows for any game on the rack (`skills/rack.js`, `docs/miniatures.md`).
 
 ## What starts it
 An ask for a new game, or a game on the rack that the Site Test or a correction says feels wrong ("too hard", "can't tell what to do").

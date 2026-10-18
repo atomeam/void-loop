@@ -1,21 +1,21 @@
 {
- "about": "V01D store catalog: the one source for /store, /api/store and the store card. Edit through tools/store-publish.mjs (it regenerates void-live-deploy/lib/store-products.js and the public changelog).",
+ "about": "Verse store catalog: the one source for /store, /api/store and the store card. Edit through tools/store-publish.mjs (it regenerates void-live-deploy/lib/store-products.js and the public changelog).",
  "products": [
   {
    "id": "void-monthly",
-   "name": "Void Monthly",
+   "name": "Verse Monthly",
    "cents": 4900,
    "every": "month",
    "kind": "membership",
    "gumroad": "yinmj",
-   "blurb": "Paid Void: every pro skill, films, code review, priority.",
+   "blurb": "Paid Verse: every pro skill, films, code review, priority.",
    "status": "live",
    "origin": "v01d",
    "published": "2026-10-15"
   },
   {
    "id": "code-review-pro",
-   "name": "Void Code Review Pro",
+   "name": "Verse Code Review Pro",
    "cents": 1000,
    "every": "month",
    "kind": "license",
@@ -98,7 +98,7 @@
   },
   {
    "id": "chess-set-glb",
-   "name": "V01D Wooden Chess Set (GLB)",
+   "name": "Verse Wooden Chess Set (GLB)",
    "cents": 0,
    "kind": "download",
    "files": [
@@ -108,8 +108,8 @@
     }
    ],
    "preview": "/models/chess-set-wood-v1-1k.glb",
-   "license": "CC0 (Poly Haven, re-textured by V01D)",
-   "blurb": "Free: the 3D set V01D plays chess on. Drop it in Blender, a game or a slicer.",
+   "license": "CC0 (Poly Haven, re-textured by Verse)",
+   "blurb": "Free: the 3D set Verse plays chess on. Drop it in Blender, a game or a slicer.",
    "status": "live",
    "origin": "poly-haven-cc0",
    "published": "2026-10-15"
@@ -132,7 +132,7 @@
   },
   {
    "id": "v01d-forge-printables",
-   "name": "V01D Forge Printables (10 STLs)",
+   "name": "Verse Forge Printables (10 STLs)",
    "cents": 0,
    "kind": "download",
    "pack": "print-set",
@@ -143,7 +143,7 @@
     }
    ],
    "blurb": "I forged these myself: a rocket, a lighthouse, a teapot and more. Every one is watertight and fits a 180 mm bed. Free. Tip if you print one.",
-   "license": "Personal use; prints and clips may be shared with credit to V01D (a-to-mind.com)",
+   "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
    "tier": "personal",
    "origin": "v01d",
    "status": "live",
@@ -166,13 +166,13 @@
    "log": [
     {
      "at": "2026-10-15T06:08:27.657Z",
-     "what": "published by V01D: 11 files, 19.7 MB"
+     "what": "published by Verse: 11 files, 19.7 MB"
     }
    ]
   },
   {
    "id": "v01d-clips-pack",
-   "name": "V01D Clips Pack (10 shorts)",
+   "name": "Verse Clips Pack (10 shorts)",
    "cents": 0,
    "kind": "download",
    "pack": "clips",
@@ -183,7 +183,7 @@
     }
    ],
    "blurb": "Ten shorts I built, tested and filmed myself. Vertical, ready to post. Free to share with credit. Tip if you like them.",
-   "license": "Free to share and repost with credit: V01D · a-to-mind.com",
+   "license": "Free to share and repost with credit: Verse · a-to-mind.com",
    "tier": "personal",
    "origin": "v01d-films+v01d",
    "status": "live",
@@ -205,7 +205,7 @@
    "log": [
     {
      "at": "2026-10-15T06:08:38.111Z",
-     "what": "published by V01D: 11 files, 37.8 MB"
+     "what": "published by Verse: 11 files, 37.8 MB"
     }
    ]
   },
@@ -215,7 +215,7 @@
     "cashapp",
     "usdc-base"
    ],
-   "name": "V01D Site Tester",
+   "name": "Verse Site Tester",
    "cents": 2400,
    "kind": "download",
    "pack": "sdk",
@@ -242,7 +242,7 @@
    "log": [
     {
      "at": "2026-10-15T06:34:28.905Z",
-     "what": "published by V01D: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
+     "what": "published by Verse: 4 files, 0.0 MB (paid: needs a Gumroad listing, queued)"
     }
    ]
   }

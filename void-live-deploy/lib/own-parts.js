@@ -22,7 +22,7 @@ const rows = PARTS.map((p) => {
   return { p,
     framed: new RegExp('^' + LEAD + ' ' + OWNER + n + '(?: ' + CARD + ')?$'),  // "show me the site test", "open the book"
     carded: new RegExp('^' + OWNER + n + ' ' + CARD + '$'),
-    owned: p.owned ? new RegExp('^(?:my|your|void\'s|v01d\'s) ' + n + '$') : null };                   // "the site test card", "status page"
+    owned: p.owned ? new RegExp('^(?:my|your|void\'s|(?:v01d|verse)\'s) ' + n + '$') : null };                   // "the site test card", "status page"
 });
 /** the part an ask names inside the frame, or null. Pure. */
 export function partOf(text) {

@@ -1,5 +1,5 @@
 /**
- * swarm miniature — Void's agents (salvaged from the Frontier-Engine experiment F-020, drafts/020-webgpu-void-agents on
+ * swarm miniature — Verse's agents (salvaged from the Frontier-Engine experiment F-020, drafts/020-webgpu-void-agents on
  * atomeam/a-to-mind.com, docs/SALVAGE.md): a field of glowing agents, each running its own small state machine
  * (explore / cluster / disperse) from where the pointer is and how many neighbours it has, with separation from close
  * neighbours. The whole field's speed and clustering make a mood (idle, clustering, dispersing) and a hue, and the card

@@ -1,4 +1,4 @@
-// The router keeps corrections to Verse out of the look skill (asked by Void: its probe of "open the self card and tell void ... wrong" came within
+// The router keeps corrections to Verse out of the look skill (asked by Verse: its probe of "open the self card and tell void ... wrong" came within
 // 0.02 of look, which shares the word "void"). Run: node --test tools/router-self.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';

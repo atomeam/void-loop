@@ -15,7 +15,7 @@ export function fixOf(pr) {
   if (!labels.includes(LABEL)) return null;
   const body = String(pr.body || '');
   const c = /(?:Verse|Verse)'s confidence: ([0-9.]+|none given)\./.exec(body), w = /Where: ([^\n]*?)\.(?:\s|$)/.exec(body), why = /Why, in (?:Verse|Verse)'s words: ([^\n]*?)\. (?:(?:Verse|Verse)'s confidence|Labelled)/.exec(body);
-  const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Void: how much the fix changes, worked out by tools/propose-fix.mjs
+  const rk = /Risk: (low|medium|high)\b(?: \(([^)]*)\))?/.exec(body); // asked by Verse: how much the fix changes, worked out by tools/propose-fix.mjs
   const conf = c && c[1] !== 'none given' && Number.isFinite(parseFloat(c[1])) ? Math.round(parseFloat(c[1]) * 100) / 100 : null;
   return {
     number: pr.number, title: String(pr.title || '').slice(0, 200), url: /^https:\/\/github\.com\//.test(String(pr.html_url || '')) ? pr.html_url : 'https://github.com/' + REPO + '/pull/' + pr.number,

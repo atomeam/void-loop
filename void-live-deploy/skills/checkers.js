@@ -1,5 +1,5 @@
 /**
- * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Void.
+ * checkers skill — wooden draughts on the same board and table as chess (skills/mini/checkers.js), played against Verse.
  * "play checkers", "checkers", "lets play draughts" summons it; it stays until thrown off. You are the dark (rosewood) men
  * and move first. Tap a man, then where it lands; for a multi-jump tap each landing in turn.
  * The rules live in skills/checkers-rules.js (forced captures, multi-jumps, crowning, a king moves both ways).
@@ -8,7 +8,7 @@
 import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as K from './checkers-rules.js';
-import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
 
 export function checkersOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -72,7 +72,7 @@ function mount(th, stageApi) {
     if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([st().s]).slice(-60);
     st().s = K.apply(st().s, m); st().sel = -1; st().hops = []; st().moves++;
-    // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
+    // the game ended on the board: one line on this device's match history (asked by Verse); a take-back after that plays on without a second line
     const code = K.status(st().s);
     if (code !== 'playing' && !st().logged) { st().logged = true; finish('checkers', code === 'dark-wins' ? 'win' : code === 'light-wins' ? 'loss' : 'draw', { moves: Math.ceil(st().moves / 2), minutes: minutesSince(st().started) }); }
     save(); paint();
@@ -80,7 +80,7 @@ function mount(th, stageApi) {
   function voidTurn() {
     const s = st().s;
     if (s.turn !== 'l' || K.status(s) !== 'playing' || thinking.has(th.id)) return;
-    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Void thinks on this thread
+    const p = new Promise((res) => setTimeout(res, 450)).then(() => levelPick(K.bestMove(s, { depth: 8, ms: 400 }), K.legalMoves(s))) // let your man land before Verse thinks on this thread
       .then((m) => new Promise((res) => setTimeout(() => res(m), 150))).then((m) => {
         thinking.delete(th.id);
         if (st().s !== s || !m) { paint(); return; }

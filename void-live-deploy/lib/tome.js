@@ -93,7 +93,7 @@ export const TOME_CSS = [
   '@media (max-width:700px){.tome{--th:min(84vh,calc(94vw / .73));width:calc(var(--th) * .73)}.tome.shut,.tome.shut.back{transform:scale(.96)}.tome-backcover{width:calc(100% + 2.8%);left:-1.4%;border-radius:1.4%/2%}.tome-page,.tome-face,.tome-leaf,.tome-cover{width:100%;left:0}.tome-cover{width:calc(100% + 2.8%);left:-1.4%}.tome-leaf.fwd{left:0}.tome-spine{display:none}'
     + '.tome-page.left,.tome-page.right{border-radius:.6%/.9%;box-shadow:inset 0 0 7cqh rgba(95,58,18,.26)}.tome-stack.left{display:none}.tome-list{columns:1}.tome-prompt .desk{display:none}.tome-prompt .phone{display:inline}}',
   '@media (prefers-reduced-motion:reduce){.tome,.tome-cover,.tome-leaf,#vtome{transition-duration:.01s}}',
-].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Void)
+].join('') + RULES_CSS; // the rule registry's illuminated entries (asked by Verse)
 
 const chapterOf = (book, id) => (book.chapters || []).find((c) => c.id === id) || {};
 const jump = (n, label, esc) => '<a href="#" class="gjump" data-page="' + n + '">' + esc(label) + '</a>';
@@ -101,7 +101,7 @@ const asks = (list, esc) => (list && list.length ? '<div class="tome-say">Say</d
 
 /** the contents page's list: every chapter with its first page; past ten chapters it sets tighter so the last still sits above the
  *  page number (the What's new chapter made it thirteen). Pure. */
-/** the parchment's tone from the Status card's last reading on this device (asked by Void: "a 'scented-parchment' CSS filter that subtly
+/** the parchment's tone from the Status card's last reading on this device (asked by Verse: "a 'scented-parchment' CSS filter that subtly
  *  shifts the color temperature of the tome based on the 'status' skill's current health"): warm sepia when all is well, cooler and greyer
  *  the more fails; '' (the parchment as drawn) with no reading or one over a day old. health: { failing, checked, at }. Pure. */
 export function parchmentFilter(health, now = Date.now()) {
@@ -153,7 +153,7 @@ export function pageHtml(p, book, esc) {
     return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
       + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
   }
-  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Void): lib/rule-registry.js
+  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Verse): lib/rule-registry.js
   if (p.kind === 'index') {
     return '<div class="tome-kicker">Index</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><ul class="tome-list gb-list">' + (p.entries || []).map((e) => '<li>' + jump(e.page, e.name, esc) + '<span class="lead-dots"></span><span class="n">' + e.page + '</span></li>').join('') + '</ul></div>';
   }

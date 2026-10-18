@@ -1,6 +1,6 @@
 // The fringe-engine ledger: one family per hourly run, built as a draft (drafts/fringe/<family>.html).
 // tools/fringe.json is the record: [{run, at, family, draft, sources:[{claim, source, confidence}], sha256, emit}].
-// emit:true wires the draft into Void: `--publish` copies it to void-live-deploy/fringe/<family>.html minus the
+// emit:true wires the draft into Verse: `--publish` copies it to void-live-deploy/fringe/<family>.html minus the
 // "draft · not published" label, and the check holds the live copy to exactly that.
 // Rules (Adam, 2026-10-02; variety rule 47ca3de on a-to-mind.com master):
 //   - one family per run, from FAMILIES; a family may not repeat within the last six runs
@@ -17,12 +17,12 @@
 //   node tools/fringe.mjs --record drafts/fringe/x.html sources.json   appends the next run (family from the file name,
 //     run number, time, sha256, emit:false) in the ledger's own 2-space style, then checks the ledger. sources.json is the
 //     sources array, or { sources, hypothesis, behavior, findings, failure_modes, next_experiments, combines } (the research notes)
-//   node tools/fringe.mjs --input-tag <skill> "<ask>"   the near-miss tag for the input that set a novelty or failure off (asked by Void)
+//   node tools/fringe.mjs --input-tag <skill> "<ask>"   the near-miss tag for the input that set a novelty or failure off (asked by Verse)
 //   node tools/fringe.mjs --suggest-near routes.json   the router's near-miss rows (the owner's /api/routes) matched to the last runs' notes
 //   node tools/fringe.mjs --learned   what the ledger has learned, for the next run to read first: recent findings, failure
-//     modes and next experiments, what the core needs (Void's open asks, failing or unchecked skills, benchmark and people's
+//     modes and next experiments, what the core needs (Verse's open asks, failing or unchecked skills, benchmark and people's
 //     misses), and pairs of published families no run has combined yet
-// The research notes (owner, 2026-10-13: the ledger becomes a research engine that compounds: "every run should leave Void
+// The research notes (owner, 2026-10-13: the ledger becomes a research engine that compounds: "every run should leave Verse
 // with at least one durable asset"; optional, so the first 73 runs stand as written, append-only):
 //   hypothesis        what the run set out to show
 //   behavior          what a person can do with the draft, in one line: novelty is judged on it, not on the family's name
@@ -33,12 +33,12 @@
 //   combines          other families this run joins with its own (the combination map is read off these)
 //   near              the miss-board target or router skill the run was built toward ("skill:weather", "probe:sky", "miss-board",
 //                     "step:14"), one or a list; --learned shows them, and the "fringe to skill" card links the family to the skill
-//                     (asked by Void, ask-20261013-1719-1: tag each novelty or failure with the input that triggered it)
+//                     (asked by Verse, ask-20261013-1719-1: tag each novelty or failure with the input that triggered it)
 //   lab               { label, sub, asks: [phrases] }: how a published draft is opened from the stage. --publish writes
 //                     void-live-deploy/fringe/lab.json from these and skills/make.js reads it, so a draft that ships reaches
 //                     people without anyone editing the lab list by hand (the fringe → core loop, owner's direction 2026-10-13)
 //   --publish also writes void-live-deploy/fringe/ledger.json: each published family with its research notes, what it was built
-//   toward and the core skills its notes name (ledgerOf), for the "fringe to skill" card (skills/fringe-to-skill.js; asked by Void,
+//   toward and the core skills its notes name (ledgerOf), for the "fringe to skill" card (skills/fringe-to-skill.js; asked by Verse,
 //   ask-20261013-0026-2: "a dashboard that visualizes the relationship between a fringe experiment and its potential as a
 //   permanent skill")
 import { readFileSync, existsSync, writeFileSync, mkdirSync } from 'node:fs';
@@ -76,14 +76,14 @@ export function sameBehavior(a, b) { const x = words(a), y = new Set(words(b)); 
 
 // What the core needs (owner, 2026-10-13: "if you want void to be truly self-sustaining, you need to focus on the feedback loops
 // between the fringe experiments and the core"): the demand a run should build toward, read from the repo where the hourly run
-// can see it. Void's own open asks (domains/void.voice.md), the skills failing on the benchmark or least checked
+// can see it. Verse's own open asks (domains/void.voice.md), the skills failing on the benchmark or least checked
 // (void-live-deploy/skills/families.json), the asks the benchmark got wrong (tools/bench.misses.json) and what people asked
-// that Void could not answer (domains/void.misses.json, the public snapshot, when it is written). A source that is missing is
+// that Verse could not answer (domains/void.misses.json, the public snapshot, when it is written). A source that is missing is
 // left out. Pure apart from the reads.
 export function demand(read = (p) => readFileSync(resolve(root, p), 'utf8'), n = 5) {
   const out = { asks: [], friction: [], bench: [], misses: [] };
   try {
-    const m = /## Void's current asks\n\n([\s\S]*?)\n\n## /.exec(read('domains/void.voice.md'));
+    const m = /## Verse's current asks\n\n([\s\S]*?)\n\n## /.exec(read('domains/void.voice.md'));
     if (m) out.asks = m[1].split('\n').map((l) => /^- (.+?)(?: \*\(small\)\*)? \((?:daily|after a build)/.exec(l)).filter(Boolean).map((x) => x[1]).slice(0, n);
   } catch (_) {}
   try {
@@ -142,7 +142,7 @@ export function nearOf(r) {
   return xs.every((x) => typeof x === 'string' && NEAR.test(x)) ? xs : [];
 }
 /** The input that set a novelty or failure off, as a tag a run puts in `near` (or on a failure_mode as `input`): near-miss:<skill>:<8 hex>,
- * the skill the router came closest to and a hash of the ask it came closest on (asked by Void: "Link the fringe ledger entries to the
+ * the skill the router came closest to and a hash of the ask it came closest on (asked by Verse: "Link the fringe ledger entries to the
  * 'near-miss' router data so that every novelty or failure is tagged with the specific input that triggered it"). The ask's words are
  * the person's and stay in the router's own log (/api/routes, owner only); the hash lets the owner find the very row. Pure. */
 export function inputTag(skill, ask) {
@@ -265,10 +265,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     out.push('', 'Behaviors already built (a new run must do something else):', ...(L.behaviors.length ? L.behaviors.map((f) => line(`run ${f.run} (${f.family}): ${f.x}`)) : [line('none recorded yet')]));
     const D = demand(), dl = (xs) => (xs.length ? xs.map(line) : [line('none recorded yet')]);
     out.push('', 'What the core needs (build toward one of these when your family can serve it, and say which in findings):',
-      '  Void\'s own open asks:', ...dl(D.asks).map((x) => '  ' + x),
+      '  Verse\'s own open asks:', ...dl(D.asks).map((x) => '  ' + x),
       '  Skills failing or unchecked:', ...dl(D.friction).map((x) => '  ' + x),
-      '  Benchmark asks Void got wrong:', ...dl(D.bench).map((x) => '  ' + x),
-      '  What people asked that Void could not answer:', ...dl(D.misses).map((x) => '  ' + x));
+      '  Benchmark asks Verse got wrong:', ...dl(D.bench).map((x) => '  ' + x),
+      '  What people asked that Verse could not answer:', ...dl(D.misses).map((x) => '  ' + x));
     out.push('', `Published families never combined (${L.untried.length} pairs; a run may join its family with another and say so in combines):`, ...L.untried.slice(0, 12).map(([a, b]) => line(a + ' + ' + b)));
     console.log(out.join('\n'));
   }

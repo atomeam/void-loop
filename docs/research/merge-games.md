@@ -1,4 +1,4 @@
-# Merge games, and what V01D can take from them (research, 2026-10-16)
+# Merge games, and what Verse can take from them (research, 2026-10-16)
 
 Asked by the owner: "research merge games so V01D can experiment with card merges. V01D should understand and combine all systems and be smart, so when each subscriber proposes things like this it can individually alter their personal V01D."
 
@@ -11,17 +11,17 @@ Take: one cache of pair-to-result shared by everyone, model invents once, discov
 Take: merging must be one gesture (drop one card on another), results should chain, and the board filling up is the pressure.
 
 **Yu-Gi-Oh fusion (Polymerization)** is the opposite design: recipe-gated and costly. Named materials are consumed, the result comes from a separate deck, there are rulings on every edge (face-down materials, returning from the graveyard), and newer cards bend the rules. (Yugipedia, Card Rulings: Polymerization.)
-Take: the strategy lives in costs and consumption: a merge that spends its materials is a decision; one that doesn't is a toy. V01D duels (frontier #33) should consume materials; the collection should not.
+Take: the strategy lives in costs and consumption: a merge that spends its materials is a decision; one that doesn't is a toy. Verse duels (frontier #33) should consume materials; the collection should not.
 
 Not searched, from general knowledge only: Magic's meld (two specific permanents become one) and Slay the Spire's per-card upgrade (a card improves in place). Both are worth a look before the duel rules are final.
 
-## What this means for V01D
+## What this means for Verse
 
-1. **Merge two cards, get a new card.** Any two V01D cards (an idea, a skill, a game, a stage thing) merge into one. The result is keyed by the unordered pair of idea keys, computed once, cached for everyone, and credited to its first discoverer (a public handle only if they chose one, never anything else about them).
+1. **Merge two cards, get a new card.** Any two Verse cards (an idea, a skill, a game, a stage thing) merge into one. The result is keyed by the unordered pair of idea keys, computed once, cached for everyone, and credited to its first discoverer (a public handle only if they chose one, never anything else about them).
 2. **Numbers are earned, never invented.** The result's Power, Resistance and Income come from the parents by fixed rules (frontier #31: stats come from evidence). The model chooses the name, the kinds it is, and one line of what it adds; it never sets a number. Art is a seeded blend of both parents' art (lib/card-art.js).
 3. **It should surprise.** Drop a card on another on the stage and they merge: people don't know objects interact, and finding out is the point (owner, 2026-10-16: "it should surprise them").
 4. **Chains and depth.** A merged card can merge again; depth raises rarity and cost; a chain of merges is one move.
-5. **Personal Voids.** A subscriber can propose a merge rule or a whole new system in words ("when a song meets a place, make a concert"). V01D reads it against every system it has (skills, cards, stage things, the duel), writes it down as DATA (a declarative rule: kinds in, kind out, stat rule, name template), checks it, and applies it to that subscriber's own V01D only. Rules are never code. A rule many subscribers propose can be offered to the owner as a global one.
+5. **Personal Voids.** A subscriber can propose a merge rule or a whole new system in words ("when a song meets a place, make a concert"). Verse reads it against every system it has (skills, cards, stage things, the duel), writes it down as DATA (a declarative rule: kinds in, kind out, stat rule, name template), checks it, and applies it to that subscriber's own Verse only. Rules are never code. A rule many subscribers propose can be offered to the owner as a global one.
 6. **Safe by construction.** The model only ever returns a name and a line of text for a pair; both are length-capped, escaped and run through the existing keeper (secrets, harmful asks). No pair can reach a network, a file or a price.
 
 ## Not here

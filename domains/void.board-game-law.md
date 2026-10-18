@@ -1,4 +1,4 @@
-# Can V01D duplicate board games? (US first, EU/UK note)
+# Can Verse duplicate board games? (US first, EU/UK note)
 
 > **Not legal advice.** This is research for building, not a lawyer's opinion. Talk to an IP lawyer before selling any of this at commercial scale.
 
@@ -25,10 +25,10 @@
 ## 3. Parody law
 
 - **Copyright.** *Campbell v. Acuff-Rose*, 510 U.S. 569 (1994): a parody that **comments on the original** gets more fair-use room, even when it's commercial. But it may borrow only what it needs to "conjure up" the original. A reskin that simply plays the same game and comments on nothing is not parody under *Campbell* or *Warhol*. It's a substitute.
-- **Trademark.** *Jack Daniel's Properties v. VIP Products*, 599 U.S. 140 (2023): when a parody uses someone else's mark **as its own brand name or logo**, there's no special First Amendment shield. The ordinary likelihood-of-confusion test applies, and parody only helps to the extent it makes confusion less likely. So "Monopoly-but-V01D" is risky as a product name.
-- **The V01D parody recipe:** (1) keep the mechanics, which are free anyway; (2) use 100% original V01D art, names, rules wording, sculpts and palette; (3) make the joke clear and V01D's own (cosmic, glitch, void-robot); (4) no original logos, fonts, box design or confusable names; (5) a "not affiliated with X" line is good hygiene but doesn't cure a confusing name. Legally the parody is the theme. The mechanics are what you're actually allowed to take.
+- **Trademark.** *Jack Daniel's Properties v. VIP Products*, 599 U.S. 140 (2023): when a parody uses someone else's mark **as its own brand name or logo**, there's no special First Amendment shield. The ordinary likelihood-of-confusion test applies, and parody only helps to the extent it makes confusion less likely. So "Monopoly-but-Verse" is risky as a product name.
+- **The Verse parody recipe:** (1) keep the mechanics, which are free anyway; (2) use 100% original Verse art, names, rules wording, sculpts and palette; (3) make the joke clear and Verse's own (cosmic, glitch, void-robot); (4) no original logos, fonts, box design or confusable names; (5) a "not affiliated with X" line is good hygiene but doesn't cure a confusing name. Legally the parody is the theme. The mechanics are what you're actually allowed to take.
 
-## 4. Rulebook for V01D
+## 4. Rulebook for Verse
 
 **Can be identical:** mechanics, turn structure, scoring, win conditions, board topology as function (number of spaces, grid size, a map of real-world regions), standard components (d6 dice, a 52-card deck, pawns, grids, timers), and public-domain games **in full**, including original public-domain art (scan it from a pre-1931 printing, not from a modern reissue that adds new art).
 
@@ -40,39 +40,39 @@
 
 PD = public domain. "Mechanics free" means the rules as gameplay can be copied. No patents in this list are in force.
 
-| Game | PD or protected | What's protected | Safest Void version | Generic name | V01D parody (name · twist) |
+| Game | PD or protected | What's protected | Safest Verse version | Generic name | Verse parody (name · twist) |
 |---|---|---|---|---|---|
-| Risk (1957) | Protected | RISK mark, map art, card art, box, piece look | Own world map art, own pieces, the same conquest rules | World Conquest | **R1SK.EXE** · armies are glitch-bots; V01D "defragments" continents |
+| Risk (1957) | Protected | RISK mark, map art, card art, box, piece look | Own world map art, own pieces, the same conquest rules | World Conquest | **R1SK.EXE** · armies are glitch-bots; Verse "defragments" continents |
 | Monopoly (1935) | Protected; the Landlord's Game (1904/1924) is **PD** | MONOPOLY mark, board graphics, Mr. Monopoly, tokens, card text | Base it on Landlord's Game PD material plus original art (VoidQuest already does this) | Property Trading Game | **Hollow Holdings** · buy black holes; rent is paid in light |
-| Clue (1949) | Protected | CLUE/Cluedo marks, characters, art | New suspects, rooms and weapons; same deduction rules | Mystery Deduction | **Who Deleted V01D?** · find which process, which server, which bug |
-| Scrabble (1948) | Protected | SCRABBLE mark, board look, tile design | Own board colours and premium layout styling, own tiles | Word Tiles | **Glyph Void** · letters drift in from the void |
+| Clue (1949) | Protected | CLUE/Cluedo marks, characters, art | New suspects, rooms and weapons; same deduction rules | Mystery Deduction | **Who Deleted Verse?** · find which process, which server, which bug |
+| Scrabble (1948) | Protected | SCRABBLE mark, board look, tile design | Own board colours and premium layout styling, own tiles | Word Tiles | **Glyph Verse** · letters drift in from the void |
 | Catan (1995) | Protected | CATAN mark, art, card text; hex mechanics free | Original hex art and resources | Island Settlers | **Settlers of the Null** · mine stardust on asteroid hexes |
 | Ticket to Ride (2004) | Protected (check patents) | Mark, maps, train art, card art | Own map and art, route-claiming rules | Rail Routes | **Wormhole Rails** · claim wormhole lines |
-| Sorry! (1934) | Protected mark; Pachisi base is PD | SORRY! mark, card text, art | Pachisi-style race with original cards | Home Run Race | **Oops, V01D** · bump rivals into the void |
+| Sorry! (1934) | Protected mark; Pachisi base is PD | SORRY! mark, card text, art | Pachisi-style race with original cards | Home Run Race | **Oops, Verse** · bump rivals into the void |
 | Trouble (1965) / Aggravation (1962) | Protected marks; mechanic is PD (Pachisi) | Marks, Pop-O-Matic look | Own dice bubble design | Pop Race | **Glitch Pop** · a dice dome that glitches |
 | Battleship (1967) | Pencil game PD; marks protected | BATTLESHIP mark, plastic case design, art | A grid game with own ships and styling | Sea Strike | **Starship Sink** · hidden fleets in nebulae |
-| Connect Four (1974) | Mechanic PD (Captain's Mistress) | CONNECT 4 mark, frame look | Own colours and frame | Four in a Row | **Line of V01D** · discs fall into a black hole |
-| Stratego (1946) | Mechanic from L'Attaque (1909), **PD** | STRATEGO mark, art | Hidden ranks with own unit names | Hidden Ranks | **Fog of V01D** · bots hidden in static |
+| Connect Four (1974) | Mechanic PD (Captain's Mistress) | CONNECT 4 mark, frame look | Own colours and frame | Four in a Row | **Line of Verse** · discs fall into a black hole |
+| Stratego (1946) | Mechanic from L'Attaque (1909), **PD** | STRATEGO mark, art | Hidden ranks with own unit names | Hidden Ranks | **Fog of Verse** · bots hidden in static |
 | Othello (1971) | Reversi (1883) is **PD** | OTHELLO mark, green and black look | Reversi with own styling | Reversi | **Flipside** · discs flip between light and void |
-| Mastermind (1970) | Bulls and Cows is PD | MASTERMIND mark, box art | Code-break with own pegs | Code Breaker | **Crack V01D's Code** · V01D sets the code and taunts you |
+| Mastermind (1970) | Bulls and Cows is PD | MASTERMIND mark, box art | Code-break with own pegs | Code Breaker | **Crack Verse's Code** · Verse sets the code and taunts you |
 | Yahtzee (1956) | Yacht/Generala PD | YAHTZEE mark, score-sheet design | Own score sheet | Five Dice | **Yeet the Dice** · combos power a rocket |
 | Uno (1971) | Crazy Eights is PD | UNO mark, card design | Own card art and action names | Match Eights | **NULL** · a "void" card wipes a hand |
 | Life (1860 / 1960) | The 1860 Checkered Game of Life is **PD** | THE GAME OF LIFE mark, 1960 board, spinner look | 1860 rules and art, or a new path | Life Path | **Afterlife.exe** · careers for a robot from boot to shutdown |
-| Candy Land (1949) | Protected | Mark, characters, art | New colour-track world | Color Track | **Candy Void** · sugar nebulae |
+| Candy Land (1949) | Protected | Mark, characters, art | New colour-track world | Color Track | **Candy Verse** · sugar nebulae |
 | Chutes and Ladders | Snakes and Ladders is ancient, **PD** | CHUTES AND LADDERS mark, art | Snakes and Ladders with own art | Snakes & Ladders | **Wormholes & Rockets** |
-| Operation (1965) | Patent expired | OPERATION mark, patient figure ("Cavity Sam") | Own figure and circuit design | Steady Hand | **Repair V01D DR01D** · fix the robot without a zap |
-| Guess Who? (1979) | Protected | Mark, character art | Own faces and flip-board look | Face Guess | **Who's in the Void?** · alien faces |
-| Pictionary (1985) | Mechanic (charades-drawing) free | Mark, word cards | Own word lists | Sketch Guess | **Draw the Void** · V01D guesses your drawing |
+| Operation (1965) | Patent expired | OPERATION mark, patient figure ("Cavity Sam") | Own figure and circuit design | Steady Hand | **Repair Verse DR01D** · fix the robot without a zap |
+| Guess Who? (1979) | Protected | Mark, character art | Own faces and flip-board look | Face Guess | **Who's in the Verse?** · alien faces |
+| Pictionary (1985) | Mechanic (charades-drawing) free | Mark, word cards | Own word lists | Sketch Guess | **Draw the Verse** · Verse guesses your drawing |
 | Trivial Pursuit (1981) | Facts free (*Worth*) | Mark, question wording, wheel and wedge look | Own questions, own scoring token | Trivia Wheel | **Brain Orbit** · win planets, not wedges |
 | Carcassonne (2000) | Protected | Mark, tile art, meeple shape (trademark) | Own tile art, non-meeple figures | Tile Kingdoms | **Moon Tiles** · build a lunar base |
-| Pandemic (2008) | Protected (check patents) | Mark, map and card art, role text | Own threats and roles | Co-op Outbreak | **System Crash** · stop viruses spreading across V01D's servers |
-| Dominion (2008) | Protected | Mark, card names, text and art (deckbuilding is free) | Own cards entirely | Deckbuilder | **Void Deck** · build a deck of glitches |
-| SolarQuest (1985) | Protected (Western Publishing) | Mark, board art | VoidQuest already exists: own board, property-game rules | Space Property Game | **VoidQuest** · you against V01D |
-| Axis & Allies (1981) | Protected | Mark, sculpts, map art | Own map, units and sculpts | WWII Strategy | **Axis of V01D** · robot factions, not historical armies |
+| Pandemic (2008) | Protected (check patents) | Mark, map and card art, role text | Own threats and roles | Co-op Outbreak | **System Crash** · stop viruses spreading across Verse's servers |
+| Dominion (2008) | Protected | Mark, card names, text and art (deckbuilding is free) | Own cards entirely | Deckbuilder | **Verse Deck** · build a deck of glitches |
+| SolarQuest (1985) | Protected (Western Publishing) | Mark, board art | VoidQuest already exists: own board, property-game rules | Space Property Game | **VoidQuest** · you against Verse |
+| Axis & Allies (1981) | Protected | Mark, sculpts, map art | Own map, units and sculpts | WWII Strategy | **Axis of Verse** · robot factions, not historical armies |
 | Diplomacy (1959) | Protected mark and art; 1959 copyright possibly unrenewed (verify) | Mark, map art, rules text | Own map, rewritten rules | Negotiation War | **Treaty.exe** · AIs that betray each other |
-| Scattergories (1988) | Protected | Mark, category lists | Own lists | Category Rush | **Void Categories** |
+| Scattergories (1988) | Protected | Mark, category lists | Own lists | Category Rush | **Verse Categories** |
 | Boggle (1972) | Protected | Mark, dice-letter distribution (arguably), tray design | Own letter set and tray | Word Grid | **Bit Scramble** |
-| Chess, Go, checkers, mancala, backgammon, Pachisi/Parcheesi | **PD** (Parcheesi is a mark) | Nothing for the game itself; only modern art or sets | Identical play, any style | (own names) | **V01D Chess**, etc. |
+| Chess, Go, checkers, mancala, backgammon, Pachisi/Parcheesi | **PD** (Parcheesi is a mark) | Nothing for the game itself; only modern art or sets | Identical play, any style | (own names) | **Verse Chess**, etc. |
 
 ## 6. Top surprises
 

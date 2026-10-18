@@ -1,10 +1,10 @@
-// the preview state of summoned intents and the peek flag (asked by Void, 2026-10-16). node --test tools/intent-preview.test.mjs
+// the preview state of summoned intents and the peek flag (asked by Verse, 2026-10-16). node --test tools/intent-preview.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { previewOf, previewHtml, planOf, openPlanOf } from '../void-live-deploy/skills/intent.js';
 import { ruleReview } from '../void-live-deploy/lib/code-review.js';
 const esc = (t) => String(t).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]);
 
-test('preview takes only a plan Void can make', () => {
+test('preview takes only a plan Verse can make', () => {
   assert.equal(previewOf('preview I need to ship the product page by Friday'), 'I need to ship the product page by Friday');
   assert.equal(previewOf('Sketch: make a plan to learn Spanish'), 'make a plan to learn Spanish');
   for (const n of ['preview of the movie', 'preview my essay formatting', 'preview', 'ship the product page by Friday']) assert.equal(previewOf(n), '', n);

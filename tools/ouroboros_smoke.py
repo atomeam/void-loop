@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """End-to-end smoke of the real command line, for CI on Windows (and anywhere): a temp tree with spaces in its path and a
-CRLF repo idle for a year, then `run` and `push --dry-run` against a stub Void. The stub counts requests: a dry run must make none.
+CRLF repo idle for a year, then `run` and `push --dry-run` against a stub Verse. The stub counts requests: a dry run must make none.
 Run: python tools/ouroboros_smoke.py"""
 import http.server, json, os, subprocess, sys, tempfile, threading
 from pathlib import Path

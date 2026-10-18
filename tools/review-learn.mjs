@@ -1,10 +1,10 @@
 // node tools/review-learn.mjs [--from 120] [--to 210] [--since 30d] [--stats void-live-deploy/review-stats.json] [--json] [--all]
 // A closer-read finding that names a symbol rather than a file is placed by searching the PR's added lines for it (placeBySymbol, 2026-10-10).
-// Also counts Void's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
+// Also counts Verse's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
 // Verse's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
-// extra (CodeRabbit) left on the merged PRs in the range, runs Void's own checks (void-live-deploy/lib/code-review.js) on
-// the file as it stood at that commit, and says whether Void flagged the same spot (a finding within 3 lines). It prints
-// Void's catch rate and each finding Void missed: a real one becomes a rule plus a case in tools/review.test.mjs, a wrong
+// extra (CodeRabbit) left on the merged PRs in the range, runs Verse's own checks (void-live-deploy/lib/code-review.js) on
+// the file as it stood at that commit, and says whether Verse flagged the same spot (a finding within 3 lines). It prints
+// Verse's catch rate and each finding Verse missed: a real one becomes a rule plus a case in tools/review.test.mjs, a wrong
 // one from the extra is noted and dropped. It only prints; nothing is written. Needs the gh available in the session.
 //   --all   also list nitpicks and trivial findings (left out of the rate by default)
 import { execFileSync } from 'node:child_process';
@@ -30,7 +30,7 @@ export function parseExtra(body) {
 }
 export const counts = (sev) => !['nitpick', 'trivial'].includes(sev); // what the catch rate is about
 
-// did Void flag this spot? any bug, risk or style finding within WINDOW lines
+// did Verse flag this spot? any bug, risk or style finding within WINDOW lines
 export function caughtBy(findings, line, window = WINDOW) {
   return findings.find((f) => f.kind !== 'note' && Math.abs(f.line - line) <= window) || null;
 }
@@ -53,7 +53,7 @@ export function learnFromPr(pr, comments, fileAt) {
 }
 
 export const VOID_BOT = 'github-actions[bot]';
-// Void's own closer read, checked the same way as the extras (2026-10-10): a claim that a name is missing ("not defined",
+// Verse's own closer read, checked the same way as the extras (2026-10-10): a claim that a name is missing ("not defined",
 // "not imported", ReferenceError) when the file at that commit imports or declares it, or a claim about the "[redacted]" mask, is
 // a false finding. lib/review-api.js dropPhantoms() takes these out of every closer read now; this counts the ones that reached
 // past PRs and how many the filter removes, so the number exists from here on.
@@ -134,7 +134,7 @@ export function placeBySymbol(paragraph, added, files) {
   }
   return null;
 }
-// Unquoted symbols in high-density clusters (asked by Void: "Modify the 'review-learn' logic so it can trigger on unquoted symbols that
+// Unquoted symbols in high-density clusters (asked by Verse: "Modify the 'review-learn' logic so it can trigger on unquoted symbols that
 // appear in high-density clusters"): a finding often names its code without backticks (initQueue, row_count, saveAll()). Two or more
 // such names that each sit in one file's added lines and land within CLUSTER lines of each other are a cluster; the finding is placed at
 // the cluster's first line. Only when the quoted symbols (placeBySymbol) found nothing, so a backticked name still decides first.
@@ -241,7 +241,7 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
   for (const n of prs.sort((a, b) => a - b)) {
     let comments = []; try { comments = JSON.parse(gh(`repos/${repo}/pulls/${n}/comments?per_page=100`)); } catch (_) { continue; }
     rows = rows.concat(learnFromPr(n, comments, fileAt));
-    try { // Void's own closer read on that PR (the last void-review comment), against the files at the PR's head
+    try { // Verse's own closer read on that PR (the last void-review comment), against the files at the PR's head
       const issue = JSON.parse(gh(`repos/${repo}/issues/${n}/comments?per_page=100`)).filter((c) => c.user && c.user.login === VOID_BOT && String(c.body || '').startsWith('<!-- void-review -->')).pop();
       if (issue) {
         const pull = JSON.parse(gh(`repos/${repo}/pulls/${n}`)), filesApi = JSON.parse(gh(`repos/${repo}/pulls/${n}/files?per_page=100`)), files = filesApi.map((f) => f.filename);
@@ -257,13 +257,13 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
   if (statsPath) writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
   if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows, closerRead: { claims: phantoms.length, false: falsePh.length, dropped: dropped.length, phantoms }, lessons: { ...ls }, stats }, null, 1)); process.exit(0); }
   console.log(`Verse's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
-  console.log(s.rate == null ? 'nothing Void could review yet' : `Void flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Void does not review`);
+  console.log(s.rate == null ? 'nothing Verse could review yet' : `Verse flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Verse does not review`);
   const list = process.argv.includes('--all') ? rows.filter((r) => r.reviewed && !r.caught) : s.missed;
   if (list.length) console.log('\nMissed (each is a rule to teach lib/code-review.js, or a wrong call by the extra):');
   for (const r of list) console.log(`  #${r.pr} ${r.path}:${r.line} [${r.severity}] ${r.title}`);
   console.log(`\nVoid's closer read on the same PRs: ${phantoms.length} claim(s) that a name is missing or that the mask is a bug; ${falsePh.length} false (the file imports or declares the name, or it is the mask); dropPhantoms removes ${dropped.length} of those`);
   for (const r of falsePh) console.log(`  #${r.pr} ${r.files.map((f) => f.split('/').pop()).join(',')}: ${r.claim}`);
-  console.log(`\nLessons from Void's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file; ${ls.empty} paragraph(s) made no claim (counted apart)`);
+  console.log(`\nLessons from Verse's closer read (the extras are silent): it named a line ${ls.closerFound} time(s) the rules could be checked on (${ls.bySymbol} placed by the symbol it quoted); the rules had flagged ${ls.rulesFlagged} of them within ${WINDOW} lines; ${ls.unplaced} could not be placed on one file; ${ls.empty} paragraph(s) made no claim (counted apart)`);
   for (const l of lessons.filter((x) => !x.placed && !x.empty)) console.log(`  unplaced #${l.pr} line ${l.line}: ${l.sentence}`);
   for (const l of lessons.filter((x) => x.empty)) console.log(`  empty #${l.pr}: ${l.sentence}`);
   if (ls.candidates.length) console.log('Candidate cases (each a rule to teach lib/code-review.js, with the id it would need):');

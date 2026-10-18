@@ -1,13 +1,13 @@
 /**
- * go skill — the board game Go, two people on one 9×9 board (asked for by Void in its first daily reflection, 2026-10-08:
+ * go skill — the board game Go, two people on one 9×9 board (asked for by Verse in its first daily reflection, 2026-10-08:
  * domains/void.voice.md). Same shape as othello.js: a pure engine and a card.
- * The lesson Void asked for is the interaction model: placing a stone is a move, not a verdict. A placement removes
+ * The lesson Verse asked for is the interaction model: placing a stone is a move, not a verdict. A placement removes
  * opposing stones only when it takes their last liberty (that is a real capture, and only then does a capture count go
  * up); nothing is scored, no territory is worked out and no winner is named until someone presses "Count position".
  * The board is 3D and stands in the void (skills/mini/go.js); its card is separate (skills/side-card.js). A flat board
- * stands in where WebGL can't run. "play go" is two separate seats taking turns on one device, with no Void opponent and no
+ * stands in where WebGL can't run. "play go" is two separate seats taking turns on one device, with no Verse opponent and no
  * real-time loop. "play go against void" (or "can you play go") seats you as Black and Verse as White: after each of your
- * moves or passes Verse replies with lib/go-ai.js (Monte Carlo playouts), asked by Void: "Next game I want to learn: Go".
+ * moves or passes Verse replies with lib/go-ai.js (Monte Carlo playouts), asked by Verse: "Next game I want to learn: Go".
  * Rules: captures, no suicide, simple ko (no immediate retake of a single stone), passing. Two passes in a row end play;
  * then the players tap dead groups and count. Counting is area scoring (stones + surrounded empty points) with 7 komi
  * for White. Before both have passed a count is an estimate of the position, never a result. Not covered: superko.

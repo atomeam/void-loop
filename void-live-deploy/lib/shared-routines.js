@@ -9,7 +9,7 @@ export const TABLE = 'CREATE TABLE IF NOT EXISTS void_routines (id TEXT PRIMARY 
 export const MAX_ASKS = 4, MAX_ASK = 120, MAX_SHOWN = 50;
 const NAME_RE = /^[a-z][a-z0-9' -]{1,30}$/;
 const AUTHOR_RE = /^[A-Za-z0-9][A-Za-z0-9 .'_-]{0,29}$/;
-const NOT_AUTHORS = /^(?:void|the void|owner|admin|a-to-mind|atomind)$/i; // a name that would read as Void's own voice
+const NOT_AUTHORS = /^(?:void|the void|v01d|verse|owner|admin|a-to-mind|atomind)$/i; // a name that would read as Verse's own voice
 
 const flat = (s) => String(s == null ? '' : s).replace(/[\u0000-\u001f\u007f]/g, ' ').replace(/\s+/g, ' ').trim();
 

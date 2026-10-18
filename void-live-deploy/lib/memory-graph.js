@@ -1,4 +1,4 @@
-// The personal memory graph (asked by Void, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge graph across
+// The personal memory graph (asked by Verse, 2026-10-18: "an upgrade that lets me keep a persistent, personal knowledge graph across
 // conversations—so I could remember details you've shared before, notice patterns in your interests, and build on them over time
 // without you having to repeat anything"). A tiny graph of what a person asks about, kept on this device only (the `graph` store in
 // lib/state.js, localStorage) and never sent: nodes are skills, topics and explicit facts, edges join a skill to the topics it answered
@@ -108,7 +108,7 @@ export function forgetFact(graph, text) { const g = copy(graph); delete g.nodes[
 
 export const CONF_DAYS = 3, CONF_HALF_LIFE_DAYS = 30; // 3 distinct days is about two thirds sure; unseen for 30 days halves it
 /**
- * how sure the graph is of a node, 0 to 1 (asked by Void: "a confidence score on each node ... how many times a specific fact has been verified"):
+ * how sure the graph is of a node, 0 to 1 (asked by Verse: "a confidence score on each node ... how many times a specific fact has been verified"):
  * evidence = 1 - exp(-d / 3), where d is the distinct days the node was seen on plus a quarter for each repeat on a day already counted (n), weighted by
  * recency, 0.5 ^ (days since last seen / 30). A fact told again (noteFact) or tapped "still true" raises it; "forget that" removes the node (0). Pure.
  */
@@ -173,7 +173,7 @@ export function factAsk(text) {
   return /^forget/i.test(m[1]) ? { forget: f } : { remember: f };
 }
 
-// ---- export and import (asked by Void: "download their graph as a structured JSON file for backup"). The file is the person's: made and read in the
+// ---- export and import (asked by Verse: "download their graph as a structured JSON file for backup"). The file is the person's: made and read in the
 // browser, never uploaded. An imported file is read with care: version-checked, caps enforced, every label cleaned again, unknown fields dropped.
 export const SCHEMA = 'void.memory.v1';
 export const IMPORT_MAX = 2e6; // characters; a bigger text is refused before it is parsed

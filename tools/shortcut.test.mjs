@@ -1,4 +1,4 @@
-// The contextual shortcut (asked by Void): node --test tools/shortcut.test.mjs
+// The contextual shortcut (asked by Verse): node --test tools/shortcut.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import skill, { suggestionsFor } from '../void-live-deploy/skills/shortcut.js';

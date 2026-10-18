@@ -2,7 +2,7 @@
  * lift3d — stand an existing 2D game card's board in the void as a 3D board, with the rest of the card (status, buttons,
  * rules) as a separate panel beside it (skills/side-card.js). Not a skill: othello.js, tictactoe.js, mancala.js and
  * aggravation.js import it. The game keeps its rules and its 2D board exactly as they were: the 2D board just hides, and
- *  - a tap on the 3D board clicks the 2D element it names (so every rule, turn lock and Void reply runs unchanged),
+ *  - a tap on the 3D board clicks the 2D element it names (so every rule, turn lock and Verse reply runs unchanged),
  *  - any change the game paints on the 2D board re-sends `snapshot()` to the 3D board.
  * Where WebGL can't run (or the tests switch 3D off) the miniature never loads and the card stays exactly as it was.
  *
@@ -70,7 +70,7 @@ export function lift3d(th, stageApi, el, { kind, board, title, W, H, snapshot, l
   }
   el.appendChild(view);
   if (up.has(key)) lift(); // already 3D: no flash of the flat board on a re-render
-  // the game repaints its 2D board after every move (its own, Void's, a new game): follow it
+  // the game repaints its 2D board after every move (its own, Verse's, a new game): follow it
   const obs = new MutationObserver(() => { if (mini) mini.update(data()); });
   obs.observe(board, { subtree: true, childList: true, attributes: true, characterData: true });
   stageApi.miniature(view, kind, data(), { key, label: label || ('3D ' + title + ' board: tap to play; drag to look around'), maxPolar: 1.2, minPolar: 0.12 })

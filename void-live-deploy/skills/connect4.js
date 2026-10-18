@@ -1,6 +1,6 @@
 /**
- * connect4 skill — Connect Four against Void (skills/connect4-rules.js): "play connect 4", "connect four", "four in a row".
- * Void looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
+ * connect4 skill — Connect Four against Verse (skills/connect4-rules.js): "play connect 4", "connect four", "four in a row".
+ * Verse looks several moves ahead and every disc it drops says why. The upright frame stands in the void in 3D
  * (mini/connect4.js), lifted by skills/lift3d.js with this card beside it; the flat grid here is the fallback.
  */
 import { levelPick } from './game-level.js';

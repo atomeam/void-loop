@@ -1,4 +1,4 @@
-// Source reliability (asked by Void, its self-page: "Create a 'source-reliability' metric within the 'Words and the world'
+// Source reliability (asked by Verse, its self-page: "Create a 'source-reliability' metric within the 'Words and the world'
 // family to help raise its proven rating."). Most of the Words and the world family answers from someone else's data (Wiktionary,
 // Datamuse, TVMaze, Open Library, TheMealDB ...), so how far to trust an answer is how far to trust its source. Copied from how
 // Wikipedia rates a claim (WP:RS: a named, published source; a second one to check it against; a record of it being right), read
@@ -9,15 +9,15 @@
 //   second    it has a second outside source to fall back on or check against (two or more sites)
 //   answered  a record of the real source answering: a kept live answer (findings/<skill>/*.json, "attempt": "live", "ok": true, the
 //             families' fourth kind of evidence). The benchmark's success rate does not count: it stubs outside services ("this
-//             measures Void, not their uptime", tools/bench.mjs), so it says the ask reached the skill, not that the source answered.
+//             measures Verse, not their uptime", tools/bench.mjs), so it says the ask reached the skill, not that the source answered.
 // Each is one point (0 to 3). It changes no rating and lowers no bar: the tiers stay tools/families.mjs's. What it adds is the way
 // up the existing rules leave open: for each tested or checked skill that reads an outside source, whether one kept live answer from
 // that source (a findings/<skill>/ file, tools/rides-live.mjs is the pattern) would make it proven under ratingOf as it stands.
 // tools/families.mjs writes it into families.json (each skill's `source`, the family's `sources`); the family-health card shows it.
 import { ratingOf } from './families.mjs';
 
-export const SOURCE_FAMILIES = ['words']; // the families the metric is kept for (Void asked for Words and the world)
-// sites that are never a source of an answer: placeholders, XML namespaces, Void's own site
+export const SOURCE_FAMILIES = ['words']; // the families the metric is kept for (Verse asked for Words and the world)
+// sites that are never a source of an answer: placeholders, XML namespaces, Verse's own site
 const NOT_SOURCES = new Set(['example.org', 'example.com', 'w3.org', 'schema.org', 'a-to-mind.com', 'localhost']);
 const TWO_PART = /^(?:co|com|org|gov|ac|net|edu)\.[a-z]{2}$/; // bbc.co.uk is a site, co.uk is not
 
@@ -29,14 +29,14 @@ export function siteOf(host) {
   return TWO_PART.test(p.slice(-2).join('.')) && p.length >= 3 ? p.slice(-3).join('.') : p.slice(-2).join('.');
 }
 
-/** the outside sites named in some code: every https URL's site, sorted, Void's own and placeholders left out. Pure. */
+/** the outside sites named in some code: every https URL's site, sorted, Verse's own and placeholders left out. Pure. */
 export function sitesIn(text) {
   const out = new Set();
   for (const m of String(text || '').matchAll(/https:\/\/([a-z0-9-]+(?:\.[a-z0-9-]+)+)/gi)) { const s = siteOf(m[1]); if (s && !NOT_SOURCES.has(s)) out.add(s); }
   return [...out].sort();
 }
 
-/** the server routes a skill calls ('/api/movies?...' -> 'movies'); /api/answer is Void's own model, not an outside source. Pure. */
+/** the server routes a skill calls ('/api/movies?...' -> 'movies'); /api/answer is Verse's own model, not an outside source. Pure. */
 export function routesIn(text) {
   return [...new Set([...String(text || '').matchAll(/['"`]\/api\/([a-z0-9-]+)/g)].map((m) => m[1]))].filter((r) => r !== 'answer').sort();
 }

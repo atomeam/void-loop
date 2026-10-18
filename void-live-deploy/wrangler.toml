@@ -2,11 +2,11 @@ name = "a-to-mind"
 compatibility_date = "2025-01-01"
 pages_build_output_dir = "."
 
-# Shared miss list (asks Void couldn't answer yet). Create once:
+# Shared miss list (asks Verse couldn't answer yet). Create once:
 #   npx wrangler kv namespace create MISSES   -> paste the id below
 # Secrets once: npx wrangler pages secret put READ_TOKEN --project-name=a-to-mind
 #               npx wrangler pages secret put SALT --project-name=a-to-mind
-# Paid Void + the store (plan item 12): npx wrangler pages secret put GUMROAD_PING_KEY --project-name=a-to-mind      (any long random string; also in the Ping URL)
+# Paid Verse + the store (plan item 12): npx wrangler pages secret put GUMROAD_PING_KEY --project-name=a-to-mind      (any long random string; also in the Ping URL)
 #                                       optional: GUMROAD_ACCESS_TOKEN (Gumroad app token, view_sales) = read each sale back from the API;
 #                                       without it a keyed ping with Atom's seller_id (lib/gumroad.js SELLER_IDS) is trusted. Optional GUMROAD_SELLER_ID overrides it.
 # The proposal's send (lib/email-send.js, behind the confirm line). To turn it on:
@@ -21,7 +21,7 @@ pages_build_output_dir = "."
 binding = "MISSES"
 id = "95b089f5717a4793b2b52a852f2a8443"
 
-# Void's queue + miss list (D1, 100k writes/day free). Reuses the old a-to-mind-board database.
+# Verse's queue + miss list (D1, 100k writes/day free). Reuses the old a-to-mind-board database.
 [[d1_databases]]
 binding = "DB"
 database_name = "a-to-mind-board"
@@ -35,7 +35,7 @@ binding = "AI"
 #   Unset = models on: the free model named in lib/models.js (Gemma 4 26B today) with the router (lib/router.js) in front.
 #   VOID_ROUTER_TUNE   JSON thresholds, e.g. {"skillMin":0.72,"hardMin":0.6}  (tune from GET /api/routes scores)
 
-# Void's films for people who pay (functions/api/films.js; owner, 2026-10-14). The bucket was made once with
+# Verse's films for people who pay (functions/api/films.js; owner, 2026-10-14). The bucket was made once with
 #   npx wrangler r2 bucket create void-films
 [[r2_buckets]]
 binding = "FILMS"

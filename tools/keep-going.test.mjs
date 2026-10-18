@@ -1,4 +1,4 @@
-// An approval that starts a task which keeps running after the person leaves (asked by Void): node --test tools/keep-going.test.mjs
+// An approval that starts a task which keeps running after the person leaves (asked by Verse): node --test tools/keep-going.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { keepAsk, keepLine, everyOf, keepGoing } from '../void-live-deploy/lib/keep-going.js';

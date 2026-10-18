@@ -2,7 +2,7 @@
 # Verse doesn't sell, lib/product-gap.js), have Verse write the kit, test the files, price it with lib/appraise.js, upload the zip to R2,
 # and open a PR with the catalog row + public changelog entry; automerge.yml merges it on green. Needs VOID_OWNER_TOKEN (queue) and
 # CLOUDFLARE_API_TOKEN/CLOUDFLARE_ACCOUNT_ID with R2 write; without them every run is a quiet no-op.
-name: Void builds store gaps
+name: Verse builds store gaps
 
 on:
   schedule:

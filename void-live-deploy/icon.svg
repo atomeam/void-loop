@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <!-- V01D's mark: the 0, a ring of light (the same ring the startup intro draws) -->
+  <!-- Verse's mark: the 0, a ring of light (the same ring the startup intro draws) -->
   <defs>
     <radialGradient id="g" cx="50%" cy="46%" r="60%">
       <stop offset="0" stop-color="#16122e"/>

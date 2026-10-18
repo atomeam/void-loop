@@ -1,6 +1,6 @@
 // Reading domains/void.frontier.md, the one build order (cleanup step 2, 2026-10-11), the same way everywhere: the open items
 // folded in from the old lists, the cleanup steps not done yet, and adding an item. Used by tools/next.mjs (what a run takes
-// next), tools/self-context.mjs (what Void says is still open about itself) and tools/grow-ideas.mjs (the idea intake).
+// next), tools/self-context.mjs (what Verse says is still open about itself) and tools/grow-ideas.mjs (the idea intake).
 // tools/will.py reads the same open list with the same rule (it is Python). Tests: tools/frontier.test.mjs.
 import { readFileSync } from 'node:fs';
 

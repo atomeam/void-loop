@@ -2,7 +2,7 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://a-to-mind.com/void.growth.schema.json",
   "title": "void.growth.json",
-  "description": "How Void has grown: an append-only ledger, one entry per change to what Void can do. Append with node tools/grow.mjs; summon on the surface with \"growth\".",
+  "description": "How Verse has grown: an append-only ledger, one entry per change to what Verse can do. Append with node tools/grow.mjs; summon on the surface with \"growth\".",
   "type": "array",
   "items": {
     "type": "object",
@@ -11,13 +11,13 @@
     "properties": {
       "at": { "type": "string", "pattern": "^\\d{4}-\\d\\d-\\d\\dT\\d\\d:\\d\\d:\\d\\dZ$", "description": "When, in UTC." },
       "by": { "type": "string", "pattern": "^[a-z0-9][a-z0-9._-]{0,39}$", "description": "Who: the agent or person's slug (claude, grok, forethinkers, adam)." },
-      "kind": { "enum": ["grow", "build", "fix", "retire", "idea", "finding"], "description": "grow: a new thing Void can do. build: an improvement to one. fix: something broken now works. retire: something removed or folded into Void. idea / finding: from the idea stream, not yet built." },
+      "kind": { "enum": ["grow", "build", "fix", "retire", "idea", "finding"], "description": "grow: a new thing Verse can do. build: an improvement to one. fix: something broken now works. retire: something removed or folded into Verse. idea / finding: from the idea stream, not yet built." },
       "what": { "type": "string", "minLength": 1, "maxLength": 4000, "description": "What changed, in plain words." },
       "ref": { "type": "string", "pattern": "^https://", "description": "Optional link: the PR, commit or page." },
       "from": { "type": "string", "description": "Optional: where a backfilled entry was copied from." },
       "show": { "type": "string", "minLength": 1, "maxLength": 70, "description": "Optional: the change in a few plain words for people, not agents (\"sticky notes look like real paper\"); the \"look what I made\" walkthrough reads it (skills/showcase.js)." },
       "try": { "type": "string", "minLength": 1, "maxLength": 120, "description": "Optional: an ask that shows the change on the stage (\"sticky note buy milk\"); the walkthrough runs it." },
-      "asked": { "type": "string", "minLength": 1, "description": "Optional: the id of the ask of Void's this answers (ask-YYYYMMDD-HHMM-n, shown in domains/void.voice.md; the ask's exact words also match, for older entries); tools/reflect.mjs leaves an answered ask out of the current list." }
+      "asked": { "type": "string", "minLength": 1, "description": "Optional: the id of the ask of Verse's this answers (ask-YYYYMMDD-HHMM-n, shown in domains/void.voice.md; the ask's exact words also match, for older entries); tools/reflect.mjs leaves an answered ask out of the current list." }
     }
   }
 }

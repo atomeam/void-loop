@@ -5,7 +5,7 @@
 # It also runs on main once a day, when main has moved since the last good run here (a quiet day costs seconds), and after a
 # clean run on main it raises the floor (tools/bench.best.json) by itself: tools/bench-floor.mjs, never lowering it. A drop
 # below the floor fails the run, and that is a fix PR, never a wait.
-name: Void bench
+name: Verse bench
 
 on:
   pull_request:

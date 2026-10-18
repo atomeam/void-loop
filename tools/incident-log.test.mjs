@@ -36,7 +36,7 @@ test('incident skill: "what broke lately" asks open the list; the brief asks and
   assert.match(incidentsHtml((s) => String(s), []), /Nothing has broken/);
 });
 
-test('touchedBy lists the paths one commit changed, and nothing for a bad sha (asked by Void)', () => {
+test('touchedBy lists the paths one commit changed, and nothing for a bad sha (asked by Verse)', () => {
   const d = mkdtempSync(join(tmpdir(), 'inc-')), git = (...a) => execFileSync('git', ['-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { cwd: d, encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] });
   git('init', '-q'); mkdirSync(join(d, 'void-live-deploy/skills'), { recursive: true });
   writeFileSync(join(d, 'a.txt'), '1'); git('add', '.'); git('commit', '-qm', 'one');

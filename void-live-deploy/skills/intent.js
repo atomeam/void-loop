@@ -1,6 +1,6 @@
 /**
  * intent skill: summon by outcome, not by name (frontier #10, first piece).
- * "I need to ship the product page by Friday" becomes a build order of asks Void already answers, run in order:
+ * "I need to ship the product page by Friday" becomes a build order of asks Verse already answers, run in order:
  * a countdown to the day, a checklist with dates worked back from it, the day on the calendar, and (when a person
  * is named: "and tell Sam") a draft note to them. What those asks put on the stage becomes one group, so
  * dragging one piece moves the plan (skills/group.js).
@@ -172,7 +172,7 @@ export function openPlanOf(text) {
   return { goal, who: m[2] && !NOT_A_PERSON.test(m[2]) ? m[2] : null };
 }
 
-/** The build order: asks Void already answers, in the order they run. Pure. */
+/** The build order: asks Verse already answers, in the order they run. Pure. */
 export function planOf(text, now = new Date()) {
   const hit = intentOf(text);
   if (!hit) {
@@ -223,7 +223,7 @@ function layOut(st, ids, live) {
 
 let seq = 0;
 
-// Plan history (asked by Void, ask-20261014-1012-3 and ask-20261014-0847-1: "a 'plan history' sidebar that shows the name or
+// Plan history (asked by Verse, ask-20261014-1012-3 and ask-20261014-0847-1: "a 'plan history' sidebar that shows the name or
 // timestamp of each distinct plan block to prevent accidental total wipes"): the last few distinct plans this browser made
 // (goal, when, the pieces as they were laid out) in localStorage, so "clear" or a lost undo is never total: "plan history"
 // lists them, "restore plan 2" or "restore the plan to learn spanish" puts one back on the stage as new things.
@@ -276,7 +276,7 @@ async function engineSteps(goal) {
     const steps = Array.isArray(j.steps) && j.steps.length ? j.steps.map((x) => listSafe(String(x)).replace(/\s*&\s*|\s+and\s+/gi, ' + ').slice(0, 60)).filter(Boolean).slice(0, 7) : null;
     const timer = Number.isInteger(j.timer) && j.timer >= 5 && j.timer <= 60 ? j.timer : null;
     const note = typeof j.note === 'string' && cleanNote(j.note).length >= 3 ? cleanNote(j.note) : null;
-    // asked by Void: Clef's yes/no (a daily practice, so a timer) is weighed against how this goal's earlier sessions went (lib/practice.js)
+    // asked by Verse: Clef's yes/no (a daily practice, so a timer) is weighed against how this goal's earlier sessions went (lib/practice.js)
     let w = { minutes: timer, why: '' };
     try { w = weigh(timer, j.practice === true, entryOf(readLog(localStorage), goal)); } catch (_) {}
     return steps ? { steps, timer: w.minutes, quality: w.why, practice: !!timer && j.practice === true, learn: j.learn === true, note } : null;
@@ -288,12 +288,12 @@ const timerAsk = (min, practice, quality, goal) => ({ piece: 'timer', ask: 'set 
 // and a note to self, run as the sticky's own ask
 const noteAsk = (note) => ({ piece: 'note', ask: 'add a sticky that says ' + note });
 const extras = (got) => [...(got.timer ? [timerAsk(got.timer, got.practice, got.quality, got.goal)] : []), ...(got.note ? [noteAsk(got.note)] : [])];
-// A preview state (asked by Void, 2026-10-16: "a 'preview' state for summoned intents so users can see the proposed plan as a
+// A preview state (asked by Verse, 2026-10-16: "a 'preview' state for summoned intents so users can see the proposed plan as a
 // lightweight card before it fully deploys"). "preview I need to ship the product page by Friday" (also "sketch ...") plans the same
 // way but puts nothing on the stage: one card shows the goal, the day, the steps and the pieces that would come, with "put it on the
-// stage" (the same ask, typed for you) and "not what I meant" (which Void notes as an intent it misread, for its growth inbox).
+// stage" (the same ask, typed for you) and "not what I meant" (which Verse notes as an intent it misread, for its growth inbox).
 const PREVIEW_RE = /^(?:preview|sketch)\s*(?:the\s+plan\s*)?[:,-]?\s+(.{6,200})$/i;
-/** the intent inside a "preview ..." ask, or '' (also '' when the rest is not a plan Void can make). Pure. */
+/** the intent inside a "preview ..." ask, or '' (also '' when the rest is not a plan Verse can make). Pure. */
 export function previewOf(text) {
   const m = PREVIEW_RE.exec(String(text || '').trim().replace(/[?!.]+$/, ''));
   if (!m) return '';
@@ -336,7 +336,7 @@ async function run(text, api) {
     if (got) got.goal = open.goal;
     if (!steps) {
       if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute');
-      if (api.reportMiss) api.reportMiss(text, 'intent:no-steps'); // a failed intent goes to the miss board as a possible new skill (asked by Void)
+      if (api.reportMiss) api.reportMiss(text, 'intent:no-steps'); // a failed intent goes to the miss board as a possible new skill (asked by Verse)
       return 'intent';
     }
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
@@ -351,10 +351,10 @@ async function run(text, api) {
   const st = api.stage || {};
   if (!st.ask || !st.things) return 'none';
   const before = new Set(Object.keys(st.things()));
-  for (const a of plan.asks) { // in order: each is an ask Void already answers, as if typed
+  for (const a of plan.asks) { // in order: each is an ask Verse already answers, as if typed
     const had = new Set(Object.keys(st.things()));
     await st.ask(a.ask);
-    // a sticky the plan put up says what it is (Void's ask): a note to keep in mind, or a message not yet sent
+    // a sticky the plan put up says what it is (Verse's ask): a note to keep in mind, or a message not yet sent
     const role = a.piece === 'note' ? 'note' : a.piece === 'draft' ? 'draft' : '';
     if (role) for (const [id, t] of Object.entries(st.things())) if (!had.has(id) && t && t.kind === 'sticky') t.role = role;
     // a practice timer knows its goal, so at 0:00 it can ask whether the session met it (skills/timer.js, lib/practice.js)
@@ -362,7 +362,7 @@ async function run(text, api) {
   }
   const live = st.things();
   const ids = Object.keys(live).filter((id) => !before.has(id));
-  if (ids.length) keepPlan({ goal: plan.goal, at: new Date().toISOString(), pieces: ids.map((id) => live[id].kind), things: ids.map((id) => JSON.parse(JSON.stringify(live[id]))) }); // plan history (asked by Void): kept after the pieces are laid out below, by reference
+  if (ids.length) keepPlan({ goal: plan.goal, at: new Date().toISOString(), pieces: ids.map((id) => live[id].kind), things: ids.map((id) => JSON.parse(JSON.stringify(live[id]))) }); // plan history (asked by Verse): kept after the pieces are laid out below, by reference
   if (ids.length > 1) {
     const g = 'g' + Date.now().toString(36) + 'p' + (seq++).toString(36);
     for (const id of ids) live[id].group = g;

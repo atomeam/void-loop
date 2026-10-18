@@ -75,7 +75,7 @@ class Lens(unittest.TestCase):
     def test_report_text(self):
         md = void_lens.report_md(self.scan())
         self.assertIn("nothing was deleted", md)
-        self.assertIn("Void Pro (planned, not available yet)", md)
+        self.assertIn("Verse Pro (planned, not available yet)", md)
         self.assertIn("hf cache", md)
 
     def test_json_and_cli(self):

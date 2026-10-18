@@ -1,7 +1,7 @@
 /**
- * films skill - Void's own films: where to watch them (/films/, free for everyone, no sign-in)
+ * films skill - Verse's own films: where to watch them (/films/, free for everyone, no sign-in)
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Void should know whatI mean
+ * Owner, 2026-10-14: "where do I watch the films i have typed films voids fillms nothing pulls it up . Verse should know whatI mean
  * and help". Takes "films", "voids fillms", "void's films", "where do I watch the films", "show me your videos", "review films",
  * typos included; leaves films about anything else ("best films of 2025", "film a timer") to the skills that answer those.
  */
@@ -24,7 +24,7 @@ export function wantsFilms(lower) {
   return MINE.test(t) || VIDEOS.test(t) || REVIEW.test(t);
 }
 
-// the films as data (asked by Void, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
+// the films as data (asked by Verse, 2026-10-15: "Implement the 'film-metadata' skill to extract structured JSON from any Verse FILM
 // currently on the stage"): "film metadata", "films as json", "films json", "export the films". Read from /api/films, which anyone
 // may list; each film becomes { id, day, experiment, title, tags, source, watch }.
 const META = new RegExp('^(?:(?:show|give|get|export|list)\\s+(?:me\\s+)?)?(?:the\\s+)?(?:' + WHOSE + ')?(?:' + FILM + '|videos?)\\s+(?:metadata|meta|data|as\\s+json|json|info)$|^(?:export\\s+(?:the\\s+)?' + FILM + ')$', 'i');
@@ -36,8 +36,8 @@ export function filmMeta(f) {
   const tags = Array.isArray(f.tags) ? f.tags : String(f.tags || '').split(',').map((x) => x.trim()).filter(Boolean);
   return { id: f.id, day, experiment: exp, title: f.title || '', tags, source: src, watch: 'https://a-to-mind.com/films/' };
 }
-// The feed monitor (asked by Void: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
-// (asked by Void: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
+// The feed monitor (asked by Verse: "watches the /films/rss route and triggers a 'new-content' notification card") and the film card
+// (asked by Verse: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
 // v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
 // card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
 const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;

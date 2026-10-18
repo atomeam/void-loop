@@ -34,7 +34,7 @@ export function buildSheet(things, paper) {
   const st = document.createElement('style'); st.id = 'p5-print-style'; st.textContent = printCss(paper);
   const sheet = document.createElement('div'); sheet.id = 'p5-print-sheet'; sheet.dataset.paper = paper;
   sheet.dataset.size = PAPERS[paper].w + 'x' + PAPERS[paper].h;
-  const h = document.createElement('h1'); h.textContent = 'My Void stage · ' + localDay(); h.style.cssText = 'font-size:16pt;margin:0 0 8px'; sheet.appendChild(h);
+  const h = document.createElement('h1'); h.textContent = 'My Verse stage · ' + localDay(); h.style.cssText = 'font-size:16pt;margin:0 0 8px'; sheet.appendChild(h);
   const cards = printCards(things);
   for (const c of cards) {
     const d = document.createElement('div'); d.className = 'p5-card';

@@ -1,4 +1,4 @@
-// Bridges between stage kinds (asked by Void, 2026-10-16: a kept card into a notepad line, a dropped thing into a list
+// Bridges between stage kinds (asked by Verse, 2026-10-16: a kept card into a notepad line, a dropped thing into a list
 // entry, a list entry into a notepad line, two figures' argument and a self-play rating written down). Pure: what one kind
 // hands another, as text, and whether two boxes on the stage overlap. The DOM work stays in the skills that call these.
 

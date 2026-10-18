@@ -30,7 +30,7 @@ const NAME_RE = /^(?:my\s+name\s+is|my\s+name's|i'?m|i\s+am|call\s+me|it'?s|this
 const NOT_NAMES = new Set(['clear', 'menu', 'undo', 'close', 'help', 'hi', 'hello', 'hey', 'yes', 'no', 'ok', 'okay', 'thanks', 'stop', 'quiet', 'nothing', 'nevermind', 'motelet', 'fine', 'good', 'here', 'back']);
 export function nameOf(text, original) {
   const t = CLEAN(text); let m = t.match(NAME_RE), raw = null;
-  // a bare word is a name only when written like one ("Sam"): lowercase "weather" stays an ask for the rest of Void
+  // a bare word is a name only when written like one ("Sam"): lowercase "weather" stays an ask for the rest of Verse
   if (m) raw = m[1]; else if (/^[a-z][a-z'-]{1,19}$/.test(t) && !NOT_NAMES.has(t) && /^[A-Z]/.test(String(original || '').trim())) raw = t;
   if (!raw) return null;
   const src = String(original || raw).trim().replace(/[?!.]+$/, ''), tail = src.slice(src.length - raw.length); // keep the person's own capitals

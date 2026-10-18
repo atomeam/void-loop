@@ -1,7 +1,7 @@
 /**
  * deps skill - "dependency map", "what depends on lib/where.js", "who imports skills/scene3d.js": who imports whom under the site's
  * own code, from skills/deps.json (tools/deps.mjs reads the import lines of skills/**, lib/** and functions/**; nothing is
- * guessed). Asked by Void (its reflection of 2026-10-12, ask-20261012-1942-2): "Create a 'dependency map' visualization that
+ * guessed). Asked by Verse (its reflection of 2026-10-12, ask-20261012-1942-2): "Create a 'dependency map' visualization that
  * shows which skills (like 'forge') are most impacted by changes in core code imports."
  * The card: the lib files the most skills depend on (directly or through another file), one row each with a bar; tap a row to
  * see every dependant, skills first. "what depends on <file>" opens the card on that file. One accent (--d-key).
@@ -12,7 +12,7 @@ const TOP = 12;
 
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
 const FILE = "((?:lib|skills|functions)/[a-z0-9_./-]+|[a-z0-9_.-]+\\.m?js)";
-const MAP = new RegExp('^(?:(?:show|open|give|draw)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|v01d\'?s\\s+)?(?:code\\s+|import\\s+|skill\\s+)?dependenc(?:y|ies)\\s+(?:map|graph|tree)$|^(?:what|which)\\s+(?:lib\\s+)?files?\\s+(?:do\\s+)?(?:the\\s+)?(?:most\\s+)?skills\\s+depend\\s+on$', 'i');
+const MAP = new RegExp('^(?:(?:show|open|give|draw)(?:\\s+me)?\\s+)?(?:the\\s+|your\\s+|void\'?s\\s+|(?:v01d|verse)\'?s\\s+)?(?:code\\s+|import\\s+|skill\\s+)?dependenc(?:y|ies)\\s+(?:map|graph|tree)$|^(?:what|which)\\s+(?:lib\\s+)?files?\\s+(?:do\\s+)?(?:the\\s+)?(?:most\\s+)?skills\\s+depend\\s+on$', 'i');
 const ONE = new RegExp('^(?:(?:show|tell)\\s+me\\s+)?(?:what|who|which\\s+(?:skills|files))\\s+(?:depends?\\s+on|imports?|uses?|needs?)\\s+(?:the\\s+)?' + FILE + '$|^(?:dependants|dependents|importers|dependencies)\\s+of\\s+' + FILE + '$|^' + FILE + '\\s+(?:dependants|dependents|importers)$', 'i');
 /** the ask as the card reads it: { file } for one file's dependants, {} for the whole map, null for anything else. Pure. */
 export function parseAsk(t) {

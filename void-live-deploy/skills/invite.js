@@ -1,14 +1,14 @@
 /**
- * invite skill: bring someone into your Void (frontier #11). A signed-in member gets a link; whoever opens it appears here
- * as a faint presence, and what either of you summons shows on both stages. Closing the tab ends it; your Void stays yours.
+ * invite skill: bring someone into your Verse (frontier #11). A signed-in member gets a link; whoever opens it appears here
+ * as a faint presence, and what either of you summons shows on both stages. Closing the tab ends it; your Verse stays yours.
  * The room is made by POST /api/share (lib/share.js); the page joins it on the 'void:share-join' event (lib/share-client.js).
- * "invite someone", "invite a friend into my Void", "bring someone in".
+ * "invite someone", "invite a friend into my Verse", "bring someone in".
  */
 const ME_KEY = 'a2m.void.me.v1';
 export function inviteOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:please\s+)?(?:invite\s+(?:someone|somebody|a\s+friend|a\s+person|people)|bring\s+(?:someone|somebody|a\s+friend|a\s+person)\s+in(?:to)?)(?:\s+(?:in|into|to)?\s*(?:my|your|this)\s+void)?$/.test(t)
-    || /^(?:please\s+)?share\s+(?:my|this)\s+void\s+live$/.test(t);
+  return /^(?:please\s+)?(?:invite\s+(?:someone|somebody|a\s+friend|a\s+person|people)|bring\s+(?:someone|somebody|a\s+friend|a\s+person)\s+in(?:to)?)(?:\s+(?:in|into|to)?\s*(?:my|your|this)\s+(?:void|verse))?$/.test(t)
+    || /^(?:please\s+)?share\s+(?:my|this)\s+(?:void|verse)\s+live$/.test(t);
 }
 
 async function run(text, api) {
@@ -37,7 +37,7 @@ async function run(text, api) {
 
 export default {
   name: 'invite',
-  examples: ['invite someone', 'invite a friend', 'invite someone into my Void', 'bring someone in', 'share my Void live'],
+  examples: ['invite someone', 'invite a friend', 'invite someone into my Verse', 'bring someone in', 'share my Verse live'],
   nearMisses: ['share this card', 'how do i invite someone to a zoom call', 'send an invite to the party', 'invite'],
   match(lower, text) { return inviteOf(text); },
   run,

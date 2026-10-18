@@ -34,9 +34,9 @@ assert.deepEqual([L.findings[0].x, L.failures[0].x.what, L.next[0].x, L.behavior
 assert.ok(!L.untried.some(([a, b]) => a + '+' + b === 'attention+opt-in-gesture'), 'a pair a run combined is no longer untried');
 const may = new Set(next(real));
 assert.ok(L.untried.slice(0, 6).every(([a, b]) => may.has(a) || may.has(b)), 'the first pairs each hold a family the next run may pick');
-// what the core needs: Void's open asks, failing then unchecked skills, benchmark misses, people's misses; a missing source is left out
+// what the core needs: Verse's open asks, failing then unchecked skills, benchmark misses, people's misses; a missing source is left out
 const files = {
-  'domains/void.voice.md': "# x\n\n## Void's current asks\n\n_Read on 2026-10-13._\n\n- Track a success metric for each experiment. *(small)* (daily, 2026-10-13) `ask-1`\n- Show which experiment could become a skill. (after a build, 2026-10-12) `ask-2`\n\n## Log, oldest first\n",
+  'domains/void.voice.md': "# x\n\n## Verse's current asks\n\n_Read on 2026-10-13._\n\n- Track a success metric for each experiment. *(small)* (daily, 2026-10-13) `ask-1`\n- Show which experiment could become a skill. (after a build, 2026-10-12) `ask-2`\n\n## Log, oldest first\n",
   'void-live-deploy/skills/families.json': JSON.stringify({ families: [{ skills: [{ name: 'map', tier: 'experiment' }, { name: 'weather', tier: 'proven', failing: ['rain later', 'snow?'] }, { name: 'clock', tier: 'proven' }] }] }),
   'tools/bench.misses.json': JSON.stringify({ misses: ['rain later -> answer'] }),
 };
@@ -62,7 +62,7 @@ assert.deepEqual(unreachable(real), [], 'today every published draft is in the l
 const T = labTools([{ id: 'attention-9', label: 'Scroll pauses', sub: 's', asks: ['scroll pauses', 'what did i pause on'] }, { id: 'miss-board', label: 'dupe', asks: ['dupe'] }, { id: 'Bad Id', label: 'x', asks: ['x'] }, { id: 'no-asks', label: 'x', asks: [] }]);
 assert.deepEqual(T.map((t) => t[1]), ['attention-9']);
 assert.ok(T[0][0].test('scroll pauses') && T[0][0].test('open the scroll pauses') && T[0][0].test('what did i pause on') && !T[0][0].test('scroll pauses please'));
-// near (asked by Void, ask-20261013-1719-1): what a run was built toward, one target or a list, kept as written; junk is refused
+// near (asked by Verse, ask-20261013-1719-1): what a run was built toward, one target or a list, kept as written; junk is refused
 assert.deepEqual(check(withNotes({ near: 'skill:weather' })), []);
 assert.deepEqual(check(withNotes({ near: ['probe:sky', 'miss-board', 'step:14'] })), []);
 for (const bad of [{ near: '' }, { near: 'Has Spaces' }, { near: ['skill:weather', 7] }, { near: 'x'.repeat(81) }]) assert.match(check(withNotes(bad)).join('\n'), /near must name/, JSON.stringify(bad));
@@ -88,7 +88,7 @@ const CR = cardRows(JSON.parse(readFileSync(new URL('../' + LEDGER, import.meta.
 assert.equal(CR.length, ledgerOf(real).length); assert.ok(CR.every((r) => r.drafts.length >= 1) && asksFringe('which skills came from the fringe') && !asksFringe('fringe festival'));
 console.log('fringe-notes: ok');
 
-{ // a novelty or failure is tagged with the near-miss input that set it off (asked by Void)
+{ // a novelty or failure is tagged with the near-miss input that set it off (asked by Verse)
   const { inputTag, suggestInputs, check } = await import('./fringe.mjs');
   const t = inputTag('Weather', 'Will it be   nice tomorrow');
   assert.ok(/^near-miss:weather:[0-9a-f]{8}$/.test(t));

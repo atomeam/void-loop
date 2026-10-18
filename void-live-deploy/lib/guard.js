@@ -1,16 +1,16 @@
-// Void's defences (the will's "check my defences" want, 2026-09-28). Shared by functions/api/_middleware.js and the routes.
+// Verse's defences (the will's "check my defences" want, 2026-09-28). Shared by functions/api/_middleware.js and the routes.
 // Uses what the platform already gives: the edge cache (caches.default) as a per-colo counter, plus a per-isolate map so a
 // burst is caught even before the cache answers. Pages Functions have no rate-limit binding; a Cloudflare WAF rate-limiting
 // rule on the zone is the stronger outer layer (dashboard, see domains/void.defences.md).
 //
 // Every /api route gets: a per-connection budget per minute, a request-size cap, a brake on repeated wrong keys, no
-// cross-site writes from other websites' pages (Gumroad's server-to-server ping and Void's own tools send no Origin), no CORS,
+// cross-site writes from other websites' pages (Gumroad's server-to-server ping and Verse's own tools send no Origin), no CORS,
 // nosniff and no-store by default. Owner keys are compared in constant time.
 
 export const WINDOW_MS = 60e3;
 // rpm: requests per connection per minute on that route. body: the largest request body accepted, in bytes.
 export const LIMITS = {
-  mcp: { rpm: 60, body: 64000 }, // Void as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
+  mcp: { rpm: 60, body: 64000 }, // Verse as an MCP server (functions/api/mcp.js): read-only tools; a review_code call carries up to 60,000 characters of code
   answer: { rpm: 30, body: 20000 },
   appraise: { rpm: 6, body: 1200000 }, // one downsized photo (768 px JPEG) per call, 6 a minute: a vision model call each (functions/api/appraise.js) // /api/answer also keeps its own tighter 12 a minute for model calls
   miss: { rpm: 30, body: 1000 },
@@ -26,24 +26,24 @@ export const LIMITS = {
   catalog: { rpm: 60, body: 1000 },
   passkey: { rpm: 60, body: 20000 },
   mine: { rpm: 120, body: 900200 },
-  publish: { rpm: 20, body: 40000 }, // a paid Void's public page (/@name)
+  publish: { rpm: 20, body: 40000 }, // a paid Verse's public page (/@name)
   gumroad: { rpm: 120, body: 50000 },
   handoff: { rpm: 30, body: 262144 }, // agent drop-links; 256 KB matches functions/api/handoff.js
   rehearsal: { rpm: 10, body: 500 }, // owner-only: seed and clean the rehearsal's stand-in reply (functions/api/rehearsal.js)
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
-  memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
-  films: { rpm: 120, body: 40000000 }, // Void's films for people who pay (functions/api/films.js): a video seeks with many Range GETs; only the owner POSTs a film (OWNER_WRITES)
+  memory: { rpm: 30, body: 262144 }, // owner-only: what Verse remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
+  films: { rpm: 120, body: 40000000 }, // Verse's films for people who pay (functions/api/films.js): a video seeks with many Range GETs; only the owner POSTs a film (OWNER_WRITES)
   'film-views': { rpm: 60, body: 0 }, // Verse Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
   'film-review': { rpm: 30, body: 4000 }, // a paying member's or the owner's verdict on a film and a note of up to 1,000 characters (functions/api/film-review.js)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
-  review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
-  reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
+  review: { rpm: 60, body: 70000 }, // Verse's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
+  reflect: { rpm: 30, body: 2000 }, // Verse's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
   'voice-reply': { rpm: 20, body: 4000 }, // owner-only: a reply to Verse's reflection or card; one model call (functions/api/voice-reply.js)
   'probe-log': { rpm: 60, body: 2000 }, // the growth card reads it; the probe and fix tools write one record each (lib/probe-log.js)
   'v01d-fixes': { rpm: 10, body: 500 }, // owner-only: approve one of Verse's fix pull requests (functions/api/v01d-fixes.js)
   'propose-fix': { rpm: 6, body: 40000 }, // owner-only: Verse proposes a matcher fix for an ask its probe missed (lib/propose-fix.js); the body carries one skill file
   'probe-asks': { rpm: 6, body: 8000 }, // owner-only: Verse writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
-  automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
+  automations: { rpm: 60, body: 2200000 }, // owner-only: Verse's own automations; a pull-request rule carries up to 20 files of 100 KB
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
   react: { rpm: 60, body: 300 }, // spectator reactions (functions/api/react.js): a closed list of 6 ids and a ledger slug in; integer counts out; 20 a minute and 200 a day per hashed connection in the route itself, no model
@@ -152,7 +152,7 @@ export async function bump(origin, key, now = Date.now()) {
 export const peek = (origin, key, now = Date.now()) => read(origin, slotKey(key, now));
 export function resetGuard() { mem.clear(); } // tests only
 
-// Another website's page trying to write through a visitor's browser. Requests with no Origin (servers, Void's own tools,
+// Another website's page trying to write through a visitor's browser. Requests with no Origin (servers, Verse's own tools,
 // curl) and same-origin pages pass; GET, HEAD and OPTIONS never change anything here.
 export function crossSite(request) {
   if (/^(GET|HEAD|OPTIONS)$/.test(request.method)) return false;
@@ -187,7 +187,7 @@ export async function guard(ctx) {
   const { request, env } = ctx;
   const url = new URL(request.url), route = url.pathname.split('/')[2] || '';
   const lim = LIMITS[route] || DEFAULT_LIMIT;
-  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { allow: 'GET, POST, PUT, PATCH', 'cache-control': 'no-store' } }); // no CORS: other sites can't read Void's API
+  if (request.method === 'OPTIONS') return new Response(null, { status: 204, headers: { allow: 'GET, POST, PUT, PATCH', 'cache-control': 'no-store' } }); // no CORS: other sites can't read Verse's API
   if (!NO_ORIGIN_CHECK.includes(route) && crossSite(request)) return plain(403, 'cross-site requests are refused');
   const conn = await connId(request, env);
   if ((await peek(url.origin, 'fail:' + conn)) >= FAIL_MAX) return plain(429, 'too many wrong keys, wait a minute', { 'retry-after': '60' });

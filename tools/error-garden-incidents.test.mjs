@@ -1,4 +1,4 @@
-// node --test tools/error-garden-incidents.test.mjs: the site's red checks grow in the error garden (asked by Void, 2026-10-18: "any new red
+// node --test tools/error-garden-incidents.test.mjs: the site's red checks grow in the error garden (asked by Verse, 2026-10-18: "any new red
 // browser check automatically generates a summary card in the error-garden"). Pure parts only: plantIncidents over a made-up incidents.json.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

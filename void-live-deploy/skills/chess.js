@@ -1,14 +1,14 @@
 /**
- * chess skill — a real wooden chess set on the stage (skills/mini/chess.js), played against Void.
+ * chess skill — a real wooden chess set on the stage (skills/mini/chess.js), played against Verse.
  * "play chess", "chess", "lets play chess" summons it; it stays until thrown off. You are white; tap a piece, then a square.
- * The rules live in skills/chess-rules.js (castling, en passant, promotion, check, mate, stalemate, draws); Void searches
+ * The rules live in skills/chess-rules.js (castling, en passant, promotion, check, mate, stalemate, draws); Verse searches
  * in a Web Worker (skills/chess-worker.js) so the pieces keep moving smoothly while it thinks.
  * Where WebGL can't run, the same game shows as a flat board of buttons, so the card always works.
  */
 import { levelPick } from './game-level.js';
 import { grip, sideCard } from './side-card.js';
 import * as R from './chess-rules.js';
-import { finish, minutesSince, load as loadGames, summary, summaryLine } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
+import { finish, minutesSince, load as loadGames, summary, summaryLine } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Verse)
 
 export function chessOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -20,7 +20,7 @@ const GLYPH = { K: '♔', Q: '♕', R: '♖', B: '♗', N: '♘', P: '♙', k: '
 const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · Verse wins' : 'Checkmate · you win'), stalemate: () => 'Stalemate · a draw', 'draw-50': () => 'Draw · fifty quiet moves', 'draw-material': () => 'Draw · not enough to mate', 'draw-repetition': () => 'Draw · the same position three times' };
 const thinking = new Map(); // th.id -> pending search, so a re-render never starts a second one
 let worker = null, seq = 0;
-const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Void thinks
+const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Verse thinks
 const liveSquare = new Map(); // th.id -> the newest mount's onSquare: a 3D board still holding an older card's data taps the live card (a redraw while the board loaded left taps on a card no longer on the stage)
 function think(s, onProgress) {
   return new Promise((res) => {
@@ -105,8 +105,8 @@ function mount(th, stageApi) {
     if (!st().started) st().started = Date.now(); // the first move starts the clock the match history shows
     st().hist = (st().hist || []).concat([before]).slice(-60); // take back needs the positions before
     st().s = R.play(before, m); st().moves.push(label); st().sel = -1;
-    st().line = (st().line || []).concat([R.sqName(m.from) + R.sqName(m.to) + (m.promo ? m.promo.toLowerCase() : '')]); // the moves as coordinates, for the match replay (asked by Void)
-    // the game ended on the board: one line on this device's match history (asked by Void); a take-back after that plays on without a second line
+    st().line = (st().line || []).concat([R.sqName(m.from) + R.sqName(m.to) + (m.promo ? m.promo.toLowerCase() : '')]); // the moves as coordinates, for the match replay (asked by Verse)
+    // the game ended on the board: one line on this device's match history (asked by Verse); a take-back after that plays on without a second line
     const code = R.status(st().s);
     if (R.isOver(code) && !st().logged) { st().logged = true; finish('chess', code === 'checkmate' ? (st().s.turn === 'w' ? 'loss' : 'win') : 'draw', { moves: Math.ceil(st().moves.length / 2), minutes: minutesSince(st().started), line: (st().line || []).length === st().moves.length ? st().line : null }); }
     save(); paint();
@@ -119,9 +119,9 @@ function mount(th, stageApi) {
     const p = think(s, (info) => { if (thinking.has(th.id) && st().s === s) { leaning.set(th.id, info); if (el.isConnected) paint(); } })
       .then((m) => new Promise((res) => setTimeout(() => res(m), Math.max(0, 650 - (Date.now() - started))))).then((m) => {
       thinking.delete(th.id); leaning.delete(th.id);
-      if (st().s !== s || !m) { paint(); return; } // the game changed while Void thought
+      if (st().s !== s || !m) { paint(); return; } // the game changed while Verse thought
       doMove(m);
-      if (!el.isConnected) stageApi.render(); // the card re-rendered while Void thought: show the move on the live card
+      if (!el.isConnected) stageApi.render(); // the card re-rendered while Verse thought: show the move on the live card
     });
     thinking.set(th.id, p); paint();
   }
@@ -172,7 +172,7 @@ function mount(th, stageApi) {
   }
   again.addEventListener('click', (e) => { e.stopPropagation(); thinking.delete(th.id); th.state = freshState(); picker.style.display = 'none'; save(); paint(); });
   back.addEventListener('click', (e) => { e.stopPropagation(); const h = st().hist || []; if (!h.length) return; thinking.delete(th.id);
-    // undo your move and Void's reply together, so it is your turn again
+    // undo your move and Verse's reply together, so it is your turn again
     let n = st().s.turn === 'w' && h.length >= 2 ? 2 : 1; st().s = h[h.length - n]; st().hist = h.slice(0, h.length - n); st().moves = st().moves.slice(0, -n); st().line = (st().line || []).slice(0, -n); st().sel = -1; save(); paint(); voidTurn(); });
 
   let card = null;
@@ -193,7 +193,7 @@ function mount(th, stageApi) {
     stageApi.miniature(view, 'chess', data(), { key: 'chess:' + th.id, label: '3D chess board: tap a piece, then a square; drag to look around', maxPolar: 1.22, minPolar: 0.15 })
       .then((h) => { mini = h; paint(); }).catch((e) => { console.warn('[chess] 3D unavailable, flat board', e); fallback(); });
   } else fallback();
-  voidTurn(); // a reloaded board on Void's turn picks up where it was
+  voidTurn(); // a reloaded board on Verse's turn picks up where it was
 }
 
 async function run(text, api) {

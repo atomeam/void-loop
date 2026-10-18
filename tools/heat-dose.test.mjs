@@ -1,4 +1,4 @@
-// The coral heat card's 48-hour projected dose (lib/heat-dose.js, asked by Void): NOAA's HotSpot and degree-heating-week
+// The coral heat card's 48-hour projected dose (lib/heat-dose.js, asked by Verse): NOAA's HotSpot and degree-heating-week
 // maths on Open-Meteo's marine and UV forecasts. Run: node --test tools/heat-dose.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

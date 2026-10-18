@@ -1,11 +1,11 @@
 # Verse proposes the fix (frontier #28, step 3 of docs/playbooks/probe-and-fix.md). Once a day, after its own probe has queued the
 # asks it missed (probe-asks.yml, `probe:` jobs), Verse's model reads the owning skill and proposes the narrowest matcher change
 # (owner-only /api/propose-fix, lib/propose-fix.js); tools/propose-fix.mjs applies it to a copy and lets the repo decide: the skill
-# collision check, the skill's unit test, Void's review as a gate, and the everyday benchmark on the missed ask plus every bench ask
+# collision check, the skill's unit test, Verse's review as a gate, and the everyday benchmark on the missed ask plus every bench ask
 # the skill already answers. Only a proposal that passes all four leaves this job, as a patch file; the second job holds the write
 # token, moves the patch's bytes into a branch (git apply, nothing run) and opens a pull request labelled "made by Verse" and
-# automerge (owner, 2026-10-16): it merges on Void's review like any PR, and verify.yml reverts it if main's suite goes red. A PR the
-# workflow token opens starts no pull_request runs, so this job dispatches Void's review and the automerge bot on it itself.
+# automerge (owner, 2026-10-16): it merges on Verse's review like any PR, and verify.yml reverts it if main's suite goes red. A PR the
+# workflow token opens starts no pull_request runs, so this job dispatches Verse's review and the automerge bot on it itself.
 # A proposal that fails is undone and the job's note says which step, for a builder.
 # Needs VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
 # The brain: the daily run asks Verse's own model (Workers AI, free). A run started by hand can pick "claude" instead
@@ -67,7 +67,7 @@ jobs:
         run: npm ci --no-audit --no-fund
       - name: Checks
         run: node --test tools/propose-fix.test.mjs tools/claude-brain.test.mjs
-      - name: Every workflow file parses (asked by Void; a broken YAML stopped this one from loading on 2026-10-15)
+      - name: Every workflow file parses (asked by Verse; a broken YAML stopped this one from loading on 2026-10-15)
         run: |
           python3 - <<'PY'
           import glob, sys, yaml
@@ -132,7 +132,7 @@ jobs:
             echo "slug=$(node -p "require(process.argv[1]).ask.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 34)" "$r")" >> "$GITHUB_OUTPUT"
             echo "ask=$(node -p "require(process.argv[1]).ask.replace(/[^\w ,.'?!-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "why=$(node -p "require(process.argv[1]).why.replace(/[^\w ,.'?!():;-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
-            # the evidence (asked by Void): Verse's confidence and the file and lines each edit changes
+            # the evidence (asked by Verse): Verse's confidence and the file and lines each edit changes
             echo "title=$(node -p "require(process.argv[1]).title.replace(/[^\w ,.'?!:\"-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "confidence=$(node -p "String(require(process.argv[1]).confidence ?? 'none given').replace(/[^\w .-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "risk=$(node -p "const k = require(process.argv[1]).risk || { level: 'unknown', why: '' }; (k.level + ' (' + k.why + ')').replace(/[^\\w .,()'-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
@@ -156,7 +156,7 @@ jobs:
       contents: write
       pull-requests: write
       issues: write
-      actions: write # start Void's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
     steps:
       - uses: actions/checkout@v4
         with:
@@ -191,20 +191,20 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add "void-live-deploy/skills/$SKILL.js"
-          git commit -q -m "$TITLE" -m "Proposed by Verse's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Void's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY" -m "Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Void (probe)"
+          git commit -q -m "$TITLE" -m "Proposed by Verse's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Verse's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY" -m "Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Verse (probe)"
           git push -q origin "$branch"
           gh label create "made by Verse" --color 5c5cff --description "a change Verse's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true
           # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"): sure enough, it
-          # merges itself once Void's review is clean; otherwise it waits for the owner on the "Verse's fixes" card (or here on GitHub)
+          # merges itself once Verse's review is clean; otherwise it waits for the owner on the "Verse's fixes" card (or here on GitHub)
           gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
           gh label create "waits for owner" --color d4a72c --description "Verse was not sure enough (confidence under 0.8): the owner looks before it merges" --force >/dev/null 2>&1 || true
-          # under 0.8 the fix is a draft on the board, not a pull request asking to merge (asked by Void); Approve on the card, or the automerge label, makes it ready
+          # under 0.8 the fix is a draft on the board, not a pull request asking to merge (asked by Verse); Approve on the card, or the automerge label, makes it ready
           draft=""; [ "$gate" = "automerge" ] || draft="--draft"
           url=$(gh pr create $draft --base main --head "$branch" --label "made by Verse" --label "$gate" --title "$TITLE" \
             --body "Verse's own model proposed this change for an ask its daily probe wrote and missed (frontier #28, step 3: tools/propose-fix.mjs). Before it got here it passed the skill collision check, the skill's unit test, Void's review as a gate and the everyday benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY. Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL. Labelled $gate: at confidence 0.8 and up it merges on Void's review like any PR (owner, 2026-10-16), and verify.yml takes it back if the suite goes red; under 0.8 it waits for the owner (the \"Verse's fixes\" card on the site). The ask is Verse's own words, not a visitor's.")
           echo "### Verse's fix is up: $url" >> "$GITHUB_STEP_SUMMARY"
-          # the merge gate: Void's review on this head, then the bot that merges labelled PRs once it is clean
-          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Void's review on ${url} by hand"
+          # the merge gate: Verse's review on this head, then the bot that merges labelled PRs once it is clean
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
           [ "$gate" = "automerge" ] && { gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true; }
           echo "Verse's confidence $CONFIDENCE: $gate" >> "$GITHUB_STEP_SUMMARY"
           # the job's note says where the fix went (counts and the link only)

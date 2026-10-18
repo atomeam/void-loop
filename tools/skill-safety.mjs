@@ -1,4 +1,4 @@
-// The automerge bot's safety-check (asked by Void: "a 'safety-check' step to the automerge bot that runs node --test on the specific
+// The automerge bot's safety-check (asked by Verse: "a 'safety-check' step to the automerge bot that runs node --test on the specific
 // affected skill files before finalizing the merge"). Before a ready PR is merged, the unit tests of the skills and libs it changed
 // run on the PR's own head: node --test on those test files only (never the suite). A failure holds the merge and says so once
 // on the PR; it adds to the gates (Verse's review, the checks), it replaces none. If the check itself cannot run (no fetch, no

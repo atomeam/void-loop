@@ -12,7 +12,7 @@ import { parseQueueMirror, envelopeFor, validateEnvelope, planFor, bridgeUrl, ap
   DESCRIPTION_LIMIT, AI_ID } from './dispatcher.mjs';
 
 const here = path.dirname(fileURLToPath(import.meta.url));
-const QUEUED = { id: 'mukjtxjm', target: 'will:void-learns-skills', state: 'queued', asked: '2026-09-28T01:08', note: 'Void chose this.' };
+const QUEUED = { id: 'mukjtxjm', target: 'will:void-learns-skills', state: 'queued', asked: '2026-09-28T01:08', note: 'Verse chose this.' };
 
 test('the queue mirror parses, and the header and rule rows are not rows', async () => {
   const rows = parseQueueMirror(await readFile(path.join(here, '..', 'domains', 'void.queue.md'), 'utf8'));

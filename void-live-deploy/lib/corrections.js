@@ -1,4 +1,4 @@
-// The correction channel (asked by Void: "the routing handler for the 'open the self card' intent so I can ingest user corrections ... a strict
+// The correction channel (asked by Verse: "the routing handler for the 'open the self card' intent so I can ingest user corrections ... a strict
 // meta-data channel"). A person opens the self card ("open the self card", "tell void what it got wrong") and says which answer was wrong and
 // what they wanted. That goes here, into a store of its own in the `self` family (CORRECTIONS.key), and nowhere else: it shares no key and no
 // code with the look skill's state (the look store in lib/state.js), so a correction can never restyle the stage and a restyle can never overwrite a

@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 export const TITLE = 'verify-main failed check';
 // the workflows that have run verify-main: its own since 2026-10-10, the deploy before (older verdicts still count)
-export const VERIFY_WORKFLOWS = ['Void verify', 'Void deploy'];
+export const VERIFY_WORKFLOWS = ['Verse verify', 'Verse deploy', 'Void verify', 'Void deploy']; // the old display names too: runs from before the rename (2026-10-18) still count // rename-name: keep
 export const COUNT_TITLE = 'verify-main failed checks';
 // the job whose verdict the revert reads: browser-suite since 2026-10-10 (verify.yml split the fast tests off into python-tests,
 // so a Python test red on the runner no longer hides the suite); verify-main before, and those verdicts still count

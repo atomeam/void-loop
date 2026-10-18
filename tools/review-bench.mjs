@@ -1,6 +1,6 @@
-// How good is Void's code reviewer? Scored on bugs that really reached main. Each case in tools/review-bench.json is a fix
+// How good is Verse's code reviewer? Scored on bugs that really reached main. Each case in tools/review-bench.json is a fix
 // commit ("Main green: ...") and a pattern for the lines it repaired; git blame on the commit before the fix names the commit
-// that wrote those lines, and Void reviews that commit exactly as it reviews a PR (tools/review-pr.mjs). A case is caught when
+// that wrote those lines, and Verse reviews that commit exactly as it reviews a PR (tools/review-pr.mjs). A case is caught when
 // a finding lands in the same file within WINDOW lines of a broken line. Noise is every bug or risk finding that is not near one.
 //   node tools/review-bench.mjs                  the pattern checks only (offline, seconds)
 //   node tools/review-bench.mjs --deep URL       also the closer read (VOID_REVIEW_KEY, as tools/review-pr.mjs --deep)
@@ -37,7 +37,7 @@ export function deepFindings(text) {
   return [...String(text || '').matchAll(/^(\S+?):(\d+) — (bug|risk|style) — (.*?)(?: — `|$)/gm)].map((m) => ({ file: m[1], line: Number(m[2]), kind: m[3], message: m[4], deep: true }));
 }
 
-/** caught or not, from Void's findings on the bug commit and the broken lines there. Pure. */
+/** caught or not, from Verse's findings on the bug commit and the broken lines there. Pure. */
 export function score(findings, file, broken) {
   const near = (f) => f.file === file && broken.some((b) => Math.abs(f.line - b) <= WINDOW);
   const hits = findings.filter(near);

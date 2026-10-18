@@ -1,11 +1,11 @@
-// service-health — is each outside service Verse hands you to reachable, and how fast (asked by Void, 2026-10-16: "Create a 'Service
+// service-health — is each outside service Verse hands you to reachable, and how fast (asked by Verse, 2026-10-16: "Create a 'Service
 // Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.)").
 // Laid out the way status pages do it (Uptime Kuma, Statuspage): one row per service, a dot for up / slow / down, and its response
 // time. Checked from the visitor's own browser only when the card opens or "Check again" is tapped: no timer, no server call, nothing
 // kept. A link-only adapter (skills/providers.js: Waymo, Uber, Lyft, Uber Eats, DoorDash) has no API Verse calls, so its row times
 // reaching the provider's site; a public API (CoinGecko for crypto, Bluesky's AppView for social) is asked for its health answer.
 // Pure apart from `check`, which takes its fetch and clock as arguments.
-// The stability gauge (asked by Void, 2026-10-18: "a 'stability-gauge' on the Service Health card that fluctuates in real-time based on
+// The stability gauge (asked by Verse, 2026-10-18: "a 'stability-gauge' on the Service Health card that fluctuates in real-time based on
 // the frequency of incident reports in incidents.json"): Verse's own browser suite on main is a service too; its dial reads lib/autopsy.js
 // stabilityOf over incidents.json (100 with no red suite in 7 days, 12 less per red one) and the card redraws it on "Check again" and once
 // a minute while open, so the needle moves as incidents land or age out.

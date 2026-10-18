@@ -24,13 +24,13 @@ test('an offer is only the routine: a name, a chosen author, at most four short 
   assert.match(cleanOffer({ name: 'morning', author: 'Sam', asks: ['email me at sk-live-abcdefghijklmnopqrstuvwx'] }).error, /secret/);
   for (const bad of [{ name: '', author: 'Sam', asks: ['a b'] }, { name: 'morning', author: '', asks: ['a b'] }, { name: 'morning', author: 'Sam', asks: [] },
     { name: 'morning', author: 'Sam', asks: ['a b', 'c d', 'e f', 'g h', 'i j'] }, { name: 'morning', author: 'Sam', asks: ['x'.repeat(121)] },
-    { name: 'morning', author: '<b>Sam</b>', asks: ['a b'] }, { name: 'morning', author: 'Void', asks: ['a b'] }, null]) assert.ok(cleanOffer(bad).error, JSON.stringify(bad));
+    { name: 'morning', author: '<b>Sam</b>', asks: ['a b'] }, { name: 'morning', author: 'Verse', asks: ['a b'] }, null]) assert.ok(cleanOffer(bad).error, JSON.stringify(bad));
 });
 
 test('the asks: "offer my morning as Sam" (a display name is required), "routines from others"', () => {
   assert.deepEqual(offerAsk('offer my morning as Sam', { morning: {} }), { name: 'morning', author: 'Sam' });
   assert.deepEqual(offerAsk('share my morning routine as Sam Lee', { morning: {} }), { name: 'morning', author: 'Sam Lee' });
-  assert.deepEqual(offerAsk('offer my morning', { morning: {} }), { name: 'morning', author: null }, 'no name yet: Void asks for one');
+  assert.deepEqual(offerAsk('offer my morning', { morning: {} }), { name: 'morning', author: null }, 'no name yet: Verse asks for one');
   assert.equal(offerAsk('offer my evening as Sam', { morning: {} }), null, 'only a routine that exists');
   for (const q of ['routines from others', "other people's routines", 'shared routines']) assert.ok(othersAsk(q), q);
   for (const q of ['offer my condolences', 'share my screen', 'my routines']) assert.ok(!offerAsk(q, { morning: {} }) && !othersAsk(q), q);

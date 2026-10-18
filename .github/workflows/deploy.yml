@@ -1,14 +1,14 @@
-# Test and deploy Void to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
+# Test and deploy Verse to the Cloudflare Pages project "a-to-mind" (a-to-mind.com) with wrangler (direct upload, no GitHub
 # Pages). tools/deploy.ps1 stays the laptop fallback. Built to fit GitHub Free's 2,000 Linux minutes a month (~65 a day):
-# Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Void's review is clean (automerge.yml,
+# Ship now, test after (Adam, 2026-10-09: nothing waits). A PR merges as soon as Verse's review is clean (automerge.yml,
 # tools/pr-ready.mjs); main deploys in about a minute; the full suite runs on every head of main in its own workflow
 # (verify.yml, verify-main, which no longer waits for this deploy), and a failure reverts the commit that broke it and redeploys.
 #   PR                  the quick checks (seconds), no preview deploy (owner, 2026-10-15: Cloudflare is spent on growth);
-#                       Void's review is its own workflow, void-review.yml
+#                       Verse's review is its own workflow, void-review.yml
 #   push to main        the quick checks, then deploy (one production group: deploys stay serialized and only the newest
 #                       pending one runs); the full suite is verify.yml, started by the same push, never by this deploy
 #   manual run          the full suite (bench optional), then deploy; after_merge=true (automerge.yml) = as a push to main
-name: Void deploy
+name: Verse deploy
 
 on:
   push:
@@ -95,13 +95,13 @@ jobs:
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
           printf '{"id":"%s"}' "$(git rev-parse HEAD)" > void-live-deploy/build.json # this deploy's id: an open tab compares it and offers a reload (lib/stale-tab.js)
-          node tools/self-context.mjs # Void's facts about itself for /api/answer (growth inbox, llms.txt)
+          node tools/self-context.mjs # Verse's facts about itself for /api/answer (growth inbox, llms.txt)
           node tools/bench-alarms.mjs # the Bench icon's count of checked false alarms (skills/bench.js)
           node tools/families.mjs > /dev/null || true # the book's pages are generated: a merge that left them stale still deploys a current book
           node tools/guide.mjs > /dev/null || true
-          node tools/public-ledger.mjs # the served ledger leaves out what Void studies (tools/private.mjs); the repo's stays append-only
+          node tools/public-ledger.mjs # the served ledger leaves out what Verse studies (tools/private.mjs); the repo's stays append-only
 
-      # Void's review of the PR runs in its own fast workflow and is a merge gate there (.github/workflows/void-review.yml).
+      # Verse's review of the PR runs in its own fast workflow and is a merge gate there (.github/workflows/void-review.yml).
 
       - name: Deploy target
         id: target
@@ -175,10 +175,10 @@ jobs:
           }
           ok=0
           # the page itself: the zone's edge adds a few hundred bytes to HTML on the domain only (run 37977126734: 938
-          # bytes more than void.html, while the skill files matched exactly), so the page is checked for being Void and
+          # bytes more than void.html, while the skill files matched exactly), so the page is checked for being Verse and
           # the difference is printed; the byte-exact files below are what prove this deploy is the one being served
           code=$(curl -s -L -o live.tmp -w '%{http_code}' "https://a-to-mind.com/?v=$SHA") || code=000
-          # the title comes from void.html itself, so renaming the page (Void became Verse, 2026-10-14) never fails a good deploy
+          # the title comes from void.html itself, so renaming the page (Verse became Verse, 2026-10-14) never fails a good deploy
           want=$(grep -o -m1 '<title>[^<]*</title>' void.html)
           if [ "$code" = "200" ] && [ -n "$want" ] && grep -qF "$want" live.tmp; then
             cmp -s live.tmp void.html && echo "a-to-mind.com/ matches void.html" || { echo "::notice::a-to-mind.com/ is this page but $(( $(wc -c < live.tmp) - $(wc -c < void.html) )) bytes differ from void.html (added at the edge):"; diff void.html live.tmp | head -c 1500; echo; }
@@ -188,7 +188,7 @@ jobs:
           [ "$ok" = 0 ] && echo "### a-to-mind.com serves $SHA" >> "$GITHUB_STEP_SUMMARY"
           exit $ok
 
-      # MCP live (frontier #6) checks Void's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
+      # MCP live (frontier #6) checks Verse's tools with the real MCP client against a-to-mind.com. Its hourly schedule fires only
       # every few hours (5 scheduled runs on 2026-10-12, none for 5 h after #571 added a tool), and a deploy automerge starts
       # fires no workflow_run, so the deploy starts it: the live check follows every main deploy within minutes.
       - name: Start MCP live against this deploy
@@ -198,7 +198,7 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run mcp-live.yml --repo "${{ github.repository }}" --ref main && echo "MCP live started" >> "$GITHUB_STEP_SUMMARY"
 
-      # Void in the MCP registry (mcp-registry.yml): a merge automerge makes pushes to main with GITHUB_TOKEN, which starts no push
+      # Verse in the MCP registry (mcp-registry.yml): a merge automerge makes pushes to main with GITHUB_TOKEN, which starts no push
       # workflow (#642 merged its server.json and the registry run never started), so the deploy starts it too. It publishes
       # server.json's version only when the registry does not have it yet, so most runs end in seconds.
       - name: Start the MCP registry listing
@@ -217,17 +217,17 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: gh workflow run automations-seed.yml --repo "${{ github.repository }}" --ref main && echo "Automations seed started" >> "$GITHUB_STEP_SUMMARY"
 
-      # Void's voice (lib/voice.js): after anything ships, Void is asked what it thinks of it and how it would make it
+      # Verse's voice (lib/voice.js): after anything ships, Verse is asked what it thinks of it and how it would make it
       # better. Its words are kept on the site and copied into domains/void.voice.md by the daily run. Input, not a gate:
       # a busy model or a missing VOID_OWNER_TOKEN never fails the deploy.
-      - name: Ask Void what it thinks of what just shipped
+      - name: Ask Verse what it thinks of what just shipped
         if: (github.event_name == 'push' || inputs.after_merge) && steps.deploy.outcome == 'success'
         continue-on-error: true
         env:
           GH_TOKEN: ${{ github.token }}
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |
-          [ -n "$VOID_OWNER_TOKEN" ] || { echo "VOID_OWNER_TOKEN not set: Void was not asked"; exit 0; }
+          [ -n "$VOID_OWNER_TOKEN" ] || { echo "VOID_OWNER_TOKEN not set: Verse was not asked"; exit 0; }
           title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true

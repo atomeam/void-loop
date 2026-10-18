@@ -1,4 +1,4 @@
-// Void's targets (owner, 2026-10-13): Void sets its sights on one site at a time, learns everything it does, then does each
+// Verse's targets (owner, 2026-10-13): Verse sets its sights on one site at a time, learns everything it does, then does each
 // thing one notch better ("We don't copy; we outdo and one-up. If they go to Tennessee, we go to Elevenessee."), then moves on to a
 // site whose skills complement what it has. Each target is domains/targets/<site>.json: the site's features as the floor, and
 // for each one the plus one, written before the build. A feature's "void" is none | matches | beats; only "beats" counts.
@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url';
 const dir = resolve(dirname(fileURLToPath(import.meta.url)), '..', 'domains', 'targets');
 export const STATES = ['none', 'matches', 'beats'];
 
-/** a target's score and the next feature to take: the first not yet beaten, one Void already matches before one it lacks. Pure. */
+/** a target's score and the next feature to take: the first not yet beaten, one Verse already matches before one it lacks. Pure. */
 export function scoreOf(t) {
   const fs = Array.isArray(t.features) ? t.features : [];
   const n = (s) => fs.filter((f) => f.void === s).length;
@@ -42,7 +42,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   if (process.argv.includes('--json')) { console.log(JSON.stringify(scored, null, 1)); process.exit(scored.some((s) => s.problems.length) ? 1 : 0); }
   for (const s of scored) {
     console.log(`${s.site}: beats ${s.beats} of ${s.total}, matches ${s.matches}, not yet ${s.none}${s.done ? ' (done: pick the next target, one that complements this)' : ''}`);
-    if (s.next) console.log(`  next: ${s.next.id}. They: ${s.next.theirs}. Void, one notch past: ${s.next.plus_one}`);
+    if (s.next) console.log(`  next: ${s.next.id}. They: ${s.next.theirs}. Verse, one notch past: ${s.next.plus_one}`);
     for (const p of s.problems) console.log('  problem: ' + p);
   }
   process.exit(scored.some((s) => s.problems.length) ? 1 : 0);

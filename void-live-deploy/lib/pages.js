@@ -1,6 +1,6 @@
-// Public Voids (a-to-mind.com/@name): a paid Void can put its look and kept cards on a public page.
+// Public Voids (a-to-mind.com/@name): a paid Verse can put its look and kept cards on a public page.
 // Only what is chosen for the page is stored: the look (colours, effects) and kept cards as plain text. Never the stage,
-// calendar or notes, and never HTML: a page is served on this origin, so stored markup would be script on everyone's Void.
+// calendar or notes, and never HTML: a page is served on this origin, so stored markup would be script on everyone's Verse.
 export const PAGE_TABLE = 'CREATE TABLE IF NOT EXISTS void_pages (handle TEXT PRIMARY KEY, user_id TEXT NOT NULL UNIQUE, data TEXT NOT NULL, updated TEXT NOT NULL)';
 export const HANDLE_RE = /^[a-z0-9_]{3,24}$/;
 export const RESERVED = new Set(['api', 'admin', 'root', 'void', 'owner', 'atom', 'adam', 'a2m', 'atomind', 'a_to_mind', 'support', 'help', 'about', 'login', 'signin', 'signup', 'settings', 'billing', 'pay', 'store', 'shop', 'www', 'mail', 'static', 'assets', 'skills', 'tools', 'official', 'security', 'staff', 'mod', 'moderator', 'system', 'null', 'undefined', 'everyone', 'here']);

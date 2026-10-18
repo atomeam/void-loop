@@ -18,7 +18,7 @@ You name it, Verse learns it and does it better.
 Verse's own better, updated version of the board game Solar Quest, with Verse as the rival player. "play voidquest" and "play solar quest" both open it. Every other trademarked board game gets the same treatment (a Verse name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.
 
 ## Terms
-- **Verse**: the product's name (Adam, 2026-10-18: "rename Verse everywhere"); it was Void, then V01D. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks.
+- **Verse**: the product's name (Adam, 2026-10-18: "rename Verse everywhere"); it was Verse, then Verse. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks.
 - **skill family**: one of the nine groups Verse sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Verse, not a topic to look up: "what is Words and the world" means the family, not trivia about the phrase.
 - **Making things**: Verse's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json).
 - **Games**: Verse's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json).

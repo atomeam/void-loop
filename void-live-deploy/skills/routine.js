@@ -1,7 +1,7 @@
 /**
  * routine — frontier #13's first piece. "call this my morning" keeps the last few asks (the ones the ask box already remembers
  * for its hints) as a routine named "morning" in this browser; "my morning" asks them again, in order, exactly as if typed.
- * "my routines" lists them, "forget my morning" drops one. A routine is only asks Void already answers, so it can do nothing
+ * "my routines" lists them, "forget my morning" drops one. A routine is only asks Verse already answers, so it can do nothing
  * typing them could not; it stays in this browser unless its owner offers it. The pure half (the ask, the pick, the store) is
  * lib/routines.js. The second piece: "offer my morning as Sam" sends only that routine's asks and the name Sam chose to a list
  * the site's owner reviews (lib/shared-routines.js, /api/routines); "routines from others" shows the approved ones, and
@@ -88,7 +88,7 @@ async function pending(api, log) {
       };
       row.querySelector('[data-yes]').addEventListener('click', () => decide(true));
       row.querySelector('[data-no]').addEventListener('click', () => decide(false));
-      // one click (asked by Void): the offer becomes a skill file to commit; the file is made here, from the offer, and downloaded
+      // one click (asked by Verse): the offer becomes a skill file to commit; the file is made here, from the offer, and downloaded
       row.querySelector('[data-forge]').addEventListener('click', () => {
         const k = skillOf(r);
         if (k.error) { said.textContent = 'not forged: ' + k.error; return; }

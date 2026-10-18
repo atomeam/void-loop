@@ -1,8 +1,8 @@
 // Product gaps (Adam, 2026-10-15): when someone asks for something to buy or hire and no store product truly matches (or the
-// relevance gate in lib/gumroad.js productFor rejects a weak match), Void shows no sponsor line and notes a gap for the ask's
+// relevance gate in lib/gumroad.js productFor rejects a weak match), Verse shows no sponsor line and notes a gap for the ask's
 // topic instead. Only the topic is kept: a few word stems, never the visitor's words (the repo and the log are public).
 // Each ask adds one to its topic's count. When a topic reaches GAP_MIN asks, one
-// `store-gap:<topic>` job joins the build queue (void_queue). Adam (2026-10-15, domains/void.decisions.json): Void's self-made
+// `store-gap:<topic>` job joins the build queue (void_queue). Adam (2026-10-15, domains/void.decisions.json): Verse's self-made
 // products go on sale automatically when the price is within the set range, with no trademarks, tested files and a public
 // log entry each; anything outside the range stays a hidden draft.
 // Writes are one D1 batch per gap (the topic count), plus the queue row once at the threshold.

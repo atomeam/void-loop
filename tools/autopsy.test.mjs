@@ -73,7 +73,7 @@ test('the incident request carries only the redacted check name, skill and famil
   assert.equal((await suggestIncidentFix(chk, FAM, { owner: '', fetchFn: f })).got.ok, false); assert.equal(calls, 0);
   assert.equal((await suggestIncidentFix(chk, FAM, { owner: 'k', fetchFn: f })).got.ok, true); assert.equal(calls, 2);
 });
-test('a test case from each recent failure (asked by Void): the ask the check quotes, else the skill\'s own example; newest first, one per skill, unmapped checks skipped', async () => {
+test('a test case from each recent failure (asked by Verse): the ask the check quotes, else the skill\'s own example; newest first, one per skill, unmapped checks skipped', async () => {
   const { autopsy, incidentCases } = await import('../void-live-deploy/lib/autopsy.js');
   const fam = { families: [{ id: 'stage', name: 'The stage', skills: [{ name: 'label' }, { name: 'timer' }] }] };
   const guide = { pages: [{ kind: 'skill', name: 'label', examples: ['label it'] }, { kind: 'skill', name: 'timer', examples: ['timer', 'set a timer for 2 minutes'] }] };
@@ -86,7 +86,7 @@ test('a test case from each recent failure (asked by Void): the ask the check qu
   assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
 });
 
-test('stability gauge: red suites in the last week lower the score; none is steady (asked by Void)', async () => {
+test('stability gauge: red suites in the last week lower the score; none is steady (asked by Verse)', async () => {
   const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
   const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
   assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1 });
@@ -95,7 +95,7 @@ test('stability gauge: red suites in the last week lower the score; none is stea
   assert.equal(stabilityOf(mk('2027-01-01T00:00:00Z'), now).week, 0, 'a time in the future is not counted');
   assert.match(stabilityHtml(g), /data-stability="wobbly"/); assert.match(stabilityHtml(stabilityOf(null, now)), /data-stability="none"/); assert.match(stabilityHtml(g), /width:76%/);
 });
-test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Void)', () => {
+test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Verse)', () => {
   assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);
   const sus = suspectsOf(['tools/x.mjs', 'void-live-deploy/skills/clock.js', 'void-live-deploy/skills/convert.js'], [{ skill: 'convert' }, { skill: null }]);
   assert.deepEqual(sus.map((s) => [s.skill, s.likely]), [['convert', true], ['clock', false]]);

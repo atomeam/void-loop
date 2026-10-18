@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// The dependency scanner for moves into skills/ (asked by Void: "Implement a dependency scanner that automatically updates the
+// The dependency scanner for moves into skills/ (asked by Verse: "Implement a dependency scanner that automatically updates the
 // published-page check whenever a file is moved into the skills/ directory"). Main went red once because the published-page check
 // proved the rendered page was the homepage by finding /mountCalendar/ in its HTML, and #545 moved that function into
 // skills/calendar.js (63a00fd). A check keyed on a name the page no longer holds fails on every run and nothing says why.

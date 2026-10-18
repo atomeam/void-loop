@@ -136,7 +136,7 @@ export function videoAskOf(text, { hasCard = false, late = false } = {}) {
   if (url) { const v = parseVideoUrl(url[0].replace(/[),.;!?]+$/, '')); if (v) { const queue = /^(?:queue|add|put)\b/i.test(raw) || /\b(?:to|in|on)\s+(?:the\s+|my\s+)?(?:queue|playlist)\b/i.test(raw); return { kind: queue ? 'queue' : 'play', video: v }; } return null; }
   let t = raw.toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^(?:hey\s+)?(?:v01d|void|verse)[,:]?\s+/, '').replace(/^(?:please|can\s+you|could\s+you|would\s+you)\s+/, '').replace(/\s+please$/, '').trim();
   if (!t) return null;
-  if (/\b(?:your|v01d'?s|void'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // Verse's own films are the films skill's
+  if (/\b(?:your|v01d'?s|verse'?s|void'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // Verse's own films are the films skill's
   const vid = /\b(?:videos?|vids?|clips?|youtube|rumble|vimeo|dailymotion|peertube|odysee|twitch|trailer|music\s+video|documentary|livestream|vod)\b/;
   // the watch tools
   if (/^(?:close|stop|remove|hide|put\s+away|get\s+rid\s+of)\s+(?:the\s+|my\s+)?(?:video|player|youtube|video\s+player|video\s+card)$/.test(t) || (hasCard && /^stop\s+(?:watching|playing)$/.test(t))) return { kind: 'close' };

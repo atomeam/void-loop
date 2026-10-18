@@ -1,5 +1,5 @@
 /**
- * draw skill - a drawing card where you describe a brush in words and Void makes it.
+ * draw skill - a drawing card where you describe a brush in words and Verse makes it.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "let me draw", "open a canvas", "sketch pad", "make a brush like dry charcoal", "new brush: soft watercolor".
  * Not a shelf of fixed brushes with sliders: say what you want ("dry charcoal that
@@ -151,7 +151,7 @@ export function layerCommand(text, names) {
 }
 /** a brush's tube radius in space: half its size in pixels, at the scale the camera sees the middle of the scene (pixels per unit). Pure. */
 export function tubeRadius(sizePx, pxPerUnit) { return Math.round(Math.max(0.5, sizePx / 2) / Math.max(1, pxPerUnit) * 10000) / 10000; }
-/** close a tube's two open ends (Void asked: a spatial sketch as an STL): a fan from each end ring's centre, wound to face out
+/** close a tube's two open ends (Verse asked: a spatial sketch as an STL): a fan from each end ring's centre, wound to face out
  *  (away from the next ring in). P: flat positions, I: indices, laid out as rings of radial+1 vertices, tubular+1 rings. Pure. */
 export function capTube(P, I, radial, tubular) {
   const pos = Array.from(P), idx = Array.from(I), per = radial + 1;
@@ -298,7 +298,7 @@ function run(text, api) {
       layers = layers.filter((x) => x !== L); for (const x of layers) if (x.clipTo === L) x.clipTo = T; if (A === L) A = T; return named(L) + ' is merged into ' + named(T) + '.'; }
     return '';
   };
-  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Void's one WebGL renderer
+  // a 3D layer (frontier 25): its strokes are tubes in a scene of their own, rendered by Verse's one WebGL renderer
   // (skills/scene3d.js, loaded only when a 3D layer is made) into the layer's own canvas, so it stacks, hides, fades,
   // clips and blends like any other layer. A drag paints on the plane through the middle of the scene, facing you; Turn spins it.
   let E3 = null, turning = false, spin = null;
@@ -335,7 +335,7 @@ function run(text, api) {
     const mat = new THREE.MeshStandardMaterial({ color: new THREE.Color(color), roughness: 0.45 + cur.grain * 0.45, metalness: 0, envMapIntensity: 0.3, transparent: cur.flow < 0.45, opacity: Math.min(1, Math.max(0.15, cur.flow * 2.2)) }); // dabs overlap and build up on paper; a tube is one pass, so flow counts double
     const mesh = new THREE.Mesh(geo, mat); mesh.userData = { pts: pts.slice(), size }; return mesh;
   };
-  // Void asked (2026-10-12): "a 'thickness' parameter to the spatial paint skill" and "convert a spatial sketch into an STL file"
+  // Verse asked (2026-10-12): "a 'thickness' parameter to the spatial paint skill" and "convert a spatial sketch into an STL file"
   const thicken = (L, by) => {
     let n = 0;
     for (const o of L.space.group.children) { const u = o.userData; if (!u || !u.pts) continue;
@@ -408,8 +408,8 @@ function run(text, api) {
     S.live = tubeOf(S, S.pts); S.group.add(S.live); renderSpace(L); compose();
   };
   // "make it my backdrop" (frontier 25, step 3): the picture as it shows now, every visible layer, 3D ones as they are turned,
-  // goes behind your Void (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
-  // float on your Void's own colour. Too big to sync, it is drawn smaller until it fits.
+  // goes behind your Verse (void.html keeps it in the look, which your passkey syncs). Transparent stays transparent: the strokes
+  // float on your Verse's own colour. Too big to sync, it is drawn smaller until it fits.
   const backdropSrc = () => {
     compose();
     for (let w = cv.width; w >= 240; w = Math.round(w * 0.75)) {

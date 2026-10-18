@@ -1,9 +1,9 @@
 /**
- * figures skill — a small 3D friend that roams your own Void, notices your cursor, and leaves when you send it away
+ * figures skill — a small 3D friend that roams your own Verse, notices your cursor, and leaves when you send it away
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * Board Next #17. "summon a sprite", "bring a friend", "show me a 3D buddy"; "send them away" / "dismiss figures" (undo brings
  * them back); "less motion" holds them still. Figures are stage items in this browser (the personal layer), so the next
- * visitor still arrives at a blank Void. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
+ * visitor still arrives at a blank Verse. The 3D layer (skills/figures3d.js + three.js) loads only once a figure is on the stage.
  */
 import { fallbackScript, natureOf } from './scripts.js';
 import { thingOf } from './forge-rules.js';
@@ -25,7 +25,7 @@ const DISMISS = [
 const STILL = /^(?:please\s+)?(?:less\s+motion|reduce(?:d)?\s+motion|hold\s+still|stay\s+still|stop\s+moving|keep\s+(?:them|the\s+(?:figures?|sprites?))\s+still|(?:figures?|sprites?)\s+hold\s+still)$/;
 const ROAM = /^(?:please\s+)?(?:more\s+motion|let\s+(?:them|the\s+(?:figures?|sprites?))\s+(?:roam|move|wander)(?:\s+again)?|roam\s+free|you\s+can\s+move(?:\s+again)?)$/;
 
-// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Void, ask-20261015-0347-2: a low-poly toggle for older hardware)
+// the 3D detail setting (skills/scene3d.js DETAIL_KEY; asked by Verse, ask-20261015-0347-2: a low-poly toggle for older hardware)
 const LOW_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?low[\s-]?poly(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:lighter|simpler?|lite|light)\s+3d|3d\s+(?:low|light|lite|simple|low[\s-]?poly)(?:\s+mode)?|low\s+3d\s+detail)$/;
 const FULL_POLY = /^(?:please\s+)?(?:(?:use\s+|switch\s+to\s+|turn\s+on\s+)?(?:full|high)[\s-]?(?:poly|detail)(?:\s+(?:3d|mode|miniatures?|figures?))?|(?:full|detailed|sharp)\s+3d|3d\s+(?:full|high|detailed)(?:\s+(?:detail|mode))?|full\s+3d\s+detail)$/;
 const AUTO_POLY = /^(?:please\s+)?(?:auto(?:matic)?\s+3d(?:\s+(?:detail|mode))?|3d\s+(?:detail\s+)?auto(?:matic)?|3d\s+auto\s+detail|(?:let\s+)?3d\s+(?:detail\s+)?decide(?:\s+itself)?)$/;
@@ -88,7 +88,7 @@ export function natureSummon(t) {
 
 // An article's figure is the thing itself (Adam, 2026-10-09): a page about cats brings a real cat, about a banana a real
 // banana. Matched on the title's last word, then the whole title ("Honey bee" is a bee, "Great white shark" a shark);
-// null when Void has no real model of it yet, so the page brings no stand-in.
+// null when Verse has no real model of it yet, so the page brings no stand-in.
 export function realFigureFor(card, seed = (Math.random() * 4294967296) >>> 0) {
   const title = String((card && card.title) || '').replace(/\s*\(.*\)$/, '').trim().toLowerCase();
   if (!title || title.split(/\s+/).length > 4) return null;

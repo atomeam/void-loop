@@ -1,12 +1,12 @@
 # Upkeep automations (owner, 2026-10-15: "add automations ... everywhere you can"). tools/upkeep.mjs does the work; each job is
 # small (ubuntu, a few minutes at most), writes a data file to main only when it changed, and warns instead of failing.
 #   daily:  clip visits (/c/_stats -> domains/void.clips.json), Piped host health (domains/void.piped.json), the smoke test of every
-#           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Void),
-#           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Void)
+#           skill (tools/skills-check.mjs --write tools/skills-smoke.json, then tools/families.mjs: a failing skill's rating drops; asked by Verse),
+#           the 7-day re-test of skills not tested since (tools/retest.mjs -> tools/retest.json; a failure queues one retest:<skill> job; asked by Verse)
 #   weekly: dead links in sitemap.xml + llms.txt, npm audit summary, delete branches already merged into main and idle 14+ days
 #   on merge: the PR's Working on line in domains/handoff.md moves to Just finished, and the queue job its body names (`Job: <id>`,
 #           tools/job-link.mjs) goes live: the belt for a merge a person made (the bot's merges mark it live from tools/automerge.mjs)
-name: Void upkeep
+name: Verse upkeep
 
 on:
   schedule:
@@ -40,12 +40,12 @@ jobs:
         run: |
           node tools/upkeep.mjs clips-stats || true
           node tools/upkeep.mjs piped || true
-      - name: Smoke test every skill (asked by Void)
+      - name: Smoke test every skill (asked by Verse)
         # every skill loaded, each example reaching it first, no near miss taken, its suite() passing; the record feeds the ratings
         run: |
           node tools/skills-check.mjs --write tools/skills-smoke.json || true
           node tools/families.mjs > /dev/null || true
-      - name: Re-test skills not tested in 7 days (asked by Void)
+      - name: Re-test skills not tested in 7 days (asked by Verse)
         # non-destructive: their examples routed, near misses kept out, their unit test run; a failure becomes one retest:<skill> queue job
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}

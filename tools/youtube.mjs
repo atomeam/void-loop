@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Step 2 of the broadcast loop (owner, 2026-10-14: "Void should use my Youtube channel to make its own Videos"): upload a film
-// tools/record.mjs made to Void's channel, "A-to-Mind's Void" (https://www.youtube.com/@atombomb983). The YouTube Data API v3 with
-// the owner's own OAuth client: a refresh token is traded for an access token, the token's channel must be Void's (anything else is
+// tools/record.mjs made to Verse's channel, "A-to-Mind's Verse" (https://www.youtube.com/@atombomb983). The YouTube Data API v3 with
+// the owner's own OAuth client: a refresh token is traded for an access token, the token's channel must be Verse's (anything else is
 // refused, so a wrong token never posts somewhere else), then a resumable upload of the video with its title, description and tags.
 // Uploads from an API project Google has not audited are kept private by YouTube itself (videos.insert docs); YT_PRIVACY sets the
 // status asked for (private by default; public once the project is audited and the owner says so).
@@ -11,7 +11,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
-export const CHANNEL_ID = 'UCk9IOf_MwoC6Bw3zxEZiTPg'; // A-to-Mind's Void, @atombomb983 (the owner, 2026-10-14)
+export const CHANNEL_ID = 'UCk9IOf_MwoC6Bw3zxEZiTPg'; // A-to-Mind's Verse, @atombomb983 (the owner, 2026-10-14)
 export const CATEGORY = '28'; // Science & Technology
 
 // what Google's refusals mean, in the owner's terms (the first real run, 2026-10-14, got unauthorized_client)
@@ -30,12 +30,12 @@ export async function accessToken({ clientId, clientSecret, refreshToken }, fetc
   return j.access_token;
 }
 
-/** the channel the token posts to; refuses any channel but Void's */
+/** the channel the token posts to; refuses any channel but Verse's */
 export async function checkChannel(token, fetchFn = fetch, want = CHANNEL_ID) {
   const r = await fetchFn('https://www.googleapis.com/youtube/v3/channels?part=id&mine=true', { headers: { authorization: 'Bearer ' + token } });
   const j = await r.json().catch(() => ({}));
   const id = j.items && j.items[0] && j.items[0].id;
-  if (id !== want) throw new Error('the token belongs to channel ' + (id || '(none)') + ', not Void\'s ' + want + ': nothing uploaded');
+  if (id !== want) throw new Error('the token belongs to channel ' + (id || '(none)') + ', not Verse\'s ' + want + ': nothing uploaded');
   return id;
 }
 
@@ -68,5 +68,5 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const token = await accessToken(env);
   await checkChannel(token);
   const id = await upload(token, bytes, meta, process.env.YT_PRIVACY || 'private');
-  console.log('uploaded to Void\'s channel: https://www.youtube.com/shorts/' + id + ' (' + (process.env.YT_PRIVACY || 'private') + ')');
+  console.log('uploaded to Verse\'s channel: https://www.youtube.com/shorts/' + id + ' (' + (process.env.YT_PRIVACY || 'private') + ')');
 }

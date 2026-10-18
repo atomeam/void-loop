@@ -1,17 +1,17 @@
 /**
- * swarm skill — "swarm", "void agents", "show me the swarm", "watch the agents": Void's agents on the stage, a field of small
+ * swarm skill — "swarm", "void agents", "show me the swarm", "watch the agents": Verse's agents on the stage, a field of small
  * minds that cluster near your pointer, explore when you leave and now and then scatter, while the card around them
  * changes with the field's mood (its border hue, glow and status line). The 3D field is skills/mini/swarm.js on the shared
  * scene3d.js engine. Salvaged from the Frontier-Engine experiment F-020 (docs/SALVAGE.md). Reduced motion: a still field.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-const WHEN = /^(?:show (?:me )?|open |start |run )?(?:the |your |v01d'?s |void'?s )?(?:swarm|void agents?|agent swarm|swarm agents|agents swarm|swarm effect|swarm sim(?:ulation)?)(?: (?:demo|mode|effect))?(?: please)?$/i;
+const WHEN = /^(?:show (?:me )?|open |start |run )?(?:the |your |(?:v01d|verse)'?s |verse'?s |void'?s )?(?:swarm|void agents?|agent swarm|swarm agents|agents swarm|swarm effect|swarm sim(?:ulation)?)(?: (?:demo|mode|effect))?(?: please)?$/i;
 const WORDS = { idle: 'void · idle', clustering: 'clustering', dispersing: 'dispersing' };
 
 function run(text, api) {
   const { showPage, esc } = api;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>' + esc('Void agents') + '</h2><div class="sub">' + esc('a swarm of small minds; move over it to call them, leave and they explore') + '</div>'
+    p.innerHTML = '<h2>' + esc('Verse agents') + '</h2><div class="sub">' + esc('a swarm of small minds; move over it to call them, leave and they explore') + '</div>'
       + '<div class="vswarm" style="--mood:190;--intensity:.3;border:2px solid hsl(var(--mood),70%,calc(50% + var(--intensity)*30%));box-shadow:0 0 calc(var(--intensity)*20px) hsl(var(--mood),70%,50%);border-radius:14px;overflow:hidden;transition:border-color .3s,box-shadow .3s">'
       + '<div class="vmini" style="height:' + (Math.min(innerWidth, innerHeight) < 560 ? 200 : 240) + 'px"></div></div>'
       + '<p class="vswarm-status" role="status" aria-live="polite" style="margin:8px 0 0">void · idle</p>'
@@ -25,7 +25,7 @@ function run(text, api) {
     if (status && m.name !== lastName) { lastName = m.name; status.textContent = WORDS[m.name] || m.name; } // only a change is announced
   };
   if (band && api.stage && api.stage.miniature) {
-    api.stage.miniature(band, 'swarm', { onMood }, { key: 'swarm:' + Date.now().toString(36), label: 'Void agents: a swarm that gathers near your pointer', orbit: false, ground: 'none' })
+    api.stage.miniature(band, 'swarm', { onMood }, { key: 'swarm:' + Date.now().toString(36), label: 'Verse agents: a swarm that gathers near your pointer', orbit: false, ground: 'none' })
       .catch(() => { band.remove(); if (status) status.textContent = 'The swarm needs WebGL, which this browser cannot run.'; });
   } else if (band) { band.remove(); if (status) status.textContent = 'The swarm needs WebGL, which this browser cannot run.'; }
   return 'swarm';

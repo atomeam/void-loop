@@ -13,7 +13,7 @@
  */
 import { spreadOf, pagesOfSpread } from '../lib/guide.js';
 import { withNews, newSince } from '../lib/book-news.js';
-import { playable, start as showcase } from './showcase.js'; // What's new as a live walkthrough (asked by Void)
+import { playable, start as showcase } from './showcase.js'; // What's new as a live walkthrough (asked by Verse)
 import { searchBook, SEARCH_CSS } from '../lib/tome-search.js';
 import { TOME_CSS, sheetHtml, stacks, PROMPT, coverHtml, backCoverHtml, pageHtml, tocHtml, parchmentFilter } from '../lib/tome.js';
 import { loadHealth } from '../lib/success-pulse.js';
@@ -22,13 +22,13 @@ export { pageHtml, tocHtml };
 
 const BOOK_WORDS = '(?:book|guide|manual|handbook|strategy guide|book of everything|book of all)';
 const OPEN = '(?:(?:open|show(?:\\s+me)?|read|flip through|browse|bring|summon|let me see|see|get)\\s+(?:up\\s+)?)?';
-const WHOSE = '(?:the\\s+|your\\s+|v01d\\s*\'?s?\\s+|void\\s*\'?s?\\s+|a-to-mind\'?s?\\s+)';
-const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '|(?:v01d|void|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|v01d|void|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
-const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
+const WHOSE = '(?:the\\s+|your\\s+|v01d\\s*\'?s?\\s+|verse\\s*\'?s?\\s+|void\\s*\'?s?\\s+|a-to-mind\'?s?\\s+)';
+const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '|(?:v01d|void|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|v01d|verse|void|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
+const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|verse\\s+|void\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
 const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|verse|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
-const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
+const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|verse\s+|void\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|verse\s+|void\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
 const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|void|v01d|verse)\s+(?:have|has))?|(?:the\s+)?(?:v01d|void|verse)\s+(?:book|guide|manual|handbook))$/i;
-// the rule registry (asked by Void): "rule registry", "show the router rules", "list all active router rules" open the book at that chapter
+// the rule registry (asked by Verse): "rule registry", "show the router rules", "list all active router rules" open the book at that chapter
 const RE_RULES = /^(?:(?:open|show(?:\s+me)?|read|list|see|browse)\s+)?(?:(?:the|your|all(?:\s+the)?|every)\s+)?(?:(?:v01d|void|verse)\s*'?s?\s+)?(?:active\s+)?(?:rule[- ]?registry|(?:router|routing)\s+rules|rules\s+of\s+the\s+router)(?:\s+(?:in|from)\s+the\s+(?:book|tome|guide))?(?:\s+please)?$/i;
 
 /** { at } for an ask that opens the book (at: a name to open it on, or ''), null otherwise. Pure. */
@@ -127,7 +127,7 @@ function mount(book, api, startAt, text) {
     + '<div class="tome-boards"></div><div class="tome-stack left"></div><div class="tome-stack right"></div>'
     + '<section class="tome-page left" data-page=""></section><section class="tome-page right" data-page=""></section><div class="tome-spine"></div>'
     + '<div class="tome-cover">' + coverHtml(book, esc) + '</div><div class="tome-backcover">' + backCoverHtml(book, esc) + '</div></div><button type="button" class="tome-tocover" aria-label="Back to the cover">Cover</button><form class="tome-search" role="search" autocomplete="off"><input type="search" name="q" placeholder="Search the tome: a skill, an ask" aria-label="Search the tome" maxlength="80" enterkeyhint="go" aria-controls="tome-hits"><ul class="tome-hits" id="tome-hits" role="listbox" aria-label="Pages found"></ul></form><div class="tome-prompt" aria-hidden="true">' + PROMPT + '</div><div class="sr-only" aria-live="polite"></div>';
-  // the parchment's tone follows the site's health at the Status card's last check (asked by Void); untouched with no reading
+  // the parchment's tone follows the site's health at the Status card's last check (asked by Verse); untouched with no reading
   const tone = parchmentFilter(loadHealth()); if (tone) { root.dataset.tone = tone; root.querySelector('.tome').style.setProperty('--tome-tone', tone); }
   document.body.appendChild(root);
   document.documentElement.classList.add('v-tome');
@@ -178,7 +178,7 @@ function mount(book, api, startAt, text) {
   root.querySelector('.tome-tocover').addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); toCover(); });
   root.querySelector('.tome-tocover').addEventListener('pointerdown', (e) => e.stopPropagation());
 
-  // ---- the search bar docked at the top (asked by Void): type, pick a page, the book turns to it; it stays while you read
+  // ---- the search bar docked at the top (asked by Verse): type, pick a page, the book turns to it; it stays while you read
   const bar = root.querySelector('.tome-search'), box = bar.querySelector('input'), hits = bar.querySelector('.tome-hits');
   const find = () => {
     const list = searchBook(book, box.value);
@@ -207,7 +207,7 @@ function mount(book, api, startAt, text) {
   root.addEventListener('click', (e) => {
     const t = e.target;
     if (tome.classList.contains('shut') && tome.contains(t)) { e.preventDefault(); e.stopPropagation(); openCover(); return; }
-    // asked by Void: "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive
+    // asked by Verse: "Connect the 'What's new' chapter entries with the 'showcase' skill so every new update can be viewed as a live, interactive
     // demonstration": a day's "show these on the stage" closes the book and walks through that day's changes, each one asked for real
     const day = t.closest && t.closest('a[data-showcase-day]');
     if (day) { e.preventDefault(); e.stopPropagation(); const d = day.getAttribute('data-showcase-day'), steps = ((book.news && book.news.entries) || []).filter((x) => x.day === d && x.try).reverse().map((x) => ({ line: x.line, ask: x.try }));

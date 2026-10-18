@@ -1,5 +1,5 @@
 /**
- * shortcut skill — a contextual shortcut (asked by Void: "a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and
+ * shortcut skill — a contextual shortcut (asked by Verse: "a 'Contextual Shortcut' skill that looks at my current 'time' or 'body and
  * mind' family and suggests one of the new 'everything' services (e.g., suggesting food if it's dinner time)").
  * "what should I do now", "suggest something for right now": it reads the clock on this device (nothing is sent, no place is
  * asked) and offers ONE next thing from the time family (timer, today) or the body and mind family (sleep, breathing, food),

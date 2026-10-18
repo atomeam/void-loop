@@ -1,4 +1,4 @@
-# Card merge: two ideas make one V01D card
+# Card merge: two ideas make one Verse card
 
 **Starts when:** someone asks "merge X and Y" (or combine, fuse, "what do you get if you merge X and Y"), or a frontier #34 step is claimed.
 
@@ -6,11 +6,11 @@
 
 **Commands:**
 1. `node --test tools/merge-rules.test.mjs tools/merge-route.test.mjs` (rules, parsing, route with a fake model and fake D1).
-2. `node tools/heavy.mjs node tools/test_void.mjs --only "V01D merge"` (the page, route stubbed, route down, refusal).
+2. `node tools/heavy.mjs node tools/test_void.mjs --only "Verse merge"` (the page, route stubbed, route down, refusal).
 3. `node tools/ask.mjs "merge a pizza and a black hole"` to see it as a person does.
-4. Ship with `node tools/finish.mjs grow "..." --test "V01D merge" --try "merge a pizza and a black hole"`.
+4. Ship with `node tools/finish.mjs grow "..." --test "Verse merge" --try "merge a pizza and a black hole"`.
 
-**Worked when:** the card shows both parents, a name, the type line "Idea - merged, depth 1", `P 1 R 1 I 0` for two fresh ideas, and the source line says "Named once by V01D's model" (route up) or "Named offline" (route down); asking the pair in the other order gives the same card.
+**Worked when:** the card shows both parents, a name, the type line "Idea - merged, depth 1", `P 1 R 1 I 0` for two fresh ideas, and the source line says "Named once by Verse's model" (route up) or "Named offline" (route down); asking the pair in the other order gives the same card.
 
 **Rules to keep:** the model returns a name and one line only (40 and 120 characters, no markup, links or key shapes); a stat rule changes only in `merge-rules.js` with its test; a model failure is never cached; typed words are never stored, only the folded pair key; the route's file header says what a stranger can make it do, keep it true.
 

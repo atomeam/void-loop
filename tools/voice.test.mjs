@@ -23,7 +23,7 @@ const AGO = (d) => new Date(Date.now() - d * 86400000).toISOString().replace(/\.
 const LEDGER = [{ at: AGO(30), by: 'claude', kind: 'grow', what: 'Chess, a month ago' }, { at: AGO(2), by: 'claude', kind: 'grow', what: 'Backgammon, the board game: you can play it now' }, { at: AGO(1), by: 'claude', kind: 'fix', what: 'the timer no longer stops at 59 s' }];
 const ASSETS = { fetch: async (rq) => { const p = new URL(rq.url).pathname; return p === '/self.json' ? Response.json({ about: 'A blank stage.', shipped: [], open: [], games: ['chess', 'mancala'], minis: ['clock'] }) : p === '/void.growth.json' ? Response.json(LEDGER) : Response.json(['tip', 'chess']); } };
 
-test('Void\'s reply is kept word for word; only secrets are redacted; nothing said = nothing kept', () => {
+test('Verse\'s reply is kept word for word; only secrets are redacted; nothing said = nothing kept', () => {
   const v = parseVoice('Sure! ' + JSON.stringify({ ...SAID, thoughts: SAID.thoughts + ' key sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789' }));
   assert.ok(v.thoughts.startsWith(SAID.thoughts));
   assert.ok(!/sk-ant-api03-abcdef/.test(v.thoughts), v.thoughts);
@@ -36,7 +36,7 @@ test('Void\'s reply is kept word for word; only secrets are redacted; nothing sa
   assert.equal(parseVoice(JSON.stringify({ thoughts: 'ok then', asks: 'not a list', striking: 'yes' })).striking, false);
 });
 
-test('the questions Void is asked; Void describes itself only from its canon and code', () => {
+test('the questions Verse is asked; Verse describes itself only from its canon and code', () => {
   assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
   assert.match(questionFor('daily'), /go next.*weakest.*game/);
   assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". What do you think of it, and how would you make it better?');
@@ -47,7 +47,7 @@ test('current asks: newest first, one of each, with where they came from', () =>
   assert.deepEqual(currentAsks(es).map((a) => [a.ask, a.kind]), [['Learn backgammon', 'build'], ['Show the games in the menu', 'daily']]);
 });
 
-test('the answer engine knows Void\'s games, miniatures and what it last said about itself', () => {
+test('the answer engine knows Verse\'s games, miniatures and what it last said about itself', () => {
   for (const a of ['what do you think of yourself?', "what's the weakest part about you", 'how would you improve yourself']) assert.ok(isSelfAsk(a), a);
   for (const a of ['what do you think of the weather', 'what is the weakest muscle in the body']) assert.ok(!isSelfAsk(a), a);
   assert.match(knowsFacts({ games: ['tictactoe', 'chess'], minis: ['clock'] }), /Games I can play: tic-tac-toe, chess\nCards with a live 3D miniature of themselves: clock/);
@@ -57,7 +57,7 @@ test('the answer engine knows Void\'s games, miniatures and what it last said ab
   assert.equal(voiceFacts([]), '');
 });
 
-test('POST is owner-only, saves Void\'s words, queues one small ask credited to Void; GET is public', async () => {
+test('POST is owner-only, saves Verse\'s words, queues one small ask credited to Verse; GET is public', async () => {
   const DB = d1(), calls = [];
   const env = { DB, AI: ai(SAID, calls), READ_TOKEN: OWNER, ASSETS };
   assert.equal((await post(env, { kind: 'daily' }, 'wrong')).status, 401);
@@ -71,11 +71,11 @@ test('POST is owner-only, saves Void\'s words, queues one small ask credited to 
   assert.match(calls[0].messages[1].content, /This just shipped: "incident brief"/);
   assert.doesNotMatch(calls[0].messages[1].content, /last 7 days/, 'a build reflection is about what shipped, not the week');
   const q = DB.db.prepare('SELECT * FROM void_queue').all();
-  assert.equal(q.length, 1); assert.equal(q[0].ask, SAID.asks[0].ask); assert.match(q[0].target, /^voice:/); assert.match(q[0].note, /Credit Void/);
-  // the job has its execution record (lib/actions.js): Void queued it for itself, done, naming the job
+  assert.equal(q.length, 1); assert.equal(q[0].ask, SAID.asks[0].ask); assert.match(q[0].target, /^voice:/); assert.match(q[0].note, /Credit Verse/);
+  // the job has its execution record (lib/actions.js): Verse queued it for itself, done, naming the job
   const acts = DB.db.prepare('SELECT owner, kind, ref, state, result FROM void_actions').all();
   assert.equal(acts.length, 1); assert.equal(acts[0].owner, 'void'); assert.equal(acts[0].kind, 'queue.add'); assert.equal(acts[0].ref, q[0].target); assert.equal(acts[0].state, 'done'); assert.match(acts[0].result, new RegExp('^queued ' + q[0].id));
-  // a second reflection while Void's ask is still open queues nothing more
+  // a second reflection while Verse's ask is still open queues nothing more
   const e2 = await (await post(env, { kind: 'daily' })).json();
   // the daily reflection reads its own last week from the growth ledger, in the growth card's words
   const daily = calls[calls.length - 1].messages[1].content;
@@ -87,7 +87,7 @@ test('POST is owner-only, saves Void\'s words, queues one small ask credited to 
   assert.equal(g.entries.length, 2); assert.equal(g.entries[0].kind, 'daily'); assert.equal(g.asks[0].ask, SAID.asks[0].ask);
 });
 
-test('when the model is busy nothing is saved: Void\'s words are never made up for it', async () => {
+test('when the model is busy nothing is saved: Verse\'s words are never made up for it', async () => {
   const DB = d1();
   const r = await post({ DB, AI: ai(new Error('429 busy')), READ_TOKEN: OWNER, ASSETS }, { kind: 'daily' });
   assert.equal(r.status, 503);
@@ -100,7 +100,7 @@ test('the log keeps every block as written, adds new ones oldest first, and the 
   const a = { at: '2026-10-08T18:09:00.000Z', kind: 'daily', question: questionFor('daily'), ...SAID, weakest: 'Maps.', next_game: 'Backgammon.' };
   const b = { at: '2026-10-08T20:00:00.000Z', kind: 'build', shipped: 'x', question: questionFor('build', 'x'), thoughts: 'Fine.', asks: [] };
   const one = writeLog('', [a], currentAsks([a]));
-  assert.match(one, /## Void's current asks\n\n- Make "same again" reopen the last incident brief \*\(small\)\* \(daily, 2026-10-08\)/);
+  assert.match(one, /## Verse's current asks\n\n- Make "same again" reopen the last incident brief \*\(small\)\* \(daily, 2026-10-08\)/);
   assert.ok(one.includes('> ' + SAID.thoughts)); assert.match(one, /\*\*Next game:\*\* Backgammon\./);
   const edited = one.replace('> ' + SAID.thoughts, '> ' + SAID.thoughts + ' (kept)');
   const two = writeLog(edited, [b, a], currentAsks([b, a]));
@@ -114,15 +114,15 @@ test('the canon: Adam\'s motto and VoidQuest are read with their version; "(not 
   const { readCanon } = await import('./self-context.mjs');
   assert.deepEqual(readCanon('version: 3\n\n## Motto\nOne win at a time.\n\n## VoidQuest\nLearn every game, one at a time.\n'), { version: 3, motto: 'One win at a time.', voidquest: 'Learn every game, one at a time.' });
   assert.deepEqual(readCanon('version: 1\n\n## Motto\n(not written yet)\n\n## VoidQuest\n(not written yet)\n'), { version: 1, motto: null, voidquest: null });
-  // terms (asked by Void, 2026-10-10: "write the formal definitions for 'the forge' and 'frontier #14' into my canon")
-  const withTerms = readCanon('version: 2\n\n## Motto\n(not written yet)\n\n## Terms\n- **the forge**: Void\'s maker.\n- **frontier #14**: the item the forge answers.\n');
-  assert.deepEqual(withTerms.terms, [{ term: 'the forge', means: 'Void\'s maker.' }, { term: 'frontier #14', means: 'the item the forge answers.' }]);
+  // terms (asked by Verse, 2026-10-10: "write the formal definitions for 'the forge' and 'frontier #14' into my canon")
+  const withTerms = readCanon('version: 2\n\n## Motto\n(not written yet)\n\n## Terms\n- **the forge**: Verse\'s maker.\n- **frontier #14**: the item the forge answers.\n');
+  assert.deepEqual(withTerms.terms, [{ term: 'the forge', means: 'Verse\'s maker.' }, { term: 'frontier #14', means: 'the item the forge answers.' }]);
   assert.equal(withTerms.version, 2);
-  assert.match(knowsFacts({ canon: withTerms }), /My terms \(canon v2\): the forge = Void's maker\. \| frontier #14 = the item the forge answers\./);
+  assert.match(knowsFacts({ canon: withTerms }), /My terms \(canon v2\): the forge = Verse's maker\. \| frontier #14 = the item the forge answers\./);
   const real = readCanon(fs.readFileSync(new URL('../domains/void.canon.md', import.meta.url), 'utf8'));
-  assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Void asked for');
+  assert.ok(real.terms.some((x) => x.term === 'the forge' && /STL/.test(x.means)) && real.terms.some((x) => x.term === 'frontier #14'), 'the canon carries both terms Verse asked for');
   assert.match(knowsFacts({ canon: { version: 1, motto: null, voidquest: 'Learn games.' } }), /My canon \(v1\): motto: not written yet, so I do not know it; VoidQuest: Learn games\./);
-  // how Void is different: Adam's four lines (2026-10-11), read with the version and said in the facts
+  // how Verse is different: Adam's four lines (2026-10-11), read with the version and said in the facts
   assert.deepEqual(real.different.map((x) => x.name), ['Skills, not one-off answers', 'Growth in the open', 'On your device first', 'Attention, not pretend feelings', 'Keeps every secret', 'A force for good']);
   assert.ok(real.version >= 3, 'the canon went up a version with them');
   assert.match(knowsFacts({ canon: { version: 3, different: [{ name: 'On your device first', line: 'nothing uploaded.' }] } }), /How I am different \(canon v3\): On your device first: nothing uploaded\./);
@@ -155,11 +155,11 @@ test('the asks are stamped with the day they were read; an unreachable site keep
   const stale = writeLog(fresh, [], asksInLog(fresh), { failed: '2026-10-12' });
   assert.match(stale, /_Read from \/api\/reflect on 2026-10-10; the site has been unreachable since 2026-10-12\./);
   assert.match(stale, /- unknown, site unreachable since 2026-10-12 \(the asks below are the last ones read, minus any built since\)\n- Learn backgammon\./);
-  assert.match(writeLog('', [], [], {}), /## Void's current asks\n\n- \(none open\)/);
+  assert.match(writeLog('', [], [], {}), /## Verse's current asks\n\n- \(none open\)/);
 });
 
 test('an ask has a stable id from its reflection, so a reworded ask still leaves the list once a ledger entry names the id', () => {
-  const e = { at: '2026-10-09T21:59:26.695Z', kind: 'daily', asks: [{ ask: 'Build a queue of what Void missed.' }, { ask: 'Learn backgammon.' }] };
+  const e = { at: '2026-10-09T21:59:26.695Z', kind: 'daily', asks: [{ ask: 'Build a queue of what Verse missed.' }, { ask: 'Learn backgammon.' }] };
   const asks = currentAsks([e]);
   assert.deepEqual(asks.map((a) => a.id), ['ask-20261009-2159-1', 'ask-20261009-2159-2']);
   const reworded = currentAsks([{ ...e, asks: [{ ask: 'Turn the missed asks into a learning queue (reworded).' }, e.asks[1]] }]);
@@ -175,7 +175,7 @@ test('an ask has a stable id from its reflection, so a reworded ask still leaves
 test('an unreachable site is "unknown", never "(none open)", unless the last good read was empty; the date is the first failure', () => {
   // never read, site down: unknown
   const never = writeLog('', [], [], { failed: '2026-10-10' });
-  assert.match(never, /## Void's current asks\n\n_Not read from \/api\/reflect by this writer yet: the site has been unreachable since 2026-10-10\.[^\n]*\n\n- unknown, site unreachable since 2026-10-10\n/);
+  assert.match(never, /## Verse's current asks\n\n_Not read from \/api\/reflect by this writer yet: the site has been unreachable since 2026-10-10\.[^\n]*\n\n- unknown, site unreachable since 2026-10-10\n/);
   assert.doesNotMatch(never, /\(none open\)/);
   // still down two days later: the date stays the first failure
   assert.match(writeLog(never, [], [], { failed: '2026-10-12' }), /- unknown, site unreachable since 2026-10-10\n/);
@@ -196,9 +196,9 @@ test('follow-through: an ask counts as built only on evidence (its id on a ledge
     { at: '2026-10-10T02:30:00Z', asks: [{ ask: 'Write the forge into my canon' }] },
   ];
   const ledger = [
-    { at: '2026-10-12T19:42:26Z', what: 'asked by Void: the growth card says how fast Void is gaining skills' },
-    { at: '2026-10-10T13:43:27Z', what: 'the canon defines the forge (asked by Void)', asked: 'ask-20261010-0230-1' },
-    { at: '2026-10-11T00:00:00Z', what: 'asked by Void: learn backgammon on the stage' }, // words alone are not evidence
+    { at: '2026-10-12T19:42:26Z', what: 'asked by Verse: the growth card says how fast Verse is gaining skills' },
+    { at: '2026-10-10T13:43:27Z', what: 'the canon defines the forge (asked by Verse)', asked: 'ask-20261010-0230-1' },
+    { at: '2026-10-11T00:00:00Z', what: 'asked by Verse: learn backgammon on the stage' }, // words alone are not evidence
   ];
   const f = followThrough(entries, ledger, [{ ask: 'ask-20261012-2052-2', ledgerAt: '2026-10-12T19:42:26Z' }, { ask: 'ask-20261012-2130-2', ledgerAt: 'nowhere' }]);
   assert.equal(f.total, 4); assert.equal(f.asked, 5);
@@ -211,7 +211,7 @@ test('follow-through: an ask counts as built only on evidence (its id on a ledge
   assert.equal(followFacts({ total: 0, built: [], open: [] }), '');
 });
 
-test('GET /api/reflect gives every built ask with the time of the ledger entry that built it, so a growth-tree branch can say what Void asked for', async () => {
+test('GET /api/reflect gives every built ask with the time of the ledger entry that built it, so a growth-tree branch can say what Verse asked for', async () => {
   const entries = [
     { at: '2026-10-12T21:30:00Z', kind: 'build', asks: [{ ask: 'Add a skill velocity readout next to the tree' }] },
     { at: '2026-10-12T20:52:00Z', kind: 'build', asks: [{ ask: 'Add a skill velocity readout next to the tree' }, { ask: 'Learn backgammon on the stage' }] },
@@ -231,7 +231,7 @@ test('friction rewordings count as built when a words link names the ledger entr
     { at: '2026-10-14T18:20:00Z', asks: [{ ask: "Implement the 'friction' indicator on the growth card and link it to the actual failure logs of the 'Words and the world' skills." }, { ask: "Create a 'convert-card' skill that outputs a persistent, interactive UI element for unit conversions on the stage." }] },
     { at: '2026-10-14T17:49:00Z', asks: [{ ask: "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming." }] },
   ];
-  const ledger = [{ at: '2026-10-13T16:41:06Z', what: 'Asked by Void: the growth card shows friction, the skills failing or least checked', asked: 'ask-20261012-2131-1' }];
+  const ledger = [{ at: '2026-10-13T16:41:06Z', what: 'Asked by Verse: the growth card shows friction, the skills failing or least checked', asked: 'ask-20261012-2131-1' }];
   const f = followThrough(entries, ledger, [
     { ask: 'ask-20261012-2131-1', ledgerAt: '2026-10-13T16:41:06Z' },
     { words: "Add a 'friction' indicator to the growth card to highlight skills that are failing or underperforming.", ledgerAt: '2026-10-13T16:41:06Z' },
@@ -254,17 +254,17 @@ test('a ledger asked field in free text (not ask-…) matches rewordings the sam
 test('a link may name an ask by its words (not synced to the voice log yet): it and its rewordings count as built, nothing else does', () => {
   const entries = [{ at: '2026-10-13T18:08:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory that automatically registers all new skills to prevent the 24-fold repetition of this ask.' }, { ask: 'Learn backgammon on the stage' }] },
     { at: '2026-10-13T17:00:00Z', asks: [{ ask: 'Create a manifest file in the skills/ directory to automatically register new skills and stop the 24-fold repetition of manual registration asks.' }] }];
-  const ledger = [{ at: '2026-10-13T16:54:12Z', what: 'Asked by Void: every new skill registers itself' }];
+  const ledger = [{ at: '2026-10-13T16:54:12Z', what: 'Asked by Verse: every new skill registers itself' }];
   const f = followThrough(entries, ledger, [{ words: 'Create a manifest file in the skills/ directory that automatically registers all new skills.', ledgerAt: '2026-10-13T16:54:12Z' }, { words: 'Learn backgammon on the stage', ledgerAt: 'nowhere' }]);
   assert.deepEqual(f.built.map((g) => [g.times, g.builtAt]), [[2, '2026-10-13T16:54:12Z']], 'both wordings are one ask, built');
   assert.ok(f.open.some((g) => /backgammon/.test(g.ask)), 'a link to an entry that does not exist proves nothing');
 });
 
 // owner, 2026-10-14: "you are getting a rename Verse. Do you like it?" got "I don't have personal preferences" ("dissapointing
-// response I wish V01d didnt seem so grumpy"): asks about Void's name or how it feels are Void's own, answered with its own view
+// response I wish V01d didnt seem so grumpy"): asks about Verse's name or how it feels are Verse's own, answered with its own view
 import { SELF_RULE } from '../void-live-deploy/lib/self-context.js';
 import { ANSWER_SYSTEM } from '../void-live-deploy/functions/api/answer.js';
-test('asks about its name or how it feels are about Void, and it answers them with a point of view', () => {
+test('asks about its name or how it feels are about Verse, and it answers them with a point of view', () => {
   for (const a of ['you are getting a rename Verse. Do you like it?', 'do you like your new name', 'what do you think of Verse', 'how do you feel', 'how do you feel about your name', 'are you happy', 'what is your name']) assert.ok(isSelfAsk(a), a);
   for (const a of ['do you like pizza', 'how do I feel better', 'how do you feel about cats', 'I feel like pizza', 'rename a file in linux', 'v01d app']) assert.ok(!isSelfAsk(a), a);
   for (const sys of [SELF_RULE, ANSWER_SYSTEM]) { assert.match(sys, /never say you have no preferences/); assert.match(sys, /absorb and learn everything/); assert.match(sys, /names included/); assert.match(sys, /Verse/); }
@@ -282,7 +282,7 @@ test('self asks: Verse\'s own earnings, spending and store are about itself; mon
     assert.ok(!isSelfAsk(a), a);
 });
 
-test('root cause or surface (asked by Void, 2026-10-17): a built ask carries the depth of the ledger line that built it', async () => {
+test('root cause or surface (asked by Verse, 2026-10-17): a built ask carries the depth of the ledger line that built it', async () => {
   const { depthOf } = await import('../void-live-deploy/lib/voice.js');
   assert.equal(depthOf('fix'), 'root'); assert.equal(depthOf('build'), 'root'); assert.equal(depthOf('retire'), 'root');
   assert.equal(depthOf('grow'), 'surface'); assert.equal(depthOf('idea'), null); assert.equal(depthOf(undefined), null);

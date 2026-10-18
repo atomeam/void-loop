@@ -57,7 +57,7 @@ test('talking back: the route is owner only, answers in Verse\'s words, keeps th
   const r1 = await (await route.onRequestPost({ request: req('POST', { text: 'rides is live now' }), env })).json();
   assert.equal(r1.to, DAILY.at, 'no `to` means the newest reflection');
   const q = env.DB.raw.prepare('SELECT ask, target, state, note FROM void_queue').all();
-  assert.equal(q.length, 1); assert.equal(q[0].ask, 'Show the live rides finding on the rides card'); assert.equal(q[0].target, 'voice:show-the-live-rides-finding-on-the-rides'); assert.match(q[0].note, /owner replied to it .* Credit Void\./);
+  assert.equal(q.length, 1); assert.equal(q[0].ask, 'Show the live rides finding on the rides card'); assert.equal(q[0].target, 'voice:show-the-live-rides-finding-on-the-rides'); assert.match(q[0].note, /owner replied to it .* Credit Verse\./);
   assert.ok(r1.queued, 'what the conversation made Verse want built went to the builders'); assert.equal(r1.answer, 'You are right, I had rides wrong.'); assert.equal(r1.correction, true); assert.equal(r1.remember, 'rides is live');
   const r2 = await (await route.onRequestPost({ request: req('POST', { text: 'and the finding has an artifact', to: DAILY.at }), env })).json();
   assert.match(asked[1], /The conversation so far:\nOwner: "rides is live now"\nYou: "You are right, I had rides wrong\."/, 'Verse sees the thread it is in');
