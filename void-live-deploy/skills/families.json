@@ -1114,11 +1114,11 @@
     "proven": 9
    },
    "sources": {
-    "read": 21,
-    "named": 19,
+    "read": 20,
+    "named": 18,
     "second": 10,
     "answered": 0,
-    "points": 1.38,
+    "points": 1.4,
     "one_live_from_proven": [
      "repo",
      "digest",
@@ -1128,14 +1128,13 @@
      "spanish",
      "news",
      "joke",
-     "film-metadata",
      "media-pick",
      "book",
      "show",
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.38 of 3 on average). One kept live answer each would make 14 more proven: repo, digest, movie, pick-for-me, video, spanish and 8 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 13 more proven: repo, digest, movie, pick-for-me, video, spanish and 7 more."
    },
    "skills": [
     {
@@ -1420,18 +1419,7 @@
      "why": "a self-test",
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "streak": 1,
-     "source": {
-      "sites": [
-       "apple.com"
-      ],
-      "named": true,
-      "second": false,
-      "answered": false,
-      "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: apple.com; named on the card; no second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
-     }
+     "streak": 1
     },
     {
      "name": "media-pick",

@@ -2786,11 +2786,11 @@
    "chapter": "words",
    "name": "film-metadata",
    "title": "Film metadata",
-   "line": "Film discovery returns JSON film metadata",
+   "line": "Film discovery returns structured JSON film metadata",
    "examples": [
-    "film discovery for inception",
-    "movie metadata for the matrix",
-    "find films about space"
+    "find me a sci-fi film from the 80s",
+    "films by Kurosawa",
+    "film metadata for Ikiru"
    ],
    "tier": "tested",
    "why": "a self-test",
@@ -7205,7 +7205,7 @@
     {
      "rank": 161,
      "name": "film-metadata",
-     "catches": "film discovery for inception"
+     "catches": "find me a sci-fi film from the 80s"
     },
     {
      "rank": 162,
