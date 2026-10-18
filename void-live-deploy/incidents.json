@@ -2,6 +2,26 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T16:26:32.989Z",
+   "sha": "b0113f6749f20b329a507b61d1be400152778b90",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39144673452",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/deploy.yml",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/checks.mjs",
+    "tools/ledger-proof.mjs",
+    "tools/ledger-proof.test.mjs",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/incidents.json"
+   ]
+  },
+  {
    "at": "2026-10-18T16:21:27.740Z",
    "sha": "cfbda4fbadec0dddd424c003ed870ab185410d71",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39143833356",
@@ -680,39 +700,6 @@
     "void-live-deploy/skills/note-tools.js",
     "void-live-deploy/void.html",
     "void.html"
-   ]
-  },
-  {
-   "at": "2026-10-18T06:50:42.063Z",
-   "sha": "d139d79e5b5ffee950b2ea79c49e586ea355f51b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39104498469",
-   "suite": "browser suite on main",
-   "checks": [
-    "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
-    "intent without a day: \"plan my move\" brings the move's steps as a checklist with no dates (the move last), no countdown, nothing on the calendar, and says how to add a day",
-    "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
-    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/skill-overlap.json",
-    "tools/test_void.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/lib/router.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/0069-wants",
-    "void-live-deploy/skills/wants.js"
    ]
   }
  ]
