@@ -33,18 +33,22 @@ export function intentOf(text) {
   if (evidence.length) return { intent: 'incident', evidence };
   const sentences = (s.match(/[.!?](?:\s|$)/g) || []).length, design = (s.match(DESIGN) || []).length;
   if (s.length >= 400 && sentences >= 4 && design >= 3) return { intent: 'discussion', evidence };
+  // A builder's own progress note ("I've reverted it", "the checks are running", "nothing is pushed yet"): first person, a run of
+  // build words, no error quoted and no automation tool named (a bare "script" is not one: builders talk about scripts). It reports on work; it is not a broken automation to fix.
+  if (s.length >= 300 && sentences >= 3 && [null, 'script'].includes(platformOf(s)) && (s.match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 3
+    && (s.match(/\b(?:commit(?:ted)?|push(?:ed)?|branch|bench|checks?|tests?|PR|pull request|revert(?:ed)?|rename[d]?|suite|CI|merge[d]?)\b/gi) || []).length >= 3) return { intent: 'report', evidence };
   if (s.length < 300 && /\?\s*$/.test(s)) return { intent: 'question', evidence };
   return { intent: 'unclear', evidence };
 }
 export function isFixAsk(text) {
   const s = String(text || '');
-  if (intentOf(s).intent === 'discussion') return false; // talk about errors and fixes is not a broken automation
+  if (['discussion', 'report'].includes(intentOf(s).intent)) return false; // talk about errors and fixes, or a progress note, is not a broken automation
   return TROUBLE.test(s) && (THING.test(s) || /\b(error|exception|traceback)\b[\s\S]*\b(https?:\/\/|\{|\bstatus\b)/i.test(s));
 }
 // Enough to work on (an error, a code, a config, a URL, steps), or should Void ask for it first?
 export function hasDetails(text) {
   const s = String(text || '');
-  if (intentOf(s).intent === 'discussion') return false;
+  if (['discussion', 'report'].includes(intentOf(s).intent)) return false;
   return (s.length > 140 && s.length < 1500) || errorEvidence(s).length > 0 || /\n|```|[{}[\]<>]|https?:\/\/|\b[45]\d\d\b|\b(error|exception|traceback|status|unauthori[sz]ed|forbidden|not found|timeout|timed out|econn\w*|enotfound|undefined|null|invalid|denied|expired|rate limit|quota|syntax|unexpected|required|missing|permission|token|credential|mapping|field)\b/i.test(s);
 }
 export function platformOf(text) { for (const [name, re] of PLATFORMS) if (re.test(String(text || ''))) return name; return null; }
