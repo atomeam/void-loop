@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 675,
+ "counted": 676,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -531,7 +531,7 @@
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 11,
+   "dependants": 12,
    "tests": 1
   },
   {
@@ -682,6 +682,13 @@
    "tests": 0
   },
   {
+   "file": "lib/automations.js",
+   "skills": 1,
+   "direct": 0,
+   "dependants": 10,
+   "tests": 3
+  },
+  {
    "file": "lib/proposal.js",
    "skills": 1,
    "direct": 1,
@@ -694,13 +701,6 @@
    "direct": 1,
    "dependants": 10,
    "tests": 6
-  },
-  {
-   "file": "lib/automations.js",
-   "skills": 1,
-   "direct": 0,
-   "dependants": 9,
-   "tests": 3
   },
   {
    "file": "lib/plan.js",
@@ -720,7 +720,7 @@
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 3,
+   "dependants": 4,
    "tests": 2
   },
   {
@@ -1168,7 +1168,7 @@
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 7
   },
   {
@@ -1361,6 +1361,13 @@
    "tests": 2
   },
   {
+   "file": "lib/approval-core.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 9
+  },
+  {
    "file": "lib/mcp.js",
    "skills": 0,
    "direct": 0,
@@ -1380,13 +1387,6 @@
    "direct": 0,
    "dependants": 2,
    "tests": 0
-  },
-  {
-   "file": "lib/approval-core.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 1,
-   "tests": 8
   },
   {
    "file": "lib/aurora-feed.js",
@@ -1488,6 +1488,13 @@
   },
   {
    "file": "lib/appraise.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/approval-gate.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0,
@@ -2212,8 +2219,15 @@
     "lib/keep-going.js"
    ],
    "importedBy": [
-    "functions/api/approval.js"
+    "functions/api/approval.js",
+    "lib/approval-gate.js"
    ]
+  },
+  "lib/approval-gate.js": {
+   "imports": [
+    "lib/approval-core.js"
+   ],
+   "importedBy": []
   },
   "lib/arcade-ghost.js": {
    "imports": [],
@@ -2476,6 +2490,7 @@
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
     "lib/approval-core.js",
+    "lib/approval-gate.js",
     "skills/approve-card.js"
    ]
   },
@@ -3489,6 +3504,9 @@
     "functions/api/approval.js",
     "lib/approval-core.js",
     "skills/approve-card.js"
+   ],
+   "reachedBy": [
+    "lib/approval-gate.js"
    ]
   },
   "lib/keeper.js": {
@@ -3805,6 +3823,7 @@
     "functions/api/support.js",
     "functions/films/rss.js",
     "functions/tools.json.js",
+    "lib/approval-gate.js",
     "lib/bench-asks.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
@@ -5381,6 +5400,7 @@
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
     "lib/approval-core.js",
+    "lib/approval-gate.js",
     "lib/keep-going.js",
     "skills/approve-card.js"
    ]
