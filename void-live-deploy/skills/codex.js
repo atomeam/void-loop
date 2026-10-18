@@ -16,7 +16,7 @@ function currentCard() {
     }
   } catch (_) {}
   try {
-    const log = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]');
+    const log = JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]'); // void-review: ok (inside a try/catch just above and below)
     for (let i = log.length - 1; i >= 0; i--) {
       const e = log[i];
       if (e && e.ask && /^skill:/.test(String(e.note || '')) && !/codex/i.test(e.ask)) return { ask: e.ask, title: e.ask, text: '', skill: String(e.note).slice(6) };

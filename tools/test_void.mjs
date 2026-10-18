@@ -1489,6 +1489,7 @@ try {
     const gf = await S.p.$eval('.gauge-feedback', (e) => ({ kept: e.querySelectorAll('.gf-kept').length, struck: e.querySelectorAll('.gf-struck').length, frames: [...e.querySelectorAll('.gf-kept')[0].querySelectorAll('.gf-frame')].map((x) => x.dataset.frame), record: [...e.querySelectorAll('ul.gf-record li')].map((x) => x.textContent) })).catch(() => null);
     check('gauge feedback: of three statements the two about the login page and the deadline stay (each in neutral, kind and blunt frames) and the praise of the person is struck out of the permanent record',
       gf && gf.kept === 2 && gf.struck === 1 && gf.frames.join() === 'neutral,kind,blunt' && gf.record.length === 2 && !gf.record.some((x) => /genius/i.test(x)) && !S.errors.length, JSON.stringify({ gf, errors: S.errors }));
+  }
   // thinking math (owner, 2026-10-18): eigenwork, edit check, plan stability and the ambition temperature, played the way a person uses them
   if (want("thinking math: eigenwork refuses done until every required mode moved, the edit check flags a tear until a path joins it, a brittle plan says brittle, a cooling ambition list refuses proposals")) { const S = await fresh();
     await S.ask('factor my goal launch a podcast', 600);
@@ -1524,6 +1525,7 @@ try {
     await S.p.dispatchEvent(card + '.an-del >> nth=0', 'click').catch(() => {});
     const reopened = await until(async () => await S.p.$eval(card + '.an-add', (b) => !b.disabled).catch(() => false), 3000);
     check('ambition temperature: starts hot, cooling by date refuses a new proposal at the kept size, and one delete opens it again', phaseNow === 'hot' && cooling === 'cooling' && refused && /Cooling: cut the list/.test(why) && reopened && !S.errors.length, JSON.stringify({ phaseNow, cooling, refused, why, reopened, errors: S.errors }));
+  }
   // thought laws (owner, 2026-10-18): causal scars, counterfactual draft, witness claims, played the way a person uses them
   if (want("thought laws: scars dim what dies with a decision and ask before deleting, a shadow document marks the fracture line, a claim without a witness cannot be committed")) { const S = await fresh();
     await S.ask('map the scars of my decisions: A > x, y; B > y, z', 700);
@@ -1532,12 +1534,12 @@ try {
     const dimmed = await S.p.$$eval('.causal-scars [data-dim="1"]', (g) => g.map((x) => x.dataset.node).sort().join());
     await S.p.mouse.move(0, 0);
     await S.p.click('.causal-scars button.cs-remove >> nth=0');
-    const asked = await S.p.$eval('.causal-scars .cs-msg', (e) => e.textContent);
+    const csMsg = await S.p.$eval('.causal-scars .cs-msg', (e) => e.textContent);
     const stillThere = (await S.state()).find((x) => x.kind === 'scars').nodes.length;
     await S.p.click('.causal-scars button.cs-accept');
     const left = (await S.state()).find((x) => x.kind === 'scars').nodes.slice().sort().join();
     check('causal scars: hovering A dims only x (y has another cause), remove asks first (nothing deleted yet), and Accept deletes A with x',
-      nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(asked) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, asked, stillThere, left, errors: S.errors }));
+      nodes.join() === 'A:decision,x:constraint,y:constraint,B:decision,z:constraint' && dimmed === 'x' && /also removes 1: x/.test(csMsg) && stillThere === 5 && left === 'B,y,z' && !S.errors.length, JSON.stringify({ nodes, dimmed, csMsg, stillThere, left, errors: S.errors }));
     await S.ask('what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish. Price stays low.', 700);
     const closed = await S.p.$eval('.counterfactual-draft details', (d) => d.open + ':' + document.querySelectorAll('.counterfactual-draft [data-fracture="1"]').length);
     await S.p.click('.counterfactual-draft summary');
@@ -1554,6 +1556,7 @@ try {
     const committed = await S.p.$$eval('.witness-claims .wc-committed .wc-claim', (e) => e.map((x) => x.textContent));
     check('witness claims: the claim with no witness is refused (stays in Draft), the one with a data pointer moves to Committed and shows it',
       /no witness/.test(refused) && draftCount === 2 && committed.length === 1 && /data: q3\.csv/.test(committed[0]) && !S.errors.length, JSON.stringify({ refused, draftCount, committed, errors: S.errors }));
+  }
   // stage pack b (owner, 2026-10-18): the immune check, four channels and the stakes phase, played the way a person uses them
   if (want("stage pack b: immune check fever and antibodies, four channels collision and empty synthesis, stakes phase that gates confirm")) { const S = await fresh();
     await S.ask('immune check: make the app better and also fix everything', 700);
@@ -1581,6 +1584,7 @@ try {
     const phase3 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), open = await S.p.$eval('.sp-confirm', (b) => b.disabled);
     check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
       phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
+  }
   // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
   if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
     await S.ask('plant my mistake: I sent the email before checking it', 600);
@@ -2193,13 +2197,14 @@ try {
       cards.length === 24 && saved === 0 && merged.n === 23 && merged.grown === 1 && purged === 0 && !P.errors.length, JSON.stringify({ cards: cards.length, saved, merged, purged, e: P.errors }));
     // mass extinction: the card takes nothing until the word extinct is typed; then every unkept thing goes and one survivor stays, marked
     const n2 = (await P.state()).length; await P.ask('mass extinction', 700);
-    const asked = await P.p.$('.vpage.on .ext-word'); if (asked) { await asked.fill('nope'); await asked.press('Enter'); await P.p.waitForTimeout(300); }
+    const extWord = await P.p.$('.vpage.on .ext-word'); if (extWord) { await extWord.fill('nope'); await extWord.press('Enter'); await P.p.waitForTimeout(300); }
     const refused = await P.p.$eval('.vpage.on .ext-line', (e) => e.textContent).catch(() => ''), n3 = (await P.state()).length;
-    if (asked) { await asked.fill('extinct'); await asked.press('Enter'); }
+    if (extWord) { await extWord.fill('extinct'); await extWord.press('Enter'); }
     const marked = await until(() => P.p.$$eval('.thing .survivor-tag', (l) => l.length), 6000);
     const left = await P.state(), line = await P.p.$eval('.vpage.on .ext-line', (e) => e.textContent).catch(() => '');
     check('stage pack e extinction: "mass extinction" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked',
-      !!asked && /not confirmed/.test(refused) && n3 === n2 && n2 === 2 && marked === 1 && left.length === 1 && left[0].survivor === true && /1 gone · survivor: the/.test(line) && !P.errors.length, JSON.stringify({ asked: !!asked, refused, n2, n3, marked, left: left.map((t) => t.kind + (t.survivor ? '*' : '')), line, e: P.errors }));
+      !!extWord && /not confirmed/.test(refused) && n3 === n2 && n2 === 2 && marked === 1 && left.length === 1 && left[0].survivor === true && /1 gone · survivor: the/.test(line) && !P.errors.length, JSON.stringify({ extWord: !!extWord, refused, n2, n3, marked, left: left.map((t) => t.kind + (t.survivor ? '*' : '')), line, e: P.errors }));
+  }
   // stage pack G (asked by the owner, 2026-10-18): the contradiction lamp, ask diff and skill eclipse (tools/stage-pack-g.test.mjs has the pure parts)
   if (want("stage pack g: the contradiction lamp, ask diff and skill eclipse on one stage")) { const P = await fresh();
     // the lamp: a quiet stage has no clash; two stickies that disagree about one day light one lamp and one line; dismiss puts both out

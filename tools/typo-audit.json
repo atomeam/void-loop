@@ -1,6 +1,8 @@
 {
   "about": "Words the typo audit (tools/typo-audit.mjs) would otherwise flag, each with why it is right as written: a real word one letter-swap from a commoner one, or a slip kept on purpose.",
   "allow": {
+    "filed": "a real word: the codex files a card (the echo chamber's lore), not 'field'",
+    "trail": "a real word: the stigmergy board's trail, not 'trial'",
     "dose": "a real word: the coral skill's heat dose, not 'does'",
     "flies": "a real word: 'how far a crow flies', not 'files'",
     "form": "a real word: a web form, not 'from'",

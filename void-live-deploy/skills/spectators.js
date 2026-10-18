@@ -107,7 +107,7 @@ async function run(text, api) {
   const snap = snapshotOf(api.stage.things(), plainOf), code = pack(snap), link = linkOf(location.origin, code);
   openHere = true;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>The stage is open to spectators</h2><p>Anyone with this link sees a read-only copy of what is on your stage now: ' + snap.length + ' thing' + (snap.length === 1 ? '' : 's') + ', as words. The copy lives in the link itself; nothing is published or stored anywhere.</p>'
+    p.innerHTML = '<h2>The stage is open to spectators</h2><p>Anyone with this link sees a read-only copy of what is on your stage now: ' + snap.length + ' thing' + (snap.length === 1 ? '' : 's') + ', as words. The copy lives in the link itself; nothing is published or stored anywhere.</p>' // void-review: ok (static text plus snap.length, a number; the link is set with textContent and href below)
       + '<p><a class="spectate-link" target="_blank" rel="noopener"></a></p><button type="button" class="spectate-copy g-btn" style="font:inherit;font-size:12px;padding:5px 12px;border-radius:8px;border:1px solid rgba(255,255,255,.3);background:rgba(255,255,255,.08);color:inherit;cursor:pointer">copy link</button>'
       + '<p class="sub">Spectators see this moment, not what you add later: say it again for a fresh link. Reactions from spectators do not reach you yet. "close the stage" closes it here.</p>'
       + '<div class="src">a snapshot of this device\'s stage, packed into the link · not a published page, not a live room (those are "publish my void as @name" and "invite someone")</div>';

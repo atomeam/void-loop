@@ -12,6 +12,7 @@ const FN = join(ROOT, 'functions');
 
 // Void's own routes: the page, the owner, signed-in accounts or other services call them. Left out of openapi.json on purpose.
 export const INTERNAL = {
+  '/api/react': "the showcase's reaction bar: a closed list of six reactions and a showcase slug in, integer counts out, rate limited per hashed client (functions/api/react.js, lib/reactions.js, docs/playbooks/open-endpoint-closed-list.md); the page is the only caller",
   '/api/store/{[path}]': "the /store page's own API: catalog, checkout, receipts and signed downloads (functions/api/store/[[path]].js, docs/store.md)",
   '/api/merge': "the merge card's own API: two idea names in, a cached model-written name and line out; the page is the only caller (functions/api/merge.js, skills/merge.js)",
   '/api/repo': "the repo card's own API: a public GitHub owner/name in, its cleaned live facts out, no token (functions/api/repo.js, lib/repo-look.js, skills/repo.js); the page is the only caller",

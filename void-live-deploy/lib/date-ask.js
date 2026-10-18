@@ -12,7 +12,7 @@ const NW = '(?:\\d+|a|an|one|two|three|four|five|six|seven|eight|nine|ten|twelve
 const NUMW = { a: 1, an: 1, one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10, twelve: 12, other: 2 };
 const nOf = (s) => (/^\d+$/.test(s) ? +s : NUMW[String(s).toLowerCase()]);
 const UNIT = '(business days?|working days?|weekdays?|days?|weeks?|months?|years?)';
-const re = (src, flags = '') => new RegExp(src, flags);
+const re = (src, flags = '') => new RegExp(src, flags); // void-review: ok (src is one of this file's own fixed pattern strings, never the person's text)
 const fmt = (iso) => M.formatDay(iso, 'long');
 const plural = (n, w) => n + ' ' + w + (Math.abs(n) === 1 ? '' : 's');
 const signed = (n) => (n > 0 ? 'in ' + plural(n, 'day') : n < 0 ? plural(-n, 'day') + ' ago' : 'today');

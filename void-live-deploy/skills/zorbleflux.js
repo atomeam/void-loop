@@ -16,7 +16,7 @@ export function zorbleOf(text) {
   return null;
 }
 const bestGet = () => { try { return Z.parseBest(localStorage.getItem(BEST_KEY)); } catch (e) { return 0; } };
-const bestPut = (n) => { try { localStorage.setItem(BEST_KEY, String(n)); } catch (e) { /* storage can be blocked: the round still plays */ } };
+const bestPut = (n) => { try { localStorage.setItem(BEST_KEY, String(n)); } catch (e) { /* storage can be blocked: the round still plays */ } }; // void-review: ok (storage can be blocked: the round still plays)
 
 function mount(th, stageApi) {
   const calm = !!(window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches);

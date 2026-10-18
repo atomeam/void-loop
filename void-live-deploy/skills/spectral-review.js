@@ -47,7 +47,7 @@ export function sentences(text) {
     for (const m of chunk.matchAll(/[^.!?\n]+[.!?]*|\n/g)) {
       const t = m[0];
       if (!t.trim()) continue;
-      const mid = new RegExp(CONN_RE.source, 'i').test(t);
+      const mid = new RegExp(CONN_RE.source, 'i').test(t); // void-review: ok (CONN_RE is this file's own fixed pattern)
       out.push({ start: offset + m.index, end: offset + m.index + t.length, text: t, slow: first || isHeading, mid: mid && !(first || isHeading) });
       first = false;
     }

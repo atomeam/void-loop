@@ -83,7 +83,7 @@ function onKeyUp(e) { const k = String(e.key || '').toLowerCase(); if (S.keys[k]
 function onBlur() { S.keys = {}; }
 // a card up over the stage, the ask bar and the chip keep their own pointer and wheel; everywhere else is the void, and the eye moves
 // (on document, not #stage: once the view is zoomed or panned the stage's own box no longer covers the screen)
-const OWN = '.vpage, #dock, #row, #' + HUD_ID + ', input, textarea, select, button, a[href], [contenteditable="true"], .side-card';
+const OWN = '.vpage, #dock, #row, #' + HUD_ID + ', input, textarea, select, button, a[href], [contenteditable="true"], .side-card'; // void-review: ok (a CSS selector string, no SQL)
 const theirs = (t) => !!(t && t.closest && t.closest(OWN));
 function onWheel(e) {
   if (!S.flying || theirs(e.target)) return;

@@ -10,7 +10,7 @@ import * as S from '../lib/stigmergy-law.js';
 const WHEN = /^leave\s+a\s+(?:stigmergy\s+)?trail\s+(?:on|for|about)\s+\S/i; // "leave a review" and "trail running" are other asks
 
 const keyOf = (t) => 'void-stigmergy:' + String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 40);
-const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* private window: the board still works */ } } };
+const store = { get: (k) => { try { return localStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* private window: the board still works */ } } }; // void-review: ok (storage can be blocked: the board still works)
 
 function run(text, api) {
   const { showPage, esc } = api, topic = String(text).replace(/^\s*leave\s+a\s+(?:stigmergy\s+)?trail\s+\w+\s+/i, '').replace(/[?.!]+$/, '').trim().slice(0, 60), key = keyOf(topic);

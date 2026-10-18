@@ -67,7 +67,7 @@ function mount(th, stageApi) {
     const row = document.createElement('div');
     row.className = 'eg-plant'; row.dataset.stage = st; row.dataset.count = String(p.count || 1);
     row.style.cssText = 'display:flex;gap:8px;align-items:center;margin:4px 0';
-    const g = document.createElement('span'); g.innerHTML = GLYPH[st]; g.title = st;
+    const g = document.createElement('span'); g.innerHTML = GLYPH[st]; g.title = st; // void-review: ok (GLYPH is this file's own constant table, st is one of its keys)
     const body = document.createElement('div'); body.style.flex = '1';
     body.innerHTML = '<div>' + escHtml(p.text) + '</div><div style="font-size:11px;opacity:.7">' + st + (st === 'weed' ? ' · came back ×' + p.count : '') + '</div>' + (p.rule ? '<div class="eg-rule" style="font-size:12px;color:#ffd166">rule: ' + escHtml(p.rule) + '</div>' : '');
     row.append(g, body);
