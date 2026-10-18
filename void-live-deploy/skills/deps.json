@@ -39,28 +39,28 @@
    "dependants": 33
   },
   {
+   "file": "lib/keeper.js",
+   "skills": 13,
+   "direct": 0,
+   "dependants": 34
+  },
+  {
+   "file": "lib/merge-rules.js",
+   "skills": 13,
+   "direct": 1,
+   "dependants": 34
+  },
+  {
+   "file": "lib/art-rules.js",
+   "skills": 13,
+   "direct": 0,
+   "dependants": 33
+  },
+  {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
    "dependants": 18
-  },
-  {
-   "file": "lib/keeper.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 33
-  },
-  {
-   "file": "lib/merge-rules.js",
-   "skills": 12,
-   "direct": 1,
-   "dependants": 33
-  },
-  {
-   "file": "lib/art-rules.js",
-   "skills": 12,
-   "direct": 0,
-   "dependants": 32
   },
   {
    "file": "lib/rule-registry.js",
@@ -97,6 +97,24 @@
    "skills": 9,
    "direct": 8,
    "dependants": 9
+  },
+  {
+   "file": "lib/corrections.js",
+   "skills": 8,
+   "direct": 0,
+   "dependants": 24
+  },
+  {
+   "file": "lib/reactions.js",
+   "skills": 8,
+   "direct": 1,
+   "dependants": 24
+  },
+  {
+   "file": "lib/autopsy.js",
+   "skills": 8,
+   "direct": 3,
+   "dependants": 21
   },
   {
    "file": "lib/ladder.js",
@@ -147,28 +165,10 @@
    "dependants": 8
   },
   {
-   "file": "lib/corrections.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 23
-  },
-  {
-   "file": "lib/reactions.js",
-   "skills": 7,
-   "direct": 1,
-   "dependants": 23
-  },
-  {
    "file": "lib/better.js",
    "skills": 7,
    "direct": 2,
    "dependants": 21
-  },
-  {
-   "file": "lib/autopsy.js",
-   "skills": 7,
-   "direct": 2,
-   "dependants": 20
   },
   {
    "file": "lib/field-stage.js",
@@ -1994,6 +1994,7 @@
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/error-garden.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -2188,6 +2189,7 @@
     "lib/reactions.js"
    ],
    "importedBy": [
+    "skills/error-garden.js",
     "skills/growth.js",
     "skills/incident-autopsy.js"
    ],
@@ -2613,6 +2615,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/error-garden.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -3172,6 +3175,7 @@
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/error-garden.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -3384,6 +3388,7 @@
     "skills/about-skill.js",
     "skills/collectible.js",
     "skills/duel.js",
+    "skills/error-garden.js",
     "skills/forge-table.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -3992,6 +3997,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/error-garden.js",
     "skills/growth-tree.js",
     "skills/growth.js",
     "skills/guide.js",
@@ -5615,7 +5621,8 @@
   "skills/error-garden.js": {
    "imports": [
     "lib/stage-pack.js",
-    "lib/stage-words.js"
+    "lib/stage-words.js",
+    "lib/autopsy.js"
    ],
    "importedBy": []
   },
