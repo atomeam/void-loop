@@ -6063,5 +6063,9 @@
   {"ask": "days until the 1st of march", "want": "skill:countdown"},
   {"ask": "how many days till jan 2nd", "want": "skill:countdown"},
   {"ask": "days until dec 25th", "want": "skill:countdown"},
-  {"ask": "show me a visa test card", "want": "article"}
+  {"ask": "show me a visa test card", "want": "article"},
+  {"ask": "what do you want built now", "want": "skill:wants"},
+  {"ask": "name all your unbuilt asks", "want": "skill:wants"},
+  {"ask": "your backlog", "want": "skill:wants"},
+  {"ask": "what have you not built yet", "want": "skill:wants"}
 ]

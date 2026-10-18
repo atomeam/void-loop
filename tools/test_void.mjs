@@ -5446,6 +5446,30 @@ try {
       all.length === 5 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 5 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
+  // the wants card (owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell to the model, which made 50 up):
+  // skills/wants.js answers from V01D's own records (the suite's /api/will and /api/reflect fixtures, tools/fixtures/outside.mjs, and the
+  // real /self.json's open frontier items), three blocks with counts, every item a tap-to-copy chip, the compound line; the self card keeps its ask
+  if (want('wants card')) { const W = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const selfJson = JSON.parse(fs.readFileSync(path.join(root, 'self.json'), 'utf8')), nOpen = (selfJson.open || []).length;
+    await W.ask('name all your unbuilt asks and come up with 50 more new ones', 300); await until(async () => /What I want built/.test(await W.page()), 6000);
+    const got = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const blk = (id) => pg.querySelector('.wants-block[data-block=' + id + ']');
+      const texts = (id) => [...blk(id).querySelectorAll('.wants-chip')].map((b) => b.getAttribute('data-copy'));
+      return { title: pg.querySelector('h2').textContent, count: pg.querySelector('.wants-count').textContent, heads: ['wants', 'asks', 'inbox'].map((id) => blk(id).querySelector('h3').textContent),
+        wants: texts('wants'), asks: texts('asks'), inbox: texts('inbox'), askSub: blk('asks').querySelector('.wants-chip small').textContent, more: (pg.querySelector('.wants-more') || {}).textContent || '', src: pg.querySelector('.src').textContent, missing: pg.querySelectorAll('[data-missing]').length }; });
+    const loop = await W.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').pop());
+    check('wants card: "name all your unbuilt asks and come up with 50 more new ones" opens "What I want built" from V01D\'s own records (the will fixture\'s want, the reflect fixture\'s open ask with its date, the real self.json open frontier items), a count line "1 want · 1 ask not built · N inbox items", every item a chip, and the 50 new ones are the asker\'s to ask for one at a time',
+      !!got && got.title === 'What I want built' && got.count === '1 want · 1 ask not built · ' + nOpen + ' inbox item' + (nOpen === 1 ? '' : 's') && got.heads.join('|') === 'My will (1)|Asked, not built yet (1)|Growth inbox (' + nOpen + ')'
+        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && nOpen > 0 && got.inbox.includes(selfJson.open[0].ask)
+        && /^The 50 new ones are yours to ask for one at a time/.test(got.more) && /no model/.test(got.src) && got.missing === 0 && loop && loop.note === 'skill:wants' && !W.errors.length,
+      JSON.stringify({ got, nOpen, loop, errors: W.errors }));
+    // a tap on a chip copies it (the chip marks itself copied; the whisper says so) and runs no ask
+    await W.p.click('.vpage.on .wants-block[data-block=asks] .wants-chip'); await W.p.waitForTimeout(300);
+    const tapped = await W.p.evaluate(() => ({ copied: !!document.querySelector('.vpage.on .wants-chip.copied'), said: document.getElementById('whisper').textContent.trim(), stillOpen: /What I want built/.test(document.querySelector('.vpage.on') ? document.querySelector('.vpage.on').textContent : '') }));
+    check('wants card: a tap on an item copies it and keeps the card open', tapped.stillOpen && (tapped.copied ? tapped.said === 'copied' : tapped.said === 'select it to copy') && !W.errors.length, JSON.stringify({ tapped, errors: W.errors }));
+    await W.ask('what do you think of yourself', 300); await until(async () => /What I think of myself/.test(await W.page()), 6000);
+    const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
+    check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
+    await W.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));
