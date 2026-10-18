@@ -152,6 +152,9 @@
     },
     {
       "ask": "yo bitcoin price"
+    },
+    {
+      "ask": "icebreakers about hiking"
     }
   ],
   "candidates": [],

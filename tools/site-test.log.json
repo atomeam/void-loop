@@ -1164,5 +1164,12 @@
   "of": 44,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
+ },
+ {
+  "at": "2026-10-18T00:52:54Z",
+  "passed": 35,
+  "of": 45,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
  }
 ]

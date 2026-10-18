@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 42,
- "runsTotal": 156,
+ "cases": 43,
+ "runsTotal": 157,
  "kinds": {
-  "grow": 35,
+  "grow": 36,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T00:52:54Z",
+   "passed": 35,
+   "of": 45,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
+  },
   {
    "at": "2026-10-18T00:31:24Z",
    "passed": 42,
@@ -142,13 +149,6 @@
    "of": 28,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"show the days until a date\" (skill:show-countdown)"
-  },
-  {
-   "at": "2026-10-17T12:21:39Z",
-   "passed": 19,
-   "of": 27,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"draw a line\" (skill:shape)"
   }
  ],
  "seen": {
@@ -179,8 +179,8 @@
   "skill:crypto": "2026-10-18T00:31:24Z",
   "skill:dark-look": "2026-10-18T00:31:24Z",
   "skill:dates": "2026-10-18T00:31:24Z",
-  "skill:dating": "2026-10-17T08:05:32Z",
-  "skill:different": "2026-10-17T08:11:24Z",
+  "skill:dating": "2026-10-18T00:52:54Z",
+  "skill:different": "2026-10-18T00:52:54Z",
   "skill:dismiss": "2026-10-17T08:11:24Z",
   "skill:distance": "2026-10-17T08:18:35Z",
   "skill:draw": "2026-10-17T08:18:35Z",
@@ -282,7 +282,7 @@
   "skill:words": "2026-10-17T23:19:19Z",
   "skill:work": "2026-10-17T23:19:19Z",
   "skill:zoom-figure": "2026-10-17T23:49:12Z",
-  "skill:deps": "2026-10-17T08:11:24Z",
+  "skill:deps": "2026-10-18T00:52:54Z",
   "skill:fringe-to-skill": "2026-10-17T08:18:35Z",
   "skill:bench": "2026-10-17T20:35:41Z",
   "skill:collide": "2026-10-17T20:35:41Z",
