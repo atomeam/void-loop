@@ -10,6 +10,10 @@ test('only the unit tests that import a changed skill or lib are picked, and a c
   assert.deepEqual(testsFor(['void-live-deploy/lib/keep-going.js', 'tools/new.test.mjs'], TESTS).files, ['tools/keep.test.mjs', 'tools/new.test.mjs']);
   assert.deepEqual(testsFor(['void-live-deploy/skills/status.js'], [['browser.test.mjs', "import { chromium } from 'playwright-core'; // skills/status.js"]]).files, [], 'a browser script is left to verify.yml');
   assert.deepEqual(testsFor(['void.html', 'docs/MAP.md'], TESTS).files, []);
+  // a test that runs a browser script (bench-load.test.mjs spawns bench.mjs) needs Chrome too, even when the PR changed the test itself
+  const runs = [['bench-load.test.mjs', "spawnSync(process.execPath, [join(here, 'bench.mjs')])"], ['bench-math.test.mjs', "import { x } from './bench-load.mjs'; import k from '../void-live-deploy/lib/keep-going.js';"]];
+  assert.deepEqual(testsFor(['tools/bench-load.test.mjs', 'void-live-deploy/lib/keep-going.js'], runs, ['bench.mjs']).files, ['tools/bench-math.test.mjs'], 'bench-load.mjs is not bench.mjs');
+  assert.deepEqual(testsFor(['tools/bench-load.test.mjs'], runs, []).files, ['tools/bench-load.test.mjs'], 'without the list of browser scripts it is run as before');
   assert.equal(testsFor(['void-live-deploy/skills/merges.js'], [['a.test.mjs', "skills/merges.jsx"]]).files.length, 0, 'a longer name is not a match');
 });
 
