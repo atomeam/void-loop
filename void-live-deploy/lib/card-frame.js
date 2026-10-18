@@ -110,7 +110,7 @@ export const CARD_CSS = [
   // the comic-ink layer (owner, 2026-10-18: "design the almost comic like epic v01d cards"): heavy black ink round every panel with an offset
   // shadow like a printed panel, a bold outlined title banner, the stats in an inked plate, and halftone dots over the art
   '.vpage.vcard{outline:3px solid #000;outline-offset:-1px}',
-  '.vcard .vc-title{text-transform:uppercase;font-family:"Bangers","Impact","Anton","Arial Black",system-ui,sans-serif!important;font-weight:800;letter-spacing:.06em;color:#fff7e0;text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),4px 4px 0 #000}',
+  '.vcard .vc-title{font-family:"Bangers","Impact","Anton","Arial Black",system-ui,sans-serif!important;font-weight:800;letter-spacing:.06em;color:#fff7e0;text-shadow:2px 2px 0 #000,-1px -1px 0 #000,1px -1px 0 #000,-1px 1px 0 #000;border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),4px 4px 0 #000}',
   '.vcard .vc-art{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),5px 5px 0 #000;border-radius:3px}',
   '.vcard .vc-art::before{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;background:radial-gradient(circle,rgba(0,0,0,.28) 0.9px,transparent 1.3px) 0 0/5px 5px;mix-blend-mode:multiply;opacity:.55}',
   '.vcard .vc-type{border:3px solid #000!important;box-shadow:inset 0 0 0 2px var(--edge),3px 3px 0 #000;font-weight:700;color:#f3efe2}',
