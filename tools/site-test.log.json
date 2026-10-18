@@ -1241,5 +1241,12 @@
   "of": 56,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
+ },
+ {
+  "at": "2026-10-18T06:18:56Z",
+  "passed": 55,
+  "of": 57,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
  }
 ]
