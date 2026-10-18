@@ -17,3 +17,5 @@ Mistakes already made:
 - A Blob module Worker needs an absolute URL for its import (`spawnMind` resolves it); the CSP allows `worker-src blob:`.
 - Under `prefers-reduced-motion` the card runs no loop, so a hook must not rely on the loop to notice the card has left: check `el.isConnected` on its own timer, and do not evolve while `still()`.
 - A seal stores facts only (params and metrics), never the pointer's path.
+- Several drafts on one theme (2026-10-18, attention: `lib/field-attention.js`): one module, each draft a named variant with its own create/step, and top-level `create(seed, { variant })`/`step`/`metrics` that dispatch on `s.variant`; a Law button swaps `th.state` (it stays non-enumerable). Tag every slow thought with its variant and drop an answer whose variant is no longer the card's, or a lattice genome lands on particles.
+- An injected source (a pointer, a typed word) must outweigh the law's own pull down, or it vanishes: under a growth bell a cell above the bell loses `rate / 2` a step, so a source of less than that leaves a dark moat, not a lit spot. Check it with numbers (`consensus` above 0.5 at the source) before drawing it.

@@ -2547,6 +2547,37 @@ try {
     check('field minds: the vector field mind card shows a live ink density that is also its CSS variable, the mind has thought at least once (gen above 0) with and without a Worker, the morph touches the card and not the page, sound stays off, and Seal keeps a record',
       out.length === 2 && good(out[0]) && good(out[1]) && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status), JSON.stringify(out));
   }
+  if (want("field minds: attention field mind, a typed word becomes an attractor its look-alikes fall toward, Law cycles Grok's four attention drafts, with and without a Worker")) { // asked by Owner, 2026-10-18: Grok's attention drafts
+    const out = [];
+    for (const bare of [false, true]) { // bare: no Worker and no Web Audio (docs/playbooks/field-mind.md), the mind falls back to the page
+      const F = bare ? await fresh('delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext;') : await fresh();
+      const card = '.ff-attention-field-mind';
+      await F.ask('attention field', 700); await until(async () => !!(await F.p.$(card + ' canvas')), 8000);
+      const read = () => F.p.$eval(card, (e) => ({ law: e.dataset.law, mind: e.dataset.mind, gen: +(e.dataset.gen || 0), words: +(e.dataset.words || 0), answer: +(e.dataset.answer || 0), clusters: +(e.dataset.clusters || 0),
+        consensus: +e.dataset.consensus, lawBtn: e.querySelector('.af-law').textContent, status: e.querySelector('.ff-hud').textContent, sound: e.querySelector('.ff-sound').textContent, filter: e.style.filter, page: getComputedStyle(document.body).filter }));
+      await F.p.fill(card + ' .af-word', 'cluster'); await F.p.press(card + ' .af-word', 'Enter');
+      await until(async () => (await read()).answer > 0.5 && (await read()).gen > 0, 12000);
+      const a = await read();
+      const box = await (await F.p.$(card + ' canvas')).boundingBox(); // the pointer sculpts: move over it, press to push
+      await F.p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.3); for (let i = 0; i < 8; i++) await F.p.mouse.move(box.x + box.width * (0.3 + i * 0.03), box.y + box.height * 0.4);
+      await F.p.mouse.down(); await F.p.waitForTimeout(250); await F.p.mouse.up();
+      const laws = [a.law];
+      for (let i = 0; i < 2; i++) { await F.p.click(card + ' .af-law'); laws.push((await read()).law); } // affinity -> heads -> lattice
+      await until(async () => /gen [1-9]/.test((await read()).status), 12000); // the HUD shows the generation on the frame after the thought
+      const lat = await read();
+      await F.p.click(card + ' .af-law'); laws.push((await read()).law); await F.p.click(card + ' .af-law'); laws.push((await read()).law);
+      await F.p.click(card + ' .ff-seal'); await until(async () => !!(await F.p.$eval(card, (e) => e.dataset.seal).catch(() => '')), 4000);
+      const sealed = await F.p.$eval(card, (e) => e.dataset.seal || '');
+      const rows = await F.p.evaluate(() => new Promise((res) => { const q = indexedDB.open('void-field', 1); q.onsuccess = () => { const g = q.result.transaction('seals').objectStore('seals').getAll(); g.onsuccess = () => { q.result.close(); res(JSON.stringify(g.result)); }; }; q.onerror = () => res(''); }));
+      out.push({ bare, a, lat, laws, sealed, sealHasWord: /"cluster"/.test(rows), errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.law === 'affinity' && o.a.words === 1 && o.a.answer > 0.5 && o.a.gen > 0 && o.a.clusters > 0 && /^affinity \(frontier-webgpu-attention-field\) · 1 word · \d+ clusters/.test(o.a.status)
+      && o.laws.join() === 'affinity,heads,lattice,causal,affinity' && o.lat.law === 'lattice' && o.lat.gen > 0 && /^lattice \(F-029\) · 0 words · gen \d+ · fitness [\d.]+/.test(o.lat.status)
+      && /^hue-rotate\(/.test(o.a.filter) && o.a.page === 'none' && /^[0-9a-f]{12}$/.test(o.sealed) && !o.sealHasWord && !o.errors.length;
+    check('field minds: the attention field mind (Grok\'s attention drafts) turns a typed word into an attractor its look-alikes fall toward, clusters like with like, Law cycles affinity, two heads (F-032), lattice (F-029, its mind evolves) and causal (F-047), the morph touches the card only, Seal keeps no typed word, and with Worker and Web Audio deleted the mind thinks on the page and Sound says it is unavailable',
+      out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
+      && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
+  }
   if (want("flow canvas: F-033 ink rides a paintable field, a mind evolves it in a Worker and on the page when workers are blocked, velocity morphs the ink's CSS shapes")) { // asked by Owner: F-033
     const flowRun = async (F) => {
       await F.ask('adaptive flow canvas', 900); await until(async () => !!(await F.p.$('.ff-flow-canvas canvas')), 8000);

@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 2,
   "tested": 62,
-  "checked": 35,
+  "checked": 36,
   "proven": 85
  },
  "families": [
@@ -25,7 +25,7 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 6,
+    "checked": 7,
     "proven": 11
    },
    "skills": [
@@ -261,6 +261,13 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "attention-field-mind",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     },
     {
      "name": "rts",
