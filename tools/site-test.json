@@ -179,6 +179,9 @@
     },
     {
       "ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25"
+    },
+    {
+      "ask": "decision matrix for whether to move to Berlin"
     }
   ],
   "candidates": [],
