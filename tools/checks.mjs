@@ -70,6 +70,7 @@ for (const [name, file] of [
   ['skills', 'skills-check.mjs'],
   ['new-skill', 'new-skill.test.mjs'],
   ['stage-pack-h', 'stage-pack-h.test.mjs'],
+  ['stage-pack-i', 'stage-pack-i.test.mjs'],
   ['frontier', 'frontier.test.mjs'],
   ['map-sync', 'map-sync.test.mjs'],
   ['map-coverage', 'map-coverage.test.mjs'],

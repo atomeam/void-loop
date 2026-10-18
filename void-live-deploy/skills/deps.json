@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 550,
+ "counted": 556,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -15,6 +15,12 @@
    "dependants": 32
   },
   {
+   "file": "lib/stage-pack.js",
+   "skills": 14,
+   "direct": 14,
+   "dependants": 14
+  },
+  {
    "file": "lib/state.js",
    "skills": 13,
    "direct": 2,
@@ -25,12 +31,6 @@
    "skills": 13,
    "direct": 2,
    "dependants": 18
-  },
-  {
-   "file": "lib/stage-pack.js",
-   "skills": 13,
-   "direct": 13,
-   "dependants": 13
   },
   {
    "file": "lib/astro.js",
@@ -78,6 +78,12 @@
    "file": "lib/skyask.js",
    "skills": 8,
    "direct": 7,
+   "dependants": 8
+  },
+  {
+   "file": "lib/stage-pack-h.js",
+   "skills": 8,
+   "direct": 8,
    "dependants": 8
   },
   {
@@ -189,6 +195,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/stage-pack-i.js",
+   "skills": 5,
+   "direct": 5,
+   "dependants": 5
+  },
+  {
    "file": "lib/probe-log.js",
    "skills": 4,
    "direct": 1,
@@ -280,12 +292,6 @@
   },
   {
    "file": "lib/skill-family.js",
-   "skills": 3,
-   "direct": 3,
-   "dependants": 3
-  },
-  {
-   "file": "lib/stage-pack-h.js",
    "skills": 3,
    "direct": 3,
    "dependants": 3
@@ -3621,9 +3627,24 @@
   "lib/stage-pack-h.js": {
    "imports": [],
    "importedBy": [
+    "skills/certainty-budget.js",
+    "skills/draft-triad.js",
     "skills/echo-disagrees.js",
+    "skills/interrupt-priority.js",
     "skills/near-choir.js",
-    "skills/negative-summons.js"
+    "skills/negative-summons.js",
+    "skills/partial-answer.js",
+    "skills/stale-work.js"
+   ]
+  },
+  "lib/stage-pack-i.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/certainty-budget.js",
+    "skills/draft-triad.js",
+    "skills/interrupt-priority.js",
+    "skills/partial-answer.js",
+    "skills/stale-work.js"
    ]
   },
   "lib/stage-pack.js": {
@@ -3641,6 +3662,7 @@
     "skills/recipe-stack.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/stale-work.js",
     "skills/task-diagram.js"
    ]
   },
@@ -4143,6 +4165,13 @@
    ],
    "importedBy": []
   },
+  "skills/certainty-budget.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
   "skills/challenge-rules.js": {
    "imports": [
     "lib/observations.js",
@@ -4372,6 +4401,13 @@
    "importedBy": [
     "skills/country.js"
    ]
+  },
+  "skills/draft-triad.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
   },
   "skills/draw.js": {
    "imports": [
@@ -4872,6 +4908,13 @@
    "imports": [
     "lib/plan.js",
     "lib/practice.js"
+   ],
+   "importedBy": []
+  },
+  "skills/interrupt-priority.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
    ],
    "importedBy": []
   },
@@ -5490,6 +5533,13 @@
    ],
    "importedBy": []
   },
+  "skills/partial-answer.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack-h.js"
+   ],
+   "importedBy": []
+  },
   "skills/pdf-card.js": {
    "imports": [
     "lib/pdf-qa.js"
@@ -6089,6 +6139,14 @@
   },
   "skills/sport.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/stale-work.js": {
+   "imports": [
+    "lib/stage-pack-i.js",
+    "lib/stage-pack.js",
+    "lib/stage-pack-h.js"
+   ],
    "importedBy": []
   },
   "skills/state.js": {

@@ -7607,6 +7607,49 @@ try {
     await C.ctx.close();
   }
 
+  // stage pack i (owner, 2026-10-18): partial answer, draft triad, stale work, certainty budget, interrupt priority
+  if (want("stage pack i: partial answer fills one hole, draft triad keeps one, stale work, certainty budget, interrupt priority")) {
+    const Q = await fresh();
+    await Q.ask('partial answer on my trip', 600);
+    const q1 = await until(() => Q.p.$eval('.sph-card[data-sph="partial-answer"]', (e) => /blocked on:.*the dates/.test(e.innerText)).catch(() => false), 15000);
+    await Q.ask('fill the hole: May 3 to 9', 500);
+    const q2 = await Q.p.$eval('.sph-card[data-sph="partial-answer"]', (e) => e.innerText).catch(() => '');
+    check('stage pack i: "partial answer on my trip" shows only "blocked on" the table inputs; "fill the hole: May 3 to 9" moves exactly one into what is known and asks for the next',
+      q1 && /dates: May 3 to 9/.test(q2) && !/blocked on:.*dates/.test(q2) && /budget/.test(q2) && !Q.errors.length, JSON.stringify({ q1, q2: q2.slice(0, 200), errs: Q.errors }));
+    await Q.ask('three drafts of we are late with the report', 600);
+    const labels = await Q.p.$$eval('.sph-card[data-sph="draft-triad"] .dt-label', (l) => l.map((x) => x.innerText.toLowerCase())).catch(() => []);
+    await Q.p.click('.sph-card[data-sph="draft-triad"] .dt-card[data-label="conservative"] .dt-x').catch(() => {});
+    await Q.p.click('.sph-card[data-sph="draft-triad"] .dt-card[data-label="weird"] .dt-keep').catch(() => {});
+    const left = await Q.p.$$eval('.sph-card[data-sph="draft-triad"] .dt-card', (c) => c.map((x) => x.dataset.label + ':' + x.dataset.winner)).catch(() => []);
+    check('stage pack i: "three drafts of ..." gives aggressive, conservative, weird; dismiss drops one; "keep this draft" on weird leaves only the marked winner',
+      labels.join() === 'aggressive,conservative,weird' && left.join() === 'weird:true' && !Q.errors.length, JSON.stringify({ labels, left, errs: Q.errors }));
+    for (let i = 0; i < 5; i++) await Q.ask('note that I edited the pitch', 150);
+    await Q.ask('show stale work', 500);
+    const sw = await Q.p.$eval('.sph-card[data-sph="stale-work"]', (e) => e.innerText).catch(() => '');
+    await Q.p.click('.sph-card[data-sph="stale-work"] .sw-decide').catch(() => {});
+    await Q.p.waitForTimeout(200);
+    await Q.ask('show stale work', 500);
+    const sw2 = await Q.p.$eval('.sph-card[data-sph="stale-work"]', (e) => e.innerText).catch(() => '');
+    check('stage pack i: five "note that I edited the pitch" make it stale; decide takes it off the list', /pitch/.test(sw) && /Nothing is stale/.test(sw2) && !Q.errors.length, JSON.stringify({ sw: sw.slice(0, 120), sw2: sw2.slice(0, 80), errs: Q.errors }));
+    await Q.ask('certainty budget of 1', 500);
+    await Q.p.fill('.sph-card[data-sph="certainty-budget"] .cb-in', 'it will definitely work').catch(() => {});
+    await Q.p.click('.sph-card[data-sph="certainty-budget"] .cb-send').catch(() => {});
+    const cb0 = await Q.p.$eval('.sph-card[data-sph="certainty-budget"] .cb-badge', (e) => e.innerText).catch(() => '');
+    await Q.p.fill('.sph-card[data-sph="certainty-budget"] .cb-in', 'it is always the cache').catch(() => {});
+    await Q.p.click('.sph-card[data-sph="certainty-budget"] .cb-send').catch(() => {});
+    const cbNote = await Q.p.$eval('.sph-card[data-sph="certainty-budget"] .cb-note', (e) => e.innerText).catch(() => '');
+    await Q.p.fill('.sph-card[data-sph="certainty-budget"] .cb-in', 'the invoice was paid').catch(() => {});
+    await Q.p.click('.sph-card[data-sph="certainty-budget"] .cb-refill').catch(() => {});
+    const cb1 = await Q.p.$eval('.sph-card[data-sph="certainty-budget"] .cb-badge', (e) => e.innerText).catch(() => '');
+    check('stage pack i: a hard claim spends the budget (0/1), the next is refused, "refill" with a confirmed fact restores 1/1', cb0 === '0/1' && /Out of certainty/.test(cbNote) && cb1 === '1/1' && !Q.errors.length, JSON.stringify({ cb0, cbNote, cb1, errs: Q.errors }));
+    await Q.ask('set priority deep', 400);
+    await Q.ask('show deferred', 500);
+    const ip = await Q.p.$eval('.sph-card[data-sph="interrupt-priority"]', (e) => e.innerText).catch(() => '');
+    await Q.ask('show deferred revenue accounting', 600);
+    check('stage pack i: "set priority deep" is kept and "show deferred" shows it; "show deferred revenue accounting" is left to the normal path', /priority: deep/.test(ip) && (await Q.p.$$('.sph-card[data-sph="interrupt-priority"]')).length === 1 && !Q.errors.length, JSON.stringify({ ip: ip.slice(0, 80), errs: Q.errors }));
+    await Q.ctx.close();
+  }
+
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
