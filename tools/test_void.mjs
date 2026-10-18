@@ -1356,8 +1356,8 @@ try {
     await O.ctx.route(/\/api\/mine$/, (rt) => rt.fulfill(json({ data: null, rev: 0, updated: null })));
     await O.ctx.route(/\/api\/publish$/, async (rt) => { const q = rt.request(); const res = await publishFn['onRequest' + q.method()[0] + q.method().slice(1).toLowerCase()]({ request: new Request('https://a-to-mind.com/api/publish', { method: q.method(), headers: { 'content-type': 'application/json', authorization: (await q.allHeaders()).authorization || '' }, body: q.method() === 'GET' || q.method() === 'DELETE' ? undefined : q.postData() }), env }); return rt.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() }); });
     await O.p.reload(); await O.p.waitForTimeout(600);
-    await O.ask('publish my void as @neo', 500); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first();
-    await O.ask('yes', 900); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
+    await O.ask('publish my void as @neo', 300); await until(async () => /Put your V01D at/.test(await O.whisper()), 15000); const asked = await O.whisper(); const before = await DB.prepare("SELECT handle FROM void_pages WHERE handle = 'neo'").first(); // the line comes once the skills are in: wait for it, not a guessed half second
+    await O.ask('yes', 300); await until(async () => /Your V01D is public/.test(await O.page()), 15000); const done = await O.page(); const after = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     await O.ask('unpublish', 700); const gone = await DB.prepare("SELECT handle FROM void_pages WHERE user_id = 'userA'").first();
     const C = await mk('userC', 'paid'); await pub(C, 'POST', { handle: 'cee', look, cards });
     const up = (await render('@cee')).status;
@@ -2520,7 +2520,7 @@ try {
     await G.ctx.close(); }
   if (want("paste any size and read aloud: a huge pasted log is read start and end, folded on the card, and the card reads itself aloud")) {
     const P = await fresh(() => { window.__said = []; window.__cancels = 0; const ss = window.speechSynthesis;
-      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; }; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > 0 && window.__cancels === 0 }); } });
+      if (ss) { ss.speak = (u) => { window.__said.push(u.text); }; ss.cancel = () => { window.__cancels++; window.__saidAtCancel = window.__said.length; }; window.__saidAtCancel = 0; Object.defineProperty(ss, 'speaking', { get: () => window.__said.length > window.__saidAtCancel }); } }); // speaking until the next cancel: the start's own cancel() used to make it read as silent, so a slow second tap met a button the page had already turned off
     let sent = null, bytes = 0;
     await P.ctx.route(/\/api\/answer(?:\?|$)/, (r) => { const b = r.request().postData() || ''; bytes = Buffer.byteLength(b); try { sent = JSON.parse(b); } catch (_) {} return r.fulfill(json({ answer: 'Likely cause: Postgres refuses the connection.\nFix:\n1. Start the database and check its host.', fix: 'model' })); });
     const first = 'my n8n workflow is broken after the deploy and the webhook step keeps failing on every single run with the log below, please fix it';
@@ -4053,13 +4053,16 @@ try {
     });
     await S.ask('is uber down', 600);
     await until(async () => (await S.p.$$eval('.vpage.on .sh-row[data-state="checking"]', (e) => e.length).catch(() => 1)) === 0 && (await S.p.$$('.vpage.on .sh-row')).length > 0, 10000).catch(() => {});
-    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0) }));
+    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0),
+      gauge: (() => { const g = el.querySelector('.sh-gauge'); return g ? { label: g.dataset.stability, score: +g.dataset.score, deg: (g.querySelector('.sh-needle').style.transform.match(/-?\d+/) || [''])[0], reads: +(el.querySelector('[data-sh-gauge]').dataset.reads || 0) } : null; })() }));
     const a = await read(), hitsA = hits;
     await S.p.click('.vpage.on [data-sh-again]'); await until(async () => (await read()).checked >= 2, 10000).catch(() => {});
     const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
-    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, and Check again checks every one again',
+    // the stability dial (asked by Void): the served incidents.json is the real file, so the dial reads a label and a score, the needle sits at the score's angle, and Check again reads it again
+    const dialOk = (g) => g && ['steady', 'wobbly', 'shaky'].includes(g.label) && g.score >= 0 && g.score <= 100 && +g.deg === Math.round(-90 + 1.8 * g.score);
+    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and V01D\'s own stability dial reads incidents.json (again on Check again)',
       a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
-      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
     await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
@@ -4456,12 +4459,14 @@ try {
       const ok = await until(async () => { const v = await stars(page); streak = Math.max(streak, v.streak.dx); return Date.now() - t0 >= 500 && (await page.evaluate(() => window.__voidFly.state().x)) <= far; }, 6000);
       const v = await stars(page); await page.keyboard.up('d'); return { ok, v, streak }; };
     await P.ask('fly around', 500);
+    await until(async () => (await stars(P.p)).lib, 10000); // the sky's maths file is in before D is held
     const rest0 = await stars(P.p);
     const { ok: heldD, v: mid, streak } = await holdD(P.p, -120);
     await P.p.keyboard.press('Escape');
     const back = await until(async () => atRest(await stars(P.p)) && !(await P.p.evaluate(() => window.__voidFly.state().landing)), 6000);
     const R = await fresh(); await R.p.emulateMedia({ reducedMotion: 'reduce' });
     await R.ask('fly around', 500);
+    await until(async () => (await stars(R.p)).lib, 10000);
     const { ok: heldR, v: rMid, streak: rStreak } = await holdD(R.p, -300);
     await R.p.keyboard.press('Escape');
     const rBack = await until(async () => atRest(await stars(R.p)), 3000);
