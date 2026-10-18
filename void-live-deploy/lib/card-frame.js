@@ -11,6 +11,7 @@
 // (what it imports), an arrow in at the top when other skills lean on it, Income being how many do. Pure: cardOf(), chromeHtml(); the page calls keep() and style().
 import { hueOf } from './guide.js';
 import { typeWords, kindOf, newInSub, repeatsTitle } from './card-kinds.js';
+import { lineageOf } from './lineage.js';
 import { bar as shareBar, SHARE_CSS } from './card-share.js';
 import { artLook } from './art-meta.js';
 import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
@@ -70,8 +71,9 @@ const gem = (r) => (r ? '<i class="vc-gem" style="background:' + r.gem + ';color
 /** the art box, the type bar, the adds line and the footer as HTML. Pure. */
 export function chromeHtml(c, esc) {
   const art = '<div class="vc-art">' + artSvg({ key: c.key || c.name || c.typeLine, name: c.key || c.name || '', kind: c.artKind || kindWord(c.typeLine), chapter: c.chapter, hue: c.artHue != null ? c.artHue : c.hue, ink: c.artInk || undefined, rarity: c.rarity, season: c.season, glyph: c.isSkill, nouns: c.nouns }, { w: 520, h: 150 }) + '</div>';
-  const type = '<div class="vc-type"><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
-  const adds = c.adds ? '<div class="vc-adds"><b>Adds to Verse</b> ' + esc(c.adds) + '</div>' : '';
+  const lineage = lineageOf(c.chapter), trace = lineage ? ' title="' + esc(lineage) + '" data-lineage="' + esc(lineage) + '"' : '';
+  const type = '<div class="vc-type"' + trace + '><span>' + esc(c.typeLine) + '</span>' + gem(c.rarity) + '</div>';
+  const adds = c.adds ? '<div class="vc-adds"><b' + trace + '>Adds to Verse</b> ' + esc(c.adds) + '</div>' : '';
   const stat = (k, v, t) => '<span title="' + t + '">' + k + '<b>' + v + '</b></span>';
   const plate = c.power == null ? '' : '<div class="vc-pt">' + (c.fetched ? stat('P', c.power, 'power: the sources it stands on') + stat('R', c.toughness, 'resistance: days since the source was edited')
     : stat('P', c.power, 'power: success rate out of nine') + stat('R', c.toughness, 'resistance: real asks that proved it') + (c.income == null ? '' : stat('I', c.income, 'income: how many other files lean on it'))) + '</div>';

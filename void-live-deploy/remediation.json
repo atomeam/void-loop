@@ -1,0 +1,20 @@
+{
+ "note": "How long a failing skill took to be proven again, from the history of skills/families.json (tools/remediation-velocity.mjs; asked by Verse).",
+ "at": "2026-10-18T09:05:59.911Z",
+ "snapshots": 243,
+ "windowDays": 5.2,
+ "converted": [],
+ "convertedTotal": 0,
+ "medianDays": null,
+ "open": [
+  {
+   "skill": "shape",
+   "sinceDays": 1.8
+  },
+  {
+   "skill": "holidays",
+   "sinceDays": 0.8
+  }
+ ],
+ "openTotal": 2
+}
