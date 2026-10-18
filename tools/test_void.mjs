@@ -1411,6 +1411,47 @@ try {
         && !green && !visitor && /V01D’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
+  // tools pack 10 (owner, 2026-10-18): list and table transforms and starter templates, played the way a person asks for them
+  if (want("tools pack 10: list ticks, nesting and numbering, new lists from a list, a data table that sums, sorts and exports, and starter templates")) { const S = await fresh();
+    await S.ask('list: milk, eggs, bread, milk', 700);
+    await S.ask('check all on the list', 600);
+    const allDone = await S.p.$$eval('.list-card .list-entry input[type=checkbox]', (c) => c.map((x) => x.checked).join());
+    await S.ask('invert the checks on the list', 600);
+    const inverted = await S.p.$$eval('.list-card .list-entry input[type=checkbox]', (c) => c.map((x) => x.checked).join());
+    await S.ask('number the list', 600);
+    const numbered = await S.p.$$eval('.list-card .list-item-text', (c) => c.map((x) => x.textContent).join('|'));
+    await S.ask('indent eggs under milk in the list', 600);
+    const nested = await S.p.$$eval('.list-card .list-entry', (c) => c.map((x) => (x.style.marginLeft || '0') + ':' + x.querySelector('.list-item-text').textContent).join('|'));
+    const badge = await S.p.$eval('.list-card .list-count', (c) => c.textContent).catch(() => '');
+    check('list tools: "check all" ticks all four, "invert the checks" unticks them, "number the list" puts 1. 2. 3. in front, "indent eggs under milk" nests it, and a count badge shows',
+      allDone === 'true,true,true,true' && inverted === 'false,false,false,false' && /^1\. milk\|2\. eggs\|3\. bread\|4\. milk$/.test(numbered) && /18px:– eggs/.test(nested) && /4 items/.test(badge) && !S.errors.length, JSON.stringify({ allDone, inverted, numbered, nested, badge, errors: S.errors }));
+    await S.ask('dedupe the list ignoring case', 600);
+    await S.ask('first 2 of the list', 700);
+    const lists = (await S.state()).filter((x) => x.kind === 'list').map((x) => (x.items || []).map((i) => i.text).join('+'));
+    await S.ask('show the list as a tag cloud', 600);
+    const cloud = await S.p.$$eval('.list-cloud .list-cloud-word', (w) => w.length);
+    check('list tools: "dedupe ignoring case" drops the second milk, "first 2 of the list" makes a second list of two and leaves the first, and "as a tag cloud" draws the picked (new) list as two words',
+      lists.length === 2 && lists.includes('milk+eggs+bread') && lists.includes('milk+eggs') && cloud === 2 && !S.errors.length, JSON.stringify({ lists, cloud, errors: S.errors }));
+    await S.ask('csv to table: item,cost // tea,3.5 // jam,2 // rye,10', 800);
+    const rows = await S.p.$$eval('.datatable-card tbody tr', (r) => r.length);
+    await S.ask('sum of column 2', 500);
+    const sum = await S.p.$eval('.datatable-card .dt-result', (e) => e.textContent).catch(() => '');
+    await S.ask('sort the table by column 2 descending', 500);
+    const sorted = await S.p.$$eval('.datatable-card tbody tr td:first-child input', (i) => i.map((x) => x.value).join());
+    await S.ask('freeze the header', 400);
+    await S.ask('zebra stripe the table', 400);
+    const frozen = await S.p.$eval('.datatable-card .dt-wrap', (e) => e.style.maxHeight).catch(() => '');
+    await S.ask('export the table as markdown', 500);
+    const md = await S.p.$eval('.datatable-card .dt-export textarea', (t) => t.value).catch(() => '');
+    check('data table: pasting CSV makes a three-row table, "sum of column 2" says 15.5, "sort by column 2 descending" puts rye first, "freeze the header" caps the height, and "export as markdown" shows the pipes',
+      rows === 3 && /= 15\.5/.test(sum) && sorted === 'rye,tea,jam' && frozen === '200px' && md.startsWith('| item | cost |') && !S.errors.length, JSON.stringify({ rows, sum, sorted, frozen, md: md.slice(0, 60), errors: S.errors }));
+    await S.ask('meeting agenda template', 700);
+    await S.ask('contacts template', 700);
+    const kinds = (await S.state()).filter((x) => /Meeting agenda|Contacts/.test(x.title || '')).map((x) => x.kind + ':' + x.title).sort().join();
+    const agenda = await S.p.$$eval('.list-card .list-title', (t) => t.map((x) => x.textContent).filter((x) => /agenda/i.test(x)).length);
+    check('list templates: "meeting agenda template" puts a numbered agenda list on the stage and "contacts template" a table with Name, Phone, Email, Notes',
+      kinds === 'datatable:Contacts,list:Meeting agenda' && agenda === 1 && !S.errors.length, JSON.stringify({ kinds, agenda, errors: S.errors }));
+    await S.ctx.close(); }
   // stage pack a (owner, 2026-10-18): the minimap, the ask clipboard card, the decision matrix, the habit ring and the recipe stack, played the way a person uses them
   if (want("stage pack a: minimap dots, ask clipboard re-runs, decision matrix totals, habit rings that keep today, a recipe stack that advances itself and chimes only after a tap")) { const S = await fresh();
     await S.ask('sticky note buy milk', 500);

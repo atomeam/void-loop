@@ -12,7 +12,9 @@
 import { append as noteAppend } from './notepad.js';
 import { soundOf } from './soundscape.js'; // "add soft rain" is a sound for the soundscape, not a list item
 import { entryFor, itemLine, boxOverlap, plainOf } from '../lib/bridges.js';
+import { markerOf, cloudOf, reorder, PRIORITY } from '../lib/list-ops.js';
 
+let dragId = ''; // the item whose grip is being dragged (tools pack 10)
 const uid = (prefix) => prefix + '_' + Math.random().toString(36).slice(2, 9);
 
 /** an item's words without the punctuation around them. Pure. */
@@ -22,7 +24,10 @@ export const cleanText = (value) => String(value || '').replace(/^[\s,;:]+|[\s,;
 export function normalizeItems(items) {
   return (Array.isArray(items) ? items : []).map((item) => {
     if (typeof item === 'string') return { id: uid('item'), text: cleanText(item), done: false };
-    return { id: (item && item.id) || uid('item'), text: cleanText(item && item.text), done: !!(item && item.done) };
+    const kept = {}; // nesting and priority (tools pack 10) survive a clean-up
+    if (item && item.depth > 0) kept.depth = Math.min(2, item.depth | 0);
+    if (item && item.pri) kept.pri = item.pri;
+    return { id: (item && item.id) || uid('item'), text: cleanText(item && item.text), done: !!(item && item.done), ...kept };
   }).filter((item) => item.text);
 }
 
@@ -175,22 +180,43 @@ function mount(th, stageApi) {
   el.appendChild(title);
 
   const items = Array.isArray(th.items) ? th.items : (th.items = []);
-  items.forEach((item) => {
+  // tools pack 10 (owner, 2026-10-18; lib/list-ops.js, skills/list-tools.js): a count badge, numbered or lettered items, a priority dot,
+  // nested sub-items, columns, a tag cloud and drag-to-reorder by the grip. All of it is only drawn when the list carries the setting.
+  if (items.length) title.after(make('span', 'list-count', { textContent: items.length + ' item' + (items.length === 1 ? '' : 's') + (items.some((i) => i && i.done) ? ' \u00b7 ' + items.filter((i) => i && i.done).length + ' done' : '') }));
+  let host = el, top = 0;
+  if (th.view === 'cloud' && items.length) {
+    host = make('div', 'list-cloud'); host.style.cssText = 'display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline;padding:6px 2px;max-width:320px';
+    cloudOf(items).forEach((w) => host.appendChild(make('span', 'list-cloud-word', { textContent: w.word, title: w.count + ' time' + (w.count === 1 ? '' : 's'), style: 'font-size:' + (11 + w.size * 4) + 'px;opacity:' + (0.55 + w.size * 0.09) })));
+  } else if (th.cols > 1) { host = make('div', 'list-rows'); host.style.cssText = 'column-count:' + Math.min(4, th.cols) + ';column-gap:14px'; }
+  const rowItems = th.view === 'cloud' ? [] : items;
+  rowItems.forEach((item) => {
     if (!item || !item.id) return;
     const row = make('div', 'list-entry' + (item.done ? ' done' : ''));
+    if (item.depth > 0) row.style.marginLeft = Math.min(2, item.depth) * 18 + 'px';
+    if (th.cols > 1) row.style.breakInside = 'avoid';
+    const grip = quiet(make('span', 'list-grip', { textContent: '\u22ee\u22ee', title: 'drag to reorder', draggable: true }));
+    grip.style.cssText = 'cursor:grab;opacity:.45;font-size:11px;padding:0 3px;user-select:none';
+    grip.addEventListener('dragstart', (e) => { dragId = item.id; try { e.dataTransfer.setData('text/plain', item.text || ''); e.dataTransfer.effectAllowed = 'move'; } catch (x) { /* some browsers refuse */ } });
+    grip.addEventListener('dragend', () => { dragId = ''; });
+    row.addEventListener('dragover', (e) => { if (dragId) e.preventDefault(); });
+    row.addEventListener('drop', (e) => { if (!dragId) return; e.preventDefault(); if (stageApi.snapshot) stageApi.snapshot(); th.items = reorder(th.items, dragId, item.id); dragId = ''; keep(); });
     const check = quiet(make('input', '', { type: 'checkbox', checked: !!item.done }));
     check.setAttribute('aria-label', 'complete ' + (item.text || 'item'));
     check.addEventListener('change', () => { item.done = check.checked; keep(); });
-    const remove = quiet(make('button', 'list-remove', { type: 'button', textContent: '×' }));
+    const remove = quiet(make('button', 'list-remove', { type: 'button', textContent: '\u00d7' }));
     remove.setAttribute('aria-label', 'remove ' + (item.text || 'item'));
     remove.addEventListener('click', () => { th.items = th.items.filter((candidate) => candidate.id !== item.id); keep(); });
-    const toNote = quiet(make('button', 'list-to-note', { type: 'button', textContent: '→ note', title: 'copy this entry into the notepad' }));
+    const toNote = quiet(make('button', 'list-to-note', { type: 'button', textContent: '\u2192 note', title: 'copy this entry into the notepad' }));
     toNote.setAttribute('aria-label', 'copy ' + (item.text || 'item') + ' to the notepad');
     toNote.style.cssText = 'font:inherit;font-size:10px;padding:0 5px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:transparent;color:inherit;cursor:pointer;opacity:.7';
     toNote.addEventListener('click', () => { noteAppend(stageApi, itemLine(item)); stageApi.say('in the notepad'); });
-    row.append(check, make('span', 'list-item-text', { textContent: item.text || '' }), toNote, remove);
-    el.appendChild(row);
+    if (!(item.depth > 0)) top++;
+    const mark = item.depth > 0 ? '\u2013' : markerOf(th.style, top);
+    const lead = (mark ? mark + ' ' : '') + (item.pri && PRIORITY[item.pri] ? PRIORITY[item.pri] + ' ' : '');
+    row.append(grip, check, make('span', 'list-item-text', { textContent: lead + (item.text || '') }), toNote, remove);
+    host.appendChild(row);
   });
+  if (host !== el) el.appendChild(host);
   if (!items.length) el.appendChild(make('div', 'list-empty', { textContent: 'No items yet' }));
 
   const addRow = make('div', 'list-add-row');

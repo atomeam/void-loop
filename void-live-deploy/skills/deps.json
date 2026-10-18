@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 599,
+ "counted": 603,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 35,
-   "direct": 35,
-   "dependants": 35
+   "skills": 37,
+   "direct": 37,
+   "dependants": 37
   },
   {
    "file": "lib/ask-text.js",
@@ -69,6 +69,12 @@
    "dependants": 9
   },
   {
+   "file": "lib/bridges.js",
+   "skills": 8,
+   "direct": 4,
+   "dependants": 10
+  },
+  {
    "file": "lib/rts.js",
    "skills": 8,
    "direct": 3,
@@ -91,12 +97,6 @@
    "skills": 8,
    "direct": 7,
    "dependants": 8
-  },
-  {
-   "file": "lib/bridges.js",
-   "skills": 7,
-   "direct": 4,
-   "dependants": 9
   },
   {
    "file": "lib/field-stage.js",
@@ -381,6 +381,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/list-ops.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/reaction-bar.js",
    "skills": 2,
    "direct": 1,
@@ -616,6 +622,12 @@
   },
   {
    "file": "lib/linediff.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/list-templates.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2004,6 +2016,7 @@
     "lib/arena.js",
     "skills/connect4.js",
     "skills/games.js",
+    "skills/list-tools.js",
     "skills/othello.js"
    ]
   },
@@ -2845,6 +2858,19 @@
    "imports": [],
    "importedBy": [
     "skills/ask-diff.js"
+   ]
+  },
+  "lib/list-ops.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/list-tools.js",
+    "skills/list.js"
+   ]
+  },
+  "lib/list-templates.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/list-templates.js"
    ]
   },
   "lib/mcp-skills.js": {
@@ -3842,6 +3868,8 @@
     "skills/homotopy-edit.js",
     "skills/hunting-question.js",
     "skills/idea-certificate.js",
+    "skills/list-templates.js",
+    "skills/list-tools.js",
     "skills/minimap.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
@@ -5341,13 +5369,31 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/list-templates.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/list-templates.js"
+   ],
+   "importedBy": []
+  },
+  "skills/list-tools.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/list-ops.js",
+    "skills/list.js"
+   ],
+   "importedBy": []
+  },
   "skills/list.js": {
    "imports": [
     "skills/notepad.js",
     "skills/soundscape.js",
-    "lib/bridges.js"
+    "lib/bridges.js",
+    "lib/list-ops.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/list-tools.js"
+   ]
   },
   "skills/live.js": {
    "imports": [],
@@ -5828,6 +5874,7 @@
     "lib/arena.js",
     "skills/connect4.js",
     "skills/games.js",
+    "skills/list-tools.js",
     "skills/othello.js"
    ]
   },
@@ -6480,6 +6527,9 @@
    "imports": [],
    "importedBy": [
     "skills/list.js"
+   ],
+   "reachedBy": [
+    "skills/list-tools.js"
    ]
   },
   "skills/spanish.js": {
