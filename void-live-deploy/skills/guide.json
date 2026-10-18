@@ -3191,7 +3191,7 @@
     "CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAIL fly stars move: the streak never showed. 159/162 passed, unit tests pass, the rest are unconfirmed."
    ],
    "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "why": "a self-test, 3 browser-suite mentions",
    "n": 169
   },
   {

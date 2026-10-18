@@ -2,48 +2,50 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:41:38.411Z",
-   "sha": "5d392dcfada102a83db9d624a613412a869a9b67",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39112149984",
+   "at": "2026-10-18T08:43:57.958Z",
+   "sha": "51a1558a2dadc923f71e71f468bca70609ae7a8f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111918629",
    "suite": "browser suite on main",
    "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "fuzzy layer: 'open a notpad' opens the notepad and 'generate a pasword' the password card, both logged as typed; 'whether in paris' keeps its words; a place after 'in' and a slip no skill takes stay as typed",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
     "suite ran to the end"
    ],
    "touched": [
-    "docs/MAP.md",
     "domains/void.agents.log.md",
-    "tools/checks.mjs",
-    "tools/families.mjs",
-    "tools/ics.test.mjs",
-    "void-live-deploy/lib/ics.js",
-    "void-live-deploy/skills/calendar-file.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1714-calendar-file",
+    "tools/backlog-digest.test.mjs",
+    "void-live-deploy/skills/backlog-digest.js",
     "void-live-deploy/void.growth.json",
-    "tools/automation-fix.test.mjs",
-    "void-live-deploy/incidents.json"
+    "tools/bench.json"
    ]
   },
   {
-   "at": "2026-10-18T08:36:15.907Z",
-   "sha": "419a1261859017c962aad3d7b057abc09b7e45ce",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111047602",
+   "at": "2026-10-18T08:31:51.736Z",
+   "sha": "ecde9c7a12fc5ee423d0bd1ba98798037ab7ae6c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39111158116",
    "suite": "browser suite on main",
    "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "check timeout: no check finished within 300 s"
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
    ],
    "touched": [
-    "tools/bench.json",
-    "tools/wants.test.mjs",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
+    "domains/void.agents.log.md",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
     "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
+    "docs/MAP.md",
+    "domains/void.frontier.md",
+    "tools/checks.mjs",
+    "tools/convert-math.test.mjs",
+    "void-live-deploy/lib/convert-math.js",
+    "void-live-deploy/skills/convert.js",
+    "void-live-deploy/skills/deps.json"
    ]
   },
   {

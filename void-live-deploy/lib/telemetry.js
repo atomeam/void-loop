@@ -70,3 +70,10 @@ export function summaryOf(t) {
   out.push(t.failures.length ? t.failures.length + ' thing' + (t.failures.length === 1 ? '' : 's') + ' still failing or unconfirmed' : 'Nothing in it names a failure');
   return out;
 }
+
+/** a builder's own report on work (first person, with pull requests or commits and the CI words around them): never a broken automation to fix, even when it quotes
+ *  an error or a timeout it is describing. lib/automation-fix.js intentOf asks this first. Pure. */
+export function isBuildersReport(text) {
+  const t = telemetryOf(text);
+  return !!t && (t.signals.includes('pr') || t.signals.includes('sha')) && (String(text).match(/\bI(?:'m|'ve|'ll|'d)?\b/g) || []).length >= 2;
+}

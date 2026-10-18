@@ -369,6 +369,12 @@
    "dependants": 4
   },
   {
+   "file": "lib/telemetry.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 50
+  },
+  {
    "file": "lib/movies.js",
    "skills": 3,
    "direct": 2,
@@ -922,12 +928,6 @@
   },
   {
    "file": "lib/technical-context.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1
-  },
-  {
-   "file": "lib/telemetry.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2127,7 +2127,9 @@
    ]
   },
   "lib/automation-fix.js": {
-   "imports": [],
+   "imports": [
+    "lib/telemetry.js"
+   ],
    "importedBy": [
     "functions/api/answer.js",
     "functions/api/card-art.js",
@@ -4869,7 +4871,58 @@
   "lib/telemetry.js": {
    "imports": [],
    "importedBy": [
+    "lib/automation-fix.js",
     "skills/telemetry-route.js"
+   ],
+   "reachedBy": [
+    "functions/api/actions.js",
+    "functions/api/answer.js",
+    "functions/api/approval.js",
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/figurescript.js",
+    "functions/api/film-review.js",
+    "functions/api/film-views.js",
+    "functions/api/films.js",
+    "functions/api/handoff.js",
+    "functions/api/mcp.js",
+    "functions/api/memory.js",
+    "functions/api/merge.js",
+    "functions/api/miss.js",
+    "functions/api/probe-asks.js",
+    "functions/api/propose-fix.js",
+    "functions/api/queue.js",
+    "functions/api/reflect.js",
+    "functions/api/rehearsal.js",
+    "functions/api/repo.js",
+    "functions/api/review.js",
+    "functions/api/routes.js",
+    "functions/api/routines.js",
+    "functions/api/support.js",
+    "functions/api/voice-reply.js",
+    "functions/api/will.js",
+    "functions/films/rss.js",
+    "functions/tools.json.js",
+    "lib/bench-asks.js",
+    "lib/clef.js",
+    "lib/code-review.js",
+    "lib/correction-fix.js",
+    "lib/job-draft.js",
+    "lib/mcp.js",
+    "lib/memory-scope.js",
+    "lib/paid-access.js",
+    "lib/privacy.js",
+    "lib/probe-asks.js",
+    "lib/propose-fix.js",
+    "lib/repo-look.js",
+    "lib/review-api.js",
+    "lib/router.js",
+    "lib/routine-skill.js",
+    "lib/self-context.js",
+    "lib/shared-routines.js",
+    "lib/voice.js",
+    "skills/repo.js",
+    "skills/routine.js"
    ]
   },
   "lib/template-list.js": {
