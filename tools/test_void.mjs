@@ -1581,6 +1581,42 @@ try {
     const phase3 = await S.p.$eval('.stakes-phase', (e) => e.dataset.phase), open = await S.p.$eval('.sp-confirm', (b) => b.disabled);
     check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
       phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
+  // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
+  if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
+    await S.ask('plant my mistake: I sent the email before checking it', 600);
+    const first = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage));
+    await S.ask('plant my mistake: sent emails before checking', 600);
+    const second = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    await S.ask('write a rule for my mistake: sent email before checking => read it aloud first', 600);
+    const rule = await S.p.$eval('.error-garden .eg-rule', (e) => e.textContent).catch(() => '');
+    const compost = await S.p.$$eval('.error-garden .eg-plant', (r) => r.map((x) => x.dataset.stage));
+    check('error garden: a mistake is a sprout, the same mistake again is one weed (not two plants), and a rule beside it makes compost that shows the rule',
+      first.join() === 'sprout' && second.join() === 'weed2' && compost.join() === 'compost' && /read it aloud first/.test(rule) && !S.errors.length, JSON.stringify({ first, second, compost, rule, errors: S.errors }));
+    await S.ask('keep this idea: a stage that remembers', 600);
+    const none = await S.p.$$eval('.idea-certificate .ic-cert', (c) => c.length);
+    await S.ask('keep this idea: a stage that remembers | why: it makes coming back feel like home | rejected: a login wall; a feed', 600);
+    const made = await S.p.$$eval('.idea-certificate .ic-cert', (c) => c.map((x) => x.textContent));
+    await S.ask('bury idea 1', 500);
+    const alive = await S.p.$$eval('.idea-certificate .ic-cert', (c) => c.map((x) => x.dataset.dead));
+    await S.ask('bury idea 1 | death note: it stopped being true', 600);
+    const dead = await S.p.$eval('.idea-certificate .ic-death', (e) => e.textContent).catch(() => '');
+    check('idea certificate: no certificate without a why, one with it (rejected alternatives shown), no burial without a death note, then buried with the note kept',
+      none === 0 && made.length === 1 && /why it lives: it makes coming back/.test(made[0]) && /a login wall/.test(made[0]) && alive.join() === '' && /it stopped being true/.test(dead) && !S.errors.length, JSON.stringify({ none, made, alive, dead, errors: S.errors }));
+    const N = await fresh("try { const k = 'a2m.void.state.v1'; if (!localStorage.getItem(k)) localStorage.setItem(k, JSON.stringify({ n1: { id: 'n1', kind: 'sticky', x: 40, y: 60, text: 'yes: ship the garden' }, n2: { id: 'n2', kind: 'sticky', x: 300, y: 60, text: 'no: ship the garden later' }, n3: { id: 'n3', kind: 'notepad', x: 40, y: 260, text: 'bread recipe' } })); } catch (_) {}");
+    await N.ask('how hot are my nouns', 700);
+    const labels = await N.p.$$eval('.noun-heat .nh-row', (r) => r.map((x) => x.dataset.term + ':' + x.dataset.label));
+    check('noun heat: a word that sits in both a yes and a no note is burning and listed first, a word met once long ago is cold', labels.length > 0 && /^(ship|garden):burning$/.test(labels[0]) && labels.includes('bread:cold') && !N.errors.length, JSON.stringify({ labels, errors: N.errors }));
+    await N.ctx.close();
+    await S.ask("a question I'm avoiding: should I quit my job", 600);
+    await S.p.reload(); await S.p.waitForSelector('.hunting-question', { timeout: 8000 }).catch(() => {});
+    const line = await S.p.$eval('.hunting-question .hq-text', (e) => e.textContent).catch(() => '');
+    await S.p.click('.hunting-question button >> nth=1').catch(() => {});
+    await S.p.fill('.hunting-question input', 'ok').catch(() => {}); await S.p.press('.hunting-question input', 'Enter').catch(() => {});
+    const stays = await S.p.$$eval('.hunting-question', (e) => e.length);
+    await S.p.fill('.hunting-question input', 'I decided to stay and be kind to myself').catch(() => {}); await S.p.press('.hunting-question input', 'Enter').catch(() => {});
+    const gone = await until(async () => (await S.p.$$eval('.hunting-question', (e) => e.length)) === 0, 4000);
+    check('hunting question: it comes back at the margin after a reload, is never answered, a one-word reason does not release it and a written reason does',
+      line === 'should I quit my job' && stays === 1 && gone && !S.errors.length, JSON.stringify({ line, stays, gone, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();

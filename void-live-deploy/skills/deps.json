@@ -1,18 +1,18 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 584,
+ "counted": 589,
  "libs": [
+  {
+   "file": "lib/stage-pack.js",
+   "skills": 32,
+   "direct": 32,
+   "dependants": 32
+  },
   {
    "file": "lib/ask-text.js",
    "skills": 31,
    "direct": 23,
    "dependants": 33
-  },
-  {
-   "file": "lib/stage-pack.js",
-   "skills": 28,
-   "direct": 28,
-   "dependants": 28
   },
   {
    "file": "lib/field-kit.js",
@@ -232,6 +232,12 @@
   },
   {
    "file": "lib/stage-pack-c.js",
+   "skills": 4,
+   "direct": 4,
+   "dependants": 4
+  },
+  {
+   "file": "lib/stage-words.js",
    "skills": 4,
    "direct": 4,
    "dependants": 4
@@ -3764,12 +3770,16 @@
     "skills/date-grid.js",
     "skills/decision-matrix.js",
     "skills/eigenwork.js",
+    "skills/error-garden.js",
     "skills/four-channels.js",
     "skills/gauge-feedback.js",
     "skills/habit-ring.js",
     "skills/health-habits.js",
     "skills/homotopy-edit.js",
+    "skills/hunting-question.js",
+    "skills/idea-certificate.js",
     "skills/minimap.js",
+    "skills/noun-heat.js",
     "skills/plan-stability.js",
     "skills/recipe-stack.js",
     "skills/sheaf-check.js",
@@ -3782,6 +3792,15 @@
     "skills/time-math.js",
     "skills/witness-claims.js",
     "skills/writing-aids.js"
+   ]
+  },
+  "lib/stage-words.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/error-garden.js",
+    "skills/hunting-question.js",
+    "skills/idea-certificate.js",
+    "skills/noun-heat.js"
    ]
   },
   "lib/stale-tab.js": {
@@ -4659,6 +4678,13 @@
     "skills/games.js"
    ]
   },
+  "skills/error-garden.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
   "skills/event-countdown.js": {
    "imports": [
     "lib/event-date.js"
@@ -5098,6 +5124,20 @@
     "skills/sorry.js",
     "skills/tictactoe.js"
    ]
+  },
+  "skills/hunting-question.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
+  },
+  "skills/idea-certificate.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
   },
   "skills/image.js": {
    "imports": [],
@@ -5705,6 +5745,13 @@
     "skills/games.js",
     "skills/othello.js"
    ]
+  },
+  "skills/noun-heat.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/stage-words.js"
+   ],
+   "importedBy": []
   },
   "skills/nutrition.js": {
    "imports": [],
