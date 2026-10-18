@@ -464,6 +464,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-18T15:20:46Z",
+   "subject": "Fast checks: perf3d takes 4 min instead of 11; the extension test's B2 case waits for the card to arrive"
+  },
+  {
+   "at": "2026-10-18T14:48:21Z",
+   "subject": "reinvest: today's plan for Verse's money"
+  },
+  {
+   "at": "2026-10-18T14:48:12Z",
+   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:39:28Z",
+   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:35:11Z",
+   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:29:24Z",
+   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:22:23Z",
+   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:15:46Z",
+   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T14:14:57Z",
+   "subject": "Dependency health counts only rated skills; three stage skills get benchmark asks: 27 of 27 steady"
+  },
+  {
    "at": "2026-10-18T14:11:28Z",
    "subject": "Incident: the browser suite failed on ab4a1252 (void-live-deploy/incidents.json)"
   },
@@ -506,42 +542,6 @@
   {
    "at": "2026-10-18T13:34:19Z",
    "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:25:30Z",
-   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:21:11Z",
-   "subject": "Incident: the browser suite failed on a27f0e34 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:18:54Z",
-   "subject": "report-to-growth: a builder's note becomes open items on the frontier"
-  },
-  {
-   "at": "2026-10-18T13:16:34Z",
-   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:07:26Z",
-   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:03:08Z",
-   "subject": "Incident: the browser suite failed on 8322451d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T13:00:49Z",
-   "subject": "Zorbleflux throttle: a quiet 'calming the field' pill while the stage is held back"
-  },
-  {
-   "at": "2026-10-18T12:51:35Z",
-   "subject": "Incident: the browser suite failed on c37395be (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T12:45:54Z",
-   "subject": "Incident: the browser suite failed on c37395be (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
