@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T06:46:34.059Z",
-   "sha": "264d596f39774d22794ff6215c44f9ec53c39ff4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39104143756",
+   "at": "2026-10-18T06:46:45.889Z",
+   "sha": "68beae80cf4e0338020f0612d1bbf5133a265354",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39104242714",
    "suite": "browser suite on main",
    "checks": [
     "intent: \"I need to ship the product page by Friday and tell Sam\" brings a countdown, a dated checklist ending on the day, the day on the calendar and a draft to Sam, as one group (drag one, all move); nothing sent, no model, no miss; an outcome with no day is not a plan",
@@ -12,21 +12,33 @@
     "open plan timer: \"make a plan to learn spanish\" puts up the engine's steps as a checklist, its 15 minute practice timer and its note to self as a sticky, as one group, and says so (with the call Clef made: a daily practice)",
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
    ]
   },
   {
-   "at": "2026-10-18T06:21:44.869Z",
+   "at": "2026-10-18T06:29:30.801Z",
+   "sha": "3ba7f7a2f88137be60936ef0e616753a9e917750",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39103092985",
+   "suite": "browser suite on main",
+   "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "V01D card art: \"save card\" downloads a .png (PNG magic bytes) of the whole card at the 63:88 ratio",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
+    "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-18T06:10:09.553Z",
    "sha": "075112f7541e1fec15fd7e20dbd37b5c3aae375a",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39102853985",
    "suite": "browser suite on main",
    "checks": [
-    "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
-    "check timeout: no check finished within 300 s"
+    "list tools: \"check all\" ticks all four, \"invert the checks\" unticks them, \"number the list\" puts 1. 2. 3. in front, \"indent eggs under milk\" nests it, and a count badge shows",
+    "data table: pasting CSV makes a three-row table, \"sum of column 2\" says 15.5, \"sort by column 2 descending\" puts rye first, \"freeze the header\" caps the height, and \"export as markdown\" shows the pipes",
+    "suite ran to the end"
    ]
   },
   {
@@ -294,16 +306,6 @@
    "suite": "browser suite on main",
    "checks": [
     "convert card: maths (98.6 F = 37 C, 5 mi = 8.04672 km, 1 TB = 1,048,576 MB, 1 cup = 16 tbsp), its asks route to it and look-alikes do not; \"temperature converter\" opens it on Celsius to Fahrenheit, 212 C gives 413.6 F, typing -40 in the other box gives -40, swap flips the units, \"a converter for 5 miles to km\" reuses the one card with 8.04672 km and the other lengths listed, it survives a reload and \"close the converter\" puts it away",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-17T12:00:48.580Z",
-   "sha": "0c58190c01f42d867df8f94e556461e88e60100d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39029816697",
-   "suite": "browser suite on main",
-   "checks": [
-    "router: a failed paid call costs nothing and Gemma answers (would escalate); the rule is written in STANDING.md",
     "check timeout: no check finished within 300 s"
    ]
   }
