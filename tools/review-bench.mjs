@@ -5,6 +5,7 @@
 //   node tools/review-bench.mjs                  the pattern checks only (offline, seconds)
 //   node tools/review-bench.mjs --deep URL       also the closer read (VOID_REVIEW_KEY, as tools/review-pr.mjs --deep)
 //   node tools/review-bench.mjs --json           the scores and every case as JSON
+// A case with "fixture": true has no fix commit: its file (tools/review-fixtures/, real code from another of the owner's repos) was added whole, and the bug is there at HEAD.
 // Add a case whenever a fix lands for a bug the review let through: the score only means something if the set keeps growing.
 // Noise is checked by hand in tools/review-noise.json (each finding read at its commit: "false", or "real" for a bug the bench
 // does not score), so the summary says how many other findings were false alarms, real, or not yet checked.
@@ -19,14 +20,14 @@ export const WINDOW = 3;
 const CHECKED = JSON.parse(readFileSync(resolve(here, 'review-noise.json'), 'utf8'));
 const git = (...a) => execFileSync('git', a, { cwd: root, encoding: 'utf8', maxBuffer: 64 << 20, timeout: 120e3 });
 
-/** the commit and line (in that commit's file) that wrote each line matching `quote` in `file` just before `fix` */
-export function blameBroken(fix, file, quote) {
+/** the commit and line (in that commit's file) that wrote each line matching `quote` in `file` just before `fix`; `at` names another ref to read instead (a fixture case reads HEAD: the file was added whole, nothing fixed it) */
+export function blameBroken(fix, file, quote, at = fix + '^') {
   const re = new RegExp(quote); // void-review: ok (the pattern is a case written in tools/review-bench.json, meant as a regex)
-  const lines = git('show', fix + '^:' + file).split('\n');
+  const lines = git('show', at + ':' + file).split('\n');
   const out = [];
   lines.forEach((l, i) => {
     if (!re.test(l)) return;
-    const p = git('blame', '--porcelain', '-L', (i + 1) + ',' + (i + 1), fix + '^', '--', file).split('\n')[0].split(' ');
+    const p = git('blame', '--porcelain', '-L', (i + 1) + ',' + (i + 1), at, '--', file).split('\n')[0].split(' ');
     out.push({ commit: p[0].slice(0, 12), line: Number(p[1]) });
   });
   return out;
@@ -54,7 +55,7 @@ export function checkedNoise(noise, commit, checked) {
 }
 
 export function runCase(c, deep = '') {
-  const blamed = blameBroken(c.fix, c.file, c.quote);
+  const blamed = blameBroken(c.fix, c.file, c.quote, c.fixture ? 'HEAD' : undefined);
   if (!blamed.length) return { ...c, error: 'no line matches the quote before the fix' };
   // the commit that wrote most of the broken lines is the one that brought the bug in
   const counts = new Map(); for (const b of blamed) counts.set(b.commit, (counts.get(b.commit) || 0) + 1);
@@ -84,5 +85,5 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     if (!c.caught) console.log('        ' + c.what);
     for (const f of c.noise) console.log('        noise' + (f.verdict ? ' (' + (f.verdict === 'real' ? 'a real bug' : 'checked: false alarm') + ')' : ' (not checked yet)') + ': ' + f.file + ':' + f.line + ' ' + f.kind + ' — ' + String(f.message || f.rule || '').slice(0, 200)); // what it said
   }
-  console.log('\nVerse\'s review' + (deep ? ' with the closer read' : ' (pattern checks)') + ' caught ' + caught.length + ' of ' + ran.length + ' bugs that reached main; ' + noise + ' other bug or risk findings on those commits' + (noise ? ' (' + tally.false + ' checked false alarms, ' + tally.real + ' real bugs, ' + tally.unchecked + ' not checked yet)' : ''));
+  console.log('\nVerse\'s review' + (deep ? ' with the closer read' : ' (pattern checks)') + ' caught ' + caught.length + ' of ' + ran.length + ' known bugs (' + ran.filter((c) => !c.fixture).length + ' that reached main, ' + ran.filter((c) => c.fixture).length + ' in the deploy action fixture); ' + noise + ' other bug or risk findings on those commits' + (noise ? ' (' + tally.false + ' checked false alarms, ' + tally.real + ' real bugs, ' + tally.unchecked + ' not checked yet)' : ''));
 }

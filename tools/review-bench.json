@@ -10,5 +10,15 @@
   { "id": "ringer-fade-on-frames", "fix": "088c5a6", "file": "void-live-deploy/skills/mini/ringer.js", "quote": "GHOST_FADE|ghostMat\\.opacity = GHOST_ON",
     "what": "the ghost fades inside tick(), which the scene skips while the miniature is off screen, so it never fades" },
   { "id": "clear-under-page-timing", "fix": "aaeb4db", "file": "void.html", "quote": "const r = \\{ left: r0\\.left - had\\[0\\]",
-    "what": "measures the card while it is still scaling in, so a thing is left under the finished card" }
+    "what": "measures the card while it is still scaling in, so a thing is left under the finished card" },
+  { "id": "deploy-action-invented-url", "fixture": true, "source": "atomeam/auto-deploy-action index.ts", "file": "tools/review-fixtures/auto-deploy-action/index.ts", "quote": "setOutput\\('deployment_url'",
+    "what": "the deployment_url output is made up from the project id and platform name; no platform returned it, so the action reports a URL it never deployed to" },
+  { "id": "deploy-action-output-dir-ignored", "fixture": true, "source": "atomeam/auto-deploy-action index.ts", "file": "tools/review-fixtures/auto-deploy-action/index.ts", "quote": "'pages', 'deploy', 'dist'",
+    "what": "the output_directory input is read and logged but Cloudflare deploys the hard-coded dist, and no other platform is told it" },
+  { "id": "deploy-action-cloudflare-token-unused", "fixture": true, "source": "atomeam/auto-deploy-action index.ts", "file": "tools/review-fixtures/auto-deploy-action/index.ts", "quote": "'wrangler', 'pages', 'deploy'",
+    "what": "the api_token is never given to wrangler (it reads CLOUDFLARE_API_TOKEN from the environment), so the deploy uses whatever credentials the runner already has or fails" },
+  { "id": "deploy-action-project-unused", "fixture": true, "source": "atomeam/auto-deploy-action index.ts", "file": "tools/review-fixtures/auto-deploy-action/index.ts", "quote": "'vercel', '--token'|'netlify-cli', 'deploy'",
+    "what": "the project_id is passed to the Vercel and Netlify deploys nowhere, so they deploy whichever project the checkout is linked to, or prompt, not the project the caller named" },
+  { "id": "deploy-action-token-not-masked", "fixture": true, "source": "atomeam/auto-deploy-action index.ts", "file": "tools/review-fixtures/auto-deploy-action/index.ts", "quote": "getInput\\('api_token'\\)",
+    "what": "the token is read and put on a command line (exec echoes it) without core.setSecret, so a token passed as a plain input rather than a secret shows in the log" }
 ]
