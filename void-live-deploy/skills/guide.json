@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 11,
+    "tested": 10,
     "checked": 7,
-    "proven": 9
+    "proven": 10
    },
    "from": 134,
    "to": 162
@@ -2807,8 +2807,10 @@
     "films by Kurosawa",
     "film metadata for Ikiru"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 6 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. The void remembers each asking.",
+   "glow": 100,
    "n": 150
   },
   {

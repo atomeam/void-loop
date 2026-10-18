@@ -46,6 +46,17 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "film-metadata",
+  "tool": "skill_film_metadata",
+  "family": "words",
+  "familyName": "Words and the world",
+  "examples": [
+   "find me a sci-fi film from the 80s",
+   "films by Kurosawa",
+   "movies directed by Hitchcock"
+  ]
+ },
+ {
   "skill": "recipe",
   "tool": "skill_recipe",
   "family": "words",
