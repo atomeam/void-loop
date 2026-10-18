@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 667,
+ "counted": 669,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -310,6 +310,12 @@
   },
   {
    "file": "lib/card-sections.js",
+   "skills": 4,
+   "direct": 0,
+   "dependants": 6
+  },
+  {
+   "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
    "dependants": 6
@@ -2399,6 +2405,7 @@
    "imports": [
     "lib/guide.js",
     "lib/card-kinds.js",
+    "lib/lineage.js",
     "lib/card-share.js",
     "lib/art-meta.js",
     "lib/card-art.js",
@@ -3302,6 +3309,19 @@
     "functions/api/miss.js",
     "lib/refusal.js",
     "skills/miss-jobs.js"
+   ]
+  },
+  "lib/lineage.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/card-frame.js"
+   ],
+   "reachedBy": [
+    "lib/duel-rules.js",
+    "skills/about-skill.js",
+    "skills/duel.js",
+    "skills/forge-table.js",
+    "skills/merge.js"
    ]
   },
   "lib/linediff.js": {
@@ -7197,6 +7217,10 @@
    "importedBy": []
   },
   "skills/releasenotes.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "skills/remediation-velocity.js": {
    "imports": [],
    "importedBy": []
   },
