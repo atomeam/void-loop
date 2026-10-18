@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T10:16:07.608Z",
-   "sha": "5fd74653c8cededf0cc1e57fa42ba03345fc39df",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39117445448",
+   "at": "2026-10-18T10:20:09.202Z",
+   "sha": "a1a572efda23f373f2e7a6dbc857070aadc6034e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39117837318",
    "suite": "browser suite on main",
    "checks": [
     "status: \"void status\" shows every skill loading, the browser checks, and the sources as they answer: both Open-Meteo services and Wikipedia up, Frankfurter answering 503, the blocked rest unreachable; nothing left in storage",
@@ -12,6 +12,24 @@
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
     "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "void-live-deploy/skills/zorbleflux.js",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
+   "at": "2026-10-18T10:03:34.328Z",
+   "sha": "5fd74653c8cededf0cc1e57fa42ba03345fc39df",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39117445448",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
    ],
    "touched": [
     "void-live-deploy/skills/zorbleflux.js"
@@ -693,32 +711,6 @@
     "tools/site-test.log.json",
     "tools/site-test.seen.json",
     "void-live-deploy/claims-verified.json",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T23:28:15.555Z",
-   "sha": "f129c9b42b46c4068075cdbfe42e2df996e96e61",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39077953199",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/book-news.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/lib/book-news.js",
-    "void-live-deploy/lib/tome.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.js",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
    ]
