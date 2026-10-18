@@ -4449,7 +4449,7 @@
    "line": "Find things on the stage: \"search kept items for pizza\" / \"find milk on the stage\" (91, 92: a card of the matches, each with a go button), \"show all timers on…",
    "examples": [
     "search kept items for pizza",
-    "find milk on the stage",
+    "search the stage for milk",
     "show all timers on the stage"
    ],
    "tier": "tested",
