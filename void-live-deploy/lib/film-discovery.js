@@ -32,7 +32,7 @@ const DEC = '(?:the\\s+)?(?:\\d{4}s|[2-9]0[\'’]?s|twenties|thirties|forties|fi
 const GEN = '(?:sci-?\\s?fi|science\\s+fiction|scifi|fantasy|horror|comed(?:y|ies)|dramas?|thrillers?|action|adventure|romance|romantic|westerns?|documentar(?:y|ies)|animated|animation|anime|musicals?|classics?)';
 const LEAD = '^(?:please\\s+)?(?:(?:find|show|discover|search\\s+for|get|give|list|recommend)\\s+(?:me\\s+|us\\s+)?)?(?:(?:a|an|some|the|any)\\s+)?';
 const NAME = '([\\p{L}][\\p{L} .\'’-]{1,40}?)';
-const re = (s) => new RegExp(s, 'iu');
+const re = (s) => new RegExp(s, 'iu'); // void-review: ok (only called with the constant pattern strings above, never with user text)
 const BY = re(LEAD + '(?:(' + GEN + ')\\s+)?(?:films?|movies?)\\s+(?:by|directed\\s+by|from\\s+director)\\s+' + NAME + '(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
 const KIND = re(LEAD + '(?:(' + DEC + ')\\s+)?(?:(' + GEN + ')\\s+)?(?:films?|movies?)(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
 const KIND2 = re(LEAD + '(?:(' + DEC + ')\\s+)?(' + GEN + ')(?:\\s+(?:from|of|in|made\\s+in|released\\s+in)\\s+(' + DEC + '))?$');
