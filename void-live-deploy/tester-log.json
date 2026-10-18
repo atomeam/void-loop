@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 51,
- "runsTotal": 165,
+ "cases": 52,
+ "runsTotal": 166,
  "kinds": {
-  "grow": 44,
+  "grow": 45,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T05:30:07Z",
+   "passed": 54,
+   "of": 55,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
+  },
   {
    "at": "2026-10-18T05:16:07Z",
    "passed": 45,
@@ -142,13 +149,6 @@
    "of": 36,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"are you web4\" (skill:web4)"
-  },
-  {
-   "at": "2026-10-17T22:05:31Z",
-   "passed": 34,
-   "of": 35,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"is unwrap risky in rust\" (skill:technical-context)"
   }
  ],
  "seen": {
@@ -333,6 +333,10 @@
   "skill:csv-table": "2026-10-18T05:16:07Z",
   "skill:date-calc": "2026-10-18T05:16:07Z",
   "skill:date-grid": "2026-10-18T05:16:07Z",
-  "skill:decide-cards": "2026-10-18T05:16:07Z"
+  "skill:decide-cards": "2026-10-18T05:16:07Z",
+  "skill:decision-matrix": "2026-10-18T05:30:07Z",
+  "skill:deep-work": "2026-10-18T05:30:07Z",
+  "skill:dev-tools": "2026-10-18T05:30:07Z",
+  "skill:draft-triad": "2026-10-18T05:30:07Z"
  }
 }

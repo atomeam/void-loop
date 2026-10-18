@@ -74,5 +74,12 @@
   {"check": "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"", "sha": "996815c8ed4006a7491b113064a0b71545ea6a61", "at": "2026-10-17T13:17:00Z"},
   {"check": "check timeout: no check finished within 300 s", "sha": "996815c8ed4006a7491b113064a0b71545ea6a61", "at": "2026-10-17T13:17:00Z"},
   {"check": "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, a", "sha": "1e76fbc06270aab044fed964c94fc75631f829c0", "at": "2026-10-17T14:04:09Z"},
-  {"check": "check timeout: no check finished within 300 s", "sha": "1e76fbc06270aab044fed964c94fc75631f829c0", "at": "2026-10-17T14:04:09Z"}
+  {"check": "check timeout: no check finished within 300 s", "sha": "1e76fbc06270aab044fed964c94fc75631f829c0", "at": "2026-10-17T14:04:09Z"},
+  {"check": "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, a", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one f", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "calc-more and tip: \"300 px in cm at 150 dpi\" is 5.08 cm, \"5 cm to pixels at 300 dpi\" is 590.55 px, \"100 usd to eur at 0.92\" uses only the typed rate (92 EUR, an", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"},
+  {"check": "check timeout: no check finished within 300 s", "sha": "5d4ea4c90189dbd3386843318f19d8cd73804df2", "at": "2026-10-18T05:33:00Z"}
 ]

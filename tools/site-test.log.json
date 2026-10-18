@@ -1227,5 +1227,12 @@
   "of": 54,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
+ },
+ {
+  "at": "2026-10-18T05:30:07Z",
+  "passed": 54,
+  "of": 55,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
  }
 ]
