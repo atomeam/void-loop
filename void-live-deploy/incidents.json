@@ -2,13 +2,23 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T04:35:01.776Z",
-   "sha": "00328d0f75100e826443338ac598fd5155fdcaf2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39096657415",
+   "at": "2026-10-18T04:41:48.484Z",
+   "sha": "ce39a8ac72503de9d64bdc3f9422788ed4bc4ddb",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39097124483",
    "suite": "browser suite on main",
    "checks": [
     "stage pack h: \"what almost answered that\" lists up to 3 other skills for the last ask (\"make a clock\") as \"you might have meant\", one tap each runs that skill's first example; no network call; \"choir practice near me\" does not open it",
     "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-18T04:23:32.754Z",
+   "sha": "00328d0f75100e826443338ac598fd5155fdcaf2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39096657415",
+   "suite": "browser suite on main",
+   "checks": [
+    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
+    "suite ran to the end"
    ]
   },
   {
@@ -279,16 +289,6 @@
    "suite": "browser suite on main",
    "checks": [
     "appraise: \"what is this coin worth\" opens the photo card; the photo goes once to /api/appraise as a downsized JPEG with the note, and the card shows V01D's one value with its reasons and the expert line; \"what am I worth\" is a compliment with no number; a photo of a vase gets a \"make me a vase\" link (a coin gets none) and the link puts the vase on the stage"
-   ]
-  },
-  {
-   "at": "2026-10-17T09:46:59.908Z",
-   "sha": "25d8fc90709ecf34dbe7a3661e16cfe47c78d85e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39021841143",
-   "suite": "browser suite on main",
-   "checks": [
-    "the book: \"open the book\" dims the stage and fills it with a leather tome, no card and no menu behind it: the cover swings open to the title page alone on the right (folio 1), parchment set in a serif, a prompt along the foot (Turn page / Esc), and as many skill pages as skills/index.json has skills",
-    "the book: the index at the back lists every skill with its page (and every boxed game by its box name), and its Clock entry lands on the clock page: the running heads (the title on the left, the chapter on the right), the name, one line, asks as lines of ink, a rating and a glyph"
    ]
   }
  ]
