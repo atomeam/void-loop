@@ -62,6 +62,16 @@ export async function runCard(m, api) {
   return 'movie';
 }
 
+/** every verified pick as structured film metadata (asked by Void, 2026-10-18: "Link the 'Pick a movie' skill output to the
+ *  'film-metadata' skill so every selection returns structured JSON metadata"): film-metadata's own fields, filled only from what the
+ *  source returned for that pick, never a second guess; a field the source left empty is left out. Pure. */
+export function pickJson(films) {
+  return (films || []).filter((f) => f && f.verified).map((f) => {
+    const o = { title: f.title, year: f.year, director: f.director, genre: f.genre, rated: f.rating, runtime: f.runtime ? f.runtime + ' min' : '', description: f.overview, free: !!f.free };
+    for (const k of Object.keys(o)) if (o[k] === '' || o[k] === undefined || o[k] === null) delete o[k];
+    return o;
+  });
+}
 export async function runPick(api) {
   const { showPage, esc } = api;
   const el = showPage((p) => { p.innerHTML = '<h2>A movie to watch</h2><div class="sub">picking, then checking each one is real…</div>'; });
@@ -77,12 +87,15 @@ export async function runPick(api) {
   const row = (f) => '<div class="mv-row" style="display:flex;gap:10px;margin:10px 0;align-items:flex-start">'
     + (f.poster ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" loading="lazy" style="width:56px;border-radius:5px;flex:none">' : '')
     + '<div><a href="#" data-ask="' + esc(cardAskText(f.title, f.year)) + '"><b>' + esc(f.title) + '</b>' + (f.year ? ' (' + f.year + ')' : '') + '</a> ' + badge(f, esc)
+    + ' <a href="#" class="mv-json" data-ask="film metadata for ' + esc(f.title) + '">JSON</a>'
     + '<div class="sub">' + esc([f.genre, f.rating].filter(Boolean).join(' · ')) + '</div>' + (f.overview ? '<div>' + esc(f.overview) + '</div>' : '') + '</div></div>';
   artMeta(el, real[0]);
   el.innerHTML = real.length
     ? (real[0].poster ? '<img src="' + esc(real[0].poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '')
       + '<h2>A movie to watch</h2><div class="sub">every title below was found in a real source; open one to watch or see the trailer</div>' + real.map(row).join('')
       + (fake.length ? '<div class="sub">Not verified (no source knows them, so not shown as fact): ' + fake.map((f) => esc(f.title)).join(', ') + '</div>' : '')
+      + '<details class="mv-picks-json"><summary>These picks as JSON</summary><pre style="white-space:pre-wrap;font-size:12px;max-height:300px;overflow:auto">'
+      + esc(JSON.stringify({ count: real.length, films: pickJson(real) }, null, 2)) + '</pre></details>'
       + SRC({ sources: ['iTunes Search API', 'Internet Archive'] }, esc)
     : '<h2>A movie to watch</h2><p>I could not reach the movie sources just now, so I will not name a movie from memory. Ask again in a moment.</p>';
   return 'movie';

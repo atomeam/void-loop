@@ -1003,6 +1003,9 @@ try {
     await M.ask('pick a movie to watch with me', 1800);
     const rows = await M.p.$$eval('.vpage.on .mv-row', (e) => e.map((x) => x.textContent)), unv = await M.p.$eval('.vpage.on', (e) => e.textContent.includes('Not verified') && e.textContent.includes('Made Up Movie Zork'));
     const art1 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
+    // asked by Void (2026-10-18): every selection returns structured JSON metadata, linked to film-metadata
+    const pickJs = await M.p.$eval('.vpage.on .mv-picks-json pre', (e) => JSON.parse(e.textContent)).catch(() => null);
+    const rowJson = await M.p.$$eval('.vpage.on .mv-row .mv-json', (e) => e.map((a) => a.dataset.ask));
     await M.p.click('.vpage.on a[data-ask*="Talk to Me"]'); await M.p.waitForTimeout(1200);
     const facts = await M.p.$eval('.vpage.on .mv-facts', (d) => d.textContent).catch(() => ''), jsonAsk = await M.p.$eval('.vpage.on .mv-json', (a) => a.dataset.ask).catch(() => '');
     await M.p.keyboard.press('Escape'); await M.ask('pick a movie to watch with me', 1800);
@@ -1010,8 +1013,8 @@ try {
     await M.p.click('.vpage.on .mv-play'); await M.p.waitForTimeout(200);
     const vid = await M.p.$eval('.vpage.on .mv-player video', (v) => v.src).catch(() => '');
     const art2 = await M.p.$eval('.vpage.on .vc-art img.vc-art-photo', (i) => i.src).catch(() => '');
-    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
-      rows.length === 2 && /Talk to Me/.test(rows[0]) && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
+    check('real movies: the pick lists only the two found movies (Talk to Me, Nosferatu), each with a JSON link to film metadata and the found ones as JSON (never the unfound), names the unfound one as not verified, the card art is the first movie\'s poster, a free film opens its own card with its own poster and plays in a <video> from the archive',
+      rows.length === 2 && /Talk to Me/.test(rows[0]) && pickJs && pickJs.count === 2 && pickJs.films[0].director === 'Danny Philippou' && pickJs.films[0].runtime === '95 min' && !('description' in pickJs.films[1]) && pickJs.films.every((f) => f.title !== 'Made Up Movie Zork') && rowJson.join('|') === 'film metadata for Talk to Me|film metadata for Nosferatu' && /Director\s*Danny Philippou/.test(facts) && /Runtime\s*95 min/.test(facts) && !/Cast/.test(facts) && jsonAsk === 'film metadata for Talk to Me' && unv && art1 === POSTER && /archive\.org\/download\/nosferatu\/n\.mp4/.test(vid) && /archive\.org\/services\/img\/nosferatu/.test(art2) && !M.errors.length, JSON.stringify({ rows, unv, art1, vid, art2, e: M.errors }));
     await M.ctx.close(); }
   // real music (owner, 2026-10-17): "pick something to listen to" looks each suggested song up; found ones show with their cover as the card's art and
   // play as the 30 s official preview in an <audio>; an unfound one is "not verified". The source is stood in for here.
