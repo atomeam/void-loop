@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 619,
+ "counted": 625,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 38,
-   "direct": 38,
-   "dependants": 38
+   "skills": 41,
+   "direct": 41,
+   "dependants": 41
   },
   {
    "file": "lib/ask-text.js",
@@ -423,6 +423,12 @@
    "dependants": 2
   },
   {
+   "file": "lib/fx.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
@@ -430,6 +436,12 @@
   },
   {
    "file": "lib/list-ops.js",
+   "skills": 2,
+   "direct": 2,
+   "dependants": 2
+  },
+  {
+   "file": "lib/safety.js",
    "skills": 2,
    "direct": 2,
    "dependants": 2
@@ -2743,6 +2755,13 @@
    "imports": [],
    "importedBy": []
   },
+  "lib/fx.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/card-play.js",
+    "skills/stage-fx.js"
+   ]
+  },
   "lib/go-ai.js": {
    "imports": [],
    "importedBy": [
@@ -3793,6 +3812,13 @@
     "skills/duel.js"
    ]
   },
+  "lib/safety.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/photo-scrub.js",
+    "skills/safety-kit.js"
+   ]
+  },
   "lib/sale-jobs.js": {
    "imports": [
     "lib/products.js",
@@ -4076,11 +4102,14 @@
     "skills/minimap.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
+    "skills/photo-scrub.js",
     "skills/plan-stability.js",
     "skills/qr-scan.js",
     "skills/recipe-stack.js",
+    "skills/safety-kit.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
+    "skills/stage-fx.js",
     "skills/stakes-phase.js",
     "skills/stale-work.js",
     "skills/task-board.js",
@@ -4676,6 +4705,12 @@
    "reachedBy": [
     "skills/dates.js"
    ]
+  },
+  "skills/card-play.js": {
+   "imports": [
+    "lib/fx.js"
+   ],
+   "importedBy": []
   },
   "skills/cartoon.js": {
    "imports": [
@@ -6226,6 +6261,13 @@
     "skills/period.js"
    ]
   },
+  "skills/photo-scrub.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/safety.js"
+   ],
+   "importedBy": []
+  },
   "skills/pick-for-me.js": {
    "imports": [
     "lib/media.js",
@@ -6490,6 +6532,13 @@
    "imports": [
     "lib/rts.js",
     "skills/scripts.js"
+   ],
+   "importedBy": []
+  },
+  "skills/safety-kit.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/safety.js"
    ],
    "importedBy": []
   },
@@ -6834,6 +6883,13 @@
    "imports": [
     "lib/stage-tools.js",
     "lib/stage-tools-dom.js"
+   ],
+   "importedBy": []
+  },
+  "skills/stage-fx.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/fx.js"
    ],
    "importedBy": []
   },

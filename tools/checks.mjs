@@ -50,6 +50,7 @@ for (const [name, file] of [
   ['label', 'label.test.mjs'],
   ['void-seal', 'void-seal.test.mjs'],
   ['collectible', 'collectible.test.mjs'],
+  ['tools pack 8', 'tools-pack-8.test.mjs'],
   ['mcp-registry', 'mcp-registry.test.mjs'],
   ['support', 'support.test.mjs'],
   ['doc-drift-unit', 'doc-drift.test.mjs'],

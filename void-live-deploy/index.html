@@ -1705,6 +1705,12 @@ Object.values(things).forEach((th) => {
       return hex ? hex[0] : null;
     }
 
+// "confirm before mass delete" (safety kit, opt-in, kept on this device): with it on, clearing the stage or removing two or more
+    // things in one ask asks first; off by default, so nothing changes until someone asks for it
+    function massOk(n, what) {
+      try { const s = JSON.parse(localStorage.getItem('a2m.void.safety.v1') || '{}'); if (s && s.confirmMass && n >= 2) return window.confirm('Remove ' + n + ' ' + what + '? (Say undo afterwards to bring them back.)'); } catch (_) {}
+      return true;
+    }
 function wantsClearStage(lower) {
       return /^(clear|clear\s+(everything|all|stage|the\s+stage)|reset\s+(everything|all|stage)|wipe|start\s+over)\s*[.!]?\s*$/.test(lower)
         || /\b(clear|reset)\s+(everything|all|the\s+stage|stage)\b/.test(lower)
@@ -1847,6 +1853,7 @@ function wantsClearStage(lower) {
 
 // clear entire stage
       if (wantsClearStage(lower)) {
+        if (!massOk(Object.keys(things).length, 'things from the stage')) return { ok: true, detail: 'kept' };
         things = {};
         selectedId = null;
         save(); render();
@@ -4371,6 +4378,7 @@ say('nothing selected to remove');
         const kinds = /\bcards?\b/.test(lower) ? Array.from(new Set(['link', 'kept', ...batchKinds(lower.replace(/\ball\s+(?:the\s+)?cards?\b|\bcards?\b/g, ' ')).filter((k) => k !== 'link' || /\blinks?\b/.test(lower))])) : batchKinds(lower);
         if (kinds.length) {
           let n = 0;
+          if (!massOk(Object.values(things).filter((th) => kinds.includes(th.kind)).length, 'things')) { say('kept'); return true; }
           for (const th of Object.values(things)) if (kinds.includes(th.kind)) { delete things[th.id]; n += 1; }
           if (selectedId && !things[selectedId]) selectedId = null;
           if (lastKeptId && !things[lastKeptId]) lastKeptId = null;

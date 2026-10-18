@@ -1966,6 +1966,196 @@ try {
       && emails === 'bob@example.com\nann@example.org' && rot === 'Uryyb' && diff === '  a\n- b\n+ c' && /HELLO/.test(upper) && notOurs && !S.errors.length,
       JSON.stringify({ sorted, title, copyLabel, deduped, note, emails, rot, diff, upper: upper.slice(0, 80), notOurs, errors: S.errors }));
     await S.ctx.close(); }
+  // tools pack 8 (owner, 2026-10-18): safety and trust tools, then small delights; all opt-in, played the way a person uses them
+  if (want("tools pack 8: safety (unverified badge, hide numbers, redact, panic, PIN lock and auto-lock, clipboard, photo scrub, ephemeral, confirm mass delete) then delights (confetti, tick, dust, undo toast, tour, flip, stamp, tape, rubber band)")) { const S = await fresh();
+    await S.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
+    const nothing = await S.p.evaluate(() => !document.querySelector('#sf-panic,#sf-lock,#sf-nums-chip,#fx-toast,#fx-tour,.fx-dust,.fx-confetti,.rb-bar,.play-stamp,#play-tape-style,.claim-card,.pin-card,.scrub-card'));
+    // 181 the unverified badge
+    await S.ask('unverified: the moon is made of cheese', 700);
+    const badge1 = await S.p.$eval('.claim-card .claim-badge', (b) => b.textContent).catch(() => '');
+    await S.p.click('.claim-card .claim-toggle');
+    const badge2 = await S.p.$eval('.claim-card .claim-badge', (b) => b.textContent).catch(() => '');
+    const claim = (await S.state()).find((x) => x.kind === 'claim');
+    check('tools pack 8: nothing safety or delight on a fresh stage; "unverified: <claim>" puts a claim card up with an Unverified badge that a tap turns to Checked, and it is kept', nothing && badge1 === 'Unverified' && badge2 === 'Checked' && claim && claim.checked === true && /cheese/.test(claim.text) && !S.errors.length, JSON.stringify({ nothing, badge1, badge2, claim, errors: S.errors }));
+    await S.ask('clear', 500);
+    // 182 hide numbers
+    await S.ask('sticky note call 555 1234', 600);
+    const shown = await S.p.$eval('#stage', (e) => /\d/.test(e.innerText));
+    await S.ask('hide numbers', 500);
+    const maskedNow = await S.p.$eval('#stage', (e) => !/\d/.test(e.innerText) && /•/.test(e.innerText));
+    await S.p.reload(); await S.p.waitForSelector('.thing.sticky', { timeout: 8000 }).catch(() => {});
+    const maskedAfterReload = await until(() => S.p.$eval('#stage', (e) => !/\d/.test(e.innerText) && /•/.test(e.innerText)), 5000);
+    await S.p.click('#sf-nums-chip');
+    const back = await S.p.$eval('#stage', (e) => /555 1234/.test(e.innerText));
+    check('tools pack 8: "hide numbers" turns every digit on the stage into a dot (kept across a reload), and the chip gives them back', shown && maskedNow && maskedAfterReload && back && !S.errors.length, JSON.stringify({ shown, maskedNow, maskedAfterReload, back, errors: S.errors }));
+    // 183 redact selection
+    await S.ask('clear', 500);
+    await S.ask('sticky note my code is hunter2 ok', 600);
+    await S.p.evaluate(() => { const w = document.createTreeWalker(document.querySelector('#stage .thing.sticky'), 4); let n; while ((n = w.nextNode())) { const i = n.nodeValue.indexOf('hunter2'); if (i >= 0) { const r = document.createRange(); r.setStart(n, i); r.setEnd(n, i + 7); const s = getSelection(); s.removeAllRanges(); s.addRange(r); return; } } });
+    await S.p.waitForTimeout(200);
+    await S.ask('redact selection', 500);
+    const red = await S.p.evaluate(() => ({ spans: document.querySelectorAll('.sf-redact').length, text: document.querySelector('#stage .thing.sticky').innerText }));
+    await S.ask('unredact', 400);
+    const unred = await S.p.$eval('#stage .thing.sticky', (e) => e.innerText);
+    check('tools pack 8: "redact selection" blacks out the text you selected (the words are gone from the page text, the line keeps its shape) and "unredact" brings them back', red.spans >= 1 && !/hunter2/.test(red.text) && /my code is/.test(red.text) && /hunter2/.test(unred) && !S.errors.length, JSON.stringify({ red, unred, errors: S.errors }));
+    // 184 panic
+    await S.ask('panic', 400);
+    const pan = await S.p.evaluate(() => { const o = document.querySelector('#sf-panic'); if (!o) return null; const r = o.getBoundingClientRect(); return { w: r.width, h: r.height, vw: innerWidth, vh: innerHeight }; });
+    await S.p.keyboard.press('Escape');
+    const panGone = await until(() => S.p.evaluate(() => !document.querySelector('#sf-panic')), 2000);
+    await S.ask('hide the stage', 400); await S.p.click('#sf-panic', { force: true });
+    const panGone2 = await until(() => S.p.evaluate(() => !document.querySelector('#sf-panic')), 2000);
+    check('tools pack 8: "panic" covers the whole page with a blank screen that Esc (or a tap) takes away, and "hide the stage" does the same', pan && pan.w >= pan.vw - 1 && pan.h >= pan.vh - 1 && panGone && panGone2 && !S.errors.length, JSON.stringify({ pan, panGone, panGone2, errors: S.errors }));
+    // 185 the PIN lock, 186 auto-lock
+    await S.ask('set a pin', 600);
+    const card = await S.p.$eval('.pin-card', (e) => e.innerText).catch(() => '');
+    await S.p.fill('.pin-card .pin-new', '4821'); await S.p.click('.pin-card .pin-set');
+    await until(() => S.p.evaluate(() => !!JSON.parse(localStorage.getItem('a2m.void.safety.v1') || '{}').pin), 4000);
+    const kept = await S.p.evaluate(() => localStorage.getItem('a2m.void.safety.v1'));
+    const anywhere = await S.p.evaluate(() => JSON.stringify(Object.assign({}, localStorage)).includes('4821'));
+    await S.p.click('.pin-card .pin-lock');
+    const lockedUp = await S.p.evaluate(() => !!document.querySelector('#sf-lock'));
+    await S.p.fill('#sf-lock input', '0000'); await S.p.keyboard.press('Enter');
+    const wrong = await until(() => S.p.$eval('#sf-lock .sf-err', (e) => /not the PIN/.test(e.textContent)).catch(() => false), 4000);
+    const stillLocked = await S.p.evaluate(() => !!document.querySelector('#sf-lock'));
+    await S.p.fill('#sf-lock input', '4821'); await S.p.keyboard.press('Enter');
+    const opened = await until(() => S.p.evaluate(() => !document.querySelector('#sf-lock') && !document.getElementById('input').closest('[inert]')), 4000);
+    await S.ask('auto lock after 1 minute', 400);
+    await S.p.evaluate(() => { const real = Date.now.bind(Date), at = real(); Date.now = () => real() + 70000 + (real() - at); });
+    const autoLocked = await until(() => S.p.evaluate(() => !!document.querySelector('#sf-lock')), 9000);
+    await S.p.evaluate(() => { document.querySelector('#sf-lock input').value = '4821'; document.querySelector('#sf-lock form').requestSubmit(); });
+    await until(() => S.p.evaluate(() => !document.querySelector('#sf-lock')), 4000);
+    await S.ask('auto lock off', 300);
+    check('tools pack 8: the PIN lock card says it is a casual lock, keeps a hash (never the PIN) on this device, locks on "lock now", refuses a wrong PIN, opens on the right one, and "auto lock after 1 minute" locks after the idle time', /casual lock/.test(card) && /"hash":"[0-9a-f]{64}"/.test(kept) && !anywhere && lockedUp && wrong && stillLocked && opened && autoLocked && !S.errors.length, JSON.stringify({ card: card.slice(0, 80), kept: kept && kept.slice(0, 60), anywhere, lockedUp, wrong, stillLocked, opened, autoLocked, errors: S.errors }));
+    // 187 clear clipboard
+    await S.p.evaluate(() => navigator.clipboard.writeText('super secret'));
+    await S.ask('clear my clipboard', 500);
+    const clip = await S.p.evaluate(() => navigator.clipboard.readText());
+    const said = await S.whisper();
+    check('tools pack 8: "clear my clipboard" empties the clipboard and says so', clip === '' && /Clipboard cleared/.test(said) && !S.errors.length, JSON.stringify({ clip, said, errors: S.errors }));
+    // 190 confirm before mass delete
+    await S.ask('clear', 500);
+    await S.ask('sticky note one', 400); await S.ask('another sticky note two', 400);
+    await S.ask('confirm before mass delete', 400);
+    let asked = '';
+    S.p.once('dialog', (d) => { asked = d.message(); d.dismiss(); });
+    await S.ask('clear', 600);
+    const keptTwo = (await S.state()).filter((x) => x.kind === 'sticky').length;
+    S.p.once('dialog', (d) => d.accept());
+    await S.ask('clear', 600);
+    const clearedAfterYes = (await S.state()).length === 0;
+    await S.ask('stop asking before clearing', 300);
+    check('tools pack 8: with "confirm before mass delete" on, clearing the stage asks first (no keeps both stickies, yes clears), and nothing asks while it is off', /Remove 2 things/.test(asked) && keptTwo === 2 && clearedAfterYes && !S.errors.length, JSON.stringify({ asked, keptTwo, clearedAfterYes, errors: S.errors }));
+    // 188 the photo scrub
+    const seg = (m, body) => Buffer.from([0xff, m, (body.length + 2) >> 8, (body.length + 2) & 255, ...body]);
+    const exif = [0x45, 0x78, 0x69, 0x66, 0, 0, 0x4d, 0x4d, 0, 0x2a, 0, 0, 0, 8, 0, 1, 0x88, 0x25, 0, 4, 0, 0, 0, 1, 0, 0, 0, 0x1a, 0, 0, 0, 0, 0, 0];
+    const jpg = Buffer.concat([Buffer.from([0xff, 0xd8]), seg(0xe1, exif), seg(0xdb, [0, 1, 2, 3]), Buffer.from([0xff, 0xda, 0, 4, 1, 2, 9, 9, 9, 0xff, 0xd9])]);
+    await S.ask('strip the exif from a photo', 600);
+    await S.p.setInputFiles('.scrub-card .scrub-file', { name: 'holiday.jpg', mimeType: 'image/jpeg', buffer: jpg });
+    const scrubSaid = await until(() => S.p.$eval('.scrub-card .scrub-said', (e) => e.textContent).catch(() => ''), 4000);
+    const cleaned = await S.p.evaluate(async () => { const a = document.querySelector('.scrub-card .scrub-save'); if (!a) return null; const b = new Uint8Array(await (await fetch(a.href)).arrayBuffer()); return { len: b.length, exif: new TextDecoder('latin1').decode(b).includes('Exif'), name: a.download }; });
+    check('tools pack 8: the photo scrub says what it removed (EXIF, with where it was taken) and offers a copy without it, the pixels intact', /Removed EXIF/.test(scrubSaid) && /where it was taken/.test(scrubSaid) && cleaned && cleaned.exif === false && cleaned.len === jpg.length - (exif.length + 4) && cleaned.name === 'holiday-clean.jpg' && !S.errors.length, JSON.stringify({ scrubSaid, cleaned, jlen: jpg.length, errors: S.errors }));
+    // 191 confetti, 192 tick
+    await S.ask('clear', 500);
+    await S.p.evaluate(() => { window.__burst = 0; new MutationObserver((ms) => { for (const m of ms) for (const n of m.addedNodes) if (n.className === 'fx-confetti') window.__burst++; }).observe(document.body, { childList: true }); });
+    await S.ask('list: a, b', 600);
+    await S.ask('confetti when I finish a goal', 400);
+    await S.ask('check off a', 500);
+    const early = await S.p.evaluate(() => window.__burst);
+    await S.ask('check off b', 600);
+    const burst = await until(() => S.p.evaluate(() => window.__burst), 3000);
+    await S.ask('add c to the list', 500);
+    const afterAdd = await S.p.evaluate(() => window.__burst);
+    await S.ask('confetti off', 300);
+    check('tools pack 8: "confetti when I finish a goal" throws confetti once when the last list item is ticked (not for the first), not again for unrelated changes', early === 0 && burst === 1 && afterAdd === 1 && !S.errors.length, JSON.stringify({ early, burst, afterAdd, errors: S.errors }));
+    await S.ask('clear', 500);
+    await S.ask('soft tick sound on keep', 400);
+    const t0 = await S.p.evaluate(() => window.__fxTicks || 0);
+    await S.ask('what is the speed of light', 1200);
+    await S.ask('keep this', 700);
+    const t1 = await until(() => S.p.evaluate((n) => (window.__fxTicks || 0) > n, t0), 3000);
+    check('tools pack 8: "soft tick sound on keep" ticks when "keep this" makes a card', t1 && (await S.state()).some((x) => x.kind === 'kept') && !S.errors.length, JSON.stringify({ t0, t1, errors: S.errors }));
+    await S.ask('turn off the tick sound', 300);
+    // 193 dust
+    await S.ask('winter dust', 500);
+    const dust = await S.p.evaluate(() => { const c = document.querySelector('.fx-dust'); return c && { season: c.dataset.season, pe: getComputedStyle(c).pointerEvents }; });
+    await S.p.reload(); await S.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 15000 }).catch(() => {}); const dustBack = await until(() => S.p.evaluate(() => !!document.querySelector('.fx-dust')), 5000);
+    await S.ask('dust off', 400);
+    const dustGone = await S.p.evaluate(() => !document.querySelector('.fx-dust'));
+    check('tools pack 8: "winter dust" drifts snow behind the cards without catching taps, comes back after a reload, and "dust off" clears it', dust && dust.season === 'winter' && dust.pe === 'none' && dustBack && dustGone && !S.errors.length, JSON.stringify({ dust, dustBack, dustGone, errors: S.errors }));
+    // 199 undo toast
+    await S.ask('clear', 500);
+    await S.ask('undo toast', 400);
+    await S.ask('sticky note toast me', 500);
+    await S.ask('remove the sticky', 600);
+    const toastText = await until(() => S.p.$eval('#fx-toast .fx-toast-msg', (e) => e.textContent).catch(() => ''), 3000);
+    const gone = !(await S.state()).some((x) => x.kind === 'sticky');
+    await S.p.click('#fx-toast .fx-toast-undo');
+    const returned = await until(async () => (await S.state()).some((x) => x.kind === 'sticky'), 4000);
+    const toastClosed = await S.p.evaluate(() => !document.querySelector('#fx-toast'));
+    await S.ask('turn off the undo toast', 300);
+    check('tools pack 8: "undo toast" shows "Removed 1 thing" with an Undo button after a removal, and the button brings the sticky back', /Removed 1 thing/.test(toastText) && gone && returned && toastClosed && !S.errors.length, JSON.stringify({ toastText, gone, returned, toastClosed, errors: S.errors }));
+    // 200 the tour
+    await S.ask('give me the tour', 500);
+    const step1 = await S.p.$eval('#fx-tour .tour-step', (e) => e.textContent).catch(() => '');
+    for (let i = 0; i < 3; i++) await S.p.click('#fx-tour .tour-next');
+    const step4 = await S.p.$eval('#fx-tour .tour-step', (e) => e.textContent);
+    await S.p.click('#fx-tour .tour-next');
+    const lastBtn = await S.p.$eval('#fx-tour .tour-next', (e) => e.textContent);
+    await S.p.click('#fx-tour .tour-next');
+    const doneClosed = await S.p.evaluate(() => !document.querySelector('#fx-tour'));
+    await S.ask('take the tour', 400); await S.p.click('#fx-tour .tour-skip');
+    const skipped = await S.p.evaluate(() => !document.querySelector('#fx-tour'));
+    await S.ask('take the tour', 400); await S.p.keyboard.press('Escape');
+    const escd = await S.p.evaluate(() => !document.querySelector('#fx-tour'));
+    check('tools pack 8: "give me the tour" steps through five short cards (Next, Done), and Skip tour or Esc ends it at once', step1 === 'Step 1 of 5' && step4 === 'Step 4 of 5' && lastBtn === 'Done' && doneClosed && skipped && escd && !S.errors.length, JSON.stringify({ step1, step4, lastBtn, doneClosed, skipped, escd, errors: S.errors }));
+    // 195 flip, 196 stamp, 197 tape
+    await S.ask('clear', 500);
+    await S.ask('sticky note stamp me', 600);
+    await S.ask('flip this card', 300);
+    const flipped = await S.p.$eval('#stage .thing.sticky', (e) => !!e.dataset.flipped);
+    await S.ask('stamp it approved', 500);
+    const stamp1 = await S.p.$eval('#stage .thing.sticky .play-stamp', (e) => e.textContent).catch(() => '');
+    await S.p.reload(); await S.p.waitForSelector('.thing.sticky .play-stamp', { timeout: 8000 }).catch(() => {});
+    const stamp2 = await S.p.$eval('#stage .thing.sticky .play-stamp', (e) => e.textContent).catch(() => '');
+    await S.ask('remove the stamp', 400);
+    const stamp3 = await S.p.evaluate(() => document.querySelectorAll('.play-stamp').length);
+    await S.ask('tape on', 400);
+    const tape = await S.p.$eval('#stage .thing.sticky', (e) => getComputedStyle(e, '::after').content);
+    await S.ask('tape off', 300);
+    const tapeOff = await S.p.$eval('#stage .thing.sticky', (e) => getComputedStyle(e, '::after').content);
+    check('tools pack 8: "flip this card" turns the picked card, "stamp it approved" presses a stamp that is kept across a reload and comes off with "remove the stamp", and "tape on" puts tape on sticky notes until "tape off"', flipped && stamp1 === 'APPROVED' && stamp2 === 'APPROVED' && stamp3 === 0 && tape === '""' && tapeOff !== '""' && !S.errors.length, JSON.stringify({ flipped, stamp1, stamp2, stamp3, tape, tapeOff, errors: S.errors }));
+    // 198 rubber band
+    await S.ask('clear', 500);
+    await S.ask('sticky note left', 400); await S.ask('another sticky note right', 400);
+    await S.ask('rubber band select', 400);
+    const vp = S.p.viewportSize();
+    await S.p.mouse.move(4, 4); await S.p.mouse.down(); await S.p.mouse.move(vp.width / 2, vp.height / 2, { steps: 4 }); await S.p.mouse.move(vp.width - 6, vp.height - 90, { steps: 4 }); await S.p.mouse.up();
+    const count = await until(() => S.p.$eval('.rb-bar .rb-count', (e) => e.textContent).catch(() => ''), 3000);
+    const marked = await S.p.evaluate(() => document.querySelectorAll('.rb-picked').length);
+    await S.p.click('.rb-bar .rb-clear');
+    const letGo = await S.p.evaluate(() => !document.querySelector('.rb-bar') && !document.querySelector('.rb-picked'));
+    await S.p.mouse.move(4, 4); await S.p.mouse.down(); await S.p.mouse.move(vp.width - 6, vp.height - 90, { steps: 6 }); await S.p.mouse.up();
+    await until(() => S.p.evaluate(() => !!document.querySelector('.rb-bar')), 3000);
+    await S.p.click('.rb-bar .rb-remove');
+    const removed = await until(async () => (await S.state()).filter((x) => x.kind === 'sticky').length === 0, 3000);
+    check('tools pack 8: "rubber band select" lets a dragged box pick both stickies ("2 selected", outlined), Let go clears it, and Remove takes them off the stage', /2 selected/.test(count) && marked === 2 && letGo && removed && !S.errors.length, JSON.stringify({ count, marked, letGo, removed, errors: S.errors }));
+    await S.ctx.close();
+    // 189 ephemeral mode: the stage goes back to how it was when the mode was turned on
+    const E = await fresh();
+    await E.ask('sticky note keep me', 600);
+    await E.ask('ephemeral mode', 400);
+    await E.ask('another sticky note drop me', 600);
+    const during = (await E.state()).filter((x) => x.kind === 'sticky').length;
+    await E.p.reload(); await E.p.waitForSelector('.thing.sticky', { timeout: 8000 }).catch(() => {});
+    const afterTexts = (await E.state()).filter((x) => x.kind === 'sticky').map((x) => x.text);
+    const stillOn = await E.p.evaluate(() => !!sessionStorage.getItem('a2m.void.eph.v1'));
+    await E.ask('turn off ephemeral mode', 400);
+    await E.ask('another sticky note stay', 600);
+    await E.p.reload(); await E.p.waitForSelector('.thing.sticky', { timeout: 8000 }).catch(() => {});
+    const afterOff = (await E.state()).filter((x) => x.kind === 'sticky').length;
+    check('tools pack 8: "ephemeral mode" forgets what was done in the tab (a reload puts the stage back to how it was), and "turn off ephemeral mode" keeps things again', during === 2 && afterTexts.length === 1 && /keep me/.test(afterTexts[0]) && stillOn && afterOff === 2 && !E.errors.length, JSON.stringify({ during, afterTexts, stillOn, afterOff, errors: E.errors }));
+    await E.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
