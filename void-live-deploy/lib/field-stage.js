@@ -1,4 +1,4 @@
-// field-stage — the DOM half of V01D's field minds (lib/field-kit.js is the pure half; docs/playbooks/field-mind.md says how to add one).
+// field-stage — the DOM half of Verse's field minds (lib/field-kit.js is the pure half; docs/playbooks/field-mind.md says how to add one).
 // mountField(th, stageApi, idea) puts a small Canvas2D card on the stage and runs the idea's step law on it:
 //   - one requestAnimationFrame loop, paused while the tab is hidden and gone when the card leaves the page;
 //     with prefers-reduced-motion the field is warmed up once and then moves only when you touch it (no loop);

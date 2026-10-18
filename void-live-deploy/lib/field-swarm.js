@@ -1,4 +1,4 @@
-// field-swarm — swarms, trajectories and implicit fields: seven of Grok's drafts as one pure law module on V01D's field kit (asked by the
+// field-swarm — swarms, trajectories and implicit fields: seven of Grok's drafts as one pure law module on Verse's field kit (asked by the
 // owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"; drafts in atomeam/a-to-mind.com drafts/). Each draft's
 // law is a named variant with the same shape, so the card (skills/swarm-mind.js) and its Worker mind can run any of them:
 //   swarm      F-044 + F-030 + F-026 + F-028  two tribes of agents ride a tiny MLP vector field, climb the pointer's fading memory, lean

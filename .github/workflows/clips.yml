@@ -1,8 +1,8 @@
-# V01D's daily ad batch (owner, 2026-10-15: "strengthen that to be a powerhouse ad plus ad revenue monster"; "plus promotes itself").
+# Verse's daily ad batch (owner, 2026-10-15: "strengthen that to be a powerhouse ad plus ad revenue monster"; "plus promotes itself").
 # tools/clips.mjs plans the day (3 moments, picked by deep-link performance in domains/void.clips.json), films the live site in
 # headless Chrome, renders 9:16 Shorts with its tricks library in ffmpeg (no Workers AI), and writes manifest.json with each clip's
 # words per platform. The batch is kept as a draft release; posting is by hand (or tools/youtube.mjs when YT_UPLOAD is 1).
-name: V01D clips
+name: Verse clips
 
 on:
   schedule:
@@ -39,9 +39,9 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           d=$(date -u +%Y%m%d)
-          gh release create "clips-$d-${{ github.run_attempt }}" media/clips/*.mp4 media/clips/manifest.json --draft --title "V01D clips $d" --notes "Daily ad batch: words per platform in manifest.json. Posting: drafts unless an account is connected."
+          gh release create "clips-$d-${{ github.run_attempt }}" media/clips/*.mp4 media/clips/manifest.json --draft --title "Verse clips $d" --notes "Daily ad batch: words per platform in manifest.json. Posting: drafts unless an account is connected."
       # every ad clip is on the films page too, where anyone can download it and upload it (owner, 2026-10-15)
-      - name: Put each clip in V01D FILMS
+      - name: Put each clip in Verse FILMS
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |

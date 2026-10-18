@@ -1,5 +1,5 @@
-// Video: the pure part of V01D's video skill (skills/video.js) and its search route (functions/api/video.js). Owner, 2026-10-15:
-// "it should master youtube and easily pull up any video, rumble and other free platforms too. V01D should be the only site you need."
+// Video: the pure part of Verse's video skill (skills/video.js) and its search route (functions/api/video.js). Owner, 2026-10-15:
+// "it should master youtube and easily pull up any video, rumble and other free platforms too. Verse should be the only site you need."
 // Embed only: every player is the platform's own official embed (YouTube through youtube-nocookie.com), so nothing is downloaded or
 // rehosted, the platform's terms are kept and the creator's ads and counts stay theirs. Nothing here touches the network.
 
@@ -34,7 +34,7 @@ export function clockOf(n) {
 }
 
 const YT_ID = /^[A-Za-z0-9_-]{11}$/;
-/** a pasted url -> { platform, id, start?, needsOembed? } for any platform V01D can play, or null. Pure. */
+/** a pasted url -> { platform, id, start?, needsOembed? } for any platform Verse can play, or null. Pure. */
 export function parseVideoUrl(raw) {
   let u; try { u = new URL(String(raw || '').trim()); } catch (_) { return null; }
   if (!/^https?:$/.test(u.protocol)) return null;
@@ -114,7 +114,7 @@ export function watchUrl(v) {
     default: return null;
   }
 }
-/** what each embed can do from V01D's controls: seek in place, speed, captions. Pure data. */
+/** what each embed can do from Verse's controls: seek in place, speed, captions. Pure data. */
 export const CAN = {
   youtube: { seek: 'api', speed: true, captions: true }, vimeo: { seek: 'api', speed: true, captions: true },
   dailymotion: { seek: 'reload', speed: false, captions: true }, peertube: { seek: 'reload', speed: false, captions: true },
@@ -136,7 +136,7 @@ export function videoAskOf(text, { hasCard = false, late = false } = {}) {
   if (url) { const v = parseVideoUrl(url[0].replace(/[),.;!?]+$/, '')); if (v) { const queue = /^(?:queue|add|put)\b/i.test(raw) || /\b(?:to|in|on)\s+(?:the\s+|my\s+)?(?:queue|playlist)\b/i.test(raw); return { kind: queue ? 'queue' : 'play', video: v }; } return null; }
   let t = raw.toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').replace(/^(?:hey\s+)?(?:v01d|void|verse)[,:]?\s+/, '').replace(/^(?:please|can\s+you|could\s+you|would\s+you)\s+/, '').replace(/\s+please$/, '').trim();
   if (!t) return null;
-  if (/\b(?:your|v01d'?s|void'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // V01D's own films are the films skill's
+  if (/\b(?:your|v01d'?s|void'?s)\s+(?:own\s+)?(?:videos?|films?|movies?|clips?)\b/.test(t)) return null; // Verse's own films are the films skill's
   const vid = /\b(?:videos?|vids?|clips?|youtube|rumble|vimeo|dailymotion|peertube|odysee|twitch|trailer|music\s+video|documentary|livestream|vod)\b/;
   // the watch tools
   if (/^(?:close|stop|remove|hide|put\s+away|get\s+rid\s+of)\s+(?:the\s+|my\s+)?(?:video|player|youtube|video\s+player|video\s+card)$/.test(t) || (hasCard && /^stop\s+(?:watching|playing)$/.test(t))) return { kind: 'close' };
@@ -180,7 +180,7 @@ export function videoAskOf(text, { hasCard = false, late = false } = {}) {
 }
 function cleanQuery(q) { return String(q || '').replace(PLAT_STRIP, ' ').replace(/^(?:the\s+)?(?:videos?|vids?|clips?)\s+(?:of|about|for)\s+/, '').replace(/\s+/g, ' ').trim().slice(0, 120) || null; }
 
-/** one search hit from each platform's public API, in V01D's own shape: { platform, id, title, channel, seconds, thumb, ... }. Pure. */
+/** one search hit from each platform's public API, in Verse's own shape: { platform, id, title, channel, seconds, thumb, ... }. Pure. */
 export function hitsOf(platform, j) {
   const s = (x) => String(x == null ? '' : x).slice(0, 200), n = (x) => (Number.isFinite(+x) && +x > 0 ? Math.round(+x) : null);
   try {

@@ -413,7 +413,7 @@ for (const c of ['let best = null; if (best.t > 1) go();', 'let r = null; const 
   ok(langOf('apiVersion: v1\nkind: Pod\nspec:\n  containers:\n    - image: nginx') === 'yaml', 'a k8s manifest is yaml');
   ok(isReviewAsk('audit my github actions') && isReviewAsk('check this CI workflow') && isReviewAsk('review my GitHub Actions workflow') && !isReviewAsk('is my workflow good') && !isReviewAsk('check my actions'), 'actions review asks');
 }
-// speed: Void's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
+// speed: Verse's reviewer is the first reviewer on every PR, so it has to be fast. A string with many backslashes (a regex like
 // /\s+\w+\s+/ written out) once sent the string finder into exponential backtracking: one line of go.js took 2.5 s, and
 // code-review.js itself never finished. Each case below must finish in well under a second.
 {

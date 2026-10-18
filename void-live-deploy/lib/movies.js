@@ -1,4 +1,4 @@
-// Real movies (owner, 2026-10-17: V01D answered "pick a movie to watch with me" with 'Talk to Me (2022)' written from memory;
+// Real movies (owner, 2026-10-17: Verse answered "pick a movie to watch with me" with 'Talk to Me (2022)' written from memory;
 // "lets have it find the actual movies it suggests ... and play right in v01d"). Pure helpers for skills/movie.js and functions/api/movies.js.
 // A suggested title is untrusted text (a model wrote it, a person may have typed it): cleanTitle() runs before any request or render.
 // A movie is shown as fact only when a real source returned it (iTunes Search: poster, overview, official trailer, store link; the Internet
@@ -65,7 +65,7 @@ export function pickItunes(results, title, year) {
     price: r.trackPrice > 0 ? Number(r.trackPrice) : null, rentPrice: r.trackRentalPrice > 0 ? Number(r.trackRentalPrice) : null, currency: /^[A-Z]{3}$/.test(r.currency || '') ? r.currency : '',
   };
 }
-/** is this Internet Archive item a film V01D may play: the title is this one, and it is public domain / Creative Commons / a Blender open movie. Pure. */
+/** is this Internet Archive item a film Verse may play: the title is this one, and it is public domain / Creative Commons / a Blender open movie. Pure. */
 export function legalArchive(doc, title, year) {
   if (!doc || !/^[A-Za-z0-9._-]{1,100}$/.test(String(doc.identifier || ''))) return false;
   const one = (v) => (Array.isArray(v) ? v[0] : v), lic = String(one(doc.licenseurl) || ''), cols = [].concat(doc.collection || []).map(String), by = String(one(doc.creator) || '');

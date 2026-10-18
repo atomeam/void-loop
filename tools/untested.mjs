@@ -1,6 +1,6 @@
 // Untested-code ratchet (docs/multipliers.md #3): which lib/ and skills/ files no test names, biggest first, and a count that may
 // only go down. A test "names" a file when a test file (tools/*.test.mjs, tools/test_*.mjs, tools/*_test.py) mentions its path or
-// its import (lib/x.js, skills/x.js). Tells whoever writes tests where to start; V01D asked for tests of its own skills.
+// its import (lib/x.js, skills/x.js). Tells whoever writes tests where to start; Verse asked for tests of its own skills.
 //   node tools/untested.mjs            the list, worst first
 //   node tools/untested.mjs --check    exit 1 if more files are untested than tools/untested.json allows (lower it when you add tests)
 import { readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs';

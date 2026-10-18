@@ -30,7 +30,7 @@ export async function onRequestPost({ request, env, waitUntil }) {
     return res.ok ? res.json() : null;
   } };
   const reply = await rpc(msg, ctx);
-  // a failed tool call is counted where V01D reads its shortfalls (asked by Void, ask-20261014-1722-3): the tool's name and the day only,
+  // a failed tool call is counted where Verse reads its shortfalls (asked by Void, ask-20261014-1722-3): the tool's name and the day only,
   // never the arguments or who called
   const failed = mcpFailure(msg, reply);
   if (failed) { const p = recordShortfall(env, failed, 'failed'); if (waitUntil) waitUntil(p); else await p; }

@@ -1,7 +1,7 @@
 /**
- * app skill - V01D as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't
+ * app skill - Verse as an app on your phone or computer: an Install button where the browser offers one, the steps where it doesn't
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * Owner, 2026-10-14: "wheres my apps . web mobile? hows that all look". V01D installs from the browser (manifest.webmanifest, sw.js):
+ * Owner, 2026-10-14: "wheres my apps . web mobile? hows that all look". Verse installs from the browser (manifest.webmanifest, sw.js):
  * on its own window, from the home screen, with films one long-press away. Chrome and Edge offer the install (kept by void.html as
  * window.__v01dInstall); iPhone and iPad install through Safari's Share menu, so the card shows those steps instead.
  */

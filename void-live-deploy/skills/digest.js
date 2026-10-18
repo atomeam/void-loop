@@ -1,5 +1,5 @@
 /**
- * digest skill: V01D reads a video's words. "summarize this transcript: …" (paste any transcript, YouTube's included),
+ * digest skill: Verse reads a video's words. "summarize this transcript: …" (paste any transcript, YouTube's included),
  * "summarize https://<peertube>/w/<id>" or an archive.org/details link (their open captions), then "what did this teach?"
  * or "what did it say about X?". Server: /api/digest (lib/digest.js). The transcript stays in this tab's memory only.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }

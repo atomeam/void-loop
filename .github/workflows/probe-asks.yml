@@ -1,10 +1,10 @@
-# V01D writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md). Once a day V01D's own model
+# Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md). Once a day Verse's own model
 # writes 25 asks for the skill family it is least proven in (or the one named), the everyday benchmark runs them on the real page
 # (tools/bench.mjs --probe, outside services stubbed) and the misses are queued for the builders at /api/queue as `probe:` jobs,
-# at most 2 open at once (tools/probe-asks.mjs). The probe is V01D's; the fix is still a builder's (step 3 is next). The asks are
-# V01D's own words and never a visitor's; none are committed: the job summary carries them as quoted data only. Needs
+# at most 2 open at once (tools/probe-asks.mjs). The probe is Verse's; the fix is still a builder's (step 3 is next). The asks are
+# Verse's own words and never a visitor's; none are committed: the job summary carries them as quoted data only. Needs
 # VOID_OWNER_TOKEN (the Pages READ_TOKEN); without it every run is a quiet no-op.
-name: V01D probes itself
+name: Verse probes itself
 
 on:
   schedule:
@@ -60,7 +60,7 @@ jobs:
         run: |
           cp void.html void-live-deploy/index.html
           cp void.html void-live-deploy/void.html
-      - name: V01D writes, the benchmark probes, the misses are queued
+      - name: Verse writes, the benchmark probes, the misses are queued
         shell: bash
         env:
           VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
@@ -68,15 +68,15 @@ jobs:
           DRY: ${{ inputs.dry && '--dry' || '' }}
         run: |
           if [ -z "$VOID_OWNER_TOKEN" ]; then
-            echo "::warning title=V01D did not probe itself::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
+            echo "::warning title=Verse did not probe itself::Repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) is not set."
             exit 0
           fi
           args=($DRY); [ -n "$FAMILY" ] && args+=(--family "$FAMILY")
           code=0; node tools/probe-asks.mjs "${args[@]}" > probe.txt || code=$?
-          sed -n '/^### V01D probed/,$p' probe.txt >> "$GITHUB_STEP_SUMMARY" || true
+          sed -n '/^### Verse probed/,$p' probe.txt >> "$GITHUB_STEP_SUMMARY" || true
           tail -n 40 probe.txt
           case $code in
             0) ;;
-            3) echo "::warning title=V01D wrote no asks::the site could not be reached or V01D's model did not answer; it runs again tomorrow" ;;
+            3) echo "::warning title=Verse wrote no asks::the site could not be reached or Verse's model did not answer; it runs again tomorrow" ;;
             *) echo "::warning title=The probe did not run::see the lines above" ;;
           esac

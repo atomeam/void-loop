@@ -81,7 +81,7 @@ export function confirmLine(toolName, args) {
     case 'proposal.send': return a.title ? `Send the proposal “${a.title}” to ${a.to}?` : `Send the proposal to ${a.to}?`;
     case 'calendar.book': return `Add “${a.what}” to your calendar${a.when ? ' ' + a.when : ''}?`;
     case 'booking.make': return `Book ${a.what}${cost ? ' for ' + cost : ''}?`;
-    case 'order.place': { // a spend proposal from V01D's own money (lib/reinvest.js) also says what it should pay back, and by when
+    case 'order.place': { // a spend proposal from Verse's own money (lib/reinvest.js) also says what it should pay back, and by when
       const back = a.payback ? ` Expected payback: ${a.payback}${a.by ? ', checked by ' + a.by : ''}.` : '';
       return (cost ? `Buy ${a.item} for ${cost}?` : `Buy ${a.item}? The price isn't known yet.`) + back;
     }

@@ -77,9 +77,9 @@ function main(argv) {
     for (const t of loadTargets()) { const sc = scoreOf(t); if (sc.done) continue;
       console.log(`\nTarget: ${sc.site}, beats ${sc.beats} of ${sc.total}.` + (sc.next ? ` Next: ${sc.next.id}. They: ${sc.next.theirs}. Void, one notch past: ${sc.next.plus_one}` : '')); }
   } catch (_) {}
-  try { // Void's review: where builders overrode it, by rule; the noisiest rule is the next reviewer fix (tools/review-overrides.mjs)
+  try { // Verse's review: where builders overrode it, by rule; the noisiest rule is the next reviewer fix (tools/review-overrides.mjs)
     const o = overrideSummary(reviewOverrides());
-    if (o.rules.length) console.log(`\nVoid's review, overridden as right as written: ${o.rules.map((r) => r.rule + ' ' + r.n).join(', ')}${o.idle.length ? ` (and ${o.idle.length} markers no rule needs any more)` : ''}. Fix the noisiest rule or confirm the overrides: node tools/review-overrides.mjs`);
+    if (o.rules.length) console.log(`\nVerse's review, overridden as right as written: ${o.rules.map((r) => r.rule + ' ' + r.n).join(', ')}${o.idle.length ? ` (and ${o.idle.length} markers no rule needs any more)` : ''}. Fix the noisiest rule or confirm the overrides: node tools/review-overrides.mjs`);
   } catch (_) {}
   const BM = new URL('./bench.misses.json', import.meta.url);
   if (existsSync(BM)) { let b = null; try { b = JSON.parse(readFileSync(BM, 'utf8')); } catch (_) {}

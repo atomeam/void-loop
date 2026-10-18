@@ -6,7 +6,7 @@
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open endpoint. The most a caller can do is:
 //   - read a cached picture for a folded subject (public by design: it came from the model, not from the caller);
-//   - make V01D paint ONE new picture for a subject, never more than RL_MAX times a minute per connection (the answer route's rateLimited(), its own
+//   - make Verse paint ONE new picture for a subject, never more than RL_MAX times a minute per connection (the answer route's rateLimited(), its own
 //     bucket), never more than CAP images a day for everyone together (env ART_DAILY_CAP, default 30, counted in D1), and never at all when ART_OFF=1.
 //     A second ask for the same subject costs nothing: it reads the row. The model sees a FIXED template with only the folded key (letters, digits,
 //     spaces: no markup or quotes), the kind and the rarity from short allow-lists, so a typed instruction never reaches it. The Art Director's
@@ -19,7 +19,7 @@
 //   - fill the table: one row per distinct folded subject (at most ~700 KB), only when the model really drew, and only up to the daily cap.
 // Nothing a person typed is stored and nobody is recorded: the row holds the folded key, the picture and the day. A model that fails, is busy, or
 // returns something that is not a small jpeg or png gives { state: 'plate' } and writes NOTHING, so a bad moment is never cached and the card keeps
-// V01D's ink plate. Over the cap is the same answer.
+// Verse's ink plate. Over the cap is the same answer.
 import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
@@ -29,7 +29,7 @@ import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, image
 export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000, POLL_CAP = 100; // POLL_CAP: free paintings a day from Pollinations past the Workers AI cap (bounded by D1 storage, ~250 KB a row)
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
 const on = (env) => !!(env && env.AI) && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
-/** the daily cap (owner, 2026-10-17: V01D spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
+/** the daily cap (owner, 2026-10-17: Verse spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
  *  and NEVER above FREE_CAP, the free allowance's share this route may use. There is deliberately no path past it: raising it later means reading /api/earnings
  *  (owner-only, net of refunds) for money that covers it and logging each paid painting publicly, and that code does not exist yet. Pure. */
 export const FREE_CAP = 30;
@@ -132,7 +132,7 @@ export async function onRequestPost({ request, env }) {
   const made = await madeToday(env), overWorkers = made >= capOf(env);
   if (overWorkers && (!pollOn(env) || made >= capOf(env) + POLL_CAP)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
-  const scene = await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and V01D's take on it), or '' for the fixed template
+  const scene = await direct(env, key, kind, body && body.family, body && body.take); // the Art Director's scene (from the card and Verse's take on it), or '' for the fixed template
   let img = '';
   try {
     const prompt = scene ? directedPrompt(scene, rarity) : artPrompt(key, kind, rarity), slow = () => new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS));

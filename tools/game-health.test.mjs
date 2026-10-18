@@ -4,7 +4,7 @@ import { gameHealth, gameHealthHtml, MIN } from '../void-live-deploy/lib/game-he
 import { healthHtml } from '../void-live-deploy/skills/family-health.js';
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
 const game = (g, result) => ({ game: g, result, vs: 'v01d', at: '2026-10-18T00:00:00Z' });
-const wins = (g, n) => Array.from({ length: n }, () => game(g, 'loss')); // the person lost: V01D won
+const wins = (g, n) => Array.from({ length: n }, () => game(g, 'loss')); // the person lost: Verse won
 
 test('nothing played reads nothing; each game with a match gets a row from its own record', () => {
   assert.deepEqual(gameHealth(null, []), []); assert.equal(gameHealthHtml(esc, []), '');

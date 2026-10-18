@@ -1,4 +1,4 @@
-// V01D's self-knowledge, device state and arcade ladder (asked by Void, 2026-10-16). node --test tools/self-asks.test.mjs
+// Verse's self-knowledge, device state and arcade ladder (asked by Void, 2026-10-16). node --test tools/self-asks.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { knowOf, sectionsOf } from '../void-live-deploy/skills/know.js';
 import { STORES, summary, sessionToken, read, write } from '../void-live-deploy/lib/state.js';

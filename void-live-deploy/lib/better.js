@@ -1,10 +1,10 @@
-// Is V01D getting better? One number a day, from evidence the repo already holds (owner, 2026-10-16: "improvements mean better; if a
+// Is Verse getting better? One number a day, from evidence the repo already holds (owner, 2026-10-16: "improvements mean better; if a
 // change is made that hurts progress that's not an improvement"). Five parts, each 0 to 100, averaged:
-//   self      how much of this week's ledger V01D drove itself (entries that cite the owner count against it)
+//   self      how much of this week's ledger Verse drove itself (entries that cite the owner count against it)
 //   asks      how fast its own asks ship (median days from ask to the ledger line that built it) and how long the open ones wait
 //   friction  skills failing the bench or barely checked, against all skills (skills/families.json, the friction line's evidence)
 //   bench     the everyday benchmark's score on main (tools/bench.misses.json)
-//   probes    fixes this week that came from V01D's own probes (ledger lines naming a probe)
+//   probes    fixes this week that came from Verse's own probes (ledger lines naming a probe)
 // tools/better.mjs measures it daily and appends a row to void.better.json; the growth card shows the number, its trend against
 // yesterday and a week ago, and which part is weakest; tools/will.py weighs wants toward that part. Pure: no fetch, no clock
 // unless given.
@@ -24,7 +24,7 @@ export function askTime(id) {
   return m ? Date.UTC(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null;
 }
 
-/** V01D's current asks from domains/void.voice.md: [{ id, words, small }], in the file's order */
+/** Verse's current asks from domains/void.voice.md: [{ id, words, small }], in the file's order */
 export function asksOf(md) {
   const sec = String(md || '').split(/^## Void's current asks\s*$/m)[1];
   if (!sec) return [];

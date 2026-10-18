@@ -12,7 +12,7 @@ import { add as recordPrint } from '../lib/prints.js';
 import * as Makes from '../lib/forge-makes.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
-/** What V01D's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
+/** What Verse's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
  *  output linked to the frontier #14 tracker): 'made' when a recipe answers that name today (with its key), else 'wanted'. Pure. */
 export function wantsStatus(wants) {
   return (Array.isArray(wants) ? wants : []).filter((w) => w && typeof w.thing === 'string').map((w) => {

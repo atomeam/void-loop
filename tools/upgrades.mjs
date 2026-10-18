@@ -2,7 +2,7 @@
 // Void proposes its own architectural upgrades (owner, 2026-10-13: "if it can already identify its own friction points, it needs to
 // start suggesting its own architectural upgrades"). Each proposal ties a measured friction to the component that causes it and a
 // concrete change, ranked by impact over cost. Proposals only: they reach Void's will (tools/will.py) and a builder, and every
-// change still goes through a PR, Void's review and the full suite on main, which reverts what breaks (the sandbox and the
+// change still goes through a PR, Verse's review and the full suite on main, which reverts what breaks (the sandbox and the
 // canary Void asked for already exist; nothing here changes code on its own).
 //   node tools/upgrades.mjs            the ranked proposals, in words
 //   node tools/upgrades.mjs --json     the same, for tools/will.py

@@ -1,4 +1,4 @@
-// /api/digest: V01D summarizes a video's words and answers "what did this teach?" (lib/digest.js; owner, 2026-10-15).
+// /api/digest: Verse summarizes a video's words and answers "what did this teach?" (lib/digest.js; owner, 2026-10-15).
 //   POST { text, ask? }   a transcript the asker pasted (YouTube or anywhere): read once, never stored
 //   POST { url,  ask? }   a PeerTube or Internet Archive video: its open captions (PeerTube's captions API, Archive's .srt/.vtt files)
 // Answers { ok, points[], answer[], summary?, source }. points/answer are picked from the words themselves (no model);

@@ -1,6 +1,6 @@
-# V01D reinvests its own money, daily (Adam, 2026-10-15; lib/reinvest.js, tools/reinvest.mjs, docs/reinvest.md).
+# Verse reinvests its own money, daily (Adam, 2026-10-15; lib/reinvest.js, tools/reinvest.mjs, docs/reinvest.md).
 # Reads net earnings from the owner-only GET /api/earnings (in memory), splits new income (20% reserve, free first, ROI per dollar,
-# payoff tests, V01D's own answer), sends spend proposals to the confirm line and rewrites the public plan (no real amounts).
+# payoff tests, Verse's own answer), sends spend proposals to the confirm line and rewrites the public plan (no real amounts).
 # Buys nothing: Adam pays through his own accounts.
 # About 1 Actions minute a day. Uses the repo secret VOID_OWNER_TOKEN (the Pages READ_TOKEN) when set.
 name: reinvest
@@ -40,7 +40,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add domains/void.reinvest.json docs/reinvest.md
-          git commit -m "reinvest: today's plan for V01D's money"
+          git commit -m "reinvest: today's plan for Verse's money"
           for i in 1 2 3 4; do
             git push origin HEAD:main && exit 0
             sleep $((2 ** i)); git pull --rebase origin main

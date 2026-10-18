@@ -1,4 +1,4 @@
-// V01D's NCA / living-lattice law (lib/field-nca.js; Grok's F-036, F-039, F-043 x2, F-045; asked by Owner, 2026-10-18), with numbers.
+// Verse's NCA / living-lattice law (lib/field-nca.js; Grok's F-036, F-039, F-043 x2, F-045; asked by Owner, 2026-10-18), with numbers.
 // Run: node --test tools/field-nca.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';

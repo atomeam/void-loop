@@ -97,7 +97,7 @@ export function noteAsk(graph, ask) {
 }
 
 const factId = (t) => 'fact:' + String(t).toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
-/** a plain fact the person asked V01D to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
+/** a plain fact the person asked Verse to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
 export function noteFact(graph, text, at) {
   const f = String(text || '').replace(/[\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, FACT_MAX);
   if (!graph || !f) return graph;

@@ -241,7 +241,7 @@ async function run(text, api) {
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Void: the arcade ladder)
-  // V01D's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
+  // Verse's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
@@ -257,7 +257,7 @@ async function run(text, api) {
       if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o + statusHtml(esc, skillStatus(fam)) + familyMapHtml(esc, fam)); // void-review: ok: every value is escaped (lib/inbox-health.js, tested with markup in a skill name)
     });
   }).catch(() => {});
-  // is V01D getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
+  // is Verse getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
   // yesterday and a week ago, and the weakest part, under the owner's view (or whatever of those lines is there yet)
   fetch(BETTER_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((rows) => {
     const html = betterHtml(esc, rows), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');

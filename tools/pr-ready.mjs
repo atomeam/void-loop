@@ -9,7 +9,7 @@
 //   that already finished has failed (test-and-deploy, bench). Nothing else is waited on: not the suite, not the benchmark.
 //   The full suite runs on every head of main (verify.yml, verify-main), and a failure there reverts the merge and
 //   redeploys.
-// Void's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
+// Verse's review is the main one; every other reviewer is an extra (Adam, 2026-10-09). CodeRabbit is never waited on and
 //   never blocks: what it has found on this head is reported in `extra`, and a finding Void missed is a rule to teach
 //   code-review.js (domains/void.frontier.md #1), not a reason to hold a merge.
 export const CR = 'coderabbitai[bot]';
@@ -48,7 +48,7 @@ export function readiness(gh, repo, pr) {
 // run its own copy). The branch is checked out detached in its own worktree, main merged with tools/merge-main.mjs (the
 // append-only records settle by keeping both sides), and the merge commit pushed to the branch: never a force-push, so a branch
 // that moved in the meantime refuses the push and the next wake tries again. A push made with the workflow's token starts no
-// pull_request run, so Void's review is dispatched on the new head by hand (void-review.yml workflow_dispatch, input pr); its
+// pull_request run, so Verse's review is dispatched on the new head by hand (void-review.yml workflow_dispatch, input pr); its
 // finish wakes automerge.yml, which then merges the PR. A conflict outside the append-only files comes back as one comment on
 // the PR naming the files (the same comment is never posted twice), and the bot tries again whenever main moves.
 export const CONFLICT_MARK = '<!-- void-automerge: conflict -->', ACTIONS_BOT = 'github-actions[bot]';

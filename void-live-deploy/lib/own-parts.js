@@ -1,6 +1,6 @@
-// V01D's own components by name (owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card). One table: each part of
-// V01D, the words people use for it, the skill that shows it, and the ask that skill already answers. skills/own-parts.js is
-// ranked first and takes any ask that names a part inside the "show me / open / where is / the ... card" frame, so V01D's own
+// Verse's own components by name (owner, 2026-10-18: "Show me the Site Test card" fetched a Visa test card). One table: each part of
+// Verse, the words people use for it, the skill that shows it, and the ask that skill already answers. skills/own-parts.js is
+// ranked first and takes any ask that names a part inside the "show me / open / where is / the ... card" frame, so Verse's own
 // anatomy beats generic web trivia and any generic skill. A new part is one row here, plus its asks in tools/own-parts.test.mjs.
 // "names" are the part's words (regex source, matched whole, lowercase); "skill" answers; "ask" is what that skill takes.
 // "owned": "my site test" alone counts (a possessive and the name); only for names no other sense uses.

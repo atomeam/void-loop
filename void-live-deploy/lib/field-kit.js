@@ -1,4 +1,4 @@
-// field-kit — the pure half of V01D's "field minds" (the Grok frontier ideas F-020..F-033, asked by the owner, 2026-10-17: "all of
+// field-kit — the pure half of Verse's "field minds" (the Grok frontier ideas F-020..F-033, asked by the owner, 2026-10-17: "all of
 // Grok's ideas are to be added to Void"). A field mind is a small simulated substrate (particles, a grid, a lattice) plus a tiny
 // local mind that reads the field and lets the card around it change. This file has no DOM and no clock: everything is a function of
 // its arguments, deterministic by seed, so each idea's law can be tested with numbers instead of pixels. The DOM half is

@@ -10,7 +10,7 @@ const STOP = new Set(('about above after again against also always another aroun
   + 'tonight friends friend together night pretty quite maybe perhaps rated rating review reviews story stories plot something someone anything everyone mostly start '
   + 'started find finds need needs help idea ideas kind list lists top best better worth see seen look looks sure part parts real very right year years released release '
   + 'directed director starring stars plays cast known called named long short high low new old big small little '
-  // the words about V01D and the search, not the subject (owner's K-pop card, 2026-10-17: "Closest match I found for void kpop" made it paint "match void")
+  // the words about Verse and the search, not the subject (owner's K-pop card, 2026-10-17: "Closest match I found for void kpop" made it paint "match void")
   + 'void v01d match matches closest search searched').split(' '));
 const MOTIFS = {
   hand: 'hand hands fist palm finger fingers glove', eye: 'eye eyes gaze vision watcher', skull: 'skull skulls bone bones dead death corpse skeleton grave tomb embalmed mummy',

@@ -1,15 +1,15 @@
-// V01D writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md): the probe is V01D's, the fix still a
-// builder's. Picks the family V01D is least proven in (void-live-deploy/skills/families.json, or --family <id>), asks the live
-// site's owner-only /api/probe-asks for 25 asks in that family (V01D's own model writes them; lib/probe-asks.js keeps only plain,
+// Verse writes its own probe asks (frontier #28, step 2 of docs/playbooks/probe-and-fix.md): the probe is Verse's, the fix still a
+// builder's. Picks the family Verse is least proven in (void-live-deploy/skills/families.json, or --family <id>), asks the live
+// site's owner-only /api/probe-asks for 25 asks in that family (Verse's own model writes them; lib/probe-asks.js keeps only plain,
 // bench-shaped ones), runs them through the everyday benchmark (tools/bench.mjs --probe, the real page, outside services
 // stubbed) and queues the misses for the builders at /api/queue as `probe:<slug>` jobs, at most PROBE_OPEN_MAX open at once, a
-// target never queued twice. The asks are V01D's words, not a visitor's; still, none are committed here: the probe file lives
+// target never queued twice. The asks are Verse's words, not a visitor's; still, none are committed here: the probe file lives
 // in the temp folder and the job summary carries the asks only as quoted data.
 //   node tools/probe-asks.mjs                 write, probe and queue (owner token VOID_OWNER_TOKEN)
 //   node tools/probe-asks.mjs --family words  a named family instead of the least proven one
 //   node tools/probe-asks.mjs --dry           write and probe, queue nothing
 //   node tools/probe-asks.mjs --asks c.json   skip the model: probe the asks in a file (always dry unless --queue-too)
-//   node tools/probe-asks.mjs --no-probe      write the asks only (prints them; for a look at what V01D writes)
+//   node tools/probe-asks.mjs --no-probe      write the asks only (prints them; for a look at what Verse writes)
 // Exit 0 when it ran (misses or not), 1 when the probe could not run, 3 when the site could not be reached or had no asks.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
@@ -37,7 +37,7 @@ export function requestFor(fam, bench, family = '') {
 /** Candidates not already in the benchmark (those are answered already; bench.mjs skips them, and a skipped ask would read as a miss in its again file). */
 export const freshOnly = (asks, bench) => { const have = new Set((bench || []).map((x) => String(x.ask).trim().toLowerCase())); return (asks || []).filter((a) => !have.has(String(a.ask).trim().toLowerCase())); };
 
-/** The job for one miss: V01D's own words as quoted data, a target from the ask's slug. */
+/** The job for one miss: Verse's own words as quoted data, a target from the ask's slug. */
 export const jobOf = (m, family) => ({
   ask: ('learn to handle "' + m.ask + '"').slice(0, 120),
   target: 'probe:' + slug(m.ask),
@@ -92,7 +92,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   } catch (e) { console.error('probe-asks: Verse did not write asks: ' + e.message); process.exit(3); }
   const fresh = freshOnly(asks, bench);
   if (noProbe) { console.log(JSON.stringify({ family, asks }, null, 1)); process.exit(0); }
-  // one record per run in V01D's probe ledger (lib/probe-log.js, the growth card's "My probes"): counts only, never the asks
+  // one record per run in Verse's probe ledger (lib/probe-log.js, the growth card's "My probes"): counts only, never the asks
   const logRun = async (probed, missed, queuedN, forge = []) => { if (dry) return; try { await api('/api/probe-log', 'POST', { kind: 'probe', family: family && family.id, wrote: asks.length, probed, misses: missed, queued: queuedN, forge }); } catch (e) { console.error('probe-asks: the probe ledger was not written: ' + e.message); } };
   if (!fresh.length) { await logRun(0, 0, 0); console.log(summary({ family, wrote: asks.length, probed: 0, misses: [], queued: [], dry })); process.exit(asks.length ? 0 : 3); }
   const file = join(os.tmpdir(), 'void-probe-asks-' + Date.now().toString(36) + '.json');

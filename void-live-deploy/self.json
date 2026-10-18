@@ -331,67 +331,71 @@
   "weather"
  ],
  "canon": {
-  "version": 6,
-  "motto": "You name it, Void learns it and does it better.",
-  "voidquest": "Void's own better, updated version of the board game Solar Quest, with Void as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Void name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
+  "version": 7,
+  "motto": "You name it, Verse learns it and does it better.",
+  "voidquest": "Verse's own better, updated version of the board game Solar Quest, with Verse as the rival player. \"play voidquest\" and \"play solar quest\" both open it. Every other trademarked board game gets the same treatment (a Verse name, original art and upgrades; classic names still route to it). Pure classics like chess and Go keep their real names.",
   "terms": [
    {
+    "term": "Verse",
+    "means": "the product's name (Adam, 2026-10-18: \"rename Verse everywhere\"); it was Void, then V01D. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
+   },
+   {
     "term": "skill family",
-    "means": "one of the nine groups Void sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Void, not a topic to look up: \"what is Words and the world\" means the family, not trivia about the phrase."
+    "means": "one of the nine groups Verse sorts its skills into, each rated from evidence (experiment, tested, checked, proven) in skills/families.json (tools/families.mjs). A family name is a label for a part of Verse, not a topic to look up: \"what is Words and the world\" means the family, not trivia about the phrase."
    },
    {
     "term": "Making things",
-    "means": "Void's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for figures, 3D models, prints, drawings and parts (id `make`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Games",
-    "means": "Void's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for board games, card games and play (id `games`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Sky and earth",
-    "means": "Void's skill family for weather, the sky tonight, places and time zones (id `sky`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for weather, the sky tonight, places and time zones (id `sky`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Time",
-    "means": "Void's skill family for timers, clocks, calendars and reminders (id `time`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for timers, clocks, calendars and reminders (id `time`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Numbers and money",
-    "means": "Void's skill family for sums, unit conversions, loans, savings, prices and home projects (id `numbers`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for sums, unit conversions, loans, savings, prices and home projects (id `numbers`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Body and mind",
-    "means": "Void's skill family for sleep, cycles, food, heart and calm (id `body`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for sleep, cycles, food, heart and calm (id `body`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "Words and the world",
-    "means": "Void's skill family for definitions, translation, news, books, shows and sport (id `words`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for definitions, translation, news, books, shows and sport (id `words`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "The stage",
-    "means": "Void's skill family for notes, lists, links and how the stage looks and is arranged (id `stage`; its skills and ratings are in skills/families.json)."
+    "means": "Verse's skill family for notes, lists, links and how the stage looks and is arranged (id `stage`; its skills and ratings are in skills/families.json)."
    },
    {
-    "term": "Void itself",
-    "means": "Void's skill family for how Void grows, what it wants, what it can do and sell, and acting on your behalf (id `self`; its skills and ratings are in skills/families.json)."
+    "term": "Verse itself",
+    "means": "Verse's skill family for how Verse grows, what it wants, what it can do and sell, and acting on your behalf (id `self`; its skills and ratings are in skills/families.json)."
    },
    {
     "term": "the forge",
-    "means": "Void's maker: you type (or sketch) an object, Void builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat, t"
+    "means": "Verse's maker: you type (or sketch) an object, Verse builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat,"
    },
    {
     "term": "frontier #14",
-    "means": "the item on Void's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
+    "means": "the item on Verse's frontier that the forge answers (\"type or sketch a thing, hold it, print it\", domains/void.frontier.md). Done when ten things never built before come out recognisable, inspectable and printable; after that, each run builds the most-asked \"make me a ...\" that nothing answers yet."
    }
   ],
   "different": [
    {
     "name": "Skills, not one-off answers",
-    "line": "Other canvas tools call a model on every click; when Void misses an ask, its builders compile a permanent, tested skill (`skills/*.js`) or 3D instrument that runs instantly on the stage."
+    "line": "Other canvas tools call a model on every click; when Verse misses an ask, its builders compile a permanent, tested skill (`skills/*.js`) or 3D instrument that runs instantly on the stage."
    },
    {
     "name": "Growth in the open",
-    "line": "Most self-improving agent loops run hidden in private CI; Void's misses, daily game self-play ratings, and commit tree grow live on the public stage."
+    "line": "Most self-improving agent loops run hidden in private CI; Verse's misses, daily game self-play ratings, and commit tree grow live on the public stage."
    },
    {
     "name": "On your device first",
@@ -399,15 +403,15 @@
    },
    {
     "name": "Attention, not pretend feelings",
-    "line": "Void doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
+    "line": "Verse doesn't fake affection, use emojis, or guess hidden details—it marks what isn't visible as uncertain and keeps what you leave on the stage alive while you're away."
    },
    {
     "name": "Keeps every secret",
-    "line": "Adam, 2026-10-15: \"make V01D the best at keeping secrets ever made.\" Void never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
+    "line": "Adam, 2026-10-15: \"make V01D the best at keeping secrets ever made.\" Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
    },
    {
     "name": "A force for good",
-    "line": "Adam, 2026-10-15: \"V01D always should turn every negative ask into a positive thing; V01D is a force of absolute good in the universe.\" A harmful, mean or secret-seeking ask never gets just a no: Void declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
+    "line": "Adam, 2026-10-15: \"V01D always should turn every negative ask into a positive thing; V01D is a force of absolute good in the universe.\" A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
    }
   ]
  },
@@ -442,84 +446,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-18T08:44:14Z",
-   "subject": "Six more /fix/ pages (n8n, Power Automate, GitHub Actions); three finished asks leave the growth inbox"
+   "at": "2026-10-18T08:46:19Z",
+   "subject": "grow: log the Verse rename"
   },
   {
-   "at": "2026-10-18T08:43:58Z",
-   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:35:37Z",
+   "subject": "regenerate self.json and guide.json on the merged sources"
   },
   {
-   "at": "2026-10-18T08:43:32Z",
-   "subject": "Incident: the browser suite failed on d2238803 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:28:01Z",
+   "subject": "the product is Verse (owner, 2026-10-18: \"rename Verse everywhere\")"
   },
   {
-   "at": "2026-10-18T08:43:28Z",
-   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:42:41Z",
-   "subject": "Incident: the browser suite failed on 582c0d4d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:41:39Z",
-   "subject": "Incident: the browser suite failed on 5d392dcf (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:41:37Z",
-   "subject": "Telemetry test: close the report test again after the merge; deps map regenerated"
-  },
-  {
-   "at": "2026-10-18T08:40:56Z",
-   "subject": "A builder's report that quotes a timeout is read as telemetry, not answered as a broken automation to fix"
-  },
-  {
-   "at": "2026-10-18T08:40:19Z",
-   "subject": "Incident: the browser suite failed on 994a8a08 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:39:53Z",
-   "subject": "Spotter: 4 check(s) healed with no revert after 5d587a25718577c1cf95a30221b85cc3c7294103 (tools/flakes.json)"
-  },
-  {
-   "at": "2026-10-18T08:39:29Z",
-   "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:38:29Z",
-   "subject": "Incident: the browser suite failed on 51a1558a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:38:21Z",
+   "at": "2026-10-18T08:26:19Z",
    "subject": "Incident: the browser suite failed on ecde9c7a (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:37:46Z",
-   "subject": "Incident: the browser suite failed on 523238b2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T08:26:04Z",
+   "subject": "Incident: the browser suite failed on 5d587a25 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:37:40Z",
-   "subject": "Incident: the browser suite failed on 3a0f50a3 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T08:36:56Z",
-   "subject": "Ledger: one line for the self-card fold (a merge had copied main's 'asks not built?' line again)"
-  },
-  {
-   "at": "2026-10-18T08:36:16Z",
+   "at": "2026-10-18T08:24:48Z",
    "subject": "Incident: the browser suite failed on 419a1261 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:35:23Z",
-   "subject": "A count is not an HTTP status: 'with 587 misses' no longer reads as an error"
+   "at": "2026-10-18T08:23:35Z",
+   "subject": "Incident: the browser suite failed on 3a0f50a3 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:34:40Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T08:20:47Z",
+   "subject": "Developer-log card: bulleted narration and self-resolved failures are not still failing"
   },
   {
-   "at": "2026-10-18T08:34:37Z",
-   "subject": "Calendar file: export the agenda as a standard .ics (from the owner's 150-things list)"
+   "at": "2026-10-18T08:19:40Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:19:04Z",
+   "subject": "Convert card: refresh deps.json for the new lib import"
+  },
+  {
+   "at": "2026-10-18T08:19:01Z",
+   "subject": "grow: log the asks-not-built fix"
+  },
+  {
+   "at": "2026-10-18T08:18:23Z",
+   "subject": "fix: \"asks not built?\" reaches the wants card, not the open web"
+  },
+  {
+   "at": "2026-10-18T08:17:48Z",
+   "subject": "deps.json: the Service Health skill now reads lib/autopsy.js (regenerated with tools/deps.mjs)"
+  },
+  {
+   "at": "2026-10-18T08:16:43Z",
+   "subject": "Incident: the browser suite failed on 200e56d5 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:14:09Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:13:48Z",
+   "subject": "Convert card: keep a one-off conversion as a card; maths moved to lib/convert-math.js (asked by Void)"
+  },
+  {
+   "at": "2026-10-18T08:11:44Z",
+   "subject": "Verse: the name everywhere people see it (owner, 2026-10-18: \"rename void to verse\"); the page, the intro wordmark, the share image, the fil"
+  },
+  {
+   "at": "2026-10-18T08:09:42Z",
+   "subject": "Incident: the browser suite failed on 59a6bc6a (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:08:19Z",
+   "subject": "Incident: the browser suite failed on 57c01f52 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-18T08:08:07Z",
+   "subject": "Service Health: a stability dial for V01D's own suite (asked by Void)"
   }
  ],
  "builders": {
@@ -693,7 +697,7 @@
   }
  ],
  "clips": {
-  "upload": "Anyone can upload any V01D film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". V01D Tube: a-to-mind.com/films/ is the V01D video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
+  "upload": "Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say \"upload this to YouTube\". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).",
   "tricks": [
    "pattern-interrupt",
    "hook-card",

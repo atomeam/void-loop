@@ -1,6 +1,6 @@
 /**
  * event-countdown skill - how long until a named event: "how many hours til gta6", "how long until the world cup starts", "countdown to
- * the olympics" (owner's pasted card, 2026-10-17: V01D said GTA VI had no release date when it had one, 19 November 2026). The date
+ * the olympics" (owner's pasted card, 2026-10-17: Verse said GTA VI had no release date when it had one, 19 November 2026). The date
  * comes from the event's own Wikipedia summary, read now, never from a model's memory; the card names the source and counts down live.
  * When the summary names no date still ahead it says exactly that. Dates, holidays and times of day stay with countdown, holidays and
  * the clock (lib/event-date.js eventAsk leaves them out).
@@ -29,7 +29,7 @@ async function summaryOf(words) {
 
 const n = (x, w) => x + ' ' + w + (x === 1 ? '' : 's');
 /** how fresh the source is, after the confidence badge (asked by Void: "a 'last-verified' timestamp to the confidence badge so users know how
- *  fresh the source data is"): the page's last edit from Wikipedia and when V01D read it. '' when the page gave no edit time. Pure. */
+ *  fresh the source data is"): the page's last edit from Wikipedia and when Verse read it. '' when the page gave no edit time. Pure. */
 export function verifiedLine(edited, now = new Date()) {
   const e = new Date(edited || ''); if (!edited || isNaN(e)) return '';
   const day = e.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric', timeZone: 'UTC' });

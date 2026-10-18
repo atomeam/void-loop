@@ -90,7 +90,7 @@ test('paying users who said it broke: read with the owner key only, shown on the
   finally { delete globalThis.localStorage; }
 });
 
-// news about V01D's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
+// news about Verse's own systems, pasted in (tester's weak-answer queue, paraphrased): the substance first, the time math as an aside
 test('a pasted update about my own routine is news about me, not a time list', async () => {
   const { newsOf, takeOf } = await import('../void-live-deploy/skills/status.js');
   const paste = 'update for you: a new routine now runs every 3 hours from 3:17 AM ET and clears every list';

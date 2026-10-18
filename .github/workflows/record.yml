@@ -8,7 +8,7 @@ name: Void records itself
 on:
   schedule:
     - cron: '41 15 * * *' # daily: three films
-  # and whenever V01D ships something (owner, 2026-10-15: "let V01D make films whenever it wants or does anything"): after each
+  # and whenever Verse ships something (owner, 2026-10-15: "let Verse make films whenever it wants or does anything"): after each
   # deploy of main, one film of an experiment never filmed before, or none (a deploy never re-films an old one)
   workflow_run:
     workflows: ['Void deploy']
@@ -110,7 +110,7 @@ jobs:
             node tools/film-post.mjs "$(ls "$d"/*.mp4 | head -1)" "$(ls "$d"/*.txt | head -1)" --id "${tag#film-}" 2>&1 | tee -a "$GITHUB_STEP_SUMMARY"
             gh release edit "$tag" --draft=true
           done
-      # every film's words in today's name (owner, 2026-10-14: "it shoud say V01d everywhere"): tools/film-post.mjs brands them V01D
+      # every film's words in today's name (owner, 2026-10-14: "it shoud say V01d everywhere"): tools/film-post.mjs brands them Verse
       - name: Refresh every film's words on the site
         if: steps.film.outputs.made != '0'
         env:

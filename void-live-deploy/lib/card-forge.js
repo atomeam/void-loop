@@ -1,6 +1,6 @@
 // The Art Forge on the card (owner, 2026-10-17: "the art should be of the subject of each card"). keep() in lib/card-frame.js calls forge(el, c) after it
 // builds a card's frame. A card with no painted art yet asks GET /api/card-art for its folded subject (a read of the cache, free); if the picture is
-// there it fills the art box (cover-fit, over V01D's ink plate, under the foil frame). If it is not and the card is an answer or a merged card (never a
+// there it fills the art box (cover-fit, over Verse's ink plate, under the foil frame). If it is not and the card is an answer or a merged card (never a
 // skill, game or miniature), it paints it ONCE by itself (one POST per subject per page; the server's daily cap, rate limit and kill switch bound the spend) and the plate stays until the picture lands. ?art=button offers a "paint this card" button instead; ?art=off never asks.
 // The picture is kept on the card element (el._vcForge) so a rebuilt frame shows it again, and the saved card picture (lib/card-image.js) includes it.
 import { safeImg } from './art-rules.js';

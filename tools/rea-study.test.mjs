@@ -1,5 +1,5 @@
 // node --test tools/rea-study.test.mjs: the REA study tool (tools/rea-study.mjs). Public pages only, passive REA commands only,
-// a study fits V01D's private memory, and the digest keeps the evidence (script and line) for each finding.
+// a study fits Verse's private memory, and the digest keeps the evidence (script and line) for each finding.
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { safeUrl, studyRecord, digestOf, ALLOWED, MAX_DIGEST, REA } from './rea-study.mjs';

@@ -1,4 +1,4 @@
-// V01D's probe ledger (lib/probe-log.js). GET is public: counts, skill names, confidences and outcomes only, never an ask.
+// Verse's probe ledger (lib/probe-log.js). GET is public: counts, skill names, confidences and outcomes only, never an ask.
 // GET                         -> { log: newest first, stats: probeStats(log) }
 // POST (owner) { kind, … }    one record from tools/probe-asks.mjs ('probe') or tools/propose-fix.mjs ('fix') -> the kept record
 // 400 for a record that is neither kind or out of range; 503 without the database.

@@ -1,4 +1,4 @@
-// V01D makes music (owner, 2026-10-17: "void should also learn how to make music"). An original short piece, composed here from a seed and
+// Verse makes music (owner, 2026-10-17: "void should also learn how to make music"). An original short piece, composed here from a seed and
 // synthesised with Web Audio: no model call, no sample, no paid service, no tune copied from anywhere. The same ask always gives the same piece
 // (the seed is a hash of the ask's own words). The mood word picks the tempo, the scale and the instruments; everything the card says about the
 // piece (key, tempo, bars, chords) is read back from the values that were composed, never described from memory.

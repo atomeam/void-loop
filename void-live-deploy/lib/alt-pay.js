@@ -4,7 +4,7 @@
 //   cashapp    no public verification API: the order joins the owner's queue; only ownerOk (lib/guard.js) approves it.
 //   usdc-base  read-only on-chain check of the tx: a USDC Transfer on Base to our address for the exact order amount
 //              (the amount's last 4 decimals are the order's memo), >= CONFIRMATIONS deep, each tx used once.
-// V01D never sends, signs or holds crypto; it only reads public chain data. No address or cashtag lives in the repo:
+// Verse never sends, signs or holds crypto; it only reads public chain data. No address or cashtag lives in the repo:
 //   CASHAPP_CASHTAG       Adam's public $cashtag (Pages variable)          -> enables 'cashapp'
 //   CRYPTO_USDC_BASE_ADDR Adam's own receive-only 0x address (Pages var.)  -> enables 'usdc-base'
 //   BASE_RPC_URL          optional, defaults to the public https://mainnet.base.org

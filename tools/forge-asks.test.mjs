@@ -1,4 +1,4 @@
-// V01D's forge asks (2026-10-16): the person recipe, the print ledger, the probe tracker, forge iterations, the routine forge.
+// Verse's forge asks (2026-10-16): the person recipe, the print ledger, the probe tracker, forge iterations, the routine forge.
 // Run: node --test tools/forge-asks.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

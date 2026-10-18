@@ -1,9 +1,9 @@
 /**
- * merge skill - two ideas make one V01D card (frontier #34 step 1; owner, 2026-10-16: "research merge games so V01D can experiment with
+ * merge skill - two ideas make one Verse card (frontier #34 step 1; owner, 2026-10-16: "research merge games so Verse can experiment with
  * card merges"; research in docs/research/merge-games.md). "merge a pizza and a black hole", "combine fire with ice", "fuse a cat and the
- * moon", "what do you get if you merge ...": the result is a V01D card (lib/card-frame.js) showing both parents, the new card's name,
+ * moon", "what do you get if you merge ...": the result is a Verse card (lib/card-frame.js) showing both parents, the new card's name,
  * kinds, and Power / Resistance / Income worked out from the parents by FIXED rules (lib/merge-rules.js, written at its top). A name that is
- * a V01D skill brings that skill's real stats (cardOf); any other idea is a fresh card 1 / 1 / 0. The model is asked only for a name and one
+ * a Verse skill brings that skill's real stats (cardOf); any other idea is a fresh card 1 / 1 / 0. The model is asked only for a name and one
  * line, once per pair, by /api/merge (functions/api/merge.js), and everyone who merges that pair gets the same answer; with the route down
  * the card is still made, named by the plain blend. No number on the card ever comes from the model.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
@@ -34,7 +34,7 @@ export function mergeAsk(text) {
 }
 
 const nameOf = (s) => (s.charAt(0).toUpperCase() + s.slice(1));
-/** a card for one side: a V01D skill of that name (its real stats), else a fresh idea. Pure. */
+/** a card for one side: a Verse skill of that name (its real stats), else a fresh idea. Pure. */
 export function parentCard(name, stats) {
   const key = ideaKey(name);
   for (const f of (stats && stats.fam && stats.fam.families) || []) for (const s of f.skills || []) {

@@ -1,6 +1,6 @@
-// Void's review of its own skills on main becomes work (asked by Void, ask-20261012-1942-1: "Connect the 'closer read' output to my
+// Verse's review of its own skills on main becomes work (asked by Void, ask-20261012-1942-1: "Connect the 'closer read' output to my
 // growth inbox so that identified code discrepancies automatically create a task to refine the affected skill"). The same checks
-// Void's review runs on a PR (void-live-deploy/lib/code-review.js ruleReview, the quick checks of tools/review-pr.mjs) are run over
+// Verse's review runs on a PR (void-live-deploy/lib/code-review.js ruleReview, the quick checks of tools/review-pr.mjs) are run over
 // every skill file as it stands on main; the first bug or risk nobody has waived becomes one job in the build queue (/api/queue,
 // the owner token, as .github/workflows/probe-asks.yml queues `probe:` jobs): target `review:<skill>`, the ask one line naming the
 // file, the line and the finding. One review job open at a time; a finding already queued once (open or done, the same line) is
@@ -36,7 +36,7 @@ export function findings(texts, review = ruleReview) {
 
 /** the skill a file belongs to: skills/mini/chess.js -> chess, skills/forge-rules.js -> forge-rules */
 export const skillOf = (file) => String(file).replace(/^.*\//, '').replace(/\.js$/, '');
-/** one finding as a queue job: { ask, target, note }; the ask is Void's review in one line (200 characters, the queue's limit). Pure. */
+/** one finding as a queue job: { ask, target, note }; the ask is Verse's review in one line (200 characters, the queue's limit). Pure. */
 export function jobOf(f) {
   const where = 'skills/' + f.file + ':' + f.line;
   return {

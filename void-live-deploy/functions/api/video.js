@@ -1,4 +1,4 @@
-// /api/video: V01D's video search and link lookup (skills/video.js; owner, 2026-10-15: "V01D should be the only site you need").
+// /api/video: Verse's video search and link lookup (skills/video.js; owner, 2026-10-15: "Verse should be the only site you need").
 //   GET /api/video?q=moon+landing&p=dailymotion   search one platform; p is youtube, dailymotion, archive, peertube, odysee (searchable),
 //                                                 or rumble, vimeo, twitch (no public search API: the answer carries the platform's own search link)
 //   GET /api/video?url=<a rumble/youtube/vimeo/dailymotion page>   its title, channel, length, thumbnail and (Rumble) the embed id, from the

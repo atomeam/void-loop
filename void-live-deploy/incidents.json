@@ -2,6 +2,33 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T08:52:37.130Z",
+   "sha": "b95dc3a3d4aaa0cf8d38957c1ab643a500f40cb3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39112830224",
+   "suite": "browser suite on main",
+   "checks": [
+    "tools pack 8: the PIN lock card says it is a casual lock, keeps a hash (never the PIN) on this device, locks on \"lock now\", refuses a wrong PIN, opens on the right one, and \"auto lock after 1 minute\" locks after the idle time",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/bench.json",
+    "tools/bench.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/forge.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.html",
+    "void.html",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/fix-pages.json",
+    "void-live-deploy/fix/github-actions-npm-ci-lockfile-out-of-sync/index.html",
+    "void-live-deploy/fix/github-actions-permission-denied-publickey/index.html",
+    "void-live-deploy/fix/index.html",
+    "void-live-deploy/fix/n8n-econnrefused-http-request/index.html"
+   ]
+  },
+  {
    "at": "2026-10-18T08:45:21.144Z",
    "sha": "f74e9b8a321dc61f2748c90a821f54e3521814a1",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39112292446",
@@ -706,32 +733,6 @@
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-17T21:56:22.353Z",
-   "sha": "5773a89f69c3525bec022c1fba868277f8a00bfb",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39072138179",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/card-share.test.mjs",
-    "tools/site-test.json",
-    "tools/site-test.mjs",
-    "tools/site-test.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/card-share.js",
-    "void-live-deploy/void.asks.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/void.html",
-    "void.html",
-    "tools/site-test.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json"
    ]
   }
  ]

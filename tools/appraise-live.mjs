@@ -1,5 +1,5 @@
 // The live appraiser, checked from outside (.github/workflows/appraise-live.yml, manual): POST one small test image to
-// /api/appraise on the live site and read what came back: the status, the kind V01D saw, whether the text is V01D's own
+// /api/appraise on the live site and read what came back: the status, the kind Verse saw, whether the text is Verse's own
 // valuation line, and whether the vision model answered at all (a 503 means the deploy has no vision model bound, a 502 that
 // the model did not answer). Prints a Markdown table for the job summary: status, kind and yes/no only; never the image, never a
 // visitor's photo (this one is a tiny test picture made here). Exit 1 when the route did not value it, 3 when the site cannot be reached.
@@ -29,7 +29,7 @@ export async function checkAppraise(site, post = (u, o) => fetch(u, o)) {
   row('/api/appraise answers', r.status === 200, 'HTTP ' + r.status + (j && j.error ? ': ' + j.error : ''));
   row('the vision model is bound and answered', r.status !== 503 && r.status !== 502, r.status === 503 ? 'no vision model on this deploy' : r.status === 502 ? 'the model did not answer' + (j && j.reason ? ' (' + String(j.reason).replace(/\s+/g, ' ').slice(0, 120) + ')' : '') : 'answered');
   const v = j && j.value;
-  row('Verse valued what it saw', !!v && (v.person ? !!j.text : /^(?:V01D|Verse) values this at \$/.test(String(j.text || ''))), v ? (v.person ? 'a person: complimented, no number' : 'kind ' + v.kind + ', one number') : 'no value');
+  row('Verse valued what it saw', !!v && (v.person ? !!j.text : /^(?:Verse|Verse) values this at \$/.test(String(j.text || ''))), v ? (v.person ? 'a person: complimented, no number' : 'kind ' + v.kind + ', one number') : 'no value');
   row('a person ask is complimented, never priced', false, 'not checked here');
   const p = await post(base + '/api/appraise', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ image: TEST_PNG, note: 'what am I worth' }) });
   const pj = await p.json().catch(() => null);

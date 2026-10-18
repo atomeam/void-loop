@@ -5,7 +5,7 @@
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open endpoint. The most a caller can do is:
 //   - read a cached name and line for a pair (public by design: they came from the model, not from the caller);
-//   - make V01D ask the free model for a name and one line, at most RL_MAX times a minute per connection (the answer route's
+//   - make Verse ask the free model for a name and one line, at most RL_MAX times a minute per connection (the answer route's
 //     rateLimited(), its own bucket), for two names of at most 60 folded characters each. The model sees only the folded
 //     keys (letters, digits, spaces: no markup, quotes or newlines), under INJECTION_RULE, with nothing to call: it has no network,
 //     file, storage or price capability, and its reply is parsed for two strings only, then run through redact(), scrubOut() and

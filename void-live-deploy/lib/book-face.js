@@ -1,4 +1,4 @@
-// The faces of the 3D V01D Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
+// The faces of the 3D Verse Book (skills/mini/book.js): one page of skills/guide.json laid out on a sheet of paper, as a list of
 // things to draw plus the places a tap lands. Pure, so it runs without a browser: the caller gives it a measure(text, font)
 // function (a canvas' measureText in the page, a fixed width in the tests) and paints the result with paint(). The same page data
 // the flat book reads (lib/guide.js, tools/guide.mjs), so the 3D book can never show a different page.
@@ -90,10 +90,11 @@ export function layoutFace(page, book, side, measure) {
     footer(); return out;
   }
   if (page.kind === 'opener') {
-    // a long chapter title wraps to two lines and the glyph gives up the room, so the page keeps its height ("Safety and small delights" ran off the sheet)
-    const tl = wrap(page.title, '700 32px ' + SERIF, w, measure, 2), extra = (tl.length - 1) * 38;
-    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40; for (const [i, l] of tl.entries()) t(l, x0, y + i * 38, '700 32px ' + SERIF, INK); y += 16 + extra;
-    ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - (160 - extra) / 2, y: y + 6, size: 160 - extra }); y += 190 - extra;
+    t('Chapter', x0, y, '13px ' + SANS, SOFT); y += 40;
+    // a long chapter name ("Safety and small delights") steps the title down until it fits the sheet, never off it
+    let ts = 32; while (ts > 18 && measure(page.title, '700 ' + ts + 'px ' + SERIF) > w - 8) ts -= 2;
+    t(page.title, x0, y, '700 ' + ts + 'px ' + SERIF, INK); y += 16;
+    ops.push({ k: 'glyph', name: page.chapter, chapter: page.chapter, x: x0 + w / 2 - 80, y: y + 6, size: 160 }); y += 190;
     for (const l of wrap(page.line, '17px ' + SERIF, w, measure, 4)) { t(l, x0 + w / 2, y, '17px ' + SERIF, SOFT, 'center'); y += 25; }
     const n = (page.skills || []).length;
     t(n + (page.chapter === 'minis' ? ' miniatures' : ' skills') + (chap.from ? ' · pages ' + chap.from + '–' + chap.to : ''), x0 + w / 2, y + 8, '13px ' + SANS, SOFT, 'center');

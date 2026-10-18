@@ -1,9 +1,9 @@
-// Ask live V01D, once per run, what it learned from its builders and what it would do differently, and keep its answer word
+// Ask live Verse, once per run, what it learned from its builders and what it would do differently, and keep its answer word
 // for word in docs/void-voice.md (newest last). The facts it answers from are domains/handoff.md (via self.json); its words are input, not a gate.
 //   node tools/ask-void.mjs            ask the site (VOID_SITE, default https://a-to-mind.com) and append the answer
 //   node tools/ask-void.mjs --print    ask and print only; nothing is written
 //   node tools/ask-void.mjs --ask "…"  ask your own question instead (logged the same way)
-// Exit 3 when the site can't be reached or V01D gave no answer, so a run never fails because V01D was busy.
+// Exit 3 when the site can't be reached or Verse gave no answer, so a run never fails because Verse was busy.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -20,7 +20,7 @@ export function entry(at, question, answer, sources = []) {
   const src = sources.length ? '\n\nSources: ' + sources.map((s) => s.title || s.url || s).join(' · ') : '';
   return `\n<!-- ask-void:${at} -->\n### ${at.slice(0, 16).replace('T', ' ')} UTC\n\n**Asked:** ${question}\n\n${quoted}${src}\n`;
 }
-// V01D once said its builders' lessons were "codified in void.assimilate.md / void.plan.md"; they were not. Every file it names is
+// Verse once said its builders' lessons were "codified in void.assimilate.md / void.plan.md"; they were not. Every file it names is
 // checked: one that does not exist, or a claim that lessons live anywhere but the board, gets a correction under its words.
 export const BOARD = 'domains/handoff.md';
 export function checkCites(answer, exists = (f) => existsSync(resolve(root, f)) || existsSync(resolve(root, 'domains', f)) || existsSync(resolve(root, 'docs', f))) {
@@ -41,7 +41,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     j = r.ok ? await r.json() : null;
   } catch (_) { j = null; }
   const answer = j && typeof j.answer === 'string' ? j.answer.trim() : '';
-  if (!answer) { console.log('V01D gave no answer' + (j && j.note ? ': ' + j.note : '')); process.exit(3); }
+  if (!answer) { console.log('Verse gave no answer' + (j && j.note ? ': ' + j.note : '')); process.exit(3); }
   if (process.argv.includes('--print')) { console.log(answer); process.exit(0); }
   const at = new Date().toISOString();
   const notes = checkCites(answer);

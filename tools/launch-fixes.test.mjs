@@ -1,7 +1,7 @@
 // node --test tools/launch-fixes.test.mjs: the four live bugs the launch audit found (2026-10-15), each kept fixed.
 //   1. "play voidquest" / "play solar quest" open VoidQuest (skills/monopoly.js, its own board on the property-game rules)
 //   2. a model's markdown (a comic's **Title:** and *name*) renders, never shows raw asterisks (lib/md.js via void.html fixHtml)
-//   3. "what are you?" leads with V01D's self-answer and the canon's motto, word for word (void.html SELF_LEAD)
+//   3. "what are you?" leads with Verse's self-answer and the canon's motto, word for word (void.html SELF_LEAD)
 //   4. a game's "How to play" never stays over the board: × , Esc and the first tap off it close it (skills/howto.js)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

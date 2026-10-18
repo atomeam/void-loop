@@ -1,6 +1,6 @@
 /**
- * repo skill - V01D can see a public GitHub repository (owner, 2026-10-17: "make v01d able to see repos"). "look at atomeam/void-loop",
- * "what is in github.com/x/y", a pasted repo link: a V01D card of what is really there (description, language mix, recent commits, top-level
+ * repo skill - Verse can see a public GitHub repository (owner, 2026-10-17: "make v01d able to see repos"). "look at atomeam/void-loop",
+ * "what is in github.com/x/y", a pasted repo link: a Verse card of what is really there (description, language mix, recent commits, top-level
  * files, README opening, open issue and PR counts) read live by /api/repo (functions/api/repo.js, lib/repo-look.js). Public repos only, no
  * token; a private or missing one says "I can only see public repos". Everything from the repo is untrusted text: the server cleans it, this
  * page escapes it, and no model ever reads it. Copy / save come with the card frame (lib/card-share.js).

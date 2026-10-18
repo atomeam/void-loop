@@ -29,7 +29,7 @@ export function readCanon(text) {
   const terms = [...String((new RegExp('^## Terms\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ term: m[1].trim().slice(0, 60), means: clip(m[2], 400) })).slice(0, 20);
   // how Void is different: Adam's '- **name**: line' lines under ## How Void is different (2026-10-11); left out when there are none
-  const different = [...String((new RegExp('^## How Void is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
+  const different = [...String((new RegExp('^## How (?:Void|Verse) is different\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
     .map((m) => ({ name: m[1].trim().slice(0, 60), line: clip(m[2], 400) })).slice(0, 8);
   return { version: +((/^version:\s*(\d+)/m.exec(t) || [])[1] || 0), motto: known(sec('Motto')), voidquest: known(sec('VoidQuest')), ...(terms.length ? { terms } : {}), ...(different.length ? { different } : {}) };
 }
@@ -70,7 +70,7 @@ export function readCommits(log, n = 20) {
 }
 
 // domains/handoff.md: the two builders' shared board. Its Just finished, Ladders and Lessons ('- **name**: line' bullets) go into
-// self.json trimmed, so V01D learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
+// self.json trimmed, so Verse learns from how it is being built ("what did your builders learn?"). Now and Up for grabs stay out.
 export function readTagteam(text, n = 6) {
   const t = String(text || '');
   const sec = (h) => [...String((new RegExp('^## ' + h + '\\s*\\n([\\s\\S]*?)(?=^## |$(?![\\s\\S]))', 'm').exec(t) || [])[1] || '').matchAll(/^- \*\*(.+?)\*\*:\s*(.+)$/gm)]
@@ -80,8 +80,8 @@ export function readTagteam(text, n = 6) {
   return out.finished.length || out.ladders.length || out.lessons.length ? out : null;
 }
 
-// docs/wishlist.md: V01D's ranked improvement budget (plan only, nothing bought). Each table row goes into self.json 'wishlist'
-// trimmed, so "what's on your wishlist?" is answered from it and V01D can propose a new order.
+// docs/wishlist.md: Verse's ranked improvement budget (plan only, nothing bought). Each table row goes into self.json 'wishlist'
+// trimmed, so "what's on your wishlist?" is answered from it and Verse can propose a new order.
 export function readWishlist(text, n = 12) {
   return String(text || '').split('\n').map((l) => l.split('|').slice(1, -1).map((c) => c.trim())).filter((c) => c.length >= 7 && /^\d+$/.test(c[0]))
     .map((c) => { const t = (x, k) => clip(x.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/[`*]/g, ''), k); return { rank: +c[0], item: t(c[1], 80), free: t(c[2], 200), cost: t(c[3], 200), value: t(c[4], 120), why: t(c[5], 160) }; })
@@ -134,10 +134,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     builders: existsSync(tagteam) ? readTagteam(readFileSync(tagteam, 'utf8')) : null,
     wishlist: existsSync(resolve(root, 'docs/wishlist.md')) ? readWishlist(readFileSync(resolve(root, 'docs/wishlist.md'), 'utf8')) : null,
     commits: readCommits(spawnSync('git', ['log', '--no-merges', '-20', '--format=%cI%x09%s', 'HEAD'], { cwd: root, encoding: 'utf8', timeout: 20000 }).stdout) });
-  // V01D's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
+  // Verse's clips (tools/clips.mjs): its tricks library and what performed, so it picks what to film next and which trick to learn
   const clipsFile = resolve(root, 'domains/void.clips.json');
   if (existsSync(clipsFile)) { try { const c = JSON.parse(readFileSync(clipsFile, 'utf8')); const { TRICKS } = await import('./clips.mjs');
-    self.clips = { upload: 'Anyone can upload any V01D film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". V01D Tube: a-to-mind.com/films/ is the V01D video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
+    self.clips = { upload: 'Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
   const text = JSON.stringify(self, null, 1) + '\n';
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;
