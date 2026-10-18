@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
  "cases": 64,
- "runsTotal": 179,
+ "runsTotal": 180,
  "kinds": {
   "grow": 57,
-  "file": 68,
+  "file": 69,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T13:46:58Z",
+   "passed": 57,
+   "of": 68,
+   "kind": "file",
+   "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
   {
    "at": "2026-10-18T12:35:31Z",
    "passed": 64,
@@ -142,13 +149,6 @@
    "of": 50,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
-  },
-  {
-   "at": "2026-10-18T04:03:13Z",
-   "passed": 46,
-   "of": 48,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"swarm mind\" (skill:swarm-mind)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T12:35:31Z",
+  "skill:film-metadata": "2026-10-18T13:46:58Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -384,6 +384,9 @@
   "skill:qr-scan": "2026-10-18T11:21:11Z",
   "skill:recipe-stack": "2026-10-18T12:35:31Z",
   "skill:remediation-velocity": "2026-10-18T12:35:31Z",
-  "skill:riot": "2026-10-18T12:35:31Z"
+  "skill:riot": "2026-10-18T12:35:31Z",
+  "skill:safety-kit": "2026-10-18T13:46:58Z",
+  "skill:sheaf-check": "2026-10-18T13:46:58Z",
+  "skill:skill-eclipse": "2026-10-18T13:46:58Z"
  }
 }
