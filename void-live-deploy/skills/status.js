@@ -9,6 +9,7 @@
  * opens by itself when a run on main or one of those actions failed (autoOpen). Nothing is sent about you; nothing is kept.
  */
 import { cleanLower } from '../lib/ask-text.js';
+import { stabilityOf, stabilityHtml } from '../lib/autopsy.js';
 import { recovered, loadFailed, keepFailed, keepHealth, successPulse } from '../lib/success-pulse.js';
 export const SOURCES = [
   { name: 'Open-Meteo weather', for: 'weather, air quality, UV', url: 'https://api.open-meteo.com/v1/forecast?latitude=0&longitude=0&current=temperature_2m' },
@@ -194,7 +195,7 @@ export async function supportState(fetchFn = (u, o) => fetch(u, o), key = ownerK
 }
 
 const dot = (ok) => '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:' + (ok ? '#3fbf6a' : '#e0584a') + '"></span>';
-export function statusHtml(esc, skills, browser, sources, at, build, support, actions) {
+export function statusHtml(esc, skills, browser, sources, at, build, support, actions, stability) {
   const row = (ok, name, note, ms) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + dot(ok) + esc(name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(note) + (ms != null ? ' · ' + ms + ' ms' : '') + '</td></tr>';
   const up = sources ? sources.filter((s) => s.ok).length : 0;
   return '<h2>V01D status</h2><div class="sub">checked just now, from this browser' + (at ? ' · ' + esc(at) : '') + '</div>'
@@ -204,6 +205,7 @@ export function statusHtml(esc, skills, browser, sources, at, build, support, ac
     + '<h3 style="margin:12px 0 4px;font-size:15px">Outside sources' + (sources ? ' · ' + up + ' of ' + sources.length + ' answering' : '') + '</h3>'
     + (sources ? '<table style="border-collapse:collapse">' + sources.map((s) => row(s.ok, s.name, 'for ' + s.for + (s.note ? ' · ' + s.note : ''), s.ok ? s.ms : null)).join('') + '</table>'
       : '<p style="color:#8a8a92">Not checked: this browser is offline.</p>')
+    + (stability ? stabilityHtml(stability, esc) : '')
     + (build ? '<h3 style="margin:12px 0 4px;font-size:15px">V01D’s own build' + (buildFailed(build) ? ' · <span style="color:#e0584a">something on main failed</span>' : '') + '</h3><table style="border-collapse:collapse">'
       + build.map((b) => '<tr><td style="padding:3px 10px 3px 0;white-space:nowrap">' + (b.state === 'running' || b.state === 'unknown' ? '<span style="display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:6px;background:#8a8a92"></span>' : dot(b.state === 'passed')) + esc(b.name) + '</td><td style="color:#8a8a92;padding:3px 0">' + esc(b.note) + (b.url ? ' · <a href="' + esc(b.url) + '" target="_blank" rel="noopener">the run</a>' : '') + '</td></tr>'
         + (b.checks && b.checks.length ? '<tr class="status-cause"><td></td><td style="color:#e0584a;padding:0 0 6px"><b>What failed:</b> ' + b.checks.map(esc).join(' · ') + '<span style="color:#8a8a92"> · ' + (b.suite ? esc(b.suite) + '; ' : '') + 'verify.yml takes the breaking commit back by itself when it can name it, else the run says which commits to look at</span>'
@@ -230,7 +232,8 @@ async function run(text, api) {
   const browser = checkBrowser(), online = browser.find((b) => b.name === 'Online').ok;
   const [skills, sources, build, support, actions] = await Promise.all([checkSkills(), online ? Promise.all(SOURCES.map((s) => ping(s))) : Promise.resolve(null), online ? buildState().then((rows) => withCauses(rows)) : Promise.resolve(null), online ? supportState() : Promise.resolve(null), online ? failedActions() : Promise.resolve(null)]);
   const at = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit', second: '2-digit' });
-  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions);
+  const stability = online ? await fetch('/incidents.json', { cache: 'no-cache' }).then((r) => r.ok ? r.json() : null).then((j) => j ? stabilityOf(j) : null).catch(() => null) : null;
+  el.innerHTML = statusHtml(esc, skills, browser, sources, at, build, support, actions, stability);
   // a Success Pulse (asked by Void): something that failed at the last check and is fine now (a skill that did not load and does)
   const checked = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).map((x) => 'source:' + x.name), ...(build || []).map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];
   const failing = [...(skills.missing || []).map((n) => 'skill:' + n), ...(sources || []).filter((x) => !x.ok).map((x) => 'source:' + x.name), ...(build || []).filter((b) => b.state !== 'passed' && b.state !== 'running' && b.state !== 'unknown').map((b) => 'build:' + b.name), ...(actions || []).map((x) => 'action:' + x.kind)];

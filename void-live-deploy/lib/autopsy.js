@@ -19,7 +19,21 @@ const norm = (t) => String(t == null ? '' : t).toLowerCase().replace(/[^a-z0-9]+
 export function parseIncidents(j) {
   const list = Array.isArray(j) ? j : j && Array.isArray(j.incidents) ? j.incidents : [];
   return list.filter((i) => i && /^[0-9a-f]{7,40}$/i.test(String(i.sha || '')) && Array.isArray(i.checks) && Number.isFinite(Date.parse(i.at)))
-    .map((i) => ({ at: String(i.at), sha: String(i.sha).toLowerCase(), suite: String(i.suite || '').slice(0, 80), checks: i.checks.map((c) => String(c == null ? '' : c).slice(0, 400)).filter(Boolean) }));
+    .map((i) => ({ at: String(i.at), sha: String(i.sha).toLowerCase(), suite: String(i.suite || '').slice(0, 80), checks: i.checks.map((c) => String(c == null ? '' : c).slice(0, 400)).filter(Boolean),
+      touched: (Array.isArray(i.touched) ? i.touched : []).map((x) => String(x == null ? '' : x)).filter((x) => /^[\w./@-]{1,120}$/.test(x)).slice(0, 15) }));
+}
+
+/** the skill a changed path is (void-live-deploy/skills/<name>.js, not a helper under skills/order or a test), or null. Pure. */
+export function skillOfPath(path) {
+  const m = /(?:^|\/)skills\/([a-z0-9][a-z0-9-]*)\.js$/.exec(String(path || ''));
+  return m ? m[1] : null;
+}
+
+/** the changed skill files of a commit, each marked `likely` when its skill has a failing check in the same incident. Evidence, not blame. Pure. */
+export function suspectsOf(touched, checks) {
+  const failing = new Set((checks || []).map((c) => c.skill).filter(Boolean));
+  return (touched || []).map((file) => ({ file, skill: skillOfPath(file) })).filter((x) => x.skill)
+    .map((x) => ({ ...x, likely: failing.has(x.skill) })).sort((a, b) => b.likely - a.likely);
 }
 
 /** the title of a check: the words before its first colon, or its first four words when it has none. Pure. */
@@ -62,7 +76,7 @@ export function autopsy(incidentsJson, fam, guide, focus = '') {
     if (isGoLog(c.text)) goLog.push({ sha: i.sha, at: i.at, text: c.text });
     if (c.family) counts.set(c.family, { id: c.family, name: c.name, count: (counts.get(c.family) || { count: 0 }).count + 1 }); else un.set(c.text, (un.get(c.text) || 0) + 1);
   }
-  placed = placed.map((i) => ({ ...i, checks: i.checks.map(({ text, skill, family }) => ({ text, skill, family })) }));
+  placed = placed.map((i) => { const checks = i.checks.map(({ text, skill, family }) => ({ text, skill, family })); return { ...i, checks, suspects: suspectsOf(i.touched, checks) }; });
   return {
     total: inc.length, failing: placed.reduce((n, i) => n + i.checks.length, 0), recent: placed.slice(0, RECENT), focus: want, goLog,
     families: [...counts.values()].sort((a, b) => b.count - a.count || a.name.localeCompare(b.name)),
@@ -101,8 +115,34 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
-      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul></li>').join('') + '</ul>'
+      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
+}
+/**
+ * the stability gauge (Status card, asked by Void): how often the browser suite went red on main in the last 7 days, from incidents.json.
+ * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Pure.
+ */
+export function stabilityOf(incidentsJson, now = Date.now()) {
+  const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
+  const day = recent.filter((i) => now - Date.parse(i.at) < 864e5).length;
+  const score = Math.max(0, 100 - 12 * recent.length);
+  return { score, label: !recent.length ? 'steady' : recent.length <= 3 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length };
+}
+/** the gauge as markup: a bar and one sentence. Pure. */
+export function stabilityHtml(g, esc = escHtml) {
+  if (!g || !g.known) return '<div class="status-stability sub" data-stability="none">No red suite recorded yet, so there is nothing to gauge.</div>';
+  const col = g.label === 'steady' ? '#3fbf6a' : g.label === 'wobbly' ? '#d9a441' : '#e0584a';
+  return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
+    + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
+    + '<span class="sub">' + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day), from <code>incidents.json</code>.</span></div>';
+}
+/** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
+export function culpritHtml(i, esc) {
+  if (!Array.isArray(i.touched) || !i.touched.length) return '';
+  const sus = i.suspects || [], likely = sus.filter((x) => x.likely);
+  if (!sus.length) return '<div class="sub" data-culprit="none">No skill file changed in this commit (' + esc(i.touched.length) + ' file' + (i.touched.length === 1 ? '' : 's') + ' did), so the cause is not a skill rewrite.</div>';
+  return '<div class="sub" data-culprit="' + (likely.length ? 'likely' : 'changed') + '">' + (likely.length ? 'Likely cause: ' : 'Skill files changed in this commit: ')
+    + sus.slice(0, 5).map((x) => '<code>' + esc(x.file.replace(/^void-live-deploy\//, '')) + '</code>' + (x.likely ? ' (has a failing check)' : '')).join(', ') + '</div>';
 }
 /** the health pulse (self card): the latest incident, its commit and the families its checks map to; null when none is recorded. Pure. */
 export function pulseOf(a) {
@@ -130,7 +170,7 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
 export function failurePlants(incidentsJson, max = 12) {
   const by = new Map();
   for (const inc of parseIncidents(incidentsJson).slice(0, 30)) {
-    for (const t of new Set(inc.checks.map(titleOf).filter((x) => x.length >= 3))) {
+    for (const t of new Set(inc.checks.filter((c) => !/^suite ran to the end$/i.test(String(c).trim())).map(titleOf).filter((x) => x.length >= 3))) { // the suite's own last line is not a check
       const e = by.get(t) || { text: t.slice(0, 120), count: 0, last: Date.parse(inc.at) };
       e.count += 1; by.set(t, e);
     }

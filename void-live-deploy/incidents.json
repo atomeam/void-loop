@@ -2,14 +2,39 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T07:12:46.493Z",
-   "sha": "e819d8d7adc8ec1b9c69347c29d877ef78ca25a2",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39105712005",
+   "at": "2026-10-18T07:31:32.608Z",
+   "sha": "5bdb7a18402dfd7ba04e9418ff81fb57b171d432",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39107361136",
+   "suite": "browser suite on main",
+   "checks": [
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
+    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
+    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
+    "stage pack e extinction: \"mass extinction\" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked",
+    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
+    "suite ran to the end"
+   ]
+  },
+  {
+   "at": "2026-10-18T07:21:02.656Z",
+   "sha": "a823219cec2e64a8edd9beb76f1d2a3ff291d06e",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39106213834",
    "suite": "browser suite on main",
    "checks": [
     "paste any size and read aloud: a 3,000-line pasted log reaches the server under 20 kB with its first line and its last error, the title ends in … at a word, the card folds away everything given (saying how much of the middle was left out), and the card's button reads the whole card aloud and stops when tapped again",
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "check timeout: no check finished within 300 s"
+   ]
+  },
+  {
+   "at": "2026-10-18T06:58:58.171Z",
+   "sha": "e819d8d7adc8ec1b9c69347c29d877ef78ca25a2",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39105712005",
+   "suite": "browser suite on main",
+   "checks": [
+    "publish: \"publish my void as @neo\" asks the person first (nothing written); \"yes\" publishes and shows the link (the old @sam is freed); \"unpublish\" takes it down",
+    "suite ran to the end"
    ]
   },
   {
@@ -284,25 +309,6 @@
    "at": "2026-10-17T13:27:53.710Z",
    "sha": "c1ad05a96a257abe9a91eec2ef16ff37d95a6173",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39035452339",
-   "suite": "browser suite on main",
-   "checks": [
-    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-17T13:07:54.537Z",
-   "sha": "d88b94f8eed1a954a1e98d9f41206e8786830c76",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39034174431",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ]
-  },
-  {
-   "at": "2026-10-17T12:49:27.629Z",
-   "sha": "bf44047dedeaa256c159c6700e10a6fd8a2c64c3",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39032880397",
    "suite": "browser suite on main",
    "checks": [
     "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",

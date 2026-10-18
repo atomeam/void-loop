@@ -1,15 +1,29 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 57,
- "runsTotal": 171,
+ "cases": 59,
+ "runsTotal": 173,
  "kinds": {
-  "grow": 50,
+  "grow": 52,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T07:27:02Z",
+   "passed": 52,
+   "of": 62,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"play a local audio file\" (skill:media-object)"
+  },
+  {
+   "at": "2026-10-18T07:14:02Z",
+   "passed": 59,
+   "of": 61,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"keep this idea: a stage that remembers | why: it makes coming back feel like home\" (skill:idea-certificate)"
+  },
   {
    "at": "2026-10-18T06:59:10Z",
    "passed": 57,
@@ -135,20 +149,6 @@
    "of": 43,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"turn the questions i missed into a five-minute challenge\" (skill:challenge)"
-  },
-  {
-   "at": "2026-10-17T23:49:12Z",
-   "passed": 41,
-   "of": 42,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"closer on the figure\" (skill:zoom-figure)"
-  },
-  {
-   "at": "2026-10-17T23:19:19Z",
-   "passed": 39,
-   "of": 41,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
   }
  ],
  "seen": {
@@ -357,6 +357,14 @@
   "skill:habit-ring": "2026-10-18T06:59:10Z",
   "skill:health-habits": "2026-10-18T06:59:10Z",
   "skill:homotopy-edit": "2026-10-18T06:59:10Z",
-  "skill:hunting-question": "2026-10-18T06:59:10Z"
+  "skill:hunting-question": "2026-10-18T06:59:10Z",
+  "skill:idea-certificate": "2026-10-18T07:14:02Z",
+  "skill:interrupt-priority": "2026-10-18T07:14:02Z",
+  "skill:list-templates": "2026-10-18T07:14:02Z",
+  "skill:list-tools": "2026-10-18T07:14:02Z",
+  "skill:media-object": "2026-10-18T07:27:02Z",
+  "skill:memory-graph": "2026-10-18T07:27:02Z",
+  "skill:minimap": "2026-10-18T07:27:02Z",
+  "skill:miss-jobs": "2026-10-18T07:27:02Z"
  }
 }

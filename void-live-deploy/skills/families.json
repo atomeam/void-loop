@@ -14,8 +14,8 @@
  "totals": {
   "experiment": 7,
   "tested": 96,
-  "checked": 99,
-  "proven": 89
+  "checked": 98,
+  "proven": 90
  },
  "families": [
   {
@@ -846,8 +846,8 @@
    "count": {
     "experiment": 0,
     "tested": 4,
-    "checked": 4,
-    "proven": 9
+    "checked": 3,
+    "proven": 10
    },
    "skills": [
     {
@@ -865,11 +865,12 @@
     },
     {
      "name": "convert",
-     "tier": "checked",
-     "why": "5 browser-suite mentions, 1 real ask in the benchmark",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 5 browser-suite mentions, 1 real ask in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
      "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
@@ -2188,7 +2189,7 @@
     {
      "name": "error-garden",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },
@@ -2506,7 +2507,7 @@
     {
      "name": "incident",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 6 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
