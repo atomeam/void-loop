@@ -1239,6 +1239,7 @@ Object.values(things).forEach((th) => {
       });
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
+      tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
       syncFigures();
       announceNew();
       requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
@@ -1372,8 +1373,11 @@ Object.values(things).forEach((th) => {
       cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
       const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
       let moved = false;
+      const elOf = (id) => stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
+      const gameOpen = cards.some((k) => things[k.id] && isGameThing(things[k.id], elOf(k.id)));
       for (const [id, p] of Object.entries(moves)) {
         const th = things[id], c = cards.find((k) => k.id === id), g = th && (th.geo || geoOf.get(id)); if (!th || !c || !g) continue;
+        if (gameOpen && !th.prior && !isGameThing(th, elOf(id)) && !c.fresh) th.prior = { x: th.x, y: th.y }; // pushed aside by a game: it goes back here when the game closes
         const s = p.scale ?? (th.scale || 1);
         if (s < 1) { if (!(th.scale < 1)) th.home = { x: c.x, y: c.y }; th.scale = s; th.geo = g; } // shrunk: remember its full size and where it stood
         else { delete th.scale; delete th.geo; delete th.home; }
@@ -1381,8 +1385,103 @@ Object.values(things).forEach((th) => {
         if (sideOf(id)) th.card = { x: Math.round(p.x + g.sx * s), y: Math.round(p.y + g.sy * s) };
         placeThing(th); moved = true;
       }
+      if (settleGames()) moved = true;
       if (moved) { decorate(); save(); }
     }
+    // A game opens and the loose cards it now covers are moved aside, never destroyed (owner, 2026-10-18: a list card sat under the
+    // chess panel). lib/panel-fit.js: each covered card goes to the nearest clear spot (it remembers `prior`), or, with no room,
+    // is tucked into the tray at the left edge (one tap brings it back); when the game closes every card returns to its spot.
+    let panelFit = null; import('/lib/panel-fit.js').then((m) => { panelFit = m; layoutStage(); }).catch(() => {});
+    // a game is a kind with a "How to play" (skills/howto.js HOWTO) or a thing with its own side card; never just any card with a 3D art miniature
+    let gameKinds = new Set(); import('/skills/howto.js').then((m) => { gameKinds = new Set(Object.keys(m.HOWTO || {})); layoutStage(); }).catch(() => {});
+    const isGameThing = (th, el) => !!(el && th && (gameKinds.has(th.kind) || stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]')));
+    function trayEl() {
+      let t = document.getElementById('stage-tray');
+      if (!t) {
+        t = document.createElement('div'); t.id = 'stage-tray'; t.setAttribute('role', 'group'); t.setAttribute('aria-label', 'Tucked away while a game is open');
+        t.style.cssText = 'position:fixed;left:8px;bottom:calc(var(--dock-space,120px) + 4px);z-index:40;display:flex;flex-direction:column;gap:6px;align-items:flex-start;max-width:46vw';
+        document.body.appendChild(t);
+      }
+      return t;
+    }
+    function tuckApply() { // hide each tucked thing and show its chip; nothing is deleted
+      const tray = trayEl(); tray.textContent = '';
+      for (const th of Object.values(things)) {
+        if (!th.tucked) continue;
+        const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'); if (el) el.style.display = 'none';
+        const b = document.createElement('button'); b.type = 'button'; b.dataset.tuck = th.id;
+        const label = String(th.name || th.kind || 'card').replace(/^\w/, (c) => c.toUpperCase()).slice(0, 24);
+        b.textContent = label + ' \u21A9'; b.setAttribute('aria-label', 'Bring back ' + label);
+        b.style.cssText = 'font:inherit;font-size:12px;color:var(--ink,#eee);background:rgba(20,22,30,.92);border:1px solid var(--card-line,rgba(255,255,255,.16));border-radius:999px;padding:5px 12px;cursor:pointer;backdrop-filter:blur(6px)';
+        b.addEventListener('click', () => untuckThing(th.id));
+        tray.appendChild(b);
+      }
+      tray.hidden = !tray.childElementCount;
+    }
+    function untuckThing(id) { // one tap: it comes back, on the nearest clear spot to where it was, and stays there while this game is open
+      const th = things[id]; if (!th || !th.tucked) return;
+      th.tucked = false; th.restored = true;
+      const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
+      if (el) {
+        el.style.display = '';
+        if (panelFit && placement) { const o = otherRects(id), p = placement.freeSpot({ w: el.offsetWidth, h: el.offsetHeight }, o, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) }, { x: th.x, y: th.y }); th.x = p.x; th.y = p.y; placeThing(th); }
+      }
+      tuckApply(); save(); requestAnimationFrame(() => layoutStage());
+    }
+    // where a thing stands, not where an entrance animation draws it this frame (a board that lands scaled read 130 px off): the
+    // layout box for stage children, the drawn box only for what lives outside the stage (the ask bar)
+    const stageBox = (el) => {
+      if (el.offsetParent === stage) { const k = el.style.scale && parseFloat(el.style.scale) < 1 ? parseFloat(el.style.scale) : 1; return { x: el.offsetLeft, y: el.offsetTop, w: Math.round(el.offsetWidth * k), h: Math.round(el.offsetHeight * k) }; }
+      const r = el.getBoundingClientRect(), s0 = stage.getBoundingClientRect(); return { x: Math.round(r.left - s0.left), y: Math.round(r.top - s0.top), w: Math.round(r.width), h: Math.round(r.height) };
+    };
+    function otherRects(skipId) { // every visible thing and card panel on the stage, and the ask bar, as stage rectangles
+      const out = [...stage.querySelectorAll(':scope > .thing[data-id], :scope > .side-card')].filter((e) => (e.dataset.id || e.dataset.of) !== skipId && e.offsetWidth && e.style.display !== 'none').map(stageBox);
+      if (askRow && askRow.offsetWidth) out.push(stageBox(askRow));
+      return out;
+    }
+    function settleGames() {
+      if (!panelFit || PAGE) return false;
+      const all = Object.values(things).map((th) => ({ th, el: stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]') })).filter((x) => x.el);
+      const games = all.filter((x) => isGameThing(x.th, x.el) && x.el.offsetWidth);
+      const area = { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) };
+      let changed = false;
+      if (!games.length) { // the game closed: what it moved aside comes back, where it was; what was tucked is shown again
+        const back = all.filter((x) => x.th.prior || x.th.tucked || x.th.restored);
+        if (!back.length) return false;
+        for (const x of back) { x.th.tucked = false; delete x.th.restored; x.el.style.display = ''; }
+        const items = back.filter((x) => x.th.prior).map((x) => ({ id: x.th.id, prior: x.th.prior, w: x.el.offsetWidth, h: x.el.offsetHeight }));
+        const stay = all.filter((x) => !items.some((i) => i.id === x.th.id) && x.el.offsetWidth).map((x) => stageBox(x.el));
+        const plan = panelFit.restorePlan(items, stay, area);
+        for (const x of back) { const p = plan[x.th.id]; if (p) { x.th.x = p.x; x.th.y = p.y; placeThing(x.th); } delete x.th.prior; }
+        tuckApply(); return true;
+      }
+      const blockers = [];
+      for (const g of games) { // a game's rectangle is its board and its panel together
+        let r = stageBox(g.el); const side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(g.th.id) + '"]');
+        for (const n of [g.el, side]) if (n && gameWatch) { gameWatch.observe(n, { attributes: true, attributeFilter: ['style'] }); if (panelWatch) panelWatch.observe(n); } // it moves or grows later: look again
+        if (side && side.offsetWidth) { const q = stageBox(side), x0 = Math.min(r.x, q.x), y0 = Math.min(r.y, q.y); r = { x: x0, y: y0, w: Math.max(r.x + r.w, q.x + q.w) - x0, h: Math.max(r.y + r.h, q.y + q.h) - y0 }; }
+        blockers.push(r);
+      }
+      if (askRow && askRow.offsetWidth) blockers.push(stageBox(askRow));
+      const loose = all.filter((x) => !games.includes(x) && !x.th.tucked && !x.th.restored && !(x.th.scale < 1) && x.el.offsetWidth).map((x) => ({ id: x.th.id, ...stageBox(x.el) }));
+      const plan = panelFit.settleAround(loose, blockers, area);
+      for (const [id, p] of Object.entries(plan.moves)) { const th = things[id]; if (!th.prior) th.prior = { x: th.x, y: th.y }; th.x = p.x; th.y = p.y; placeThing(th); changed = true; }
+      for (const id of plan.tuck) { const th = things[id]; if (!th.prior) th.prior = { x: th.x, y: th.y }; th.tucked = true; changed = true; }
+      if (changed || all.some((x) => x.th.tucked)) tuckApply();
+      return changed;
+    }
+    // the game's place and the panel's size change after it opens (it is centred, its 3D board loads, "How to play" folds): look again
+    let settleQ = 0;
+    const settleSoon = () => {
+      if (settleQ) return;
+      settleQ = requestAnimationFrame(() => { settleQ = 0; if (document.documentElement.classList.contains('dragging')) return; if (settleGames()) { decorate(); save(); } });
+    };
+    const gameWatch = new MutationObserver(settleSoon), panelWatch = typeof ResizeObserver === 'function' ? new ResizeObserver(settleSoon) : null;
+    new MutationObserver(() => {
+      for (const el of stage.querySelectorAll(':scope > .side-card, :scope > .thing')) { if (el.classList.contains('side-card') || isGameThing(things[el.dataset.id] || {}, el)) { gameWatch.observe(el, { attributes: true, attributeFilter: ['style'] }); if (panelWatch) panelWatch.observe(el); } }
+      settleSoon();
+    }).observe(stage, { childList: true });
+    document.addEventListener('void:dropped', settleSoon);
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
     function announceNew() {
@@ -1639,7 +1738,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
-            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; delete th.prior; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             try { document.dispatchEvent(new CustomEvent('void:dropped', { detail: { id: th.id } })); } catch (_) {} // skills react to a thing set down (skills/list.js: a drop on a list adds an entry)

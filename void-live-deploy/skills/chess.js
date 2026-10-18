@@ -20,6 +20,7 @@ const STATUS = { checkmate: (s) => (s.turn === 'w' ? 'Checkmate · V01D wins' : 
 const thinking = new Map(); // th.id -> pending search, so a re-render never starts a second one
 let worker = null, seq = 0;
 const leaning = new Map(); // th.id -> what the search has seen so far ({ depth, nodes, best }), for the line while Void thinks
+const liveSquare = new Map(); // th.id -> the newest mount's onSquare: a 3D board still holding an older card's data taps the live card (a redraw while the board loaded left taps on a card no longer on the stage)
 function think(s, onProgress) {
   return new Promise((res) => {
     const opts = { depth: 5, ms: 1100 };
@@ -81,7 +82,7 @@ function mount(th, stageApi) {
     const s = st().s, chk = R.inCheck(s) ? s.board.indexOf(s.turn === 'w' ? 'K' : 'k') : -1;
     const seen = new Set();
     const targets = targetsOf(st().sel).filter((m) => (seen.has(m.to) ? false : seen.add(m.to))).map((m) => ({ to: m.to, capture: !!m.captured }));
-    return { free, board: s.board, last: s.last || null, selected: st().sel, targets, check: chk, onSquare };
+    return { free, board: s.board, last: s.last || null, selected: st().sel, targets, check: chk, onSquare: (...a) => (liveSquare.get(th.id) || onSquare)(...a) };
   }
   function paint() {
     const s = st().s, code = R.status(s), busy = thinking.has(th.id);
@@ -116,6 +117,7 @@ function mount(th, stageApi) {
     });
     thinking.set(th.id, p); paint();
   }
+  liveSquare.set(th.id, onSquare);
   function onSquare(sq0, cands = [sq0]) {
     const s = st().s;
     if (s.turn !== 'w' || thinking.has(th.id) || R.isOver(R.status(s))) return;

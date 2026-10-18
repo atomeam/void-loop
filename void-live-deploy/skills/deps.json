@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 631,
+ "counted": 633,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -13,6 +13,18 @@
    "skills": 32,
    "direct": 23,
    "dependants": 34
+  },
+  {
+   "file": "lib/placement.js",
+   "skills": 23,
+   "direct": 0,
+   "dependants": 25
+  },
+  {
+   "file": "lib/panel-fit.js",
+   "skills": 23,
+   "direct": 1,
+   "dependants": 24
   },
   {
    "file": "lib/field-kit.js",
@@ -1185,12 +1197,6 @@
    "dependants": 0
   },
   {
-   "file": "lib/placement.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 0
-  },
-  {
    "file": "lib/rating-note.js",
    "skills": 0,
    "direct": 0,
@@ -1234,6 +1240,12 @@
   },
   {
    "file": "lib/stale-tab.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0
+  },
+  {
+   "file": "lib/star-parallax.js",
    "skills": 0,
    "direct": 0,
    "dependants": 0
@@ -3382,6 +3394,39 @@
     "functions/films/rss.js"
    ]
   },
+  "lib/panel-fit.js": {
+   "imports": [
+    "lib/placement.js"
+   ],
+   "importedBy": [
+    "skills/side-card.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/eightball.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
+  },
   "lib/parody.js": {
    "imports": [],
    "importedBy": [
@@ -3469,7 +3514,35 @@
   },
   "lib/placement.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "lib/panel-fit.js"
+   ],
+   "reachedBy": [
+    "lib/arena.js",
+    "skills/aggravation.js",
+    "skills/battleship.js",
+    "skills/checkers.js",
+    "skills/chess.js",
+    "skills/connect4.js",
+    "skills/eightball.js",
+    "skills/fireworks.js",
+    "skills/games.js",
+    "skills/gears.js",
+    "skills/go.js",
+    "skills/lift3d.js",
+    "skills/lock.js",
+    "skills/mancala.js",
+    "skills/monopoly.js",
+    "skills/moon.js",
+    "skills/othello.js",
+    "skills/poker.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
+    "skills/ringer.js",
+    "skills/side-card.js",
+    "skills/sorry.js",
+    "skills/tictactoe.js"
+   ]
   },
   "lib/plan.js": {
    "imports": [],
@@ -4182,6 +4255,10 @@
    ]
   },
   "lib/stale-tab.js": {
+   "imports": [],
+   "importedBy": []
+  },
+  "lib/star-parallax.js": {
    "imports": [],
    "importedBy": []
   },
@@ -6754,7 +6831,8 @@
   "skills/side-card.js": {
    "imports": [
     "skills/howto.js",
-    "skills/sfx.js"
+    "skills/sfx.js",
+    "lib/panel-fit.js"
    ],
    "importedBy": [
     "skills/checkers.js",

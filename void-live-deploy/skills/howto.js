@@ -64,7 +64,7 @@ const CSS = '.howto-btn{margin-left:auto;border:1px solid var(--card-line,rgba(2
   + '.howto-tip{margin-top:8px;font-size:12px;color:var(--muted,#a9a9b2)}'
   + '.howto-go{margin-top:10px;width:100%;border:0;border-radius:10px;padding:9px 12px;background:#ffe2a1;color:#2a1c06;font:700 13px system-ui,sans-serif}'
   + '.howto-go:hover{background:#fff0c9}'
-  + '.howto{position:relative;max-height:min(46vh,340px);overflow:auto}'
+  + '.howto{position:relative}' // no cap of its own (owner, 2026-10-18: a second scroll box inside the card cut step 4 off); the card is the one box that fits above the ask bar and scrolls
   + '.howto-x{position:absolute;top:6px;right:6px;width:24px;height:24px;border:0;border-radius:50%;background:rgba(255,255,255,.08);color:var(--ink,#eee);font:600 15px/24px system-ui,sans-serif;cursor:pointer;padding:0}'
   + '.howto-x:hover{background:rgba(255,255,255,.18)}'
   + '@keyframes howto-in{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}'
