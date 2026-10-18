@@ -824,6 +824,16 @@
     .vpage.vc-self .vs-of { color: var(--ink-3); }
     @media (prefers-reduced-motion: no-preference) { .vpage.vc-self .vs-sec { animation: vs-in .35s ease both; } @keyframes vs-in { from { opacity: 0; transform: translateY(4px); } } }
     .vpage::-webkit-scrollbar { width: 8px; } .vpage::-webkit-scrollbar-thumb { background: rgba(255,255,255,.14); border-radius: 8px; }
+    /* the browser's own look stays out (owner, 2026-10-18: "protecting the aesthetic perimeter"): selected text takes V01D's violet, every scrolling
+       box gets a thin translucent pill with no arrows, and a toggle pill that is on looks on */
+    ::selection { background: rgba(150,110,255,.42); color: #fff; }
+    * { scrollbar-width: thin; scrollbar-color: rgba(190,170,255,.22) transparent; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; background: transparent; }
+    ::-webkit-scrollbar-button { display: none; width: 0; height: 0; }
+    ::-webkit-scrollbar-track, ::-webkit-scrollbar-corner { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(190,170,255,.22); border-radius: 6px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(190,170,255,.4); }
+    .vpage .tr-copy[aria-pressed="true"] { background: rgba(150,110,255,.28); border-color: rgba(190,170,255,.6); color: #fff; }
     @media (max-width: 480px) {
       .vpage { width: calc(100vw - 20px); padding: 20px 18px 16px; }
       .vpage h2 { font-size: 20px; }
