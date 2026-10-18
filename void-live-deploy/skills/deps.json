@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 546,
+ "counted": 550,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -25,6 +25,12 @@
    "skills": 13,
    "direct": 2,
    "dependants": 18
+  },
+  {
+   "file": "lib/stage-pack.js",
+   "skills": 13,
+   "direct": 13,
+   "dependants": 13
   },
   {
    "file": "lib/astro.js",
@@ -60,12 +66,6 @@
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
-   "dependants": 9
-  },
-  {
-   "file": "lib/stage-pack.js",
-   "skills": 9,
-   "direct": 9,
    "dependants": 9
   },
   {
@@ -3629,11 +3629,15 @@
   "lib/stage-pack.js": {
    "imports": [],
    "importedBy": [
+    "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
     "skills/decision-matrix.js",
+    "skills/eigenwork.js",
     "skills/gauge-feedback.js",
     "skills/habit-ring.js",
+    "skills/homotopy-edit.js",
     "skills/minimap.js",
+    "skills/plan-stability.js",
     "skills/recipe-stack.js",
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
@@ -3994,6 +3998,12 @@
    "importedBy": [
     "skills/time.js"
    ]
+  },
+  "skills/anneal-ambition.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/app.js": {
    "imports": [],
@@ -4406,6 +4416,12 @@
     "skills/time.js"
    ]
   },
+  "skills/eigenwork.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/eightball.js": {
    "imports": [
     "skills/side-card.js"
@@ -4796,6 +4812,12 @@
     "skills/room.js",
     "skills/walls.js"
    ]
+  },
+  "skills/homotopy-edit.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
   },
   "skills/howto.js": {
    "imports": [],
@@ -5498,6 +5520,12 @@
   },
   "skills/place.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/plan-stability.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/poker-rules.js": {

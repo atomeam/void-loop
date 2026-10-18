@@ -1459,6 +1459,41 @@ try {
     const gf = await S.p.$eval('.gauge-feedback', (e) => ({ kept: e.querySelectorAll('.gf-kept').length, struck: e.querySelectorAll('.gf-struck').length, frames: [...e.querySelectorAll('.gf-kept')[0].querySelectorAll('.gf-frame')].map((x) => x.dataset.frame), record: [...e.querySelectorAll('ul.gf-record li')].map((x) => x.textContent) })).catch(() => null);
     check('gauge feedback: of three statements the two about the login page and the deadline stay (each in neutral, kind and blunt frames) and the praise of the person is struck out of the permanent record',
       gf && gf.kept === 2 && gf.struck === 1 && gf.frames.join() === 'neutral,kind,blunt' && gf.record.length === 2 && !gf.record.some((x) => /genius/i.test(x)) && !S.errors.length, JSON.stringify({ gf, errors: S.errors }));
+  // thinking math (owner, 2026-10-18): eigenwork, edit check, plan stability and the ambition temperature, played the way a person uses them
+  if (want("thinking math: eigenwork refuses done until every required mode moved, the edit check flags a tear until a path joins it, a brittle plan says brittle, a cooling ambition list refuses proposals")) { const S = await fresh();
+    await S.ask('factor my goal launch a podcast', 600);
+    await S.p.fill('.eigenwork textarea', 'research: read papers | 40\ndecision: pick a date | 0\ncraft: record | 10\nsocial: tell friends | 0');
+    const early = await S.p.$eval('.eigenwork .ew-status', (e) => e.textContent);
+    await S.p.click('.eigenwork .ew-done', { force: true });
+    const stillOpen = !(await S.state()).some((x) => x.kind === 'eigenwork' && x.finished);
+    await S.p.fill('.eigenwork textarea', 'research: read papers | 40\ndecision: pick a date | 5\ncraft: record | 10\nsocial: tell friends | 1');
+    await S.p.click('.eigenwork .ew-done');
+    const finished = await until(async () => (await S.state()).some((x) => x.kind === 'eigenwork' && x.finished), 3000);
+    check('eigenwork: four mode bars, done refused while decision and social sit at zero, allowed once every required mode has moved', /Not done: nothing yet in decision, social/.test(early) && stillOpen && finished && !S.errors.length, JSON.stringify({ early, stillOpen, finished, errors: S.errors }));
+    await S.ask('check my edit', 600);
+    await S.p.fill('.homotopy-edit textarea[data-field="oldSrc"]', '1: a\n2: b\n3: c\n4: so ship <- 1,2,3');
+    await S.p.fill('.homotopy-edit textarea[data-field="newSrc"]', '1: a\n2: b\n3: c\n4: so ship <- 3');
+    const tear = await S.p.$eval('.homotopy-edit .he-out', (e) => e.textContent);
+    await S.p.fill('.homotopy-edit textarea[data-field="pathSrc"]', '4: 1,2,3 > 2,3 > 3');
+    const joined = await S.p.$eval('.homotopy-edit .he-out', (e) => e.textContent);
+    check('edit check: a claim that lost two premises at once is a tear, and a path of one-premise hops joins it', /Tear at claim 4/.test(tear) && /Joined at claim 4/.test(joined) && !/Tear at/.test(joined) && !S.errors.length, JSON.stringify({ tear, joined, errors: S.errors }));
+    await S.ask('is my plan stable', 600);
+    await S.p.fill('.plan-stability textarea', 'start 100\n10 x1.5 +-5%\n10 x1.5 +-5%\n10 x1.5 +-5%\n10 x1.5 +-5%');
+    const brittle = await S.p.$eval('.plan-stability .ps-out', (e) => e.dataset.state);
+    await S.p.fill('.plan-stability textarea', 'start 100\n10 x0.5 +-5%\n10 x0.5 +-5%\n10 x0.5 +-5%\n10 x0.5 +-5%');
+    const stable = await S.p.$eval('.plan-stability .ps-out', (e) => e.dataset.state);
+    check('plan stability: a chain that multiplies by 1.5 four times reads brittle, one that halves reads stable', brittle === 'brittle' && stable === 'stable' && !S.errors.length, JSON.stringify({ brittle, stable, errors: S.errors }));
+    await S.ask('set my ambition temperature for the book, hot 3 days, cool 30 days, keep 2', 600);
+    const phaseNow = await S.p.$eval('.anneal-ambition .an-phase', (e) => e.dataset.phase);
+    await S.ask('set my ambition temperature for the film, hot 0 days, cool 30 days, keep 2', 600);
+    const card = '.anneal-ambition >> nth=1 >> ';
+    const cooling = await S.p.$eval(card + '.an-phase', (e) => e.dataset.phase).catch(() => '');
+    for (const v of ['one', 'two']) { await S.p.fill(card + '.an-input', v); await S.p.dispatchEvent(card + '.an-add', 'click'); }
+    const refused = await S.p.$eval(card + '.an-add', (b) => b.disabled).catch(() => false);
+    const why = await S.p.$eval(card + '.an-refuse', (e) => e.textContent).catch(() => '');
+    await S.p.dispatchEvent(card + '.an-del >> nth=0', 'click').catch(() => {});
+    const reopened = await until(async () => await S.p.$eval(card + '.an-add', (b) => !b.disabled).catch(() => false), 3000);
+    check('ambition temperature: starts hot, cooling by date refuses a new proposal at the kept size, and one delete opens it again', phaseNow === 'hot' && cooling === 'cooling' && refused && /Cooling: cut the list/.test(why) && reopened && !S.errors.length, JSON.stringify({ phaseNow, cooling, refused, why, reopened, errors: S.errors }));
     await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
