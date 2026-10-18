@@ -19,6 +19,7 @@
 import { publicWhat } from './growth-tree.js'; // the site leaves out quotes of the owner's messages
 import { reactionBar } from '../lib/reaction-bar.js'; // spectator reactions under a step (the closed list, /api/react)
 import { targetOf } from '../lib/reactions.js';
+import { dockPanel } from '../lib/placement.js'; // where the walkthrough panel goes so it never covers the open card or the ask bar
 export const SEEN_KEY = 'a2m.void.growthSeen.v1'; // when this device first visited: nothing older is ever new to it (a first visit stays empty)
 export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here: a thing is previewed once, then never offered again
 export const LEDGER_URL = '/void.growth.json';
@@ -121,7 +122,47 @@ async function verifiedSet() {
 
 let tour = null; // the walkthrough on screen: { steps, i, made, bar }
 
-// the bar sits just above the ask box and above an open card (a step's card must not cover its own controls)
+// the panel never covers an open card, the step's things or the ask bar (owner, 2026-10-18: it opened over the dragon card, hiding its
+// text and buttons): lib/placement.js dockPanel puts it above the ask bar when nothing is open, beside the open card when there is room,
+// docked at the top or between the card and the ask bar, and when there is no free space it becomes a modal layer over a dimmed stage
+// (focus kept inside, Esc closes, aria-modal). It is re-placed as the card lands, grows or the window changes.
+const rectOf = (e) => { const r = e && e.getBoundingClientRect ? e.getBoundingClientRect() : null; return r && r.width > 0 && r.height > 0 ? { x: r.left, y: r.top, w: r.width, h: r.height } : null; };
+function avoidRects() {
+  const out = [], pg = document.querySelector('.vpage.on'); if (pg) out.push(rectOf(pg));
+  for (const id of (tour && tour.made && tour.made.ids) || []) { const e = document.querySelector('#stage [data-id="' + (window.CSS && CSS.escape ? CSS.escape(id) : id) + '"]'); if (e) out.push(rectOf(e)); }
+  return out.filter(Boolean);
+}
+function place(el) {
+  if (!el || !el.isConnected) return;
+  const d = document.getElementById('dock'), dr = d && d.getBoundingClientRect();
+  const floor = dr && dr.height ? dr.top : innerHeight - 72;
+  const heightAt = (w) => { el.style.width = w + 'px'; el.style.maxHeight = 'none'; return el.offsetHeight; };
+  const p = dockPanel({ view: { w: innerWidth, h: innerHeight }, top: 0, floor, avoid: avoidRects(), heightAt });
+  Object.assign(el.style, { left: p.x + 'px', top: p.y + 'px', width: p.w + 'px', maxHeight: p.maxH + 'px', bottom: 'auto' });
+  el.dataset.dock = p.mode;
+  modal(el, p.mode === 'modal');
+}
+// no free space: a proper modal layer. The stage behind is dimmed and blurred, focus stays in the panel, Esc closes the walkthrough.
+function modal(el, on) {
+  let s = document.getElementById('showcase-scrim');
+  if (!on) { if (s) s.remove(); el.setAttribute('role', 'region'); el.removeAttribute('aria-modal'); return; }
+  if (!s) {
+    s = document.createElement('div'); s.id = 'showcase-scrim'; s.className = 'showcase-scrim'; s.setAttribute('aria-hidden', 'true');
+    s.style.cssText = 'position:fixed;inset:0;z-index:59;background:rgba(4,5,10,.55);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)';
+    document.body.insertBefore(s, el);
+  }
+  const was = el.getAttribute('aria-modal') === 'true';
+  el.setAttribute('role', 'dialog'); el.setAttribute('aria-modal', 'true');
+  if (!was || !el.contains(document.activeElement)) { const f = el.querySelector('button'); if (f) f.focus({ preventScroll: true }); }
+}
+// Tab and Shift+Tab go round the panel's own buttons while it is modal
+function trap(e) {
+  const el = e.currentTarget; if (e.key !== 'Tab' || el.getAttribute('aria-modal') !== 'true') return;
+  const f = [...el.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])')].filter((x) => x.offsetParent !== null);
+  if (!f.length) return;
+  const i = f.indexOf(document.activeElement);
+  if (e.shiftKey && i <= 0) { e.preventDefault(); f[f.length - 1].focus(); } else if (!e.shiftKey && (i === -1 || i === f.length - 1)) { e.preventDefault(); f[0].focus(); }
+}
 function bar() {
   let el = document.getElementById('showcase-bar');
   if (!el) {
@@ -129,12 +170,14 @@ function bar() {
     el.id = 'showcase-bar';
     el.setAttribute('role', 'region');
     el.setAttribute('aria-label', 'What Void made');
-    el.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);width:min(720px,calc(100% - 32px));box-sizing:border-box;z-index:60;padding:8px 12px;border-radius:12px;'
+    el.style.cssText = 'position:fixed;box-sizing:border-box;z-index:60;padding:8px 12px;border-radius:12px;overflow:auto;overscroll-behavior:contain;'
       + 'background:rgba(20,22,30,.9);border:1px solid rgba(255,255,255,.1);backdrop-filter:blur(8px);box-shadow:0 8px 24px rgba(0,0,0,.4);'
       + 'color:var(--ink-2,#b9bdcb);font-size:13px;line-height:1.35;display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px';
+    el.addEventListener('keydown', trap);
     document.body.appendChild(el);
-    el._place = () => { const d = document.getElementById('dock'); el.style.bottom = ((d ? d.getBoundingClientRect().height : 72) + 6) + 'px'; };
+    el._place = () => place(el);
     addEventListener('resize', el._place);
+    el._tick = setInterval(el._place, 400); // the card lands, grows or settles after the step's ask: keep clear of it
   }
   el._place();
   return el;
@@ -150,7 +193,8 @@ function button(label, on) {
 
 function end(stageApi) {
   if (!tour) return;
-  const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); el.remove(); }
+  const el = document.getElementById('showcase-bar'); if (el) { removeEventListener('resize', el._place); clearInterval(el._tick); el.remove(); }
+  const s = document.getElementById('showcase-scrim'); if (s) s.remove();
   removeEventListener('keydown', tour.esc, true);
   tour = null;
 }
@@ -191,16 +235,19 @@ async function step(stageApi) {
   if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)
     const tray = document.createElement('span');
     tray.className = 'showcase-tray';
-    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0)';
+    // the panel's own footer row (owner, 2026-10-18: not a separate row piled between the panel and the ask bar)
+    tray.style.cssText = 'display:flex;flex-wrap:wrap;gap:5px;flex:1 1 100%;align-items:center;color:var(--ink-3,#8b90a0);border-top:1px solid rgba(255,255,255,.08);padding-top:6px';
     tray.append(document.createTextNode('grab one onto the stage:'));
     for (const it of items) tray.append(chip(stageApi, it));
     el.append(tray);
   }
+  place(el);
   const before = new Set(Object.keys(stageApi.things())), pageBefore = document.querySelector('.vpage');
   tour.made = { ids: [], pageBefore };
   await stageApi.ask(s.ask);
   if (!tour || tour.steps[tour.i] !== s) return;
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
+  place(el); // clear of what the step just put up
   // the preview has to show the thing it names (owner, 2026-10-16: "the preview is supposed to actually preview what it says"):
   // a moment for the card to land, then proof: a new thing on the stage, a new card, or the page's own log saying a skill
   // answered (not the encyclopedia, not a miss). Without proof the line says so, and the ask goes to the miss board as a
@@ -282,7 +329,12 @@ export function start(stageApi, steps, { label = 'Built while you were away' } =
   if (tour) end(stageApi);
   if (!steps.length) return false;
   const bl = typeof document !== 'undefined' && document.getElementById('whatsnew-bell'); if (bl) bl.remove(); // the walkthrough has begun, the icon has done its job
-  tour = { steps, i: 0, made: null, label, esc: (e) => { if (e.key === 'Escape' && tour && !document.querySelector('.vpage.on')) end(stageApi); } };
+  tour = { steps, i: 0, made: null, label, esc: (e) => {
+    if (e.key !== 'Escape' || !tour) return;
+    const el = document.getElementById('showcase-bar');
+    if (el && el.dataset.dock === 'modal') { e.preventDefault(); e.stopPropagation(); end(stageApi); return; } // the modal layer closes first
+    if (!document.querySelector('.vpage.on')) end(stageApi);
+  } };
   addEventListener('keydown', tour.esc, true);
   step(stageApi);
   return true;

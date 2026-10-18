@@ -2625,6 +2625,75 @@ try {
       JSON.stringify({ first, second, misses, errors: P.errors }).slice(0, 900));
     await P.ctx.close();
   }
+  // the owner (2026-10-18): the walkthrough opened in the middle of the screen over the dragon card, hiding its text and buttons; and with a
+  // field-mind card up, the panel, its "grab one" pills and the ask bar piled into one band. The panel (lib/placement.js dockPanel) goes beside,
+  // above or below the open card, clear of the ask bar, the pills are its footer, and with no free space it is a modal layer (dimmed stage,
+  // focus kept inside, Esc closes). Field-mind cards: the header's insets match, the F-id tags stay whole, every control sits inside the card.
+  if (want("showcase never covers the open card or the ask bar; field-mind headers and controls fit")) {
+    const LEDGER = [
+      { at: '2026-10-18T01:40:53Z', by: 'claude', kind: 'grow', what: 'cards evolve', show: 'cards evolve into cinematic paintings; mint collectible cards', try: 'make a collectible card of a dragon' },
+      { at: '2026-10-18T01:00:00Z', by: 'claude', kind: 'build', what: 'nca', show: 'the NCA mind grows a living lattice', try: 'nca mind' },
+      { at: '2026-10-17T01:00:00Z', by: 'claude', kind: 'build', what: 'counter', show: 'a counter you can tap', try: 'make a counter' },
+      { at: '2026-10-17T00:00:00Z', by: 'claude', kind: 'grow', what: 'paper', show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
+    ];
+    const hit = (a, b) => !!(a && b) && a.x < b.x + b.w && b.x < a.x + a.w && a.y < b.y + b.h && b.y < a.y + a.h;
+    const open = async (w, h, order) => {
+      const P = await fresh(); await P.p.setViewportSize({ width: w, height: h });
+      const list = order ? order.map((i) => LEDGER[i]) : LEDGER;
+      await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(list) }));
+      await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: list.map((e) => e.try) }) }));
+      await P.ask('show me everything you made', 600); return P;
+    };
+    // the panel, the open card (its box, its text and buttons) and the ask bar, once the card has landed and the panel has settled beside it
+    const boxes = async (P, card) => { await until(() => P.p.evaluate((sel) => !!(document.querySelector('#showcase-bar[data-dock]') && document.querySelector(sel)), card), 9000); await P.p.waitForTimeout(900); return boxes1(P, card); };
+    const boxes1 = (P, card) => P.p.evaluate((sel) => {
+      const R = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return r.width && r.height ? { x: r.left, y: r.top, w: r.width, h: r.height } : null; };
+      const bar = document.getElementById('showcase-bar'), c = document.querySelector(sel);
+      return { bar: R(bar), card: R(c), dock: bar && bar.dataset.dock, row: R(document.getElementById('row')), tray: R(bar && bar.querySelector('.showcase-tray')), rx: !!(bar && bar.querySelector('.rx-bar')),
+        parts: c ? [...c.querySelectorAll('button, p, h2, .g-title, .g-sub, select')].filter((e) => e.offsetParent).map(R).filter(Boolean) : [],
+        scrim: !!document.getElementById('showcase-scrim'), role: bar && bar.getAttribute('role'), modal: bar && bar.getAttribute('aria-modal'), text: bar ? bar.innerText.replace(/\s+/g, ' ').slice(0, 60) : '' };
+    }, card);
+    // clear: the panel touches neither the card nor the ask bar; or, where it has to, it is a real modal layer
+    const clear = (b) => !!b && !!b.bar && !!b.card && (b.dock === 'modal' ? b.scrim && b.role === 'dialog' && b.modal === 'true' : !hit(b.bar, b.card) && !b.parts.some((x) => hit(b.bar, x)) && !hit(b.bar, b.row));
+    const r = {};
+    // the dragon card at 1280x800: beside it; Next still walks on, the reactions sit under the step, the pills are the panel's footer
+    const A = await open(1280, 800); r.wide = await boxes(A, '.vpage.on'); r.wideTray = !!r.wide && !!r.wide.tray && r.wide.tray.y >= r.wide.bar.y && r.wide.tray.y + r.wide.tray.h <= r.wide.bar.y + r.wide.bar.h + 1;
+    await A.p.click('[data-showcase="next"]'); r.next = await until(async () => { const t = await A.p.$eval('#showcase-bar', (e) => e.innerText).catch(() => ''); return /^2 of 4/.test(t) ? t.slice(0, 40) : ''; }, 8000);
+    await A.ctx.close();
+    // the dragon card on a 390-wide phone: no free space, so a modal: focus inside, Tab goes round the panel, Esc closes it all
+    const B = await open(390, 800); r.phone = await boxes(B, '.vpage.on');
+    r.focusIn = await B.p.evaluate(() => document.getElementById('showcase-bar').contains(document.activeElement));
+    for (let i = 0; i < 12; i++) await B.p.keyboard.press('Tab');
+    r.tabIn = await B.p.evaluate(() => document.getElementById('showcase-bar').contains(document.activeElement));
+    await B.p.keyboard.press('Escape'); await B.p.waitForTimeout(200);
+    r.escaped = await B.p.evaluate(() => !document.getElementById('showcase-bar') && !document.getElementById('showcase-scrim'));
+    await B.ctx.close();
+    // a field-mind card on a short 1280x640 window: the panel and its pills clear of the card and the ask bar; the header's insets match
+    const C = await open(1280, 640, [1, 2, 3]); r.short = await boxes(C, '.field-card');
+    r.head = await C.p.evaluate(() => { const c = document.querySelector('.field-card'), cr = c.getBoundingClientRect(), ext = (e) => { const g = document.createRange(); g.selectNodeContents(e); return g.getBoundingClientRect(); };
+      return { left: Math.round((ext(c.querySelector('.g-title')).left - cr.left) * 10) / 10, right: Math.round((cr.right - ext(c.querySelector('.g-sub')).right) * 10) / 10 }; });
+    await C.ctx.close();
+    // field minds at 1280x800 and 390x800: every control inside its card; the F-id tags whole, never one alone on a line, the full list in the title
+    r.minds = [];
+    for (const w of [1280, 390]) {
+      const M = await fresh(); await M.p.setViewportSize({ width: w, height: 800 });
+      for (const ask of ['swarm mind', 'resonance mind', 'nca mind']) await M.ask(ask, 900);
+      await until(async () => (await M.p.$$('.field-card')).length >= 3, 8000);
+      r.minds.push(await M.p.evaluate((w) => [...document.querySelectorAll('.field-card')].map((c) => {
+        const cr = c.getBoundingClientRect(), out = [...c.querySelectorAll('.ff-btns > *')].filter((b) => b.offsetParent).filter((b) => { const x = b.getBoundingClientRect(); return x.left < cr.left - 1 || x.right > cr.right + 1 || x.top < cr.top - 1 || x.bottom > cr.bottom + 1; }).map((b) => b.textContent.trim().slice(0, 16) || b.tagName);
+        const tags = [...c.querySelectorAll('.g-sub .g-tag')], lines = {}; for (const t of tags) { const y = Math.round(t.getBoundingClientRect().top); lines[y] = (lines[y] || 0) + 1; }
+        return { w, id: c.dataset.field, out, tags: tags.length, whole: tags.every((t) => t.getClientRects().length === 1), lines: Object.values(lines), title: c.querySelector('.g-sub').title };
+      }), w));
+      await M.ctx.close();
+    }
+    const minds = r.minds.flat(), res = minds.filter((m) => m.id === 'resonance-mind');
+    check('showcase never covers the open card or the ask bar: at 1280x800 the walkthrough sits beside the dragon card, clear of its text, its buttons and the ask bar, its "grab one" pills its own footer, the reactions under the step, and Next still walks on; on a 390-wide phone, with no free space, it is a modal layer (dimmed stage, role dialog, aria-modal) that keeps focus and Esc closes; at 1280x640 with a field-mind card up, the panel clears the card and the ask bar; field-mind headers have matching insets (within 2px), the F-id tags stay whole and never leave one alone on a line, and every control sits inside its card at 1280 and 390 wide',
+      clear(r.wide) && r.wide.dock !== 'modal' && r.wideTray && r.wide.rx && /^2 of 4/.test(r.next || '')
+        && clear(r.phone) && r.focusIn && r.tabIn && r.escaped
+        && clear(r.short) && r.short.dock !== 'modal' && !!r.short.tray && Math.abs(r.head.left - r.head.right) <= 2
+        && minds.length === 6 && minds.every((m) => !m.out.length) && res.length === 2 && res.every((m) => m.tags === 6 && m.whole && m.lines.every((n) => n >= 2) && /F-034 · F-027/.test(m.title)),
+      JSON.stringify({ ...r, wide: r.wide && { ...r.wide, parts: r.wide.parts.length }, phone: r.phone && { ...r.phone, parts: r.phone.parts.length }, short: r.short && { ...r.short, parts: r.short.parts.length } }).slice(0, 1600));
+  }
   // the owner (2026-10-11): a sticky sat 85% hidden behind the rating card; an open card never buries a stage thing
   if (want("an open card never buries a stage thing: it steps aside while the card is up and comes back, its saved place unchanged")) {
     const r = {};

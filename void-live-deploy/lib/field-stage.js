@@ -53,6 +53,15 @@ function makeSound() {
   };
 }
 
+/** the header's subtitle. A list of tags ("F-034 · F-027 · F-044 ...") keeps each tag whole and wraps only between tags, in balanced lines
+ *  (owner, 2026-10-18: "· F-042" sat alone on a second line); the full list is its title too. */
+function subLine(sub, text) {
+  const parts = String(text).split(' · ');
+  if (parts.length < 2) { sub.textContent = text; return; }
+  sub.textContent = ''; sub.title = text; sub.style.textWrap = 'balance';
+  parts.forEach((t, i) => { const s = document.createElement('span'); s.className = 'g-tag'; s.style.whiteSpace = 'nowrap'; s.textContent = t + (i < parts.length - 1 ? ' ·' : ''); sub.append(s, i < parts.length - 1 ? ' ' : ''); });
+}
+
 /** mount a field card for an idea on the stage; returns { el, state, tick(n) }. */
 export function mountField(th, stageApi, idea) {
   const W = idea.W || 320, H = idea.H || 240, cls = 'field-card ff-' + idea.id;
@@ -62,7 +71,9 @@ export function mountField(th, stageApi, idea) {
   const el = document.createElement('div');
   el.className = 'thing kept-card game-card ' + cls; el.dataset.id = th.id; el.tabIndex = 0; el.dataset.field = idea.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(' + (W + 24) + 'px, calc(100vw - 20px))';
-  el.innerHTML = '<div class="ff-body"><div class="g-head"><span class="g-title"></span><span class="g-sub"></span></div>'
+  // the header's insets are the same on both sides (owner, 2026-10-18: the subtitle sat against the right border): a long subtitle wraps
+  // under the title, right-aligned, instead of running past the card's edge, and both keep 6px more than the card's padding
+  el.innerHTML = '<div class="ff-body"><div class="g-head" style="flex-wrap:wrap;row-gap:2px;padding:0 6px"><span class="g-title"></span><span class="g-sub" style="flex:0 1 auto;min-width:0;margin-left:auto;text-align:right"></span></div>'
     + '<div class="ff-frame" style="border-radius:10px;overflow:hidden"></div>'
     + '<div class="ff-hud g-status" role="status" aria-live="polite" style="font-size:13px;margin-top:6px"></div>'
     + '<div class="ff-why" style="font-size:11.5px;color:var(--muted,#8a8a8a);min-height:1.4em"></div>'
@@ -71,7 +82,7 @@ export function mountField(th, stageApi, idea) {
     + '<button type="button" class="g-btn ff-tilt" aria-pressed="false">Tilt</button><button type="button" class="g-btn ff-reset">Reset</button></div>'
     + '<div class="ff-sealed" style="font-size:11.5px;color:var(--muted,#8a8a8a);min-height:1.3em"></div></div>';
   const q = (s) => el.querySelector(s);
-  q('.g-title').textContent = idea.title; q('.g-sub').textContent = idea.sub || '';
+  q('.g-title').textContent = idea.title; subLine(q('.g-sub'), idea.sub || '');
   const cv = document.createElement('canvas'), dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = W * dpr; cv.height = H * dpr; cv.className = 'ff-canvas'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', idea.title + ' (a live field; move over it)');
   cv.style.cssText = 'display:block;width:100%;aspect-ratio:' + W + '/' + H + ';background:#05040c;touch-action:none;cursor:crosshair';
@@ -136,6 +147,8 @@ export function mountField(th, stageApi, idea) {
   // an idea may add its own controls and think in the background: idea.mount({ el, q, th, input, cv, W, H, tick, redraw, still }) -> { dispose() }
   let hook = null;
   if (typeof idea.mount === 'function') { try { hook = idea.mount({ el, q, th, input, cv, W, H, tick, redraw: () => { morph(); draw(); }, still: () => still }) || null; } catch (_) { hook = null; } }
+  // every control stays inside the card (owner, 2026-10-18: Tilt and Reset were clipped off the right edge): the row wraps, and no one control is wider than it
+  for (const c of q('.ff-btns').children) c.style.maxWidth = '100%';
   const endHook = () => { try { hook && hook.dispose && hook.dispose(); } catch (_) { /* gone */ } hook = null; };
 
   // the loop: paused while hidden, ended when the card leaves, none at all under reduced motion
