@@ -528,6 +528,11 @@
     html.has-world #stage { cursor: grab; touch-action: none; }
     html.has-world .vpage { max-height: min(58vh, calc(100vh - 140px)); max-height: min(58dvh, calc(100dvh - 140px)); background: linear-gradient(160deg, rgba(10,14,28,0.62), rgba(10,14,28,0.40)); }
     @media (prefers-reduced-motion: reduce) { #void-world, #void-card-world { transition: none; } }
+    /* the Zorbleflux throttle's indicator (asked by Verse, 2026-10-18): while someone uses a card's input and the moving things on the stage are held
+       back (lib/motion-throttle.js sets html[data-motion-throttle]), a small quiet pill says so; it fades in and out and never takes a tap */
+    html::after { content: 'calming the field'; content: 'calming the field' / ''; position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 5; padding: 2px 10px; border-radius: 999px; font: 11px/1.6 system-ui, sans-serif; letter-spacing: .04em; color: rgba(214,222,255,.9); background: rgba(40,34,90,.55); border: 1px solid rgba(150,130,255,.35); opacity: 0; transition: opacity .3s; pointer-events: none; }
+    html[data-motion-throttle="slow"]::after { opacity: .75; }
+    @media (prefers-reduced-motion: reduce) { html::after { transition: none; } }
     /* read aloud (owner, 2026-10-15: "Verse needs a read aloud button"): a round button pinned in each card's top corner */
     .vread { position: sticky; top: 0; float: right; z-index: 2; margin: -10px -12px 4px 10px; width: 36px; height: 36px; border-radius: 50%; padding: 0;
       display: grid; place-items: center; cursor: pointer; color: #cfd8ff; background: rgba(20,22,34,.72); border: 1px solid rgba(255,255,255,.14);
