@@ -47,7 +47,6 @@ export default {
     'end of this quarter',
     'format 2026-10-03 as us',
     'every 10 days from 2026-10-01 for 4 times',
-    'days since 2026-01-01',
     'next birthday 1990-05-03',
     'zodiac sign for march 3',
     'deadline risk 2026-10-20',

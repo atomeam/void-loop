@@ -129,7 +129,7 @@ test('miss-jobs: the ask is tight', () => {
 });
 const NOW = Date.parse('2026-10-18T12:00:00Z'), day = '2026-10-18T10:00:00Z';
 const rows = [
-  { ask: 'draw a mandala', count: 5, first: '2026-10-16T10:00:00Z', last: day, fallback: 'none:x' },
+  { ask: 'draw a mandala', count: 5, first: '2026-10-16T10:00:00Z', last: day, fallback: '' }, // a miss that was only read-and-unknown is not queued any more (lib/learn.js),
   { ask: 'sing me a song', count: 3, first: '2026-10-16T10:00:00Z', last: day, fallback: '' },
   { ask: 'asdfgh qwerty', count: 9, last: day },
   { ask: 'unlock sk-abcdefghijklmnopqrstuvwx', count: 4, last: day }, // secret-scan: ok (made up, shaped like a key)
