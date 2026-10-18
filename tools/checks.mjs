@@ -67,6 +67,7 @@ for (const [name, file] of [
   ['swarm', 'swarm.test.mjs'],
   ['upkeep', 'upkeep.test.mjs'],
   ['films', 'films.test.mjs'],
+  ['film-discovery', 'film-discovery.test.mjs'],
   ['store-gap', 'store-gap.test.mjs'],
   ['film-share', 'film-share.test.mjs'],
   ['appraise', 'appraise.test.mjs'],

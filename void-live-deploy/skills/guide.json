@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 11,
+    "tested": 10,
     "checked": 7,
-    "proven": 9
+    "proven": 10
    },
    "from": 134,
    "to": 162
@@ -2801,14 +2801,16 @@
    "chapter": "words",
    "name": "film-metadata",
    "title": "Film metadata",
-   "line": "Film discovery returns JSON film metadata",
+   "line": "Film discovery returns structured JSON film metadata",
    "examples": [
-    "film discovery for inception",
-    "movie metadata for the matrix",
-    "find films about space"
+    "find me a sci-fi film from the 80s",
+    "films by Kurosawa",
+    "film metadata for Ikiru"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 6 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. The void remembers each asking.",
+   "glow": 100,
    "n": 150
   },
   {
@@ -7238,7 +7240,7 @@
     {
      "rank": 161,
      "name": "film-metadata",
-     "catches": "film discovery for inception"
+     "catches": "find me a sci-fi film from the 80s"
     },
     {
      "rank": 162,

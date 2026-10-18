@@ -1,0 +1,23 @@
+{
+  "_note": "Hand-written in the shape the iTunes Search API returns for entity=movie (the fields lib/film-discovery.js reads). Not a live recording: the build sandbox has no network. Films, years and directors are real; the descriptions are short paraphrases for the tests. Replace with a recording when a networked run can make one.",
+  "director_kurosawa": { "resultCount": 4, "results": [
+    { "kind": "feature-movie", "trackId": 1, "trackName": "Ikiru", "artistName": "Akira Kurosawa", "releaseDate": "1952-10-09T07:00:00Z", "primaryGenreName": "Drama", "trackTimeMillis": 8580000, "shortDescription": "A dying civil servant looks for meaning in his last months.", "trackViewUrl": "https://tv.apple.com/us/movie/ikiru/umc.cmc.example1" },
+    { "kind": "feature-movie", "trackId": 2, "trackName": "Seven Samurai", "artistName": "Akira Kurosawa", "releaseDate": "1954-04-26T07:00:00Z", "primaryGenreName": "Foreign", "trackTimeMillis": 12420000, "longDescription": "A village hires seven masterless samurai to defend it from bandits. A landmark of world cinema.", "trackViewUrl": "https://tv.apple.com/us/movie/seven-samurai/umc.cmc.example2" },
+    { "kind": "feature-movie", "trackId": 3, "trackName": "Rashomon", "artistName": "Akira Kurosawa", "releaseDate": "1950-08-26T07:00:00Z", "primaryGenreName": "Drama", "trackTimeMillis": 5280000, "trackViewUrl": "https://tv.apple.com/us/movie/rashomon/umc.cmc.example3" },
+    { "kind": "feature-movie", "trackId": 4, "trackName": "Kurosawa: A Tribute", "artistName": "Some Other Director", "releaseDate": "2001-01-01T08:00:00Z", "primaryGenreName": "Documentary", "shortDescription": "Not by him." },
+    { "kind": "song", "trackId": 5, "trackName": "Not a film", "artistName": "Akira Kurosawa", "releaseDate": "1990-01-01T08:00:00Z" }
+  ] },
+  "year_1982": { "resultCount": 3, "results": [
+    { "kind": "feature-movie", "trackId": 11, "trackName": "Blade Runner", "artistName": "Ridley Scott", "releaseDate": "1982-06-25T07:00:00Z", "primaryGenreName": "Sci-Fi & Fantasy", "trackTimeMillis": 7080000, "shortDescription": "A blade runner hunts rogue replicants in a rain-soaked future Los Angeles.", "trackViewUrl": "https://tv.apple.com/us/movie/blade-runner/umc.cmc.example11" },
+    { "kind": "feature-movie", "trackId": 12, "trackName": "Tootsie", "artistName": "Sydney Pollack", "releaseDate": "1982-12-17T08:00:00Z", "primaryGenreName": "Comedy", "trackTimeMillis": 6960000, "shortDescription": "An out-of-work actor poses as a woman to win a role." },
+    { "kind": "feature-movie", "trackId": 13, "trackName": "Blade Runner", "artistName": "Ridley Scott", "releaseDate": "1982-06-25T07:00:00Z", "primaryGenreName": "Sci-Fi & Fantasy", "shortDescription": "Duplicate edition." }
+  ] },
+  "year_1984": { "resultCount": 2, "results": [
+    { "kind": "feature-movie", "trackId": 21, "trackName": "The Terminator", "artistName": "James Cameron", "releaseDate": "1984-10-26T07:00:00Z", "primaryGenreName": "Sci-Fi & Fantasy", "trackTimeMillis": 6420000, "shortDescription": "A cyborg assassin is sent back in time to kill the mother of a future leader.", "trackViewUrl": "https://tv.apple.com/us/movie/the-terminator/umc.cmc.example21" },
+    { "kind": "feature-movie", "trackId": 22, "trackName": "Amadeus", "artistName": "Milos Forman", "releaseDate": "1984-09-19T07:00:00Z", "primaryGenreName": "Drama", "trackTimeMillis": 9600000 }
+  ] },
+  "title_ikiru": { "resultCount": 1, "results": [
+    { "kind": "feature-movie", "trackId": 1, "trackName": "Ikiru", "artistName": "Akira Kurosawa", "releaseDate": "1952-10-09T07:00:00Z", "primaryGenreName": "Drama", "trackTimeMillis": 8580000, "shortDescription": "A dying civil servant looks for meaning in his last months." }
+  ] },
+  "empty": { "resultCount": 0, "results": [] }
+}

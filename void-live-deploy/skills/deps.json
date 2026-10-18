@@ -291,6 +291,12 @@
    "dependants": 5
   },
   {
+   "file": "lib/movies.js",
+   "skills": 4,
+   "direct": 2,
+   "dependants": 10
+  },
+  {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
@@ -379,12 +385,6 @@
    "skills": 3,
    "direct": 1,
    "dependants": 50
-  },
-  {
-   "file": "lib/movies.js",
-   "skills": 3,
-   "direct": 2,
-   "dependants": 7
   },
   {
    "file": "lib/date-words.js",
@@ -646,6 +646,12 @@
   },
   {
    "file": "lib/field-vector.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 2
+  },
+  {
+   "file": "lib/film-discovery.js",
    "skills": 1,
    "direct": 1,
    "dependants": 2
@@ -1539,6 +1545,12 @@
   "functions/api/film-views.js": {
    "imports": [
     "functions/api/films.js"
+   ],
+   "importedBy": []
+  },
+  "functions/api/filmfind.js": {
+   "imports": [
+    "lib/film-discovery.js"
    ],
    "importedBy": []
   },
@@ -2970,6 +2982,15 @@
     "skills/swarm-mind.js"
    ]
   },
+  "lib/film-discovery.js": {
+   "imports": [
+    "lib/movies.js"
+   ],
+   "importedBy": [
+    "functions/api/filmfind.js",
+    "skills/film-metadata.js"
+   ]
+  },
   "lib/film-reviews.js": {
    "imports": [],
    "importedBy": [
@@ -3566,12 +3587,15 @@
    "importedBy": [
     "functions/api/media.js",
     "functions/api/movies.js",
+    "lib/film-discovery.js",
     "lib/media.js",
     "lib/taste.js",
     "skills/movie.js",
     "skills/pick-for-me.js"
    ],
    "reachedBy": [
+    "functions/api/filmfind.js",
+    "skills/film-metadata.js",
     "skills/media-pick.js"
    ]
   },
@@ -5883,7 +5907,9 @@
    ]
   },
   "skills/film-metadata.js": {
-   "imports": [],
+   "imports": [
+    "lib/film-discovery.js"
+   ],
    "importedBy": []
   },
   "skills/films.js": {
