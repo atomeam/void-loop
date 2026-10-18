@@ -209,10 +209,13 @@
     {
      "name": "shape",
      "tier": "checked",
-     "why": "2 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "2 browser-suite mentions, 2 real asks in the benchmark",
+     "failing": [
+      "draw a circle"
+     ],
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 1,
+     "success_rate": 0.5,
      "streak": 1
     },
     {
