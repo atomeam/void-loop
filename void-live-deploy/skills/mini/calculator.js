@@ -61,7 +61,7 @@ export default function build(ctx, data) {
   fg.fillStyle = '#1b1c1f'; fg.fillRect(0, 0, 512, 160);
   const cg = fg.createLinearGradient(0, 0, 512, 0); cg.addColorStop(0, '#3a2620'); cg.addColorStop(0.5, '#4a3026'); cg.addColorStop(1, '#3a2620');
   fg.fillStyle = cg; fg.fillRect(250, 22, 236, 58); fg.strokeStyle = 'rgba(0,0,0,0.6)'; fg.lineWidth = 2; for (let i = 1; i < 4; i++) { fg.beginPath(); fg.moveTo(250 + i * 59, 22); fg.lineTo(250 + i * 59, 80); fg.stroke(); }
-  fg.fillStyle = '#c9cbd0'; fg.font = 'italic 700 40px Arial, sans-serif'; fg.fillText('VOID', 26, 62); fg.font = '600 20px Arial, sans-serif'; fg.fillStyle = '#8b8e95'; fg.fillText('SL-200  SOLAR', 28, 96);
+  fg.fillStyle = '#c9cbd0'; fg.font = 'italic 700 40px Arial, sans-serif'; fg.fillText('VERSE', 26, 62); fg.font = '600 20px Arial, sans-serif'; fg.fillStyle = '#8b8e95'; fg.fillText('SL-200  SOLAR', 28, 96);
   const faceT = new THREE.CanvasTexture(fc); faceT.colorSpace = THREE.SRGBColorSpace; faceT.anisotropy = 8; texs.push(faceT);
   const face = new THREE.Mesh(G(new THREE.PlaneGeometry(W - 0.01, (W - 0.01) * 160 / 512).rotateX(-Math.PI / 2)), M(new THREE.MeshPhysicalMaterial({ map: faceT, roughness: 0.3, clearcoat: 0.6 })));
   const topY = 0.0015 + T - 0.003 + 0.0015; face.position.set(0, topY + 0.0002, -L / 2 + 0.013); face.receiveShadow = true;

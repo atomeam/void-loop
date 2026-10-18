@@ -5950,8 +5950,8 @@ try {
     await S.ask('close', 600);
     await S.ask(text, 1500);
     const back = await until(async () => S.p.evaluate(() => { const e = document.querySelector('.vpage.on.vcard'); return e && /brought back/.test(e.innerText) ? { h: (e.querySelector('h2') || {}).textContent, share: !!e.querySelector('.vc-share'), type: !!e.querySelector('.vc-type') } : null; }), 6000);
-    check('Verse cards: "copy card" puts readable text ending in a V01D-CARD code line on the clipboard, and pasting that text into Verse brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
-      !!btn && /V01D-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('V01D-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
+    check('Verse cards: "copy card" puts readable text ending in a VERSE-CARD code line on the clipboard, and pasting that text into Verse brings the card back (same title, a frame, its own copy buttons) without asking the answer route',
+      !!btn && /VERSE-CARD:/.test(text) && text.trim().split('\n').pop().startsWith('VERSE-CARD:') && !!back && back.h === title && back.share && back.type && answered === 0 && !S.errors.length, JSON.stringify({ btn: !!btn, tail: text.slice(-60), back, title, answered, errors: S.errors }));
     await S.p.evaluate(() => { window.__copied = ''; }); await S.p.click('.vpage.on.vcard .vc-share button:first-child'); await S.p.waitForTimeout(300);
     const text2 = await S.p.evaluate(() => window.__copied);
     check('Verse cards: copying a card that was pasted back carries a short version tag (v2) the first copy did not have (asked by Verse)', !/ · v\d/.test(text) && /a-to-mind\.com · v2\n/.test(text2), text2.slice(-120));

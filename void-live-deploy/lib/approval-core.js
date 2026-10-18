@@ -134,12 +134,12 @@ export function parseGatedAsk(text) {
   // "let Verse spend up to $5 a month on a stronger model" / "let Verse pay for a stronger model up to $5 a month" / "stop paying for stronger models"
   const MODELS = '(?:a\\s+)?(?:stronger|better|smarter|paid)\\s+(?:ai\\s+)?models?';
   const EARNED = '(?:\\s+(?:from|out of)\\s+(?:what\\s+(?:it|you)(?:\\s+ha(?:s|ve))?\\s+earned|(?:its|your)\\s+earnings))?';
-  if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
-      || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
+  if ((m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|verse|yourself|you)\\s+(?:to\\s+)?(?:pay|spend)\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)\\s+(?:on|for)\\s+' + MODELS + EARNED + '$', 'i')))
+      || (m = s.match(new RegExp('^(?:let|allow)\\s+(?:void|verse|yourself|you)\\s+(?:to\\s+)?pay\\s+for\\s+' + MODELS + '\\s+(?:up\\s+to\\s+)?' + COST + '\\s+(?:a|per|each)\\s+(day|week|month)' + EARNED + '$', 'i')))) {
     const cost = parseCost(m[1]);
     if (cost && cost.currency === 'USD') return { toolName: 'models.spend', args: { model: PAID_MODEL, cost, per: m[2].toLowerCase() } };
   }
-  if (new RegExp('^(?:stop|don\'?t)\\s+(?:void\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
+  if (new RegExp('^(?:stop|don\'?t)\\s+(?:(?:void|verse)\\s+)?(?:paying|pay|spending)\\s+(?:for|on)\\s+' + MODELS + '$', 'i').test(s)) {
     return { toolName: 'models.spend', args: { model: PAID_MODEL, cost: { amount: 0, currency: 'USD' }, per: 'month' } };
   }
   if ((m = s.match(new RegExp('^(?:pay|send)\\s+' + COST + '\\s+to\\s+(.+)$', 'i'))) || (m = s.match(new RegExp('^pay\\s+(.+?)\\s+' + COST + '$', 'i')))) {

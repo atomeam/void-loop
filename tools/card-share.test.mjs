@@ -21,7 +21,7 @@ test('only https links survive and nothing else rides along', () => {
 test('junk is not a card', () => {
   assert.equal(parse('hello'), null); assert.equal(parse(MARK + 'not-json-at-all'), null); assert.equal(parse(MARK + Buffer.from('{"v":2,"t":"x"}').toString('base64url')), null); assert.equal(parse(''), null);
 });
-test('file names are safe', () => { assert.equal(fileName({ t: 'Black hole!' }), 'black-hole.v01d-card.txt'); assert.equal(fileName({ t: '' }), 'card.v01d-card.txt'); });
+test('file names are safe', () => { assert.equal(fileName({ t: 'Black hole!' }), 'black-hole.verse-card.txt'); assert.equal(fileName({ t: '' }), 'card.verse-card.txt'); });
 
 test('the code line is short; the whole copied text restores the full body, a bare code restores its start', () => {
   const body = 'My own words. '.repeat(160), d = { t: 'What I think of myself', k: 'Answer — from Verse', b: body, src: [{ title: 'a', url: 'https://a.example/x' }, { title: 'b', url: 'https://b.example/y' }, { title: 'c', url: 'https://c.example/z' }] };
@@ -121,4 +121,13 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.match(html, /<details class="vs-sec vs-log" data-sec="built"><summary class="vs-sum"><h3 class="vs-h">What got built <span class="vs-n">\(30 of 40 asks\)/);
   assert.match(html, /<h3 class="vs-h">What I've asked for <span class="vs-n">\(6 waiting\)/);
   assert.match(html, /<section class="vs-sec" data-sec="words"><blockquote class="vs-voice">/, 'the untitled opening stays a plain section');
+});
+
+test('a card shared before the rename (V01D-CARD:) still pastes, and new copies carry VERSE-CARD:', () => {
+  const d = { t: 'Old card', k: 'answer', b: 'kept from before 2026-10-18', src: [], n: '' };
+  const code = codeOf(d);
+  assert.equal(code.startsWith('VERSE-CARD:'), true);
+  const old = code.replace(/^VERSE-CARD:/, 'V01D-CARD:');
+  assert.equal(parse(old)?.t, 'Old card');
+  assert.equal(parse(code)?.t, 'Old card');
 });

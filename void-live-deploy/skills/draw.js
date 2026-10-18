@@ -118,7 +118,7 @@ export function layerCommand(text, names) {
   let m;
   if ((m = new RegExp('^(?:new|add)(?: a)? (?:3d|3-d|three[ -]d|vr|space) layer(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^(?:new|add)(?: a)? layer(?: (?:for|called|named))?(?: ' + L + ')? in (?:3d|3-d|space|vr)$').exec(t))) return { op: 'add', name: bare(m[1] || '') || '3d ' + (names.length + 1), space: true };
   if ((m = new RegExp('^(?:new|add)(?: a)? layer(?:s)?(?: (?:for|called|named))?(?: ' + L + ')?$').exec(t)) || (m = new RegExp('^add ' + L + ' (?:on|as) (?:a )?new layer$').exec(t))) return { op: 'add', name: bare(m[1] || '') || 'layer ' + (names.length + 1) };
-  if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
+  if (/^(?:make|set|use|put)\s+(?:it|this|my drawing|the drawing|this drawing)\s+(?:as\s+)?(?:my|the)\s+(?:(?:void|verse)'?s?\s+)?(?:backdrop|background|wallpaper)$|^(?:make\s+(?:it\s+)?)?my\s+(?:void'?s?\s+)?(?:backdrop|background|wallpaper)$/.test(t)) return { op: 'backdrop' };
   if ((m = new RegExp('^(?:make|set) ' + L + ' (thicker|fatter|bolder|thinner|slimmer|finer)$').exec(t))) return one('thick', m[1], { by: /thicker|fatter|bolder/.test(m[2]) ? 1.5 : 1 / 1.5 });
   if (/^(?:3d\s+)?print\s+(?:it|this)$|^(?:save|export|download)\s+(?:it|this)\s+as\s+(?:an?\s+)?stl$/.test(t)) return { op: 'print', i: -1 };
   if ((m = new RegExp('^(?:3d\\s+)?print ' + L + '$').exec(t)) || (m = new RegExp('^(?:save|export|download) ' + L + ' as (?:an? )?stl$').exec(t))) return one('print', m[1]);
