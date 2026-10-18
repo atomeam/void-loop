@@ -37,6 +37,7 @@ for (const [name, file] of [
   ['match-history', 'match-history.test.mjs'],
   ['wants', 'wants.test.mjs'],
   ['stage-pack-b', 'stage-pack-b.test.mjs'],
+  ['error-garden-incidents', 'error-garden-incidents.test.mjs'],
   ['everything', 'everything.test.mjs'],
   ['fringe-notes', 'fringe.test.mjs'],
   ['stage-pack-d', 'stage-pack-d.test.mjs'],

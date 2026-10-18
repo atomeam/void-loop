@@ -2189,7 +2189,7 @@
     {
      "name": "error-garden",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },
@@ -2507,7 +2507,7 @@
     {
      "name": "incident",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 6 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,

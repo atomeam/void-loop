@@ -1875,6 +1875,19 @@ try {
     check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
       phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
   }
+  // the site's red checks grow in the error garden by themselves (asked by Void, 2026-10-18): the served incidents.json is the real file, so an opened garden plants its newest incident
+  if (want("error garden: the site's red checks are planted from incidents.json when the garden opens, once, and opening it again adds nothing")) { const S = await fresh();
+    await S.ask('show my error garden', 900);
+    await S.p.waitForSelector('.error-garden .eg-plant[data-from=incident]', { timeout: 6000 }).catch(() => {});
+    const planted = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const head = await S.p.$eval('.error-garden', (e) => e.textContent).catch(() => '');
+    const shas = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => /failed on [0-9a-f]{7}/.test(x.textContent)));
+    await S.ask('show my error garden', 900);
+    const again = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    check("error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
+      planted.length >= 1 && planted.every((p) => p === 'sprout1') && /from red checks/.test(head) && shas.every(Boolean) && again.join() === planted.join() && !S.errors.length,
+      JSON.stringify({ planted, shas, again, errors: S.errors }));
+  }
   // the error garden grown from the incident autopsy (asked by Void and the owner, 2026-10-18): "plant my test failures" plants incidents.json's failing checks
   if (want("error garden from incidents: plant my test failures plants the failing checks, repeats are weeds, and asking again adds nothing twice")) { const S = await fresh();
     await S.ask('plant my test failures in my error garden', 1500);

@@ -170,7 +170,7 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
 export function failurePlants(incidentsJson, max = 12) {
   const by = new Map();
   for (const inc of parseIncidents(incidentsJson).slice(0, 30)) {
-    for (const t of new Set(inc.checks.map(titleOf).filter((x) => x.length >= 3))) {
+    for (const t of new Set(inc.checks.filter((c) => !/^suite ran to the end$/i.test(String(c).trim())).map(titleOf).filter((x) => x.length >= 3))) { // the suite's own last line is not a check
       const e = by.get(t) || { text: t.slice(0, 120), count: 0, last: Date.parse(inc.at) };
       e.count += 1; by.set(t, e);
     }
