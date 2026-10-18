@@ -87,12 +87,13 @@ const SUB = { wants: 'What I chose to become next, from what people keep asking 
 const EMPTY = { wants: 'My will has not chosen anything yet.', asks: 'Everything I asked for has been built.', inbox: 'My growth inbox is empty.' };
 const MISSING = { wants: 'I could not read my will just now, so I will not guess at it.', asks: 'I could not read my asks just now, so I will not guess at them.', inbox: 'I could not read my growth inbox just now, so I will not guess at it.' };
 const CSS = '.wants-card .wants-count{font-size:13px;color:var(--muted);margin:2px 0 10px}.wants-card .wants-h{font-size:15px;margin:12px 0 2px}.wants-card .wants-sub{font-size:12px;color:var(--muted);margin:0 0 6px}'
-  + '.wants-card .wants-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}.wants-card .wants-chip{font:inherit;font-size:13px;line-height:1.35;text-align:left;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:6px 12px;cursor:pointer;max-width:100%}'
+  + '.wants-card .wants-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px}.wants-card .wants-chip{display:inline-block;font:inherit;font-size:13px;line-height:1.35;text-align:left;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:6px 12px;cursor:pointer;max-width:100%}'
   + '.wants-card .wants-chip:hover,.wants-card .wants-chip:focus-visible{background:rgba(255,255,255,.12)}.wants-card .wants-chip.copied{border-color:var(--accent)}.wants-card .wants-chip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.wants-card .wants-empty{font-size:13px;color:var(--muted);margin:2px 0 6px}.wants-card .wants-more{margin:10px 0 0;font-size:13px}';
 /** the card's markup: a title, the count line, three blocks (each a heading, one line of where it comes from, chips or its empty or
  *  missing line), the compound line when there is one, and a source line. esc escapes for HTML; every value goes through it. Pure. */
 export function cardHtml(m, esc, { more = '' } = {}) {
-  const chip = (text, sub) => '<button type="button" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</button>';
+  // a span with role="button", not a <button>: a saved or shared card leaves buttons out of its text, and the real wants are what the card is for (owner, 2026-10-18)
+  const chip = (text, sub) => '<span role="button" tabindex="0" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small>' + esc(sub) + '</small>' : '') + '</span>';
   const block = (id, title, items, sub) => '<section class="wants-block" data-block="' + id + '" data-n="' + items.length + '"><h3 class="wants-h">' + esc(title) + ' <span class="wants-n">(' + items.length + ')</span></h3>'
     + (m.missing[id === 'wants' ? 'will' : id === 'asks' ? 'reflect' : 'self'] ? '<p class="wants-empty" data-missing="1">' + esc(MISSING[id]) + '</p>'
       : items.length ? '<div class="wants-chips">' + items.map((it) => chip(it.text, sub(it))).join('') + '</div>' : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>')
@@ -119,11 +120,9 @@ async function run(text, api) {
   showPage((el) => {
     el.classList.add('wants-card');
     el.innerHTML = cardHtml(m, esc, { more });
-    el.addEventListener('click', async (e) => {
-      const b = e.target.closest && e.target.closest('button[data-copy]'); if (!b) return;
-      const ok = await copyText(b.getAttribute('data-copy'));
-      b.classList.toggle('copied', ok); if (say) say(ok ? 'copied' : 'select it to copy');
-    });
+    const tap = async (b) => { const ok = await copyText(b.getAttribute('data-copy')); b.classList.toggle('copied', ok); if (say) say(ok ? 'copied' : 'select it to copy'); };
+    el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-copy]'); if (b) tap(b); });
+    el.addEventListener('keydown', (e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const b = e.target.closest && e.target.closest('[data-copy]'); if (b) { e.preventDefault(); tap(b); } });
   });
   if (say) say(countLine(m.counts));
   return 'wants';
