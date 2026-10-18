@@ -13,8 +13,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 2,
-  "tested": 64,
-  "checked": 39,
+  "tested": 65,
+  "checked": 43,
   "proven": 85
  },
  "families": [
@@ -1573,8 +1573,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 1,
-    "tested": 6,
-    "checked": 8,
+    "tested": 7,
+    "checked": 12,
     "proven": 7
    },
    "skills": [
@@ -1760,6 +1760,41 @@
      "name": "fly",
      "tier": "tested",
      "why": "3 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "riot",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "mutate",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "sudden-death",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "overload",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "extinction",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     }

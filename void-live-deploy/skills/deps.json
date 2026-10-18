@@ -1,12 +1,18 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 497,
+ "counted": 503,
  "libs": [
   {
    "file": "lib/ask-text.js",
    "skills": 25,
    "direct": 23,
    "dependants": 26
+  },
+  {
+   "file": "lib/field-kit.js",
+   "skills": 12,
+   "direct": 0,
+   "dependants": 22
   },
   {
    "file": "lib/sky-math.js",
@@ -67,12 +73,6 @@
    "skills": 7,
    "direct": 0,
    "dependants": 25
-  },
-  {
-   "file": "lib/field-kit.js",
-   "skills": 7,
-   "direct": 0,
-   "dependants": 16
   },
   {
    "file": "lib/field-stage.js",
@@ -138,6 +138,12 @@
    "file": "lib/observations.js",
    "skills": 5,
    "direct": 2,
+   "dependants": 5
+  },
+  {
+   "file": "lib/opposite-era.js",
+   "skills": 5,
+   "direct": 5,
    "dependants": 5
   },
   {
@@ -2203,15 +2209,21 @@
     "lib/field-resonance.js",
     "lib/field-stage.js",
     "lib/field-swarm.js",
-    "lib/field-vector.js"
+    "lib/field-vector.js",
+    "lib/opposite-era.js"
    ],
    "reachedBy": [
     "lib/field-vector-worker.js",
     "skills/attention-field-mind.js",
+    "skills/extinction.js",
     "skills/flow-canvas.js",
     "skills/living-cards-mind.js",
+    "skills/mutate.js",
     "skills/nca-mind.js",
+    "skills/overload.js",
     "skills/resonance-mind.js",
+    "skills/riot.js",
+    "skills/sudden-death.js",
     "skills/swarm-mind.js",
     "skills/vector-field-mind.js"
    ]
@@ -2743,6 +2755,18 @@
     "skills/challenge.js",
     "skills/goal.js",
     "skills/quiz.js"
+   ]
+  },
+  "lib/opposite-era.js": {
+   "imports": [
+    "lib/field-kit.js"
+   ],
+   "importedBy": [
+    "skills/extinction.js",
+    "skills/mutate.js",
+    "skills/overload.js",
+    "skills/riot.js",
+    "skills/sudden-death.js"
    ]
   },
   "lib/page-picture.js": {
@@ -4117,6 +4141,12 @@
    ],
    "importedBy": []
   },
+  "skills/extinction.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
+  },
   "skills/family-health.js": {
    "imports": [
     "lib/skill-use.js",
@@ -5005,6 +5035,12 @@
    ],
    "importedBy": []
   },
+  "skills/mutate.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
+  },
   "skills/nca-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -5058,6 +5094,12 @@
     "lib/arena.js",
     "skills/games.js"
    ]
+  },
+  "skills/overload.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
   },
   "skills/ovulation.js": {
    "imports": [
@@ -5312,6 +5354,12 @@
    "importedBy": [
     "skills/games.js"
    ]
+  },
+  "skills/riot.js": {
+   "imports": [
+    "lib/opposite-era.js"
+   ],
+   "importedBy": []
   },
   "skills/room.js": {
    "imports": [
@@ -5652,6 +5700,12 @@
   "skills/store.js": {
    "imports": [
     "lib/store.js"
+   ],
+   "importedBy": []
+  },
+  "skills/sudden-death.js": {
+   "imports": [
+    "lib/opposite-era.js"
    ],
    "importedBy": []
   },

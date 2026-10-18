@@ -1799,6 +1799,56 @@ try {
     check('stage extras collision: a clock set down on a sticky outlines both and says they overlap, "any collisions" says it again, and moved apart the flags go',
       before === 0 && on === 2 && /(clock and the sticky|sticky and the clock) overlap/.test(said) && asked === 2 && off === 0 && !P.errors.length, JSON.stringify({ before, on, said, asked, off, e: P.errors }));
     await P.ctx.close(); }
+  // stage pack E, the Opposite Era (asked by the owner, 2026-10-18): the riot, the mutation chamber, sudden death, the overload and the
+  // mass extinction, one after another on one stage with a sticky, a clock and a counter (tools/stage-pack-e.test.mjs has the pure parts)
+  if (want("stage pack e: the opposite era: riot, mutation, sudden death, overload and extinction on one stage")) { const P = await fresh();
+    await P.ask('sticky note pasta', 600); await P.ask('clock', 600); await P.ask('make a counter', 600);
+    const spots = async () => (await P.state()).map((t) => t.kind + '@' + t.x + ',' + t.y).sort().join(' ');
+    const moving = () => P.p.$$eval('#stage > .thing[data-id]', (els) => els.filter((e) => /translate\(/.test(e.style.transform)).length);
+    // the riot: things are drawn away from their spots by a transform while the saved spots stay; the end eases them back; reduced motion gets none
+    const spots0 = await spots(); await P.ask('start the riot', 800);
+    const rioting = await until(async () => (await moving()) >= 2, 3000), spotsRiot = await spots();
+    await P.ask('end the riot', 600); const calm = await moving(), saidEnd = await P.whisper();
+    await P.p.emulateMedia({ reducedMotion: 'reduce' }); await P.ask('start the riot', 500); const still = await P.whisper(), stillMoving = await moving(); await P.p.emulateMedia({ reducedMotion: 'no-preference' });
+    check('stage pack e riot: "start the riot" draws the things away from their spots by CSS transform only (the saved spots are untouched), "end the riot" clears every transform, and with reduced motion there is no riot and the line says so',
+      rioting && spotsRiot === spots0 && calm === 0 && /riot is over/.test(saidEnd) && /reduced motion/.test(still) && stillMoving === 0 && !P.errors.length, JSON.stringify({ rioting, same: spotsRiot === spots0, calm, saidEnd, still, stillMoving, e: P.errors }));
+    // the mutation chamber: the picked counter steps a generation a second and wears its gen tag; a lock freezes it at 7; stop clears it
+    await P.ask('mutate this card', 1400);
+    const gen1 = await until(() => P.p.$eval('.thing.counter > .mutate-gen', (e) => ({ gen: +e.dataset.gen, filter: e.parentElement.style.filter })).catch(() => null), 3000);
+    await P.ask('lock generation 7', 500); await P.p.waitForTimeout(1300);
+    const locked = await P.p.$eval('.thing.counter > .mutate-gen', (e) => ({ gen: +e.dataset.gen, locked: e.dataset.locked, t: e.textContent })).catch(() => null);
+    await P.ask('stop mutating', 500); const cleared = await P.p.$$eval('.mutate-gen', (l) => l.length), plain = await P.p.$eval('.thing.counter', (e) => e.style.filter);
+    check('stage pack e mutate: "mutate this card" steps the picked counter a generation a second under a gen tag and a hue filter, "lock generation 7" freezes it at exactly 7 (a second later it is still 7), and "stop mutating" clears the tag and the look',
+      !!gen1 && gen1.gen >= 1 && /hue-rotate/.test(gen1.filter) && !!locked && locked.gen === 7 && locked.locked === '1' && /gen 7 · locked/.test(locked.t) && cleared === 0 && plain === '' && !P.errors.length, JSON.stringify({ gen1, locked, cleared, plain, e: P.errors }));
+    // sudden death: one banner over the stage, and at zero one unkept thing is gone; a cancelled one takes nothing
+    const n0 = (await P.state()).length; await P.ask('sudden death in 2 seconds', 400);
+    const banner = await P.p.$eval('.thing.sudden-death .sd-num', (e) => e.textContent).catch(() => null);
+    const struck = await until(async () => (await P.p.$$eval('.thing.sudden-death', (l) => l.length)) === 0 && (await P.state()).length === n0 - 1, 6000);
+    await P.ask('sudden death in 60 seconds', 400); const armed = await P.p.$$eval('.thing.sudden-death', (l) => l.length);
+    await P.ask('cancel sudden death', 400); const off = await P.p.$$eval('.thing.sudden-death', (l) => l.length), n1 = (await P.state()).length;
+    check('stage pack e sudden death: "sudden death in 2 seconds" puts one counting banner up and at zero one thing is gone with the banner, "sudden death in 60 seconds" arms one and "cancel sudden death" takes it down with nothing lost',
+      /^[12]$/.test(banner || '') && struck && armed === 1 && off === 0 && n1 === n0 - 1 && !P.errors.length, JSON.stringify({ banner, struck, armed, off, n0, n1, e: P.errors }));
+    // the overload: 24 glitching mini-cards, never saved; one dropped on another merges into it; the purge clears them
+    await P.ask('overload me', 1000); const cards = await P.p.$$eval('.overload-card', (l) => l.map((e) => e.dataset.id)), saved = (await P.state()).filter((t) => t.kind === 'overload').length;
+    const box = (sel) => P.p.$eval(sel, (e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, w: r.width, h: r.height }; });
+    const drag = async (sel, to) => { const b = await box(sel); await P.p.evaluate(([sel, x0, y0, x1, y1]) => { const el = document.querySelector(sel), ev = (type, x, y) => new PointerEvent(type, { clientX: x, clientY: y, bubbles: true, pointerId: 1, isPrimary: true, button: 0 });
+        const n = Math.max(2, Math.ceil(Math.hypot(x1 - x0, y1 - y0) / 10)); el.dispatchEvent(ev('pointerdown', x0, y0));
+        for (let i = 1; i <= n; i++) window.dispatchEvent(ev('pointermove', x0 + ((x1 - x0) * i) / n, y0 + ((y1 - y0) * i) / n)); window.dispatchEvent(ev('pointerup', x1, y1)); }, [sel, b.x + 6, b.y + 6, to.x + 6, to.y + 6]); await P.p.waitForTimeout(400); };
+    const onto = cards.length > 1 ? await box('[data-id="' + cards[1] + '"]') : null; if (onto) await drag('[data-id="' + cards[0] + '"]', { x: onto.x + 10, y: onto.y + 4 });
+    const merged = await P.p.$$eval('.overload-card', (l) => ({ n: l.length, grown: l.filter((e) => e.dataset.size === '2').length }));
+    await P.ask('purge the overload', 600); const purged = await P.p.$$eval('.overload-card', (l) => l.length);
+    check('stage pack e overload: "overload me" floods the stage with 24 mini-cards that are never saved, a card dragged onto another merges into it (23 left, one of size 2), and "purge the overload" clears them all',
+      cards.length === 24 && saved === 0 && merged.n === 23 && merged.grown === 1 && purged === 0 && !P.errors.length, JSON.stringify({ cards: cards.length, saved, merged, purged, e: P.errors }));
+    // mass extinction: the card takes nothing until the word extinct is typed; then every unkept thing goes and one survivor stays, marked
+    const n2 = (await P.state()).length; await P.ask('mass extinction', 700);
+    const asked = await P.p.$('.vpage.on .ext-word'); if (asked) { await asked.fill('nope'); await asked.press('Enter'); await P.p.waitForTimeout(300); }
+    const refused = await P.p.$eval('.vpage.on .ext-line', (e) => e.textContent).catch(() => ''), n3 = (await P.state()).length;
+    if (asked) { await asked.fill('extinct'); await asked.press('Enter'); }
+    const marked = await until(() => P.p.$$eval('.thing .survivor-tag', (l) => l.length), 6000);
+    const left = await P.state(), line = await P.p.$eval('.vpage.on .ext-line', (e) => e.textContent).catch(() => '');
+    check('stage pack e extinction: "mass extinction" opens a card that takes nothing on a wrong word, and on the word extinct every unkept thing collapses and exactly one survivor stays on the stage, marked',
+      !!asked && /not confirmed/.test(refused) && n3 === n2 && n2 === 2 && marked === 1 && left.length === 1 && left[0].survivor === true && /1 gone · survivor: the/.test(line) && !P.errors.length, JSON.stringify({ asked: !!asked, refused, n2, n3, marked, left: left.map((t) => t.kind + (t.survivor ? '*' : '')), line, e: P.errors }));
+    await P.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

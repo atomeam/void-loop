@@ -19,6 +19,7 @@ for (const [name, file] of [
   ['fringe-notes', 'fringe.test.mjs'],
   ['upgrades', 'upgrades.test.mjs'],
   ['collide', 'collide.test.mjs'],
+  ['stage-pack-e', 'stage-pack-e.test.mjs'],
   ['taste', 'taste.test.mjs'],
   ['shows', 'shows.test.mjs'],
   ['lab-use', 'lab-use.test.mjs'],

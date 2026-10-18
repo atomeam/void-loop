@@ -24,4 +24,5 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [build-voice-asks.md](build-voice-asks.md) | V01D's own asks from `domains/void.voice.md`: group repeats, check what is built, record or ship one small PR each | not yet |
 | [make-music.md](make-music.md) | an original short piece of music composed from an ask and synthesised in the browser (song, beat, lullaby), with a piano roll, WAV and notes | not yet |
 | [stage-mode.md](stage-mode.md) | a mode over the whole stage (the camera of "fly around": pure maths in `lib/`, a skill that owns the HUD, the keys and Esc, the view never the state) | not yet |
+| [stage-effects.md](stage-effects.md) | a pack of effects on everything already on the stage (motion drawn by transform only, a seeded mutation, timed or confirmed removal, an ephemeral flood), one lib, one test file, one browser section | not yet |
 | [field-mind.md](field-mind.md) | a small simulated field with a tiny local mind on the shared kit (flow canvas, swarm, figures): pure law, Worker mind with a page fallback, card, tests | not yet |
