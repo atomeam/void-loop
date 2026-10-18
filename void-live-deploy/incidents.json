@@ -2,29 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:51:34.234Z",
-   "sha": "a0711aed12a2de18ef6332b2320fa04b715c2f74",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39112691474",
+   "at": "2026-10-18T08:52:37.130Z",
+   "sha": "b95dc3a3d4aaa0cf8d38957c1ab643a500f40cb3",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39112830224",
    "suite": "browser suite on main",
    "checks": [
+    "tools pack 8: the PIN lock card says it is a casual lock, keeps a hash (never the PIN) on this device, locks on \"lock now\", refuses a wrong PIN, opens on the right one, and \"auto lock after 1 minute\" locks after the idle time",
     "suite ran to the end"
    ],
    "touched": [
+    "tools/bench.json",
+    "tools/bench.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/forge.js",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.html",
+    "void.html",
     "domains/void.agents.log.md",
     "domains/void.frontier.md",
     "tools/fix-pages.json",
     "void-live-deploy/fix/github-actions-npm-ci-lockfile-out-of-sync/index.html",
     "void-live-deploy/fix/github-actions-permission-denied-publickey/index.html",
     "void-live-deploy/fix/index.html",
-    "void-live-deploy/fix/n8n-econnrefused-http-request/index.html",
-    "void-live-deploy/fix/n8n-json-parameter-needs-valid-json/index.html",
-    "void-live-deploy/fix/power-automate-connection-needs-fixing/index.html",
-    "void-live-deploy/fix/power-automate-invalid-template-expression/index.html",
-    "void-live-deploy/self.json",
-    "void-live-deploy/sitemap.xml",
-    "void-live-deploy/void.growth.json",
-    "tools/site-test.log.json",
-    "tools/site-test.seen.json"
+    "void-live-deploy/fix/n8n-econnrefused-http-request/index.html"
    ]
   },
   {
