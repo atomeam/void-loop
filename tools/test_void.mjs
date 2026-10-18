@@ -1875,6 +1875,20 @@ try {
     check('stakes phase: money makes it careful with Confirm locked (dissent and cooling-off), two stakes freeze it with no Confirm, none opens it',
       phase1 === 'careful' && locked && stillCooling && phase2 === 'frozen' && hidden === 'none' && phase3 === 'open' && !open && !S.errors.length, JSON.stringify({ phase1, locked, stillCooling, phase2, hidden, phase3, open, errors: S.errors }));
   }
+  // the site's red checks grow in the error garden (asked by Void, 2026-10-18): the served incidents.json is the real file, so the garden plants its newest incident
+  if (want("error garden: the site's red checks are planted from incidents.json, once, and planting them again adds nothing")) { const S = await fresh();
+    await S.ask('show my error garden', 900);
+    await S.p.waitForSelector('.error-garden .eg-plant[data-from=incident]', { timeout: 6000 }).catch(() => {});
+    const planted = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const head = await S.p.$eval('.error-garden', (e) => e.textContent).catch(() => '');
+    const texts = await S.p.$$eval('.error-garden .eg-plant[data-from=incident] div > div:first-child', (r) => r.map((x) => x.textContent));
+    await S.ask('plant the red checks in my garden', 900);
+    const again = await S.p.$$eval('.error-garden .eg-plant[data-from=incident]', (r) => r.map((x) => x.dataset.stage + x.dataset.count));
+    const said = await S.whisper().catch(() => '');
+    check("error garden: the site's red checks are planted from incidents.json as sprouts with the check's title, the header counts them, and reading the file again plants nothing twice",
+      planted.length >= 1 && planted.every((p) => p === 'sprout1') && /from red checks/.test(head) && texts.every((t) => /^red check: /.test(t)) && again.join() === planted.join() && /no new red checks/.test(said) && !S.errors.length,
+      JSON.stringify({ planted, texts, said, errors: S.errors }));
+  }
   // stage pack b (owner, 2026-10-18): the error garden, the idea certificate, noun heat and the hunting question, played the way a person uses them
   if (want("stage pack b: an error garden that turns a repeated mistake into a weed and a ruled one into compost, idea certificates that need a why and a death note, noun heat, a hunting question that returns on a later visit")) { const S = await fresh();
     await S.ask('plant my mistake: I sent the email before checking it', 600);

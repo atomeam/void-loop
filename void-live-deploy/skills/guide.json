@@ -4169,10 +4169,11 @@
    "line": "\"plant my mistake: <text>\" puts a mistake in a garden on the stage as a sprout",
    "examples": [
     "plant my mistake: I sent the email before checking it",
-    "show my error garden"
+    "show my error garden",
+    "plant the red checks in my garden"
    ],
    "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "why": "a self-test, 4 browser-suite mentions",
    "n": 235
   },
   {
