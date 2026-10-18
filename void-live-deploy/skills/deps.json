@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 661,
+ "counted": 664,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -28,9 +28,9 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 19,
+   "skills": 20,
    "direct": 2,
-   "dependants": 38
+   "dependants": 40
   },
   {
    "file": "lib/field-kit.js",
@@ -105,6 +105,12 @@
    "dependants": 25
   },
   {
+   "file": "lib/ladder.js",
+   "skills": 9,
+   "direct": 4,
+   "dependants": 23
+  },
+  {
    "file": "lib/autopsy.js",
    "skills": 9,
    "direct": 4,
@@ -115,12 +121,6 @@
    "skills": 9,
    "direct": 8,
    "dependants": 9
-  },
-  {
-   "file": "lib/ladder.js",
-   "skills": 8,
-   "direct": 3,
-   "dependants": 21
   },
   {
    "file": "lib/qr.js",
@@ -219,6 +219,12 @@
    "dependants": 8
   },
   {
+   "file": "lib/match-history.js",
+   "skills": 6,
+   "direct": 5,
+   "dependants": 8
+  },
+  {
    "file": "lib/stage-find.js",
    "skills": 6,
    "direct": 4,
@@ -240,12 +246,6 @@
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 6
-  },
-  {
-   "file": "lib/match-history.js",
-   "skills": 5,
-   "direct": 4,
    "dependants": 6
   },
   {
@@ -663,6 +663,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/backlog-digest.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
@@ -772,6 +778,12 @@
   },
   {
    "file": "lib/forge-makes.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/game-health.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2222,6 +2234,12 @@
     "skills/showcase.js"
    ]
   },
+  "lib/backlog-digest.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/backlog-digest.js"
+   ]
+  },
   "lib/bench-asks.js": {
    "imports": [
     "functions/api/answer.js",
@@ -2954,6 +2972,15 @@
     "skills/stage-fx.js"
    ]
   },
+  "lib/game-health.js": {
+   "imports": [
+    "lib/match-history.js",
+    "lib/ladder.js"
+   ],
+   "importedBy": [
+    "skills/family-health.js"
+   ]
+  },
   "lib/go-ai.js": {
    "imports": [],
    "importedBy": [
@@ -3209,6 +3236,8 @@
     "lib/state.js"
    ],
    "importedBy": [
+    "lib/game-health.js",
+    "skills/family-health.js",
     "skills/growth.js",
     "skills/pong.js",
     "skills/snake.js"
@@ -3279,9 +3308,11 @@
     "lib/state.js"
    ],
    "importedBy": [
+    "lib/game-health.js",
     "skills/about-skill.js",
     "skills/checkers.js",
     "skills/chess.js",
+    "skills/family-health.js",
     "skills/othello.js"
    ],
    "reachedBy": [
@@ -4669,6 +4700,7 @@
     "lib/about-skill.js",
     "lib/arena.js",
     "lib/bench-asks.js",
+    "lib/game-health.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -4676,6 +4708,7 @@
     "skills/chess.js",
     "skills/codex.js",
     "skills/echo-chamber.js",
+    "skills/family-health.js",
     "skills/games.js",
     "skills/growth-tree.js",
     "skills/growth.js",
@@ -5167,6 +5200,12 @@
   },
   "skills/automations.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/backlog-digest.js": {
+   "imports": [
+    "lib/backlog-digest.js"
+   ],
    "importedBy": []
   },
   "skills/battleship-rules.js": {
@@ -5667,7 +5706,10 @@
   "skills/family-health.js": {
    "imports": [
     "lib/skill-use.js",
-    "lib/better.js"
+    "lib/better.js",
+    "lib/game-health.js",
+    "lib/ladder.js",
+    "lib/match-history.js"
    ],
    "importedBy": []
   },

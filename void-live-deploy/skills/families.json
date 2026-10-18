@@ -13,7 +13,7 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 7,
-  "tested": 96,
+  "tested": 97,
   "checked": 98,
   "proven": 90
  },
@@ -2390,11 +2390,18 @@
    "for": "how Void grows, what it wants, what it can do and sell, and acting on your behalf",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 10,
     "checked": 14,
     "proven": 16
    },
    "skills": [
+    {
+     "name": "backlog-digest",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
     {
      "name": "guide",
      "tier": "proven",

@@ -14,6 +14,9 @@
  */
 import { readUsed, usedWords, deadWeight } from '../lib/skill-use.js';
 import { familyDrivers, velocityOf } from '../lib/better.js';
+import { gameHealth, gameHealthHtml } from '../lib/game-health.js';
+import { load as loadLadder } from '../lib/ladder.js';
+import { load as loadMatches } from '../lib/match-history.js';
 export const FAMILIES_URL = '/skills/families.json';
 export const TIERS = ['proven', 'checked', 'tested', 'experiment']; // strongest first, the order of the bar
 // what each rating means, in the words of tools/families.mjs
@@ -143,7 +146,7 @@ export function applyFilter(el, tier) {
 }
 
 /** the whole card's body (below the title). Pure. */
-export function healthHtml(esc, fam, used = null, now = Date.now(), better = null) {
+export function healthHtml(esc, fam, used = null, now = Date.now(), better = null, games = null) {
   const H = healthRows(fam), vel = velocityOf(better, fam, now).byFamily;
   if (!H.rows.length) return '<p>The skill families could not be read just now. Ask again in a moment.</p>';
   const tile = (t) => '<div style="flex:1 1 0;min-width:64px"><div class="big" data-total="' + t + '" style="font-size:28px;line-height:1.1">' + H.totals[t] + '</div>'
@@ -160,7 +163,7 @@ export function healthHtml(esc, fam, used = null, now = Date.now(), better = nul
       + bar(r.count, r.total, esc(r.name + ': ' + words(r.count)))
       + '</button><div class="fh-open" hidden>' + (r.for ? '<div class="sub" style="font-size:13px;margin:4px 0 0">For ' + esc(r.for) + '.</div>' : '')
       + (r.sources ? '<div class="sub fh-sources" data-read="' + esc(+r.sources.read || 0) + '" style="font-size:13px;margin:4px 0 0">' + esc(r.sources.words) + '</div>' : '')
-      + skillsHtml(esc, r, used, now) + '</div></div>').join('') + '</div>'
+      + (r.id === 'games' ? gameHealthHtml(esc, games) : '') + skillsHtml(esc, r, used, now) + '</div></div>').join('') + '</div>'
     + '<div class="sub" style="font-size:12px;line-height:1.5;margin-top:10px">The four kinds of evidence: a skill\'s own self-test, the browser suite, real asks in the everyday benchmark, and a live finding (a kept answer from the real outside service the skill wraps, a file in the repo, never a claim). '
     + TIERS.map((t) => '<b style="font-weight:600">' + t + '</b>: ' + MEANS[t]).join('; ') + '. Tap a family to see each skill and why. '
     + 'Last tested is the newest date a skill\'s evidence has (its own tests and the browser suite as last seen in the repo, or the benchmark\'s last run on main); '
@@ -178,7 +181,8 @@ async function run(text, api) {
   let used = null; try { used = readUsed(localStorage); } catch (_) { used = null; }
   let better = null; try { const r = await fetch('/void.better.json', { cache: 'no-cache' }); better = r.ok ? await r.json() : null; } catch (_) { better = null; }
   if (_pageStill && !_pageStill(el)) return 'family-health';
-  el.innerHTML = head + healthHtml(esc, fam, used, Date.now(), better);
+  let games = null; try { games = gameHealth(loadLadder(), loadMatches()); } catch (_) { games = null; }
+  el.innerHTML = head + healthHtml(esc, fam, used, Date.now(), better, games);
   el.addEventListener('click', (e) => {
     const q = e.target && e.target.closest && e.target.closest('button[data-fh-filter]'); if (q) { applyFilter(el, q.dataset.fhFilter); return; }
     const b = e.target && e.target.closest && e.target.closest('button[data-open]'); if (!b) return;
