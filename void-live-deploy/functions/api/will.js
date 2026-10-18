@@ -14,7 +14,7 @@ import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
 const MODEL = models('will');
-const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every three hours)
+const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';

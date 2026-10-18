@@ -1,4 +1,4 @@
-# Verse's will, every three hours from 9 AM to 9 PM New York time (tools/will.py): it gathers everything that exists (what people
+# Verse's will, every hour around the clock (owner, 2026-10-18: "set Verse up to automatically self update very often, it should give itself its own wants and replace them constantly") (tools/will.py): it gathers everything that exists (what people
 # asked that Verse still misses, the frontier's open items, ideas from its inputs), Verse chooses three wants in its own words
 # (/api/will), the card "what do you want to become?" shows them, and the top one goes to the builders' queue. It used to run only
 # from a scheduled task on the owner's laptop, so the card kept wants Verse had already built ("add milk", 2026-10-12).
@@ -7,11 +7,10 @@ name: Verse's will
 
 on:
   schedule:
-    - cron: '7 13-23/3 * * *' # 13:07 to 22:07 UTC, every three hours: 9 AM to 6 PM New York in summer, an hour earlier in winter
-    - cron: '7 1 * * *' # 9 PM New York in summer
+    - cron: '7 * * * *' # every hour at :07, day and night; each run chooses three fresh wants and replaces the card's
   workflow_dispatch:
   # also right after main deploys (owner, 2026-10-18: "ok there is too much not updating"): a merge that built a want would
-  # otherwise leave it on the card until the next three-hour slot. One Workers AI call per merge, and only when the deploy passed.
+  # otherwise leave it on the card until the next hourly slot. One Workers AI call per merge, and only when the deploy passed.
   workflow_run:
     workflows: ['Verse deploy']
     types: [completed]
