@@ -26,6 +26,7 @@ export const STORES = {
   codex:    { key: 'a2m.void.codex.v1',    what: 'the cards and answers you filed in the codex' },
   capsule:  { key: 'a2m.void.capsule.v1',  what: 'your sealed time capsules (a word is kept only as a hash)' },
   whispers: { key: 'a2m.void.whispers.v1', what: 'notes you left on stage things, shown once' },
+  graph:    { key: 'a2m.void.graph.v1',    what: 'what you ask about, as a small graph of skills and a few topic words (never the sentence), so V01D can build on it ("what do you know about me")' },
 };
 
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };

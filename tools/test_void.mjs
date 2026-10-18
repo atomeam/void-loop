@@ -3125,6 +3125,37 @@ try {
     check('stage pack g eclipse: "eclipse games skills for an hour" shows the chip "eclipsed: games" and tic tac toe stops routing to its skill, a tap on the chip lifts it, the stage family is refused, "until friday" says so on its chip and "lift the eclipse" clears all',
       /^eclipsed: games · \d+ min left$/.test(chip) && /games/.test(kept1) && !/tic-tac-toe/.test(hiddenTo) && tttThings === 0 && lifted0 === 1 && chipsGone === 0 && /tic-tac-toe/.test(back) && /stage skills stay/.test(refused) && stageChip === 0 && chips2 === 'eclipsed: money · until fri' && none === 0 && !P.errors.length, JSON.stringify({ chip, hiddenTo, tttThings, lifted0, chipsGone, back, refused, stageChip, chips2, none, e: P.errors }));
     await P.ctx.close(); }
+  // the personal memory graph (asked by Void, 2026-10-18; lib/memory-graph.js, skills/memory-graph.js): what a person asks about, kept on this device as a small
+  // graph of skills and a few topic words, read back as "What I've noticed"; the sentence typed is never stored and nothing is sent
+  if (want("memory graph: what I've noticed")) { const G = await fresh();
+    const posted = []; G.p.on('request', (r) => { if (r.method() === 'POST') posted.push(String(r.postData() || '')); });
+    await G.ask('make a clock', 900); const note = await G.whisper();
+    await G.ask('make a 5 minute timer', 700); await G.ask('draw a circle', 700);
+    for (const a of ['make a clock', 'make a 5 minute timer', 'draw a circle']) await G.ask(a, 700);
+    const kept = await G.p.evaluate(() => localStorage.getItem('a2m.void.graph.v1') || '');
+    await G.ask('what do you know about me', 1200);
+    const read = async () => G.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null;
+      return { t: pg.innerText, chips: [...pg.querySelectorAll('.mg-interests .mg-chip')].map((c) => c.textContent), chipAsks: [...pg.querySelectorAll('.mg-interests a[data-ask]')].map((c) => c.getAttribute('data-ask')), next: [...pg.querySelectorAll('.mg-next a[data-ask]')].map((c) => c.getAttribute('data-ask')), pairs: [...pg.querySelectorAll('.mg-pairs li')].map((l) => l.textContent), forget: !!pg.querySelector('.mg-forget'), stop: !!pg.querySelector('.mg-stop'), start: !!pg.querySelector('.mg-start') }; });
+    const card = await read();
+    const examples = await G.p.evaluate(() => Promise.all(['clock', 'timer', 'shape'].map((n) => import('/skills/' + n + '.js').then((m) => m.default.examples))).then((l) => l.flat()));
+    check('memory graph: three asks twice are noted on this device (the first time a one-line note says so), and "what do you know about me" shows three interest chips that each ask a skill\'s own example, the clock and timer pair, "from 6 asks", a suggestion that is a real example, and Forget / Stop',
+      /forget my patterns/.test(note) && /stop remembering/.test(note) && !!card && card.chips.length === 3 && card.chips.some((c) => /^clock/.test(c)) && card.chips.some((c) => /^minute timer/.test(c)) && card.chips.some((c) => /^circle/.test(c))
+        && card.chipAsks.length === 3 && card.chipAsks.every((a) => examples.includes(a)) && /from 6 asks on this device since \d{4}-\d{2}-\d{2}/.test(card.t) && card.next.length >= 1 && card.next.length <= 3 && card.next.every((a) => examples.includes(a))
+        && card.pairs.some((p) => /clock and timer, together \d+ times|timer and clock, together \d+ times/.test(p)) && card.forget && card.stop && !card.start && /Nothing leaves this device/.test(card.t) && !G.errors.length,
+      JSON.stringify({ note, card, examples: examples.length, errors: G.errors }));
+    check('memory graph: the sentence typed is never stored and nothing of the graph is sent', kept.length > 0 && !kept.includes('draw a circle') && !kept.includes('make a 5 minute timer') && /"topic:circle"/.test(kept)
+      && !posted.some((b) => /graph\.v1|minute timer|topic:/.test(b)), JSON.stringify({ kept: kept.slice(0, 300), posted: posted.map((b) => b.slice(0, 80)) }));
+    await G.p.reload(); await skillsUp(G.p, 200);
+    await G.ask('what do you know about me', 1200); const again = await read();
+    await G.ask('forget my patterns', 1000); const gone = await read(), keptAfter = await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.graph.v1') || '{}'));
+    await G.ask('make a clock', 700); await G.ask('stop remembering', 900); const off = await read();
+    await G.ask('make a clock', 700); const whileOff = await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.graph.v1') || '{}'));
+    await G.ask('start remembering', 900); await G.ask('make a clock', 700); const back = await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.graph.v1') || '{}'));
+    check('memory graph: a reload keeps the graph, "forget my patterns" empties it (the card says nothing yet), "stop remembering" stops the noting (Start replaces Stop) and "start remembering" resumes it',
+      !!again && /from 6 asks/.test(again.t) && again.chips.length === 3 && !!gone && /Nothing yet/.test(gone.t) && gone.chips.length === 0 && keptAfter.asks === 0 && Object.keys(keptAfter.nodes || {}).length === 0
+        && !!off && off.start && !off.stop && /Off: I am not keeping/.test(off.t) && whileOff.on === false && whileOff.asks === 1 && back.on === true && back.asks === 2 && !G.errors.length,
+      JSON.stringify({ again: again && again.t.slice(0, 120), gone: gone && gone.t.slice(0, 120), keptAfter, off: off && off.t.slice(0, 80), whileOff, back, errors: G.errors }));
+    await G.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
     const n = await until(() => P.p.$eval('.bench-count', (e) => (e.dataset.n != null ? +e.dataset.n : null)).catch(() => null), 4000);

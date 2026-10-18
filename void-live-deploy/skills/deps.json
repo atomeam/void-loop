@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 653,
+ "counted": 655,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -790,6 +790,12 @@
   },
   {
    "file": "lib/media-local.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/memory-graph.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -3280,6 +3286,12 @@
     "functions/api/merge.js",
     "functions/api/repo.js",
     "lib/bench-asks.js"
+   ]
+  },
+  "lib/memory-graph.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/memory-graph.js"
    ]
   },
   "lib/memory-scope.js": {
@@ -6255,6 +6267,12 @@
    "importedBy": [
     "skills/pick-for-me.js"
    ]
+  },
+  "skills/memory-graph.js": {
+   "imports": [
+    "lib/memory-graph.js"
+   ],
+   "importedBy": []
   },
   "skills/memory.js": {
    "imports": [

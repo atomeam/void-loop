@@ -4530,6 +4530,16 @@ say('nothing selected to remove');
         const n = document.createElement('span'); n.className = 'rating-note'; n.title = 'From the skill ratings (tools/families.mjs): evidence only'; n.textContent = (src.textContent.trim() ? ' · ' : '') + t; src.appendChild(n);
       }, 700)).catch(() => {});
     }
+    // the personal memory graph (lib/memory-graph.js, the `graph` store in lib/state.js; asked by Void, 2026-10-18: "a persistent, personal knowledge
+    // graph across conversations"): which skill answered and a few object words of the ask, on this device only, never the sentence, never sent;
+    // "what do you know about me" reads it back (skills/memory-graph.js). The first time anything is kept it says so once, on the card or the whisper line.
+    function graphNote(who, text, card) {
+      import('/lib/memory-graph.js').then((m) => {
+        const r = m.noteAskStored(localStorage, { skill: who, text, at: Date.now() });
+        if (!r.note) return;
+        if (card && vpageEl === card && !card.querySelector('.graph-note')) { const d = document.createElement('div'); d.className = 'src graph-note'; d.textContent = m.NOTE; card.appendChild(d); } else say(m.NOTE);
+      }).catch(() => {});
+    }
     function groundCheck(text, skill, el) {
       import('/lib/ground.js').then((g) => setTimeout(() => {
         if (vpageEl !== el) return; // replaced before it settled: not this card's to judge
@@ -4570,6 +4580,7 @@ say('nothing selected to remove');
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) groundCheck(text, (skill.member && skill.member(lower0, text)) || skill, vpageEl);
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) ratingNote(who, vpageEl);
           if (src !== 'none' && vpageEl && vpageEl !== cardBefore) { vpageEl.dataset.skill = who; keepCard(vpageEl); } // the card learns which skill made it: its rarity, cost and stats
+          if (src !== 'none') graphNote(who, text, vpageEl && vpageEl !== cardBefore ? vpageEl : null);
           if (src === 'none') reportMiss(text, 'skill:' + who);
           return true;
         }
