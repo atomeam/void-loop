@@ -57,7 +57,7 @@ export function recentAnswered(log, limit = 8) {
 
 /** "tell void what it got wrong", "correct void ...", "void got this wrong", "I want to correct you": a correction, not a look or a page. Pure. */
 export function wantsCorrection(lower) {
-  return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b|made\s+a\s+mistake)/.test(String(lower || '').toLowerCase());
+  return /\b(?:got\s+(?:this|that|it|something|one)\s+wrong|what\s+it\s+got\s+wrong|(?:correct|fix)\s+(?:void|v01d|you)\b|(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|you)\b|made\s+a\s+mistake|self[- ]?card\b.*\b(?:correct|fix)\s+(?:it|that|this)\b)/.test(String(lower || '').toLowerCase());
 }
 
 /** the answer a select value names: null for the empty placeholder, a non-number or an index out of range. Pure. */

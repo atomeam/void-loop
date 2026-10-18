@@ -11,7 +11,11 @@ export const REACTIONS = Object.freeze({
   laugh: '\u{1F602}',
   heart: '\u{2764}\u{FE0F}',
   eyes: '\u{1F440}',
+  // asked by Void (2026-10-18): "so errors trigger a specific 'confusion' or 'pity' reaction"; shown tinted on the incident-autopsy card. 8 is the owner's ceiling.
+  confused: '\u{1F615}',
+  pity: '\u{1F97A}',
 });
+export const ERROR_REACTIONS = Object.freeze(['confused', 'pity']);
 export const REACTION_IDS = Object.freeze(Object.keys(REACTIONS));
 export const isReaction = (id) => typeof id === 'string' && Object.prototype.hasOwnProperty.call(REACTIONS, id);
 /** the glyph for an id, or '' for anything not on the list. Pure. */
@@ -20,6 +24,9 @@ export const glyphOf = (id) => (isReaction(id) ? REACTIONS[id] : '');
 export const TARGET_RE = /^[a-z0-9-]{1,40}$/;
 /** a target is a short slug; whether it names something real is the route's second check. Pure. */
 export const targetOk = (t) => typeof t === 'string' && TARGET_RE.test(t);
+/** the slug of an incident in incidents.json (its `at`, prefixed so it can never equal a ledger slug), e.g. 2026-10-18T04:08:54.198Z ->
+ *  incident-2026-10-18t04-08-54-198z; '' for anything that is not a date. Like a ledger slug, the route accepts it only when the site's own incidents.json has it. Pure. */
+export const incidentTargetOf = (at) => { const s = typeof at === 'string' && Number.isFinite(Date.parse(at)) ? targetOf(at) : ''; return s && targetOk('incident-' + s) ? 'incident-' + s : ''; };
 /** the slug of a ledger entry (void.growth.json `at`, e.g. 2026-10-18T01:40:53Z -> 2026-10-18t01-40-53z): the stage items spectators can react to. Pure. */
 export const targetOf = (at) => { const s = String(at || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, ''); return targetOk(s) ? s : ''; };
 

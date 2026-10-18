@@ -6,7 +6,7 @@ import { REACTION_IDS, REACTIONS, targetOk } from './reactions.js';
 
 export const REST_MS = 1200;      // a button rests this long after a tap
 export const MAX_REST_MS = 120000; // a Retry-After never rests the bar longer than this
-const LABELS = { clap: 'applaud', fire: 'fire', wow: 'wow', laugh: 'laugh', heart: 'love', eyes: 'watching' };
+const LABELS = { clap: 'applaud', fire: 'fire', wow: 'wow', laugh: 'laugh', heart: 'love', eyes: 'watching', confused: 'confused', pity: 'pity' };
 
 /** the counts object from a response, as integers for exactly the ids on the list, or null when it is not one. Pure. */
 export function cleanCounts(j) {
@@ -22,7 +22,8 @@ export const short = (n) => (n >= 1000 ? (n / 1000).toFixed(n >= 10000 ? 0 : 1).
 const BURST_CSS = '.rx-b{position:absolute;pointer-events:none;font-size:18px;animation:rx-up .8s ease-out forwards}@keyframes rx-up{from{transform:translateY(0);opacity:1}to{transform:translateY(-34px);opacity:0}}';
 
 /** Build the bar for `target` (a ledger slug). Returns the element, or null when the target is not a slug; the element stays hidden until the counts have been
- *  read once, so a dead endpoint shows nothing. opts: fetchFn, doc, reduceMotion, now. */
+ *  read once, so a dead endpoint shows nothing. opts: fetchFn, doc, reduceMotion, now, tint ({ id: css } added to those buttons' style: the autopsy's
+ *  warning look on 'confused' and 'pity', asked by Void). */
 export function reactionBar(target, opts = {}) {
   const doc = opts.doc || (typeof document !== 'undefined' ? document : null), f = opts.fetchFn || (typeof fetch === 'function' ? fetch.bind(globalThis) : null);
   if (!doc || !f || !targetOk(target)) return null;
@@ -43,7 +44,8 @@ export function reactionBar(target, opts = {}) {
   };
   for (const id of REACTION_IDS) {
     const b = doc.createElement('button'); b.type = 'button'; b.dataset.reaction = id; b.setAttribute('aria-label', LABELS[id] || id);
-    b.style.cssText = 'font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:1px 8px;cursor:pointer;display:inline-flex;gap:4px;align-items:center';
+    b.style.cssText = 'font:inherit;color:inherit;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);border-radius:999px;padding:1px 8px;cursor:pointer;display:inline-flex;gap:4px;align-items:center' + (opts.tint && typeof opts.tint[id] === 'string' ? ';' + opts.tint[id] : '');
+    if (opts.tint && opts.tint[id]) b.dataset.tint = '1';
     const g = doc.createElement('span'); g.textContent = REACTIONS[id]; g.setAttribute('aria-hidden', 'true');
     const n = doc.createElement('span'); n.className = 'rx-n'; n.style.cssText = 'font-size:12px;opacity:.8;min-width:0';
     b.append(g, n); nums[id] = n; btns[id] = b; bar.append(b);

@@ -2,7 +2,7 @@
 // Run: node --test tools/placement.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { arrange, freeSpot, clearSpot, overlaps, GAP, MIN_SCALE } from '../void-live-deploy/lib/placement.js';
+import { arrange, freeSpot, clearSpot, overlaps, dockPanel, GAP, MIN_SCALE } from '../void-live-deploy/lib/placement.js';
 
 const AREA = { w: 1000, h: 700 };
 const apply = (cards, moves) => cards.map((c) => (moves[c.id] ? { ...c, ...moves[c.id] } : c));
@@ -77,4 +77,34 @@ test('a small card never shrinks: with no free spot it still takes the spot that
   assert.ok(!m.note || m.note.scale === undefined, JSON.stringify(m));
   const half = arrange([{ id: 'left', x: 0, y: 0, w: 380, h: 280 }, { id: 'card', x: 20, y: 20, w: 380, h: 280, fresh: true }], { w: 600, h: 300 });
   assert.ok(half.card && half.card.scale === undefined, 'below the board size it moves, never shrinks: ' + JSON.stringify(half));
+});
+
+// the walkthrough panel (skills/showcase.js) never covers the open card or the ask bar (owner, 2026-10-18)
+const box = (p) => ({ x: p.x, y: p.y, w: p.w, h: p.h });
+const H = (w) => (w < 400 ? 220 : 110); // a panel that wraps taller when narrow
+test('dockPanel: nothing open puts the panel just above the ask bar, full width', () => {
+  const p = dockPanel({ view: { w: 1280, h: 800 }, floor: 664, heightAt: H });
+  assert.deepEqual([p.mode, p.w, p.y + p.h], ['bottom', 720, 652]);
+});
+test('dockPanel: the dragon card at 1280x800 leaves room beside it: the panel goes there and touches neither the card nor the ask bar', () => {
+  const card = { x: 360, y: 24, w: 560, h: 620 }, p = dockPanel({ view: { w: 1280, h: 800 }, floor: 664, avoid: [card], heightAt: H });
+  assert.equal(p.mode, 'side'); assert.ok(!overlaps(box(p), card), JSON.stringify(p)); assert.ok(p.y + p.h <= 664 && p.x + p.w <= 1280 - 16, JSON.stringify(p));
+});
+test('dockPanel: a narrow card with room above docks the panel at the top; with room only below, between the card and the ask bar', () => {
+  const top = dockPanel({ view: { w: 390, h: 800 }, floor: 674, avoid: [{ x: 10, y: 300, w: 370, h: 300 }], heightAt: H });
+  assert.equal(top.mode, 'top'); assert.equal(top.y, 12); assert.ok(!overlaps(box(top), { x: 10, y: 300, w: 370, h: 300 }));
+  const low = dockPanel({ view: { w: 390, h: 800 }, floor: 674, avoid: [{ x: 10, y: 20, w: 370, h: 300 }], heightAt: H });
+  assert.equal(low.mode, 'bottom'); assert.ok(low.y >= 320 + 12 && low.y + low.h <= 674 - 12, JSON.stringify(low));
+});
+test('dockPanel: no free space (the card fills a phone) is a modal, centred between the top and the ask bar, never taller than the room', () => {
+  const p = dockPanel({ view: { w: 390, h: 800 }, floor: 674, avoid: [{ x: 10, y: 179, w: 370, h: 320 }], heightAt: H });
+  assert.equal(p.mode, 'modal'); assert.equal(p.w, 358); assert.ok(p.y >= 12 && p.y + p.h <= 674 - 12, JSON.stringify(p));
+  const tiny = dockPanel({ view: { w: 390, h: 200 }, floor: 150, avoid: [{ x: 0, y: 0, w: 390, h: 150 }], heightAt: H });
+  assert.equal(tiny.mode, 'modal'); assert.ok(tiny.h <= tiny.maxH && tiny.maxH === 150 - 24, JSON.stringify(tiny));
+});
+test('dockPanel: the left side is taken when it is the wider one; a card partly off screen counts only where it shows', () => {
+  const p = dockPanel({ view: { w: 1280, h: 640 }, floor: 487, avoid: [{ x: 860, y: 50, w: 384, h: 508 }], heightAt: H });
+  assert.equal(p.mode, 'side'); assert.ok(p.x + p.w <= 860 - 12 && p.x >= 16, JSON.stringify(p));
+  const off = dockPanel({ view: { w: 1280, h: 800 }, floor: 664, avoid: [{ x: -2000, y: 0, w: 2400, h: 900 }], heightAt: H });
+  assert.equal(off.mode, 'side'); assert.ok(off.x >= 400 + 12, JSON.stringify(off));
 });

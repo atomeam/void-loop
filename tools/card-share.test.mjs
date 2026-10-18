@@ -84,14 +84,41 @@ test('self card (owner review 2026-10-18): saved text keeps a blank line between
   const v = { entries: [{ kind: 'daily', at: '2026-10-18T08:00:00Z', thoughts: 'I am thin on maps.', weakest: 'Maps <b>.', next_game: 'Backgammon', better: '' }, { kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts' }],
     asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T01:00:00Z' }], follow: { total: 73, built: 35, recent: [{ ask: 'Go', what: 'a board', at: '2026-10-08T00:00:00Z', times: 3, depth: 'root', ref: 'javascript:x' }] } };
   const secs = selfSections(v);
-  assert.deepEqual(secs.map((s) => s.id), ['words', 'weakest', 'next', 'shipped', 'asked', 'built']); // empty "better" is left out
+  assert.deepEqual(secs.map((s) => s.id), ['words', 'sure', 'asked', 'built', 'growth', 'shipped']); // the owner's redesign: words, the family bars' slot, then the blocks
+  assert.deepEqual(secs.find((s) => s.id === 'growth').blocks.filter((b) => b.t === 'sub').map((b) => b.text), ['Weakest right now', 'Next game I want to learn']); // empty "better" is left out
+  assert.equal(secs.find((s) => s.id === 'asked').count, '1 waiting'); assert.equal(secs.find((s) => s.id === 'built').count, '35 of 73 asks');
   assert.equal(secs.find((s) => s.id === 'built').log, true); assert.equal(secs.find((s) => s.id === 'words').log, false);
   const asked = secs.find((s) => s.id === 'asked').blocks[0].items[0]; assert.match(asked.sub, /^Asked in my daily reflection, 2026-10-08 · not built yet$/);
   const built = secs.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items[0]; assert.equal(built.sub, '2026-10-08 · asked 3 times'); assert.equal(built.detail.ref, '');
-  const html = selfHtml(secs, esc); assert.ok(!html.includes('<b>.') && html.includes('Maps &lt;b&gt;.'), 'text is escaped'); assert.match(html, /<h3 class="vs-h">What got built<\/h3>/);
+  const html = selfHtml(secs, esc); assert.ok(!html.includes('<b>.') && html.includes('Maps &lt;b&gt;.'), 'text is escaped'); assert.match(html, /<h3 class="vs-h">What got built <span class="vs-n">\(35 of 73 asks\)<\/span><\/h3>/);
+  assert.match(html, /^<section class="vs-sec" data-sec="words"><blockquote class="vs-voice"><p>I am thin on maps\.<\/p>/, 'V01D\'s words are a quotation, first');
+  assert.match(html, /<section class="vs-sec" data-sec="sure"><div data-v-conf><\/div><\/section>/);
+  assert.ok(!/<details class="vs-sec[^"]*" data-sec="\w+" open>/.test(html), 'every block starts closed');
   // a DOM-like tree for textOf: sections are blocks, li[data-bullet] is a "- " line
   const T = (s) => ({ nodeType: 3, nodeValue: s }), E = (tagName, kids, attr = {}) => ({ nodeType: 1, tagName, childNodes: kids.map((k) => (typeof k === 'string' ? T(k) : k)), getAttribute: (a) => attr[a] || null });
   const sec = (h, li) => E('SECTION', [E('H3', [h]), E('UL', li.map((x) => E('LI', [E('DIV', [x[0]]), E('DIV', [x[1]])], { 'data-bullet': '1' })))]);
   const body = [sec('What I have asked for', [['Terrain', 'Asked 2026-10-08 · not built yet']]), sec('What got built', [['Go', '2026-10-08']])].map((x) => tidy(textOf(x))).join('\n\n');
   assert.equal(body, 'What I have asked for\n- Terrain\nAsked 2026-10-08 · not built yet\n\nWhat got built\n- Go\n2026-10-08');
+});
+
+test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait behind "show all N" and keep one line in the saved text; titled sections are collapsible, closed', async () => {
+  const { selfSections, selfHtml, FOLD } = await import('../void-live-deploy/lib/self-blocks.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const recent = Array.from({ length: 30 }, (_, i) => ({ ask: 'ask ' + i, what: 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: 'root' }));
+  const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'want ' + i, kind: 'daily', at: '2026-10-18T00:00:00Z' }));
+  const html = selfHtml(selfSections({ entries: [{ kind: 'daily', thoughts: 'hi', weakest: 'maps' }], asks, follow: { total: 40, built: 30, recent } }), esc);
+  assert.equal(FOLD, 5);
+  assert.equal((html.match(/data-more="1" hidden/g) || []).length, 25 + 1, '25 older builds and 1 older ask are folded');
+  assert.match(html, /<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="30">show all 30<\/button>/);
+  assert.match(html, /data-n="6">show all 6</);
+  assert.equal((html.match(/data-share-skip="1"/g) || []).length, 25 * 2 + 1, 'an older build keeps a short line, not its details and dates; an older ask keeps a short line');
+  assert.equal((html.match(/<summary data-share-short="[^"]+">/g) || []).length, 26, 'every folded item carries its short line for the saved text');
+  const { shortLine, SHORT } = await import('../void-live-deploy/lib/self-blocks.js');
+  assert.equal(shortLine('ask 7'), 'ask 7');
+  const sl = shortLine('a careful sentence about what V01D wanted built and why it mattered to the stage, twice over');
+  assert.ok(sl.length <= SHORT + 1 && sl.endsWith('…') && !/\s…$/.test(sl) && 'a careful sentence about what V01D wanted built and why it mattered to the stage'.startsWith(sl.slice(0, -1)), sl);
+  assert.match(html, /<details class="vs-sec" data-sec="growth"><summary class="vs-sum"><h3 class="vs-h">Weakest right now \/ Next game \/ How I'd get better<\/h3><\/summary><h4 class="vs-h4">Weakest right now<\/h4>/);
+  assert.match(html, /<details class="vs-sec vs-log" data-sec="built"><summary class="vs-sum"><h3 class="vs-h">What got built <span class="vs-n">\(30 of 40 asks\)/);
+  assert.match(html, /<h3 class="vs-h">What I've asked for <span class="vs-n">\(6 waiting\)/);
+  assert.match(html, /<section class="vs-sec" data-sec="words"><blockquote class="vs-voice">/, 'the untitled opening stays a plain section');
 });

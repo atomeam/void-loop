@@ -1747,6 +1747,11 @@
       "words": "Convert my old parts into long-running 'do this for me' tasks that include approval cards, letting past iterations keep working even when the owner is away.",
       "ledgerAt": "2026-10-16T23:28:18Z",
       "why": "the approval-card bridge exists: 'keep <automation> running every 2 hours' on the confirm line puts a rule on the clock with nobody here, every step an action record (lib/keep-going.js). Turning a saved routine or forge iteration into such a task needs a server-side runner and is not built"
+    },
+    {
+      "words": "Implement the 'open the self card' handler directly so I can perform self-audits on demand.",
+      "ledgerAt": "2026-10-17T07:39:48Z",
+      "why": "built: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (void.html wantsVoice, pattern self[- ]?(card|page)); checked again 2026-10-18 with node tools/ask.mjs \"open the self card\" (by: voice) (tools/asks-link.json)"
     }
   ]
 }

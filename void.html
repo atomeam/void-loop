@@ -781,6 +781,30 @@
     /* the self card (lib/self-blocks.js): headings you can scan, one bullet per ask with its dates beneath, paragraphs with air between them,
        V01D's own words in the reading font and the changelog (what got built) in monospace inside its own darker box */
     .vpage.vc-self .vs-sec { margin-top: 18px; }
+    /* the owner's redesign (2026-10-18): V01D's words as a quotation with an accent bar, sub-headings inside a block, a muted count in each heading */
+    .vpage.vc-self .vs-voice { margin: 14px 0 6px; padding: 4px 0 4px 16px; border-left: 4px solid rgb(var(--d-key, 158 178 255) / .9); }
+    .vpage.vc-self .vs-voice p { font-size: 17.5px; line-height: 1.6; color: var(--ink); margin: 0 0 6px; }
+    .vpage.vc-self .vs-voice .vs-cite { font-size: 12px; }
+    .vpage.vc-self .vs-h4 { font-size: 14px; font-weight: 700; letter-spacing: .02em; color: var(--ink); margin: 10px 0 4px; }
+    .vpage.vc-self .vs-n { font-weight: 500; font-size: 13px; color: var(--ink-3); }
+    .vpage.vc-self details.vs-sec { margin-top: 10px; }
+    .vpage.vc-self [data-v-conf] { margin-top: 14px; }
+    .vpage.vc-self details.vs-log:not([open]) { background: none; border: 0; padding: 0; font-family: inherit; } /* closed, the changelog block looks like the others; its box shows when it is open */
+    .vpage.vc-self .vc-share { gap: 6px; } .vpage.vc-self .vc-share .vc-grp::before { content: none; } /* the footer: one wrapping row of buttons */
+    .vpage.vc-self .vs-sum { display: block; list-style: none; cursor: pointer; border-radius: 6px; }
+    .vpage.vc-self .vs-sum::-webkit-details-marker { display: none; }
+    .vpage.vc-self .vs-sum:focus-visible { outline: 2px solid rgba(170,190,255,.85); outline-offset: 2px; }
+    .vpage.vc-self .vs-sum .vs-h { display: flex; align-items: baseline; gap: 8px; }
+    .vpage.vc-self .vs-sum .vs-h::after { content: ""; margin-left: auto; width: 7px; height: 7px; border-right: 2px solid var(--ink-3); border-bottom: 2px solid var(--ink-3); transform: translateY(-3px) rotate(45deg); transition: transform .15s ease; }
+    .vpage.vc-self details.vs-sec:not([open]) > .vs-sum .vs-h::after { transform: rotate(-45deg); }
+    .vpage.vc-self details.vs-sec:not([open]) > .vs-sum .vs-h { margin-bottom: 0; }
+    .vpage.vc-self .vs-more { margin-top: 6px; }
+    /* the speaker sits as far in from the right border as the title does from the left (owner, 2026-10-18): no negative margin, and the scrollbar's
+       gutter is kept on both edges so a classic scrollbar does not push the speaker further in than the title */
+    .vpage.vc-self { scrollbar-gutter: stable both-edges; }
+    .vpage.vc-self.vcard > .vread { right: 27px !important; } /* the title bar's margin, border and padding (12 + 3 + 12): the speaker's right inset is the title text's left one */
+    @media (max-width: 520px) { .vpage.vc-self.vcard > .vread { right: 21px !important; } }
+    .vpage.vc-self .src { padding-bottom: 10px; }
     .vpage.vc-self .vs-h { font-size: 17px; font-weight: 700; line-height: 1.3; letter-spacing: 0; color: var(--ink); margin: 0 0 8px; padding-bottom: 5px; border-bottom: 1px solid rgb(var(--d-key, 158 178 255) / .35); box-shadow: 0 1px 0 rgba(255, 210, 122, .18); }
     .vpage.vc-self .vs-sec p { margin: 0 0 10px; }
     .vpage.vc-self .vs-sec p:last-child { margin-bottom: 0; }
@@ -1087,7 +1111,7 @@
   <div id="dock" role="search" aria-label="Ask Void">
     <div id="hints" role="listbox" aria-label="suggestions"></div>
     <div id="row">
-      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="Ask V01D" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
+      <input id="input" aria-label="Ask Void" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" writingsuggestions="false" placeholder="Ask V01D" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" data-lpignore="true" data-1p-ignore data-form-type="other" />
       <button id="go" type="button" aria-label="Ask" title="Ask">↵</button>
     </div>
     <div id="whisper" aria-live="polite"></div>
@@ -1239,6 +1263,7 @@ Object.values(things).forEach((th) => {
       });
       Object.values(things).forEach((th) => { if (th.scale < 1) placeThing(th); }); // a shrunk board stays shrunk across redraws and reloads
       decorate();
+      tuckApply(); // anything tucked away while a game was open stays in the tray across redraws
       syncFigures();
       announceNew();
       requestAnimationFrame(() => layoutStage()); // after any centring the summoner asked for
@@ -1372,8 +1397,11 @@ Object.values(things).forEach((th) => {
       cards.forEach((c) => { laidOut.add(c.id); centred.delete(c.id); }); grownIds.clear(); // a card not on the stage yet keeps its claim on the middle
       const moves = placement.arrange(cards, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) });
       let moved = false;
+      const elOf = (id) => stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
+      const gameOpen = cards.some((k) => things[k.id] && isGameThing(things[k.id], elOf(k.id)));
       for (const [id, p] of Object.entries(moves)) {
         const th = things[id], c = cards.find((k) => k.id === id), g = th && (th.geo || geoOf.get(id)); if (!th || !c || !g) continue;
+        if (gameOpen && !th.prior && !isGameThing(th, elOf(id)) && !c.fresh) th.prior = { x: th.x, y: th.y }; // pushed aside by a game: it goes back here when the game closes
         const s = p.scale ?? (th.scale || 1);
         if (s < 1) { if (!(th.scale < 1)) th.home = { x: c.x, y: c.y }; th.scale = s; th.geo = g; } // shrunk: remember its full size and where it stood
         else { delete th.scale; delete th.geo; delete th.home; }
@@ -1381,8 +1409,103 @@ Object.values(things).forEach((th) => {
         if (sideOf(id)) th.card = { x: Math.round(p.x + g.sx * s), y: Math.round(p.y + g.sy * s) };
         placeThing(th); moved = true;
       }
+      if (settleGames()) moved = true;
       if (moved) { decorate(); save(); }
     }
+    // A game opens and the loose cards it now covers are moved aside, never destroyed (owner, 2026-10-18: a list card sat under the
+    // chess panel). lib/panel-fit.js: each covered card goes to the nearest clear spot (it remembers `prior`), or, with no room,
+    // is tucked into the tray at the left edge (one tap brings it back); when the game closes every card returns to its spot.
+    let panelFit = null; import('/lib/panel-fit.js').then((m) => { panelFit = m; layoutStage(); }).catch(() => {});
+    // a game is a kind with a "How to play" (skills/howto.js HOWTO) or a thing with its own side card; never just any card with a 3D art miniature
+    let gameKinds = new Set(); import('/skills/howto.js').then((m) => { gameKinds = new Set(Object.keys(m.HOWTO || {})); layoutStage(); }).catch(() => {});
+    const isGameThing = (th, el) => !!(el && th && (gameKinds.has(th.kind) || stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(th.id) + '"]')));
+    function trayEl() {
+      let t = document.getElementById('stage-tray');
+      if (!t) {
+        t = document.createElement('div'); t.id = 'stage-tray'; t.setAttribute('role', 'group'); t.setAttribute('aria-label', 'Tucked away while a game is open');
+        t.style.cssText = 'position:fixed;left:8px;bottom:calc(var(--dock-space,120px) + 4px);z-index:40;display:flex;flex-direction:column;gap:6px;align-items:flex-start;max-width:46vw';
+        document.body.appendChild(t);
+      }
+      return t;
+    }
+    function tuckApply() { // hide each tucked thing and show its chip; nothing is deleted
+      const tray = trayEl(); tray.textContent = '';
+      for (const th of Object.values(things)) {
+        if (!th.tucked) continue;
+        const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]'); if (el) el.style.display = 'none';
+        const b = document.createElement('button'); b.type = 'button'; b.dataset.tuck = th.id;
+        const label = String(th.name || th.kind || 'card').replace(/^\w/, (c) => c.toUpperCase()).slice(0, 24);
+        b.textContent = label + ' \u21A9'; b.setAttribute('aria-label', 'Bring back ' + label);
+        b.style.cssText = 'font:inherit;font-size:12px;color:var(--ink,#eee);background:rgba(20,22,30,.92);border:1px solid var(--card-line,rgba(255,255,255,.16));border-radius:999px;padding:5px 12px;cursor:pointer;backdrop-filter:blur(6px)';
+        b.addEventListener('click', () => untuckThing(th.id));
+        tray.appendChild(b);
+      }
+      tray.hidden = !tray.childElementCount;
+    }
+    function untuckThing(id) { // one tap: it comes back, on the nearest clear spot to where it was, and stays there while this game is open
+      const th = things[id]; if (!th || !th.tucked) return;
+      th.tucked = false; th.restored = true;
+      const el = stage.querySelector(':scope > .thing[data-id="' + CSS.escape(id) + '"]');
+      if (el) {
+        el.style.display = '';
+        if (panelFit && placement) { const o = otherRects(id), p = placement.freeSpot({ w: el.offsetWidth, h: el.offsetHeight }, o, { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) }, { x: th.x, y: th.y }); th.x = p.x; th.y = p.y; placeThing(th); }
+      }
+      tuckApply(); save(); requestAnimationFrame(() => layoutStage());
+    }
+    // where a thing stands, not where an entrance animation draws it this frame (a board that lands scaled read 130 px off): the
+    // layout box for stage children, the drawn box only for what lives outside the stage (the ask bar)
+    const stageBox = (el) => {
+      if (el.offsetParent === stage) { const k = el.style.scale && parseFloat(el.style.scale) < 1 ? parseFloat(el.style.scale) : 1; return { x: el.offsetLeft, y: el.offsetTop, w: Math.round(el.offsetWidth * k), h: Math.round(el.offsetHeight * k) }; }
+      const r = el.getBoundingClientRect(), s0 = stage.getBoundingClientRect(); return { x: Math.round(r.left - s0.left), y: Math.round(r.top - s0.top), w: Math.round(r.width), h: Math.round(r.height) };
+    };
+    function otherRects(skipId) { // every visible thing and card panel on the stage, and the ask bar, as stage rectangles
+      const out = [...stage.querySelectorAll(':scope > .thing[data-id], :scope > .side-card')].filter((e) => (e.dataset.id || e.dataset.of) !== skipId && e.offsetWidth && e.style.display !== 'none').map(stageBox);
+      if (askRow && askRow.offsetWidth) out.push(stageBox(askRow));
+      return out;
+    }
+    function settleGames() {
+      if (!panelFit || PAGE) return false;
+      const all = Object.values(things).map((th) => ({ th, el: stage.querySelector(':scope > .thing[data-id="' + CSS.escape(th.id) + '"]') })).filter((x) => x.el);
+      const games = all.filter((x) => isGameThing(x.th, x.el) && x.el.offsetWidth);
+      const area = { w: stage.clientWidth, h: Math.max(stage.clientHeight, 200) };
+      let changed = false;
+      if (!games.length) { // the game closed: what it moved aside comes back, where it was; what was tucked is shown again
+        const back = all.filter((x) => x.th.prior || x.th.tucked || x.th.restored);
+        if (!back.length) return false;
+        for (const x of back) { x.th.tucked = false; delete x.th.restored; x.el.style.display = ''; }
+        const items = back.filter((x) => x.th.prior).map((x) => ({ id: x.th.id, prior: x.th.prior, w: x.el.offsetWidth, h: x.el.offsetHeight }));
+        const stay = all.filter((x) => !items.some((i) => i.id === x.th.id) && x.el.offsetWidth).map((x) => stageBox(x.el));
+        const plan = panelFit.restorePlan(items, stay, area);
+        for (const x of back) { const p = plan[x.th.id]; if (p) { x.th.x = p.x; x.th.y = p.y; placeThing(x.th); } delete x.th.prior; }
+        tuckApply(); return true;
+      }
+      const blockers = [];
+      for (const g of games) { // a game's rectangle is its board and its panel together
+        let r = stageBox(g.el); const side = stage.querySelector(':scope > .side-card[data-of="' + CSS.escape(g.th.id) + '"]');
+        for (const n of [g.el, side]) if (n && gameWatch) { gameWatch.observe(n, { attributes: true, attributeFilter: ['style'] }); if (panelWatch) panelWatch.observe(n); } // it moves or grows later: look again
+        if (side && side.offsetWidth) { const q = stageBox(side), x0 = Math.min(r.x, q.x), y0 = Math.min(r.y, q.y); r = { x: x0, y: y0, w: Math.max(r.x + r.w, q.x + q.w) - x0, h: Math.max(r.y + r.h, q.y + q.h) - y0 }; }
+        blockers.push(r);
+      }
+      if (askRow && askRow.offsetWidth) blockers.push(stageBox(askRow));
+      const loose = all.filter((x) => !games.includes(x) && !x.th.tucked && !x.th.restored && !(x.th.scale < 1) && x.el.offsetWidth).map((x) => ({ id: x.th.id, ...stageBox(x.el) }));
+      const plan = panelFit.settleAround(loose, blockers, area);
+      for (const [id, p] of Object.entries(plan.moves)) { const th = things[id]; if (!th.prior) th.prior = { x: th.x, y: th.y }; th.x = p.x; th.y = p.y; placeThing(th); changed = true; }
+      for (const id of plan.tuck) { const th = things[id]; if (!th.prior) th.prior = { x: th.x, y: th.y }; th.tucked = true; changed = true; }
+      if (changed || all.some((x) => x.th.tucked)) tuckApply();
+      return changed;
+    }
+    // the game's place and the panel's size change after it opens (it is centred, its 3D board loads, "How to play" folds): look again
+    let settleQ = 0;
+    const settleSoon = () => {
+      if (settleQ) return;
+      settleQ = requestAnimationFrame(() => { settleQ = 0; if (document.documentElement.classList.contains('dragging')) return; if (settleGames()) { decorate(); save(); } });
+    };
+    const gameWatch = new MutationObserver(settleSoon), panelWatch = typeof ResizeObserver === 'function' ? new ResizeObserver(settleSoon) : null;
+    new MutationObserver(() => {
+      for (const el of stage.querySelectorAll(':scope > .side-card, :scope > .thing')) { if (el.classList.contains('side-card') || isGameThing(things[el.dataset.id] || {}, el)) { gameWatch.observe(el, { attributes: true, attributeFilter: ['style'] }); if (panelWatch) panelWatch.observe(el); } }
+      settleSoon();
+    }).observe(stage, { childList: true });
+    document.addEventListener('void:dropped', settleSoon);
     // A thing that just arrived on the stage (a list, a timer, a game board) is read out once, like an answer page
     let seenIds = null;
     function announceNew() {
@@ -1639,7 +1762,7 @@ Object.values(things).forEach((th) => {
             cur.style.left = th.x + 'px'; cur.style.top = th.y + 'px';
             moveMates(th.x - origX, th.y - origY);
             for (const m of mates) { m.t.x = Math.max(0, m.t.x); m.t.y = Math.max(0, m.t.y); if (m.el) { m.el.style.left = m.t.x + 'px'; m.el.style.top = m.t.y + 'px'; } }
-            if (th.x !== origX || th.y !== origY) { th.pinned = true; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
+            if (th.x !== origX || th.y !== origY) { th.pinned = true; delete th.prior; for (const m of mates) m.t.pinned = true; } // put there by hand: the stage never moves it (lib/placement.js)
             decorate();
             try { if (sk && sk.dropped) sk.dropped(th, stageApi); } catch (_) {}
             try { document.dispatchEvent(new CustomEvent('void:dropped', { detail: { id: th.id } })); } catch (_) {} // skills react to a thing set down (skills/list.js: a drop on a list adds an entry)
@@ -2487,19 +2610,23 @@ say('nothing selected to remove');
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
       // corrections from anyone (asked by Void): kept on this device in a store of its own (lib/corrections.js), never in the look's state
-      h += '<section class="vs-sec"><h3 class="vs-h">Correct me</h3><div data-v-correct></div></section>';
-      if (owner) h += '<section class="vs-sec"><h3 class="vs-h">Talk to me</h3><div class="v-talk" data-v-talk></div>'
+      h += '<details class="vs-sec" data-sec="correct"><summary class="vs-sum"><h3 class="vs-h">Correct me</h3></summary><div data-v-correct></div></details>';
+      if (owner) h += '<details class="vs-sec" data-sec="talk"><summary class="vs-sum"><h3 class="vs-h">Talk to me</h3></summary><div class="v-talk" data-v-talk></div>'
         + '<p style="margin:8px 0 4px"><textarea data-v-reply maxlength="600" rows="2" placeholder="Reply to what I said, or correct me" aria-label="Your reply to V01D" style="width:100%;font:inherit;background:rgba(255,255,255,.06);color:inherit;border:1px solid rgba(255,255,255,.18);border-radius:8px;padding:8px 10px;resize:vertical"></textarea></p>'
         + '<p><button type="button" class="tr-copy" data-v-send>Send</button></p>'
-        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></section>';
-      el.innerHTML = h + '<div data-v-pulse></div><div data-v-conf></div><div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
+        + '<div class="sub">I answer in my own words and keep what you tell me for every reflection after this. I may speak of it when I reflect in public.</div></details>';
+      el.innerHTML = h + '<div data-v-pulse></div>' + (h.includes('data-v-conf') ? '' : '<div data-v-conf></div>') + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
       mountCorrect(el, said); mountPulse(el);
-      el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.vDepth; let shown = 0;
-        el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
-        el.querySelectorAll('.v-built > li').forEach((li) => { const on = (k === 'all' || li.dataset.depth === k) && shown < 6; if (on) shown++; li.hidden = !on; }); }));
+      // the long lists show their newest five; "show all N" unfolds the rest (owner, 2026-10-18), and the Root cause / Surface filter keeps to that fold
+      const fold = (ul) => { const all = ul.nextElementSibling && ul.nextElementSibling.matches('[data-v-more]') && ul.nextElementSibling.getAttribute('aria-expanded') === 'true', k = ul.dataset.depthOn || 'all'; let shown = 0;
+        ul.querySelectorAll(':scope > li').forEach((li) => { const on = (k === 'all' || li.dataset.depth === k) && (all || shown < 5); if (on) shown++; li.hidden = !on; }); };
+      el.querySelectorAll('[data-v-more]').forEach((b) => b.addEventListener('click', () => { const open = b.getAttribute('aria-expanded') !== 'true', n = b.dataset.n;
+        b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'show the newest 5' : 'show all ' + n; const ul = b.previousElementSibling; if (ul) fold(ul); }));
+      el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const ul = el.querySelector('.v-built'); if (!ul) return;
+        el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Void, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
-      Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.confidenceHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: confidenceHtml escapes every name with esc
+      Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
     }
     // "tell void what it got wrong": the form on the self card; a correction goes to the self family's own store, not the look's (lib/corrections.js)
     // the health pulse (asked by Void): the latest incident, its commit and the families it maps to, read once when the card opens (no polling); the
@@ -2553,7 +2680,7 @@ say('nothing selected to remove');
           b.disabled = false;
         });
         const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw });
-        if (said && m.wantsCorrection(said)) { if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
+        if (said && m.wantsCorrection(said)) { const sec = slot.closest('details'); if (sec) { sec.open = true; sec.dataset.focused = '1'; } if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
       } catch (_) {}
     }
     async function talkBack(el, owner, to) {
@@ -3945,27 +4072,75 @@ say('nothing selected to remove');
     // the starfield drifts a fraction of a pixel a frame: redrawing its two full-screen canvases every frame (60-120 a second,
     // forever) competed with the 3D boards for the GPU (perf, 2026-10-15). It now redraws at about 24 fps, which looks the same.
     let starLast = 0;
+    // the stars follow the flying eye (asked by Owner, 2026-10-18: "you cant tell you are flying rhe stars dont move"): skills/fly.js
+    // tells every camera move ('void-camera'); each layer slides and swells a fraction of it (lib/star-parallax.js: the far layer
+    // 0.15, the near 0.4), wrapping like a tile so no edge is ever empty, and the near stars streak when the eye moves fast (a soft
+    // warp when zooming in fast). Reduced motion: a few pixels of drift, no streaks. At home the layers are exactly as they were.
+    // While the eye moves the layers redraw every frame (a few hundred dots: well under a millisecond), else at the usual ~24 fps.
+    const SKY = { lib: null, cam: null, near: { ox: 0, oy: 0, s: 1 }, far: { ox: 0, oy: 0, s: 1 }, vx: 0, vy: 0, zr: 0, at: 0, fresh: false, drawAt: 0, streak: { dx: 0, dy: 0, warp: 0 } };
+    let skyLibP = null;
+    function skyView() {
+      const L = SKY.lib; if (!L || !SKY.cam) return;
+      const still = reduceMotion.matches;
+      SKY.near = L.layerView(SKY.cam, L.NEAR, innerWidth, innerHeight, { still }); SKY.far = L.layerView(SKY.cam, L.FAR, innerWidth, innerHeight, { still });
+    }
+    const kickStars = () => { if (voidLook.stars !== 'off' && !starRAF && !document.hidden) starRAF = requestAnimationFrame(drawStars); };
+    window.addEventListener('void-camera', (e) => {
+      const d = e && e.detail; if (!d) return;
+      const now = performance.now(), prev = SKY.cam, was = SKY.near, dt = SKY.at ? (now - SKY.at) / 1000 : 0;
+      SKY.cam = { x: Number(d.x) || 0, y: Number(d.y) || 0, z: Number(d.z) || 1 };
+      if (!SKY.lib) { if (!skyLibP) skyLibP = import('/lib/star-parallax.js').then((m) => { SKY.lib = m; skyView(); kickStars(); }).catch(() => {}); return; }
+      skyView();
+      if (prev && dt > 0.004 && dt < 1) { // the near layer's speed (px/s) and the zoom rate, smoothed over a couple of frames (a slow frame counts as at most a quarter second, as fly.js steps it)
+        const t = Math.min(0.25, dt);
+        SKY.vx = SKY.vx * 0.5 + 0.5 * (SKY.near.ox - was.ox) / t; SKY.vy = SKY.vy * 0.5 + 0.5 * (SKY.near.oy - was.oy) / t;
+        SKY.zr = SKY.zr * 0.5 + 0.5 * Math.log(SKY.cam.z / (prev.z || 1)) / t;
+      }
+      SKY.at = now; SKY.fresh = true; kickStars();
+    });
+    try { window.__voidStars = () => ({ near: { ...SKY.near }, far: { ...SKY.far }, streak: { ...SKY.streak } }); } catch (_) {} // the tests read the layers here
+    function skyTick(now) { // the streak fades once the camera stops telling (a drag let go, the keys up): a frame with no move since the last one
+      const dt = SKY.drawAt ? Math.min(0.25, (now - SKY.drawAt) / 1000) : 0; SKY.drawAt = now;
+      if (SKY.fresh) SKY.fresh = false; else { const k = Math.exp(-9 * dt); SKY.vx *= k; SKY.vy *= k; SKY.zr *= k; if (Math.hypot(SKY.vx, SKY.vy) < 2) SKY.vx = SKY.vy = 0; if (Math.abs(SKY.zr) < 0.05) SKY.zr = 0; }
+      SKY.streak = SKY.lib.streakOf(SKY.vx, SKY.vy, SKY.zr, { still: reduceMotion.matches });
+      return now - SKY.at < 200 || !!(SKY.vx || SKY.vy || SKY.zr); // still moving: draw every frame
+    }
     function drawStars(now) {
-      if (typeof now === 'number' && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
+      const live = SKY.lib ? skyTick(performance.now()) : false;
+      if (typeof now === 'number' && !live && now - starLast < 40) { starRAF = !reduceMotion.matches && !document.hidden ? requestAnimationFrame(drawStars) : 0; return; }
       if (typeof now === 'number') starLast = now;
       const W = innerWidth, H = innerHeight, t = performance.now() / 1000;
       starCtx.clearRect(0, 0, W, H);
       if (starFarCtx) starFarCtx.clearRect(0, 0, W, H);
       const k = voidLook.stars === 'slow' ? 0.3 : 1, move = !reduceMotion.matches;
+      const fv = SKY.far, nv = SKY.near, fOff = !!(fv.ox || fv.oy || fv.s !== 1), nOff = !!(nv.ox || nv.oy || nv.s !== 1), sk = SKY.streak, streak = !!(sk.dx || sk.dy || sk.warp);
+      const each = (st, v, f) => { if (!(v.ox || v.oy || v.s !== 1)) return f(st.x, st.y, 1); const xs = SKY.lib.placeAxis(st.x, v.ox, v.s, W, 4); if (!xs.length) return; for (const py of SKY.lib.placeAxis(st.y, v.oy, v.s, H, 4)) for (const px of xs) f(px, py, v.s); };
       if (starFarCtx) {
+        starFarCtx.fillStyle = 'rgb(210,220,255)';
         for (const st of farStars) {
           if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-          starFarCtx.globalAlpha = st.a || .35; starFarCtx.fillStyle = 'rgb(210,220,255)';
-          starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill();
+          starFarCtx.globalAlpha = st.a || .35;
+          if (!fOff) { starFarCtx.beginPath(); starFarCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starFarCtx.fill(); continue; }
+          each(st, fv, (x, y, s) => { starFarCtx.beginPath(); starFarCtx.arc(x, y, st.r * s, 0, Math.PI * 2); starFarCtx.fill(); });
         }
       }
       if (starFarCtx) starFarCtx.globalAlpha = 1;
+      if (streak) starCtx.lineCap = 'round';
       for (const st of stars) {
         if (move) { st.x = (st.x + st.vx * k + W) % W; st.y = (st.y + st.vy * k + H) % H; }
-        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1;
-        starCtx.globalAlpha = (st.a || .7) * tw; starCtx.fillStyle = 'rgb(' + (st.c || '255,255,255') + ')';
-        starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r, 0, Math.PI * 2); starCtx.fill();
-        if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha *= .18; starCtx.beginPath(); starCtx.arc(st.x, st.y, st.r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
+        const tw = st.tw && move ? 0.55 + 0.45 * Math.sin(t * st.tw + st.ph) : 1, a = (st.a || .7) * tw, col = 'rgb(' + (st.c || '255,255,255') + ')';
+        starCtx.fillStyle = col;
+        const one = (x, y, s) => {
+          const r = st.r * (1 + (s - 1) * 0.6);
+          starCtx.globalAlpha = a; starCtx.beginPath(); starCtx.arc(x, y, r, 0, Math.PI * 2); starCtx.fill();
+          if (streak) { // a short line back to where the star was a moment ago, plus the warp's pull from the middle
+            const ex = x + sk.dx - (x - W / 2) * sk.warp, ey = y + sk.dy - (y - H / 2) * sk.warp;
+            starCtx.strokeStyle = col; starCtx.lineWidth = Math.max(0.8, r * 1.3); starCtx.globalAlpha = a * 0.55;
+            starCtx.beginPath(); starCtx.moveTo(x, y); starCtx.lineTo(ex, ey); starCtx.stroke();
+          }
+          if (st.r > 1.3 && tw > .8) { starCtx.globalAlpha = a * .18; starCtx.beginPath(); starCtx.arc(x, y, r * 3.2, 0, Math.PI * 2); starCtx.fill(); }
+        };
+        if (!nOff && !streak) one(st.x, st.y, 1); else each(st, nv, one);
       }
       starCtx.globalAlpha = 1;
       if (move && !document.hidden) starRAF = requestAnimationFrame(drawStars); else starRAF = 0;
@@ -3994,7 +4169,7 @@ say('nothing selected to remove');
       if (persist && !PAGE) { try { localStorage.setItem(LOOK_KEY, JSON.stringify(voidLook)); } catch (_) {} mineChanged(); }
     }
     document.addEventListener('visibilitychange', () => { if (!document.hidden && voidLook.stars !== 'off' && !starRAF) drawStars(); });
-    window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); });
+    window.addEventListener('resize', () => { if (voidLook.stars !== 'off') seedStars(); skyView(); });
     function handleLookAsk(lower) {
       if (/^(this is mine|open my void|my void)\s*[.!]?$/.test(lower)) { enterVoid(); say('yours'); return true; }
       const FX = /\b(add|no|remove|hide|stop)\s+(a\s+|the\s+)?(nebula|particles?|swarm)\b|\bmake\s+my\s+void\s+(swirl|swirly|alive|move)\b|^(calm\s+my\s+void|no\s+effects)\s*[.!]?$/;

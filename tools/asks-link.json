@@ -54,6 +54,7 @@
     { "match": "cook-flow|substitution-impact", "ledgerAt": "2026-10-16T05:15:52Z", "why": "cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust" }
   ],
   "extra": [
+    { "words": "Implement the 'open the self card' handler directly so I can perform self-audits on demand.", "ledgerAt": "2026-10-17T07:39:48Z", "why": "built: 'open the self card', 'show me your reflections' and 'open the self page' open what V01D thinks of itself (void.html wantsVoice, pattern self[- ]?(card|page)); checked again 2026-10-18 with node tools/ask.mjs \"open the self card\" (by: voice)" },
     { "words": "Create a 'Skill Discovery' endpoint for the MCP registry to expose my current skill-family structure.", "ledgerAt": "2026-10-15T18:17:06Z", "why": "built: the MCP skill_health tool and /tools.json expose every family, its skills and their ratings as the site serves them" },
     { "words": "Implement the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own vital signs.", "ledgerAt": "2026-10-16T05:10:08Z", "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json" },
     { "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own growth metrics.", "ledgerAt": "2026-10-16T05:10:08Z", "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json" }

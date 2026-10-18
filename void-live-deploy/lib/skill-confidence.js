@@ -58,3 +58,31 @@ export function confidenceHtml(fam, today, esc = escHtml) {
     + '<div class="sub">One square per skill. Strong colour is proven, faint is only tested or an experiment; a dashed, greyed square has not been tested in ' + WEATHER_DAYS + ' days or more. '
     + esc(sum.byTier.proven) + ' proven, ' + esc(sum.byTier.checked) + ' checked, ' + esc(sum.byTier.tested) + ' tested, ' + esc(sum.byTier.experiment) + ' experiment; ' + esc(sum.weathered) + ' weathered.</div>';
 }
+
+// The family bars (owner's redesign of the self card, 2026-10-18: "a horizontal bar per skill family (proven share) ... weakest family highlighted"):
+// one row per family of skills/families.json, the bar its share of proven skills; the weakest is the lowest proven share (ties: the lower share of
+// proven and checked together, then the larger family). Nothing estimated: counts of ratings the file already holds.
+/** [{ id, name, proven, checked, total, share (0..1), weak }] in the file's order. Pure. */
+export function familyBars(fam) {
+  const rows = ((fam && fam.families) || []).filter((f) => f && Array.isArray(f.skills) && f.skills.some((s) => s && s.name)).map((f) => {
+    const sk = f.skills.filter((s) => s && s.name), proven = sk.filter((s) => s.tier === 'proven').length, checked = sk.filter((s) => s.tier === 'checked').length;
+    return { id: String(f.id || f.name || ''), name: String(f.name || f.id || ''), proven, checked, total: sk.length, share: proven / sk.length, weak: false };
+  });
+  const weakest = rows.slice().sort((a, b) => a.share - b.share || (a.proven + a.checked) / a.total - (b.proven + b.checked) / b.total || b.total - a.total)[0];
+  if (weakest) weakest.weak = true;
+  return rows;
+}
+/** "How sure I am of my skills" for the self card: the family bars, then the strip of one square per skill folded under them. '' with no families. Pure. */
+export function sureHtml(fam, today, esc = escHtml) {
+  const bars = familyBars(fam); if (!bars.length) return '';
+  const row = (b) => '<div class="fb-row' + (b.weak ? ' fb-weak' : '') + '" data-fam-bar="' + esc(b.id) + '" data-name="' + esc(b.name) + '" data-share="' + (Math.round(b.share * 1000) / 1000) + '" data-label="' + esc(b.proven + ' of ' + b.total + ' proven') + '"' + (b.weak ? ' data-weak="1"' : '') + '>'
+    + '<span class="fb-name">' + esc(b.name) + (b.weak ? ' <em>weakest</em>' : '') + '</span><span class="fb-track" role="img" aria-label="' + esc(b.name + ': ' + b.proven + ' of ' + b.total + ' skills proven') + '"><i style="width:' + Math.round(b.share * 100) + '%"></i></span>'
+    + '<span class="fb-num">' + esc(b.proven + '/' + b.total) + '</span></div>';
+  const css = '<style>.fb-row{display:grid;grid-template-columns:minmax(0,38%) 1fr auto;gap:10px;align-items:center;margin:5px 0;font-size:var(--fs-s,13px)}.fb-name{color:var(--ink-2,#c3c8d8);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}'
+    + '.fb-name em{font-style:normal;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:#ffb000;margin-left:4px}.fb-track{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden}'
+    + '.fb-track i{display:block;height:100%;border-radius:inherit;background:rgb(var(--d-key,158 178 255)/.9)}.fb-num{font-variant-numeric:tabular-nums;color:var(--ink-3,#8e94a8);font-size:12px}'
+    + '.fb-weak .fb-track{box-shadow:0 0 0 1px #ffb000}.fb-weak .fb-track i{background:#ffb000}.fb-weak .fb-name{color:#ffd45e}.sc-more>summary{cursor:pointer;color:var(--ink-3,#8e94a8);font-size:12px;margin-top:6px}</style>';
+  return css + '<div class="vh">How sure I am of my skills</div><div class="fb-bars" data-fam-bars="' + bars.length + '">' + bars.map(row).join('') + '</div>'
+    + '<div class="sub" style="font-size:12px">Each bar is the share of a family\'s skills rated proven, from the evidence in skills/families.json.</div>'
+    + '<details class="sc-more"><summary>Every skill, one square each</summary>' + confidenceHtml(fam, today, esc).replace('<div class="vh">How sure I am of my skills</div>', '') + '</details>';
+}

@@ -587,6 +587,68 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
   }
 
   if (want("3d: the board games' rules")) await runRulesChecks(check);
+  // ---- game panel fits (owner, 2026-10-18): the "How to play" steps were cut off after step 3 under the ask bar, and the chess panel
+  // opened on top of a list card. Every step is visible or scrolls into view, the panel never meets the ask bar, and opening a game
+  // moves the cards it would cover aside (or tucks them in the tray), never over them; closing it puts them back where they were.
+  if (want("3d: game panel fits")) {
+    const panelFacts = (F) => F.p.evaluate(() => {
+      const box = (e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, r: r.right, b: r.bottom }; };
+      const hit = (a, b) => a.x < b.r - 0.5 && b.x < a.r - 0.5 && a.y < b.b - 0.5 && b.y < a.b - 0.5;
+      const card = document.querySelector('#stage > .side-card'), h = card && card.querySelector('.howto');
+      if (!card || !h || h.hidden) return { panel: false };
+      const bars = ['row', 'dock'].map((id) => document.getElementById(id)).filter(Boolean).map(box);
+      const steps = [...h.querySelectorAll('li')].map((li) => {
+        li.scrollIntoView({ block: 'nearest' }); const c = box(card), l = box(li);
+        return { seen: l.y >= c.y - 1 && l.b <= c.b + 1 && l.x >= c.x - 1 && l.r <= c.r + 1 && !bars.some((b) => hit(l, b)), text: li.textContent.slice(0, 30) };
+      });
+      card.scrollTop = 0;
+      const c = box(card);
+      return { panel: true, steps, n: steps.length, allSeen: steps.every((s) => s.seen), barHit: bars.some((b) => hit(c, b)), padBottom: parseFloat(getComputedStyle(card).paddingBottom), scrolls: card.scrollHeight > card.clientHeight + 1, card: c, bars };
+    });
+    const out = [];
+    for (const [label, size, phone, game] of [['desktop 1280x800', { width: 1280, height: 800 }, false, 'play chess'], ['short 1280x560', { width: 1280, height: 560 }, false, 'play chess'], ['phone 390x800', { width: 390, height: 800 }, true, 'play go']]) {
+      const F = phone ? await fresh({ phone: true }) : await fresh();
+      await F.p.setViewportSize(size);
+      await F.ask(game, 600);
+      const f = await until(async () => { const x = await panelFacts(F); return x.panel && x.n >= 3 ? x : false; }, 30000) || await panelFacts(F);
+      out.push({ label, ok: f.panel && f.n >= 4 && f.allSeen && !f.barHit && f.padBottom >= 12 && !F.errors.length, f: { ...f, e: F.errors } });
+      await F.ctx.close();
+    }
+    check('game panel fits: at 1280x800, 1280x560 and a 390x800 phone every "How to play" step is fully visible or scrolls into view inside the panel, the panel has bottom padding and never meets the ask bar',
+      out.length === 3 && out.every((o) => o.ok), JSON.stringify(out.filter((o) => !o.ok)).slice(0, 1500));
+    // the pile-up: a list on the stage, then a game; nothing overlaps, nothing is lost, and closing the game brings the list back
+    const res = [];
+    for (const [label, phone] of [['desktop 1280x800', false], ['phone 390x800', true]]) {
+      const F = phone ? await fresh({ phone: true }) : await fresh();
+      await F.p.setViewportSize(phone ? { width: 390, height: 800 } : { width: 1280, height: 800 });
+      await F.ask('make a list', 700); await F.ask('add milk', 600); await F.ask('add eggs', 600);
+      const before = (await F.state()).find((t) => t.kind === 'list');
+      await F.ask('play chess', 600);
+      const boxes = () => F.p.evaluate(() => {
+        const vis = (e) => !!(e && e.offsetWidth && getComputedStyle(e).display !== 'none');
+        const box = (e) => { const r = e.getBoundingClientRect(); return { x: r.left, y: r.top, r: r.right, b: r.bottom }; };
+        const hit = (a, b) => a.x < b.r - 0.5 && b.x < a.r - 0.5 && a.y < b.b - 0.5 && b.y < a.b - 0.5;
+        const list = document.querySelector('#stage > .thing.list-card'), chess = [...document.querySelectorAll('#stage > .thing[data-id]')].find((e) => e.dataset.id.startsWith('chess_'));
+        const side = document.querySelector('#stage > .side-card'), row = document.getElementById('row');
+        const named = [['list', list], ['board', chess], ['panel', side], ['bar', row]].filter(([, e]) => vis(e)).map(([n, e]) => [n, box(e)]);
+        const pairs = []; for (let i = 0; i < named.length; i++) for (let j = i + 1; j < named.length; j++) if (hit(named[i][1], named[j][1])) pairs.push(named[i][0] + '/' + named[j][0]);
+        return { chess: !!chess, listShown: vis(list), tucked: !!document.querySelector('#stage-tray button[data-tuck]'), pairs };
+      });
+      // the 3D board lands and its panel arrives a beat later: wait for the stage to settle with nothing on top of anything
+      const open = await until(async () => { const b = await boxes(); return b.chess && !b.pairs.length && (b.listShown || b.tucked) ? b : false; }, 30000) || await boxes();
+      const kept = (await F.state()).find((t) => t.kind === 'list');
+      let chipBack = null;
+      if (open.tucked) { await F.p.click('#stage-tray button[data-tuck]'); await F.p.waitForTimeout(300); chipBack = (await boxes()).listShown; }
+      await F.ask('forget this', 700);
+      const back = await until(async () => { const st = await F.state(); const l = st.find((t) => t.kind === 'list'); return !st.some((t) => t.kind === 'chess') && l && !l.tucked && !l.prior && l.x === before.x && l.y === before.y ? l : false; }, 8000);
+      const shown = await F.p.evaluate(() => { const l = document.querySelector('#stage > .thing.list-card'); return !!(l && l.offsetWidth && getComputedStyle(l).display !== 'none') && !document.querySelector('#stage-tray button'); });
+      res.push({ label, ok: !!before && open.chess && !open.pairs.length && (open.listShown || open.tucked) && !!kept && (chipBack === null || chipBack) && !!back && shown && !F.errors.length,
+        f: { before: before && { x: before.x, y: before.y }, open, kept: !!kept, chipBack, back: back && { x: back.x, y: back.y }, shown, after: (await F.state()).map((t) => ({ k: t.kind, x: t.x, y: t.y, prior: t.prior, tucked: t.tucked, restored: t.restored })), e: F.errors } });
+      await F.ctx.close();
+    }
+    check('game panel fits: chess opened with a list on the stage leaves no overlapping boxes among the list, the board, its panel and the ask bar (the list moves aside or waits in the tray, one tap brings it back), at 1280x800 and on a phone; closing the game puts the list back exactly where it was',
+      res.length === 2 && res.every((o) => o.ok), JSON.stringify(res).slice(0, 2000));
+  }
   // ---- chess and checkers: routing, the real 3D board takes taps, Void replies, and a flat board where WebGL can't run
   if (want("3d: chess and checkers")) {
     const F = await fresh();

@@ -6,6 +6,7 @@
 import { artSource } from './art-source.js';
 import { artInner, rarityKey, RARITY_LOOK } from './card-art.js';
 import { safeImg } from './art-rules.js';
+import { qrSvg } from './qr.js';
 
 export const CARD_W = 744, CARD_H = 1039, BLEED = 35;
 const INK = '#0a0a10';
@@ -50,6 +51,44 @@ export function fitLong(text, h, w = 624) {
   const fs = LONG_MIN_FS, lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 9999);
   return { lines: l, fs, lh, extra: l.length * lh - h };
 }
+// The self card's picture (owner's redesign, 2026-10-18: the saved "What I think of myself" was a tall PNG holding every ask as raw lines, 16k
+// characters). It has the live card's shape instead: V01D's own words as a quotation with an accent bar, "How sure I am of my skills" as a bar per
+// family (the proven share; the weakest in amber), then each block's heading with its count and at most SELF_LINES lines. Nothing is a wall.
+// `self` comes from the card on the page (lib/card-share.js selfImage): { voice, bars: [{ name, share, label, weak }], sections: [{ title, lines }] }.
+export const SELF_LINES = 3, SELF_VOICE_LINES = 5;
+/** the self card's text box laid out: { els: [{ k: 'text', x, y, text, fs, bold, italic, fill } | { k: 'rect', x, y, w, h, fill, rx }], height }. Pure. */
+export function selfLayout(self, w = 624, soft = '#c9cfe8') {
+  const els = [], S = self || {}, cols = (px, fs) => Math.max(8, Math.floor(px / (fs * 0.5)));
+  let y = 0;
+  const text = (str, x, fs, o = {}) => els.push({ k: 'text', x, y, text: str, fs, bold: !!o.bold, italic: !!o.italic, fill: o.fill || '#e6e1d3' });
+  const voice = wrap(S.voice || '', cols(w - 22, 21), SELF_VOICE_LINES);
+  if (voice.length) {
+    const top = y + 4;
+    for (const l of voice) { y += 28; text(l, 20, 21, { italic: true, fill: '#f3efe2' }); }
+    els.push({ k: 'rect', x: 0, y: top, w: 4, h: y - top + 8, fill: soft, rx: 2 });
+    y += 12;
+  }
+  const bars = Array.isArray(S.bars) ? S.bars.slice(0, 16) : [];
+  if (bars.length) {
+    y += 22; text('How sure I am of my skills', 0, 18, { bold: true, fill: '#f3efe2' }); y += 6;
+    const tx = 210, tw = w - tx - 64;
+    for (const b of bars) {
+      y += 18; const share = Math.max(0, Math.min(1, +b.share || 0));
+      text(wrap(String(b.name || '') + (b.weak ? ' (weakest)' : ''), cols(tx - 12, 14), 1)[0] || '', 0, 14, { fill: b.weak ? '#ffd45e' : '#d8d4c6' });
+      els.push({ k: 'rect', x: tx, y: y - 10, w: tw, h: 8, fill: b.weak ? 'rgba(255,176,0,.25)' : 'rgba(255,255,255,.12)', rx: 4, track: true });
+      if (share > 0) els.push({ k: 'rect', x: tx, y: y - 10, w: Math.max(4, Math.round(tw * share)), h: 8, fill: b.weak ? '#ffb000' : soft, rx: 4 });
+      text(String(b.label || '').replace(/ proven$/, '').replace(' of ', '/'), tx + tw + 10, 13, { fill: '#a9a69a' });
+    }
+    y += 14;
+  }
+  for (const sec of (Array.isArray(S.sections) ? S.sections : []).slice(0, 6)) {
+    y += 24; text(wrap(sec.title || '', cols(w, 18 * 1.08), 1)[0] || '', 0, 18, { bold: true, fill: '#f3efe2' });
+    for (const l of (sec.lines || []).slice(0, SELF_LINES)) { y += 19; text('•', 4, 15, { fill: soft }); text(wrap(l, cols(w - 22, 15), 1)[0] || '', 22, 15); }
+    y += 4;
+  }
+  return { els, height: y + 6 };
+}
+
 /** the text at the largest size (23 down to 11 px) whose wrapped lines fit `h` px of the text box: { lines, fs, lh }. Only text beyond even the smallest size is cut. Pure. */
 export function fitText(text, h, w = 624) {
   for (let fs = 23; fs >= 11; fs--) { const lh = Math.round(fs * 1.25), l = wrap(text, Math.floor(w / (fs * 0.5)), 999); if (l.length * lh <= h) return { lines: l, fs, lh }; }
@@ -63,7 +102,7 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   const title = String(d.title || d.name || 'V01D').replace(/\s+/g, ' ').trim();
   const cost = Math.max(0, Math.min(6, Math.round(+d.cost) || 0));
   const { lines: tl, fs } = fitTitle(title, 620 - cost * 24), T = titleExtra(tl.length, fs); // T: how much taller a long ask makes the title bar; everything below moves down by it
-  const box = fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
+  const selfBox = d.self && typeof d.self === 'object' ? selfLayout(d.self) : null, box = selfBox ? { els: selfBox.els, extra: Math.max(0, selfBox.height - 246) } : fitLong(d.text, d.adds ? 172 : 246), X = box.extra, W = CARD_W + b * 2, H = CARD_H + X + T + b * 2; // X: a long card's extra height below the art
   const hue = Number.isFinite(+d.hue) ? Math.round(+d.hue) % 360 : 230, id = 'c' + rk[0];
   const edge = 'hsl(' + hue + ' 38% 48%)', dark = 'hsl(' + hue + ' 22% 8%)', mid = 'hsl(' + hue + ' 28% 20%)', soft = 'hsl(' + hue + ' 40% 78%)';
   let s = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + ' — V01D card">';
@@ -106,8 +145,9 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   // text box
   s += '<rect x="40" y="636" width="664" height="' + (262 + X) + '" rx="10" fill="hsl(' + hue + ' 22% 12%)" stroke="' + edge + '" stroke-width="2"/>';
   // the whole answer shows (owner, 2026-10-17: the last line drew over the box border and was cut): the text shrinks to fit, and a long one makes a long card
-  const lines = box.lines;
-  lines.forEach((l, i) => { s += '<text x="60" y="' + (644 + box.fs + i * box.lh) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + box.fs + '" fill="#e6e1d3">' + esc(l) + '</text>'; });
+  if (box.els) box.els.forEach((e) => { s += e.k === 'rect' ? '<rect x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" width="' + e.w + '" height="' + e.h + '" rx="' + (e.rx || 0) + '" fill="' + esc(e.fill) + '"/>'
+    : '<text x="' + (60 + e.x) + '" y="' + (644 + e.y) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + e.fs + '"' + (e.bold ? ' font-weight="700"' : '') + (e.italic ? ' font-style="italic"' : '') + ' fill="' + esc(e.fill) + '">' + esc(e.text) + '</text>'; }); // the self card (selfLayout)
+  else box.lines.forEach((l, i) => { s += '<text x="60" y="' + (644 + box.fs + i * box.lh) + '" font-family="Georgia,\'Times New Roman\',serif" font-size="' + box.fs + '" fill="#e6e1d3">' + esc(l) + '</text>'; });
   if (d.adds) { const a = wrap('Adds to V01D: ' + d.adds, 58, 2); a.forEach((l, i) => { s += '<text x="60" y="' + (846 + X + i * 24) + '" font-family="Georgia,serif" font-style="italic" font-size="19" fill="' + soft + '">' + esc(l) + '</text>'; }); s += '<path d="M60 ' + (828 + X) + 'h624" stroke="' + edge + '" stroke-width="1.5"/>'; }
   // footer: collector number and the three plates
   const foot = [RL.name === 'Common' && !d.rarity ? '' : (d.rarity ? RL.name : ''), d.number, 'V01D', d.tested ? 'tested ' + d.tested : ''].filter(Boolean).join(' · ');
@@ -116,6 +156,26 @@ export function cardSvg(data = {}, { bleed = false } = {}) {
   stats.forEach(([k, v], i) => { const x = 704 - (stats.length - i) * 74; s += '<rect x="' + x + '" y="' + (926 + X) + '" width="68" height="66" rx="10" fill="' + mid + '" stroke="' + edge + '" stroke-width="3"/><text x="' + (x + 12) + '" y="' + (952 + X) + '" font-family="Georgia,serif" font-size="18" fill="' + soft + '">' + k + '</text><text x="' + (x + 34) + '" y="' + (980 + X) + '" font-family="Georgia,serif" font-weight="700" font-size="34" text-anchor="middle" fill="#f3efe2">' + esc(num(v)) + '</text>'; });
   s += '</g></g><rect width="' + W + '" height="' + H + '" fill="url(#' + id + 's)"/></g></svg>';
   return s;
+}
+
+/** a utility card's picture (data-card-plain, lib/card-frame.js): no foil, rarity, art or stats; the title, the card's own words and, when it has
+ *  one, its QR code (lib/qr.js qrMatrix) at a size a phone can scan, on the plain dark page. data: { title, text, qr }. Every text field is escaped. Pure. */
+export function plainSvg(data = {}) {
+  const d = data || {}, W = CARD_W, P = 56, title = String(d.title || 'V01D').replace(/\s+/g, ' ').trim();
+  const tl = wrap(title, 30, 3), body = wrap(d.text, 52, 40), q = d.qr && d.qr.modules ? d.qr : null, Q = q ? 300 : 0;
+  let y = P + 44, s = '';
+  tl.forEach((l) => { s += '<text x="' + P + '" y="' + y + '" font-family="ui-sans-serif,system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" font-weight="700" font-size="40" fill="#f2f4fa">' + esc(l) + '</text>'; y += 50; });
+  y += 10;
+  body.forEach((l) => { s += '<text x="' + P + '" y="' + y + '" font-family="ui-sans-serif,system-ui,\'Segoe UI\',Helvetica,Arial,sans-serif" font-size="23" fill="#d9dde8">' + esc(l) + '</text>'; y += 34; });
+  if (q) {
+    y += 10; const inner = qrSvg(q, { margin: 3, label: 'QR code' }).replace('<svg ', '<svg x="' + P + '" y="' + y + '" width="' + Q + '" height="' + Q + '" ');
+    s += '<rect x="' + (P - 6) + '" y="' + (y - 6) + '" width="' + (Q + 12) + '" height="' + (Q + 12) + '" rx="14" fill="#fff"/>' + inner;
+    s += '<text x="' + (P + Q + 28) + '" y="' + (y + Q / 2) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="22" fill="#b9bfd0">Scan to open</text>';
+    y += Q + 16;
+  }
+  const H = y + 64;
+  s += '<text x="' + P + '" y="' + (H - 32) + '" font-family="ui-sans-serif,system-ui,sans-serif" font-size="17" letter-spacing="1.5" fill="#9aa1b5">V01D \u00b7 A-TO-MIND.COM</text>';
+  return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + W + ' ' + H + '" width="' + W + '" height="' + H + '" role="img" aria-label="' + esc(title) + '"><rect width="' + W + '" height="' + H + '" rx="34" fill="#12152a"/><rect x="2" y="2" width="' + (W - 4) + '" height="' + (H - 4) + '" rx="32" fill="none" stroke="#2c3252" stroke-width="2"/>' + s + '</svg>';
 }
 
 /** the PNG of a card's SVG, in the browser: an Image and a canvas. Resolves a Blob; rejects when the browser cannot draw it. */

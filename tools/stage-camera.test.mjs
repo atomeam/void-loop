@@ -60,3 +60,16 @@ test('the wheel zooms in small steps either way, and what is kept comes back val
   assert.deepEqual(fromStored('nonsense'), { cam: { ...HOME }, flying: false });
   assert.deepEqual(fromStored(null), { cam: { ...HOME }, flying: false });
 });
+
+test('dynamic scale (asked by Void): a picture swells to 8% at the screen centre, eases off with distance, and is plain far away', async () => {
+  const { nearness, nearLook, NEAR_SCALE } = await import('../void-live-deploy/lib/stage-camera.js');
+  assert.equal(nearness(500, 400, 1000, 800), 1);
+  assert.equal(nearness(0, 0, 1000, 800), 0);
+  const a = nearness(560, 400, 1000, 800), b = nearness(700, 400, 1000, 800);
+  assert.ok(a < 1 && b < a && b > 0, 'falls off smoothly');
+  assert.deepEqual(nearLook(0), { scale: 1, shadow: '' });
+  assert.equal(nearLook(1).scale, NEAR_SCALE); assert.equal(NEAR_SCALE, 1.08);
+  assert.ok(nearLook(1).scale > nearLook(0.5).scale && nearLook(0.5).scale > 1);
+  assert.match(nearLook(0.5).shadow, /^drop-shadow\(0 \d+px \d+px rgba\(0,0,0,0\.\d\d\)\)$/);
+  assert.equal(nearLook(7).scale, NEAR_SCALE); assert.equal(nearLook('x').scale, 1);
+});

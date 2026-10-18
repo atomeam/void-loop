@@ -4,7 +4,8 @@
  * unmapped, never guessed. Shows the latest incidents with their commit, a count per family, and "No incidents recorded." when the file is empty.
  * Fetches only the site's own files; no model, no key. Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-import { autopsy, autopsyHtml } from '../lib/autopsy.js';
+import { autopsy, autopsyHtml, ERROR_TINT, REACT_ON } from '../lib/autopsy.js';
+import { reactionBar } from '../lib/reaction-bar.js'; // spectators react to an incident; 'confused' and 'pity' wear the warning look (asked by Void)
 const WHEN = /^(?:(?:show|open|give)(?:\s+me)?\s+)?(?:the\s+|an\s+|your\s+)?(?:incident\s+autopsy(?:\s+(?:for|of|in)\s+(?:the\s+)?([a-z0-9][a-z0-9 -]{0,40}?))?|autopsy\s+of\s+(?:the\s+)?(?:failed|failing|red)\s+(?:suites?|checks?|incidents?)|which\s+(?:skill\s+)?famil(?:y|ies)\s+(?:is|are)\s+(?:unhealthy|failing|breaking|red))$/i;
 const norm = (t) => String(t || '').toLowerCase().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[?.!]+$/, '').trim();
 // a family named after the autopsy ("incident autopsy for time", the link on a stability sparkline, asked by Void): its id or its name, from families.json; '' for any other word
@@ -18,6 +19,11 @@ async function run(text, api) {
   const [inc, fam, guide] = await Promise.all([get('/incidents.json'), get('/skills/families.json'), get('/skills/guide.json')]);
   if (!el || (_pageStill && !_pageStill(el))) return 'incident-autopsy';
   el.innerHTML = head + autopsyHtml(autopsy(inc, fam, guide, famOf(text, fam)), esc) + '<div class="src">Source: incidents.json, written by tools/incident-log.mjs when a browser suite on main fails · families from skills/families.json</div>'; // void-review: ok: autopsyHtml escapes every word with esc
+  // a reaction bar under each of the newest incidents (hidden unless /api/react answers; the slug is checked against incidents.json by the route)
+  for (const li of [...el.querySelectorAll('li[data-incident]')].slice(0, REACT_ON)) {
+    const bar = reactionBar(li.dataset.incident, { tint: ERROR_TINT }); if (!bar) continue;
+    bar.style.margin = '4px 0 2px'; const inner = li.querySelector('ul'); li.insertBefore(bar, inner);
+  }
   return 'incident-autopsy';
 }
 

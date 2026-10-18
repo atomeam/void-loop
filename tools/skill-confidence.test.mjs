@@ -33,3 +33,19 @@ test('without an esc passed, names are still escaped', () => {
   const h = confidenceHtml({ families: [{ name: '<b>f</b>', skills: [{ name: '<img onerror=x>', tier: 'proven', last_tested: '2026-10-16' }] }] }, today);
   assert.ok(!h.includes('<img') && !h.includes('<b>f') && h.includes('&lt;img onerror=x&gt;'));
 });
+
+test('the family bars (the self card redesign, 2026-10-18): one bar per family, its proven share from the file, the weakest marked once; the strip folded under them', async () => {
+  const { familyBars, sureHtml } = await import('../void-live-deploy/lib/skill-confidence.js');
+  const f = { families: [
+    { id: 'a', name: 'A', skills: [{ name: 'x', tier: 'proven' }, { name: 'y', tier: 'proven' }, { name: 'z', tier: 'tested' }] },
+    { id: 'b', name: 'B <i>', skills: [{ name: 'p', tier: 'checked' }, { name: 'q', tier: 'tested' }] },
+    { id: 'c', name: 'C', skills: [{ name: 'r', tier: 'tested' }, { name: 's', tier: 'experiment' }] },
+    { id: 'd', name: 'D', skills: [] }] };
+  const b = familyBars(f);
+  assert.deepEqual(b.map((x) => [x.id, x.proven, x.total, Math.round(x.share * 100), x.weak]), [['a', 2, 3, 67, false], ['b', 0, 2, 0, false], ['c', 0, 2, 0, true]], 'a family with no skills has no bar; at the same share the one with fewer checked is weakest');
+  const h = sureHtml(f, today);
+  assert.equal((h.match(/data-fam-bar=/g) || []).length, 3); assert.equal((h.match(/data-weak="1"/g) || []).length, 1);
+  assert.ok(h.includes('B &lt;i&gt;') && !h.includes('B <i>'), 'names escaped');
+  assert.match(h, /<details class="sc-more"><summary>Every skill, one square each<\/summary>.*class="sc-strip"/s);
+  assert.equal(sureHtml({ families: [] }, today), '');
+});

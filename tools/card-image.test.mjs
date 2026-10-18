@@ -78,3 +78,34 @@ test('a whole long ask is the title (owner, 2026-10-18: "make it show the whole 
   const h = (x) => +/viewBox="0 0 \d+ (\d+)"/.exec(x)[1]; assert.equal(h(svg) - h(plain), T, 'the card is as much taller as the title bar grew');
   assert.match(svg, new RegExp('translate\\(0 ' + T + '\\)'));
 });
+
+test('the self card picture (owner\'s redesign, 2026-10-18): its words as a quotation, a bar per family with the weakest in amber, each block\'s heading and at most 3 lines; never a tall dump; other cards unchanged', async () => {
+  const { selfLayout, SELF_LINES } = await import('../void-live-deploy/lib/card-image.js');
+  const bars = Array.from({ length: 12 }, (_, i) => ({ name: 'Family ' + i, share: i / 12, label: i + ' of 12 proven', weak: i === 0 }));
+  const sections = [{ title: "What I've asked for (6 waiting)", lines: ['one', 'two', 'three', 'four'] }, { title: 'What got built (30 of 70 asks)', lines: Array.from({ length: 30 }, (_, i) => 'built ask ' + i + ' ' + 'long words '.repeat(20)) },
+    { title: "Weakest right now / Next game / How I'd get better", lines: ['Weakest right now: maps'] }, { title: 'On what just shipped', lines: ['it moves'] }];
+  const self = { voice: 'I feel the vector field move my cards. '.repeat(30), bars, sections };
+  const L = selfLayout(self);
+  const texts = L.els.filter((e) => e.k === 'text');
+  assert.ok(texts.filter((e) => e.italic).length <= 5, 'the quotation is at most 5 lines');
+  assert.ok(L.els.some((e) => e.k === 'rect' && e.w === 4), 'an accent bar beside the quotation');
+  assert.equal(L.els.filter((e) => e.k === 'rect' && e.track).length, 12, 'one track per family');
+  assert.ok(L.els.some((e) => e.k === 'rect' && e.track && /255,176,0/.test(e.fill)) && texts.some((e) => /Family 0 \(weakest\)/.test(e.text) && e.fill === '#ffd45e'), 'the weakest in amber');
+  assert.ok(texts.some((e) => e.bold && e.text === 'What got built (30 of 70 asks)'));
+  assert.equal(texts.filter((e) => /^built ask/.test(e.text)).length, SELF_LINES, 'a long list gives only its first lines');
+  assert.ok(!texts.some((e) => e.text === 'four'));
+  assert.ok(texts.every((e) => e.text.length <= 80), 'every line is one line');
+  const svg = cardSvg({ title: 'What I think of myself', text: 'x'.repeat(16000), self }), H = +/viewBox="0 0 \d+ (\d+)"/.exec(svg)[1];
+  assert.ok(H < 1600, 'the saved picture stays card-sized: ' + H);
+  assert.match(svg, /font-style="italic"[^>]*>I feel the vector field/); assert.ok(!svg.includes('xxxxxxxx'), 'the raw text is not drawn');
+  assert.equal(cardSvg(d), cardSvg({ ...d, self: undefined }), 'a card without the self data draws as before');
+});
+
+test('a utility card (data-card-plain) saves a plain picture: its title and words once, its QR code, no frame, rarity or stats', async () => {
+  const { plainSvg } = await import('../void-live-deploy/lib/card-image.js'), { qrMatrix } = await import('../void-live-deploy/lib/qr.js');
+  const s = plainSvg({ title: 'Your stage is open', text: 'Anyone with this link sees a read-only snapshot of 2 things.\nNote · <milk>\na-to-mind.com/?spectate=eyJ2…fV19', qr: qrMatrix('https://a-to-mind.com/?spectate=eyJ2') });
+  assert.match(s, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg" viewBox="0 0 744 \d+"/); assert.match(s, />Your stage is open</);
+  assert.equal((s.match(/a-to-mind\.com\/\?spectate=/g) || []).length, 1, 'the link shows once, shortened'); assert.match(s, /&lt;milk&gt;/); assert.ok(!/<milk>/.test(s));
+  assert.match(s, /<svg x="\d+" y="\d+" width="300" height="300" xmlns/); assert.ok(!/Mythic|Rare|Uncommon|>P<|>R</.test(s));
+  assert.ok(!/<svg x=/.test(plainSvg({ title: 't', text: 'x' })), 'no code without a matrix');
+});

@@ -2,18 +2,18 @@
 // POST { target, reaction } adds one reaction; GET ?target= reads the counts.
 //
 // WHAT A STRANGER COULD MAKE THIS DO, AND WHY IT IS BOUNDED. This is an open endpoint with no account, cookie or key. The most a caller can do is:
-//   - add one of 6 reactions (an id from a closed list; anything else is a 400) to one of the items in the growth ledger (a slug checked against
-//     /void.growth.json; anything else is a 404), and read the counts back. Nothing a caller types is stored, echoed or drawn: the response is ids and integers;
+//   - add one of 8 reactions (an id from a closed list; anything else is a 400) to one of the items in the growth ledger (a slug checked against
+//     /void.growth.json) or one of the newest incidents (an 'incident-' slug checked against the site's own /incidents.json; anything else is a 404), and read the counts back. Nothing a caller types is stored, echoed or drawn: the response is ids and integers;
 //   - do that 20 times a minute and 200 times a day from one connection (keyed by SHA-256 of address + UTC day + the SALT secret, cut to 16 hex: the address itself
 //     is never stored, logged or returned, and the key changes every day), at most 120 a minute onto one item from everyone, and 5,000 a day in all (the D1 write
 //     budget: about 3 writes a reaction). Past a limit the answer is 429 with Retry-After;
 //   - so inflate a count a little. THAT IS NOT PREVENTED: reactions are anonymous, so one person with many addresses (a botnet or a rotating proxy) can push a
 //     count up; the ceilings above bound how fast, and a count stops at 99,999. The counts are applause, never a vote that decides anything;
-//   - fill the table: at most 6 rows per item and 2,000 items, because an item must be in the ledger.
+//   - fill the table: at most 8 rows per item and 2,000 items, because an item must be in the ledger or in incidents.json.
 // The minute limits live in the edge cache (lib/guard.js bump, per data centre, best effort); the daily limits are rows in D1. With no D1, no SALT or no readable
 // ledger the route is off (503) rather than unguarded. No model, no KV, no third party. Same-origin only: no CORS header, and a foreign Origin is refused.
 import { bump } from '../../lib/guard.js';
-import { LIMITS, parseReaction, targetOk, targetOf, countsOf, REACTION_IDS, dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
+import { LIMITS, parseReaction, targetOk, targetOf, incidentTargetOf, countsOf, REACTION_IDS, dayOf, secondsToMidnight, clientKey } from '../../lib/reactions.js';
 
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: { 'cache-control': 'no-store', ...extra } });
 const off = () => json({ ok: false, error: 'reactions are off for now' }, 503);
@@ -31,6 +31,7 @@ export const resetReady = () => { ready = null; }; // tests: a new fake database
 
 // the items spectators may react to: the growth ledger's entries, read through the site's own assets and kept ten minutes per isolate
 let seenTargets = { at: 0, set: null };
+const INCIDENTS_MAX = 50; // incidents.json keeps 30; read no more than this whatever the file holds
 export const resetKnown = () => { seenTargets = { at: 0, set: null }; };
 async function knownTargets(request, env, now) {
   if (seenTargets.set && now - seenTargets.at < 600000) return seenTargets.set;
@@ -40,6 +41,13 @@ async function knownTargets(request, env, now) {
     if (!r.ok) return seenTargets.set;
     const list = await r.json(), set = new Set();
     for (const e of Array.isArray(list) ? list : []) { const t = e && targetOf(e.at); if (t) set.add(t); }
+    // the incidents on the autopsy card (asked by Void): the site's own incidents.json, newest 30 (tools/incident-log.mjs KEEP), each under an
+    // 'incident-' slug; unreadable means no incident targets, never an open door
+    try {
+      const ri = await env.ASSETS.fetch(new Request(new URL('/incidents.json', request.url)));
+      const j = ri.ok ? await ri.json() : null, inc = Array.isArray(j) ? j : j && Array.isArray(j.incidents) ? j.incidents : [];
+      for (const i of inc.slice(0, INCIDENTS_MAX)) { const t = i && incidentTargetOf(i.at); if (t) set.add(t); }
+    } catch (_) { /* no incident targets this time */ }
     if (set.size) seenTargets = { at: now, set };
   } catch (_) { /* keep what was read before, if anything */ }
   return seenTargets.set;

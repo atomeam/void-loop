@@ -2,7 +2,7 @@
 // Copy gives readable text that ends in one code line; save downloads the same text as a file; pasting that text (or only the code line)
 // into V01D reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
-import { cardSvg, toPng, photoData } from './card-image.js';
+import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
 export const MARK = 'V01D-CARD:';
 const CODE_RE = /V01D-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
@@ -67,7 +67,9 @@ export const tidy = (s) => String(s || '').split('\n').map((l) => l.replace(/[ \
 /** a card's title and its whole body text, before any cap (the frame's own chrome and buttons left out). */
 function bodyOf(el) {
   const c = el.cloneNode(true);
-  c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent').forEach((x) => x.remove());
+  // [data-share-skip]: a part the card shows but the saved text leaves out / [data-nosave] (the self card's folded items keep their one line, not their dates and details)
+  c.querySelectorAll('button, .src, .vc-art, .vc-type, .vc-adds, .vc-foot, .vc-arrows, .vc-share, style, .vtell, .sub.page-sent, [data-share-skip], [data-nosave]').forEach((x) => x.remove());
+  c.querySelectorAll('[data-share-short]').forEach((x) => { x.textContent = x.getAttribute('data-share-short'); }); // ... and a long line it shows saves as its short form
   const h2 = c.querySelector('h2'), title = h2 ? h2.textContent : '';
   if (h2) h2.remove();
   return { title, body: Array.from(c.children).map((x) => tidy(textOf(x))).filter(Boolean).join('\n\n') };
@@ -83,7 +85,21 @@ export function readCard(el) {
 /** what the card's picture is drawn from: the frame's own numbers (el._vcard, set by keep) and the card's text. */
 export function imageData(el, d) {
   const c = el._vcard || {}, text = d.b || '';
-  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '' };
+  return { art: el._vcForge || ((el.querySelector(':scope > .vc-art > .vc-seal') || {}).src || ''), nouns: c.nouns, title: d.t, text, typeLine: d.k, kind: d.k, cost: c.cost, rarity: c.rarity, hue: c.hue, chapter: c.chapter, key: c.key || d.t, name: c.name, adds: c.adds, power: c.power, toughness: c.toughness, income: c.income, number: c.number, tested: c.tested, season: c.season, glyph: c.isSkill, painting: !!el._vcForge, poster: !!el.dataset.poster, sub: (el.querySelector(':scope > .sub:not([hidden])') || {}).textContent || '',
+    // the self card draws its own shape (lib/card-image.js selfLayout): its words, the family bars, each block's heading and first lines; other cards: none
+    self: el.classList && el.classList.contains('vc-self') ? selfImage(el) : undefined };
+}
+/** the self card's picture data from the card on the page: { voice, bars: [{ name, share, label, weak }], sections: [{ title, lines (at most 3) }] }.
+ *  The interactive blocks (Correct me, Talk to me) are left out; a list gives its newest items, a block of paragraphs its sub-heading and words. */
+export function selfImage(el) {
+  const t = (n) => (n ? n.textContent.replace(/\s+/g, ' ').trim() : '');
+  const bars = [...el.querySelectorAll('[data-fam-bar]')].map((b) => ({ name: b.dataset.name || '', share: +b.dataset.share || 0, label: b.dataset.label || '', weak: !!b.dataset.weak }));
+  const sections = [...el.querySelectorAll('details.vs-sec')].filter((d) => !/^(?:correct|talk)$/.test(d.dataset.sec || '')).map((d) => {
+    let lines = [...d.querySelectorAll('li[data-bullet] > details > summary')].map(t);
+    if (!lines.length) { let head = ''; lines = []; for (const n of d.querySelectorAll('.vs-h4, .vs-p, .vs-note, .vs-lead')) { if (n.classList.contains('vs-h4')) { head = t(n); continue; } lines.push((head ? head + ': ' : '') + t(n)); head = ''; } }
+    return { title: t(d.querySelector(':scope > summary')), lines: lines.filter(Boolean).slice(0, 3) };
+  });
+  return { voice: t(el.querySelector('.vs-voice > p')), bars, sections };
 }
 const download = (blob, name) => { const u = URL.createObjectURL(blob), a = document.createElement('a'); a.href = u; a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 1000); };
 /** the picture a saved card draws in its art box: the Art Forge's painting first (owner, 2026-10-17: "still no art": the copied card
@@ -117,7 +133,10 @@ export function bar(el) {
   const grp = (name) => { const g = document.createElement('div'); g.className = 'vc-grp'; g.dataset.label = name; g.setAttribute('role', 'group'); g.setAttribute('aria-label', name); w.appendChild(g); return g; };
   const gCard = grp('Card'), gText = grp('Text');
   const mk = (g, label, run) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; b.addEventListener('pointerdown', (e) => e.stopPropagation()); b.addEventListener('click', async (e) => { e.stopPropagation(); const done = await run(); b.textContent = done; setTimeout(() => { b.textContent = label; }, 1600); }); g.appendChild(b); };
-  const png = async (d) => { const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1); };
+  const png = async (d) => {
+    if (el.dataset && el.dataset.cardPlain !== undefined) return toPng(plainSvg({ title: d.t, text: d.b, qr: el._qr || null }), 1); // a utility card saves its plain picture (lib/card-image.js)
+    const photo = (await artPicture(el)) || ''; return toPng(cardSvg({ ...imageData(el, d), photo }, { bleed: false }), 1);
+  };
   mk(gCard, 'copy card', async () => {
     const d = readCard(el), text = shareText(d);
     try { if (typeof ClipboardItem !== 'undefined' && navigator.clipboard && navigator.clipboard.write) { await navigator.clipboard.write([new ClipboardItem({ 'text/plain': new Blob([text], { type: 'text/plain' }), 'image/png': png(d) })]); return 'copied'; } } catch (_) { /* the picture could not ride along: text only */ }

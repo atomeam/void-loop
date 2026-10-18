@@ -6,8 +6,13 @@
 // estimated. Incident text is untrusted: it is shown only through esc. Pure: data in, data and markup out. No network, no model, no key.
 import { familyMap } from './corrections.js';
 import { WARNING_LOCK } from './art-rules.js';
+import { incidentTargetOf, ERROR_REACTIONS } from './reactions.js';
 
 export const RECENT = 8; // incidents listed
+export const REACT_ON = 3; // the newest incidents that carry a spectator reaction bar (each bar is one read of /api/react)
+/** the warning look on the error reactions of an incident's bar (asked by Void: "errors trigger a specific 'confusion' or 'pity' reaction aesthetic"):
+ *  { confused: css, pity: css } from the warning style lock's amber. Pure constant; nothing from a request. */
+export const ERROR_TINT = Object.freeze(Object.fromEntries(ERROR_REACTIONS.map((id) => [id, 'background:rgba(255,176,0,.18);border-color:' + WARNING_LOCK.css.match(/#ffb000/)[0] + ';color:#ffd45e;box-shadow:0 0 0 1px rgba(255,176,0,.35) inset'])));
 const norm = (t) => String(t == null ? '' : t).toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
 
 /** the incidents of a parsed incidents.json that are well formed: { at, sha, suite, checks[] }, in the file's order (newest first). Pure. */
@@ -95,7 +100,7 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against V01D, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
-    + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
+    + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul></li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
