@@ -355,7 +355,8 @@ check('gap 2: a harmless button on the same page (Save) is still clicked after Y
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
 const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
 await draftReply();
-await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
+// the card is on and its text is filled before either is read (on a loaded machine the card lit up a beat before its text was set)
+await panel.waitForFunction(() => document.getElementById('act').classList.contains('on') && !!document.querySelector('.act-text').textContent, null, { timeout: 8000 }).catch(() => {});
 const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
 const autoCard = await panel.evaluate(() => ({ on: document.getElementById('act').classList.contains('on'), what: document.querySelector('.act-what').textContent, text: document.querySelector('.act-text').textContent, site: document.querySelector('.act-site').textContent }));
 await press('.act-no', async () => !(await cardOn()));
