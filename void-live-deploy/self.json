@@ -446,84 +446,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-18T09:09:58Z",
-   "subject": "Only Verse's words: keep main's renamed lines in RULES, MAP and deploy.yml, add only the new rule, map line and deploy step"
+   "at": "2026-10-18T12:39:29Z",
+   "subject": "Incident: the browser suite failed on 3afe77b7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:09:26Z",
-   "subject": "Safety-check: a test that runs a browser script is left to verify.yml like one that imports a browser, the PR's own tests included (bench-lo"
+   "at": "2026-10-18T12:36:59Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"find me a sci"
   },
   {
-   "at": "2026-10-18T09:09:26Z",
-   "subject": "Only Verse's words are on the site: the owner's quoted words leave the served ledger, self.json and every served comment and JSON file at de"
+   "at": "2026-10-18T12:31:37Z",
+   "subject": "Incident: the browser suite failed on 3afe77b7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:08:58Z",
-   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T12:27:06Z",
+   "subject": "Answer \"what's new pussycat\" as what's new, with a nod to the song"
   },
   {
-   "at": "2026-10-18T09:07:38Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T12:26:35Z",
+   "subject": "Incident: the browser suite failed on 3afe77b7 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:07:10Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T12:22:02Z",
+   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:07:08Z",
-   "subject": "wants: 'name your next 10 upgrades you want' is Verse's own backlog, not a generic model list"
+   "at": "2026-10-18T12:14:58Z",
+   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:06:02Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T12:09:23Z",
+   "subject": "Upkeep: clip visits, Piped host health, the daily skill smoke test and re-test"
   },
   {
-   "at": "2026-10-18T09:06:00Z",
-   "subject": "Name lineage on the self family and remediation velocity (asked by Verse)"
+   "at": "2026-10-18T12:08:54Z",
+   "subject": "Incident: the browser suite failed on 78c8dd33 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:05:57Z",
-   "subject": "bench-load: its wait change moves to the next PR with the safety-check fix (the bot's checkout has no browser, and this test spawns one)"
+   "at": "2026-10-18T12:06:09Z",
+   "subject": "Fix the red self-card check: the fixture's six asks were one ask"
   },
   {
-   "at": "2026-10-18T09:04:52Z",
-   "subject": "film discovery: regenerate the book and the MCP skill list after merging main"
+   "at": "2026-10-18T12:00:14Z",
+   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:04:49Z",
-   "subject": "Incident: the browser suite failed on e18a912b (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:54:45Z",
+   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:04:42Z",
-   "subject": "Incident: the browser suite failed on 80963b89 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:48:47Z",
+   "subject": "Zorbleflux throttle: a smooth velocity curve back to full speed instead of a step"
   },
   {
-   "at": "2026-10-18T09:02:03Z",
-   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:48:41Z",
+   "subject": "Incident: the browser suite failed on ca08b95e (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T08:59:14Z",
-   "subject": "Incident: the browser suite failed on e18a912b (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:46:47Z",
+   "subject": "Arena: Verse played itself again; the records and the self-play champion"
   },
   {
-   "at": "2026-10-18T08:58:46Z",
-   "subject": "Void and V01D are now Verse everywhere people and builders read: the page, skill answers, card titles, tests, tools, workflows and docs (own"
+   "at": "2026-10-18T11:46:31Z",
+   "subject": "Better: today's measure and the pit crew's list (counts only)"
   },
   {
-   "at": "2026-10-18T08:57:43Z",
-   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:44:20Z",
+   "subject": "Reef watch: Coral Reef Watch read; any alert change is in the ledger"
   },
   {
-   "at": "2026-10-18T08:52:37Z",
-   "subject": "Incident: the browser suite failed on b95dc3a3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T11:41:08Z",
+   "subject": "Trial watch: the registry checked; what changed is in the ledger"
   },
   {
-   "at": "2026-10-18T08:52:33Z",
-   "subject": "film discovery: settle the merge of main (bench asks kept, generated files regenerated)"
+   "at": "2026-10-18T11:22:22Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"yo find me a"
   },
   {
-   "at": "2026-10-18T08:51:53Z",
-   "subject": "book: a long chapter name steps its opener title down to fit the sheet"
+   "at": "2026-10-18T11:14:53Z",
+   "subject": "Ledger and log: one line each for the Zorbleflux restore (two overlapping runs had written it twice)"
   }
  ],
  "builders": {

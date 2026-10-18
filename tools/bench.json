@@ -6081,5 +6081,17 @@
   {"ask": "72 f to c as a converter card", "want": "skill:convert"},
   {"ask": "name you next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
-  {"ask": "what upgrades do you want", "want": "skill:wants"}
+  {"ask": "what upgrades do you want", "want": "skill:wants"},
+  {
+    "ask": "decision matrix for pasta vs pizza",
+    "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "make a weighted decision matrix for which laptop to buy",
+    "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "decision matrix for moving to berlin",
+    "want": "skill:decision-matrix"
+  }
 ]
