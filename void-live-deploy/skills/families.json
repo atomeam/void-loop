@@ -14,7 +14,7 @@
  "totals": {
   "experiment": 7,
   "tested": 100,
-  "checked": 100,
+  "checked": 103,
   "proven": 131
  },
  "families": [
@@ -1131,7 +1131,7 @@
    "count": {
     "experiment": 0,
     "tested": 6,
-    "checked": 1,
+    "checked": 3,
     "proven": 6
    },
    "skills": [
@@ -1247,6 +1247,20 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "its tests",
      "streak": 1
+    },
+    {
+     "name": "time-math",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "busy-blocks",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },
@@ -2045,7 +2059,7 @@
    "count": {
     "experiment": 3,
     "tested": 17,
-    "checked": 37,
+    "checked": 38,
     "proven": 7
    },
    "skills": [
@@ -2516,24 +2530,28 @@
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "promoted": "2026-10-18"
+     "last_tested_by": "its tests"
     },
     {
      "name": "counterfactual-draft",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "promoted": "2026-10-18"
+     "last_tested_by": "its tests"
     },
     {
      "name": "witness-claims",
      "tier": "checked",
      "why": "a self-test, 1 browser-suite mention",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests",
-     "promoted": "2026-10-18"
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "task-board",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },

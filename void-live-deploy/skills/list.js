@@ -123,21 +123,23 @@ export function ask(lower, text, stageApi) {
     list.items = [];
     return done('list-cleared', list);
   }
-  const off = removeOf(text);
+  // an ask about a "task" is the task board's (skills/task-board.js: "add task x", "mark task x done"); a list that already holds an item with that word keeps it
+  const forBoard = /\btasks?\b/i.test(text) && !((find(stageApi) || { items: [] }).items || []).some((item) => /\btasks?\b/i.test(item && item.text));
+  const off = forBoard ? '' : removeOf(text);
   if (off) {
     const list = find(stageApi), item = itemNamed(list, off);
     if (!item) return 'list-item-not-found';
     list.items = list.items.filter((candidate) => candidate.id !== item.id);
     return done('list-item-removed', list);
   }
-  const tick = checkOf(text);
+  const tick = forBoard ? '' : checkOf(text);
   if (tick) {
     const list = find(stageApi), item = itemNamed(list, tick);
     if (!item) return 'list-item-not-found';
     item.done = !item.done;
     return done(item.done ? 'list-item-complete' : 'list-item-uncomplete', list);
   }
-  const add = addOf(text, (words) => !!stageApi.targetKind(words));
+  const add = forBoard ? '' : addOf(text, (words) => !!stageApi.targetKind(words));
   if (add) {
     const list = ensure(stageApi);
     if (!itemNamed(list, add)) { list.items.push({ id: uid('item'), text: add, done: false }); return done('list-item-added'); }

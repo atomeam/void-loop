@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 559,
+ "counted": 566,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -9,16 +9,16 @@
    "dependants": 33
   },
   {
+   "file": "lib/stage-pack.js",
+   "skills": 20,
+   "direct": 20,
+   "dependants": 20
+  },
+  {
    "file": "lib/field-kit.js",
    "skills": 18,
    "direct": 2,
    "dependants": 32
-  },
-  {
-   "file": "lib/stage-pack.js",
-   "skills": 17,
-   "direct": 17,
-   "dependants": 17
   },
   {
    "file": "lib/state.js",
@@ -249,6 +249,12 @@
    "dependants": 7
   },
   {
+   "file": "lib/date-words.js",
+   "skills": 3,
+   "direct": 1,
+   "dependants": 6
+  },
+  {
    "file": "lib/art-meta.js",
    "skills": 3,
    "direct": 0,
@@ -477,6 +483,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/day-blocks.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/duel-rules.js",
    "skills": 1,
    "direct": 1,
@@ -603,6 +615,12 @@
    "dependants": 1
   },
   {
+   "file": "lib/tasks.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
    "file": "lib/taste.js",
    "skills": 1,
    "direct": 1,
@@ -616,6 +634,12 @@
   },
   {
    "file": "lib/term-orbits-law.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1
+  },
+  {
+   "file": "lib/time-math.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1
@@ -2203,6 +2227,27 @@
     "skills/veto-council.js"
    ]
   },
+  "lib/date-words.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/day-blocks.js",
+    "lib/tasks.js",
+    "lib/time-math.js",
+    "skills/time-math.js"
+   ],
+   "reachedBy": [
+    "skills/busy-blocks.js",
+    "skills/task-board.js"
+   ]
+  },
+  "lib/day-blocks.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/busy-blocks.js"
+   ]
+  },
   "lib/digest.js": {
    "imports": [],
    "importedBy": [
@@ -3652,6 +3697,7 @@
    "importedBy": [
     "skills/anneal-ambition.js",
     "skills/ask-clipboard.js",
+    "skills/busy-blocks.js",
     "skills/causal-scars.js",
     "skills/counterfactual-draft.js",
     "skills/decision-matrix.js",
@@ -3665,7 +3711,9 @@
     "skills/sheaf-check.js",
     "skills/spectral-review.js",
     "skills/stale-work.js",
+    "skills/task-board.js",
     "skills/task-diagram.js",
+    "skills/time-math.js",
     "skills/witness-claims.js"
    ]
   },
@@ -3798,6 +3846,14 @@
     "skills/status.js"
    ]
   },
+  "lib/tasks.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/task-board.js"
+   ]
+  },
   "lib/taste.js": {
    "imports": [
     "lib/movies.js"
@@ -3818,6 +3874,14 @@
    ],
    "importedBy": [
     "skills/term-orbits.js"
+   ]
+  },
+  "lib/time-math.js": {
+   "imports": [
+    "lib/date-words.js"
+   ],
+   "importedBy": [
+    "skills/time-math.js"
    ]
   },
   "lib/tome-search.js": {
@@ -4138,6 +4202,13 @@
   },
   "skills/breath.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/busy-blocks.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/day-blocks.js"
+   ],
    "importedBy": []
   },
   "skills/calc.js": {
@@ -6240,6 +6311,13 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/task-board.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/tasks.js"
+   ],
+   "importedBy": []
+  },
   "skills/task-diagram.js": {
    "imports": [
     "lib/stage-pack.js",
@@ -6276,6 +6354,14 @@
   "skills/time-capsule.js": {
    "imports": [
     "lib/stage-pack-c.js"
+   ],
+   "importedBy": []
+  },
+  "skills/time-math.js": {
+   "imports": [
+    "lib/time-math.js",
+    "lib/date-words.js",
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },

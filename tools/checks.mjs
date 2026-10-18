@@ -213,6 +213,7 @@ for (const [name, file] of [
   ['stage pack a', 'stage-pack-a.test.mjs'],
   ['math transplants', 'math-transplants.test.mjs'],
   ['thought laws', 'thought-laws.test.mjs'],
+  ['tools pack 2', 'tools-pack-2.test.mjs'],
   ['together', 'together.test.mjs'],
   ['plan', 'plan.test.mjs'],
   ['chess thinking', 'chess-thinking.test.mjs'],

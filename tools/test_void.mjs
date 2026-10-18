@@ -2441,6 +2441,57 @@ try {
       JSON.stringify({ r, e: P.errors }).slice(0, 1400));
     await P.ctx.close(); }
   // step 6's visible upgrade for the list (owner, 2026-10-11: every cleanup move ships one): the card is the clipboard its 3D view shows
+  // tools pack 2 (owner, 2026-10-18): the task board, the time questions, the days-since card and busy blocks, played the way a person uses them
+  if (want("tools pack 2: a task board with a today stack, overdue in red, waiting and someday, a done archive that keeps; meeting length, week number, age; a days-since card; busy blocks with free gaps")) { const T = await fresh();
+    await T.ask('add a task call mum today high priority 30 min', 700);
+    await T.ask('new task late report 2026-10-01 60 min', 600);
+    const rows = await T.p.$$eval('.task-board .tb-task', (r) => r.map((x) => x.querySelector('.tb-text').textContent + (x.dataset.overdue === '1' ? '!' : '') + (x.querySelector('.tb-pri') ? '^' : '') + (x.querySelector('.tb-est') ? '~' : '')));
+    const sum = await T.p.$eval('.task-board .tb-sum', (e) => e.textContent).catch(() => '');
+    await T.ask('someday: learn piano', 500);
+    await T.ask('add waiting for Sam to reply', 500);
+    const tabs = await T.p.$$eval('.task-board [role=tab]', (b) => b.map((x) => x.textContent));
+    await T.ask('finish task call mum', 500);
+    await T.ask('add milk to my list', 500); // not a task: the list keeps its own asks
+    const tasksOnly = (await T.state()).filter((x) => x.kind === 'tasks'), lists = (await T.state()).filter((x) => x.kind === 'list');
+    await T.p.reload(); await T.p.waitForSelector('.task-board', { timeout: 8000 }).catch(() => {});
+    await T.p.click('.task-board [data-tab="done"]').catch(() => {});
+    const doneRows = await T.p.$$eval('.task-board .tb-task .tb-text', (r) => r.map((x) => x.textContent));
+    check('task board: two tasks make a Today stack with the overdue one first and red, marks and estimates show, someday and waiting get their tabs, "finish task" moves one to Done, a plain "add milk to my list" stays a list, a reload keeps all of it',
+      rows.join('|') === 'late report!~|call mum^~' && /1 overdue/.test(sum) && /90 min today/.test(sum) && tabs.join('|') === 'Today 2|All 2|Waiting for 1|Someday 1|Done 0'
+      && tasksOnly.length === 1 && tasksOnly[0].tasks.length === 4 && lists.length === 1 && doneRows.join('|') === 'call mum' && !T.errors.length,
+      JSON.stringify({ rows, sum, tabs, tasksOnly: tasksOnly.length, lists: lists.length, doneRows, errors: T.errors }));
+    await T.ctx.close();
+    const M = await fresh();
+    await M.ask('how long is a meeting from 9:30 to 11:15', 600);
+    const meet = await M.page();
+    await M.ask('week number of oct 25', 600);
+    const wk = await M.page();
+    await M.ask('age calculator', 600);
+    await M.p.fill('#ac-b', '1990-05-03');
+    const age = await M.p.$eval('#ac-out', (e) => e.textContent).catch(() => '');
+    check('time math: a meeting from 9:30 to 11:15 is 1 h 45 min, oct 25 sits in an ISO week of its own year, the age calculator turns a birth day into years, months and days and the next birthday',
+      /1 h 45 min/.test(meet) && /105 minutes/.test(meet) && /Week \d+/.test(wk) && /Monday to Sunday/.test(wk) && /\d+ years, \d+ months?, \d+ days?/.test(age) && /next birthday in \d+ days/.test(age) && !M.errors.length,
+      JSON.stringify({ meet: meet.slice(0, 120), wk: wk.slice(0, 160), age: age.slice(0, 200), errors: M.errors }));
+    const d12 = new Date(); d12.setDate(d12.getDate() - 12); const iso12 = d12.getFullYear() + '-' + String(d12.getMonth() + 1).padStart(2, '0') + '-' + String(d12.getDate()).padStart(2, '0');
+    await M.ask('days since I quit coffee', 600);
+    const ds0 = await M.p.$eval('.days-since', (e) => e.dataset.days + '|' + e.querySelector('.ds-label').textContent).catch(() => '');
+    await M.ask('days since I started running on ' + iso12, 600);
+    await M.p.reload(); await M.p.waitForSelector('.days-since', { timeout: 8000 }).catch(() => {});
+    const dsAll = await M.p.$$eval('.days-since', (e) => e.map((x) => x.dataset.days + '|' + x.querySelector('.ds-label').textContent));
+    await M.p.click('.days-since .ds-reset >> nth=1').catch(() => {});
+    const dsReset = await M.p.$$eval('.days-since', (e) => e.map((x) => x.dataset.days));
+    check('days since: "days since I quit coffee" starts a card at 0 days, "days since I started running on <12 days ago>" is a second card that still counts 12 after a reload, Reset puts it back to 0',
+      ds0 === '0|days since quit coffee' && dsAll.join() === '0|days since quit coffee,12|days since started running' && dsReset.join() === '0,0' && !M.errors.length, JSON.stringify({ ds0, dsAll, dsReset, errors: M.errors }));
+    await M.ask('busy blocks: standup 9-9:30, lunch 12-1, review 2:30-4', 700);
+    const blocks = await M.p.$$eval('.busy-blocks .bb-block', (b) => b.length), free = await M.p.$eval('.busy-blocks .bb-free', (e) => e.textContent).catch(() => '');
+    await M.p.fill('.busy-blocks .bb-add', 'gym 5-6pm'); await M.p.press('.busy-blocks .bb-add', 'Enter');
+    await new Promise((r) => setTimeout(r, 500));
+    const after = await M.p.$$eval('.busy-blocks .bb-block', (b) => b.length), sum2 = await M.p.$eval('.busy-blocks .bb-sum', (e) => e.textContent).catch(() => '');
+    await M.ask('clear busy blocks', 500);
+    const gone = (await M.p.$$eval('.busy-blocks', (b) => b.length)) === 0;
+    check('busy blocks: three blocks make a bar with the free gaps named, typing "gym 5-6pm" adds a fourth, "clear busy blocks" takes the card off',
+      blocks === 3 && /Free: 8:00 am to 9:00 am/.test(free) && after === 4 && /busy/.test(sum2) && gone && !M.errors.length, JSON.stringify({ blocks, free, after, sum2, gone, errors: M.errors }));
+    await M.ctx.close(); }
   if (want("list clipboard look: white paper on a hardboard clipboard, a steel clip, items in pencil in the felt-tip hand, drawn tick boxes, done ones crossed out, a colour still edges it")) { const P = await fresh();
     await P.ask('a shopping list with eggs, milk and bread', 500); await P.ask('check off milk', 400); await P.ask('add peanut butter', 400);
     await P.p.click('.list-shop-store[data-store="walmart"]'); await P.p.waitForTimeout(200);
