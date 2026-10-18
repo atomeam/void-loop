@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 60,
- "runsTotal": 175,
+ "cases": 61,
+ "runsTotal": 176,
  "kinds": {
-  "grow": 53,
+  "grow": 54,
   "file": 68,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T10:02:42Z",
+   "passed": 54,
+   "of": 64,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T09:26:58Z",
    "passed": 62,
@@ -142,13 +149,6 @@
    "of": 45,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
-  },
-  {
-   "at": "2026-10-18T00:31:24Z",
-   "passed": 42,
-   "of": 44,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T09:26:58Z",
+  "skill:film-metadata": "2026-10-18T10:02:42Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -372,6 +372,9 @@
   "skill:negative-summons": "2026-10-18T08:43:06Z",
   "skill:calendar-file": "2026-10-18T09:26:58Z",
   "skill:night-ritual": "2026-10-18T09:26:58Z",
-  "skill:note-tools": "2026-10-18T09:26:58Z"
+  "skill:note-tools": "2026-10-18T09:26:58Z",
+  "skill:noun-heat": "2026-10-18T10:02:42Z",
+  "skill:oracle": "2026-10-18T10:02:42Z",
+  "skill:outline-note": "2026-10-18T10:02:42Z"
  }
 }

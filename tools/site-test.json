@@ -206,6 +206,9 @@
     },
     {
       "ask": "find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "films by Kurosawa"
     }
   ],
   "candidates": [],
