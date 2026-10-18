@@ -5,12 +5,13 @@
  */
 export const ASKS_KEY = 'a2m.void.asks.v1';
 
-export function recentAsks(store) {
+export const KEPT_ASKS = 12; // stored; the empty box still shows the newest 5 (the ask clipboard card, skills/ask-clipboard.js, reads all)
+export function recentAsks(store, n = 5) {
   const bag = store || (typeof localStorage !== 'undefined' ? localStorage : null);
   if (!bag) return [];
   try {
     const raw = JSON.parse(bag.getItem(ASKS_KEY) || '[]');
-    return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, 5) : [];
+    return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, n) : [];
   } catch (_) { return []; }
 }
 
@@ -18,8 +19,8 @@ export function rememberAsk(text, store) {
   const bag = store || (typeof localStorage !== 'undefined' ? localStorage : null);
   const t = String(text || '').trim().slice(0, 240);
   if (!bag || !t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return recentAsks(bag);
-  const prev = recentAsks(bag).filter((s) => s.toLowerCase() !== t.toLowerCase());
-  const next = [t].concat(prev).slice(0, 5);
+  const prev = recentAsks(bag, KEPT_ASKS).filter((s) => s.toLowerCase() !== t.toLowerCase());
+  const next = [t].concat(prev).slice(0, KEPT_ASKS);
   try { bag.setItem(ASKS_KEY, JSON.stringify(next)); } catch (_) {}
   return next;
 }

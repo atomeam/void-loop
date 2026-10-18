@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 514,
+ "counted": 520,
  "libs": [
   {
    "file": "lib/ask-text.js",
@@ -142,6 +142,12 @@
   },
   {
    "file": "lib/opposite-era.js",
+   "skills": 5,
+   "direct": 5,
+   "dependants": 5
+  },
+  {
+   "file": "lib/stage-pack.js",
    "skills": 5,
    "direct": 5,
    "dependants": 5
@@ -3489,6 +3495,16 @@
     "skills/negative-summons.js"
    ]
   },
+  "lib/stage-pack.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/ask-clipboard.js",
+    "skills/decision-matrix.js",
+    "skills/habit-ring.js",
+    "skills/minimap.js",
+    "skills/recipe-stack.js"
+   ]
+  },
   "lib/stale-tab.js": {
    "imports": [],
    "importedBy": []
@@ -3839,6 +3855,13 @@
     "skills/zorbleflux.js"
    ]
   },
+  "skills/ask-clipboard.js": {
+   "imports": [
+    "skills/recent.js",
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/attention-field-mind.js": {
    "imports": [
     "lib/field-stage.js",
@@ -4114,6 +4137,12 @@
   "skills/deadlines.js": {
    "imports": [
     "skills/live.js"
+   ],
+   "importedBy": []
+  },
+  "skills/decision-matrix.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
@@ -4529,6 +4558,12 @@
     "lib/tome-search.js",
     "lib/tome.js",
     "lib/success-pulse.js"
+   ],
+   "importedBy": []
+  },
+  "skills/habit-ring.js": {
+   "imports": [
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },
@@ -5028,6 +5063,12 @@
    ],
    "importedBy": []
   },
+  "skills/minimap.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
+   "importedBy": []
+  },
   "skills/monopoly-rules.js": {
    "imports": [],
    "importedBy": [
@@ -5376,6 +5417,14 @@
   },
   "skills/recent.js": {
    "imports": [],
+   "importedBy": [
+    "skills/ask-clipboard.js"
+   ]
+  },
+  "skills/recipe-stack.js": {
+   "imports": [
+    "lib/stage-pack.js"
+   ],
    "importedBy": []
   },
   "skills/recipe.js": {

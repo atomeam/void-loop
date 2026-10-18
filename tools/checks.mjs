@@ -205,6 +205,7 @@ for (const [name, file] of [
   ['timer', 'timer.test.mjs'],
   ['clock', 'clock.test.mjs'],
   ['list', 'list.test.mjs'],
+  ['stage pack a', 'stage-pack-a.test.mjs'],
   ['together', 'together.test.mjs'],
   ['plan', 'plan.test.mjs'],
   ['chess thinking', 'chess-thinking.test.mjs'],

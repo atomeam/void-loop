@@ -13,9 +13,9 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 4,
-  "tested": 83,
-  "checked": 59,
-  "proven": 108
+  "tested": 81,
+  "checked": 65,
+  "proven": 109
  },
  "families": [
   {
@@ -1474,9 +1474,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 1,
-    "tested": 12,
+    "tested": 11,
     "checked": 4,
-    "proven": 8
+    "proven": 9
    },
    "sources": {
     "read": 21,
@@ -1493,7 +1493,6 @@
      "spanish",
      "news",
      "joke",
-     "recipe",
      "film-metadata",
      "media-pick",
      "book",
@@ -1501,7 +1500,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.38 of 3 on average). One kept live answer each would make 15 more proven: repo, digest, movie, pick-for-me, video, spanish and 9 more."
+    "words": "Source reliability: 21 skills answer from outside sources; 19 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.38 of 3 on average). One kept live answer each would make 14 more proven: repo, digest, movie, pick-for-me, video, spanish and 8 more."
    },
    "skills": [
     {
@@ -1753,11 +1752,12 @@
     },
     {
      "name": "recipe",
-     "tier": "tested",
-     "why": "9 real asks in the benchmark",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "1 browser-suite mention, 9 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
      "success_rate": 1,
+     "promoted": "2026-10-18",
      "streak": 1,
      "source": {
       "sites": [
@@ -1767,8 +1767,7 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: themealdb.com; named on the card; no second source; no kept live answer yet. One kept live answer from themealdb.com would make it proven"
+      "words": "source 1 of 3: themealdb.com; named on the card; no second source; no kept live answer yet"
      }
     },
     {
@@ -2020,16 +2019,16 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 3,
-    "tested": 9,
-    "checked": 16,
+    "tested": 8,
+    "checked": 22,
     "proven": 7
    },
    "skills": [
     {
      "name": "sticky",
      "tier": "proven",
-     "why": "a self-test, 12 browser-suite mentions, 4 real asks in the benchmark",
-     "last_tested": "2026-10-17",
+     "why": "a self-test, 13 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
@@ -2173,10 +2172,11 @@
     },
     {
      "name": "recent",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
-     "last_tested": "2026-10-17",
-     "last_tested_by": "the daily smoke test",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-18",
      "streak": 1
     },
     {
@@ -2302,6 +2302,41 @@
      "last_tested": "2026-10-17",
      "last_tested_by": "the daily smoke test",
      "since": "2026-10-18"
+    },
+    {
+     "name": "minimap",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "ask-clipboard",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "decision-matrix",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "habit-ring",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
+     "name": "recipe-stack",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
     }
    ]
   },

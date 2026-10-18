@@ -5439,18 +5439,18 @@ say('nothing selected to remove');
       return words.length && words.every((w) => hl.includes(w)) ? 1 : 0;
     }
     const ASKS_KEY = 'a2m.void.asks.v1';
-    function recentAsks() {
+    function recentAsks(n = 5) { // the box shows the newest 5; 12 are kept for the ask clipboard card (skills/ask-clipboard.js)
       try {
         const raw = JSON.parse(localStorage.getItem(ASKS_KEY) || '[]');
-        return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, 5) : [];
+        return Array.isArray(raw) ? raw.filter((s) => typeof s === 'string' && s.trim()).slice(0, n) : [];
       } catch (_) { return []; }
     }
     function rememberAsk(text) {
       const t = String(text || '').trim().slice(0, 240);
       if (!t || /^(?:unlock\s*)+\S{16,}\s*$/i.test(t)) return;
       try {
-        const prev = recentAsks().filter((s) => s.toLowerCase() !== t.toLowerCase());
-        localStorage.setItem(ASKS_KEY, JSON.stringify([t].concat(prev).slice(0, 5)));
+        const prev = recentAsks(12).filter((s) => s.toLowerCase() !== t.toLowerCase());
+        localStorage.setItem(ASKS_KEY, JSON.stringify([t].concat(prev).slice(0, 12)));
       } catch (_) {}
     }
     let askBoxTouched = false;

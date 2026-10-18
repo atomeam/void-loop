@@ -1315,6 +1315,58 @@ try {
         && !green && !visitor && /V01D’s own build · something on main failed/.test(asked) && !O.errors.length && !G.errors.length && !V.errors.length,
       JSON.stringify({ red: red.replace(/\s+/g, ' ').slice(0, 300), link, green: green.slice(0, 80), visitor: visitor.slice(0, 80), asked: asked.replace(/\s+/g, ' ').slice(0, 200), errors: O.errors.concat(G.errors, V.errors) }));
     await O.ctx.close(); await G.ctx.close(); await V.ctx.close(); }
+  // stage pack a (owner, 2026-10-18): the minimap, the ask clipboard card, the decision matrix, the habit ring and the recipe stack, played the way a person uses them
+  if (want("stage pack a: minimap dots, ask clipboard re-runs, decision matrix totals, habit rings that keep today, a recipe stack that advances itself and chimes only after a tap")) { const S = await fresh();
+    await S.ask('sticky note buy milk', 500);
+    const before = await S.p.$$eval('.minimap-card', (d) => d.length);
+    await S.ask('show the minimap', 600);
+    const dots = await S.p.$$eval('.minimap-card [data-target]', (d) => d.length);
+    await S.p.click('.minimap-card [data-target]').catch(() => {});
+    await S.ask('hide the minimap', 500);
+    const gone = await S.p.$$eval('.minimap-card', (d) => d.length) === 0 && !(await S.state()).some((x) => x.kind === 'minimap');
+    check('minimap: nothing until asked, then one dot for the sticky that a tap can follow, and "hide the minimap" takes it off', before === 0 && dots === 1 && gone && !S.errors.length, JSON.stringify({ before, dots, gone, errors: S.errors }));
+    await S.p.evaluate(() => localStorage.setItem('a2m.void.asks.v1', JSON.stringify(['make a counter', 'sticky note two', 'make a clock']))); // three asks on this device, newest first
+    await S.ask('show my recent asks as a card', 600);
+    const card = await S.page(); const clipTexts = await S.p.$$eval('.vpage.on .clip-text', (e) => e.map((x) => x.textContent)); const runs = await S.p.$$eval('.vpage.on button.clip-run', (b) => b.length);
+    await S.p.click('.vpage.on button.clip-run >> nth=0').catch(() => {});
+    const counterMade = await until(async () => (await S.state()).some((x) => x.kind === 'counter'), 5000);
+    await S.ask('re-run the second recent ask', 800);
+    const twoMade = await until(async () => (await S.state()).filter((x) => x.kind === 'sticky' && /two/.test(x.text || '')).length >= 1, 5000);
+    check('ask clipboard: the card lists the asks kept on this device (not its own command), a tap on run asks it again, and "re-run the second recent ask" does the same by words',
+      /Ask clipboard/.test(card) && /make a counter/.test(card) && /sticky note two/.test(card) && clipTexts.join('|') === 'make a counter|sticky note two|make a clock' && runs >= 3 && counterMade && twoMade && !S.errors.length, JSON.stringify({ card: card.slice(0, 200), clipTexts, runs, counterMade, twoMade, errors: S.errors }));
+    await S.ask('decision matrix for whether to move to Berlin', 600);
+    await S.p.fill('.decision-matrix input[aria-label="score of Do it on Cost"]', '5');
+    await S.p.fill('.decision-matrix input[aria-label="score of Do it on Joy"]', '4');
+    await S.p.fill('.decision-matrix input[aria-label="score of Don\'t on Cost"]', '2');
+    const totalsNow = await S.p.$$eval('.decision-matrix .dm-total', (c) => c.map((x) => x.textContent + (x.dataset.best ? '*' : '')));
+    await S.p.fill('.decision-matrix input[aria-label="weight of Cost"]', '1');
+    const reweighed = await S.p.$$eval('.decision-matrix .dm-total', (c) => c.map((x) => x.textContent));
+    const saved = (await S.state()).find((x) => x.kind === 'decision');
+    check('decision matrix: weighted totals follow the scores and weights as they are typed (3*5+3*4=27 against 3*2=6, then 1*5+12=17), the best option is marked, and the card is kept',
+      totalsNow.join() === '27*,6' && reweighed.join() === '17,2' && saved && saved.scores['0|0'] === 5 && !S.errors.length, JSON.stringify({ totalsNow, reweighed, saved, errors: S.errors }));
+    await S.ask('habit ring for write, walk, sleep', 600);
+    const rings = await S.p.$$eval('.habit-ring .habit', (b) => b.map((x) => x.dataset.habit));
+    await S.p.click('.habit-ring .habit[data-habit="walk"]');
+    await S.ask('mark sleep done today', 600);
+    const marked = async () => S.p.$$eval('.habit-ring .habit', (b) => b.map((x) => x.dataset.habit + ':' + x.getAttribute('aria-pressed')));
+    const first = await marked();
+    await S.p.reload(); await S.p.waitForSelector('.habit-ring .habit', { timeout: 8000 }).catch(() => {});
+    const afterReload = await marked();
+    const label = await S.p.$eval('.habit-ring .habit[data-habit="walk"]', (b) => b.textContent).catch(() => '');
+    check('habit ring: three rings, a tap marks walk, "mark sleep done today" marks sleep, write stays open, and a reload keeps today with a 1 day streak',
+      rings.join() === 'write,walk,sleep' && first.join() === 'write:false,walk:true,sleep:true' && afterReload.join() === first.join() && /1 day streak/.test(label) && !S.errors.length, JSON.stringify({ rings, first, afterReload, label, errors: S.errors }));
+    await S.ask('cook pasta: boil 3 s then rest 2 s', 700);
+    await S.p.evaluate(() => { window.__osc = 0; window.AudioContext = class { constructor() { this.state = 'running'; this.currentTime = 0; this.destination = {}; } resume() { return Promise.resolve(); } createOscillator() { window.__osc++; return { frequency: {}, connect() {}, start() {}, stop() {} }; } createGain() { return { gain: { setValueAtTime() {}, exponentialRampToValueAtTime() {} }, connect() {} }; } }; });
+    const idle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
+    await new Promise((r) => setTimeout(r, 1200));
+    const stillIdle = await S.p.$eval('.recipe-stack', (e) => e.dataset.step + ' ' + e.querySelector('.rs-time').textContent);
+    await S.p.click('.recipe-stack .rs-go');
+    const second = await until(async () => (await S.p.$eval('.recipe-stack', (e) => e.dataset.step).catch(() => '')) === '1', 6000);
+    const chimedAtHandover = await S.p.evaluate(() => window.__osc);
+    const done = await until(async () => /Done/.test(await S.p.$eval('.recipe-stack .rs-time', (e) => e.textContent).catch(() => '')), 6000);
+    check('recipe stack: it waits for a tap, then the second step starts by itself after the first (a soft two-note chime only once the tap has happened) and the card ends on Done',
+      idle === '0 0:03' && stillIdle === '0 0:03' && second && chimedAtHandover >= 2 && done && !S.errors.length, JSON.stringify({ idle, stillIdle, second, chimedAtHandover, done, errors: S.errors }));
+    await S.ctx.close(); }
   // release notes: pasted commits sort under Keep a Changelog headings as you type; merges and version bumps drop out
   if (want("release notes: pasted commits sort under Keep a Changelog headings as you type; merges and")) { const P = await fresh();
     await P.ask('release notes for v1.4.0 ⏎ a1b2c3d feat(api): add search (#41) ⏎ fix: crash on empty list ⏎ Merge pull request #42 from x/y', 900);
