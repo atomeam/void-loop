@@ -2577,6 +2577,37 @@ try {
     check('field minds: the attention field mind (Grok\'s attention drafts) turns a typed word into an attractor its look-alikes fall toward, clusters like with like, Law cycles affinity, two heads (F-032), lattice (F-029, its mind evolves) and causal (F-047), the morph touches the card only, Seal keeps no typed word, and with Worker and Web Audio deleted the mind thinks on the page and Sound says it is unavailable',
       out.length === 2 && good(out[0]) && good(out[1]) && out[0].a.mind === 'worker' && out[1].a.mind === 'main' && /thinking in a Worker/.test(out[0].a.status) && /thinking on the page/.test(out[1].a.status)
       && out[1].a.sound === 'Sound unavailable', JSON.stringify(out));
+  if (want("field minds: nca mind runs Grok's lattices on one card, the pointer seeds it, ask words and the Rule picker switch drafts, portals keep a rule, with or without a Worker")) { // asked by Owner, 2026-10-18: F-036, F-039, F-043, F-045
+    const out = [];
+    for (const noWorker of [false, true]) {
+      const F = await fresh(noWorker ? 'delete window.Worker; delete window.AudioContext; delete window.webkitAudioContext; window.Worker = undefined;' : () => {});
+      const card = '.ff-nca-mind', read = () => F.p.$eval(card, (el) => ({ variant: el.dataset.variant, mind: el.dataset.mind, gen: +(el.dataset.gen || 0), entropy: +el.dataset.entropy, consensus: +el.dataset.consensus, status: el.querySelector('.ff-hud').textContent,
+        rule: el.querySelector('.nca-rule').value, rules: el.querySelectorAll('.nca-rule option').length, portals: +(el.dataset.portals || 0), reinforced: +(el.dataset.reinforced || 0), sound: el.querySelector('.ff-sound').textContent,
+        filter: el.style.filter, page: getComputedStyle(document.body).filter, n: document.querySelectorAll('.ff-nca-mind').length }));
+      await F.ask('show me a living lattice', 700); await until(async () => !!(await F.p.$(card + ' .nca-rule')), 8000);
+      const a = await read();
+      const box = await (await F.p.$(card + ' canvas')).boundingBox();
+      await F.p.mouse.move(box.x + box.width * 0.3, box.y + box.height * 0.5); await F.p.mouse.down();
+      for (let i = 0; i < 10; i++) await F.p.mouse.move(box.x + box.width * (0.3 + i * 0.02), box.y + box.height * 0.5);
+      await F.p.mouse.up();
+      await until(async () => (await read()).gen > 0, 12000);
+      const b = await read();
+      await F.ask('nca portal mind', 700); await until(async () => (await read()).variant === 'portal', 4000);
+      for (let i = 0; i < 40 && !(await read()).portals; i++) { await F.p.mouse.move(box.x + box.width * (0.2 + (i % 10) * 0.06), box.y + box.height * (0.3 + (i % 4) * 0.12)); await F.p.waitForTimeout(100); }
+      const c = await read();
+      if (c.portals) { await F.p.$eval(card + ' .nca-portal', (p) => p.click()); await until(async () => (await read()).reinforced > 0, 2000); }
+      const d = await read();
+      await F.p.selectOption(card + ' .nca-rule', 'residual'); await F.p.mouse.move(box.x + 20, box.y + 40); for (let i = 0; i < 12; i++) await F.p.mouse.move(box.x + 20 + i * 12, box.y + 40 + i * 4);
+      await F.p.waitForTimeout(300);
+      const e = await read();
+      out.push({ noWorker, a, b, c, d, e, errors: F.errors.slice() }); await F.ctx.close();
+    }
+    const good = (o) => o.a.variant === 'growing' && o.a.rule === 'growing' && o.a.rules === 6 && o.a.entropy > 0.05 && o.b.gen > 0 && /^F-036 \+ F-039 · gen \d+ · fitness [\d.]+ · entropy [\d.]+ · activity [\d.]+/.test(o.b.status)
+      && o.c.variant === 'portal' && o.c.rule === 'portal' && o.c.n === 1 && o.c.portals >= 1 && o.d.reinforced === 1 && o.e.variant === 'residual' && /^F-043 .* surprise [\d.]+/.test(o.e.status)
+      && /^hue-rotate\(/.test(o.e.filter) && o.e.page === 'none' && !o.errors.length;
+    check('field minds: the NCA mind card (F-036, F-039, F-043, F-045) starts on the growing multichannel NCA, the pointer seeds it and the mind evolves it (gen above 0); "nca portal mind" switches the same card to F-045 whose hotspots open portals a tap reinforces, the Rule picker switches to F-043\'s residual lattice, the morph stays on the card, in a Worker and on the page with Worker and Web Audio deleted',
+      out.every(good) && out[0].b.mind === 'worker' && out[1].b.mind === 'main' && /Worker/.test(out[0].b.status) && /page/.test(out[1].b.status) && out[1].a.sound === 'Sound unavailable',
+      JSON.stringify(out.map((o) => ({ noWorker: o.noWorker, a: o.a, b: o.b, c: o.c, d: o.d, e: o.e, errors: o.errors }))));
   }
   if (want("flow canvas: F-033 ink rides a paintable field, a mind evolves it in a Worker and on the page when workers are blocked, velocity morphs the ink's CSS shapes")) { // asked by Owner: F-033
     const flowRun = async (F) => {

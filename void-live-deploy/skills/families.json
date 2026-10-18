@@ -255,6 +255,13 @@
      "promoted": "2026-10-17"
     },
     {
+     "name": "nca-mind",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "flow-canvas",
      "tier": "tested",
      "why": "3 browser-suite mentions",

@@ -277,6 +277,7 @@
     "swarm",
     "vector-field-mind",
     "living-cards-mind",
+    "nca-mind",
     "flow-canvas",
     "attention-field-mind",
     "rts"
@@ -698,6 +699,21 @@
   {
    "kind": "skill",
    "chapter": "make",
+   "name": "nca-mind",
+   "title": "Nca mind",
+   "line": "V01D's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and",
+   "examples": [
+    "nca mind",
+    "show me a living lattice",
+    "neural cellular automaton"
+   ],
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
+   "n": 32
+  },
+  {
+   "kind": "skill",
+   "chapter": "make",
    "name": "flow-canvas",
    "title": "Flow canvas",
    "line": "F-033, the Adaptive Flow-Canvas: , made with lib/field-stage.js fieldSkill",
@@ -708,21 +724,6 @@
    ],
    "tier": "tested",
    "why": "3 browser-suite mentions",
-   "n": 32
-  },
-  {
-   "kind": "skill",
-   "chapter": "make",
-   "name": "attention-field-mind",
-   "title": "Attention field mind",
-   "line": "ATTENTION as a field mind",
-   "examples": [
-    "attention field",
-    "attention mind",
-    "attention field mind"
-   ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
    "n": 33
   },
   {
@@ -4394,7 +4395,7 @@
     "incident-autopsy",
     "event-countdown",
     "living-cards-mind",
-    "attention-field-mind"
+    "nca-mind"
    ],
    "n": 242
   },
@@ -5304,8 +5305,8 @@
     },
     {
      "rank": 152,
-     "name": "attention-field-mind",
-     "catches": "attention field"
+     "name": "nca-mind",
+     "catches": "nca mind"
     }
    ],
    "n": 261
@@ -5338,10 +5339,6 @@
     {
      "name": "Appraise",
      "page": 108
-    },
-    {
-     "name": "Attention field mind",
-     "page": 33
     },
     {
      "name": "Aurora tonight",
@@ -5458,6 +5455,10 @@
     {
      "name": "Countdown (3D)",
      "page": 211
+    },
+    {
+     "name": "Counter",
+     "page": 104
     }
    ],
    "n": 262
@@ -5465,12 +5466,8 @@
   {
    "kind": "index",
    "chapter": "index",
-   "title": "Index C–F",
+   "title": "Index C–G",
    "entries": [
-    {
-     "name": "Counter",
-     "page": 104
-    },
     {
      "name": "Counter (3D)",
      "page": 212
@@ -5581,7 +5578,7 @@
     },
     {
      "name": "Flow canvas",
-     "page": 32
+     "page": 33
     },
     {
      "name": "Food",
@@ -5610,6 +5607,10 @@
     {
      "name": "Fuel",
      "page": 98
+    },
+    {
+     "name": "Gears",
+     "page": 16
     }
    ],
    "n": 263
@@ -5619,10 +5620,6 @@
    "chapter": "index",
    "title": "Index G–M",
    "entries": [
-    {
-     "name": "Gears",
-     "page": 16
-    },
     {
      "name": "Gears (3D)",
      "page": 216
@@ -5762,6 +5759,10 @@
     {
      "name": "Magnetize",
      "page": 19
+    },
+    {
+     "name": "Make",
+     "page": 7
     }
    ],
    "n": 264
@@ -5771,10 +5772,6 @@
    "chapter": "index",
    "title": "Index M–P",
    "entries": [
-    {
-     "name": "Make",
-     "page": 7
-    },
     {
      "name": "Mancala",
      "page": 41
@@ -5842,6 +5839,10 @@
     {
      "name": "Music",
      "page": 8
+    },
+    {
+     "name": "Nca mind",
+     "page": 32
     },
     {
      "name": "News",
@@ -6329,10 +6330,6 @@
    "page": 108
   },
   {
-   "name": "Attention field mind",
-   "page": 33
-  },
-  {
    "name": "Aurora tonight",
    "page": 62
   },
@@ -6562,7 +6559,7 @@
   },
   {
    "name": "Flow canvas",
-   "page": 32
+   "page": 33
   },
   {
    "name": "Food",
@@ -6807,6 +6804,10 @@
   {
    "name": "Music",
    "page": 8
+  },
+  {
+   "name": "Nca mind",
+   "page": 32
   },
   {
    "name": "News",
