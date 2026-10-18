@@ -2,52 +2,37 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Void). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T08:36:15.907Z",
-   "sha": "419a1261859017c962aad3d7b057abc09b7e45ce",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111047602",
+   "at": "2026-10-18T08:37:39.901Z",
+   "sha": "3a0f50a3385fa5d222b1b96a19a0eba0d860718f",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39110976100",
    "suite": "browser suite on main",
    "checks": [
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "tools/bench.json",
-    "tools/wants.test.mjs",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T08:19:40.157Z",
-   "sha": "57c01f522894cbd8b16adc12f056518c215025ae",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39110000209",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "calc-more and tip: \"300 px in cm at 150 dpi\" is 5.08 cm, \"5 cm to pixels at 300 dpi\" is 590.55 px, \"100 usd to eur at 0.92\" uses only the typed rate (92 EUR, and it says so), a kgs-to-lbs rate is not taken for money; \"45 with 8% tax and 20% tip\" totals $57.60 with $3.60 tax, and \"an 84 dollar bill 4 ways\" is $21.00 each",
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "domains/handoff.md",
     "domains/void.agents.log.md",
-    "tools/telemetry-route.test.mjs",
-    "void-live-deploy/lib/telemetry.js",
+    "tools/service-health.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/service-health.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/service-health.js",
     "void-live-deploy/void.growth.json",
-    "tools/automation-fix.test.mjs",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/automation-fix.js"
+    "void-live-deploy/incidents.json"
    ]
   },
   {
-   "at": "2026-10-18T08:02:35.721Z",
+   "at": "2026-10-18T08:16:42.600Z",
    "sha": "200e56d541283389e47fa1ce10207a9236113dc3",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39109636216",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "tools/automation-fix.test.mjs",
@@ -738,6 +723,33 @@
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
+   ]
+  },
+  {
+   "at": "2026-10-17T21:13:54.211Z",
+   "sha": "7c66b3b8f12db0a052bcbf22811e77ac2d39e459",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39068791421",
+   "suite": "browser suite on main",
+   "checks": [
+    "label: \"label the clock kitchen\" and \"label the note groceries\" tag them, \"draw an arrow from kitchen to the timer\" joins them and the arrow follows the clock when it is dragged, a free label \"to do\" takes an arrow, \"undo\" takes the last arrow back, all of it survives a reload, and \"remove the arrows\" / \"remove the labels\" clear them",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/event-date.test.mjs",
+    "tools/families.mjs",
+    "tools/service-health.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/event-date.js",
+    "void-live-deploy/lib/service-health.js",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/event-countdown.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1260-service-health"
    ]
   }
  ]
