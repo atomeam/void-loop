@@ -270,6 +270,11 @@
       "match": "cook-flow|substitution-impact",
       "ledgerAt": "2026-10-16T05:15:52Z",
       "why": "cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust"
+    },
+    {
+      "match": "velocity.?smoothing.*zorbleflux throttle|zorbleflux throttle.*velocity.?smoothing|smoothing curve.*throttle",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "the throttle stays slow 0.7 s after a card's input is let go, then climbs to full speed along a smoothstep over 0.5 s, flat at both ends, instead of a step"
     }
   ],
   "extra": [
