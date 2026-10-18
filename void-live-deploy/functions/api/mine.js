@@ -1,4 +1,4 @@
-// Your Void follows you (plan item 6): the owner's stage, look and kept cards, kept server-side per passkey account.
+// Your Verse follows you (plan item 6): the owner's stage, look and kept cards, kept server-side per passkey account.
 // GET  (Bearer session) -> { data, rev, updated }   (data null until the first sync)
 // PUT  (Bearer session) { data, baseRev } -> { rev, updated } | 409 { data, rev, updated } when another device wrote first
 // data = { v, state, look, entered }: stored as JSON, never interpreted here; the page cleans it before showing it.

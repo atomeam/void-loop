@@ -49,7 +49,7 @@ export default [
   "protects": "SCRABBLE mark, board look, tile design",
   "safest": "Own board colours and premium layout styling, own tiles",
   "generic": "Word Tiles",
-  "parody": "Glyph Void",
+  "parody": "Glyph Verse",
   "twist": "letters drift in from the void"
  },
  {
@@ -219,7 +219,7 @@ export default [
   "protects": "Mark, characters, art",
   "safest": "New colour-track world",
   "generic": "Color Track",
-  "parody": "Candy Void",
+  "parody": "Candy Verse",
   "twist": "sugar nebulae"
  },
  {
@@ -258,7 +258,7 @@ export default [
   "protects": "Mark, character art",
   "safest": "Own faces and flip-board look",
   "generic": "Face Guess",
-  "parody": "Who's in the Void?",
+  "parody": "Who's in the Verse?",
   "twist": "alien faces"
  },
  {
@@ -271,7 +271,7 @@ export default [
   "protects": "Mark, word cards",
   "safest": "Own word lists",
   "generic": "Sketch Guess",
-  "parody": "Draw the Void",
+  "parody": "Draw the Verse",
   "twist": "Verse guesses your drawing"
  },
  {
@@ -323,7 +323,7 @@ export default [
   "protects": "Mark, card names, text and art (deckbuilding is free)",
   "safest": "Own cards entirely",
   "generic": "Deckbuilder",
-  "parody": "Void Deck",
+  "parody": "Verse Deck",
   "twist": "build a deck of glitches"
  },
  {
@@ -375,7 +375,7 @@ export default [
   "protects": "Mark, category lists",
   "safest": "Own lists",
   "generic": "Category Rush",
-  "parody": "Void Categories",
+  "parody": "Verse Categories",
   "twist": ""
  },
  {

@@ -1,8 +1,8 @@
 /**
- * game-level — one Void opponent strength shared by every game in the Games family (Adam, 2026-10-15: "board games can
- * all be combined"). The games card (skills/rack.js) sets it; each game asks it before Void moves.
+ * game-level — one Verse opponent strength shared by every game in the Games family (Adam, 2026-10-15: "board games can
+ * all be combined"). The games card (skills/rack.js) sets it; each game asks it before Verse moves.
  *   getLevel() -> 'easy' | 'normal' | 'hard'      setLevel(l)      levelPick(best, options) -> a move
- * Hard always plays Void's best move. Normal sometimes plays a random legal move; easy often does. Pure apart from the
+ * Hard always plays Verse's best move. Normal sometimes plays a random legal move; easy often does. Pure apart from the
  * saved choice (localStorage, absent in tests and workers, where the level is 'hard' so self-play and tests stay exact).
  */
 export const LEVELS = ['easy', 'normal', 'hard'];

@@ -1,14 +1,14 @@
-// tools/record.mjs: what Void's own video of an experiment says comes from the lab entry and the run's ledger notes.
+// tools/record.mjs: what Verse's own video of an experiment says comes from the lab entry and the run's ledger notes.
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { runOf, script, hookOf, filmedOf, pickFilm, picksOf, sourceOf, shipsOf, shipId, unfilmed } from './record.mjs';
 import { toolList } from '../void-live-deploy/skills/make.js';
 
-const ledger = [{ run: 1, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board' }, { run: 2, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board', behavior: 'Estimate how much of what people ask Void has already seen.', hypothesis: 'Good-Turing says it', findings: ['about 40% unseen'], failure_modes: [{ what: 'small samples swing', evidence: 'n<30' }] }];
+const ledger = [{ run: 1, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board' }, { run: 2, draft: 'drafts/fringe/miss-board-4.html', family: 'miss-board', behavior: 'Estimate how much of what people ask Verse has already seen.', hypothesis: 'Good-Turing says it', findings: ['about 40% unseen'], failure_modes: [{ what: 'small samples swing', evidence: 'n<30' }] }];
 const run = runOf(ledger, 'miss-board-4');
 assert.equal(run.run, 2, 'the newest run of a redone draft');
 assert.equal(runOf(ledger, 'nope-1'), null);
-const s = script({ id: 'miss-board-4', label: "What it hasn't heard yet", sub: 'How much of what people will ask has Void already seen?' }, run);
+const s = script({ id: 'miss-board-4', label: "What it hasn't heard yet", sub: 'How much of what people will ask has Verse already seen?' }, run);
 // an ad (owner, 2026-10-14): the experiment's own question as the hook, the link in the first line, #Shorts for reach
 assert.equal(s.hook, 'How much of what people will ask has Verse already seen?', 'the name viewers see is Verse');
 assert.equal(s.title, 'How much of what people will ask has Verse already seen? | an AI built this itself #Shorts');
@@ -17,7 +17,7 @@ assert.match(s.description, /#Shorts/); assert.ok(s.tags.includes('Shorts'));
 assert.match(s.cta, /a\u2011to\u2011mind\.com/, 'the domain never breaks across lines');
 assert.equal(hookOf({ label: 'X', sub: 'No question here.' }, { behavior: 'Does a thing.' }), 'Does a thing.', 'no question: the behavior');
 assert.equal(s.caption, 'Estimate how much of what people ask Verse has already seen.', 'the ledger behavior is the caption');
-assert.ok(!/\bVoid\b/.test(s.description) && /VERSE FILMS/.test(s.description) && s.tags.includes('Verse'), 'no Void left in what a viewer reads');
+assert.ok(!/\bVoid\b/.test(s.description) && /VERSE FILMS/.test(s.description) && s.tags.includes('Verse'), 'no Verse left in what a viewer reads');
 assert.match(s.description, /What it set out to show: Good-Turing says it/);
 assert.match(s.description, /What it found:\n- about 40% unseen/);
 assert.match(s.description, /What failed:\n- small samples swing/);
@@ -56,7 +56,7 @@ console.log('record: ok');
   assert.deepEqual(picksOf(lab, [], 0), ['d-4'], 'at least one');
 }
 
-// each film links to the code it shows (asked by Void, 2026-10-15)
+// each film links to the code it shows (asked by Verse, 2026-10-15)
 {
   const w = script({ id: 'miss-board-4', label: 'x', sub: 'y?' }, null);
   assert.equal(w.source, 'https://github.com/atomeam/void-loop/blob/main/void-live-deploy/fringe/miss-board-4.html');
@@ -70,7 +70,7 @@ console.log('record: ok');
   assert.equal(s.finding, 'about 40% unseen', 'the first finding, word for word');
   assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, null).finding, '', 'no run: no card');
   assert.equal(script({ id: 'x-1', label: 'X', sub: 'A line.' }, { findings: [] }).finding, '', 'no findings: no card');
-  assert.equal(script({ id: 'x-1', label: 'X', sub: 'y' }, { findings: ['Void misses 3 of 10 asks.', 'second'] }).finding, 'Verse misses 3 of 10 asks.', 'branded, the first only');
+  assert.equal(script({ id: 'x-1', label: 'X', sub: 'y' }, { findings: ['Verse misses 3 of 10 asks.', 'second'] }).finding, 'Verse misses 3 of 10 asks.', 'branded, the first only');
   const long = 'The cue sped answers up when it pointed the right way. It slowed them down when it pointed the wrong way, every sitting, for every one of the people who tried it.';
   assert.equal(findingOf({ findings: [long] }), 'The cue sped answers up when it pointed the right way.', 'too long: its first sentence');
   const one = 'word '.repeat(40).trim(), f = findingOf({ findings: [one] });

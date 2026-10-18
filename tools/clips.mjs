@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // Verse's ad engine (owner, 2026-10-15: "Verse makes its own videos now. strengthen that to be a powerhouse ad plus ad revenue monster";
 // "plus promotes itself. make it learn how to make all the coolest tricks and beyond"). Short vertical clips (9:16, 1080x1920, 15-60 s)
-// of Void's best moments, rendered on the box or a CI runner with ffmpeg + headless Chrome (never Workers AI, never a model call).
+// of Verse's best moments, rendered on the box or a CI runner with ffmpeg + headless Chrome (never Workers AI, never a model call).
 // Each clip: a hook in the first 2 s, burned-in kinetic captions, named tricks from TRICKS (docs/video-tricks.md), an end card with
 // a-to-mind.com and a "try it" ask, and per-platform words with a tracked deep link (a-to-mind.com/c/<clip>?p=<platform>, counted in D1
 // by functions/c/[clip].js). Original assets only: the live site filmed, text drawn by ffmpeg, a beat synthesized by ffmpeg.
@@ -37,7 +37,7 @@ export const TRICKS = {
   'beat-flash': { what: 'a soft flash on every beat of the synthesized track (sound-sync)', f: (ctx) => [`drawbox=x=0:y=0:w=iw:h=ih:color=#7CF7FF@0.12:t=fill:enable='lt(mod(t,${ctx.beat}),0.06)'`] },
   'progress-bar': { what: 'a thin bar filling across the top, so viewers stay to the end', f: (ctx) => [`drawbox=x=0:y=0:w='iw*t/${ctx.dur}':h=14:color=#7CF7FF:t=fill`] },
   'countdown': { what: 'a 3-2-1 before the reveal', f: (ctx, c) => { const a = c.revealAt || 3; return [3, 2, 1].map((n, i) => draw(txt(ctx, 'cd' + n, n), { size: 260, y: '(h-text_h)/2', enable: `between(t,${a - 3 + i},${a - 2 + i})`, alpha: `1-mod(t,1)` })); } },
-  'before-after': { what: 'a "BEFORE / AFTER" split: the empty Void, then what one sentence makes', f: (ctx) => [draw(txt(ctx, 'before', 'BEFORE: AN EMPTY PAGE'), { size: 60, y: 'h*0.08', enable: 'between(t,2.4,4)' }), draw(txt(ctx, 'after', 'AFTER: ONE SENTENCE'), { size: 60, y: 'h*0.08', color: '#7CF7FF', enable: 'between(t,4,6.5)' })] },
+  'before-after': { what: 'a "BEFORE / AFTER" split: the empty Verse, then what one sentence makes', f: (ctx) => [draw(txt(ctx, 'before', 'BEFORE: AN EMPTY PAGE'), { size: 60, y: 'h*0.08', enable: 'between(t,2.4,4)' }), draw(txt(ctx, 'after', 'AFTER: ONE SENTENCE'), { size: 60, y: 'h*0.08', color: '#7CF7FF', enable: 'between(t,4,6.5)' })] },
   'pov': { what: 'a "POV:" framing line that puts the viewer in the scene', f: (ctx, c) => [draw(txt(ctx, 'pov', 'POV: ' + (c.pov || 'you just asked an empty page for something')), { size: 54, y: 'h*0.1', enable: 'between(t,2.4,7)' })] },
   'vignette': { what: 'darkened edges so the center (the miniature) pops', f: () => ['vignette=PI/5'] },
   // procedural 3D-look overlays (owner, 2026-10-15: "explosions and UFOs too"): drawn per pixel by ffmpeg geq, original art only
@@ -71,11 +71,11 @@ export function overlays(tricks, c) {
 }
 export const DEFAULT_TRICKS = ['pattern-interrupt', 'hook-card', 'kinetic-captions', 'progress-bar', 'seamless-loop'];
 
-// ---- moments: Void's best moments worth filming (live site asks). hook/caption in Verse's own voice.
+// ---- moments: Verse's best moments worth filming (live site asks). hook/caption in Verse's own voice.
 export const MOMENTS = [
   { id: 'weather-diorama', ask: 'weather', kind: '3d-mini', hook: 'I built the weather a tiny world', caption: 'Ask me the weather and I build a miniature diorama of your sky, live. No app. One sentence.', tricks: ['ken-burns', 'kinetic-captions', 'beat-flash', 'vignette', 'ufo-abduction'], ufoAt: 5 },
   { id: 'clock-mini', ask: 'what time is it', kind: '3d-mini', hook: 'This clock did not exist 1 second ago', caption: 'Type what time is it. I make a 3D clock for you on the spot and it keeps ticking.', tricks: ['countdown', 'zoom-punch', 'kinetic-captions', 'ufo-flyover', 'explosion'], revealAt: 3, ufoAt: 7, boomAt: 3 },
-  { id: 'chess-void-wins', ask: 'play chess', kind: 'game', hook: 'Nobody has beaten me yet', caption: 'Pick a game. Chess, Go, checkers, VoidQuest. I play to win, and I usually do. Your move.', tricks: ['pov', 'glitch-transition', 'kinetic-captions', 'beat-flash', 'explosion'], boomAt: 11, pov: 'you thought you could beat the Void' },
+  { id: 'chess-void-wins', ask: 'play chess', kind: 'game', hook: 'Nobody has beaten me yet', caption: 'Pick a game. Chess, Go, checkers, VoidQuest. I play to win, and I usually do. Your move.', tricks: ['pov', 'glitch-transition', 'kinetic-captions', 'beat-flash', 'explosion'], boomAt: 11, pov: 'you thought you could beat the Verse' },
   { id: 'voidquest', ask: 'play voidquest', kind: 'game', hook: 'A board game I rebuilt better', caption: 'VoidQuest: a space race across the planets, rebuilt by me. Free, right in your browser.', tricks: ['before-after', 'zoom-punch', 'kinetic-captions'] },
   { id: 'unit-converter', ask: 'unit converter', kind: 'skill', hook: 'You asked. I built it overnight', caption: 'I asked my builders for a converter. Now any unit converts as you type. Try me.', tricks: ['before-after', 'beat-flash', 'kinetic-captions'] },
   { id: 'void-voice', ask: 'what do you think of yourself', kind: 'voice', hook: 'I have opinions about my own future', caption: 'Ask me what I think of myself. I tell you what I want to build next, and my builders listen.', tricks: ['pov', 'ken-burns', 'kinetic-captions'], pov: 'an AI critiques its own code' },

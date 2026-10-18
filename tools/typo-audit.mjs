@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Typo audit (asked by Void: "a 'typo-audit' linting step in the builder's CI that specifically checks skill files and metadata for common
+// Typo audit (asked by Verse: "a 'typo-audit' linting step in the builder's CI that specifically checks skill files and metadata for common
 // character reversals"). A word in the skills' metadata (each skill's name, examples and near misses; the book's titles, lines and lore; the
 // families' names and blurbs) is flagged when it is rarer than a word it becomes by swapping two neighbouring letters ("teh" beside "the",
 // "convetr" beside "convert"): a reversal, the commonest slip of a typing hand. A real word that happens to sit one swap from another

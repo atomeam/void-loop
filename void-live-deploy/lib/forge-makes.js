@@ -1,4 +1,4 @@
-// Forge iterations (asked by Void: "create the recipe-versioning system in the forge to save 'make' results as unique, inspectable
+// Forge iterations (asked by Verse: "create the recipe-versioning system in the forge to save 'make' results as unique, inspectable
 // iterations"). Every "make me a ..." the forge answers is kept as one iteration: a number of its own, the recipe and its id
 // (skills/forge-rules.js recipeId: a change to a recipe gives a new id), the words that asked for it and the time. The same recipe
 // made twice is two iterations with one recipe id; a recipe changed in between shows as a different id, so what produced what can

@@ -5,10 +5,10 @@
  * place, its title is typed on it, it links what is left to buy to a store's search, and it is Verse's own dark panel (no clipboard;
  * the old 3D clipboard, skills/mini/list.js, no longer mounts beside it). Moved out of void.html in cleanup step 6, the last of the built-ins. The page asks `ask`
  * at the place its list code always ran (`askAt`), and the shared targeting reaches the list through `ensure`.
- * Two bridges (asked by Void, 2026-10-16): drop any stage thing onto the list card and its words become a new entry (the page
+ * Two bridges (asked by Verse, 2026-10-16): drop any stage thing onto the list card and its words become a new entry (the page
  * says 'void:dropped' when a drag sets something down; lib/bridges.js entryFor says what the entry reads); the small "→ note"
  * on every entry copies it as a line into the notepad (skills/notepad.js append).
- * A goal (asked by Void, 2026-10-18, the "density-indicator"): "set a goal of 10 on the list", "goal: 10 items", "aim for 5 on my
+ * A goal (asked by Verse, 2026-10-18, the "density-indicator"): "set a goal of 10 on the list", "goal: 10 items", "aim for 5 on my
  * shopping list", "the list is full at 8" keep a `goal` on the list thing (lib/list-goal.js reads the ask); the head then shows
  * "7 of 10" in mono and a 3px density bar runs under it (violet, amber within one of the goal, a quiet green at or past it), redrawn
  * with every add, tick or removal because the card mounts again on each render. "clear the goal" takes both off; no goal, nothing shows.
@@ -134,7 +134,7 @@ export function ask(lower, text, stageApi) {
     list.items = [];
     return done('list-cleared', list);
   }
-  // a goal on the list (asked by Void; lib/list-goal.js): kept on the thing, so it survives a reload; a set with no list makes one to count
+  // a goal on the list (asked by Verse; lib/list-goal.js): kept on the thing, so it survives a reload; a set with no list makes one to count
   const goal = goalOf(text);
   if (goal) {
     if (goal.clear) {
@@ -199,7 +199,7 @@ function mount(th, stageApi) {
   title.addEventListener('input', () => { th.title = title.textContent || ''; stageApi.save(); });
   const items = Array.isArray(th.items) ? th.items : (th.items = []);
   const head = make('div', 'list-head'); // the title bar: the typed title, and how many are still to do in mono
-  // the goal's count ("7 of 10") beside the open/total count, and the density bar under the head: only when a goal is set (asked by Void)
+  // the goal's count ("7 of 10") beside the open/total count, and the density bar under the head: only when a goal is set (asked by Verse)
   const dense = density(items.length, th.goal);
   head.appendChild(title);
   if (dense) { const g = make('span', 'list-goal', { textContent: dense.label, title: 'goal: ' + th.goal + ' items' }); g.dataset.state = dense.state; head.appendChild(g); }

@@ -12,7 +12,7 @@ export const MODES = [
   { id: 'dyslexia', cls: 'a11y-dyslexia', label: 'Dyslexia-friendly font', does: 'A clearer face (OpenDyslexic, Atkinson Hyperlegible or Verdana if your device has one) with wider spacing.' },
   { id: 'colorblind', cls: 'a11y-cb', label: 'Colorblind-safe palette', does: 'Done / not done and right / wrong use blue and orange from the Okabe-Ito palette, and carry a ✓ or ✗ as well.' },
   { id: 'targets', cls: 'a11y-targets', label: 'Click targets of at least 44px', does: 'Buttons, fields and checkboxes grow to a 44 by 44 pixel touch size.' },
-  { id: 'captions', cls: '', label: 'Captions for system speech', does: 'When Void reads aloud, the words appear at the bottom of the screen.' },
+  { id: 'captions', cls: '', label: 'Captions for system speech', does: 'When Verse reads aloud, the words appear at the bottom of the screen.' },
   { id: 'haptic', cls: '', label: 'Haptic tick on keep (mobile)', does: 'A short vibration when something is kept, on phones that can.' },
   { id: 'outline', cls: 'a11y-outline', label: 'Sticky focus outline', does: 'A thick outline stays on whatever has focus, however it got it.' },
 ];
@@ -37,7 +37,7 @@ const WORDS = {
   dyslexia: String.raw`(?:dyslexi(?:a|c)[ -]?(?:friendly|safe)?\s*(?:font|mode|type|text)|(?:font|text)\s+for\s+dyslexia|dyslexi(?:a|c)[ -]friendly)`,
   colorblind: String.raw`(?:colou?r[ -]?blind(?:ness)?[ -]?(?:safe|friendly)?\s*(?:palette|mode|colou?rs|theme)|colou?r[ -]?blind[ -](?:safe|friendly))`,
   targets: String.raw`(?:(?:big(?:ger)?|large(?:r)?|44\s?px|44-pixel)\s+(?:click|tap|touch)\s+targets?|(?:click|tap|touch)\s+targets?\s+(?:of\s+)?(?:at\s+least\s+)?(?:44|bigger|larger|big|large)\s?(?:px)?|44\s?px\s+(?:click\s+|tap\s+|touch\s+)?targets?\s+mode)`,
-  captions: String.raw`(?:captions?\s+(?:for|on)\s+(?:the\s+)?(?:system\s+|void\s+)?(?:speech|voice|read[ -]aloud)|(?:speech|voice|read[ -]aloud)\s+captions?|caption\s+(?:the\s+)?(?:system\s+)?(?:speech|voice))`,
+  captions: String.raw`(?:captions?\s+(?:for|on)\s+(?:the\s+)?(?:system\s+|(?:verse|void)\s+)?(?:speech|voice|read[ -]aloud)|(?:speech|voice|read[ -]aloud)\s+captions?|caption\s+(?:the\s+)?(?:system\s+)?(?:speech|voice))`,
   haptic: String.raw`(?:haptic\s+(?:tick|feedback|buzz)(?:\s+on\s+keep)?|(?:vibrate|buzz|tick)\s+(?:when|on|as)\s+(?:i\s+|you\s+)?keep(?:ing)?)`,
   outline: String.raw`(?:(?:sticky|persistent|thick|strong(?:er)?|always[ -]on|bold)\s+focus\s+(?:outline|ring|indicator)|focus\s+(?:outline|ring)\s+(?:always|sticky|stays))`,
   keys: String.raw`(?:keyboard[ -]only\s+(?:stage\s+)?(?:move|mode|moving|navigation)|(?:move|drag)\s+(?:the\s+)?(?:cards?|things|objects)\s+with\s+(?:the\s+)?(?:keyboard|arrow\s+keys)|arrow[ -]key\s+(?:move|moving))`,

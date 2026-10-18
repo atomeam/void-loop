@@ -1,5 +1,5 @@
-// What Void studies stays off the site (the owner, 2026-10-13: Void does not need to say what sites it is studying or
-// borrowing from). The growth ledger, the frontier and the build notes name the products Void measures itself against;
+// What Verse studies stays off the site (the owner, 2026-10-13: Verse does not need to say what sites it is studying or
+// borrowing from). The growth ledger, the frontier and the build notes name the products Verse measures itself against;
 // everything the site serves is passed through here at build and deploy time (tools/public-ledger.mjs, tools/self-context.mjs); this file is never served, so the list itself stays off the site, and any sentence or bracket that names one, or the
 // study itself, is left out. The ledger stays append-only in the repo; only what is shown is filtered. Pure.
 export const PRIVATE = [

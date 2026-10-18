@@ -1,4 +1,4 @@
-// arena — Void plays Connect Four against itself and writes down how good it is (frontier #5, lib/arena.js).
+// arena — Verse plays Connect Four against itself and writes down how good it is (frontier #5, lib/arena.js).
 // 200 games: a depth ladder (each look-ahead depth against the one below, 40 games a step, depth 1 anchored at 1000), then a
 // tuned evaluation at depth 2 (a nudged copy plays the card's own weights for 40 games; kept only if it wins clearly, and
 // rated from those games against depth 2). The result goes to void-live-deploy/arena.json, the record an ask can answer from.

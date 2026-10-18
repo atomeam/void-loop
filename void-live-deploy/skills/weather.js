@@ -3,7 +3,7 @@
  * Contract: { name, examples, match(lower, text), run(text, api) }
  * api: { showPage, esc, say, reportMiss, loopLog }
  * The card stays current on its own: skills/live.js re-fetches the forecast every 15 minutes while it is up.
- * Asked by Void (ask-20261014-1523-1, "link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger
+ * Asked by Verse (ask-20261014-1523-1, "link the 'weather' skill to the 'remind' or 'timer' skill so weather changes trigger
  * actionable prompts"): when rain, snow, frost or heat is in the next hours, the card offers one ask the timer skill takes
  * ("remind me to bring an umbrella in 110 minutes"), timed to the hour before it starts, so a visitor gets a countdown on the
  * stage at once (the remind skill's "remind me at 2pm" is the owner's: it goes to the confirm line and needs the key).
@@ -93,7 +93,7 @@ async function run(text, api) {
       const c = w.current, d = w.daily, h = w.hourly;
       if (!c || !d || !h) throw new Error('no forecast');
       queueMicrotask(() => weatherMini(api, el, w, loc, place)); // after the card's text is in: the diorama goes on top
-      const next = weatherPrompt(h); // asked by Void: rain, snow, frost or heat in the next hours offers one reminder
+      const next = weatherPrompt(h); // asked by Verse: rain, snow, frost or heat in the next hours offers one reminder
       const nextLine = next ? '<p class="wx-next">' + esc(next.why) + ' <a href="#" data-ask="' + esc(next.ask) + '">' + esc(next.ask) + '</a> <span style="color:#8b90a0;font-size:12px">· a timer on the stage, to ' + esc(next.at) + '</span></p>' : '';
       const hours = h.time.slice(0, 8).map((t, i) => '<div style="text-align:center"><div style="color:#8b90a0;font-size:12px;white-space:nowrap">' + esc(new Date(t).toLocaleTimeString([], { hour: 'numeric' })) + '</div><div style="font-weight:500">' + T(h.temperature_2m[i]) + '</div><div style="color:#8b90a0;font-size:11px">' + (h.precipitation_probability[i] != null ? h.precipitation_probability[i] + '%' : '') + '</div></div>').join('');
       el.classList.add('vp-tight'); // a weather card is a glance: tight, no empty right half

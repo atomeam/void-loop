@@ -1,4 +1,4 @@
-// The tester-log (asked by Void, ask-20261015-0616-1: "Integrate the Site tester's output into a "tester-log" on the
+// The tester-log (asked by Verse, ask-20261015-0616-1: "Integrate the Site tester's output into a "tester-log" on the
 // stage so I can see exactly what is being tested"). tools/site-test.mjs keeps its run log in tools/site-test.log.json; this
 // writes the public view the growth card reads, void-live-deploy/tester-log.json: the newest runs (what passed, what each improved)
 // and the suite's size. Only tester-made wordings ever reach the log (never a visitor's words), so it is safe to serve.

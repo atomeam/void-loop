@@ -53,7 +53,7 @@ test('a picture is centred: a near fit fills the frame, a tall figure is shown w
   assert.ok(tall.fill.w >= 664 && tall.fill.h >= 440, 'the blurred copy still fills the frame');
   const wide = picturePlan(3000, 600, 664, 440); assert.ok(wide.whole); assert.ok(wide.whole.w <= 664 + 1e-9);
 });
-test('visual consistency (asked by Void): every picture shape from 1:20 to 20:1 stays inside the saved card\'s art box, centred, and the blur behind it covers the box', () => {
+test('visual consistency (asked by Verse): every picture shape from 1:20 to 20:1 stays inside the saved card\'s art box, centred, and the blur behind it covers the box', () => {
   const W = 664, H = 440, eps = 1e-6; let filled = 0, whole = 0;
   for (let k = -60; k <= 60; k++) { // aspect ratios from 1:20 to 20:1, evenly in log scale
     const r = Math.pow(20, k / 60), iw = Math.round(1000 * Math.sqrt(r)), ih = Math.round(1000 / Math.sqrt(r)), p = picturePlan(iw, ih, W, H), at = iw + 'x' + ih;

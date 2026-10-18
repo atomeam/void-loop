@@ -3,7 +3,7 @@
  * "refresh this" asks it again. The asks stay in the page (they work on whatever answer is open, and public /@name pages
  * show their cards the same way); this draws the card: pinned up with a red pushpin at a slight tilt of its own, the title
  * in the felt-tip hand, the answer scrolling under the pin. Moved out of void.html in cleanup step 6.
- * To the notepad (asked by Void, 2026-10-16): the small "to notepad" button on every kept card, or "turn the card into a note" /
+ * To the notepad (asked by Verse, 2026-10-16): the small "to notepad" button on every kept card, or "turn the card into a note" /
  * "note this card", copies its title and words as one line under what the notepad holds (lib/bridges.js keptNote).
  */
 import { append } from './notepad.js';

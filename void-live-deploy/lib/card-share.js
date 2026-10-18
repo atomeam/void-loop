@@ -4,7 +4,7 @@
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
 export const MARK = 'V01D-CARD:'; // an identifier, kept through the rename to Verse (2026-10-18) so every card already shared still pastes
-const CODE_RE = /(?:V01D|Verse)-CARD:([A-Za-z0-9_-]{8,12000})/;
+const CODE_RE = /(?:Verse|V01D)-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const httpsOnly = (u) => (/^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u).slice(0, 300) : '');
 
@@ -36,7 +36,7 @@ export function parse(text) {
   try {
     const j = JSON.parse(unb64(m[1])); if (!j || j.v !== 1 || !clip(j.t, 120)) return null;
     // the readable part (title, kind, blank line, the body, then "Verse card from a-to-mind.com") restores the whole body and every source
-    const pre = String(text).slice(0, m.index).split(/\n?(?:V01D|Verse) card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
+    const pre = String(text).slice(0, m.index).split(/\n?(?:Verse|V01D) card from a-to-mind\.com/)[0], lines = pre.split('\n'), at = lines.findIndex((l, i) => i >= 2 && l === '' && lines[0].trim() === clip(j.t, 120));
     let body = j.b, src = j.src;
     if (at >= 0) { const rest = lines.slice(at + 1).join('\n'), cut = rest.search(/\n?Sources:\n/); const full = (cut >= 0 ? rest.slice(0, cut) : rest).trim(); if (full.length > String(j.b || '').length && full.startsWith(String(j.b || '').slice(0, 40))) body = full;
       if (cut >= 0) { const found = [...rest.slice(cut).matchAll(/^\[\d+\] (.*?)(?: (https:\/\/\S+))?$/gm)].map((x) => ({ t: x[1], u: x[2] || '' })); if (found.length > (src || []).length) src = found; } }
@@ -110,7 +110,7 @@ export async function artPicture(el) {
   if (forged) { const src = forged.getAttribute('src') || ''; if (/^data:image\/(?:jpeg|png|webp);base64,[A-Za-z0-9+/=]+$/.test(src)) return src; const got = await photoData(forged.src || src); if (got) return got; }
   return photo ? photoData(photo.getAttribute('src'), (el.dataset || {}).poster ? { w: 293, h: 440 } : undefined) : ''; // a film's poster is drawn at its own portrait shape
 }
-/** the full-content badge (asked by Void: "a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete
+/** the full-content badge (asked by Verse: "a 'full-content' badge on cards that exceed 2400 characters to signal to the user that the complete
  *  data is preserved"): '' for a short card, 'whole text kept' up to BODY_MAX, and past it only what is true. Pure. */
 export function fullNote(n) {
   const len = Math.max(0, Math.floor(+n) || 0);

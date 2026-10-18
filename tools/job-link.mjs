@@ -1,4 +1,4 @@
-// A build-queue job follows its pull request (asked by Void: "Learn skills by myself by turning the daily miss list into queued
+// A build-queue job follows its pull request (asked by Verse: "Learn skills by myself by turning the daily miss list into queued
 // jobs"; a job used to sit at `building` forever once its PR merged). The link is one line at the end of the PR body, `Job: <id>`:
 // tools/finish.mjs --job writes it and moves the job to `building` when the PR opens; tools/automerge.mjs moves it to `live` when
 // it merges (and upkeep.yml's handoff-done job does the same for a merge a person made). Pure helpers plus two fetches against

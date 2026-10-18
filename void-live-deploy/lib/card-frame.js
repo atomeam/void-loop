@@ -17,7 +17,7 @@ import { artSvg, kindWord, seasonOf, KINDS as ART_KINDS } from './card-art.js';
 import { forge, FORGE_CSS, answerText } from './card-forge.js';
 import { sealArt, SEAL_CSS } from './void-seal.js';
 import { subjectOf } from './card-subject.js';
-import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Void)
+import { lookOfSkill, LOOK_CSS } from './card-look.js'; // the family's frame: organic for sky and earth, blueprint for numbers and money (asked by Verse)
 import { artSource } from './art-source.js';
 import { sectionsOf } from './card-sections.js';
 
@@ -97,7 +97,7 @@ export const CARD_CSS = [
   '.vcard .vc-pt{min-width:58px;text-align:center;padding:3px 12px;background:linear-gradient(180deg,hsl(var(--h) 28% 26%),hsl(var(--h) 26% 14%));border:2px solid var(--edge);border-radius:9px 4px 9px 4px;font-size:17px;font-weight:700;letter-spacing:.05em;color:#f3efe2;box-shadow:0 2px 6px rgba(0,0,0,.5)}',
   '.vcard .vc-pt{display:flex;gap:8px;padding:3px 9px}.vcard .vc-pt span{font-size:10px;letter-spacing:.1em;color:hsl(var(--h) 30% 70%);display:flex;align-items:baseline;gap:3px}.vcard .vc-pt b{font-size:16px;color:#f3efe2;letter-spacing:.02em}',
   '.vcard .vc-arrows i{position:absolute;font-style:normal;font-size:12px;line-height:1;color:var(--edge);text-shadow:0 0 6px currentColor}.vcard .vc-arrows .in{top:-2px;left:50%;transform:translateX(-50%)}.vcard .vc-arrows .r{right:-1px;top:50%;transform:translateY(-50%)}.vcard .vc-arrows .l{left:-1px;top:50%;transform:translateY(-50%) scaleX(-1)}.vcard .vc-arrows .b{bottom:-3px;left:50%;transform:translateX(-50%) rotate(90deg)}',
-  // type-specific layouts (asked by Void: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
+  // type-specific layouts (asked by Verse: "Implement type-specific card layouts so that different response types (e.g., Film vs. Place) use unique
   // visual hierarchies"): the answer card's kind (card-kinds.js) decides what leads. A Film is a cinema screen: a tall letterboxed art box and an
   // italic centred title. A Place leads with where it is: its type line first, in large caps, then the title, over a shallow horizon. A Person is a
   // portrait: a round art box centred above the name. A Song is a record sleeve: a thin strip, the title with a note before it.
@@ -143,7 +143,7 @@ export const CARD_CSS = [
   '.vcard-plain .vc-share button:hover,.vcard-plain .vc-share button:focus-visible{background:rgba(255,255,255,.08);outline:2px solid rgba(160,190,255,.7);outline-offset:1px}.vcard-plain .vc-share .vc-full{font-size:10.5px;color:#a9afc2}',
 ].join('') + LOOK_CSS + FORGE_CSS + SEAL_CSS + SHARE_CSS;
 
-// Skill evolution (asked by Void: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
+// Skill evolution (asked by Verse: "Create a 'Skill Evolution' animation where a card visually upgrades its border or glow when a new 'proven'
 // test passes"): a skill's rating only rises when new evidence arrives (tools/families.mjs). This browser remembers the rating it last showed
 // for each skill; when a card appears with a higher one the card glows once and says what it became. The first sight of a skill only
 // remembers it, so nothing evolves on a first visit. Stored on this device only.
@@ -215,7 +215,7 @@ export function keep(el, esc, stats) {
   el.style.setProperty('--h', String(c.hue));
   el._vcard = c; el.dataset.cardKey = key; el.dataset.rarity = c.rarity ? c.rarity.name.toLowerCase() : 'answer';
   if (c.kindName) el.dataset.kind = c.kindName; else delete el.dataset.kind;
-  const look = name ? lookOfSkill(stats && stats.fam, name) : ''; if (look) el.dataset.look = look; else delete el.dataset.look; // asked by Void: the family decides the frame
+  const look = name ? lookOfSkill(stats && stats.fam, name) : ''; if (look) el.dataset.look = look; else delete el.dataset.look; // asked by Verse: the family decides the frame
   if (h2) h2.dataset.cost = c.cost ? '◆'.repeat(c.cost) : '';
   const html = chromeHtml(c, esc), tpl = document.createElement('template');
   tpl.innerHTML = html.art + html.type; /* void-review: ok: chromeHtml escapes every text field */ const top = [...tpl.content.childNodes];

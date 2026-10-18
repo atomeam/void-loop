@@ -1,10 +1,10 @@
-// Verse's review of its own skills on main becomes work (asked by Void, ask-20261012-1942-1: "Connect the 'closer read' output to my
+// Verse's review of its own skills on main becomes work (asked by Verse, ask-20261012-1942-1: "Connect the 'closer read' output to my
 // growth inbox so that identified code discrepancies automatically create a task to refine the affected skill"). The same checks
 // Verse's review runs on a PR (void-live-deploy/lib/code-review.js ruleReview, the quick checks of tools/review-pr.mjs) are run over
 // every skill file as it stands on main; the first bug or risk nobody has waived becomes one job in the build queue (/api/queue,
 // the owner token, as .github/workflows/probe-asks.yml queues `probe:` jobs): target `review:<skill>`, the ask one line naming the
 // file, the line and the finding. One review job open at a time; a finding already queued once (open or done, the same line) is
-// not queued again; the words are Void's own review, never a visitor's. The fix is still a builder's.
+// not queued again; the words are Verse's own review, never a visitor's. The fix is still a builder's.
 //   node tools/review-main.mjs           review and queue (VOID_OWNER_TOKEN; without it a quiet no-op, exit 0)
 //   node tools/review-main.mjs --dry     review and print what would be queued
 //   node tools/review-main.mjs --list    print every open finding, in the order they would be queued
@@ -42,7 +42,7 @@ export function jobOf(f) {
   return {
     target: (PREFIX + skillOf(f.file)).slice(0, 40),
     ask: ('review ' + where + ' (' + f.kind + ', ' + f.rule + '): ' + f.message).slice(0, 200),
-    note: ('Void\'s own review of the skill as it stands on main (tools/review-main.mjs, the quick checks of lib/code-review.js), not a visitor\'s words. Fix the line, or mark it right as written with a void-review: ok comment.').slice(0, 300),
+    note: ('Verse\'s own review of the skill as it stands on main (tools/review-main.mjs, the quick checks of lib/code-review.js), not a visitor\'s words. Fix the line, or mark it right as written with a void-review: ok comment.').slice(0, 300),
   };
 }
 
@@ -56,7 +56,7 @@ export function plan(fs, queue) {
 }
 
 export const summary = ({ found, fresh, queued, open, dry }) => [
-  '### Void reviewed its skills on main',
+  '### Verse reviewed its skills on main',
   '',
   '| What | How many |', '|:--|--:|',
   '| bugs and risks in skill files, not waived | ' + found + ' |', '| not queued before | ' + fresh + ' |', '| review jobs already open | ' + open + ' |',

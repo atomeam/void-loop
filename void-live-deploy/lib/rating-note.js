@@ -1,4 +1,4 @@
-// A card that rests on thin evidence says so (asked by Void: "a visual warning when a card rests on tested or experiment evidence"):
+// A card that rests on thin evidence says so (asked by Verse: "a visual warning when a card rests on tested or experiment evidence"):
 // the skill that answered is looked up in skills/families.json (tools/families.mjs, ratings from evidence only) and, when its rating
 // is "experiment" or "tested", one line joins the card's source line. Checked and proven skills say nothing. Pure.
 export const THIN = ['experiment', 'tested'];

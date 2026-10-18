@@ -1,4 +1,4 @@
-// Publish your Void at a-to-mind.com/@name (paid Voids; the tier is checked here, never trusted from the page).
+// Publish your Verse at a-to-mind.com/@name (paid Voids; the tier is checked here, never trusted from the page).
 // GET    (Bearer session)                  -> { handle | null }
 // POST   (Bearer session) { handle, look, cards } -> { ok, handle, url } | 401 not signed in | 402 not paid | 400 bad handle | 409 taken
 // DELETE (Bearer session)                  -> { ok } (the page is gone; the handle is free again)
@@ -26,11 +26,11 @@ export async function onRequestPost({ request, env }) {
   try {
     const me = await who(request, env);
     if (!me) return bad(401, 'not signed in');
-    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'publishing is part of a paid Void');
+    if ((await tierOf(env, me.userId)) !== 'paid') return bad(402, 'publishing is part of a paid Verse');
     const owner = await env.DB.prepare('SELECT user_id FROM void_pages WHERE handle = ?').bind(handle).first();
     if (owner && owner.user_id !== me.userId) return bad(409, 'that name is taken');
     const now = new Date().toISOString();
-    // one page per Void. A move to a new name is ONE statement (UPDATE ... SET handle): if someone claimed that name in the
+    // one page per Verse. A move to a new name is ONE statement (UPDATE ... SET handle): if someone claimed that name in the
     // meantime, the unique handle refuses it and nothing changes, so the old page is never lost to a failed rename.
     const had = await env.DB.prepare('SELECT handle FROM void_pages WHERE user_id = ?').bind(me.userId).first();
     try {

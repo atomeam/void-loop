@@ -226,7 +226,7 @@ function mount(th, stageApi) {
   // the 3D hourglass beside the timer (skills/mini/timer.js): its sand follows remaining/startedAt, a fresh run turns it over
   stageApi.miniature(el, 'timer', { duration: th.duration, remaining: th.remaining, running: !!th.running, startedAt: th.startedAt || 0 }, { key: th.id, place: 'beside', width: 120, height: 160, label: '3D hourglass' }).catch(() => {});
 
-  // a practice timer from a plan (lib/practice.js, asked by Void): at 0:00 it asks whether the session met the goal, logs the
+  // a practice timer from a plan (lib/practice.js, asked by Verse): at 0:00 it asks whether the session met the goal, logs the
   // answer as that goal's success_rate and last_tested, and says how the goal is going
   const askMet = () => {
     if (!th.goal || th.answered || th.running || th.remaining > 0) return;

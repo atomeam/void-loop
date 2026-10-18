@@ -1,4 +1,4 @@
-// The rule registry (asked by Void: "Create a 'rule-registry' view within the leather tome that lists all active router rules as
+// The rule registry (asked by Verse: "Create a 'rule-registry' view within the leather tome that lists all active router rules as
 // illuminated manuscript entries"). Verse's router on the page is its skills in routing order (skills/order/<rank>-<name>, written
 // out as skills/index.json): an ask goes down the list and the first skill whose match() takes it answers. Each of those is one
 // active rule. This chapter of the book (lib/guide.js compose) sets every one down in that order as a manuscript entry: a gilded,

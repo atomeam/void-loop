@@ -57,7 +57,7 @@ test('approve: owner only, needs a pull request number, a GitHub key, and a pull
   } finally { globalThis.fetch = real; }
 });
 
-// asked by Void: a risk level on the proposal, and a fix under 0.8 is a draft on the board
+// asked by Verse: a risk level on the proposal, and a fix under 0.8 is a draft on the board
 import { riskOf } from '../void-live-deploy/lib/propose-fix.js';
 import { readFileSync } from 'node:fs';
 test('risk level: lists are low, several or long pattern edits medium, a structural line high', () => {

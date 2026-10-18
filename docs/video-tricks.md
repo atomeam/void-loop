@@ -1,4 +1,4 @@
-# V01D's video tricks library
+# Verse's video tricks library
 
 Every trick is a named, reusable effect in `tools/clips.mjs` (`TRICKS`). A clip names the tricks it uses; `plan` adds the defaults
 (pattern-interrupt, hook-card, kinetic-captions, progress-bar, seamless-loop). All art is procedural and original: ffmpeg filters
@@ -34,7 +34,7 @@ synthesized with `aevalsrc`. No stock footage, no model calls, no Workers AI.
 (The retention percentages in those third-party posts are their claims, not YouTube's.)
 
 ## Learned from open videos
-Techniques V01D read in openly captioned tutorials (tools/learn-tricks.mjs). Each is a lead for a new entry in `TRICKS`, not a built trick.
+Techniques Verse read in openly captioned tutorials (tools/learn-tricks.mjs). Each is a lead for a new entry in `TRICKS`, not a built trick.
 
 - **tracking**: "And I'm gonna go ahead and proxy the clip so I can make sure …" (Tutorial: Motion Tracking in Kdenlive, https://tilvids.com/videos/watch/a0a45e4d-9ed3-4aaa-b51f-828c1c55cda9, learned 2026-10-15)
 - **keyframe**: "Keyframe spacing is basically how many frames in the video you want to track." (Tutorial: Motion Tracking in Kdenlive, https://tilvids.com/videos/watch/a0a45e4d-9ed3-4aaa-b51f-828c1c55cda9, learned 2026-10-15)
@@ -53,10 +53,10 @@ driven from the page instead of the mouse, word-level karaoke captions, sound-de
 gravity in the explosion.
 
 ## It keeps growing
-1. Void's daily reflection (`lib/voice.js`) now asks: "Which new video trick should you learn next for your own clips?" Its answer
+1. Verse's daily reflection (`lib/voice.js`) now asks: "Which new video trick should you learn next for your own clips?" Its answer
    is saved word for word as `next_trick` (shown in `domains/void.voice.md` by `tools/reflect.mjs`).
-2. A builder implements it as a new entry in `TRICKS`, adds a row here, and appends `{ trick, at, asked: "Void (daily <date>)" }`
-   to `learned` in `domains/void.clips.json`. Commit trailer: `Suggested-by: Void (daily <date>)`.
-3. `tools/self-context.mjs` puts the trick names, the `learned` list and clip visits into `self.json`, so Void knows its library
+2. A builder implements it as a new entry in `TRICKS`, adds a row here, and appends `{ trick, at, asked: "Verse (daily <date>)" }`
+   to `learned` in `domains/void.clips.json`. Commit trailer: `Suggested-by: Verse (daily <date>)`.
+3. `tools/self-context.mjs` puts the trick names, the `learned` list and clip visits into `self.json`, so Verse knows its library
    and does not ask for a trick it already has.
-4. The queue above is the fallback: when Void names nothing new, take the top queued trick.
+4. The queue above is the fallback: when Verse names nothing new, take the top queued trick.

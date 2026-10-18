@@ -80,7 +80,7 @@ test('the route is owner-only, needs ask, skill and source, asks the review mode
   const r = await post(env, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'Verse says how sure it is (asked by Void)'); assert.deepEqual(j.evidence.map((e) => [e.file, e.line]), [['void-live-deploy/skills/words.js', 5], ['void-live-deploy/skills/words.js', 8]], 'each edit cites its file and line (asked by Void)'); assert.equal(j.model, models('will'));
+  assert.equal(j.edits.length, 2); assert.match(j.why, /antonym/); assert.equal(j.confidence, 0.82, 'Verse says how sure it is (asked by Verse)'); assert.deepEqual(j.evidence.map((e) => [e.file, e.line]), [['void-live-deploy/skills/words.js', 5], ['void-live-deploy/skills/words.js', 8]], 'each edit cites its file and line (asked by Verse)'); assert.equal(j.model, models('will'));
   assert.equal(calls[0].o.messages[0].content, FIX_SYSTEM); assert.match(calls[0].o.messages[1].content, /opposite of brave/); assert.equal(calls.length, 1, 'one model call, so the request ends inside the platform limit'); assert.equal(calls[0].m, models('will'));
   const none = await post({ AI: ai({ why: 'x', edits: [{ find: 'nope', replace: 'x' }] }), READ_TOKEN: OWNER }, { ask: 'opposite of brave', skill: 'words', source: SOURCE });
   assert.equal(none.status, 502);
@@ -130,7 +130,7 @@ test('the route is marked internal and limited; the workflow keeps the write tok
   assert.doesNotMatch(pr, /ANTHROPIC/);
 });
 
-test('evidence (asked by Void): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {
+test('evidence (asked by Verse): each edit names its file, its line number and the line as it stood; a stale edit has none', () => {
   const ev = evidenceOf(SOURCE, GOOD.edits, 'words');
   assert.deepEqual(ev.map((e) => e.line), [5, 8]); assert.equal(ev[0].file, 'void-live-deploy/skills/words.js'); assert.match(ev[0].was, /^return \/\^\(\?:rhymes/);
   assert.equal(whereOf(ev), 'void-live-deploy/skills/words.js lines 5, 8'); assert.equal(whereOf(ev.slice(0, 1)), 'void-live-deploy/skills/words.js line 5'); assert.equal(whereOf([]), '');
@@ -163,7 +163,7 @@ test('the workflow installs packages before its checks (the Claude brain test im
   assert.ok(wf.indexOf('npm ci --no-audit') > 0 && wf.indexOf('npm ci --no-audit') < wf.indexOf('node --test tools/propose-fix.test.mjs'));
 });
 
-test('a missed ask the router says a skill should have caught is a propose-fix job (lane), one with no skill near is a builder\'s (asked by Void)', () => {
+test('a missed ask the router says a skill should have caught is a propose-fix job (lane), one with no skill near is a builder\'s (asked by Verse)', () => {
   const q = { items: [
     { id: 'm1', at: '2026-10-16T09:00:00Z', target: 'miss:cab-to-oakland', state: 'queued', ask: 'learn to handle "cab to oakland"', note: 'asked 3× (1 phrasing), last 2026-10-15; router skill:rides 0.71; lane: propose-fix; from the miss board' },
     { id: 'm2', at: '2026-10-16T08:00:00Z', target: 'miss:sunset-on-mars', state: 'queued', ask: 'learn to handle "sunset on mars"', note: 'asked 3× (1 phrasing), last 2026-10-15; router simple 0.30; lane: new skill; from the miss board' },

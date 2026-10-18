@@ -1,4 +1,4 @@
-// Void's own automations (lib/automations.js, lib/automations-run.js, functions/api/automations.js, functions/api/hook/[id].js):
+// Verse's own automations (lib/automations.js, lib/automations-run.js, functions/api/automations.js, functions/api/hook/[id].js):
 // what a rule may say, how event data fills it (and can never widen it), the GitHub calls a run makes, the run log, and
 // who may make, run or trigger a rule. node --test tools/automations.test.mjs
 import { test } from 'node:test';
@@ -22,7 +22,7 @@ test('a rule: the templates are valid, and the basics are checked', () => {
 });
 
 test('a rule can only reach what the owner allows: repos, branches under void/, no workflow files, public https', () => {
-  assert.match(R.validate(pr({ repo: 'someone/else' }), env0).errors.join(' '), /repo must be one Void may touch/);
+  assert.match(R.validate(pr({ repo: 'someone/else' }), env0).errors.join(' '), /repo must be one Verse may touch/);
   assert.match(R.validate(pr({ repo: '{{event.repo}}' }), env0).errors.join(' '), /repo must be/, 'event data never picks the repo');
   assert.ok(R.validate(pr({ repo: 'atomeam/other' }), { AUTOMATION_REPOS: 'atomeam/void-loop, atomeam/other' }).ok, 'the owner can allow more');
   for (const branch of ['main', 'feature/x', 'void/../main', 'void/a..b', 'void/x.lock', 'void/']) assert.ok(!R.validate(pr({ branch }), env0).ok, branch);

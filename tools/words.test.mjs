@@ -34,7 +34,7 @@ test('words: the older asks still read the same, and the examples are all taken'
   assert.ok(words.nearMisses.every((e) => !wordsOf(e)), 'no near miss is taken');
 });
 
-// A word in the list is a tap from a picture of it (asked by Void): the cartoon skill's own ask, with the article it expects.
+// A word in the list is a tap from a picture of it (asked by Verse): the cartoon skill's own ask, with the article it expects.
 import { pictureAsk } from '../void-live-deploy/skills/words.js';
 test('words: each listed word links to a cartoon of it', () => {
   assert.equal(pictureAsk('tiles'), 'cartoon version of a tiles');

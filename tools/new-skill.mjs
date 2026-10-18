@@ -1,4 +1,4 @@
-// Add a skill to Void with one command, so even the simplest agent can grow it. A skill is one file with five fields
+// Add a skill to Verse with one command, so even the simplest agent can grow it. A skill is one file with five fields
 // ({ name, examples, nearMisses, match, run }); everything around it (the routing-order file, the generated index, the
 // collision check) is done here, so nothing is hand-edited and nothing conflicts with another PR.
 //   node tools/new-skill.mjs <name> --ask "an ask it answers" [--ask "another"] [--near "a look-alike it must NOT take"] [--rank 1050]

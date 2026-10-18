@@ -1,7 +1,7 @@
-// Void's standalone products: things Void makes that people can buy on their own, each also included in paid Void
+// Verse's standalone products: things Verse makes that people can buy on their own, each also included in paid Verse
 // (the $49 a month membership, lib/gumroad.js UNLOCKS). Adding a product is one row here plus its page and its API.
 // A standalone purchase is a Gumroad product with license keys turned on: the buyer gets a license key by email and uses it
-// directly (no Void account needed). The server checks the key with Gumroad (/v2/licenses/verify) and remembers the answer
+// directly (no Verse account needed). The server checks the key with Gumroad (/v2/licenses/verify) and remembers the answer
 // for a few hours, so a refund, a chargeback or a cancelled subscription turns it off soon after.
 // The owner (READ_TOKEN, an owner session) always has every product, free, with no daily cap: these are built for us first.
 //   gumroad.slug: the product's permalink (moonbeam846.gumroad.com/l/<slug>); empty = not on sale on its own yet.
@@ -13,7 +13,7 @@ import { ensureStoreTables, loadCatalog } from './store-db.js';
 export const PRODUCTS = [
   {
     id: 'code-review',
-    name: 'Void Code Review Pro',
+    name: 'Verse Code Review Pro',
     page: 'https://a-to-mind.com/code-review/',
     adds: 'the closer read: an AI reviewer on every pull request, on top of the free instant checks',
     includedIn: 'paid',

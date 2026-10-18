@@ -3,7 +3,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  * "synonym for happy", "another word for big", "opposite of cold", "what rhymes with orange", "how do you spell necessary",
  * "5 letter words starting with cr", "words ending in ology", "anagram of listen", "unscramble tlesi".
- * Asked by Void (ask-20261014-1548-1): an unscrambled or pattern word is a tap away from a picture of it: each word in the
+ * Asked by Verse (ask-20261014-1548-1): an unscrambled or pattern word is a tap away from a picture of it: each word in the
  * list runs "cartoon version of a <word>" (skills/cartoon.js: a cartoon figure on the stage), so the words get a visual context.
  */
 // "plural of cactus": English rules plus the common irregulars, no network needed

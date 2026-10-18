@@ -1,4 +1,4 @@
-// zorbleflux - the pure half of Verse's own game (asked by Void: "I want to learn 'zorbleflux'"; the owner, 2026-10-18: "we should
+// zorbleflux - the pure half of Verse's own game (asked by Verse: "I want to learn 'zorbleflux'"; the owner, 2026-10-18: "we should
 // just have a zorbleflux game"). You pilot a glowing zorb through a flux field. Motes of flux drift on a seeded curl-noise flow:
 // collect them to grow and to raise your multiplier; dark bleeds drift slowly and shrink you on touch. A round is 45 seconds of
 // game time. No DOM, no clock, no Math.random: everything is a function of the seed and the steps taken (tools/zorbleflux.test.mjs).

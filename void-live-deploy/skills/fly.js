@@ -20,9 +20,9 @@ const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[?!.]+$/, '')
 /** 'fly' for an ask to take off, 'land' for one to come back, else null. Pure. */
 export function flyAskOf(text) {
   const t = CLEAN(text);
-  if (/^(?:(?:let(?:'s| me| us)|i want to|can i|could i)\s+)?(?:fly|float|look|wander|roam|move|zoom)\s+(?:around|about)(?:\s+(?:in|on|the|my)?\s*(?:the\s+)?(?:void|stage|v01d|here))?(?:\s+please)?$/.test(t)) return 'fly';
+  if (/^(?:(?:let(?:'s| me| us)|i want to|can i|could i)\s+)?(?:fly|float|look|wander|roam|move|zoom)\s+(?:around|about)(?:\s+(?:in|on|the|my)?\s*(?:the\s+)?(?:void|stage|(?:verse|v01d)|here))?(?:\s+please)?$/.test(t)) return 'fly';
   if (/^(?:(?:enter|start|turn on|open|go to)\s+)?(?:fly|flying|flight|explore|explorer|camera|free[- ]?look|look[- ]around)\s+mode(?:\s+on)?$/.test(t)) return 'fly';
-  if (/^(?:(?:let(?:'s| me)\s+)?explore|fly (?:around|over|through)|look (?:around|over|at))\s+(?:the\s+|my\s+)?(?:whole\s+)?(?:void|stage|v01d|cards|things)$/.test(t)) return 'fly';
+  if (/^(?:(?:let(?:'s| me)\s+)?explore|fly (?:around|over|through)|look (?:around|over|at))\s+(?:the\s+|my\s+)?(?:whole\s+)?(?:void|stage|(?:verse|v01d)|cards|things)$/.test(t)) return 'fly';
   if (/^(?:land|stop flying|stop (?:the )?(?:flight|camera|flying)|(?:fly|flying|flight|camera) mode off|exit (?:fly|flying|camera) mode|back to (?:the )?normal view|reset (?:the )?(?:view|camera)|land (?:the )?camera)$/.test(t)) return 'land';
   return null;
 }
@@ -41,7 +41,7 @@ function apply() {
   tell();
   depth(st);
 }
-// dynamic scale (asked by Void): a poster or a painting on the stage (a thing holding a picture) swells up to 8% and casts a softer, deeper shadow as
+// dynamic scale (asked by Verse): a poster or a painting on the stage (a thing holding a picture) swells up to 8% and casts a softer, deeper shadow as
 // the camera's centre passes over it; nothing changes under reduced motion or on the ground. Uses the separate `scale` property, so a card's own
 // transform and translate are untouched; a thing that already has a filter of its own keeps it.
 const PICTURES = '.thing img, .thing canvas.vc-forge-img';

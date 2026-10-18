@@ -1,7 +1,7 @@
 /**
- * poker skill — heads-up Texas Hold'em against Void for play money (skills/poker-rules.js): "play poker", "texas hold'em".
- * The card shows only what you may see (rules view()): your two cards, the board, the pot and both stacks; Void's cards
- * stay face down until a showdown. Each choice Void makes shows its estimate of how often it wins and why it chose.
+ * poker skill — heads-up Texas Hold'em against Verse for play money (skills/poker-rules.js): "play poker", "texas hold'em".
+ * The card shows only what you may see (rules view()): your two cards, the board, the pot and both stacks; Verse's cards
+ * stay face down until a showdown. Each choice Verse makes shows its estimate of how often it wins and why it chose.
  * The table stands in the void in 3D (mini/poker.js), lifted by skills/lift3d.js with this card beside it.
  */
 import * as P from './poker-rules.js';
@@ -9,7 +9,7 @@ import { lift3d } from './lift3d.js';
 
 export function pokerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|deal|new)\s+(?:a\s+(?:game|hand|round)\s+of\s+|some\s+)?(?:poker|texas hold ?'?em|hold ?'?em)(?:\s+(?:game|hand))?(?:\s+(?:with|against)\s+(?:me|void|you))?$/.test(t)) return { kind: 'game' };
+  if (/^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:play|start|open|deal|new)\s+(?:a\s+(?:game|hand|round)\s+of\s+|some\s+)?(?:poker|texas hold ?'?em|hold ?'?em)(?:\s+(?:game|hand))?(?:\s+(?:with|against)\s+(?:me|(?:verse|void)|you))?$/.test(t)) return { kind: 'game' };
   if (/^(?:a\s+)?(?:game|hand)\s+of\s+(?:poker|texas hold ?'?em|hold ?'?em)$|^deal\s+(?:me\s+)?(?:in|a\s+hand)$/.test(t)) return { kind: 'game' };
   return null;
 }

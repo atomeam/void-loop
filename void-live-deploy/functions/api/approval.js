@@ -24,7 +24,7 @@ import {
 } from '../../lib/approval-core.js';
 
 // toolName -> async (args, env) => result. Empty until a connector ships: an approved action with no
-// executor is recorded as approved-but-not-run and Void says the service isn't connected yet.
+// executor is recorded as approved-but-not-run and Verse says the service isn't connected yet.
 export const executors = {
   // a standing spend on a stronger model (STANDING.md): recorded only here, after the yes; the router pays only from earnings
   'models.spend': (args, env, rec) => grantStandingSpend(args, env, rec),

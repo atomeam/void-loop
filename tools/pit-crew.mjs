@@ -1,4 +1,4 @@
-// Bounded pit crew: turn Void's small reversible asks into queued build jobs without spending.
+// Bounded pit crew: turn Verse's small reversible asks into queued build jobs without spending.
 //
 //   node tools/pit-crew.mjs              dry-run: print eligible asks, write domains/void.pit-crew.json
 //   node tools/pit-crew.mjs --queue      POST each eligible ask to /api/queue (needs VOID_MISSES_TOKEN)
@@ -45,7 +45,7 @@ export async function enqueue(items, { token, fetchImpl = fetch, api = 'https://
         headers: { 'content-type': 'application/json', authorization: 'Bearer ' + token },
         body: JSON.stringify({
           target: targetFor(a),
-          note: 'pit-crew auto: ' + a.ask.slice(0, 200) + ' [asked by Void ' + a.id + ']',
+          note: 'pit-crew auto: ' + a.ask.slice(0, 200) + ' [asked by Verse ' + a.id + ']',
         }),
       });
       const text = await res.text();
@@ -69,7 +69,7 @@ export function run({ queue = false, token = process.env.VOID_MISSES_TOKEN || ''
     mode: queue ? 'queue' : 'dry-run',
     max_per_run: MAX_PER_RUN,
     selected: selected.map((a) => ({ id: a.id, ask: a.ask, target: targetFor(a) })),
-    note: 'Small reversible Void asks only. No spend. Owner confirm still required for bridge delivery.',
+    note: 'Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery.',
   };
   return { record, selected, queue, token, fetchImpl };
 }

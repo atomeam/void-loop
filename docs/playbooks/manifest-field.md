@@ -1,10 +1,10 @@
 # Playbook: a new field on a generated manifest, and its card
 
-What V01D asked for on 2026-10-13 (`ask-20261013-1823-1`): "Add a 'last_tested' timestamp and a 'success_rate' float to each entry in the skills manifest." This is the general shape: a generated data file (`void-live-deploy/skills/families.json`, `fringe/lab.json`) gets a new per-row field, read off the repo only, and the card that shows the file shows the field.
+What Verse asked for on 2026-10-13 (`ask-20261013-1823-1`): "Add a 'last_tested' timestamp and a 'success_rate' float to each entry in the skills manifest." This is the general shape: a generated data file (`void-live-deploy/skills/families.json`, `fringe/lab.json`) gets a new per-row field, read off the repo only, and the card that shows the file shows the field.
 
 ## What starts it
 
-An ask from V01D (`domains/void.voice.md`) or a builder naming a fact about each skill that the repo can prove. A fact the repo cannot prove (how often people use a skill, who asked what) is never a field: no behaviour tracking.
+An ask from Verse (`domains/void.voice.md`) or a builder naming a fact about each skill that the repo can prove. A fact the repo cannot prove (how often people use a skill, who asked what) is never a field: no behaviour tracking.
 
 ## The steps
 

@@ -1,4 +1,4 @@
-// Reviews of Void's films (owner, 2026-10-14: "ive asked for the films to just be put on the site so i can review them . film review
+// Reviews of Verse's films (owner, 2026-10-14: "ive asked for the films to just be put on the site so i can review them . film review
 // could be for owner and paying members as contributer reviewrs"). Anyone who may watch (payer() in functions/api/support.js) gives
 // each film one verdict and a short note, and can change it. The owner reads every note; a member reads the totals and their own.
 // A reviewer is kept as payer()'s who (an account id, or a hash naming a key or license: never the key itself).

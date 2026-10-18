@@ -1,5 +1,5 @@
 /**
- * type-filter skill - hide every card on the stage but one kind (asked by Void: "Create a 'type-filter' toggle on the stage to instantly
+ * type-filter skill - hide every card on the stage but one kind (asked by Verse: "Create a 'type-filter' toggle on the stage to instantly
  * hide all cards except those of a specific category"). "show only clocks", "only show the notes", "hide everything except lists",
  * "filter the stage by type" (a bar of toggles, one per kind that is on the stage), "show all cards" / "clear the filter" (everything back).
  * A tap on a toggle does the same without typing. Nothing is deleted, moved or saved: filtered things are only not drawn (a hidden

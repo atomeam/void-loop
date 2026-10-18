@@ -1,5 +1,5 @@
 /**
- * services skill — what Void sells, with prices, and a Buy link for what is on sale.
+ * services skill — what Verse sells, with prices, and a Buy link for what is on sale.
  * "pricing", "what do you sell", "hire you", "fix my automation", "what does void cost".
  * The rows come from lib/products.js (the ones with a price: the hands-on services). The card reads the live store
  * (/api/catalog) for each row it can match by slug, so the shown price and link are Gumroad's own and never drift;
@@ -16,8 +16,8 @@ export function servicesOf(text) {
   const t = String(text || '').trim().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').toLowerCase();
   if (!t) return null;
   if (/^(?:(?:your |the |show (?:me )?(?:your |the )?)?pricing|price list|prices|what do you sell|what do you offer|what(?:'s| is) for sale|what can i buy(?: here)?)$/.test(t)) return { why: 'pricing' };
-  if (/^(?:what does void cost|how much (?:does void|is void|do you) cost|how much is void|what do you cost)$/.test(t)) return { why: 'cost' };
-  if (/^(?:(?:can|how do) i hire you|hire you|i(?: want|'d like) to hire you|hire void)$/.test(t)) return { why: 'hire' };
+  if (/^(?:what does (?:verse|void) cost|how much (?:does (?:verse|void)|is (?:verse|void)|do you) cost|how much is (?:verse|void)|what do you cost)$/.test(t)) return { why: 'cost' };
+  if (/^(?:(?:can|how do) i hire you|hire you|i(?: want|'d like) to hire you|hire (?:verse|void))$/.test(t)) return { why: 'hire' };
   if (/^(?:fix my automations?|(?:my|our) automations? (?:is |are )?(?:broken?|stopped(?: working)?|down)|repair my automation|my (?:zap|workflow) (?:broke|is broken|stopped working)|fix my zap)$/.test(t)) return { why: 'fix' };
   return null;
 }

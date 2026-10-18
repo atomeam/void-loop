@@ -1,4 +1,4 @@
-// node --test tools/match-history.test.mjs: the match history on a game's about card (asked by Void: "Expand the chess skill page to
+// node --test tools/match-history.test.mjs: the match history on a game's about card (asked by Verse: "Expand the chess skill page to
 // include a 'Match History' table that pulls from my recent game logs", and an Elo or win rate against the owner so the Games family
 // feels competitive and real). lib/match-history.js: the log caps at 100, the summary and the estimated Elo on a known sequence,
 // an empty log, the asks that open it, the block's markup, and the storage helpers over a stand-in storage.

@@ -1,10 +1,10 @@
-# Playbook: something V01D keeps about a person, on the device only (a store, a hook, a card, two opt-out asks)
+# Playbook: something Verse keeps about a person, on the device only (a store, a hook, a card, two opt-out asks)
 
-What it grows: a thing V01D remembers about the person using it, without a server: a pattern, a preference, a record of what happened here. The first one is the personal memory graph (`lib/memory-graph.js`, `skills/memory-graph.js`; asked by Void, 2026-10-18: "a persistent, personal knowledge graph across conversations"). Earlier pieces of the same kind: the last-used day per skill (`lib/skill-use.js`), the correction channel (`lib/corrections.js`), the arcade ladder (`lib/ladder.js`).
+What it grows: a thing Verse remembers about the person using it, without a server: a pattern, a preference, a record of what happened here. The first one is the personal memory graph (`lib/memory-graph.js`, `skills/memory-graph.js`; asked by Verse, 2026-10-18: "a persistent, personal knowledge graph across conversations"). Earlier pieces of the same kind: the last-used day per skill (`lib/skill-use.js`), the correction channel (`lib/corrections.js`), the arcade ladder (`lib/ladder.js`).
 
 ## What starts it
 
-An ask (from V01D or a person) to remember, notice or build on something across visits. The owner's rule: no behaviour tracking on a server. So the first version always lives in the browser's own storage, and only what the card needs is kept: never the sentence typed, never a key, never an address. Check first what already exists: `grep -n "a2m.void" void-live-deploy/lib/state.js` lists every store; `node tools/ask.mjs "<the ask>"` shows who answers it today.
+An ask (from Verse or a person) to remember, notice or build on something across visits. The owner's rule: no behaviour tracking on a server. So the first version always lives in the browser's own storage, and only what the card needs is kept: never the sentence typed, never a key, never an address. Check first what already exists: `grep -n "a2m.void" void-live-deploy/lib/state.js` lists every store; `node tools/ask.mjs "<the ask>"` shows who answers it today.
 
 ## The shape
 

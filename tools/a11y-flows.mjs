@@ -1,4 +1,4 @@
-// The visitors Void would exclude (frontier #23), first piece: the main flows run with the keyboard alone and with reduced motion, and every
+// The visitors Verse would exclude (frontier #23), first piece: the main flows run with the keyboard alone and with reduced motion, and every
 // step says whether it holds or where it falls short. A step that falls short is a finding for the log, not a failing test: the fixes come
 // after, one by one, and each one turns its step into a line that must hold. tools/test_void.mjs calls runFlows() and prints the report.
 // Steps: [flow, id, what a visitor needs]. Each probe returns null when it holds, or a sentence saying how it falls short.

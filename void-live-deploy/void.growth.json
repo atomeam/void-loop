@@ -5572,5 +5572,6 @@
   "kind": "build",
   "what": "the product is Verse on every surface a person reads; void and v01d still answer every ask, and nothing stored under the old names (tables, keys, saved links, card codes) is renamed, so nothing anyone kept breaks",
   "ref": "https://github.com/atomeam/void-loop/pull/1116"
- }
+ },
+  {"at": "2026-10-18T08:58:44Z", "by": "claude", "kind": "build", "what": "Void and V01D are now Verse everywhere people and builders read: the page, skill answers, card titles, tests, tools, workflows and docs (owner: 'Void is now Verse rename everywhere', scope 'truly everything'); asks that said void or v01d still work and old ledger/log lines are untouched", "show": "the name on the page, in answers and in tools is Verse now", "try": "who are you"}
 ]

@@ -1,4 +1,4 @@
-// match-history — the games you finished against Verse on this device, and your record from them (asked by Void: "Expand the chess
+// match-history — the games you finished against Verse on this device, and your record from them (asked by Verse: "Expand the chess
 // skill page to include a 'Match History' table that pulls from my recent game logs", and "I want the page to show my current Elo
 // or win-rate against the owner to make the 'Games' family feel competitive and real"). A game card (chess, checkers, othello)
 // calls finish() when a game ends on the board (checkmate, stalemate, a draw, a win on discs or men; a board thrown off mid-game
@@ -27,7 +27,7 @@ export function parseGame(g) {
   const game = String(g.game || '').toLowerCase(), result = String(g.result || '').toLowerCase(), vs = VS.includes(g.vs) ? g.vs : 'v01d';
   if (!GAMES.includes(game) || !RESULTS.includes(result)) return null;
   const at = new Date(g.at || 0); const when = isNaN(at.getTime()) || !g.at ? new Date().toISOString() : at.toISOString();
-  // a chess game keeps its moves as coordinates ('e2e4', 'e7e8q') for the match replay (asked by Void); anything else is dropped
+  // a chess game keeps its moves as coordinates ('e2e4', 'e7e8q') for the match replay (asked by Verse); anything else is dropped
   const line = game === 'chess' && Array.isArray(g.line) && g.line.length <= LINE_MAX && g.line.every((x) => typeof x === 'string' && /^[a-h][1-8][a-h][1-8][qrbn]?$/.test(x)) ? g.line.slice() : null;
   return { at: when, game, vs, result, moves: Math.round(num(g.moves)), minutes: Math.round(num(g.minutes) * 10) / 10, ...(line && line.length ? { line } : {}) };
 }

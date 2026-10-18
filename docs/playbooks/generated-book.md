@@ -1,6 +1,6 @@
 # Playbook: a page for everything, generated from the repo (the book)
 
-**What starts it.** The owner asks for one place that holds everything ("a book you could flip through that contains everything so you don't have to search", 2026-10-16), or a list on the site has drifted from what the repo holds (a card that names skills by hand misses the new ones). The rule: a list of what V01D has is never written by hand. It is read off the repo's own files and a check fails when the written copy is stale.
+**What starts it.** The owner asks for one place that holds everything ("a book you could flip through that contains everything so you don't have to search", 2026-10-16), or a list on the site has drifted from what the repo holds (a card that names skills by hand misses the new ones). The rule: a list of what Verse has is never written by hand. It is read off the repo's own files and a check fails when the written copy is stale.
 
 **The pattern** (the same one `tools/families.mjs` and `tools/skills-index.mjs` follow):
 

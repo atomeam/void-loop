@@ -1,5 +1,5 @@
 /**
- * live — the background runner for cards that go stale (asked by Void, 2026-10-09: "a background task runner that
+ * live — the background runner for cards that go stale (asked by Verse, 2026-10-09: "a background task runner that
  * allows my existing skills (like news, weather, or worldtime) to update autonomously").
  *
  * A skill draws its card once, then hands live.js a refresh and how often. live.js re-runs that refresh for as long as

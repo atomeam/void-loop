@@ -13,7 +13,7 @@
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
-const YOU = "(?:you|v01d|void|verse)", YOUR = "(?:your|v01d's|void's|verse's|v01d|void|verse)";
+const YOU = "(?:you|(?:verse|v01d)|(?:verse|void)|verse)", YOUR = "(?:your|(?:verse|v01d)'s|(?:verse|void)'s|verse's|(?:verse|v01d)|(?:verse|void)|verse)";
 const LISTS = "(?:wants|wishes|unbuilt asks|open asks|asks not built|asks not built yet|unbuilt wants|unbuilt items|open items|backlog|wish ?list|want list|list of wants|to-?do list|todo|growth inbox|inbox|open list|build list|unbuilt list)";
 const RULES = [
   // "what do you want", "what do you want built now", "what do you want to learn", "what else do you want", "what do you want next", never "to be / to become / to do" (the will card)

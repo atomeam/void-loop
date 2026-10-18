@@ -7,14 +7,14 @@
 // The self card ("what I think of myself") is a page handler (void.html wantsVoice), not a skill, and already takes its own frame.
 export const PARTS = [
   { id: 'site-test', skill: 'growth', owned: true, ask: 'site test', names: ['site[ -]?test(?:er)?(?: (?:log|results?|runs?))?', 'stability (?:trend|sparklines?|chart|graph)', 'heat ?map', 'weathered heat ?map'] },
-  { id: 'growth', skill: 'growth', ask: 'growth', names: ['growth(?: (?:ledger|log|history|inbox))?', '(?:void|v01d|verse)(?:\'s)? growth', 'owner (?:view|inbox)'] },
-  { id: 'status', skill: 'status', ask: 'void status', names: ['(?:void |v01d |system )?status', 'health check', 'sources? status'] },
+  { id: 'growth', skill: 'growth', ask: 'growth', names: ['growth(?: (?:ledger|log|history|inbox))?', '(?:void|(?:verse|v01d)|verse)(?:\'s)? growth', 'owner (?:view|inbox)'] },
+  { id: 'status', skill: 'status', ask: 'void status', names: ['(?:void |(?:verse|v01d) |system )?status', 'health check', 'sources? status'] },
   { id: 'book', skill: 'guide', ask: 'open the book', names: ['book', 'tome', 'guide', 'leather tome', 'illuminated tome'] },
   { id: 'rule-registry', skill: 'guide', ask: 'rule registry', names: ['rules? registry', 'router rules?'] },
   { id: 'merges', skill: 'merges', ask: 'merge log', names: ['merge(?:s| log)', 'merged (?:prs|pull requests)'] },
 ];
 const LEAD = '(?:(?:can|could) you )?(?:please )?(?:(?:show|open|pull up|bring up|display|summon|give|take|go to|see|find|get|load|read|flip to|turn to|jump to)(?: me)?(?: to)?|let me see|i want to see|i would like to see|where(?: is|\'s| can i find| do i find)|take me to)';
-const OWNER = '(?:the |my |your |our |this |that |void\'s |v01d\'s |void |v01d )*';
+const OWNER = '(?:the |my |your |our |this |that |(?:verse|void)\'s |(?:verse|v01d)\'s |(?:verse|void) |(?:verse|v01d) )*';
 const CARD = '(?:card|page|view|chapter|section|screen|panel|tab|window)';
 const clean = (s) => String(s || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 const rows = PARTS.map((p) => {
@@ -22,7 +22,7 @@ const rows = PARTS.map((p) => {
   return { p,
     framed: new RegExp('^' + LEAD + ' ' + OWNER + n + '(?: ' + CARD + ')?$'),  // "show me the site test", "open the book"
     carded: new RegExp('^' + OWNER + n + ' ' + CARD + '$'),
-    owned: p.owned ? new RegExp('^(?:my|your|void\'s|v01d\'s) ' + n + '$') : null };                   // "the site test card", "status page"
+    owned: p.owned ? new RegExp('^(?:my|your|(?:verse|void)\'s|(?:verse|v01d)\'s) ' + n + '$') : null };                   // "the site test card", "status page"
 });
 /** the part an ask names inside the frame, or null. Pure. */
 export function partOf(text) {

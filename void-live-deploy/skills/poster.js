@@ -4,7 +4,7 @@
  * this browser: nothing is uploaded. Ordering it waits for a print-on-demand account (its key as a Pages secret) and a yes
  * on the confirm line, so the card says that plainly and shows no price it has no source for.
  * "make this a poster", "print this card as a poster", "turn this into a poster".
- * A Verse film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
+ * A Verse film's poster (asked by Verse, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
  * miss-board-4" read the film's metadata (skills/films.js filmMeta, /api/films) and add a 9:16 phone-story size for promo.
  */
 import { filmMeta } from './films.js';
@@ -24,7 +24,7 @@ export const STORY = { w: 9, h: 16, name: 'phone story', px: [1080, 1920] };
 export function filmPosterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^order\b/.test(t)) return null;
-  const OF = "(?:v0[1i]d'?s?\\s+|void'?s?\\s+|verse'?s?\\s+)?";
+  const OF = "(?:v0[1i]d'?s?\\s+|(?:verse|void)'?s?\\s+|verse'?s?\\s+)?";
   let m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?poster\\s+(?:for|of)\\s+(?:the\\s+)?film\\s+([a-z0-9][a-z0-9-]{2,60}-\\d+)$'));
   if (m) return { which: m[1] };
   m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?(?:poster\\s+(?:for|of)\\s+(?:the\\s+)?(?:newest\\s+|latest\\s+|new\\s+|last\\s+)?' + OF + 'films?|' + OF + 'film\\s+poster)$'));

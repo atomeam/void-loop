@@ -1,4 +1,4 @@
-// Void's own automations (lib/automations.js, lib/automations-run.js): the owner's "when this happens, do that" rules.
+// Verse's own automations (lib/automations.js, lib/automations-run.js): the owner's "when this happens, do that" rules.
 // GET -> { rules, runs, templates, repos } · POST { rule, rotate? } makes or replaces one (a webhook rule's secret is
 // returned once) · POST { id, run: true, event? } runs one now · PATCH { id, enabled } · DELETE { id } — all owner token.
 import { ownerOk } from '../../lib/guard.js';

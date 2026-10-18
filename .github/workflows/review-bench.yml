@@ -1,4 +1,4 @@
-# How good is Void's code review? tools/review-bench.mjs scores it on bugs that really reached main (each "Main green" fix,
+# How good is Verse's code review? tools/review-bench.mjs scores it on bugs that really reached main (each "Main green" fix,
 # git blame back to the commit that broke it, reviewed as a PR). The quick checks run offline in checks.mjs; this job adds the
 # closer read (the model, through https://a-to-mind.com/api/review with the owner key, as void-review.yml does), weekly and on
 # demand, and writes the score to the job summary. Nothing is committed, posted or deployed. The closer read uses the site's
@@ -24,7 +24,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Score Void's review (quick checks, then with the closer read)
+      - name: Score Verse's review (quick checks, then with the closer read)
         env:
           VOID_REVIEW_KEY: ${{ secrets.VOID_OWNER_TOKEN }}
         run: |

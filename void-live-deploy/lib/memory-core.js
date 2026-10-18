@@ -1,4 +1,4 @@
-// Void's memory (D1): short records about things the owner has done, written by tools such as tools/ouroboros.py.
+// Verse's memory (D1): short records about things the owner has done, written by tools such as tools/ouroboros.py.
 // Everything that arrives is untrusted: it is validated, re-redacted and capped here, whatever the sender claims to have done.
 export const CREATE = [
   'CREATE TABLE IF NOT EXISTS void_memory (id TEXT PRIMARY KEY, kind TEXT NOT NULL, name TEXT NOT NULL, summary TEXT NOT NULL, links TEXT NOT NULL, state TEXT NOT NULL, remote TEXT NOT NULL, last_commit TEXT NOT NULL, digest TEXT NOT NULL, sha256 TEXT NOT NULL, source TEXT NOT NULL, at TEXT NOT NULL, updated TEXT NOT NULL, body TEXT NOT NULL DEFAULT \'\', body_sha256 TEXT NOT NULL DEFAULT \'\')',
@@ -86,7 +86,7 @@ export async function search(env, q, limit = 20, scope = '') {
   const { results } = await env.DB.prepare(`SELECT id, kind, name, summary, links, state, remote, last_commit, digest, sha256, updated FROM void_memory WHERE ${where} ORDER BY updated DESC LIMIT ?`).bind(...args, n).all();
   return results.map((r) => ({ ...r, id: shown(r.id, scope), links: JSON.parse(r.links || '[]') }));
 }
-// ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Void remembers.
+// ---- ask: a plain question in, a plain answer out. No model: the words that matter are matched against what Verse remembers.
 const STOP = new Set('a an the i me my we our you your of on in at to for with and or is are was were do did does have has had what which who where when how why show tell list find about built build made make project projects thing things'.split(' '));
 // the rows that match a plain question (and the words that were matched): what ask() answers from and what the answer path reads.
 // With nothing matching every word, a row must still match at least minShare of them and minCount of them (ask() takes any one; the answer path half, and two).

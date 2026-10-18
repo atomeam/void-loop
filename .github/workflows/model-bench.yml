@@ -1,4 +1,4 @@
-# The live model bake-off (tools/model-bench.mjs), run by hand: Void's answer prompts sent to the current free model and the
+# The live model bake-off (tools/model-bench.mjs), run by hand: Verse's answer prompts sent to the current free model and the
 # challengers on real Workers AI, scored and timed, with a verdict. Manual only (Actions > Model bench > Run workflow, or
 # gh workflow run model-bench.yml -f pr=256), because every call spends Workers AI neurons. Before it spends anything it
 # checks the token once (--check): a token without Workers AI Read/Edit ends the job green with the missing scope named.
@@ -7,7 +7,7 @@
 # scores only). Nothing is written to D1 and nothing is deployed; the full results are the artifact.
 # Then the verdict is acted on (tools/model-switch.mjs): a challenger that wins under the thresholds becomes a PR that sets the
 # answer path's model in lib/models.js (the table, the previous model and the one-line revert in its body), labelled for
-# automerge, with Void's review started on it (a PR opened by this token starts no run by itself); a "keep" only posts the
+# automerge, with Verse's review started on it (a PR opened by this token starts no run by itself); a "keep" only posts the
 # table. Either way the run's date, models and verdict go in the growth ledger (in the switch PR, or on main for a keep).
 name: Model bench
 
@@ -39,7 +39,7 @@ permissions:
   contents: write # the switch PR's branch; the ledger line on main for a keep
   pull-requests: write
   issues: write
-  actions: write # start Void's review on the switch PR
+  actions: write # start Verse's review on the switch PR
 
 jobs:
   bench:

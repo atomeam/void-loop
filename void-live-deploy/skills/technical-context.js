@@ -25,7 +25,7 @@ function run(text, api) {
     el.innerHTML = '<h2>\u26a0 ' + esc(term.say) + ' is a risk</h2><p>' + esc(term.sentence) + '</p>'
       + '<p><b>Goes wrong:</b> <code>' + esc(term.risky) + '</code></p><p><b>Safer:</b> <code>' + esc(term.safer) + '</code></p>'
       + (shown ? '<p class="sub">A caution shape is on the stage.</p>' : '')
-      + '<div class="src">Source: Void\'s own code review rules (the same words it uses on pasted code) \u00b7 paste code and say "review this" to check yours</div>';
+      + '<div class="src">Source: Verse\'s own code review rules (the same words it uses on pasted code) \u00b7 paste code and say "review this" to check yours</div>';
   });
   return 'technical-context';
 }

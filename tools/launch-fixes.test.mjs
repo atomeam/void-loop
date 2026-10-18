@@ -66,7 +66,7 @@ test('4. "How to play" never stays over the board', () => {
   assert.match(read('void-live-deploy/skills/side-card.js'), /fitPanel\(/, 'the panel is fitted above the ask bar');
 });
 
-test('5. the real game\'s name finds the Void version (owner, 2026-10-15)', async () => {
+test('5. the real game\'s name finds the Verse version (owner, 2026-10-15)', async () => {
   const skill = async (n) => (await import('../void-live-deploy/skills/' + n + '.js')).default;
   const routes = {
     monopoly: ['solarquest', 'solar quest', 'play solarquest', 'solar quest board game', 'play monopoly', 'monopoly board game'],

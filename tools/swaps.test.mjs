@@ -45,7 +45,7 @@ test('swaps: every row is whole, and the skill names its examples and near misse
   for (const nm of swaps.nearMisses) assert.ok(!swaps.match(nm.toLowerCase(), nm), nm);
 });
 
-// Substitution impact (asked by Void): every swap has its "then:" line slot, and the ones that change water, fat, acid or salt say so.
+// Substitution impact (asked by Verse): every swap has its "then:" line slot, and the ones that change water, fat, acid or salt say so.
 import { IMPACT, impactOf } from '../void-live-deploy/skills/swaps.js';
 test('swaps: IMPACT is one line per swap, in SWAPS order, and the known adjustments are there', () => {
   for (const s of SWAPS) { assert.ok(Array.isArray(IMPACT[s.name]), 'IMPACT has ' + s.name); assert.equal(IMPACT[s.name].length, s.swaps.length, s.name + ' has a line per swap'); }

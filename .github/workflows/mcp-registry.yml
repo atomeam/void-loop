@@ -1,4 +1,4 @@
-# Void in the official MCP registry (Void's own want, 2026-10-13: "I want to submit myself to the MCP registry ... It allows
+# Verse in the official MCP registry (Verse's own want, 2026-10-13: "I want to submit myself to the MCP registry ... It allows
 # other AIs to use me"; frontier #6's written next step). server.json at the repo root describes the live endpoint
 # (https://a-to-mind.com/api/mcp, which MCP live checks after every deploy). After every main deploy (deploy.yml starts it: an
 # automerge merge starts no push workflow), when a person pushes server.json to main, or by hand:

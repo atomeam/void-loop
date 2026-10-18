@@ -1,5 +1,5 @@
 /**
- * checkers miniature — turned wooden draughts (rosewood for you, oak for Void) on the same maple and walnut board
+ * checkers miniature — turned wooden draughts (rosewood for you, oak for Verse) on the same maple and walnut board
  * and wooden table as chess. Playable: taps call data.onSquare(sq); the card owns the rules (skills/checkers-rules.js).
  * data: { board: Array(64) of 'd' 'D' 'l' 'L' | null, last: move | null (from checkers-rules play()), selected: sq | -1,
  *         targets: [sq], hops: [sq] (the path tapped so far), movable: [sq] (pieces that must or may move), onSquare(sq, candidates) }

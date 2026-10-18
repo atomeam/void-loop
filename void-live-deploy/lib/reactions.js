@@ -11,7 +11,7 @@ export const REACTIONS = Object.freeze({
   laugh: '\u{1F602}',
   heart: '\u{2764}\u{FE0F}',
   eyes: '\u{1F440}',
-  // asked by Void (2026-10-18): "so errors trigger a specific 'confusion' or 'pity' reaction"; shown tinted on the incident-autopsy card. 8 is the owner's ceiling.
+  // asked by Verse (2026-10-18): "so errors trigger a specific 'confusion' or 'pity' reaction"; shown tinted on the incident-autopsy card. 8 is the owner's ceiling.
   confused: '\u{1F615}',
   pity: '\u{1F97A}',
 });

@@ -1,4 +1,4 @@
-// Verse's probe ledger (asked by Void twice: "Create a 'probe-success-rate' card in the growth inbox that tracks how many of my
+// Verse's probe ledger (asked by Verse twice: "Create a 'probe-success-rate' card in the growth inbox that tracks how many of my
 // self-generated probe asks actually result in a new skill or improved evidence rating", and "Integrate the confidence score into
 // the Growth Inbox so I can prioritize fixing 'high-certainty' misses first"). Each daily probe run (tools/probe-asks.mjs) and each
 // fix Verse proposes (tools/propose-fix.mjs) leaves one record: counts, the skill, the line changes, Verse's confidence, and whether
@@ -17,7 +17,7 @@ export function recordOf(r, at = new Date().toISOString()) {
   if (r.kind === 'probe') {
     const wrote = int(r.wrote, 200), probed = int(r.probed, 200), misses = int(r.misses, 200), queued = int(r.queued, 200);
     if (wrote === null || probed === null || misses === null || queued === null || misses > probed || probed > wrote) return null;
-    // what the probe asked the forge for and it could not make (asked by Void, ask-20261015-2045-2: link probe output to frontier #14)
+    // what the probe asked the forge for and it could not make (asked by Verse, ask-20261015-2045-2: link probe output to frontier #14)
     const forge = [...new Set((Array.isArray(r.forge) ? r.forge : []).map((t) => String(t || '').toLowerCase().trim()).filter((t) => /^[a-z][a-z -]{1,30}$/.test(t)))].slice(0, 8);
     return { at, kind: 'probe', family: slug(r.family), wrote, probed, misses, queued, ...(forge.length ? { forge } : {}) };
   }

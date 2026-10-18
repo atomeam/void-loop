@@ -263,7 +263,7 @@ def report_md(d: dict) -> str:
     if r["count"]:
         L += [f"**{r['count']} inactive projects hold {human(r['total'])}.** These are NOT safe to delete as they are: they hold your only copy of the work unless you have pushed it.", ""]
         L += ["| Size | Idle (days) | Path |", "|---|---|---|"] + [f"| {human(x['bytes'])} | {x['idle_days']} | `{x['path']}` |" for x in r["top"]]
-        L += ["", "> **Void Pro (planned, not available yet):** pull the documentation, architecture and reusable code out of projects like these into a searchable workspace, verify a cloud backup, and only then offer to remove the local copy.", "> If this is useful, tell us what you'd want it to do first."]
+        L += ["", "> **Verse Pro (planned, not available yet):** pull the documentation, architecture and reusable code out of projects like these into a searchable workspace, verify a cloud backup, and only then offer to remove the local copy.", "> If this is useful, tell us what you'd want it to do first."]
     else:
         L.append("None found.")
     return "\n".join(L) + "\n"

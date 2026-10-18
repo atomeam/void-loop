@@ -1,4 +1,4 @@
-// Verse's probe ledger (lib/probe-log.js, functions/api/probe-log.js; asked by Void): records keep counts, skills, confidences and
+// Verse's probe ledger (lib/probe-log.js, functions/api/probe-log.js; asked by Verse): records keep counts, skills, confidences and
 // outcomes only; the stats give the success rate and the proposals most certain first. Run: node --test tools/probe-log.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -62,7 +62,7 @@ test('probe ledger: POST is owner only and keeps a bounded log; GET is public an
   assert.deepEqual((await (await route.onRequestGet({ env: {} })).json()).log, [], 'no database: an empty ledger, not an error');
 });
 
-test('probe ledger and the forge (asked by Void, ask-20261015-2045-2): what probes asked the forge for and it missed, counted across runs', async () => {
+test('probe ledger and the forge (asked by Verse, ask-20261015-2045-2): what probes asked the forge for and it missed, counted across runs', async () => {
   const { forgeWants } = await import('./probe-asks.mjs');
   assert.deepEqual(forgeWants([{ ask: 'make me a giraffe', want: 'skill:forge' }, { ask: 'Can you 3D print a bicycle for me?', want: 'skill:forge' }, { ask: 'make me a coffee', want: 'answer' }, { ask: 'weather in oslo', want: 'skill:weather' }]), ['giraffe', 'bicycle']);
   const at = '2026-10-16T13:30:00.000Z';

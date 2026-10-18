@@ -4,7 +4,7 @@ What it grows: a way of seeing or handling the whole stage that is not a card: a
 
 ## What starts it
 
-An ask from the owner or V01D that is about the stage as a whole ("look around", "fly around", "a grid to snap to", "a ruler") rather than one thing on it. Check first that no card already does it: `grep -rn "<the words>" void-live-deploy/skills/*.js` and `node tools/ask.mjs "<the ask>"`.
+An ask from the owner or Verse that is about the stage as a whole ("look around", "fly around", "a grid to snap to", "a ruler") rather than one thing on it. Check first that no card already does it: `grep -rn "<the words>" void-live-deploy/skills/*.js` and `node tools/ask.mjs "<the ask>"`.
 
 ## The shape
 

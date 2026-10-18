@@ -1,4 +1,4 @@
-// The pricing card (void-live-deploy/skills/services.js): what Void sells, from lib/products.js.
+// The pricing card (void-live-deploy/skills/services.js): what Verse sells, from lib/products.js.
 // Run: node --test tools/services.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';

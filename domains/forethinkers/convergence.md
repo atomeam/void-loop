@@ -145,7 +145,7 @@ nodes:
   - id: stage-figure
     kind: void-stage
     status: hypothesis
-    part: little 3D figure inhabiting the current Void
+    part: little 3D figure inhabiting the current Verse
     tracks: [living-figures, void-stage]
     claim: Search pops a small 3D version that uses what is already on stage and leaves when thrown off with the mouse. Motelet does this on main (void-live-deploy/skills/figure.js, 2026-10-07); stays hypothesis here until a dated public page describes it.
 ```
@@ -166,4 +166,4 @@ nodes:
 - 2026-10-03 06:12 ET. Figure-scale-benchtop-magnetize established. MIT hard magnet is Sr-ferrite at 1.5 T (Canada et al. VPP 2026); bonded Neo needs 3-4 T (Magnequench); Mag-Instruments PM reaches 4 T at dia 1.25 cm sample OD. Export-to-print stays blocked on format. Figure-joint link stays hypothesis.
 - 2026-10-03 04:04 ET. Magnetize-outside-printer established from Sloma et al. 2025 (7 T impulse on FDM NdFeB) plus MIT News 2026-02-18 (magnetize is post-print; in-print is next). Figure-joint link stays hypothesis. Export-to-print stays blocked on main.
 - 2026-10-03 seed. Only the MIT linear motor is established. Figure-joint link is a hypothesis. Export-to-print is blocked.
-- 2026-10-03 build (PR #40, not a research cycle): the stage-figure node has a working ask in Void ("a chair" then "summon motelet": it sits; a cup: it holds it; thrown off the screen it leaves), browser-tested. Export-to-print now has a browser-tested STL download (Motelet, Linemote-1); still not slicer-tested or printed, so it stays blocked.
+- 2026-10-03 build (PR #40, not a research cycle): the stage-figure node has a working ask in Verse ("a chair" then "summon motelet": it sits; a cup: it holds it; thrown off the screen it leaves), browser-tested. Export-to-print now has a browser-tested STL download (Motelet, Linemote-1); still not slicer-tested or printed, so it stays blocked.

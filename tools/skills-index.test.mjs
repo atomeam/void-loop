@@ -42,7 +42,7 @@ test('--adopt: a skill the index lists by hand gets an order file between its ne
   assert.throws(() => adoptOrder(['a', 'x', 'y', 'b'], (() => { const o = join(d, 'tight'); mkdirSync(o); writeFileSync(join(o, '0010-a'), ''); writeFileSync(join(o, '0011-b'), ''); return o; })()), /no rank left/);
 });
 
-test('Void\'s ask: a new skill file in skills/ registers itself at the end of the routing order; libraries and OFF files stay out', async () => {
+test('Verse\'s ask: a new skill file in skills/ registers itself at the end of the routing order; libraries and OFF files stay out', async () => {
   const { unregistered, registerNew, OFF } = await import('./skills-index.mjs');
   const { mkdtempSync, writeFileSync: w, readdirSync: ls, mkdirSync } = await import('node:fs');
   const { join } = await import('node:path'); const { tmpdir } = await import('node:os');

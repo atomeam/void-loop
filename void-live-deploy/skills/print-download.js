@@ -26,7 +26,7 @@ export function offlinePackage(bytes) {
   return { ok: offline, offline, published: false, html: '' };
 }
 
-// The stage readiness manifest (asked by Void, ask-20261014-2156-1) and the print gate (ask-20261014-2156-2): every 3D miniature
+// The stage readiness manifest (asked by Verse, ask-20261014-2156-1) and the print gate (ask-20261014-2156-2): every 3D miniature
 // says when its first frame is drawn (skills/scene3d.js: data-rendered on its wrap, aria-busy on its canvas). This reads them all
 // into one object, also offered as window.voidStageReadiness() for outside checks; the print file waits while one is still drawing.
 export function readiness(root) {

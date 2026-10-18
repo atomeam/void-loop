@@ -1,10 +1,10 @@
-// The memory card (void-live-deploy/skills/memory.js): Void answers from what it remembers (GET /api/memory?ask=).
+// The memory card (void-live-deploy/skills/memory.js): Verse answers from what it remembers (GET /api/memory?ask=).
 // Run: node --test tools/memory-card.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import skill, { memoryOf, askUrl, rowsOf, noteId, noteRecord } from '../void-live-deploy/skills/memory.js';
 
-test('the card opens on the ways people ask what they built or what Void remembers, and not on look-alikes', () => {
+test('the card opens on the ways people ask what they built or what Verse remembers, and not on look-alikes', () => {
   assert.deepEqual(memoryOf('what did I build with react'), { q: 'react' });
   assert.deepEqual(memoryOf('What did I build in Python?'), { q: 'python' });
   assert.deepEqual(memoryOf('which projects have I made using rust'), { q: 'rust' });
