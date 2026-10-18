@@ -182,6 +182,9 @@
     },
     {
       "ask": "decision matrix for whether to move to Berlin"
+    },
+    {
+      "ask": "favorite this"
     }
   ],
   "candidates": [],
