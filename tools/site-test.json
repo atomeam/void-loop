@@ -203,6 +203,9 @@
     },
     {
       "ask": "play a local audio file"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s"
     }
   ],
   "candidates": [],
