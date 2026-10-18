@@ -118,6 +118,24 @@ export function autopsyHtml(a, esc = escHtml) {
       + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
+/**
+ * the stability gauge (Status card, asked by Void): how often the browser suite went red on main in the last 7 days, from incidents.json.
+ * score 100 with none, 12 less per red suite (never below 0); steady / wobbly / shaky. Pure.
+ */
+export function stabilityOf(incidentsJson, now = Date.now()) {
+  const week = 7 * 864e5, inc = parseIncidents(incidentsJson), recent = inc.filter((i) => { const t = Date.parse(i.at); return t <= now + 6e4 && now - t < week; });
+  const day = recent.filter((i) => now - Date.parse(i.at) < 864e5).length;
+  const score = Math.max(0, 100 - 12 * recent.length);
+  return { score, label: !recent.length ? 'steady' : recent.length <= 3 ? 'wobbly' : 'shaky', week: recent.length, day, known: inc.length };
+}
+/** the gauge as markup: a bar and one sentence. Pure. */
+export function stabilityHtml(g, esc = escHtml) {
+  if (!g || !g.known) return '<div class="status-stability sub" data-stability="none">No red suite recorded yet, so there is nothing to gauge.</div>';
+  const col = g.label === 'steady' ? '#3fbf6a' : g.label === 'wobbly' ? '#d9a441' : '#e0584a';
+  return '<div class="status-stability" data-stability="' + esc(g.label) + '" style="margin:6px 0"><b>Stability: ' + esc(g.label) + '</b> <span style="font-variant-numeric:tabular-nums">' + esc(g.score) + '/100</span>'
+    + '<div style="height:6px;border-radius:3px;background:rgba(128,128,128,.25);margin:4px 0"><div style="height:6px;border-radius:3px;width:' + esc(g.score) + '%;background:' + col + '"></div></div>'
+    + '<span class="sub">' + esc(g.week) + ' red browser suite' + (g.week === 1 ? '' : 's') + ' on main in the last 7 days (' + esc(g.day) + ' in the last day), from <code>incidents.json</code>.</span></div>';
+}
 /** the "changed in this commit" line of one incident: the skill files it changed, the likely ones first; says plainly when none was a skill file or the paths were never recorded. Pure. */
 export function culpritHtml(i, esc) {
   if (!Array.isArray(i.touched) || !i.touched.length) return '';

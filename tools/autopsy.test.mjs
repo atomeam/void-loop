@@ -86,6 +86,15 @@ test('a test case from each recent failure (asked by Void): the ask the check qu
   assert.equal(c[1].check, 'label'); assert.equal(incidentCases(autopsy(inc, fam, guide), guide, 1).length, 1); assert.deepEqual(incidentCases(null, guide), []);
 });
 
+test('stability gauge: red suites in the last week lower the score; none is steady (asked by Void)', async () => {
+  const { stabilityOf, stabilityHtml } = await import('../void-live-deploy/lib/autopsy.js');
+  const now = Date.parse('2026-10-18T12:00:00Z'), mk = (...ats) => ({ incidents: ats.map((at, n) => ({ at, sha: 'abcdef' + n, checks: ['x'] })) });
+  assert.deepEqual(stabilityOf(mk('2026-09-01T00:00:00Z'), now), { score: 100, label: 'steady', week: 0, day: 0, known: 1 });
+  const g = stabilityOf(mk('2026-10-18T06:00:00Z', '2026-10-15T00:00:00Z', '2026-10-01T00:00:00Z'), now); assert.deepEqual([g.score, g.label, g.week, g.day], [76, 'wobbly', 2, 1]);
+  assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).score, 0); assert.equal(stabilityOf(mk(...Array(9).fill('2026-10-17T00:00:00Z')), now).label, 'shaky');
+  assert.equal(stabilityOf(mk('2027-01-01T00:00:00Z'), now).week, 0, 'a time in the future is not counted');
+  assert.match(stabilityHtml(g), /data-stability="wobbly"/); assert.match(stabilityHtml(stabilityOf(null, now)), /data-stability="none"/); assert.match(stabilityHtml(g), /width:76%/);
+});
 test('culprit pointer: a changed skill file whose skill has a failing check is the likely cause; none changed says so (asked by Void)', () => {
   assert.equal(skillOfPath('void-live-deploy/skills/convert.js'), 'convert'); assert.equal(skillOfPath('void-live-deploy/skills/order/0480-watch'), null); assert.equal(skillOfPath('tools/convert.js'), null);
   const sus = suspectsOf(['tools/x.mjs', 'void-live-deploy/skills/clock.js', 'void-live-deploy/skills/convert.js'], [{ skill: 'convert' }, { skill: null }]);
