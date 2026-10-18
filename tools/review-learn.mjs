@@ -1,7 +1,7 @@
 // node tools/review-learn.mjs [--from 120] [--to 210] [--since 30d] [--stats void-live-deploy/review-stats.json] [--json] [--all]
 // A closer-read finding that names a symbol rather than a file is placed by searching the PR's added lines for it (placeBySymbol, 2026-10-10).
 // Also counts Void's own closer read's false 'not defined' and mask claims on those PRs (phantomsIn, 2026-10-10).
-// Void's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
+// Verse's review is the main one; the other reviewers are extras (domains/void.frontier.md #1). This reads every finding an
 // extra (CodeRabbit) left on the merged PRs in the range, runs Void's own checks (void-live-deploy/lib/code-review.js) on
 // the file as it stood at that commit, and says whether Void flagged the same spot (a finding within 3 lines). It prints
 // Void's catch rate and each finding Void missed: a real one becomes a rule plus a case in tools/review.test.mjs, a wrong
@@ -256,7 +256,7 @@ if (process.argv[1] && import.meta.url.endsWith(process.argv[1].split('/').pop()
     rulesFlagged: ls.rulesFlagged, closerFound: ls.closerFound, unplaced: ls.unplaced, empty: ls.empty, bySymbol: ls.bySymbol, falseDropped: dropped.length, learned, learnedFromExtras, extrasFindings: rows.length, extrasRate: s.rate };
   if (statsPath) writeFileSync(statsPath, JSON.stringify(stats, null, 2) + '\n');
   if (process.argv.includes('--json')) { console.log(JSON.stringify({ ...s, rows, closerRead: { claims: phantoms.length, false: falsePh.length, dropped: dropped.length, phantoms }, lessons: { ...ls }, stats }, null, 1)); process.exit(0); }
-  console.log(`Void's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
+  console.log(`Verse's review against the extras, merged PRs #${Math.min(...prs)}-#${Math.max(...prs)}: ${s.findings} findings by ${EXTRA}`);
   console.log(s.rate == null ? 'nothing Void could review yet' : `Void flagged ${s.caught} of ${s.scored} (${s.rate}%) of the ones that count (nitpicks and trivial left out); ${s.notReviewable} were in files Void does not review`);
   const list = process.argv.includes('--all') ? rows.filter((r) => r.reviewed && !r.caught) : s.missed;
   if (list.length) console.log('\nMissed (each is a rule to teach lib/code-review.js, or a wrong call by the extra):');

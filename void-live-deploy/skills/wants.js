@@ -1,19 +1,19 @@
 /**
  * wants skill - "what do you want built now", "name all your unbuilt asks", "your backlog": one card, "What I want built", read from
- * V01D's own records and never from a model (the owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell
- * to the model, which said V01D had no catalog of unbuilt asks and made 50 up; "The router needs a hardcoded context injection so V01D
+ * Verse's own records and never from a model (the owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell
+ * to the model, which said Verse had no catalog of unbuilt asks and made 50 up; "The router needs a hardcoded context injection so Verse
  * always knows its own developmental state"). Three blocks: "My will" (GET /api/will, the wants the self card shows too), "Asked, not
  * built yet" (GET /api/reflect `asks`: each with when it was asked and "I called it small" when so, the list the self card folds) and
  * "Growth inbox" (/self.json `open`: the open items of domains/void.frontier.md, written at deploy by tools/self-context.mjs; no new
  * route), a count line "N wants · M asks not built · K inbox items", and every item a tap-to-copy chip. A compound ask is matched on
- * its first clause ("name all your unbuilt asks and come up with 50 more new ones"): the card lists what V01D has and says the 50 new
+ * its first clause ("name all your unbuilt asks and come up with 50 more new ones"): the card lists what Verse has and says the 50 new
  * ones are the asker's to ask for one at a time. A record that cannot be read says so on its block; nothing is guessed. "what do you
  * want to be" (the will card), "what do you think of yourself" (the self card), "what can you do" (the self page), "what's next?" (the
  * calendar), "what's on my list" and "what do I want for dinner" are not this.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
-const YOU = "(?:you|v01d|void)", YOUR = "(?:your|v01d's|void's|v01d|void)";
+const YOU = "(?:you|v01d|void|verse)", YOUR = "(?:your|v01d's|void's|verse's|v01d|void|verse)";
 const LISTS = "(?:wants|wishes|unbuilt asks|open asks|asks not built|asks not built yet|unbuilt wants|unbuilt items|open items|backlog|wish ?list|want list|list of wants|to-?do list|todo|growth inbox|inbox|open list|build list|unbuilt list)";
 const RULES = [
   // "what do you want", "what do you want built now", "what do you want to learn", "what else do you want", "what do you want next", never "to be / to become / to do" (the will card)
@@ -43,7 +43,7 @@ export function clauses(text) {
   const m = /^(.*?)(?:\s*[,;]\s*|\s+(?:and|then|and then|plus|also)\s+)(?=(?:come up|make up|invent|think of|think up|add|give|write|list|name|suggest|propose|tell|then|also|and|\d))(.*)$/.exec(t);
   return m && m[1] && m[2] ? { first: m[1].trim(), rest: m[2].trim().replace(/^(?:and then|and|then|also|plus)\s+/, '') } : { first: t, rest: '' };
 }
-/** true when the ask (its first clause) is for V01D's own backlog. Pure. */
+/** true when the ask (its first clause) is for Verse's own backlog. Pure. */
 export function wantsOf(text) {
   const { first } = clauses(text);
   if (!first || NOT.test(first)) return false;
@@ -61,7 +61,7 @@ export function moreLine(rest) {
 const day = (t) => String(t || '').slice(0, 10);
 const sentence = (s) => String(s == null ? '' : s).replace(/\s+/g, ' ').trim();
 const MAX = 40; // items a block shows at most (the inbox is the longest list; the whole thing stays one card)
-/** the card's model from V01D's three records: { wants, asks, inbox, counts, missing }. A record that is null or not a list is
+/** the card's model from Verse's three records: { wants, asks, inbox, counts, missing }. A record that is null or not a list is
  *  "missing" (could not be read), an empty list is an empty state. Pure. */
 export function cardModel({ will, reflect, self } = {}) {
   const wl = will && Array.isArray(will.wants) ? will.wants : null;

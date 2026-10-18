@@ -97,7 +97,7 @@ export function noteAsk(graph, ask) {
 }
 
 const factId = (t) => 'fact:' + String(t).toLowerCase().replace(/[^a-z0-9 ]+/g, '').replace(/\s+/g, ' ').trim().slice(0, 60);
-/** a plain fact the person asked V01D to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
+/** a plain fact the person asked Verse to remember ("remember that …"): one node, kept word for word (clipped), said twice is one. Pure. */
 export function noteFact(graph, text, at) {
   const f = String(text || '').replace(/[\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, FACT_MAX);
   if (!graph || !f) return graph;
@@ -213,7 +213,7 @@ export function importInto(graph, json) {
     if (json.length > IMPORT_MAX) return { ok: false, why: 'that file is over 2 MB' };
     try { j = JSON.parse(json); } catch (_) { return { ok: false, why: 'that is not a JSON file' }; }
   }
-  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a V01D memory file (schema ' + SCHEMA + ')' };
+  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a Verse memory file (schema ' + SCHEMA + ')' };
   if (j.v !== 1) return { ok: false, why: 'that file is version ' + String(j.v).slice(0, 12) + ', this page reads version 1' };
   if (!plain(j.nodes)) return { ok: false, why: 'that file has no nodes' };
   const g = copy(graph && plain(graph) && plain(graph.nodes) ? graph : empty());

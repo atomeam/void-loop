@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Draws void-live-deploy/og.png, the card a shared link shows (iMessage, Discord, X, Slack): the V01D wordmark with its 0 as the ring
+// Draws void-live-deploy/og.png, the card a shared link shows (iMessage, Discord, X, Slack): the Verse wordmark with its 0 as the ring
 // of light (the same ring as the startup intro and the icon), the line, three answer cards and the ask pill. 1200 x 630.
 //   node tools/og-image.mjs
 import { chromium } from 'playwright-core';

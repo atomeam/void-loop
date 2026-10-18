@@ -72,7 +72,7 @@ export function create({ voids = 1, seed = (Math.random() * 4294967296) >>> 0 } 
     players: [{ name: 'You', seat: 'you', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false }],
     owner: {}, houses: {}, turn: 0, phase: 'roll', dice: null, doubles: 0, pending: null, proposal: null, rng: seed >>> 0, moves: 0, log: [], winner: null,
   };
-  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'V01D' : 'V01D ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
+  for (let k = 0; k < n; k++) s.players.push({ name: n === 1 ? 'Verse' : 'Verse ' + (k + 1), seat: 'void', money: START_MONEY, pos: 0, jail: 0, free: 0, out: false });
   s.decks = { chance: shuffled(s, CHANCE.length), chest: shuffled(s, CHEST.length) };
   return s;
 }
@@ -265,7 +265,7 @@ function propose(s, p) {
     if (mine.length !== GROUP[g].length - 1 || yours.length !== 1 || s.houses[yours[0]]) continue;
     const i = yours[0], price = Math.ceil(SPACES[i].p * 1.8 / 10) * 10;
     if (cash - price < RESERVE) continue;
-    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to V01D than its ' + SPACES[i].p + ' price' };
+    s.proposal = { from: p, space: i, cash: price, why: 'it would complete its ' + g + ' set, so it is worth more to Verse than its ' + SPACES[i].p + ' price' };
     say(s, p, 'offered you ' + price + ' for ' + SPACES[i].n, { why: s.proposal.why });
     return;
   }

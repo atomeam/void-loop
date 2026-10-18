@@ -1,7 +1,7 @@
 /**
- * duel skill: the V01D card game (frontier #33, steps 1 and 2). "duel", "play cards", "card duel", "play the card game" put a table on the stage:
- * your Root against V01D's, V01D cards (lib/card-frame.js) with their arrows, the Treasury and the turn in view. "summon <idea>" and
- * "attack <card> with <card>" play on a duel that is already there. All rules, and V01D's side, are lib/duel-rules.js (pure, no dice, no hidden hand).
+ * duel skill: the Verse card game (frontier #33, steps 1 and 2). "duel", "play cards", "card duel", "play the card game" put a table on the stage:
+ * your Root against Verse's, Verse cards (lib/card-frame.js) with their arrows, the Treasury and the turn in view. "summon <idea>" and
+ * "attack <card> with <card>" play on a duel that is already there. All rules, and Verse's side, are lib/duel-rules.js (pure, no dice, no hidden hand).
  * A real skill's name summons the card it has earned (statsFor); any other idea is a fresh card (1 / 1 / 0, cost 1).
  */
 import * as D from '../lib/duel-rules.js';
@@ -56,7 +56,7 @@ function mount(th, stageApi) {
   if (!document.getElementById('duel-style')) { const st = document.createElement('style'); st.id = 'duel-style'; st.textContent = CSS; document.head.appendChild(st); }
   const el = document.createElement('div'); el.className = 'thing kept-card game-card duel-card'; el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(480px, calc(100vw - 20px));max-height:calc(100vh - 80px);overflow:auto';
-  el.innerHTML = '<div class="g-head"><span class="g-title">V01D Duel</span><span class="g-sub">you are below</span></div><div class="d-bar" aria-live="polite"></div><div class="d-lab">V01D</div><div class="d-row d-foe"></div><div class="d-lab">You</div><div class="d-row d-me"></div>'
+  el.innerHTML = '<div class="g-head"><span class="g-title">Verse Duel</span><span class="g-sub">you are below</span></div><div class="d-bar" aria-live="polite"></div><div class="d-lab">Verse</div><div class="d-row d-foe"></div><div class="d-lab">You</div><div class="d-row d-me"></div>'
     + '<div class="d-panel" hidden></div><div class="d-ctl"><input class="d-idea" type="text" maxlength="40" placeholder="any idea to summon" aria-label="an idea to summon"><button type="button" class="g-btn d-summon">Summon</button><button type="button" class="g-btn d-attack">Attack</button><button type="button" class="g-btn d-pass">Pass (+2)</button><button type="button" class="g-btn d-new">New duel</button></div><div class="d-log"></div>';
   const q = (sel) => el.querySelector(sel), bar = q('.d-bar'), foe = q('.d-foe'), me = q('.d-me'), panel = q('.d-panel'), log = q('.d-log'), input = q('.d-idea');
   const save = () => stageApi.save && stageApi.save();
@@ -64,7 +64,7 @@ function mount(th, stageApi) {
   for (const b of el.querySelectorAll('button,input')) b.addEventListener('pointerdown', (e) => e.stopPropagation());
   const fam = () => stats && stats.fam, deps = () => stats && stats.deps;
   const defOf = (name) => D.statsFor(name, fam(), deps());
-  function seedPool() { // V01D summons from what the site has proved most: the skills whose card has earned more than a fresh one
+  function seedPool() { // Verse summons from what the site has proved most: the skills whose card has earned more than a fresh one
     if (!stats || !stats.fam || th.state.pool.void.length) return;
     const names = []; for (const f of stats.fam.families || []) for (const s of f.skills || []) names.push(s.name);
     const earned = names.map(defOf).filter((c) => c.power > 1 || c.resistance > 1).sort((a, b) => (b.power + b.resistance) - (a.power + a.resistance) || (a.name < b.name ? -1 : 1));
@@ -73,7 +73,7 @@ function mount(th, stageApi) {
   function paint() {
     const s = th.state, st = D.collectIncome(s); if (st !== s) { th.state = st; save(); return paint(); }
     const mineTurn = s.side === 'you' && !s.over && !pending;
-    bar.innerHTML = '<span>Turn <b>' + Math.min(s.turn + 1, D.TURNS) + '</b> of ' + D.TURNS + '</span><span>Treasury: you <b>' + s.treasury.you + '</b> · V01D <b>' + s.treasury.void + '</b></span><span>Income <b>' + D.incomeOf(s, 'you') + '</b></span><span>' + (s.over ? 'over' : s.side === 'you' ? 'your move · ' + s.actions + ' action' + (s.actions === 1 ? '' : 's') : 'V01D is playing') + '</span>'; // void-review: ok: only numbers the game computed (turn, treasury, income) reach the markup
+    bar.innerHTML = '<span>Turn <b>' + Math.min(s.turn + 1, D.TURNS) + '</b> of ' + D.TURNS + '</span><span>Treasury: you <b>' + s.treasury.you + '</b> · Verse <b>' + s.treasury.void + '</b></span><span>Income <b>' + D.incomeOf(s, 'you') + '</b></span><span>' + (s.over ? 'over' : s.side === 'you' ? 'your move · ' + s.actions + ' action' + (s.actions === 1 ? '' : 's') : 'Verse is playing') + '</span>'; // void-review: ok: only numbers the game computed (turn, treasury, income) reach the markup
     const sel = (c) => { if (!mineTurn) return; if (c.side === 'you') { if (c.neutralised) return; mine = c.id; if (mode !== 'attack') mode = 'attack'; } else if (mode === 'attack' && !c.neutralised) theirs = c.id; paint(); };
     for (const [row, side] of [[foe, 'void'], [me, 'you']]) {
       row.textContent = '';
@@ -86,9 +86,9 @@ function mount(th, stageApi) {
     }
     for (const b of el.querySelectorAll('.d-ctl button,.d-ctl input')) b.disabled = !mineTurn && !b.classList.contains('d-new');
     panel.hidden = true; panel.textContent = '';
-    if (pending) { // V01D attacks: you answer with coins
+    if (pending) { // Verse attacks: you answer with coins
       const a = s.cards.find((c) => c.id === pending.from), t = s.cards.find((c) => c.id === pending.target), cap = Math.min(s.treasury.you, 8);
-      panel.hidden = false; panel.innerHTML = '<div>V01D attacks <b>' + esc(t.name) + '</b> with <b>' + esc(a.name) + '</b>' + (pending.pledge ? ' and pledges ' + pending.pledge : '') + '. Its total: <b>' + (a.power + D.support(s, a) + pending.pledge) + '</b>, yours: <b>' + (t.resistance + D.support(s, t)) + '</b> + the coins you answer with.</div>';
+      panel.hidden = false; panel.innerHTML = '<div>Verse attacks <b>' + esc(t.name) + '</b> with <b>' + esc(a.name) + '</b>' + (pending.pledge ? ' and pledges ' + pending.pledge : '') + '. Its total: <b>' + (a.power + D.support(s, a) + pending.pledge) + '</b>, yours: <b>' + (t.resistance + D.support(s, t)) + '</b> + the coins you answer with.</div>';
       for (let n = 0; n <= cap; n++) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn d-answer'; b.textContent = 'Answer ' + n; b.dataset.n = n; b.addEventListener('click', (e) => { e.stopPropagation(); const p = pending; pending = null; step({ ...p, answer: n }); }); panel.appendChild(b); }
     } else if (mineTurn && mode === 'summon') {
       const def = defOf(input.value.trim() || 'Idea'), why = slot ? D.whyIllegal(s, { type: 'summon', card: def, parent: slot.parent, slot: slot.slot }) : 'tap an open arrow';
@@ -97,18 +97,18 @@ function mount(th, stageApi) {
     } else if (mineTurn && mode === 'attack') {
       const a = s.cards.find((c) => c.id === mine), t = s.cards.find((c) => c.id === theirs);
       panel.hidden = false;
-      if (!a || !t) panel.innerHTML = '<div>' + (a ? 'Now tap one of V01D’s cards.' : 'Tap one of your cards to attack with.') + '</div>'; // void-review: ok: two fixed strings, no user text
+      if (!a || !t) panel.innerHTML = '<div>' + (a ? 'Now tap one of Verse’s cards.' : 'Tap one of your cards to attack with.') + '</div>'; // void-review: ok: two fixed strings, no user text
       else {
         pledge = Math.min(pledge, s.treasury.you);
-        panel.innerHTML = '<div><b>' + esc(a.name) + '</b> (' + a.power + ' + ' + D.support(s, a) + ' support + <b>' + pledge + '</b> coins = <b>' + (a.power + D.support(s, a) + pledge) + '</b>) against <b>' + esc(t.name) + '</b> (' + t.resistance + ' + ' + D.support(s, t) + ' support = <b>' + (t.resistance + D.support(s, t)) + '</b> + V01D’s answer). It must beat the total.</div>';
+        panel.innerHTML = '<div><b>' + esc(a.name) + '</b> (' + a.power + ' + ' + D.support(s, a) + ' support + <b>' + pledge + '</b> coins = <b>' + (a.power + D.support(s, a) + pledge) + '</b>) against <b>' + esc(t.name) + '</b> (' + t.resistance + ' + ' + D.support(s, t) + ' support = <b>' + (t.resistance + D.support(s, t)) + '</b> + Verse’s answer). It must beat the total.</div>';
         for (const [txt, d] of [['− coin', -1], ['+ coin', 1]]) { const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn d-pledge'; b.textContent = txt; b.addEventListener('click', (e) => { e.stopPropagation(); pledge = Math.max(0, Math.min(s.treasury.you, pledge + d)); paint(); }); panel.appendChild(b); }
         const go = document.createElement('button'); go.type = 'button'; go.className = 'g-btn d-confirm'; go.textContent = 'Attack'; go.addEventListener('click', (e) => { e.stopPropagation(); step({ type: 'attack', from: a.id, target: t.id, pledge }); }); panel.appendChild(go);
       }
     }
     log.textContent = s.log.slice(-3).reverse().join(' · ');
-    if (s.over) { const w = document.createElement('div'); w.className = 'd-win'; w.textContent = s.over.winner === 'draw' ? 'A draw: level on Power after ' + D.TURNS + ' turns.' : s.over.winner === 'you' ? 'You win' + (s.over.why === 'root' ? ': V01D’s Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.you + ' to ' + s.over.void + ').') : 'V01D wins' + (s.over.why === 'root' ? ': your Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.void + ' to ' + s.over.you + ').'); panel.hidden = false; panel.textContent = ''; panel.appendChild(w); }
+    if (s.over) { const w = document.createElement('div'); w.className = 'd-win'; w.textContent = s.over.winner === 'draw' ? 'A draw: level on Power after ' + D.TURNS + ' turns.' : s.over.winner === 'you' ? 'You win' + (s.over.why === 'root' ? ': Verse’s Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.you + ' to ' + s.over.void + ').') : 'Verse wins' + (s.over.why === 'root' ? ': your Root is neutralised.' : ' on Power after ' + D.TURNS + ' turns (' + s.over.void + ' to ' + s.over.you + ').'); panel.hidden = false; panel.textContent = ''; panel.appendChild(w); }
   }
-  function step(action) { // one action by whoever is to move; V01D answers when it is its turn
+  function step(action) { // one action by whoever is to move; Verse answers when it is its turn
     try { th.state = D.apply(th.state, action); } catch (e) { log.textContent = String(e.message); return paint(); }
     mode = null; mine = theirs = slot = null; pledge = 0; input.value = ''; save(); paint(); voidPlays();
   }
@@ -154,7 +154,7 @@ function mountRules(th, stageApi) {
   if (!document.getElementById('rules-style')) { const st = document.createElement('style'); st.id = 'rules-style'; st.textContent = RCSS; document.head.appendChild(st); }
   const el = document.createElement('div'); el.className = 'thing kept-card game-card duel-card rules-card'; el.dataset.id = th.id;
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(520px, calc(100vw - 20px));max-height:calc(100vh - 80px);overflow:auto';
-  el.innerHTML = '<div class="g-head"><span class="g-title">V01D Rules</span><span class="g-sub">all in force at once</span></div><div class="r-sets"></div><div class="d-lab">V01D</div><div class="d-row r-foe"></div><div class="d-lab">You</div><div class="d-row r-me"></div><div class="d-bar r-bar"></div><ol class="r-log" aria-label="what happened, in words"></ol><div class="d-ctl"><button type="button" class="g-btn r-more">Play 4 more turns</button></div>';
+  el.innerHTML = '<div class="g-head"><span class="g-title">Verse Rules</span><span class="g-sub">all in force at once</span></div><div class="r-sets"></div><div class="d-lab">Verse</div><div class="d-row r-foe"></div><div class="d-lab">You</div><div class="d-row r-me"></div><div class="d-bar r-bar"></div><ol class="r-log" aria-label="what happened, in words"></ol><div class="d-ctl"><button type="button" class="g-btn r-more">Play 4 more turns</button></div>';
   for (const b of el.querySelectorAll('button')) b.addEventListener('pointerdown', (e) => e.stopPropagation());
   const q = (sel) => el.querySelector(sel); let turns = 4, stats = null, sets = null;
   function paint() {
@@ -162,7 +162,7 @@ function mountRules(th, stageApi) {
     const play = playTurns(sets, { turns }), lines = playLines(play), st = play.state;
     q('.r-sets').textContent = ''; for (const x of sets) { const c = document.createElement('span'); c.className = 'r-set'; c.textContent = x.title + ' · ' + x.rules.length + ' rules'; c.title = x.about; q('.r-sets').appendChild(c); }
     for (const [row, side] of [[q('.r-foe'), 'void'], [q('.r-me'), 'you']]) { row.textContent = ''; for (const c of st.cards.filter((x) => x.side === side)) row.appendChild(tile(c, st, stats, () => {})); }
-    q('.r-bar').innerHTML = '<span>Turn <b>' + (st.turn + 1) + '</b></span><span>Coins: you <b>' + st.res.you.coins + '</b> · V01D <b>' + st.res.void.coins + '</b></span><span>' + (st.over ? esc((st.over.winner === 'draw' ? 'a draw' : (st.over.winner === 'you' ? 'you win' : 'V01D wins')) + ' (' + st.over.why + ')') : 'play goes on') + '</span>';
+    q('.r-bar').innerHTML = '<span>Turn <b>' + (st.turn + 1) + '</b></span><span>Coins: you <b>' + st.res.you.coins + '</b> · Verse <b>' + st.res.void.coins + '</b></span><span>' + (st.over ? esc((st.over.winner === 'draw' ? 'a draw' : (st.over.winner === 'you' ? 'you win' : 'Verse wins')) + ' (' + st.over.why + ')') : 'play goes on') + '</span>';
     const ol = q('.r-log'); ol.textContent = '';
     for (const l of lines) { const li = document.createElement('li'); li.textContent = l; if (/^Clash on/.test(l)) li.className = 'clash'; else if (/ blocked the /.test(l)) li.className = 'block'; else if (/^Turn \d+:/.test(l)) li.className = 'turn'; ol.appendChild(li); }
     q('.r-more').disabled = !!st.over;
@@ -177,14 +177,14 @@ async function run(text, api) {
   const ask = duelOf(text); if (!ask) return 'none';
   if (ask.kind === 'rules') {
     api.summon('rulesduel', { names: ask.games, x: Math.max(10, Math.round(innerWidth / 2 - 260)), y: 50 });
-    api.say('V01D Rules · ' + ask.games.join(' + ') + ' in force at once · every clash is written out');
+    api.say('Verse Rules · ' + ask.games.join(' + ') + ' in force at once · every clash is written out');
     return 'duel';
   }
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'duel');
   if (ask.kind === 'open' || !existing) {
     if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'duel'; }
     api.summon('duel', { state: D.newState(), x: Math.max(10, Math.round(innerWidth / 2 - 240)), y: 50 });
-    api.say('V01D Duel · destroy the other Root · summon any idea, attack, or pass · you are below');
+    api.say('Verse Duel · destroy the other Root · summon any idea, attack, or pass · you are below');
     return 'duel';
   }
   if (!ctl) return 'duel';

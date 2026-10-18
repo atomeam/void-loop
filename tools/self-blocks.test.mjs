@@ -48,7 +48,7 @@ test('velocity: the self card puts it at the top of "What got built", before the
 });
 
 // friction (asked by Void: "a 'friction' overlay to the growth-velocity sparkline that colors segments red when an open ask exceeds its expected
-// resolution time"): an open ask is overdue after OVERDUE_SMALL_DAYS (one V01D called small) or OVERDUE_DAYS; the day it crossed is red on the line
+// resolution time"): an open ask is overdue after OVERDUE_SMALL_DAYS (one Verse called small) or OVERDUE_DAYS; the day it crossed is red on the line
 const open = [
   { ask: 'small, 3 days old', at: '2026-10-15T12:00:00Z', small: true }, // crossed its 2-day limit on the 17th
   { ask: 'small, 1 day old', at: '2026-10-17T12:00:00Z', small: true }, // due the 19th: not yet

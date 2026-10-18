@@ -1,5 +1,5 @@
 /**
- * The V01D Book as a real book (owner, 2026-10-16: "the V01D book should be an actual 3D book with a cover and turnable pages").
+ * The Verse Book as a real book (owner, 2026-10-16: "the Verse book should be an actual 3D book with a cover and turnable pages").
  * A hardcover lying on the desk: tap the cover and it swings open on its spine; the pages are leaves that really turn, bending as
  * they go, with the stack thinning on one side and thickening on the other. Every face is a sheet of skills/guide.json laid out
  * by lib/book-face.js (the same pages the flat book shows). data: { book (skills/guide.json), cur (the page the spread holds),
@@ -49,7 +49,7 @@ export default async function build(ctx, data) {
     g.save(); g.translate(w / 2, h * 0.38); g.strokeStyle = gold; g.lineWidth = 2.2;
     for (let i = 1; i <= 5; i++) { g.beginPath(); g.arc(0, 0, 22 + i * 17, i * 0.9, i * 0.9 + 4.6); g.stroke(); }
     g.fillStyle = gold; g.beginPath(); g.arc(0, 0, 7, 0, Math.PI * 2); g.fill(); g.restore();
-    g.fillStyle = gold; g.textAlign = 'center'; g.font = '700 74px Georgia, serif'; g.fillText('V01D', w / 2, h * 0.67);
+    g.fillStyle = gold; g.textAlign = 'center'; g.font = '700 74px Georgia, serif'; g.fillText('Verse', w / 2, h * 0.67);
     g.font = '600 22px Georgia, serif'; g.fillText('THE BOOK', w / 2, h * 0.73);
     g.font = 'italic 17px Georgia, serif'; g.fillStyle = 'rgba(216,180,90,.8)'; g.fillText('everything it can do, one page each', w / 2, h * 0.79);
     g.font = '13px system-ui, sans-serif'; g.fillText('a-to-mind.com', w / 2, h * 0.91);

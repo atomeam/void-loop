@@ -17,10 +17,10 @@ export function parseWords(text) {
   const part = (name) => { const m = t.match(new RegExp('(?:^|\\n)' + name + '\\n([\\s\\S]*?)(?=\\n(?:TITLE|DESCRIPTION|TAGS)\\n|$)')); return m ? m[1].trim() : ''; };
   return { title: part('TITLE'), description: part('DESCRIPTION'), tags: part('TAGS') };
 }
-// what a viewer reads says V01D (owner, 2026-10-14: "it shoud say V01d everywhere"); films made before the name keep working
+// what a viewer reads says Verse (owner, 2026-10-14: "it shoud say V01d everywhere"); films made before the name keep working
 export function branded(w) {
-  const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Void' ? 'V01D' : t));
-  return { title: brand(w.title), description: brand(w.description).replace(/#Void\b/g, '#V01D'), tags: [...new Set(tags)].join(', ') };
+  const tags = String(w.tags || '').split(/\s*,\s*/).filter(Boolean).map((t) => (t === 'Void' ? 'Verse' : t));
+  return { title: brand(w.title), description: brand(w.description).replace(/#Void\b/g, '#Verse'), tags: [...new Set(tags)].join(', ') };
 }
 
 export async function post({ mp4, words: raw, id, site = 'https://a-to-mind.com', token, fetchImpl = fetch, wordsOnly = false }) {

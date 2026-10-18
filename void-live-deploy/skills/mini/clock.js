@@ -28,7 +28,7 @@ function dialTexture(THREE, label) {
   g.fillStyle = '#1f1a16'; g.textAlign = 'center'; g.textBaseline = 'middle';
   g.font = '600 ' + Math.round(R * 0.19) + 'px Georgia, "Times New Roman", serif';
   for (let i = 1; i <= 12; i++) { const a = (i / 12) * Math.PI * 2; g.fillText(String(i), Math.sin(a) * R * 0.68, -Math.cos(a) * R * 0.68 + R * 0.012); }
-  g.font = 'italic ' + Math.round(R * 0.075) + 'px Georgia, serif'; g.fillStyle = '#5a4a3a'; g.fillText('V01D', 0, -R * 0.33);
+  g.font = 'italic ' + Math.round(R * 0.075) + 'px Georgia, serif'; g.fillStyle = '#5a4a3a'; g.fillText('Verse', 0, -R * 0.33);
   if (label) { g.font = '600 ' + Math.round(R * 0.072) + 'px Georgia, serif'; g.fillStyle = '#3b3028'; g.fillText(String(label).toUpperCase().slice(0, 18), 0, R * 0.36); }
   const t = new THREE.CanvasTexture(c); t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 8; return t;
 }

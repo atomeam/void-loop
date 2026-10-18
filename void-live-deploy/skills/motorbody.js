@@ -90,7 +90,7 @@ export function pentamoteFiles(parts = pentamoteParts()) {
   const objs = parts.map((p, i) => '<object id="' + (10 + i) + '" type="model" name="' + p.name + '" pid="' + (2 + i) + '" pindex="0">' + meshes[i].xml + '</object>').join('');
   const items = parts.map((p, i) => '<item objectid="' + (10 + i) + '"/>').join('');
   const model = '<?xml version="1.0" encoding="UTF-8"?><model unit="millimeter" xml:lang="en-US" xmlns="http://schemas.microsoft.com/3dmanufacturing/core/2015/02" xmlns:m="http://schemas.microsoft.com/3dmanufacturing/material/2015/02">'
-    + '<metadata name="Title">' + PENTAMOTE.name + '</metadata><metadata name="Designer">A-to-Mind</metadata><metadata name="Application">a-to-mind.com V01D</metadata>'
+    + '<metadata name="Title">' + PENTAMOTE.name + '</metadata><metadata name="Designer">A-to-Mind</metadata><metadata name="Application">a-to-mind.com Verse</metadata>'
     + '<resources>' + base + groups + objs + '</resources><build>' + items + '</build></model>';
   const config = '<?xml version="1.0" encoding="UTF-8"?>\n<config>\n' + parts.map((p, i) => ' <object id="' + (10 + i) + '" instances_count="1">\n'
     + '  <metadata type="object" key="name" value="' + p.name + '"/>\n  <metadata type="object" key="extruder" value="' + (i + 1) + '"/>\n'

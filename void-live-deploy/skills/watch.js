@@ -32,7 +32,7 @@ function mount(th, stageApi) {
   card.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(480px, calc(100vw - 20px))';
   const head = el('div'); head.className = 'g-head';
   const title = el('span', null, 'Watches'); title.className = 'g-title';
-  const sub = el('span', null, 'V01D checks these for you every 15 minutes'); sub.className = 'g-sub';
+  const sub = el('span', null, 'Verse checks these for you every 15 minutes'); sub.className = 'g-sub';
   head.append(title, sub);
   const status = el('div', 'margin-top:6px;' + MUTED); status.className = 'watch-status g-status'; status.setAttribute('aria-live', 'polite');
   const list = el('div', 'display:grid;gap:8px;margin-top:10px'); list.className = 'watch-list';
@@ -47,7 +47,7 @@ function mount(th, stageApi) {
   const call = async (method, body) => {
     const r = await fetch('/api/watch', { method, headers: headers(), body: body ? JSON.stringify(body) : undefined });
     const j = await r.json().catch(() => ({}));
-    if (r.status === 401) throw new Error('Watches are the owner\'s and paid members\'. Unlock V01D (unlock <key>) or sign in with your passkey, then ask again.');
+    if (r.status === 401) throw new Error('Watches are the owner\'s and paid members\'. Unlock Verse (unlock <key>) or sign in with your passkey, then ask again.');
     if (r.status === 403) throw new Error('Watches are for the owner and paid members.');
     if (!r.ok) throw new Error(j.error || 'the watch service answered ' + r.status);
     return j;
@@ -101,7 +101,7 @@ async function run(text, api) {
   } else {
     if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
     else api.summon('watch', { center: true });
-    api.say('Watches · what V01D checks for you');
+    api.say('Watches · what Verse checks for you');
   }
   return 'watch';
 }

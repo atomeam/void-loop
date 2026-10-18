@@ -1,8 +1,8 @@
 /**
- * appraise skill — V01D values anything from a photo (frontier #30; owner, 2026-10-15: "the coin, card, value appraisal system
- * which needs image viewing capabilities", "an image should value all items if asked", "V01D can decide, it's an appraiser").
+ * appraise skill — Verse values anything from a photo (frontier #30; owner, 2026-10-15: "the coin, card, value appraisal system
+ * which needs image viewing capabilities", "an image should value all items if asked", "Verse can decide, it's an appraiser").
  * "what is this worth", "value this", "appraise this coin", "how much is my watch worth", "how much could I sell this for": a
- * card that takes one photo (the camera on a phone), downsizes it in the browser, and asks /api/appraise; V01D says what it
+ * card that takes one photo (the camera on a phone), downsizes it in the browser, and asks /api/appraise; Verse says what it
  * sees and gives one value, the details that moved it, and when an expert in hand is needed. The photo is sent once for that
  * answer and never kept. People are never priced: "what am I worth", or a person in the photo, gets a compliment and no number.
  */
@@ -43,7 +43,7 @@ async function run(text, api) {
   if (!q) return 'none';
   const { showPage, esc } = api;
   if (q.person) {
-    showPage((p) => { p.innerHTML = '<h2>What you are worth</h2><p>' + esc(complimentFor('', String(text || '').length)) + '</p><div class="src">V01D values coins, cards and chairs. Never people.</div>'; });
+    showPage((p) => { p.innerHTML = '<h2>What you are worth</h2><p>' + esc(complimentFor('', String(text || '').length)) + '</p><div class="src">Verse values coins, cards and chairs. Never people.</div>'; });
     return 'appraise';
   }
   const el = showPage((p) => {
@@ -67,7 +67,7 @@ async function run(text, api) {
       out.innerHTML = (v.person ? '<p class="ap-person">' + esc(j.text) + '</p>'
         : '<div style="font-size:40px;font-weight:300;line-height:1.1;margin:8px 0 4px" class="ap-value">' + esc(v.text || '') + '</div><p class="ap-text">' + esc(j.text || '') + '</p>')
         + (j.seen ? '<p class="sub ap-seen">What I saw: ' + esc(j.seen) + '</p>' : '');
-      // what V01D saw is a thing its forge can model: one tap makes it (asked by Void, ask-20261015-2008-1); the mesher loads only then
+      // what Verse saw is a thing its forge can model: one tap makes it (asked by Void, ask-20261015-2008-1); the mesher loads only then
       if (!v.person && j.seen) import('./forge-rules.js').then((F) => {
         const m = makeableIn(j.seen, F.THINGS); if (!m || !out.isConnected) return;
         const line = document.createElement('p'), a = document.createElement('a');

@@ -1,6 +1,6 @@
 /**
- * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: V01D wrote 'Talk to Me (2022)' from memory; "have it find the
- * actual movies it suggests ... and play right in v01d"). V01D suggests titles, then each is looked up at /api/movies (iTunes Search + the
+ * movie skill — "pick a movie to watch with me" finds REAL movies (owner, 2026-10-17: Verse wrote 'Talk to Me (2022)' from memory; "have it find the
+ * actual movies it suggests ... and play right in v01d"). Verse suggests titles, then each is looked up at /api/movies (iTunes Search + the
  * Internet Archive, lib/movies.js). A verified movie gets its own card: its poster as the card's art, year, genre, the source's one-line overview,
  * and what plays here: a public-domain / Creative Commons film from the Internet Archive plays in a <video>; an official trailer plays from Apple's
  * CDN; an in-copyright film gets the trailer and where-to-watch links, never a pirate source. A title no source knows is listed as "not verified".
@@ -19,7 +19,7 @@ const badge = (f, esc) => '<span class="mv-badge" style="font-size:11px;letter-s
 const artMeta = (el, f) => { if (f && f.verified) { el.dataset.artGenre = f.genre || ''; el.dataset.artYear = f.year || ''; } }; // the card's art follows the source's genre and year (lib/art-meta.js)
 const art = (f, esc) => (f.poster && /^https:\/\//.test(f.poster) ? '<img src="' + esc(f.poster) + '" alt="" referrerpolicy="no-referrer" style="display:none">' : '');
 const safeUrl = (u) => (/^https:\/\//i.test(String(u || '')) ? String(u) : '#');
-const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · V01D plays only free, legal films and official trailers</div>';
+const SRC = (f, esc) => '<div class="src">Source: ' + esc((f.sources || ['iTunes Search API', 'Internet Archive']).join(' · ')) + ' · Verse plays only free, legal films and official trailers</div>';
 
 /** the card of one movie: art, facts, the player, the links. Pure given a lookup result. */
 export function movieCard(f, esc) {

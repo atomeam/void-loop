@@ -33,22 +33,22 @@ export const LIMITS = {
   figurescript: { rpm: 60, body: 4000 }, // Next #19: behavior script for a summoned figure (AI once, then D1 cache)
   memory: { rpm: 30, body: 262144 }, // owner-only: what Void remembers (tools/ouroboros.py push); 256 KB matches MAX_BODY in lib/memory-core.js
   films: { rpm: 120, body: 40000000 }, // Void's films for people who pay (functions/api/films.js): a video seeks with many Range GETs; only the owner POSTs a film (OWNER_WRITES)
-  'film-views': { rpm: 60, body: 0 }, // V01D Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
+  'film-views': { rpm: 60, body: 0 }, // Verse Tube view counts (functions/api/film-views.js): one D1 upsert per view, no KV
   'film-review': { rpm: 30, body: 4000 }, // a paying member's or the owner's verdict on a film and a note of up to 1,000 characters (functions/api/film-review.js)
   support: { rpm: 10, body: 6000 }, // the support desk (functions/api/support.js): paying users only, a report of up to 2,000 characters
   review: { rpm: 60, body: 70000 }, // Void's code review API (lib/review-api.js): the instant checks free, the closer read with a Pro key
   reflect: { rpm: 30, body: 2000 }, // Void's voice: public GET of its reflections, owner POST asks it what it thinks (lib/voice.js)
-  'voice-reply': { rpm: 20, body: 4000 }, // owner-only: a reply to V01D's reflection or card; one model call (functions/api/voice-reply.js)
+  'voice-reply': { rpm: 20, body: 4000 }, // owner-only: a reply to Verse's reflection or card; one model call (functions/api/voice-reply.js)
   'probe-log': { rpm: 60, body: 2000 }, // the growth card reads it; the probe and fix tools write one record each (lib/probe-log.js)
-  'v01d-fixes': { rpm: 10, body: 500 }, // owner-only: approve one of V01D's fix pull requests (functions/api/v01d-fixes.js)
-  'propose-fix': { rpm: 6, body: 40000 }, // owner-only: V01D proposes a matcher fix for an ask its probe missed (lib/propose-fix.js); the body carries one skill file
-  'probe-asks': { rpm: 6, body: 8000 }, // owner-only: V01D writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
+  'v01d-fixes': { rpm: 10, body: 500 }, // owner-only: approve one of Verse's fix pull requests (functions/api/v01d-fixes.js)
+  'propose-fix': { rpm: 6, body: 40000 }, // owner-only: Verse proposes a matcher fix for an ask its probe missed (lib/propose-fix.js); the body carries one skill file
+  'probe-asks': { rpm: 6, body: 8000 }, // owner-only: Verse writes its own probe asks for one family (lib/probe-asks.js); the body carries 14 example asks and the wants
   automations: { rpm: 60, body: 2200000 }, // owner-only: Void's own automations; a pull-request rule carries up to 20 files of 100 KB
   merge: { rpm: 30, body: 2000 }, // two idea names in, a cached name and line out (functions/api/merge.js); the model is asked at most 6 times a minute per connection by its own bucket
   'card-art': { rpm: 30, body: 2000 }, // the Art Forge (functions/api/card-art.js): a subject word in, a cached picture out; the model runs at most 3 times a minute per connection and 30 times a day in all
   react: { rpm: 60, body: 300 }, // spectator reactions (functions/api/react.js): a closed list of 6 ids and a ledger slug in; integer counts out; 20 a minute and 200 a day per hashed connection in the route itself, no model
-  digest: { rpm: 6, body: 70000 }, // V01D reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
-  video: { rpm: 30, body: 0 }, // V01D's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
+  digest: { rpm: 6, body: 70000 }, // Verse reads a pasted transcript or a PeerTube/Archive video's open captions (functions/api/digest.js): Gemma at most once per answer, edge-cached
+  video: { rpm: 30, body: 0 }, // Verse's video search and link lookup (functions/api/video.js): GET only, edge-cached, no KV, no model
   repo: { rpm: 20, body: 0 }, // a public GitHub repo's facts (functions/api/repo.js): GET, edge-cached ten minutes, 6 fresh lookups a minute, no token, no model, no KV
   media: { rpm: 30, body: 0 }, // real songs and shows (functions/api/media.js): GET only, a fixed list of sources, edge-cached, no KV, no model
   movies: { rpm: 30, body: 0 }, // real movies (functions/api/movies.js): GET only, a fixed list of sources, edge-cached, no KV, no model

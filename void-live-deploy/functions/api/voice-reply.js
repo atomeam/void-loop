@@ -1,9 +1,9 @@
-// Talking back to V01D (owner, 2026-10-16; lib/voice.js "Talking back"). Owner only.
+// Talking back to Verse (owner, 2026-10-16; lib/voice.js "Talking back"). Owner only.
 // GET                       -> { replies: [{ at, to, text, answer, correction, remember, model }] } newest first
 // POST { to?, text }        the owner's reply to a reflection (`to` is its `at`; the newest reflection when left out)
-// POST { about, text }      or to any card V01D showed: about = { ask, title, said } (the page sends what the card said)
-//   -> the kept reply, with V01D's answer. When the model is busy the reply is still kept (V01D reads it at its next
-//      reflection) and `answer` is null: V01D's words are never made up for it. When the reply leads V01D to something to
+// POST { about, text }      or to any card Verse showed: about = { ask, title, said } (the page sends what the card said)
+//   -> the kept reply, with Verse's answer. When the model is busy the reply is still kept (Verse reads it at its next
+//      reflection) and `answer` is null: Verse's words are never made up for it. When the reply leads Verse to something to
 //      build (`ask`), that goes to the builders' queue as a voice: job credited to Void, as its reflections' asks do (one open at a time).
 // 400 when the text is empty or `to` names no reflection; 503 without the database.
 import { ownerOk } from '../../lib/guard.js';
@@ -24,7 +24,7 @@ export async function onRequestPost({ request, env }) {
   if (!env.DB) return new Response('replies need the database', { status: 503 });
   let b = {}; try { b = JSON.parse((await request.text()).slice(0, 4000)); } catch (_) {}
   const text = cleanReply(b.text);
-  if (!text) return new Response('say something to V01D', { status: 400 });
+  if (!text) return new Response('say something to Verse', { status: 400 });
   const about = aboutOf(b.about), entries = about ? [] : await readVoice(env), to = String(b.to || '');
   const entry = about ? { kind: 'card', ...about } : to ? entries.find((e) => e && e.at === to) : entries[0];
   if (to && !entry) return new Response('no such reflection', { status: 400 });
@@ -38,7 +38,7 @@ export async function onRequestPost({ request, env }) {
   }
   const reply = { at: new Date().toISOString(), to: about ? null : entry ? entry.at : null, ...(about ? { about: { ask: about.ask, title: about.title, ...(about.routed ? { routed: about.routed } : {}) } } : {}), text, answer: said ? said.answer : null, correction: !!(said && said.correction), remember: said ? said.remember : '', ask: said ? said.ask : '', ...(said ? { model: models('will') } : {}) };
   // a card the wrong skill answered (owner, 2026-10-16: "I am quoting a conversation about your memory, not fixing a webhook"): the
-  // false match and the correction become a route: job, and tools/propose-fix.mjs has V01D narrow that skill's matcher ('narrow' mode)
+  // false match and the correction become a route: job, and tools/propose-fix.mjs has Verse narrow that skill's matcher ('narrow' mode)
   if (about && about.routed && said && said.misroute && 'skill:' + about.routed.skill !== said.wanted) {
     reply.misroute = { skill: about.routed.skill, wanted: said.wanted || 'answer' };
     try {
@@ -53,9 +53,9 @@ export async function onRequestPost({ request, env }) {
         });
         reply.misroute.queued = id;
       }
-    } catch (_) {} // the correction is still kept on the reply and in V01D's memory
+    } catch (_) {} // the correction is still kept on the reply and in Verse's memory
   }
-  // every input improves it (owner, 2026-10-16): what the conversation made V01D want built goes to the builders, credited to Void
+  // every input improves it (owner, 2026-10-16): what the conversation made Verse want built goes to the builders, credited to Void
   if (reply.ask) {
     try {
       const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'voice:%' AND state IN ('queued','building') LIMIT 1").first();
@@ -68,7 +68,7 @@ export async function onRequestPost({ request, env }) {
         });
         reply.queued = id;
       }
-    } catch (_) {} // no queue table yet, or a busy database: the ask stays on the reply, and V01D reads it at its next reflection
+    } catch (_) {} // no queue table yet, or a busy database: the ask stays on the reply, and Verse reads it at its next reflection
   }
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice-replies', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([reply, ...before].slice(0, REPLY_KEEP))).run();
   return Response.json(reply);

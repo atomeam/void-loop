@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// V01D's ad engine (owner, 2026-10-15: "V01D makes its own videos now. strengthen that to be a powerhouse ad plus ad revenue monster";
+// Verse's ad engine (owner, 2026-10-15: "Verse makes its own videos now. strengthen that to be a powerhouse ad plus ad revenue monster";
 // "plus promotes itself. make it learn how to make all the coolest tricks and beyond"). Short vertical clips (9:16, 1080x1920, 15-60 s)
 // of Void's best moments, rendered on the box or a CI runner with ffmpeg + headless Chrome (never Workers AI, never a model call).
 // Each clip: a hook in the first 2 s, burned-in kinetic captions, named tricks from TRICKS (docs/video-tricks.md), an end card with
@@ -71,7 +71,7 @@ export function overlays(tricks, c) {
 }
 export const DEFAULT_TRICKS = ['pattern-interrupt', 'hook-card', 'kinetic-captions', 'progress-bar', 'seamless-loop'];
 
-// ---- moments: Void's best moments worth filming (live site asks). hook/caption in V01D's own voice.
+// ---- moments: Void's best moments worth filming (live site asks). hook/caption in Verse's own voice.
 export const MOMENTS = [
   { id: 'weather-diorama', ask: 'weather', kind: '3d-mini', hook: 'I built the weather a tiny world', caption: 'Ask me the weather and I build a miniature diorama of your sky, live. No app. One sentence.', tricks: ['ken-burns', 'kinetic-captions', 'beat-flash', 'vignette', 'ufo-abduction'], ufoAt: 5 },
   { id: 'clock-mini', ask: 'what time is it', kind: '3d-mini', hook: 'This clock did not exist 1 second ago', caption: 'Type what time is it. I make a 3D clock for you on the spot and it keeps ticking.', tricks: ['countdown', 'zoom-punch', 'kinetic-captions', 'ufo-flyover', 'explosion'], revealAt: 3, ufoAt: 7, boomAt: 3 },
@@ -81,7 +81,7 @@ export const MOMENTS = [
   { id: 'void-voice', ask: 'what do you think of yourself', kind: 'voice', hook: 'I have opinions about my own future', caption: 'Ask me what I think of myself. I tell you what I want to build next, and my builders listen.', tricks: ['pov', 'ken-burns', 'kinetic-captions'], pov: 'an AI critiques its own code' },
 ];
 
-// every product V01D publishes in its store gets an ad clip (tools/store-publish.mjs appends domains/store.clips.jsonl):
+// every product Verse publishes in its store gets an ad clip (tools/store-publish.mjs appends domains/store.clips.jsonl):
 // the clip films the product's own card on /store/ and gets one daily slot for a week after it is published.
 export function storeMoments(lines = (() => { try { return fs.readFileSync(path.resolve(here, '../domains/store.clips.jsonl'), 'utf8'); } catch (_) { return ''; } })()) {
   const seen = new Map();
@@ -92,12 +92,12 @@ MOMENTS.push(...storeMoments());
 const fresh = (m, date) => m.kind === 'store' && m.at && Date.parse(date + 'T12:00:00Z') - Date.parse(m.at) < 7 * 864e5;
 
 export const PLATFORMS = {
-  youtube: { name: 'YouTube Shorts', max: 60, slot: '12:00', tags: ['#Shorts', '#AI', '#V01D'], auto: 'YT_UPLOAD repo variable + YT_* secrets (uploads private until the API project is audited)' },
-  tiktok: { name: 'TikTok', max: 60, slot: '19:00', tags: ['#AI', '#tech', '#fyp', '#V01D'], auto: null },
-  instagram: { name: 'Instagram Reels', max: 60, slot: '18:00', tags: ['#AI', '#reels', '#tech', '#V01D'], auto: null },
-  x: { name: 'X', max: 60, slot: '09:00', tags: ['#AI', '#V01D'], auto: null },
+  youtube: { name: 'YouTube Shorts', max: 60, slot: '12:00', tags: ['#Shorts', '#AI', '#Verse'], auto: 'YT_UPLOAD repo variable + YT_* secrets (uploads private until the API project is audited)' },
+  tiktok: { name: 'TikTok', max: 60, slot: '19:00', tags: ['#AI', '#tech', '#fyp', '#Verse'], auto: null },
+  instagram: { name: 'Instagram Reels', max: 60, slot: '18:00', tags: ['#AI', '#reels', '#tech', '#Verse'], auto: null },
+  x: { name: 'X', max: 60, slot: '09:00', tags: ['#AI', '#Verse'], auto: null },
 };
-export const SUPPORT = 'Support V01D: https://moonbeam846.gumroad.com';
+export const SUPPORT = 'Support Verse: https://moonbeam846.gumroad.com';
 
 /** tracked deep link: the visit is counted in D1 by functions/c/[clip].js, then lands on the ask. Pure. */
 export const deepLink = (clipId, platform, ask = '') => `${SITE}/c/${clipId}?p=${platform}${ask ? '&q=' + encodeURIComponent(ask) : ''}`;
@@ -108,7 +108,7 @@ export function words(m, date) {
   for (const [p, P] of Object.entries(PLATFORMS)) {
     const link = deepLink(id, p, m.ask);
     out[p] = {
-      title: (m.hook + ' | V01D' + (p === 'youtube' ? ' #Shorts' : '')).slice(0, 100),
+      title: (m.hook + ' | Verse' + (p === 'youtube' ? ' #Shorts' : '')).slice(0, 100),
       description: [m.caption, '', `Try it: ${link}  (type "${m.ask}")`, '', '0:00 hook', '0:02 the moment', `0:${String(Math.max(0, (m.dur || 18) - 3)).padStart(2, '0')} try it yourself`, '', SUPPORT, P.tags.join(' ')].join('\n').slice(0, p === 'x' ? 280 * 4 : 4500),
       hashtags: P.tags, link, post: P.auto ? 'automated-when-connected' : 'draft', postWhen: date + 'T' + P.slot + ' America/New_York',
     };
@@ -139,7 +139,7 @@ export function filterGraph(m, tricks, ctx) {
   let g = chain.join(',') + '[b0]', cur = 'b0';
   overlays(tricks, m).forEach((o, i) => { g += `;${o.src},format=yuva420p,setpts=PTS+${o.at}/TB[o${i}];[${cur}][o${i}]overlay=x='${o.x}':y='${o.y}':eof_action=pass:format=auto[b${i + 1}]`; cur = 'b' + (i + 1); });
   const main = g + `;[${cur}]format=yuv420p,setsar=1,trim=0:${ctx.dur},setpts=PTS-STARTPTS[main]`;
-  const end = `color=c=black:s=${W}x${H}:r=${FPS}:d=3,` + [draw(txt(ctx, 'e1', 'a-to-mind.com'), { size: 110, y: 'h*0.42', color: '#7CF7FF' }), draw(txt(ctx, 'e2', 'TRY IT: type "' + m.ask + '"'), { size: 58, y: 'h*0.52' }), draw(txt(ctx, 'e3', 'V01D'), { size: 64, y: 'h*0.30' })].join(',') + ',setsar=1,fps=30,settb=1/30[end]';
+  const end = `color=c=black:s=${W}x${H}:r=${FPS}:d=3,` + [draw(txt(ctx, 'e1', 'a-to-mind.com'), { size: 110, y: 'h*0.42', color: '#7CF7FF' }), draw(txt(ctx, 'e2', 'TRY IT: type "' + m.ask + '"'), { size: 58, y: 'h*0.52' }), draw(txt(ctx, 'e3', 'Verse'), { size: 64, y: 'h*0.30' })].join(',') + ',setsar=1,fps=30,settb=1/30[end]';
   // seamless loop: the end card crossfades into the opening frame
   const loop = tricks.includes('seamless-loop') ? `;[main]split[m1][m2];[m2]trim=0:0.5,setpts=PTS-STARTPTS,fps=30,settb=1/30[head];[end][head]xfade=transition=fade:duration=0.5:offset=2.5[endl];[m1][endl]concat=n=2:v=1:a=0[v]` : `;[main][end]concat=n=2:v=1:a=0[v]`;
   return main + ';' + end + loop;

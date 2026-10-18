@@ -1,7 +1,7 @@
 // node --test tools/launch-fixes.test.mjs: the four live bugs the launch audit found (2026-10-15), each kept fixed.
 //   1. "play voidquest" / "play solar quest" open VoidQuest (skills/monopoly.js, its own board on the property-game rules)
 //   2. a model's markdown (a comic's **Title:** and *name*) renders, never shows raw asterisks (lib/md.js via void.html fixHtml)
-//   3. "what are you?" leads with V01D's self-answer and the canon's motto, word for word (void.html SELF_LEAD)
+//   3. "what are you?" leads with Verse's self-answer and the canon's motto, word for word (void.html SELF_LEAD)
 //   4. a game's "How to play" never stays over the board: × , Esc and the first tap off it close it (skills/howto.js)
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -45,7 +45,7 @@ test('2. a comic\'s markdown renders: no raw asterisks', async () => {
   assert.match(html, /await mdReady;/, 'an answer waits for it, so the first one renders too');
 });
 
-test('3. "what are you?" answers as V01D with the canon\'s motto', () => {
+test('3. "what are you?" answers as Verse with the canon\'s motto', () => {
   const html = read('void.html'), canon = read('domains/void.canon.md');
   const motto = (/^## Motto\n(.+)$/m.exec(canon) || [])[1];
   assert.ok(motto, 'the canon has a motto');
@@ -83,8 +83,8 @@ test('5. the real game\'s name finds the Void version (owner, 2026-10-15)', asyn
 
 test('a numbered list split by blank lines is one list, numbered 1, 2, 3 (owner, 2026-10-18: "it is failing to increment the <ol> index")', async () => {
   const { mdBlock } = await import('../void-live-deploy/lib/md.js'), e = (x) => x.replace(/&/g, '&amp;').replace(/</g, '&lt;');
-  assert.equal(mdBlock('1. **Hover** - a\n\n1. **Pressed** - b\n\n1. **Growth** - c\n\nwritten by V01D', e),
-    '<ol><li><b>Hover</b> - a</li><li><b>Pressed</b> - b</li><li><b>Growth</b> - c</li></ol><p>written by V01D</p>');
+  assert.equal(mdBlock('1. **Hover** - a\n\n1. **Pressed** - b\n\n1. **Growth** - c\n\nwritten by Verse', e),
+    '<ol><li><b>Hover</b> - a</li><li><b>Pressed</b> - b</li><li><b>Growth</b> - c</li></ol><p>written by Verse</p>');
   assert.equal(mdBlock('3. c\n4. d', e), '<ol start="3"><li>c</li><li>d</li></ol>');
   assert.equal(mdBlock('1. a\n   more of a\n2. b', e), '<ol><li>a<br>more of a</li><li>b</li></ol>');
   assert.equal(mdBlock('- a\n- b\n\npara', e), '<ul><li>a</li><li>b</li></ul><p>para</p>');

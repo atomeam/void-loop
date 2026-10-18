@@ -1,5 +1,5 @@
 /**
- * nca-mind skill — V01D's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and
+ * nca-mind skill — Verse's neural cellular automata and living lattices, built from Grok's drafts F-036, F-039, F-043 (two of them) and
  * F-045 (asked by the owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"). One card runs a lattice whose
  * every cell follows the same small rule; the pointer seeds it (move to feed it, press to plant life) and a small evolutionary mind
  * (6 rules, one generation every 2 s, in a Worker or on the page when Workers are blocked) keeps the rules that make a varied,

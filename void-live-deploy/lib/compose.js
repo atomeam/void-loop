@@ -1,4 +1,4 @@
-// V01D makes music (owner, 2026-10-17: "void should also learn how to make music"). An original short piece, composed here from a seed and
+// Verse makes music (owner, 2026-10-17: "void should also learn how to make music"). An original short piece, composed here from a seed and
 // synthesised with Web Audio: no model call, no sample, no paid service, no tune copied from anywhere. The same ask always gives the same piece
 // (the seed is a hash of the ask's own words). The mood word picks the tempo, the scale and the instruments; everything the card says about the
 // piece (key, tempo, bars, chords) is read back from the values that were composed, never described from memory.
@@ -85,7 +85,7 @@ export function describe(p) {
 
 /** the notes as text, bar by bar, to copy. Pure. */
 export function notesText(p) {
-  const L = [p.title + ' (V01D, ' + p.key + ' ' + p.scale + ', ' + p.bpm + ' bpm, ' + p.bars + ' bars; 16 steps a bar, step 1 first)', 'ask: ' + p.ask, ''];
+  const L = [p.title + ' (Verse, ' + p.key + ' ' + p.scale + ', ' + p.bpm + ' bpm, ' + p.bars + ' bars; 16 steps a bar, step 1 first)', 'ask: ' + p.ask, ''];
   for (let b = 0; b < p.bars; b++) {
     const lo = b * p.stepsPerBar, hi = lo + p.stepsPerBar;
     const m = p.melody.filter((n) => n.step >= lo && n.step < hi).map((n) => noteName(n.midi) + '@' + (n.step - lo + 1) + 'x' + n.len).join(' ');

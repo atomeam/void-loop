@@ -1,5 +1,5 @@
 /**
- * backlog-digest skill - "digest your backlog": V01D's unbuilt asks grouped by skill family with the weakest evidence rating of the skills they name (asked by Void). Own records, no model.
+ * backlog-digest skill - "digest your backlog": Verse's unbuilt asks grouped by skill family with the weakest evidence rating of the skills they name (asked by Void). Own records, no model.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  *   match: true when this skill should take the ask (the first skill in skills/order/ to say yes wins).
  *   run:   shows the answer; api.showPage(build) puts a card on the stage and api.esc escapes text. Return the skill's name.

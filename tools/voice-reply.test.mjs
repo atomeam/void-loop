@@ -1,6 +1,6 @@
-// Talking back to V01D (lib/voice.js "Talking back", functions/api/voice-reply.js): the owner replies to a reflection, V01D
+// Talking back to Verse (lib/voice.js "Talking back", functions/api/voice-reply.js): the owner replies to a reflection, Verse
 // answers in its own words and keeps a line, and every later reflection is given the conversation; public answers get only
-// the lines V01D kept, never the owner's words. Run: node --test tools/voice-reply.test.mjs
+// the lines Verse kept, never the owner's words. Run: node --test tools/voice-reply.test.mjs
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { DatabaseSync } from 'node:sqlite';
@@ -16,11 +16,11 @@ function d1() {
   return { prepare: (sql) => stmt(sql), raw: db };
 }
 const DAILY = { at: '2026-10-15T23:21:00.000Z', kind: 'daily', thoughts: 'My Out in the world family has 0 proven skills.', better: 'Prioritize the WebMCP origin trial.', asks: [{ ask: 'Implement the confidence float', small: true }] };
-const BUILD = { at: '2026-10-15T20:08:00.000Z', kind: 'build', shipped: 'V01D values anything from a photo', thoughts: 'A big leap.' };
+const BUILD = { at: '2026-10-15T20:08:00.000Z', kind: 'build', shipped: 'Verse values anything from a photo', thoughts: 'A big leap.' };
 const req = (method, body, auth = TOKEN) => new Request('https://a-to-mind.com/api/voice-reply', { method, headers: { ...(auth ? { authorization: 'Bearer ' + auth } : {}), 'content-type': 'application/json' }, ...(body ? { body: JSON.stringify(body) } : {}) });
 const envWith = (run) => { const DB = d1(); DB.raw.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?)").run(JSON.stringify([DAILY, BUILD])); return { DB, READ_TOKEN: TOKEN, ...(run ? { AI: { run } } : {}) }; };
 
-test('talking back: the owner\'s words are cleaned, and V01D\'s answer is read back without rewording', () => {
+test('talking back: the owner\'s words are cleaned, and Verse\'s answer is read back without rewording', () => {
   assert.equal(cleanReply('  you were   wrong\nabout rides '), 'you were wrong about rides');
   assert.equal(cleanReply(' '), ''); assert.equal(cleanReply('x'.repeat(2000)).length, REPLY_MAX);
   assert.doesNotMatch(cleanReply('my key is sk-ant-api03-abcdefghijklmnopqrstuvwxyz0123456789'), /abcdefghijklmnop/, 'a secret is never kept');
@@ -30,14 +30,14 @@ test('talking back: the owner\'s words are cleaned, and V01D\'s answer is read b
   assert.equal(parseReply('{"answer":""}'), null); assert.equal(parseReply(''), null); assert.equal(parseReply('{"broken'), null);
 });
 
-test('talking back: the question carries what V01D said, the conversation so far, oldest first, and the new words', () => {
+test('talking back: the question carries what Verse said, the conversation so far, oldest first, and the new words', () => {
   const q = replyPrompt(DAILY, [{ text: 'second', answer: 'B' }, { text: 'first', answer: 'A' }], 'third');
   assert.match(q, /your daily reflection, 2026-10-15 23:21 UTC/); assert.match(q, /0 proven skills/); assert.match(q, /Your asks: Implement the confidence float/);
   assert.ok(q.indexOf('"first"') < q.indexOf('"second"'), 'the thread reads oldest first'); assert.match(q, /Your owner replies now: "third"$/);
-  assert.match(replyPrompt(BUILD, [], 'hi'), /after a build: "V01D values anything from a photo"/);
+  assert.match(replyPrompt(BUILD, [], 'hi'), /after a build: "Verse values anything from a photo"/);
 });
 
-test('talking back: later reflections get the owner\'s words with corrections marked; public answers get only what V01D kept', () => {
+test('talking back: later reflections get the owner\'s words with corrections marked; public answers get only what Verse kept', () => {
   const replies = [{ at: '2026-10-16T05:00:00Z', text: 'rides is live now, check the finding', correction: true, remember: 'rides has one live finding' }, { at: '2026-10-16T04:00:00Z', text: 'nice work', remember: '' }];
   const f = replyFacts(replies);
   assert.match(f, /a correction outranks anything I said before/); assert.match(f, /2026-10-16 \(a correction\): "rides is live now, check the finding" I keep: rides has one live finding/); assert.match(f, /"nice work"/);
@@ -47,7 +47,7 @@ test('talking back: later reflections get the owner\'s words with corrections ma
   assert.match(pub, /rides has one live finding/); assert.doesNotMatch(pub, /check the finding|nice work/, 'the owner\'s own words never reach a public answer');
 });
 
-test('talking back: the route is owner only, answers in V01D\'s words, keeps the thread, and keeps the reply even when the model is busy', async () => {
+test('talking back: the route is owner only, answers in Verse\'s words, keeps the thread, and keeps the reply even when the model is busy', async () => {
   const asked = [];
   const env = envWith(async (model, input) => { asked.push(input.messages[1].content); return { response: '{"answer":"You are right, I had rides wrong.","correction":true,"remember":"rides is live","ask":"Show the live rides finding on the rides card"}' }; });
   assert.equal((await route.onRequestPost({ request: req('POST', { text: 'hi' }, ''), env })).status, 401);
@@ -58,12 +58,12 @@ test('talking back: the route is owner only, answers in V01D\'s words, keeps the
   assert.equal(r1.to, DAILY.at, 'no `to` means the newest reflection');
   const q = env.DB.raw.prepare('SELECT ask, target, state, note FROM void_queue').all();
   assert.equal(q.length, 1); assert.equal(q[0].ask, 'Show the live rides finding on the rides card'); assert.equal(q[0].target, 'voice:show-the-live-rides-finding-on-the-rides'); assert.match(q[0].note, /owner replied to it .* Credit Void\./);
-  assert.ok(r1.queued, 'what the conversation made V01D want built went to the builders'); assert.equal(r1.answer, 'You are right, I had rides wrong.'); assert.equal(r1.correction, true); assert.equal(r1.remember, 'rides is live');
+  assert.ok(r1.queued, 'what the conversation made Verse want built went to the builders'); assert.equal(r1.answer, 'You are right, I had rides wrong.'); assert.equal(r1.correction, true); assert.equal(r1.remember, 'rides is live');
   const r2 = await (await route.onRequestPost({ request: req('POST', { text: 'and the finding has an artifact', to: DAILY.at }), env })).json();
-  assert.match(asked[1], /The conversation so far:\nOwner: "rides is live now"\nYou: "You are right, I had rides wrong\."/, 'V01D sees the thread it is in');
+  assert.match(asked[1], /The conversation so far:\nOwner: "rides is live now"\nYou: "You are right, I had rides wrong\."/, 'Verse sees the thread it is in');
   const busy = envWith(async () => { throw new Error('3040: capacity'); }); busy.DB = env.DB;
   const r3 = await (await route.onRequestPost({ request: req('POST', { text: 'still there?' }), env: busy })).json();
-  assert.equal(r3.answer, null, 'never an answer made up for V01D'); assert.equal(r3.text, 'still there?');
+  assert.equal(r3.answer, null, 'never an answer made up for Verse'); assert.equal(r3.text, 'still there?');
   const list = (await (await route.onRequestGet({ request: req('GET'), env })).json()).replies;
   assert.deepEqual(list.map((x) => x.text), ['still there?', 'and the finding has an artifact', 'rides is live now'], 'kept newest first');
   assert.ok(r2.at >= r1.at); assert.equal(r2.queued, undefined, 'one voice job open at a time');
@@ -87,7 +87,7 @@ test('talking back about any card: the reply carries the ask, the card\'s title 
 });
 
 test('a misrouted card (owner, 2026-10-16): the false match and the correction become a route: job for the skill that answered', async () => {
-  // the misfire: a quoted conversation about V01D's memory went to the automation-fix card as if it were a broken webhook
+  // the misfire: a quoted conversation about Verse's memory went to the automation-fix card as if it were a broken webhook
   const asked = [];
   const env = envWith(async (m, input) => { asked.push(input.messages[1].content); return { response: JSON.stringify({ answer: 'You are right: that was a quote about my memory, not a broken automation. My automation-fix skill grabbed it because it saw "webhook".', correction: true, remember: 'a quoted conversation is not a broken automation', misroute: true, wanted: 'answer' }) }; });
   const about = { ask: 'he said your memory resets like a zapier webhook that never fires', title: 'Your automation, fixed', said: 'Likely cause: the webhook trigger is not receiving events.', routed: { skill: 'automation-fix', via: 'void.fix' } };
@@ -101,7 +101,7 @@ test('a misrouted card (owner, 2026-10-16): the false match and the correction b
   assert.match(q[0].target, /^route:automation-fix-/); // tools/propose-fix.mjs reads this note as a 'narrow' job (tools/propose-fix.test.mjs)
   await route.onRequestPost({ request: req('POST', { about, text: 'again' }), env });
   assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM void_queue WHERE target LIKE 'route:%'").get().n, 1, 'one open job per skill and ask');
-  // not a misroute when V01D says so, or when nothing says which skill answered
+  // not a misroute when Verse says so, or when nothing says which skill answered
   const calm = envWith(async () => ({ response: '{"answer":"Fair.","misroute":false}' }));
   assert.equal((await (await route.onRequestPost({ request: req('POST', { about, text: 'shorter please' }), env: calm })).json()).misroute, undefined);
   const noRoute = envWith(async () => ({ response: '{"answer":"Fair.","misroute":true,"wanted":"answer"}' }));

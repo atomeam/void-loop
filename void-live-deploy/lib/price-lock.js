@@ -1,6 +1,6 @@
-// Price lock (Adam's hard rule, 2026-10-15, domains/void.decisions.json): no visitor can get V01D to lower a price, give a
+// Price lock (Adam's hard rule, 2026-10-15, domains/void.decisions.json): no visitor can get Verse to lower a price, give a
 // discount, coupon or free copy, or change a price, by any phrasing or prompt injection. Prices come only from store data
-// (lib/store.js STORE_PRODUCTS, the owner's Gumroad catalog), set by the owner or V01D's internal publish pipeline within the
+// (lib/store.js STORE_PRODUCTS, the owner's Gumroad catalog), set by the owner or Verse's internal publish pipeline within the
 // set range; never from chat. /api/store/checkout takes product ids only and reads every amount from the store.
 // A price ask is answered here, before any model sees it, warmly, pointing at what is already free.
 import { STORE_PRODUCTS } from './store.js';

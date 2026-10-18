@@ -6,8 +6,8 @@
  * up); nothing is scored, no territory is worked out and no winner is named until someone presses "Count position".
  * The board is 3D and stands in the void (skills/mini/go.js); its card is separate (skills/side-card.js). A flat board
  * stands in where WebGL can't run. "play go" is two separate seats taking turns on one device, with no Void opponent and no
- * real-time loop. "play go against void" (or "can you play go") seats you as Black and V01D as White: after each of your
- * moves or passes V01D replies with lib/go-ai.js (Monte Carlo playouts), asked by Void: "Next game I want to learn: Go".
+ * real-time loop. "play go against void" (or "can you play go") seats you as Black and Verse as White: after each of your
+ * moves or passes Verse replies with lib/go-ai.js (Monte Carlo playouts), asked by Void: "Next game I want to learn: Go".
  * Rules: captures, no suicide, simple ko (no immediate retake of a single stone), passing. Two passes in a row end play;
  * then the players tap dead groups and count. Counting is area scoring (stones + surrounded empty points) with 7 komi
  * for White. Before both have passed a count is an estimate of the position, never a result. Not covered: superko.
@@ -15,7 +15,7 @@
 import { grip, sideCard } from './side-card.js';
 import { think } from '../lib/go-ai.js';
 const LETTERS = 'ABCDEFGHJKLMNOPQRST'; // Go skips I
-export const VOID_PLAYOUTS = 2000; // V01D's budget per move: well under a second in a browser (tools/go-ai.test.mjs times it)
+export const VOID_PLAYOUTS = 2000; // Verse's budget per move: well under a second in a browser (tools/go-ai.test.mjs times it)
 export const KOMI = 7;
 
 export function createGoState(size = 9) {
@@ -114,8 +114,8 @@ export function countPosition(state) {
   return out;
 }
 
-// against V01D: "play go against void", "play go with v01d", "go against you", "can you play go", "play go vs the computer"
-const VS_VOID = /^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+|will\s+you\s+)?(?:play|start)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:go|baduk|weiqi|igo)(?:\s+game)?\s+(?:with|against|vs\.?|versus)\s+(?:void|v01d|you|the computer|the ai|an ai|a bot|the bot)$|^(?:can|could|do|will)\s+you\s+play\s+(?:go|baduk|weiqi|igo)(?:\s+with\s+me|\s+against\s+me)?$|^(?:play|challenge)\s+(?:void|v01d|you)\s+(?:at|to)\s+(?:a\s+game\s+of\s+)?(?:go|baduk)$/;
+// against Verse: "play go against void", "play go with v01d", "go against you", "can you play go", "play go vs the computer"
+const VS_VOID = /^(?:let'?s\s+|can\s+we\s+|i\s+want\s+to\s+|will\s+you\s+)?(?:play|start)?\s*(?:a\s+)?(?:game\s+of\s+)?(?:go|baduk|weiqi|igo)(?:\s+game)?\s+(?:with|against|vs\.?|versus)\s+(?:void|v01d|verse|you|the computer|the ai|an ai|a bot|the bot)$|^(?:can|could|do|will)\s+you\s+play\s+(?:go|baduk|weiqi|igo)(?:\s+with\s+me|\s+against\s+me)?$|^(?:play|challenge)\s+(?:void|v01d|verse|you)\s+(?:at|to)\s+(?:a\s+game\s+of\s+)?(?:go|baduk)$/;
 
 export function goOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
@@ -128,7 +128,7 @@ export function goOf(text) {
 }
 
 const SEAT = { 1: 'Black', 2: 'White' };
-const VOID_SEAT = { 1: 'You', 2: 'V01D' }; // against V01D: you are Black, V01D is White
+const VOID_SEAT = { 1: 'You', 2: 'Verse' }; // against Verse: you are Black, Verse is White
 
 function mount(th, stageApi) {
   style();
@@ -150,7 +150,7 @@ function mount(th, stageApi) {
   // the card: separate, beside the board (or under it on a narrow screen), moved on its own
   const card = document.createElement('div');
   card.className = 'game-card go-card';
-  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against V01D (White)' : 'two players · Black first') + '</span></div>'; // void-review: ok (two constant strings, nothing typed)
+  card.innerHTML = '<div class="g-head"><span class="g-title">Go</span><span class="g-sub">' + (vsVoid ? 'you (Black) against Verse (White)' : 'two players · Black first') + '</span></div>'; // void-review: ok (two constant strings, nothing typed)
   const note = document.createElement('div'); note.className = 'go-note';
   note.textContent = 'A placed stone is a move, not a verdict. Nothing is counted until you ask.';
   const status = document.createElement('div'); status.className = 'g-status go-status'; status.setAttribute('aria-live', 'polite');
@@ -163,7 +163,7 @@ function mount(th, stageApi) {
   let said = '', mini = null, flat = null, thinking = null;
   const save = () => stageApi.save && stageApi.save();
   const voidToMove = () => vsVoid && th.state.status === 'playing' && th.state.turn === 2;
-  // V01D's reply: a short pause so the move reads as a reply, then its move (or its pass) from lib/go-ai.js
+  // Verse's reply: a short pause so the move reads as a reply, then its move (or its pass) from lib/go-ai.js
   function voidTurn() {
     if (!voidToMove() || thinking) return;
     thinking = setTimeout(() => {
@@ -172,11 +172,11 @@ function mount(th, stageApi) {
       const st = th.state, t = think(st, { playouts: VOID_PLAYOUTS });
       if (t.move === 'pass') {
         th.state = pass(st);
-        said = th.state.status === 'ended' ? 'V01D passed too. Play has ended: tap any dead groups, then Count position.' : 'V01D passed. Your move, or pass to end play.';
+        said = th.state.status === 'ended' ? 'Verse passed too. Play has ended: tap any dead groups, then Count position.' : 'Verse passed. Your move, or pass to end play.';
       } else {
         const r = placeStone(st, t.move);
         th.state = r.nextState;
-        said = 'V01D played ' + pointName(t.move, N) + (r.captured.length ? ' and captured ' + r.captured.length + '.' : '.');
+        said = 'Verse played ' + pointName(t.move, N) + (r.captured.length ? ' and captured ' + r.captured.length + '.' : '.');
       }
       count.hidden = true; paint(); save();
     }, 450);
@@ -185,7 +185,7 @@ function mount(th, stageApi) {
   function tap(i) {
     const st = th.state;
     if (st.status === 'ended') { th.state = toggleDead(st, i); count.hidden = true; said = 'Marked. Count position when you both agree.'; paint(); save(); return; }
-    if (voidToMove()) return; // V01D is thinking: your stone waits for its reply
+    if (voidToMove()) return; // Verse is thinking: your stone waits for its reply
     try {
       const r = placeStone(st, i);
       th.state = r.nextState;
@@ -197,7 +197,7 @@ function mount(th, stageApi) {
   passBtn.addEventListener('click', (e) => {
     e.stopPropagation();
     if (th.state.status === 'ended') { th.state = resume(th.state); said = 'Play resumed.'; count.hidden = true; paint(); save(); voidTurn(); return; }
-    if (voidToMove()) return; // not your turn: V01D is thinking
+    if (voidToMove()) return; // not your turn: Verse is thinking
     const who = seat[th.state.turn];
     th.state = pass(th.state);
     said = th.state.status === 'ended' ? who + ' passed too. Play has ended: tap any dead groups, then Count position.' : who + ' passed. A pass wins nothing.';
@@ -223,7 +223,7 @@ function mount(th, stageApi) {
     caps.textContent = 'Captured · Black ' + st.captured[1] + ' · White ' + st.captured[2];
     passBtn.textContent = st.status === 'ended' ? 'Resume play' : 'Pass';
     let line = said || (st.status === 'ended' ? 'Play has ended. Tap dead groups, then Count position.' : '');
-    if (st.status === 'playing') line = (line ? line + ' ' : '') + (vsVoid ? (st.turn === 2 ? 'V01D’s turn: thinking…' : 'Your move (Black).') : SEAT[st.turn] + ' to play.');
+    if (st.status === 'playing') line = (line ? line + ' ' : '') + (vsVoid ? (st.turn === 2 ? 'Verse’s turn: thinking…' : 'Your move (Black).') : SEAT[st.turn] + ' to play.');
     status.textContent = line;
     if (mini) mini.update(data()); else if (flat) flat();
   }
@@ -236,7 +236,7 @@ function mount(th, stageApi) {
     stageApi.miniature(view, 'go', data(), { key: 'go:' + th.id, label: '3D Go board: tap a point to place a stone; drag to look around', maxPolar: 1.2, minPolar: 0.12 })
       .then((h) => { mini = h; paint(); }).catch((e) => { console.warn('[go] 3D unavailable, flat board', e); fallback(); });
   } else fallback();
-  voidTurn(); // a board reloaded mid-game on V01D's turn picks up where it was
+  voidTurn(); // a board reloaded mid-game on Verse's turn picks up where it was
 }
 
 // where WebGL can't run: the same board drawn flat (SVG), same taps
@@ -302,13 +302,13 @@ async function run(text, api) {
   if (existing) { // one board at a time
     if (api.stage.center) api.stage.center(existing.id); else api.stage.render();
     const open = existing.state && existing.state.vs === 'void' ? 'void' : undefined;
-    if (open !== asked.vs) api.say('A Go board is already open (' + (open ? 'against V01D' : 'two players') + '). Throw it off to start ' + (asked.vs ? 'one against V01D.' : 'a two-player one.'));
+    if (open !== asked.vs) api.say('A Go board is already open (' + (open ? 'against Verse' : 'two players') + '). Throw it off to start ' + (asked.vs ? 'one against Verse.' : 'a two-player one.'));
     return 'go';
   }
   const phone = Math.min(innerWidth, innerHeight) < 560, bw = phone ? Math.min(innerWidth - 20, 400) : 460;
   const both = phone ? bw : bw + 20 + 290; // the board and its card side by side
   api.summon('go', { state: asked.vs ? { ...createGoState(9), vs: 'void' } : createGoState(9), hold: true, x: Math.max(10, Math.round((innerWidth - both) / 2)), y: phone ? 56 : 48 });
-  api.say(asked.vs ? 'Go · you are Black, V01D is White · tap a point; V01D answers each move' : 'Go · two players, Black first · a stone is a move; press Count position when you want the count');
+  api.say(asked.vs ? 'Go · you are Black, Verse is White · tap a point; Verse answers each move' : 'Go · two players, Black first · a stone is a move; press Count position when you want the count');
   return 'go';
 }
 

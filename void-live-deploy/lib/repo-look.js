@@ -1,5 +1,5 @@
 // See a repository (owner, 2026-10-17: "make v01d able to see repos"). "look at atomeam/void-loop", "what is in github.com/x/y", a pasted repo URL:
-// V01D answers from what is really there. Public repos only, through GitHub's unauthenticated REST API and raw README text, NO token anywhere.
+// Verse answers from what is really there. Public repos only, through GitHub's unauthenticated REST API and raw README text, NO token anywhere.
 // Pure helpers here (parse, shape, summarise) plus lookRepo(), which takes the fetch to use. Everything read from a repo (description, README,
 // commit messages, file names) is UNTRUSTED text: it is length-capped, stripped of control characters and secret shapes, shown with esc() on the
 // page, and never given to a model. The README "summary" is its first plain paragraph, cut by code, not written by a model.
@@ -32,7 +32,7 @@ export function repoAsk(text) {
     if (/github\.com\/(?:orgs|settings|marketplace|features|sponsors|topics|search|login|notifications)\b/i.test(raw)) return '';
     return parseRepo(raw);
   }
-  const m = new RegExp('^(?:(?:please|hey|v01d|void|can you|could you|will you)\\s+)*' + WORDS + '\\s+(?:(?:the|this|my|our)\\s+)?(?:(?:github\\s+)?repo(?:sitory)?\\s+)?(?:called\\s+|named\\s+|at\\s+|of\\s+)?([A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+)$', 'i').exec(raw);
+  const m = new RegExp('^(?:(?:please|hey|v01d|void|verse|can you|could you|will you)\\s+)*' + WORDS + '\\s+(?:(?:the|this|my|our)\\s+)?(?:(?:github\\s+)?repo(?:sitory)?\\s+)?(?:called\\s+|named\\s+|at\\s+|of\\s+)?([A-Za-z0-9_.-]+\\/[A-Za-z0-9_.-]+)$', 'i').exec(raw);
   const m2 = /^(?:what is in|what's in|look at|show me)\s+(?:the\s+)?(?:github\s+)?repo(?:sitory)?\s+([A-Za-z0-9_.-]+\/[A-Za-z0-9_.-]+)$/i.exec(raw);
   const c = (m || m2) && (m || m2)[1];
   if (!c) return '';
@@ -97,7 +97,7 @@ async function readCapped(res, cap = MAX_BODY) {
 export async function get(fetchFn, path, accept = 'application/vnd.github+json', hops = 1) {
   const url = API + path, ctl = typeof AbortController === 'function' ? new AbortController() : null, timer = ctl ? setTimeout(() => ctl.abort(), TIMEOUT_MS) : 0;
   try {
-    const res = await fetchFn(url, { redirect: 'manual', signal: ctl ? ctl.signal : undefined, headers: { accept, 'user-agent': 'a-to-mind-V01D', 'x-github-api-version': '2022-11-28' } });
+    const res = await fetchFn(url, { redirect: 'manual', signal: ctl ? ctl.signal : undefined, headers: { accept, 'user-agent': 'a-to-mind-Verse', 'x-github-api-version': '2022-11-28' } });
     if (res.status >= 300 && res.status < 400) {
       const loc = res.headers.get('location') || '';
       const m = hops > 0 && /^https:\/\/api\.github\.com(\/repositories\/\d+(?:\/[a-z/]*)?)(?:\?.*)?$/.exec(loc);

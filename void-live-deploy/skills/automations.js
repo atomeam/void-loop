@@ -48,7 +48,7 @@ function mount(th, stageApi) {
   const tok = ownerToken();
   stageApi.bindDrag(card, th);
   stageApi.stage.appendChild(card);
-  if (!tok) { status.textContent = 'Automations are the owner’s. Unlock V01D first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
+  if (!tok) { status.textContent = 'Automations are the owner’s. Unlock Verse first (unlock <key>, or sign in with your passkey), then ask again.'; return; }
 
   let data = null;
   const call = async (method, body) => {
@@ -119,7 +119,7 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'automations');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); }
   else api.summon('automations', { center: true });
-  api.say('Automations · when this happens, do that · V01D runs them itself');
+  api.say('Automations · when this happens, do that · Verse runs them itself');
   return 'automations';
 }
 

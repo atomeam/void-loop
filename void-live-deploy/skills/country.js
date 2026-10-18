@@ -136,7 +136,7 @@ async function run(text, api) {
     el.innerHTML = '<h2>' + esc(q.name.replace(/\b\w/g, (x) => x.toUpperCase())) + '</h2><div class="sub">' + (known && q.want === 'currencies' ? 'Currency' : 'Capital') + '</div><div style="font-size:44px;font-weight:300;line-height:1.15;margin:6px 0 8px">' + esc(big) + '</div>'
       + (CAPITAL_ZONES[key] ? '<p>Time there now: ' + esc(timeLine(key, [], -new Date().getTimezoneOffset())) + '</p>' : '')
       + (answers ? '' : waiting ? '<p>Looking up the ' + esc(q.want) + '…</p>' : '<p>The country service didn\'t answer just now, so only the capital is shown. Ask again in a moment for ' + esc(q.want) + '.</p>')
-      + '<div class="src">' + (waiting ? 'From V01D\'s built-in list, checking REST Countries…' : 'From V01D\'s built-in list (the live source, REST Countries, didn\'t answer)') + '</div>';
+      + '<div class="src">' + (waiting ? 'From Verse\'s built-in list, checking REST Countries…' : 'From Verse\'s built-in list (the live source, REST Countries, didn\'t answer)') + '</div>';
     return answers ? 'answered' : 'shown'; };
   builtIn(true);
   try {

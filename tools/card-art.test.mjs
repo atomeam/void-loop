@@ -1,4 +1,4 @@
-// V01D card art (lib/card-art.js): deterministic, every kind draws, safe to inline. Run: node --test tools/card-art.test.mjs
+// Verse card art (lib/card-art.js): deterministic, every kind draws, safe to inline. Run: node --test tools/card-art.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { artSvg, KINDS, kindWord, seasonOf, rarityKey } from '../void-live-deploy/lib/card-art.js';

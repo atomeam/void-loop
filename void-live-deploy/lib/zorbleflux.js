@@ -1,4 +1,4 @@
-// zorbleflux - the pure half of V01D's own game (asked by Void: "I want to learn 'zorbleflux'"; the owner, 2026-10-18: "we should
+// zorbleflux - the pure half of Verse's own game (asked by Void: "I want to learn 'zorbleflux'"; the owner, 2026-10-18: "we should
 // just have a zorbleflux game"). You pilot a glowing zorb through a flux field. Motes of flux drift on a seeded curl-noise flow:
 // collect them to grow and to raise your multiplier; dark bleeds drift slowly and shrink you on touch. A round is 45 seconds of
 // game time. No DOM, no clock, no Math.random: everything is a function of the seed and the steps taken (tools/zorbleflux.test.mjs).
@@ -105,5 +105,5 @@ export function parseBest(v) { const n = Math.floor(+v); return Number.isFinite(
 
 /** the one line the card shows while playing. */
 export const status = (s) => s.over ? 'Round over: ' + s.score + ' flux' : Math.ceil(ROUND - s.t) + 's · ' + s.score + ' flux · x' + s.mult.toFixed(2).replace(/\.?0+$/, '');
-export const ABOUT = 'A zorbleflux is the thing V01D got asked about 154 times and could not answer, so it made it a game.';
+export const ABOUT = 'A zorbleflux is the thing Verse got asked about 154 times and could not answer, so it made it a game.';
 export const RULES = 'Steer the zorb. Collect flux to grow and score more. Avoid the dark bleeds. 45 seconds.';

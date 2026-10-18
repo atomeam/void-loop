@@ -12,7 +12,7 @@ export const GW = 64, GH = 48, CARDS = 5, POP = 6, TRIAL = 60, MIND_EVERY = 2;
 export const SPEC = { feed: [0.018, 0.062], kill: [0.045, 0.066], diffU: [0.05, 0.11], diffV: [0.16, 0.22], attract: [0, 0.004] };
 export const LABELS = ['idea', 'stage', 'card', 'mind', 'you'];
 // family gravity (asked by Void, 2026-10-17: "cards with matching skill family IDs drift toward a common center"): each card belongs to
-// one of V01D's skill families (skills/families.json names), and cards of one family are pulled toward the centre of the others until
+// one of Verse's skill families (skills/families.json names), and cards of one family are pulled toward the centre of the others until
 // they sit REST apart; a card alone in its family feels nothing, and a held card pulls its family to it without being moved.
 export const FAMILIES = { idea: 'Void itself', mind: 'Void itself', stage: 'The stage', card: 'The stage', you: 'Out in the world' };
 export const GRAVITY = 0.0008, REST = 0.14;

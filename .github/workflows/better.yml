@@ -1,6 +1,6 @@
-# Is V01D getting better? Once a day tools/better.mjs measures five parts from the repo's own evidence (lib/better.js), appends
+# Is Verse getting better? Once a day tools/better.mjs measures five parts from the repo's own evidence (lib/better.js), appends
 # the row to void-live-deploy/void.better.json (the growth card's "Better:" line) and writes today's row with its trend to
-# domains/void.better.json (the builders, tools/will.py's boost, tools/pit-crew.mjs); the pit crew's dry run then lists V01D's
+# domains/void.better.json (the builders, tools/will.py's boost, tools/pit-crew.mjs); the pit crew's dry run then lists Verse's
 # small asks in domains/void.pit-crew.json. Counts only, no network, no secret, no spend (#906 and the better-score branch, one tool).
 name: Better
 
@@ -31,7 +31,7 @@ jobs:
         run: node --test tools/better.test.mjs tools/pit-crew.test.mjs
       - name: Measure and write today's row
         run: node tools/better.mjs --write | tee -a "$GITHUB_STEP_SUMMARY"
-      - name: Pit crew dry run (V01D's small asks, nothing queued)
+      - name: Pit crew dry run (Verse's small asks, nothing queued)
         run: node tools/pit-crew.mjs | tee -a "$GITHUB_STEP_SUMMARY"
       - name: Commit what changed
         run: |

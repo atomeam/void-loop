@@ -73,7 +73,7 @@ function saveSnap(s) { try { localStorage.setItem(SNAP_KEY, JSON.stringify(s)); 
 const when = (iso) => { const d = new Date(iso); return isNaN(d) ? iso : d.toLocaleString(undefined, { year: 'numeric', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' }); };
 export function trialwatchHtml(esc, data, from) {
   const head = from === 'live' ? 'Checked live from ClinicalTrials.gov on ' + when(data.at) : from === 'snapshot' ? 'ClinicalTrials.gov could not be reached; showing the last check, from ' + when(data.at)
-    : from === 'daily' ? 'ClinicalTrials.gov could not be reached from here; showing V01D\'s own daily check, from ' + when(data.at) : '';
+    : from === 'daily' ? 'ClinicalTrials.gov could not be reached from here; showing Verse\'s own daily check, from ' + when(data.at) : '';
   return '<h2>Longevity trial watch</h2><div class="sub">' + esc(head) + '</div>'
     + WATCH.map((w) => '<h3 style="margin:14px 0 4px;font-size:15px">' + esc(w.topic) + '</h3>'
       + (w.note ? '<p>' + esc(w.note) + '</p>' : '')

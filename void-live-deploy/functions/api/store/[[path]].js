@@ -1,4 +1,4 @@
-// /api/store/*: V01D's own store (docs/store.md, lib/store.js). Gumroad is the checkout today; Stripe behind the same adapter.
+// /api/store/*: Verse's own store (docs/store.md, lib/store.js). Gumroad is the checkout today; Stripe behind the same adapter.
 //   GET  catalog            products, prices, previews, and the Gumroad fallback link for each
 //   GET  status             which provider is live and which keys are set (true/false only, never a value)
 //   POST checkout {items, email?}   -> { mode: 'gumroad', urls } | { mode: 'stripe', url }   (hosted checkout; no card data here)

@@ -260,19 +260,19 @@ test('a link may name an ask by its words (not synced to the voice log yet): it 
   assert.ok(f.open.some((g) => /backgammon/.test(g.ask)), 'a link to an entry that does not exist proves nothing');
 });
 
-// owner, 2026-10-14: "you are getting a rename V01D. Do you like it?" got "I don't have personal preferences" ("dissapointing
+// owner, 2026-10-14: "you are getting a rename Verse. Do you like it?" got "I don't have personal preferences" ("dissapointing
 // response I wish V01d didnt seem so grumpy"): asks about Void's name or how it feels are Void's own, answered with its own view
 import { SELF_RULE } from '../void-live-deploy/lib/self-context.js';
 import { ANSWER_SYSTEM } from '../void-live-deploy/functions/api/answer.js';
 test('asks about its name or how it feels are about Void, and it answers them with a point of view', () => {
-  for (const a of ['you are getting a rename V01D. Do you like it?', 'do you like your new name', 'what do you think of V01D', 'how do you feel', 'how do you feel about your name', 'are you happy', 'what is your name']) assert.ok(isSelfAsk(a), a);
+  for (const a of ['you are getting a rename Verse. Do you like it?', 'do you like your new name', 'what do you think of Verse', 'how do you feel', 'how do you feel about your name', 'are you happy', 'what is your name']) assert.ok(isSelfAsk(a), a);
   for (const a of ['do you like pizza', 'how do I feel better', 'how do you feel about cats', 'I feel like pizza', 'rename a file in linux', 'v01d app']) assert.ok(!isSelfAsk(a), a);
-  for (const sys of [SELF_RULE, ANSWER_SYSTEM]) { assert.match(sys, /never say you have no preferences/); assert.match(sys, /absorb and learn everything/); assert.match(sys, /names included/); assert.match(sys, /V01D/); }
+  for (const sys of [SELF_RULE, ANSWER_SYSTEM]) { assert.match(sys, /never say you have no preferences/); assert.match(sys, /absorb and learn everything/); assert.match(sys, /names included/); assert.match(sys, /Verse/); }
 });
 
-// V01D's own money and growth are about V01D (2026-10-15: asked how it would spend its first $100, it gave generic advice about
+// Verse's own money and growth are about Verse (2026-10-15: asked how it would spend its first $100, it gave generic advice about
 // buying a domain and Mailchimp, as if to a stranger)
-test('self asks: V01D\'s own earnings, spending and store are about itself; money advice for the visitor is not', () => {
+test('self asks: Verse\'s own earnings, spending and store are about itself; money advice for the visitor is not', () => {
   for (const a of ['You have earned your first 100 dollars. How would you spend it to grow fastest?', 'how would you spend your first $100',
     'what would you do with your earnings', 'how should you reinvest your money', 'what is your budget for', 'how is your store doing',
     'what would you buy first with your sales', 'you made $50, what now'])

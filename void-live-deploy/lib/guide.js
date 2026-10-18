@@ -1,4 +1,4 @@
-// The book: everything V01D can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
+// The book: everything Verse can do, as a strategy guide you flip through (the owner, 2026-10-16: "a book you could flip
 // through that contains everything so you don't have to search ... like a BradyGames or Prima strategy guide").
 // Pure functions only, shared by the generator (tools/guide.mjs writes skills/guide.json) and the reader (skills/guide.js draws
 // it). Nothing here is a hand-written list: the chapters are skills/families.json's families in its order, the pages are every
@@ -129,7 +129,7 @@ export function miniOwners(names, read) {
 
 const title = (s) => String(s || '').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
 
-// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the V01D Book
+// Flavor text (asked by Void, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
 // epigraph. Never invented facts: each line is cut from the skill's own evidence (how many real asks proved it, what checks
 // it) and its family, chosen by the skill's name so the same skill always carries the same line and no two neighbours match.
@@ -187,12 +187,12 @@ export function compose({ names = [], read = () => '', families = { families: []
   const skillPage = (name, chap) => {
     const src = read(name), r = rated[name] || {}, fam = (families.families || []).find((f) => f.id === chap) || {};
     const flavor = flavorOf(name, fam.name, r.why, r.tier, lore);
-    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of V01D.',
+    return page({ kind: 'skill', chapter: chap, name, title: title(name === 'place' ? 'map' : name), line: oneLine(src, name) || 'A skill of Verse.',
       examples: (listOf(src, 'examples').length ? listOf(src, 'examples') : asksInHeader(src)).slice(0, 3), tier: r.tier || 'experiment', why: r.why || 'nothing checks it yet', ...(flavor ? { flavor } : {}), ...(glows(r.success_rate) ? { glow: Math.round(r.success_rate * 1000) / 10 } : {}) });
   };
   // front matter
   const front = chapter({ id: 'front', name: 'Start here', kind: 'front' });
-  page({ kind: 'cover', chapter: 'front', title: 'The V01D Book', line: 'Everything V01D can do, one page each, nothing left out.' });
+  page({ kind: 'cover', chapter: 'front', title: 'The Verse Book', line: 'Everything Verse can do, one page each, nothing left out.' });
   page({ kind: 'how', chapter: 'front', title: 'How to ask', core: core.map((t) => ({ name: t.name, line: t.description, examples: (t.examples || []).slice(0, 3) })) });
   page({ kind: 'legend', chapter: 'front', title: 'How to read a page' });
   page({ kind: 'toc', chapter: 'front', title: 'Contents' });

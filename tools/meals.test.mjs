@@ -1,4 +1,4 @@
-// V01D's body asks (skills/nutrition.js, 2026-10-16): "plan my meals" splits the day's calories into meals (ask-20261014-1453-1),
+// Verse's body asks (skills/nutrition.js, 2026-10-16): "plan my meals" splits the day's calories into meals (ask-20261014-1453-1),
 // the BMI card keeps a weight trend only when "save this" is tapped (ask-20261014-2248-1) and links its band to the calorie
 // card with the same height and weight (ask-20261014-2248-2). Run: node --test tools/meals.test.mjs
 import { test } from 'node:test';

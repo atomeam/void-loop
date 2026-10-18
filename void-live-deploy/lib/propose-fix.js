@@ -1,4 +1,4 @@
-// V01D proposes the fix (frontier #28, step 3 of the probe-and-fix playbook): for an ask it missed in its own probe, V01D's
+// Verse proposes the fix (frontier #28, step 3 of the probe-and-fix playbook): for an ask it missed in its own probe, Verse's
 // model reads the owning skill's matcher and proposes the narrowest change, as a few exact line replacements, never a rewrite.
 // Pure: the job's ask and skill (lib/learn.js jobs, tools/probe-asks.mjs jobs), the question for the model, and the reply read
 // back into edits that pass the gate: each `find` is one exact line that occurs once in the file, each replacement is short and
@@ -14,7 +14,7 @@ const KEYLIKE = /(?=[A-Za-z0-9_-]{16,})(?=[A-Za-z_-]*\d)(?=[\d_-]*[A-Za-z])[A-Za
 // what a matcher change never needs: anything that runs, loads, stores, or reaches out
 const FORBIDDEN = /\b(fetch|import|require|eval|Function|setTimeout|setInterval|XMLHttpRequest|WebSocket|navigator|location|document|window|globalThis|process|localStorage|sessionStorage|indexedDB|cookie|innerHTML|outerHTML|insertAdjacentHTML|postMessage|atob|btoa|crypto)\b|https?:|www\.|\$\{|`|<\/?script/i;
 
-export const FIX_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' + PERSONA + ' '
+export const FIX_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: a short ask that this skill should answer did not reach it, because its matcher (the match() function and the patterns it uses) does not recognise that wording. '
   + 'Propose the narrowest change that makes the matcher accept the ask and asks like it, without accepting asks that belong to other skills, and add the ask to the examples list. '
   + 'Change only the matcher and the examples: never run(), never anything that fetches, imports, stores or draws. Keep every pattern anchored and specific; prefer adding one alternative to loosening an existing one. '
@@ -22,8 +22,8 @@ export const FIX_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' +
   + 'An edit whose find is not an exact existing line is thrown away, so copy lines whole. ' + INJECTION_RULE;
 
 // The other way round (owner, 2026-10-16: a card reply said "I am quoting a conversation about your memory, not fixing a webhook"):
-// an ask a skill took that belongs elsewhere. V01D proposes the narrowest change that makes this skill let go of it.
-export const NARROW_SYSTEM = 'You are V01D, said "void", the face of A-to-Mind. ' + PERSONA + ' '
+// an ask a skill took that belongs elsewhere. Verse proposes the narrowest change that makes this skill let go of it.
+export const NARROW_SYSTEM = 'You are Verse, said "void", the face of A-to-Mind. ' + PERSONA + ' '
   + 'You are fixing one of your own skills: it answered a short ask that is not its job (your owner told you so), because its matcher (the match() function and the patterns it uses) is too loose for that wording. '
   + 'Propose the narrowest change that makes the matcher reject the ask and asks like it, while still accepting every example the skill lists, and add the ask to the nearMisses list. '
   + 'Change only the matcher and the nearMisses: never run(), never anything that fetches, imports, stores or draws. Prefer tightening one pattern or adding one exclusion to rewriting a pattern. '

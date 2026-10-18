@@ -1,4 +1,4 @@
-// /api/video: V01D's video search and link lookup (skills/video.js; owner, 2026-10-15: "V01D should be the only site you need").
+// /api/video: Verse's video search and link lookup (skills/video.js; owner, 2026-10-15: "Verse should be the only site you need").
 //   GET /api/video?q=moon+landing&p=dailymotion   search one platform; p is youtube, dailymotion, archive, peertube, odysee (searchable),
 //                                                 or rumble, vimeo, twitch (no public search API: the answer carries the platform's own search link)
 //   GET /api/video?url=<a rumble/youtube/vimeo/dailymotion page>   its title, channel, length, thumbnail and (Rumble) the embed id, from the
@@ -11,7 +11,7 @@ import { parseVideoUrl, hitsOf, PLATFORMS, OPEN_SEARCH } from '../../lib/video.j
 
 const JSON_H = { 'content-type': 'application/json; charset=utf-8', 'cache-control': 'public, max-age=21600' };
 const reply = (o, status = 200) => new Response(JSON.stringify(o), { status, headers: JSON_H });
-const UA = { 'user-agent': 'V01D/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
+const UA = { 'user-agent': 'Verse/1.0 (+https://a-to-mind.com)', accept: 'application/json' };
 async function getJson(u) { const r = await fetch(u, { headers: UA, cf: { cacheTtl: 21600 } }); if (!r.ok) throw new Error('upstream ' + r.status); return r.json(); }
 
 export async function search(platform, q, env) {
@@ -29,7 +29,7 @@ export async function search(platform, q, env) {
   if (platform === 'archive') return { ok: true, platform, searchUrl, hits: hitsOf(platform, await getJson('https://archive.org/advancedsearch.php?q=' + encodeURIComponent('(' + q + ') AND mediatype:movies') + '&fl[]=identifier&fl[]=title&fl[]=creator&fl[]=runtime&rows=8&output=json')) };
   if (platform === 'peertube') return { ok: true, platform, searchUrl, hits: hitsOf(platform, await getJson('https://sepiasearch.org/api/v1/search/videos?count=8&nsfw=false&search=' + e)) };
   if (platform === 'odysee') return { ok: true, platform, searchUrl, hits: hitsOf(platform, await getJson('https://lighthouse.odysee.tv/search?size=8&from=0&claimType=file&mediaType=video&nsfw=false&resolve=true&s=' + e)) };
-  return { ok: true, platform, hits: [], searchUrl, note: PLATFORMS[platform].label + ' has no public search API; open its search, then paste any video link here to play it in V01D' };
+  return { ok: true, platform, hits: [], searchUrl, note: PLATFORMS[platform].label + ' has no public search API; open its search, then paste any video link here to play it in Verse' };
 }
 
 // Keyless YouTube search (owner, 2026-10-15: "theres prolly a workaround for that youtube problem"), used only while no
@@ -69,7 +69,7 @@ export async function keylessYouTube(q, searchUrl, hosts = PIPED, inv = INVIDIOU
 const OEMBED = { youtube: 'https://www.youtube.com/oembed?format=json&url=', rumble: 'https://rumble.com/api/Media/oembed.json?url=', vimeo: 'https://vimeo.com/api/oembed.json?url=', dailymotion: 'https://www.dailymotion.com/services/oembed?url=' };
 export async function lookup(url) {
   const v = parseVideoUrl(url);
-  if (!v || !OEMBED[v.platform]) return { ok: false, error: 'not a link V01D looks up' };
+  if (!v || !OEMBED[v.platform]) return { ok: false, error: 'not a link Verse looks up' };
   const page = v.page || url;
   const j = await getJson(OEMBED[v.platform] + encodeURIComponent(page));
   if (v.platform === 'rumble' && !v.id) { const m = String(j.html || '').match(/rumble\.com\/embed\/(v[a-z0-9]+)/i); if (!m) return { ok: false, error: 'Rumble did not give an embed for that link' }; v.id = m[1]; delete v.needsOembed; }

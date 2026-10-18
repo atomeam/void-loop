@@ -46,7 +46,7 @@ export function create({ seed = (Math.random() * 4294967296) >>> 0, stack = 500 
   return deal(s);
 }
 const other = (p) => (p === 'you' ? 'void' : 'you');
-const say = (s, who, text, extra = {}) => { s.log.push({ who: who === 'you' ? 'You' : who === 'void' ? 'V01D' : '', text, ...extra }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
+const say = (s, who, text, extra = {}) => { s.log.push({ who: who === 'you' ? 'You' : who === 'void' ? 'Verse' : '', text, ...extra }); if (s.log.length > 120) s.log.splice(0, s.log.length - 120); };
 
 export function deal(s0) {
   const s = s0.cards ? clone(s0) : s0;
@@ -59,7 +59,7 @@ export function deal(s0) {
   const sb = s.button, bb = other(sb);
   post(s, sb, SB); post(s, bb, BB); s.raises = 1;
   s.toAct = sb;
-  say(s, null, 'Hand ' + s.hand + ': ' + (sb === 'you' ? 'you post' : 'V01D posts') + ' the small blind ' + SB + ', ' + (bb === 'you' ? 'you post' : 'V01D posts') + ' the big blind ' + BB);
+  say(s, null, 'Hand ' + s.hand + ': ' + (sb === 'you' ? 'you post' : 'Verse posts') + ' the small blind ' + SB + ', ' + (bb === 'you' ? 'you post' : 'Verse posts') + ' the big blind ' + BB);
   return s;
 }
 function post(s, p, n) { const k = Math.min(n, s.stacks[p]); s.stacks[p] -= k; s.bet[p] += k; s.pot += k; }
@@ -102,7 +102,7 @@ function nextStreet(s) {
 }
 function showdown(s) {
   const y = evaluate([...s.cards.you, ...s.board]), v = evaluate([...s.cards.void, ...s.board]), c = compare(y, v);
-  say(s, null, 'Showdown: you have ' + HANDS[y[0]] + ' (' + s.cards.you.map(cardName).join(' ') + '), V01D has ' + HANDS[v[0]] + ' (' + s.cards.void.map(cardName).join(' ') + ')');
+  say(s, null, 'Showdown: you have ' + HANDS[y[0]] + ' (' + s.cards.you.map(cardName).join(' ') + '), Verse has ' + HANDS[v[0]] + ' (' + s.cards.void.map(cardName).join(' ') + ')');
   return win(s, c > 0 ? 'you' : c < 0 ? 'void' : null, { you: HANDS[y[0]], void: HANDS[v[0]] });
 }
 function win(s, p, hands) {

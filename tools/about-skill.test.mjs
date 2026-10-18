@@ -1,5 +1,5 @@
-// "tell me about <a skill of V01D's>" (asked by Void): lib/about-skill.js and skills/about-skill.js against the real book, the real
-// ratings and the real overlap pairs: every example resolves to its skill, every near miss (Wikipedia's topics, V01D's self page) to
+// "tell me about <a skill of Verse's>" (asked by Void): lib/about-skill.js and skills/about-skill.js against the real book, the real
+// ratings and the real overlap pairs: every example resolves to its skill, every near miss (Wikipedia's topics, Verse's self page) to
 // nothing, the resolve rule holds (named: any page; tagged or bare: an exact hit, bare also a coined name), and the card's facts are right.
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -41,7 +41,7 @@ test('every example of the skill resolves to the skill it names', () => {
   for (const [ask, name] of Object.entries(history)) { assert.equal(nameOf(ask), null, ask + ': not an about-ask'); assert.equal(historyAsk(ask).game, name, ask); assert.ok(skill.match(ask, ask), ask + ' matches'); }
 });
 
-test('every near miss resolves to nothing: the world keeps its route, V01D its self page', () => {
+test('every near miss resolves to nothing: the world keeps its route, Verse its self page', () => {
   for (const ask of skill.nearMisses) if (ask !== 'tell me about zorbleflux') assert.equal(nameOf(ask), null, ask);
   // "tell me about zorbleflux" is zorbleflux's own (ranked first); the rule would also leave it: a bare one-word name
   assert.equal(nameOf('tell me about zorbleflux'), null);

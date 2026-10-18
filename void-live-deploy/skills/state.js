@@ -1,5 +1,5 @@
 /**
- * state skill - the one place that says what V01D keeps on this device (asked by Void, 2026-10-16: "Connect the memory card
+ * state skill - the one place that says what Verse keeps on this device (asked by Void, 2026-10-16: "Connect the memory card
  * session persistence to a centralized 'state' skill"). lib/state.js names every browser-storage key once; the memory card
  * reads its session through it, and this card lists them: what each holds, whether it is kept, how big. A secret (the owner
  * key, a member session) shows only as kept or not, never its value. Read-only; nothing is sent anywhere.
@@ -8,7 +8,7 @@
 import { summary, sessionToken } from '../lib/state.js';
 
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:please\s+)?(?:show|open)\s+(?:me\s+)?(?:my|the|your)\s+state(?:\s+card)?|what\s+(?:do\s+you\s+|does\s+(?:void|v01d)\s+)?(?:keep|store|save|remember)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what(?:'s| is)\s+(?:kept|stored|saved)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what\s+state\s+do\s+you\s+keep)$/;
+const ASK_RE = /^(?:(?:please\s+)?(?:show|open)\s+(?:me\s+)?(?:my|the|your)\s+state(?:\s+card)?|what\s+(?:do\s+you\s+|does\s+(?:void|v01d|verse)\s+)?(?:keep|store|save|remember)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what(?:'s| is)\s+(?:kept|stored|saved)\s+(?:on|in)\s+(?:this|my)\s+(?:device|browser)|what\s+state\s+do\s+you\s+keep)$/;
 /** the ask wants the list of what is kept on this device. Pure. */
 export const stateOf = (text) => ASK_RE.test(CLEAN(text));
 

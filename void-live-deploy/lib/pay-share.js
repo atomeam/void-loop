@@ -10,7 +10,7 @@ const FREE_RE = /^readme(\.[a-z0-9]+)?$/i;
 
 export const isShareProduct = (p) => !!(p && p.pwyw && p.cents > 0 && Array.isArray(p.contents) && p.contents.length);
 
-/** the stable order: p.order (V01D's value ranking, starter items first) if given, else contents order; free items lead. */
+/** the stable order: p.order (Verse's value ranking, starter items first) if given, else contents order; free items lead. */
 export function shareItems(p) {
   const names = (Array.isArray(p.order) && p.order.length ? p.order : p.contents || []).filter((n, i, a) => typeof n === 'string' && a.indexOf(n) === i);
   const freeSet = new Set([...(p.freeItems || []), ...names.filter((n) => FREE_RE.test(n))]);

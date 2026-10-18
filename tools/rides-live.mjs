@@ -1,4 +1,4 @@
-// The first live external rung for the "Out in the world" family (owner, 2026-10-16; V01D's own reflection: "turn those 3 tested
+// The first live external rung for the "Out in the world" family (owner, 2026-10-16; Verse's own reflection: "turn those 3 tested
 // skills into 3 proven ones by actually interacting with external APIs or real-world data"). Once a day, from GitHub's network, the
 // rides family asks a real routing service one real question: how long is the drive from SFO to downtown San Francisco right now.
 // The service is the public OSRM demo router (router.project-osrm.org): no key, no account, no person in the loop. The answer is

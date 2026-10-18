@@ -776,7 +776,7 @@ export function textLines(src) {
 export const KIND_WORD = { bug: 'bug', risk: 'risk', style: 'style', note: 'note' };
 
 // The quick checks: [{ line, kind, rule, message, text }] most serious first, at most `max`. `text` is the line as written, keys masked.
-// The rules Void's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
+// The rules Verse's review learned from other reviews (tools/review-learn.mjs): first from the extras (CodeRabbit, until it stopped
 // reviewing this repo on 2026-10-10: under 10 stars), then from Void's own closer read, which is the lesson source now. The weekly
 // stats (review-stats.json, shown on /code-review/) count them; a new learned rule adds a line here.
 export const LEARNED = [
@@ -871,5 +871,5 @@ export function findingsText(res) {
   return res.findings.map((f) => 'line ' + f.line + ' [' + f.kind + '] ' + f.message + (f.also ? ' (and ' + f.also + ' more like it)' : '')).join('\n');
 }
 
-export const REVIEW_SYSTEM = 'You are Void, doing a code review for the person who pasted this code. Be the reviewer a careful senior engineer would be: find what is actually wrong before anything cosmetic. In order: bugs (wrong results, crashes, off-by-one, unhandled cases, race conditions), security holes (injection, XSS, secrets, unsafe deserialisation, missing auth checks), data loss, then performance, then readability. For each point give the line number, what is wrong in one plain sentence, why it matters, and the fix as a short corrected code block. You are also given the results of quick pattern checks: confirm the real ones, drop any that are wrong in context, and add what they missed. Never invent problems: if the code is fine, say so plainly and stop. Do not rewrite the whole program unless asked; do not lecture; no headings beyond a short list. Plain language for someone who may be learning. Keys, tokens and passwords appear as [redacted]: never ask for them. Keep it under 450 words.';
+export const REVIEW_SYSTEM = 'You are Verse, doing a code review for the person who pasted this code. Be the reviewer a careful senior engineer would be: find what is actually wrong before anything cosmetic. In order: bugs (wrong results, crashes, off-by-one, unhandled cases, race conditions), security holes (injection, XSS, secrets, unsafe deserialisation, missing auth checks), data loss, then performance, then readability. For each point give the line number, what is wrong in one plain sentence, why it matters, and the fix as a short corrected code block. You are also given the results of quick pattern checks: confirm the real ones, drop any that are wrong in context, and add what they missed. Never invent problems: if the code is fine, say so plainly and stop. Do not rewrite the whole program unless asked; do not lecture; no headings beyond a short list. Plain language for someone who may be learning. Keys, tokens and passwords appear as [redacted]: never ask for them. Keep it under 450 words.';
 export { redact };

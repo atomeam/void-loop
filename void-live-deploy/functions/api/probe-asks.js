@@ -1,6 +1,6 @@
-// V01D writes its own probe asks (frontier #28, step 2; lib/probe-asks.js). Owner only; nothing is stored.
+// Verse writes its own probe asks (frontier #28, step 2; lib/probe-asks.js). Owner only; nothing is stored.
 // POST { family?: '<id or name>', examples?: [{ask, want}], wants?: ['skill:…'] }
-//   -> { family: { id, name }, asks: [{ ask, want }], model }   bench-shaped asks V01D wrote for that family
+//   -> { family: { id, name }, asks: [{ ask, want }], model }   bench-shaped asks Verse wrote for that family
 // The family comes from /skills/families.json (the least proven one when none is named); the examples and wants are
 // builder-written benchmark data the caller (tools/probe-asks.mjs) reads from tools/bench.json, since the page does not carry
 // it. 400 for an unknown family, 503 when no model is bound or it did not answer, 502 when it answered nothing usable.
@@ -31,8 +31,8 @@ export async function onRequestPost({ request, env }) {
       max_tokens: 1200, chat_template_kwargs: { enable_thinking: false },
     });
     said = pick(r);
-  } catch (e) { await recordShortfall(env, 'probe-asks', reasonOf(e)); return new Response('V01D could not write asks just now', { status: 503 }); }
+  } catch (e) { await recordShortfall(env, 'probe-asks', reasonOf(e)); return new Response('Verse could not write asks just now', { status: 503 }); }
   const asks = parseAsks(said, wants, examples);
-  if (!asks.length) return new Response('V01D wrote nothing usable', { status: 502 });
+  if (!asks.length) return new Response('Verse wrote nothing usable', { status: 502 });
   return Response.json({ family: { id: family.id, name: family.name }, asks, model: models('will') });
 }

@@ -1,5 +1,5 @@
 /**
- * dating skill - the beginning of V01D's dating track: a profile builder and an icebreaker coach that run entirely on
+ * dating skill - the beginning of Verse's dating track: a profile builder and an icebreaker coach that run entirely on
  * the page. Nothing is sent anywhere, no matching, no other people's data; adults only (an 18+ check before it opens).
  * The real dating service needs auth, verification, block/report and moderation first (docs/everything-app.md).
  * Contract: { name, examples, nearMisses, match, run }.
@@ -31,7 +31,7 @@ function run(text, api) {
   showPage((el) => {
     el.className += ' dating-card';
     const body = () => {
-      el.innerHTML = '<h2>Dating · the beginning</h2><p class="g-sub" style="font-size:12px">Step one of V01D dating: build your profile and practise openers. All on this page; nothing is sent or saved anywhere.</p>' // void-review: ok (only constant strings: the field labels are fixed in this file)
+      el.innerHTML = '<h2>Dating · the beginning</h2><p class="g-sub" style="font-size:12px">Step one of Verse dating: build your profile and practise openers. All on this page; nothing is sent or saved anywhere.</p>' // void-review: ok (only constant strings: the field labels are fixed in this file)
         + ['name|First name', 'vibe|Your vibe (e.g. curious night owl)', 'interests|Interests, commas between', 'looking|Looking for'].map((f) => { const [k, l] = f.split('|'); return '<input class="dt-' + k + '" aria-label="' + l + '" placeholder="' + l + '" style="width:100%;margin:3px 0">'; }).join('')
         + '<p style="margin-top:10px"><b>Your bio</b></p><p class="dt-bio" aria-live="polite"></p><p><b>Openers</b></p><ul class="dt-ice"></ul>'
         + '<div class="src">Matching, chat, block and report come later, with sign-in and safety review · adults only</div>';
@@ -44,7 +44,7 @@ function run(text, api) {
     };
     let ok = false; try { ok = sessionStorage.getItem(ADULT) === '1'; } catch (_) {}
     if (ok) return body();
-    el.innerHTML = '<h2>Dating</h2><p>This part of V01D is for adults only.</p><button class="g-btn dt-18" type="button">I am 18 or older</button> <button class="g-btn dt-no" type="button">I am not</button>';
+    el.innerHTML = '<h2>Dating</h2><p>This part of Verse is for adults only.</p><button class="g-btn dt-18" type="button">I am 18 or older</button> <button class="g-btn dt-no" type="button">I am not</button>';
     el.querySelector('.dt-18').addEventListener('click', () => { try { sessionStorage.setItem(ADULT, '1'); } catch (_) {} body(); });
     el.querySelector('.dt-no').addEventListener('click', () => { el.innerHTML = '<h2>Dating</h2><p>Come back when you are 18. Plenty of other things to do here.</p>'; });
   });

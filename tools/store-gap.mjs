@@ -1,9 +1,9 @@
 #!/usr/bin/env node
-// store-gap jobs become store products (lib/product-gap.js queues `store-gap:<topic>` after 3 asks for something V01D doesn't sell).
-// For each topic V01D writes a practical guide pack in its own words (asked of V01D itself at /api/answer, so it is V01D's
-// content, no third-party text), checks the files (non-trivial, no trademarks, no secrets, made by V01D), prices it with
+// store-gap jobs become store products (lib/product-gap.js queues `store-gap:<topic>` after 3 asks for something Verse doesn't sell).
+// For each topic Verse writes a practical guide pack in its own words (asked of Verse itself at /api/answer, so it is Verse's
+// content, no third-party text), checks the files (non-trivial, no trademarks, no secrets, made by Verse), prices it with
 // lib/appraise.js against comparable store items, demand and effort, and publishes it through tools/store-publish.mjs:
-// live in /store with a public changelog row that carries the "why this price" note (Adam 2026-10-15: V01D is the appraiser).
+// live in /store with a public changelog row that carries the "why this price" note (Adam 2026-10-15: Verse is the appraiser).
 // Until a paid checkout exists for new products (Stripe off, no Gumroad API key), a gap product is live as pay-what-you-want
 // with the appraised price shown as the suggested amount; the moment paid checkout is on, `suggested` becomes its price.
 //   node tools/store-gap.mjs --topic "logo design" [--asks 3] [--dry] [--no-upload]
@@ -13,10 +13,10 @@ import { appraise } from '../void-live-deploy/lib/appraise.js';
 import { secretsIn } from './secret-scan.mjs';
 
 export const slug = (t) => String(t).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
-export const title = (t) => 'V01D ' + String(t).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + ' Starter Kit';
+export const title = (t) => 'Verse ' + String(t).replace(/-/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) + ' Starter Kit';
 const enc = (s) => new TextEncoder().encode(s);
 
-/** the pack's files from V01D's own answers. ask(q) -> text */
+/** the pack's files from Verse's own answers. ask(q) -> text */
 export async function gapFiles(topic, ask) {
   const t = topic.replace(/-/g, ' ');
   const parts = [
@@ -26,7 +26,7 @@ export async function gapFiles(topic, ask) {
   ];
   const out = [];
   for (const [name, q] of parts) { const body = String((await ask(q)) || '').trim(); out.push({ name, data: enc('# ' + title(topic) + ': ' + name.replace('.md', '') + '\n\n' + body + '\n'), origin: 'v01d', text: body }); }
-  out.push({ name: 'README.txt', data: enc(title(topic) + '\n\nWritten by V01D (a-to-mind.com) because people kept asking for it. Personal use; share with credit "V01D · a-to-mind.com".\n'), origin: 'v01d', text: 'readme' });
+  out.push({ name: 'README.txt', data: enc(title(topic) + '\n\nWritten by Verse (a-to-mind.com) because people kept asking for it. Personal use; share with credit "Verse · a-to-mind.com".\n'), origin: 'v01d', text: 'readme' });
   return out;
 }
 /** file tests beyond store-publish's guard: real content, no trademarks, no secrets */
@@ -48,12 +48,12 @@ export async function buildGap(topic, { asks = 3, ask, dry = false, noUpload = f
   const comps = catalog.products.filter((p) => p.cents > 0 || p.suggested).map((p) => ({ name: p.name, cents: p.cents || p.suggested }));
   const bytes = files.reduce((s, f) => s + f.data.length, 0);
   const a = appraise({ name: title(topic), effortHours: 2, files: files.map((f) => ({ bytes: f.data.length })) }, { comps, demand: asks, sales: 0 });
-  const blurb = `A starter kit for ${topic.replace(/-/g, ' ')}: a step-by-step guide, a checklist and reusable templates, written by V01D. Pay what you want (suggested ${'$' + a.cents / 100}).`;
+  const blurb = `A starter kit for ${topic.replace(/-/g, ' ')}: a step-by-step guide, a checklist and reusable templates, written by Verse. Pay what you want (suggested ${'$' + a.cents / 100}).`;
   const r = await publish({ kind: 'templates', id, name: title(topic), blurb, dry, noUpload, noClip: false, hook: 'You kept asking, so I made it' }, files);
   if (dry) return { id, appraisal: a, bytes, row: r.row };
   const cat = readCatalog(), row = cat.products.find((p) => p.id === id);
   row.suggested = a.cents; row.appraisal = a.note + (a.flags.length ? ' [' + a.flags.join(', ') + ']' : '');
-  row.log.push({ at: new Date().toISOString(), what: 'priced by V01D: ' + a.note });
+  row.log.push({ at: new Date().toISOString(), what: 'priced by Verse: ' + a.note });
   sync(cat);
   return { id, appraisal: a, row };
 }

@@ -5,7 +5,7 @@
  * as it looks (the browser draws a copy of it, styles and all); a card it cannot paint that way (a video, a 3D view) is drawn as a plain
  * labelled box rather than left out. "qr code for this stage view" shows a QR code (lib/qr.js, made here, no service) for this page's
  * address (108): scanning it opens Void on another device. The stage itself stays on this device, a QR code cannot carry it.
- * The collectible skill still copies a V01D answer card; this one is for the things on the stage. Nothing is uploaded.
+ * The collectible skill still copies a Verse answer card; this one is for the things on the stage. Nothing is uploaded.
  */
 import { imageIntent, unionBox, pixelSize, foreignSvg, plainLayout } from '../lib/stage-image.js';
 import { qrMatrix, qrSvg } from '../lib/qr.js';

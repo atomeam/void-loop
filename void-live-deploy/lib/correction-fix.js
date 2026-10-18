@@ -4,7 +4,7 @@
 // the page is exactly: the skill's name, the family's id (from the families file, not typed), the ask run through redact(), the skill's own public
 // file (which the route needs to read the matcher), and a fixed sentence. The visitor's own words (the correction text) are never sent.
 // The click only drafts a proposal (line edits that passed the route's gate): nothing is applied here; a builder or tools/propose-fix.mjs opens
-// the pull request, and Void's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
+// the pull request, and Verse's review and automerge gates still apply. What was sent and what came back are shown. Pure apart from the fetch it is handed.
 import { redact } from './automation-fix.js';
 import { familyMap } from './corrections.js';
 export const FIX_ROUTE = '/api/propose-fix';
@@ -34,7 +34,7 @@ export function resultHtml(sent, got, esc = escHtml) {
   if (!got || !got.ok) return head + '<div class="sub" data-fix-error="1">No proposal: ' + esc(got && got.error || 'it did not answer') + '</div>';
   const j = got.json || {};
   const edits = Array.isArray(j.edits) ? j.edits.slice(0, 4) : [];
-  return head + '<div class="sub" data-fix-proposal="1">V01D proposes ' + esc(edits.length) + ' line change' + (edits.length === 1 ? '' : 's') + (Number.isFinite(+j.confidence) ? ', sure to ' + esc(Math.round(+j.confidence * 100)) + '%' : '') + ': ' + esc(j.why || '') + '</div>'
+  return head + '<div class="sub" data-fix-proposal="1">Verse proposes ' + esc(edits.length) + ' line change' + (edits.length === 1 ? '' : 's') + (Number.isFinite(+j.confidence) ? ', sure to ' + esc(Math.round(+j.confidence * 100)) + '%' : '') + ': ' + esc(j.why || '') + '</div>'
     + edits.map((e) => '<pre style="white-space:pre-wrap;font-size:12px;margin:2px 0">' + esc('- ' + e.find + '\n+ ' + e.replace) + '</pre>').join('')
     + '<div class="sub">A draft only: nothing was changed. A builder opens it as a pull request, and Void\'s review decides.</div>';
 }

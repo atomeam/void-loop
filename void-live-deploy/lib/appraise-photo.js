@@ -1,12 +1,12 @@
-// V01D values anything from a photo (frontier #30; owner, 2026-10-15: "i already asked for the coin, card, value appraisal
+// Verse values anything from a photo (frontier #30; owner, 2026-10-15: "i already asked for the coin, card, value appraisal
 // system which needs image viewing capabilities", "not just coin and card an image should value all items if asked", and
-// "V01D can decide, it's an appraiser"). The vision model (lib/models.js, path 'vision') says what it sees; this file turns
-// that description into V01D's valuation: one number, the details that moved it, and when an expert in hand is needed.
+// "Verse can decide, it's an appraiser"). The vision model (lib/models.js, path 'vision') says what it sees; this file turns
+// that description into Verse's valuation: one number, the details that moved it, and when an expert in hand is needed.
 // Honest: an estimate from a photo, never a certified appraisal or an authentication; no comparable sale is ever invented.
 // People are never priced (owner): a person in the photo, or an ask about a person, gets a sincere compliment and no number.
 // Pure: no network, no DOM. functions/api/appraise.js and skills/appraise.js use it.
 
-// what kind of thing it is, the words the model uses for it, and V01D's base value in cents for an ordinary example
+// what kind of thing it is, the words the model uses for it, and Verse's base value in cents for an ordinary example
 export const KINDS = [
   { kind: 'coin', re: /\b(coins?|penny|pennies|nickel|dime|quarter|cent|dollar coin|medal(?:lion)?|token|bullion|sovereign|doubloon)\b/i, base: 300, expert: /\b(gold|silver|ancient|roman|greek|error|double die|proof|uncirculated|rare)\b/i },
   { kind: 'trading card', re: /\b(trading cards?|pok[eé]mon|baseball cards?|basketball cards?|football cards?|magic(?: the gathering)?|yu-?gi-?oh|holo(?:graphic)?|rookie card|psa|graded)\b/i, base: 400, expert: /\b(holo|first edition|1st edition|rookie|graded|psa|signed|autograph)\b/i },
@@ -82,7 +82,7 @@ const round = (c) => { if (c < 1000) return Math.max(100, Math.round(c / 100) * 
 export const usd = (c) => '$' + (c % 100 ? (c / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : Math.round(c / 100).toLocaleString('en-US'));
 
 /**
- * V01D's valuation from what the vision model saw (and what the person typed with the photo).
+ * Verse's valuation from what the vision model saw (and what the person typed with the photo).
  * -> { kind, cents, text: '$240', says: [reasons], expert: bool, person: bool } (person: no cents, no text). Pure.
  */
 export function valueFrom(desc, note = '') {
@@ -105,7 +105,7 @@ export function appraisalText(v) {
   if (!v) return '';
   if (v.unknown) return v.says[0];
   if (v.person) return v.says[0];
-  const lines = ['V01D values this at ' + v.text + '.', 'Why: ' + v.says.join('; ') + '.'];
+  const lines = ['Verse values this at ' + v.text + '.', 'Why: ' + v.says.join('; ') + '.'];
   if (v.expert) lines.push('This kind can be worth far more or far less than a photo shows: have it looked at in hand before you sell or insure it.');
   lines.push('An estimate from one photo, not a certified appraisal or an authentication; no comparable sales were checked.');
   return lines.join(' ');
@@ -118,7 +118,7 @@ export function subjectOf(desc) {
   return first.split(/\b(?:sitting|resting|lying|placed|standing|set|displayed|photographed|shown|on|in front of|beside|next to|against|near|under|behind|atop|inside|in|with|and|held)\b/)[0].replace(/[^a-z0-9]+/g, ' ').trim();
 }
 
-/** the thing in a photo that V01D's forge can model, for a "make me one" link (asked by Void, ask-20261015-2008-1: connect an
+/** the thing in a photo that Verse's forge can model, for a "make me one" link (asked by Void, ask-20261015-2008-1: connect an
  * appraised photo to its make recipe): the longest forge name (skills/forge-rules.js THINGS, passed in so this file never loads the
  * mesher) found as whole words in the description's subject, as { key, label, ask }; null for none, and never for a person. Pure. */
 export function makeableIn(desc, things) {
@@ -129,5 +129,5 @@ export function makeableIn(desc, things) {
   return best ? { key: best.key, label: best.label, ask: 'make me a ' + best.key } : null;
 }
 
-/** the vision model's prompt: describe, never value (the valuing is V01D's own, above). Pure. */
+/** the vision model's prompt: describe, never value (the valuing is Verse's own, above). Pure. */
 export const VISION_PROMPT = 'Describe exactly what is in this photo in two or three plain sentences: what the object is, its material, brand or maker if printed on it, any year or edition marks, and its condition (scratches, wear, damage, or mint). If a person or pet is in the photo, say so first. Do not guess a price.';

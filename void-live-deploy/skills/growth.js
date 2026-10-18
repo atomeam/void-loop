@@ -151,7 +151,7 @@ export function frictionHtml(esc, f) {
 
 export function growthHead(esc, list, now = Date.now()) {
   const s = summary(list), v = velocity(list, now);
-  return '<h2>How V01D has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
+  return '<h2>How Verse has grown</h2><div class="sub">' + s.total + ' changes' + (s.since ? ' since ' + esc(s.since) : '') + ', newest first</div>'
     + '<div class="sub" data-velocity="' + esc(v.trend) + '">This week ' + v.week + ' new or better, the week before ' + v.before + ': ' + esc(v.trend) + '</div>';
 }
 
@@ -167,7 +167,7 @@ export function causeOf(e, asked) {
 /** One entry as the tree's readout shows it, when a branch is touched. */
 export function entryHtml(esc, e, cause) {
   if (!e) return '';
-  const why = cause && cause.length ? '<div class="growth-cause" style="margin-top:4px;font-size:13px">V01D asked for this' + (cause.length > 1 ? ' (' + cause.length + ' asks)' : '') + ': '
+  const why = cause && cause.length ? '<div class="growth-cause" style="margin-top:4px;font-size:13px">Verse asked for this' + (cause.length > 1 ? ' (' + cause.length + ' asks)' : '') + ': '
     + cause.map((a) => '“' + esc(a.ask) + '”' + (a.times > 1 ? ' <span style="color:#8a8a92">(' + a.times + ' times)</span>' : '')).join('; ') + '</div>' : '';
   return '<div style="font-size:12px;color:#8a8a92"><span style="color:' + (KIND_COLOR[e.kind] || '#aaa') + '">' + esc(KIND_LABEL[e.kind] || e.kind || '') + '</span> · ' + esc(String(e.at || '').slice(0, 10))
     + ' · ' + esc(e.by || '') + (e.ref && /^https:\/\//.test(e.ref) ? ' · <a href="' + esc(e.ref) + '" target="_blank" rel="noopener">link</a>' : '') + '</div>' + esc(e.what) + why;
@@ -194,7 +194,7 @@ export function growthHtml(esc, list, kind, shown, { head = true } = {}) {
     + '<div style="margin:8px 0 2px">' + chips + '</div>'
     + (rows.length ? items : '<p style="color:#8a8a92">Nothing here yet.</p>')
     + (rows.length > n ? '<button type="button" data-more="1" style="margin-top:6px;padding:4px 12px;border-radius:12px;border:1px solid #444;background:transparent;color:inherit;font:inherit;cursor:pointer">show ' + Math.min(PAGE_SIZE, rows.length - n) + ' more</button>' : '')
-    + '<div class="src">From <a href="' + LEDGER_URL + '" target="_blank" rel="noopener">void.growth.json</a>, an append-only ledger: every change to what V01D can do adds one line.</div>';
+    + '<div class="src">From <a href="' + LEDGER_URL + '" target="_blank" rel="noopener">void.growth.json</a>, an append-only ledger: every change to what Verse can do adds one line.</div>';
 }
 
 export async function loadLedger(fetchFn = (u, o) => fetch(u, o)) {
@@ -209,14 +209,14 @@ async function run(text, api) {
   const week = weekOf(text);
   if (!week && !growthOf(text)) return 'none';
   const { showPage, esc, _pageStill } = api;
-  const el = showPage((p) => { p.innerHTML = '<h2>How V01D has grown</h2><div class="sub">reading the ledger…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>How Verse has grown</h2><div class="sub">reading the ledger…</div>'; });
   let list;
   try { list = await loadLedger(); }
-  catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How V01D has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
+  catch (e) { if (!_pageStill || _pageStill(el)) el.innerHTML = '<h2>How Verse has grown</h2><p>The ledger could not be read just now (' + esc((e && e.message) || String(e)) + '). Ask again in a moment.</p>'; return 'none'; }
   if (_pageStill && !_pageStill(el)) return 'growth';
   let kind = '', shown = PAGE_SIZE;
   el.innerHTML = growthHead(esc, list) + ladderHtml(esc, loadLadder()) + '<div data-probes></div>'; // void-review: ok: ladderHtml escapes its titles and writes numbers (lib/ladder.js, asked by Void: the arcade ladder)
-  // V01D's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
+  // Verse's probes (lib/probe-log.js, asked by Void): how many of the asks it wrote for itself it missed, how many fixes it proposed
   // and passed, and its proposals most certain first; nothing shows until the ledger has a record
   fetch('/api/probe-log', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((j) => {
     const slot = el.querySelector('[data-probes]'), html = j && probeHtml(esc, j.stats);
@@ -231,7 +231,7 @@ async function run(text, api) {
       if (fam && at && el.isConnected) at.insertAdjacentHTML('afterend', o + statusHtml(esc, skillStatus(fam)) + familyMapHtml(esc, fam)); // void-review: ok: every value is escaped (lib/inbox-health.js, tested with markup in a skill name)
     });
   }).catch(() => {});
-  // is V01D getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
+  // is Verse getting better? (lib/better.js; owner, 2026-10-16: "improvements mean better"): the daily score, its trend against
   // yesterday and a week ago, and the weakest part, under the owner's view (or whatever of those lines is there yet)
   fetch(BETTER_URL, { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((rows) => {
     const html = betterHtml(esc, rows), at = el.querySelector('.growth-owner') || el.querySelector('.growth-friction') || el.querySelector('[data-velocity]');
@@ -288,7 +288,7 @@ function plantTree(el, api, list, { from } = {}) {
   const day = document.createElement('span'); day.className = 'growth-day'; day.style.cssText = 'white-space:nowrap;font-variant-numeric:tabular-nums';
   when.append(range, day);
   const said = document.createElement('div'); said.className = 'growth-picked'; said.style.cssText = 'min-height:18px;margin:0 0 8px;line-height:1.45;font-size:13px;color:#8a8a92';
-  const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what V01D still wants. Touch any of it to read it.';
+  const hint = 'One branch for every change, the oldest at the trunk, the newest at the tips; its berries are its kind, the closed buds what Verse still wants. Touch any of it to read it.';
   said.textContent = hint;
   el.append(slot, when, said);
   let selected = null, self = null, wants = null, asked = null; // asked: what Void asked for, by the entry that built it
@@ -299,7 +299,7 @@ function plantTree(el, api, list, { from } = {}) {
   let queue = null;
   const mount = () => (queue = (queue || Promise.resolve()).catch(() => {}).then(() => stage.miniature(slot, 'growthtree', { entries: list, until: today() ? null : at() && at().until, tracks: today() && self ? self.tracks : null, building: today() && self ? self.building : null,
     wants: today() ? wants : null, commits: today() && self ? self.commits : null, selected, onPick, onPickGhost, onPickCommit },
-    { key: TREE_KEY, place: 'inside', label: 'V01D’s growth as a tree: one branch per change; touch a branch to read it' })));
+    { key: TREE_KEY, place: 'inside', label: 'Verse’s growth as a tree: one branch per change; touch a branch to read it' })));
   function onPick(index) {
     const e = list[index]; if (!e) return;
     selected = index; said.style.color = ''; said.innerHTML = entryHtml(api.esc, e, causeOf(e, asked));
@@ -357,7 +357,7 @@ export function suite() {
     && frictionHtml(esc, friction(null)) === '';
   const asked = [{ ask: 'a <b>bud</b>', at: '2026-10-01T10:00:00Z', times: 3 }, { ask: 'elsewhere', at: '2026-10-09T00:00:00Z', times: 1 }];
   const c = causeOf(list[0], asked), ch = entryHtml(esc, list[0], c);
-  const cok = c && c.length === 1 && ch.includes('V01D asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
+  const cok = c && c.length === 1 && ch.includes('Verse asked for this: “a &lt;b&gt;bud&lt;/b&gt;” <span style="color:#8a8a92">(3 times)</span>') && !causeOf(list[1], asked) && !entryHtml(esc, list[1], null).includes('growth-cause') && causeOf(list[0], null) === null;
   // the inbox's skill health lines (asked by Void): promoted skills with their clean runs in a row, and the growth animation guard
   const pf = { families: [{ name: 'F', skills: [{ name: 'newone', tier: 'checked', promoted: new Date().toISOString().slice(0, 10), streak: 2 }] }] };
   const hok = ownerHtml(esc, pf, list, {}).includes('Skill stability: 1 skill promoted lately') && ownerHtml(esc, pf, list, {}).includes('newone</b> to checked') && bloom(null, { kind: 'bloom' }) === false && bloom({}, { kind: 'none' }) === false;
@@ -365,8 +365,8 @@ export function suite() {
 }
 
 // The tester log, folded into the growth card (asked by Void, ask-20261015-0616-1; owner: "most skills can be combined"): the site
-// tester's newest runs from /tester-log.json (tools/tester-log.mjs): when, how many passed, and what each run improved.const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void)\s+tested\s+(?:today|lately|recently)\??$/;
-const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void)\s+tested\s+(?:today|lately|recently)\??$/;
+// tester's newest runs from /tester-log.json (tools/tester-log.mjs): when, how many passed, and what each run improved.const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void|verse)\s+tested\s+(?:today|lately|recently)\??$/;
+const TESTER_ASK = /^(?:show\s+(?:me\s+)?)?(?:the\s+)?(?:site\s+)?tester(?:'s)?\s+(?:log|runs?|results?)$|^(?:site[\s-]test|site\s+tester)\s*(?:log|results?|runs?)?$|^what\s+(?:is|are|'s)\s+(?:the\s+)?(?:site\s+)?tester\s+(?:testing|checking|doing)(?:\s+(?:now|right now))?\??$|^(?:what\s+(?:did|have)\s+)?(?:you|v01d|void|verse)\s+tested\s+(?:today|lately|recently)\??$/;
 export const testerAsk = (text) => TESTER_ASK.test(String(text || '').toLowerCase().trim().replace(/[’]/g, "'").replace(/\s+/g, ' ').replace(/[.!]+$/, ''));
 
 /** the card's rows from /tester-log.json. Pure. */
@@ -448,7 +448,7 @@ function runTester(text, api) {
   Promise.all([get('/tester-log.json'), get(FAMILIES_URL), get(GUIDE_URL), get('/incidents.json'), get(BETTER_URL)]).then(([j, fam, guide, inc, rows]) => {
     if (!el) return;
     const R = testerRows(j), C = testCandidates(fam, guide), I = inc ? incidentCases(autopsy(inc, fam, guide), guide) : [];
-    el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into V01D after every deploy and every hour; each run improves one thing.</div>' : '') +
+    el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into Verse after every deploy and every hour; each run improves one thing.</div>' : '') +
       (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
       // asked by Void: a test case from each recent failure on main (lib/autopsy.js incidentCases), the ask that failed when the check quotes it
       (I.length ? '<h3 style="margin:12px 0 4px">From recent failures</h3><div class="sub">Checks that went red on main lately, each turned into an ask to try now. Tap one to test it.</div><ol class="st-incidents" style="padding-left:20px">'

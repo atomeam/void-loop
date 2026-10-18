@@ -1,8 +1,8 @@
-// service-health — is each outside service V01D hands you to reachable, and how fast (asked by Void, 2026-10-16: "Create a 'Service
+// service-health — is each outside service Verse hands you to reachable, and how fast (asked by Void, 2026-10-16: "Create a 'Service
 // Health' dashboard card that monitors the connectivity and response speed of the new adapters (Waymo, Uber, Crypto, etc.)").
 // Laid out the way status pages do it (Uptime Kuma, Statuspage): one row per service, a dot for up / slow / down, and its response
 // time. Checked from the visitor's own browser only when the card opens or "Check again" is tapped: no timer, no server call, nothing
-// kept. A link-only adapter (skills/providers.js: Waymo, Uber, Lyft, Uber Eats, DoorDash) has no API V01D calls, so its row times
+// kept. A link-only adapter (skills/providers.js: Waymo, Uber, Lyft, Uber Eats, DoorDash) has no API Verse calls, so its row times
 // reaching the provider's site; a public API (CoinGecko for crypto, Bluesky's AppView for social) is asked for its health answer.
 // Pure apart from `check`, which takes its fetch and clock as arguments.
 

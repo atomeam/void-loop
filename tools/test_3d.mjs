@@ -290,7 +290,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const cause = at && await F.p.evaluate(() => { const c = document.querySelector('.vpage .growth-picked .growth-cause'); return c ? c.textContent : null; });
     const trunkAt = at && ledgerAts[at.trunk];
     check('"growth": touching a branch says what Void asked for that it built (asked by Void: "link the growth card branches to the growth inbox"), matched by the entry that built it',
-      cause === 'V01D asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
+      cause === 'Verse asked for this: “the ask built at ' + trunkAt + '” (2 times)', JSON.stringify({ cause, trunkAt }));
     const sel = await until(() => F.p.evaluate(() => { const s = window.__voidMini && window.__voidMini.state('growth-tree'); return s && s.selected != null ? s : false; }), 8000);
     check('"growth": the ledger card brings its 3D tree inside the card with a branch for every entry, and touching the trunk reads the oldest entry under the tree and lights that branch',
       !!drawn && at.inCard && at.state.branches === at.n && !!read && sel && sel.selected === at.trunk && !F.errors.length, JSON.stringify({ drawn: !!drawn, at, read, sel, e: F.errors }));
@@ -666,7 +666,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     const replied = await until(async () => { const st = await F.state(); const c = st.find((t) => t.kind === 'chess'); return c && c.state.moves.length === 2 && c.state.s.turn === 'w' ? c.state.moves : false; }, 40000);
     await until(() => F.p.evaluate(() => { const l = window.__chessLines || []; return /Your move/.test(l[l.length - 1] || ''); }), 10000); // the line under the board follows the state a beat later, longer on a slow runner
     const lines = await F.p.evaluate(() => window.__chessLines || []);
-    const weighing = lines.find((t) => /^V01D is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
+    const weighing = lines.find((t) => /^Verse is thinking… \d+ moves? deep · [\d,]+ positions · leaning \S+$/.test(t)) || null;
     check('chess: while Void thinks, the line under the board says how deep it has looked, how many positions and the move it leans to (asked by Void), then "Your move"',
       !!replied && !!weighing && /Your move/.test(lines[lines.length - 1] || ''), JSON.stringify({ weighing, lines: lines.slice(-8) }));
     const pix = await F.p.evaluate(() => { const c = document.querySelector('.chess-card canvas'), g = c && c.getContext('2d'); if (!g) return 0; const d = g.getImageData(0, 0, c.width, c.height).data; let n = 0; for (let i = 0; i < d.length; i += 16) if (d[i] + d[i + 1] + d[i + 2] > 60) n++; return n / (d.length / 16); });
@@ -778,10 +778,10 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
     await F.p.setViewportSize({ width: 390, height: 844 });
     await F.ask('play connect 4', 600);
     const key = await until(() => F.p.evaluate(() => { const m = window.__voidMini && window.__voidMini.list().find((x) => x.kind === 'connect4' && x.ready && x.draws > 0); return m && m.key; }), 90000);
-    // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load V01D's search
+    // you keep dropping in column 1; Void finds its four. The game sets the pace, not a move count: under CI load Verse's search
     // for a forced win outran a fixed 30 x 800 ms budget (verify 60e2e47, 24a139a, ad536f3, e464d0f: "won": false with the log
     // already saying "found a forced win"), so this waits for each turn and gives the whole game 90 s
-    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when V01D had not blocked it: "You dropped in column 1" as the last line, no reason)
+    let turn = 0; const COLS = [0, 2, 4, 6]; // you drop in the far columns and never build a four yourself (stacking one column let you win on the fourth drop when Verse had not blocked it: "You dropped in column 1" as the last line, no reason)
     for (const end = Date.now() + 90000; key && Date.now() < end;) {
       const st = await F.p.$eval('.c4-status', (e) => e.textContent).catch(() => '');
       if (/win|draw/i.test(st)) break;
@@ -808,7 +808,7 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       JSON.stringify({ won, lay, e: F.errors }));
     await F.ctx.close();
   }
-  // ---- the V01D Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
+  // ---- the Verse Book is read as a full-screen tome now (owner, 2026-10-16: the graphic style of a Skyrim book, not a card with a
   // menu): tools/test_void.mjs "the book:" covers it. The desk-sized WebGL hardcover (skills/mini/book.js, lib/book-face.js) is on
   // the salvage shelf (docs/SALVAGE.md); its leaf geometry and page painter still have their own unit tests (tools/book-face.test.mjs).
   // ---- the Magic 8 Ball is a ball in the void: asking again shakes the same ball for a new answer

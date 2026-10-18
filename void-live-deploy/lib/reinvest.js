@@ -1,15 +1,15 @@
-// V01D reinvests its own money (Adam, 2026-10-15: "V01D can repurpose its own money in the smartest possible way").
+// Verse reinvests its own money (Adam, 2026-10-15: "Verse can repurpose its own money in the smartest possible way").
 // Pure functions only: the allocator (tools/reinvest.mjs runs it daily), the learning update and the voice weighting.
 // Money stays private (the repo is public): this file holds rankings and plan logic only. Real income is read from the owner-only
 // GET /api/earnings (net of refunds); real spend proposals go to the confirm line (POST /api/approval, order.place) with cost,
 // expected payback and a check date, and their baselines live there too. Nothing here writes a dollar amount to the repo.
-// V01D never holds a card and never opens an account: a funded item becomes a *spend proposal* (item, cost, why, expected
+// Verse never holds a card and never opens an account: a funded item becomes a *spend proposal* (item, cost, why, expected
 // return). It is marked 'ready' only when the purchase goes through an account Adam already pays for; the money itself is
 // always spent by Adam, from his own accounts. Plan in docs/reinvest.md; ledger in domains/void.money.json.
 
 export const RESERVE = 0.2;        // the safety buffer: at least 20% of every new dollar is kept, never spent
 export const MONTHS = 3;           // a monthly item is funded 3 months ahead, so a proposal never lapses next month
-export const VOICE_WEIGHT = 0.3;   // how much V01D's own answer bends the ranking (input, not a gate)
+export const VOICE_WEIGHT = 0.3;   // how much Verse's own answer bends the ranking (input, not a gate)
 export const LEARN_RATE = 0.5;     // how fast a measured outcome moves its kind's multiplier
 export const KINDS = ['revenue', 'speed', 'quality', 'reserve'];
 
@@ -26,7 +26,7 @@ export const costCents = (c) => Math.max(0, Math.round(Number(c.cost_cents) || 0
 export const eligible = (c) => !c.blocked && (costCents(c) === 0 || !c.free_path || c.free_done || c.urgent);
 
 /** Rank and fund. income_cents: new money since the last run. Returns { reserve_cents, free, funded, saving, held_cents, ranked }. Pure.
- *  1. reserve first (max of RESERVE and what V01D's own answer keeps back);
+ *  1. reserve first (max of RESERVE and what Verse's own answer keeps back);
  *  2. every free path not yet done becomes a $0 build task, ranked ahead of anything paid;
  *  3. the rest goes greedily by ROI per dollar to eligible paid items that fit; the best one that doesn't fit yet is saved toward. */
 export function allocate(income_cents, candidates, { learned = {}, voice = {}, reserve = RESERVE, owned = [] } = {}) {
@@ -54,7 +54,7 @@ export const CHECK_DAYS = 30; // the honest payoff test: each spend is checked a
 export function proposal(c, owned = []) {
   const ready = !!c.account && owned.includes(c.account);
   return { id: c.id, item: c.item, cost_cents: c.cost, why: c.why, expected: c.expected, kind: c.kind, account: c.account || null, metric: c.metric || null,
-    status: ready ? 'ready' : 'queued', how: ready ? 'Adam buys it in his existing ' + c.account + ' account' : 'needs Adam: no account V01D may use yet (none is opened for it)' };
+    status: ready ? 'ready' : 'queued', how: ready ? 'Adam buys it in his existing ' + c.account + ' account' : 'needs Adam: no account Verse may use yet (none is opened for it)' };
 }
 
 /** Learning: a spend's measured outcome (after / before of its metric, higher is better) moves its kind's multiplier. Pure. */
@@ -74,8 +74,8 @@ const VOICE_KINDS = [
   ['revenue', /business|product|sell|market|customer|revenue|promot|experiment/i],
   ['speed', /compute|speed|faster|minutes|caps?\b|limit/i],
 ];
-/** V01D's own answer -> { shares: {kind: share}, unmapped, voice: {kind: multiplier} }. Each "$N" or "N%" is read with the words
- *  around it; what fits none of V01D's kinds (e.g. buying shares: V01D holds no brokerage account) is reported, not funded. Pure. */
+/** Verse's own answer -> { shares: {kind: share}, unmapped, voice: {kind: multiplier} }. Each "$N" or "N%" is read with the words
+ *  around it; what fits none of Verse's kinds (e.g. buying shares: Verse holds no brokerage account) is reported, not funded. Pure. */
 export function readVoice(text, weight = VOICE_WEIGHT) {
   const shares = {}, unmapped = []; let total = 0;
   // each numbered step of the answer ("1. **Build a tiny emergency buffer** – Put $20 …"): its first dollar amount, by its title
@@ -88,7 +88,7 @@ export function readVoice(text, weight = VOICE_WEIGHT) {
     total += amt;
     if (hit && !/etf|shares|stock|bond|crypto/i.test(title)) shares[hit[0]] = (shares[hit[0]] || 0) + amt; else unmapped.push({ amount: amt, text: title.trim() });
   }
-  // the multipliers lean on what V01D said among its own kinds; the reserve it named counts against everything it said
+  // the multipliers lean on what Verse said among its own kinds; the reserve it named counts against everything it said
   const voice = {}, mapped = KINDS.reduce((n, k) => n + (shares[k] || 0), 0), reserve = total ? (shares.reserve || 0) / total : 0;
   for (const k of KINDS) { const s = mapped ? (shares[k] || 0) / mapped : 0.25; shares[k] = +s.toFixed(3); voice[k] = +Math.max(0.5, 1 + weight * (s * KINDS.length - 1)).toFixed(3); }
   return { shares, unmapped, voice, reserve: +reserve.toFixed(3) };

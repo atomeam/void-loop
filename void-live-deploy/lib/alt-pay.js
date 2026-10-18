@@ -4,7 +4,7 @@
 //   cashapp    no public verification API: the order joins the owner's queue; only ownerOk (lib/guard.js) approves it.
 //   usdc-base  read-only on-chain check of the tx: a USDC Transfer on Base to our address for the exact order amount
 //              (the amount's last 4 decimals are the order's memo), >= CONFIRMATIONS deep, each tx used once.
-// V01D never sends, signs or holds crypto; it only reads public chain data. No address or cashtag lives in the repo:
+// Verse never sends, signs or holds crypto; it only reads public chain data. No address or cashtag lives in the repo:
 //   CASHAPP_CASHTAG       Adam's public $cashtag (Pages variable)          -> enables 'cashapp'
 //   CRYPTO_USDC_BASE_ADDR Adam's own receive-only 0x address (Pages var.)  -> enables 'usdc-base'
 //   BASE_RPC_URL          optional, defaults to the public https://mainnet.base.org
@@ -33,8 +33,8 @@ export const usdcText = (u) => { const s = u.toString().padStart(7, '0'); return
 
 export function instructions(rail, p, order, env) {
   const R = railsOf(env)[rail], code = String(order.id).slice(-8).toUpperCase();
-  if (rail === 'cashapp') return { rail, pay: '$' + (p.cents / 100).toFixed(2), to: R.tag, link: 'https://cash.app/' + R.tag + '/' + (p.cents / 100).toFixed(2), note: 'V01D ' + code,
-    then: 'Put "V01D ' + code + '" in the Cash App note, then send your Cash App payment reference (from the receipt) with your order code. The owner confirms it by hand; your downloads unlock then.' };
+  if (rail === 'cashapp') return { rail, pay: '$' + (p.cents / 100).toFixed(2), to: R.tag, link: 'https://cash.app/' + R.tag + '/' + (p.cents / 100).toFixed(2), note: 'Verse ' + code,
+    then: 'Put "Verse ' + code + '" in the Cash App note, then send your Cash App payment reference (from the receipt) with your order code. The owner confirms it by hand; your downloads unlock then.' };
   return { rail, pay: usdcText(usdcUnits(p.cents, order.id)) + ' USDC', exact_units: usdcUnits(p.cents, order.id).toString(), network: 'Base (chain 8453)', token: USDC_BASE, to: R.address,
     then: 'Send exactly this amount of USDC on Base (the last digits identify your order), then send the transaction hash with your order code. It unlocks after ' + CONFIRMATIONS + ' confirmations. Any other token, network or amount is not matched.' };
 }

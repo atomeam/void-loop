@@ -12,7 +12,7 @@ import { add as recordPrint } from '../lib/prints.js';
 import * as Makes from '../lib/forge-makes.js';
 
 const store = () => { try { return typeof localStorage === 'undefined' ? null : localStorage; } catch (_) { return null; } };
-/** What V01D's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
+/** What Verse's probes asked the forge for, each with its status in the forge now (asked by Void, ask-20261015-2045-2: the probe
  *  output linked to the frontier #14 tracker): 'made' when a recipe answers that name today (with its key), else 'wanted'. Pure. */
 export function wantsStatus(wants) {
   return (Array.isArray(wants) ? wants : []).filter((w) => w && typeof w.thing === 'string').map((w) => {
@@ -104,7 +104,7 @@ function mount(th, stageApi) {
   el.style.cssText = 'left:' + th.x + 'px;top:' + th.y + 'px;width:min(320px, calc(100vw - 20px))';
   el.innerHTML = '<div class="g-head"><span class="g-title"></span><span class="g-sub">forged · ready to print</span></div>';
   el.querySelector('.g-title').textContent = model.label;
-  const cv = document.createElement('canvas'); cv.width = 300; cv.height = 240; cv.className = 'forge-view'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'the ' + model.label.toLowerCase() + ' V01D made, shaded');
+  const cv = document.createElement('canvas'); cv.width = 300; cv.height = 240; cv.className = 'forge-view'; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', 'the ' + model.label.toLowerCase() + ' Verse made, shaded');
   cv.style.cssText = 'width:100%;height:auto;display:block;background:#0b0b0e;border-radius:10px';
   const facts = document.createElement('div'); facts.className = 'forge-facts g-status'; facts.style.cssText = 'display:block;margin-top:8px';
   const pc = F.printCheck(model);
@@ -133,7 +133,7 @@ async function run(text, api) {
       p.innerHTML = '<h2>Forge history</h2><div class="sub">' + Object.keys(F.THINGS).length + ' recipes, one mesh each: what you spin is what prints. ' + (forged.length ? forged.length + ' on the stage now.' : 'Nothing forged on this stage yet.') + '</div>'
         + '<ul style="padding-left:18px">' + Object.keys(F.THINGS).map((key) => { const m = F.build(key), pc = F.printCheck(m); return '<li><a href="#" data-ask="make me a ' + esc(key) + '">' + esc(m.label) + '</a> · ' + esc(dims(m.size)) + ' · ' + esc(pc.triangles.toLocaleString('en')) + ' triangles · ' + (pc.supports ? 'supports' : 'no supports') + (F.THINGS[key].figure ? ' · <span class="sub">a figure as a recipe</span>' : '') + (onStage.get(key) ? ' · <b>on the stage' + (onStage.get(key) > 1 ? ' ×' + onStage.get(key) : '') + '</b>' : '') + (askedOf.get(key) ? ' · <span class="sub">asked "' + esc(askedOf.get(key)) + '"</span>' : '') + '</li>'; }).join('') + '</ul>'
         + '<div data-forge-tracker></div>'
-        + '<div class="src">Recipes from skills/forge-rules.js; what V01D\'s probes asked the forge for (frontier #14) is read from its probe ledger, each marked made or not made yet.</div>';
+        + '<div class="src">Recipes from skills/forge-rules.js; what Verse\'s probes asked the forge for (frontier #14) is read from its probe ledger, each marked made or not made yet.</div>';
     });
     // the frontier #14 tracker (asked by Void): the probe ledger's forge wants, each with its status in the forge today
     try {

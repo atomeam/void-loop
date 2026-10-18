@@ -1,4 +1,4 @@
-# V01D's store checks its own downloads (tools/store-publish.mjs check; docs/store.md "Self-publishing"). Daily at about 7 AM ET
+# Verse's store checks its own downloads (tools/store-publish.mjs check; docs/store.md "Self-publishing"). Daily at about 7 AM ET
 # every live free product gets a fresh signed link from https://a-to-mind.com/api/store/free and its first bytes are fetched.
 # A product whose download fails is unpublished: status "unpublished" in domains/store.products.json, a public changelog row,
 # and a pull request (automerge picks it up on green). Nothing else is written; no secrets are needed.

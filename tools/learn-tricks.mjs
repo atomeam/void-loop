@@ -1,4 +1,4 @@
-// The video-tricks learner (owner, 2026-10-15: "V01D was already supposed to be learning from YouTube videos anyway"):
+// The video-tricks learner (owner, 2026-10-15: "Verse was already supposed to be learning from YouTube videos anyway"):
 // finds editing tutorials on PeerTube (Sepia Search) and the Internet Archive that carry open captions, reads the captions
 // (functions/api/digest.js captionsOf, lib/digest.js trickLines), and writes one line per new technique into
 // docs/video-tricks.md under "## Learned from open videos": the technique, a short paraphrase-length excerpt (at most
@@ -15,7 +15,7 @@ export function addLearned(doc, rows) {
   const fresh = rows.filter((r) => !have.has(r.trick.toLowerCase()) && have.add(r.trick.toLowerCase()));
   if (!fresh.length) return doc;
   const lines = fresh.map((r) => '- **' + r.trick + '**: "' + r.quote + '" (' + r.title + ', ' + r.url + ', learned ' + r.at + ')').join('\n');
-  if (!doc.includes(HEAD)) doc = doc.replace(/\n## Queue \(not built yet\)/, '\n' + HEAD + '\nTechniques V01D read in openly captioned tutorials (tools/learn-tricks.mjs). Each is a lead for a new entry in `TRICKS`, not a built trick.\n\n\n## Queue (not built yet)');
+  if (!doc.includes(HEAD)) doc = doc.replace(/\n## Queue \(not built yet\)/, '\n' + HEAD + '\nTechniques Verse read in openly captioned tutorials (tools/learn-tricks.mjs). Each is a lead for a new entry in `TRICKS`, not a built trick.\n\n\n## Queue (not built yet)');
   const intro = doc.indexOf('\n\n', doc.indexOf(HEAD)) + 2;
   return doc.slice(0, intro) + lines + '\n' + doc.slice(intro);
 }

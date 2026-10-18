@@ -1,9 +1,9 @@
-// Study how the best do a feature, from the inside, with evidence (frontier: REA; owner, 2026-10-15: "V01D should be able to
+// Study how the best do a feature, from the inside, with evidence (frontier: REA; owner, 2026-10-15: "Verse should be able to
 // reverse engineer everything, this would speed things up drastically"). Wraps REA (`rea-agents`, MIT) and uses only its passive,
 // static web commands: list the page, capture its scripts, map modules, endpoints and WebMCP tools, each finding with its script
 // and line. REA never runs the captured code; nothing here logs in, submits, breaks a protection or fetches past what a visitor's
-// browser loads. Study, never copying: no code, assets or text are carried over; only V01D's own version of a feature ships.
-// What was studied is the owner's: the repo, run logs and summaries are public, so findings go only to V01D's private memory
+// browser loads. Study, never copying: no code, assets or text are carried over; only Verse's own version of a feature ships.
+// What was studied is the owner's: the repo, run logs and summaries are public, so findings go only to Verse's private memory
 // (owner-only /api/memory, kind "study") and a run prints counts, never a URL or a finding.
 //   node tools/rea-study.mjs --url <https://…> --question "how does it value a coin"   study here, print the digest (a builder's own machine)
 //   node tools/rea-study.mjs --ask <https://…> "question"   file a study for the runner (VOID_OWNER_TOKEN); the request is private too
@@ -72,7 +72,7 @@ export function digestOf({ url, question, at, result }) {
   if (inf.length) { L.push('## Inferences (with confidence)'); for (const i of inf.slice(0, 20)) L.push('- ' + i.kind + ': `' + String(i.value).slice(0, 100) + '` (' + i.confidence + ', ' + ((i.basis || []).map(where).join(', ') || 'no basis') + ')'); L.push(''); }
   const unk = n.unknowns || [], lim = n.limitations || [];
   if (unk.length || lim.length) { L.push('## What REA could not tell'); for (const x of [...unk, ...lim].slice(0, 12)) L.push('- ' + (typeof x === 'string' ? x : JSON.stringify(x)).slice(0, 300)); L.push(''); }
-  L.push('## Use', 'Read for how it works, then build V01D\'s own version. Never copy its code, assets or text.');
+  L.push('## Use', 'Read for how it works, then build Verse\'s own version. Never copy its code, assets or text.');
   let out = L.join('\n');
   if (out.length > MAX_DIGEST) out = out.slice(0, MAX_DIGEST - 40) + '\n\n(digest shortened to fit)';
   return { digest: out, counts: { scripts: cap.scripts_analyzed || nodes.length, endpoints: endpoints.length, modules: nodes.length } };
@@ -133,14 +133,14 @@ async function main(argv) {
         await save(studyRecord({ url, question: req.question, digest, counts })); done++;
       } catch (_) { failed++; }
     }
-    console.log('rea-study: ' + pending.length + ' pending, ' + done + ' studied, ' + failed + ' failed (findings are in V01D\'s private memory)');
+    console.log('rea-study: ' + pending.length + ' pending, ' + done + ' studied, ' + failed + ' failed (findings are in Verse\'s private memory)');
     return failed && !done ? 1 : 0;
   }
   if (argv.includes('--ask')) {
     const i = argv.indexOf('--ask'), url = safeUrl(argv[i + 1]), q = argv[i + 2] || 'how it works';
     if (!url) { console.error('rea-study: a public http(s) page, please'); return 2; }
     await save(studyRecord({ url, question: q }));
-    console.log('rea-study: filed; run the "REA study" workflow (or wait for the next run) and ask V01D "what did you study"');
+    console.log('rea-study: filed; run the "REA study" workflow (or wait for the next run) and ask Verse "what did you study"');
     return 0;
   }
   const url = safeUrl(opt('--url'), argv.includes('--local'));

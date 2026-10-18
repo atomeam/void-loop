@@ -1,5 +1,5 @@
 /**
- * guide skill — the book: everything V01D can do, one page each, read like a Skyrim book. "open the book", "the guide",
+ * guide skill — the book: everything Verse can do, one page each, read like a Skyrim book. "open the book", "the guide",
  * "show me everything you can do", "the book at chess". Say it and the stage dims, a worn leather tome comes up to fill the
  * screen, its cover swings open in half a second (Skyrim's fBookOpenTime) and you are reading two parchment pages set in a
  * serif: a running head, a title with a rule under it, a drop capital, the asks as lines of italic ink, the folio in the outer
@@ -23,13 +23,13 @@ export { pageHtml, tocHtml };
 const BOOK_WORDS = '(?:book|guide|manual|handbook|strategy guide|book of everything|book of all)';
 const OPEN = '(?:(?:open|show(?:\\s+me)?|read|flip through|browse|bring|summon|let me see|see|get)\\s+(?:up\\s+)?)?';
 const WHOSE = '(?:the\\s+|your\\s+|v01d\\s*\'?s?\\s+|void\\s*\'?s?\\s+|a-to-mind\'?s?\\s+)';
-const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '|(?:v01d|void)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|v01d|void)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
+const RE_BOOK = new RegExp('^' + OPEN + '(?:' + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '|(?:v01d|void|verse)\\s+' + BOOK_WORDS + '|strategy guide|handbook|book of everything)(?:\\s+of\\s+everything(?:\\s+(?:you|it|v01d|void|verse)\\s+can\\s+do)?)?(?:\\s+please)?$', 'i'); // a bare "book" or "guide" stays a word or a book search
 const RE_AT = new RegExp('^' + OPEN + WHOSE + '(?:v01d\\s+|void\\s+)?' + BOOK_WORDS + '\\s+(?:at|on|to|for|about)\\s+(?:the\\s+)?([a-z0-9][a-z0-9 \'-]{1,40})$', 'i');
-const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
+const RE_ALL = /^(?:(?:show|tell)\s+me\s+|list\s+|i want to see\s+|what(?:'s| is|s)\s+)?(?:everything|all(?: the things)?|every single thing)\s+(?:that\s+)?(?:you|void|v01d|verse|it)\s+(?:can|could)\s+do(?:,?\s+(?:all of it|in one place))?(?:\s+please)?$/i;
 const RE_NEWS = /^(?:(?:what'?s|whats|what is)\s+new\s+in\s+(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)|(?:the\s+)?(?:v01d\s+|void\s+)?(?:book|guide)(?:'s)?\s+(?:news|what'?s new))$/i;
-const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|void|v01d)\s+(?:have|has))?|(?:the\s+)?(?:v01d|void)\s+(?:book|guide|manual|handbook))$/i;
+const RE_MORE = /^(?:(?:what's|whats|what is)\s+in\s+the\s+(?:book|guide)|(?:the\s+)?table\s+of\s+contents|(?:show\s+me\s+)?(?:the\s+)?(?:whole|complete|full)\s+(?:list|guide|book|manual)(?:\s+of\s+(?:skills|everything))?|every\s+skill(?:\s+(?:you|void|v01d|verse)\s+(?:have|has))?|(?:the\s+)?(?:v01d|void|verse)\s+(?:book|guide|manual|handbook))$/i;
 // the rule registry (asked by Void): "rule registry", "show the router rules", "list all active router rules" open the book at that chapter
-const RE_RULES = /^(?:(?:open|show(?:\s+me)?|read|list|see|browse)\s+)?(?:(?:the|your|all(?:\s+the)?|every)\s+)?(?:(?:v01d|void)\s*'?s?\s+)?(?:active\s+)?(?:rule[- ]?registry|(?:router|routing)\s+rules|rules\s+of\s+the\s+router)(?:\s+(?:in|from)\s+the\s+(?:book|tome|guide))?(?:\s+please)?$/i;
+const RE_RULES = /^(?:(?:open|show(?:\s+me)?|read|list|see|browse)\s+)?(?:(?:the|your|all(?:\s+the)?|every)\s+)?(?:(?:v01d|void|verse)\s*'?s?\s+)?(?:active\s+)?(?:rule[- ]?registry|(?:router|routing)\s+rules|rules\s+of\s+the\s+router)(?:\s+(?:in|from)\s+the\s+(?:book|tome|guide))?(?:\s+please)?$/i;
 
 /** { at } for an ask that opens the book (at: a name to open it on, or ''), null otherwise. Pure. */
 export function guideOf(text) {
@@ -119,7 +119,7 @@ export function closeTome(why = 'esc') {
 function mount(book, api, startAt, text) {
   const { esc } = api;
   const old = current(); if (old) { old._cleanup && old._cleanup(); old.remove(); }
-  book.title = book.title || 'The V01D Book';
+  book.title = book.title || 'The Verse Book';
   const total = book.pages.length;
   let cur = Math.min(Math.max(startAt || readKept() || 1, 1), total), turning = false;
   const root = document.createElement('div'); root.id = 'vtome'; root.setAttribute('role', 'dialog'); root.setAttribute('aria-label', book.title); root.setAttribute('aria-modal', 'true');

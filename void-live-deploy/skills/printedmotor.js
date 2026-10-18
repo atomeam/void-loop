@@ -32,7 +32,7 @@ export function printedMotorHtml(esc) {
     + '<div class="printedmotor-mini" style="height:180px;margin:8px 0 4px"></div>'
     + STEPS.map((s, i) => '<p><b>' + (i + 1) + '. ' + esc(s.head) + '</b> · ' + esc(s.line) + ' <span style="color:#8a8a92;font-size:12px">· <a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date) + ')</span></p>').join('')
     + '<p><b>' + esc(NEXT_LINE) + '</b></p>'
-    + '<p style="color:#8a8a92;font-size:13px">The printed hard magnets still need <a href="#" data-ask="show the magnetize step">the magnetize step</a>. V01D’s own designs, both untested: <a href="#" data-ask="pentamote-1">Pentamote-1</a>, a five-material motor body with a slicer-ready file, shown above, and <a href="#" data-ask="summon linemote-1">Linemote-1</a>, a finger-scale actuator.</p>'
+    + '<p style="color:#8a8a92;font-size:13px">The printed hard magnets still need <a href="#" data-ask="show the magnetize step">the magnetize step</a>. Verse’s own designs, both untested: <a href="#" data-ask="pentamote-1">Pentamote-1</a>, a five-material motor body with a slicer-ready file, shown above, and <a href="#" data-ask="summon linemote-1">Linemote-1</a>, a finger-scale actuator.</p>'
     + '<div class="src">Dated sources: ' + STEPS.map((s) => '<a href="' + esc(s.href) + '" target="_blank" rel="noopener">' + esc(s.name) + '</a> (' + esc(s.date) + ')').join(' · ') + '. Lab results, not products.</div>';
 }
 

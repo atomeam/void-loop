@@ -50,5 +50,5 @@ test('a whole game together ends (perfect, the deck, or three mistakes), and eve
     s = sure >= 0 ? F.play(s, sure) : one >= 0 ? F.play(s, one) : s.hints < 8 ? F.discard(s, 0) : F.hint(s, { rank: s.hands.void[0].r });
   }
   assert.ok(s.over); assert.ok(F.score(s) >= 5, 'a cooperative game scores something: ' + F.score(s));
-  for (const l of s.log.filter((x) => x.who === 'V01D')) assert.ok(l.why, l.text);
+  for (const l of s.log.filter((x) => x.who === 'Verse')) assert.ok(l.why, l.text);
 });

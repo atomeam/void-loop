@@ -33,10 +33,10 @@ export const showcaseOf = (text) => ASK_RE.test(CLEAN(text));
 // recent visible builds whose ledger lines came before `show` and `try` existed
 export const KNOWN = [
   { match: /^sticky notes look like real paper/i, show: 'sticky notes look like real paper', try: 'sticky note buy milk' },
-  { match: /^do you love me\?: answered/i, show: 'V01D answers "do you love me?" in its own words', try: 'do you love me?' },
+  { match: /^do you love me\?: answered/i, show: 'Verse answers "do you love me?" in its own words', try: 'do you love me?' },
   { match: /^Four in a Row looks finished/i, show: 'Four in a Row: the winning four light up', try: 'four in a row' },
-  { match: /^Void played Othello against itself/i, show: 'V01D knows how good it is at Othello', try: 'how good are you at othello' },
-  { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'V01D learns Connect Four a little every day', try: 'how good are you at connect four' },
+  { match: /^Void played Othello against itself/i, show: 'Verse knows how good it is at Othello', try: 'how good are you at othello' },
+  { match: /^(?:Ask Void how good it is at Connect Four|Void now learns Connect Four)/i, show: 'Verse learns Connect Four a little every day', try: 'how good are you at connect four' },
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
 
@@ -107,7 +107,7 @@ export const newestAt = (entries) => (Array.isArray(entries) ? entries : []).red
 const read = (k) => { try { return localStorage.getItem(k) || ''; } catch (_) { return ''; } };
 const write = (k, v) => { try { localStorage.setItem(k, v); } catch (_) {} };
 const nowIso = () => new Date().toISOString().replace(/\.\d+Z$/, 'Z');
-/** the asks already previewed on this device (cleaned); bounded, so it stays small however much V01D makes */
+/** the asks already previewed on this device (cleaned); bounded, so it stays small however much Verse makes */
 export function shownSet() { try { return new Set(JSON.parse(read(SHOWN_KEY) || '[]')); } catch (_) { return new Set(); } }
 export function markShown(steps) {
   const all = [...shownSet()]; for (const s of steps || []) { const a = CLEAN(s.ask); if (a && !all.includes(a)) all.push(a); }
@@ -233,7 +233,7 @@ async function step(stageApi) {
     button('Keep', () => { tour.made = null; tour.i++; step(stageApi); }), ...(last ? [] : [button('Done', () => { clear(stageApi); end(stageApi); })]));
   ctl.firstChild.dataset.showcase = 'next'; ctl.children[1].dataset.showcase = 'keep'; if (!last) ctl.children[2].dataset.showcase = 'done';
   el.append(head, line, ctl);
-  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what V01D made; hidden unless /api/react answers
+  const rx = s.at ? reactionBar(targetOf(s.at)) : null; // spectators react to what Verse made; hidden unless /api/react answers
   if (rx) el.append(rx);
   const items = trayOf(tour.steps, tour.i);
   if (items.length) { // the tray: grab a coming step and drop it on the stage to try it now (a tap tries it too)
@@ -374,8 +374,8 @@ export function bell(stageApi, steps) {
   if (typeof document === 'undefined' || !steps || !steps.length || document.getElementById('whatsnew-bell')) return null;
   const b = document.createElement('button'); b.type = 'button'; b.id = 'whatsnew-bell'; b.className = 'whatsnew-bell';
   const n = steps.length; b.dataset.count = String(n);
-  b.setAttribute('aria-label', (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' V01D made while you were away: show me');
-  b.title = 'What\'s new: tap to see what V01D made';
+  b.setAttribute('aria-label', (n === 1 ? 'Something new' : n.toLocaleString('en') + ' new things') + ' Verse made while you were away: show me');
+  b.title = 'What\'s new: tap to see what Verse made';
   b.innerHTML = '<style>.whatsnew-bell{position:fixed;left:14px;bottom:14px;z-index:5;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,.28);background:rgba(20,18,34,.82);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;box-shadow:0 0 0 0 rgba(158,178,255,.55);animation:wn-pulse 2.4s ease-out infinite}' // void-review: ok: static markup, the only variable is a number
     + '.whatsnew-bell svg{width:20px;height:20px;animation:wn-spin 6s linear infinite}.whatsnew-bell b{position:absolute;top:-5px;right:-5px;min-width:17px;height:17px;border-radius:9px;background:#ff6a3d;color:#fff;font:700 11px/17px system-ui,sans-serif;text-align:center;padding:0 4px;box-sizing:border-box}'
     + '@keyframes wn-pulse{0%{box-shadow:0 0 0 0 rgba(158,178,255,.55)}70%,100%{box-shadow:0 0 0 14px rgba(158,178,255,0)}}@keyframes wn-spin{to{transform:rotate(360deg)}}'
@@ -387,7 +387,7 @@ export function bell(stageApi, steps) {
 }
 
 /** "show me everything you made": the whole walkthrough, previewed before or not, asked for by name. Pure. */
-const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything|all(?: the things)?|every single thing) (?:you|v01d|void)(?:'ve| have|'s| has)? (?:ever )?(?:made|built|done)(?: for me)?(?: so far| ever)?$/;
+const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything|all(?: the things)?|every single thing) (?:you|v01d|void|verse)(?:'ve| have|'s| has)? (?:ever )?(?:made|built|done)(?: for me)?(?: so far| ever)?$/;
 export const everythingOf = (text) => ALL_RE.test(CLEAN(text));
 
 async function run(text, api) {

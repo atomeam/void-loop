@@ -1,4 +1,4 @@
-// V01D cards (lib/card-frame.js): every page is a card with stats from the skill's own evidence. Run: node --test tools/card-frame.test.mjs
+// Verse cards (lib/card-frame.js): every page is a card with stats from the skill's own evidence. Run: node --test tools/card-frame.test.mjs
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
@@ -22,7 +22,7 @@ test('a proven skill is a mythic card: cost in words said, power from its succes
 test('the rarity is the evidence rating, nothing else; an unrated or source page has no stats', () => {
   assert.deepEqual(Object.entries(RARITY).map(([k, v]) => k + ':' + v.name), ['proven:Mythic', 'checked:Rare', 'tested:Uncommon', 'experiment:Common']);
   const a = cardOf({ kind: 'Answer' });
-  assert.equal(a.rarity, null); assert.equal(a.power, null); assert.equal(a.toughness, null); assert.equal(a.typeLine, 'Answer — from V01D'); assert.equal(a.cost, 0);
+  assert.equal(a.rarity, null); assert.equal(a.power, null); assert.equal(a.toughness, null); assert.equal(a.typeLine, 'Answer — from Verse'); assert.equal(a.cost, 0);
   const t = cardOf({ skill: { name: 'x', tier: 'tested', success_rate: 0.5 } });
   assert.equal(t.rarity.name, 'Uncommon'); assert.equal(t.power, 5);
   assert.equal(cardOf({ skill: { name: 'y', tier: 'experiment' } }).power, 0, 'no success rate: the tier stands in');
@@ -40,8 +40,8 @@ test('every skill in the book makes a card whose numbers stay in a card\'s range
 
 test('the chrome is a type bar with a gem, an adds line, and a footer with the plate; a source card has no plate', () => {
   const deps = JSON.parse(readFileSync(resolve(root, 'deps.json'), 'utf8')), c = cardOf({ ...lookup({ book, fam, deps }, 'forge') }), h = chromeHtml(c, esc);
-  assert.match(h.type, /class="vc-type"/); assert.match(h.type, /vc-gem/); assert.match(h.adds, /Adds to V01D/);
-  assert.match(h.foot, /class="vc-pt"/); assert.match(h.foot, /P<b>9<\/b>/); assert.match(h.foot, /R<b>10<\/b>/); assert.match(h.foot, /Mythic/); assert.match(h.foot, /V01D/);
+  assert.match(h.type, /class="vc-type"/); assert.match(h.type, /vc-gem/); assert.match(h.adds, /Adds to Verse/);
+  assert.match(h.foot, /class="vc-pt"/); assert.match(h.foot, /P<b>9<\/b>/); assert.match(h.foot, /R<b>10<\/b>/); assert.match(h.foot, /Mythic/); assert.match(h.foot, /Verse/);
   const a = chromeHtml(cardOf({ kind: 'Answer' }), esc); assert.doesNotMatch(a.foot, /vc-pt/); assert.equal(a.adds, '');
 });
 

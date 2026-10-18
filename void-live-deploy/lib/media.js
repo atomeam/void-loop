@@ -1,8 +1,8 @@
-// The shared media pick (owner, 2026-10-17: "the same must work for music, videos, shows and games ... V01D should pick on its own ... when the ask
-// names no kind or title"). One flow for every kind: V01D proposes titles (a model writes them, so they are untrusted), each is looked up in a real
+// The shared media pick (owner, 2026-10-17: "the same must work for music, videos, shows and games ... Verse should pick on its own ... when the ask
+// names no kind or title"). One flow for every kind: Verse proposes titles (a model writes them, so they are untrusted), each is looked up in a real
 // keyless source, and only a FOUND one is shown as fact (a card with its own art); the rest is "not verified". Playback is legal only: 30 s official
 // previews, free public-domain/CC films, official trailers; everything else links out, never a pirate or scraped stream. Movies live in
-// lib/movies.js and keep working unchanged; this file adds kind detection, the V01D-picks-the-kind rule and the music adapter (iTunes Search).
+// lib/movies.js and keep working unchanged; this file adds kind detection, the Verse-picks-the-kind rule and the music adapter (iTunes Search).
 // Pure. skills/media-pick.js is the page side, functions/api/media.js the server side.
 import { cleanTitle, normTitle, cleanYear, onHost, parseSuggestions } from './movies.js';
 export { cleanTitle, normTitle, cleanYear };
@@ -10,11 +10,11 @@ export { cleanTitle, normTitle, cleanYear };
 /** the kinds built so far, each with the verb that reaches it. Shows, video and games join this table as their adapters ship. */
 export const KINDS = { movie: { verb: 'watch' }, music: { verb: 'listen' } };
 const NOUN = { movie: /^(?:movies?|films?)$/, music: /^(?:songs?|music|tracks?|tunes?|albums?)$/, show: /^(?:shows?|series|tv|sitcoms?|dramas?)$/ };
-// KINDS above is what V01D may choose for you by itself (the day's rotation); NOUN also names kinds you can ask for by name, like shows.
+// KINDS above is what Verse may choose for you by itself (the day's rotation); NOUN also names kinds you can ask for by name, like shows.
 const VERB = { watch: 'movie', listen: 'music' };
 
-/** which kind a pick ask is for: a named kind ("pick a song"), a verb ("something to listen to"), or none named, then V01D chooses by the day (`day` = days since 1970).
- *  Returns { kind, chosen } (chosen: V01D picked the kind) or null when this is not a pick ask for a built kind. Pure. */
+/** which kind a pick ask is for: a named kind ("pick a song"), a verb ("something to listen to"), or none named, then Verse chooses by the day (`day` = days since 1970).
+ *  Returns { kind, chosen } (chosen: Verse picked the kind) or null when this is not a pick ask for a built kind. Pure. */
 export function pickKind(text, day = Math.floor(Date.now() / 864e5)) {
   const t = String(text || '').toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim();
   const tail = '(?:\\s+(?:with\\s+(?:me|us)|tonight|today|now|right\\s+now))?';

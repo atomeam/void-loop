@@ -7,13 +7,13 @@ import { grip, sideCard } from './side-card.js';
 import { LEVELS, getLevel, setLevel } from './game-level.js';
 import PARODY from '../lib/parody.js';
 
-// V01D's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
-// From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and V01D's own version.
+// Verse's parody of any classic game (asked by Void: a searchable games matrix and a "parody-forge" card), folded into the game rack.
+// From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.
 // "parody of monopoly", "your version of clue", "is reversi public domain", "make a v01d version of risk", "parody games". Pure.
-const PARODY_RE = /^(?:(?:what(?:'s| is)|whats|show(?: me)?|tell me|make(?: me)?|forge|build|give me)\s+)?(?:the\s+|a\s+|an\s+)?(?:v01d|void|your|ur)?\s*(?:parody|version|take|spin|remake|knock-?off)\s+(?:of|on)\s+(.+)$|^parody[\s-]forge\s+(.+)$|^is\s+(.+?)\s+(?:in\s+the\s+)?public\s+domain$|^can\s+(?:v01d|void|you)\s+(?:copy|make|clone)\s+(.+)$/;
+const PARODY_RE = /^(?:(?:what(?:'s| is)|whats|show(?: me)?|tell me|make(?: me)?|forge|build|give me)\s+)?(?:the\s+|a\s+|an\s+)?(?:v01d|void|verse|your|ur)?\s*(?:parody|version|take|spin|remake|knock-?off)\s+(?:of|on)\s+(.+)$|^parody[\s-]forge\s+(.+)$|^is\s+(.+?)\s+(?:in\s+the\s+)?public\s+domain$|^can\s+(?:v01d|void|verse|you)\s+(?:copy|make|clone)\s+(.+)$/;
 export function parodyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|list)(?: me)?\s+)?(?:the\s+|your\s+|v01d'?s?\s+|void'?s?\s+)?(?:parody|parodies)(?:\s+games?)?$|^(?:v01d|void)\s+parod(?:y|ies)$|^parody[\s-]forge$/.test(t)) return { all: true };
+  if (/^(?:(?:show|list)(?: me)?\s+)?(?:the\s+|your\s+|v01d'?s?\s+|void'?s?\s+)?(?:parody|parodies)(?:\s+games?)?$|^(?:v01d|void|verse)\s+parod(?:y|ies)$|^parody[\s-]forge$/.test(t)) return { all: true };
   const m = PARODY_RE.exec(t); if (!m) return null;
   const name = (m[1] || m[2] || m[3] || m[4] || '').replace(/^(?:the|a|an)\s+/, '').replace(/\s+(?:board\s+)?game$/, '').replace(/[^a-z0-9 &']+/g, '').trim();
   const row = PARODY.find((r) => r.names.includes(name) || r.generic.toLowerCase() === name || r.parody.toLowerCase() === name);
@@ -22,10 +22,10 @@ export function parodyOf(text) {
 function parodyCard(q, api) {
   const { showPage, esc } = api;
   showPage((el) => {
-    if (q.all) { el.innerHTML = '<h2>V01D\'s parody games</h2><p class="sub">Rules are free; names, art and wording are not. My own version of each (not legal advice).</p><ul style="padding-left:18px">' + PARODY.map((r) => '<li><b>' + esc(r.parody) + '</b> · ' + esc(r.game) + (r.twist ? ' <span class="sub">— ' + esc(r.twist) + '</span>' : '') + '</li>').join('') + '</ul>'; return; }
+    if (q.all) { el.innerHTML = '<h2>Verse\'s parody games</h2><p class="sub">Rules are free; names, art and wording are not. My own version of each (not legal advice).</p><ul style="padding-left:18px">' + PARODY.map((r) => '<li><b>' + esc(r.parody) + '</b> · ' + esc(r.game) + (r.twist ? ' <span class="sub">— ' + esc(r.twist) + '</span>' : '') + '</li>').join('') + '</ul>'; return; }
     if (q.unknown) { el.innerHTML = '<h2>' + esc(q.unknown) + '</h2><p>That game is not in my parody matrix yet. Its rules would be free to use; its name, art and rulebook wording are not. Ask "parody games" for the 30 I have.</p>'; return; }
     const r = q.row, play = GAMES.find((g) => r.names.includes(g.id) || r.names.some((n) => g.ask === 'play ' + n));
-    el.innerHTML = '<h2>' + esc(r.parody) + '</h2><div class="sub">V01D\'s version of ' + esc(r.game) + '</div>' + (r.twist ? '<p>' + esc(r.twist) + '</p>' : '')
+    el.innerHTML = '<h2>' + esc(r.parody) + '</h2><div class="sub">Verse\'s version of ' + esc(r.game) + '</div>' + (r.twist ? '<p>' + esc(r.twist) + '</p>' : '')
       + '<ul style="padding-left:18px"><li><b>Public domain?</b> ' + esc(r.status) + '</li><li><b>Protected</b> ' + esc(r.protects) + '</li><li><b>Safest version</b> ' + esc(r.safest) + '</li><li><b>Generic name</b> ' + esc(r.generic) + '</li></ul>'
       + (play ? '<a href="#" data-ask="' + esc(play.ask) + '">Play it now</a> · ' : '') + '<span class="sub">Not legal advice.</span>';
   });
@@ -69,7 +69,7 @@ export function rackOf(text) {
 export const SOON = { scrabble: 'Scrabble', risk: 'Risk', clue: 'Clue', cluedo: 'Cluedo', catan: 'Catan', 'settlers of catan': 'Catan',
   backgammon: 'Backgammon', ludo: 'Ludo', parcheesi: 'Parcheesi', trouble: 'Trouble', 'snakes and ladders': 'Snakes and ladders', 'chutes and ladders': 'Chutes and ladders', 'chinese checkers': 'Chinese checkers', dominoes: 'dominoes' };
 
-const HINT = 'pick V01D’s level, then a game · try: chess · checkers · go · monopoly · voidquest · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
+const HINT = 'pick Verse’s level, then a game · try: chess · checkers · go · monopoly · voidquest · tic tac toe · reversi · four in a row · mancala · star marbles · marbles · back to start · rock paper scissors · magic 8 ball';
 
 function mount(th, stageApi) {
   const phone = Math.min(innerWidth, innerHeight) < 560;
@@ -113,7 +113,7 @@ function mount(th, stageApi) {
   }).catch(() => {});
   // one Void strength for every game (skills/game-level.js): the games read it before Void moves
   const lv = document.createElement('div'); lv.className = 'rack-level'; lv.style.cssText = 'display:flex;gap:6px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)';
-  lv.append('V01D plays:');
+  lv.append('Verse plays:');
   const paintLv = () => lv.querySelectorAll('button').forEach((x) => { x.style.opacity = x.dataset.level === getLevel() ? '1' : '.5'; x.setAttribute('aria-pressed', String(x.dataset.level === getLevel())); });
   for (const l of LEVELS) {
     const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn rack-level-pick'; b.dataset.level = l; b.textContent = l;

@@ -1,5 +1,5 @@
 import { chromium } from 'playwright-core';
-// node tools/video-live.mjs: load a YouTube link, a Rumble link and a search on live V01D in installed headless Chrome and save
+// node tools/video-live.mjs: load a YouTube link, a Rumble link and a search on live Verse in installed headless Chrome and save
 // screenshots to /workspace/void-audit/video-player/ (VOID_SITE overrides the site, CHROME_PATH the browser). Prints each card's embed src.
 import { mkdirSync } from 'node:fs';
 const site = process.env.VOID_SITE || 'https://a-to-mind.com', out = process.env.VOID_SHOTS || '/workspace/void-audit/video-player/'; mkdirSync(out, { recursive: true });

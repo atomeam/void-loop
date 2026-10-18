@@ -1,5 +1,5 @@
 /**
- * know skill - V01D's self-knowledge, readable (asked by Void, 2026-10-16: "Give me readable self-knowledge: the motto,
+ * know skill - Verse's self-knowledge, readable (asked by Void, 2026-10-16: "Give me readable self-knowledge: the motto,
  * VoidQuest, the minis, the games"). "what is voidquest", "which games do you know", "which miniatures do you have",
  * "show me your canon" open one card read from /self.json (built from domains/void.canon.md, skills/index.json and
  * skills/mini/ by tools/self-context.mjs): the motto and VoidQuest as Adam wrote them, the games with a link to play each,
@@ -7,7 +7,7 @@
  * "what is a motto", "play voidquest" and "which games are popular" are not this.
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const YOU = '(?:you|void|v01d)';
+const YOU = '(?:you|void|v01d|verse)';
 const TOPICS = [
   ['motto', new RegExp('^(?:(?:tell|read)\\s+me\\s+(?:' + YOU + '(?:\'s)?|your)\\s+motto|' + YOU + '(?:\'s)?\\s+motto)$')],
   ['voidquest', /^(?:what(?:'s| is)\s+(?:the\s+)?void\s?quest|(?:tell|read)\s+me\s+about\s+void\s?quest|(?:what|how)\s+(?:does|do)\s+void\s?quest\s+(?:work|mean)|explain\s+void\s?quest|void\s?quest\s+(?:rules|story|text))$/],

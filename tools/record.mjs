@@ -32,13 +32,13 @@ export function hookOf(tool, run) {
 /** what the video says, as an ad for Void (owner, 2026-10-14: "make each video into an awesomely epic ad for itself and reach as
  *  many viewers as possible"): { hook, caption, cta, title, description, tags } from the lab entry ({ id, label, sub }) and its
  *  ledger run. Everything in it is true of the experiment: what it is, what it found, what failed. Pure. */
-// the name viewers see is V01D (owner, 2026-10-14: "it shoud say V01d everywhere"; "V01D FILMS"): the lab's and ledger's own words say Void
-export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'V01D');
+// the name viewers see is Verse (owner, 2026-10-14: "it shoud say V01d everywhere"; "Verse FILMS"): the lab's and ledger's own words say Void
+export const brand = (t) => String(t || '').replace(/\bVoid\b/g, 'Verse');
 // the code a film shows: its lab page in the repository (asked by Void, 2026-10-15: "Create an automated link between a recorded
 // experiment video and its corresponding skill file in the repository"). Pure.
 export const REPO = 'https://github.com/atomeam/void-loop/blob/main/';
 export const sourceOf = (id) => String(id).startsWith('ship-') ? REPO + 'void-live-deploy/void.growth.json' : REPO + 'void-live-deploy/fringe/' + String(id) + '.html';
-// a film of something V01D shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
+// a film of something Verse shipped (owner, 2026-10-17: "i noticed v01d stopped making videos"; frontier #26 step 4): the lab ran out of
 // experiments never filmed (all were by 2026-10-15, after which every deploy filmed nothing and the daily run repeated the same three).
 // Each growth-ledger entry with a "show" and a "try" is a film: the ask opened on the live site. ship-<yyyymmddhhmm of the entry>. Pure.
 export const shipId = (e) => 'ship-' + String(e.at).replace(/\D/g, '').slice(0, 12);
@@ -69,19 +69,19 @@ export function script(tool0, run0) {
   const title = (hook.length + tail.length <= TITLE_MAX ? hook + tail : label + tail).slice(0, TITLE_MAX);
   const parts = [
     hook + ' Try it free: ' + link, // the first lines are what a viewer sees before "more": the hook and the link
-    'V01D, an AI at https://a-to-mind.com, built this experiment by itself, tested it, and filmed it in a real browser. Nothing was edited by hand.',
+    'Verse, an AI at https://a-to-mind.com, built this experiment by itself, tested it, and filmed it in a real browser. Nothing was edited by hand.',
     'How it is built: ' + sourceOf(tool0.id), // the film and the code it shows, linked (asked by Void, 2026-10-15)
     behavior !== hook ? behavior : '',
     run && run.hypothesis ? 'What it set out to show: ' + String(run.hypothesis).trim() : '',
     run && Array.isArray(run.findings) && run.findings.length ? 'What it found:\n' + lines(run.findings) : '',
     run && Array.isArray(run.failure_modes) && run.failure_modes.length ? 'What failed:\n' + lines(run.failure_modes.map((f) => (f && f.what) || f)) : '',
-    'Ask V01D for anything: https://a-to-mind.com',
-    'V01D FILMS: a new one every day.',
+    'Ask Verse for anything: https://a-to-mind.com',
+    'Verse FILMS: a new one every day.',
     'Watch them all: https://www.youtube.com/@atombomb983',
-    '#Shorts #AI #V01D',
+    '#Shorts #AI #Verse',
   ].filter(Boolean);
   return { source: sourceOf(tool0.id), hook, finding: findingOf(run), caption: behavior || label, cta: 'Built by an AI, by itself.\nTry it free at\na\u2011to\u2011mind.com', title, description: parts.join('\n\n').slice(0, DESC_MAX),
-    tags: ['V01D', 'V01D FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
+    tags: ['Verse', 'Verse FILMS', 'Void', 'A-to-Mind', 'AI', 'AI experiment', 'interactive', 'Shorts', run ? run.family : 'lab'].filter(Boolean) };
 }
 
 /** which lab experiment each film was, from the film release tags (film-<yyyymmdd>-<id>-r<run>), oldest first: [{ id, day }] */
@@ -173,7 +173,7 @@ export async function record(id, { seconds = 20, out = path.resolve(here, '..', 
       document.body.style.paddingBottom = (cap.offsetHeight + 40) + 'px'; // the caption never hides the end of the page
       const bar = fx('data-v-bar'); requestAnimationFrame(() => { bar.style.transitionDuration = total + 'ms'; bar.style.width = '100%'; });
       window.__vfx = {
-        card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">V01D</div>' : '')); return c; },
+        card(kicker, text, mark) { const c = fx('data-v-card', (kicker ? '<div class="k">' + esc(kicker) + '</div>' : '') + '<div class="h">' + esc(text) + '</div>' + (mark ? '<div class="m">Verse</div>' : '')); return c; },
         clear() { document.querySelectorAll('[data-v-card]').forEach((n) => n.remove()); },
         chip(text) { const c = fx('data-v-chip', esc(text)); requestAnimationFrame(() => c.classList.add('on')); setTimeout(() => { c.classList.remove('on'); setTimeout(() => c.remove(), 250); }, 1100); },
         punch(el) { // push in on what was pressed, then ease back: the camera follows the action
@@ -233,7 +233,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const lab = toolList().filter((t) => /-\d+$/.test(t.id));
   const ships = shipsOf(JSON.parse(fs.readFileSync(path.join(site, 'void.growth.json'), 'utf8'))).map((t) => t.id);
   // the films already made, as their release tags (record.yml passes them in VOID_FILMED), so a new film is a new experiment
-  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "V01D can make as many videos as it wants and
+  // --count N: N films in one run, each a different experiment (owner, 2026-10-15: "Verse can make as many videos as it wants and
   // is encouraged to use it as its voice to the world")
   // --only-new (after a deploy): only experiments never filmed, possibly none
   const filmed = filmedOf(process.env.VOID_FILMED || ''), done = new Set(filmed.map((f) => f.id));

@@ -207,14 +207,14 @@ check('local only: no request anywhere carried the page text or the draft', leak
 await V.evaluate(() => { const t = document.querySelector('.tab-draft'); t.value = 'keep it short'; t.dispatchEvent(new Event('input', { bubbles: true })); });
 const beforeDraft = out.length;
 await V.click('.tab-ask-summary', { force: true }); // a real click: the countdown card no longer lands over the tab card (lib/placement.js)
-await V.waitForFunction(() => /from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
+await V.waitForFunction(() => /from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {});
 const dSaid = await V.evaluate(() => (document.querySelector('.tab-said') || {}).textContent || '');
 const dBox = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
 const dFoot = await V.evaluate(() => (document.querySelector('.tab-foot') || {}).textContent || '');
 const dPosts = out.slice(beforeDraft).filter((x) => /a-to-mind\.com\/api\/answer /.test(x));
 let dBody = null; try { dBody = JSON.parse(dPosts[0].slice(dPosts[0].indexOf(' ') + 1)); } catch (_) {}
 check('draft for me: the summary comes back into the card\'s box, the card says it is from Void and what was sent, and the one request carried mode draft with the title, address, the selection (none now) and the box as a note',
-  /summary from V01D/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
+  /summary from Verse/.test(dSaid) && /Fixture page/.test(dBox) && /sent to a-to-mind\.com for a summary draft · not kept there/.test(dFoot)
   && dPosts.length === 1 && dBody && dBody.mode === 'draft' && dBody.intent === 'summary' && dBody.title === 'Fixture page' && dBody.url === 'https://fixture.test/' && dBody.note === 'keep it short' && !('text' in dBody) && !('field' in dBody),
   { dSaid, dBox: dBox.slice(0, 120), dFoot, dBody });
 check('draft for me: rewrite is disabled with nothing selected', await V.evaluate(() => !!(document.querySelector('.tab-ask-rewrite') || {}).disabled));
@@ -351,7 +351,7 @@ check('gap 2: a harmless button on the same page (Save) is still clicked after Y
 
 // B3 joined to the drafts: a "draft for me: reply" on an allowed site comes back as a proposed step, the same card with the
 // draft in it; on a site not on the list the draft stays copy-only, with no card and nothing said about acting
-const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
+const draftReply = async () => { await V.evaluate(() => document.querySelector('.tab-ask-reply').click()); await V.waitForFunction(() => /^reply from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), null, { timeout: 8000 }).catch(() => {}); };
 await draftReply();
 await panel.waitForFunction(() => document.getElementById('act').classList.contains('on'), null, { timeout: 5000 }).catch(() => {});
 const replyDraft = await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '');
@@ -361,12 +361,12 @@ await sw.evaluate(() => chrome.storage.local.set({ allow: [] }));
 await page.waitForTimeout(200);
 // the card's line is read the moment the draft lands (a later redraw of the card may reset it), not after a fixed wait
 await V.evaluate(() => document.querySelector('.tab-ask-reply').click());
-const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from V01D/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
+const offSaid = await V.waitForFunction(() => { const t = (document.querySelector('.tab-said') || {}).textContent || ''; return /^reply from Verse/.test(t) ? t : null; }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => '');
 await page.waitForTimeout(400);
 const offList = { on: await cardOn(), said: offSaid, act: await actSaid(), box: await V.evaluate(() => (document.querySelector('.tab-draft') || {}).value || '') };
 check('B3 from a draft: a "draft for me: reply" on an allowed site yields the Yes / No card to fill the box you were in with the draft; on a site not listed, no card and the draft stays copy-only',
   autoCard.on && replyDraft.length > 0 && autoCard.text === replyDraft && /Reply/.test(autoCard.what) && autoCard.site === 'fixture.test'
-  && !offList.on && /^reply from V01D/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
+  && !offList.on && /^reply from Verse/.test(offList.said) && !/not on your list/.test(offList.act) && offList.box.length > 0,
   { autoCard, replyDraft: replyDraft.slice(0, 80), offList });
 
 // A customer email becomes a proposal in your reply box, after your yes: "draft for me: proposal" in a mail thread sends the
@@ -383,7 +383,7 @@ const sendOn = () => panel.evaluate(() => document.getElementById('send').classL
 const pressProposal = async (n) => { await V.evaluate(() => document.querySelector('.tab-ask-proposal').click());
   await panel.waitForFunction(() => document.getElementById('send').classList.contains('on'), null, { timeout: 8000 }).catch(() => {});
   await press('.send-yes', async () => !(await sendOn())); // the page is read only after this Yes, in the panel
-  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from V01D/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
+  await V.waitForFunction((k) => document.querySelectorAll('.proposal-card').length >= k && /^proposal from Verse/.test((document.querySelector('.tab-said') || {}).textContent || ''), n, { timeout: 10000 }).catch(() => {}); };
 // Gap 1: reading the page for Void needs a Yes in the extension's own panel. The frame only asks; until that Yes nothing is read
 // from the tab and nothing is sent, and a No reads nothing. The same holds for an ask the frame makes by itself (a page on
 // a-to-mind.com gone wrong): it gets the card too, a second ask while it is open is refused, and No sends back no page text.

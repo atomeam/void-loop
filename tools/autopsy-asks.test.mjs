@@ -1,4 +1,4 @@
-// Void's incident asks: the warning style lock, the Go-against-V01D log, the drill-down from a stability sparkline. Run: node --test tools/autopsy-asks.test.mjs
+// Void's incident asks: the warning style lock, the Go-against-Verse log, the drill-down from a stability sparkline. Run: node --test tools/autopsy-asks.test.mjs
 import test from 'node:test'; import assert from 'node:assert/strict';
 import { autopsy, autopsyHtml, GO_LOG, isGoLog } from '../void-live-deploy/lib/autopsy.js';
 import { WARNING_LOCK } from '../void-live-deploy/lib/art-rules.js';
@@ -20,7 +20,7 @@ test('the autopsy card is locked to the warning look: amber on black, a hazard s
   assert.ok(WARNING_LOCK.css.includes('#ffb000') && WARNING_LOCK.css.includes('#0b0b0b'));
 });
 
-test('failing Go-against-V01D checks are collected from the incidents, shown with a replay ask, escaped', () => {
+test('failing Go-against-Verse checks are collected from the incidents, shown with a replay ask, escaped', () => {
   assert.ok(isGoLog('go against v01d: it replies')); assert.ok(isGoLog('go-ai: x')); assert.ok(!isGoLog('google: x')); assert.ok(!isGoLog('go to the shop'));
   const a = autopsy(SAMPLE, FAM, GUIDE); assert.deepEqual(a.goLog.map((g) => g.sha), ['aaaaaaa1', 'bbbbbbb2']);
   const h = autopsyHtml(a, esc); assert.match(h, /data-autopsy-golog="2"/); assert.ok(h.includes('data-ask="' + GO_LOG.replay + '"')); assert.ok(!h.includes('<b>x')); assert.match(h, /&lt;b>x/);

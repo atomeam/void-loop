@@ -26,14 +26,14 @@ function draw(el, esc, q) {
     + '<a style="font-size:11px;opacity:.7;margin-right:8px" href="' + esc(p.app(q)) + '">app</a>';
   el.querySelector('.rd-out').innerHTML = '<p style="margin:10px 0 4px">Food' + (q.food ? ' · ' + esc(q.food) : '') + (q.address ? ' · to ' + esc(q.address) : '') + '</p>'
     + ofKind('food').map((p) => btn(p)).join('') + '<p style="margin:10px 0 4px">Rides' + (q.address ? ' · to ' + esc(q.address) : '') + '</p>' + ofKind('ride').map((p) => btn(p)).join('')
-    + '<p class="g-sub" style="font-size:12px;margin-top:8px">You order and pay inside their app; V01D never sees your card. Waymo food delivery runs through DoorDash in metro Phoenix.</p>';
+    + '<p class="g-sub" style="font-size:12px;margin-top:8px">You order and pay inside their app; Verse never sees your card. Waymo food delivery runs through DoorDash in metro Phoenix.</p>';
 }
 function run(text, api) {
   const { showPage, esc } = api; const q = ridesAsk(text);
   if (!q) return 'none';
   if ('waymo' in q) {
     const w = waymoWhere(q.waymo);
-    showPage((el) => { el.innerHTML = '<h2>Where Waymo runs</h2><p>' + esc(w.text) + '</p><p class="g-sub">Waymo has no public ordering API, so V01D opens the Waymo app for you: <a href="https://waymo.com/rides/" target="_blank" rel="noopener">waymo.com/rides</a>.</p><div class="src">Source: <a href="https://waymo.com/faq/" target="_blank" rel="noopener">Waymo FAQ</a> · checked Oct 2026</div>'; });
+    showPage((el) => { el.innerHTML = '<h2>Where Waymo runs</h2><p>' + esc(w.text) + '</p><p class="g-sub">Waymo has no public ordering API, so Verse opens the Waymo app for you: <a href="https://waymo.com/rides/" target="_blank" rel="noopener">waymo.com/rides</a>.</p><div class="src">Source: <a href="https://waymo.com/faq/" target="_blank" rel="noopener">Waymo FAQ</a> · checked Oct 2026</div>'; });
     return 'rides';
   }
   showPage((el) => {

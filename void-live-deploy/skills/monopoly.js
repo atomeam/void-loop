@@ -8,9 +8,9 @@
 import * as M from './monopoly-rules.js';
 import { lift3d } from './lift3d.js';
 
-// VoidQuest (domains/void.canon.md): V01D's own space version of the property game, after Solar Quest, V01D as the rival.
+// VoidQuest (domains/void.canon.md): Verse's own space version of the property game, after Solar Quest, Verse as the rival.
 // "play voidquest" and "play solar quest" open it; it plays on the same rules (monopoly-rules.js) with its own board.
-export const VOIDQUEST_RE = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+game\s+of\s+)?(?:void\s*quest|v01d\s*quest|solar\s*quest)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|v01d|you))?$/;
+export const VOIDQUEST_RE = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+game\s+of\s+)?(?:void\s*quest|v01d\s*quest|solar\s*quest)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|v01d|verse|you))?$/;
 export function monopolyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (VOIDQUEST_RE.test(t)) return { kind: 'game', theme: 'voidquest' };
@@ -32,8 +32,8 @@ export const VOIDQUEST_NAMES = [
   'Deep Signal', 'Altair Forge', 'Jupiter Gate', 'Nebula Drift', 'Orion Spire', 'Void Tax', 'The Void Core',
 ];
 export const THEMES = {
-  monopoly: { kind: 'monopoly', title: 'The Landlord’s Game', mid: 'THE LANDLORD’S GAME', sub: 'you against V01D', names: null, sky: '#e9f1e2', ground: '#1d2a22', centre: '#cfe2c8', ink: '#2b4a33' },
-  voidquest: { kind: 'voidquest', title: 'VoidQuest', mid: 'VOIDQUEST', sub: 'our version of SolarQuest · you against V01D', names: VOIDQUEST_NAMES, sky: '#dfe3ff', ground: '#120f2a', centre: '#1b1640', ink: '#b9a8ff' },
+  monopoly: { kind: 'monopoly', title: 'The Landlord’s Game', mid: 'THE LANDLORD’S GAME', sub: 'you against Verse', names: null, sky: '#e9f1e2', ground: '#1d2a22', centre: '#cfe2c8', ink: '#2b4a33' },
+  voidquest: { kind: 'voidquest', title: 'VoidQuest', mid: 'VOIDQUEST', sub: 'our version of SolarQuest · you against Verse', names: VOIDQUEST_NAMES, sky: '#dfe3ff', ground: '#120f2a', centre: '#1b1640', ink: '#b9a8ff' },
 };
 /** a space's name on this board */
 export const spaceName = (theme, i) => (theme.names ? theme.names[i] : M.SPACES[i].n);
@@ -103,11 +103,11 @@ const makeMount = (theme) => function mount(th, stageApi) {
   cashIn.addEventListener('pointerdown', (e) => e.stopPropagation());
   const offerB = btn('Offer', 'mono-offer-btn', () => { const r = M.offer(th.state, { space: picked, cash: cashIn.value }); th.state = r.s; offerOut.textContent = T(r.why); save(); paint(); });
   const buildB = btn('Build a house', 'mono-build', () => act(M.build(th.state, picked)));
-  offerRow.append(document.createTextNode('Offer V01D'), cashIn, offerB);
+  offerRow.append(document.createTextNode('Offer Verse'), cashIn, offerB);
   const offerOut = document.createElement('div'); offerOut.className = 'mono-offer-out'; offerOut.style.cssText = 'font-size:12px;color:var(--muted,#8a8a8a);min-height:15px';
   const log = document.createElement('div'); log.className = 'mono-log'; log.style.cssText = 'font-size:11.5px;color:var(--muted,#8a8a8a);max-height:132px;overflow:auto;margin-top:6px;border-top:1px solid rgba(255,255,255,.08);padding-top:4px';
   const foot = document.createElement('div'); foot.className = 'g-rules';
-  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space to see it; tap one of V01D’s to make an offer, or one of your full sets to build.';
+  foot.textContent = 'Buying is always your choice. Rent, tax, cards and Jail are forced. Tap a space to see it; tap one of Verse’s to make an offer, or one of your full sets to build.';
   let picked = -1;
   const save = () => stageApi.save && stageApi.save();
   function act(next) { if (next !== th.state) { th.state = next; save(); } paint(); voidPlays(); }
@@ -181,11 +181,11 @@ async function run(text, api) {
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return kind; }
   if (kind === 'voidquest') {
     api.summon('voidquest', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
-    api.say('VoidQuest, our version of SolarQuest · you against V01D · roll to start; buying is always your choice');
+    api.say('VoidQuest, our version of SolarQuest · you against Verse · roll to start; buying is always your choice');
     return 'voidquest';
   }
   api.summon('monopoly', { state: M.create({ voids: 1 }), x: Math.max(10, Math.round(innerWidth / 2 - 420)), y: 40 });
-  api.say('The Landlord’s Game (plays like Monopoly) · you against V01D · roll to start; buying is always your choice');
+  api.say('The Landlord’s Game (plays like Monopoly) · you against Verse · roll to start; buying is always your choice');
   return 'monopoly';
 }
 

@@ -2,7 +2,7 @@
  * crowd skill - the crowd engine (owner, 2026-10-18, the Opposite Era; made with tools/new-skill.mjs). "summon the crowd" fills
  * the layer behind the stage (the page's world layer, as the night sky uses) with anonymous particles that react to what you do:
  * they cheer (rise) when a thing is added, flee from the spot where one is removed, swarm toward a thing you drag, and after
- * 10 s with nothing happening they spell V01D. The crowd grows with how many things changed in the last minute (sizeFor).
+ * 10 s with nothing happening they spell Verse. The crowd grows with how many things changed in the last minute (sizeFor).
  * "dismiss the crowd" clears it. Nothing is saved and nothing leaves the device. The particle law (create, step, moodOf,
  * sizeFor, spellPoints) is pure and seeded; tested in tools/stage-pack-f.test.mjs. One world at a time: the crowd replaces the sky.
  */
@@ -17,7 +17,7 @@ export function crowdOf(text) {
   return null;
 }
 
-export const MIN = 40, MAX = 400, IDLE_MS = 10000, MOOD_MS = 2500, WORD = 'V01D';
+export const MIN = 40, MAX = 400, IDLE_MS = 10000, MOOD_MS = 2500, WORD = 'Verse';
 /** how many in the crowd for `changes` things changed in the last minute. Pure. */
 export const sizeFor = (changes) => clamp(MIN + 25 * Math.max(0, Math.floor(+changes) || 0), MIN, MAX);
 /** how many of `times` (ms) fall in the last minute before `now`. Pure. */
@@ -129,7 +129,7 @@ async function run(text, api) {
   if (!q || !api.stage || !api.stage.setWorld) return 'none';
   if (q === 'dismiss') { if (api.stage.world() === 'crowd') { api.stage.setWorld(null); api.say('the crowd disperses'); } else api.say('no crowd here'); return 'crowd'; }
   api.stage.setWorld('crowd', { stage: api.stage });
-  api.say('the crowd is in: it cheers what you add, flees what you remove, follows what you drag, and spells V01D when you pause · "dismiss the crowd" clears it');
+  api.say('the crowd is in: it cheers what you add, flees what you remove, follows what you drag, and spells Verse when you pause · "dismiss the crowd" clears it');
   return 'crowd';
 }
 
