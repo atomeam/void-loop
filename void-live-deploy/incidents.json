@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-18T09:23:47.781Z",
-   "sha": "44617fcf6f5929824b7aa8594e84a51720089f39",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39114141203",
+   "at": "2026-10-18T09:24:37.101Z",
+   "sha": "c53adfce08747cb63caae0b1a02d2a67714f2d23",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39114090393",
    "suite": "browser suite on main",
    "checks": [
     "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
@@ -12,10 +12,6 @@
     "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "tools/bench.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/wants.js",
     "docs/MAP.md",
     "domains/void.agents.log.md",
     "tools/checks.mjs",
@@ -26,7 +22,11 @@
     "void-live-deploy/lib/card-frame.js",
     "void-live-deploy/lib/lineage.js",
     "void-live-deploy/remediation.json",
-    "void-live-deploy/skills/deps.json"
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1715-remediation-velocity"
    ]
   },
   {
