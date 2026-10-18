@@ -37,7 +37,7 @@ const QUOTES = String.raw`${QUOTED}(?:\s*(?:[;,]|and|then)\s*${QUOTED})*`;
 const ATTRIB_IN_PARENS = new RegExp(String.raw`\s*\([^()]*\b${WHO}\b[^()]*?:\s*${QUOTES}[^()]*\)`, 'g');
 const ATTRIB_BARE = new RegExp(String.raw`(\b${WHO}\b[^"“”\n:]{0,60}?):\s*${QUOTES}`, 'g');
 const WORDS = new RegExp(String.raw`(\b(?:in\s+)?(?:the\s+)?(?:owner|Adam|Atom)'s\s+(?:own\s+)?words)[,:]?\s*${QUOTES}`, 'g'); // "in the owner's words "…""
-export const quotesOwner = (s) => new RegExp(String.raw`\b${WHO}\b[^"“”\n:]{0,60}?:\s*${QUOTED}`).test(String(s || '')) || new RegExp(WORDS.source).test(String(s || ''));
+export const quotesOwner = (s) => new RegExp(String.raw`\b${WHO}\b[^"“”\n:]{0,60}?:\s*${QUOTED}`).test(String(s || '')) || new RegExp(WORDS.source).test(String(s || '')); // both patterns are built from this file's own constants, never from the text tested (void-review: ok)
 export function quoteFree(text) {
   const t = String(text == null ? '' : text);
   if (!quotesOwner(t)) return t;
