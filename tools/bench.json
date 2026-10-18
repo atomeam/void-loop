@@ -6067,5 +6067,6 @@
   {"ask": "what do you want built now", "want": "skill:wants"},
   {"ask": "name all your unbuilt asks", "want": "skill:wants"},
   {"ask": "your backlog", "want": "skill:wants"},
-  {"ask": "what have you not built yet", "want": "skill:wants"}
+  {"ask": "what have you not built yet", "want": "skill:wants"},
+  {"ask": "asks not built?", "want": "skill:wants"}
 ]

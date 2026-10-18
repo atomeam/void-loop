@@ -36,3 +36,16 @@ test('the skill (skills/service-health.js) takes its asks and leaves the look-al
   for (const a of [...skill.examples, 'is waymo up right now?', 'adapter status', 'are your services working']) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of [...skill.nearMisses, 'order pizza to 1 main st', 'bitcoin price']) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
+
+test('the stability dial (asked by Void): the needle turns with the score, the label and counts are shown, none recorded rests at the top, everything escaped', () => {
+  assert.equal(S.needleOf(0), -90); assert.equal(S.needleOf(100), 90); assert.equal(S.needleOf(50), 0); assert.equal(S.needleOf(76), 47); assert.equal(S.needleOf(-5), -90); assert.equal(S.needleOf('x'), -90);
+  const steady = S.gaugeHtml(esc, { score: 100, label: 'steady', week: 0, day: 0, known: 3 });
+  assert.match(steady, /data-stability="steady" data-score="100"/); assert.match(steady, /rotate\(90deg\)/); assert.match(steady, /steady · 100\/100/); assert.match(steady, /0 red suites on main in 7 days/);
+  const shaky = S.gaugeHtml(esc, { score: 28, label: 'shaky', week: 6, day: 2, known: 9 });
+  assert.match(shaky, /data-stability="shaky" data-score="28"/); assert.match(shaky, /rotate\(-40deg\)/); assert.match(shaky, /6 red suites on main in 7 days, 2 in the last day/); assert.match(shaky, /stroke-dasharray="44 157"/);
+  const none = S.gaugeHtml(esc, { score: 100, label: 'steady', week: 0, day: 0, known: 0 });
+  assert.match(none, /data-stability="none"/); assert.match(none, /nothing to gauge/); assert.match(none, /no red suite recorded yet/); assert.match(none, /rotate\(90deg\)/);
+  const odd = S.gaugeHtml(esc, { score: 64, label: '<b>', week: 1, day: 0, known: 1 });
+  assert.ok(odd.includes('&lt;b&gt;') && !odd.includes('data-stability="<b>"'), 'a label is escaped');
+  assert.equal(S.GAUGE_EVERY_MS, 60000);
+});
