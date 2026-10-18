@@ -1262,5 +1262,12 @@
   "of": 59,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"fly around\" (skill:fly)"
+ },
+ {
+  "at": "2026-10-18T06:59:10Z",
+  "passed": 57,
+  "of": 60,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
  }
 ]

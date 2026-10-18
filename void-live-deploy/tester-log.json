@@ -1,15 +1,22 @@
 {
  "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 56,
- "runsTotal": 170,
+ "cases": 57,
+ "runsTotal": 171,
  "kinds": {
-  "grow": 49,
+  "grow": 50,
   "file": 67,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-18T06:59:10Z",
+   "passed": 57,
+   "of": 60,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"habit ring for write, walk, sleep\" (skill:habit-ring)"
+  },
   {
    "at": "2026-10-18T06:45:07Z",
    "passed": 59,
@@ -142,13 +149,6 @@
    "of": 41,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"what rhymes with orange\" (skill:words)"
-  },
-  {
-   "at": "2026-10-17T23:06:05Z",
-   "passed": 33,
-   "of": 40,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"find a rumble video about bitcoin\" (skill:video)"
   }
  ],
  "seen": {
@@ -353,6 +353,10 @@
   "skill:fly": "2026-10-18T06:45:07Z",
   "skill:forge-table": "2026-10-18T06:45:07Z",
   "skill:four-channels": "2026-10-18T06:45:07Z",
-  "skill:gauge-feedback": "2026-10-18T06:45:07Z"
+  "skill:gauge-feedback": "2026-10-18T06:45:07Z",
+  "skill:habit-ring": "2026-10-18T06:59:10Z",
+  "skill:health-habits": "2026-10-18T06:59:10Z",
+  "skill:homotopy-edit": "2026-10-18T06:59:10Z",
+  "skill:hunting-question": "2026-10-18T06:59:10Z"
  }
 }
