@@ -85,6 +85,24 @@ export function trailSpeed(trail) {
   for (let i = 1; i < trail.length; i++) d += Math.hypot(trail[i].x - trail[i - 1].x, trail[i].y - trail[i - 1].y);
   return d / (trail.length - 1);
 }
+// displacement ripple (asked by Void, its next video trick: "a 'displacement' effect where a card appears to ripple the spatial field as it
+// moves, making the stage feel less like a screen and more like a liquid"): a moving card drops a ripple every RIPPLE_EVERY ms; each grows
+// to RIPPLE_R field widths over RIPPLE_LIFE ms and fades, and the card's draw bends the field inside its ring like a lens through water
+export const RIPPLE_EVERY = 110, RIPPLE_LIFE = 900, RIPPLE_R = 0.2, RIPPLE_MAX = 30;
+/** drop a ripple { x, y, t } for each card that moves (its trail at least TRAIL_MIN fast) when RIPPLE_EVERY ms have passed since `last`;
+ *  drops the ones older than RIPPLE_LIFE and keeps at most RIPPLE_MAX. Returns the time of this drop (or `last`). Pure on its inputs. */
+export function rippleTick(ripples, cards, trails, now, last = -Infinity) {
+  for (let i = ripples.length - 1; i >= 0; i--) if (now - ripples[i].t >= RIPPLE_LIFE) ripples.splice(i, 1);
+  if (now - last < RIPPLE_EVERY) return last;
+  (cards || []).forEach((c, i) => { if (c && trailSpeed(trails && trails[i]) >= TRAIL_MIN) ripples.push({ x: c.x, y: c.y, t: now }); });
+  if (ripples.length > RIPPLE_MAX) ripples.splice(0, ripples.length - RIPPLE_MAX);
+  return now;
+}
+/** how a ripple looks at `now`: { r } its radius in field widths (easing out, fast then slow) and { a } its strength (1 → 0). Pure. */
+export function rippleAt(rp, now) {
+  const k = clamp((now - rp.t) / RIPPLE_LIFE, 0, 1), e = 1 - (1 - k) * (1 - k);
+  return { r: RIPPLE_R * e, a: 1 - k };
+}
 /** a step: dt in seconds; input { x, y, down } from the pointer seeds energy. */
 export function step(s, dt = 1 / 60, input = {}) {
   const k = clamp(dt * 60, 0.25, 3);

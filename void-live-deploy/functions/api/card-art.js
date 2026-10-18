@@ -9,7 +9,9 @@
 //   - make V01D paint ONE new picture for a subject, never more than RL_MAX times a minute per connection (the answer route's rateLimited(), its own
 //     bucket), never more than CAP images a day for everyone together (env ART_DAILY_CAP, default 30, counted in D1), and never at all when ART_OFF=1.
 //     A second ask for the same subject costs nothing: it reads the row. The model sees a FIXED template with only the folded key (letters, digits,
-//     spaces: no markup or quotes), the kind and the rarity from short allow-lists, so a typed instruction never reaches it. Subjects that are a real
+//     spaces: no markup or quotes), the kind and the rarity from short allow-lists, so a typed instruction never reaches it. The Art Director's
+//     text call before it sees the same folded key, kind and family (an allow-list) and nothing else, and its scene is cut to plain words and
+//     refused like a subject (sceneOf), so it widens nothing; it runs only when a painting is about to be made (under the cap, after the rate limit). Subjects that are a real
 //     person, sexual, hateful, a brand or an artist, a secret or key shape, or refused by the keeper get no model call;
 //   - fill the table: one row per distinct folded subject (at most ~700 KB), only when the model really drew, and only up to the daily cap.
 // Nothing a person typed is stored and nobody is recorded: the row holds the folded key, the picture and the day. A model that fails, is busy, or
@@ -19,9 +21,9 @@ import { rateLimited } from './answer.js';
 import { redact } from '../../lib/automation-fix.js';
 import { scrubOut } from '../../lib/keeper.js';
 import { models } from '../../lib/models.js';
-import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf } from '../../lib/art-rules.js';
+import { rawSubject, subjectKey, kindWordOf, rarityOf, refusal, artPrompt, imageOf, DIRECTOR_SYSTEM, directorPrompt, sceneOf, directedPrompt } from '../../lib/art-rules.js';
 
-export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30;
+export const RL_MAX = 3, TIMEOUT_MS = 40000, DEFAULT_CAP = 30, DIRECT_MS = 12000;
 const json = (o, status = 200, extra = {}) => Response.json(o, { status, headers: extra });
 const on = (env) => !!(env && env.AI) && !/^(1|true|yes|on)$/i.test(String(env.ART_OFF || '').trim());
 /** the daily cap (owner, 2026-10-17: V01D spends only what it has earned; with no earnings there is no budget): ART_DAILY_CAP when it is a whole number from 0 up, else 30,
@@ -52,6 +54,18 @@ async function noteMiss(env, why) {
   try { await env.DB.prepare('CREATE TABLE IF NOT EXISTS void_art_miss (day TEXT NOT NULL, why TEXT NOT NULL, n INTEGER NOT NULL, PRIMARY KEY (day, why))').run();
     await env.DB.prepare('INSERT INTO void_art_miss (day, why, n) VALUES (?, ?, 1) ON CONFLICT(day, why) DO UPDATE SET n = n + 1').bind(today(), why).run(); } catch (_) {}
 }
+// the Art Director (lib/art-rules.js): one short call to the free text model with the folded subject, the kind and the family (allow-lists only);
+// its scene is cleaned and checked by sceneOf, and anything that fails, is slow or is refused gives '' and the fixed template paints instead
+const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || (r.result && r.result.response))) || '';
+export async function direct(env, key, kind, family) {
+  try {
+    const r = await Promise.race([
+      env.AI.run(models('merge'), { messages: [{ role: 'system', content: DIRECTOR_SYSTEM }, { role: 'user', content: directorPrompt(key, kind, family) }], max_tokens: 90 }),
+      new Promise((_, no) => setTimeout(() => no(new Error('slow')), DIRECT_MS)),
+    ]);
+    return sceneOf(scrubOut(redact(String(pick(r))), env), isSecret);
+  } catch (_) { return ''; }
+}
 const hit = (row, key) => ({ state: 'art', key, img: row.img, cached: true, day: row.day });
 const plate = (why, extra = {}) => json({ state: 'plate', why, ...extra });
 
@@ -81,10 +95,11 @@ export async function onRequestPost({ request, env }) {
   if (!on(env)) return plate('off');
   if ((await madeToday(env)) >= capOf(env)) return plate('cap');
   if (await rateLimited(request, env, 'card-art', RL_MAX)) return json({ state: 'plate', why: 'slow', error: 'slow down' }, 429);
+  const scene = await direct(env, key, kind, body && body.family); // the Art Director's scene, or '' for the fixed template
   let img = '';
   try {
     const r = await Promise.race([
-      env.AI.run(models('art'), { prompt: artPrompt(key, kind, rarity), steps: 4 }),
+      env.AI.run(models('art'), { prompt: scene ? directedPrompt(scene, rarity) : artPrompt(key, kind, rarity), steps: 4 }),
       new Promise((_, no) => setTimeout(() => no(new Error('slow')), TIMEOUT_MS)),
     ]);
     img = imageOf(r);

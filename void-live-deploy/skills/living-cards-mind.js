@@ -44,7 +44,7 @@ function mount({ el, q, th, still }) {
       .catch(() => {}).finally(() => { busy = false; });
   };
   const timer = setInterval(() => { if (!el.isConnected) { dispose(); return; } think(); }, F.MIND_EVERY * 1000);
-  const frameLoop = () => { raf = 0; if (!el.isConnected) return; paint(); el.dataset.trails = String(s.trailShown || 0); el.dataset.trailMax = String(Math.max(+el.dataset.trailMax || 0, s.trailShown || 0)); raf = requestAnimationFrame(frameLoop); };
+  const frameLoop = () => { raf = 0; if (!el.isConnected) return; paint(); el.dataset.trails = String(s.trailShown || 0); el.dataset.trailMax = String(Math.max(+el.dataset.trailMax || 0, s.trailShown || 0)); el.dataset.rippleMax = String(Math.max(+el.dataset.rippleMax || 0, s.rippleShown || 0)); raf = requestAnimationFrame(frameLoop); };
   paint(); if (!still()) raf = requestAnimationFrame(frameLoop);
   function dispose() { clearInterval(timer); if (raf) cancelAnimationFrame(raf); try { mind.close(); } catch (_) { /* gone */ } }
   return { dispose };
@@ -75,6 +75,18 @@ const idea = {
         g.lineWidth = w; for (let j = 1; j < t.length; j++) { g.strokeStyle = col(a * (0.35 + 0.65 * j / t.length)); g.beginPath(); g.moveTo(t[j - 1].x * W, t[j - 1].y * H); g.lineTo(t[j].x * W, t[j].y * H); g.stroke(); } }
     });
     s.trailShown = s.trails.filter((t) => F.trailSpeed(t) >= F.TRAIL_MIN).length;
+    // the displacement ripple (asked by Void): rings spread from a moving card, and inside each ring the field is drawn slightly magnified
+    // about the ring's centre, so the field itself bends like water as the card passes; a light crest and a dark trough sell the wave
+    s.ripples = s.ripples || []; s.rippleAt = F.rippleTick(s.ripples, s.cards, s.trails, tnow, s.rippleAt);
+    for (const rp of s.ripples) {
+      const { r, a } = F.rippleAt(rp, tnow), cx = rp.x * W, cy = rp.y * H, R = r * W; if (a <= 0 || R < 2) continue;
+      const band = 7 + 5 * a, zoom = 1 + 0.08 * a;
+      g.save(); g.beginPath(); g.arc(cx, cy, R + band, 0, Math.PI * 2); g.arc(cx, cy, Math.max(0, R - band), 0, Math.PI * 2, true); g.clip();
+      g.translate(cx, cy); g.scale(zoom, zoom); g.translate(-cx, -cy); g.drawImage(off, 0, 0, W, H); g.restore();
+      g.lineWidth = 2; g.strokeStyle = 'rgba(255,255,255,' + (0.55 * a).toFixed(3) + ')'; g.beginPath(); g.arc(cx, cy, R, 0, Math.PI * 2); g.stroke();
+      g.strokeStyle = 'rgba(0,0,0,' + (0.35 * a).toFixed(3) + ')'; g.beginPath(); g.arc(cx, cy, R + 3, 0, Math.PI * 2); g.stroke();
+    }
+    s.rippleShown = s.ripples.length;
   }
 };
 

@@ -6,7 +6,7 @@
 import { ideaKey } from './merge-rules.js';
 import { keeperOf } from './keeper.js';
 
-export const SUBJECT_RAW_MAX = 120, IMG_MAX = 700000; // characters typed (cut before folding); bytes of base64 the row may hold
+export const SUBJECT_RAW_MAX = 120, IMG_MAX = 700000, IMG_MIN = 8000; // characters typed (cut before folding); the most and the least base64 a kept picture may be (the least: the quality gate below)
 export const KINDS = { place: 'a place', film: 'a story', song: 'a melody', animal: 'a creature', thing: 'an object', idea: 'an idea', event: 'an event', answer: 'a thing', merge: 'a fusion', skill: 'an arcane instrument' };
 const KIND_ALIAS = { person: 'person', people: 'person', cat: 'animal', species: 'animal', film: 'film', movie: 'film', song: 'song', place: 'place', city: 'place', country: 'place', event: 'event', idea: 'idea', merged: 'merge', merge: 'merge', skill: 'skill', miniature: 'skill' };
 export const RARITY_STYLE = { mythic: 'blazing gold and crimson light, a halo of arcane sigils', rare: 'warm gold light, floating glyphs', uncommon: 'cool silver light, faint runes', common: 'moody indigo light, soft mist' };
@@ -43,15 +43,53 @@ export function refusal(raw, kind = 'answer', isSecret = () => false) {
 }
 
 export const ART_STYLE = 'arcane illuminati engraving, occult tarot-card illustration, all-seeing eye and sacred geometry halo, fine etched linework and gold filigree on deep indigo and black, glowing sigils and mystical light, a single central subject';
-/** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
-export function artPrompt(key, kind = 'answer', rarity = 'common') {
-  return ART_STYLE + ': ' + String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + RARITY_STYLE[rarityOf(rarity)] + ', dark frame-ready composition, no text, no letters, no logos, no signature';
+// The Art Director (owner, 2026-10-18: "upgrade the Art Forge from a simple image generator into an autonomous Art Director": "if V01D just passes a
+// card's title ... directly to an image API, the model guesses the context and framing, which results in cut-off cats and random aesthetics").
+// Before the painting, one short call to the free text model turns the card's folded subject, its kind and its family (each from an allow-list:
+// still nothing a person typed) into one visual scene; its answer is cut to plain words and checked by the same refusals as a subject, and a
+// scene that fails any of it is dropped for the fixed template. The style lock wraps whatever the scene is, so every card on the stage shares
+// one look (the owner's words: "dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus, 8k resolution. --no text,
+// watermarks, cropped edges, out of frame"; the image model takes no negative prompt, so the --no list is written as words).
+export const FAMILIES = ['Making things', 'Games', 'Sky and earth', 'Time', 'Numbers and money', 'Body and mind', 'Words and the world', 'Out in the world', 'The stage', 'Void itself'];
+export const familyOf = (v) => { const k = String(v == null ? '' : v).trim().toLowerCase(); return FAMILIES.find((f) => f.toLowerCase() === k) || ''; };
+export const STYLE_LOCK = 'dark fantasy, cyber-mysticism, intricate details, masterpiece, sharp focus, 8k resolution';
+export const FRAMING = 'one central subject wholly inside the frame with dark space all around it, centered composition, no text, no letters, no watermarks, no cropped edges, nothing out of frame, no logos, no signature';
+export const DIRECTOR_SYSTEM = 'You are the art director for V01D\'s trading cards. Turn the card below into ONE visual scene for a painting, in at most 30 words: '
+  + 'one central subject drawn whole and centered with space around it, what surrounds it, the light and the mood, in a dark arcane void. '
+  + 'Never name an artist, a brand, a franchise, a character or a real person, and never put words or letters in the picture. Reply with the scene only, one line.';
+export const SCENE_MAX = 240;
+/** the Director's input: the folded subject, the kind phrase and the family, all from allow-lists. Pure. */
+export function directorPrompt(key, kind = 'answer', family = '') {
+  const f = familyOf(family);
+  return 'Card: ' + String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + '. Kind: ' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '.' + (f ? ' Family: ' + f + '.' : '');
+}
+/** the Director's reply -> one clean scene (letters, digits, spaces and plain punctuation, at most SCENE_MAX characters, at least four words), or ''
+ *  when it is empty, too short, or would be refused as a subject (sexual, hateful, a brand or artist, shaped like a secret). Pure. */
+export function sceneOf(text, isSecret = () => false) {
+  const line = String(text == null ? '' : text).replace(/<[^>]*>/g, ' ').split(/\n/).map((l) => l.trim()).find((l) => l) || '';
+  const clean = line.replace(/^(?:scene|answer|output)\s*:\s*/i, '').replace(/[^A-Za-z0-9 ,.'-]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, SCENE_MAX).replace(/[ ,.'-]+$/, '');
+  if (clean.split(' ').length < 4) return '';
+  const all = clean.toLowerCase(); // a subject's refusals, word by word (refusal()'s run-of-letters secret test would trip on any sentence)
+  if (isSecret(clean) || keeperOf(clean) || SEXUAL.test(all) || HATE.test(all) || BRANDS.test(all) || /\d{6,}/.test(all) || clean.split(' ').some((w) => w.length >= 28)) return '';
+  return clean;
+}
+/** the directed prompt: the scene, the style lock, V01D's arcane signature, the rarity's light and the framing. Pure. */
+export function directedPrompt(scene, rarity = 'common') {
+  return scene + ', ' + STYLE_LOCK + ', ' + ART_STYLE + ', ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + FRAMING;
 }
 
-/** the model's reply -> a data URL, or '' when it is not a small jpeg or png. The reply is { image: '<base64>' } (or the base64 itself). Pure. */
+/** the fixed prompt: the template, the folded subject, and the kind and rarity phrases from the allow-lists. Nothing else enters it. Pure. */
+export function artPrompt(key, kind = 'answer', rarity = 'common') {
+  return ART_STYLE + ': ' + String(key).replace(/[^a-z0-9 ]/g, '').slice(0, 60) + ' (' + (KINDS[kindWordOf(kind)] || KINDS.answer) + '), ' + RARITY_STYLE[rarityOf(rarity)] + ', ' + STYLE_LOCK + ', ' + FRAMING;
+}
+
+/** the model's reply -> a data URL, or '' when it is not a small jpeg or png. The reply is { image: '<base64>' } (or the base64 itself). The quality gate
+ *  (owner, 2026-10-18: "if the image API fails or returns an image that triggers a basic safety/blur filter, discard it"): a picture under IMG_MIN
+ *  characters of base64 (about 6 KB) is a flat, blank or blacked-out frame (a filtered answer comes back as one), so it is not kept and costs no
+ *  place in the day's cap: the cap counts kept pictures. Pure. */
 export function imageOf(r) {
   const b = typeof r === 'string' ? r : r && typeof r.image === 'string' ? r.image : '';
-  if (!b || b.length > IMG_MAX || !/^[A-Za-z0-9+/]+={0,2}$/.test(b)) return '';
+  if (!b || b.length > IMG_MAX || b.length < IMG_MIN || !/^[A-Za-z0-9+/]+={0,2}$/.test(b)) return '';
   if (b.startsWith('/9j/')) return 'data:image/jpeg;base64,' + b;
   if (b.startsWith('iVBORw0KGgo')) return 'data:image/png;base64,' + b;
   return '';

@@ -58,3 +58,18 @@ test('the velocity trail (asked by Void): a card keeps its last TRAIL positions,
   const still = []; for (let i = 0; i < 5; i++) F.trailPush(still, { x: 0.3, y: 0.3 });
   assert.equal(F.trailSpeed(still), 0); assert.equal(F.trailSpeed([]), 0);
 });
+
+test('displacement ripple (asked by Void): a moving card drops a ripple every RIPPLE_EVERY ms, a still one none; a ripple grows, fades and is gone after RIPPLE_LIFE', async () => {
+  const F = await import('../void-live-deploy/lib/field-cards.js');
+  const moving = [{ x: 0.1, y: 0.1 }, { x: 0.2, y: 0.1 }], still = [{ x: 0.5, y: 0.5 }, { x: 0.5, y: 0.5 }];
+  const cards = [{ x: 0.2, y: 0.1 }, { x: 0.5, y: 0.5 }], rs = [];
+  let last = F.rippleTick(rs, cards, [moving, still], 1000);
+  assert.equal(last, 1000); assert.deepEqual(rs, [{ x: 0.2, y: 0.1, t: 1000 }], 'only the moving card ripples');
+  assert.equal(F.rippleTick(rs, cards, [moving, still], 1000 + F.RIPPLE_EVERY - 1, last), last, 'not again too soon'); assert.equal(rs.length, 1);
+  last = F.rippleTick(rs, cards, [moving, still], 1000 + F.RIPPLE_EVERY, last); assert.equal(rs.length, 2);
+  const a0 = F.rippleAt(rs[0], 1000), mid = F.rippleAt(rs[0], 1000 + F.RIPPLE_LIFE / 2), end = F.rippleAt(rs[0], 1000 + F.RIPPLE_LIFE);
+  assert.ok(a0.r === 0 && a0.a === 1); assert.ok(mid.r > F.RIPPLE_R / 2 && mid.a === 0.5, 'eases out: past half its size at half its life'); assert.ok(end.r === F.RIPPLE_R && end.a === 0);
+  F.rippleTick(rs, cards, [still, still], 1000 + F.RIPPLE_LIFE + F.RIPPLE_EVERY + 1, last); assert.equal(rs.length, 0, 'old ripples go; a still field drops none');
+  const many = []; for (let t = 0; t < 40; t++) F.rippleTick(many, cards, [moving, moving], t * F.RIPPLE_EVERY, (t - 1) * F.RIPPLE_EVERY);
+  assert.ok(many.length <= F.RIPPLE_MAX);
+});

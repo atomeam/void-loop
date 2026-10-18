@@ -60,7 +60,7 @@ function show(el, img) {
 async function ask(method, el, c) {
   const kind = kindOf(el, c), rarity = c.rarity ? c.rarity.name.toLowerCase() : 'common';
   const url = '/api/card-art' + (method === 'GET' ? '?key=' + encodeURIComponent(subjectFor(el, c)) + '&kind=' + encodeURIComponent(kind) : '');
-  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity }) });
+  const r = await fetch(url, method === 'GET' ? { cache: 'no-store' } : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ subject: subjectFor(el, c), kind, rarity, family: c.chapter || '' }) });
   return r.ok ? r.json() : { state: 'plate', why: r.status === 429 ? 'slow' : 'http' };
 }
 function button(el, c) {
