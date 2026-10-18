@@ -127,8 +127,8 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 6,
-    "checked": 7,
+    "tested": 5,
+    "checked": 8,
     "proven": 7
    },
    "from": 153,
@@ -3165,8 +3165,8 @@
     "mint a card of the moon",
     "collectible card of tokyo"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "checked",
+   "why": "a self-test, 2 browser-suite mentions",
    "n": 174
   },
   {

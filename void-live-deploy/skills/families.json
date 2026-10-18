@@ -13,8 +13,8 @@
  "smoke_at": "2026-10-17",
  "totals": {
   "experiment": 2,
-  "tested": 64,
-  "checked": 38,
+  "tested": 63,
+  "checked": 39,
   "proven": 85
  },
  "families": [
@@ -1573,8 +1573,8 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
     "experiment": 1,
-    "tested": 6,
-    "checked": 7,
+    "tested": 5,
+    "checked": 8,
     "proven": 7
    },
    "skills": [
@@ -1751,10 +1751,11 @@
     },
     {
      "name": "collectible",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "promoted": "2026-10-18"
     }
    ]
   },
