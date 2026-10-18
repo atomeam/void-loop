@@ -4053,13 +4053,16 @@ try {
     });
     await S.ask('is uber down', 600);
     await until(async () => (await S.p.$$eval('.vpage.on .sh-row[data-state="checking"]', (e) => e.length).catch(() => 1)) === 0 && (await S.p.$$('.vpage.on .sh-row')).length > 0, 10000).catch(() => {});
-    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0) }));
+    const read = () => S.p.$eval('.vpage.on', (el) => ({ rows: [...el.querySelectorAll('.sh-row')].map((r) => r.dataset.service + ':' + r.dataset.state + ':' + r.querySelector('.sh-said').textContent), sum: el.querySelector('.sh-sum').textContent, checked: +(el.querySelector('[data-sh-out]').closest('.vpage').dataset.checked || 0),
+      gauge: (() => { const g = el.querySelector('.sh-gauge'); return g ? { label: g.dataset.stability, score: +g.dataset.score, deg: (g.querySelector('.sh-needle').style.transform.match(/-?\d+/) || [''])[0], reads: +(el.querySelector('[data-sh-gauge]').dataset.reads || 0) } : null; })() }));
     const a = await read(), hitsA = hits;
     await S.p.click('.vpage.on [data-sh-again]'); await until(async () => (await read()).checked >= 2, 10000).catch(() => {});
     const b = await read(), row = (id) => a.rows.find((x) => x.startsWith(id + ':')) || '';
-    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, and Check again checks every one again',
+    // the stability dial (asked by Void): the served incidents.json is the real file, so the dial reads a label and a score, the needle sits at the score's angle, and Check again reads it again
+    const dialOk = (g) => g && ['steady', 'wobbly', 'shaky'].includes(g.label) && g.score >= 0 && g.score <= 100 && +g.deg === Math.round(-90 + 1.8 * g.score);
+    check('service health (asked by Void): "is uber down" lists all seven services; CoinGecko up with its time, Bluesky down (answered 503), Waymo down (could not be reached), Uber slow, the summary counts them, Check again checks every one again, and V01D\'s own stability dial reads incidents.json (again on Check again)',
       a.rows.length === 7 && /^coingecko:up:up · \d+ ms$/.test(row('coingecko')) && row('bluesky') === 'bluesky:down:down · answered 503' && row('waymo') === 'waymo:down:down · could not be reached'
-      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
+      && /^uber:slow:slow · [\d.]+ s$/.test(row('uber')) && a.sum === '4 of 7 up, 1 slow, 2 down' && hitsA === 7 && hits === 14 && b.rows.length === 7 && dialOk(a.gauge) && dialOk(b.gauge) && b.gauge.reads >= 2 && !S.errors.length, JSON.stringify({ a, b, hits, errors: S.errors }));
     await S.ctx.close(); }
   if (want("field minds: living cards mind, five cards ride an evolving field, take their look from it, and dragging one seeds it, with or without a Worker")) { // asked by the owner: Grok's idea F-038
     const out = [];
