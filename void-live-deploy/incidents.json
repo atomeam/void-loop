@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-18T16:15:00.753Z",
+   "sha": "cfbda4fbadec0dddd424c003ed870ab185410d71",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39143833356",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "domains/void.frontier.md",
+    "tools/checks.mjs",
+    "tools/test_void.mjs",
+    "tools/will-guard.test.mjs",
+    "void-live-deploy/functions/api/will.js",
+    "void-live-deploy/lib/will-guard.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/void.growth.json",
+    "tools/site-test.json",
+    "tools/site-test.log.json",
+    "tools/site-test.seen.json",
+    "void-live-deploy/claims-verified.json"
+   ]
+  },
+  {
    "at": "2026-10-18T16:08:31.702Z",
    "sha": "bd7deb178c2a637ec3a0a12d10fb3600ad57c32b",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39142324126",
@@ -679,34 +705,6 @@
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/order/0069-wants",
     "void-live-deploy/skills/wants.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T06:33:06.729Z",
-   "sha": "264d596f39774d22794ff6215c44f9ec53c39ff4",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39104143756",
-   "suite": "browser suite on main",
-   "checks": [
-    "calendar: a visitor adds \"call Sam next Tuesday at 4\", \"add dentist to my calendar <nine days ahead> at 3pm\", \"put lunch with Ana on my calendar tomorrow at noon\"; all saved here and on the stage card; no yes, no server, no Wikipedia",
-    "dated open plan: \"make a plan to learn spanish by friday\" asks the engine and lists its steps dated back from the day (the goal last), with the countdown and the calendar; with no engine \"learn guitar by next week\" still gets its checklist",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "docs/playbooks/README.md",
-    "docs/playbooks/game.md",
-    "domains/void.agents.log.md",
-    "tools/anchor-density.test.mjs",
-    "tools/asks-link.json",
-    "tools/self-blocks.test.mjs",
-    "tools/spark.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/index.html",
-    "void-live-deploy/lib/anchor-density.js",
-    "void-live-deploy/lib/self-blocks.js",
-    "void-live-deploy/lib/spark.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json"
    ]
   }
  ]
