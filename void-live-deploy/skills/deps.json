@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Void). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 651,
+ "counted": 652,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 51,
-   "direct": 47,
-   "dependants": 56
+   "skills": 52,
+   "direct": 48,
+   "dependants": 57
   },
   {
    "file": "lib/ask-text.js",
@@ -435,6 +435,12 @@
    "dependants": 48
   },
   {
+   "file": "lib/watch.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 11
+  },
+  {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
@@ -567,10 +573,10 @@
    "dependants": 10
   },
   {
-   "file": "lib/watch.js",
+   "file": "lib/automations.js",
    "skills": 1,
-   "direct": 1,
-   "dependants": 10
+   "direct": 0,
+   "dependants": 9
   },
   {
    "file": "lib/plan.js",
@@ -583,6 +589,12 @@
    "skills": 1,
    "direct": 0,
    "dependants": 6
+  },
+  {
+   "file": "lib/keep-going.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 3
   },
   {
    "file": "lib/learn.js",
@@ -987,12 +999,6 @@
    "dependants": 9
   },
   {
-   "file": "lib/automations.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 8
-  },
-  {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
@@ -1087,12 +1093,6 @@
    "skills": 0,
    "direct": 0,
    "dependants": 3
-  },
-  {
-   "file": "lib/keep-going.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
   },
   {
    "file": "lib/mcp.js",
@@ -2140,7 +2140,8 @@
     "functions/api/approval.js",
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
-    "lib/approval-core.js"
+    "lib/approval-core.js",
+    "skills/approve-card.js"
    ]
   },
   "lib/autopsy.js": {
@@ -3102,7 +3103,8 @@
    ],
    "importedBy": [
     "functions/api/approval.js",
-    "lib/approval-core.js"
+    "lib/approval-core.js",
+    "skills/approve-card.js"
    ]
   },
   "lib/keeper.js": {
@@ -4429,6 +4431,7 @@
     "lib/stage-port.js",
     "skills/accessibility-modes.js",
     "skills/anneal-ambition.js",
+    "skills/approve-card.js",
     "skills/ask-clipboard.js",
     "skills/ask-immune.js",
     "skills/busy-blocks.js",
@@ -4860,7 +4863,8 @@
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
     "lib/approval-core.js",
-    "lib/keep-going.js"
+    "lib/keep-going.js",
+    "skills/approve-card.js"
    ]
   },
   "lib/web4.js": {
@@ -4980,6 +4984,14 @@
    "imports": [
     "lib/appraise-photo.js",
     "skills/forge-rules.js"
+   ],
+   "importedBy": []
+  },
+  "skills/approve-card.js": {
+   "imports": [
+    "lib/keep-going.js",
+    "lib/stage-pack.js",
+    "skills/live.js"
    ],
    "importedBy": []
   },
@@ -6144,6 +6156,7 @@
    "imports": [],
    "importedBy": [
     "skills/actions.js",
+    "skills/approve-card.js",
     "skills/deadlines.js",
     "skills/memory.js",
     "skills/merges.js",

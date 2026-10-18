@@ -254,6 +254,7 @@ for (const [name, file] of [
   ['chess thinking', 'chess-thinking.test.mjs'],
   ['shared routines', 'shared-routines.test.mjs'],
   ['automations', 'automations.test.mjs'],
+  ['approve-card', 'approve-card.test.mjs'],
   ['actions', 'actions.test.mjs'],
   ['ringer', 'ringer.test.mjs'],
   ['queue', 'queue.test.mjs'],

@@ -123,10 +123,14 @@ const json = (body) => ({ status: 200, contentType: 'application/json', headers:
 // Plan item 7 (confirm line): /api/approval is the real Pages Function, run here against an in-memory D1,
 // with a stand-in email executor so we can see exactly when an action runs.
 const approvalFn = await import(new URL('../void-live-deploy/functions/api/approval.js', import.meta.url).href);
+// the approve card (skills/approve-card.js): /api/automations is the real Pages Function too, on the same in-memory D1, so the
+// automation.keep executor's yes (lib/keep-going.js) flips a seeded rule onto the clock exactly as it does live
+const automationsFn = await import(new URL('../void-live-deploy/functions/api/automations.js', import.meta.url).href);
+const autosLib = await import(new URL('../void-live-deploy/lib/automations-run.js', import.meta.url).href);
 const OWNER = 'test-owner-key-0123456789';
 function memoryD1({ broken = false } = {}) {
   // Like D1: the tables don't exist until /api/approval makes them; broken = the database can't be reached.
-  const approvals = new Map(), ledger = [], actions = new Map(), tables = new Set();
+  const approvals = new Map(), ledger = [], actions = new Map(), tables = new Set(), autos = new Map(), autoRuns = [];
   const need = (t) => { if (broken) throw new Error('D1 unavailable'); if (!tables.has(t)) throw new Error('no such table: ' + t); };
   const exec = (sql, a) => {
     if (broken) throw new Error('D1 unavailable');
@@ -138,11 +142,24 @@ function memoryD1({ broken = false } = {}) {
     if (/^INSERT INTO void_ledger/.test(sql)) { need('void_ledger'); ledger.push({ id: a[0], approval_id: a[1], kind: a[2] }); return { meta: { changes: 1 } }; }
     if (/^INSERT INTO void_actions/.test(sql)) { need('void_actions'); actions.set(a[0], { kind: a[2], ref: a[3], state: a[4], result: a[5], error: a[6] }); return { meta: { changes: 1 } }; } // the execution record (lib/actions.js)
     if (/^DELETE FROM void_actions/.test(sql)) { need('void_actions'); return { meta: { changes: 0 } }; }
+    // Void's automations (lib/automations-run.js): the rule rows the approve card's yes switches on, and the runs the clock leaves
+    if (/^INSERT INTO void_automations/.test(sql)) { need('void_automations'); const old = autos.get(a[0]); autos.set(a[0], { id: a[0], name: a[1], enabled: a[2], rule: a[3], hook: a[4], created: old ? old.created : a[5], updated: a[6], scope: old ? old.scope : a[7] }); return { meta: { changes: 1 } }; }
+    if (/^UPDATE void_automations SET enabled = \?, updated = \? WHERE id = \?$/.test(sql)) { need('void_automations'); const r = autos.get(a[2]); if (r) { r.enabled = a[0]; r.updated = a[1]; } return { meta: { changes: r ? 1 : 0 } }; }
     throw new Error('unexpected sql: ' + sql);
   };
-  const first = (sql, a) => { if (/^SELECT state, record FROM void_approvals/.test(sql)) { need('void_approvals'); return approvals.get(a[0]) || null; } throw new Error('unexpected sql: ' + sql); };
-  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => exec(sql, a), first: async () => first(sql, a) });
-  return { approvals, ledger, actions, tables, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
+  const first = (sql, a) => {
+    if (/^SELECT state, record FROM void_approvals/.test(sql)) { need('void_approvals'); return approvals.get(a[0]) || null; }
+    if (/^SELECT (?:id, enabled, rule, hook, scope|hook, created, scope) FROM void_automations WHERE id = \?$/.test(sql)) { need('void_automations'); return autos.get(a[0]) || null; }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const all = (sql, a) => {
+    if (/^SELECT .* FROM void_automations WHERE scope = \? ORDER BY created$/.test(sql)) { need('void_automations'); return { results: [...autos.values()].filter((r) => (r.scope || '') === a[0]) }; }
+    if (/^SELECT .* FROM void_automation_runs WHERE rule_id = \? ORDER BY at DESC LIMIT 100$/.test(sql)) { need('void_automation_runs'); return { results: autoRuns.filter((r) => r.rule_id === a[0]).sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 100) }; }
+    if (/^SELECT .* FROM void_automation_runs ORDER BY at DESC LIMIT 60$/.test(sql)) { need('void_automation_runs'); return { results: [...autoRuns].sort((x, y) => (x.at < y.at ? 1 : -1)).slice(0, 60) }; }
+    throw new Error('unexpected sql: ' + sql);
+  };
+  const stmt = (sql, a = []) => ({ sql, a, bind: (...b) => stmt(sql, b), run: async () => exec(sql, a), first: async () => first(sql, a), all: async () => all(sql, a) });
+  return { approvals, ledger, actions, tables, autos, autoRuns, prepare: (sql) => stmt(sql), batch: async (list) => list.map((q) => exec(q.sql, q.a)) };
 }
 const gate = { env: { READ_TOKEN: OWNER, DB: memoryD1() }, calls: [], ran: [] };
 approvalFn.executors['email.send'] = async (args) => { gate.ran.push(args); return { id: 'sent-' + gate.ran.length }; };
@@ -151,6 +168,14 @@ async function approvalRoute(r) {
   if (q.method() === 'POST') gate.calls.push(JSON.parse(q.postData() || '{}'));
   const request = new Request(q.url(), { method: q.method(), headers: { authorization: h.authorization || '', 'content-type': 'application/json' }, body: q.method() === 'POST' ? q.postData() : undefined });
   const res = await (q.method() === 'POST' ? approvalFn.onRequestPost : approvalFn.onRequestGet)({ request, env: gate.env });
+  return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
+}
+// the real /api/automations (GET ?rule=, POST, PATCH, DELETE) on the same in-memory D1 as the approval route
+async function automationsRoute(r) {
+  const q = r.request(), h = await q.allHeaders(), m = q.method();
+  const request = new Request(q.url(), { method: m, headers: { authorization: h.authorization || '', 'content-type': 'application/json' }, body: m === 'GET' ? undefined : q.postData() });
+  const fn = { GET: automationsFn.onRequestGet, POST: automationsFn.onRequestPost, PATCH: automationsFn.onRequestPatch, DELETE: automationsFn.onRequestDelete }[m];
+  const res = fn ? await fn({ request, env: gate.env }) : new Response('no', { status: 405 });
   return r.fulfill({ status: res.status, contentType: 'application/json', body: await res.text() });
 }
 
@@ -432,6 +457,7 @@ async function fresh(...inits) {
       return r.fulfill(json({ item: it, items: [it], heartbeat: new Date().toISOString() }));
     }
     if (u.includes('/api/approval')) return approvalRoute(r);
+    if (/\/api\/automations$/.test(new URL(u).pathname)) return automationsRoute(r);
     if (u.includes('/api/misses')) { missesCalls.push(u); return r.fulfill(json([])); }
     if (/\/api\/(passkey|mine)$/.test(new URL(u).pathname)) return meRoute(r);
     if (/\/api\/catalog$/.test(new URL(u).pathname)) return catalogRoute(r);
@@ -4831,6 +4857,76 @@ try {
       JSON.stringify({ drafted: { ...drafted, asked: drafted.asked.slice(0, 40), scope: drafted.scope.slice(0, 40) + '…' + drafted.scope.slice(-30) }, kept: kept && { title: kept.fields && kept.fields.title, request: kept.request === pastedREQ || kept.request }, line, rec: rec && { state: rec.state, ref: rec.ref, result: rec.result }, errs: P.errors }).slice(0, 900));
     await P.ask('no', 600);
     await P.ctx.close(); }
+  // the approve card (skills/approve-card.js; asked by Void, growth-inbox #10): "approve later: keep <automation> running every 2 hours"
+  // puts a pending card on the stage that runs nothing; Approve asks the card's own line through the page's confirm line (the real
+  // /api/approval and /api/automations on the in-memory D1); the owner's trusted Yes puts the seeded rule on the clock; Abort switches it off
+  if (want("approve card: approve later keeps a pending card that never runs by itself, Approve goes through the confirm line, Abort switches it off, the working bar is still under reduced motion, chess thinking shares it")) {
+    const AC = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '");' });
+    const seeded = await autosLib.save(gate.env, { id: 'morning-digest', name: 'Morning digest', enabled: false, when: { on: 'manual' }, do: [{ action: 'note', text: 'digest' }] }); // a rule the owner made earlier, switched off
+    const ruleNow = async () => { const f = await autosLib.get(gate.env, 'morning-digest', ''); return f ? { enabled: f.rule.enabled, when: f.rule.when } : null; };
+    const cardState = () => AC.p.$eval('.approve-card', (e) => ({ status: e.dataset.status, pill: e.querySelector('.approve-pill').textContent, line: e.querySelector('.approve-line').textContent, what: e.querySelector('.approve-what').textContent, title: e.querySelector('.approve-title').textContent,
+      approveShown: getComputedStyle(e.querySelector('.approve-yes')).display !== 'none', abortShown: getComputedStyle(e.querySelector('.approve-abort')).display !== 'none', working: e.querySelector('.approve-status').classList.contains('vc-working'), busy: e.querySelector('.approve-status').getAttribute('aria-busy') })).catch(() => null);
+    let approvalHits = 0; AC.p.on('request', (q) => { if (q.url().includes('/api/approval')) approvalHits++; });
+    const ranBefore = gate.ran.length, decidedBefore = gate.calls.filter((c) => c.type === 'a2m.approval.decision').length;
+    await AC.ask('approve later: keep morning-digest running every 2 hours', 900);
+    const made = await until(async () => { const c = await cardState(); return c && c.status === 'pending' && /waiting|no run yet/.test(c.line) ? c : false; }, 6000);
+    const kept0 = (await AC.state()).find((t) => t.kind === 'approve');
+    await AC.p.reload(); await skillsUp(AC.p, 400);
+    const back = await until(async () => { const c = await cardState(); return c && c.status === 'pending' && /no run yet|waiting/.test(c.line) ? c : false; }, 6000); // reloaded: pending, read off D1, no approval asked
+    const reloadQuiet = approvalHits === 0 && JSON.stringify(await ruleNow()) === JSON.stringify({ enabled: false, when: { on: 'manual' } }); // and nothing is on the clock
+    // Approve: the confirm line shows the card's own line; the bar under the status works (animated); a script's click on Yes does nothing
+    await AC.p.$eval('.approve-card .approve-yes', (b) => b.click()); await AC.p.waitForTimeout(900);
+    const line = await AC.whisper();
+    const working = await cardState();
+    const anim = await AC.p.$eval('.approve-card .approve-status', (e) => getComputedStyle(e, '::after').animationName);
+    await AC.p.evaluate(() => { const y = document.querySelector('#whisper [data-vc="yes"]'); if (y) { y.click(); y.dispatchEvent(new KeyboardEvent('keydown', { key: 'Enter', bubbles: true })); } }); await AC.p.waitForTimeout(600);
+    const synthetic = { line: await AC.whisper(), rule: await ruleNow(), ran: gate.ran.length - ranBefore, decided: gate.calls.filter((c) => c.type === 'a2m.approval.decision').length - decidedBefore };
+    // the owner's own click: the executor puts the rule on the clock, the card hears void:confirm and reads it back as approved
+    await AC.p.click('#whisper [data-vc="yes"]');
+    const approved = await until(async () => { const c = await cardState(); return c && c.status === 'approved' && !c.working && c.abortShown && !c.approveShown ? c : false; }, 8000);
+    const onClock = await ruleNow();
+    const kept1 = (await AC.state()).find((t) => t.kind === 'approve');
+    const ledgerKind = gate.env.DB.ledger.slice(-1)[0] && gate.env.DB.ledger.slice(-1)[0].kind;
+    // the clock ran it twice after the yes while the tab was away (rows the tick would leave); the next refresh says so and reads running
+    await AC.p.waitForTimeout(400);
+    const seen = (await AC.state()).find((t) => t.kind === 'approve'); // the refresh after the yes stamped seenAt: the runs come after both
+    const at = (ms) => new Date(Math.max(Date.parse(seen.approvedAt), Date.parse(seen.seenAt) || 0) + ms).toISOString();
+    gate.env.DB.autoRuns.push({ id: 'r1', rule_id: 'morning-digest', at: at(50), trigger: 'schedule', ok: 1, log: JSON.stringify([{ action: 'note', ok: true, said: 'digest' }]) }, { id: 'r2', rule_id: 'morning-digest', at: at(100), trigger: 'schedule', ok: 1, log: JSON.stringify([{ action: 'note', ok: true, said: 'digest' }]) });
+    await AC.p.waitForTimeout(300);
+    await AC.p.evaluate(() => document.querySelector('.approve-card')._live.now());
+    const running = await until(async () => { const c = await cardState(); return c && c.status === 'running' && /2 runs while you were away/.test(c.line) && /2 runs · last .*digest/.test(c.line) ? c : false; }, 6000);
+    // Abort: the automations card's own switch, off
+    await AC.p.$eval('.approve-card .approve-abort', (b) => b.click());
+    const aborted = await until(async () => { const c = await cardState(); return c && c.status === 'aborted' && c.approveShown && !c.abortShown ? c : false; }, 6000);
+    const offAgain = await ruleNow();
+    // reduced motion: the working bar stays, still
+    await AC.p.emulateMedia({ reducedMotion: 'reduce' });
+    await AC.p.$eval('.approve-card .approve-yes', (b) => b.click()); await AC.p.waitForTimeout(700);
+    const stillAnim = await AC.p.$eval('.approve-card .approve-status', (e) => ({ working: e.classList.contains('vc-working'), anim: getComputedStyle(e, '::after').animationName, h: getComputedStyle(e, '::after').height }));
+    await AC.ask('no', 600);
+    const refused = await cardState();
+    await AC.p.emulateMedia({ reducedMotion: null });
+    check('approve card: "approve later: keep morning-digest running every 2 hours" is a pending card that runs nothing (reloaded: still pending, no /api/approval call, the rule still off); Approve asks the card\'s own confirm line with the working bar; a script\'s click on Yes changes nothing; the owner\'s Yes puts the rule on the clock and the card reads approved (no approval id kept); two runs while away read as running; Abort switches it off; "no" says not approved',
+      seeded.ok && !!made && made.what === 'Keep “morning-digest” running by itself every 2 hours, even when you are not here?' && made.title === 'Keep “morning-digest” running' && made.approveShown && !made.abortShown
+      && kept0 && kept0.ask === 'keep morning-digest running every 2 hours' && kept0.tool === 'automation.keep' && kept0.rule === 'morning-digest' && kept0.status === 'pending' && kept0.approvedAt === null && !('approvalId' in kept0)
+      && !!back && reloadQuiet
+      && line === 'Keep “morning-digest” running by itself every 2 hours, even when you are not here? Yes / No' && working && working.working && working.busy === 'true' && /vcShimmer/.test(anim)
+      && /Yes \/ No/.test(synthetic.line) && synthetic.rule.enabled === false && synthetic.ran === 0 && synthetic.decided === 0
+      && !!approved && JSON.stringify(onClock) === JSON.stringify({ enabled: true, when: { on: 'schedule', every: 120 } }) && ledgerKind === 'done' && kept1 && typeof kept1.approvedAt === 'string' && !('approvalId' in kept1) && !JSON.stringify(kept1).includes('approvalId')
+      && !!running && !!aborted && JSON.stringify(offAgain) === JSON.stringify({ enabled: false, when: { on: 'schedule', every: 120 } })
+      && stillAnim.working && stillAnim.anim === 'none' && stillAnim.h === '3px' && refused && !refused.working && /not approved, nothing changed/.test(refused.line) && refused.status === 'aborted' && !AC.errors.length,
+      JSON.stringify({ seeded: seeded.ok, made: made && [made.status, made.line, made.title], kept0: kept0 && Object.keys(kept0), back: back && [back.status, back.line], reloadQuiet, line, working: working && [working.working, working.busy], anim, synthetic, approved: approved && [approved.status, approved.line], onClock, ledgerKind, kept1: kept1 && { approvedAt: kept1.approvedAt, keys: Object.keys(kept1) }, running: running && [running.status, running.line], aborted: aborted && [aborted.status, aborted.line], offAgain, stillAnim, refused: refused && [refused.status, refused.working, refused.line], errs: AC.errors }).slice(0, 2600));
+    // chess shares the look: while V01D thinks, its status line carries .vc-working[aria-busy=true]; "Your move" takes it off
+    await AC.ask('play chess', 600);
+    await until(() => AC.p.$('.chess-flat button[data-sq="12"]'), 8000); // no WebGL here: the flat board (scene3d is off in the suite)
+    await AC.p.evaluate(() => { window.__chessBusy = []; const look = () => { const s = document.querySelector('.chess-status'); if (s && s.classList.contains('vc-working') && s.getAttribute('aria-busy') === 'true' && window.__chessBusy[window.__chessBusy.length - 1] !== s.textContent) window.__chessBusy.push(s.textContent); };
+      new MutationObserver(look).observe(document.body, { subtree: true, childList: true, characterData: true, attributes: true, attributeFilter: ['class', 'aria-busy'] }); look(); });
+    await AC.p.$eval('.chess-flat button[data-sq="12"]', (b) => b.click()); await AC.p.waitForTimeout(120); await AC.p.$eval('.chess-flat button[data-sq="28"]', (b) => b.click());
+    const thought = await until(() => AC.p.evaluate(() => (window.__chessBusy || []).find((t) => /thinking/.test(t)) || false), 15000);
+    const yourMove = await until(() => AC.p.$eval('.chess-status', (s) => (!s.classList.contains('vc-working') && !s.hasAttribute('aria-busy') && /Your move/.test(s.textContent) ? s.textContent : false)).catch(() => false), 30000);
+    check('chess thinking shares the working look: while V01D thinks the status line carries .vc-working[aria-busy=true] with its thinking line, and "Your move" takes both off',
+      !!thought && /^V01D is thinking/.test(thought) && !!yourMove && !AC.errors.length, JSON.stringify({ thought, yourMove, errs: AC.errors }));
+    await AC.ctx.close(); }
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
   if (want("the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the aske")) { const V = await fresh();

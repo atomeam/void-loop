@@ -26,4 +26,5 @@ Each playbook is one kind of work a builder did by hand, written so V01D's own l
 | [stage-mode.md](stage-mode.md) | a mode over the whole stage (the camera of "fly around": pure maths in `lib/`, a skill that owns the HUD, the keys and Esc, the view never the state) | not yet |
 | [stage-effects.md](stage-effects.md) | a pack of effects on everything already on the stage (motion drawn by transform only, a seeded mutation, timed or confirmed removal, an ephemeral flood), one lib, one test file, one browser section | not yet |
 | [field-mind.md](field-mind.md) | a small simulated field with a tiny local mind on the shared kit (flow canvas, swarm, figures): pure law, Worker mind with a page fallback, card, tests | not yet |
+| [approve-card.md](approve-card.md) | a card that waits on the stage for a yes through the confirm line and then runs on the server clock after you leave (the approve card over D1 automations) | not yet |
 | [open-endpoint-closed-list.md](open-endpoint-closed-list.md) | an open POST endpoint strangers can use safely: closed list of ids, salted per-day client key, layered limits, fail closed (spectator reactions) | not yet |

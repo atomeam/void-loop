@@ -959,6 +959,10 @@
     .ag-marble.picked .ag-ring { stroke: #fff; stroke-width: 3; animation: none; }
     .ag-target { fill: rgba(255,255,255,.22); stroke: #fff; stroke-width: 2.2; cursor: pointer; animation: agPulse 1.1s ease-in-out infinite; }
     @keyframes agPulse { 50% { opacity: .35; } }
+    /* one "working" look, shared: a chess card while V01D thinks and an approve card while the confirm line waits (skills/approve-card.js) */
+    .vc-working { position: relative; }
+    .vc-working::after { content: ''; display: block; height: 3px; margin-top: 5px; border-radius: 2px; background: linear-gradient(90deg, rgba(150,110,255,.08), rgba(150,110,255,.55) 50%, rgba(150,110,255,.08)); background-size: 200% 100%; animation: vcShimmer 1.4s linear infinite, agPulse 1.1s ease-in-out infinite; }
+    @keyframes vcShimmer { to { background-position: -200% 0; } }
     .ag-die { width: 42px; height: 42px; flex: none; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 7px; gap: 1px; border-radius: 10px;
       background: linear-gradient(145deg, #ffffff, #e2e3ea); box-shadow: 0 0 0 2px var(--ag-col, #888), 0 6px 14px rgba(0,0,0,.45), inset 0 -2px 3px rgba(0,0,0,.12); }
     .ag-die i { border-radius: 50%; }
@@ -969,6 +973,7 @@
     @media (prefers-reduced-motion: reduce) {
       .thing.game-card.arrive, .ttt-cell.placed svg, .oth-disc.flip, .oth-disc.drop, .ag-die.tumble, .ag-marble.can .ag-ring, .ag-target, #whisper { animation: none !important; }
       .ag-marble, .mc-pit, .g-btn { transition: none !important; }
+      .vc-working::after { animation: none; opacity: .6; }
     }
     @media (max-width: 480px) {
       .thing.game-card { padding: 16px 14px 14px; }
@@ -4753,6 +4758,8 @@ say('nothing selected to remove');
       else msg = "couldn't, " + nothing;
       loopLog({ domain: 'void.confirm', ask: pc.text, score: d && d.ran ? 'pass' : 'fail', note: (d && d.decision || decision) + (d && d.ran ? ' ran' : ' not run') });
       lastConfirm = { until: Date.now() + 60000, expired: decision === 'timeout' || (d && d.decision === 'timeout'), nothing };
+      // a card that asked this line (skills/approve-card.js) hears how it went: the tool, its args, the decision, whether the action ran
+      try { document.dispatchEvent(new CustomEvent('void:confirm', { detail: { toolName: pc.toolName, args: pc.args, decision, ran: !!(d && d.ran) } })); } catch (_) {}
       whisper.textContent = ''; say(msg);
     }
     // Only a real person's click or key answers the line (e.isTrusted): a script's synthetic click never says yes.
@@ -4797,7 +4804,18 @@ say('nothing selected to remove');
     function mineSnapshot() { let entered = null; try { entered = localStorage.getItem(ENTRY_KEY); } catch (_) {} return { v: 1, state: keptThings(), look: voidLook, entered }; }
     const mineSig = () => sig(JSON.stringify(mineSnapshot()));
 
-    const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept']);
+    const THING_KINDS = new Set(['clock', 'sticky', 'notepad', 'timer', 'counter', 'image', 'link', 'list', 'calc', 'shape', 'kept', 'approve']);
+    // the approve card (skills/approve-card.js): a synced row carries only these fields, each in its own shape; anything else is dropped
+    const APPROVE_STATUS = new Set(['pending', 'approved', 'running', 'done', 'failed', 'aborted']);
+    const isoOrNull = (v) => (typeof v === 'string' && /^\d{4}-\d{2}-\d{2}T[\d:.]+Z$/.test(v) && isFinite(Date.parse(v)) ? v : null);
+    function cleanApprove(t) {
+      const ask = String(t.ask || '').trim(), args = t.args && typeof t.args === 'object' && !Array.isArray(t.args) ? t.args : null;
+      if (!/^(keep|stop keeping) /.test(ask) || ask.length > 200 || t.tool !== 'automation.keep' || !args || !/^[a-z0-9-]{3,40}$/.test(String(args.id || '')) || !Number.isInteger(args.every)) return null;
+      const times = Number.isInteger(t.times) && t.times >= 0 && t.times <= 1000 ? t.times : 0;
+      return { id: t.id, kind: 'approve', ask, tool: 'automation.keep', args: { id: args.id, every: args.every, on: args.on !== false }, rule: args.id,
+        status: APPROVE_STATUS.has(t.status) ? t.status : 'pending', approvedAt: isoOrNull(t.approvedAt), seenAt: isoOrNull(t.seenAt), times,
+        title: String(t.title || '').slice(0, 200), what: String(t.what || '').slice(0, 200), x: isFinite(Number(t.x)) ? Number(t.x) : 40, y: isFinite(Number(t.y)) ? Number(t.y) : 40 };
+    }
     function cleanHTML(html) {
       const doc = new DOMParser().parseFromString('<!doctype html><body>' + String(html || '').slice(0, 300000), 'text/html');
       doc.body.querySelectorAll('script,style,link,meta,base,object,embed,frame,frameset,form,input,textarea,select,button,template,noscript,svg,math,portal').forEach((n) => n.remove());
@@ -4820,6 +4838,7 @@ say('nothing selected to remove');
       for (const [k, t0] of Object.entries(st).slice(0, 400)) {
         if (!t0 || typeof t0 !== 'object' || !THING_KINDS.has(t0.kind) || !/^[\w-]{1,48}$/.test(k)) continue;
         const t = JSON.parse(JSON.stringify(t0)); t.id = k;
+        if (t.kind === 'approve') { const a = cleanApprove(t); if (a) out[k] = a; continue; } // whitelisted fields only (skills/approve-card.js)
         for (const n of ['x', 'y', 'w', 'h', 'size']) if (n in t) { t[n] = Number(t[n]); if (!isFinite(t[n])) t[n] = n === 'size' ? 48 : 40; }
         if (t.kind === 'kept') t.html = cleanHTML(t.html);
         if (t.kind === 'link' && !/^https?:\/\//i.test(String(t.url || ''))) continue;
