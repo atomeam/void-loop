@@ -15,7 +15,7 @@
   "experiment": 7,
   "tested": 96,
   "checked": 98,
-  "proven": 88
+  "proven": 89
  },
  "families": [
   {
@@ -386,7 +386,7 @@
     {
      "name": "chess",
      "tier": "checked",
-     "why": "a self-test, 8 browser-suite mentions",
+     "why": "a self-test, 10 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },
@@ -2383,7 +2383,7 @@
     "experiment": 0,
     "tested": 9,
     "checked": 14,
-    "proven": 15
+    "proven": 16
    },
    "skills": [
     {
@@ -2471,7 +2471,7 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 11 browser-suite mentions, 10 real asks in the benchmark",
+     "why": "a self-test, 12 browser-suite mentions, 10 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2693,17 +2693,25 @@
     {
      "name": "approve-card",
      "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "why": "a self-test, 5 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests"
     },
     {
      "name": "memory-graph",
      "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "why": "a self-test, 6 browser-suite mentions",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "promoted": "2026-10-18"
+    },
+    {
+     "name": "wants",
+     "tier": "proven",
+     "why": "a self-test, 6 browser-suite mentions, 4 real asks in the benchmark",
+     "last_tested": "2026-10-18",
+     "last_tested_by": "its tests",
+     "success_rate": 1
     }
    ]
   },

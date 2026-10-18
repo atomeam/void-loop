@@ -3167,6 +3167,18 @@ try {
       !!again && /from 6 asks/.test(again.t) && again.chips.length === 3 && !!gone && /Nothing yet/.test(gone.t) && gone.chips.length === 0 && keptAfter.asks === 0 && Object.keys(keptAfter.nodes || {}).length === 0
         && !!off && off.start && !off.stop && /Off: I am not keeping/.test(off.t) && whileOff.on === false && whileOff.asks === 1 && back.on === true && back.asks === 2 && !G.errors.length,
       JSON.stringify({ again: again && again.t.slice(0, 120), gone: gone && gone.t.slice(0, 120), keptAfter, off: off && off.t.slice(0, 80), whileOff, back, errors: G.errors }));
+    // a confidence on each node (asked by Void): a fact told on two seeded days is surer than one told once, the card draws the thin bar, and "still true" raises it
+    const dayIso = (d) => new Date(Date.now() - d * 864e5).toISOString();
+    await G.p.evaluate(({ a, b }) => { const g = JSON.parse(localStorage.getItem('a2m.void.graph.v1')); g.on = true; g.nodes = { 'fact:i like green tea': { kind: 'fact', label: 'I like green tea', n: 2, days: 2, first: a, last: b }, 'fact:my cat is called pixel': { kind: 'fact', label: 'my cat is called Pixel', n: 1, days: 1, first: b, last: b } }; g.edges = {}; localStorage.setItem('a2m.void.graph.v1', JSON.stringify(g)); }, { a: dayIso(2), b: dayIso(0) });
+    await G.ask('what do you know about me', 1200);
+    const facts = async () => G.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return pg ? [...pg.querySelectorAll('.mg-facts li')].map((l) => ({ t: l.firstChild.textContent, conf: +l.dataset.conf, bar: l.querySelector('.mg-conf i') ? l.querySelector('.mg-conf i').style.width : '', title: l.title })) : null; });
+    const before = await facts();
+    await G.p.evaluate(() => { const b = [...document.querySelectorAll('.vpage.on .mg-still')].find((x) => x.dataset.fact === 'my cat is called Pixel'); if (b) b.click(); }); await G.p.waitForTimeout(900);
+    const after = await facts(), stored = await G.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.graph.v1')).nodes);
+    const tea = (l) => l && l.find((f) => /green tea/.test(f.t)), cat = (l) => l && l.find((f) => /Pixel/.test(f.t));
+    check('memory graph: a fact told on two seeded days has a higher confidence than one told once, the card draws a thin bar and a % for each, and "still true" raises the single one',
+      !!before && before.length === 2 && tea(before).conf > cat(before).conf && cat(before).conf > 0 && tea(before).bar === tea(before).conf + '%' && /% sure/.test(tea(before).title)
+        && !!after && cat(after).conf > cat(before).conf && stored['fact:my cat is called pixel'].n === 2 && !G.errors.length, JSON.stringify({ before, after, errors: G.errors }));
     await G.ctx.close(); }
   if (want("stage extras bench: the Bench icon counts the false alarms on record and lists them on a tap")) { const P = await fresh();
     await P.ask('show the bench', 800);
@@ -3938,6 +3950,21 @@ try {
       !!card && card.name === 'chess' && card.title === 'Chess' && /Games/.test(card.sub) && /experiment|tested|checked|proven/.test(card.sub) && card.chips.includes('play chess') && card.rel >= 1 && card.tryAsk === 'play chess'
       && went && tokyo === 'article' && noCard && !A.errors.length, JSON.stringify({ card, chipAsk, went, tokyo, noCard, errors: A.errors }));
     await A.ctx.close();
+  }
+  if (want("chess match history: a game's about card carries your record on this device, 'my chess record' and 'tell me about the chess skill' show three seeded games as a summary line and a table, and an empty device says no games yet")) { // asked by Void (2026-10-18): a Match History table from the game logs, an Elo against the owner
+    const seed = () => { try { localStorage.setItem('a2m.void.games.v1', JSON.stringify([{ at: '2026-10-17T10:00:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 34, minutes: 7 }, { at: '2026-10-17T11:00:00.000Z', game: 'chess', vs: 'v01d', result: 'loss', moves: 41, minutes: 12.5 }, { at: '2026-10-18T09:30:00.000Z', game: 'chess', vs: 'v01d', result: 'win', moves: 28, minutes: 5 }, { at: '2026-10-18T09:45:00.000Z', game: 'othello', vs: 'v01d', result: 'loss', moves: 30, minutes: 4 }])); } catch (_) {} };
+    const block = (P) => P.p.$eval('.vpage.on.about-skill', (e) => { const b = e.querySelector('.match-history'); return { name: e.dataset.skillName, game: b ? b.dataset.game : null, played: b ? b.dataset.played : null, sum: b ? b.querySelector('.mh-sum').textContent : '', rows: b ? [...b.querySelectorAll('tbody tr')].map((r) => [...r.children].map((c) => c.textContent)) : null, line: (e.querySelector('p') || {}).textContent || '' }; }).catch(() => null);
+    const cardOf = (P, name) => until(async () => { const c = await block(P); return c && c.name === name && c.rows ? c : null; }, 8000);
+    const H = await fresh(seed);
+    await H.ask('tell me about the chess skill', 600); const b = await cardOf(H, 'chess'); // the about card carries the block, and the chess module's own line carries the record
+    await H.ask('tell me about the guide skill', 600); await until(async () => { const c = await block(H); return c && c.name === 'guide'; }, 8000); // another skill's card between, so the next is a fresh card
+    await H.ask('my chess record', 600); const a = await cardOf(H, 'chess');
+    await H.ctx.close();
+    const E = await fresh(); await E.ask('chess match history', 600); const c = await cardOf(E, 'chess'); await E.ctx.close();
+    check("chess match history (asked by Void): 'my chess record' opens the chess card with its Match History block (3 played · 2–1–0 · 67% · you ~1215, V01D ~1185 (estimated): win, loss, win from 1200 at K = 32, the othello game left out), a table of the three games newest first with when, vs, result, moves and minutes, 'tell me about the chess skill' carries the same block and the record in its line, and an empty device says no games on this device yet with no table",
+      !!a && a.game === 'chess' && a.played === '3' && a.sum === '3 played · 2–1–0 · 67% · you ~1215, V01D ~1185 (estimated)' && a.rows.length === 3 && a.rows[0].slice(1).join('|') === 'V01D|you won|28|5' && a.rows[1].slice(1).join('|') === 'V01D|V01D won|41|12.5' && a.rows[2][2] === 'you won' && /^Oct 18, \d\d:\d\d$/.test(a.rows[0][0])
+      && !!b && b.played === '3' && b.rows.length === 3 && /Your record against V01D on this device: 3 played · 2–1–0 · 67%/.test(b.line)
+      && !!c && c.played === '0' && /^no games on this device yet · finish a game of Chess/.test(c.sum) && c.rows.length === 0 && !H.errors.length && !E.errors.length, JSON.stringify({ a, b, c, errors: H.errors.concat(E.errors) }));
   }
   if (want("field minds: the shared kit mounts a card, morphs only the card, keeps sound off until a tap, and seals facts to IndexedDB")) { // asked by the owner: Grok's ideas F-020..F-033
     const F = await fresh();
@@ -4986,7 +5013,18 @@ try {
     const yourMove = await until(() => AC.p.$eval('.chess-status', (s) => (!s.classList.contains('vc-working') && !s.hasAttribute('aria-busy') && /Your move/.test(s.textContent) ? s.textContent : false)).catch(() => false), 30000);
     check('chess thinking shares the working look: while V01D thinks the status line carries .vc-working[aria-busy=true] with its thinking line, and "Your move" takes both off',
       !!thought && /^V01D is thinking/.test(thought) && !!yourMove && !AC.errors.length, JSON.stringify({ thought, yourMove, errs: AC.errors }));
-    await AC.ctx.close(); }
+    await AC.ctx.close();
+    // the stale warning (asked by Void: "a stale-warning ... more than 48 hours"): a card seeded three days old says so in amber; "Keep waiting" clears it and starts the 48 hours again
+    const old3 = new Date(Date.now() - 3 * 864e5).toISOString();
+    const SC = await fresh({ content: 'localStorage.setItem("a2m.void.owner.v1", "' + OWNER + '"); if (!localStorage.getItem("a2m.void.state.v1")) localStorage.setItem("a2m.void.state.v1", JSON.stringify({ ap3: { id: "ap3", kind: "approve", ask: "keep morning-digest running every 2 hours", tool: "automation.keep", args: { id: "morning-digest", every: 120, on: true }, rule: "morning-digest", status: "pending", approvedAt: null, seenAt: "' + old3 + '", createdAt: "' + old3 + '", times: 0, title: "Keep morning-digest running", what: "Keep morning-digest running by itself every 2 hours?", x: 60, y: 120 } }));' });
+    const staleNow = await until(() => SC.p.$eval('.approve-card', (c) => { const s = c.querySelector('.approve-stale'); return s && !s.hidden ? { t: s.textContent, cls: s.className, border: getComputedStyle(s).borderLeftColor, w: getComputedStyle(s).borderLeftWidth, keep: getComputedStyle(c.querySelector('.approve-keep')).display !== 'none', approve: getComputedStyle(c.querySelector('.approve-yes')).display !== 'none' } : false; }).catch(() => false), 8000);
+    await SC.p.$eval('.approve-card .approve-keep', (b) => b.click());
+    const cleared = await until(() => SC.p.$eval('.approve-card', (c) => (c.querySelector('.approve-stale').hidden && getComputedStyle(c.querySelector('.approve-keep')).display === 'none' ? true : false)).catch(() => false), 4000);
+    const reset = (await SC.state()).find((t) => t.kind === 'approve');
+    check('approve card: a card seeded three days old shows the amber "waiting 3 days — still want this?" line (.vc-stale, amber left border) beside Approve and Keep waiting; "Keep waiting" clears it and resets createdAt',
+      !!staleNow && staleNow.t === 'waiting 3 days — still want this?' && /vc-stale/.test(staleNow.cls) && staleNow.border === 'rgb(224, 160, 48)' && staleNow.w === '3px' && staleNow.keep && staleNow.approve
+        && cleared === true && !!reset && Date.now() - Date.parse(reset.createdAt) < 120000 && !SC.errors.length, JSON.stringify({ staleNow, cleared, createdAt: reset && reset.createdAt, errs: SC.errors }));
+    await SC.ctx.close(); }
   // the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the asker's scope and the card shows
   // its first check as evidence; "my watches" lists them with pause and stop; a visitor without a key is told whose it is
   if (want("the standing watch (skills/watch.js, build order step 4): an ask makes a watch in the aske")) { const V = await fresh();
@@ -5434,6 +5472,30 @@ try {
       all.length === 5 && labels.join('|') === 'All · 9|Root cause · 3|Surface · 3' && root.join() === 'ask 0 <b>x</b>,ask 3,ask 6' && surface.join() === 'ask 1,ask 4,ask 7' && pressed === 'true' && back.length === 5 && !R.errors.length,
       JSON.stringify({ all, labels, root, surface, pressed, back, errors: R.errors }));
     await R.ctx.close(); }
+  // the wants card (owner, 2026-10-18: "name all your unbuilt asks and come up with 50 more new ones" fell to the model, which made 50 up):
+  // skills/wants.js answers from V01D's own records (the suite's /api/will and /api/reflect fixtures, tools/fixtures/outside.mjs, and the
+  // real /self.json's open frontier items), three blocks with counts, every item a tap-to-copy chip, the compound line; the self card keeps its ask
+  if (want('wants card')) { const W = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const selfJson = JSON.parse(fs.readFileSync(path.join(root, 'self.json'), 'utf8')), nOpen = (selfJson.open || []).length;
+    await W.ask('name all your unbuilt asks and come up with 50 more new ones', 300); await until(async () => /What I want built/.test(await W.page()), 6000);
+    const got = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const blk = (id) => pg.querySelector('.wants-block[data-block=' + id + ']');
+      const texts = (id) => [...blk(id).querySelectorAll('.wants-chip')].map((b) => b.getAttribute('data-copy'));
+      return { title: pg.querySelector('h2').textContent, count: pg.querySelector('.wants-count').textContent, heads: ['wants', 'asks', 'inbox'].map((id) => blk(id).querySelector('h3').textContent),
+        wants: texts('wants'), asks: texts('asks'), inbox: texts('inbox'), askSub: blk('asks').querySelector('.wants-chip small').textContent, more: (pg.querySelector('.wants-more') || {}).textContent || '', src: pg.querySelector('.src').textContent, missing: pg.querySelectorAll('[data-missing]').length }; });
+    const loop = await W.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').pop());
+    check('wants card: "name all your unbuilt asks and come up with 50 more new ones" opens "What I want built" from V01D\'s own records (the will fixture\'s want, the reflect fixture\'s open ask with its date, the real self.json open frontier items), a count line "1 want · 1 ask not built · N inbox items", every item a chip, and the 50 new ones are the asker\'s to ask for one at a time',
+      !!got && got.title === 'What I want built' && got.count === '1 want · 1 ask not built · ' + nOpen + ' inbox item' + (nOpen === 1 ? '' : 's') && got.heads.join('|') === 'My will (1)|Asked, not built yet (1)|Growth inbox (' + nOpen + ')'
+        && got.wants.join() === 'I want to answer every question about tides.' && got.asks.join() === 'Give the map card terrain' && /daily reflection, 2026-10-08/.test(got.askSub) && got.inbox.length === nOpen && nOpen > 0 && got.inbox.includes(selfJson.open[0].ask)
+        && /^The 50 new ones are yours to ask for one at a time/.test(got.more) && /no model/.test(got.src) && got.missing === 0 && loop && loop.note === 'skill:wants' && !W.errors.length,
+      JSON.stringify({ got, nOpen, loop, errors: W.errors }));
+    // a tap on a chip copies it (the chip marks itself copied; the whisper says so) and runs no ask
+    await W.p.click('.vpage.on .wants-block[data-block=asks] .wants-chip'); await W.p.waitForTimeout(300);
+    const tapped = await W.p.evaluate(() => ({ copied: !!document.querySelector('.vpage.on .wants-chip.copied'), said: document.getElementById('whisper').textContent.trim(), stillOpen: /What I want built/.test(document.querySelector('.vpage.on') ? document.querySelector('.vpage.on').textContent : '') }));
+    check('wants card: a tap on an item copies it and keeps the card open', tapped.stillOpen && (tapped.copied ? tapped.said === 'copied' : tapped.said === 'select it to copy') && !W.errors.length, JSON.stringify({ tapped, errors: W.errors }));
+    await W.ask('what do you think of yourself', 300); await until(async () => /What I think of myself/.test(await W.page()), 6000);
+    const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
+    check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
+    await W.ctx.close(); }
   if (want("self card layout")) { const L = await fresh(() => { delete Navigator.prototype.serviceWorker; });
     const rec = [0, 1].map((i) => ({ ask: 'built ask ' + i, what: 'built ' + i, at: '2026-10-1' + i + 'T00:00:00Z', times: i + 1, depth: 'root' }));
     await L.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-18T08:00:00Z', kind: 'daily', thoughts: 'I am thin on maps.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] }, { at: '2026-10-17T08:00:00Z', kind: 'build', thoughts: 'Small and good.', shipped: 'Footer', better: 'copy counts', asks: [] }], asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T00:00:00Z' }, { ask: 'Backgammon', kind: 'build', at: '2026-10-09T00:00:00Z' }], follow: { total: 73, built: 35, asked: 73, recent: rec } })));

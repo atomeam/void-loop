@@ -52,7 +52,7 @@ export function parseGraph(text) {
   g.on = j.on !== false; g.noted = j.noted === true;
   g.first = typeof j.first === 'string' ? j.first : null; g.last = typeof j.last === 'string' ? j.last : null;
   g.asks = Number.isFinite(j.asks) && j.asks >= 0 ? Math.floor(j.asks) : 0;
-  if (j.nodes && typeof j.nodes === 'object') for (const [id, n] of Object.entries(j.nodes)) if (isNode(n) && /^(topic|skill|fact|thing):/.test(id)) g.nodes[id] = { kind: n.kind, label: n.label, n: Math.floor(n.n), first: n.first, last: n.last };
+  if (j.nodes && typeof j.nodes === 'object') for (const [id, n] of Object.entries(j.nodes)) if (isNode(n) && /^(topic|skill|fact|thing):/.test(id)) g.nodes[id] = { kind: n.kind, label: n.label, n: Math.floor(n.n), first: n.first, last: n.last, days: Number.isFinite(n.days) && n.days >= 1 ? Math.min(Math.floor(n.days), Math.floor(n.n) || 1) : 1 };
   if (j.edges && typeof j.edges === 'object') for (const [k, n] of Object.entries(j.edges)) { const [a, b] = k.split('>'); if (a && b && g.nodes[a] && g.nodes[b] && Number.isFinite(n) && n > 0) g.edges[k] = Math.floor(n); }
   if (Array.isArray(j.visits) && j.visits.length === 7) g.visits = j.visits.map((d) => (Array.isArray(d) && d.length === 4 ? d.map((x) => (Number.isFinite(x) && x >= 0 ? Math.floor(x) : 0)) : [0, 0, 0, 0]));
   if (j.prev && typeof j.prev === 'object' && skillName(j.prev.skill) && Number.isFinite(j.prev.at)) g.prev = { skill: skillName(j.prev.skill), at: j.prev.at };
@@ -61,7 +61,9 @@ export function parseGraph(text) {
 }
 
 const copy = (g) => ({ ...g, nodes: { ...g.nodes }, edges: { ...g.edges }, visits: g.visits.map((d) => d.slice()) });
-const bump = (g, id, kind, label, now) => { const n = g.nodes[id]; g.nodes[id] = n ? { ...n, n: n.n + 1, last: iso(now) } : { kind, label, n: 1, first: iso(now), last: iso(now) }; };
+const dayKey = (t) => { const d = new Date(t); return d.getFullYear() + '-' + d.getMonth() + '-' + d.getDate(); }; // the local day
+// days = the distinct local days a node was seen on (a node from before this field counts as one)
+const bump = (g, id, kind, label, now) => { const n = g.nodes[id]; g.nodes[id] = n ? { ...n, n: n.n + 1, last: iso(now), days: (n.days || 1) + (dayKey(Date.parse(n.last) || now) === dayKey(now) ? 0 : 1) } : { kind, label, n: 1, first: iso(now), last: iso(now), days: 1 }; };
 const join = (g, a, b) => { const k = a + '>' + b; g.edges[k] = (g.edges[k] || 0) + 1; };
 const lastOf = (g, id) => Date.parse((g.nodes[id] || {}).last || 0) || 0;
 /** the graph within its caps: the least recently seen nodes go first, with every edge that touches a gone node; then the edges whose ends are oldest. Pure. */
@@ -104,6 +106,21 @@ export function noteFact(graph, text, at) {
 /** the graph without that fact. Pure. */
 export function forgetFact(graph, text) { const g = copy(graph); delete g.nodes[factId(String(text || '').trim().slice(0, FACT_MAX))]; return g; }
 
+export const CONF_DAYS = 3, CONF_HALF_LIFE_DAYS = 30; // 3 distinct days is about two thirds sure; unseen for 30 days halves it
+/**
+ * how sure the graph is of a node, 0 to 1 (asked by Void: "a confidence score on each node ... how many times a specific fact has been verified"):
+ * evidence = 1 - exp(-d / 3), where d is the distinct days the node was seen on plus a quarter for each repeat on a day already counted (n), weighted by
+ * recency, 0.5 ^ (days since last seen / 30). A fact told again (noteFact) or tapped "still true" raises it; "forget that" removes the node (0). Pure.
+ */
+export function confidence(node, at) {
+  if (!node || typeof node !== 'object' || !Number.isFinite(node.n) || node.n < 1) return 0;
+  const days = Math.min(Math.max(1, Number.isFinite(node.days) ? node.days : 1), node.n), d = days + 0.25 * (node.n - days);
+  const age = Math.max(0, ((ms(at)) - (Date.parse(node.last) || ms(at))) / dayMs);
+  const c = (1 - Math.exp(-d / CONF_DAYS)) * Math.pow(0.5, age / CONF_HALF_LIFE_DAYS);
+  return Math.min(1, Math.max(0, c));
+}
+export const pct = (c) => Math.round(Math.min(1, Math.max(0, Number(c) || 0)) * 100);
+
 const daysSince = (at, now) => Math.max(0, (now - (Date.parse(at) || now)) / dayMs);
 const strongestSkill = (g, tid) => { let best = '', n = 0; for (const [k, c] of Object.entries(g.edges)) { const [a, b] = k.split('>'); if (b === tid && a.startsWith('skill:') && c > n) { best = a.slice(6); n = c; } } return best; };
 /** when the person usually visits, from the 7x4 histogram: { days: [names], slots: [phrases], total, words }. Pure. */
@@ -121,13 +138,14 @@ export function patterns(graph, at) {
   const g = graph && graph.nodes ? graph : empty(), now = ms(at);
   const topics = Object.entries(g.nodes).filter(([, n]) => n.kind === 'topic').map(([id, n]) => {
     const age = daysSince(n.last, now);
-    return { id, label: n.label, n: n.n, first: n.first, last: n.last, days: Math.floor(age), skill: strongestSkill(g, id), score: n.n * Math.pow(0.5, age / HALF_LIFE_DAYS) };
+    return { id, label: n.label, n: n.n, first: n.first, last: n.last, days: Math.floor(age), skill: strongestSkill(g, id), score: n.n * Math.pow(0.5, age / HALF_LIFE_DAYS), conf: confidence(n, now) };
   });
-  const interests = topics.slice().sort((a, b) => b.score - a.score || b.n - a.n || a.label.localeCompare(b.label)).slice(0, 6);
-  const pairs = Object.entries(g.edges).filter(([k, n]) => n >= 2 && /^skill:[^>]+>skill:/.test(k)).map(([k, n]) => { const [a, b] = k.split('>'); return { a: a.slice(6), b: b.slice(6), n }; }).sort((x, y) => y.n - x.n || x.a.localeCompare(y.a)).slice(0, 3);
+  const interests = topics.slice().sort((a, b) => b.score - a.score || b.n - a.n || b.conf - a.conf || a.label.localeCompare(b.label)).slice(0, 6);
+  const pairs = Object.entries(g.edges).filter(([k, n]) => n >= 2 && /^skill:[^>]+>skill:/.test(k)).map(([k, n]) => { const [a, b] = k.split('>'); return { a: a.slice(6), b: b.slice(6), n, conf: (confidence(g.nodes[a], now) + confidence(g.nodes[b], now)) / 2 }; }).sort((x, y) => y.n - x.n || y.conf - x.conf || x.a.localeCompare(y.a)).slice(0, 3);
   const lapsed = topics.filter((t) => t.n >= 3 && t.days >= STALE_DAYS).sort((a, b) => b.n - a.n || a.days - b.days).slice(0, 3);
   const facts = Object.values(g.nodes).filter((n) => n.kind === 'fact').map((n) => n.label).sort(); // void-review: ok (labels, sorted as text)
-  return { on: g.on !== false, asks: g.asks || 0, first: g.first, interests, pairs, when: whenWords(g.visits), lapsed, facts };
+  const factItems = Object.values(g.nodes).filter((n) => n.kind === 'fact').map((n) => ({ label: n.label, conf: confidence(n, now), n: n.n, days: n.days || 1 })).sort((a, b) => b.conf - a.conf || a.label.localeCompare(b.label)); // void-review: ok (labels, sorted as text)
+  return { on: g.on !== false, asks: g.asks || 0, first: g.first, interests, pairs, when: whenWords(g.visits), lapsed, facts, factItems };
 }
 
 /** at most three next asks, each a skill's own example (examples: { skill: [ask] }) with why, from the patterns alone; [] with no examples. Pure. */
@@ -145,6 +163,86 @@ export function suggest(graph, at, examples) {
   return out.slice(0, 3);
 }
 
+/** "remember that …" / "forget that …" as the memory skill reads them (a whole sentence, three words or more): { remember } or { forget } or null. Pure. */
+export function factAsk(text) {
+  const o = String(text || '').trim().replace(/[’]/g, "'");
+  const m = /^(?:(?:please|void),?\s+)?(remember\s*(?:that|:)|forget\s+that)\s+(.+)$/i.exec(o);
+  if (!m) return null;
+  const f = m[2].trim().replace(/\s+/g, ' ').replace(/[.!?]+$/, '');
+  if (f.split(' ').length < 3 || f.length > 280) return null;
+  return /^forget/i.test(m[1]) ? { forget: f } : { remember: f };
+}
+
+// ---- export and import (asked by Void: "download their graph as a structured JSON file for backup"). The file is the person's: made and read in the
+// browser, never uploaded. An imported file is read with care: version-checked, caps enforced, every label cleaned again, unknown fields dropped.
+export const SCHEMA = 'void.memory.v1';
+export const IMPORT_MAX = 2e6; // characters; a bigger text is refused before it is parsed
+const CLEAN_WORDS = (label) => String(label || '').toLowerCase().replace(/[’]/g, "'").replace(/[^a-z0-9'\s-]+/g, ' ').split(/\s+/).filter((w) => w && WORD.test(w) && !STOP.has(w)).slice(0, WORDS_MAX);
+const topicLabel = (label) => { let out = ''; for (const w of CLEAN_WORDS(label)) { const next = out ? out + ' ' + w : w; if (next.length > LABEL_MAX) break; out = next; } return out; };
+const plain = (x) => x && typeof x === 'object' && !Array.isArray(x);
+const count = (x, max) => (Number.isFinite(x) && x >= 0 ? Math.min(Math.floor(x), max) : 0);
+const isoOf = (x) => { const t = typeof x === 'string' ? Date.parse(x) : NaN; return Number.isFinite(t) && t > 0 && t < 4.1e12 ? iso(t) : ''; };
+
+/** the graph as a file's worth of data: the graph plus { schema, exportedAt }. A copy, so the file can be changed without touching the graph. Pure. */
+export function exportOf(graph, at) {
+  const g = graph && plain(graph) && plain(graph.nodes) ? graph : empty();
+  return { schema: SCHEMA, exportedAt: iso(ms(at)), v: 1, on: g.on !== false, noted: g.noted === true, first: g.first || null, last: g.last || null, asks: g.asks || 0,
+    nodes: JSON.parse(JSON.stringify(g.nodes)), edges: { ...g.edges }, visits: (Array.isArray(g.visits) ? g.visits : empty().visits).map((d) => d.slice()), prev: g.prev ? { ...g.prev } : null };
+}
+
+/** one imported node, cleaned: { id, node } or null. The id is made again from the cleaned label, never taken from the file. */
+function cleanNode(id, n) {
+  if (!plain(n) || !KINDS.has(n.kind) || typeof n.label !== 'string' || n.label.length > FACT_MAX || typeof id !== 'string' || !id.startsWith(n.kind + ':')) return null;
+  let label = '', nid = '';
+  if (n.kind === 'skill') { label = skillName(n.label); nid = 'skill:' + label; }
+  else if (n.kind === 'fact') { label = n.label.replace(/[\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, FACT_MAX); nid = factId(label); }
+  else { label = topicLabel(n.label); nid = n.kind + ':' + label; }
+  const first = isoOf(n.first), last = isoOf(n.last);
+  if (!label || !first || !last || !Number.isFinite(n.n) || n.n < 1) return null;
+  const c = Math.min(Math.floor(n.n), 1e6), days = Number.isFinite(n.days) && n.days >= 1 ? Math.min(Math.floor(n.days), c) : 1;
+  return { id: nid, node: { kind: n.kind, label, n: c, first: first <= last ? first : last, last: first <= last ? last : first, days } };
+}
+
+/**
+ * a memory file merged onto the graph: { ok, graph, added, merged, skipped } or { ok: false, why }. Merging takes the larger count of each node and edge, the
+ * earlier first and later last, so bringing in the same file twice changes nothing. The person's own on/off, note and previous-ask are kept; the caps (trim) apply. Pure.
+ */
+export function importInto(graph, json) {
+  let j = json;
+  if (typeof json === 'string') {
+    if (json.length > IMPORT_MAX) return { ok: false, why: 'that file is over 2 MB' };
+    try { j = JSON.parse(json); } catch (_) { return { ok: false, why: 'that is not a JSON file' }; }
+  }
+  if (!plain(j) || j.schema !== SCHEMA) return { ok: false, why: 'that is not a V01D memory file (schema ' + SCHEMA + ')' };
+  if (j.v !== 1) return { ok: false, why: 'that file is version ' + String(j.v).slice(0, 12) + ', this page reads version 1' };
+  if (!plain(j.nodes)) return { ok: false, why: 'that file has no nodes' };
+  const g = copy(graph && plain(graph) && plain(graph.nodes) ? graph : empty());
+  const ids = new Map(); let added = 0, merged = 0, skipped = 0;
+  const entries = Object.entries(j.nodes);
+  skipped += Math.max(0, entries.length - NODE_MAX * 2);
+  for (const [id, n] of entries.slice(0, NODE_MAX * 2)) {
+    const c = cleanNode(id, n);
+    if (!c) { skipped += 1; continue; }
+    ids.set(id, c.id);
+    const have = Object.prototype.hasOwnProperty.call(g.nodes, c.id) ? g.nodes[c.id] : null;
+    if (have) { g.nodes[c.id] = { ...have, n: Math.max(have.n, c.node.n), days: Math.max(have.days || 1, c.node.days), first: have.first < c.node.first ? have.first : c.node.first, last: have.last > c.node.last ? have.last : c.node.last }; merged += 1; }
+    else { g.nodes[c.id] = c.node; added += 1; }
+  }
+  if (!added && !merged) return { ok: false, why: 'there was nothing usable in that file' };
+  if (plain(j.edges)) for (const [k, n] of Object.entries(j.edges).slice(0, EDGE_MAX * 2)) {
+    const [a, b, extra] = k.split('>'), na = ids.get(a), nb = ids.get(b);
+    if (extra !== undefined || !na || !nb || !Number.isFinite(n) || n < 1) { skipped += 1; continue; }
+    const key = na + '>' + nb;
+    g.edges[key] = Math.max(g.edges[key] || 0, Math.min(Math.floor(n), 1e6));
+  }
+  if (Array.isArray(j.visits) && j.visits.length === 7) g.visits = g.visits.map((d, i) => (Array.isArray(j.visits[i]) && j.visits[i].length === 4 ? d.map((x, s) => Math.max(x, count(j.visits[i][s], 1e6))) : d));
+  g.asks = Math.max(g.asks || 0, count(j.asks, 1e7));
+  const first = isoOf(j.first), last = isoOf(j.last);
+  if (first && (!g.first || first < g.first)) g.first = first;
+  if (last && (!g.last || last > g.last)) g.last = last;
+  return { ok: true, graph: trim(g), added, merged, skipped };
+}
+
 // ---- storage: over the storage handed in (default localStorage); never throws
 const store = (s) => { try { return s || globalThis.localStorage || null; } catch (_) { return null; } };
 export function readGraph(s) { const st = store(s); if (!st) return empty(); try { return parseGraph(st.getItem(GRAPH_KEY)); } catch (_) { return empty(); } }
@@ -160,3 +258,8 @@ export function noteAskStored(s, ask) {
 export function setOn(s, on) { const g = readGraph(s); g.on = !!on; g.noted = true; writeGraph(g, s); return g; }
 /** forget everything: an empty graph, still on, the note not shown again. */
 export function clearGraph(s) { const g = empty(); g.on = readGraph(s).on; g.noted = true; writeGraph(g, s); return g; }
+
+/** "remember that …" in storage: the fact is noted (told again, it is one node seen once more). Never throws; off leaves the graph alone. */
+export function noteFactStored(s, text, at) { const g = readGraph(s); if (!g.on) return g; const after = noteFact(g, text, at); if (after !== g) writeGraph(after, s); return after; }
+/** "forget that …" in storage: the fact leaves the graph, and with it its confidence. */
+export function forgetFactStored(s, text) { const g = forgetFact(readGraph(s), text); writeGraph(g, s); return g; }

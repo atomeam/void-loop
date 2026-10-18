@@ -7,10 +7,14 @@
  * example. Wikipedia topics keep their route: "tell me about tokyo", "what is a black hole", "explain photosynthesis" never come here
  * (lib/about-skill.js resolveSkill: a bare one-word topic is the world's even when a skill shares the word). The book and the ratings
  * are fetched once per session, shared with the card frame (lib/card-frame.js loadStats), at idle time so a first visit is not slowed.
+ * A game's card (chess, checkers, reversi) carries a Match History block (asked by Void: "a 'Match History' table that pulls from my
+ * recent game logs", an Elo or win rate against the owner): your record on this device and the last ten games, from a2m.void.games.v1
+ * (lib/match-history.js); "chess match history", "my chess record", "my record against void" open it straight.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
 import { parseAsk, resolveSkill, aboutOf } from '../lib/about-skill.js';
 import { loadStats } from '../lib/card-frame.js';
+import { historyAsk, historyHtml, summary, summaryLine, load as loadGames, GAMES, TITLES } from '../lib/match-history.js'; // a game's card carries your match history on this device (asked by Void)
 
 let stats = null; // { book, fam, deps } once read; until then only a named ask ("the chess skill") can be matched
 let overlapsP = null; // tools/skill-overlap.json is not served today; when /skills/overlap.json is, its pairs come first in "related"
@@ -32,14 +36,17 @@ export function aboutText(mod) {
 
 const CSS = '.about-skill .about-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px}.about-skill .about-chip{font:inherit;font-size:13px;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:5px 12px;cursor:pointer}'
   + '.about-skill .about-chip:hover,.about-skill .about-chip:focus-visible{background:rgba(255,255,255,.12)}.about-skill .about-chip.rel{border-style:dashed}.about-skill .about-try{font:inherit;font-size:14px;color:#0b0b0b;background:var(--accent);border:0;border-radius:999px;padding:7px 16px;cursor:pointer;margin:2px 0 8px}'
-  + '.about-skill .about-h{font-size:12px;color:var(--muted);margin:8px 0 2px;text-transform:uppercase;letter-spacing:.06em}';
+  + '.about-skill .about-h{font-size:12px;color:var(--muted);margin:8px 0 2px;text-transform:uppercase;letter-spacing:.06em}'
+  + '.about-skill .mh-sum{margin:2px 0 6px}.about-skill .mh-table{width:100%;border-collapse:collapse;font-size:13px;margin:2px 0 8px}.about-skill .mh-table th,.about-skill .mh-table td{text-align:left;padding:3px 6px;border-bottom:1px solid rgba(255,255,255,.08)}'
+  + '.about-skill .mh-table th{color:var(--muted);font-weight:normal;font-size:11px;text-transform:uppercase;letter-spacing:.06em}.about-skill .mh-table td[data-result="win"]{color:#9fe08a}.about-skill .mh-table td[data-result="loss"]{color:#f0a4a4}';
 
-/** the card's HTML for aboutOf's facts. Pure. */
+/** the card's HTML for aboutOf's facts (a.history, when set, is a game's Match History block, already markup). Pure. */
 export function cardHtml(a, esc) {
   const chip = (text, ask, cls) => '<button type="button" class="about-chip' + (cls ? ' ' + cls : '') + '" data-ask="' + esc(ask) + '">' + esc(text) + '</button>';
   return '<style>' + CSS + '</style><h2>' + esc(a.title) + '</h2>'
     + '<div class="sub">a skill of V01D’s' + (a.family ? ' · ' + esc(a.family.name) : '') + ' · ' + esc(a.tier) + (a.why ? ' (' + esc(a.why) + ')' : '') + '</div>'
     + (a.line ? '<p>' + esc(a.line) + '</p>' : '')
+    + (a.history || '')
     + (a.examples.length ? '<div class="about-h">Ask it</div><div class="about-chips" data-role="examples">' + a.examples.map((e) => chip(e, e)).join('') + '</div>' : '')
     + (a.related.length ? '<div class="about-h">Related</div><div class="about-chips" data-role="related">' + a.related.map((r) => chip(r.title, r.ask, 'rel')).join('') + '</div>' : '')
     + '<button type="button" class="about-try" data-ask="' + esc(a.tryAsk) + '">Try it: ' + esc(a.tryAsk) + '</button>'
@@ -49,17 +56,22 @@ export function cardHtml(a, esc) {
 async function run(text, api) {
   const { showPage, esc } = api;
   const s = stats || await load();
-  const page = s && s.book ? resolveSkill(text, s.book) : null;
+  // "my chess record", "chess match history": the game's own card, opened for its Match History block (asked by Void); the book's page when it has one
+  const h = historyAsk(text), bookPage = (name) => (s && s.book && Array.isArray(s.book.pages) ? s.book.pages.find((p) => p && (p.kind === 'skill' || p.kind === 'game') && p.name === name) : null);
+  const playAsk = h ? ['play ' + h.game] : []; // for a stand-in page when the book is not in; kept out of a literal list on the page object, since the book reads this file's first literal list of asks as this skill's own (lib/guide.js listOf)
+  const page = h ? bookPage(h.game) || { kind: 'skill', name: h.game, title: TITLES[h.game], line: '', examples: playAsk, n: 0 } : s && s.book ? resolveSkill(text, s.book) : null;
   if (!page) { const q = parseAsk(text); api.say(q ? 'no skill called ' + q.topic + ' yet · "open the book" shows what I can do' : "couldn't"); return 'none'; }
   let about = '';
   try { about = aboutText(await import('./' + page.name + '.js')); } catch (_) { /* a page with no module of its own (a family member, a game box): the page's line */ } // void-review: ok
-  const a = aboutOf(page, s.fam, await overlaps(), { book: s.book, about });
+  const a = aboutOf(page, s ? s.fam : null, await overlaps(), { book: s ? s.book : null, about });
+  let sum = null;
+  if (GAMES.includes(a.name)) { const log = loadGames(); sum = summary(log, { game: a.name }); a.history = historyHtml(esc, sum, log); } // a game's card: your record on this device
   showPage((el) => {
     el.classList.add('about-skill'); el.dataset.skillName = a.name;
     el.innerHTML = cardHtml(a, esc);
     el.querySelectorAll('button[data-ask]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); api.stage.ask(b.dataset.ask); }));
   });
-  api.say(a.title + (a.family ? ' · ' + a.family.name : '') + ' · ' + a.tier);
+  api.say(h && sum ? a.title + ' · your record against V01D on this device: ' + summaryLine(sum) : a.title + (a.family ? ' · ' + a.family.name : '') + ' · ' + a.tier);
   return 'about-skill';
 }
 
@@ -78,10 +90,11 @@ export function suite() {
 
 export default {
   name: 'about-skill',
-  examples: ['tell me about the chess skill', 'what is the forge skill', "what's the define skill", 'explain the guide skill', 'how does the deps skill work', 'how do i use the recipe skill'],
-  nearMisses: ['tell me about tokyo', 'what is a black hole', 'explain photosynthesis', 'define serendipity', 'tell me about yourself', 'what can you do', 'tell me about zorbleflux', 'what is a sim card'],
-  // a named ask ("the chess skill", "your weather") is this skill's whatever the book says; a bare coined name ("what is family health") needs the book, read at idle
-  match(lower, text) { const q = parseAsk(text || lower); return !!q && (q.named || !!(stats && stats.book && resolveSkill(text || lower, stats.book))); },
+  examples: ['tell me about the chess skill', 'what is the forge skill', "what's the define skill", 'explain the guide skill', 'how does the deps skill work', 'how do i use the recipe skill', 'chess match history', 'my chess record', 'my record against void'],
+  nearMisses: ['tell me about tokyo', 'what is a black hole', 'explain photosynthesis', 'define serendipity', 'tell me about yourself', 'what can you do', 'tell me about zorbleflux', 'what is a sim card', 'match history', 'chess rules', 'how good are you at chess'],
+  // a named ask ("the chess skill", "your weather") is this skill's whatever the book says; a bare coined name ("what is family health") needs the book, read at idle;
+  // "my chess record", "chess match history" open a game's card for its Match History block (lib/match-history.js historyAsk)
+  match(lower, text) { if (historyAsk(text || lower)) return true; const q = parseAsk(text || lower); return !!q && (q.named || !!(stats && stats.book && resolveSkill(text || lower, stats.book))); },
   run,
   suite,
   prime,

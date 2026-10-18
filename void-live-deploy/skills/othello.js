@@ -9,6 +9,7 @@
 import { levelPick } from './game-level.js';
 import { lift3d } from './lift3d.js';
 import { showArena } from '../lib/arena-say.js';
+import { finish, minutesSince } from '../lib/match-history.js'; // a finished game goes on this device's match history (asked by Void)
 const N = 8;
 const DIRS = [[-1, -1], [-1, 0], [-1, 1], [0, -1], [0, 1], [1, -1], [1, 0], [1, 1]];
 
@@ -122,12 +123,21 @@ function mount(th, stageApi) {
     b.addEventListener('click', (e) => {
       e.stopPropagation();
       if (thinking || th.state.turn !== 1) return;
-      try { th.state = resolveMove(th.state, i).nextState; } catch (_) { return; } // not a legal square: no-op
+      let next; try { next = resolveMove(th.state, i).nextState; } catch (_) { return; } // not a legal square: no-op
+      settle(next);
       paint(); stageApi.save && stageApi.save();
       voidTurn();
     });
     cells.push(b);
     grid.appendChild(b);
+  }
+  // the position after a move keeps the clock the first move started; a game that ended on the board goes on this device's match history (asked by Void), once
+  function settle(next) {
+    th.state = { ...next, started: th.state.started || Date.now() };
+    if (next.status === 'playing' || th.state.logged) return;
+    th.state.logged = true;
+    const { black, white } = countDiscs(next.board);
+    finish('othello', next.status === 'black_wins' ? 'win' : next.status === 'white_wins' ? 'loss' : 'draw', { moves: Math.ceil(Math.max(0, black + white - 4) / 2), minutes: minutesSince(th.state.started) });
   }
   function voidTurn() {
     if (th.state.status !== 'playing' || th.state.turn !== 2) return;
@@ -135,7 +145,7 @@ function mount(th, stageApi) {
       thinking = null;
       if (!el.isConnected) return; // the stage redrew: the new card carries on
       const m = levelPick(voidMove(th.state.board, 2), legalMoves(th.state.board, 2));
-      if (m >= 0) th.state = resolveMove(th.state, m).nextState;
+      if (m >= 0) settle(resolveMove(th.state, m).nextState);
       paint(); stageApi.save && stageApi.save();
       voidTurn(); // you had no move, so Void goes again
     }, 520);

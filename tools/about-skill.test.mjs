@@ -8,6 +8,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseAsk, resolveSkill, aboutOf } from '../void-live-deploy/lib/about-skill.js';
 import skill, { aboutText, cardHtml, prime, suite } from '../void-live-deploy/skills/about-skill.js';
+import { historyAsk } from '../void-live-deploy/lib/match-history.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const json = (p) => JSON.parse(readFileSync(resolve(root, p), 'utf8'));
@@ -34,8 +35,10 @@ test('parseAsk: the phrasings, the wrappers, and what is named or tagged', () =>
 
 test('every example of the skill resolves to the skill it names', () => {
   const want = { 'tell me about the chess skill': 'chess', 'what is the forge skill': 'forge', "what's the define skill": 'define', 'explain the guide skill': 'guide', 'how does the deps skill work': 'deps', 'how do i use the recipe skill': 'recipe' };
-  assert.deepEqual(Object.keys(want).sort(), [...skill.examples].sort(), 'the test names every example');
+  const history = { 'chess match history': 'chess', 'my chess record': 'chess', 'my record against void': 'chess' }; // the match history asks (lib/match-history.js historyAsk), not the book's resolve
+  assert.deepEqual(Object.keys(want).concat(Object.keys(history)).sort(), [...skill.examples].sort(), 'the test names every example');
   for (const [ask, name] of Object.entries(want)) assert.equal(nameOf(ask), name, ask);
+  for (const [ask, name] of Object.entries(history)) { assert.equal(nameOf(ask), null, ask + ': not an about-ask'); assert.equal(historyAsk(ask).game, name, ask); assert.ok(skill.match(ask, ask), ask + ' matches'); }
 });
 
 test('every near miss resolves to nothing: the world keeps its route, V01D its self page', () => {
