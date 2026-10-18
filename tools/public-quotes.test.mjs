@@ -34,3 +34,8 @@ test('the served ledger shows no quote of the owner\'s, and keeps the line', () 
   const pub = publicLedger([{ at: 't', what: 'Will made real (owner: "if it is theatre, work on it"): Verse hears what came of its asks', show: 'see it' }]);
   assert.equal(pub.length, 1); assert.equal(pub[0].what, 'Will made real: Verse hears what came of its asks');
 });
+
+test('a comment after code with no ; ) , or brace before it loses the quote too, and a URL in a string is left alone', () => {
+  assert.equal(commentsQuoteFree('let x = 5 // the owner said: "my words here"', '.js'), 'let x = 5 // the owner said');
+  assert.equal(commentsQuoteFree('const u = "http://x.com"; // fine', '.js'), 'const u = "http://x.com"; // fine');
+});

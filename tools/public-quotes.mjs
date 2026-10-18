@@ -21,7 +21,7 @@ export function commentsQuoteFree(text, ext) {
     for (let i = 0; i < lines.length;) {
       if (/^\s*\/\//.test(lines[i])) { let j = i; while (j < lines.length && /^\s*\/\//.test(lines[j])) j++; const run = lines.slice(i, j).join('\n'); res.push(...(quotesOwner(run) ? quoteFree(run) : run).split('\n')); i = j; continue; }
       // a comment after code on the same line ("code; // … (owner: "…")"): only the part after the //
-      const m = /^(.*[;)},{]\s*)(\/\/.*)$/.exec(lines[i]);
+      const m = /^(.*[;)},{]\s*)(\/\/.*)$/.exec(lines[i]) || /^(.*?\s)(\/\/.*)$/.exec(lines[i]); // or after any code and a space ("let x = 5 // …"); a "://" has no space before it
       if (!m) { res.push(lines[i]); i++; continue; }
       let j = i + 1; while (j < lines.length && /^\s*\/\//.test(lines[j])) j++; // the comment may go on over the // lines below it
       const run = [m[2], ...lines.slice(i + 1, j)].join('\n');
