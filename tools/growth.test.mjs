@@ -118,3 +118,8 @@ test('the stability trend: a point a day per family from void.better.json, today
   assert.match(sparkSvg(time.points), /<polyline points="3\.0,[\d.]+ 36\.0,[\d.]+ 69\.0,[\d.]+"/); assert.equal(sparkSvg([]), '');
   const html = stabilityHtml((x) => String(x).replace(/</g, '&lt;'), s); assert.match(html, /Words &lt;b>/); assert.match(html, /−10 from 2 recent failures/); assert.match(html, /\(\+10\)/);
 });
+
+test('"what just shipped?" is about Verse (it came back as a Wikipedia line about the Just Cause games, 2026-10-19), and real shipping questions are left alone', () => {
+  for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently']) assert.equal(growthOf(q), true, q);
+  for (const q of ['what shipped to my order', 'where did my package ship', 'what have you built', 'when does the iphone ship']) assert.equal(growthOf(q), false, q);
+});

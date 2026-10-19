@@ -99,5 +99,16 @@ export const SKILL_TOOLS = [
    "how do you spell necessary",
    "what rhymes with orange"
   ]
+ },
+ {
+  "skill": "writing-aids",
+  "tool": "skill_writing_aids",
+  "family": "words",
+  "familyName": "Words and the world",
+  "examples": [
+   "proofread: teh cat sat sat on the mat",
+   "fix the grammar in: he recieve it alot",
+   "turn this into a thread: One thing happened. Then another thing happened."
+  ]
  }
 ];

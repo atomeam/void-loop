@@ -2421,7 +2421,7 @@ say('nothing selected to remove');
     function smallTalk(l) {
       if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|verse|a\s+lot|so\s+much)|thank\s+you\s+(?:void|verse|so\s+much))$/.test(l)) return 'anytime';
       if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+(?:verse|void))?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
-      if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|(?:verse|void)))?$/.test(l)) return 'quiet and ready. what do you need?';
+      if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok|what'?s\s+good|wh?at'?s\s*up|wassup|sup|how'?s\s+(?:life|everything|your\s+day)|how\s+you\s+doing)(?:\s+(?:today|(?:verse|void)))?$/.test(l)) return 'quiet and ready. what do you need?';
       if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Verse, by A-to-Mind. ask for anything';
       if (/^(?:who\s+(?:made|built|created|designed)\s+you|who'?s\s+your\s+(?:maker|creator))$/.test(l)) return 'A-to-Mind made me: Adam, building with a crew of AI agents';
       if (/^(?:are\s+you\s+(?:an?\s+)?(?:ai|bot|robot|human|real|a\s+person|alive|chatgpt|sentient))$/.test(l)) return 'software, not a person: I make things appear when you ask';

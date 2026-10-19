@@ -282,6 +282,18 @@ async function engineSteps(goal) {
     return steps ? { steps, timer: w.minutes, quality: w.why, practice: !!timer && j.practice === true, learn: j.learn === true, note } : null;
   } catch (_) { return null; }
 }
+// the steps of a starter plan when the answer engine has none (no model, busy, no reply): the same five or four moves for any "learn X" or goal, honest about
+// being generic, so "make a plan to learn guitar" still gives a checklist to start from (before 2026-10-19 it said it could not plan and the bench counted a miss)
+/** { steps, learn } for a goal, each step 60 characters or fewer. Pure. */
+export function fallbackSteps(goal) {
+  const g = String(goal || '').trim().replace(/\s+/g, ' ').slice(0, 40) || 'it';
+  const learn = /^(?:to\s+)?learn(?:ing)?\b/i.test(g);
+  const what = g.replace(/^(?:to\s+)?learn(?:ing)?\s+/i, '') || g;
+  const raw = learn
+    ? ['Say why you want to learn ' + what, 'Pick one beginner course or book for ' + what, 'Block three 20-minute sessions this week', 'Do the first session today', 'Review after two weeks and adjust']
+    : ['Write what done looks like for ' + g, 'List every piece, then the smallest first one', 'Do the first piece today', 'Pick a day to check progress'];
+  return { steps: raw.map((x) => listSafe(x).slice(0, 60)).filter(Boolean), learn };
+}
 // the fixed shapes besides the checklist that an engine reply may add: a practice timer, run as the timer's own ask
 // (practice: Clef called the goal a daily practice, and the card says so)
 const timerAsk = (min, practice, quality, goal) => ({ piece: 'timer', ask: 'set a timer for ' + min + ' minutes', minutes: min, practice, quality, goal });
@@ -332,13 +344,11 @@ async function run(text, api) {
   if (!plan) {
     const open = openPlanOf(text);
     if (!open) return 'none';
-    const got = await engineSteps(open.goal), steps = got && got.steps;
-    if (got) got.goal = open.goal;
-    if (!steps) {
-      if (api.say) api.say('could not plan "' + open.goal + '" right now: the answer engine gave no steps. Try again in a minute');
-      if (api.reportMiss) api.reportMiss(text, 'intent:no-steps'); // a failed intent goes to the miss board as a possible new skill (asked by Verse)
-      return 'intent';
-    }
+    let got = await engineSteps(open.goal), starter = false;
+    if (!got) { const f = fallbackSteps(open.goal); got = { steps: f.steps, timer: null, quality: '', practice: false, learn: false, note: null }; starter = true; }
+    const steps = got.steps;
+    got.goal = open.goal;
+    if (starter && api.say) api.say('a starter plan for "' + open.goal + '": the answer engine had nothing just now, so these are the general steps');
     const asks = [{ piece: 'checklist', ask: 'make a list with ' + steps.join(', ') }];
     if (open.who) asks.push({ piece: 'draft', ask: 'add a sticky that says draft to ' + cap(open.who) + ' (not sent): heads up, ' + (/^(?:give\s+)?us\b|\bour\b/.test(String(text).toLowerCase()) ? "we're" : "I'm") + ' working on: ' + open.goal });
     asks.push(...extras(got));
