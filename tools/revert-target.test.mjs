@@ -108,6 +108,7 @@ test('a target that left main\'s first-parent line, or was already reverted by a
   assert.match(stillLive('m215', ['h', 'r', 'm216', 'm215', 'm214'], body).why, /already reverted on main \(r\)/);
   assert.match(stillLive('gone', ['h', 'm216'], body).why, /not on main's first-parent line/);
   assert.equal(stillLive('m215abcdef', ['h', 'r2', 'm215abcdef'], (s) => (s === 'r2' ? 'Verse-auto-revert: m215abc' : '')).live, false, 'a short sha in the trailer still matches');
+  assert.equal(stillLive('m215abcdef', ['h', 'r4', 'm215abcdef'], (s) => (s === 'r4' ? 'Void-auto-revert: m215abc' : '')).live, false, 'a revert made before the rename to Verse (2026-10-18) still counts');
   assert.equal(stillLive('m215abcdef', ['h', 'r3', 'm215abcdef'], (s) => (s === 'r3' ? 'Verse-auto-revert: m21' : '')).live, true, 'a trailer shorter than a short sha is not a match');
 });
 
@@ -160,7 +161,7 @@ test('verify-main has its own workflow (verify.yml, 2026-10-10): its runs count,
   const body = () => 'Merge pull request #2';
   assert.deepEqual(verifiedState('new', 'o/r', api, body), { sha: 'new', state: 'fail', failing: [RACK] });
   assert.equal(verifiedState('other', 'o/r', api, body).state, 'unknown', 'a job named verify-main in some other workflow is not a verdict');
-  assert.deepEqual(VERIFY_WORKFLOWS, ['Verse verify', 'Verse deploy']);
+  assert.deepEqual(VERIFY_WORKFLOWS, ['Verse verify', 'Verse deploy', 'Void verify', 'Void deploy']);
   assert.deepEqual(SUITE_JOBS, ['browser-suite', 'verify-main'], 'the suite job today, and the name older verdicts carry; python-tests is never read as the suite');
 });
 

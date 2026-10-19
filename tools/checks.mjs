@@ -208,10 +208,14 @@ for (const [name, file] of [
   ['public-quotes', 'public-quotes.test.mjs'],
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
+<<<<<<< HEAD
   ['lacks', 'lacks.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
   ['what-skills', 'what-skills.test.mjs'],
   ['reflect', 'reflect.test.mjs'],
+=======
+  ['terminal', 'terminal.test.mjs'],
+>>>>>>> origin/main
   ['ledger-proof', 'ledger-proof.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
   ['churn', 'churn.test.mjs'],

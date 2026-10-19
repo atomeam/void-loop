@@ -262,6 +262,7 @@
  "telemetry-route": "Paste a CI report, build log or status update and Verse reads it as the builders' own telemetry instead of…",
  "template-list": "One stage card for the lists a home runs on, each with its own shape: \"packing list for a beach trip\"…",
  "term-orbits": "\"watch my words drift\": paste your text: its important terms become nodes in orbit",
+ "terminal": "Skill: \"terminal\", \"open the command line\", \"verse cli\": a command-line card on the stage with history (arrow…",
  "text-tools": "\"tools pack 9\": one skill, one mode per ask: \"sort these lines: ...\", \"remove duplicate lines: ...\", \"extract…",
  "throw-off": "Figures-first dismiss: click a Verse object or person to pick it up",
  "tictactoe": "The first board game as a real skill (countdown's shape, not make's iframe)",

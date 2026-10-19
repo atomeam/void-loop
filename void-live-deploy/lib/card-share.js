@@ -3,8 +3,8 @@
 // into Verse reopens the card. The code carries what the card shows (title, kind, body, source links) and nothing about who made it.
 // Numbers never ride in it: a reopened card earns its stats again from evidence, so a pasted code cannot claim any. Pure except bar().
 import { cardSvg, plainSvg, toPng, photoData } from './card-image.js';
-export const MARK = 'V01D-CARD:'; // an identifier, kept through the rename to Verse (2026-10-18) so every card already shared still pastes
-const CODE_RE = /(?:Verse|V01D)-CARD:([A-Za-z0-9_-]{8,12000})/;
+export const MARK = 'VERSE-CARD:'; // renamed from V01D-CARD: on 2026-10-18 with the brand; the parser below still reads every card shared before
+const CODE_RE = /(?:VERSE|Verse|V01D)-CARD:([A-Za-z0-9_-]{8,12000})/;
 const clip = (s, n) => String(s == null ? '' : s).replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, ' ').trim().slice(0, n);
 const httpsOnly = (u) => (/^https:\/\/[^\s"'<>]+$/i.test(String(u || '')) ? String(u).slice(0, 300) : '');
 
@@ -44,7 +44,7 @@ export function parse(text) {
   } catch (_) { return null; }
 }
 /** a file name for a saved card. Pure. */
-export const fileName = (d, ext = 'txt') => (String(d.t || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'card') + '.v01d-card.' + ext;
+export const fileName = (d, ext = 'txt') => (String(d.t || 'card').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 40) || 'card') + '.verse-card.' + ext;
 
 const BLOCK = /^(P|DIV|LI|UL|OL|H[1-6]|TR|TABLE|SECTION|ARTICLE|HEADER|FOOTER|BLOCKQUOTE|PRE|FIGURE|FIGCAPTION|DL|DT|DD|DETAILS|SUMMARY|NAV|FORM|FIELDSET)$/;
 /** a node's words as a reader sees them: a line per block (paragraph, list item, row), a space between side-by-side pieces (facts in a

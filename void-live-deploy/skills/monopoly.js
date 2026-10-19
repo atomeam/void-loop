@@ -10,7 +10,7 @@ import { lift3d } from './lift3d.js';
 
 // VoidQuest (domains/void.canon.md): Verse's own space version of the property game, after Solar Quest, Verse as the rival.
 // "play voidquest" and "play solar quest" open it; it plays on the same rules (monopoly-rules.js) with its own board.
-export const VOIDQUEST_RE = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+game\s+of\s+)?(?:void\s*quest|v01d\s*quest|solar\s*quest)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|v01d|verse|you))?$/;
+export const VOIDQUEST_RE = /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+game\s+of\s+)?(?:void\s*quest|v01d\s*quest|verse\s*quest|solar\s*quest)(?:\s+(?:board\s+)?game)?(?:\s+(?:with|against)\s+(?:me|void|v01d|verse|you))?$/;
 export function monopolyOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (VOIDQUEST_RE.test(t)) return { kind: 'game', theme: 'voidquest' };

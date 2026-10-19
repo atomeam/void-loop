@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 
 export const TITLE = 'verify-main failed check';
 // the workflows that have run verify-main: its own since 2026-10-10, the deploy before (older verdicts still count)
-export const VERIFY_WORKFLOWS = ['Verse verify', 'Verse deploy'];
+export const VERIFY_WORKFLOWS = ['Verse verify', 'Verse deploy', 'Void verify', 'Void deploy'];
 export const COUNT_TITLE = 'verify-main failed checks';
 // the job whose verdict the revert reads: browser-suite since 2026-10-10 (verify.yml split the fast tests off into python-tests,
 // so a Python test red on the runner no longer hides the suite); verify-main before, and those verdicts still count
@@ -101,7 +101,7 @@ export function stillLive(target, mainLine, body) {
   if (!mainLine.includes(target)) return { live: false, why: target + ' is not on main\'s first-parent line any more' };
   for (const s of mainLine) {
     if (s === target) break;
-    const m = /^Verse-auto-revert:\s*(\S+)/m.exec(body(s) || '');
+    const m = /^(?:Verse|Void)-auto-revert:\s*(\S+)/m.exec(body(s) || '');
     // the workflow writes the full sha; an abbreviated one still matches when it is at least a short sha (7) long
     if (m && (m[1] === target || (m[1].length >= 7 && (target.startsWith(m[1]) || m[1].startsWith(target))))) return { live: false, why: target + ' is already reverted on main (' + s.slice(0, 7) + ')' };
   }
@@ -128,7 +128,7 @@ const gh = (path) => JSON.parse(run('gh', ['api', path]));
 
 /** What verify-main found on one commit of main, from that commit's runs (verify.yml, or deploy.yml before it moved). */
 export function verifiedState(sha, repo, api = gh, body = (s) => run('git', ['log', '-1', '--format=%B', s])) {
-  if (/^Verse-auto-revert:/m.test(body(sha))) return { sha, state: 'unknown', failing: null }; // reverts are not re-tested
+  if (/^(?:Verse|Void)-auto-revert:/m.test(body(sha))) return { sha, state: 'unknown', failing: null }; // reverts are not re-tested
   const runs = (api('repos/' + repo + '/actions/runs?head_sha=' + sha + '&per_page=20').workflow_runs || [])
     .filter((r) => VERIFY_WORKFLOWS.includes(r.name) && r.event !== 'pull_request');
   for (const r of runs) {

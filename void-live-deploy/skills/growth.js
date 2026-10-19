@@ -28,7 +28,7 @@ const WEEK_RE = new RegExp('^(?:what (?:can|could) you do now that you (?:couldn
   + '|what(?:\'?s| is| has)? (?:new|changed)(?: (?:with|about|in) (?:you|(?:verse|void)))? ' + WEEK
   + '|what (?:have you|has (?:verse|void)|did you) (?:learned|learnt|learn|added|add|built|build|shipped|ship|gained|gain|got better at|get better at) ' + WEEK
   + '|how (?:have you|has (?:verse|void)) (?:grown|changed|improved) ' + WEEK
-  + '|(?:void|your) (?:week|growth this week|last week))$');
+  + '|(?:void|verse|your) (?:week|growth this week|last week))$');
 export function weekOf(text) { return WEEK_RE.test(CLEAN(text)); }
 
 /** Newest first, optionally one kind only; entries without a valid time sink to the end. */

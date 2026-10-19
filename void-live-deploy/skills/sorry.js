@@ -69,7 +69,7 @@ function boardSvg() {
   const lid = svgEl('g', { transform: 'rotate(-28)' }, s);
   svgEl('text', { x: 0, y: -4, 'text-anchor': 'middle', 'font-size': 15, 'font-weight': 700, 'letter-spacing': 3, fill: '#1d2a52', 'font-family': 'Georgia, serif' }, lid).textContent = 'BACK TO';
   svgEl('text', { x: 0, y: 26, 'text-anchor': 'middle', 'font-size': 32, 'font-weight': 800, 'letter-spacing': 2, fill: '#c8202c', 'font-family': 'Georgia, serif' }, lid).textContent = 'START';
-  svgEl('text', { x: 0, y: 42, 'text-anchor': 'middle', 'font-size': 7, 'letter-spacing': 2, fill: '#1d2a52', opacity: '.7', 'font-family': 'system-ui, sans-serif' }, lid).textContent = 'A VOID GAME';
+  svgEl('text', { x: 0, y: 42, 'text-anchor': 'middle', 'font-size': 7, 'letter-spacing': 2, fill: '#1d2a52', opacity: '.7', 'font-family': 'system-ui, sans-serif' }, lid).textContent = 'A VERSE GAME';
   svgEl('g', { class: 'so-targets' }, s);
   svgEl('g', { class: 'so-pawns' }, s);
   return s;
@@ -151,7 +151,7 @@ function mount(th, stageApi) {
     const face = s.card == null ? '' : s.card === 'sorry' ? 'Bump!' : String(s.card);
     if (face !== card.dataset.face) {
       card.dataset.face = face;
-      card.textContent = face || 'VOID';
+      card.textContent = face || 'VERSE';
       card.classList.toggle('back', !face);
       card.style.fontSize = face === 'Bump!' || !face ? '13px' : '';
       if (face && !reduced()) { card.classList.remove('flip'); void card.offsetWidth; card.classList.add('flip'); }

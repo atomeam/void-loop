@@ -476,6 +476,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T02:48:18Z",
+   "subject": "Verse's reflection follows the build; the safety check installs declared packages before it judges"
+  },
+  {
    "at": "2026-10-19T02:47:19Z",
    "subject": "The already-built card is combined by family, every row says something, and the descriptions refresh with every build"
   },
@@ -550,10 +554,6 @@
   {
    "at": "2026-10-18T18:37:40Z",
    "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T18:24:00Z",
-   "subject": "Review bench: the deploy action's defects as fixture cases"
   }
  ],
  "builders": {

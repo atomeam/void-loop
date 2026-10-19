@@ -36,7 +36,7 @@ export default async function build(ctx, data) {
   g.fillStyle = '#2b4a33'; g.textAlign = 'center';
   g.font = `700 ${Math.round(cp * 0.32)}px Georgia, serif`; if (!data.lid) g.fillText('THE', px / 2, px / 2 - cp * 0.62);
   g.font = `700 ${Math.round(cp * 0.7)}px Georgia, serif`; g.fillText(data.lid || 'LANDLORD’S GAME', px / 2, px / 2 + cp * 0.1);
-  g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VOID  GAME', px / 2, px / 2 + cp * 0.5);
+  g.font = `${Math.round(cp * 0.2)}px system-ui, sans-serif`; g.fillText('A  VERSE  GAME', px / 2, px / 2 + cp * 0.5);
   const c2 = document.createElement('canvas'); c2.width = c2.height = px;
   const g2 = c2.getContext('2d'); g2.translate(px, px); g2.rotate(Math.PI); g2.drawImage(flat, 0, 0);
   const topMap = new THREE.CanvasTexture(c2); topMap.colorSpace = THREE.SRGBColorSpace; topMap.anisotropy = 8;
