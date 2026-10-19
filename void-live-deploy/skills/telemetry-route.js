@@ -5,7 +5,7 @@
  * nothing lands on the stage unasked. A question or an instruction ("why is my ci red") is left alone (lib/telemetry.js).
  */
 import { telemetryOf, summaryOf } from '../lib/telemetry.js';
-import { liveLines, REPO } from '../lib/telemetry-live.js';
+import { liveLines, REPO, stillRunning, REFRESH_MAX, REFRESH_MS } from '../lib/telemetry-live.js';
 
 const MARK = { true: '✓ ', false: '✗ ', null: '· ' };
 
@@ -15,14 +15,29 @@ function run(text, api) {
   const el = showPage((p) => {
     p.innerHTML = '<h2>What is really true now</h2>' // void-review: ok (constant heading; every value below is escaped)
       + '<ul class="v-asks" data-tel-live="1"><li>checking GitHub for main, the pull requests and the commits it names…</li></ul>'
-      + '<div class="vh">What the report said</div><ul class="v-asks">' + summaryOf(t).slice(1).map((l) => '<li>' + esc(l) + '</li>').join('') + '</ul>'
+      + '<div class="vh">What the report said</div><ul class="v-asks">' + summaryOf(t).slice(1).map((l) => '<li' + (/^Nothing in it names a failure/.test(l) ? ' data-tel-none="1"' : '') + '>' + esc(l) + '</li>').join('') + '</ul>'
       + (t.failures.length ? '<div class="vh">Named as failing in the report (checked above, not here)</div><ul class="v-asks" data-tel-fail="1">' + t.failures.map((f) => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
       + '<p><button type="button" class="tr-copy" data-tel="garden">Plant these in the error garden</button> <button type="button" class="tr-copy" data-tel="autopsy">Open the incident autopsy</button></p>'
       + '<div class="src">Live state from GitHub\'s public API for ' + esc(REPO) + ' · what you pasted stays on this device</div>';
   });
   const slot = el && el.querySelector && el.querySelector('[data-tel-live]');
-  if (slot) liveLines(t).then((lines) => {
+  // the card keeps itself true while it is open: checks that were still running are read again once a minute until they settle (REFRESH_MAX at most)
+  const draw = (lines) => {
     slot.innerHTML = lines.map((l) => '<li data-ok="' + esc(String(l.ok)) + '">' + esc(MARK[String(l.ok)] || '· ') + esc(l.text) + '</li>').join('') || '<li>nothing to check</li>'; // void-review: ok (every value escaped)
+    el.dataset.telChecked = new Date().toISOString().slice(11, 16) + ' UTC';
+    el.dataset.telRunning = String(stillRunning(lines));
+    // the report named no failure but GitHub does: say so where the report is summed up, so the card never reads as all clear
+    const none = el.querySelector('[data-tel-none]');
+    if (none) none.textContent = lines.some((l) => l.ok === false) ? 'Nothing in it names a failure, but GitHub does: see the ✗ above' : 'Nothing in it names a failure';
+  };
+  if (slot) liveLines(t).then((lines) => {
+    draw(lines);
+    if (!stillRunning(lines) || !api.keepFresh) return;
+    let n = 0;
+    const id = api.keepFresh(el, async () => {
+      const next = await liveLines(t); draw(next); n++;
+      if (!stillRunning(next) || n >= REFRESH_MAX) clearInterval(id);
+    }, REFRESH_MS);
   });
   if (el) el.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-tel]'); if (!b) return;

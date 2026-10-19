@@ -9935,6 +9935,45 @@ try {
     check('telemetry route: a builder\'s report that quotes a check timeout is read as a developer log, not answered as a broken automation to fix', /What is really true now/.test(String(rep)) && !/broken automation/.test(String(rep)) && !S.errors.length, JSON.stringify({ rep: String(rep).slice(0, 200), errors: S.errors }));
     await S.ctx.close(); }
 
+  // the reality card keeps itself true while it is open (owner, 2026-10-19: "all cards should constantly update"): checks GitHub said were still running
+  // are read again until they settle, then it stops asking
+  if (want("telemetry route keeps checking")) { const S = await fresh(() => { window.__voidFreshMs = 5000; });
+    let done = false, calls = 0;
+    const sha = 'bffbcd82aa11bb22cc33dd44ee55ff6677889900';
+    await S.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\//, (rt) => { const u = rt.request().url(); calls++;
+      if (/\/commits\?sha=main/.test(u)) return rt.fulfill(json([{ sha, author: { login: 'atomeam' }, commit: { message: 'Merge pull request #1176', committer: { date: '2026-10-19T19:07:00Z' }, author: { name: 'atomeam' } } }]));
+      if (/check-runs/.test(u)) return rt.fulfill(json({ check_runs: [{ name: 'deploy', status: 'completed', conclusion: 'success', started_at: '1' }, { name: 'browser-suite (1)', status: done ? 'completed' : 'in_progress', conclusion: done ? 'success' : null, started_at: '1' }] }));
+      if (/\/pulls\/1176/.test(u)) return rt.fulfill(json({ number: 1176, merged_at: '2026-10-19T19:07:00Z', state: 'closed', title: 'Self card never stuck' }));
+      return rt.fulfill({ status: 404, body: '{}' }); });
+    await S.ask('I merged PR 1176 into main and I am watching it. The deploy passed after the push, the CI pipeline on main is still running the browser suite, the workflow has 1/2 checks passed so far and no check failed yet.', 900);
+    const first = await until(() => S.p.$eval('.vpage.on [data-tel-live]', (e) => e.innerText).then((t) => /still running/.test(t) ? t : '').catch(() => ''), 15000).catch(() => '');
+    done = true;
+    const settled = await until(() => S.p.$eval('.vpage.on [data-tel-live]', (e) => e.innerText).then((t) => /2 passed/.test(t) && !/still running/.test(t) ? t : '').catch(() => ''), 15000).catch(() => '');
+    const after = calls; await S.p.waitForTimeout(7000);
+    check('telemetry route keeps checking: a pasted status update naming PR 1176 opens the reality card, which shows "still running", reads GitHub again by itself until the checks settle, then stops asking',
+      /1 passed · 1 still running/.test(first) && /2 passed/.test(settled) && /#1176 merged/.test(settled) && calls === after && !S.errors.length, JSON.stringify({ first, settled, calls, after, errors: S.errors }));
+    await S.ctx.close(); }
+  // the reality card reads past Verse's own record commits to the change that ran checks (owner, 2026-10-19: the card said "no checks reported"
+  // on an incident note and "Nothing in it names a failure" while the merge under four notes had failed its browser suite)
+  if (want("telemetry route reads past record commits")) { const S = await fresh();
+    const c = (sha, message, date) => ({ sha, author: { login: 'github-actions[bot]' }, commit: { message, committer: { date } } });
+    const recent = [c('ff1d3548aa', 'Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)', '2026-10-19T19:35:00Z'), c('e2f0a3f7aa', 'Verse hardens itself: 5 benchmark ask(s) for kept', '2026-10-19T19:20:00Z'),
+      c('f104fab9aa', 'Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)', '2026-10-19T19:10:00Z'), c('c750cfd0aa', 'Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)', '2026-10-19T18:50:00Z'),
+      c('bffbcd82aa', 'Merge pull request #1176 from atomeam/helper/self-card-guard', '2026-10-19T18:00:00Z')];
+    const asked = [];
+    await S.ctx.route(/api\.github\.com\/repos\/atomeam\/void-loop\//, (rt) => { const u = rt.request().url(); asked.push(u.replace(/^.*void-loop/, ''));
+      if (/\/commits\?sha=main/.test(u)) return rt.fulfill(json(recent));
+      if (/bffbcd82aa\/check-runs/.test(u)) return rt.fulfill(json({ check_runs: [{ name: 'Verse deploy', status: 'completed', conclusion: 'success', started_at: '1' }, { name: 'browser suite', status: 'completed', conclusion: 'failure', started_at: '1' }] }));
+      if (/\/pulls\/1176/.test(u)) return rt.fulfill(json({ number: 1176, merged_at: '2026-10-19T18:00:00Z', state: 'closed', title: 'Self card never stuck' }));
+      return rt.fulfill({ status: 404, body: '{}' }); });
+    await S.ask('I merged PR 1176 into main and I am watching it. The deploy passed after the push, the CI pipeline on main is green and the workflow passed every check on the merge commit, so nothing is broken now.', 900); // the all-clear a builder pasted while main was red
+    const live = await until(() => S.p.$eval('.vpage.on [data-tel-live]', (e) => e.innerText).then((t) => /bffbcd82/.test(t) ? t : '').catch(() => ''), 15000).catch(() => '');
+    const none = await S.p.$eval('.vpage.on [data-tel-none]', (e) => e.textContent).catch(() => '');
+    check('telemetry route reads past record commits: with four incident and benchmark notes over a merge whose browser suite failed, the card names the merge as main, marks it failed with the incident count, says what the newer commits are, and its report summary says GitHub names a failure',
+      /✗ main is at bffbcd82 \(2026-10-19 18:00 UTC, Merge pull request #1176/.test(live) && /1 failed \(browser suite\)/.test(live) && /noted 3 times/.test(live) && /The 4 newest commits are Verse's own records \(3 incident notes, 1 benchmark update\)/.test(live)
+        && !/no checks reported/.test(live) && /but GitHub does/.test(none) && asked.filter((u) => /check-runs/.test(u)).length === 1 && !S.errors.length,
+      JSON.stringify({ live, none, asked, errors: S.errors }));
+    await S.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all
