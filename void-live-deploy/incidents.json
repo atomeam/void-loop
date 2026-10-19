@@ -2,6 +2,20 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T12:42:24.256Z",
+   "sha": "a8b4560a06b01ef07b2984828f3c349e848afe1c",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39253567192",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "tools/propose-fix.mjs",
+    "tools/propose-fix.test.mjs",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-19T12:34:54.179Z",
    "sha": "0bbdbcf3bfd3cb874c0c97b85074f8d7aa115ba0",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39250314516",
@@ -683,20 +697,6 @@
     "tools/report-to-growth.mjs",
     "tools/report-to-growth.test.mjs",
     "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T13:34:18.471Z",
-   "sha": "a27f0e341f0e0a4cbf2533c1885b67bf61e90209",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39130832807",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
     "void-live-deploy/incidents.json"
    ]
   }
