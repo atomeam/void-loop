@@ -6171,5 +6171,8 @@
   {
     "ask": "what am I missing in my notes",
     "want": "skill:notebook"
-  }
+  },
+  {"ask": "terminal", "want": "skill:terminal"},
+  {"ask": "open the command line", "want": "skill:terminal"},
+  {"ask": "verse cli", "want": "skill:terminal"}
 ]

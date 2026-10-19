@@ -476,84 +476,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-18T09:18:24Z",
-   "subject": "self.json after the merge"
+   "at": "2026-10-19T02:17:47Z",
+   "subject": "bench.json: keep both sides of the merge (a conflict marker had been committed; never pushed)"
   },
   {
-   "at": "2026-10-18T09:18:06Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-19T02:15:36Z",
+   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:18:00Z",
-   "subject": "Incident: the browser suite failed on 74238086 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:14:44Z",
+   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:17:54Z",
-   "subject": "Verse everywhere, second pass: the ask matchers that still took only void, the persona lineage, drawn boards, VERSE-CARD, both-name revert r"
+   "at": "2026-10-19T02:09:20Z",
+   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:17:38Z",
-   "subject": "Incident: the browser suite failed on 80963b89 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:09:08Z",
+   "subject": "the daily readout prompt drops the character (it contradicted PERSONA's 'never deny feelings'), becomes a strict summary of tagged facts, an"
   },
   {
-   "at": "2026-10-18T09:17:14Z",
-   "subject": "Incident: the browser suite failed on 98e04711 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:03:58Z",
+   "subject": "the self card stops pretending: its words are labelled as a language model's, prompted to speak as Verse from the facts it was given (shown "
   },
   {
-   "at": "2026-10-18T09:16:55Z",
-   "subject": "Incident: the browser suite failed on c53adfce (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T00:42:04Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"film metadata"
   },
   {
-   "at": "2026-10-18T09:15:28Z",
-   "subject": "Wants card: the real items are in its saved text (chips are spans, not buttons)"
+   "at": "2026-10-18T20:31:03Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-18T09:13:13Z",
-   "subject": "Incident: the browser suite failed on 74238086 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:48:47Z",
+   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:12:34Z",
-   "subject": "Incident: the browser suite failed on 44617fcf (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:47:22Z",
+   "subject": "Site test: fix: \"yo film metadata for ikiru\" refused: don't know this y"
   },
   {
-   "at": "2026-10-18T09:11:42Z",
-   "subject": "Incident: the browser suite failed on c53adfce (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:43:34Z",
+   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:11:30Z",
-   "subject": "Incident: the browser suite failed on e18a912b (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:37:40Z",
+   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:11:23Z",
-   "subject": "Zorbleflux answers 'do you know' asks; the wants card puts the real items first (owner)"
+   "at": "2026-10-18T18:24:00Z",
+   "subject": "Review bench: the deploy action's defects as fixture cases"
   },
   {
-   "at": "2026-10-18T09:10:36Z",
-   "subject": "Incident: the browser suite failed on 80963b89 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:23:06Z",
+   "subject": "Review bench fixture: the deploy action's index.ts (the owner's own repo, MIT), added alone so the bench can review it as a commit"
   },
   {
-   "at": "2026-10-18T09:08:58Z",
-   "subject": "Incident: the browser suite failed on f98d4cbc (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:21:48Z",
+   "subject": "Incident: the browser suite failed on 9751b0ba (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:07:38Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T18:20:05Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"fimls by kuro"
   },
   {
-   "at": "2026-10-18T09:07:10Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T18:15:32Z",
+   "subject": "Incident: the browser suite failed on 9751b0ba (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:07:08Z",
-   "subject": "wants: 'name your next 10 upgrades you want' is Verse's own backlog, not a generic model list"
+   "at": "2026-10-18T18:13:06Z",
+   "subject": "Incident: the browser suite failed on c7d982fe (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:06:02Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-18T18:09:38Z",
+   "subject": "Incident: the browser suite failed on 9751b0ba (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T09:06:00Z",
-   "subject": "Name lineage on the self family and remediation velocity (asked by Verse)"
+   "at": "2026-10-18T18:05:38Z",
+   "subject": "Incident: the browser suite failed on c7d982fe (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

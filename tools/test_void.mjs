@@ -5905,6 +5905,35 @@ try {
       JSON.stringify(first) === JSON.stringify([today]) && JSON.stringify(again) === JSON.stringify([today]) && /Garden Plan/.test(dangling || '') && made.notes.includes('Garden Plan') && made.shown === 'Garden Plan' && made.back.includes(today)
       && linked === 'ask [[Zed]] about the beds' && !stillMissing && view === 'missing' && !clicks.length && !B.errors.length, JSON.stringify({ first, again, today, dangling, made, linked, view, clicks, errors: B.errors }));
     await B.ctx.close(); }
+  // the terminal card (asked by the owner, 2026-10-19: "a CLI ... better than an LLM mostly means not using one for most things"): commands are rules,
+  // the model is reached by one command only and its lines are marked, an unknown word goes nowhere, and the typed commands are kept on this device
+  if (want("terminal: help, skill, skills and tab-complete run without a model, an unknown command goes nowhere, ask --model alone calls the model and marks it, timer hands the page its own ask")) { const B = await fresh(); let modelCalls = 0;
+    await B.ctx.route(/127\.0\.0\.1:\d+\/api\/answer$/, (r) => { modelCalls++; return r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ answer: 'a drafted line\nand a second', sources: [] }) }); });
+    await B.ask('terminal', 900);
+    const opened = await until(async () => B.p.$('.term-in').catch(() => null), 6000);
+    const type = async (line) => { await B.p.fill('.term-in', line); await B.p.press('.term-in', 'Enter'); await B.p.waitForTimeout(250); };
+    const logText = () => B.p.$eval('.term-log', (e) => e.innerText).catch(() => '');
+    await type('help'); const help = await logText();
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await B.p.waitForTimeout(400); await B.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'terminal-help.png') }).catch(() => {}); }
+    await until(async () => (/\d+ skills/.test(await (async () => { await type('skills'); return logText(); })()) ? true : null), 8000);
+    await type('skill timer'); await type('skills pad');
+    const read = await logText();
+    await type('rm -rf /'); const errs = await B.p.$$eval('.term-err', (l) => l.map((e) => e.textContent));
+    const beforeModel = modelCalls;
+    await B.p.fill('.term-in', 'fam'); await B.p.press('.term-in', 'Tab'); const tabbed = await B.p.$eval('.term-in', (i) => i.value);
+    await B.p.fill('.term-in', ''); await B.p.press('.term-in', 'ArrowUp'); const upOnce = await B.p.$eval('.term-in', (i) => i.value);
+    await type('ask --model say something'); await until(async () => B.p.$('.term-model').catch(() => null), 5000);
+    const marked = await B.p.$$eval('.term-model', (l) => l.map((e) => e.textContent));
+    const kept = await B.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.terminal.v1') || '[]'); } catch (_) { return null; } });
+    await type('timer 5m'); await B.p.waitForTimeout(900);
+    const asked = await B.p.evaluate(() => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').map((x) => x.ask + '=' + x.note); } catch (_) { return []; } });
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await B.ask('terminal', 900); await B.p.waitForTimeout(500); await B.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'terminal.png') }).catch(() => {}); }
+    check('terminal: help, skill, skills and tab-complete run without a model, an unknown command goes nowhere, ask --model alone calls the model and marks it, timer hands the page its own ask',
+      !!opened && /commands \(every one works without a model/.test(help) && /Timer \(timer\)/.test(read) && /notepad/.test(read) && errs.some((e) => /unknown command: rm/.test(e))
+      && beforeModel === 0 && tabbed === 'families ' && upOnce === 'rm -rf /' && modelCalls === 1 && marked.length === 2 && marked.every((m) => m.startsWith('[model] '))
+      && Array.isArray(kept) && kept.includes('help') && kept.includes('ask --model say something') && asked.some((a) => /^set a timer for 5 minutes=/.test(a)) && !B.errors.length,
+      JSON.stringify({ opened: !!opened, help: help.slice(0, 80), read: read.slice(-160), errs, beforeModel, tabbed, upOnce, modelCalls, marked, kept, asked: asked.slice(-3), errors: B.errors }));
+    await B.ctx.close(); }
   // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
   // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
   if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });
