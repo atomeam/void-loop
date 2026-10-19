@@ -17,18 +17,18 @@
    "tests": 2
   },
   {
+   "file": "lib/state.js",
+   "skills": 27,
+   "direct": 3,
+   "dependants": 47,
+   "tests": 4
+  },
+  {
    "file": "lib/placement.js",
    "skills": 27,
    "direct": 1,
    "dependants": 30,
    "tests": 1
-  },
-  {
-   "file": "lib/state.js",
-   "skills": 25,
-   "direct": 3,
-   "dependants": 45,
-   "tests": 4
   },
   {
    "file": "lib/panel-fit.js",
@@ -43,6 +43,13 @@
    "direct": 2,
    "dependants": 33,
    "tests": 4
+  },
+  {
+   "file": "lib/ladder.js",
+   "skills": 16,
+   "direct": 9,
+   "dependants": 30,
+   "tests": 2
   },
   {
    "file": "lib/keeper.js",
@@ -64,13 +71,6 @@
    "direct": 0,
    "dependants": 35,
    "tests": 3
-  },
-  {
-   "file": "lib/ladder.js",
-   "skills": 13,
-   "direct": 8,
-   "dependants": 27,
-   "tests": 1
   },
   {
    "file": "lib/sky-math.js",
@@ -3605,6 +3605,7 @@
     "skills/merge-void.js",
     "skills/null-sweep.js",
     "skills/pong.js",
+    "skills/rack.js",
     "skills/snake.js",
     "skills/void-breaker.js"
    ],
@@ -3622,10 +3623,12 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/games.js",
     "skills/growth-tree.js",
     "skills/guide.js",
     "skills/mini/growthtree.js",
     "skills/own-parts.js",
+    "skills/rebuild-map.js",
     "skills/showcase.js"
    ]
   },
@@ -5118,6 +5121,8 @@
     "skills/othello.js",
     "skills/own-parts.js",
     "skills/pong.js",
+    "skills/rack.js",
+    "skills/rebuild-map.js",
     "skills/showcase.js",
     "skills/skill-eclipse.js",
     "skills/snake.js",
@@ -7618,7 +7623,8 @@
    "imports": [
     "skills/side-card.js",
     "skills/game-level.js",
-    "lib/parody.js"
+    "lib/parody.js",
+    "lib/ladder.js"
    ],
    "importedBy": [
     "skills/games.js",

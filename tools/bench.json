@@ -6201,5 +6201,9 @@
   {"ask": "turn this into a thread: One thing happened. Then another thing happened.", "want": "skill:writing-aids"},
   {"ask": "what just shipped?", "want": "skill:growth"},
   {"ask": "what shipped today", "want": "skill:growth"},
-  {"ask": "what did you just ship", "want": "skill:growth"}
+  {"ask": "what did you just ship", "want": "skill:growth"},
+  {"ask": "arcade games", "want": "skill:rack"},
+  {"ask": "show me the arcade", "want": "skill:rack"},
+  {"ask": "my arcade ladder", "want": "skill:rack"},
+  {"ask": "what arcade games can i play", "want": "skill:rack"}
 ]

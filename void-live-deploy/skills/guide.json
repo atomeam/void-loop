@@ -1205,13 +1205,13 @@
    "title": "Rack",
    "line": "The game rack: a 3D walnut shelf of boxed board games standing in the void",
    "examples": [
+    "arcade games",
     "parody of monopoly",
-    "parody games",
-    "is reversi public domain"
+    "parody games"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "An old art of the games, tested each day before the sun is up. Say the words below and it answers.",
+   "why": "a self-test, 7 browser-suite mentions, 7 real asks in the benchmark",
+   "flavor": "Asked 7 times in earnest, and never once left unanswered. Say the words below and it answers.",
    "glow": 100,
    "n": 55
   },
@@ -5994,8 +5994,8 @@
    "line": "A walnut game shelf standing in the void, one boxed board game per slot, covers facing you",
    "card": "Rack",
    "examples": [
-    "parody of monopoly",
-    "parody games"
+    "arcade games",
+    "parody of monopoly"
    ],
    "owner": "rack",
    "ownerPage": 55,
