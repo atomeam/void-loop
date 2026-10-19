@@ -6235,5 +6235,6 @@
   {"ask": "rubber band select", "want": "skill:card-play"},
   {"ask": "all of your unbuilt wants and asks", "want": "skill:wants"},
   {"ask": "your unbuilt wants and asks", "want": "skill:wants"},
-  {"ask": "list all your wants and asks", "want": "skill:wants"}
+  {"ask": "list all your wants and asks", "want": "skill:wants"},
+  {"ask": "watch my terms drift apart", "want": "skill:term-orbits"}
 ]
