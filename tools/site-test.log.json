@@ -1391,5 +1391,12 @@
   "of": 74,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
+ },
+ {
+  "at": "2026-10-19T10:59:48Z",
+  "passed": 73,
+  "of": 74,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"arcade games\" (skill:arcade)"
  }
 ]
