@@ -21,6 +21,16 @@ export function coveredByName(title, names) {
   return names.has(words.join('-')) || (words.length === 1 && names.has(words[0]));
 }
 
+/** whether a candidate's quoted ask ("teach my look skill \"open the self card\"") is inside an ask of Verse's already linked as built
+ *  (void.asks.json links: "Fix the router to ensure 'open the self card' correctly triggers the look skill ..."). A stale router record
+ *  kept putting a built ask back on top of the will (owner, 2026-10-19). builtWords: the links' words, lower case. Pure. */
+export function coveredByBuilt(title, builtWords) {
+  const m = /["“]([^"”]{8,120})["”]/.exec(String(title || ''));
+  if (!m || !Array.isArray(builtWords) || !builtWords.length) return false;
+  const q = m[1].toLowerCase().replace(/\s+/g, ' ').trim();
+  return q.split(' ').length >= 2 && builtWords.some((w) => String(w).toLowerCase().includes(q));
+}
+
 export const MAX_TRIES = 2;     // a want whose jobs ended set aside or failed this many times waits
 export const WINDOW_DAYS = 14;  // ... counting the ones that ended this recently
 /** the queue target a want's job has: 'will:' and the title as a short slug. */
