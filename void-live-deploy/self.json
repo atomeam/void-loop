@@ -477,6 +477,22 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T19:27:32Z",
+   "subject": "Verse Photos, step 1: a photo library kept on this device. 'add photos' keeps pictures full size in this browser (never uploaded, the same…"
+  },
+  {
+   "at": "2026-10-19T19:26:32Z",
+   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T19:12:31Z",
+   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T19:00:12Z",
+   "subject": "Regenerate deps, the skill tools list and the self/asks cards after the merge"
+  },
+  {
    "at": "2026-10-19T18:53:21Z",
    "subject": "Regenerate the families and the book after the merge"
   },
@@ -539,22 +555,6 @@
   {
    "at": "2026-10-19T17:34:41Z",
    "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T17:30:22Z",
-   "subject": "Verse hardens itself: 13 benchmark ask(s) for repo, digest, movie, deep-work, dependency-health"
-  },
-  {
-   "at": "2026-10-19T17:27:08Z",
-   "subject": "A page driven by automation tags its misses robot and /api/miss stores none: Verse's will counted our own claims check as people asking 72…"
-  },
-  {
-   "at": "2026-10-19T17:11:45Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T17:11:39Z",
-   "subject": "asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from…"
   }
  ],
  "builders": {

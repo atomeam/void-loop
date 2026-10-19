@@ -66,6 +66,7 @@ for (const [name, file] of [
   ['near-miss', 'near-miss.test.mjs'],
   ['miss-robot', 'miss-robot.test.mjs'],
   ['media-music', 'media-music.test.mjs'],
+  ['photo-library', 'photo-library.test.mjs'],
   ['context-check', 'context-check.test.mjs'],
   ['word-math', 'word-math.test.mjs'],
   ['swarm', 'swarm.test.mjs'],
