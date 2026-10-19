@@ -93,3 +93,9 @@ test('the lines of a status report that are the builder\'s own account of a fix 
   assert.equal(failuresOf('The 3D block stalls with a check timeout after the voice check.').length, 1, 'a real one stays');
   assert.equal(failuresOf('FAIL fly stars move: the streak never showed').length, 1, 'a FAIL line stays');
 });
+
+test('a condition or a "would" is not a failure that is still happening (the 2026-10-19 card counted both)', async () => {
+  const { failuresOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const f = failuresOf('Pull requests: #1157, #1158\nIf either PR goes red or hits a conflict, fix it first.\nA failing check would automatically revert the commit that broke it.\nFAIL fly stars move: the streak never showed.\nWhen the suite fails again the revert runs.');
+  assert.deepEqual(f, ['FAIL fly stars move: the streak never showed.']);
+});
