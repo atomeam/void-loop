@@ -149,11 +149,12 @@ jobs:
           URL: ${{ steps.deploy.outputs.deployment-url }}
         run: |
           echo "Deployment: $URL"
+          # the deploy uploads its own copy of the page (tools/public-quotes.mjs takes the owner's quoted words out of it), so the check compares with that copy, not the repo's void.html (which differs from it by those words: every deploy since 2026-10-18 failed here)
           for i in 1 2 3 4 5 6; do
             code=$(curl -s -o page.html -w '%{http_code}' "$URL/") || code=000
-            if [ "$code" = "200" ] && cmp -s page.html void.html; then echo "served index.html matches void.html"; break; fi
+            if [ "$code" = "200" ] && cmp -s page.html void-live-deploy/index.html; then echo "served index.html matches the deployed copy"; break; fi
             echo "attempt $i: HTTP $code"; sleep 10
-            [ "$i" = 6 ] && { echo "::error::deployment did not serve the tested void.html"; exit 1; }
+            [ "$i" = 6 ] && { echo "::error::deployment did not serve the deployed page"; exit 1; }
           done
           echo "### Deployed ${{ steps.target.outputs.sha }} to ${{ steps.target.outputs.branch }}: $URL" >> "$GITHUB_STEP_SUMMARY"
 
