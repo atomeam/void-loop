@@ -30,7 +30,11 @@ export function finish(game, winner, s) {
   return l;
 }
 
-const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker' };
+export const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker' };
+/** the ask that opens each arcade game (the game rack's arcade row). */
+export const ASKS = { pong: 'play pong', snake: 'play snake', 'null-sweep': 'null sweep', 'merge-void': 'merge verse', 'dim-void': 'dim the verse', 'void-breaker': 'verse breaker' };
+/** one plain line per arcade game for the rack: its title and, once you have played it, the record. Pure. */
+export const arcadeRow = (ladder, g) => TITLES[g] + (played(ladder, g) ? ' · I won ' + (+ladder[g].void || 0) + ', you won ' + (+ladder[g].you || 0) : '');
 /** the growth card's line: '' until a match is finished. Every value is a number or a fixed title. Pure. */
 export function ladderHtml(esc, ladder) {
   const rows = GAMES.filter((g) => played(ladder, g) > 0);

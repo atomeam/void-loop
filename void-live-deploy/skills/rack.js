@@ -6,6 +6,7 @@
 import { grip, sideCard } from './side-card.js';
 import { LEVELS, getLevel, setLevel } from './game-level.js';
 import PARODY from '../lib/parody.js';
+import { GAMES as LADDER_GAMES, ASKS as ARCADE_ASKS, arcadeRow, load as loadLadder } from '../lib/ladder.js';
 
 // Verse's parody of any classic game (asked by Verse: a searchable games matrix and a "parody-forge" card), folded into the game rack.
 // From domains/void.board-game-law.md §5 (tools/parody.mjs): what is free to copy, what is protected, and Verse's own version.
@@ -55,6 +56,8 @@ export const GAMES = [
 
 export function rackOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  // the arcade: "arcade games", "show me the arcade", "my arcade ladder" (2026-10-19: "arcade games" came back as a Wikipedia page about an advergame studio)
+  if (t !== 'arcade' && /^(?:show\s+(?:me\s+)?|open\s+|play\s+(?:an?\s+)?|go\s+to\s+)?(?:the\s+|your\s+|my\s+)?arcade(?:\s+(?:games?|ladder|record|scores?))?$|^(?:what|which)\s+arcade\s+games\s+(?:can\s+i\s+play|do\s+you\s+have)$/.test(t)) return { kind: 'rack' };
   if (/^(?:(?:let'?s|lets)\s+)?play\s+(?:a\s+)?(?:board\s+)?game$|^what\s+(?:board\s+)?games?\s+(?:can\s+(?:i|we)\s+play|do\s+you\s+have|are\s+there)(?:\s+on\s+this\s+site|\s+here)?$|^(?:any\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+)?(?:games?\s+(?:card|picker|menu|list)|board\s+games?\s+card)$|^(?:pick|choose)\s+a\s+(?:board\s+)?game$/.test(t)) return { kind: 'rack' };
   if (/^(?:show\s+(?:me\s+)?|open\s+|summon\s+)?(?:the\s+|a\s+|your\s+)?(?:3d\s+)?(?:game|games|board\s*game|board\s*games)\s+(?:rack|shelf|shelves|cabinet|closet|cupboard)$|^(?:show\s+(?:me\s+)?)(?:the\s+|your\s+)?(?:board\s+)?games$/.test(t)) return { kind: 'rack' };
@@ -99,6 +102,18 @@ function mount(th, stageApi) {
     list.appendChild(b);
   }
   card.appendChild(list);
+  // the arcade (Verse Studio): the games with Verse as player two, each with your record against Verse once you have played it ("arcade games" opens this card)
+  const arc = document.createElement('div'); arc.className = 'rack-arcade'; arc.style.cssText = 'display:flex;flex-wrap:wrap;gap:6px;margin-top:10px';
+  const arcHead = document.createElement('div'); arcHead.className = 'g-sub'; arcHead.style.cssText = 'width:100%;font-size:12px'; arcHead.textContent = 'Arcade · you against Verse';
+  arc.appendChild(arcHead);
+  const ladder = loadLadder();
+  for (const g of LADDER_GAMES) {
+    const b = document.createElement('button'); b.type = 'button'; b.className = 'g-btn rack-arcade-pick'; b.dataset.arcade = g; b.textContent = arcadeRow(ladder, g);
+    b.addEventListener('pointerdown', (e) => e.stopPropagation());
+    b.addEventListener('click', (e) => { e.stopPropagation(); if (!stageApi.ask) return; delete stageApi.things()[th.id]; stageApi.save && stageApi.save(); stageApi.ask(ARCADE_ASKS[g]); });
+    arc.appendChild(b);
+  }
+  card.appendChild(arc);
   // game strength (asked by Verse twice): each game's evidence rating from skills/families.json, proven to experiment, as a mark on its
   // button and in its title; nothing shows until the file is read, and a game with no skill of its own gets none
   fetch('/skills/families.json', { cache: 'no-cache' }).then((r) => (r.ok ? r.json() : null)).then((fam) => {
@@ -151,7 +166,7 @@ export default {
   rackOf,
   parodyOf,
   GAMES,
-  examples: ['parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
+  examples: ['arcade games', 'parody of monopoly', 'parody games', 'is reversi public domain', 'games', 'what games do you have', 'play a game', "let's play a game", 'game rack', 'show me the games', 'board games', 'the game shelf', 'play scrabble', 'scrabble board game', 'games card', 'pick a game'],
   nearMisses: ['play chess', 'play go', 'video games', 'games for kids', 'what is game theory', 'hunger games', 'play monopoly', 'what is a monopoly', 'play music', 'play sorry by justin bieber'],
   match(lower, text) { return !!rackOf(text) || !!parodyOf(text); },
   run,
