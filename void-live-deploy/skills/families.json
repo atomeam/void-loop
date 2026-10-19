@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 77,
-  "checked": 58,
-  "proven": 167
+  "checked": 54,
+  "proven": 171
  },
  "families": [
   {
@@ -1252,8 +1252,8 @@
    "count": {
     "experiment": 0,
     "tested": 8,
-    "checked": 4,
-    "proven": 16
+    "checked": 3,
+    "proven": 17
    },
    "sources": {
     "read": 20,
@@ -1751,10 +1751,12 @@
     },
     {
      "name": "text-tools",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -1781,9 +1783,10 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 4 live findings, 2026-10-18",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 4 live findings, 2026-10-18",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
      "streak": 3
     },
     {
@@ -1820,8 +1823,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 36,
-    "proven": 29
+    "checked": 33,
+    "proven": 32
    },
    "skills": [
     {
@@ -1873,7 +1876,7 @@
     {
      "name": "pulse",
      "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2093,10 +2096,12 @@
     },
     {
      "name": "feud",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2420,10 +2425,12 @@
     },
     {
      "name": "error-garden",
-     "tier": "checked",
-     "why": "a self-test, 6 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 6 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2472,10 +2479,12 @@
     },
     {
      "name": "family-gravity",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {

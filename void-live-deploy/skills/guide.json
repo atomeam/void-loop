@@ -100,8 +100,8 @@
    "count": {
     "experiment": 0,
     "tested": 8,
-    "checked": 4,
-    "proven": 16
+    "checked": 3,
+    "proven": 17
    },
    "from": 139,
    "to": 167
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 36,
-    "proven": 29
+    "checked": 33,
+    "proven": 32
    },
    "from": 173,
    "to": 268
@@ -3155,8 +3155,10 @@
     "remove duplicate lines: a ⏎ b ⏎ a",
     "extract emails: write to bob@example.com or ann@example.org"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Proven 2 times over by those who asked, and kept among the words and the world.",
+   "glow": 100,
    "n": 166
   },
   {
@@ -3199,8 +3201,9 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 4 live findings, 2026-10-18",
-   "flavor": "Not a boast but a record: every asking answered. Say the words below and it answers.",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 4 live findings, 2026-10-18",
+   "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 169
   },
   {
@@ -3443,7 +3446,7 @@
     "pulse of my arrows"
    ],
    "tier": "tested",
-   "why": "1 real ask in the benchmark",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 179
   },
@@ -3833,8 +3836,10 @@
     "blood feud between the counter and the timer",
     "end the feud"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 204
   },
   {
@@ -4408,8 +4413,10 @@
     "show my error garden",
     "plant my test failures in my error garden"
    ],
-   "tier": "checked",
-   "why": "a self-test, 6 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 6 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 242
   },
   {
@@ -4497,8 +4504,10 @@
     "family gravity off",
     "gravity only notes"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. Ask, and see.",
+   "glow": 100,
    "n": 248
   },
   {
