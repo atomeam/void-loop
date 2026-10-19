@@ -1,5 +1,5 @@
 /**
- * merge-void skill — Merge Void, Verse's sliding-merge puzzle (skills/merge-void-rules.js; research in domains/void.game-research.md):
+ * merge-void skill — Merge Verse, Verse's sliding-merge puzzle (skills/merge-void-rules.js; research in domains/void.game-research.md):
  * "merge void", "play 2048", "2048 game", "sliding tiles", "tile merge game". Slide the cards; equal cards fuse; reach 1024 first, or end with the
  * higher score. Player two is Verse: it plays the same seed beside you, a slide every 1.1 seconds, and says why. Arrow keys or WASD (card focused),
  * a swipe, or the four buttons. A finished game goes on Verse's arcade ladder.
@@ -10,14 +10,14 @@ import { finish } from '../lib/ladder.js';
 
 export function mergeVoidOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:(?:verse|void|v01d)\s+)?(?:merge\s+void|(?:play\s+)?2048(?:\s+game)?|sliding\s+(?:tiles?|cards?)(?:\s+game)?|tile\s+merge(?:\s+game)?|merge\s+(?:puzzle|game))(?:\s+(?:with|against|vs)\s+(?:me|(?:verse|void)|you))?$/.test(t) && (/\b(merge|sliding|tile|play|game|let|start|open|wanna|can we|new)\b/.test(t));
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:(?:verse|void|v01d)\s+)?(?:merge\s+(?:void|verse)|(?:play\s+)?2048(?:\s+game)?|sliding\s+(?:tiles?|cards?)(?:\s+game)?|tile\s+merge(?:\s+game)?|merge\s+(?:puzzle|game))(?:\s+(?:with|against|vs)\s+(?:me|(?:verse|void)|you))?$/.test(t) && (/\b(merge|sliding|tile|play|game|let|start|open|wanna|can we|new)\b/.test(t));
 }
 
 const tint = (v) => (v ? 'hsl(' + (210 + Math.log2(v) * 17) + ' 55% ' + (v >= 512 ? 56 : 38) + '%)' : 'rgba(255,255,255,.07)');
 const KEYS = { arrowleft: 'left', a: 'left', arrowright: 'right', d: 'right', arrowup: 'up', w: 'up', arrowdown: 'down', s: 'down' };
 
 function mount(th, stageApi) {
-  const c = studioCard(th, stageApi, { cls: 'mvoid', title: 'Merge Void', sub: 'you against Verse, one seed', width: 320 });
+  const c = studioCard(th, stageApi, { cls: 'mvoid', title: 'Merge Verse', sub: 'you against Verse, one seed', width: 320 });
   let you, vs, result = '', stop = null, started = false;
   const grid = (px) => { const g = document.createElement('div'); g.style.cssText = 'display:grid;grid-template-columns:repeat(4,1fr);gap:' + px + 'px'; return g; };
   const big = grid(4); big.className = 'mv-you'; big.style.touchAction = 'none';
@@ -64,14 +64,14 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'merge-void');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'merge-void'; }
   api.summon('merge-void', { x: Math.max(10, Math.round(innerWidth / 2 - 160)), y: 50 });
-  api.say('Merge Void · you and Verse slide the same seed · reach ' + M.TARGET + ' first');
+  api.say('Merge Verse · you and Verse slide the same seed · reach ' + M.TARGET + ' first');
   return 'merge-void';
 }
 
 export default {
   name: 'merge-void',
   mergeVoidOf,
-  examples: ['merge void', 'play 2048', '2048 game', 'sliding tiles', 'tile merge game', "let's play merge void"],
+  examples: ['merge void', 'merge verse', 'play 2048', '2048 game', 'sliding tiles', 'tile merge game', "let's play merge void"],
   nearMisses: ['2048', 'what is 2048 divided by 4', 'merge two pdfs', 'merge sort', 'the year 2048', 'play chess', 'sliding doors'],
   match(lower, text) { return !!mergeVoidOf(text); },
   run,

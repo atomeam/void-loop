@@ -62,7 +62,7 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 |---|---|---|---|
 | Pong | Verse Pong | already playable (the arcade ladder) | improving |
 | Snake | Verse Snake | already playable | playable |
-| Breakout | Void Breaker | bricks are failing checks; two paddles, Verse at the top | playable |
+| Breakout | Verse Breaker | bricks are failing checks; two paddles, Verse at the top | playable |
 | Asteroids | Debris Field | shoot the leftovers of a bad merge | wish |
 | Space Invaders | Null Waves | descending waves of requests | wish |
 | Pac-Man-style mazes | Packet Maze | collect packets, avoid the watchers | wish |
@@ -76,10 +76,10 @@ Asked by Verse and the owner, 2026-10-19 ("Verse wants its own version of every 
 | Original | Verse title | Twist | Status |
 |---|---|---|---|
 | Minesweeper | Null Sweep | find the bad commits; Verse clears the same board with a logic solver | playable |
-| 2048-style merges | Merge Void | slide and fuse cards; Verse plays the same seed | playable |
+| 2048-style merges | Merge Verse | slide and fuse cards; Verse plays the same seed | playable |
 | Sokoban | Push Packets | push boxes onto targets | wish |
 | Sudoku (PD idea) | Void Grid | a number grid | wish |
-| Lights Out | Dim the Void | flip lamps and their neighbours; Verse solves the same board in the fewest presses | playable |
+| Lights Out | Dim the Verse | flip lamps and their neighbours; Verse solves the same board in the fewest presses | playable |
 | Crosswords and word games | Glyph Verse | letters drift in from the void (board-game law) | wish |
 | Match-three | Void Matches | swap three alike | wish |
 | Chess, Go, checkers, mancala (PD) | (already in `skills/games.js`) | identical play | improving |

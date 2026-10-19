@@ -1,5 +1,5 @@
 /**
- * dim-void skill — Dim the Void, Verse's lights-out puzzle (skills/dim-void-rules.js; research in domains/void.game-research.md):
+ * dim-void skill — Dim the Verse, Verse's lights-out puzzle (skills/dim-void-rules.js; research in domains/void.game-research.md):
  * "dim the void", "lights out", "play lights out", "switch the lamps off". Pressing a lamp flips it and the four beside it; put every lamp out.
  * Player two is Verse: it plays the same board with the shortest solution, one press every 1.4 seconds once you have pressed, and that count is the
  * par your presses are measured against. First board dark wins. A hint shows one press from a shortest solution and is counted. A finished game goes
@@ -16,7 +16,7 @@ export function dimVoidOf(text) {
 }
 
 function mount(th, stageApi) {
-  const c = studioCard(th, stageApi, { cls: 'dvoid', title: 'Dim the Void', sub: 'you against Verse, one board', width: 300 });
+  const c = studioCard(th, stageApi, { cls: 'dvoid', title: 'Dim the Verse', sub: 'you against Verse, one board', width: 300 });
   let you, vs, result = '', stop = null, started = false, hints = 0, hint = -1;
   const g = document.createElement('div'); g.className = 'dv-grid'; g.style.cssText = 'display:grid;grid-template-columns:repeat(' + D.N + ',1fr);gap:4px';
   const lamps = [];
@@ -68,14 +68,14 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'dim-void');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'dim-void'; }
   api.summon('dim-void', { x: Math.max(10, Math.round(innerWidth / 2 - 150)), y: 50 });
-  api.say('Dim the Void · put every lamp out before Verse does');
+  api.say('Dim the Verse · put every lamp out before Verse does');
   return 'dim-void';
 }
 
 export default {
   name: 'dim-void',
   dimVoidOf,
-  examples: ['dim the void', 'lights out puzzle', 'play lights out', 'switch the lamps off', "let's play dim the void", 'lamp puzzle'],
+  examples: ['dim the void', 'dim the verse', 'lights out puzzle', 'play lights out', 'switch the lamps off', "let's play dim the void", 'lamp puzzle'],
   nearMisses: ['lights out for the night', 'dim the lights', 'how to dim a monitor', 'turn off the lights', 'play chess', 'lamp shopping'],
   match(lower, text) { return !!dimVoidOf(text); },
   run,

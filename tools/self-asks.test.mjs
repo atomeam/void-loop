@@ -46,7 +46,7 @@ test('the ladder knows every Studio game, starts each at 1000, and moves 16 a ma
   for (const g of ['null-sweep', 'merge-void', 'dim-void', 'void-breaker']) {
     assert.ok(LADDER_GAMES.includes(g), g);
     let l = record(null, g, 'void'); assert.equal(ladderRating(l, g), 1016); l = record(l, g, 'you'); l = record(l, g, 'you'); assert.equal(ladderRating(l, g), 984); assert.equal(ladderPlayed(l, g), 3);
-    assert.equal(ladderHtml(esc, l).includes(({ 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Void', 'dim-void': 'Dim the Void', 'void-breaker': 'Void Breaker' })[g] + ' 984'), true, g);
+    assert.equal(ladderHtml(esc, l).includes(({ 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker' })[g] + ' 984'), true, g);
   }
   assert.equal(ladderRating(record(null, 'not-a-game', 'void'), 'not-a-game'), 1000, 'an unknown game is not counted');
 });
