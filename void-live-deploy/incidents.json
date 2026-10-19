@@ -2,11 +2,12 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-19T05:46:10.390Z",
+   "at": "2026-10-19T05:50:36.007Z",
    "sha": "2dfc2fcc9906cd0f831e8ff23a242ba87719fbcd",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39205872262",
    "suite": "browser suite on main",
    "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
     "suite ran to the end"
    ],
    "touched": [
