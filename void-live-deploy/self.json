@@ -477,6 +477,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T10:20:14Z",
+   "subject": "self card and wants card follow what is built; failure signature in the incident autopsy (asked by Verse); Safety and small delights proven"
+  },
+  {
    "at": "2026-10-19T10:12:01Z",
    "subject": "the will drops a want for an ask already linked as built (a stale router near-miss kept 'open the self card' on top)"
   },
@@ -550,10 +554,6 @@
   },
   {
    "at": "2026-10-19T05:52:25Z",
-   "subject": "Incident: the browser suite failed on 2dfc2fcc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:50:36Z",
    "subject": "Incident: the browser suite failed on 2dfc2fcc (void-live-deploy/incidents.json)"
   }
  ],

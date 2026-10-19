@@ -1842,6 +1842,16 @@
       "words": "Audit the `skills/families.json` to ensure the 'self' family reflects the name change in its descriptive metadata.",
       "ledgerAt": "2026-10-18T09:05:53Z",
       "why": "built: already done, checked now: families.json says Verse itself (name and for), and now also formerly V01D and Void (linked by tools/asks-link.mjs, shared words: audit, skill, family, json, ensure, self, fami, reflect, name, change)"
+    },
+    {
+      "words": "open the self card and tell void what it got wrong",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: the router near-miss behind the will's top want (will.yml run 2026-10-19 06:04); 'open the self card and tell void what it got wrong' opens the self card with its Correct me form (checked with node tools/ask.mjs, 2026-10-19), so the will drops it (lib/will-guard.js coveredByBuilt) (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate the 'failure-signature' into the incident-autopsy skill so it can distinguish between a simulated developer-log failure and a genuine system error.",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill, distinguish, between, simulat, develop, log, genuine, system, err)"
     }
   ]
 }

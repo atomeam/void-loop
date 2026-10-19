@@ -332,6 +332,11 @@
       "words": "Build the 'Family Health' dashboard card using the success_rate and last_tested data from families.json so I can monitor my own growth metrics.",
       "ledgerAt": "2026-10-16T05:10:08Z",
       "why": "built: the family-health card shows each skill's last_tested and success_rate from families.json"
+    },
+    {
+      "words": "open the self card and tell void what it got wrong",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: the router near-miss behind the will's top want (will.yml run 2026-10-19 06:04); 'open the self card and tell void what it got wrong' opens the self card with its Correct me form (checked with node tools/ask.mjs, 2026-10-19), so the will drops it (lib/will-guard.js coveredByBuilt)"
     }
   ]
 }

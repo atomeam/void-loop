@@ -28,7 +28,8 @@ const RULES = [
   new RegExp('^what (?:(?:have|has|did) ' + YOU + ' not|(?:haven\'t|havent|hasn\'t|hasnt|didn\'t|didnt) ' + YOU + ') (?:built|build|made|make|done|do|shipped|ship|finished|finish)(?: yet)?$'),
   new RegExp('^what (?:have|has|do|does) ' + YOU + ' (?:still |yet )?(?:left|got left|have left|got) to (?:build|make|do|ship)$'),
   new RegExp('^what (?:are|were) ' + YOUR + ' (?:open|unbuilt|remaining|outstanding|pending) (?:asks|wants|items|wishes)$'),
-  new RegExp('^(?:(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each|  everything)?(?: of)? )?' + YOUR + ' ' + LISTS + '$'),
+  // "all of your unbuilt wants and asks" (owner, 2026-10-19: it reached the model, which said it has no wants): a bare "all (of)", and two lists joined by "and"
+  new RegExp('^(?:(?:(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each|  everything)?|all)(?: of)? )?' + YOUR + ' ' + LISTS + '(?: (?:and|&) (?:' + LISTS + '|asks|wants))?$'),
   new RegExp('^(?:name|list|show|show me|tell me|give me|print|read|read me|read out|recite|enumerate)(?: me)?(?: all| every| each)?(?: of)? (?:the )?(?:things|stuff|asks|wants|items)(?: ' + YOU + ' (?:want|wants|wanted|asked for|asked|have not built|haven\'t built|havent built|still want|want built))?(?: not built| unbuilt| still open| left| yet)?$'),
   // bare noun phrases that can only mean this list ("asks not built?" once reached the open web and answered with Daisy Bell);
   // a bare "todo", "inbox" or "backlog" stays out: those are the visitor's own lists, not Verse's
@@ -134,7 +135,7 @@ async function run(text, api) {
 export default {
   name: 'wants',
   about: "What I want built: my will, the asks of mine nobody has built, and my growth inbox, from my own records, never a model.",
-  examples: ['what do you want built now', 'name all your unbuilt asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want'],
+  examples: ['what do you want built now', 'name all your unbuilt asks', 'all of your unbuilt wants and asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want'],
   nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,
