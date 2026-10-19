@@ -1384,5 +1384,12 @@
   "of": 73,
   "kind": "grow",
   "note": "new ground passed, kept as a regression case: \"add task call mum friday high priority 30 min\" (skill:task-board)"
+ },
+ {
+  "at": "2026-10-19T04:58:40Z",
+  "passed": 64,
+  "of": 74,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
  }
 ]
