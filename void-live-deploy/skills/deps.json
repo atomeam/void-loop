@@ -630,7 +630,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 2,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/stage-port.js",

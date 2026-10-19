@@ -54,3 +54,9 @@ t('a card-stats idle wait over the limit is flagged, never failed (asked by Vers
   assert.match(changedText(before, after), /void is empty/); assert.equal(judge({ ask: 'bring it to the front' }, { text: changedText(before, after) }).ok, true);
   assert.equal(changedText(before, before), ''); assert.equal(changedText('a', 'a then more'), ' then more'); });
 console.log('site-test: ' + n + ' checks passed');
+
+// failedOf names the asks that failed and the first reason each, at most 12 (owner, 2026-10-19: the tester card only counted them)
+{ const { failedOf } = await import('./site-test.mjs');
+  const r = [{ ask: 'what are you?', ok: false, why: ['missing text /Verse/', 'slow'] }, { ask: 'play chess', ok: true, why: [] }];
+  assert.deepEqual(failedOf(r), [{ ask: 'what are you?', why: 'missing text /Verse/' }]);
+  assert.equal(failedOf(Array.from({ length: 20 }, (_, i) => ({ ask: 'a' + i, ok: false, why: [] }))).length, 12); }

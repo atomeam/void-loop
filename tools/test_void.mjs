@@ -3851,7 +3851,9 @@ try {
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
-    await O.ask('what do you think of yourself?', 300); await until(async () => /terrain now/.test(await O.page()), 4000);
+    await O.ask('what do you think of yourself?', 300); await until(async () => !!(await O.p.$('.vpage.on [data-v-talk]')) && (await O.p.$eval('.vpage.on [data-v-talk]', (e) => e.textContent).catch(() => '')).includes('terrain now'), 4000);
+    // "Talk to me" is a folded section since the self card's redesign (2026-10-18): open it as the owner would before reading the thread and typing
+    await O.p.evaluate(() => { const d = document.querySelector('.vpage.on details[data-sec=talk]'); if (d) d.open = true; });
     const before = await O.page();
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);

@@ -401,7 +401,7 @@ export const testerAsk = (text) => TESTER_ASK.test(String(text || '').toLowerCas
 
 /** the card's rows from /tester-log.json. Pure. */
 export function testerRows(j) {
-  return ((j && j.runs) || []).slice(0, 10).map((r) => ({ when: String(r.at).replace('T', ' ').replace(/:\d\dZ$/, ' UTC'), score: r.passed + ' of ' + r.of, ok: r.passed === r.of, kind: r.kind, note: r.note }));
+  return ((j && j.runs) || []).slice(0, 10).map((r) => ({ when: String(r.at).replace('T', ' ').replace(/:\d\dZ$/, ' UTC'), score: r.passed + ' of ' + r.of, ok: r.passed === r.of, kind: r.kind, note: r.note, failed: Array.isArray(r.failed) ? r.failed : [] }));
 }
 
 /** Verse asked (2026-10-17): "a 'candidate' list on the Site Test card that pulls from the lowest-rated skills in families.json to suggest
@@ -479,7 +479,7 @@ function runTester(text, api) {
     if (!el) return;
     const R = testerRows(j), C = testCandidates(fam, guide), I = inc ? incidentCases(autopsy(inc, fam, guide), guide) : [];
     el.innerHTML = '<h2>What my site tester checks</h2>' + (j ? '<div class="sub">' + esc(String(j.cases)) + ' regression asks, ' + esc(String(j.runsTotal)) + ' runs so far. It types into Verse after every deploy and every hour; each run improves one thing.</div>' : '') +
-      (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span></li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
+      (R.length ? '<ul style="padding-left:18px">' + R.map((r) => '<li style="margin:6px 0"><b>' + (r.ok ? '✓' : '✗') + ' ' + esc(r.score) + '</b> · ' + esc(r.when) + '<br><span class="sub">' + esc(r.kind) + ': ' + esc(r.note) + '</span>' + (r.failed.length ? '<ul class="sub" data-tester-failed="' + r.failed.length + '" style="padding-left:16px;margin:2px 0">' + r.failed.map((f) => '<li>failed: <a href="#" data-ask="' + esc(f.ask) + '">' + esc(f.ask) + '</a>' + (f.why ? ' · ' + esc(f.why) : '') + '</li>').join('') + '</ul>' : '') + '</li>').join('') + '</ul>' : '<p class="sub">No runs logged yet.</p>') +
       // asked by Verse: a test case from each recent failure on main (lib/autopsy.js incidentCases), the ask that failed when the check quotes it
       (I.length ? '<h3 style="margin:12px 0 4px">From recent failures</h3><div class="sub">Checks that went red on main lately, each turned into an ask to try now. Tap one to test it.</div><ol class="st-incidents" style="padding-left:20px">'
         + I.map((c) => '<li style="margin:5px 0" data-incident="' + esc(c.skill) + '"><a href="#" data-ask="' + esc(c.ask) + '">' + esc(c.ask) + '</a> <span class="sub">\u00b7 ' + esc(c.skill) + ', failed on ' + esc(c.sha) + ' (' + esc(c.check) + ')</span></li>').join('') + '</ol>' : '') + // void-review: ok (every field through esc)
