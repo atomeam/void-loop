@@ -6345,5 +6345,20 @@
   {"ask": "empty month grid for november 2026", "want": "skill:date-grid"},
   {"ask": "empty week grid", "want": "skill:date-grid"},
   {"ask": "7x5 heatmap", "want": "skill:date-grid"},
-  {"ask": "what if my assumption is false", "want": "skill:counterfactual-draft"}
+  {"ask": "what if my assumption is false", "want": "skill:counterfactual-draft"},
+  {"ask": "pixels to cm at 96 dpi", "want": "skill:calc-more"},
+  {"ask": "300 px in cm at 150 dpi", "want": "skill:calc-more"},
+  {"ask": "5 cm to pixels at 300 dpi", "want": "skill:calc-more"},
+  {"ask": "crypto prices", "want": "skill:markets"},
+  {"ask": "crypto board", "want": "skill:markets"},
+  {"ask": "crypto card", "want": "skill:markets"},
+  {"ask": "make a collectible card of a dragon", "want": "skill:collectible"},
+  {"ask": "mint a card of the moon", "want": "skill:collectible"},
+  {"ask": "collectible card of tokyo", "want": "skill:collectible"},
+  {"ask": "csv table: name,age ⏎ ann,30 ⏎ bo,25", "want": "skill:csv-table"},
+  {"ask": "paste csv: item;price ⏎ tea;3 ⏎ cake;5", "want": "skill:csv-table"},
+  {"ask": "table from csv: a,b ⏎ 1,2", "want": "skill:csv-table"},
+  {"ask": "deadline chain from today: 24 hours, 72 hours, 14 days", "want": "skill:deadlines"},
+  {"ask": "when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month", "want": "skill:deadlines"},
+  {"ask": "reporting deadlines from 2026-10-15 14:00", "want": "skill:deadlines"}
 ]

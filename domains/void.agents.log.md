@@ -938,3 +938,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-19T15:29:39Z | verse | grow | hardened itself: 6 benchmark ask(s) for ask-diff, bookmarks, cartoon, causal-scars (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T16:09:45Z | verse | grow | hardened itself: 10 benchmark ask(s) for show-countdown, codex, contradiction-lamp, counter (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T16:29:48Z | verse | grow | hardened itself: 10 benchmark ask(s) for time-math, date-calc, date-grid, counterfactual-draft (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-19T17:09:47Z | verse | grow | hardened itself: 15 benchmark ask(s) for calc-more, markets, collectible, csv-table, deadlines (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
