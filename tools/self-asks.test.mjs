@@ -39,3 +39,14 @@ test('ladder: Verse moves 16 a match, never under 400, draws and nonsense do not
   assert.equal(ladderHtml(esc, null), '');
   const s = mem(); finish('pong', 'void', s); finish('pong', 'void', s); assert.equal(rating(load(s), 'pong'), 1032);
 });
+
+// the Studio games (domains/void.game-studio.md) record on the same ladder, each with its own title and rating
+import { GAMES as LADDER_GAMES, rating as ladderRating, played as ladderPlayed } from '../void-live-deploy/lib/ladder.js';
+test('the ladder knows every Studio game, starts each at 1000, and moves 16 a match', () => {
+  for (const g of ['null-sweep', 'merge-void', 'dim-void', 'void-breaker']) {
+    assert.ok(LADDER_GAMES.includes(g), g);
+    let l = record(null, g, 'void'); assert.equal(ladderRating(l, g), 1016); l = record(l, g, 'you'); l = record(l, g, 'you'); assert.equal(ladderRating(l, g), 984); assert.equal(ladderPlayed(l, g), 3);
+    assert.equal(ladderHtml(esc, l).includes(({ 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Void', 'dim-void': 'Dim the Void', 'void-breaker': 'Void Breaker' })[g] + ' 984'), true, g);
+  }
+  assert.equal(ladderRating(record(null, 'not-a-game', 'void'), 'not-a-game'), 1000, 'an unknown game is not counted');
+});

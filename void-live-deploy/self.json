@@ -476,6 +476,14 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T03:59:27Z",
+   "subject": "Verse Studio's first four games: Null Sweep, Merge Void, Dim the Void, Void Breaker"
+  },
+  {
+   "at": "2026-10-19T03:58:46Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
    "at": "2026-10-19T03:58:33Z",
    "subject": "Tests for the game kit and a map line for the art tools"
   },
@@ -546,14 +554,6 @@
   {
    "at": "2026-10-19T02:36:50Z",
    "subject": "wants: \"what needs built\" opens Verse's own list, not a Maslow essay"
-  },
-  {
-   "at": "2026-10-19T02:34:42Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"add task call"
-  },
-  {
-   "at": "2026-10-19T02:25:44Z",
-   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

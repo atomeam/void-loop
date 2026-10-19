@@ -5934,6 +5934,65 @@ try {
       && Array.isArray(kept) && kept.includes('help') && kept.includes('ask --model say something') && asked.some((a) => /^set a timer for 5 minutes=/.test(a)) && !B.errors.length,
       JSON.stringify({ opened: !!opened, help: help.slice(0, 80), read: read.slice(-160), errs, beforeModel, tabbed, upOnce, modelCalls, marked, kept, asked: asked.slice(-3), errors: B.errors }));
     await B.ctx.close(); }
+  // Verse Studio's first games (asked by Verse and the owner, 2026-10-19: "its own version of every game"; P2 is Verse): each is a card on the stage with Verse as player two,
+  // its rules in skills/<game>-rules.js (tested by tools/<game>.test.mjs); here the cards are driven like a person drives them
+  if (want("studio games: Null Sweep opens, flags and resets; Verse plays the same board and says why")) { const B = await fresh();
+    await B.ask('null sweep', 900);
+    const opened = await until(async () => B.p.$('.nsweep .ns-cell').catch(() => null), 6000);
+    const cells = await B.p.$$('.nsweep .ns-cell').then((l) => l.length).catch(() => 0);
+    await B.p.click('.nsweep .ns-cell[data-i="40"]'); await B.p.waitForTimeout(150);
+    const after = await B.p.$$eval('.nsweep .ns-cell', (l) => l.filter((b) => !/closed|flagged/.test(b.getAttribute('aria-label'))).length);
+    const closed = await B.p.$eval('.nsweep .ns-cell:not([disabled])', (b) => b.dataset.i).catch(() => null);
+    if (closed != null) await B.p.dispatchEvent('.nsweep .ns-cell[data-i="' + closed + '"]', 'contextmenu');
+    const flagged = closed != null ? await B.p.$eval('.nsweep .ns-cell[data-i="' + closed + '"]', (b) => b.getAttribute('aria-label')).catch(() => '') : '';
+    const verse = await until(async () => B.p.$eval('.nsweep-why', (e) => (/Verse \(\d+ of \d+ opened\): ./.test(e.textContent) ? e.textContent : null)).catch(() => null), 6000);
+    await B.p.click('.nsweep .nsweep-new'); await B.p.waitForTimeout(150);
+    const reset = await B.p.$$eval('.nsweep .ns-cell', (l) => l.filter((b) => /closed/.test(b.getAttribute('aria-label'))).length);
+    check('studio games: Null Sweep opens, flags and resets; Verse plays the same board and says why',
+      !!opened && cells === 81 && after >= 1 && /flagged/.test(flagged) && !!verse && reset === 81 && !B.errors.length, JSON.stringify({ cells, after, flagged, verse, reset, errors: B.errors }));
+    await B.ctx.close(); }
+  if (want("studio games: Merge Void slides with the keys, Verse plays beside you, and New game starts again")) { const B = await fresh();
+    await B.ask('merge void', 900);
+    const opened = await until(async () => B.p.$('.mvoid .mv-you').catch(() => null), 6000);
+    const count = () => B.p.$$eval('.mvoid .mv-you > div', (l) => l.filter((d) => d.textContent).length);
+    const start = await count();
+    await B.p.focus('.mvoid'); const seen = new Set(); for (const k of ['ArrowLeft', 'ArrowDown', 'ArrowRight', 'ArrowUp', 'ArrowLeft', 'ArrowDown']) { await B.p.keyboard.press(k); seen.add(await B.p.$$eval('.mvoid .mv-you > div', (l) => l.map((d) => d.textContent).join(','))); }
+    const verse = await until(async () => B.p.$eval('.mvoid .mv-vinfo', (e) => (/Verse · best \d+ · score \d+/.test(e.textContent) ? e.textContent : null)).catch(() => null), 4000);
+    const why = await until(async () => B.p.$eval('.mvoid-why', (e) => (/^Verse: slide /.test(e.textContent) ? e.textContent : null)).catch(() => null), 6000);
+    await B.p.click('.mvoid .mvoid-new'); await B.p.waitForTimeout(150);
+    const again = await count();
+    check('studio games: Merge Void slides with the keys, Verse plays beside you, and New game starts again',
+      !!opened && start === 2 && seen.size >= 3 && !!verse && !!why && again === 2 && !B.errors.length, JSON.stringify({ start, boards: seen.size, verse, why, again, errors: B.errors }));
+    await B.ctx.close(); }
+  if (want("studio games: Dim the Void is solvable by its own rules, a hint costs, and Verse plays beside you")) { const B = await fresh();
+    await B.ask('dim the void', 900);
+    const opened = await until(async () => B.p.$('.dvoid .dv-lamp').catch(() => null), 6000);
+    const lit = () => B.p.$$eval('.dvoid .dv-lamp', (l) => l.map((b) => (/: lit$/.test(b.getAttribute('aria-label')) ? 1 : 0)));
+    const board = await lit();
+    const D = await import(new URL('../void-live-deploy/skills/dim-void-rules.js', import.meta.url).href);
+    const sol = D.solve(board, D.N);
+    await B.p.click('.dvoid .dv-hint'); const hinted = await B.p.$eval('.dvoid .dv-lamp[style*="outline"]', (b) => +b.dataset.i).catch(() => -1);
+    const costed = await until(async () => B.p.$eval('.dvoid-status', (e) => (/ \+ 1 hint · par \d+/.test(e.textContent) || /1 hint/.test(e.textContent) ? e.textContent : null)).catch(() => null), 3000);
+    for (const i of sol) await B.p.click('.dvoid .dv-lamp[data-i="' + i + '"]');
+    const won = await until(async () => B.p.$eval('.dvoid-status', (e) => (/You put them all out/.test(e.textContent) ? e.textContent : null)).catch(() => null), 4000);
+    await B.p.click('.dvoid .dvoid-new'); await B.p.waitForTimeout(150);
+    const fresh2 = (await lit()).some(Boolean);
+    check('studio games: Dim the Void is solvable by its own rules, a hint costs, and Verse plays beside you',
+      !!opened && board.some(Boolean) && Array.isArray(sol) && sol.length >= 1 && sol.includes(hinted) && !!costed && !!won && fresh2 && !B.errors.length, JSON.stringify({ lit: board.filter(Boolean).length, par: sol && sol.length, hinted, costed, won, fresh2, errors: B.errors }));
+    await B.ctx.close(); }
+  if (want("studio games: Void Breaker draws its field, serves on the pointer and keeps score for both seats")) { const B = await fresh();
+    await B.ask('void breaker', 900);
+    const opened = await until(async () => B.p.$('.vbreak canvas').catch(() => null), 6000);
+    const before = await B.p.$eval('.vbreak-status', (e) => e.textContent).catch(() => '');
+    const box = await B.p.$eval('.vbreak canvas', (c) => { const r = c.getBoundingClientRect(); return { x: r.x, y: r.y, w: r.width, h: r.height }; });
+    await B.p.mouse.move(box.x + box.w / 2, box.y + box.h * 0.9); await B.p.mouse.move(box.x + box.w * 0.3, box.y + box.h * 0.9, { steps: 6 });
+    const playing = await until(async () => B.p.$eval('.vbreak-status', (e) => (/bricks left|win|draw/i.test(e.textContent) ? e.textContent : null)).catch(() => null), 4000);
+    await B.p.waitForTimeout(800);
+    const painted = await B.p.$eval('.vbreak canvas', (c) => { const d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data; let lit = 0; for (let i = 0; i < d.length; i += 40) if (d[i] + d[i + 1] + d[i + 2] > 120) lit++; return lit; });
+    const why = await B.p.$eval('.vbreak-why', (e) => e.textContent).catch(() => '');
+    check('studio games: Void Breaker draws its field, serves on the pointer and keeps score for both seats',
+      !!opened && /Move the pointer/.test(before) && !!playing && painted > 200 && /^Verse: /.test(why) && !B.errors.length, JSON.stringify({ before, playing, painted, why, errors: B.errors }));
+    await B.ctx.close(); }
   // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
   // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
   if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });
