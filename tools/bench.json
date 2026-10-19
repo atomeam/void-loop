@@ -6300,5 +6300,17 @@
   {"ask": "value this", "want": "skill:appraise"},
   {"ask": "appraise this coin", "want": "skill:appraise"},
   {"ask": "approve later: keep morning-digest running every 2 hours", "want": "skill:approve-card"},
-  {"ask": "approve later: keep the nightly-check automation running every day", "want": "skill:approve-card"}
+  {"ask": "approve later: keep the nightly-check automation running every day", "want": "skill:approve-card"},
+  {"ask": "play fireworks", "want": "skill:fireworks"},
+  {"ask": "play hanabi", "want": "skill:fireworks"},
+  {"ask": "let's play a co-op game", "want": "skill:fireworks"},
+  {"ask": "play poker", "want": "skill:poker"},
+  {"ask": "let's play poker", "want": "skill:poker"},
+  {"ask": "play texas holdem", "want": "skill:poker"},
+  {"ask": "show me your skill families", "want": "skill:family-health"},
+  {"ask": "family health", "want": "skill:family-health"},
+  {"ask": "how healthy are your skills", "want": "skill:family-health"},
+  {"ask": "show my recent asks as a card", "want": "skill:ask-clipboard"},
+  {"ask": "ask clipboard", "want": "skill:ask-clipboard"},
+  {"ask": "re-run the third recent ask", "want": "skill:ask-clipboard"}
 ]
