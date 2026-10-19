@@ -5561,7 +5561,8 @@ try {
         && /Skill stability: 1 skill promoted lately, 1 with 3 or more clean runs in a row: newone to checked .*4 clean runs in a row/.test(got.owner) && /entirely|whenever|novelty|score|proposing/.test(got.mark || '') && got.bloom === 'bloom' && got.bloomed === 'bloom' && /2 new skills/.test(got.text) && !got.injected && !H.errors.length,
       JSON.stringify({ got, errors: H.errors }));
     await H.ctx.close(); }
-  if (want("self card: root cause or surface, a toggle over what got built")) { const R = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+  // a last look newer than every build: the lead has nothing new, so all nine stay in "What got built" (a build the lead shows is not listed twice)
+  if (want("self card: root cause or surface, a toggle over what got built")) { const R = await fresh(() => { delete Navigator.prototype.serviceWorker; try { localStorage.setItem('a2m.void.self.last.v1', JSON.stringify({ at: '2026-10-19T00:00:00Z', built: 9, total: 12 })); } catch (_) {} });
     const rec = Array.from({ length: 9 }, (_, i) => ({ ask: 'ask ' + i + (i === 0 ? ' <b>x</b>' : ''), what: 'built ' + i, at: '2026-10-1' + (i % 9) + 'T00:00:00Z', times: 1, depth: i % 3 === 0 ? 'root' : i % 3 === 1 ? 'surface' : null }));
     await R.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-17T08:00:00Z', kind: 'daily', thoughts: 'thinking', asks: [] }], asks: [], follow: { total: 12, built: 9, asked: 12, recent: rec } })));
     await R.ask('what do you think of yourself?', 300); await until(async () => /What got built/.test(await R.page()), 6000); await R.p.evaluate(() => { document.querySelector('.vpage.on .vs-sec[data-sec=built]').open = true; }); // the block starts closed (owner's redesign)
@@ -5615,6 +5616,27 @@ try {
       got.heads.includes('Weakest operational area') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
       JSON.stringify({ got, errors: L.errors }));
     await L.ctx.close(); }
+  // never the same card twice (owner, 2026-10-19: "the whole card need to be different", "no repeats ever", "all cards should constantly update"; "since i last looked"
+  // reached the model, which made up news): "since i last looked" opens the self card; the second opening leads with "Since you last looked" and none of the words read
+  // before; while it is open it reads Verse again (every 5 s here) and redraws with what is new
+  if (want("self card never repeats")) { const N = await fresh(() => { delete Navigator.prototype.serviceWorker; window.__voidFreshMs = 5000; });
+    let gen = 0;
+    const entry = (g) => ({ at: '2026-10-19T1' + g + ':00:00Z', kind: 'daily', thoughts: 'Verse is a blank stage with one quiet input. Round ' + ['one', 'two', 'three'][g] + ' of my thinking is here.', weakest: 'Flat maps.', next_game: 'Backgammon', better: 'Read the ledger.', asks: [] });
+    const rec = (g) => Array.from({ length: g + 1 }, (_, i) => ({ ask: 'built ask ' + i, what: 'the build number ' + i + ' landed', at: '2026-10-19T1' + i + ':30:00Z', times: 1, depth: 'root' }));
+    await N.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [entry(gen)], asks: [], follow: { total: 10, built: 3 + gen, recent: rec(gen), asked: rec(gen) } })));
+    const read = () => N.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); if (!pg) return null; const first = pg.querySelector('.vs-sec');
+      return { lead: first && first.getAttribute('data-sec'), leadOpen: !!(first && first.open), head: (pg.querySelector('.vs-sec[data-sec=since] h3') || {}).textContent || '', text: pg.textContent, refreshed: pg.dataset.refreshed || '' }; });
+    await N.ask('since i last looked', 300); await until(async () => /What got built/.test(await N.page()), 6000);
+    const one = await read(), loop = await N.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').pop());
+    gen = 1; await N.ask('close', 300); await N.ask('what do you think of yourself?', 300); await until(async () => /Since you last looked/.test(await N.page()), 6000);
+    const two = await read();
+    gen = 2; const three = await until(async () => { const r = await read(); return r && r.refreshed && /Round three/.test(r.text) ? r : null; }, 14000).catch(() => null);
+    check('self card never repeats: "since i last looked" opens the self card (not the model) with the newest builds first; opened again it leads with "Since you last looked" (the counts that moved, the new build) and none of the sentences read before; open, it redraws by itself with the next round',
+      !!one && one.lead === 'since' && /Newest/.test(one.head) && /blank stage with one quiet input/.test(one.text) && /Round one/.test(one.text) && loop && loop.note === 'voice'
+        && !!two && two.lead === 'since' && two.leadOpen && /Since you last looked/.test(two.head) && /\+1 asks built/.test(two.text) && /build number 1 landed/.test(two.text) && !/blank stage with one quiet input/.test(two.text) && /Round two/.test(two.text) && !/Round one/.test(two.text)
+        && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
+      JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
+    await N.ctx.close(); }
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
@@ -5663,13 +5685,13 @@ try {
     await S.p.focus('.vpage.on .vs-sec[data-sec=growth] > summary'); await S.p.keyboard.press('Enter'); const shut = await S.p.$eval('.vpage.on .vs-sec[data-sec=growth]', (d) => d.open);
     check('void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind "show all N" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)',
       self.heads.includes('Weakest operational area') && self.heads.includes('Next targeted capability') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
-        && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 30' && self.before.exp === 'false' && self.after.built === 30 && self.after.exp === 'true' && self.back === 5
+        && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 27' && self.before.exp === 'false' && self.after.built === 27 && self.after.exp === 'true' && self.back === 5 // the newest 3 lead the card ("Newest"), so the list holds the other 27: no repeats (owner, 2026-10-19)
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
-        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 10 && !S.errors.length,
+        && self.len <= 8000 && self.note !== '' && !/^first/.test(self.note) && self.allAsks === 30 && self.detailNew && self.detailOld === 13 && !S.errors.length, // 10 older builds' details and the 3 the lead shows
       JSON.stringify({ self, opened, shut, errors: S.errors }));
-    check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed, a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
-      self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.length === 0 && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
+    check('void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse\'s words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, "the whole card need to be different"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px',
+      self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.join() === 'since' && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
         && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
     const honest = await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cite = pg.querySelector('section[data-sec=words] .vs-cite'), notes = [...pg.querySelectorAll('.vs-sec[data-sec=growth] .vs-note')].map((n) => n.textContent); return { cite: cite ? cite.textContent : '', notes, theatre: /My own words, kept as I said them/.test(pg.textContent) }; });

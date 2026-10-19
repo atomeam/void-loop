@@ -2659,6 +2659,8 @@ say('nothing selected to remove');
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
     function wantsVoice(lower) {
       const a = /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|(?:verse|void)'?s\s+|(?:verse|v01d)'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
+      // "since i last looked" (owner, 2026-10-19: it reached the model, which made up news on three topics): what changed on Verse, the card's "Since you last looked"
+      if (/^(?:so\s+)?(?:(?:what(?:'?s|\s+is|\s+has)?|anything)\s+(?:new|changed|different|happened)\s+)?since\s+(?:i|you)\s+(?:last\s+)?(?:looked|checked(?:\s+in)?|visited|came(?:\s+by)?|was\s+(?:here|last\s+here)|were\s+here)(?:\s+(?:at|on)\s+(?:you|verse|void))?\s*[?.!]*$/.test(lower)) return true;
       return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|verse'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d|verse)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d|verse)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d|verse)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b.*)\s*[?.!]*$/.test(lower);
     }
     async function showVoice(said) {
@@ -2673,9 +2675,20 @@ say('nothing selected to remove');
       // the card's body is structured blocks (lib/self-blocks.js): Verse's own words in the reading font, the changelog in monospace,
       // real headings, one bullet per ask; a failed import falls back to the plain sentence so the card never opens empty
       el.classList.add('vc-self');
-      const SB = await import('/lib/self-blocks.js').catch(() => null);
+      const [SB, fam0] = await Promise.all([import('/lib/self-blocks.js').catch(() => null), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null)).catch(() => null)]);
       if (vpageEl !== el) return;
-      let h = '<h2>What I think of myself</h2>' + (SB ? SB.selfHtml(SB.selfSections(v), esc) : '<p>' + esc((daily || build || {}).thoughts || '') + '</p>');
+      // never the same card twice (owner, 2026-10-19: "the whole card need to be different im sick of reading the same thing even when verse updates",
+      // "no repeats ever", "all cards should constantly update"): "Since you last looked" leads, from what this device kept the last time; every
+      // sentence of Verse's words read before on this device is left out (lib/self-blocks.js noRepeats); while the card is open it reads Verse
+      // again every minute and redraws when anything changed, against the same keepsakes, so what is being read does not vanish mid-read
+      const SEEN = 'a2m.void.self.seen.v1', LAST = 'a2m.void.self.last.v1';
+      const kept = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (_) { return d; } };
+      const seenAtOpen = new Set(kept(SEEN, [])), lastAtOpen = kept(LAST, null);
+      const bodyOf = (vv, fam) => { if (!SB) return '<p>' + esc((daily || build || {}).thoughts || '') + '</p>';
+        const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
+        bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc); };
+      let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
+      if (SB) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
@@ -2688,12 +2701,15 @@ say('nothing selected to remove');
       el.innerHTML = h + '<div data-v-pulse></div>' + (h.includes('data-v-conf') ? '' : '<div data-v-conf></div>') + '<div class="src">Source: my reflections · ' + when(list[0].at) + '</div>';
       mountCorrect(el, said); mountPulse(el);
       // the long lists show their newest five; "show all N" unfolds the rest (owner, 2026-10-18), and the Root cause / Surface filter keeps to that fold
+      const wire = () => {
       const fold = (ul) => { const all = ul.nextElementSibling && ul.nextElementSibling.matches('[data-v-more]') && ul.nextElementSibling.getAttribute('aria-expanded') === 'true', k = ul.dataset.depthOn || 'all'; let shown = 0;
         ul.querySelectorAll(':scope > li').forEach((li) => { const on = (k === 'all' || li.dataset.depth === k) && (all || shown < 5); if (on) shown++; li.hidden = !on; }); };
       el.querySelectorAll('[data-v-more]').forEach((b) => b.addEventListener('click', () => { const open = b.getAttribute('aria-expanded') !== 'true', n = b.dataset.n;
         b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'show the newest 5' : 'show all ' + n; const ul = b.previousElementSibling; if (ul) fold(ul); }));
       el.querySelectorAll('[data-v-depth]').forEach((b) => b.addEventListener('click', () => { const ul = el.querySelector('.v-built'); if (!ul) return;
         el.querySelectorAll('[data-v-depth]').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); ul.dataset.depthOn = b.dataset.vDepth; fold(ul); }));
+      };
+      wire();
       // the growth velocity keeps up (asked by Verse: "updating in real time"): while this card is open, a stage change (a build landing puts things on the
       // stage) reads /api/reflect again and redraws the week's line in place, at most once a minute (lib/self-blocks.js VELOCITY_EVERY); no timer, and
       // the listener lets go the first time it finds the card closed
@@ -2706,7 +2722,27 @@ say('nothing selected to remove');
         addEventListener('void:stage-change', onStage); }
       if (owner) talkBack(el, owner, list[0].at);
       // how sure I am of each skill (asked by Verse, twice): the colour of each skill's square is its rating, washed out when it has not been tested lately (lib/skill-confidence.js)
-      Promise.all([import('/lib/skill-confidence.js'), fetch('/skills/families.json').then((r) => (r.ok ? r.json() : null))]).then(([m, fam]) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
+      const conf = (fam) => import('/lib/skill-confidence.js').then((m) => { const slot = vpageEl === el && el.querySelector('[data-v-conf]'); if (slot && fam) slot.innerHTML = m.sureHtml(fam, Date.now(), esc); }).catch(() => {}); // void-review: ok: sureHtml (family bars and the strip) escapes every name with esc
+      conf(fam0);
+      let was = JSON.stringify([v, fam0]);
+      keepFresh(el, async () => {
+        const [nv, nf] = await Promise.all([fetch('/api/reflect', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null)), fetch('/skills/families.json', { cache: 'no-store' }).then((r) => (r.ok ? r.json() : null))]);
+        const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
+        if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
+        was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(nf || fam0); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
+        try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
+      });
+    }
+    // every data card keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): update() runs every
+    // ms while this card is the open one and the tab is visible, one at a time; the timer lets go the first time it finds the card closed
+    function keepFresh(el, update, ms = 60000) {
+      let busy = false;
+      const id = setInterval(async () => {
+        if (vpageEl !== el) return clearInterval(id);
+        if (busy || document.visibilityState !== 'visible') return;
+        busy = true; try { await update(); } catch (_) {} busy = false;
+      }, Math.max(5000, +window.__voidFreshMs || ms));
+      return id;
     }
     // "tell void what it got wrong": the form on the self card; a correction goes to the self family's own store, not the look's (lib/corrections.js)
     // the health pulse (asked by Verse): the latest incident, its commit and the families it maps to, read once when the card opens (no polling); the
@@ -4614,6 +4650,7 @@ say('nothing selected to remove');
             summon: summonThing,
             stage: stageApi,
             refreshThings: () => render(), // the 3D calendar redraws the stage card after an edit
+            keepFresh, // a data card re-reads its records while it is open (the wants card)
           };
           const who = skill.part ? (skill.part(lower0, text) || skill.name) : skill.name; // a family skill names the member that answers (lib/skill-family.js)
           say(/weather|place|map/.test(who) ? 'looking up' : who === 'translate' ? 'translating' : 'working');

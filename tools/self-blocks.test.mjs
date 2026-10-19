@@ -163,3 +163,58 @@ test('a built item does not repeat its words under "I asked:", and the facts the
   assert.ok(!html.includes('I asked:')); assert.ok(html.includes('What was built (2026-10-19):'));
   assert.ok(html.includes('<details class="vs-given" data-share-skip="1">'));
 });
+
+test('no repeats, ever (owner, 2026-10-19): a sentence of Verse\'s words is shown once on the card and never again once read on this device', async () => {
+  const { noRepeats, sentenceKey } = await import('../void-live-deploy/lib/self-blocks.js');
+  const canon = 'Verse is a blank stage with one quiet input where asks transform into skills [S1].';
+  const better = "Improve the stability of the stage family, the least proven [S3]. Lift the two weak shared libraries [S1]. (built 2026-10-19)";
+  const v = { entries: [{ kind: 'build', at: '2026-10-19T12:00:00Z', shipped: 'Browser suite', thoughts: canon + ' The newest thing is the suite fix [Just shipped].', better },
+    { kind: 'daily', at: '2026-10-19T08:00:00Z', thoughts: canon + ' I hold 302 skills [S3].', weakest: 'The stage is weakest.', next_game: 'Deep ocean floor.', better }] };
+  const secs = selfSections(v);
+  const { sections, shown, dropped } = noRepeats(secs);
+  const texts = sections.flatMap((s) => s.blocks.filter((b) => b.t === 'quote' || b.t === 'p').map((b) => b.text));
+  const all = texts.join(' ');
+  assert.equal((all.match(/blank stage with one quiet input/g) || []).length, 1, 'the canon once');
+  assert.equal((all.match(/Lift the two weak shared libraries/g) || []).length, 1, "What I'd add is not What should change again");
+  assert.ok(dropped >= 2 && shown.length >= 3);
+  assert.ok(!sections.find((s) => s.id === 'shipped') || sections.find((s) => s.id === 'shipped').blocks.every((b) => b.t !== 'p' || !/blank stage/.test(b.text)));
+  // the next opening on this device: everything read before is gone, and a section with nothing left to read goes with it
+  const again = noRepeats(selfSections(v), new Set(shown));
+  const left = again.sections.flatMap((s) => s.blocks.filter((b) => b.t === 'quote' || b.t === 'p'));
+  assert.equal(left.length, 0, JSON.stringify(left));
+  assert.ok(again.sections.some((s) => s.id === 'sure'), 'the family bars are data, not words: they stay');
+  assert.equal(sentenceKey("What I'd add: Lift it [S1]."), 'lift it');
+});
+
+test('"Since you last looked" leads the card: what was built, the counts that moved and new reflections since this device last opened it', async () => {
+  const { sinceSection, sinceMark, famCounts } = await import('../void-live-deploy/lib/self-blocks.js');
+  const now = Date.parse('2026-10-19T18:00:00Z');
+  const fam = { families: [{ skills: [{ tier: 'proven' }, { tier: 'tested' }] }, { skills: [{ tier: 'proven' }] }] };
+  assert.deepEqual(famCounts(fam), { skills: 3, proven: 2 });
+  const v = { entries: [{ at: '2026-10-19T17:00:00Z' }, { at: '2026-10-19T09:00:00Z' }], follow: { built: 210, total: 228, recent: [
+    { ask: 'Add a velocity indicator to the wants card', what: 'the wants card shows how fast asks become skills', at: '2026-10-19T17:30:00Z' },
+    { ask: 'old', what: 'old build', at: '2026-10-18T10:00:00Z' }] } };
+  const first = sinceSection(v, null, now, fam);
+  assert.equal(first.title, 'Newest'); assert.match(first.blocks[0].text, /first look/);
+  const last = { at: '2026-10-19T15:00:00Z', built: 208, total: 226, skills: 2, proven: 2 };
+  const s = sinceSection(v, last, now, fam);
+  assert.equal(s.title, 'Since you last looked'); assert.equal(s.open, true); assert.equal(s.count, '1 new');
+  assert.equal(s.blocks[0].text, '+2 asks built · +1 skills · 1 new reflection, since you looked 3 h ago.');
+  assert.equal(s.blocks[1].items.length, 1); assert.match(s.blocks[1].items[0].text, /wants card shows how fast/);
+  const still = sinceSection(v, { ...sinceMark(v, fam, now) }, now + 600000, fam);
+  assert.match(still.blocks[0].text, /^No new counts, since you looked 10 min ago\.$/); assert.match(still.blocks[1].text, /updates while it is open/);
+  assert.match(sectionHtml(s, (x) => String(x)), /<details class="vs-sec" data-sec="since" open>/);
+  // the count moved while no dated build is newer: it never says "nothing was built" under "+2 asks built"
+  const moved = sinceSection({ ...v, follow: { ...v.follow, recent: [] } }, last, now, fam);
+  assert.match(moved.blocks[0].text, /^\+2 asks built/); assert.ok(!moved.blocks.some((b) => /Nothing of mine was built/.test(b.text || '')));
+});
+
+test('selfCard: a build the lead shows is not listed again under "What got built" (no repeats ever)', async () => {
+  const { selfCard } = await import('../void-live-deploy/lib/self-blocks.js');
+  const recent = [0, 1, 2, 3].map((i) => ({ ask: 'ask ' + i, what: 'built ' + i, at: '2026-10-19T1' + i + ':00:00Z' }));
+  const v = { entries: [{ kind: 'daily', at: '2026-10-19T09:00:00Z', thoughts: 'One line of mine for the test.' }], follow: { total: 9, built: 4, recent, asked: recent } };
+  const { sections } = selfCard(v, { at: '2026-10-19T11:30:00Z', built: 2, total: 9 }, new Set(), Date.parse('2026-10-19T14:00:00Z'));
+  assert.equal(sections[0].id, 'since');
+  assert.deepEqual(sections[0].blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['built 2', 'built 3']);
+  assert.deepEqual(sections.find((s) => s.id === 'built').blocks.find((b) => b.t === 'list').items.map((it) => it.text), ['ask 0', 'ask 1']);
+});

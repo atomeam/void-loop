@@ -182,10 +182,89 @@ export function sectionHtml(s, esc) {
   // a titled section is a collapsible block whose heading (with its count) is the toggle (owner, 2026-10-18): <details> keeps it keyboard accessible
   // with no script, and its text stays in the saved card whether it is open or not; every block starts closed, so Verse's own words are read first
   if (!s.title) return '<section class="vs-sec' + (s.log ? ' vs-log' : '') + '" data-sec="' + esc(s.id) + '">' + body + '</section>';
-  return secOpen(s.id, s.title, esc, false, s.count, s.log) + body + '</details>';
+  return secOpen(s.id, s.title, esc, !!s.open, s.count, s.log) + body + '</details>';
 }
 /** a section heading: its title and, muted, its count ("6 waiting", "30 of 70 asks"). */
 export const secHead = (title, esc, count = '') => '<h3 class="vs-h">' + esc(title) + (count ? ' <span class="vs-n">(' + esc(count) + ')</span>' : '') + '</h3>';
 /** a titled collapsible block, opened (the page's own Correct me and Talk to me use it too); close it with '</details>'. */
 export const secOpen = (id, title, esc, open = false, count = '', log = false) => '<details class="vs-sec' + (log ? ' vs-log' : '') + '" data-sec="' + esc(id) + '"' + (open ? ' open' : '') + '><summary class="vs-sum">' + secHead(title, esc, count) + '</summary>';
 export const selfHtml = (sections, esc) => sections.map((s) => sectionHtml(s, esc)).join('');
+
+// No repeats, ever (owner, 2026-10-19: "the whole card need to be different im sick of reading the same thing even when verse updates", "no repeats ever").
+// The model opens nearly every reflection with the same canon ("Verse is a blank stage with one quiet input ...") and the card used to show
+// the build's words twice (the quotation and "On what just shipped") and its "What I'd add" again under "What should change". Every
+// sentence of Verse's words (quotations and paragraphs) is shown once on a card, and never again on this device once it was read: the
+// page keeps the keys of what it showed (localStorage) and passes them in as `seen`.
+/** a sentence's key: lower case, letters and digits only, without the fact tags or a "What I'd add:" lead. Pure. */
+export const sentenceKey = (s) => String(s || '').replace(/\[[^\]]{1,40}\]/g, ' ').replace(/^\s*what i'?d add:\s*/i, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+const splitSentences = (t) => String(t || '').split(/(?<=[.!?](?:\s*\[[^\]]{1,40}\])?(?:\s*\(built \d{4}-\d{2}-\d{2}\))?)\s+(?=[A-Z'‘"“])/).map((x) => x.trim()).filter(Boolean);
+/** the sections with every sentence of Verse's words that was shown before (in `seen`, or earlier on this card) taken out; a paragraph left
+ *  empty goes with its heading and its source note, a section left with nothing to read goes. Returns { sections, shown (new keys),
+ *  dropped (how many sentences were taken out) }. Pure: `seen` is not changed. */
+export function noRepeats(sections, seen = new Set()) {
+  const had = new Set(seen), shown = [];
+  let dropped = 0;
+  const keep = (text) => {
+    const lead = /^\s*What I'?d add:\s*/i.exec(text), parts = splitSentences(lead ? text.slice(lead[0].length) : text).filter((x) => {
+      const k = sentenceKey(x); if (k.length < 12) return true;
+      if (had.has(k)) { dropped++; return false; }
+      had.add(k); shown.push(k); return true;
+    });
+    return parts.length ? (lead ? lead[0] : '') + parts.join(' ') : '';
+  };
+  const out = [];
+  for (const s of sections || []) {
+    const blocks = [];
+    for (let i = 0; i < s.blocks.length; i++) {
+      const b = s.blocks[i];
+      if (b.t !== 'quote' && b.t !== 'p') { blocks.push(b); continue; }
+      const text = keep(b.text);
+      if (text) { blocks.push({ ...b, text }); continue; }
+      // the paragraph is gone: its heading just before it and its source note just after it go too
+      if (blocks.length && blocks[blocks.length - 1].t === 'sub') blocks.pop();
+      if (s.blocks[i + 1] && s.blocks[i + 1].t === 'note' && s.blocks[i + 1].tight) i++;
+    }
+    const reads = blocks.some((b) => b.t !== 'note' && b.t !== 'given');
+    if (reads) out.push({ ...s, blocks });
+  }
+  return { sections: out, shown, dropped };
+}
+
+/** "Since you last looked": what changed on Verse between two openings of the card on this device, from /api/reflect only. `last` is what
+ *  the page kept the last time ({ at, built, total, skills, proven }), null the first time; `fam` is skills/families.json (its counts) or
+ *  null. A section { id: 'since', title, open, blocks } that leads the card, so it is never the same card twice. Pure. */
+export function sinceSection(v, last, now = Date.now(), fam = null) {
+  const f = (v && v.follow) || {}, recent = Array.isArray(f.recent) ? f.recent : [];
+  const counts = famCounts(fam), lastAt = last && Date.parse(last.at);
+  const ago = (t) => { const m = Math.max(1, Math.round((now - t) / 60000)); return m < 60 ? m + ' min' : m < 2880 ? Math.round(m / 60) + ' h' : Math.round(m / 1440) + ' days'; };
+  const newer = lastAt > 0 ? recent.filter((r) => Date.parse(r.at) > lastAt) : recent.slice(0, 3);
+  const thoughts = lastAt > 0 ? ((v && v.entries) || []).filter((e) => Date.parse(e.at) > lastAt).length : 0;
+  const lines = [];
+  if (lastAt > 0) {
+    const d = (k, a, b) => (Number.isFinite(+a) && Number.isFinite(+b) && +a !== +b ? (+a > +b ? '+' : '') + (+a - +b) + ' ' + k : '');
+    const moved = [d('asks built', f.built, last.built), counts && d('skills', counts.skills, last.skills), counts && d('proven', counts.proven, last.proven)].filter(Boolean);
+    lines.push({ t: 'p', lead: true, text: (moved.length ? moved.join(' · ') : 'No new counts') + (thoughts ? ' · ' + thoughts + ' new reflection' + (thoughts === 1 ? '' : 's') : '') + ', since you looked ' + ago(lastAt) + ' ago.' });
+  } else lines.push({ t: 'p', lead: true, text: 'Your first look on this device. Next time this part says what changed since.' });
+  if (newer.length) lines.push({ t: 'list', cls: 'v-asks vs-since', items: newer.slice(0, 8).map((r) => ({ key: buildKey(r), text: sentence(r.what) ? shortLine(sentence(r.what)) : sentence(r.ask), open: false, sub: (r.at ? day(r.at) : '') + (r.ask ? ' · I asked: ' + shortLine(sentence(r.ask)) : '') })) });
+  else if (lastAt > 0 && !(+f.built > +last.built)) lines.push({ t: 'note', text: 'Nothing of mine was built since. I grow every 10 minutes; this card updates while it is open.' });
+  return { id: 'since', title: lastAt > 0 ? 'Since you last looked' : 'Newest', open: true, count: newer.length ? newer.length + ' new' : '', log: false, blocks: lines };
+}
+/** skills and proven skills from skills/families.json ({ families: [{ skills: [{ tier }] }] }), null when unreadable. Pure. */
+export function famCounts(fam) {
+  const fs = fam && Array.isArray(fam.families) ? fam.families : null;
+  if (!fs) return null;
+  let skills = 0, proven = 0;
+  for (const x of fs) { const list = Array.isArray(x.skills) ? x.skills : []; skills += list.length; proven += list.filter((s) => s && s.tier === 'proven').length; }
+  return skills ? { skills, proven } : null;
+}
+/** what the page keeps for the next "since you last looked". Pure. */
+export const sinceMark = (v, fam, now = Date.now()) => { const f = (v && v.follow) || {}, c = famCounts(fam) || {}; return { at: new Date(now).toISOString(), built: +f.built || 0, total: +f.total || 0, skills: c.skills || 0, proven: c.proven || 0 }; };
+/** the whole card body, never the same twice: "Since you last looked" first, then the sections, with the builds the lead already shows left out of
+ *  "What got built" and every sentence read before taken out (noRepeats). Returns { sections, shown }. Pure. */
+export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null) {
+  const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.map((it) => it.key)));
+  const f = v && v.follow, rest = f && Array.isArray(f.recent) ? { ...v, follow: { ...f, recent: f.recent.filter((r) => !lead.has(buildKey(r))) } } : v;
+  const r = noRepeats([since].concat(selfSections(rest, now)), seen);
+  return { sections: r.sections, shown: r.shown };
+}
+const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');
