@@ -6373,5 +6373,15 @@
   {"ask": "dim everything except the timer", "want": "skill:deep-work"},
   {"ask": "dependency health", "want": "skill:dependency-health"},
   {"ask": "show me the dependency health", "want": "skill:dependency-health"},
-  {"ask": "how healthy are your dependencies", "want": "skill:dependency-health"}
+  {"ask": "how healthy are your dependencies", "want": "skill:dependency-health"},
+  {"ask": "why is rust unwrap a risk", "want": "skill:technical-context"},
+  {"ask": "is unwrap risky in rust", "want": "skill:technical-context"},
+  {"ask": "technical context for unwrap", "want": "skill:technical-context"},
+  {"ask": "answer me in Spanish", "want": "skill:spanish"},
+  {"ask": "answer me in Spanish: what is a void", "want": "skill:spanish"},
+  {"ask": "reply in Spanish", "want": "skill:spanish"},
+  {"ask": "dependency map", "want": "skill:deps"},
+  {"ask": "show me the dependency map", "want": "skill:deps"},
+  {"ask": "what depends on lib/where.js", "want": "skill:deps"},
+  {"ask": "three drafts of we are late with the report", "want": "skill:draft-triad"}
 ]
