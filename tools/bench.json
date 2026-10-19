@@ -6325,5 +6325,15 @@
   {"ask": "cartoon version of a plague", "want": "skill:cartoon"},
   {"ask": "cartoon version of a shipwreck", "want": "skill:cartoon"},
   {"ask": "cartoon version of gg allin", "want": "skill:cartoon"},
-  {"ask": "map the scars of my decisions: moved to Berlin > rent is high, no car; hired Sam > payroll", "want": "skill:causal-scars"}
+  {"ask": "map the scars of my decisions: moved to Berlin > rent is high, no car; hired Sam > payroll", "want": "skill:causal-scars"},
+  {"ask": "show the countdown", "want": "skill:show-countdown"},
+  {"ask": "show countdown", "want": "skill:show-countdown"},
+  {"ask": "show the days until a date", "want": "skill:show-countdown"},
+  {"ask": "file this in the codex", "want": "skill:codex"},
+  {"ask": "what have I collected about space", "want": "skill:codex"},
+  {"ask": "what contradicts", "want": "skill:contradiction-lamp"},
+  {"ask": "which of my notes contradict each other", "want": "skill:contradiction-lamp"},
+  {"ask": "make a counter", "want": "skill:counter"},
+  {"ask": "count up", "want": "skill:counter"},
+  {"ask": "set the counter to 10", "want": "skill:counter"}
 ]
