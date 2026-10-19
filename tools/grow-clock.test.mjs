@@ -16,3 +16,12 @@ test('a step every 10 minutes for under the job timeout, then the next run start
   assert.doesNotMatch(y, /secrets\./); assert.match(y, /permissions:\n  actions: write\n/);
   assert.match(y, /group: grow-clock\n  cancel-in-progress: false/);
 });
+
+test('Verse\'s own commits reach the site: each workflow that pushes to main with the Actions token starts the deploy itself (a token push starts no workflow; 2026-10-19 its commits showed "no checks reported")', () => {
+  for (const f of ['grow-self.yml', 'propose-fix.yml']) {
+    const wf = readFileSync(new URL('../.github/workflows/' + f, import.meta.url), 'utf8');
+    const job = wf.slice(wf.lastIndexOf('permissions:'));
+    assert.match(job, /actions: write/, f + ': the committing job may start a workflow');
+    assert.match(wf, /git push -q origin HEAD:main[\s\S]{0,900}gh workflow run deploy\.yml --repo "\$\{\{ github\.repository \}\}" --ref main -f after_merge=true/, f + ': the deploy starts right after the push to main');
+  }
+});

@@ -105,3 +105,12 @@ test('a plan\'s designed outcome is not a failure either (the same card, later o
   const f = failuresOf('Commits: fdc826d3\nThe laptop task then fails loudly instead of overwriting the card.\nStep 2 makes it fail harmlessly either way.\nThe deploy will fail closed without the token.\nFAIL living arrows: lock it did nothing.\nverify-main failed on ecdfb6bb.');
   assert.deepEqual(f, ['FAIL living arrows: lock it did nothing.', 'verify-main failed on ecdfb6bb.']);
 });
+
+test('a short builder status update that links this repo\'s own pull request opens the reality card; an instruction about the link does not (owner, 2026-10-19: "i pasted yor reply got nothing but line")', async () => {
+  const { telemetryOf } = await import('../void-live-deploy/lib/telemetry.js');
+  for (const t of [
+    "Two more bot notices on [atomeam/void-loop#1176](https://github.com/atomeam/void-loop/pull/1176), neither actionable: Codex is out of credits, and CodeRabbit skips repos with fewer than 10 stars. The PR is still waiting on Verse's own review.",
+    "Nothing to act on in those PR notices: two are paid review bots out of credits, two are subscription confirmations. [atomeam/void-loop#1176](https://github.com/atomeam/void-loop/pull/1176) is waiting on Verse's own review, and I'll act on whatever that review finds.",
+  ]) { const r = telemetryOf(t); assert.ok(r, t.slice(0, 40)); assert.deepEqual(r.prs, ['1176']); assert.deepEqual(r.failures, []); }
+  for (const t of ['review this PR https://github.com/atomeam/void-loop/pull/1176 and tell me what is wrong with it', 'what does https://github.com/atomeam/void-loop/pull/1176 change in the self card?', 'see https://github.com/someone/else/pull/12 for the details of that change, thanks']) assert.equal(telemetryOf(t), null, t);
+});
