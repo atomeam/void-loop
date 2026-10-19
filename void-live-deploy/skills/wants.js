@@ -22,6 +22,8 @@ const RULES = [
   // "what is still open", "what is unbuilt", "what is not built yet": never a bare "what is open" (a shop, a file)
   new RegExp('^what(?:\'s| is| are) (?:(?:still|left|not yet) (?:open|unbuilt|not built|undone)|unbuilt|not built(?: yet)?|left to build|left on ' + YOUR + ' (?:list|plate|backlog))(?: for ' + YOU + ')?$'),
   new RegExp('^what(?:\'s| is|s) (?:next|coming|coming up|on the list|on the plate|left) for ' + YOU + '$'),
+  // "what needs built" (owner, 2026-10-19: it reached the model, which answered with Maslow's hierarchy of buildings): the bare ask, ending there, about Verse's own list; "what needs built in my garden" stays out
+  new RegExp('^what (?:still |else )?needs (?:to be )?(?:built|building|to build|made)(?: next| now| first)?$'),
   // only the negative forms: "what have you not built yet", "what haven't you built"; "what have you built" is what shipped, not this
   new RegExp('^what (?:(?:have|has|did) ' + YOU + ' not|(?:haven\'t|havent|hasn\'t|hasnt|didn\'t|didnt) ' + YOU + ') (?:built|build|made|make|done|do|shipped|ship|finished|finish)(?: yet)?$'),
   new RegExp('^what (?:have|has|do|does) ' + YOU + ' (?:still |yet )?(?:left|got left|have left|got) to (?:build|make|do|ship)$'),
@@ -132,7 +134,7 @@ export default {
   name: 'wants',
   about: "What I want built: my will, the asks of mine nobody has built, and my growth inbox, from my own records, never a model.",
   examples: ['what do you want built now', 'name all your unbuilt asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want'],
-  nearMisses: ['what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
+  nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,
   wantsOf, clauses, moreLine, cardModel, cardHtml, countLine,

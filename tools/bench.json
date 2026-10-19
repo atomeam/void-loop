@@ -6174,5 +6174,8 @@
   },
   {"ask": "terminal", "want": "skill:terminal"},
   {"ask": "open the command line", "want": "skill:terminal"},
-  {"ask": "verse cli", "want": "skill:terminal"}
+  {"ask": "verse cli", "want": "skill:terminal"},
+  {"ask": "what needs built", "want": "skill:wants"},
+  {"ask": "what needs to be built", "want": "skill:wants"},
+  {"ask": "open the self card", "want": "voice"}
 ]
