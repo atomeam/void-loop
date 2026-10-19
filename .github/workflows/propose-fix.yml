@@ -211,7 +211,7 @@ jobs:
           # the confidence gate (owner, 2026-10-16: "confidence > 0.8 might auto-merge, < 0.8 diff-preview for Adam"). A pull request cannot be opened
           # from here ("GitHub Actions is not permitted to create or approve pull requests", 2026-10-19: not one Verse fix ever reached main), and the
           # gates a pull request waited for already ran in the propose job (collisions, the skill's test, Verse's review, the benchmark): sure enough,
-          # the fix goes straight onto main like the site tester's commits, and the full browser suite on main runs after it; otherwise the branch
+          # the fix goes straight onto main like the site tester's commits and starts the deploy (its push starts nothing by itself); otherwise the branch
           # waits for the owner on GitHub
           gate=$(node -e 'const c = parseFloat(process.argv[1]); console.log(Number.isFinite(c) && c >= 0.8 ? "automerge" : "waits for owner")' "$CONFIDENCE")
           url=""
@@ -222,6 +222,8 @@ jobs:
             done
             [ -n "$url" ] || exit 1
             echo "### Verse's fix is on main: $url" >> "$GITHUB_STEP_SUMMARY"
+            # a push by this token starts no workflow: the fix reaches the site only when the deploy is started here (2026-10-19)
+            gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"
           else
             git push -q origin "$branch"
             url="https://github.com/${{ github.repository }}/compare/main...$branch"

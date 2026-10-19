@@ -946,3 +946,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-19T18:30:32Z | verse | grow | hardened itself: 8 benchmark ask(s) for media-pick, show, echo-chamber, eigenwork (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T18:50:21Z | verse | grow | hardened itself: 7 benchmark ask(s) for text-tools, rides, error-garden (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T18:51:34Z | verse | grow | hardened itself: 8 benchmark ask(s) for pulse, family-gravity, feud (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-19T21:41:39Z | claude | fix | Verse's own commits reach the site: grow-self and propose-fix push to main with the Actions token, which starts no workflow, so every growth step showed 'no checks reported' and waited for the next human merge to deploy; both now start the deploy after their push (deploys run one at a time, so a burst is one deploy)
