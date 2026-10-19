@@ -211,6 +211,7 @@ for (const [name, file] of [
   ['lacks', 'lacks.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
   ['what-skills', 'what-skills.test.mjs'],
+  ['reflect', 'reflect.test.mjs'],
   ['ledger-proof', 'ledger-proof.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
   ['churn', 'churn.test.mjs'],

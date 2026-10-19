@@ -232,3 +232,6 @@ jobs:
           title=$(gh api "repos/${{ github.repository }}/commits/$(git rev-parse HEAD)/pulls" --jq '[.[] | select(.merged_at != null)][0].title // empty' || true)
           [ -n "$title" ] || title=$(git log -1 --format=%s "$(git rev-parse -q --verify HEAD^2 || git rev-parse HEAD)")
           node tools/reflect.mjs --build "$title" | tee -a "$GITHUB_STEP_SUMMARY" || true
+          # the self card's own words (weakest, next game, how I'd get better) were refreshed once a day, so after a fix they still described the old problem:
+          # ask for the full reflection after a build too, at most every three hours so a burst of merges asks once
+          node tools/reflect.mjs --daily --if-older 180 | tee -a "$GITHUB_STEP_SUMMARY" || true

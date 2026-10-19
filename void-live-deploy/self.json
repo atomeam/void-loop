@@ -476,6 +476,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T02:47:19Z",
+   "subject": "The already-built card is combined by family, every row says something, and the descriptions refresh with every build"
+  },
+  {
    "at": "2026-10-19T02:43:17Z",
    "subject": "Regenerate after the merge"
   },
@@ -550,10 +554,6 @@
   {
    "at": "2026-10-18T18:24:00Z",
    "subject": "Review bench: the deploy action's defects as fixture cases"
-  },
-  {
-   "at": "2026-10-18T18:23:06Z",
-   "subject": "Review bench fixture: the deploy action's index.ts (the owner's own repo, MIT), added alone so the bench can review it as a commit"
   }
  ],
  "builders": {

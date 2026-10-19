@@ -54,3 +54,54 @@ test('a check that cannot be set up skips and never blocks the merge; the worktr
   assert.equal(out.state, 'skip');
   assert.ok(r.calls.some((c) => c[1] === 'worktree' && c[2] === 'remove'));
 });
+
+import { missingDeclared } from './skill-safety.mjs';
+const SDK = "Error [ERR_MODULE_NOT_FOUND]: Cannot find package '@anthropic-ai/sdk' imported from /w/tools/claude-brain.mjs";
+
+test('missingDeclared: only a package the repo declares is an environment gap; one it does not is the PR\'s own mistake', () => {
+  const pkg = { dependencies: { '@anthropic-ai/sdk': '1' }, devDependencies: { 'playwright-core': '1' } };
+  assert.deepEqual(missingDeclared(SDK, pkg), ['@anthropic-ai/sdk']);
+  assert.deepEqual(missingDeclared("Cannot find package 'left-pad' imported from x", pkg), []);
+  assert.deepEqual(missingDeclared(SDK + '\n' + SDK, pkg), ['@anthropic-ai/sdk'], 'once');
+  assert.deepEqual(missingDeclared('not ok 1 - a real failure', pkg), []);
+  assert.deepEqual(missingDeclared(SDK, null), []);
+});
+
+function installRig({ firstFails = true, afterInstall = 'pass', installFails = false } = {}) {
+  const calls = []; let installed = false;
+  const run = (cmd, args) => {
+    calls.push([cmd, ...args]);
+    if (cmd === 'npm') { if (installFails) throw Object.assign(new Error('x'), { stderr: 'npm ERR! network' }); installed = true; return ''; }
+    if (cmd === 'node') {
+      if (!installed && firstFails) throw Object.assign(new Error('x'), { stdout: SDK, stderr: '' });
+      if (installed && afterInstall === 'fail') throw Object.assign(new Error('x'), { stdout: 'not ok 1 - the real failure\n', stderr: '' });
+    }
+    return '';
+  };
+  return { calls, run, gh: (p) => (/\/files/.test(p) ? [{ filename: 'void-live-deploy/skills/merges.js' }] : []) };
+}
+const PKG = () => ({ dependencies: { '@anthropic-ai/sdk': '1' } });
+
+test('a test that cannot load a declared package passes once the dependencies are installed, and the install runs once, without scripts', () => {
+  const r = installRig(), out = safety(r.run, r.gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T, pkg: PKG });
+  assert.equal(out.state, 'pass'); assert.match(out.why, /after installing dependencies/);
+  const installs = r.calls.filter((c) => c[0] === 'npm'); assert.equal(installs.length, 1);
+  assert.deepEqual(installs[0], ['npm', 'ci', '--ignore-scripts', '--no-audit', '--no-fund']);
+});
+
+test('a failure that survives the install is the PR\'s: it is held and the comment is made', () => {
+  const r = installRig({ afterInstall: 'fail' }), out = safety(r.run, r.gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T, pkg: PKG });
+  assert.equal(out.state, 'fail');
+  assert.ok(r.calls.some((c) => c[0] === 'gh' && c.includes('POST')));
+});
+
+test('if the install itself fails the check cannot judge: it skips, it never holds a merge for that', () => {
+  const r = installRig({ installFails: true }), out = safety(r.run, r.gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T, pkg: PKG });
+  assert.equal(out.state, 'skip'); assert.match(out.why, /could not be installed/);
+  assert.ok(!r.calls.some((c) => c[0] === 'gh'));
+});
+
+test('a package the repo does not declare is still a failure, with no install tried', () => {
+  const r = installRig(), out = safety(r.run, r.gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T, pkg: () => ({}) });
+  assert.equal(out.state, 'fail'); assert.ok(!r.calls.some((c) => c[0] === 'npm'));
+});
