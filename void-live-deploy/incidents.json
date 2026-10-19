@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-19T22:26:56.517Z",
-   "sha": "e88b5290603a2159d998e90065e16ced1f9d9b98",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39331451764",
+   "at": "2026-10-19T22:27:17.090Z",
+   "sha": "c1857d934b3ea30cfb0cbaa5ac499b72d576de19",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39331588560",
    "suite": "browser suite on main",
    "checks": [
     "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
@@ -29,11 +29,10 @@
     "paid: the tier comes from the server; only \"paid\" counts (anything else reads as free)"
    ],
    "touched": [
+    ".github/workflows/grow-self.yml",
+    ".github/workflows/propose-fix.yml",
     "domains/void.agents.log.md",
-    "tools/telemetry-route.test.mjs",
-    "void-live-deploy/lib/telemetry.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
+    "tools/grow-clock.test.mjs",
     "void-live-deploy/void.growth.json"
    ]
   },
