@@ -217,6 +217,7 @@ for (const [name, file] of [
   ['bench-concurrency', 'bench-concurrency.test.mjs'],
   ['lacks', 'lacks.test.mjs'],
   ['game-kit', 'game-kit.test.mjs'],
+  ['studio-skills', 'studio-skills.test.mjs'],
   ['grow-self', 'grow-self.test.mjs'],
   ['art-score', 'art-score.test.mjs'],
   ['art-pixels', 'art-pixels.test.mjs'],
