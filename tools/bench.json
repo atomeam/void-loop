@@ -6467,5 +6467,15 @@
   {"ask": "set my ambition temperature for the book, hot 5 days, cool 10 days, keep 2", "want": "skill:anneal-ambition"},
   {"ask": "incident autopsy", "want": "skill:incident-autopsy"},
   {"ask": "which skill family is unhealthy", "want": "skill:incident-autopsy"},
-  {"ask": "autopsy of the failed suites", "want": "skill:incident-autopsy"}
+  {"ask": "autopsy of the failed suites", "want": "skill:incident-autopsy"},
+  {"ask": "add task call mum friday high priority 30 min", "want": "skill:task-board"},
+  {"ask": "task board", "want": "skill:task-board"},
+  {"ask": "today's tasks", "want": "skill:task-board"},
+  {"ask": "packing list for a beach trip", "want": "skill:template-list"},
+  {"ask": "packing list template", "want": "skill:template-list"},
+  {"ask": "travel checklist for Tokyo", "want": "skill:template-list"},
+  {"ask": "plant my mistake: I sent the email before checking it", "want": "skill:error-garden"},
+  {"ask": "invite someone", "want": "skill:invite"},
+  {"ask": "invite a friend", "want": "skill:invite"},
+  {"ask": "invite someone into my Verse", "want": "skill:invite"}
 ]
