@@ -1568,7 +1568,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 0,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/ground.js",
