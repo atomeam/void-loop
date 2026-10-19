@@ -476,6 +476,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T05:00:05Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"dim the void\""
+  },
+  {
+   "at": "2026-10-19T04:58:49Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:50:06Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:44:02Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:32:30Z",
+   "subject": "The four studio games say Verse: Merge Verse, Dim the Verse, Verse Breaker"
+  },
+  {
+   "at": "2026-10-19T04:29:14Z",
+   "subject": "Incident: the browser suite failed on 8a1d83d3 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-19T04:25:49Z",
    "subject": "Incident: the browser suite failed on b1125d44 (void-live-deploy/incidents.json)"
   },
@@ -530,30 +554,6 @@
   {
    "at": "2026-10-19T03:52:29Z",
    "subject": "Card art floors rise in the daily run, and the infrastructure is tested end to end"
-  },
-  {
-   "at": "2026-10-19T03:19:42Z",
-   "subject": "Card art measured (source and pixels), the benchmark keeps its record, and four games' rules: Null Sweep, Merge Void, Dim the Void, Void Bre"
-  },
-  {
-   "at": "2026-10-19T03:03:41Z",
-   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:58:18Z",
-   "subject": "The reflection refresh is a status readout: objective question, objective labels, and a guard"
-  },
-  {
-   "at": "2026-10-19T02:56:51Z",
-   "subject": "A commit that carries a conflict marker is refused (pre-commit hook), not only a push"
-  },
-  {
-   "at": "2026-10-19T02:56:24Z",
-   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:55:38Z",
-   "subject": "Keep both sides of the merge in MAP.md and checks.mjs (markers had been committed; never pushed)"
   }
  ],
  "builders": {

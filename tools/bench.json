@@ -6192,5 +6192,11 @@
   {"ask": "verse breaker", "want": "skill:void-breaker"},
   {"ask": "play merge verse", "want": "skill:merge-void"},
   {"ask": "dim the verse", "want": "skill:dim-void"},
-  {"ask": "let's play verse breaker", "want": "skill:void-breaker"}
+  {"ask": "let's play verse breaker", "want": "skill:void-breaker"},
+  {"ask": "whats good?", "want": "said|self|hello"},
+  {"ask": "what's good", "want": "said|self|hello"},
+  {"ask": "how's life", "want": "said|self|hello"},
+  {"ask": "proofread: teh cat sat sat on the mat", "want": "skill:writing-aids"},
+  {"ask": "fix the grammar in: he recieve it alot", "want": "skill:writing-aids"},
+  {"ask": "turn this into a thread: One thing happened. Then another thing happened.", "want": "skill:writing-aids"}
 ]

@@ -100,8 +100,8 @@
    "count": {
     "experiment": 1,
     "tested": 10,
-    "checked": 7,
-    "proven": 10
+    "checked": 6,
+    "proven": 11
    },
    "from": 138,
    "to": 166
@@ -3044,11 +3044,13 @@
    "line": "One stage card with a mode for each small text tool: \"shorten this: ...\", \"bulletize this paragraph: ...\", \"numbered steps from: ...\", \"sentence case: ...\"…",
    "examples": [
     "writing aids",
-    "shorten this: In order to finish the report I basically just need to check the numbers",
-    "bulletize this paragraph: We met on Monday. The plan changed."
+    "proofread: teh cat sat sat on the mat",
+    "turn this into a thread: One thing happened. Then another thing happened."
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 164
   },
   {
