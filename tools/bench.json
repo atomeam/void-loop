@@ -6177,5 +6177,16 @@
   {"ask": "verse cli", "want": "skill:terminal"},
   {"ask": "what needs built", "want": "skill:wants"},
   {"ask": "what needs to be built", "want": "skill:wants"},
-  {"ask": "open the self card", "want": "voice"}
+  {"ask": "open the self card", "want": "voice"},
+  {"ask": "null sweep", "want": "skill:null-sweep"},
+  {"ask": "play minesweeper", "want": "skill:null-sweep"},
+  {"ask": "sweep the void", "want": "skill:null-sweep"},
+  {"ask": "merge void", "want": "skill:merge-void"},
+  {"ask": "play 2048", "want": "skill:merge-void"},
+  {"ask": "sliding tiles", "want": "skill:merge-void"},
+  {"ask": "dim the void", "want": "skill:dim-void"},
+  {"ask": "play lights out", "want": "skill:dim-void"},
+  {"ask": "void breaker", "want": "skill:void-breaker"},
+  {"ask": "brick breaker", "want": "skill:void-breaker"},
+  {"ask": "play breakout", "want": "skill:void-breaker"}
 ]
