@@ -50,10 +50,12 @@ export async function letsGo(file, ask) {
   catch (e) { return 'the edited skill did not load: ' + e.message; }
 }
 
+/** The job's state after an attempt: 'done' when the fix passed (its pull request carries it), 'failed' when a step stopped it. Pure. */
+export const stateFor = (result) => (result && result.passed ? 'done' : 'failed');
 /** The queue note after an attempt: which step stopped it, or where the fix went; counts and step names only. */
 export function noteFor(result) {
   if (result.passed) return 'Verse proposed a fix that passed ' + stepsFor(result.mode).join(', ') + ' (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ' in skills/' + result.skill + '.js); see the pull request labelled "made by Verse"';
-  return 'Verse proposed a fix (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ') that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '; a builder takes it from here';
+  return 'Verse proposed a fix (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ') that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '';
 }
 
 const run = (cmd, args, opts = {}) => spawnSync(cmd, args, { cwd: root, encoding: 'utf8', timeout: opts.timeout || 600000, env: { ...process.env, ...(opts.env || {}) }, maxBuffer: 64 * 1024 * 1024 });
@@ -122,7 +124,9 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   // the tree is left as it was either way; the patch carries the change to the write job
   if (committed) run('git', ['reset', '-q', '--hard', 'HEAD~1']); else run('git', ['checkout', '--', 'void-live-deploy/skills/' + miss.skill + '.js']);
   writeFileSync(join(outDir, 'propose-fix.json'), JSON.stringify(result, null, 1));
-  if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
+  // the job leaves the open list either way (2026-10-19: a failed job stayed queued, so every run took the same one again and the open
+  // limit kept new misses out; nothing grew for days): done when its pull request is up, failed with the step that stopped it otherwise
+  if (job && !dry) { try { await api('/api/queue', 'PATCH', { id: job.id, state: stateFor(result), note: noteFor(result).slice(0, 300) }); } catch (e) { console.error('propose-fix: the job note was not written: ' + e.message); } }
   // one record in Verse's probe ledger (lib/probe-log.js): the skill, the line changes, Verse's confidence and what came of it, never the ask
   if (job && !dry) { try { await api('/api/probe-log', 'POST', { kind: 'fix', skill: result.skill, edits: result.edits, confidence: result.confidence, passed: result.passed, failed: result.failed }); } catch (e) { console.error('propose-fix: the probe ledger was not written: ' + e.message); } }
   console.log('### Verse proposed a fix for its ' + miss.skill + ' skill\n\n| What | |\n|:--|:--|\n| the ask | "' + miss.ask + '" (wanted ' + miss.want + ') |\n| line changes | ' + result.edits + (result.evidence.length ? ' (' + whereOf(result.evidence) + ')' : '') + ' |\n| Verse\'s confidence | ' + (result.confidence ?? '—') + ' |\n| risk | ' + result.risk.level + ' (' + result.risk.why + ') |\n| brain | ' + (result.model || brain) + (result.cost != null ? ' ($' + result.cost + ' this run)' : '') + ' |\n| why, in Verse\'s words | ' + (result.why || '—') + ' |\n| result | ' + (result.passed ? 'passed ' + stepsFor(result.mode).join(', ') + (result.bench ? ' (' + result.bench.score + '/' + result.bench.total + ')' : '') : 'failed at ' + result.failed + (result.detail ? ': ' + result.detail : '')) + ' |');

@@ -103,7 +103,7 @@ test('the tool: the oldest open probe: job, the skill\'s own asks replayed with 
   const bench = [{ ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }, { ask: '15% of 80', want: 'calc' }, { ask: 'Opposite of brave', want: 'skill:words' }];
   assert.deepEqual(regressionAsks({ ask: 'opposite of brave', want: 'skill:words' }, bench, 'words'), [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'rhymes with orange', want: 'skill:words' }, { ask: 'a word for happy', want: 'skill:words|skill:define|answer' }]);
   assert.match(noteFor({ passed: true, edits: 2, skill: 'words' }), /passed collisions, unit test, void review, benchmark \(2 line changes in skills\/words\.js\); see the pull request labelled "made by Verse"/);
-  assert.match(noteFor({ passed: false, edits: 1, failed: 'benchmark', detail: '2 of 48 missed' }), /failed at: benchmark \(2 of 48 missed\); a builder takes it from here/);
+  assert.match(noteFor({ passed: false, edits: 1, failed: 'benchmark', detail: '2 of 48 missed' }), /failed at: benchmark \(2 of 48 missed\)$/);
   assert.deepEqual(STEPS, ['collisions', 'lets go', 'unit test', 'void review', 'benchmark']);
   assert.match(noteFor({ passed: true, edits: 1, skill: 'automation-fix', mode: 'narrow' }), /passed collisions, lets go, unit test, void review, benchmark/);
   // a routing correction: the oldest route: job is picked like a probe, and the bench replays only what the skill should keep
@@ -171,4 +171,10 @@ test('a missed ask the router says a skill should have caught is a propose-fix j
   assert.deepEqual(jobAsk(q.items[0]), { ask: 'cab to oakland', skill: 'rides', want: 'skill:rides', mode: 'learn' });
   assert.equal(jobAsk(q.items[1]), null);
   assert.equal(pickJob(q, '', () => true).id, 'm1'); assert.equal(pickJob({ items: [q.items[1]] }, '', () => true), null);
+});
+
+test('a job leaves the open list after an attempt: done when its fix passed, failed (with the step) when it did not, so the next one gets its turn (2026-10-19)', async () => {
+  const { stateFor, noteFor } = await import('./propose-fix.mjs');
+  assert.equal(stateFor({ passed: true }), 'done'); assert.equal(stateFor({ passed: false, failed: 'benchmark' }), 'failed');
+  assert.match(noteFor({ passed: false, failed: 'benchmark', edits: 1, detail: '1 of 1 missed' }), /failed at: benchmark \(1 of 1 missed\)$/);
 });
