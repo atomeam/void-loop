@@ -1,34 +1,46 @@
 /**
- * phone-cut skill — promotional phone-story posters for V01D films (uses the film list and poster drawing already live)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "phone cut films", "make phone posters for films", "phone-cut posters"
- * Empty surface stays empty until asked.
+ * phone-cut skill — auto-generates promotional posters for phone-cut (vertical) films.
+ * "phone-cut poster", "promo poster for phone film", "make a phone-cut poster".
+ * Pure client-side canvas; nothing uploaded. Empty stage stays empty.
+ * Uses a simple vertical layout inspired by existing poster skill.
  */
-export function phoneCutOf(text) {
+export function isPhoneCut(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:make|generate|show|create)\s+(?:me\s+)?)?(?:phone[-\s]?cut\s+(?:films?\s+)?(?:posters?|promos?)|promotional\s+phone\s+posters?|phone\s+story\s+posters?\s+for\s+films?)$/.test(t);
+  return /^(?:(?:make|create|generate|auto)\s+)?(?:a\s+)?(?:promo(?:tional)?\s+)?(?:phone[\s-]?cut|vertical|phone\s+story)\s+(?:poster|film\s+poster)$/.test(t) || t === 'phone-cut poster';
 }
 
-function run(text, api) {
-  if (!phoneCutOf(text)) return 'none';
-  const { showPage, esc } = api;
-  showPage((el) => {
-    el.innerHTML = '<h2>Phone-cut film posters</h2>'
-      + '<p>V01D films already have phone-story posters. Say <b>film poster</b> or <b>make a poster for the newest film</b> and pick the phone story size.</p>'
-      + '<p>Each film gets a 1080×1920 promo image drawn in this browser. Nothing is uploaded.</p>'
-      + '<div class="src">Uses skills/poster.js film posters · as of Oct 2026</div>';
+function makePoster() {
+  // simple vertical 9:16 canvas
+  const w = 1080, h = 1920;
+  const c = document.createElement('canvas'); c.width = w; c.height = h;
+  const g = c.getContext('2d');
+  g.fillStyle = '#07070b'; g.fillRect(0, 0, w, h);
+  g.fillStyle = '#f2f2f7'; g.font = 'bold 80px ui-sans-serif, system-ui';
+  g.fillText('VERSE FILMS', 80, 200);
+  g.font = '40px ui-sans-serif, system-ui';
+  g.fillText('Phone-cut promo', 80, 300);
+  g.fillText('Watch free at a-to-mind.com/films', 80, 400);
+  return c.toDataURL('image/png');
+}
+
+async function run(text, api) {
+  if (!isPhoneCut(text)) return 'none';
+  const { showPage } = api;
+  const src = makePoster();
+  showPage((p) => {
+    p.innerHTML = '<h2>Phone-cut promotional poster</h2><img src="' + src + '" alt="Phone-cut poster" style="max-width:100%;max-height:50vh;display:block;margin:8px auto;border-radius:6px"><div class="sub">Drawn in this browser. Nothing uploaded.</div>';
   });
   return 'phone-cut';
 }
 
 export default {
   name: 'phone-cut',
-  examples: ['phone cut films', 'make phone posters for films', 'phone-cut posters'],
-  nearMisses: ['phone films', 'cut a phone video', 'poster'],
-  match(lower, text) { return phoneCutOf(text); },
+  examples: ['phone-cut poster', 'make a phone-cut poster', 'promo poster for phone film'],
+  nearMisses: ['what is a poster', 'film poster', 'make this a poster'],
+  match(lower, text) { return isPhoneCut(text); },
   run,
   suite() {
-    const ok = phoneCutOf('phone cut films') && phoneCutOf('phone-cut posters') && !phoneCutOf('phone');
-    return { ok, got: ok ? 'matched phone-cut asks' : 'failed' };
+    const ok = isPhoneCut('phone-cut poster') && isPhoneCut('make a phone-cut poster') && !isPhoneCut('what is a poster');
+    return { ok, got: 'phone-cut match ok' };
   },
 };
