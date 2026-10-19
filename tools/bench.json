@@ -6443,5 +6443,14 @@
   {"ask": "bring the crowd in", "want": "skill:crowd"},
   {"ask": "fringe to skill", "want": "skill:fringe-to-skill"},
   {"ask": "which skills came from the fringe", "want": "skill:fringe-to-skill"},
-  {"ask": "what did the fringe experiments teach", "want": "skill:fringe-to-skill"}
+  {"ask": "what did the fringe experiments teach", "want": "skill:fringe-to-skill"},
+  {"ask": "habit ring for write, walk, sleep", "want": "skill:habit-ring"},
+  {"ask": "habit rings for read and stretch", "want": "skill:habit-ring"},
+  {"ask": "show the minimap", "want": "skill:minimap"},
+  {"ask": "hide the minimap", "want": "skill:minimap"},
+  {"ask": "minimap", "want": "skill:minimap"},
+  {"ask": "cook pasta: boil 10 min then rest 2", "want": "skill:recipe-stack"},
+  {"ask": "make rice: simmer 15 min then rest 5 min", "want": "skill:recipe-stack"},
+  {"ask": "clean this feedback: You always miss the deadline. The login page is brilliant. | work: login page deadline", "want": "skill:gauge-feedback"},
+  {"ask": "clean this feedback you never test the checkout flow", "want": "skill:gauge-feedback"}
 ]
