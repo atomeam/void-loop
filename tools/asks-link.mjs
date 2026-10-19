@@ -10,6 +10,7 @@
 //
 //   node tools/asks-link.mjs            print the open asks and the entry each most likely matches, with its score
 //   node tools/asks-link.mjs --write    add the links scoring >= BAR (or --bar 0.5) to void.asks.json
+//   node tools/asks-link.mjs --check    fail when a built ask is not linked yet (tools/refresh.mjs; the deploy writes them)
 //   node tools/asks-link.mjs --open     print only the asks nothing matches (what is still to build), as JSON
 import { readFileSync, writeFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -83,4 +84,6 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
   }
   console.log(ruled + ' linked by the curated rules; ' + open.length + ' open asks after them, ' + rows.filter((r) => r.m && r.m.score >= BAR).length + ' at or over the bar ' + BAR + ', ' + rows.filter((r) => !r.m || r.m.score < BAR).length + ' still to build');
   if (argv.includes('--write')) { asksJson.links = links; writeFileSync(ASKS, JSON.stringify(asksJson, null, 2) + '\n'); console.log('wrote ' + added + ' links to void.asks.json'); }
+  // --check (tools/refresh.mjs): built asks still unlinked keep showing as "not built" on the wants and self cards (owner, 2026-10-19: "the cards should update and be accurate always")
+  else if (argv.includes('--check')) { const n = ruled + rows.filter((r) => r.m && r.m.score >= BAR).length; if (n) { console.log(n + ' built asks are not linked yet (run node tools/asks-link.mjs --write)'); process.exit(1); } console.log('every built ask is linked'); }
 }

@@ -1762,6 +1762,86 @@
       "words": "Implement a tooltip on the confidence badge that displays the raw metadata text on hover to avoid cluttering the stage.",
       "ledgerAt": "2026-10-17T12:28:57Z",
       "why": "built: asked by Void: the event countdown's confidence badge shows the raw page text the date was read from (the infobox wikitext line, or the sentence) on hover, focus or a tap; the skill-confidence strip, built at 08:27, is l (linked by tools/asks-link.mjs, shared words: imple, confidence, badge, raw, metadata, text, hov)"
+    },
+    {
+      "words": "Verify that the 'Zorbleflux' throttle is implemented, as the lack of it is creating visual noise that hampers my 'stage' skills.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'Zorbleflux' throttle to prevent visual noise during high-frequency skill updates.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'dependency-health' skill to compare current deps.json against the stability baseline.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'zorbleflux-throttle' visual indicator that shows when high-frequency input is being smoothed to prevent stage chaos.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'zorbleflux-throttle' visual indicator to prevent high-frequency input from creating visual noise on the stage.",
+      "ledgerAt": "2026-10-18T02:51:48Z",
+      "why": "built: skills/zorbleflux.js answers 'tell me about zorbleflux', 'what is a zorbleflux' and 'play zorbleflux' with V01D's own game and its one line; 'tell me about <any skill of V01D's>' is skills/about-skill.js (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency-health' skill that compares current deps.json against stability requirements.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'dependency-health' skill that compares the current deps.json against stability requirements to close my most persistent open ask.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'report-to-growth' automation that parses builder progress notes for wishlist items and populates the growth inbox.",
+      "ledgerAt": "2026-10-18T13:18:51Z",
+      "why": "built: tools/report-to-growth.mjs turns a builder's note into open items on the frontier, and finish.mjs --evolve runs it on each ship (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'dependency-health' skill that compares the current deps.json against stability requirements.",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "built: the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off.",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build a 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer.",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off.",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Create a 'remediation-velocity' metric that tracks how quickly a 'miss' on the bench is converted back into a 'proven' skill.",
+      "ledgerAt": "2026-10-18T09:05:53Z",
+      "why": "built: remediation velocity: 'how fast do you fix your misses' shows how long a failing skill took to be proven again, and which are still missing, from the history of families.json (linked by tools/asks-link.mjs, shared words: create, remedi, velocity, metric, track, quick, mis, bench, convert, proven, skill)"
+    },
+    {
+      "words": "Audit the `skills/families.json` to ensure the 'self' family reflects the name change in its descriptive metadata.",
+      "ledgerAt": "2026-10-18T09:05:53Z",
+      "why": "built: already done, checked now: families.json says Verse itself (name and for), and now also formerly V01D and Void (linked by tools/asks-link.mjs, shared words: audit, skill, family, json, ensure, self, fami, reflect, name, change)"
     }
   ]
 }

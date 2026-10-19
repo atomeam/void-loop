@@ -43,12 +43,23 @@ export function relatedAsks(card) {
   return out.slice(0, 4);
 }
 
-/** The block above the summary: Verse's take (a few sentences, plain text) and what Verse can do about it. */
+/** a take worth showing, or '': never the model's own working ("analysis The user wants a summary…", the Tile card, 2026-10-19), never a reply that
+ *  loops on itself, never the model's "NONE" (it had nothing solid to add). Pure; the answer engine runs it before caching and the page again on a cached one. */
+export function cleanTake(take) {
+  const t = String(take || '').replace(/\s+/g, ' ').trim();
+  if (!t || /^none\.?$/i.test(t)) return '';
+  if (/^(?:analysis|thinking|reasoning)\b|\bthe user (?:wants|asks|is asking|asked|would like)\b|\bwe (?:need|should) to (?:answer|respond|summari[sz]e)\b/i.test(t)) return '';
+  const w = t.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, ' ').split(/\s+/).filter(Boolean), seen = new Map();
+  for (let i = 0; i + 5 <= w.length; i++) { const k = w.slice(i, i + 5).join(' '); const n = (seen.get(k) || 0) + 1; if (n >= 3) return ''; seen.set(k, n); }
+  return t;
+}
+
+/** The block under the summary: Verse's take (a few sentences, plain text, labelled as a model's reading) and what Verse can do about it. */
 export function takeHtml(esc, take, asks) {
-  const t = String(take || '').trim(), a = Array.isArray(asks) ? asks : [];
+  const t = cleanTake(take), a = Array.isArray(asks) ? asks : [];
   if (!t && !a.length) return '';
-  return '<div class="take" style="border-left:2px solid var(--accent, #8ea2ff);padding:2px 0 2px 10px;margin:4px 0 12px">'
-    + '<div class="take-label" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c7d2ff;margin-bottom:3px">Verse’s take</div>'
+  return '<div class="take" style="border-left:2px solid var(--accent, #8ea2ff);padding:2px 0 2px 10px;margin:10px 0 12px">'
+    + '<div class="take-label" style="font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:#c7d2ff;margin-bottom:3px">Verse’s take <span style="font-weight:400;letter-spacing:0;text-transform:none;color:#8a8fa8">· a model’s reading, not from the source</span></div>'
     + (t ? '<p style="margin:0 0 4px">' + esc(t) + '</p>' : '')
     + (a.length ? '<div>' + a.map((x) => '<a href="#" data-ask="' + esc(x.ask) + '" style="display:inline-block;margin:2px 10px 2px 0">' + esc(x.label) + ' →</a>').join('') + '</div>' : '')
     + '</div>';

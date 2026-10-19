@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 5,
-  "tested": 92,
+  "tested": 90,
   "checked": 98,
-  "proven": 106
+  "proven": 109
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 2,
-    "tested": 12,
+    "tested": 10,
     "checked": 10,
-    "proven": 11
+    "proven": 13
    },
    "skills": [
     {
@@ -77,10 +77,12 @@
     },
     {
      "name": "zoom-figure",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -278,10 +280,12 @@
     },
     {
      "name": "rts",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -344,7 +348,7 @@
     "experiment": 0,
     "tested": 5,
     "checked": 6,
-    "proven": 16
+    "proven": 17
    },
    "skills": [
     {
@@ -449,9 +453,17 @@
     {
      "name": "rack",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 7 real asks in the benchmark",
+     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1
+    },
+    {
+     "name": "arcade",
+     "tier": "proven",
+     "why": "a self-test, 6 browser-suite mentions, 7 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {

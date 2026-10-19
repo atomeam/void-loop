@@ -893,6 +893,21 @@ export async function run3dChecks({ check, fresh, want = () => true }) {
       !!ready && GAMES.length >= 14 && boxes.join() === GAMES.map((g) => g.id).join() && !!opened && !F.errors.length, JSON.stringify({ ready, boxes, want: GAMES.map((g) => g.id), opened, e: F.errors }));
     await F.ctx.close();
   }
+  // ---- the Verse arcade cabinet (owner, 2026-10-19: "also a 3d arcade machine", "Verse brand cabinet of course"): its screen lists the six arcade games;
+  // a tap on a row of the screen opens that game, the joystick moves the highlight
+  if (want("3d: the arcade cabinet")) {
+    const F = await fresh();
+    await F.ask('arcade games', 600);
+    const ready = await until(() => F.p.evaluate(() => { const l = window.__voidMini && window.__voidMini.list().find((m) => m.kind === 'arcade'); return l && l.ready && l.draws > 0 ? l : false; }), 90000);
+    const st = ready ? await F.p.evaluate(() => window.__voidMini.state(window.__voidMini.keys().find((k) => k.startsWith('arcade:')))) : {};
+    if (process.env.VOID_SHOTS) { await F.p.waitForTimeout(1200); fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await F.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'arcade-3d.png') }); }
+    await F.p.click('.arcade-pick[data-arcade="dim-void"]');
+    const opened = await until(async () => { const s = await F.state(); return s.some((t) => t.kind === 'dim-void') && !s.some((t) => t.kind === 'arcade'); }, 10000);
+    const { GAMES } = await import(new URL('../void-live-deploy/lib/ladder.js', import.meta.url).href);
+    check('arcade: "arcade games" stands the Verse cabinet in 3D, its screen listing every arcade game in lib/ladder.js; picking Dim the Verse puts the cabinet away and opens the game',
+      !!ready && (st.games || []).join() === GAMES.join() && st.selected === GAMES[0] && !!opened && !F.errors.length, JSON.stringify({ ready, st, opened, e: F.errors }));
+    await F.ctx.close();
+  }
   if (want("3d: no webgl, the flat boards")) {
     // no WebGL at all: both games fall back to a flat board of buttons that plays the same way
     const F = await fresh(() => { const g = HTMLCanvasElement.prototype.getContext; HTMLCanvasElement.prototype.getContext = function (t, ...a) { return /webgl/.test(t) ? null : g.call(this, t, ...a); }; });

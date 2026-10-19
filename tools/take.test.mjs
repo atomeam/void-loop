@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { relatedAsks, takeHtml } from '../void-live-deploy/skills/take.js';
+import { relatedAsks, takeHtml, cleanTake } from '../void-live-deploy/skills/take.js';
 import { realFigureFor } from '../void-live-deploy/skills/figures.js';
 
 test('an article offers what Verse can do about its subject', () => {
@@ -25,4 +25,19 @@ test("an article's figure is the thing itself, never a stand-in", () => {
   assert.equal(realFigureFor({ title: 'Shark Tank', description: 'American business reality television series' }, 1), null);
   assert.equal(realFigureFor({ title: 'Sorry! (game)', description: 'Board game' }, 1), null);
   assert.deepEqual(realFigureFor({ title: 'Cat', description: '' }, 7), realFigureFor({ title: 'Cat', description: '' }, 7));
+});
+
+// Verse's take is never the model's leaked working, never a loop, never NONE (2026-10-19: the Tile card)
+const escT = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+test('a leaked reasoning trace or a loop is no take', () => {
+  assert.equal(cleanTake('analysis The user wants a summary of tile manufacturing processes. Tile manufacturing processes typically involve several steps: raw material extraction tile manufacturing processes typically involve several steps: raw material extraction'), '');
+  assert.equal(cleanTake('Tiles tiles tiles are made made made of clay of clay of clay of clay of clay of clay of clay.'), '');
+  assert.equal(cleanTake('NONE'), ''); assert.equal(cleanTake(' none. '), '');
+});
+test('a plain take stays, and the card labels it as a model\'s reading under the source', () => {
+  const t = 'Roof tiles are laid overlapping so rain runs off; floor tiles are laid edge to edge on a bed of mortar.';
+  assert.equal(cleanTake(t), t);
+  const h = takeHtml(escT, t, []);
+  assert.match(h, /a model’s reading, not from the source/);
+  assert.equal(takeHtml(escT, 'analysis The user wants x', []), '', 'nothing to show: no block at all');
 });

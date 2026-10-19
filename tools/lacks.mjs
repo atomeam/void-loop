@@ -100,9 +100,11 @@ export function usable(ask) {
 }
 
 /** the plan: the top n skills and, for each, up to PER_SKILL of its own examples not already in the benchmark, as candidate rows. Pure. */
-export function plan(data, { n = 6 } = {}) {
+export function plan(data, { n = 6, first = [] } = {}) {
   const have = new Set((Array.isArray(data.bench) ? data.bench : (data.bench && (data.bench.asks || data.bench.items)) || []).map((r) => String(r && r.ask || '').trim().toLowerCase()));
-  const picks = rank(data).slice(0, Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6))), candidates = [], seen = new Set();
+  // the card cycle's next cards come first (tools/card-cycle.mjs: every card gets a turn), then the least proven ones
+  const ranked = rank(data), on = new Set(first), ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name)));
+  const picks = ordered.slice(0, Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6))), candidates = [], seen = new Set();
   for (const p of picks) {
     let k = 0;
     for (const ex of p.examples) {
@@ -192,7 +194,9 @@ async function main(argv) {
     console.log(p.queue.length + ' queued, ' + p.later.length + ' waiting for room (' + p.open + ' probe jobs were open)');
     return 0;
   }
-  const p = plan(load(), { n });
+  let first = [];
+  if (argv.includes('--cycle')) { const C = await import('./card-cycle.mjs'), c = C.load(); first = C.next(c.cards, c.audits, c.cursor, Math.ceil(n / 2)).picks.filter((x) => x.build && x.build.kind === 'bench').map((x) => x.name); }
+  const p = plan(load(), { n, first });
   if (cmd === 'plan') {
     if (!opt('--out')) { console.error('usage: lacks.mjs plan --out cand.json [--n 6]'); return 2; }
     writeFileSync(opt('--out'), JSON.stringify(p.candidates, null, 1)); writeFileSync(opt('--out') + '.plan', JSON.stringify({ picks: p.picks }));

@@ -83,8 +83,11 @@ test('cardHtml: the title, the count line, three blocks with their counts, every
   assert.ok(html.includes('<h3 class="wants-h">My will <span class="wants-n">(2)</span></h3>') && html.includes('Asked, not built yet <span class="wants-n">(2)</span>') && html.includes('Growth inbox <span class="wants-n">(2)</span>'));
   assert.equal((html.match(/class="wants-chip" data-copy="/g) || []).length, 6); assert.ok(!html.includes('<button'), 'no <button>: a saved card leaves buttons out of its text');
   assert.ok(html.includes('data-copy="A &lt;b&gt;bold&lt;/b&gt; ask"') && !html.includes('<b>bold</b>'), 'escaped');
-  assert.ok(html.includes('<small>Asked in my daily reflection, 2026-10-08</small>') && html.includes('<small>Asked after a build, 2026-10-17 · I called it small</small>'));
-  assert.ok(html.includes('<small>asked 9 times</small>') && html.includes('<small>owner, 2026-10-15</small>'));
+  assert.ok(html.includes('>Asked in my daily reflection, 2026-10-08</small>') && html.includes('>Asked after a build, 2026-10-17 · I called it small</small>'));
+  assert.ok(html.includes('>asked 9 times</small>') && html.includes('>owner, 2026-10-15</small>'));
+  // one list item per want, saved as a "- " line with its date in brackets (owner, 2026-10-19: the saved card ran every item into one paragraph)
+  assert.equal((html.match(/<li data-bullet="1">/g) || []).length, 6);
+  assert.ok(html.includes('<small data-share-short="(Asked after a build, 2026-10-17 · I called it small)">'));
   assert.ok(html.includes('<p class="wants-more">The 50 new ones are yours to ask for one at a time') && html.includes('class="src"') && /no model/.test(html) && html.includes('/api/will, 2026-10-18'));
   assert.ok(!html.includes('data-missing'), 'nothing missing');
 });
@@ -107,7 +110,7 @@ test('the skill: its name, an about line, examples and near misses that do not c
 
 test('cardHtml: the items come before the line that says where a list comes from, so a card cut to fit carries the real wants first (owner, 2026-10-18)', () => {
   const html = cardHtml(cardModel({ will, reflect, self }), esc), text = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
-  const first = html.indexOf('<span role="button" tabindex="0" class="wants-chip"'), sub = html.indexOf('<p class="wants-sub">');
+  const first = html.indexOf('<span role="button" tabindex="0" class="wants-chip"'), sub = html.indexOf('<p class="wants-sub" data-share-skip="1">');
   assert.ok(first > 0 && sub > first, 'the first chip is before the first source line');
   const firstSub = text.indexOf('What I chose to become next'); assert.ok(text.indexOf('answer every question about tides') > 0 && text.indexOf('answer every question about tides') < firstSub, 'the first want is read before any line about where the list comes from'); assert.ok(text.indexOf('Absorb and connect every repo') > 0 && text.indexOf('Give the map card terrain') > 0);
 });

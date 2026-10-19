@@ -31,6 +31,7 @@ import { scopeOf } from '../../lib/memory-scope.js';
 import { ensure as ensureMemory, lookup as memoryLookup } from '../../lib/memory-core.js';
 import { prepareProposal, proposalPrompt, parseProposal, ruleProposal, PROPOSAL_SYSTEM } from '../../lib/proposal.js';
 import { cleanGoal, planPrompt, parsePlan, parseTimer, parseNote, keepTimer, PRACTICE_ASK, LEARN_ASK, withLearnStep, PLAN_SYSTEM } from '../../lib/plan.js';
+import { cleanTake } from '../../skills/take.js';
 const MODEL = models('answer');
 // models are on whenever Workers AI is bound; VOID_ANSWER_MODELS=off (Pages env var) = open-web answers and rules-only fixes
 const modelsOn = (env) => !!(env && env.AI) && String(env.VOID_ANSWER_MODELS || '').trim().toLowerCase() !== 'off';
@@ -137,7 +138,7 @@ async function reviewAnswer(request, env, body) {
 
 // Verse's take on an article (the article page shows it above the Wikipedia summary, skills/take.js): not a repeat of the
 // summary, but what Verse itself thinks is worth knowing. One per title, kept 7 days in the edge cache; no model, no take.
-const TAKE_SYSTEM = 'You are Verse. You are given an encyclopedia summary of a subject. Give your own take in two or three short sentences: what the summary does not say that is worth knowing, a sharper point, a practical angle, a common misconception, or what to look at next. Do not repeat or paraphrase the summary. No preamble, no hedging, no lists, plain text only.';
+const TAKE_SYSTEM = 'You are Verse. You are given an encyclopedia summary of a subject. Give your own take in two or three short sentences: what the summary does not say that is worth knowing, a sharper point, a practical angle, a common misconception, or what to look at next. Do not repeat or paraphrase the summary. No preamble, no hedging, no lists, plain text only. Only well-established facts you are sure of: no guesses about a company, person or event you know little about, no claims about what "most people" think, and no side taken on a political, religious or social controversy. If you have nothing solid to add, reply with the single word NONE.';
 async function takeAnswer(request, env, body) {
   const title = norm(body.title).slice(0, 160), desc = norm(body.description).slice(0, 200);
   const extract = String(body.extract || '').replace(/[\u0000-\u001f]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 1600);
@@ -151,8 +152,8 @@ async function takeAnswer(request, env, body) {
       messages: [{ role: 'system', content: TAKE_SYSTEM + ' ' + INJECTION_RULE }, { role: 'user', content: 'Subject: ' + title + (desc ? ' (' + desc + ')' : '') + '\n\nSummary:\n' + extract }],
       max_tokens: 260, chat_template_kwargs: { enable_thinking: false }, reasoning_effort: 'low',
     });
-    const take = scrubOut(redact(noThink(pick(r))), env).replace(/\s+/g, ' ').trim().slice(0, 700);
-    if (!take) throw new Error('empty');
+    const take = cleanTake(scrubOut(redact(noThink(pick(r))), env)).slice(0, 700);
+    if (!take) return Response.json({ take: null, note: 'nothing solid to add' }); // NONE, a leaked reasoning trace or a loop: no take, and nothing cached
     try { await caches.default.put(cacheReq, new Response(take, { headers: { 'cache-control': 'max-age=604800' } })); } catch (_) {}
     return Response.json({ take });
   } catch (e) { await recordShortfall(env, 'take', reasonOf(e)); return Response.json({ take: null, note: 'model busy' }); }

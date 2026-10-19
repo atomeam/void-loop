@@ -2,6 +2,11 @@
   "note": "Curated by a builder reading the growth ledger (2026-10-16, tools/asks-link.mjs): each rule names the ledger entry that built every open ask of V01D's whose words match. Matched by a regular expression over the ask's words; the ledger entry's own text is quoted in the link's why. Add a rule only when the entry really built the ask.",
   "rules": [
     {
+      "match": "velocity.?smoothing",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs)"
+    },
+    {
       "match": "friction.*(growth card|indicator)|indicator.*friction",
       "ledgerAt": "2026-10-15T16:53:41Z",
       "why": "the growth card's friction line names the skills failing or least checked"
@@ -300,6 +305,11 @@
       "match": "dependency.?health",
       "ledgerAt": "2026-10-18T13:38:41Z",
       "why": "the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on"
+    },
+    {
+      "match": "open the self card",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\")"
     }
   ],
   "extra": [

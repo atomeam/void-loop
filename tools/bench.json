@@ -6202,8 +6202,18 @@
   {"ask": "what just shipped?", "want": "skill:growth"},
   {"ask": "what shipped today", "want": "skill:growth"},
   {"ask": "what did you just ship", "want": "skill:growth"},
-  {"ask": "arcade games", "want": "skill:rack"},
-  {"ask": "show me the arcade", "want": "skill:rack"},
-  {"ask": "my arcade ladder", "want": "skill:rack"},
-  {"ask": "what arcade games can i play", "want": "skill:rack"}
+  {"ask": "arcade games", "want": "skill:arcade"},
+  {"ask": "show me the arcade", "want": "skill:arcade"},
+  {"ask": "my arcade ladder", "want": "skill:arcade"},
+  {"ask": "what arcade games can i play", "want": "skill:arcade"},
+  {"ask": "start a camp", "want": "skill:rts"},
+  {"ask": "gather wood", "want": "skill:rts"},
+  {"ask": "build a hut", "want": "skill:rts"},
+  {"ask": "everyone gather stone", "want": "skill:rts"},
+  {"ask": "zoom in on the figure", "want": "skill:zoom-figure"},
+  {"ask": "closer on the figure", "want": "skill:zoom-figure"},
+  {"ask": "zoom out on the figure", "want": "skill:zoom-figure"},
+  {"ask": "play an arcade game", "want": "skill:arcade"},
+  {"ask": "arcade machine", "want": "skill:arcade"},
+  {"ask": "verse arcade", "want": "skill:arcade"}
 ]
