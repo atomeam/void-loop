@@ -6406,5 +6406,10 @@
   {"ask": "gravity only notes", "want": "skill:family-gravity"},
   {"ask": "start a blood feud between the clock and the note", "want": "skill:feud"},
   {"ask": "blood feud between the counter and the timer", "want": "skill:feud"},
-  {"ask": "end the feud", "want": "skill:feud"}
+  {"ask": "end the feud", "want": "skill:feud"},
+  {"ask": "turn this card into a note", "want": "skill:kept"},
+  {"ask": "copy the card to the notepad", "want": "skill:kept"},
+  {"ask": "note this card", "want": "skill:kept"},
+  {"ask": "answer in four channels", "want": "skill:four-channels"},
+  {"ask": "answer this in four channels: is the plan sound? Claim: yes. Doubt: rent. Method: ask Sam. Risk: cost.", "want": "skill:four-channels"}
 ]
