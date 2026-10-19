@@ -6335,5 +6335,15 @@
   {"ask": "which of my notes contradict each other", "want": "skill:contradiction-lamp"},
   {"ask": "make a counter", "want": "skill:counter"},
   {"ask": "count up", "want": "skill:counter"},
-  {"ask": "set the counter to 10", "want": "skill:counter"}
+  {"ask": "set the counter to 10", "want": "skill:counter"},
+  {"ask": "how long is a meeting from 9:30 to 11:15", "want": "skill:time-math"},
+  {"ask": "meeting at 9:30 for 45 minutes", "want": "skill:time-math"},
+  {"ask": "meeting length calculator", "want": "skill:time-math"},
+  {"ask": "30 days after 2026-03-01", "want": "skill:date-calc"},
+  {"ask": "10 business days from today", "want": "skill:date-calc"},
+  {"ask": "what date is next friday", "want": "skill:date-calc"},
+  {"ask": "empty month grid for november 2026", "want": "skill:date-grid"},
+  {"ask": "empty week grid", "want": "skill:date-grid"},
+  {"ask": "7x5 heatmap", "want": "skill:date-grid"},
+  {"ask": "what if my assumption is false", "want": "skill:counterfactual-draft"}
 ]
