@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 70,
- "runsTotal": 187,
+ "cases": 71,
+ "runsTotal": 188,
  "kinds": {
-  "grow": 63,
+  "grow": 64,
   "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-19T04:58:40Z",
+   "passed": 64,
+   "of": 74,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"dim the void\" (skill:dim-void)"
+  },
   {
    "at": "2026-10-19T02:33:17Z",
    "passed": 63,
@@ -142,13 +149,6 @@
    "of": 58,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"approve later: keep morning-digest running every 2 hours\" (skill:approve-card)"
-  },
-  {
-   "at": "2026-10-18T06:18:56Z",
-   "passed": 55,
-   "of": 57,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
   }
  ],
  "seen": {
@@ -409,6 +409,10 @@
   "skill:task-board": "2026-10-19T02:33:17Z",
   "skill:task-diagram": "2026-10-19T02:33:17Z",
   "skill:telemetry-route": "2026-10-19T02:33:17Z",
-  "skill:template-list": "2026-10-19T02:33:17Z"
+  "skill:template-list": "2026-10-19T02:33:17Z",
+  "skill:dim-void": "2026-10-19T04:58:40Z",
+  "skill:merge-void": "2026-10-19T04:58:40Z",
+  "skill:null-sweep": "2026-10-19T04:58:40Z",
+  "skill:term-orbits": "2026-10-19T04:58:40Z"
  }
 }
