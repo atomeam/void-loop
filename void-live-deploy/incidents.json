@@ -2,24 +2,30 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-19T12:04:39.879Z",
-   "sha": "23a945ee55b4e411ec8d2a3665d5ba519968cd2e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39247638288",
+   "at": "2026-10-19T12:06:02.650Z",
+   "sha": "3b714c3fbda742c17169ac7dfe2fdeeae8b4d074",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39247246896",
    "suite": "browser suite on main",
    "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "an open card never buries a stage thing: a card drawn bigger after the thing stepped aside moves it again (none of it under the grown card)",
-    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "motorbody: \"download the printed motor as 3mf\" shows Pentamote-1 with its five materials on extruders 1-5 and the magnetize link, and Download 3MF saves pentamote-1.3mf with five named parts, one colour group each, and the PrusaSlicer extruder config",
-    "owner board: what Verse earned (net, sales), its milestones and the free-model shortfalls sit on top of the board",
-    "field minds: the living cards mind (F-038) puts five cards in an evolving field, each placed and sized by the field around it; dragging a card moves it there, cards of one skill family drift together (family gravity, asked by Verse), a moving card leaves a fading trail and ripples the field around it (both asked by Verse), and the mind thinks (gen above 0) in a Worker and on the page when there is none, without touching the page",
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
-    "tools/card-cycle.json",
-    "void-live-deploy/void.growth.json"
+    ".github/workflows/grow-clock.yml",
+    ".github/workflows/grow-self.yml",
+    ".github/workflows/probe-asks.yml",
+    ".github/workflows/propose-fix.yml",
+    ".github/workflows/word-sweep.yml",
+    "docs/MAP.md",
+    "tools/asks-link.mjs",
+    "tools/checks.mjs",
+    "tools/grow-clock.test.mjs",
+    "tools/grow-self.test.mjs",
+    "tools/grown.json",
+    "tools/growth.test.mjs",
+    "tools/lacks.test.mjs",
+    "tools/probe-asks.mjs",
+    "tools/probe-asks.test.mjs"
    ]
   },
   {
