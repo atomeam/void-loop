@@ -5637,6 +5637,21 @@ try {
         && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
       JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
     await N.ctx.close(); }
+  // the self card never stays on "…" (owner, 2026-10-19: "not loading"): a cached library older than the page (no selfCard) still draws the card, and
+  // an unreachable /api/reflect says so instead of "I haven't been asked yet"
+  if (want("self card never stuck")) { const K = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const libPath = path.join(root, 'lib', 'self-blocks.js'), oldLib = fs.readFileSync(libPath, 'utf8').replace(/export function selfCard\(/, 'function selfCardGone(');
+    await K.ctx.route(/\/lib\/self-blocks\.js(\?.*)?$/, (rt) => rt.fulfill({ status: 200, contentType: 'text/javascript', body: oldLib }));
+    await K.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-19T10:00:00Z', kind: 'daily', thoughts: 'I drew this card with an older library.', asks: [] }], asks: [], follow: { total: 3, built: 1, recent: [], asked: [] } })));
+    await K.ask('what do you think of yourself?', 300); await K.p.waitForTimeout(2500);
+    const old = await K.page();
+    await K.ctx.unroute(/\/api\/reflect$/); await K.ctx.route(/\/api\/reflect$/, (rt) => rt.abort());
+    await K.ask('close', 300); await K.ask('what do you think of yourself?', 300); await K.p.waitForTimeout(2500);
+    const down = await K.page();
+    check('self card never stuck: with a cached library older than the page it still shows Verse\'s words, and with /api/reflect unreachable it says it could not reach its reflections (never "…", never "I haven\'t been asked yet")',
+      /drew this card with an older library/.test(old) && !/^\s*What I think of myself\s*…\s*$/.test(old) && /could not reach my reflections/.test(down) && !/haven.t been asked yet/.test(down) && !K.errors.length,
+      JSON.stringify({ old: old.slice(0, 200), down: down.slice(0, 200), errors: K.errors }));
+    await K.ctx.close(); }
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });

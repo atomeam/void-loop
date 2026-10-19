@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 78,
-  "checked": 60,
-  "proven": 164
+  "tested": 77,
+  "checked": 58,
+  "proven": 167
  },
  "families": [
   {
@@ -1251,9 +1251,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 9,
+    "tested": 8,
     "checked": 4,
-    "proven": 15
+    "proven": 16
    },
    "sources": {
     "read": 20,
@@ -1267,13 +1267,12 @@
      "video",
      "news",
      "joke",
-     "media-pick",
      "book",
      "show",
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 10 more proven: digest, pick-for-me, video, news, joke, media-pick and 4 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 9 more proven: digest, pick-for-me, video, news, joke, book and 3 more."
    },
    "skills": [
     {
@@ -1350,6 +1349,7 @@
      "source": {
       "sites": [
        "apple.com",
+       "deezer.com",
        "tvmaze.com"
       ],
       "named": false,
@@ -1357,7 +1357,7 @@
       "answered": false,
       "points": 1,
       "next": "live",
-      "words": "source 1 of 3: apple.com, tvmaze.com; not named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+      "words": "source 1 of 3: apple.com, deezer.com, tvmaze.com; not named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
      }
     },
     {
@@ -1570,22 +1570,24 @@
     },
     {
      "name": "media-pick",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3,
      "source": {
       "sites": [
        "apple.com",
+       "deezer.com",
        "tvmaze.com"
       ],
       "named": true,
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: apple.com, tvmaze.com; named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+      "words": "source 2 of 3: apple.com, deezer.com, tvmaze.com; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1611,7 +1613,7 @@
     {
      "name": "show",
      "tier": "tested",
-     "why": "1 real ask in the benchmark",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1818,8 +1820,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 38,
-    "proven": 27
+    "checked": 36,
+    "proven": 29
    },
    "skills": [
     {
@@ -2234,10 +2236,12 @@
     },
     {
      "name": "echo-chamber",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2290,10 +2294,12 @@
     },
     {
      "name": "eigenwork",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
