@@ -946,3 +946,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-19T18:30:32Z | verse | grow | hardened itself: 8 benchmark ask(s) for media-pick, show, echo-chamber, eigenwork (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T18:50:21Z | verse | grow | hardened itself: 7 benchmark ask(s) for text-tools, rides, error-garden (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T18:51:34Z | verse | grow | hardened itself: 8 benchmark ask(s) for pulse, family-gravity, feud (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-19T21:48:35Z | claude | fix | a short status update that links one of this repo's pull requests or commits opens 'What is really true now' (checked live against GitHub) instead of falling to the article lookup, which came back as an empty card; an instruction about the link ('review this PR ...') is still another skill's
