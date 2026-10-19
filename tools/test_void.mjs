@@ -6666,7 +6666,7 @@ try {
   // A will job nobody touched in three days makes way: set aside (kept, with why), and the newest top want is queued
   if (want("Verse's will makes way when its job sits untouched")) {
     const wEnv = { DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }] }) }) } };
-    const wPost = () => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }] }) }), env: wEnv });
+    const wPost = () => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ schema: 2, candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }] }) }), env: wEnv });
     const Q = wEnv.DB.queue, old = new Date(Date.now() - 4 * 864e5).toISOString(), fresh = new Date(Date.now() - 3600e3).toISOString();
     Q.set('oldjob', { id: 'oldjob', ask: 'add milk', target: 'will:add-milk', state: 'queued', note: 'Verse chose this', at: old, updated: old });
     const sa = await (await wPost()).json();
@@ -6684,7 +6684,7 @@ try {
   // twice in 14 days waits, so the next want is queued, instead of the same top want being queued again and again
   if (want("Verse's will does not queue a want again whose jobs were set aside or failed twice")) {
     const mk = () => ({ DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }, { id: 2, i_want: 'I want to answer moon questions.', because: 'people ask for the moon' }] }) }) } });
-    const post = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }, { kind: 'people asked', title: 'Answer moon questions', why: 'asked about the moon', weight: 10 }] }) }), env });
+    const post = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ schema: 2, candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }, { kind: 'people asked', title: 'Answer moon questions', why: 'asked about the moon', weight: 10 }] }) }), env });
     const ago = (days) => new Date(Date.now() - days * 864e5).toISOString();
     const jobs = (env) => [...env.DB.queue.values()].filter((q) => q.state === 'queued');
     const A = mk(); A.DB.queue.set('a1', { id: 'a1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(8), updated: ago(5) });
@@ -7857,7 +7857,7 @@ try {
   // The will engine reads the budget when it ranks: an upgrade the budget covers weighs more; money never shows in the will.
   const wSeen = [];
   const wEnv = { ...eEnv, AI: { run: async (m, o) => { wSeen.push(o.messages); return { response: JSON.stringify({ wants: [{ id: 2, i_want: 'I want a stronger model, worth every $10/month of my budget.', because: 'my earnings cover it' }] }) }; } } };
-  const cands = { candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked 9 times', weight: 20 }, { kind: 'upgrade myself', title: 'Answer and fix with a stronger model', why: 'better fixes', weight: 12, cost_cents: 1000 }, { kind: 'upgrade myself', title: 'Move to a dedicated GPU', why: 'speed', weight: 12, cost_cents: 500000 }] };
+  const cands = { schema: 2, candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked 9 times', weight: 20 }, { kind: 'upgrade myself', title: 'Answer and fix with a stronger model', why: 'better fixes', weight: 12, cost_cents: 1000 }, { kind: 'upgrade myself', title: 'Move to a dedicated GPU', why: 'speed', weight: 12, cost_cents: 500000 }] };
   const wPost = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify(cands) }), env });
   const w1 = await (await wPost(wEnv)).json();
   const prompt = ((wSeen[0] || []).find((m) => m.role === 'user') || {}).content || '';
@@ -7931,7 +7931,7 @@ try {
   const idea = gl2.find((c) => /Fleet Attest/.test(c.title));
   const wSeen2 = [];
   const kvDB = memoryStoreD1();
-  const wr = await (await willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: wc }) }), env: { DB: kvDB, READ_TOKEN: OWNER, AI: { run: async (m, o) => { wSeen2.push(o.messages); const list = o.messages[1].content; const id = +((list.match(/^(\d+)\. \[idea from input, weight \d+, from growth-ledger-backlog\] use Paperclip/m) || [])[1] || 0); return { response: JSON.stringify({ wants: [{ id, i_want: 'I want to run my agent team with Paperclip instead of building my own.', because: 'it already exists' }] }) }; } } } })).json();
+  const wr = await (await willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ schema: 2, candidates: wc }) }), env: { DB: kvDB, READ_TOKEN: OWNER, AI: { run: async (m, o) => { wSeen2.push(o.messages); const list = o.messages[1].content; const id = +((list.match(/^(\d+)\. \[idea from input, weight \d+, from growth-ledger-backlog\] use Paperclip/m) || [])[1] || 0); return { response: JSON.stringify({ wants: [{ id, i_want: 'I want to run my agent team with Paperclip instead of building my own.', because: 'it already exists' }] }) }; } } } })).json();
   const promptList = ((wSeen2[0] || [])[1] || {}).content || '';
   check('will: the intake is a candidate source (use Paperclip / Hermes / Hindsight rather than rebuild; Fleet Attest only as an idea to weigh), tagged growth-ledger-backlog end to end',
     py.status === 0 && gl2.length >= 5 && useFirst.length === 3 && useFirst.every((c) => /Use what already exists before building/.test(c.why)) && idea && idea.kind === 'idea from input' && !/\$|price|\/mo/i.test(idea.title + idea.why)

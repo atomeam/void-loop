@@ -42,3 +42,20 @@ test('the note says how many wants waited and why; the window is 14 days back fr
   assert.equal(WINDOW_DAYS, 14);
   assert.equal(sinceOf(now), '2026-10-04T12:00:00.000Z');
 });
+
+test('the will never shows a local path, and a want a live skill answers is dropped (2026-10-19: an old writer put back zorbleflux and a private folder)', async () => {
+  const { noPaths, coveredByName, WILL_SCHEMA } = await import('../void-live-deploy/lib/will-guard.js');
+  assert.equal(noPaths('Aether / a2m dispatcher + bridge (projects\\aether: apps\\back did this: ran multi-step jobs'), 'Aether / a2m dispatcher + bridge did this: ran multi-step jobs');
+  assert.equal(noPaths('see C:\\Users\\adam\\x.txt for it'), 'see for it');
+  assert.equal(noPaths('kept in /home/user/notes.md today'), 'kept in today');
+  assert.equal(noPaths('a plain sentence, with a comma (and parens).'), 'a plain sentence, with a comma (and parens).');
+  const names = new Set(['zorbleflux', 'null-sweep']);
+  assert.equal(coveredByName('learn to handle "zorbleflux"', names), true);
+  assert.equal(coveredByName('learn to handle "null sweep"', names), true);
+  assert.equal(coveredByName('learn to handle "deep ocean floor inquiries"', names), false);
+  assert.equal(coveredByName('learn to handle "zorbleflux"', new Set()), false, 'no index read: nothing is dropped');
+  assert.equal(WILL_SCHEMA, 2);
+  const py = (await import('node:fs')).readFileSync(new URL('./will.py', import.meta.url), 'utf8');
+  assert.match(py, new RegExp('WILL_SCHEMA = ' + WILL_SCHEMA + '\\b'), 'tools/will.py sends the same schema the endpoint wants');
+  assert.match(py, /"schema": WILL_SCHEMA/);
+});

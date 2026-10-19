@@ -32,7 +32,8 @@ const RESOLVED = /\b(?:passed|passes|green)\s+(?:on\s+its\s+own|alone|again|on\s
 const PLANNED = /\bas expected\b|\bmutat(?:ion|ed|ing)\b|\bon purpose\b|\bdeliberately\b|\bwithout\s+(?:the|its|this|that|it)(?:\s+[\w-]+){0,2}\s*,|\bwith\s+(?:the|its|this|that|it)\b[^,]{0,40}\b(?:taken out|removed|reverted|undone|commented out)\b/i;
 // a failure that has not happened is not still failing: a condition ("If either PR goes red or hits a conflict, fix it first.") or a "would" ("A failing
 // check would automatically revert the commit that broke it.") came back on a card as two of "3 things still failing" (2026-10-19)
-const HYPOTHETICAL = /^(?:if|when|whenever|should|unless|in case)\b|\bwould\s+(?:\w+\s+)?(?:revert|fail|break|block|stop)\b|\bif\s+(?:either|any|the|a|one)\b[^.]{0,60}\b(?:red|fail|fails|conflicts?)\b/i;
+// and a plan's designed outcome ("The laptop task then fails loudly instead of overwriting the card.", "Step 2 makes it fail harmlessly either way.") the same day
+const HYPOTHETICAL = /^(?:if|when|whenever|should|unless|in case)\b|\b(?:would|will|then|makes?\s+(?:it|them|this|that))\s+(?:\w+\s+)?(?:revert|fails?|break|block|stop)\b|\bfails?\s+(?:loudly|harmlessly|safely|closed|gracefully|fast)\b|\bif\s+(?:either|any|the|a|one)\b[^.]{0,60}\b(?:red|fail|fails|conflicts?)\b/i;
 /** the lines that name something failing, cleaned and clipped: the "FAIL ..." lines, "- **Name:** ... failed", stalls and conflicts; never a builder's
  *  own narration, and "red" only as a state. Pure. */
 export function failuresOf(text) {

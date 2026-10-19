@@ -13,7 +13,7 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
-import { slug, pickWant, skippedNote, sinceOf } from '../../lib/will-guard.js';
+import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -27,6 +27,11 @@ export async function onRequestGet({ env }) {
 export async function onRequestPost({ request, env }) {
   if (!(await ok(request, env))) return new Response('no', { status: 401 });
   let b = {}; try { b = JSON.parse(await request.text()); } catch (_) {}
+  if (+b.schema !== WILL_SCHEMA) return new Response('out of date writer: update the checkout (tools/will.py sends schema ' + WILL_SCHEMA + ')', { status: 409 });
+  // a miss a live skill already answers is not a want any more, whoever sent it (skills/index.json from this deploy)
+  let names = new Set();
+  try { if (env.ASSETS) { const r = await env.ASSETS.fetch(new Request(new URL('/skills/index.json', request.url))); if (r.ok) names = new Set((await r.json()).map((n) => String(n).toLowerCase())); } } catch (_) {}
+  b.candidates = (Array.isArray(b.candidates) ? b.candidates : []).filter((c) => !coveredByName(c && c.title, names));
   let money = null; try { money = await readEarnings(env); } catch (_) {} // no sales table yet = no budget line
   const budget = money ? money.budget_cents : 0;
   const cands = (b.candidates || []).slice(0, 60).map((c, i) => {
@@ -57,7 +62,7 @@ export async function onRequestPost({ request, env }) {
   // a reason or fact longer than n ends at a word with an ellipsis, never mid-word or on a space (the card compares them)
   const clip = (t, n) => { const x = String(t || '').trim(); return x.length <= n ? x : x.slice(0, n - 1).replace(/\s+\S*$/, '') + '…'; };
   const noMoney = (t) => String(t || '').replace(/[$€£]\s?\d[\d,.]*(\s?(k|m|\/\s?mo(nth)?|a month|per month))?/gi, 'what I earned').replace(/\b(budget|earnings?|profits?|revenue|sales total)\b/gi, 'what I earned');
-  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: redact(noMoney(w.i_want)).slice(0, 220), because: clip(redact(noMoney(honestBecause(w.because, w.c.why))), 200), evidence: clip(redact(noMoney(w.c.why)), 200) })) };
+  const will = { at, wants: wants.map((w) => ({ kind: w.c.kind, title: w.c.title, ...(w.c.source ? { source: w.c.source } : {}), i_want: clip(noPaths(redact(noMoney(w.i_want))), 220), because: clip(noPaths(redact(noMoney(honestBecause(w.because, w.c.why)))), 200), evidence: clip(noPaths(redact(noMoney(w.c.why))), 200) })) };
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('will', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify(will)).run();
   // a will job nobody has touched in STALE_DAYS makes way for the newest top want: it is set aside (kept, with why), not deleted
   await env.DB.prepare("UPDATE void_queue SET state = 'set aside', note = substr('set aside: untouched for ' || ? || ' days, a newer want takes its place · ' || COALESCE(note, ''), 1, 300), updated = ? WHERE target LIKE 'will:%' AND state IN ('queued','building') AND COALESCE(updated, at) < ?")
