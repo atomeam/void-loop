@@ -142,11 +142,26 @@ test('/api/queue POST queues the owner\'s job inside its record, and the builder
 
 test('/api/will queues Verse\'s top want inside its record (owner void, ref will:<slug>)', async () => {
   const env = d1full(); env.READ_TOKEN = TOKEN; env.AI = { run: async () => { throw new Error('model busy'); } };
-  const r = await willApi.onRequestPost({ env, request: new Request('https://x/api/will', { method: 'POST', headers: auth, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Learn tides', why: 'asked 9 times', weight: 9 }, { kind: 'idea', title: 'Backgammon', why: 'a game', weight: 2 }] }) }) });
+  const r = await willApi.onRequestPost({ env, request: new Request('https://x/api/will', { method: 'POST', headers: auth, body: JSON.stringify({ schema: 2, candidates: [{ kind: 'people asked', title: 'Learn tides', why: 'asked 9 times', weight: 9 }, { kind: 'idea', title: 'Backgammon', why: 'a game', weight: 2 }] }) }) });
   assert.equal(r.status, 200);
   const j = await r.json(); assert.ok(j.queued, JSON.stringify(j));
   assert.deepEqual(acts(env).map((a) => [a.owner, a.kind, a.ref, a.state]), [['void', 'queue.add', 'will:learn-tides', 'done']]);
   assert.match(acts(env)[0].result, /^queued \w+: Learn tides$/);
+});
+
+test('/api/will refuses an out-of-date writer (no schema) and stores nothing; a want a live skill answers is dropped; no local path is stored', async () => {
+  const env = d1full(); env.READ_TOKEN = TOKEN; env.AI = { run: async () => { throw new Error('model busy'); } };
+  env.ASSETS = { fetch: async () => new Response(JSON.stringify(['zorbleflux', 'chess'])) };
+  const post = (body) => willApi.onRequestPost({ env, request: new Request('https://x/api/will', { method: 'POST', headers: auth, body: JSON.stringify(body) }) });
+  const old = await post({ candidates: [{ kind: 'people asked', title: 'learn to handle "zorbleflux"', why: 'asked 161 times', weight: 99 }] });
+  assert.equal(old.status, 409);
+  assert.equal(env.DB.raw.prepare("SELECT COUNT(*) AS n FROM void_kv WHERE k = 'will'").get().n, 0, 'nothing stored');
+  const r = await post({ schema: 2, candidates: [{ kind: 'people asked', title: 'learn to handle "zorbleflux"', why: 'asked 161 times', weight: 99 },
+    { kind: 'absorb', title: 'become a dispatcher', why: 'Aether / a2m dispatcher + bridge (projects\\aether: apps\\back did this: ran multi-step jobs', weight: 5 }] });
+  assert.equal(r.status, 200);
+  const j = await r.json();
+  assert.ok(!j.wants.some((w) => /zorbleflux/.test(w.title)), 'the built skill is not a want');
+  assert.ok(j.wants.length && j.wants.every((w) => !/projects\\|apps\\/.test(w.i_want + w.because + w.evidence)), JSON.stringify(j.wants));
 });
 
 test('the confirm line: an approved action runs inside its record (done); a yes for a tool with no executor is recorded stubbed, nothing sent', async () => {

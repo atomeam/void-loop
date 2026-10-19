@@ -6,6 +6,21 @@
 
 import { namedHot, MAX_CHANGES, WINDOW_DAYS as CHURN_DAYS } from './churn.js';
 
+// The writer's shape (tools/will.py sends it). A POST without it comes from an old checkout (2026-10-19: a writer from before
+// 2026-10-11 kept putting back a built zorbleflux want, a finished plan item and a private folder path cut mid-word): refused, nothing stored.
+export const WILL_SCHEMA = 2;
+/** a want's words with any local file path taken out ("C:\\Users\\…", "projects\\aether: apps\\back", "/home/…", "~/…"). Pure. */
+export const noPaths = (t) => String(t == null ? '' : t)
+  .replace(/\b[A-Za-z]:\\[^\s)]*/g, '').replace(/\b[\w.-]+(?:\\[\w.-]*)+:?/g, '').replace(/(^|\s)(?:~|\/home|\/Users|\/root)\/\S*/g, '$1')
+  .replace(/\(\s*\)/g, '').replace(/\((?![^(]*\))\s*/g, '').replace(/\s{2,}/g, ' ').replace(/\s+([,.;:)])/g, '$1').trim(); // a bracket the path opened and never closed goes too
+/** whether a candidate is a miss that a live skill already answers: its quoted subject ("handle "zorbleflux"") is a skill name. Pure. */
+export function coveredByName(title, names) {
+  const m = /["'“‘]([^"'”’]{2,60})["'”’]/.exec(String(title || ''));
+  if (!m || !names || !names.size) return false;
+  const words = m[1].toLowerCase().trim().split(/\s+/);
+  return names.has(words.join('-')) || (words.length === 1 && names.has(words[0]));
+}
+
 export const MAX_TRIES = 2;     // a want whose jobs ended set aside or failed this many times waits
 export const WINDOW_DAYS = 14;  // ... counting the ones that ended this recently
 /** the queue target a want's job has: 'will:' and the title as a short slug. */

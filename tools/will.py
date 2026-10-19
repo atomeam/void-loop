@@ -27,6 +27,7 @@ def call(path, body=None):
     req = urllib.request.Request("https://a-to-mind.com" + path, data=json.dumps(body).encode() if body is not None else None, headers=H, method="POST" if body is not None else "GET")
     return json.load(urllib.request.urlopen(req, timeout=90))
 
+WILL_SCHEMA = 2  # lib/will-guard.js WILL_SCHEMA: /api/will refuses a POST without it (an old checkout kept writing a stale will)
 MISS_DAYS = 7  # lib/learn.js DAYS
 
 def recent(last, days=MISS_DAYS, now=None):
@@ -317,7 +318,7 @@ if __name__ == "__main__":
         print(json.dumps(gather(None if "--all" in sys.argv else 60, with_done="--with-done" in sys.argv)))  # ASCII-escaped: safe through a Windows (cp1252) pipe
         sys.exit(0)
     out = gather()
-    res = call("/api/will", {"candidates": out})
+    res = call("/api/will", {"schema": WILL_SCHEMA, "candidates": out})
     lines = ["# void.will: what Verse wants to become next (chosen by Verse)", "", f"Chosen {res['at'][:16]} from {len(out)} candidates. Top want queued: {res.get('queued') or ('already building ' + str(res.get('open')))}.", ""]
     for i, w in enumerate(res["wants"], 1):
         lines.append(f"{i}. **{w['i_want']}**  \n   because {w['because']} ({w['kind']}: {w['title']})")

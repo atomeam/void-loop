@@ -99,3 +99,9 @@ test('a condition or a "would" is not a failure that is still happening (the 202
   const f = failuresOf('Pull requests: #1157, #1158\nIf either PR goes red or hits a conflict, fix it first.\nA failing check would automatically revert the commit that broke it.\nFAIL fly stars move: the streak never showed.\nWhen the suite fails again the revert runs.');
   assert.deepEqual(f, ['FAIL fly stars move: the streak never showed.']);
 });
+
+test('a plan\'s designed outcome is not a failure either (the same card, later on 2026-10-19)', async () => {
+  const { failuresOf } = await import('../void-live-deploy/lib/telemetry.js');
+  const f = failuresOf('Commits: fdc826d3\nThe laptop task then fails loudly instead of overwriting the card.\nStep 2 makes it fail harmlessly either way.\nThe deploy will fail closed without the token.\nFAIL living arrows: lock it did nothing.\nverify-main failed on ecdfb6bb.');
+  assert.deepEqual(f, ['FAIL living arrows: lock it did nothing.', 'verify-main failed on ecdfb6bb.']);
+});
