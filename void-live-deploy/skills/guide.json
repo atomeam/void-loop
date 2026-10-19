@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 29,
-    "checked": 20,
-    "proven": 47
+    "checked": 19,
+    "proven": 48
    },
    "from": 173,
    "to": 269
@@ -4120,8 +4120,8 @@
     "what have I collected about space"
    ],
    "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
-   "flavor": "Proven 2 times over by those who asked, and kept among the stage.",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the stage.",
    "glow": 100,
    "n": 221
   },
@@ -4502,8 +4502,10 @@
     "a question I'm avoiding: should I quit my job",
     "a question I am avoiding: am I ready"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+   "flavor": "An old art of the stage, tested each day before the sun is up. Turn the page when you are done.",
+   "glow": 100,
    "n": 246
   },
   {

@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 75,
-  "checked": 39,
-  "proven": 189
+  "checked": 38,
+  "proven": 190
  },
  "families": [
   {
@@ -1823,8 +1823,8 @@
    "count": {
     "experiment": 0,
     "tested": 29,
-    "checked": 20,
-    "proven": 47
+    "checked": 19,
+    "proven": 48
    },
    "skills": [
     {
@@ -2264,7 +2264,7 @@
     {
      "name": "codex",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2485,10 +2485,12 @@
     },
     {
      "name": "hunting-question",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
