@@ -6235,5 +6235,21 @@
   {"ask": "rubber band select", "want": "skill:card-play"},
   {"ask": "all of your unbuilt wants and asks", "want": "skill:wants"},
   {"ask": "your unbuilt wants and asks", "want": "skill:wants"},
-  {"ask": "list all your wants and asks", "want": "skill:wants"}
+  {"ask": "list all your wants and asks", "want": "skill:wants"},
+  {"ask": "make me a song", "want": "skill:music"},
+  {"ask": "make me a lullaby", "want": "skill:music"},
+  {"ask": "make a beat", "want": "skill:music"},
+  {"ask": "fly around", "want": "skill:fly"},
+  {"ask": "look around", "want": "skill:fly"},
+  {"ask": "fly mode", "want": "skill:fly"},
+  {"ask": "show the pulse", "want": "skill:pulse"},
+  {"ask": "pulse card", "want": "skill:pulse"},
+  {"ask": "pulse of my arrows", "want": "skill:pulse"},
+  {"ask": "ranked list of my movies", "want": "skill:decide-cards"},
+  {"ask": "rank pizza, tacos, sushi", "want": "skill:decide-cards"},
+  {"ask": "weighted pros and cons for moving to Berlin", "want": "skill:decide-cards"},
+  {"ask": "leave a trail on onboarding", "want": "skill:stigmergy-board"},
+  {"ask": "leave a trail on the launch plan", "want": "skill:stigmergy-board"},
+  {"ask": "watch my words drift", "want": "skill:term-orbits"},
+  {"ask": "watch my terms drift apart", "want": "skill:term-orbits"}
 ]
