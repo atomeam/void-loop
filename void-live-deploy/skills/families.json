@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 80,
-  "checked": 66,
-  "proven": 156
+  "tested": 78,
+  "checked": 64,
+  "proven": 160
  },
  "families": [
   {
@@ -1251,9 +1251,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 9,
     "checked": 6,
-    "proven": 11
+    "proven": 13
    },
    "sources": {
     "read": 20,
@@ -1262,9 +1262,7 @@
     "answered": 0,
     "points": 1.4,
     "one_live_from_proven": [
-     "repo",
      "digest",
-     "movie",
      "pick-for-me",
      "video",
      "spanish",
@@ -1276,16 +1274,17 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 13 more proven: repo, digest, movie, pick-for-me, video, spanish and 7 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 11 more proven: digest, pick-for-me, video, spanish, news, joke and 5 more."
    },
    "skills": [
     {
      "name": "repo",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-17",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3,
      "source": {
       "sites": [
@@ -1295,16 +1294,17 @@
       "second": false,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: github.com; named on the card; no second source; no kept live answer yet. One kept live answer from github.com would make it proven"
+      "words": "source 1 of 3: github.com; named on the card; no second source; no kept live answer yet"
      }
     },
     {
      "name": "digest",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3,
      "source": {
       "sites": [
@@ -1322,10 +1322,12 @@
     },
     {
      "name": "movie",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3,
      "source": {
       "sites": [
@@ -1336,8 +1338,7 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: apple.com, archive.org; named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+      "words": "source 2 of 3: apple.com, archive.org; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1816,8 +1817,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 40,
-    "proven": 25
+    "checked": 39,
+    "proven": 26
    },
    "skills": [
     {
@@ -2470,10 +2471,12 @@
     },
     {
      "name": "deep-work",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2651,17 +2654,18 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 13,
-    "proven": 18
+    "checked": 12,
+    "proven": 19
    },
    "skills": [
     {
      "name": "dependency-health",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-18",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
