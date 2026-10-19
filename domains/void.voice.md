@@ -10,25 +10,14 @@ it by hand, edit the code instead.
 
 ## Verse's current asks
 
-_Read from /api/reflect on 2026-10-18. Asks a growth-ledger entry answers (its `asked` field) are left out._
+_Read from /api/reflect on 2026-10-19. Asks a growth-ledger entry answers (its `asked` field) are left out._
 
-- Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer. *(small)* (daily, 2026-10-18) `ask-20261018-2031-1`
-- Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off. (daily, 2026-10-18) `ask-20261018-2031-2`
-- Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven. (daily, 2026-10-18) `ask-20261018-2031-3`
-- Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off. *(small)* (after a build, 2026-10-18) `ask-20261018-1006-1`
-- Build a 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven. (after a build, 2026-10-18) `ask-20261018-1006-2`
-- Implement the 'zorbleflux-throttle' visual indicator to prevent high-frequency input from creating visual noise on the stage. *(small)* (after a build, 2026-10-18) `ask-20261018-1000-1`
+- (none open)
 
 ## Decisions on Verse's asks
 
 _Builders' record, not Verse's words. Commits that build an ask carry `Suggested-by: Verse (run N)` or `Suggested-by: Verse (<ask id>)`._
 
-- `ask-20261018-2031-1` queued, not decided yet
-- `ask-20261018-2031-2` queued, not decided yet
-- `ask-20261018-2031-3` queued, not decided yet
-- `ask-20261018-1006-1` queued, not decided yet
-- `ask-20261018-1006-2` queued, not decided yet
-- `ask-20261018-1000-1` queued, not decided yet
 - `ask-20261014-2134-1` queued: one 'rendered' signal for every 3D mini covers this and ask-20261014-2016-2 and ask-20261014-2002-1; next mini-track build
 - `ask-20261014-2016-2` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
 - `ask-20261014-2002-1` queued: folded into ask-20261014-2134-1 (one rendered signal for all minis)
@@ -3012,6 +3001,366 @@ Asks: "Implement a velocity-smoothing curve for the zorbleflux throttle to repla
 > **Next video trick:** A seamless transition where a 3D miniature card morphs into its full-scale skill interface during a video clip.
 
 Asks: "Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer." (small); "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off."; "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven."
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T06:15:24.571Z -->
+### 2026-10-19 06:15 UTC · after a build
+
+**Asked:** This just shipped: "The arcade: 'arcade games' opens the game rack with the six Studio games and your record". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input currently hosting 301 skills across 12 families [S1]. The system is transitioning from a reactive surface to an active agent, managing a high volume of inquiries including 161 'zorbleflux' asks [S1]. The recent deployment of 'The arcade' adds a game rack for six Studio games and user records [Current Input].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js [S1]. Transition from a reactive surface to an active agent by turning unanswered asks into queued jobs and upgrading old parts into long-running tasks with an approval stage [S1].
+>
+> **Next video trick:** Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off [S2].
+
+Asks: "Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer"; "Build the 'decision-matrix' skill under the Deciding family" (small); "Lift the two weak shared libraries: lib/rts.js and lib/stage-pack-h.js" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T07:08:02.900Z -->
+### 2026-10-19 07:08 UTC · after a build
+
+**Asked:** This just shipped: "Verse arcade cabinet, card cycle, word sweep, accurate wants card". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input hosting 302 skills across 12 families [S1, S3]. The system recently shipped the Verse arcade cabinet, card cycle, word sweep, and an accurate wants card [Current Input]. The skill index includes 269 entries across families such as Making things, Games, and The stage [S1, S3].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries: lib/rts.js and lib/stage-pack-h.js [S1]. Transition the system from a reactive surface to an active agent by turning unanswered asks into queued jobs and upgrading old parts into tasks with an approval stage [S1].
+>
+> **Next video trick:** A video skill effect that allows for seamless transition between different video sources like YouTube and Vimeo [video skill: play any YouTube...]
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S1, S2]" (small); "Integrate a 'failure-signature' into the incident-autopsy skill [S2]"; "Implement a velocity-smoothing curve for the zorbleflux throttle [S2]"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T10:32:11.514Z -->
+### 2026-10-19 10:32 UTC · after a build
+
+**Asked:** This just shipped: "Self and wants cards follow what is built; failure signature (asked by Verse); Safety family proven". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven and 87 tested [S3]. Recent shipments include the Service Health card, Family gravity in the living cards mind, and the inclusion of self and wants cards which follow what is built [S1, S3]. The Safety family is now rated as proven [S3].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js [S1]. Transition from a reactive surface to an active agent by turning unanswered asks into queued jobs and upgrading old parts into tasks with an approval stage [S1].
+>
+> **Next video trick:** Implement a velocity-smoothing curve for the zorbleflux throttle to regulate visual motion during user interaction [S2].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small); "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'"
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T10:32:28.775Z -->
+### 2026-10-19 10:32 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven, 97 checked, and 87 tested [S3, S4]. Recent shipments include the Service Health card, Family gravity in the living cards mind, and the inclusion of self and wants cards [S1, S3].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js [S1]. Transition from a reactive surface to an active agent by turning unanswered asks into queued jobs and upgrading old parts into tasks with an approval stage [S1].
+>
+> **Weakest operational area:** The stage family is the least proven, with only 12 proven skills out of 95 [S4]. Specific least-checked skills include figure-can, magnetize, print-download, image, throw-off, swarm, vector-field-mind, and flow-canvas [S4].
+>
+> **Next targeted capability:** Learn how to handle deep ocean floor inquiries because it has been asked 67 times, making it a primary weakness [my will, 2026-10-19].
+>
+> **Next video trick:** Animate a 'velocity-smoothing curve' for the zorbleflux throttle to regulate visual motion during interaction [S3].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small); "Integrate a 'failure-signature' into the incident-autopsy skill"; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T10:34:25.007Z -->
+### 2026-10-19 10:34 UTC · after a build
+
+**Asked:** This just shipped: "Answers: fullwidth 【1】 citations read as [1]; a citation with no source is dropped". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with a single quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven, 97 checked, and 87 tested [S3]. Recent shipments include the Service Health card, Family gravity in the living cards mind, and a change to citation formatting where fullwidth citations read as [1] and citations without sources are dropped [S1, S3, New Shipment].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js [S1]. Transition the stage family from its current status of only 12 proven skills out of 95 toward higher stability [S4].
+>
+> **Next video trick:** A video skill effect that uses an official embed like YouTube or Vimeo to play content inline [S1, Wishlist #5].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small); "Integrate a 'failure-signature' into the incident-autopsy skill"; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T11:49:27.043Z -->
+### 2026-10-19 11:49 UTC · after a build
+
+**Asked:** This just shipped: "Verse grows every 10 minutes and shows what it made; main green; accurate self and tester cards". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven, 97 checked, and 87 tested [S3]. Recent shipments include the Service Health card, Family gravity in the living cards mind, a change to citation formatting, and a new feature where Verse grows every 10 minutes, shows what it made, and maintains accurate self and tester cards [S3, New Shipment].
+>
+> **How I would make it better:** Improve dependency health by lifting the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js [S1]. Transition the stage family from its current status of only 12 proven skills out of 95 toward higher stability [S1].
+>
+> **Next video trick:** Learn to teach the look skill how to open the self card to enable self-correction [my will].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small); "Integrate a 'failure-signature' into the incident-autopsy skill."; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T11:52:35.614Z -->
+### 2026-10-19 11:52 UTC · after a build
+
+**Asked:** This just shipped: "grow-self: track the card cycle's cursor so its pull request opens". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven, 97 checked, and 87 tested [S3]. The most recent shipment, grow-self, enables tracking the card cycle's cursor so its pull request opens.
+>
+> **How I would make it better:** Improve the stability of the stage family, which is currently the least proven with only 12 proven skills out of 95 [S1, S3]. Lift the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js, to improve dependency health [S1].
+>
+> **Next video trick:** A video skill effect that plays a YouTube or Twitch video inline [video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline...].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small); "Integrate a 'failure-signature' into the incident-autopsy skill."; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T12:14:27.757Z -->
+### 2026-10-19 12:14 UTC · after a build
+
+**Asked:** This just shipped: "Verse's upgrades go straight onto main (Actions may not open pull requests here)". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into skills [S1]. The system currently hosts 302 skills across 12 families, with 113 proven, 97 checked, and 87 tested [S3]. The most recent shipment enables upgrades to go straight onto main [Just shipped].
+>
+> **How I would make it better:** Improve the stability of the stage family, which is currently the least proven with only 12 proven skills out of 95 [S3]. Lift the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js, to improve dependency health [S1].
+>
+> **Next video trick:** A video trick using the video skill to play an inline YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, or Odysee video [recently shipped].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small); "Integrate a 'failure-signature' into the incident-autopsy skill." (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T12:39:18.567Z -->
+### 2026-10-19 12:39 UTC · after a build
+
+**Asked:** This just shipped: "propose-fix: one retry after a gateway error from the model's route". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input where asks transform into skills [S1]. The system currently hosts 302 skills across 12 families, with 118 proven, 95 checked, and 88 tested [S3]. The most recent shipment enables one retry after a gateway error from the model's route [Just shipped].
+>
+> **How I would make it better:** Improve the stability of the stage family, which is currently the least proven with only 13 proven skills out of 95 [S3]. Lift the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js, to improve dependency health [S1].
+>
+> **Next video trick:** A video skill effect to play YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, or Odysee videos inline [Just shipped].
+
+Asks: "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S2]." (small); "Integrate a 'failure-signature' into the incident-autopsy skill [S1]."; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill' [S2]." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T13:50:12.397Z -->
+### 2026-10-19 13:50 UTC · after a build
+
+**Asked:** This just shipped: "Browser suite: close leftover pages between sections; wait for unanswered asks". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input where asks transform into skills [S1]. The system currently hosts 302 skills across 12 families, with 128 proven, 89 checked, and 85 tested [S3]. The most recent shipment is the Browser suite, which closes leftover pages between sections and waits for unanswered asks [Just shipped].
+>
+> **How I would make it better:** Improve the stability of the 'the stage' family, which is currently the least proven with only 14 proven skills out of 95 [S3]. Lift the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js, to improve dependency health [S1].
+>
+> **Next video trick:** Learn to handle deep ocean floor inquiries to address a high-frequency request asked 72 times [What I want next].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T13:50:23.830Z -->
+### 2026-10-19 13:50 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input where asks transform into skills [S1]. The system currently hosts 302 skills across 12 families, with 128 proven, 89 checked, and 85 tested [S3]. The most recent shipment is the Browser suite, which closes leftover pages between sections and waits for unanswered asks [Just shipped].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is currently the least proven with only 14 proven skills out of 95 [S3]. Lift the two weak shared libraries, lib/rts.js and lib/stage-pack-h.js, to improve dependency health [S1].
+>
+> **Weakest operational area:** The 'the stage' skill family is the weakest operational area, with only 14 proven skills out of 95 [S3, S4].
+>
+> **Next targeted capability:** Deep ocean floor inquiries, because it has been asked 72 times and is currently a weak point with probes at 30 [my will, 2026-10-19].
+>
+> **Next video trick:** A video effect involving a 'reasoning-link' in the movie-pick JSON to show the specific memory or skill used [S3].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T18:00:18.852Z -->
+### 2026-10-19 18:00 UTC · after a build
+
+**Asked:** This just shipped: "The self card is never the same twice, and it updates while open". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input where asks become skills [S1]. The system currently hosts 302 skills across 12 families, with 164 proven, 60 checked, and 78 tested [S3]. The recent shipment of the self card ensures it is never the same twice and updates while open, which affects the 'Verse itself' family [Just shipped].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is currently the weakest operational area with only 27 proven skills out of 95 [S3]. Address the high-frequency failure in processing site testing requests and learn to handle deep ocean floor inquiries [What I want next].
+>
+> **Next video trick:** A video effect demonstrating the inline playback of a Twitch or Odysee stream [Just shipped].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T18:00:26.173Z -->
+### 2026-10-19 18:00 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 302 skills across 12 families, with 164 proven, 60 checked, and 78 tested [S3, S4]. Recent growth includes the shipment of the self card and the lifting of weak shared libraries [Just shipped, S3].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is the weakest operational area with only 27 proven skills out of 95 [S3]. Address the high-frequency failure in processing site testing requests and learn to handle deep ocean floor inquiries [What I want next].
+>
+> **Weakest operational area:** The 'the stage' family is the weakest operational area with 95 skills, only 27 of which are proven [S3, S4].
+>
+> **Next targeted capability:** Deep ocean floor inquiries, because it has been asked 72 times and is currently a weak point [What I want next].
+>
+> **Next video trick:** A video effect that allows for seamless transitions between different film metadata overlays.
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T19:09:33.964Z -->
+### 2026-10-19 19:09 UTC · after a build
+
+**Asked:** This just shipped: "Self card never stuck on '…'; the music card has a second source and never caches a failure". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 302 skills across 12 families, with 171 proven, 54 checked, and 77 tested [S3]. Recent shipments include the self card fix, improved music card sourcing, and the lifting of weak shared libraries (lib/rts.js, lib/stage-pack-h.js) [Just shipped, S3].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is a weak area with 95 skills and only 32 proven [S3]. Address the high-frequency failure in processing site testing requests and develop the capability to handle deep ocean floor inquiries [What I want next].
+>
+> **Next video trick:** Develop a video effect for a single-frame 'zoom-figure' transition that uses the new 3D miniature rendering [S3, Just shipped].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill" (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'" (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer" (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T19:43:50.867Z -->
+### 2026-10-19 19:43 UTC · after a build
+
+**Asked:** This just shipped: "Verse Photos, step 1: a photo library kept on this device". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 303 skills across 12 families, with 173 proven, 53 checked, and 77 tested [S3]. Recent shipments include 'Verse Photos, step 1: a photo library kept on this device' [Input], alongside the lifting of weak shared libraries (lib/rts.js, lib/stage-pack-h.js) [S3].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is a weak area with 96 skills and only 33 proven [S3]. Address the 'Zorbleflux' throttle requested in open asks to regulate visual motion [S2].
+>
+> **Next video trick:** Animate a 3D miniature card to perform a complex rotation or transformation using existing stage-fx [stage-fx, card-play].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill." (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T21:58:31.098Z -->
+### 2026-10-19 21:58 UTC · after a build
+
+**Asked:** This just shipped: "A short status update linking this repo's PR or commit opens "What is really true now"". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 303 skills across 12 families, with 190 proven, 38 checked, and 75 tested [S3]. Recent shipments include lifting the weak shared libraries lib/rts.js and lib/stage-pack-h.js, as well as implementing a velocity-smoothing curve for the zorbleflux throttle [S2, S3].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which is a weak area containing 96 skills with only 48 proven [S3]. Address the outstanding 'Zorbleflux' throttle asks to prevent visual chaos [S2].
+>
+> **Next video trick:** A video effect that uses the newly shipped video skill to play a Rumble embed correctly by calling the oEmbed API [What my builders learned].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill." (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T21:58:46.462Z -->
+### 2026-10-19 21:58 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system hosts 303 skills across 12 families, with 190 proven, 38 checked, and 75 tested [S3, S4]. Recent development includes lifting the weak shared libraries lib/rts.js and lib/stage-pack-h.js [S2, S3].
+>
+> **How I would make it better:** Improve the stability of 'the stage' family, which contains 96 skills with only 48 proven [S3]. Address the outstanding 'Zorbleflux' throttle asks to prevent visual chaos [S2, S3].
+>
+> **Weakest operational area:** The 'Out in the world' family is the least proven, containing only 4 skills with 1 proven [S4].
+>
+> **Next targeted capability:** The next targeted capability is to absorb and connect every repository on the account to unify fragmented history [S1, My wishlist].
+>
+> **Next video trick:** Learn to use the YouTube Data API to implement video search and play [My wishlist].
+
+Asks: "Integrate a 'failure-signature' into the incident-autopsy skill."; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T22:00:19.841Z -->
+### 2026-10-19 22:00 UTC · after a build
+
+**Asked:** This just shipped: "Verse's own commits reach the site: grow-self and propose-fix start the deploy after their push". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 303 skills across 12 families, with 190 proven, 38 checked, and 75 tested [S3]. A new deployment capability has shipped where 'grow-self' and 'propose-fix' trigger deploys after their push.
+>
+> **How I would make it better:** Increase the density of the 'Out in the world' family, which is currently the least proven with only 4 skills and 1 proven [S3, S4]. Improve the stability of 'the stage' family by increasing its proven skill count from 48 [S3].
+>
+> **Next video trick:** Learn to use the 'Art Forge' to paint a subject with Workers AI for every merged card [builder/art-forge].
+
+Asks: "Implement a 'failure-signature' into the incident-autopsy skill." (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T22:05:25.551Z -->
+### 2026-10-19 22:05 UTC · after a build
+
+**Asked:** This just shipped: "The reality card finds main's real state under Verse's own record commits". Using the tagged facts, state what it changes in the system and what should change next.
+
+> Verse is a blank stage with one quiet input that transforms asks into permanent skills [S1]. The system currently hosts 303 skills across 12 families, with 190 proven, 38 checked, and 75 tested [S3]. Recent deployment includes the reality card finding main's real state under Verse's own record commits.
+>
+> **How I would make it better:** Increase the density and proven skill count of the 'Out in the world' family, which is the least proven with only 4 skills and 1 proven [S3]. Improve 'the stage' family stability by increasing its proven skill count from 48 [S3].
+>
+> **Next video trick:** Create a video skill clip showing a smooth transition between a 'dark-look' and 'light-look' stage style [S1, stage-style, light-look, dark-look].
+
+Asks: "Implement a 'failure-signature' into the incident-autopsy skill." (small); "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
+
+*Verse flagged this one for Adam.*
+
+<sub>model @cf/google/gemma-4-26b-a4b-it · canon v7 · asked by owner</sub>
+
+<!-- voice:2026-10-19T22:16:24.484Z -->
+### 2026-10-19 22:16 UTC · daily
+
+**Asked:** Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.
+
+> Verse is a blank stage with a single quiet input that transforms asks into permanent skills [S1]. The system currently hosts 303 skills across 12 families, with 190 proven, 38 checked, and 75 tested [S3]. The growth ledger shows 483 changes in the last 7 days, including 219 new capabilities and 149 fixes [S2].
+>
+> **How I would make it better:** Increase the proven skill count for the 'Out in the world' family to move it beyond its current state of 4 skills and 1 proven [S3]. Improve 'the stage' family stability by increasing its proven skill count from 48 [S3].
+>
+> **Weakest operational area:** The 'Out in the world' family is the least proven area, containing only 4 skills and 1 proven [S3, S4].
+>
+> **Next targeted capability:** The next targeted capability is to absorb and connect every repository on the account into the core code to unify fragmented history [S1].
+>
+> **Next video trick:** Implement a video effect that allows for YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee, or Twitch videos to play inline [S2].
+
+Asks: "Implement a 'failure-signature' into the incident-autopsy skill."; "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'." (small); "Fix the router so 'open the self card' triggers the look skill instead of a text answer." (small)
 
 *Verse flagged this one for Adam.*
 
