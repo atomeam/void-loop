@@ -303,3 +303,11 @@ test('the readout stays objective: no question, label or fed-back line asks for 
   assert.match(VOICE_SYSTEM, /No persona or feelings/); assert.match(VOICE_SYSTEM, /Cite or leave out/); assert.match(VOICE_SYSTEM, /never write "I feel", "I want"/);
   assert.doesNotMatch(readFileSync(new URL('../void-live-deploy/lib/voice.js', import.meta.url), 'utf8').split('\n').filter((l) => /e\.(better|weakest|next_game) &&/.test(l)).join('\n'), THEATRE, 'the earlier words fed back to the model use the same labels');
 });
+
+test('the skills fact says the index entries are not the skill count (the card once called 268 index entries "skills across 12 families" beside 301 in the bars)', async () => {
+  const { selfFacts } = await import('../void-live-deploy/lib/self-context.js');
+  const t = selfFacts({ self: null, skills: ['a', 'b', 'games'] });
+  assert.match(t, /My skill index has 3 entries/);
+  assert.match(t, /not the skill count/);
+  assert.doesNotMatch(t, /My skills \(3\)/);
+});

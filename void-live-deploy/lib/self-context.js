@@ -58,7 +58,7 @@ export async function readSelf(env, origin, ms = 800) {
 export function selfFacts({ self, skills, will, voice, replies } = {}) {
   const parts = [];
   if (self && self.about) parts.push('What I am: ' + self.about);
-  if (skills && skills.length) parts.push('My skills (' + skills.length + '): ' + skills.join(', '));
+  if (skills && skills.length) parts.push('My skill index has ' + skills.length + ' entries (a few, like games, time and dates, each stand for several skills, so this is not the skill count; the skill families line gives that): ' + skills.join(', '));
   if (self && Array.isArray(self.open)) parts.push('Growth inbox, still open: ' + (self.open.length ? self.open.map((r) => `"${r.ask}" (${r.from}, ${r.date})`).join('; ') : '(none open)'));
   if (self && Array.isArray(self.shipped) && self.shipped.length) parts.push('Growth inbox, recently shipped: ' + self.shipped.slice().sort((x, y) => (x.date < y.date ? 1 : -1)).slice(0, 12).map((r) => `"${r.ask}" (${r.date})`).join('; '));
   const wants = will && Array.isArray(will.wants) ? will.wants : [];
