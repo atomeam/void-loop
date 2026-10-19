@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T02:50:10.115Z",
+   "sha": "ab89662862ad76a2523566b9396c9d66a5f12c21",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39191470135",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "AGENTS.md",
+    "STANDING.md",
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/bench.json",
+    "tools/card-share.test.mjs",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/revert-target.mjs",
+    "tools/revert-target.test.mjs",
+    "tools/terminal.test.mjs",
+    "tools/test_void.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/approval-core.js"
+   ]
+  },
+  {
    "at": "2026-10-19T02:25:44.119Z",
    "sha": "02bd5018ad3b6a0e4200137bc8ad2a46d12ee737",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39188697408",
@@ -660,35 +686,6 @@
    ],
    "touched": [
     "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T08:39:29.316Z",
-   "sha": "5d587a25718577c1cf95a30221b85cc3c7294103",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39111133589",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "void seal: every card's art box carries V01D's procedural art (a data image over the hidden ink plate), the same picture for the same card and a different one for another, with no page errors",
-    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.frontier.md",
-    "tools/checks.mjs",
-    "tools/convert-math.test.mjs",
-    "void-live-deploy/lib/convert-math.js",
-    "void-live-deploy/skills/convert.js",
-    "void-live-deploy/skills/deps.json",
-    "domains/handoff.md",
-    "domains/void.agents.log.md",
-    "tools/bench.json",
-    "tools/service-health.test.mjs",
-    "tools/test_void.mjs",
-    "tools/wants.test.mjs",
-    "void-live-deploy/incidents.json",
-    "void-live-deploy/lib/service-health.js"
    ]
   }
  ]
