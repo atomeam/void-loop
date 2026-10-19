@@ -50,6 +50,9 @@ export async function letsGo(file, ask) {
   catch (e) { return 'the edited skill did not load: ' + e.message; }
 }
 
+/** a gateway error worth one more try (the edge or the model's route hiccupped); 4xx and 500 are answers, not hiccups. Pure. */
+export const retryable = (status) => status === 502 || status === 503 || status === 504;
+export const RETRY_MS = 8000;
 /** The job's state after an attempt: 'done' when the fix passed (its pull request carries it), 'failed' when a step stopped it. Pure. */
 export const stateFor = (result) => (result && result.passed ? 'done' : 'failed');
 /** The queue note after an attempt: which step stopped it, or where the fix went; counts and step names only. */
@@ -66,7 +69,10 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const outDir = opt('--out') || join(os.tmpdir(), 'void-propose-fix'); mkdirSync(outDir, { recursive: true });
   const api = async (path, method = 'GET', body) => {
     const tok = process.env.VOID_OWNER_TOKEN || process.env.VOID_MISSES_TOKEN; if (!tok) throw new Error('VOID_OWNER_TOKEN is not set in this environment');
-    const res = await fetch(SITE + path, { method, headers: { authorization: 'Bearer ' + tok, 'user-agent': 'a2m-propose-fix/1.0', ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
+    const go = () => fetch(SITE + path, { method, headers: { authorization: 'Bearer ' + tok, 'user-agent': 'a2m-propose-fix/1.0', ...(body ? { 'content-type': 'application/json' } : {}) }, ...(body ? { body: JSON.stringify(body) } : {}) });
+    let res = await go();
+    // one more try after a gateway error (2026-10-19: a 502 from the model's route spent a whole tick of the growth clock)
+    if (retryable(res.status)) { await new Promise((r) => setTimeout(r, RETRY_MS)); res = await go(); }
     if (!res.ok) throw new Error(`${method} ${path}: HTTP ${res.status} ${(await res.text()).slice(0, 120)}`); return res.json();
   };
   let job = null, miss;

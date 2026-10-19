@@ -179,3 +179,9 @@ test('a job leaves the open list after an attempt: done when its fix passed, fai
   assert.equal(stateFor({ passed: true }), 'done'); assert.equal(stateFor({ passed: false, failed: 'benchmark' }), 'failed');
   assert.match(noteFor({ passed: false, failed: 'benchmark', edits: 1, detail: '1 of 1 missed' }), /failed at: benchmark \(1 of 1 missed\)$/);
 });
+
+test('a gateway error (502, 503, 504) gets one more try; an answer (2xx, 4xx, 500) does not (2026-10-19)', async () => {
+  const { retryable } = await import('./propose-fix.mjs');
+  for (const s of [502, 503, 504]) assert.equal(retryable(s), true, String(s));
+  for (const s of [200, 400, 401, 404, 409, 429, 500]) assert.equal(retryable(s), false, String(s));
+});
