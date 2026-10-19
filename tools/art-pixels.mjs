@@ -26,6 +26,7 @@ const clamp = (n, a = 0, b = 100) => Math.max(a, Math.min(b, n));
 
 /** scores 0..100 for one RGBA picture. Pure; this exact function also runs inside the page (it is passed as source), so it uses nothing outside itself. */
 export function pixelStats(data, w, h) {
+  const clamp = (v, lo = 0, hi = 100) => Math.max(lo, Math.min(hi, v)); // inside, because the page gets this function as source text and has no outer scope
   const n = w * h, lum = new Float32Array(n);
   let sRG = 0, sYB = 0, sRG2 = 0, sYB2 = 0;
   for (let i = 0; i < n; i++) {
@@ -81,7 +82,9 @@ const SAMPLE = () => { const out = []; for (const kind of KINDS) for (const key 
 export async function measure() {
   let chromium; try { ({ chromium } = await import('playwright-core')); } catch (_) { return null; }
   let browser;
-  try { browser = await chromium.launch({ executablePath: process.env.VOID_TEST_BROWSER || undefined, headless: true, args: ['--no-sandbox'] }); } catch (_) { return null; }
+  const exe = [process.env.VOID_TEST_BROWSER, '/usr/bin/google-chrome', '/opt/pw-browsers/chromium'].find((p) => p && existsSync(p)); // the same candidates tools/test_void.mjs tries
+  if (!exe) return null;
+  try { browser = await chromium.launch({ executablePath: exe, headless: true, args: ['--no-sandbox'] }); } catch (_) { return null; }
   try {
     const page = await browser.newPage({ viewport: { width: W, height: H }, deviceScaleFactor: 1 }), cards = SAMPLE();
     await page.addScriptTag({ content: 'window.__pixelStats = ' + pixelStats.toString() + ';' }); // this file's own function, handed to the page as a script

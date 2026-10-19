@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { luminance, coloursOf, contrastOf, corpus, score, regressions, raised, weakest, METRICS, KEYS, RARITIES, SLACK } from './art-score.mjs';
+import { mergeFloor, ownPart, luminance, coloursOf, contrastOf, corpus, score, regressions, raised, weakest, METRICS, KEYS, RARITIES, SLACK } from './art-score.mjs';
 import { artSvg, KINDS } from '../void-live-deploy/lib/card-art.js';
 
 test('luminance and contrast follow WCAG: black on white is 21:1, a colour against itself is 1:1', () => {
@@ -66,4 +66,12 @@ test('weakest names the lowest property and the lowest kinds', () => {
 test('the art function itself is pure for the corpus: the same card twice is the same string', () => {
   const c = { key: 'alpha Film', name: 'alpha', kind: 'Film', rarity: 'rare' };
   assert.equal(artSvg(c), artSvg({ ...c }));
+});
+
+test('updating the source floor keeps the pixel floor next to it, and ownPart compares only what this tool owns', () => {
+  const old = { composite: 90, metrics: { contrast: 90 }, pixels: { composite: 74, chrome: '141', metrics: { tonal: 98 } } };
+  const merged = mergeFloor(old, { composite: 95, metrics: { contrast: 95 } });
+  assert.deepEqual(merged.pixels, old.pixels); assert.equal(merged.composite, 95); assert.deepEqual(merged.metrics, { contrast: 95 });
+  assert.deepEqual(mergeFloor(null, { composite: 1, metrics: {} }), { composite: 1, metrics: {} });
+  assert.deepEqual(ownPart(old), { composite: 90, metrics: { contrast: 90 } }); assert.equal(ownPart(null), null);
 });

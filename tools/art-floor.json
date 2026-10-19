@@ -1,0 +1,21 @@
+{
+ "composite": 99,
+ "metrics": {
+  "contrast": 100,
+  "hues": 100,
+  "unique": 100,
+  "weight": 100,
+  "motif": 93.1,
+  "ladder": 100
+ },
+ "pixels": {
+  "composite": 74,
+  "chrome": "141",
+  "metrics": {
+   "tonal": 98.8,
+   "colour": 81.6,
+   "detail": 100,
+   "focus": 13.9
+  }
+ }
+}
