@@ -476,6 +476,26 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T02:36:53Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-19T02:36:50Z",
+   "subject": "wants: \"what needs built\" opens Verse's own list, not a Maslow essay"
+  },
+  {
+   "at": "2026-10-19T02:34:42Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"add task call"
+  },
+  {
+   "at": "2026-10-19T02:25:44Z",
+   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T02:24:36Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
    "at": "2026-10-19T02:24:30Z",
    "subject": "Regenerate the families and the book after the merge"
   },
@@ -534,26 +554,6 @@
   {
    "at": "2026-10-18T18:47:22Z",
    "subject": "Site test: fix: \"yo film metadata for ikiru\" refused: don't know this y"
-  },
-  {
-   "at": "2026-10-18T18:43:34Z",
-   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T18:37:40Z",
-   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T18:24:00Z",
-   "subject": "Review bench: the deploy action's defects as fixture cases"
-  },
-  {
-   "at": "2026-10-18T18:23:06Z",
-   "subject": "Review bench fixture: the deploy action's index.ts (the owner's own repo, MIT), added alone so the bench can review it as a commit"
-  },
-  {
-   "at": "2026-10-18T18:21:48Z",
-   "subject": "Incident: the browser suite failed on 9751b0ba (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {
