@@ -6383,5 +6383,13 @@
   {"ask": "dependency map", "want": "skill:deps"},
   {"ask": "show me the dependency map", "want": "skill:deps"},
   {"ask": "what depends on lib/where.js", "want": "skill:deps"},
-  {"ask": "three drafts of we are late with the report", "want": "skill:draft-triad"}
+  {"ask": "three drafts of we are late with the report", "want": "skill:draft-triad"},
+  {"ask": "pick something to listen to with me", "want": "skill:media-pick"},
+  {"ask": "pick a song", "want": "skill:media-pick"},
+  {"ask": "pick something to watch", "want": "skill:media-pick"},
+  {"ask": "what network is the office on", "want": "skill:show"},
+  {"ask": "when did breaking bad end", "want": "skill:show"},
+  {"ask": "what did I decide last tuesday", "want": "skill:echo-chamber"},
+  {"ask": "replay my best answers", "want": "skill:echo-chamber"},
+  {"ask": "factor my goal: learn spanish", "want": "skill:eigenwork"}
 ]
