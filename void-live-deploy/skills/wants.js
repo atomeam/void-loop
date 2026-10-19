@@ -140,15 +140,23 @@ async function copyText(t) {
 }
 async function run(text, api) {
   if (!wantsOf(text)) return 'none';
-  const { showPage, esc, say } = api;
+  const { showPage, esc, say, keepFresh } = api;
   const [will, reflect, self] = await Promise.all([get('/api/will'), get('/api/reflect'), get('/self.json')]);
   const m = cardModel({ will, reflect, self }), more = moreLine(clauses(text).rest);
-  showPage((el) => {
+  const card = showPage((el) => {
     el.classList.add('wants-card');
     el.innerHTML = cardHtml(m, esc, { more });
     const tap = async (b) => { const ok = await copyText(b.getAttribute('data-copy')); b.classList.toggle('copied', ok); if (say) say(ok ? 'copied' : 'select it to copy'); };
     el.addEventListener('click', (e) => { const b = e.target.closest && e.target.closest('[data-copy]'); if (b) tap(b); });
     el.addEventListener('keydown', (e) => { if (e.key !== 'Enter' && e.key !== ' ') return; const b = e.target.closest && e.target.closest('[data-copy]'); if (b) { e.preventDefault(); tap(b); } });
+  });
+  // it keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): the same three records every minute, redrawn when they changed
+  let was = JSON.stringify(m);
+  if (card && keepFresh) keepFresh(card, async () => {
+    const [w, r, sj] = await Promise.all([get('/api/will'), get('/api/reflect'), get('/self.json')]);
+    const nm = cardModel({ will: w, reflect: r, self: sj }), now = JSON.stringify(nm);
+    if (now === was) return;
+    was = now; card.innerHTML = cardHtml(nm, esc, { more }); card.dataset.refreshed = String(Date.now());
   });
   if (say) say(countLine(m.counts));
   return 'wants';

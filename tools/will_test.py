@@ -63,5 +63,14 @@ class BetterBoost(unittest.TestCase):
         self.assertEqual(len(c[0]["why"]), 240)
 
 
+class RobotAsks(unittest.TestCase):
+    """our own robots' asks are not people (owner, 2026-10-19: "deep ocean floor inquiries, asked 72 times" was the claims check)"""
+    def test_the_claims_and_site_tester_asks_are_robots(self):
+        self.assertTrue(will.is_robot("tell me everything about the deep ocean floor"))
+        self.assertTrue(will.is_robot("Test the site?"))
+        self.assertTrue(will.is_robot("tester log"))
+        self.assertFalse(will.is_robot("how deep is the mariana trench"))
+
+
 if __name__ == "__main__":
     unittest.main()

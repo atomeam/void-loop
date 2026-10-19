@@ -42,6 +42,26 @@ def recent(last, days=MISS_DAYS, now=None):
     now = now or datetime.datetime.now(datetime.timezone.utc)
     return (now - t).days < days
 
+def robot_asks():
+    """The asks our own robots type into the live page (tools/robot-asks.mjs: the claims check and the site tester), cleaned the way
+    claims-verify cleans them. Their misses are replays, not people (owner, 2026-10-19: "deep ocean floor inquiries, asked 72 times"
+    was the claims check typing a ledger try ask). An empty set when node cannot be run."""
+    import subprocess
+    try:
+        return set(json.loads(subprocess.run(["node", str(ROOT / "tools" / "robot-asks.mjs")], capture_output=True, text=True, timeout=60).stdout or "[]"))
+    except Exception:
+        return set()
+
+def clean_ask(a):
+    return re.sub(r"\s+", " ", re.sub(r"[?!.]+$", "", str(a or "").strip().lower().replace("\u2019", "'"))).strip()
+
+ROBOT = None
+def is_robot(a):
+    global ROBOT
+    if ROBOT is None:
+        ROBOT = robot_asks()
+    return clean_ask(a) in ROBOT
+
 def learnable(m):
     """A miss Verse could learn from. Not one a skill already caught (fallback skill:<name>), and not one every source was read
     for and none knew (fallback none:<sources>, lib/refusal.js): nothing exists to learn about 'zorbleflux', however often it is
@@ -85,7 +105,7 @@ def gather(cap=60, with_done=False):
         # the page learned to answer since (e.g. "add milk", now the inline list) would otherwise stay a want forever
         mf = os.environ.get("VOID_MISSES_FILE", "")
         board = json.loads(pathlib.Path(mf).read_text(encoding="utf-8")) if mf else call("/api/misses")
-        misses = [m for m in board[:40] if learnable(m) and recent(m.get("last"))]
+        misses = [m for m in board[:40] if learnable(m) and recent(m.get("last")) and not is_robot(m.get("ask"))]
         covered = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([m["ask"] for m in misses]), capture_output=True, text=True, timeout=60).stdout or "[]")
         for m, done in zip(misses, covered + [False] * len(misses)):
             if not done and len(m["ask"]) > 4 and not NOISE.match(str(m["ask"]).strip()):
@@ -236,7 +256,7 @@ def gather(cap=60, with_done=False):
         near = []
         for skill, rows in (rt.get("skills") or {}).items():
             for r in rows:
-                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()):
+                if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()) and not is_robot(r["ask"]):
                     near.append((skill, r))
         try:
             import subprocess
@@ -252,7 +272,7 @@ def gather(cap=60, with_done=False):
         # the router answered as a question while it came within CLOSE of a skill's bar (lib/router.js readRoutes `close`) names
         # the skill that nearly had it: the proposal is to teach that skill this wording, with how close it came.
         props = [(skill, r) for skill, rows in (rt.get("close") or {}).items() for r in rows
-                 if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip())]
+                 if len(str(r.get("ask", ""))) > 4 and r.get("ask") != "(masked ask)" and not NOISE.match(str(r["ask"]).strip()) and not is_robot(r["ask"])]
         try:
             import subprocess
             pdone = json.loads(subprocess.run(["node", str(ROOT / "tools" / "covered.mjs")], input=json.dumps([r["ask"] for _, r in props]), capture_output=True, text=True, timeout=60).stdout or "[]")
