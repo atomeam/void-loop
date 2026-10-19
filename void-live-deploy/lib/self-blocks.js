@@ -79,7 +79,7 @@ export function foldAsks(asks) {
 
 const GROW_SOURCE = {
   weakest: "Source: a model's judgement over the family bars (counts from skills/families.json, proven skills over all skills). Check it against those bars.",
-  next_game: "Source: a model's pick. Nothing in the repo ranks games, so this is a suggestion, not a finding.",
+  next_game: "Source: a model's pick of the next capability (a game, skill or card) from the tagged facts. Nothing in the repo ranks capabilities, so this is a suggestion, not a finding.",
   better: "Source: a proposal for builders, written by the model from the facts given. It is not a plan until a ledger line says it was built.",
 };
 /** the model's short name for the card's label ("a Workers AI language model" when none was recorded). Pure. */
@@ -112,9 +112,9 @@ export function selfSections(v, now = Date.now()) {
     .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
     .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
-  const grow = daily ? [['Weakest right now', 'weakest'], ['Next game I want to learn', 'next_game'], ["How I'd get better", 'better']].filter(([, k]) => sentence(daily[k])) : [];
+  const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest right now / Next game / How I\'d get better', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });

@@ -5578,7 +5578,7 @@ try {
       return { heads: [...pg.querySelectorAll('h3.vs-h, h4.vs-h4')].map((x) => x.textContent), hw: +cs(h).fontWeight, pw: +cs(p).fontWeight, hs: px(h, 'fontSize'), ps: px(p, 'fontSize'), lis: pg.querySelectorAll('.vs-sec[data-sec=asked] ul > li').length, pad: px(li, 'paddingLeft'),
         pm: px(p, 'marginBottom') || px(lead, 'marginBottom'), leadMargin: px(lead, 'marginBottom'), logFont: cs(log).fontFamily, bodyFont: cs(lead).fontFamily, border: cs(log).borderTopWidth, meta: cs(li.querySelector('.v-meta')).fontSize, errors: 0 }; });
     check('self card layout (owner review 2026-10-18): real headings (bold, larger than the body), one list item per ask with a hanging indent, 8px or more between paragraphs, the reflection in the reading font and what got built in monospace inside a bordered box',
-      got.heads.includes('Weakest right now') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
+      got.heads.includes('Weakest operational area') && got.heads.includes("What I've asked for (2 waiting)") && got.heads.includes('What got built (35 of 73 asks)') && got.hw >= 600 && got.pw < got.hw && got.hs > got.ps && got.lis === 2 && got.pad >= 16 && got.leadMargin >= 8 && /mono|Menlo|Consolas/i.test(got.logFont) && !/mono|Menlo|Consolas/i.test(got.bodyFont) && got.border === '1px' && !L.errors.length,
       JSON.stringify({ got, errors: L.errors }));
     await L.ctx.close(); }
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
@@ -5628,7 +5628,7 @@ try {
     await S.p.click('.vpage.on .vs-sec[data-sec=growth] > summary'); const opened = await S.p.$eval('.vpage.on .vs-sec[data-sec=growth]', (d) => d.open);
     await S.p.focus('.vpage.on .vs-sec[data-sec=growth] > summary'); await S.p.keyboard.press('Enter'); const shut = await S.p.$eval('.vpage.on .vs-sec[data-sec=growth]', (d) => d.open);
     check('void asks batch 4: the self card shows the newest 5 of each long list and folds the rest behind "show all N" (aria-expanded, unfolds on click), each titled section is a collapsible block whose heading (bold, larger) is the toggle by click or keyboard, the speaker sits as far in from the right border as the title from the left, and the saved text fits whole (older builds one line each)',
-      self.heads.includes('Weakest right now') && self.heads.includes('Next game I want to learn') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
+      self.heads.includes('Weakest operational area') && self.heads.includes('Next targeted capability') && self.heads.includes('What got built (30 of 70 asks)') && self.heads.includes("What I've asked for (6 waiting)") && self.inSummary && self.hw >= 600 && self.hs > self.ps
         && self.before.built === 5 && self.before.asked === 5 && self.before.label === 'show all 30' && self.before.exp === 'false' && self.after.built === 30 && self.after.exp === 'true' && self.back === 5
         && opened === true && shut === false
         && !!self.inset && Math.abs(self.inset.right - self.inset.left) <= 2
@@ -9350,7 +9350,7 @@ try {
     const after = await S.p.evaluate(() => window.__marker || '');
     check("a tab left open shows 'a newer Verse is ready' when the build changes, and reloads only on tap", !same && shown && /newer Verse is ready/.test(text) && still === 'old page' && after === '' && !S.errors.length, JSON.stringify({ same: !!same, shown, text, still, after, errors: S.errors }));
     await S.ctx.close(); }
-  // go against Verse (asked by Verse: "Next game I want to learn: Go"; lib/go-ai.js): you are Black, Verse answers each stone as White;
+  // go against Verse (asked by Verse: "Next targeted capability: Go"; lib/go-ai.js): you are Black, Verse answers each stone as White;
   // plain "play go" stays two people on one device with no opponent
   if (want("go against v01d: \"play go against void\" seats you as black and v01d answers your stone; \"play go\" stays two people")) {
     const goOn = (X) => X.state().then((s) => s.find((x) => x.kind === 'go'));

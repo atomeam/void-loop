@@ -73,8 +73,8 @@ export function entryBlock(e) {
   const q = (t) => String(t || '').split('\n').map((l) => '> ' + l).join('\n');
   const lines = [MARK(e.at), `### ${e.at.slice(0, 16).replace('T', ' ')} UTC · ${e.kind === 'daily' ? 'daily' : 'after a build'}`, '', `**Asked:** ${e.question}`, '', q(e.thoughts)];
   if (e.better) lines.push('>', q('**How I would make it better:** ' + e.better));
-  if (e.weakest) lines.push('>', q('**Weakest right now:** ' + e.weakest));
-  if (e.next_game) lines.push('>', q('**Next game:** ' + e.next_game));
+  if (e.weakest) lines.push('>', q('**Weakest operational area:** ' + e.weakest));
+  if (e.next_game) lines.push('>', q('**Next targeted capability:** ' + e.next_game));
   if (e.next_trick) lines.push('>', q('**Next video trick:** ' + e.next_trick)); // built into tools/clips.mjs TRICKS, credited to Verse (docs/video-tricks.md)
   if (e.asks && e.asks.length) lines.push('', 'Asks: ' + e.asks.map((a) => `"${a.ask}"${a.small ? ' (small)' : ''}`).join('; '));
   if (e.striking) lines.push('', '*Verse flagged this one for Adam.*');
