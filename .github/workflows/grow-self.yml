@@ -38,6 +38,7 @@ jobs:
       passed: ${{ steps.settle.outputs.passed }}
       added: ${{ steps.settle.outputs.added }}
       skills: ${{ steps.settle.outputs.skills }}
+      title: ${{ steps.settle.outputs.title }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -116,15 +117,27 @@ jobs:
           node tools/lacks.mjs settle "$g/cand.json" "$g/probe.log" --out "$g/passing.json" --failed "$g/failed.json" --report "$g/report.md"
           cat "$g/report.md" >> "$GITHUB_STEP_SUMMARY"
           count=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).length" "$g/passing.json")
-          [ "$count" -ge 1 ] || { echo "::notice title=Nothing to add::none of the asks routed to their skill; the report lists them"; exit 0; }
-          node tools/append.mjs bench --skip --file "$g/passing.json"
-          skills=$(node -p "[...new Set(JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).map((c) => c.want.replace('skill:', '')))].join(', ')" "$g/passing.json")
-          printf '%s | verse | grow | hardened itself: %s benchmark ask(s) for %s, each typed into the real page and answered by the skill that claims it (tools/lacks.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$count" "$skills" >> domains/void.agents.log.md
-          git diff -- tools/bench.json domains/void.agents.log.md > "$g/grow.patch"
-          # only the benchmark and the log may change; anything else means a tool misbehaved and nothing is opened
-          git diff --name-only | grep -vE '^(tools/bench\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark and the log may change"; exit 1; } || true
-          node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8"))'
-          echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"
+          # the card art: the weakest properties go in the summary, and each floor rises when the art got better (it never lowers: a drop fails checks.mjs)
+          { echo; echo '#### Card art'; node tools/art-score.mjs; node tools/art-pixels.mjs; } | tee -a "$GITHUB_STEP_SUMMARY"
+          node tools/art-score.mjs --write; node tools/art-pixels.mjs --write
+          art=$(git diff --name-only -- tools/art-floor.json | wc -l)
+          if [ "$count" -lt 1 ] && [ "$art" -lt 1 ]; then echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report lists them"; exit 0; fi
+          skills=""; title=""
+          if [ "$count" -ge 1 ]; then
+            node tools/append.mjs bench --skip --file "$g/passing.json"
+            skills=$(node -p "[...new Set(JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).map((c) => c.want.replace('skill:', '')))].join(', ')" "$g/passing.json")
+            title="$count benchmark ask(s) for $skills"
+          fi
+          if [ "$art" -ge 1 ]; then
+            now=$(node -p "const f = JSON.parse(require('fs').readFileSync('tools/art-floor.json', 'utf8')); f.composite + ' and ' + (f.pixels ? f.pixels.composite : 'n/a')")
+            title="${title:+$title, and }the card art floors rise to $now"
+          fi
+          printf '%s | verse | grow | hardened itself: %s (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$title" >> domains/void.agents.log.md
+          git diff -- tools/bench.json tools/art-floor.json domains/void.agents.log.md > "$g/grow.patch"
+          # only the benchmark, the art floors and the log may change; anything else means a tool misbehaved and nothing is opened
+          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors and the log may change"; exit 1; } || true
+          node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8"))'
+          echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"; echo "title=$title" >> "$GITHUB_OUTPUT"
 
       # the patch (when anything routed) and the asks that did not: both leave this job, nothing else does
       - uses: actions/upload-artifact@v4
@@ -195,18 +208,19 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           ADDED: ${{ needs.build.outputs.added }}
           SKILLS: ${{ needs.build.outputs.skills }}
+          WHAT: ${{ needs.build.outputs.title }}
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark and the log
-          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark and the log"; exit 1; } || true
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark, the art floors and the log"; exit 1; } || true
           branch="verse/harden-$(date -u +%Y%m%d-%H%M)"
           git switch -c "$branch"
           git apply "$patch"
           [ -n "$(git status --porcelain)" ] || { echo "nothing to propose"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- tools/bench.json domains/void.agents.log.md
-          title="Verse hardens itself: $ADDED benchmark ask(s) for $SKILLS"
+          git add -- tools/bench.json tools/art-floor.json domains/void.agents.log.md
+          title="Verse hardens itself: $WHAT"
           git commit -q -m "$title" -m "Verse found its least proven skills in its own files (tools/lacks.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them."
           git push -q origin "$branch"
           for l in "made by Verse|5c5cff|a change Verse made itself and the repo's checks passed" "verse hardens|0e8a16|Verse added benchmark asks for what it had least proof of" "automerge|1d76db|merges on Verse's review"; do
@@ -214,7 +228,7 @@ jobs:
           done
           body="$(cat "$RUNNER_TEMP/grow/report.md")
 
-          Risk: low. Only tools/bench.json and the agent log change: rows are added, none edited or removed, and each row was answered by the skill it names in the real page before it was kept.
+          Risk: low. Only tools/bench.json, tools/art-floor.json and the agent log change: benchmark rows are added (none edited or removed, each answered by the skill it names in the real page before it was kept) and an art floor only ever rises.
           Labelled automerge: it merges on Verse's review like any PR, verify.yml takes it back if main's suite goes red, and it is the only one of its kind open at a time. How it was made: .github/workflows/grow-self.yml, tools/lacks.mjs."
           url=$(gh pr create --base main --head "$branch" --label "made by Verse" --label "verse hardens" --label "automerge" --title "$title" --body "$body")
           echo "### Verse hardened itself: $url" >> "$GITHUB_STEP_SUMMARY"

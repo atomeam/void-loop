@@ -54,3 +54,10 @@ test('the pixel floor never falls, allows a wider slack on another Chromium, and
   assert.equal(pixelRaised({ composite: 10, metrics: { tonal: 0, colour: 0, detail: 0, focus: 0 } }, floor).composite, 60);
   assert.deepEqual(PIXEL_METRICS, ['tonal', 'colour', 'detail', 'focus']);
 });
+
+test('pixelStats is self-contained: its source text runs in an empty context and gives the same numbers (the page receives it as text)', async () => {
+  const vm = await import('node:vm');
+  const img = image((x, y) => (x % 7 < 3 ? [200, 40, 90] : [10, 20, 60 + y]));
+  const alone = vm.runInNewContext('(' + pixelStats.toString() + ')');
+  assert.equal(JSON.stringify(alone(img, W, H)), JSON.stringify(pixelStats(img, W, H)));
+});

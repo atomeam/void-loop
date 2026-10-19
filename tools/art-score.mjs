@@ -95,6 +95,11 @@ export function raised(now, floor) {
   const f = floor || { composite: 0, metrics: {} };
   return { composite: Math.max(f.composite || 0, now.composite), metrics: Object.fromEntries(METRICS.map((m) => [m, Math.max((f.metrics || {})[m] || 0, now.metrics[m])])) };
 }
+/** the floor file after a source-score update: the new composite and properties, and every other key (the pixel floor of tools/art-pixels.mjs) kept as it was. Pure. */
+export const mergeFloor = (old, next) => ({ ...(old || {}), composite: next.composite, metrics: next.metrics });
+/** just the part of a floor this tool owns, for comparing. Pure. */
+export const ownPart = (f) => (f ? { composite: f.composite, metrics: f.metrics } : null);
+
 /** the weakest few (property, kind) findings to show a builder: the kinds with the lowest contrast and the lowest property overall. Pure. */
 export function weakest(now, n = 3) {
   const worst = Object.entries(now.metrics).sort((a, b) => a[1] - b[1])[0];
@@ -108,8 +113,8 @@ function main(argv) {
   const now = score(corpus()), floor = readFloor();
   if (argv.includes('--json')) { console.log(JSON.stringify({ now, floor, weakest: weakest(now) }, null, 1)); return 0; }
   if (argv.includes('--write')) {
-    const next = raised(now, floor), same = floor && JSON.stringify(floor) === JSON.stringify(next);
-    if (!same) writeFileSync(FLOOR_FILE, JSON.stringify(next, null, 1) + '\n');
+    const next = raised(now, floor), same = floor && JSON.stringify(ownPart(floor)) === JSON.stringify(next);
+    if (!same) writeFileSync(FLOOR_FILE, JSON.stringify(mergeFloor(floor, next), null, 1) + '\n');
     console.log(same ? 'art floor unchanged: ' + next.composite : 'art floor raised to ' + next.composite + (floor ? ' (was ' + floor.composite + ')' : '')); return 0;
   }
   console.log('card art score ' + now.composite + (floor ? ' (floor ' + floor.composite + ')' : ' (no floor yet: run --write)') + '  ' + METRICS.map((m) => m + ' ' + now.metrics[m]).join('  '));
@@ -118,7 +123,7 @@ function main(argv) {
     if (!floor) { console.error('art-floor.json is missing: run node tools/art-score.mjs --write'); return 1; }
     const bad = regressions(now, floor);
     if (bad.length) { console.error('the card art got worse: ' + bad.join('; ')); return 1; }
-    const next = raised(now, floor); if (JSON.stringify(next) !== JSON.stringify(floor)) console.log('the art improved: node tools/art-score.mjs --write raises the floor to ' + next.composite);
+    const next = raised(now, floor); if (JSON.stringify(next) !== JSON.stringify(ownPart(floor))) console.log('the art improved: node tools/art-score.mjs --write raises the floor to ' + next.composite);
   }
   return 0;
 }

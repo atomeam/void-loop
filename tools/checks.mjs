@@ -18,7 +18,7 @@ const here = dirname(fileURLToPath(import.meta.url));
 const args = process.argv.slice(2), skipBrowser = args.includes('--skip-browser');
 const only = args.includes('--only') ? args.slice(args.indexOf('--only') + 1).filter((a) => !a.startsWith('--')).join(' ').toLowerCase().split(/\s+/).filter(Boolean) : [];
 // the scripts below that open a browser (they take the heavy lock themselves): everything else is pure and goes in the pool
-const BROWSER = new Set(['draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs']);
+const BROWSER = new Set(['art-pixels.mjs', 'draft-check.mjs', 'perf3d.test.mjs', 'test_extension.mjs', 'test_glyphs.mjs', 'test_sky.mjs']);
 let browserRunning = 0;
 const gate = makeGate(() => poolSize(browserRunning > 0));
 const root = resolve(here, '..');
@@ -209,6 +209,10 @@ for (const [name, file] of [
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
   ['lacks', 'lacks.test.mjs'],
+  ['grow-self', 'grow-self.test.mjs'],
+  ['art-score', 'art-score.test.mjs'],
+  ['art-pixels', 'art-pixels.test.mjs'],
+  ['bench-concurrency', 'bench-concurrency.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
   ['what-skills', 'what-skills.test.mjs'],
   ['reflect', 'reflect.test.mjs'],
@@ -387,7 +391,9 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
-addScript('refresh', 'refresh.mjs', ['--check']); // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)
+addScript('refresh', 'refresh.mjs', ['--check']);
+addScript('art', 'art-score.mjs', ['--check']); // the card art, scored from its source: the floor only rises (tools/art-floor.json)
+addScript('art-pixels', 'art-pixels.mjs', ['--check']); // the card art as a person sees it, in Chromium (passes with a note when there is no browser) // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
 addScript('overlap', 'skill-overlap.mjs', ['--check']);
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Verse's own ask)
