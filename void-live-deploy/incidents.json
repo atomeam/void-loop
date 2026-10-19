@@ -2,6 +2,96 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T20:11:32.582Z",
+   "sha": "81d61f6ae736073961d09dda61c401ec90fff7f9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39313194651",
+   "suite": "browser suite on main",
+   "checks": [
+    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
+    "stage pack b: \"shield everything except the clock for 25 minutes\" dims every other thing to 0.15 under a 25:00 focus bar, the clock stays clear, and \"lift the shield\" restores everything and removes the bar",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "confirm line: visitors cannot send",
+    "confirm line: no = it does not run",
+    "confirm line: no answer = timeout, nothing runs",
+    "confirm line: changed request fails hard",
+    "paid: with a passkey, an outbound action still stops on the confirm line",
+    "remember me on a device that already has your passkey signs in (no second Verse)"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/photo-library.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/photo-library.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1755-photos",
+    "void-live-deploy/skills/photos.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
+   "at": "2026-10-19T19:35:17.648Z",
+   "sha": "bffbcd82f030ae0ecdf603759e9d68ad8a5957ce",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39308398972",
+   "suite": "browser suite on main",
+   "checks": [
+    "calendar: \"schedule a meeting with Sam\" is the owner's confirm line (a visitor is told so, nothing saved); \"calender\" shows one card; the card survives a reload; \"remove my calendar\" hides it and keeps the events; × removes one and undo brings it back",
+    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
+    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
+    "Verse's asks batch: the merge log lists merged pull requests newest first with how each got in (titles as text); forge history lists every recipe (eleven or more: the camp adds its own) with make links and, after one is made, says it is on the stage; the self card opens each built ask to Verse's words beside what was built",
+    "routines: \"call this my morning\" saves the two asks before it in the order they were asked (and not itself); after a reload \"my morning\" asks them again (the coin card shows, both are asked anew); \"my routines\" lists it; \"forget my morning\" drops it",
+    "quiz card: asks the gear card's own question, is not in the saved stage after a reload, and is after \"keep this quiz\"",
+    "void asks batch 4: the self card redesign (owner, 2026-10-18): one picture in the art box with nothing small over it and no evolved note, Verse's words a quotation with an accent bar and every block closed but the lead (what is new: owner, 2026-10-19, \"the whole card need to be different\"), a bar per skill family with one weakest; its saved picture has the same shape and stays under 1600 px",
+    "void asks batch 4: the family-health card's quick filter pivots between proven and experiment skills on the stage (other ratings hidden, families with none hidden) and All puts it back (asked by Verse)",
+    "voice: Verse says what it thinks of itself, in its own words, with what it has asked for and how many of its asks were built",
+    "voice: the reflection card shows what got built as a bar (2 of 5, 40%) and each ask opens to when Verse asked it and that it is not built yet",
+    "WebMCP: a miss from an agent call is tagged origin agent; the same miss typed by a person is not",
+    "paid: signed out, every paid ask gets the price, what it adds and \"remember me\" first (no page, no checkout opened)",
+    "paid: signed out, a price question says the membership line AND opens the services card under it",
+    "confirm line: visitors cannot send",
+    "confirm line: no = it does not run",
+    "confirm line: no answer = timeout, nothing runs",
+    "confirm line: changed request fails hard",
+    "paid: with a passkey, an outbound action still stops on the confirm line",
+    "remember me on a device that already has your passkey signs in (no second Verse)",
+    "paid: the tier comes from the server; only \"paid\" counts (anything else reads as free)"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/media-music.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/code-review/index.html",
+    "void-live-deploy/functions/api/media.js",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/mcp-skills.js",
+    "void-live-deploy/lib/media.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/void.asks.json",
+    "void-live-deploy/void.growth.json"
+   ]
+  },
+  {
    "at": "2026-10-19T18:27:48.650Z",
    "sha": "3cab42c94424d7bbb731d4a46c3cce4eddeafe45",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39298678677",
@@ -706,47 +796,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/notebook.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T15:47:17.999Z",
-   "sha": "686c6415d5372de6962fca6a6977c3c857270c41",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39140731260",
-   "suite": "browser suite on main",
-   "checks": [
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/perf3d.test.mjs",
-    "tools/test_extension.mjs",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T14:48:12.047Z",
-   "sha": "25ad091862fb9dd334853ae4f952f6ba2e71986b",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39136320875",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/bench.json",
-    "tools/test_void.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/dependency-health.js",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]

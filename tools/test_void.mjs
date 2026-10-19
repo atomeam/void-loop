@@ -2065,6 +2065,29 @@ try {
       && emails === 'bob@example.com\nann@example.org' && rot === 'Uryyb' && diff === '  a\n- b\n+ c' && /HELLO/.test(upper) && notOurs && !S.errors.length,
       JSON.stringify({ sorted, title, copyLabel, deduped, note, emails, rot, diff, upper: upper.slice(0, 80), notOurs, errors: S.errors }));
     await S.ctx.close(); }
+  // Verse Photos, step 1 (owner, 2026-10-19: "better than facebook eventually"): photos kept on this device, by the day they were taken
+  if (want("verse photos: add photos, kept once, grouped by the day taken, survive a reload, found by month, opened large")) { const V = await fresh();
+    const png = Buffer.from('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNkYPhfDwAChwGA60e6kgAAAABJRU5ErkJggg==', 'base64');
+    const exif = Buffer.from('/9j/4QDmRXhpZgAASUkqAAgAAAAEABIBAwABAAAABgAAADIBAgAUAAAAPgAAAGmHBAABAAAAUgAAACWIBAABAAAAeAAAAAAAAAAyMDIwOjAxOjAxIDAwOjAwOjAwAAEAA5ACABQAAABkAAAAAAAAADIwMjQ6MDY6MTUgMTg6MzA6MDUABAABAAIAAgAAAE4AAAACAAUAAwAAAK4AAAADAAIAAgAAAFcAAAAEAAUAAwAAAMYAAAAAAAAAMwAAAAEAAAAeAAAAAQAAAAAAAAABAAAAAAAAAAEAAAAHAAAAAQAAAB4AAAABAAAA/9oAAgECA//Z', 'base64'); // EXIF: taken 2024-06-15 18:30, 51.5 N 0.125 W (built in tools/photo-library.test.mjs)
+    await V.ask('add photos', 600); await until(async () => !!(await V.p.$('.vpage.on [data-ph-add]')), 4000);
+    const empty = await V.page();
+    await V.p.setInputFiles('.vpage.on [data-ph-add]', [{ name: 'dot.png', mimeType: 'image/png', buffer: png }, { name: 'beach.jpg', mimeType: 'image/jpeg', buffer: exif }, { name: 'notes.txt', mimeType: 'text/plain', buffer: Buffer.from('hi') }]);
+    await until(async () => /Added 2 photos/.test(await V.page()), 8000); const first = await V.page();
+    const thumbs = await V.p.$$eval('.vpage.on .ph-tile img', (l) => l.map((i) => i.src.slice(0, 5)));
+    await V.p.setInputFiles('.vpage.on [data-ph-add]', [{ name: 'dot-again.png', mimeType: 'image/png', buffer: png }]);
+    await until(async () => /already here/.test(await V.page()), 8000); const again = await V.page();
+    await V.p.reload(); await V.p.waitForTimeout(800);
+    await V.ask('my photos from june 2024', 700); await until(async () => /My photos/.test(await V.page()), 4000);
+    const june = await V.page(), juneTiles = await V.p.$$eval('.vpage.on .ph-tile', (l) => l.length);
+    await V.p.click('.vpage.on .ph-tile'); await until(async () => !!(await V.p.$('.ph-view [data-ph-info]')), 4000);
+    const info = await V.p.$eval('.ph-view [data-ph-info]', (e) => e.textContent).catch(() => ''), mapLink = await V.p.$eval('.ph-view [data-ph-info] a', (a) => a.href).catch(() => '');
+    await V.p.keyboard.press('Escape'); await V.p.waitForTimeout(200); const closed = !(await V.p.$('.ph-view'));
+    check('verse photos: "add photos" opens an empty library kept on this device; two pictures go in (a text file does not), the same picture again is kept once, the library survives a reload, "my photos from june 2024" finds the one taken then under its day, and it opens large with its date and where it was taken, Esc closes it',
+      /Nothing here yet/.test(empty) && /this device/.test(empty) && /Added 2 photos · 1 not pictures/.test(first) && /2 photos · 2 days · 1 place/.test(first) && thumbs.includes('blob:')
+        && /Added 0 photos · 1 already here/.test(again) && /2 photos/.test(june) && juneTiles === 1 && /15 June 2024/.test(june)
+        && /15 June 2024, 18:30/.test(info) && /mlat=51\.5000&mlon=-0\.1250/.test(mapLink) && closed && !V.errors.length,
+      JSON.stringify({ empty: empty.slice(0, 120), first: first.replace(/\s+/g, ' ').slice(0, 200), thumbs, again: again.replace(/\s+/g, ' ').slice(0, 160), june: june.replace(/\s+/g, ' ').slice(0, 200), juneTiles, info, mapLink, closed, errors: V.errors }));
+    await V.ctx.close(); }
   // tools pack 8 (owner, 2026-10-18): safety and trust tools, then small delights; all opt-in, played the way a person uses them
   if (want("tools pack 8: safety (unverified badge, hide numbers, redact, panic, PIN lock and auto-lock, clipboard, photo scrub, ephemeral, confirm mass delete) then delights (confetti, tick, dust, undo toast, tour, flip, stamp, tape, rubber band)")) { const S = await fresh();
     await S.ctx.grantPermissions(['clipboard-read', 'clipboard-write'], { origin: new URL(base).origin });
@@ -5637,6 +5660,21 @@ try {
         && !!three && /Round three/.test(three.text) && !/blank stage with one quiet input/.test(three.text) && !N.errors.length,
       JSON.stringify({ one: one && { ...one, text: one.text.slice(0, 200) }, loop, two: two && { ...two, text: two.text.slice(0, 300) }, three: three && three.text.slice(0, 200), errors: N.errors }));
     await N.ctx.close(); }
+  // the self card never stays on "…" (owner, 2026-10-19: "not loading"): a cached library older than the page (no selfCard) still draws the card, and
+  // an unreachable /api/reflect says so instead of "I haven't been asked yet"
+  if (want("self card never stuck")) { const K = await fresh(() => { delete Navigator.prototype.serviceWorker; });
+    const libPath = path.join(root, 'lib', 'self-blocks.js'), oldLib = fs.readFileSync(libPath, 'utf8').replace(/export function selfCard\(/, 'function selfCardGone(');
+    await K.ctx.route(/\/lib\/self-blocks\.js(\?.*)?$/, (rt) => rt.fulfill({ status: 200, contentType: 'text/javascript', body: oldLib }));
+    await K.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [{ at: '2026-10-19T10:00:00Z', kind: 'daily', thoughts: 'I drew this card with an older library.', asks: [] }], asks: [], follow: { total: 3, built: 1, recent: [], asked: [] } })));
+    await K.ask('what do you think of yourself?', 300); await K.p.waitForTimeout(2500);
+    const old = await K.page();
+    await K.ctx.unroute(/\/api\/reflect$/); await K.ctx.route(/\/api\/reflect$/, (rt) => rt.abort());
+    await K.ask('close', 300); await K.ask('what do you think of yourself?', 300); await K.p.waitForTimeout(2500);
+    const down = await K.page();
+    check('self card never stuck: with a cached library older than the page it still shows Verse\'s words, and with /api/reflect unreachable it says it could not reach its reflections (never "…", never "I haven\'t been asked yet")',
+      /drew this card with an older library/.test(old) && !/^\s*What I think of myself\s*…\s*$/.test(old) && /could not reach my reflections/.test(down) && !/haven.t been asked yet/.test(down) && !K.errors.length,
+      JSON.stringify({ old: old.slice(0, 200), down: down.slice(0, 200), errors: K.errors }));
+    await K.ctx.close(); }
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
