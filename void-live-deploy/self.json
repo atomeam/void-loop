@@ -476,6 +476,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T06:01:43Z",
+   "subject": "The arcade: 'arcade games' opens the game rack with an arcade row of the six Studio games and your record against Verse"
+  },
+  {
    "at": "2026-10-19T05:54:03Z",
    "subject": "Incident: the browser suite failed on 4a6edd73 (void-live-deploy/incidents.json)"
   },
@@ -550,10 +554,6 @@
   {
    "at": "2026-10-19T04:32:30Z",
    "subject": "The four studio games say Verse: Merge Verse, Dim the Verse, Verse Breaker"
-  },
-  {
-   "at": "2026-10-19T04:29:14Z",
-   "subject": "Incident: the browser suite failed on 8a1d83d3 (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

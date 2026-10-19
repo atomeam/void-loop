@@ -5,16 +5,24 @@
  * nothing lands on the stage unasked. A question or an instruction ("why is my ci red") is left alone (lib/telemetry.js).
  */
 import { telemetryOf, summaryOf } from '../lib/telemetry.js';
+import { liveLines, REPO } from '../lib/telemetry-live.js';
+
+const MARK = { true: '✓ ', false: '✗ ', null: '· ' };
 
 function run(text, api) {
   const t = telemetryOf(text); if (!t) return 'none';
   const { showPage, esc } = api;
   const el = showPage((p) => {
-    p.innerHTML = '<h2>Developer log absorbed</h2>' // void-review: ok (constant heading; every value below is escaped)
-      + '<ul class="v-asks">' + summaryOf(t).map((l) => '<li>' + esc(l) + '</li>').join('') + '</ul>'
-      + (t.failures.length ? '<div class="vh">Still failing</div><ul class="v-asks" data-tel-fail="1">' + t.failures.map((f) => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
+    p.innerHTML = '<h2>What is really true now</h2>' // void-review: ok (constant heading; every value below is escaped)
+      + '<ul class="v-asks" data-tel-live="1"><li>checking GitHub for main, the pull requests and the commits it names…</li></ul>'
+      + '<div class="vh">What the report said</div><ul class="v-asks">' + summaryOf(t).slice(1).map((l) => '<li>' + esc(l) + '</li>').join('') + '</ul>'
+      + (t.failures.length ? '<div class="vh">Named as failing in the report (checked above, not here)</div><ul class="v-asks" data-tel-fail="1">' + t.failures.map((f) => '<li>' + esc(f) + '</li>').join('') + '</ul>' : '')
       + '<p><button type="button" class="tr-copy" data-tel="garden">Plant these in the error garden</button> <button type="button" class="tr-copy" data-tel="autopsy">Open the incident autopsy</button></p>'
-      + '<div class="src">Read on this device from what you pasted · nothing sent</div>';
+      + '<div class="src">Live state from GitHub\'s public API for ' + esc(REPO) + ' · what you pasted stays on this device</div>';
+  });
+  const slot = el && el.querySelector && el.querySelector('[data-tel-live]');
+  if (slot) liveLines(t).then((lines) => {
+    slot.innerHTML = lines.map((l) => '<li data-ok="' + esc(String(l.ok)) + '">' + esc(MARK[String(l.ok)] || '· ') + esc(l.text) + '</li>').join('') || '<li>nothing to check</li>'; // void-review: ok (every value escaped)
   });
   if (el) el.addEventListener('click', (e) => {
     const b = e.target.closest && e.target.closest('[data-tel]'); if (!b) return;
