@@ -105,3 +105,10 @@ test('a package the repo does not declare is still a failure, with no install tr
   const r = installRig(), out = safety(r.run, r.gh, { repo: 'o/r', pr: 7, sha: 'abc', dir: '/tmp/x', tests: T, pkg: () => ({}) });
   assert.equal(out.state, 'fail'); assert.ok(!r.calls.some((c) => c[0] === 'npm'));
 });
+
+test('"lock it" is the picked thing\'s lock (a note against arrows), never the whole screen; "lock now" and "lock the screen" still lock it (2026-10-19)', async () => {
+  const { safetyIntent } = await import('../void-live-deploy/lib/safety.js');
+  assert.equal(safetyIntent('lock it'), null);
+  assert.deepEqual(safetyIntent('lock now'), { op: 'lock' });
+  assert.deepEqual(safetyIntent('lock the screen'), { op: 'lock' });
+});

@@ -7045,6 +7045,8 @@ try {
     }
     // the two-step app: "make me an app", then what it should do; and one line that says it all at once
     await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
+    // the reload's skills load first: a fixed half second was not enough on a loaded runner, and the app ask then raced them (2026-10-19)
+    await R.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
     await R.ask('clear', 300); // a game the last grown ask stood on the stage is still in the reloaded page's memory: start from an empty stage
     await R.ask('make me an app', 600); await R.ask('something for my groceries and a timer', 900);
     const two = (await R.state()).map((x) => x.kind).sort().join(','), twoSay = await R.whisper();
