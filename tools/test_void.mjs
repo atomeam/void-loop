@@ -2724,6 +2724,21 @@ try {
       !!bellOk && bellOk.count === '2' && /2 new things/.test(bellOk.label) && /wn-pulse/.test(bellOk.anim) && bellOk.fixed === 'fixed' && /1 of 2/.test(bar) && !gone && !P.errors.length, JSON.stringify({ bellOk, bar, gone: !!gone, errors: P.errors }));
     await P.ctx.close();
   }
+  // owner, 2026-10-19: "its supposed to pop up when Verse builds something": with the tab open, a build that ships later still pops up (no reload)
+  if (want("look what I made: a build that ships while the page is open pops up without a reload")) {
+    let LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-w')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['sticky note buy milk'])); sessionStorage.setItem('sc-w', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200); await P.p.waitForTimeout(2500);
+    const before = !!(await P.p.$('#whatsnew-bell')); // everything already previewed: nothing yet
+    LEDGER = LEDGER.concat({ at: '2026-10-19T12:00:00Z', by: 'verse', kind: 'fix', what: 'Verse fixes its counter skill', try: 'make a counter' }); // Verse ships while the tab is open
+    await P.p.evaluate(() => document.dispatchEvent(new Event('visibilitychange'))); // the tab comes back into view
+    const after = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 8000);
+    check('look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new',
+      !before && after === '1' && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.ctx.close();
+  }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
     const LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
     const TARGET = '2026-10-14t01-00-00z';

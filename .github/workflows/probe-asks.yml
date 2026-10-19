@@ -8,7 +8,7 @@ name: Verse probes itself
 
 on:
   schedule:
-    - cron: '23 13 * * *' # 9:23 AM New York (EDT), after the nightly bench and before the day's builds
+    - cron: '23 */4 * * *' # every 4 hours (owner, 2026-10-19: "upgrades extremely often"), feeding propose-fix's next runs
   workflow_dispatch:
     inputs:
       family:

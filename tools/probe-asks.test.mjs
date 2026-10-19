@@ -94,8 +94,9 @@ test('the tool: the request from repo data, fresh asks only, probe: jobs within 
   const misses = [{ ask: 'opposite of brave', want: 'skill:words' }, { ask: 'thank you in japanese', want: 'skill:translate' }, { ask: 'Opposite of brave!', want: 'skill:words' }, { ask: 'tell me a joke about cats', want: 'skill:joke' }];
   const j = jobOf(misses[0], 'words');
   assert.equal(j.ask, 'learn to handle "opposite of brave"'); assert.equal(j.target, 'probe:opposite-of-brave'); assert.match(j.note, /Verse wrote this ask for its words family and missed it \(wanted skill:words\)/); assert.match(j.note, /not a visitor's words/);
-  const p = plan(misses, { items: [{ target: 'probe:thank-you-in-japanese', state: 'done' }, { target: 'probe:old-one', state: 'queued' }] }, 'words');
-  assert.equal(p.open, 1); assert.equal(p.room, PROBE_OPEN_MAX - 1);
+  const p = plan(misses, { items: [{ target: 'probe:thank-you-in-japanese', state: 'done' }, { target: 'probe:old-one', state: 'queued' }] }, 'words', { openMax: 2 });
+  assert.equal(p.open, 1); assert.equal(p.room, 1);
+  assert.equal(plan(misses, { items: [] }, 'words').room, PROBE_OPEN_MAX); assert.ok(PROBE_OPEN_MAX >= 4, 'propose-fix runs every 2 hours: room for its jobs');
   assert.deepEqual(p.queue.map((x) => x.target), ['probe:opposite-of-brave'], 'one slot left; the Japanese one was queued before; the repeat of brave is one job');
   assert.deepEqual(p.later.map((x) => x.target), ['probe:tell-me-a-joke-about-cats']);
   const s = summary({ family: 'words', wrote: 25, probed: 22, misses: misses.slice(0, 1), queued: [j], dry: false });

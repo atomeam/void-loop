@@ -366,6 +366,18 @@ export async function nudge(stageApi, note) {
   return n;
 }
 
+/** while the tab stays open, look again for what Verse built (owner, 2026-10-19: "its supposed to pop up when Verse builds something"): the
+ *  first-touch line above only ran once per page load, so a builder or Verse's own loop shipping while the page was open showed nothing until a
+ *  reload. Every `ms` while the tab is visible, and when it comes back into view, the same check runs: a new verified build brings the quiet line
+ *  and the sparkle. One static file read (/void.growth.json) per look; nothing runs while the tab is hidden or a walkthrough is on. */
+export const WATCH_MS = 4 * 60 * 1000;
+export function watch(stageApi, note, ms = WATCH_MS) {
+  if (typeof document === 'undefined' || watch.on) return; watch.on = true;
+  const look = () => { if (document.visibilityState !== 'visible' || tour || document.getElementById('whatsnew-bell')) return; nudge(stageApi, note).catch(() => {}); };
+  setInterval(look, ms);
+  document.addEventListener('visibilitychange', look);
+}
+
 /** a small animated icon on the stage for what is new (asked by Verse: "Link the 'whats new' showcase trigger to a small, animated
  * notification icon on the stage to prevent users from having to type it"): a bell-less sparkle with the count, pulsing quietly; a tap
  * starts the same walkthrough as typing "what's new", and the icon and the quiet line both go. It appears only when something is new

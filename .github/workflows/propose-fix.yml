@@ -15,7 +15,7 @@ name: Verse proposes a fix
 
 on:
   schedule:
-    - cron: '23 14 * * *' # 10:23 AM New York (EDT), an hour after Verse probes itself
+    - cron: '53 */2 * * *' # every 2 hours (owner, 2026-10-19: "upgrades extremely often"); each run takes the oldest open probe: job
   workflow_dispatch:
     inputs:
       job:
@@ -139,11 +139,24 @@ jobs:
             echo "model=$(node -p "String(require(process.argv[1]).model || 'Verse\'s own model').replace(/[^\w .\/@:-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
             echo "where=$(node -p "const e = require(process.argv[1]).evidence || []; (e.length ? e[0].file + (e.length > 1 ? ' lines ' : ' line ') + e.map((x) => x.line).join(', ') : 'not found').replace(/[^\w ./,-]/g, '')" "$r")" >> "$GITHUB_OUTPUT"
           fi
+      # a line on the growth ledger with the ask it learned, so "look what I made" shows what Verse built by itself (owner, 2026-10-19: Verse's own
+      # fixes never reached the ledger, so nothing popped up when it built something); written here, where nothing holds a write token
+      - name: The growth-ledger line
+        if: steps.result.outputs.passed == '1'
+        shell: bash
+        env:
+          TITLE: ${{ steps.result.outputs.title }}
+          ASK: ${{ steps.result.outputs.ask }}
+        run: |
+          case "$TITLE" in "Verse fixes"*) node tools/grow.mjs fix "$TITLE" --by verse --try "$ASK" ;; *) node tools/grow.mjs fix "$TITLE" --by verse ;; esac
+          git diff -- void-live-deploy/void.growth.json > "$RUNNER_TEMP/fix/ledger.patch"
       - uses: actions/upload-artifact@v4
         if: steps.result.outputs.passed == '1'
         with:
           name: v01d-fix
-          path: ${{ runner.temp }}/fix/propose-fix.patch
+          path: |
+            ${{ runner.temp }}/fix/propose-fix.patch
+            ${{ runner.temp }}/fix/ledger.patch
           retention-days: 7
 
   # the passing patch becomes a pull request: this job can write, and it only moves bytes (it never runs anything a model wrote)
@@ -190,7 +203,10 @@ jobs:
           git diff --quiet && { echo "nothing to propose"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add "void-live-deploy/skills/$SKILL.js"
+          # the growth-ledger line the propose job wrote (ledger.patch): only bytes moved here, and only into the ledger
+          lp="$RUNNER_TEMP/fix/ledger.patch"
+          if [ -s "$lp" ] && [ "$(git apply --numstat "$lp" | cut -f3)" = "void-live-deploy/void.growth.json" ]; then git apply "$lp" || echo "::warning title=No ledger line::the ledger moved on; the fix goes up without its line"; fi
+          git add "void-live-deploy/skills/$SKILL.js" void-live-deploy/void.growth.json
           git commit -q -m "$TITLE" -m "Proposed by Verse's own model for an ask its probe missed (tools/propose-fix.mjs, frontier #28 step 3). It passed the collision check, the skill's test, Verse's review and the benchmark on the ask plus every bench ask the skill already answers. Why, in Verse's words: $WHY" -m "Verse's confidence: $CONFIDENCE. Where: $WHERE. Risk: $RISK. Model: $MODEL." -m "Suggested-by: Verse (probe)"
           git push -q origin "$branch"
           gh label create "made by Verse" --color 5c5cff --description "a change Verse's own model proposed and the repo's checks passed; a builder reviews it like anyone's" --force >/dev/null 2>&1 || true

@@ -11,7 +11,7 @@ name: Verse hardens itself
 
 on:
   schedule:
-    - cron: '41 17 * * *' # 1:41 PM New York (EDT), after propose-fix and build-miss have had their turn
+    - cron: '41 */3 * * *' # every 3 hours (owner, 2026-10-19: "it upgrades extremely often and I dont have to babysit"); one hardening PR open at a time
   workflow_dispatch:
     inputs:
       n:
@@ -135,9 +135,13 @@ jobs:
             title="${title:+$title, and }the card art floors rise to $now"
           fi
           printf '%s | verse | grow | hardened itself: %s (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$title" >> domains/void.agents.log.md
-          git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md > "$g/grow.patch"
+          # a line on the growth ledger too, with one of the asks it proved, so "look what I made" shows what Verse built by itself (owner, 2026-10-19:
+          # "bring back the I made this for upgrades"; Verse's own builds never reached the ledger, so they never popped up)
+          try=$(node -p "const c = JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')); (c[0] && c[0].ask) || ''" "$g/passing.json" 2>/dev/null || true)
+          node tools/grow.mjs grow "Verse hardened itself: $title" --by verse ${try:+--try "$try"}
+          git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch"
           # only the benchmark, the art floors and the log may change; anything else means a tool misbehaved and nothing is opened
-          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors and the log may change"; exit 1; } || true
+          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors, the logs and the ledger may change"; exit 1; } || true
           node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8"))'
           echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"; echo "title=$title" >> "$GITHUB_OUTPUT"
 
@@ -214,14 +218,14 @@ jobs:
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark and the log
-          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark, the art floors and the log"; exit 1; } || true
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md|void-live-deploy/void\.growth\.json)$' && { echo "::error title=Not opened::the patch touches more than the benchmark, the art floors and the log"; exit 1; } || true
           branch="verse/harden-$(date -u +%Y%m%d-%H%M)"
           git switch -c "$branch"
           git apply "$patch"
           [ -n "$(git status --porcelain)" ] || { echo "nothing to propose"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md
+          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md void-live-deploy/void.growth.json
           title="Verse hardens itself: $WHAT"
           git commit -q -m "$title" -m "Verse found its least proven skills in its own files (tools/lacks.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them."
           git push -q origin "$branch"

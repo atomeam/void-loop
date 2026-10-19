@@ -20,7 +20,7 @@ import crypto from 'node:crypto';
 import { pickFamily, allowedWants, examplesFor } from '../void-live-deploy/lib/probe-asks.js';
 import { slug } from '../void-live-deploy/lib/learn.js';
 
-export const PROBE_OPEN_MAX = 2; // open probe jobs at once
+export const PROBE_OPEN_MAX = 4; // open probe jobs at once (2 until 2026-10-19: propose-fix now runs every 2 hours and ran dry)
 const here = dirname(fileURLToPath(import.meta.url)), root = resolve(here, '..');
 const SITE = process.env.VOID_SITE || 'https://a-to-mind.com';
 

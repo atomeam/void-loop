@@ -221,6 +221,7 @@ for (const [name, file] of [
   ['writing-proof', 'writing-proof.test.mjs'],
   ['arcade-rack', 'arcade-rack.test.mjs'],
   ['reflect-totals', 'reflect-totals.test.mjs'],
+  ['grow-clock', 'grow-clock.test.mjs'],
   ['topic-from', 'topic-from.test.mjs'],
   ['card-cycle', 'card-cycle.test.mjs'],
   ['word-sweep', 'word-sweep.test.mjs'],
