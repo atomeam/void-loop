@@ -6422,5 +6422,15 @@
   {"ask": "switch my void to dark", "want": "skill:dark-look"},
   {"ask": "what makes you different", "want": "skill:different"},
   {"ask": "how are you different from chatgpt", "want": "skill:different"},
-  {"ask": "is there anything else like you", "want": "skill:different"}
+  {"ask": "is there anything else like you", "want": "skill:different"},
+  {"ask": "mutate this card", "want": "skill:mutate"},
+  {"ask": "lock generation 7", "want": "skill:mutate"},
+  {"ask": "stop mutating", "want": "skill:mutate"},
+  {"ask": "overload me", "want": "skill:overload"},
+  {"ask": "purge the overload", "want": "skill:overload"},
+  {"ask": "sudden death in 60 seconds", "want": "skill:sudden-death"},
+  {"ask": "cancel sudden death", "want": "skill:sudden-death"},
+  {"ask": "add a friction slider", "want": "skill:friction"},
+  {"ask": "drag friction", "want": "skill:friction"},
+  {"ask": "how slippery are things", "want": "skill:friction"}
 ]
