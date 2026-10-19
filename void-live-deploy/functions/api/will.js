@@ -13,7 +13,7 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
-import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName } from '../../lib/will-guard.js';
+import { slug, pickWant, skippedNote, sinceOf, WILL_SCHEMA, noPaths, coveredByName, coveredByBuilt } from '../../lib/will-guard.js';
 const MODEL = models('will');
 const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
@@ -31,7 +31,10 @@ export async function onRequestPost({ request, env }) {
   // a miss a live skill already answers is not a want any more, whoever sent it (skills/index.json from this deploy)
   let names = new Set();
   try { if (env.ASSETS) { const r = await env.ASSETS.fetch(new Request(new URL('/skills/index.json', request.url))); if (r.ok) names = new Set((await r.json()).map((n) => String(n).toLowerCase())); } } catch (_) {}
-  b.candidates = (Array.isArray(b.candidates) ? b.candidates : []).filter((c) => !coveredByName(c && c.title, names));
+  // ... and so is a want for an ask of Verse's already linked as built (void.asks.json, linked at every deploy by tools/asks-link.mjs)
+  let built = [];
+  try { if (env.ASSETS) { const r = await env.ASSETS.fetch(new Request(new URL('/void.asks.json', request.url))); if (r.ok) built = ((await r.json()).links || []).map((k) => String((k && (k.words || k.ask)) || '')).filter(Boolean); } } catch (_) {}
+  b.candidates = (Array.isArray(b.candidates) ? b.candidates : []).filter((c) => !coveredByName(c && c.title, names) && !coveredByBuilt(c && c.title, built));
   let money = null; try { money = await readEarnings(env); } catch (_) {} // no sales table yet = no budget line
   const budget = money ? money.budget_cents : 0;
   const cands = (b.candidates || []).slice(0, 60).map((c, i) => {

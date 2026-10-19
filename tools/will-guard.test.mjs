@@ -3,6 +3,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { slug, targetOf, triesOf, pickWant, skippedNote, sinceOf, MAX_TRIES, WINDOW_DAYS } from '../void-live-deploy/lib/will-guard.js';
+import { coveredByBuilt } from '../void-live-deploy/lib/will-guard.js';
 
 const row = (title, state) => ({ target: targetOf(title), state });
 
@@ -58,4 +59,13 @@ test('the will never shows a local path, and a want a live skill answers is drop
   const py = (await import('node:fs')).readFileSync(new URL('./will.py', import.meta.url), 'utf8');
   assert.match(py, new RegExp('WILL_SCHEMA = ' + WILL_SCHEMA + '\\b'), 'tools/will.py sends the same schema the endpoint wants');
   assert.match(py, /"schema": WILL_SCHEMA/);
+});
+
+test('coveredByBuilt: a want for an ask already linked as built is dropped; one quoting something unbuilt, or one word, stays (owner, 2026-10-19)', () => {
+  const built = ["Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer."];
+  assert.equal(coveredByBuilt('teach my look skill "open the self card"', built), true);
+  assert.equal(coveredByBuilt('learn to handle "deep ocean floor"', built), false);
+  assert.equal(coveredByBuilt('learn to handle "self"', built), false);
+  assert.equal(coveredByBuilt('teach my look skill "open the self card"', []), false);
+  assert.equal(coveredByBuilt('Absorb and connect every repo', built), false);
 });
