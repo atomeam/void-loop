@@ -62,13 +62,16 @@ export function parseVoice(text) {
   const out = {
     thoughts: clean(j.thoughts, 1500), better: clean(j.better, 800), weakest: clean(j.weakest, 600), next_game: clean(j.next_game, 400), next_trick: clean(j.next_trick, 400),
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
-      .map((a) => ({ ask: clean(a.ask, 240), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
+      .map((a) => ({ ask: untag(clean(a.ask, 240)), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
     striking: j.striking === true,
     evidence: evidenceOf(j.evidence),
   };
   return out.thoughts || out.better ? out : null;
 }
 
+// the fact tags of the prompt ("[S2]", "[S1, S3]", "[S2 tools/x.mjs]") are for the claims in its thoughts, never part of an ask: an ask that
+// kept one showed twice on the wants card, once with "[S2]" and once without (owner, 2026-10-19). Pure.
+export const untag = (s) => String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim();
 // A stable id for an ask: the reflection it came from (its time, to the minute) and its place in that reflection. It never
 // changes once the reflection is stored, so a ledger entry that names it (tools/grow.mjs --asked) still matches if the
 // ask's words are edited later.
@@ -78,9 +81,10 @@ export function currentAsks(entries, n = 6) {
   const seen = new Set(), out = [];
   for (const e of (entries || []).slice(0, 4)) {
     for (const [i, a] of (e.asks || []).entries()) {
-      const k = a.ask.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-      if (!k || seen.has(k)) continue;
-      seen.add(k); out.push({ id: askId(e.at, i), ask: a.ask, small: !!a.small, kind: e.kind, at: e.at });
+      const ask = untag(a.ask), k = ask.toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+      // one of each: the same words, or nearly the same words (sameAsk), are one ask
+      if (!k || seen.has(k) || out.some((o) => sameAsk(o.ask, ask))) continue;
+      seen.add(k); out.push({ id: askId(e.at, i), ask, small: !!a.small, kind: e.kind, at: e.at });
       if (out.length >= n) return out;
     }
   }

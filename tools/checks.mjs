@@ -64,6 +64,7 @@ for (const [name, file] of [
   ['ask-text', 'ask-text.test.mjs'],
   ['fuzzy', 'fuzzy.test.mjs'],
   ['near-miss', 'near-miss.test.mjs'],
+  ['miss-robot', 'miss-robot.test.mjs'],
   ['context-check', 'context-check.test.mjs'],
   ['word-math', 'word-math.test.mjs'],
   ['swarm', 'swarm.test.mjs'],

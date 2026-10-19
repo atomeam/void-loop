@@ -16,8 +16,8 @@
    "count": {
     "experiment": 0,
     "tested": 7,
-    "checked": 6,
-    "proven": 22
+    "checked": 4,
+    "proven": 24
    },
    "from": 5,
    "to": 40
@@ -30,8 +30,8 @@
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 3,
-    "proven": 20
+    "checked": 0,
+    "proven": 23
    },
    "from": 41,
    "to": 70
@@ -57,9 +57,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 3,
-    "proven": 6
+    "tested": 6,
+    "checked": 0,
+    "proven": 12
    },
    "from": 91,
    "to": 109
@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 3,
-    "proven": 10
+    "tested": 2,
+    "checked": 1,
+    "proven": 14
    },
    "from": 110,
    "to": 127
@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 9,
     "checked": 6,
-    "proven": 11
+    "proven": 13
    },
    "from": 139,
    "to": 167
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 51,
-    "proven": 14
+    "checked": 39,
+    "proven": 26
    },
    "from": 173,
    "to": 268
@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 15,
-    "proven": 16
+    "checked": 12,
+    "proven": 19
    },
    "from": 269,
    "to": 311
@@ -445,8 +445,10 @@
     "cartoon version of a shipwreck",
     "cartoon version of gg allin"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the making things; set down here after it answered true 3 times. The void remembers each asking.",
+   "glow": 100,
    "n": 13
   },
   {
@@ -770,8 +772,10 @@
     "attention mind",
     "attention field mind"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 2 askings, each one answered. Let the stage be the proof.",
+   "glow": 100,
    "n": 33
   },
   {
@@ -1076,8 +1080,10 @@
     "chess",
     "lets play chess"
    ],
-   "tier": "checked",
-   "why": "a self-test, 10 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 10 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the games it is the one a traveller is told to ask for first. Let the stage be the proof.",
+   "glow": 100,
    "n": 48,
    "game": {
     "title": "Chess",
@@ -1192,8 +1198,10 @@
     "let's play poker",
     "play texas holdem"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. The void remembers each asking.",
+   "glow": 100,
    "n": 53,
    "game": {
     "title": "Poker",
@@ -1214,8 +1222,10 @@
     "play hanabi",
     "let's play a co-op game"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the games are built on it. It has not failed a reader yet.",
+   "glow": 100,
    "n": 54,
    "game": {
     "title": "Fireworks",
@@ -1965,8 +1975,10 @@
     "show countdown",
     "show the days until a date"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. Say the words below and it answers.",
+   "glow": 100,
    "n": 97
   },
   {
@@ -2079,8 +2091,10 @@
     "when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month",
     "reporting deadlines from 2026-10-15 14:00"
    ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the time it is the one a traveller is told to ask for first. Turn the page when you are done.",
+   "glow": 100,
    "n": 104
   },
   {
@@ -2109,8 +2123,10 @@
     "meeting at 9:30 for 45 minutes",
     "meeting length calculator"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the time are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 106
   },
   {
@@ -2124,8 +2140,10 @@
     "busy blocks",
     "add busy block 5-6pm gym"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of the time; set down here after it answered true 3 times.",
+   "glow": 100,
    "n": 107
   },
   {
@@ -2139,8 +2157,10 @@
     "10 business days from today",
     "what date is next friday"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the time, this one is trusted enough to be taught. Ask, and see.",
+   "glow": 100,
    "n": 108
   },
   {
@@ -2154,8 +2174,10 @@
     "empty week grid",
     "7x5 heatmap"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the time. Say the words below and it answers.",
+   "glow": 100,
    "n": 109
   },
   {
@@ -2312,8 +2334,10 @@
     "crypto board",
     "crypto card"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. It has not failed a reader yet.",
+   "glow": 100,
    "n": 118
   },
   {
@@ -2361,8 +2385,10 @@
     "count up",
     "set the counter to 10"
    ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "An old art of the numbers and money, tested each day before the sun is up. The void remembers each asking.",
+   "glow": 100,
    "n": 121
   },
   {
@@ -2427,8 +2453,10 @@
     "value this",
     "appraise this coin"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered.",
+   "glow": 100,
    "n": 125
   },
   {
@@ -2442,8 +2470,10 @@
     "300 px in cm at 150 dpi",
     "5 cm to pixels at 300 dpi"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the numbers and money it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "glow": 100,
    "n": 126
   },
   {
@@ -2695,8 +2725,10 @@
     "what is in github.com/atomeam/void-loop",
     "https://github.com/atomeam/void-loop"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. Ask, and see.",
+   "glow": 100,
    "n": 140
   },
   {
@@ -2710,8 +2742,9 @@
     "summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f",
     "what did this video teach?"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 141
   },
   {
@@ -2725,8 +2758,10 @@
     "movie night",
     "movie card for Nosferatu (1922)"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the words and the world, tested each day before the sun is up. Let the stage be the proof.",
+   "glow": 100,
    "n": 142
   },
   {
@@ -3448,8 +3483,10 @@
     "bench icon",
     "bench alarms"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Of the stage; set down here after it answered true 2 times. The void remembers each asking.",
+   "glow": 100,
    "n": 182
   },
   {
@@ -3574,8 +3611,10 @@
     "send this away",
     "dismiss the selected thing"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Turn the page when you are done.",
+   "glow": 100,
    "n": 190
   },
   {
@@ -3683,8 +3722,10 @@
     "mint a card of the moon",
     "collectible card of tokyo"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "glow": 100,
    "n": 197
   },
   {
@@ -3700,7 +3741,7 @@
    ],
    "tier": "proven",
    "why": "5 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Ask, and see.",
    "glow": 100,
    "n": 198
   },
@@ -3920,8 +3961,10 @@
     "ask clipboard",
     "re-run the third recent ask"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the stage are built on it. The void remembers each asking.",
+   "glow": 100,
    "n": 213
   },
   {
@@ -4023,8 +4066,10 @@
     "open the codex on space",
     "what have I collected about space"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Proven 2 times over by those who asked, and kept among the stage.",
+   "glow": 100,
    "n": 220
   },
   {
@@ -4273,8 +4318,10 @@
     "what depends on this decision",
     "map the scars of my decisions: moved to Berlin > rent is high, no car; hired Sam > payroll"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. Ask, and see.",
+   "glow": 100,
    "n": 237
   },
   {
@@ -4288,8 +4335,10 @@
     "what if my assumption is false",
     "what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish."
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. Turn the page when you are done.",
+   "glow": 100,
    "n": 238
   },
   {
@@ -4404,8 +4453,10 @@
     "what contradicts",
     "which of my notes contradict each other"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Among the stage it is the one a traveller is told to ask for first. It has not failed a reader yet.",
+   "glow": 100,
    "n": 246
   },
   {
@@ -4418,8 +4469,10 @@
     "diff \"make a timer\" and \"make a focus timer for writing\"",
     "compare \"clock\" with \"world clock\""
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Asked 1 times in earnest, and never once left unanswered.",
+   "glow": 100,
    "n": 247
   },
   {
@@ -4448,8 +4501,10 @@
     "lift the shield",
     "dim everything except the timer"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of all the stage, this one is trusted enough to be taught.",
+   "glow": 100,
    "n": 249
   },
   {
@@ -4523,8 +4578,10 @@
     "paste csv: item;price ⏎ tea;3 ⏎ cake;5",
     "table from csv: a,b ⏎ 1,2"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. The void remembers each asking.",
+   "glow": 100,
    "n": 254
   },
   {
@@ -4673,8 +4730,10 @@
     "unfavorite this",
     "bookmark this ask"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+   "flavor": "Written by the hands that use it; 1 real askings stand behind this page.",
+   "glow": 100,
    "n": 264
   },
   {
@@ -4799,8 +4858,10 @@
     "show me the dependency health",
     "how healthy are your dependencies"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times.",
+   "glow": 100,
    "n": 270
   },
   {
@@ -5249,8 +5310,10 @@
     "family health",
     "how healthy are your skills"
    ],
-   "tier": "checked",
-   "why": "a self-test, 8 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Say the words below and it answers.",
+   "glow": 100,
    "n": 298
   },
   {
@@ -5411,8 +5474,10 @@
     "approve later: keep morning-digest running every 2 hours",
     "approve later: keep the nightly-check automation running every day"
    ],
-   "tier": "checked",
-   "why": "a self-test, 5 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 5 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Among the verse itself it is the one a traveller is told to ask for first. The void remembers each asking.",
+   "glow": 100,
    "n": 309
   },
   {
