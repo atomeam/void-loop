@@ -79,6 +79,17 @@ export const SKILL_TOOLS = [
   ]
  },
  {
+  "skill": "technical-context",
+  "tool": "skill_technical_context",
+  "family": "words",
+  "familyName": "Words and the world",
+  "examples": [
+   "why is rust unwrap a risk",
+   "is unwrap risky in rust",
+   "technical context for unwrap"
+  ]
+ },
+ {
   "skill": "translate",
   "tool": "skill_translate",
   "family": "words",
@@ -98,17 +109,6 @@ export const SKILL_TOOLS = [
    "synonym for happy",
    "how do you spell necessary",
    "what rhymes with orange"
-  ]
- },
- {
-  "skill": "writing-aids",
-  "tool": "skill_writing_aids",
-  "family": "words",
-  "familyName": "Words and the world",
-  "examples": [
-   "proofread: teh cat sat sat on the mat",
-   "fix the grammar in: he recieve it alot",
-   "turn this into a thread: One thing happened. Then another thing happened."
   ]
  }
 ];

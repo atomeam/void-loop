@@ -181,6 +181,7 @@
  "pdf-card": "\"ask questions about a pdf\", \"read this pdf\", \"chat with a pdf\"",
  "period": "A period log kept in your own Verse (this browser only), and the predictions it unlocks",
  "photo-scrub": "\"strip the exif from a photo\" / \"remove the location from a picture\" puts a card on the stage: choose a",
+ "photos": "\"my photos\", \"add photos\", \"my photos from june\": Verse Photos, a photo library that lives on this device",
  "pick-for-me": "\"pick for me\", \"surprise me\"",
  "place": "Street map of any place",
  "plan-stability": "\"is my plan stable\": a plan is a start value and a chain of numeric steps, each \"input x multiplier…",
