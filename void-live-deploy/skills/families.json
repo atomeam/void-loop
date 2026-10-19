@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 5,
   "tested": 92,
-  "checked": 99,
-  "proven": 101
+  "checked": 100,
+  "proven": 104
  },
  "families": [
   {
@@ -339,12 +339,12 @@
   {
    "id": "games",
    "name": "Games",
-   "for": "board games, card games and play: one picker (\"games\"), one Verse strength, one 3D stage",
+   "for": "board games, card games, arcade and puzzle games and play: one picker (\"games\"), one Verse strength, one 3D stage",
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 6,
-    "proven": 12
+    "checked": 7,
+    "proven": 15
    },
    "skills": [
     {
@@ -502,6 +502,42 @@
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "streak": 2
+    },
+    {
+     "name": "null-sweep",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
+    },
+    {
+     "name": "merge-void",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
+    },
+    {
+     "name": "dim-void",
+     "tier": "checked",
+     "why": "a self-test, 2 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
+    },
+    {
+     "name": "void-breaker",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
     },
     {
      "name": "duel",
