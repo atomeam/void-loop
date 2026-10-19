@@ -2663,11 +2663,19 @@ say('nothing selected to remove');
       if (/^(?:so\s+)?(?:(?:what(?:'?s|\s+is|\s+has)?|anything)\s+(?:new|changed|different|happened)\s+)?since\s+(?:i|you)\s+(?:last\s+)?(?:looked|checked(?:\s+in)?|visited|came(?:\s+by)?|was\s+(?:here|last\s+here)|were\s+here)(?:\s+(?:at|on)\s+(?:you|verse|void))?\s*[?.!]*$/.test(lower)) return true;
       return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|verse'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d|verse)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d|verse)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d|verse)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b.*)\s*[?.!]*$/.test(lower);
     }
+    // the card never stays on "…" (owner, 2026-10-19: "not loading"): whatever goes wrong while it is drawn, it says so and asks to be asked again
     async function showVoice(said) {
       const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
+      try { await drawVoice(said, el); } catch (_) {
+        if (vpageEl === el && !el.querySelector('[data-v-body], [data-v-correct]')) el.innerHTML = '<h2>What I think of myself</h2><p>I could not draw this card just now. Ask again in a moment.</p>';
+      }
+    }
+    async function drawVoice(said, el) {
       let v = null;
       try { v = await fetch('/api/reflect').then((r) => r.json()); } catch (_) {}
       if (vpageEl !== el) return;
+      // unreachable is not "never asked": say which it is, so a dropped connection never reads as Verse having nothing to say
+      if (!v || !Array.isArray(v.entries)) { el.innerHTML = '<h2>What I think of myself</h2><p>I could not reach my reflections just now. Ask again in a moment.</p>'; return; }
       const list = (v && Array.isArray(v.entries)) ? v.entries : [];
       if (!list.length) { el.innerHTML = '<h2>What I think of myself</h2><p>I haven\'t been asked yet. I\'m asked after everything that ships, and once a day where I should go next.</p><div class="vh">Correct me</div><div data-v-correct></div>'; mountCorrect(el, said); return; }
       const when = (t) => esc(new Date(t).toLocaleString([], { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit' }));
@@ -2684,11 +2692,18 @@ say('nothing selected to remove');
       const SEEN = 'a2m.void.self.seen.v1', LAST = 'a2m.void.self.last.v1';
       const kept = (k, d) => { try { return JSON.parse(localStorage.getItem(k) || 'null') || d; } catch (_) { return d; } };
       const seenAtOpen = new Set(kept(SEEN, [])), lastAtOpen = kept(LAST, null);
-      const bodyOf = (vv, fam) => { if (!SB) return '<p>' + esc((daily || build || {}).thoughts || '') + '</p>';
-        const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
-        bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc); };
+      // a copy of the library older than this page (the service worker serves its cached one when the network drops a request) has no selfCard: the
+      // card is then drawn the way it was before, and anything that throws while drawing falls back to Verse's own words, never a stuck "…"
+      const bodyOf = (vv, fam) => { const es = (vv && Array.isArray(vv.entries)) ? vv.entries : [], w = es.find((e) => e.kind === 'daily') || es.find((e) => e.kind === 'build') || {};
+        const plain = '<p>' + esc(w.thoughts || '') + '</p>';
+        if (!SB) return plain;
+        try {
+          if (typeof SB.selfCard !== 'function') return SB.selfHtml(SB.selfSections(vv), esc);
+          const r = SB.selfCard(vv, lastAtOpen, seenAtOpen, Date.now(), fam);
+          bodyOf.shown = r.shown; return SB.selfHtml(r.sections, esc);
+        } catch (_) { return plain; } };
       let h = '<h2>What I think of myself</h2><div data-v-body>' + bodyOf(v, fam0) + '</div>';
-      if (SB) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
+      if (SB && SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...seenAtOpen, ...(bodyOf.shown || [])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(v, fam0))); } catch (_) {}
       // talking back (owner, 2026-10-16): the owner replies or corrects, Verse answers at once and keeps what it learned for every
       // later reflection (functions/api/voice-reply.js, lib/voice.js); owner only, and what is typed is shown as text, never as markup
       const owner = (() => { try { return localStorage.getItem('a2m.void.owner.v1') || ''; } catch (_) { return ''; } })();
@@ -2730,7 +2745,7 @@ say('nothing selected to remove');
         const box = vpageEl === el && el.querySelector('[data-v-body]'), now = JSON.stringify([nv, nf]);
         if (!box || !nv || !Array.isArray(nv.entries) || now === was) return;
         was = now; box.innerHTML = bodyOf(nv, nf || fam0); wire(); conf(nf || fam0); el.dataset.refreshed = String(Date.now()); // void-review: ok: selfHtml escapes every value with esc
-        try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
+        if (SB.sinceMark) try { localStorage.setItem(SEEN, JSON.stringify([...new Set([...kept(SEEN, []), ...(bodyOf.shown || [])])].slice(-800))); localStorage.setItem(LAST, JSON.stringify(SB.sinceMark(nv, nf || fam0))); } catch (_) {}
       });
     }
     // every data card keeps itself current while it is open (owner, 2026-10-19: "all cards should constantly update"): update() runs every

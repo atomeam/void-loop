@@ -70,6 +70,19 @@ export function pickSong(results, title, artist) {
     seconds: r.trackTimeMillis > 0 ? Math.round(r.trackTimeMillis / 1000) : null,
   };
 }
+const DEEZER = ['dzcdn.net', 'deezer.com'];
+/** the Deezer track that is this one, the second source when iTunes is away or does not know it (keyless search API: track, artist, album, cover,
+ *  the official 30 s preview). Same matching rule as pickSong; title_short drops "(Remastered 2009)" and the like. Pure. */
+export function pickDeezerSong(data, title, artist) {
+  const want = normTitle(title), a = normTitle(artist), who = (x) => normTitle(x && x.artist && x.artist.name);
+  const r = (Array.isArray(data) ? data : []).find((x) => x && x.type === 'track' && normTitle(x.title_short || x.title) === want && (!a || who(x).includes(a) || a.includes(who(x))));
+  if (!r) return null;
+  return {
+    title: cleanTitle(r.title_short || r.title), artist: cleanTitle(r.artist.name), album: cleanTitle(r.album && r.album.title), genre: '', year: cleanYear(''),
+    poster: onHost(r.album && (r.album.cover_xl || r.album.cover_big), DEEZER), preview: onHost(r.preview, DEEZER), store: '',
+    seconds: r.duration > 0 ? Math.round(r.duration) : null,
+  };
+}
 /** where-to-listen links that are searches on legal services: never a stream. Pure. */
 export function listenLinks(title, artist, store) {
   const q = encodeURIComponent(cleanTitle(title) + ' ' + cleanTitle(artist)), l = [];
