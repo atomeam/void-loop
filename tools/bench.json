@@ -6243,5 +6243,20 @@
   {"ask": "leave a trail on onboarding", "want": "skill:stigmergy-board"},
   {"ask": "leave a trail on the launch plan", "want": "skill:stigmergy-board"},
   {"ask": "watch my words drift", "want": "skill:term-orbits"},
-  {"ask": "watch my terms drift apart", "want": "skill:term-orbits"}
+  {"ask": "watch my terms drift apart", "want": "skill:term-orbits"},
+  {"ask": "show the magnetize step", "want": "skill:magnetize"},
+  {"ask": "how do I magnetize a printed motor", "want": "skill:magnetize"},
+  {"ask": "magnetize a printed motor", "want": "skill:magnetize"},
+  {"ask": "export a print file", "want": "skill:print-file"},
+  {"ask": "export the stage as 3mf", "want": "skill:print-file"},
+  {"ask": "download a 3mf of the stage", "want": "skill:print-file"},
+  {"ask": "download the print file", "want": "skill:print-download"},
+  {"ask": "download the print file offline", "want": "skill:print-download"},
+  {"ask": "save the print file for offline", "want": "skill:print-download"},
+  {"ask": "fly around", "want": "skill:fly"},
+  {"ask": "look around", "want": "skill:fly"},
+  {"ask": "fly mode", "want": "skill:fly"},
+  {"ask": "play despacito", "want": "skill:video-play"},
+  {"ask": "watch the apollo 11 landing", "want": "skill:video-play"},
+  {"ask": "put on lofi hip hop", "want": "skill:video-play"}
 ]
