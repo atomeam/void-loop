@@ -6432,5 +6432,16 @@
   {"ask": "cancel sudden death", "want": "skill:sudden-death"},
   {"ask": "add a friction slider", "want": "skill:friction"},
   {"ask": "drag friction", "want": "skill:friction"},
-  {"ask": "how slippery are things", "want": "skill:friction"}
+  {"ask": "how slippery are things", "want": "skill:friction"},
+  {"ask": "open the stage to spectators", "want": "skill:spectators"},
+  {"ask": "close the stage", "want": "skill:spectators"},
+  {"ask": "let spectators in", "want": "skill:spectators"},
+  {"ask": "make me something unkeepable", "want": "skill:unkeepable"},
+  {"ask": "give me something that cannot be kept", "want": "skill:unkeepable"},
+  {"ask": "summon the crowd", "want": "skill:crowd"},
+  {"ask": "dismiss the crowd", "want": "skill:crowd"},
+  {"ask": "bring the crowd in", "want": "skill:crowd"},
+  {"ask": "fringe to skill", "want": "skill:fringe-to-skill"},
+  {"ask": "which skills came from the fringe", "want": "skill:fringe-to-skill"},
+  {"ask": "what did the fringe experiments teach", "want": "skill:fringe-to-skill"}
 ]

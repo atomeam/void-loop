@@ -951,3 +951,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-19T19:30:19Z | verse | grow | hardened itself: 5 benchmark ask(s) for kept, four-channels (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T19:50:17Z | verse | grow | hardened itself: 11 benchmark ask(s) for recent, showcase, dark-look, different (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T20:30:31Z | verse | grow | hardened itself: 10 benchmark ask(s) for mutate, overload, sudden-death, friction (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-19T20:50:38Z | verse | grow | hardened itself: 11 benchmark ask(s) for spectators, unkeepable, crowd, fringe-to-skill (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
