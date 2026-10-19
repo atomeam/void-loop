@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 78,
-  "checked": 64,
-  "proven": 160
+  "checked": 60,
+  "proven": 164
  },
  "families": [
   {
@@ -1252,8 +1252,8 @@
    "count": {
     "experiment": 0,
     "tested": 9,
-    "checked": 6,
-    "proven": 13
+    "checked": 4,
+    "proven": 15
    },
    "sources": {
     "read": 20,
@@ -1265,7 +1265,6 @@
      "digest",
      "pick-for-me",
      "video",
-     "spanish",
      "news",
      "joke",
      "media-pick",
@@ -1274,7 +1273,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 11 more proven: digest, pick-for-me, video, spanish, news, joke and 5 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 10 more proven: digest, pick-for-me, video, news, joke, media-pick and 4 more."
    },
    "skills": [
     {
@@ -1419,10 +1418,12 @@
     },
     {
      "name": "technical-context",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
@@ -1446,11 +1447,12 @@
     },
     {
      "name": "spanish",
-     "tier": "checked",
-     "why": "1 browser-suite mention, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "1 browser-suite mention, 4 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3,
      "source": {
       "sites": [
@@ -1461,8 +1463,7 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: googleapis.com, translated.net; named on the card; a second source; no kept live answer yet. One kept live answer from googleapis.com would make it proven"
+      "words": "source 2 of 3: googleapis.com, translated.net; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1817,8 +1818,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 39,
-    "proven": 26
+    "checked": 38,
+    "proven": 27
    },
    "skills": [
     {
@@ -2329,10 +2330,12 @@
     },
     {
      "name": "draft-triad",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2654,8 +2657,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 12,
-    "proven": 19
+    "checked": 11,
+    "proven": 20
    },
    "skills": [
     {
@@ -2928,10 +2931,12 @@
     },
     {
      "name": "deps",
-     "tier": "checked",
-     "why": "a self-test, 5 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 5 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
