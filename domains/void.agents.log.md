@@ -920,3 +920,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-18T16:51:30Z | claude | grow | Churn caps for the build loop
 2026-10-18T17:56:33Z | claude | fix | Ratings follow the tests: near-choir, echo-disagrees, negative-summons
 2026-10-18T18:23:56Z | claude | grow | Review bench fixture cases from the deploy action
+2026-10-19T02:03:55Z | claude | grow | the self card stops pretending: its words are labelled as a language model's, prompted to speak as Verse from the facts it was given (shown under them), every growth claim and the built list carry a source line, and the voice prompt forbids feelings

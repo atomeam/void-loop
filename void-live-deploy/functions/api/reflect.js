@@ -26,7 +26,7 @@ export async function onRequestGet({ request, env }) {
     // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Verse asked for (Verse's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
     asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
-  return Response.json({ entries: entries.slice(0, 20), asks: currentAsks(entries, 12).filter((a) => !built.has(a.id)).slice(0, 6), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
+  return Response.json({ entries: entries.slice(0, 20).map((e, i) => (i < 2 || !e.given ? e : { ...e, given: undefined })), asks: currentAsks(entries, 12).filter((a) => !built.has(a.id)).slice(0, 6), ...(follow ? { follow } : {}) }, { headers: { 'cache-control': 'public, max-age=60' } });
 }
 
 export async function onRequestPost({ request, env }) {
@@ -60,9 +60,9 @@ export async function onRequestPost({ request, env }) {
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
   const at = new Date().toISOString();
-  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
+  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }
-  await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([entry, ...before].slice(0, KEEP))).run();
+  await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([entry, ...before].slice(0, KEEP).map((e, i) => { if (i < 2 || !e.given) return e; const { given, ...rest } = e; return rest; }))).run();
   // Verse's concrete small ask goes to the builders' queue, credited to Verse, unless one of its asks is already open
   let queued = null;
   const small = entry.asks.find((a) => a.small);
