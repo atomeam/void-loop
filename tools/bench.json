@@ -6198,5 +6198,8 @@
   {"ask": "how's life", "want": "said|self|hello"},
   {"ask": "proofread: teh cat sat sat on the mat", "want": "skill:writing-aids"},
   {"ask": "fix the grammar in: he recieve it alot", "want": "skill:writing-aids"},
-  {"ask": "turn this into a thread: One thing happened. Then another thing happened.", "want": "skill:writing-aids"}
+  {"ask": "turn this into a thread: One thing happened. Then another thing happened.", "want": "skill:writing-aids"},
+  {"ask": "what just shipped?", "want": "skill:growth"},
+  {"ask": "what shipped today", "want": "skill:growth"},
+  {"ask": "what did you just ship", "want": "skill:growth"}
 ]
