@@ -5632,5 +5632,6 @@
   {"at": "2026-10-19T11:18:49Z", "by": "claude", "kind": "fix", "what": "the site tester logs which of its asks failed each run and the tester card names them as asks to tap; its 'what are you?' case expects Verse", "try": "site tester log"},
   {"at": "2026-10-19T11:29:13Z", "by": "claude", "kind": "build", "what": "Verse grows every 10 minutes: a growth clock starts probe-asks, grow-self and propose-fix in turn, and what Verse builds by itself goes on the ledger, so it pops up in 'look what I made'"},
   {"at": "2026-10-19T11:29:13Z", "by": "claude", "kind": "fix", "what": "'look what I made' pops up when Verse builds something while the page is open, not only on the next visit", "try": "what's new"},
-  {"at": "2026-10-19T11:38:20Z", "by": "claude", "kind": "fix", "what": "Verse's fix loop no longer jams: a proposal that fails marks its job failed (and one that passes, done), so the next miss gets its turn and new misses are queued again"}
+  {"at": "2026-10-19T11:38:20Z", "by": "claude", "kind": "fix", "what": "Verse's fix loop no longer jams: a proposal that fails marks its job failed (and one that passes, done), so the next miss gets its turn and new misses are queued again"},
+  {"at": "2026-10-19T11:50:37Z", "by": "claude", "kind": "fix", "what": "Verse's self-hardening pull request opens again: the card cycle's place in the book is a tracked file, so its change reaches the pull request"}
 ]
