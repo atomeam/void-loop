@@ -4741,7 +4741,7 @@
    "kind": "skill",
    "chapter": "self",
    "name": "v01d-fixes",
-   "title": "V01d fixes",
+   "title": "Verse fixes",
    "line": "The owner previews the fixes Verse's own model opened",
    "examples": [
     "Verse's fixes",
@@ -9299,12 +9299,12 @@
      "page": 75
     },
     {
-     "name": "V01d fixes",
-     "page": 270
-    },
-    {
      "name": "Vector field mind",
      "page": 30
+    },
+    {
+     "name": "Verse fixes",
+     "page": 270
     },
     {
      "name": "Veto council",
@@ -10688,12 +10688,12 @@
    "page": 75
   },
   {
-   "name": "V01d fixes",
-   "page": 270
-  },
-  {
    "name": "Vector field mind",
    "page": 30
+  },
+  {
+   "name": "Verse fixes",
+   "page": 270
   },
   {
    "name": "Veto council",

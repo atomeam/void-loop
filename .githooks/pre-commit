@@ -1,0 +1,5 @@
+#!/bin/sh
+# git config core.hooksPath .githooks   (the same switch as pre-push)
+# Refuses a commit whose staged files carry a conflict marker or a script/JSON that does not parse: `git add -A` in the middle of an unfinished merge
+# marks conflicted files resolved, so git itself would let the markers through. VOID_SKIP_PREPUSH=1 skips it, as for a push.
+[ -n "$VOID_SKIP_PREPUSH" ] || exec node "$(git rev-parse --show-toplevel)/tools/prepush.mjs" --staged

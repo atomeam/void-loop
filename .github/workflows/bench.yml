@@ -20,7 +20,10 @@ on:
 
 concurrency:
   group: void-bench-${{ github.event.pull_request.number || github.ref }}
-  cancel-in-progress: true
+  # a newer push to a pull request supersedes its older run; a run on main never cancels another on main. The daily run on main is what refreshes
+  # tools/bench.misses.json and the floor (the self card's "failing" list reads it): on 2026-10-18 it was cancelled, and the card kept showing the
+  # failures of 2026-10-17 for two days. Runs on main queue instead (GitHub keeps one waiting, which is the newest).
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

@@ -85,7 +85,7 @@ test('self card (owner review 2026-10-18): saved text keeps a blank line between
     asks: [{ ask: 'Terrain', kind: 'daily', at: '2026-10-08T01:00:00Z' }], follow: { total: 73, built: 35, recent: [{ ask: 'Go', what: 'a board', at: '2026-10-08T00:00:00Z', times: 3, depth: 'root', ref: 'javascript:x' }] } };
   const secs = selfSections(v);
   assert.deepEqual(secs.map((s) => s.id), ['words', 'sure', 'asked', 'built', 'growth', 'shipped']); // the owner's redesign: words, the family bars' slot, then the blocks
-  assert.deepEqual(secs.find((s) => s.id === 'growth').blocks.filter((b) => b.t === 'sub').map((b) => b.text), ['Weakest right now', 'Next game I want to learn']); // empty "better" is left out
+  assert.deepEqual(secs.find((s) => s.id === 'growth').blocks.filter((b) => b.t === 'sub').map((b) => b.text), ['Weakest operational area', 'Next targeted capability']); // empty "better" is left out
   assert.equal(secs.find((s) => s.id === 'asked').count, '1 waiting'); assert.equal(secs.find((s) => s.id === 'built').count, '35 of 73 asks');
   assert.equal(secs.find((s) => s.id === 'built').log, true); assert.equal(secs.find((s) => s.id === 'words').log, false);
   const asked = secs.find((s) => s.id === 'asked').blocks[0].items[0]; assert.match(asked.sub, /^Asked in my daily reflection, 2026-10-08 · not built yet$/);
@@ -117,7 +117,7 @@ test('self card lists fold (owner, 2026-10-18): the newest 5 show, the rest wait
   assert.equal(shortLine('ask 7'), 'ask 7');
   const sl = shortLine('a careful sentence about what Verse wanted built and why it mattered to the stage, twice over');
   assert.ok(sl.length <= SHORT + 1 && sl.endsWith('…') && !/\s…$/.test(sl) && 'a careful sentence about what Verse wanted built and why it mattered to the stage'.startsWith(sl.slice(0, -1)), sl);
-  assert.match(html, /<details class="vs-sec" data-sec="growth"><summary class="vs-sum"><h3 class="vs-h">Weakest right now \/ Next game \/ How I'd get better<\/h3><\/summary><h4 class="vs-h4">Weakest right now<\/h4>/);
+  assert.match(html, /<details class="vs-sec" data-sec="growth"><summary class="vs-sum"><h3 class="vs-h">Weakest operational area \/ Next capability \/ What should change<\/h3><\/summary><h4 class="vs-h4">Weakest operational area<\/h4>/);
   assert.match(html, /<details class="vs-sec vs-log" data-sec="built"><summary class="vs-sum"><h3 class="vs-h">What got built <span class="vs-n">\(30 of 40 asks\)/);
   assert.match(html, /<h3 class="vs-h">What I've asked for <span class="vs-n">\(6 waiting\)/);
   assert.match(html, /<section class="vs-sec" data-sec="words"><blockquote class="vs-voice">/, 'the untitled opening stays a plain section');

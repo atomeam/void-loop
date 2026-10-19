@@ -70,3 +70,17 @@ test('push.mjs refuses a conflict marker and a script that does not parse; VOID_
   const forced = pushjs(w, { VOID_SKIP_PREPUSH: '1' });
   assert.equal(forced.status, 0, forced.stderr);
 });
+
+test('--staged refuses a commit that carries a conflict marker (the unfinished-merge slip), and passes a clean one', async () => {
+  const { spawnSync } = await import('node:child_process'), { mkdtempSync, writeFileSync } = await import('node:fs'), { tmpdir } = await import('node:os'), { join } = await import('node:path');
+  const dir = mkdtempSync(join(tmpdir(), 'precommit-')), sh = (...a) => spawnSync('git', a, { cwd: dir, encoding: 'utf8' });
+  sh('init', '-q'); sh('config', 'user.email', 't@t.test'); sh('config', 'user.name', 't');
+  const tool = new URL('./prepush.mjs', import.meta.url).pathname, run = () => spawnSync(process.execPath, [tool, '--staged'], { cwd: dir, encoding: 'utf8' });
+  writeFileSync(join(dir, 'a.md'), 'fine\n'); writeFileSync(join(dir, 'b.json'), '{"ok":1}\n'); sh('add', '-A');
+  assert.equal(run().status, 0, run().stderr);
+  writeFileSync(join(dir, 'a.md'), 'x\n<<<<<<< HEAD\nmine\n=======\ntheirs\n>>>>>>> origin/main\n'); sh('add', '-A');
+  const bad = run(); assert.equal(bad.status, 1); assert.match(bad.stderr, /a\.md: conflict marker at line 2/); assert.match(bad.stderr, /nothing committed/);
+  writeFileSync(join(dir, 'a.md'), 'fine\n'); writeFileSync(join(dir, 'b.json'), '{"ok":1,}\n'); sh('add', '-A');
+  assert.match(run().stderr, /b\.json: not valid JSON/);
+  assert.equal(spawnSync(process.execPath, [tool, '--staged'], { cwd: mkdtempSync(join(tmpdir(), 'notrepo-')), encoding: 'utf8' }).status, 1, 'outside a repository it refuses instead of passing silently');
+});

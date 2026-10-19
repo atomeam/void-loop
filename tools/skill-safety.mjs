@@ -25,7 +25,15 @@ export function testsFor(changed, tests, browser = []) {
 export const readTests = (dir) => readdirSync(dir + '/tools').filter((f) => f.endsWith('.test.mjs')).map((f) => [f, readFileSync(dir + '/tools/' + f, 'utf8')]);
 export const note = (files, out) => MARK + '\nVerse automerge safety-check: `node --test ' + files.join(' ') + '` failed on this head, so the merge is held. Last lines:\n```\n' + String(out).split('\n').slice(-25).join('\n').replace(/```/g, "'''").slice(0, 1800) + '\n```\nFix it and push; the bot looks again when the head changes.';
 
-export function safety(run, gh, { repo, pr, sha, dir, tests = readTests, browser = readBrowser }) {
+/** The packages a failed run says it could not find ("Cannot find package 'x'"), when the repo declares them: the worktree simply has no node_modules, which is not the PR's fault. A package the repo does not declare is a real failure (the PR imported something that does not exist). Pure. */
+export function missingDeclared(out, pkg) {
+  const declared = { ...((pkg && pkg.dependencies) || {}), ...((pkg && pkg.devDependencies) || {}), ...((pkg && pkg.optionalDependencies) || {}) };
+  const names = [...String(out || '').matchAll(/Cannot find package '([^']+)'/g)].map((m) => m[1]);
+  return [...new Set(names)].filter((n) => Object.prototype.hasOwnProperty.call(declared, n));
+}
+const readPkg = (dir) => { try { return JSON.parse(readFileSync(`${dir}/package.json`, 'utf8')); } catch (_) { return {}; } };
+
+export function safety(run, gh, { repo, pr, sha, dir, tests = readTests, browser = readBrowser, pkg = readPkg }) {
   let changed;
   try { changed = (gh(`repos/${repo}/pulls/${pr}/files?per_page=100`) || []).map((f) => f.filename); } catch (e) { return { state: 'skip', why: 'could not list the PR files' }; }
   dir = dir || `${process.env.RUNNER_TEMP || '/tmp'}/void-safety-${pr}`;
@@ -36,9 +44,19 @@ export function safety(run, gh, { repo, pr, sha, dir, tests = readTests, browser
     git(['worktree', 'add', '--detach', dir, sha ? sha : 'FETCH_HEAD']);
     const pick = testsFor(changed, tests(dir), browser(dir));
     if (!pick.files.length) return { state: 'pass', files: [], why: 'no unit test imports what changed' };
-    try { run('node', ['--test', ...pick.files], { cwd: dir, timeout: TIMEOUT_MS }); return { state: 'pass', files: pick.files, why: pick.files.length + ' test file(s) passed' }; }
-    catch (e) {
-      const out = String(e.stdout || '') + String(e.stderr || '') || e.message;
+    const attempt = () => run('node', ['--test', ...pick.files], { cwd: dir, timeout: TIMEOUT_MS });
+    const failure = (e) => String(e.stdout || '') + String(e.stderr || '') || e.message;
+    try { attempt(); return { state: 'pass', files: pick.files, why: pick.files.length + ' test file(s) passed' }; }
+    catch (e0) {
+      let e = e0;
+      // a worktree has no node_modules: a test that imports a declared package (the Anthropic SDK in claude-brain.test.mjs) cannot load, whatever the PR changed.
+      // Install what the lockfile pins, once, and run again; only a failure that survives that is the PR's. If the install itself fails the check cannot judge: skip, never hold.
+      if (missingDeclared(failure(e0), pkg(dir)).length) {
+        try { run('npm', ['ci', '--ignore-scripts', '--no-audit', '--no-fund'], { cwd: dir, timeout: TIMEOUT_MS }); }
+        catch (inst) { return { state: 'skip', files: pick.files, why: 'dependencies could not be installed in the check worktree: ' + String(inst.stderr || inst.message).slice(0, 120) }; }
+        try { attempt(); return { state: 'pass', files: pick.files, why: pick.files.length + ' test file(s) passed (after installing dependencies)' }; } catch (e1) { e = e1; }
+      }
+      const out = failure(e);
       const body = note(pick.files, out);
       try {
         const mine = (gh(`repos/${repo}/issues/${pr}/comments?per_page=100`) || []).find((c) => c.user && c.user.login === BOT && String(c.body || '').startsWith(MARK));

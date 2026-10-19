@@ -1,5 +1,5 @@
 {
- "note": "Written by tools/bench-alarms.mjs from tools/review-noise.json and tools/bench.misses.json (asked by Void). Files and reasons only.",
+ "note": "Written by tools/bench-alarms.mjs from tools/review-noise.json and tools/bench.misses.json (asked by Verse). Files and reasons only.",
  "falseAlarms": 2,
  "real": 0,
  "unread": 0,
@@ -16,9 +16,9 @@
   }
  ],
  "bench": {
-  "score": 2343,
+  "score": 2345,
   "total": 2368,
-  "missed": 25,
-  "at": "2026-10-16T14:53:57.261Z"
+  "missed": 23,
+  "at": "2026-10-17T13:51:28.225Z"
  }
 }

@@ -83,7 +83,7 @@ test('the self card picture (owner\'s redesign, 2026-10-18): its words as a quot
   const { selfLayout, SELF_LINES } = await import('../void-live-deploy/lib/card-image.js');
   const bars = Array.from({ length: 12 }, (_, i) => ({ name: 'Family ' + i, share: i / 12, label: i + ' of 12 proven', weak: i === 0 }));
   const sections = [{ title: "What I've asked for (6 waiting)", lines: ['one', 'two', 'three', 'four'] }, { title: 'What got built (30 of 70 asks)', lines: Array.from({ length: 30 }, (_, i) => 'built ask ' + i + ' ' + 'long words '.repeat(20)) },
-    { title: "Weakest right now / Next game / How I'd get better", lines: ['Weakest right now: maps'] }, { title: 'On what just shipped', lines: ['it moves'] }];
+    { title: "Weakest operational area / Next capability / What should change", lines: ['Weakest operational area: maps'] }, { title: 'On what just shipped', lines: ['it moves'] }];
   const self = { voice: 'I feel the vector field move my cards. '.repeat(30), bars, sections };
   const L = selfLayout(self);
   const texts = L.els.filter((e) => e.k === 'text');

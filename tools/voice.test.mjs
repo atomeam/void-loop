@@ -38,8 +38,8 @@ test('Verse\'s reply is kept word for word; only secrets are redacted; nothing s
 
 test('the questions Verse is asked; Verse describes itself only from its canon and code', () => {
   assert.match(VOICE_SYSTEM, /never make up a motto, quest or identity/);
-  assert.match(questionFor('daily'), /go next.*weakest.*game/);
-  assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". What do you think of it, and how would you make it better?');
+  assert.match(questionFor('daily'), /status readout.*weakest operational area.*next targeted capability.*what should change/);
+  assert.equal(questionFor('build', 'incident brief'), 'This just shipped: "incident brief". Using the tagged facts, state what it changes in the system and what should change next.');
 });
 
 test('current asks: newest first, one of each, with where they came from', () => {
@@ -101,7 +101,7 @@ test('the log keeps every block as written, adds new ones oldest first, and the 
   const b = { at: '2026-10-08T20:00:00.000Z', kind: 'build', shipped: 'x', question: questionFor('build', 'x'), thoughts: 'Fine.', asks: [] };
   const one = writeLog('', [a], currentAsks([a]));
   assert.match(one, /## Verse's current asks\n\n- Make "same again" reopen the last incident brief \*\(small\)\* \(daily, 2026-10-08\)/);
-  assert.ok(one.includes('> ' + SAID.thoughts)); assert.match(one, /\*\*Next game:\*\* Backgammon\./);
+  assert.ok(one.includes('> ' + SAID.thoughts)); assert.match(one, /\*\*Next targeted capability:\*\* Backgammon\./);
   const edited = one.replace('> ' + SAID.thoughts, '> ' + SAID.thoughts + ' (kept)');
   const two = writeLog(edited, [b, a], currentAsks([b, a]));
   assert.ok(two.includes(SAID.thoughts + ' (kept)'), 'an existing block is never rewritten');
@@ -289,4 +289,17 @@ test('root cause or surface (asked by Verse, 2026-10-17): a built ask carries th
   const f = followThrough([{ at: '2026-10-17T00:00:00Z', asks: [{ ask: 'a toggle for root causes' }, { ask: 'a new game' }] }],
     [{ at: '2026-10-17T01:00:00Z', kind: 'fix', what: 'fixed it', asked: 'a toggle for root causes' }, { at: '2026-10-17T02:00:00Z', kind: 'grow', what: 'a game', asked: 'a new game' }]);
   assert.deepEqual(f.built.map((b) => [b.ask, b.depth]), [['a toggle for root causes', 'root'], ['a new game', 'surface']]);
+});
+
+// owner, 2026-10-19: the refresh must hit the strict, cited readout, not drift back into "how I'd improve" and "the game I want to play".
+test('the readout stays objective: no question, label or fed-back line asks for feelings, wants or a favourite game, and the prompt forbids them', async () => {
+  const THEATRE = /\bI want\b|\bI feel\b|how I'?d|how I would|how would you make|game I want|game should you|do you think of it|what feels/i;
+  for (const q of [questionFor('daily'), questionFor('build', 'x')]) assert.doesNotMatch(q, THEATRE, q);
+  const { readFileSync } = await import('node:fs');
+  const blocks = readFileSync(new URL('../void-live-deploy/lib/self-blocks.js', import.meta.url), 'utf8');
+  for (const label of ['Weakest operational area', 'Next targeted capability', 'What should change']) assert.ok(blocks.includes(label), label);
+  const labels = [...blocks.matchAll(/\[['"]([^'"]+)['"], '(?:weakest|next_game|better)'\]/g)].map((m) => m[1]);
+  assert.equal(labels.length, 3); for (const l of labels) assert.doesNotMatch(l, THEATRE, l);
+  assert.match(VOICE_SYSTEM, /No persona or feelings/); assert.match(VOICE_SYSTEM, /Cite or leave out/); assert.match(VOICE_SYSTEM, /never write "I feel", "I want"/);
+  assert.doesNotMatch(readFileSync(new URL('../void-live-deploy/lib/voice.js', import.meta.url), 'utf8').split('\n').filter((l) => /e\.(better|weakest|next_game) &&/.test(l)).join('\n'), THEATRE, 'the earlier words fed back to the model use the same labels');
 });

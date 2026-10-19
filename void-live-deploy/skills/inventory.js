@@ -6,6 +6,7 @@
  */
 import skillNames from './index.json' with { type: 'json' };
 import familyList from './families.json' with { type: 'json' };
+import whatList from './what.json' with { type: 'json' }; // one current line per skill, written from the book on every build (tools/what-skills.mjs)
 import { clean } from '../lib/ask-text.js';
 
 const CLEAN = clean; // shared: lib/ask-text.js
@@ -54,7 +55,9 @@ const WHAT = {
   inventory: 'this list — already built rows',
 };
 
-export const SKILLS_BUILT = SKILL_NAMES.map((id) => ({ id, what: WHAT[id] || id }));
+/** the words on a skill's row: the hand-written line, else the book's current one, else (a skill with neither) its name. */
+export const whatFor = (id) => WHAT[id] || whatList[id] || id;
+export const SKILLS_BUILT = SKILL_NAMES.map((id) => ({ id, what: whatFor(id) }));
 
 export const TOOLS_BUILT = [
   { id: 'existing-tools.md', what: 'registry of tools to check before building anything' },
@@ -76,7 +79,7 @@ export const ASSIMILATE_LIVE = [
   { id: 'ops log', what: 'void.agents.log.md' },
   { id: 'open sources', what: 'Wikipedia / Wiktionary / Open-Meteo' },
   { id: 'calc', what: 'percentages, units, dates, currency' },
-  { id: 'your void', what: 'silent entry + personal look per browser' },
+  { id: 'your verse', what: 'silent entry + personal look per browser' },
 ];
 
 export function inventoryOf(text) {
@@ -122,6 +125,25 @@ export function printableHtml(esc, p) {
     + '<div class="src">Source: the forge recipes (skills/forge-rules.js), checked on this ask · nothing about you is kept</div>';
 }
 
+/** The built skills combined by family (owner, 2026-10-19: "a lot of these can be combined"): [{ id, name, for, rows }] in the families' own order, the
+ * rows in a family sorted by name, and any skill no family lists under "Everything else". Pure. */
+export function groupsOf(rows, families = familyList.families || []) {
+  const byId = new Map((rows || []).map((r) => [r.id, r])), used = new Set(), out = [];
+  for (const f of families) {
+    const mine = (f.skills || []).map((x) => byId.get(x.name)).filter((r) => r && !used.has(r.id));
+    mine.forEach((r) => used.add(r.id));
+    if (mine.length) out.push({ id: f.id, name: f.name || f.id, for: f.for || '', rows: mine.sort((a, b) => a.id.localeCompare(b.id)) });
+  }
+  const rest = (rows || []).filter((r) => !used.has(r.id)).sort((a, b) => a.id.localeCompare(b.id));
+  if (rest.length) out.push({ id: 'other', name: 'Everything else', for: '', rows: rest });
+  return out;
+}
+
+/** the family groups as collapsible blocks: the name and how many, then every skill with its words. */
+export const groupsHtml = (esc, groups) => groups.map((g) => '<details class="inv-family" data-family="' + esc(g.id) + '"><summary><b>' + esc(g.name) + '</b> · ' + g.rows.length + ' skill' + (g.rows.length === 1 ? '' : 's')
+  + (g.for ? ' <span style="color:#8a8a8a">· ' + esc(g.for) + '</span>' : '') + '</summary><ul>'
+  + g.rows.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('') + '</ul></details>').join('');
+
 function hay(row) {
   return (row.id + ' ' + row.what).toLowerCase();
 }
@@ -137,11 +159,11 @@ function matchesQuery(rows, q) {
 }
 
 export function boardSectionHtml(esc) {
-  const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
+  const skills = groupsHtml(esc, groupsOf(SKILLS_BUILT));
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   return '<div class="sub" style="margin-top:18px">Already built · reuse these before queuing a rebuild</div>'
     + '<p style="color:#8a8a8a;font-size:13px;margin:4px 0 8px">Skills live on the stage; tools are in the repo. Say “what\'s already built” anytime.</p>'
-    + '<div class="sub">Skills</div><ul>' + skills + '</ul>'
+    + '<div class="sub">Skills, by family</div>' + skills
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>';
 }
 
@@ -157,12 +179,12 @@ function pageHtml(esc, hit) {
     return '<h2>Already built · ' + esc(hit.q) + '</h2><div class="sub">Matches in skills, tools and live assimilate rows · reuse before rebuilding</div><ul>' + rows + '</ul>'
       + '<div class="src">Source: Verse inventory · skills/index.json</div>';
   }
-  const skills = SKILLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
+  const skills = groupsHtml(esc, groupsOf(SKILLS_BUILT));
   const tools = TOOLS_BUILT.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   const assim = ASSIMILATE_LIVE.map((r) => '<li><b>' + esc(r.id) + '</b> — ' + esc(r.what) + '</li>').join('');
   return '<h2>Already built</h2>'
     + '<div class="sub">Reuse these before building · Atom\'s rule · nothing thrown out</div>'
-    + '<div class="sub" style="margin-top:12px">Skills</div><ul>' + skills + '</ul>'
+    + '<div class="sub" style="margin-top:12px">Skills, combined by family (tap a family to open it)</div>' + skills
     + '<div class="sub">Tools &amp; features</div><ul>' + tools + '</ul>'
     + '<div class="sub">Assimilate (live)</div><ul>' + assim + '</ul>'
     + '<div class="src">Source: Verse inventory · skills/index.json, domains/void.existing-tools.md, domains/void.assimilate.md</div>';

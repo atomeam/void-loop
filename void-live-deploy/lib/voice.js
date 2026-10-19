@@ -22,7 +22,7 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
   + 'Cite or leave out: every claim must be supported by tags from the facts; list those tags in "evidence". A claim you cannot support with a tag is not written. Use only tags that appear in the facts. '
   + 'Describe what Verse is only from the facts; never make up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"thoughts":"<the state in 2-5 plain sentences>","better":"<what should change, 1-3 sentences>",'
-  + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next game to learn and why, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
+  + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next targeted capability (a game, skill or card) and the tagged reason, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
   + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","small":<true if a builder could finish it in under an hour>}],'
   + '"evidence":{"thoughts":["S1"],"better":["S2"],"weakest":["S3"],"next_game":["S1"]},'
   + '"striking":<true only if there is something the owner should hear today: a real problem, a surprising need, a change of course>} '
@@ -30,8 +30,8 @@ export const VOICE_SYSTEM = 'You are the language model that writes the status r
 
 // the question Verse is asked, in plain words (kept on the entry so the log shows what Verse was answering)
 export function questionFor(kind, shipped) {
-  if (kind === 'daily') return 'Where should you go next? What feels weakest about you right now? Which game should you learn next? Which new video trick should you learn next for your own clips?';
-  return 'This just shipped: "' + clean(shipped, 300) + '". What do you think of it, and how would you make it better?';
+  if (kind === 'daily') return 'Give the current status readout from the tagged facts: the weakest operational area with its numbers, the next targeted capability, what should change, and one video effect missing from the clips tricks library.';
+  return 'This just shipped: "' + clean(shipped, 300) + '". Using the tagged facts, state what it changes in the system and what should change next.';
 }
 
 const clean = (t, n) => redact(String(t || '').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ')).trim().slice(0, n);
@@ -229,7 +229,7 @@ export function replyPrompt(entry, thread, text) {
     return 'What you showed when you were asked "' + e.ask + '"' + (e.title ? ' (the card "' + e.title + '")' : '') + (e.routed ? ', answered by your ' + e.routed.skill + ' skill' : '') + ':\n' + (e.said || '(nothing kept)')
       + (before ? '\n\nThe conversation so far:\n' + before : '') + '\n\nYour owner replies now: "' + text + '"';
   }
-  const said = [e.thoughts, e.better && 'How I would make it better: ' + e.better, e.weakest && 'Weakest right now: ' + e.weakest, e.next_game && 'Next game: ' + e.next_game]
+  const said = [e.thoughts, e.better && 'What should change: ' + e.better, e.weakest && 'Weakest operational area: ' + e.weakest, e.next_game && 'Next targeted capability: ' + e.next_game]
     .filter(Boolean).join(' ');
   const asks = (e.asks || []).map((a) => a && a.ask).filter(Boolean);
   const before = (thread || []).slice().reverse().map((r) => 'Owner: "' + r.text + '"' + (r.answer ? '\nYou: "' + r.answer + '"' : '')).join('\n');

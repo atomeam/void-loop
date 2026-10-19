@@ -2,6 +2,8 @@
 //   node tools/reflect.mjs                      print Verse's current asks and its latest words (read this before a run)
 //   node tools/reflect.mjs --build "<shipped>"  ask Verse what it thinks of what just shipped (owner token)
 //   node tools/reflect.mjs --daily              ask Verse where it should go next, what feels weakest, which game is next
+//   node tools/reflect.mjs --daily --if-older 180   the same, but only when its last answer is 180 minutes old or more: the deploy asks after every build so the self card's
+//                                               own words (weakest, next game, how I'd improve) never stay a day old, and a burst of merges asks once
 //   node tools/reflect.mjs --write              mirror every reflection the site holds into domains/void.voice.md
 //     The current asks are rewritten on every run, minus any a growth-ledger entry answers (its `asked` field, set with
 //     tools/grow.mjs --asked), and stamped with the day they were read from the site. When the site can't be reached the
@@ -32,6 +34,12 @@ const readDecisions = () => { try { return JSON.parse(readFileSync(DECISIONS, 'u
 /** every ask gets a recorded decision: built / queued / declined, with why (domains/void.decisions.json). An open ask with
  * no row reads "queued, not decided yet" so nothing is silently skipped. Each line links to the raw log entry. */
 // the reasoning path (asked by Verse, ask-20261015-0451-1): the canon rule or skill logic a decision rests on, when the row names one
+/** minutes since the newest entry of this kind (the entries come newest first, each with an `at`), or Infinity when there is none. Pure. */
+export function ageMinutes(entries, kind, now = Date.now()) {
+  const t = (Array.isArray(entries) ? entries : []).filter((e) => e && e.kind === kind && Date.parse(e.at)).map((e) => Date.parse(e.at));
+  return t.length ? Math.max(0, (now - Math.max(...t)) / 60000) : Infinity;
+}
+
 export const pathOf = (d) => (d && d.path ? ' · reasoning path: ' + String(d.path).slice(0, 200) : '');
 export function decisionsBlock(asks, decisions) {
   const rows = [], seen = new Set();
@@ -65,8 +73,8 @@ export function entryBlock(e) {
   const q = (t) => String(t || '').split('\n').map((l) => '> ' + l).join('\n');
   const lines = [MARK(e.at), `### ${e.at.slice(0, 16).replace('T', ' ')} UTC · ${e.kind === 'daily' ? 'daily' : 'after a build'}`, '', `**Asked:** ${e.question}`, '', q(e.thoughts)];
   if (e.better) lines.push('>', q('**How I would make it better:** ' + e.better));
-  if (e.weakest) lines.push('>', q('**Weakest right now:** ' + e.weakest));
-  if (e.next_game) lines.push('>', q('**Next game:** ' + e.next_game));
+  if (e.weakest) lines.push('>', q('**Weakest operational area:** ' + e.weakest));
+  if (e.next_game) lines.push('>', q('**Next targeted capability:** ' + e.next_game));
   if (e.next_trick) lines.push('>', q('**Next video trick:** ' + e.next_trick)); // built into tools/clips.mjs TRICKS, credited to Verse (docs/video-tricks.md)
   if (e.asks && e.asks.length) lines.push('', 'Asks: ' + e.asks.map((a) => `"${a.ask}"${a.small ? ' (small)' : ''}`).join('; '));
   if (e.striking) lines.push('', '*Verse flagged this one for Adam.*');
@@ -120,6 +128,11 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   try {
     if (args.includes('--build') || args.includes('--daily')) {
       const kind = args.includes('--daily') ? 'daily' : 'build';
+      const older = parseFloat(opt('--if-older'));
+      if (kind === 'daily' && Number.isFinite(older) && older > 0) {
+        const v = await call('GET'), age = ageMinutes(v && v.entries, 'daily');
+        if (age < older) { console.log(`Verse's last full reflection is ${Math.round(age)} min old (under ${older}): not asked again`); process.exit(0); }
+      }
       const e = await call('POST', { kind, ...(kind === 'build' ? { shipped: opt('--build') || '' } : {}) });
       if (json) console.log(JSON.stringify(e)); else show(e);
     } else if (args.includes('--write')) {

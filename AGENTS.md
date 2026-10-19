@@ -49,6 +49,8 @@ Every run follows B.I.T.E. (owner, 2026-10-11: brief, implement the smallest use
 | What Verse asked for | `domains/void.voice.md` (word for word; never reword) |
 | How Verse has grown | `void-live-deploy/void.growth.json` (append-only; "growth" on the site) |
 | The cloud estate and its cleanup | `BASE.md` |
+| What Verse lacks, and how it fixes it itself | `node tools/lacks.mjs` (ranks skills and cards by how little is proven), `.github/workflows/grow-self.yml` (daily: opens a `made by Verse` automerge PR of verified benchmark rows, queues the routing gaps for propose-fix), `docs/playbooks/grow-self.md` |
+| Generated cards (never regenerate by hand) | `node tools/refresh.mjs`: skill index, dependency map, families, the book, Verse's facts about itself, bench alarms, in order; `deploy.yml` runs it before every deploy so the self card and the book follow every build, and `checks.mjs` fails a stale committed one |
 | CI | `.github/workflows/` (`deploy.yml`, `verify.yml`, `void-review.yml`, `automerge.yml`, `bench.yml`, ...) |
 | Agent skills (Claude Code loads them for any session in this repo) | `.claude/skills/<name>/SKILL.md`: `void-run` (this page's run, short), `steward` (driving a PR to merged), `learn-from-video` (when the owner shares a video), `paid-media` (big files for people who pay: R2 plus signed links) |
 | Old text | `archive/` |

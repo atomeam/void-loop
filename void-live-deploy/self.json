@@ -476,6 +476,70 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T03:58:33Z",
+   "subject": "Tests for the game kit and a map line for the art tools"
+  },
+  {
+   "at": "2026-10-19T03:52:40Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
+   "at": "2026-10-19T03:52:29Z",
+   "subject": "Card art floors rise in the daily run, and the infrastructure is tested end to end"
+  },
+  {
+   "at": "2026-10-19T03:19:42Z",
+   "subject": "Card art measured (source and pixels), the benchmark keeps its record, and four games' rules: Null Sweep, Merge Void, Dim the Void, Void Bre"
+  },
+  {
+   "at": "2026-10-19T03:03:41Z",
+   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T02:58:18Z",
+   "subject": "The reflection refresh is a status readout: objective question, objective labels, and a guard"
+  },
+  {
+   "at": "2026-10-19T02:56:51Z",
+   "subject": "A commit that carries a conflict marker is refused (pre-commit hook), not only a push"
+  },
+  {
+   "at": "2026-10-19T02:56:24Z",
+   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T02:55:38Z",
+   "subject": "Keep both sides of the merge in MAP.md and checks.mjs (markers had been committed; never pushed)"
+  },
+  {
+   "at": "2026-10-19T02:50:10Z",
+   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T02:48:18Z",
+   "subject": "Verse's reflection follows the build; the safety check installs declared packages before it judges"
+  },
+  {
+   "at": "2026-10-19T02:47:19Z",
+   "subject": "The already-built card is combined by family, every row says something, and the descriptions refresh with every build"
+  },
+  {
+   "at": "2026-10-19T02:44:27Z",
+   "subject": "Leave propose-fix.js to a later change"
+  },
+  {
+   "at": "2026-10-19T02:43:17Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
+   "at": "2026-10-19T02:43:12Z",
+   "subject": "Verse works out what it lacks and fixes it itself; every generated card refreshes with every build"
+  },
+  {
+   "at": "2026-10-19T02:36:59Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
    "at": "2026-10-19T02:36:53Z",
    "subject": "Regenerate the families and the book after the merge"
   },
@@ -490,70 +554,6 @@
   {
    "at": "2026-10-19T02:25:44Z",
    "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:24:36Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T02:24:30Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T02:24:26Z",
-   "subject": "terminal: a command-line card for Verse, mostly rules and one marked door to the model"
-  },
-  {
-   "at": "2026-10-19T02:24:23Z",
-   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:20:49Z",
-   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:19:58Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"film meatdata"
-  },
-  {
-   "at": "2026-10-19T02:17:47Z",
-   "subject": "bench.json: keep both sides of the merge (a conflict marker had been committed; never pushed)"
-  },
-  {
-   "at": "2026-10-19T02:15:36Z",
-   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:14:44Z",
-   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:09:20Z",
-   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:09:08Z",
-   "subject": "the daily readout prompt drops the character (it contradicted PERSONA's 'never deny feelings'), becomes a strict summary of tagged facts, an"
-  },
-  {
-   "at": "2026-10-19T02:03:58Z",
-   "subject": "the self card stops pretending: its words are labelled as a language model's, prompted to speak as Verse from the facts it was given (shown "
-  },
-  {
-   "at": "2026-10-19T00:42:04Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"film metadata"
-  },
-  {
-   "at": "2026-10-18T20:31:03Z",
-   "subject": "Verse's voice: today's reflection, in its own words"
-  },
-  {
-   "at": "2026-10-18T18:48:47Z",
-   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-18T18:47:22Z",
-   "subject": "Site test: fix: \"yo film metadata for ikiru\" refused: don't know this y"
   }
  ],
  "builders": {
