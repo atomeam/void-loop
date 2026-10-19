@@ -6477,5 +6477,12 @@
   {"ask": "plant my mistake: I sent the email before checking it", "want": "skill:error-garden"},
   {"ask": "invite someone", "want": "skill:invite"},
   {"ask": "invite a friend", "want": "skill:invite"},
-  {"ask": "invite someone into my Verse", "want": "skill:invite"}
+  {"ask": "invite someone into my Verse", "want": "skill:invite"},
+  {"ask": "add soft rain", "want": "skill:soundscape"},
+  {"ask": "add a low drone", "want": "skill:soundscape"},
+  {"ask": "only the drone", "want": "skill:soundscape"},
+  {"ask": "diff \"make a timer\" and \"make a focus timer for writing\"", "want": "skill:ask-diff"},
+  {"ask": "shopping list template", "want": "skill:list-templates"},
+  {"ask": "meeting agenda template", "want": "skill:list-templates"},
+  {"ask": "bug list template", "want": "skill:list-templates"}
 ]
