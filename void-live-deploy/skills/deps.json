@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 692,
+ "counted": 694,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -507,6 +507,13 @@
    "tests": 1
   },
   {
+   "file": "lib/safety.js",
+   "skills": 3,
+   "direct": 3,
+   "dependants": 3,
+   "tests": 3
+  },
+  {
    "file": "lib/skill-family.js",
    "skills": 3,
    "direct": 3,
@@ -567,7 +574,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/video.js",
@@ -624,13 +631,6 @@
    "direct": 2,
    "dependants": 2,
    "tests": 1
-  },
-  {
-   "file": "lib/safety.js",
-   "skills": 2,
-   "direct": 2,
-   "dependants": 2,
-   "tests": 2
   },
   {
    "file": "lib/stage-port.js",
@@ -1019,6 +1019,13 @@
   },
   {
    "file": "lib/pdf-qa.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/photo-library.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -4176,6 +4183,12 @@
     "lib/bench-asks.js"
    ]
   },
+  "lib/photo-library.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/photos.js"
+   ]
+  },
   "lib/placement.js": {
    "imports": [],
    "importedBy": [
@@ -4636,6 +4649,7 @@
    "imports": [],
    "importedBy": [
     "skills/photo-scrub.js",
+    "skills/photos.js",
     "skills/safety-kit.js"
    ]
   },
@@ -7494,6 +7508,13 @@
   "skills/photo-scrub.js": {
    "imports": [
     "lib/stage-pack.js",
+    "lib/safety.js"
+   ],
+   "importedBy": []
+  },
+  "skills/photos.js": {
+   "imports": [
+    "lib/photo-library.js",
     "lib/safety.js"
    ],
    "importedBy": []

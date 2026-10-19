@@ -1852,6 +1852,11 @@
       "words": "Integrate the 'failure-signature' into the incident-autopsy skill so it can distinguish between a simulated developer-log failure and a genuine system error.",
       "ledgerAt": "2026-10-19T10:20:14Z",
       "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill, distinguish, between, simulat, develop, log, genuine, system, err)"
+    },
+    {
+      "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'.",
+      "ledgerAt": "2026-10-19T17:11:36Z",
+      "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
     }
   ],
   "totals": {

@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 77,
-  "checked": 54,
-  "proven": 171
+  "checked": 53,
+  "proven": 173
  },
  "families": [
   {
@@ -1349,6 +1349,7 @@
      "source": {
       "sites": [
        "apple.com",
+       "deezer.com",
        "tvmaze.com"
       ],
       "named": false,
@@ -1356,7 +1357,7 @@
       "answered": false,
       "points": 1,
       "next": "live",
-      "words": "source 1 of 3: apple.com, tvmaze.com; not named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
+      "words": "source 1 of 3: apple.com, deezer.com, tvmaze.com; not named on the card; a second source; no kept live answer yet. One kept live answer from apple.com would make it proven"
      }
     },
     {
@@ -1579,13 +1580,14 @@
      "source": {
       "sites": [
        "apple.com",
+       "deezer.com",
        "tvmaze.com"
       ],
       "named": true,
       "second": true,
       "answered": false,
       "points": 2,
-      "words": "source 2 of 3: apple.com, tvmaze.com; named on the card; a second source; no kept live answer yet"
+      "words": "source 2 of 3: apple.com, deezer.com, tvmaze.com; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1822,13 +1824,13 @@
     "experiment": 0,
     "tested": 30,
     "checked": 33,
-    "proven": 32
+    "proven": 33
    },
    "skills": [
     {
      "name": "telemetry-route",
      "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
+     "why": "a self-test, 3 browser-suite mentions",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "promoted": "2026-10-18",
@@ -1842,6 +1844,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 3
+    },
+    {
+     "name": "photos",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "notebook",
@@ -1917,10 +1926,12 @@
     },
     {
      "name": "kept",
-     "tier": "checked",
-     "why": "a self-test, 8 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
@@ -2670,8 +2681,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 11,
-    "proven": 20
+    "checked": 10,
+    "proven": 21
    },
    "skills": [
     {
@@ -2804,7 +2815,7 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 8 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 8 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2813,7 +2824,7 @@
     {
      "name": "incident",
      "tier": "proven",
-     "why": "a self-test, 9 browser-suite mentions, 6 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2986,10 +2997,12 @@
     },
     {
      "name": "four-channels",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
