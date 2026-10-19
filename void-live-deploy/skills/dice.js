@@ -1,49 +1,49 @@
 /**
- * dice skill — roll dice, local only (no API, no key)
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "roll a die", "roll 2d6", "2d20+5", "dice".
- * Empty surface stays empty.
+ * dice skill — roll dice. "roll a d20", "roll 2d6", "dice".
+ * Pure client-side; nothing leaves the browser. Empty stage stays empty.
  */
-export function diceOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '');
-  let m = t.match(/^(?:roll\s+)?(\d+)d(\d+)(?:\s*\+\s*(\d+))?$/);
-  if (m) return { n: Math.min(+m[1], 20), sides: Math.min(+m[2], 100), mod: +(m[3] || 0) };
-  if (/^(?:roll\s+(?:a\s+)?(?:die|dice)|dice\s+roll|roll\s+dice)$/.test(t)) return { n: 1, sides: 6, mod: 0 };
+export function parseDice(text) {
+  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+  if (t === 'dice' || t === 'roll dice' || t === 'roll the dice') return { n: 1, sides: 6 };
+  const m = t.match(/^(?:roll\s+)?(?:a\s+)?(\d+)?d(\d+)$/);
+  if (m && m[2]) {
+    const n = m[1] ? Math.max(1, Math.min(20, +m[1])) : 1;
+    const sides = Math.max(2, Math.min(100, +m[2]));
+    return { n, sides };
+  }
   return null;
 }
 
-function roll(n, sides) {
+function roll({ n, sides }) {
   const rolls = [];
-  let sum = 0;
-  for (let i = 0; i < n; i++) {
-    const r = Math.floor(Math.random() * sides) + 1;
-    rolls.push(r);
-    sum += r;
-  }
-  return { rolls, sum };
+  for (let i = 0; i < n; i++) rolls.push(1 + Math.floor(Math.random() * sides));
+  const total = rolls.reduce((a, b) => a + b, 0);
+  return { rolls, total };
 }
 
 async function run(text, api) {
+  const ask = parseDice(text);
+  if (!ask) return 'none';
   const { showPage, esc } = api;
-  const spec = diceOf(text);
-  if (!spec) return 'none';
-  const { rolls, sum } = roll(spec.n, spec.sides);
-  const total = sum + spec.mod;
+  const { rolls, total } = roll(ask);
+  const line = ask.n === 1 ? `d${ask.sides}: ${rolls[0]}` : `${ask.n}d${ask.sides}: ${rolls.join(' + ')} = ${total}`;
   showPage((p) => {
-    p.innerHTML = '<h2>Dice roll</h2><p style="font-size:28px;font-weight:300">' + esc(rolls.join(' + ')) + (spec.mod ? ' + ' + spec.mod : '') + ' = ' + total + '</p>'
-      + '<div class="sub">' + spec.n + 'd' + spec.sides + (spec.mod ? '+' + spec.mod : '') + '</div>';
+    p.innerHTML = '<h2>Dice</h2><p style="font-size:28px;line-height:1.4;font-weight:300">' + esc(line) + '</p><div class="sub">say “roll again” or another roll</div>';
   });
   return 'dice';
 }
 
 export default {
   name: 'dice',
-  examples: ['roll a die', 'roll 2d6', '2d20+5'],
-  nearMisses: ['what are dice', 'dice game', 'how to play dice'],
-  match(lower, text) { return !!diceOf(text); },
+  examples: ['roll a d20', 'roll 2d6', 'dice', 'roll dice', 'roll 3d8'],
+  nearMisses: ['what is a dice', 'dice games', 'how to play dungeons and dragons'],
+  match(lower, text) { return !!parseDice(text); },
   run,
   suite() {
-    const s = diceOf('roll 2d6');
-    return { ok: !!s && s.n === 2 && s.sides === 6 && diceOf('2d20+5') && !diceOf('hello') };
+    const a = parseDice('roll a d20');
+    const b = parseDice('2d6');
+    const c = parseDice('dice');
+    const ok = a && a.n === 1 && a.sides === 20 && b && b.n === 2 && b.sides === 6 && c && c.n === 1 && c.sides === 6 && !parseDice('what is a dice');
+    return { ok, got: JSON.stringify({ a, b, c }) };
   },
 };
