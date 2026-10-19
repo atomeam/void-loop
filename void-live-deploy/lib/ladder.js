@@ -30,7 +30,7 @@ export function finish(game, winner, s) {
   return l;
 }
 
-const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Void', 'dim-void': 'Dim the Void', 'void-breaker': 'Void Breaker' };
+const TITLES = { pong: 'Verse Pong', snake: 'Verse Snake', 'null-sweep': 'Null Sweep', 'merge-void': 'Merge Verse', 'dim-void': 'Dim the Verse', 'void-breaker': 'Verse Breaker' };
 /** the growth card's line: '' until a match is finished. Every value is a number or a fixed title. Pure. */
 export function ladderHtml(esc, ladder) {
   const rows = GAMES.filter((g) => played(ladder, g) > 0);

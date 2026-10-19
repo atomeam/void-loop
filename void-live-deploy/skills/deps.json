@@ -525,7 +525,7 @@
    "skills": 3,
    "direct": 3,
    "dependants": 3,
-   "tests": 0
+   "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
@@ -574,7 +574,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/arcade-ghost.js",

@@ -1,5 +1,5 @@
 /**
- * void-breaker skill — Void Breaker, Verse's bounce-and-clear arcade game (skills/void-breaker-rules.js; research in domains/void.game-research.md):
+ * void-breaker skill — Verse Breaker, Verse's bounce-and-clear arcade game (skills/void-breaker-rules.js; research in domains/void.game-research.md):
  * "void breaker", "breakout", "brick breaker", "play breakout". Your paddle is at the bottom, Verse's at the top, the bricks in between; a brick breaks for
  * whoever touched the ball last. Move the pointer, or use the arrow keys / A and D with the card focused. Verse says what it is doing. A finished game goes
  * on Verse's arcade ladder. The game steps at a fixed 60 a second whatever the screen does, so a game is a seed plus the pointer.
@@ -10,14 +10,14 @@ import { finish } from '../lib/ladder.js';
 
 export function voidBreakerOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:(?:verse|void|v01d)\s+)?(?:void\s+breaker|break\s?out|brick\s+breaker|brick\s+smash(?:er)?|bounce\s+and\s+clear)(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|(?:verse|void)|you))?$/.test(t)
-    && (/\b(void|play|game|let|start|open|wanna|new|brick|bounce)\b/.test(t));
+  return /^(?:(?:let'?s|lets|can we|i want to|wanna)\s+)?(?:(?:play|start|open|new)\s+)?(?:a\s+)?(?:game\s+of\s+)?(?:(?:verse|void|v01d)\s+)?(?:(?:void|verse)\s+breaker|break\s?out|brick\s+breaker|brick\s+smash(?:er)?|bounce\s+and\s+clear)(?:\s+game)?(?:\s+(?:with|against|vs)\s+(?:me|(?:verse|void)|you))?$/.test(t)
+    && (/\b(void|verse|play|game|let|start|open|wanna|new|brick|bounce)\b/.test(t));
 }
 
 const STEP = 1 / 60;
 
 function mount(th, stageApi) {
-  const c = arcadeCard(th, stageApi, { cls: 'vbreak', title: 'Void Breaker', sub: 'you are cyan · Verse is violet', w: V.W, h: V.H });
+  const c = arcadeCard(th, stageApi, { cls: 'vbreak', title: 'Verse Breaker', sub: 'you are cyan · Verse is violet', w: V.W, h: V.H });
   let s = V.create((Date.now() & 0xffff) || 7), go = false, acc = 0, x = V.W / 2, keys = 0, done = false;
   c.cv.addEventListener('pointermove', (e) => { x = c.local(e).x; go = true; });
   c.cv.addEventListener('pointerdown', (e) => { x = c.local(e).x; go = true; c.el.focus({ preventScroll: true }); });
@@ -47,14 +47,14 @@ async function run(text, api) {
   const existing = Object.values(api.stage.things()).find((t) => t.kind === 'void-breaker');
   if (existing) { if (api.stage.center) api.stage.center(existing.id); else api.stage.render(); return 'void-breaker'; }
   api.summon('void-breaker', { x: Math.max(10, Math.round(innerWidth / 2 - 130)), y: 40 });
-  api.say('Void Breaker · you are at the bottom, Verse at the top · move the pointer');
+  api.say('Verse Breaker · you are at the bottom, Verse at the top · move the pointer');
   return 'void-breaker';
 }
 
 export default {
   name: 'void-breaker',
   voidBreakerOf,
-  examples: ['void breaker', 'breakout game', 'brick breaker', 'play breakout', "let's play void breaker", 'bounce and clear game'],
+  examples: ['void breaker', 'verse breaker', 'breakout game', 'brick breaker', 'play breakout', "let's play void breaker", 'bounce and clear game'],
   nearMisses: ['breakout session ideas', 'prison breakout movie', 'brick wall pattern', 'how to break a habit', 'play chess', 'wedding breaker'],
   match(lower, text) { return !!voidBreakerOf(text); },
   run,

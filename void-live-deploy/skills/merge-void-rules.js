@@ -1,5 +1,5 @@
 /**
- * merge-void-rules — Merge Void, Verse's sliding-merge puzzle, in plain JS (no DOM), shared by the card (skills/merge-void.js) and its tests.
+ * merge-void-rules — Merge Verse, Verse's sliding-merge puzzle, in plain JS (no DOM), shared by the card (skills/merge-void.js) and its tests.
  * A 4x4 grid of cards. Slide every card one way; two cards of equal value that meet fuse into one of double value (each card fuses at most once per
  * slide), and after a slide that moved anything a new card of 2 (nine times in ten) or 4 appears in a free cell. Reach TARGET to win; with no slide
  * that changes the grid, you are stuck. The rules are the free mechanic of the sliding-merge genre (domains/void.game-research.md); the name, the

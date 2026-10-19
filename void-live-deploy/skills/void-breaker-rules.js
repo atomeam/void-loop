@@ -1,5 +1,5 @@
 /**
- * void-breaker-rules — Void Breaker, Verse's bounce-and-clear arcade game, in plain JS (no DOM), shared by the card (skills/void-breaker.js) and its tests.
+ * void-breaker-rules — Verse Breaker, Verse's bounce-and-clear arcade game, in plain JS (no DOM), shared by the card (skills/void-breaker.js) and its tests.
  * One field, two paddles, one ball and a band of bricks between them. You hold the bottom paddle, Verse the top. The ball bounces off the walls, the
  * paddles (the angle follows where it lands) and the bricks; a brick it breaks scores 10 for whoever touched the ball last. Miss the ball and you lose
  * a life, 3 each. The game ends when the bricks are gone (more points wins) or someone is out of lives (the other wins). The mechanic is the free

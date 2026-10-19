@@ -6188,5 +6188,9 @@
   {"ask": "play lights out", "want": "skill:dim-void"},
   {"ask": "void breaker", "want": "skill:void-breaker"},
   {"ask": "brick breaker", "want": "skill:void-breaker"},
-  {"ask": "play breakout", "want": "skill:void-breaker"}
+  {"ask": "play breakout", "want": "skill:void-breaker"},
+  {"ask": "verse breaker", "want": "skill:void-breaker"},
+  {"ask": "play merge verse", "want": "skill:merge-void"},
+  {"ask": "dim the verse", "want": "skill:dim-void"},
+  {"ask": "let's play verse breaker", "want": "skill:void-breaker"}
 ]

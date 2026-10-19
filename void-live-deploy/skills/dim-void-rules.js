@@ -1,5 +1,5 @@
 /**
- * dim-void-rules — Dim the Void, Verse's lights-out puzzle, in plain JS (no DOM), shared by the card (skills/dim-void.js) and its tests.
+ * dim-void-rules — Dim the Verse, Verse's lights-out puzzle, in plain JS (no DOM), shared by the card (skills/dim-void.js) and its tests.
  * A grid of lamps, some lit. Pressing a lamp flips it and the four lamps beside it (up, down, left, right). Put every lamp out. Pressing is linear
  * over GF(2), so a board is solved by elimination and a board made by pressing from all-dark is always solvable (domains/void.game-research.md).
  * The rules are the free mechanic of the lights-out genre; the name, the look and the words are Verse's own.

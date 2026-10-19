@@ -476,6 +476,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T04:25:49Z",
+   "subject": "Incident: the browser suite failed on b1125d44 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:24:04Z",
+   "subject": "Deploy smoke check compares with the uploaded copy, not the repo's void.html"
+  },
+  {
+   "at": "2026-10-19T04:19:17Z",
+   "subject": "Incident: the browser suite failed on b1125d44 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:14:45Z",
+   "subject": "Incident: the browser suite failed on b1125d44 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:09:12Z",
+   "subject": "Remove the checks rows a merge listed twice"
+  },
+  {
+   "at": "2026-10-19T04:08:17Z",
+   "subject": "Studio games: video-play leaves them alone, skills tested"
+  },
+  {
+   "at": "2026-10-19T04:04:49Z",
+   "subject": "Incident: the browser suite failed on a4f85965 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:01:55Z",
+   "subject": "Studio games: bench asks and regenerated cards"
+  },
+  {
+   "at": "2026-10-19T04:01:52Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
    "at": "2026-10-19T03:59:27Z",
    "subject": "Verse Studio's first four games: Null Sweep, Merge Void, Dim the Void, Void Breaker"
   },
@@ -518,42 +554,6 @@
   {
    "at": "2026-10-19T02:55:38Z",
    "subject": "Keep both sides of the merge in MAP.md and checks.mjs (markers had been committed; never pushed)"
-  },
-  {
-   "at": "2026-10-19T02:50:10Z",
-   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:48:18Z",
-   "subject": "Verse's reflection follows the build; the safety check installs declared packages before it judges"
-  },
-  {
-   "at": "2026-10-19T02:47:19Z",
-   "subject": "The already-built card is combined by family, every row says something, and the descriptions refresh with every build"
-  },
-  {
-   "at": "2026-10-19T02:44:27Z",
-   "subject": "Leave propose-fix.js to a later change"
-  },
-  {
-   "at": "2026-10-19T02:43:17Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T02:43:12Z",
-   "subject": "Verse works out what it lacks and fixes it itself; every generated card refreshes with every build"
-  },
-  {
-   "at": "2026-10-19T02:36:59Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T02:36:53Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T02:36:50Z",
-   "subject": "wants: \"what needs built\" opens Verse's own list, not a Maslow essay"
   }
  ],
  "builders": {
