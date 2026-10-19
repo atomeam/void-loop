@@ -54,7 +54,7 @@ export async function letsGo(file, ask) {
 export const stateFor = (result) => (result && result.passed ? 'done' : 'failed');
 /** The queue note after an attempt: which step stopped it, or where the fix went; counts and step names only. */
 export function noteFor(result) {
-  if (result.passed) return 'Verse proposed a fix that passed ' + stepsFor(result.mode).join(', ') + ' (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ' in skills/' + result.skill + '.js); see the pull request labelled "made by Verse"';
+  if (result.passed) return 'Verse proposed a fix that passed ' + stepsFor(result.mode).join(', ') + ' (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ' in skills/' + result.skill + '.js); it went onto main when Verse was sure (0.8 or more), else its v01d/fix- branch waits for the owner';
   return 'Verse proposed a fix (' + result.edits + ' line change' + (result.edits === 1 ? '' : 's') + ') that failed at: ' + result.failed + (result.detail ? ' (' + result.detail + ')' : '') + '';
 }
 
