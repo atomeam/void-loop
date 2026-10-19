@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 69,
- "runsTotal": 186,
+ "cases": 70,
+ "runsTotal": 187,
  "kinds": {
-  "grow": 62,
+  "grow": 63,
   "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-19T02:33:17Z",
+   "passed": 63,
+   "of": 73,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"add task call mum friday high priority 30 min\" (skill:task-board)"
+  },
   {
    "at": "2026-10-19T02:18:29Z",
    "passed": 71,
@@ -142,13 +149,6 @@
    "of": 57,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"echo this\" (skill:echo-disagrees)"
-  },
-  {
-   "at": "2026-10-18T06:02:59Z",
-   "passed": 54,
-   "of": 56,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"favorite this\" (skill:bookmarks)"
   }
  ],
  "seen": {
@@ -405,6 +405,10 @@
   "skill:stale-work": "2026-10-19T00:40:40Z",
   "skill:stigmergy-board": "2026-10-19T02:18:29Z",
   "skill:study-cards": "2026-10-19T02:18:29Z",
-  "skill:sudden-death": "2026-10-19T02:18:29Z"
+  "skill:sudden-death": "2026-10-19T02:18:29Z",
+  "skill:task-board": "2026-10-19T02:33:17Z",
+  "skill:task-diagram": "2026-10-19T02:33:17Z",
+  "skill:telemetry-route": "2026-10-19T02:33:17Z",
+  "skill:template-list": "2026-10-19T02:33:17Z"
  }
 }
