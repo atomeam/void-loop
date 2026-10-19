@@ -209,6 +209,7 @@ for (const [name, file] of [
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
   ['lacks', 'lacks.test.mjs'],
+  ['game-kit', 'game-kit.test.mjs'],
   ['grow-self', 'grow-self.test.mjs'],
   ['art-score', 'art-score.test.mjs'],
   ['art-pixels', 'art-pixels.test.mjs'],
