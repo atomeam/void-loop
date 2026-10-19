@@ -6460,5 +6460,12 @@
   {"ask": "map my tasks a -> b, b -> c, a -> d, d -> c", "want": "skill:task-diagram"},
   {"ask": "map my tasks: write -> review -> ship, write -> test; goal: ship", "want": "skill:task-diagram"},
   {"ask": "keep this idea: a stage that remembers | why: it makes coming back feel like home", "want": "skill:idea-certificate"},
-  {"ask": "show my idea certificates", "want": "skill:idea-certificate"}
+  {"ask": "show my idea certificates", "want": "skill:idea-certificate"},
+  {"ask": "partial answer on whether to move to Berlin", "want": "skill:partial-answer"},
+  {"ask": "tell me only what you know about my trip", "want": "skill:partial-answer"},
+  {"ask": "set my ambition temperature for the podcast", "want": "skill:anneal-ambition"},
+  {"ask": "set my ambition temperature for the book, hot 5 days, cool 10 days, keep 2", "want": "skill:anneal-ambition"},
+  {"ask": "incident autopsy", "want": "skill:incident-autopsy"},
+  {"ask": "which skill family is unhealthy", "want": "skill:incident-autopsy"},
+  {"ask": "autopsy of the failed suites", "want": "skill:incident-autopsy"}
 ]
