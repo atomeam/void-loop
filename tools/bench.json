@@ -6454,5 +6454,11 @@
   {"ask": "clean this feedback: You always miss the deadline. The login page is brilliant. | work: login page deadline", "want": "skill:gauge-feedback"},
   {"ask": "clean this feedback you never test the checkout flow", "want": "skill:gauge-feedback"},
   {"ask": "open the codex on space", "want": "skill:codex"},
-  {"ask": "a question I am avoiding: am I ready", "want": "skill:hunting-question"}
+  {"ask": "a question I am avoiding: am I ready", "want": "skill:hunting-question"},
+  {"ask": "spectral review of Our plan is very simple. We basically just ship it, because users really want it.", "want": "skill:spectral-review"},
+  {"ask": "spectral review: I think this is actually quite good, but honestly it needs work.", "want": "skill:spectral-review"},
+  {"ask": "map my tasks a -> b, b -> c, a -> d, d -> c", "want": "skill:task-diagram"},
+  {"ask": "map my tasks: write -> review -> ship, write -> test; goal: ship", "want": "skill:task-diagram"},
+  {"ask": "keep this idea: a stage that remembers | why: it makes coming back feel like home", "want": "skill:idea-certificate"},
+  {"ask": "show my idea certificates", "want": "skill:idea-certificate"}
 ]
