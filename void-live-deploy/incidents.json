@@ -2,12 +2,15 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-19T13:52:58.739Z",
+   "at": "2026-10-19T14:08:14.933Z",
    "sha": "a0d60d46a28c1181060f0b239672583d06cbd966",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39263328180",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "top misses: close/dismiss/go away with nothing open, hello/ola, test/probe/zzqx stay quiet; add milk, make a list add milk, list groceries fill one list; sticky note X / sticky that says X set the sticky text (the open sticky is edited, as before); no Wikipedia, no miss",
+    "\"incident autopsy\": the card lists the latest incidents with their commit, a count per family from incidents.json, shows double-quoted check names as text, and lists what it cannot place as unmapped",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "tools/test_void.mjs",
