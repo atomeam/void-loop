@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 9,
-    "checked": 4,
-    "proven": 15
+    "tested": 8,
+    "checked": 3,
+    "proven": 17
    },
    "from": 139,
    "to": 167
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 38,
-    "proven": 27
+    "checked": 33,
+    "proven": 32
    },
    "from": 173,
    "to": 268
@@ -2989,8 +2989,10 @@
     "pick a song",
     "pick something to watch"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. It has not failed a reader yet.",
+   "glow": 100,
    "n": 156
   },
   {
@@ -3021,7 +3023,7 @@
     "when did breaking bad end"
    ],
    "tier": "tested",
-   "why": "1 real ask in the benchmark",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 158
   },
@@ -3121,7 +3123,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
-   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the words and the world. It has not failed a reader yet.",
+   "flavor": "Not a boast but a record: 5 askings, each one answered. It has not failed a reader yet.",
    "glow": 100,
    "n": 164
   },
@@ -3153,8 +3155,10 @@
     "remove duplicate lines: a ⏎ b ⏎ a",
     "extract emails: write to bob@example.com or ann@example.org"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Proven 2 times over by those who asked, and kept among the words and the world.",
+   "glow": 100,
    "n": 166
   },
   {
@@ -3197,8 +3201,9 @@
     "is waymo in austin"
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 4 live findings, 2026-10-18",
-   "flavor": "Not a boast but a record: every asking answered. Say the words below and it answers.",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 4 live findings, 2026-10-18",
+   "flavor": "Keep this page; the out in the world are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 169
   },
   {
@@ -3360,7 +3365,7 @@
     "CI report: the browser suite failed on commit 57ab1f2e after PR 1083 merged. FAIL fly stars move: the streak never showed. 159/162 passed, unit tests pass, the rest are unconfirmed."
    ],
    "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "why": "a self-test, 7 browser-suite mentions",
    "n": 174
   },
   {
@@ -3441,7 +3446,7 @@
     "pulse of my arrows"
    ],
    "tier": "tested",
-   "why": "1 real ask in the benchmark",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 179
   },
@@ -3831,8 +3836,10 @@
     "blood feud between the counter and the timer",
     "end the feud"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. The void remembers each asking.",
+   "glow": 100,
    "n": 204
   },
   {
@@ -4086,8 +4093,10 @@
     "what did I decide last tuesday",
     "replay my best answers"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. It has not failed a reader yet.",
+   "glow": 100,
    "n": 221
   },
   {
@@ -4186,8 +4195,10 @@
     "factor my goal launch a podcast",
     "factor my goal: learn spanish"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+   "flavor": "Earned, not claimed, over 1 real askings. The void remembers each asking.",
+   "glow": 100,
    "n": 228
   },
   {
@@ -4402,8 +4413,10 @@
     "show my error garden",
     "plant my test failures in my error garden"
    ],
-   "tier": "checked",
-   "why": "a self-test, 6 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 6 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 242
   },
   {
@@ -4491,8 +4504,10 @@
     "family gravity off",
     "gravity only notes"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. Ask, and see.",
+   "glow": 100,
    "n": 248
   },
   {
@@ -5087,7 +5102,7 @@
     "is void working"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 8 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 8 real asks in the benchmark",
    "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the verse itself. Say the words below and it answers.",
    "glow": 100,
    "n": 284
@@ -5104,7 +5119,7 @@
     "postmortem template"
    ],
    "tier": "proven",
-   "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
+   "why": "a self-test, 9 browser-suite mentions, 6 real asks in the benchmark",
    "flavor": "Not a boast but a record: 6 askings, each one answered. Ask, and see.",
    "glow": 100,
    "n": 285
