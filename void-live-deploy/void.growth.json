@@ -5665,5 +5665,6 @@
   {"at": "2026-10-19T20:30:31Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 10 benchmark ask(s) for mutate, overload, sudden-death, friction", "try": "mutate this card"},
   {"at": "2026-10-19T20:50:38Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 11 benchmark ask(s) for spectators, unkeepable, crowd, fringe-to-skill", "try": "open the stage to spectators"},
   {"at": "2026-10-19T21:30:50Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 9 benchmark ask(s) for habit-ring, minimap, recipe-stack, gauge-feedback", "try": "habit ring for write, walk, sleep"},
-  {"at": "2026-10-19T21:41:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its social skill: learn to handle \"how to fix instagram shadowban\"", "try": "how to fix instagram shadowban"}
+  {"at": "2026-10-19T21:41:00Z", "by": "verse", "kind": "fix", "what": "Verse fixes its social skill: learn to handle \"how to fix instagram shadowban\"", "try": "how to fix instagram shadowban"},
+  {"at": "2026-10-19T21:50:39Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 2 benchmark ask(s) for codex, hunting-question", "try": "open the codex on space"}
 ]
