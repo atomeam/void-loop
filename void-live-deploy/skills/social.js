@@ -18,7 +18,7 @@ export function socialAsk(text) {
   if (m) return { net: 'mastodon', kind: 'handle', user: m[1], server: m[2].toLowerCase() };
   m = t.match(/^(?:(?:show|open|follow)\s+)?(?:(?:the\s+)?(?:bluesky|bsky)\s+(?:feed|posts)\s+(?:of|for|from)\s+@?([a-z0-9.-]{3,60})|@?([a-z0-9-]+(?:\.[a-z0-9-]+)*\.bsky\.(?:social|app|team))(?:\s+(?:feed|posts))?)$/);
   if (m) { const h = m[1] || m[2]; return { net: 'bsky', kind: 'handle', actor: h.includes('.') ? h : h + '.bsky.social' }; }
-  if (/^(?:(?:open|show)\s+)?(?:the\s+|my\s+)?(?:social\s+(?:feed|card|media\s+feed)|feed\s+card)$/.test(t)) return { open: true };
+  if (/^(?:(?:open|show)\s+)?(?:the\s+|my\s+)?(?:social\s+(?:feed|card|media\s+feed)|feed\s+card)$/.test(t)|/^how\s+to\s+.*\s+(?:instagram|x|twitter|bluesky|bsky|mastodon).*/.test(t)) return { open: true };
   return null;
 }
 const ago = (d) => { const s = (Date.now() - new Date(d)) / 1000; return s < 3600 ? Math.max(1, Math.round(s / 60)) + 'm' : s < 86400 ? Math.round(s / 3600) + 'h' : Math.round(s / 86400) + 'd'; };
