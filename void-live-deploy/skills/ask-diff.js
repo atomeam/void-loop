@@ -91,7 +91,7 @@ export default {
   name: 'ask-diff',
   examples: ['diff "make a timer" and "make a focus timer for writing"', 'compare "clock" with "world clock"'],
   nearMisses: ['diff command in git', 'what is the diff between two files', 'compare iphone and android'],
-  match(lower, text) { return !!diffAsk(text || lower); },
+  match(lower, text) { return !!diffAsk(text || lower) || /^(diff\s+["'].+["']\s+and\s+["'].+["'])$/.test(lower); },
   run,
   diffAsk, stateLines,
 };
