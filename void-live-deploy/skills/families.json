@@ -15,7 +15,7 @@
  "totals": {
   "experiment": 0,
   "tested": 77,
-  "checked": 54,
+  "checked": 55,
   "proven": 171
  },
  "families": [
@@ -1823,7 +1823,7 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 33,
+    "checked": 34,
     "proven": 32
    },
    "skills": [
@@ -1844,6 +1844,13 @@
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
      "streak": 3
+    },
+    {
+     "name": "photos",
+     "tier": "checked",
+     "why": "a self-test, 2 browser-suite mentions",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "the daily smoke test"
     },
     {
      "name": "notebook",
