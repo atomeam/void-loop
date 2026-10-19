@@ -78,11 +78,31 @@ export function cardModel({ will, reflect, self } = {}) {
   const ak = reflect && Array.isArray(reflect.asks) ? reflect.asks : null;
   const op = self && Array.isArray(self.open) ? self.open : null;
   const items = (xs) => (xs || []).filter((x) => x && typeof x === 'object');
-  const wants = items(wl).map((w) => ({ text: sentence(w.i_want || w.title), because: sentence(w.because), kind: sentence(w.kind) })).filter((w) => w.text).slice(0, MAX);
+  // a reason that carries its own brackets ("asked 72 times, last 2026-10-19 (my weakest part today: probes 30)") reads flat: the
+  // card puts the whole reason in brackets, and brackets inside brackets read as a glitch (owner, 2026-10-19)
+  const wants = items(wl).map((w) => ({ text: sentence(w.i_want || w.title), because: sentence(w.because).replace(/\s*\(([^()]*)\)/g, ' · $1').replace(/^\((.*)\)$/, '$1'), kind: sentence(w.kind) })).filter((w) => w.text).slice(0, MAX);
   const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '' })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from) })).filter((o) => o.text).slice(0, MAX);
-  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '' };
+  return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow) };
 }
+const WEEK = 7 * 864e5;
+/** Verse asked twice (2026-10-19): "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'". From
+ *  /api/reflect `follow` only (lib/voice.js followThrough: an ask counts as built on ledger evidence, never a guess): how many of its
+ *  asks became something built, and how many were built in the last 7 days against the 7 before. null when the record is not there. Pure. */
+export function velocityOf(follow, now = Date.now()) {
+  if (!follow || !(+follow.total > 0) || !(+follow.built >= 0)) return null;
+  const total = Math.round(+follow.total), built = Math.min(total, Math.round(+follow.built));
+  // `recent` is the 30 newest built, `asked` up to 200 in ledger order: together, one of each, they hold the last two weeks
+  const seen = new Set(), times = [];
+  for (const a of [].concat(Array.isArray(follow.recent) ? follow.recent : [], Array.isArray(follow.asked) ? follow.asked : [])) {
+    const t = Date.parse(a && a.at), k = (a && a.ask) + '|' + (a && a.at);
+    if (t > 0 && t <= now && !seen.has(k)) { seen.add(k); times.push(t); }
+  }
+  const week = times.filter((t) => now - t < WEEK).length, before = times.filter((t) => now - t >= WEEK && now - t < 2 * WEEK).length;
+  return { total, built, pct: Math.round((100 * built) / total), week, before, trend: week > before ? 'faster' : week < before ? 'slower' : 'steady' };
+}
+/** the velocity line: "Want → skill: 212 of 300 of my asks built (71%) · 4 in the last 7 days, 2 the 7 before (faster)". Pure. */
+export const velocityLine = (v) => (v ? 'Want → skill: ' + v.built + ' of ' + v.total + ' of my asks built (' + v.pct + '%) · ' + v.week + ' in the last 7 days, ' + v.before + ' the 7 before (' + v.trend + ')' : '');
 const n = (k, one, many) => k + ' ' + (k === 1 ? one : many);
 /** the count line: "N wants · M asks not built · K inbox items". Pure. */
 export const countLine = (c) => n(c.wants, 'want', 'wants') + ' · ' + n(c.asks, 'ask not built', 'asks not built') + ' · ' + n(c.inbox, 'inbox item', 'inbox items');
@@ -91,6 +111,7 @@ const EMPTY = { wants: 'My will has not chosen anything yet.', asks: 'Everything
 const MISSING = { wants: 'I could not read my will just now, so I will not guess at it.', asks: 'I could not read my asks just now, so I will not guess at them.', inbox: 'I could not read my growth inbox just now, so I will not guess at it.' };
 const CSS = '.wants-card .wants-count{font-size:13px;color:var(--muted);margin:2px 0 10px}.wants-card .wants-h{font-size:15px;margin:12px 0 2px}.wants-card .wants-sub{font-size:12px;color:var(--muted);margin:0 0 6px}'
   + '.wants-card .wants-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px;padding:0;list-style:none}.wants-card .wants-chips li{display:block;max-width:100%}.wants-card .wants-chip{display:inline-block;font:inherit;font-size:13px;line-height:1.35;text-align:left;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:6px 12px;cursor:pointer;max-width:100%}'
+  + '.wants-card .wants-velocity{font-size:13px;margin:0 0 8px}.wants-card .wants-meter{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:4px}.wants-card .wants-meter i{display:block;height:100%;background:var(--accent)}'
   + '.wants-card .wants-chip:hover,.wants-card .wants-chip:focus-visible{background:rgba(255,255,255,.12)}.wants-card .wants-chip.copied{border-color:var(--accent)}.wants-card .wants-chip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.wants-card .wants-empty{font-size:13px;color:var(--muted);margin:2px 0 6px}.wants-card .wants-more{margin:10px 0 0;font-size:13px}';
 /** the card's markup: a title, the count line, three blocks (each a heading, one line of where it comes from, chips or its empty or
  *  missing line), the compound line when there is one, and a source line. esc escapes for HTML; every value goes through it. Pure. */
@@ -104,11 +125,12 @@ export function cardHtml(m, esc, { more = '' } = {}) {
     // where the list comes from goes after the items, so a saved or shared card (its text is cut to fit) carries the real wants first (owner, 2026-10-18: "make sure the card updates with real wants"); the saved text leaves it out
     + '<p class="wants-sub" data-share-skip="1">' + esc(SUB[id]) + '</p></section>';
   return '<style>' + CSS + '</style><h2>What I want built</h2><div class="wants-count" data-counts="' + esc(JSON.stringify(m.counts)) + '">' + esc(countLine(m.counts)) + '</div>'
+    + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + '<div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
     + block('wants', 'My will', m.wants, (w) => w.because)
     + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : ''].filter(Boolean).join(' · '))
     + block('inbox', 'Growth inbox', m.inbox, (o) => o.from)
     + (more ? '<p class="wants-more">' + esc(more) + '</p>' : '')
-    + '<div class="src">Source: my will (/api/will' + (m.at ? ', ' + esc(m.at) : '') + '), my asks (/api/reflect) and my growth inbox (/self.json from domains/void.frontier.md). My own records, no model. Tap an item to copy it.</div>';
+    + '<div class="src">Source: my will (/api/will' + (m.at ? ', ' + esc(m.at) : '') + '), my asks and what became of them (/api/reflect) and my growth inbox (/self.json from domains/void.frontier.md). My own records, no model. Tap an item to copy it.</div>';
 }
 
 const get = async (url) => { try { const r = await fetch(url, { cache: 'no-cache' }); return r.ok ? await r.json() : null; } catch (_) { return null; } };
@@ -147,5 +169,5 @@ export default {
   nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,
-  wantsOf, clauses, moreLine, cardModel, cardHtml, countLine,
+  wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine,
 };

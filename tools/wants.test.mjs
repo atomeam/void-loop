@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import skill, { wantsOf, clauses, moreLine, cardModel, cardHtml, countLine } from '../void-live-deploy/skills/wants.js';
+import skill, { wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine } from '../void-live-deploy/skills/wants.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -123,4 +123,21 @@ test('the saved text of the card (buttons, source lines and the frame left out, 
 test('"all of your unbuilt wants and asks" is the wants card, not the model saying it has no wants (owner, 2026-10-19); someone else\'s list stays out', () => {
   for (const a of ['all of your unbuilt wants and asks', 'all your unbuilt wants', 'your unbuilt wants and asks', 'show me all of your unbuilt wants and asks', 'list all your wants and asks']) assert.equal(wantsOf(a), true, a);
   for (const a of ['all of my unbuilt asks', 'all of your unbuilt features in my app', 'all of your base are belong to us']) assert.equal(wantsOf(a), false, a);
+});
+
+test('the velocity indicator, asked by Verse (2026-10-19): want to skill, from /api/reflect follow only, with the last 7 days against the 7 before', () => {
+  const now = Date.parse('2026-10-19T12:00:00Z'), d = (n) => new Date(now - n * 864e5).toISOString();
+  const follow = { total: 300, built: 212, recent: [{ ask: 'a', at: d(1) }, { ask: 'b', at: d(2) }, { ask: 'c', at: d(9) }], asked: [{ ask: 'a', at: d(1) }, { ask: 'd', at: d(3) }, { ask: 'e', at: d(30) }] };
+  const v = velocityOf(follow, now);
+  assert.deepEqual(v, { total: 300, built: 212, pct: 71, week: 3, before: 1, trend: 'faster' });
+  assert.equal(velocityLine(v), 'Want → skill: 212 of 300 of my asks built (71%) · 3 in the last 7 days, 1 the 7 before (faster)');
+  assert.equal(velocityOf(null), null); assert.equal(velocityOf({ total: 0, built: 0 }), null); assert.equal(velocityLine(null), '');
+  const html = cardHtml(cardModel({ will, reflect: { ...reflect, follow }, self }), esc);
+  assert.ok(html.includes('data-velocity="') && html.includes('of my asks built') && html.includes('class="wants-meter" data-share-skip="1"'));
+  assert.ok(!cardHtml(cardModel({ will, reflect, self }), esc).includes('class="wants-velocity"'), 'no follow record, no indicator and no made-up number');
+});
+
+test('a reason with its own brackets reads flat on the card (owner, 2026-10-19: "(asked 72 times, last 2026-10-19 (my weakest part today: probes 30))")', () => {
+  const m = cardModel({ will: { wants: [{ i_want: 'I want to learn deep ocean floor inquiries.', because: 'asked 72 times, last 2026-10-19 (my weakest part today: probes 30)' }] }, reflect, self });
+  assert.equal(m.wants[0].because, 'asked 72 times, last 2026-10-19 · my weakest part today: probes 30');
 });

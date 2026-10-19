@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T17:39:56.893Z",
+   "sha": "7930edd22cd6dd4885afb8c790a89261e60709c8",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39295479075",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/miss-robot.test.mjs",
+    "tools/test_void.mjs",
+    "tools/v01d-fixes.test.mjs",
+    "tools/voice.test.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/functions/api/miss.js",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/voice.js",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/wants.js",
+    "void-live-deploy/void.growth.json",
+    "void-live-deploy/void.html"
+   ]
+  },
+  {
    "at": "2026-10-19T14:17:54.846Z",
    "sha": "a0d60d46a28c1181060f0b239672583d06cbd966",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39263328180",
@@ -700,34 +726,6 @@
     "void-live-deploy/claims-verified.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/tester-log.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T14:11:27.786Z",
-   "sha": "ab4a12527df671d9cf7c2ff4f31cb3ac5a31ecf0",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39133572592",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/asks-link.json",
-    "tools/deps.mjs",
-    "tools/deps.test.mjs",
-    "tools/families.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/self.json",
-    "void-live-deploy/skills/dependency-health.js",
-    "void-live-deploy/skills/deps.json",
-    "void-live-deploy/skills/families.json",
-    "void-live-deploy/skills/guide.json",
-    "void-live-deploy/skills/index.json",
-    "void-live-deploy/skills/order/1725-dependency-health"
    ]
   }
  ]

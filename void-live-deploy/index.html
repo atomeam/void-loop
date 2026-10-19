@@ -3004,9 +3004,11 @@ say('nothing selected to remove');
     // is sent or stored: the answer route already knew the nearest skill.
     const nearMissReady = import('/lib/near-miss.js').catch(() => null);
     let lastNear = null; // { ask, near } from the last /api/answer reply that carried a near miss
+    // a browser driven by automation (navigator.webdriver: the claims check, the site tester, a bench) says so: its misses are our own
+    // replays, never people (owner, 2026-10-19: "deep ocean floor, asked 72 times" in the will was tools/claims-verify.mjs typing a ledger try ask)
     function reportMiss(ask, fallback) {
       try {
-        fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : {}) }), keepalive: true }).catch(() => {});
+        fetch('/api/miss', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ ask: String(ask).slice(0, 200), fallback, ...(agentRuns > 0 ? { origin: 'agent' } : navigator.webdriver ? { origin: 'robot' } : {}) }), keepalive: true }).catch(() => {});
       } catch (_) {}
       const pg = vpageEl;
       return refusalReady.then((m) => {

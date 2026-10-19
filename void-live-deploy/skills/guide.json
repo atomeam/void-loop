@@ -99,9 +99,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 11,
+    "tested": 9,
     "checked": 6,
-    "proven": 11
+    "proven": 13
    },
    "from": 139,
    "to": 167
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 40,
-    "proven": 25
+    "checked": 39,
+    "proven": 26
    },
    "from": 173,
    "to": 268
@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 13,
-    "proven": 18
+    "checked": 12,
+    "proven": 19
    },
    "from": 269,
    "to": 311
@@ -2725,8 +2725,10 @@
     "what is in github.com/atomeam/void-loop",
     "https://github.com/atomeam/void-loop"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the words and the world are built on it. Ask, and see.",
+   "glow": 100,
    "n": 140
   },
   {
@@ -2740,8 +2742,9 @@
     "summarize https://makertube.net/w/02f54689-5640-4be7-b51c-bcbb6587a07f",
     "what did this video teach?"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "checked",
+   "why": "a self-test, 2 real asks in the benchmark",
+   "glow": 100,
    "n": 141
   },
   {
@@ -2755,8 +2758,10 @@
     "movie night",
     "movie card for Nosferatu (1922)"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the words and the world, tested each day before the sun is up. Let the stage be the proof.",
+   "glow": 100,
    "n": 142
   },
   {
@@ -4496,8 +4501,10 @@
     "lift the shield",
     "dim everything except the timer"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of all the stage, this one is trusted enough to be taught.",
+   "glow": 100,
    "n": 249
   },
   {
@@ -4851,8 +4858,10 @@
     "show me the dependency health",
     "how healthy are your dependencies"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of the verse itself; set down here after it answered true 3 times.",
+   "glow": 100,
    "n": 270
   },
   {

@@ -311,3 +311,15 @@ test('the skills fact says the index entries are not the skill count (the card o
   assert.match(t, /not the skill count/);
   assert.doesNotMatch(t, /My skills \(3\)/);
 });
+
+test('an ask keeps none of the prompt\'s fact tags, and the same ask with a tag is one ask (owner, 2026-10-19: the wants card showed the velocity ask twice, once with "[S2]")', async () => {
+  const { untag } = await import('../void-live-deploy/lib/voice.js');
+  assert.equal(untag("Add a 'velocity' indicator to the wants card [S2]."), "Add a 'velocity' indicator to the wants card.");
+  assert.equal(untag('Show the map [S1, S3] now [S4 tools/x.mjs]'), 'Show the map now');
+  assert.equal(untag('Keep [brackets] that are not tags'), 'Keep [brackets] that are not tags');
+  const es = [{ at: '2026-10-19T10:00:00Z', kind: 'build', asks: [{ ask: "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill' [S2]." }] },
+    { at: '2026-10-19T08:00:00Z', kind: 'daily', asks: [{ ask: "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'", small: true }] }];
+  const asks = currentAsks(es);
+  assert.equal(asks.length, 1); assert.ok(!/\[S\d/.test(asks[0].ask));
+  assert.equal(parseVoice('{"thoughts":"I grew today.","asks":[{"ask":"Learn chess openings [S1]","small":true}]}').asks[0].ask, 'Learn chess openings');
+});
