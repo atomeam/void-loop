@@ -1239,7 +1239,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 10,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/memory-scope.js",

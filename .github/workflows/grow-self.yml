@@ -1,0 +1,222 @@
+# Verse hardens itself (owner, 2026-10-19: "make it so Verse can open its own PRs and push them through and review all after thinking it up
+# based on what it lacks most"). propose-fix.yml and build-miss.yml only start from asks a visitor missed; with no misses they run and do
+# nothing. This is the lane that thinks the work up from Verse's own files: tools/lacks.mjs ranks the skills by how little is proven about
+# them (no benchmark ask, a weak evidence tier, failed runs that name them), takes the example asks the top few already claim, and the
+# real page decides: tools/bench.mjs --probe types each into the page and only the asks that routed to the claiming skill become benchmark
+# rows (tools/append.mjs). The ones that did not are listed in the pull request as routing gaps for a builder. No model, no secret, no
+# network in the build job; the second job holds the write token and only moves the patch's bytes into a branch, after checking it touches
+# nothing but tools/bench.json and the agent log. The pull request is labelled "made by Verse" and "automerge": Verse's own review
+# (void-review.yml) is the gate, verify.yml takes it back if main's suite goes red, and at most one of these is open at a time.
+name: Verse hardens itself
+
+on:
+  schedule:
+    - cron: '41 17 * * *' # 1:41 PM New York (EDT), after propose-fix and build-miss have had their turn
+  workflow_dispatch:
+    inputs:
+      n:
+        description: "how many of the most lacking skills to try (1 to 12)"
+        type: string
+        default: '6'
+      dry:
+        description: "plan, probe and settle, but open no pull request"
+        type: boolean
+        default: false
+
+concurrency:
+  group: void-grow-self
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    outputs:
+      passed: ${{ steps.settle.outputs.passed }}
+      added: ${{ steps.settle.outputs.added }}
+      skills: ${{ steps.settle.outputs.skills }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Checks (no dependencies needed)
+        run: node --test tools/lacks.test.mjs
+
+      # never pile up: one open hardening pull request at a time, so a failing one cannot be followed by ten more
+      - name: Is one already open?
+        id: open
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh pr list --repo "${{ github.repository }}" --label "verse hardens" --state open --json number --jq 'length' || echo 0)
+          echo "open=$n" >> "$GITHUB_OUTPUT"
+          [ "$n" = "0" ] || echo "::notice title=Nothing started::a hardening pull request is still open"
+
+      - name: Think it up (what Verse lacks most)
+        id: plan
+        if: steps.open.outputs.open == '0'
+        env:
+          N: ${{ inputs.n || '6' }}
+        run: |
+          mkdir -p "$RUNNER_TEMP/grow"
+          echo "planned=0" >> "$GITHUB_OUTPUT"
+          n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
+          code=0; node tools/lacks.mjs plan --out "$RUNNER_TEMP/grow/cand.json" --n "$n" || code=$?
+          case $code in
+            0) echo "planned=1" >> "$GITHUB_OUTPUT"; node tools/lacks.mjs --n "$n" | tee -a "$GITHUB_STEP_SUMMARY" ;;
+            3) echo "::notice title=Nothing lacking::every skill already has what it needs" ;;
+            *) echo "::warning title=The plan did not run::see the lines above" ;;
+          esac
+
+      - name: npm ci
+        if: steps.plan.outputs.planned == '1'
+        run: npm ci --no-audit --no-fund
+      - name: Playwright version
+        if: steps.plan.outputs.planned == '1'
+        id: pw
+        run: echo "version=$(node -p "require('playwright-core/package.json').version")" >> "$GITHUB_OUTPUT"
+      - name: Cache Chromium
+        if: steps.plan.outputs.planned == '1'
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: pw-chromium-${{ runner.os }}-${{ steps.pw.outputs.version }}
+      - name: Install Chromium (+ system deps)
+        if: steps.plan.outputs.planned == '1'
+        run: |
+          npx playwright-core install --with-deps chromium
+          echo "VOID_TEST_BROWSER=$(node -e "import('playwright-core').then(m=>console.log(m.chromium.executablePath()))")" >> "$GITHUB_ENV"
+      - name: Sync void.html copies (what the probe serves)
+        if: steps.plan.outputs.planned == '1'
+        run: |
+          cp void.html void-live-deploy/index.html
+          cp void.html void-live-deploy/void.html
+
+      # the real page decides: each candidate typed in, outside services blocked, who answered read from the page's own log
+      - name: Probe the candidates in the page
+        if: steps.plan.outputs.planned == '1'
+        run: node tools/bench.mjs --probe "$RUNNER_TEMP/grow/cand.json" | tee "$RUNNER_TEMP/grow/probe.log"
+
+      - name: Settle and write the patch
+        id: settle
+        if: steps.plan.outputs.planned == '1'
+        run: |
+          echo "passed=0" >> "$GITHUB_OUTPUT"
+          g="$RUNNER_TEMP/grow"
+          # a probe that answered nothing at all is a broken run (no browser, no page), never "every ask failed": it opens nothing
+          grep -qE '^[0-9]+ of [0-9]+ answered' "$g/probe.log" || { echo "::error title=The probe did not finish::no result line in the probe log"; exit 1; }
+          node tools/lacks.mjs settle "$g/cand.json" "$g/probe.log" --out "$g/passing.json" --failed "$g/failed.json" --report "$g/report.md"
+          cat "$g/report.md" >> "$GITHUB_STEP_SUMMARY"
+          count=$(node -p "JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).length" "$g/passing.json")
+          [ "$count" -ge 1 ] || { echo "::notice title=Nothing to add::none of the asks routed to their skill; the report lists them"; exit 0; }
+          node tools/append.mjs bench --skip --file "$g/passing.json"
+          skills=$(node -p "[...new Set(JSON.parse(require('fs').readFileSync(process.argv[1], 'utf8')).map((c) => c.want.replace('skill:', '')))].join(', ')" "$g/passing.json")
+          printf '%s | verse | grow | hardened itself: %s benchmark ask(s) for %s, each typed into the real page and answered by the skill that claims it (tools/lacks.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$count" "$skills" >> domains/void.agents.log.md
+          git diff -- tools/bench.json domains/void.agents.log.md > "$g/grow.patch"
+          # only the benchmark and the log may change; anything else means a tool misbehaved and nothing is opened
+          git diff --name-only | grep -vE '^(tools/bench\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark and the log may change"; exit 1; } || true
+          node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8"))'
+          echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"
+
+      # the patch (when anything routed) and the asks that did not: both leave this job, nothing else does
+      - uses: actions/upload-artifact@v4
+        if: steps.plan.outputs.planned == '1' && !inputs.dry && always()
+        with:
+          name: verse-hardens
+          path: |
+            ${{ runner.temp }}/grow/grow.patch
+            ${{ runner.temp }}/grow/report.md
+            ${{ runner.temp }}/grow/failed.json
+          if-no-files-found: ignore
+          retention-days: 7
+
+  # the asks a skill claims and the page did not route to it become `probe:` jobs, which propose-fix.yml turns into a fix pull request: Verse's own
+  # misses go down the same lane as the ones it finds itself. This job holds the owner token and nothing else: no write token, no model, and it
+  # runs one script from main that only reads a list of plain asks (each is checked again for shape before it is queued).
+  queue-gaps:
+    needs: build
+    if: always() && needs.build.result == 'success' && !inputs.dry
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/download-artifact@v4
+        continue-on-error: true
+        with:
+          name: verse-hardens
+          path: ${{ runner.temp }}/grow
+      - name: Queue the routing gaps for propose-fix
+        env:
+          VOID_OWNER_TOKEN: ${{ secrets.VOID_OWNER_TOKEN }}
+        run: |
+          f="$RUNNER_TEMP/grow/failed.json"
+          [ -s "$f" ] || { echo "no routing gaps this time"; exit 0; }
+          [ -n "$VOID_OWNER_TOKEN" ] || { echo "::warning title=Gaps not queued::Repo secret VOID_OWNER_TOKEN is not set"; exit 0; }
+          node tools/lacks.mjs queue "$f" | tee -a "$GITHUB_STEP_SUMMARY" || echo "::warning title=Gaps not queued::the queue could not be reached; they are in the report"
+
+  # the passing patch becomes a pull request: this job can write, and it only moves bytes (it never runs anything a probe produced)
+  pull-request:
+    needs: build
+    if: needs.build.outputs.passed == '1' && !inputs.dry
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+      pull-requests: write
+      issues: write
+      actions: write # start Verse's review and the automerge bot on the new PR (a PR this token opens starts no pull_request runs)
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/download-artifact@v4
+        with:
+          name: verse-hardens
+          path: ${{ runner.temp }}/grow
+      - name: Open a pull request with what Verse added
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ADDED: ${{ needs.build.outputs.added }}
+          SKILLS: ${{ needs.build.outputs.skills }}
+        run: |
+          patch="$RUNNER_TEMP/grow/grow.patch"
+          # the patch touches exactly the benchmark and the log
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark and the log"; exit 1; } || true
+          branch="verse/harden-$(date -u +%Y%m%d-%H%M)"
+          git switch -c "$branch"
+          git apply "$patch"
+          [ -n "$(git status --porcelain)" ] || { echo "nothing to propose"; exit 0; }
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- tools/bench.json domains/void.agents.log.md
+          title="Verse hardens itself: $ADDED benchmark ask(s) for $SKILLS"
+          git commit -q -m "$title" -m "Verse found its least proven skills in its own files (tools/lacks.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them."
+          git push -q origin "$branch"
+          for l in "made by Verse|5c5cff|a change Verse made itself and the repo's checks passed" "verse hardens|0e8a16|Verse added benchmark asks for what it had least proof of" "automerge|1d76db|merges on Verse's review"; do
+            gh label create "${l%%|*}" --color "$(echo "$l" | cut -d'|' -f2)" --description "$(echo "$l" | cut -d'|' -f3)" --force >/dev/null 2>&1 || true
+          done
+          body="$(cat "$RUNNER_TEMP/grow/report.md")
+
+          Risk: low. Only tools/bench.json and the agent log change: rows are added, none edited or removed, and each row was answered by the skill it names in the real page before it was kept.
+          Labelled automerge: it merges on Verse's review like any PR, verify.yml takes it back if main's suite goes red, and it is the only one of its kind open at a time. How it was made: .github/workflows/grow-self.yml, tools/lacks.mjs."
+          url=$(gh pr create --base main --head "$branch" --label "made by Verse" --label "verse hardens" --label "automerge" --title "$title" --body "$body")
+          echo "### Verse hardened itself: $url" >> "$GITHUB_STEP_SUMMARY"
+          gh workflow run void-review.yml --repo "${{ github.repository }}" --ref "$branch" -f pr="${url##*/}" || echo "::warning title=Review not started::start Verse's review on ${url} by hand"
+          gh workflow run automerge.yml --repo "${{ github.repository }}" --ref main || true

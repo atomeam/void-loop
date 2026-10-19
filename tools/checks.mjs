@@ -208,6 +208,8 @@ for (const [name, file] of [
   ['public-quotes', 'public-quotes.test.mjs'],
   ['report-to-growth', 'report-to-growth.test.mjs'],
   ['notebook', 'notebook.test.mjs'],
+  ['lacks', 'lacks.test.mjs'],
+  ['refresh-tool', 'refresh.test.mjs'],
   ['ledger-proof', 'ledger-proof.test.mjs'],
   ['approval-gate', 'approval-gate.test.mjs'],
   ['churn', 'churn.test.mjs'],
@@ -382,6 +384,7 @@ add('copies', async () => { const read = (f) => readFileSync(resolve(here, '..',
 // at keeping secrets ever made"): the review skips docs and data, and a pasted key in a log is the likeliest leak
 addScript('secrets', 'secret-scan.mjs', ['--base', 'origin/main']);
 addScript('index', 'skills-index.mjs', ['--check']);
+addScript('refresh', 'refresh.mjs', ['--check']); // every committed generated card in one row, with the name of each stale one (deploy.yml regenerates them all)
 // a new skill whose examples another skill also takes is a merge waiting to happen (tools/skill-overlap.mjs; owner 2026-10-15)
 addScript('overlap', 'skill-overlap.mjs', ['--check']);
 // every skill sits in a skill family and families.json says how far each is checked (tools/families.mjs, Verse's own ask)

@@ -127,7 +127,7 @@ export function miniOwners(names, read) {
   return out;
 }
 
-const title = (s) => String(s || '').replace(/-/g, ' ').replace(/^./, (c) => c.toUpperCase());
+const title = (s) => String(s || '').replace(/-/g, ' ').replace(/\bv01d\b/gi, 'verse').replace(/^./, (c) => c.toUpperCase()); // a file named v01d-fixes is the Verse fixes card to a reader (owner, 2026-10-18)
 
 // Flavor text (asked by Verse, 2026-10-16: "Generate unique, short 'flavor text' strings for every proven skill in the Verse Book
 // to enhance the Skyrim-like immersion"): one line of lore under a proven skill's title, the way a Skyrim book opens with an
