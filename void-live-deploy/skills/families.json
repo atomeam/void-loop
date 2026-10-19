@@ -11,6 +11,7 @@
   "not_here": "how often people use a skill is never counted by Verse: no usage, no popular or unused, nothing sent (no behaviour tracking). A last-used day is kept only in a person's own browser (lib/skill-use.js), shown on the family-health card, and never leaves the device"
  },
  "smoke_at": "2026-10-18",
+ "bench_at": "2026-10-17",
  "totals": {
   "experiment": 5,
   "tested": 92,
