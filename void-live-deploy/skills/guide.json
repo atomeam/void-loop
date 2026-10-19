@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 34,
-    "proven": 32
+    "checked": 33,
+    "proven": 33
    },
    "from": 173,
    "to": 269
@@ -142,8 +142,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 11,
-    "proven": 20
+    "checked": 10,
+    "proven": 21
    },
    "from": 270,
    "to": 312
@@ -3538,8 +3538,10 @@
     "copy the card to the notepad",
     "note this card"
    ],
-   "tier": "checked",
-   "why": "a self-test, 8 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "glow": 100,
    "n": 185
   },
   {
@@ -4431,7 +4433,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 6 browser-suite mentions, 2 real asks in the benchmark",
-   "flavor": "Keep this page; the stage are built on it. Say the words below and it answers.",
+   "flavor": "Earned, not claimed, over 2 real askings. Say the words below and it answers.",
    "glow": 100,
    "n": 243
   },
@@ -5454,8 +5456,10 @@
     "answer in four channels",
     "answer this in four channels: is the plan sound? Claim: yes. Doubt: rent. Method: ask Sam. Risk: cost."
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "flavor": "Keep this page; the verse itself are built on it. Let the stage be the proof.",
+   "glow": 100,
    "n": 306
   },
   {

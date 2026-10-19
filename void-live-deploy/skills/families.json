@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 77,
-  "checked": 55,
-  "proven": 171
+  "checked": 53,
+  "proven": 173
  },
  "families": [
   {
@@ -1823,8 +1823,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 34,
-    "proven": 32
+    "checked": 33,
+    "proven": 33
    },
    "skills": [
     {
@@ -1926,10 +1926,12 @@
     },
     {
      "name": "kept",
-     "tier": "checked",
-     "why": "a self-test, 8 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 8 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
@@ -2679,8 +2681,8 @@
    "count": {
     "experiment": 0,
     "tested": 11,
-    "checked": 11,
-    "proven": 20
+    "checked": 10,
+    "proven": 21
    },
    "skills": [
     {
@@ -2995,10 +2997,12 @@
     },
     {
      "name": "four-channels",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
