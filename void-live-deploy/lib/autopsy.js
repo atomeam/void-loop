@@ -64,13 +64,36 @@ export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|
 /** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Verse and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
 export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
 
+/** an incident's failure signature (asked by Verse: "a 'failure-signature' into the incident-autopsy skill so it can distinguish ... a genuine
+ *  system error"): whether its failing checks are new or already failed on earlier commits, from incidents.json alone. kind: 'new' (none of its
+ *  checks failed before), 'recurring' (every one failed before: not this commit's doing), 'mixed' (some new), 'suite' (only the runner's own
+ *  lines, a stalled machine). since: the oldest earlier incident sharing a check; fresh: the titles of the new ones. list is newest first. Pure. */
+export function signatureOf(list, k) {
+  const i = list[k]; if (!i) return null;
+  const titles = [...new Set(i.checks.filter((c) => !isSuiteMeta(c)).map(titleOf).filter((t) => t.length >= 3))];
+  if (!titles.length) return { kind: 'suite', since: '', seen: 0, fresh: [] };
+  const older = list.slice(k + 1), seenAt = new Map();
+  for (const o of older) for (const t of new Set(o.checks.map(titleOf))) if (titles.includes(t)) seenAt.set(t, o.at); // older is newest first, so the last write is the oldest
+  const fresh = titles.filter((t) => !seenAt.has(t)), since = [...seenAt.values()].sort()[0] || '';
+  return { kind: !seenAt.size ? 'new' : fresh.length ? 'mixed' : 'recurring', since, seen: older.filter((o) => o.checks.some((c) => titles.includes(titleOf(c)))).length, fresh };
+}
+/** the signature as one plain sentence. Pure. */
+export function signatureLine(g) {
+  if (!g) return '';
+  const day = String(g.since || '').slice(0, 10);
+  return g.kind === 'suite' ? 'Only the suite itself stalled: a busy machine, not a broken skill.'
+    : g.kind === 'recurring' ? 'Recurring: every failing check also failed on ' + g.seen + ' earlier red suite' + (g.seen === 1 ? '' : 's') + ' (since ' + day + '), so not this commit\'s doing.'
+    : g.kind === 'mixed' ? 'New here: ' + g.fresh.slice(0, 3).join(', ') + '; the rest failed before (since ' + day + ').'
+    : 'New: none of these checks failed before, so this commit is the first suspect.';
+}
+
 /** the autopsy: { total, failing, recent: [{ sha, at, suite, checks: [{ text, skill, family }] }], families: [{ id, name, count }], unmapped: [{ text, count }],
  *  goLog: [{ sha, at, text }] (every failing Go-against-Verse check), focus }. `focus` (a family id; asked by Verse: a drill-down from the stability sparklines) keeps only
  *  that family's failing checks, and only the incidents that have one. Pure. */
 export function autopsy(incidentsJson, fam, guide, focus = '') {
   const inc = parseIncidents(incidentsJson), map = familyMap(fam), names = [...map.keys()], pages = (guide && guide.pages) || [], want = String(focus || '');
   const counts = new Map(), un = new Map(), goLog = [], suite = { timeouts: 0, ended: 0, incidents: 0 };
-  let placed = inc.map((i) => ({ ...i, checks: i.checks.map((text) => {
+  let placed = inc.map((i, k) => ({ ...i, signature: signatureOf(inc, k), checks: i.checks.map((text) => {
     if (isSuiteMeta(text)) return { text, skill: null, family: null, name: null, meta: true };
     const skill = skillOfCheck(text, names, pages) || (isGoLog(text) && map.has('go') ? 'go' : null), f = skill && map.get(skill) || null; // a Go-against-Verse check belongs to the go skill (its name is too short to match by words)
     return { text, skill: f ? skill : null, family: f ? f.id : null, name: f ? f.name : null };
@@ -124,7 +147,7 @@ export function autopsyHtml(a, esc = escHtml) {
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
     + '<div class="vh">Latest incidents</div><ul data-autopsy-recent="1">' + a.recent.map((i) => '<li data-sha="' + esc(i.sha) + '"' + (incidentTargetOf(i.at) ? ' data-incident="' + esc(incidentTargetOf(i.at)) + '"' : '') + '><code>' + esc(i.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(i.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(i.suite) + '</span><ul>'
-      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
+      + i.checks.map((c) => '<li data-check="1">' + esc(c.text) + ' <span class="sub">' + (c.meta ? '(the suite itself)' : c.family ? '(' + esc(c.skill) + ', ' + esc(c.family) + ')' : '(unmapped)') + '</span></li>').join('') + '</ul>' + (i.signature ? '<div class="sub" data-signature="' + esc(i.signature.kind) + '">' + esc(signatureLine(i.signature)) + '</div>' : '') + culpritHtml(i, esc) + '</li>').join('') + '</ul>'
     + (a.unmapped.length ? '<div class="vh">Unmapped</div><div class="sub">No skill name or example ask matches these, so they are not placed in a family.</div><ul data-autopsy-unmapped="1">' + a.unmapped.slice(0, 12).map((u) => '<li>' + esc(u.text) + ' <span class="sub">×' + esc(u.count) + '</span></li>').join('') + '</ul>' : ''));
 }
 /**
@@ -157,7 +180,7 @@ export function culpritHtml(i, esc) {
 export function pulseOf(a) {
   const l = a && a.recent && a.recent[0]; if (!l) return null;
   const fams = [...new Map(l.checks.filter((c) => c.family).map((c) => [c.family, c.family])).keys()];
-  return { sha: l.sha, at: l.at, suite: l.suite, families: fams, unmapped: l.checks.filter((c) => !c.family).length, checks: l.checks };
+  return { sha: l.sha, at: l.at, suite: l.suite, families: fams, unmapped: l.checks.filter((c) => !c.family).length, checks: l.checks, signature: l.signature || null };
 }
 /**
  * The pulse's markup: read-only. Without an owner it has no button; with `owner` each mapped failing check of the latest incident gets a
@@ -168,6 +191,7 @@ export function pulseHtml(a, esc = escHtml, { owner = false, names = {} } = {}) 
   if (!p) return head + '<div class="sub" data-pulse-empty="1">No incidents recorded.</div>';
   return head + '<div data-pulse="1"><div><code>' + esc(p.sha.slice(0, 8)) + '</code> <span class="sub">' + esc(p.at.slice(0, 16).replace('T', ' ')) + ' UTC · ' + esc(p.suite) + '</span></div>'
     + '<div class="sub">' + (p.families.length ? 'Families it maps to: ' + p.families.map((f) => esc(names[f] || f)).join(', ') : 'None of its failing checks map to a family') + (p.unmapped ? ' · ' + esc(p.unmapped) + ' unmapped' : '') + '.</div>'
+    + (p.signature ? '<div class="sub" data-signature="' + esc(p.signature.kind) + '">' + esc(signatureLine(p.signature)) + '</div>' : '')
     + (owner ? '<ul data-pulse-checks="1">' + p.checks.map((c, i) => c.skill ? '<li>' + esc(c.text.split(':')[0]) + ' <button type="button" class="tr-copy" data-incident-fix="' + esc(i) + '">Suggest fix</button><span data-fix-out></span></li>' : '').join('') + '</ul>' : '')
     + '</div>';
 }

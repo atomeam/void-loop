@@ -120,3 +120,23 @@ test('the suite\'s own stalls and end-of-run flags are counted apart, never unma
   assert.deepEqual(failurePlants(J).map((x) => x.text), ['clock']);
   assert.ok(!autopsyHtml(autopsy(SAMPLE, FAM, GUIDE), (s) => String(s)).includes('data-autopsy-suite'));
 });
+
+test('failure signature: a check that failed on an earlier red suite is recurring (not this commit), a first failure is new, only stalls are the suite (asked by Verse)', async () => {
+  const { signatureOf, signatureLine, autopsy, autopsyHtml, pulseHtml } = await import('../void-live-deploy/lib/autopsy.js');
+  const inc = [
+    { at: '2026-10-19T07:22:27Z', sha: '4841759', suite: 'browser suite on main', checks: ['fly stars move: drift', 'grown: 21 asks', 'check timeout: no check finished within 300 s'] },
+    { at: '2026-10-18T13:16:33Z', sha: '8322451', suite: 'browser suite on main', checks: ['fly stars move: drift', 'grown: 21 asks'] },
+    { at: '2026-10-18T12:39:28Z', sha: '3afe77b', suite: 'browser suite on main', checks: ['grown: 21 asks', 'feelings: plain answer'] },
+    { at: '2026-10-17T10:00:00Z', sha: 'aaaaaaa', suite: 'browser suite on main', checks: ['check timeout: no check finished within 300 s'] },
+  ];
+  const r = signatureOf(inc, 0), m = signatureOf(inc, 1), n = signatureOf(inc, 2), su = signatureOf(inc, 3);
+  assert.equal(r.kind, 'recurring'); assert.equal(r.seen, 2); assert.equal(r.since, '2026-10-18T12:39:28Z');
+  assert.equal(m.kind, 'mixed'); assert.deepEqual(m.fresh, ['fly stars move']);
+  assert.equal(n.kind, 'new'); assert.equal(su.kind, 'suite');
+  assert.match(signatureLine(r), /^Recurring: every failing check also failed on 2 earlier red suites \(since 2026-10-18\), so not this commit's doing\.$/);
+  assert.match(signatureLine(n), /^New: none of these checks failed before/);
+  const a = autopsy(inc, { families: [] }, { pages: [] });
+  assert.equal(a.recent[0].signature.kind, 'recurring');
+  assert.match(autopsyHtml(a), /data-signature="recurring">Recurring: /);
+  assert.match(pulseHtml(a), /data-signature="recurring">Recurring: /);
+});

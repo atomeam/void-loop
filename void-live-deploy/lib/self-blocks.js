@@ -77,6 +77,15 @@ export function foldAsks(asks) {
   return out;
 }
 
+/** the model's words with each sentence that asks for something already built marked "(built 2026-10-18)": the daily readout is written once a
+ *  day, so its next pick and its proposals can name what shipped since (owner, 2026-10-19: the card asked for the decision-matrix skill and the
+ *  zorbleflux smoothing a day after both were built). The words stay as written; the mark is added after. asked: follow.asked. Pure. */
+export function markBuilt(text, asked) {
+  const t = sentence(text), done = (Array.isArray(asked) ? asked : []).filter((a) => a && a.ask);
+  if (!t || !done.length) return t;
+  return t.split(/(?<=[.!?](?:\s*\[[^\]]{1,20}\])?)\s+(?=[A-Z'‘"“])/).map((x) => { const hit = done.find((a) => sameAsk(x.replace(/\s*\[[^\]]{1,20}\]\s*$/, ''), a.ask)); return hit ? x + ' (built ' + day(hit.at) + ')' : x; }).join(' ');
+}
+
 const GROW_SOURCE = {
   weakest: "Source: a model's judgement over the family bars (counts from skills/families.json, proven skills over all skills). Check it against those bars.",
   next_game: "Source: a model's pick of the next capability (a game, skill or card) from the tagged facts. Nothing in the repo ranks capabilities, so this is a suggestion, not a finding.",
@@ -114,12 +123,12 @@ export function selfSections(v, now = Date.now()) {
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? sentence(daily[k]) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
     if (daily) blocks.push({ t: 'p', text: sentence(build.thoughts) }); // without a daily entry these words are already the quotation above
-    if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + sentence(build.better) });
+    if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + markBuilt(build.better, v && v.follow && v.follow.asked) });
     if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }

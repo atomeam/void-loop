@@ -169,9 +169,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 1,
-    "proven": 0
+    "tested": 0,
+    "checked": 0,
+    "proven": 4
    },
    "from": 315,
    "to": 319
@@ -5405,11 +5405,11 @@
    "examples": [
     "what do you want built now",
     "name all your unbuilt asks",
-    "asks not built?"
+    "all of your unbuilt wants and asks"
    ],
    "tier": "proven",
-   "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark",
-   "flavor": "Proven 10 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
+   "why": "a self-test, 7 browser-suite mentions, 13 real asks in the benchmark",
+   "flavor": "Proven 13 times over by those who asked, and kept among the verse itself. Turn the page when you are done.",
    "glow": 100,
    "n": 311
   },
@@ -5480,8 +5480,10 @@
     "redact selection",
     "panic"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 6 real asks in the benchmark",
+   "flavor": "Asked 6 times in earnest, and never once left unanswered. Turn the page when you are done.",
+   "glow": 100,
    "n": 316
   },
   {
@@ -5495,8 +5497,10 @@
     "remove the location from a picture",
     "photo scrubber"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Of all the safety and small delights, this one is trusted enough to be taught. Let the stage be the proof.",
+   "glow": 100,
    "n": 317
   },
   {
@@ -5510,8 +5514,10 @@
     "soft tick sound on keep",
     "seasonal stage dust"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 4 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 4 real askings. The void remembers each asking.",
+   "glow": 100,
    "n": 318
   },
   {
@@ -5525,8 +5531,10 @@
     "stamp it approved",
     "put tape on my notes"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 4 real asks in the benchmark",
+   "flavor": "Keep this page; the safety and small delights are built on it. It has not failed a reader yet.",
+   "glow": 100,
    "n": 319
   },
   {

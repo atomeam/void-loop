@@ -119,3 +119,8 @@ test('the saved text of the card (buttons, source lines and the frame left out, 
   const html = cardHtml(cardModel({ will, reflect, self }), esc), kept = html.replace(/<style>[\s\S]*?<\/style>/, '').replace(/<button[\s\S]*?<\/button>/g, '').replace(/<div class="src">[\s\S]*?<\/div>/, '').replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ');
   for (const w of ['answer every question about tides', 'Give the map card terrain', 'Absorb and connect every repo', 'WebMCP origin trial']) assert.ok(kept.includes(w), w);
 });
+
+test('"all of your unbuilt wants and asks" is the wants card, not the model saying it has no wants (owner, 2026-10-19); someone else\'s list stays out', () => {
+  for (const a of ['all of your unbuilt wants and asks', 'all your unbuilt wants', 'your unbuilt wants and asks', 'show me all of your unbuilt wants and asks', 'list all your wants and asks']) assert.equal(wantsOf(a), true, a);
+  for (const a of ['all of my unbuilt asks', 'all of your unbuilt features in my app', 'all of your base are belong to us']) assert.equal(wantsOf(a), false, a);
+});
