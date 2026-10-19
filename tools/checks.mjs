@@ -219,6 +219,7 @@ for (const [name, file] of [
   ['game-kit', 'game-kit.test.mjs'],
   ['studio-skills', 'studio-skills.test.mjs'],
   ['writing-proof', 'writing-proof.test.mjs'],
+  ['telemetry-live', 'telemetry-live.test.mjs'],
   ['deploy-smoke', 'deploy-smoke.test.mjs'],
   ['grow-self', 'grow-self.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
