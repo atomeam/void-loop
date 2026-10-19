@@ -40,6 +40,7 @@ export async function onRequestPost({ request: req, env, waitUntil }) {
   const fromAgent = body.origin === 'agent'; // the page's label for a miss a visiting agent's tool call caused; anything else is people
   if (!ask || ask.length < 2) return new Response('empty', { status: 400 });
   if (isNoise(ask)) return new Response(null, { status: 204 }); // test traffic is not a miss (lib/noise.js)
+  if (body.origin === 'robot') return new Response(null, { status: 204 }); // a page driven by automation (navigator.webdriver) replaying our own asks: not people, never a want
   const id = await sha(ask);
   try { // the edge cache (per colo); the /api middleware also limits every connection
     const conn = await sha((req.headers.get('cf-connecting-ip') || '') + (env.SALT || ''));

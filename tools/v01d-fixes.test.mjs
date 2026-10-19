@@ -75,8 +75,10 @@ test('the card reads the risk and the draft state from the pull request', () => 
   const f = fixOf(p); assert.equal(f.risk, 'high'); assert.match(f.riskWhy, /structural line/); assert.equal(f.draft, true);
   const q = fixOf(pr(951, '0.9', ['made by Verse', 'automerge'])); assert.equal(q.risk, null); assert.equal(q.draft, false);
 });
-test('the workflow opens a fix under 0.8 as a draft, and says the risk in the body, the commit and the output', () => {
+test('the workflow puts a fix of 0.8 or more on main and leaves one under 0.8 on its v01d/fix- branch for the owner, and says the risk in the commit and the output', () => {
+  // Actions may not open pull requests in this repo (2026-10-19), so the gate decides where the commit goes, not whether a pull request is a draft
   const wf = readFileSync(new URL('../.github/workflows/propose-fix.yml', import.meta.url), 'utf8');
-  assert.match(wf, /draft="--draft"/); assert.match(wf, /gh pr create \$draft /); assert.match(wf, /Risk: \$RISK\./); assert.match(wf, /risk=\$\(node -p/);
-  assert.match(wf, /\[ "\$gate" = "automerge" \] \|\| draft="--draft"/);
+  assert.match(wf, /Risk: \$RISK\./); assert.match(wf, /risk=\$\(node -p/);
+  assert.match(wf, /c >= 0\.8 \? "automerge" : "waits for owner"/); assert.match(wf, /if \[ "\$gate" = "automerge" \]; then/); assert.match(wf, /branch="v01d\/fix-/);
+  assert.doesNotMatch(wf, /gh pr create/);
 });
