@@ -18,7 +18,7 @@ test('every step names a script that exists, a check form, and is listed once', 
 
 test('the order is the dependency order: index, then deps, families, the book, and Verse\'s facts last', () => {
   const names = STEPS.map((s) => s.name), at = (n) => names.indexOf(n);
-  assert.ok(at('index') < at('deps') && at('deps') < at('families') && at('families') < at('guide') && at('guide') < at('self'));
+  assert.ok(at('index') < at('deps') && at('deps') < at('families') && at('families') < at('guide') && at('guide') < at('what') && at('what') < at('self'));
 });
 
 test('pick keeps STEPS order whatever order it is asked in, and refuses an unknown name', () => {

@@ -6632,6 +6632,7 @@
    "imports": [
     "skills/index.json",
     "skills/families.json",
+    "skills/what.json",
     "lib/ask-text.js",
     "skills/forge-rules.js",
     "lib/prints.js"

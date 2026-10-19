@@ -476,6 +476,10 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T02:43:17Z",
+   "subject": "Regenerate after the merge"
+  },
+  {
    "at": "2026-10-19T02:43:12Z",
    "subject": "Verse works out what it lacks and fixes it itself; every generated card refreshes with every build"
   },
@@ -550,10 +554,6 @@
   {
    "at": "2026-10-18T18:23:06Z",
    "subject": "Review bench fixture: the deploy action's index.ts (the owner's own repo, MIT), added alone so the bench can review it as a commit"
-  },
-  {
-   "at": "2026-10-18T18:21:48Z",
-   "subject": "Incident: the browser suite failed on 9751b0ba (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

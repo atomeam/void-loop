@@ -22,6 +22,7 @@ export const STEPS = [
   { name: 'deps', script: 'deps.mjs', write: [], check: ['--check'], why: 'who imports whom, from the files themselves' },
   { name: 'families', script: 'families.mjs', write: [], check: ['--check'], why: 'each skill\'s family and how far it is proven, from the tests and the benchmark' },
   { name: 'guide', script: 'guide.mjs', write: [], check: ['--check'], why: 'the book: one page per skill, game and miniature, from the skills and the families' },
+  { name: 'what', script: 'what-skills.mjs', write: [], check: ['--check'], why: 'one current line per skill for the cards that list them (the already-built card), from the book' },
   { name: 'self', script: 'self-context.mjs', write: [], check: ['--check'], volatile: true, why: "Verse's facts about itself (the self card, /api/answer), from everything above and the ledgers; it embeds the newest commits, so only the deploy keeps it current" },
   { name: 'bench-alarms', script: 'bench-alarms.mjs', write: [], check: ['--check'], volatile: true, why: "the Bench icon's count of checked false alarms; regenerated at deploy" },
 ];
