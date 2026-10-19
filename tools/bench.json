@@ -6082,7 +6082,6 @@
   {"ask": "name you next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
-<<<<<<< HEAD
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
   {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
   {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
@@ -6108,8 +6107,7 @@
   {"ask": "my verse automations", "want": "skill:automations"},
   {"ask": "any new verse films", "want": "skill:films"},
   {"ask": "verse quest", "want": "skill:monopoly"},
-  {"ask": "play tic tac toe against verse", "want": "skill:tictactoe"}
-=======
+  {"ask": "play tic tac toe against verse", "want": "skill:tictactoe"},
   {
     "ask": "decision matrix for pasta vs pizza",
     "want": "skill:decision-matrix"
@@ -6174,5 +6172,4 @@
     "ask": "what am I missing in my notes",
     "want": "skill:notebook"
   }
->>>>>>> origin/main
 ]
