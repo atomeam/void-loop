@@ -34,3 +34,12 @@ test('the same answer run twice keeps the same sources (a cached answer is filte
   const once = keepCited('x [2] y [1]', ['a', 'b']);
   assert.deepEqual(keepCited(once.answer, once.sources), once);
 });
+
+test('a fullwidth 【1】 or 【1†source】 is a citation like [1]; a marker that names no source is dropped, never left bare (owner, 2026-10-19)', async () => {
+  const { keepCited } = await import('../void-live-deploy/lib/cite.js');
+  const src = [{ title: 'All your base are belong to us', url: 'https://en.wikipedia.org/wiki/All_your_base_are_belong_to_us' }];
+  assert.deepEqual(keepCited('Engrish humor on the web【1】. It is quoted often.', src), { answer: 'Engrish humor on the web [1]. It is quoted often.', sources: src });
+  assert.deepEqual(keepCited('A meme 【1†Wikipedia】 from Zero Wing.', src), { answer: 'A meme [1] from Zero Wing.', sources: src });
+  assert.deepEqual(keepCited('Engrish humor on the web【1】. It is quoted often.', []), { answer: 'Engrish humor on the web. It is quoted often.', sources: [] });
+  assert.deepEqual(keepCited('See [3], and arr[2] stays.', src), { answer: 'See, and arr[2] stays.', sources: [] });
+});
