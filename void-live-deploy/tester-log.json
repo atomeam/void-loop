@@ -1,15 +1,22 @@
 {
  "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 67,
- "runsTotal": 184,
+ "cases": 68,
+ "runsTotal": 185,
  "kinds": {
-  "grow": 60,
+  "grow": 61,
   "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-19T00:40:40Z",
+   "passed": 70,
+   "of": 71,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T18:45:56Z",
    "passed": 59,
@@ -142,13 +149,6 @@
    "of": 55,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
-  },
-  {
-   "at": "2026-10-18T05:16:07Z",
-   "passed": 45,
-   "of": 54,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-18T18:45:56Z",
+  "skill:film-metadata": "2026-10-19T00:40:40Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -399,6 +399,9 @@
   "skill:stage-fx": "2026-10-18T18:18:28Z",
   "skill:stage-image": "2026-10-18T18:45:56Z",
   "skill:stage-organize": "2026-10-18T18:45:56Z",
-  "skill:stage-print": "2026-10-18T18:45:56Z"
+  "skill:stage-print": "2026-10-18T18:45:56Z",
+  "skill:stage-style": "2026-10-19T00:40:40Z",
+  "skill:stakes-phase": "2026-10-19T00:40:40Z",
+  "skill:stale-work": "2026-10-19T00:40:40Z"
  }
 }

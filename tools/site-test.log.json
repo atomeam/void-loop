@@ -1363,5 +1363,12 @@
   "kind": "file",
   "key": "yo film metadata for ikiru | refused: don't know this yet",
   "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+ },
+ {
+  "at": "2026-10-19T00:40:40Z",
+  "passed": 70,
+  "of": 71,
+  "kind": "grow",
+  "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
  }
 ]
