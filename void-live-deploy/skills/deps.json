@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 677,
+ "counted": 679,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 53,
-   "direct": 49,
-   "dependants": 58,
+   "skills": 54,
+   "direct": 50,
+   "dependants": 59,
    "tests": 6
   },
   {
@@ -1123,6 +1123,13 @@
    "tests": 1
   },
   {
+   "file": "lib/terminal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
+  },
+  {
    "file": "lib/text-tools.js",
    "skills": 1,
    "direct": 1,
@@ -1239,7 +1246,7 @@
    "skills": 0,
    "direct": 0,
    "dependants": 10,
-   "tests": 4
+   "tests": 5
   },
   {
    "file": "lib/memory-scope.js",
@@ -4960,6 +4967,7 @@
     "skills/task-board.js",
     "skills/task-diagram.js",
     "skills/template-list.js",
+    "skills/terminal.js",
     "skills/time-math.js",
     "skills/witness-claims.js",
     "skills/writing-aids.js"
@@ -5269,6 +5277,12 @@
    ],
    "importedBy": [
     "skills/term-orbits.js"
+   ]
+  },
+  "lib/terminal.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/terminal.js"
    ]
   },
   "lib/text-tools.js": {
@@ -8179,6 +8193,13 @@
   "skills/term-orbits.js": {
    "imports": [
     "lib/term-orbits-law.js"
+   ],
+   "importedBy": []
+  },
+  "skills/terminal.js": {
+   "imports": [
+    "lib/terminal.js",
+    "lib/stage-pack.js"
    ],
    "importedBy": []
   },

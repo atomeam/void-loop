@@ -13,7 +13,7 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 const m = (a) => skill.match(a.toLowerCase(), a);
 
-const REACH = ['what do you want built now', 'what do you want', 'what else do you want', 'name all your wants', 'name all your unbuilt asks', 'what have you not built yet',
+const REACH = ['what needs built', 'what needs to be built', 'what still needs built', 'what needs building next', 'what do you want built now', 'what do you want', 'what else do you want', 'name all your wants', 'name all your unbuilt asks', 'what have you not built yet',
   "what haven't you built", 'your backlog', 'what are your open asks', 'what is still open', "what's on your list", 'whats next for you', 'what do you want to learn',
   'name all your unbuilt asks and come up with 50 more new ones', 'What do you want built now?', 'show me your backlog', 'what is in your backlog', 'list your wants',
   'what do you want next', "what's next for you?", 'what did you not build yet', 'your open asks', 'open asks', 'asks not built?', 'asks not built yet', 'unbuilt wants', 'growth inbox', 'the unbuilt list', 'what are your unbuilt asks', 'what is your backlog',

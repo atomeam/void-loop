@@ -2419,7 +2419,7 @@ say('nothing selected to remove');
     const DINNERS = ['tacos', 'a stir-fry', 'pasta with garlic and olive oil', 'a big salad', 'curry', 'homemade pizza', 'soup and bread', 'fried rice', 'burrito bowls', 'grilled cheese and tomato soup'];
     const pick = (a) => a[Math.floor(Math.random() * a.length)];
     function smallTalk(l) {
-      if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|a\s+lot|so\s+much)|thank\s+you\s+(?:void|so\s+much))$/.test(l)) return 'anytime';
+      if (/^(?:thanks|thank\s+you|thx|ty|cheers|thanks\s+(?:void|verse|a\s+lot|so\s+much)|thank\s+you\s+(?:void|verse|so\s+much))$/.test(l)) return 'anytime';
       if (/^(?:so\s+sorry|i'?m\s+(?:so\s+)?sorry|i\s+am\s+(?:so\s+)?sorry|my\s+bad|oops\s+sorry|apologies|sorry\s+(?:about\s+that|my\s+bad))(?:\s+(?:verse|void))?$/.test(l)) return 'no worries'; // a bare "sorry" stays a lookup: the titles called Sorry, the board game among them
       if (/^(?:how\s+are\s+you|how'?s\s+it\s+going|how\s+are\s+you\s+doing|how\s+do\s+you\s+do|you\s+ok)(?:\s+(?:today|(?:verse|void)))?$/.test(l)) return 'quiet and ready. what do you need?';
       if (/^(?:what'?s|what\s+is)\s+your\s+name$|^who\s+are\s+you$/.test(l)) return 'Verse, by A-to-Mind. ask for anything';
@@ -2659,7 +2659,7 @@ say('nothing selected to remove');
     // Verse's voice: what it thinks of itself, in its own words (GET /api/reflect, lib/voice.js). Asked after every build and once a day.
     function wantsVoice(lower) {
       const a = /^(so\s+)?(what\s+do\s+you\s+(really\s+)?think\s+(of|about)\s+yourself|how\s+do\s+you\s+feel\s+about\s+yourself|what('?s|\s+is|\s+feels)\s+(the\s+)?weakest\s+(thing\s+|part\s+)?(about|in|of)\s+you|your\s+(reflections?|self[- ]review)|what\s+would\s+you\s+change\s+about\s+yourself|how\s+would\s+you\s+make\s+yourself\s+better|(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|(?:verse|void)'?s\s+|(?:verse|v01d)'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself))\s*[?.!]?$/.test(lower);
-      return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d|verse)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d|verse)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d|verse)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b.*)\s*[?.!]*$/.test(lower);
+      return a || /^(?:(?:can\s+you\s+|could\s+you\s+|please\s+)?(?:open|show|go\s+to|bring\s+up)\s+(?:me\s+)?(?:the\s+|your\s+|its\s+|void'?s\s+|verse'?s\s+|v01d'?s\s+)?self[- ]?(?:card|page)\b.*|(?:tell|let)\s+(?:void|v01d|verse)\b.*\b(?:wrong|mistake|mistaken|error)\b.*|(?:void|v01d|verse)\s+(?:got|has|had|made)\s+(?:this|that|it|something|one)\s+(?:wrong|a\s+mistake).*|(?:correct|fix)\s+(?:void|v01d|verse)\b.*|i\s+(?:want|need)\s+to\s+(?:correct|fix)\s+(?:void|v01d|verse|you)\b.*)\s*[?.!]*$/.test(lower);
     }
     async function showVoice(said) {
       const el = showPage((p) => { p.innerHTML = '<h2>What I think of myself</h2><div class="sub">…</div>'; });
@@ -5062,7 +5062,7 @@ say('nothing selected to remove');
     const SIGNIN_RE = /^(sign in|sign me in|signin|log in|log me in|login|it'?s me|i'?m back|sign in with (a |my )?passkey|use my passkey|bring (back )?my (?:verse|void))\s*[.!]?$/;
     const SIGNOUT_RE = /^(sign out|sign me out|signout|log out|log me out|logout|forget this device)\s*[.!]?$/;
     const FORGET_RE = /^(forget me|forget me everywhere|forget my (?:verse|void)|delete my (?:verse|void)|delete my account|erase me|erase my (?:verse|void))\s*[.!]?$/;
-    const WHO_RE = /^(am i signed in|am i remembered|do you remember me|who am i|sync status|is my void (synced|saved))\s*[?.!]?$/;
+    const WHO_RE = /^(am i signed in|am i remembered|do you remember me|who am i|sync status|is my (?:void|verse) (synced|saved))\s*[?.!]?$/;
     // Unlisted on purpose: the same passkey sign-in, run even when already signed in; and binding (only acts for the key holder).
     const OWNER_SIGNIN_RE = /^(owner (log ?in|sign ?in)|(sign|log) (me )?in as (the )?owner)\s*[.!]?$/;
     const OWNER_BIND_RE = /^(make (this|my passkey) (my |the )?owner (login|sign ?in|passkey)|use (this|my) passkey (as|for) (the |my )?owner( login)?|bind (my |this )?(passkey|owner login))\s*[.!]?$/;
@@ -5075,7 +5075,7 @@ say('nothing selected to remove');
       return false;
     }
     // "publish my void as @sam": your look and kept cards (as text) at a-to-mind.com/@sam, after your own yes. Paid Voids; the server checks.
-    const PUBLISH_RE = /^publish\s+my\s+void(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
+    const PUBLISH_RE = /^publish\s+my\s+(?:void|verse)(?:\s+(?:as|at))?\s+@?([a-z0-9_]{3,24})\s*[.!]?$/;
     const UNPUBLISH_RE = /^(unpublish(\s+my\s+(?:verse|void))?|take\s+(down\s+my\s+((?:verse|void)|page)|my\s+((?:verse|void)|page)\s+down))\s*[.!]?$/;
     let pendingPublish = null;
     function publishAnswer(lower) {
@@ -5168,7 +5168,7 @@ say('nothing selected to remove');
       "what (?:does|do) (?:void|it|paid (?:verse|void)|a-to-mind) cost|how much (?:does|is|do) (?:void|it|paid (?:verse|void)|a-to-mind|the paid (?:version|tier|plan))(?: cost)?|how much for (?:void|paid (?:verse|void)|more)",
       "pay(?: for (?:void|paid (?:verse|void)|more|it|the paid (?:version|tier|plan)))?(?: you)?",
       "(?:buy|get|try) (?:void )?(?:pro|premium|paid(?: (?:verse|void))?|monthly|the paid (?:version|tier|plan))",
-      "subscribe|(?:a |my )?subscription|go pro|void (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
+      "subscribe|(?:a |my )?subscription|go pro|(?:void|verse) (?:pro|plus|premium|monthly|yearly|annual)|paid (?:verse|void)|premium|(?:a |the )?paid (?:tier|plan|version)",
       "(?:more|extra|unlimited) (?:model )?answers|(?:a )?higher answer (?:limit|cap)|raise (?:my|the) answer (?:limit|cap)",
       "(?:a |my )?private skills?|(?:make|keep) (?:a |my )?skills? private|(?:make|build|add|create) (?:me )?(?:a )?private skill",
       "(?:a )?higher (?:confirm(?:ation)?|action) (?:cap|limit)|raise (?:my|the) (?:confirm(?:ation)?|action) (?:cap|limit)|more (?:confirmed )?actions(?: per day)?",
@@ -5209,7 +5209,7 @@ say('nothing selected to remove');
     // A price question shows everything for sale: handlePaidAsk said the membership sentence (it stays first), and the
     // services card (skills/services.js) lists the hands-on services under it. The card is logged as the answer so the
     // record carries both. "fix my automation" stays with the fix flow: that is a request for work, not a price.
-    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
+    const PRICE_QUESTION_RE = /^(?:(?:the |your |show (?:me )?(?:the |your )?)?(?:pricing|prices?|price list)|what (?:does|do) (?:void|verse|a-to-mind) cost|how much (?:is|does) (?:void|a-to-mind)(?: cost)?)$/;
     function isPriceQuestion(lower) { return PRICE_QUESTION_RE.test(String(lower || '').toLowerCase().trim().replace(/\s+/g, ' ').replace(/[\s?.!]+$/, '')); }
     async function alsoShowPricedServices(text) {
       if (!skillsLoaded) await Promise.race([skillsReady, new Promise((r) => setTimeout(r, 6000))]);

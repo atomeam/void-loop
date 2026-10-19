@@ -24,7 +24,7 @@ export const SOURCES = [
 ];
 
 const CLEAN = cleanLower; // shared: lib/ask-text.js
-const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:void(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+(?:verse|void)))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+(?:verse|void)\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
+const ASK_RE = /^(?:(?:show(?:\s+me)?|check|run|what(?:'s|\s+is))\s+(?:the\s+)?)?(?:(?:void|verse)(?:'s)?\s+(?:status|health|health\s+check)|(?:system|service)\s+status|status(?:\s+(?:page|check|of\s+(?:verse|void)))?|health\s+check|self[\s-]?check|diagnostics)$|^(?:is\s+(?:verse|void)\s+(?:working|up|down|ok|okay|broken)|are\s+(?:the\s+)?(?:skills|sources)\s+(?:working|up|down)|check\s+(?:void|yourself|the\s+sources))$/;
 export function statusOf(text) { return ASK_RE.test(CLEAN(text)); }
 
 // News about Verse's own systems, pasted in (a weak answer the site tester queued, 2026-10-15: a pasted note that a new routine runs

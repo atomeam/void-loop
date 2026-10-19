@@ -5,6 +5,8 @@ What we're building, and where things are. This file is a map of the repo, not a
 A rule an agent wrote and signed with Adam's name, without his words, is removed when found. (2026-09-30: plan item 12's "no pitch, not advertised" rule and its tests, written by the Linux helper on 2026-09-27.)
 
 ## What A-to-Mind is
+The product is **Verse** (V01D, said "void", until 2026-10-18; the owner renamed it). Internal names (`void.html`, `a2m.void.*`, `void_*`, `void-review`) keep the old word on purpose; every ask that says "void" or "v01d" still works beside "verse".
+
 - **In Adam's words:** A-to-Mind is like Google, except Verse *does* instead of searching. Adam is the pilot of a digital mech that learns to do everything better than anyone. It starts small: one win at a time.
 - **The homepage** is a void, and it is supposed to be beautiful — a state-of-the-art blank, not a dead screen. You call more beautiful things into it.
 - **Your own Verse** is customizable if you pay $49 a month. The public homepage stays a void.

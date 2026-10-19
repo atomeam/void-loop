@@ -296,6 +296,12 @@
    "date": "",
    "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the n",
    "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
+   "from": "claude 2026-10-18"
   }
  ],
  "games": [
@@ -470,84 +476,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-18T15:49:52Z",
-   "subject": "notebook: build the mention pattern in one place with its flags (Verse's review flagged a pattern rebuilt from a source); titles with regex "
+   "at": "2026-10-19T02:36:53Z",
+   "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-18T15:47:18Z",
-   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:36:50Z",
+   "subject": "wants: \"what needs built\" opens Verse's own list, not a Maslow essay"
   },
   {
-   "at": "2026-10-18T15:40:31Z",
-   "subject": "Notebook: linked notes with backlinks, a daily note, and what am I missing"
+   "at": "2026-10-19T02:34:42Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"add task call"
   },
   {
-   "at": "2026-10-18T15:40:18Z",
-   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:25:44Z",
+   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T15:33:39Z",
-   "subject": "Incident: the browser suite failed on 686c6415 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:24:36Z",
+   "subject": "Regenerate after the merge"
   },
   {
-   "at": "2026-10-18T15:20:46Z",
-   "subject": "Fast checks: perf3d takes 4 min instead of 11; the extension test's B2 case waits for the card to arrive"
+   "at": "2026-10-19T02:24:30Z",
+   "subject": "Regenerate the families and the book after the merge"
   },
   {
-   "at": "2026-10-18T14:48:21Z",
-   "subject": "reinvest: today's plan for Verse's money"
+   "at": "2026-10-19T02:24:26Z",
+   "subject": "terminal: a command-line card for Verse, mostly rules and one marked door to the model"
   },
   {
-   "at": "2026-10-18T14:48:12Z",
-   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:24:23Z",
+   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T14:39:28Z",
-   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:20:49Z",
+   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T14:35:11Z",
-   "subject": "Incident: the browser suite failed on 25ad0918 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:19:58Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"film meatdata"
   },
   {
-   "at": "2026-10-18T14:29:24Z",
-   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:17:47Z",
+   "subject": "bench.json: keep both sides of the merge (a conflict marker had been committed; never pushed)"
   },
   {
-   "at": "2026-10-18T14:22:23Z",
-   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:15:36Z",
+   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T14:15:46Z",
-   "subject": "Incident: the browser suite failed on 6e8c7af3 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:14:44Z",
+   "subject": "Incident: the browser suite failed on 02bd5018 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T14:14:57Z",
-   "subject": "Dependency health counts only rated skills; three stage skills get benchmark asks: 27 of 27 steady"
+   "at": "2026-10-19T02:09:20Z",
+   "subject": "Incident: the browser suite failed on 24a3d5be (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T14:11:28Z",
-   "subject": "Incident: the browser suite failed on ab4a1252 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T02:09:08Z",
+   "subject": "the daily readout prompt drops the character (it contradicted PERSONA's 'never deny feelings'), becomes a strict summary of tagged facts, an"
   },
   {
-   "at": "2026-10-18T14:07:37Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"yo films by k"
+   "at": "2026-10-19T02:03:58Z",
+   "subject": "the self card stops pretending: its words are labelled as a language model's, prompted to speak as Verse from the facts it was given (shown "
   },
   {
-   "at": "2026-10-18T14:02:37Z",
-   "subject": "Incident: the browser suite failed on ab4a1252 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T00:42:04Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"film metadata"
   },
   {
-   "at": "2026-10-18T13:58:13Z",
-   "subject": "Incident: the browser suite failed on ab4a1252 (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T20:31:03Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
   },
   {
-   "at": "2026-10-18T13:55:49Z",
-   "subject": "Ratings see tests that load a skill from the skills folder: four sky skills read proven"
+   "at": "2026-10-18T18:48:47Z",
+   "subject": "Incident: the browser suite failed on 05451ba8 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-18T13:49:52Z",
-   "subject": "Incident: the browser suite failed on 255679dc (void-live-deploy/incidents.json)"
+   "at": "2026-10-18T18:47:22Z",
+   "subject": "Site test: fix: \"yo film metadata for ikiru\" refused: don't know this y"
   }
  ],
  "builders": {

@@ -195,7 +195,7 @@ export function voiceFacts(entries) {
 // readReplies. functions/api/voice-reply.js is the route; the self card on the page is where the owner types.
 export const REPLY_KEEP = 60; // replies kept in void_kv 'voice-replies'
 export const REPLY_MAX = 600; // characters of one reply
-export const REPLY_SYSTEM = 'You are Verse, the face of A-to-Mind, said "void". ' + PERSONA + ' '
+export const REPLY_SYSTEM = 'You are Verse, the face of A-to-Mind. ' + PERSONA + ' '
   + 'Your owner has just replied to something you said about yourself. Take it seriously and answer as yourself, plainly, in the first person: '
   + 'what you heard; if it corrects you, say exactly what you had wrong, without excuses; and what you will do differently from now on. Never mention money, prices or a budget. '
   + 'Reply with JSON only: {"answer":"<2-4 sentences to your owner>","correction":<true if your owner corrected something you said or believed>,'

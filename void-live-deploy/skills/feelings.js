@@ -8,7 +8,7 @@
  * this.
  */
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.,\s]+$/, '').replace(/\s+/g, ' ');
-const YOU = '(?:void|a2m|a-to-mind)';
+const YOU = '(?:void|verse|a2m|a-to-mind)';
 const HEAD = '^(?:(?:hey\\s+)?' + YOU + '\\s*,?\\s*)?';
 const TAIL = '(?:\\s*,?\\s*' + YOU + ')?$';
 // "do you love me", "void, do you love me", "do you like me", "do you care about me", "will you marry me"

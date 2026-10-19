@@ -10,7 +10,7 @@ const ownerToken = () => { try { return localStorage.getItem(OWNER_KEY) || ''; }
 
 export function automationsOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:void\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$/.test(t)) return { open: true };
+  if (/^(?:(?:show|open|list)\s+)?(?:me\s+)?(?:my\s+)?(?:(?:void|verse)\s+)?(?:automations?|zaps|workflows? i (?:made|set up))$|^(?:new|make|create|add)\s+(?:an?\s+)?automation$|^(?:my\s+)?automation\s+rules$|^what\s+automations\s+(?:do\s+i\s+have|are\s+(?:on|running))$/.test(t)) return { open: true };
   return null;
 }
 

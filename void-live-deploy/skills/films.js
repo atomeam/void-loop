@@ -40,7 +40,7 @@ export function filmMeta(f) {
 // (asked by Verse: "a 'film-card' ... that displays the discovered film's details"): "new films", "any new films", "what's new on
 // v01d tube" read the same list /films/rss is built from (/api/films) and show the films since this browser last looked, each as a
 // card with its title, day, experiment and watch link. What was seen is kept in this browser only (localStorage), never sent.
-const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
+const NEW_RE = /^(?:are\s+there\s+|any\s+)?(?:new|newest|latest|fresh)\s+(?:v01d\s+|void\s+|verse\s+)?(?:films?|videos?|shorts|clips)(?:\s+(?:from|by|on)\s+(?:v01d|void|verse|you))?$|^what'?s\s+new\s+(?:on|in)\s+(?:v01d\s+tube|(?:the\s+)?films)$|^(?:any|got\s+any)\s+new\s+(?:films?|videos?)\s+(?:for\s+me|today)?$/;
 export const wantsNewFilms = (lower) => NEW_RE.test(String(lower || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ').trim());
 /** the films newer than the last one seen (newest first); none seen yet: the newest three. Pure. */
 export function newSince(films, seenId, firstN = 3) {

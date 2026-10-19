@@ -15,7 +15,7 @@
   "experiment": 5,
   "tested": 92,
   "checked": 99,
-  "proven": 100
+  "proven": 101
  },
  "families": [
   {
@@ -41,7 +41,7 @@
     {
      "name": "make",
      "tier": "proven",
-     "why": "a self-test, 4 browser-suite mentions, 30 real asks in the benchmark",
+     "why": "a self-test, 4 browser-suite mentions, 33 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -365,7 +365,7 @@
     {
      "name": "connect4",
      "tier": "proven",
-     "why": "a self-test, 10 real asks in the benchmark",
+     "why": "a self-test, 11 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -373,7 +373,7 @@
     {
      "name": "tictactoe",
      "tier": "proven",
-     "why": "a self-test, 8 real asks in the benchmark",
+     "why": "a self-test, 11 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -381,7 +381,7 @@
     {
      "name": "othello",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 9 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 10 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -389,7 +389,7 @@
     {
      "name": "mancala",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 5 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -418,7 +418,7 @@
     {
      "name": "monopoly",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -1703,7 +1703,7 @@
     "experiment": 1,
     "tested": 30,
     "checked": 52,
-    "proven": 11
+    "proven": 12
    },
    "skills": [
     {
@@ -1731,6 +1731,15 @@
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
+    },
+    {
+     "name": "terminal",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-19",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
     },
     {
      "name": "notepad",
@@ -1863,7 +1872,7 @@
     {
      "name": "dark-look",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2543,7 +2552,7 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 15 browser-suite mentions, 14 real asks in the benchmark",
+     "why": "a self-test, 15 browser-suite mentions, 16 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2615,7 +2624,7 @@
     {
      "name": "memory",
      "tier": "proven",
-     "why": "a self-test, 14 browser-suite mentions, 10 real asks in the benchmark",
+     "why": "a self-test, 14 browser-suite mentions, 11 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
@@ -2633,7 +2642,7 @@
     {
      "name": "status",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 6 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 8 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2651,7 +2660,7 @@
     {
      "name": "actions",
      "tier": "proven",
-     "why": "a self-test, 5 browser-suite mentions, 7 real asks in the benchmark",
+     "why": "a self-test, 5 browser-suite mentions, 8 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2660,7 +2669,7 @@
     {
      "name": "automations",
      "tier": "tested",
-     "why": "6 real asks in the benchmark",
+     "why": "7 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2678,7 +2687,7 @@
     {
      "name": "services",
      "tier": "proven",
-     "why": "a self-test, 9 real asks in the benchmark",
+     "why": "a self-test, 11 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2737,7 +2746,7 @@
     {
      "name": "films",
      "tier": "proven",
-     "why": "a self-test, 8 browser-suite mentions, 4 real asks in the benchmark",
+     "why": "a self-test, 8 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2861,7 +2870,7 @@
     {
      "name": "wants",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 8 real asks in the benchmark",
+     "why": "a self-test, 6 browser-suite mentions, 10 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
      "success_rate": 1,
