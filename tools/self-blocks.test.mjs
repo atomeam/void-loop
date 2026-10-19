@@ -110,3 +110,21 @@ test('one ask said again in other words is one line, with how many times it was 
   const sec = selfSections({ entries: [], asks: said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })) }).find((s) => s.id === 'asked');
   assert.equal(sec.count, '3 waiting'); assert.match(sec.blocks[0].items[0].sub, /asked 2 times/);
 });
+
+test('no theatre: the words say a model wrote them, what it was given sits under them, and each claim names its source', async () => {
+  const { selfSections, sectionHtml, modelLabel } = await import('../void-live-deploy/lib/self-blocks.js');
+  const { VOICE_SYSTEM } = await import('../void-live-deploy/lib/voice.js');
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const daily = { kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'I feel the hunger to grow.', weakest: 'The stage is thin.', next_game: 'Go.', better: 'Route better.', model: '@cf/test/model-1', given: 'Facts about Verse:\n<b>The stage 11/94 proven</b>' };
+  const secs = selfSections({ entries: [daily], asks: [], follow: null }, Date.parse('2026-10-19T07:00:00Z'));
+  const words = secs.find((s) => s.id === 'words'), html = sectionHtml(words, esc);
+  assert.match(html, /Written by a language model \(test\/model-1\)/); assert.match(html, /not a felt state/); assert.ok(!/My own words, kept as I said them/.test(html));
+  assert.match(html, /<details class="vs-given">/); assert.ok(html.includes('&lt;b&gt;The stage 11/94') && !html.includes('<b>The stage'), 'what it was given is shown as text');
+  const growth = secs.find((s) => s.id === 'growth'), notes = growth.blocks.filter((b) => b.t === 'note').map((b) => b.text);
+  assert.equal(notes.length, 3); assert.match(notes[0], /skills\/families\.json/); assert.match(notes[1], /not a finding/); assert.match(notes[2], /not a plan until a ledger line/);
+  assert.equal(modelLabel(''), 'a language model'); assert.equal(modelLabel('@cf/meta/llama<x>'), 'a language model (meta/llamax)');
+  assert.ok(!selfSections({ entries: [{ ...daily, given: undefined }], asks: [], follow: null }).find((s) => s.id === 'words').blocks.some((b) => b.t === 'given'), 'an older entry with no record of what it was given shows none');
+  assert.match(VOICE_SYSTEM, /never say you feel, hunger, hope/);
+  const built = selfSections({ entries: [daily], asks: [], follow: { total: 5, built: 2, recent: [], asked: [] } }).find((s) => s.id === 'built');
+  assert.ok(built.blocks.some((b) => b.t === 'note' && /void\.growth\.json/.test(b.text)));
+});
