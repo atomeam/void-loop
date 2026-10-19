@@ -218,6 +218,7 @@ for (const [name, file] of [
   ['lacks', 'lacks.test.mjs'],
   ['game-kit', 'game-kit.test.mjs'],
   ['studio-skills', 'studio-skills.test.mjs'],
+  ['deploy-smoke', 'deploy-smoke.test.mjs'],
   ['grow-self', 'grow-self.test.mjs'],
   ['refresh-tool', 'refresh.test.mjs'],
   ['what-skills', 'what-skills.test.mjs'],
