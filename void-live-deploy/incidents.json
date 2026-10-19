@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T07:11:08.603Z",
+   "sha": "4841759645dbd44082403fe2bdd9c4043971e5d9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39213854896",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    ".github/workflows/grow-self.yml",
+    ".github/workflows/word-sweep.yml",
+    "docs/MAP.md",
+    "tools/arcade-rack.test.mjs",
+    "tools/asks-link.json",
+    "tools/asks-link.mjs",
+    "tools/bench.json",
+    "tools/card-cycle.mjs",
+    "tools/card-cycle.test.mjs",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/grow-self.test.mjs",
+    "tools/lacks.mjs",
+    "tools/refresh.mjs",
+    "tools/refresh.test.mjs"
+   ]
+  },
+  {
    "at": "2026-10-19T06:32:17.145Z",
    "sha": "de5e2cc15fa566454b25bc2dfcec4cd399166c33",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39208712310",
@@ -677,28 +703,6 @@
     "tools/skills-streak.json",
     "void-live-deploy/incidents.json",
     "void-live-deploy/skills/families.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T12:14:58.039Z",
-   "sha": "78c8dd33c6becc9be231afa31a9a236d7c4d9f6d",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39125787455",
-   "suite": "browser suite on main",
-   "checks": [
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/asks-link.json",
-    "tools/motion-throttle.test.mjs",
-    "void-live-deploy/lib/motion-throttle.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]
