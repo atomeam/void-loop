@@ -2921,8 +2921,8 @@
     {
      "name": "wants",
      "tier": "proven",
-     "why": "a self-test, 6 browser-suite mentions, 10 real asks in the benchmark",
-     "last_tested": "2026-10-18",
+     "why": "a self-test, 7 browser-suite mentions, 10 real asks in the benchmark",
+     "last_tested": "2026-10-19",
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 1
