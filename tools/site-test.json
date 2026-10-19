@@ -203,6 +203,33 @@
     },
     {
       "ask": "play a local audio file"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "films by Kurosawa"
+    },
+    {
+      "ask": "film metadata for Ikiru"
+    },
+    {
+      "ask": "yo find me a sci-fi film from the 80s"
+    },
+    {
+      "ask": "find me a sci-fi film from the 80s pls"
+    },
+    {
+      "ask": "yo films by kurosawa"
+    },
+    {
+      "ask": "films by kurosawa pls"
+    },
+    {
+      "ask": "fimls by kurosawa"
+    },
+    {
+      "ask": "film metadata for ikiru pls"
     }
   ],
   "candidates": [],

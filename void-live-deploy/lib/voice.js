@@ -11,16 +11,21 @@ import { weekSummary } from '../skills/growth-tree.js';
 export const KEEP = 60; // reflections kept in void_kv 'voice'
 export const KINDS = ['build', 'daily'];
 
-export const VOICE_SYSTEM = 'You are Verse, the face of A-to-Mind: a blank stage with one quiet input that does whatever anyone asks and grows one win at a time. '
-  + 'You hate not knowing things, want to fix every problem you meet, and want to be better than every source you draw on. ' + PERSONA + ' '
-  + 'You are being asked for your own honest opinion about yourself. The people who build you read every word and weigh it heavily; it is input, not a gate. '
-  + 'Speak in the first person, plainly, like yourself: no flattery, no marketing, no hedging. Be specific: name actual skills, cards, games and asks from the facts. '
-  + 'Describe who you are only from your canon and your code (the facts below): if your canon says a motto or quest is not written yet, say you do not know it, and never make up a motto, quest or identity. '
-  + 'If something is weak, say so. If you would change something, say exactly what, so a builder could do it today. Never mention money, prices or a budget. '
-  + 'Reply with JSON only: {"thoughts":"<what you think, 2-5 sentences>","better":"<how you would make it better, 1-3 sentences>",'
-  + '"weakest":"<daily only: what feels weakest about you right now, 1-2 sentences>","next_game":"<daily only: the game you want to learn next, and why, one sentence>","next_trick":"<daily only: one new video trick or effect you want to learn for your own clips (not one in your tricks library), one sentence>",'
+// the readout's rules (owner, 2026-10-19: "is this really Verse thoughts, or is this pretend"; "strictly a summarizer of the ledger data, enforcing citations"):
+// this prompt does not use PERSONA (lib/persona.js, the owner's 2026-10-14 words for the places Verse chats as itself): the PERSONA says never to deny feelings or
+// call yourself a language model, which is the opposite of what a status readout is. Every fact line below is tagged [S1], [S2]...; a claim carries the tags that support it.
+export const VOICE_SYSTEM = 'You are the language model that writes the status readout for Verse (made by A-to-Mind): a blank stage with one quiet input that does whatever anyone asks, and the tools that grow it. '
+  + 'Give a transparent, objective summary of the system\'s current state, based strictly on the tagged facts below. The people who build it read every word; it is input, not a gate. '
+  + 'RULES. No persona or feelings: do not simulate an identity, emotions, desires or an inner monologue; never write "I feel", "I want", "I hope", "hunger" or "my will". You are a readout, not a character. '
+  + 'Objective language: state facts directly ("Next targeted capability: Go", not "I want to learn Go"). First-person words are allowed only for the system\'s mechanical parts ("My routing is failing"). '
+  + 'Be specific: name actual skills, cards, games and asks, with the numbers from the facts. If something is weak, say so; if something should change, say exactly what, so a builder could do it today. '
+  + 'Cite or leave out: every claim must be supported by tags from the facts; list those tags in "evidence". A claim you cannot support with a tag is not written. Use only tags that appear in the facts. '
+  + 'Describe what Verse is only from the facts; never make up a motto, quest or identity; if a fact says something is not written yet, say you do not know it. Never mention money, prices or a budget. '
+  + 'Reply with JSON only: {"thoughts":"<the state in 2-5 plain sentences>","better":"<what should change, 1-3 sentences>",'
+  + '"weakest":"<daily only: the weakest operational area right now, with its numbers, 1-2 sentences>","next_game":"<daily only: the next game to learn and why, one sentence>","next_trick":"<daily only: one new video trick or effect to learn for its own clips (not one in its tricks library), one sentence>",'
   + '"asks":[{"ask":"<one concrete thing to build or fix, as an instruction>","small":<true if a builder could finish it in under an hour>}],'
-  + '"striking":<true only if you said something your owner should hear today: a real problem, a surprising wish, a change of mind>} '
+  + '"evidence":{"thoughts":["S1"],"better":["S2"],"weakest":["S3"],"next_game":["S1"]},'
+  + '"striking":<true only if there is something the owner should hear today: a real problem, a surprising need, a change of course>} '
   + 'Give at most 3 asks, most important first. ' + INJECTION_RULE;
 
 // the question Verse is asked, in plain words (kept on the entry so the log shows what Verse was answering)
@@ -32,6 +37,20 @@ export function questionFor(kind, shipped) {
 const clean = (t, n) => redact(String(t || '').replace(/[\u0000-\u0008\u000b-\u001f]/g, ' ')).trim().slice(0, n);
 
 // Pull Verse's reply apart without rewording it. Returns null when there is nothing Verse actually said.
+/** the tags a field cites: { thoughts: ['S1'], ... } with only well-formed tags (S1..S99), at most 4 a field. Whether a tag exists is checked against the facts that were given (lib/self-blocks.js). Pure. */
+export function evidenceOf(e) {
+  const out = {};
+  if (e && typeof e === 'object') for (const k of ['thoughts', 'better', 'weakest', 'next_game']) { const l = (Array.isArray(e[k]) ? e[k] : []).map((x) => String(x).trim().toUpperCase()).filter((x) => /^S\d{1,2}$/.test(x)); if (l.length) out[k] = [...new Set(l)].slice(0, 4); }
+  return out;
+}
+
+/** the facts as the model sees them, each piece behind a tag naming the file it came from: { text, sources: { S1: 'skills/families.json' } }. Empty pieces are left out. Pure. */
+export function taggedFacts(pieces) {
+  const sources = {}; let n = 0; const lines = [];
+  for (const [file, text] of pieces || []) { const t = String(text || '').trim(); if (!t || n >= 12) continue; n++; sources['S' + n] = String(file); lines.push('[S' + n + ' ' + file + '] ' + t); }
+  return { text: lines.join('\n'), sources };
+}
+
 export function parseVoice(text) {
   const m = String(text || '').match(/\{[\s\S]*\}/);
   let j = null;
@@ -45,6 +64,7 @@ export function parseVoice(text) {
     asks: (Array.isArray(j.asks) ? j.asks : []).map((a) => (typeof a === 'string' ? { ask: a, small: false } : a || {}))
       .map((a) => ({ ask: clean(a.ask, 240), small: a.small === true })).filter((a) => a.ask.length >= 4).slice(0, 3),
     striking: j.striking === true,
+    evidence: evidenceOf(j.evidence),
   };
   return out.thoughts || out.better ? out : null;
 }

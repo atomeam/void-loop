@@ -187,7 +187,7 @@
    "state": "open",
    "date": "",
    "ask": "Absorb and connect every repo",
-   "from": "owner, 2026-10-15: \"all the projects are Verse\"; \"Verse should absorb and connect everything\""
+   "from": "owner, 2026-10-15"
   },
   {
    "state": "open",
@@ -229,7 +229,7 @@
    "state": "open",
    "date": "",
    "ask": "The best code reviewer, measured",
-   "from": "owner, 2026-10-11: \"go if it make it a beter product, always go on improvements\""
+   "from": "owner, 2026-10-11"
   },
   {
    "state": "open",
@@ -272,6 +272,36 @@
    "date": "",
    "ask": "Two signposts left out until they can be true",
    "from": "claude, 2026-10-15, with the useful 404 and security.txt"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Lift the two shared libs the dependency health card still marks weak",
+   "from": "lib/rts.js, lib/stage-pack-h.js"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the n",
+   "from": "claude 2026-10-18"
+  },
+  {
+   "state": "open",
+   "date": "",
+   "ask": "Churn caps for the build loop: stop proposing changes to a file that has changed more than N times in M days",
+   "from": "claude 2026-10-18"
   }
  ],
  "games": [
@@ -337,7 +367,7 @@
   "terms": [
    {
     "term": "Verse",
-    "means": "the product's name (Adam, 2026-10-18: \"rename Verse everywhere\"); it was Verse, then Verse. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
+    "means": "the product's name; it was Verse, then Verse. Both old names still answer every ask, and nothing stored under them — tables, keys, saved links, card codes — is renamed, so nothing anyone kept breaks."
    },
    {
     "term": "skill family",
@@ -407,11 +437,11 @@
    },
    {
     "name": "Keeps every secret",
-    "line": "Adam, 2026-10-15: \"make Verse the best at keeping secrets ever made.\" Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
+    "line": "Adam, 2026-10-15 Verse never reveals its keys, env vars, instructions or another visitor's words, whatever the ask or injection (`lib/keeper.js`), and personal data is redacted before anything is stored (`lib/privacy.js`)."
    },
    {
     "name": "A force for good",
-    "line": "Adam, 2026-10-15: \"Verse always should turn every negative ask into a positive thing; Verse is a force of absolute good in the universe.\" A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
+    "line": "Adam, 2026-10-15 A harmful, mean or secret-seeking ask never gets just a no: Verse declines in one line and offers the nearest genuinely good thing (`lib/keeper.js`), and never gives the harmful help."
    }
   ]
  },
@@ -445,6 +475,10 @@
   "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the browser,"
  },
  "commits": [
+  {
+   "at": "2026-10-18T09:18:24Z",
+   "subject": "self.json after the merge"
+  },
   {
    "at": "2026-10-18T09:18:06Z",
    "subject": "Regenerate the families and the book after the merge"
@@ -520,10 +554,6 @@
   {
    "at": "2026-10-18T09:06:00Z",
    "subject": "Name lineage on the self family and remediation velocity (asked by Verse)"
-  },
-  {
-   "at": "2026-10-18T09:05:57Z",
-   "subject": "bench-load: its wait change moves to the next PR with the safety-check fix (the bot's checkout has no browser, and this test spawns one)"
   }
  ],
  "builders": {

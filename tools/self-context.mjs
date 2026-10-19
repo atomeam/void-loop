@@ -7,7 +7,7 @@
 //   node tools/self-context.mjs          write the file
 //   node tools/self-context.mjs --check  exit 1 if the committed file differs from what would be written
 import { openItems } from './frontier.mjs';
-import { isPrivate } from './private.mjs';
+import { isPrivate, deepQuoteFree } from './private.mjs';
 import { readFileSync, writeFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -138,7 +138,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
   const clipsFile = resolve(root, 'domains/void.clips.json');
   if (existsSync(clipsFile)) { try { const c = JSON.parse(readFileSync(clipsFile, 'utf8')); const { TRICKS } = await import('./clips.mjs');
     self.clips = { upload: 'Anyone can upload any Verse film or ad clip: a-to-mind.com/films/ has 1. Download (free), 2. Copy for YouTube, TikTok, Reels or X (title, description with a tracked a-to-mind.com link, the call to action and a share-this-ad line, hashtags) and 3. Upload to that platform, signed in as yourself. No API or token. Say "upload this to YouTube". Verse Tube: a-to-mind.com/films/ is the Verse video site: a watch page per video at /films/?v=<id>, view counts, share buttons for every platform and an RSS feed at /films/rss (docs/void-tube.md).', tricks: Object.keys(TRICKS), learned: (c.learned || []).slice(-20), visits: c.visits || {}, note: clip(c.note, 300) }; } catch (_) { /* leave clips out */ } }
-  const text = JSON.stringify(self, null, 1) + '\n';
+  const text = JSON.stringify(deepQuoteFree(self), null, 1) + '\n'; // only Verse's words are served, never the owner's quoted ones (tools/private.mjs)
   if (process.argv.includes('--check')) {
     const same = existsSync(out) && readFileSync(out, 'utf8') === text;
     console.log(same ? 'self.json up to date' : 'self.json is stale: run node tools/self-context.mjs');

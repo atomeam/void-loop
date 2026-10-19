@@ -270,6 +270,36 @@
       "match": "cook-flow|substitution-impact",
       "ledgerAt": "2026-10-16T05:15:52Z",
       "why": "cook-flow: a kitchen conversion or swap ends with one tap that starts a timer, and a swap says what else to adjust"
+    },
+    {
+      "match": "velocity.?smoothing.*zorbleflux throttle|zorbleflux throttle.*velocity.?smoothing|smoothing curve.*throttle",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "the throttle stays slow 0.7 s after a card's input is let go, then climbs to full speed along a smoothstep over 0.5 s, flat at both ends, instead of a step"
+    },
+    {
+      "match": "what.?s new,? ?pussy ?cat|pussy ?cat prompt",
+      "ledgerAt": "2026-10-18T12:27:02Z",
+      "why": "\"what's new pussycat\" is answered as \"what's new\" with a nod to the Tom Jones song, instead of falling through to the encyclopedia"
+    },
+    {
+      "match": "decision.?matrix.*deciding family|deciding family.*decision.?matrix",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven"
+    },
+    {
+      "match": "zorbleflux.?throttle.*(visual )?indicator|indicator.*zorbleflux.?throttle",
+      "ledgerAt": "2026-10-18T13:00:46Z",
+      "why": "a quiet 'calming the field' pill shows while the throttle holds the stage back and fades when full speed returns"
+    },
+    {
+      "match": "report.?to.?growth",
+      "ledgerAt": "2026-10-18T13:18:51Z",
+      "why": "tools/report-to-growth.mjs turns a builder's note into open items on the frontier, and finish.mjs --evolve runs it on each ship"
+    },
+    {
+      "match": "dependency.?health",
+      "ledgerAt": "2026-10-18T13:38:41Z",
+      "why": "the dependency-health skill holds deps.json against two stability requirements (a test imports it; half its dependent skills checked or proven) for every shared file 8 or more skills depend on"
     }
   ],
   "extra": [

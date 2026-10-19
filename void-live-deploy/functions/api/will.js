@@ -13,10 +13,10 @@ import { redact, INJECTION_RULE } from '../../lib/automation-fix.js';
 import { readShortfalls, shortfallLine, recordShortfall, reasonOf } from '../../lib/shortfall.js';
 import { models } from '../../lib/models.js';
 import { honestBecause } from '../../lib/honest.js';
+import { slug, pickWant, skippedNote, sinceOf } from '../../lib/will-guard.js';
 const MODEL = models('will');
-const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every three hours)
+const STALE_DAYS = 3; // a will job untouched this long no longer blocks the next one (the will runs every hour)
 const ok = ownerOk; // constant-time, fails closed without READ_TOKEN (lib/guard.js)
-const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content))) || '';
 
 export async function onRequestGet({ env }) {
@@ -64,16 +64,20 @@ export async function onRequestPost({ request, env }) {
     .bind(STALE_DAYS, at, new Date(Date.parse(at) - STALE_DAYS * 864e5).toISOString()).run();
   // queue the top want unless a will job is already open
   const open = await env.DB.prepare("SELECT id FROM void_queue WHERE target LIKE 'will:%' AND state IN ('queued','building') LIMIT 1").first();
-  let queued = null;
-  if (!open && will.wants[0]) {
-    const w = will.wants[0]; const id = Date.now().toString(36), target = 'will:' + slug(w.title);
+  let queued = null, skipped = [];
+  // the guard on the build loop (lib/will-guard.js): a want whose earlier jobs were set aside or failed twice in 14 days waits, and the next want is queued;
+  // a history that cannot be read means no guard, never no will
+  let rows = []; if (!open) { try { rows = ((await env.DB.prepare("SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN ('set aside','failed') AND COALESCE(updated, at) > ?").bind(sinceOf()).all()).results) || []; } catch (_) { rows = []; } }
+  const chosenWant = pickWant(will.wants, rows); skipped = chosenWant.skipped;
+  if (!open && chosenWant.want) {
+    const w = chosenWant.want; const id = Date.now().toString(36), target = 'will:' + slug(w.title);
     // the execution record (lib/actions.js): written before the job is queued; no record, no job
     await track(env, { owner: 'void', kind: 'queue.add', ref: target }, async () => {
       await env.DB.prepare('INSERT INTO void_queue (id, ask, target, state, note, at, updated) VALUES (?, ?, ?, ?, ?, ?, ?)')
-        .bind(id, w.title, target, 'queued', 'Verse chose this: ' + w.because, at, at).run();
+        .bind(id, w.title, target, 'queued', ('Verse chose this: ' + w.because + skippedNote(skipped)).slice(0, 300), at, at).run();
       return 'queued ' + id + ': ' + w.title;
     });
     queued = id;
   }
-  return Response.json({ ...will, queued, open: open ? open.id : null });
+  return Response.json({ ...will, queued, open: open ? open.id : null, ...(skipped.length ? { skipped } : {}) });
 }

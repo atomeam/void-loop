@@ -85,3 +85,11 @@ test('a failure caused on purpose to prove a check bites is not still failing (2
   assert.equal(failuresOf('The extension check fails on main since the merge.').length, 1, 'a real one stays');
   assert.equal(failuresOf('- **book-face:** fails without warning on plain origin/main').length, 1, '"without" alone is not a planned failure');
 });
+
+test('the lines of a status report that are the builder\'s own account of a fix are not still failing (2026-10-18 card: six "failures", all narration)', () => {
+  for (const line of ['My report quoted a "check timeout", which the fixer read as an error.', 'Without it, the check fails, because the card never appears.',
+    '- Found: It fails without the change and passes with it.', 'It then answered "I read this as a broken automation" and invented a fix.', 'Remainder: unverified, the live site failed to answer once.'])
+    assert.deepEqual(failuresOf(line), [], line);
+  assert.equal(failuresOf('The 3D block stalls with a check timeout after the voice check.').length, 1, 'a real one stays');
+  assert.equal(failuresOf('FAIL fly stars move: the streak never showed').length, 1, 'a FAIL line stays');
+});

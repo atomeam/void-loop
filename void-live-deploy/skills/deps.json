@@ -1,1386 +1,1644 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 669,
+ "counted": 677,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 52,
-   "direct": 48,
-   "dependants": 57
+   "skills": 53,
+   "direct": 49,
+   "dependants": 58,
+   "tests": 6
   },
   {
    "file": "lib/ask-text.js",
    "skills": 32,
    "direct": 23,
-   "dependants": 34
+   "dependants": 34,
+   "tests": 2
   },
   {
    "file": "lib/placement.js",
    "skills": 27,
    "direct": 1,
-   "dependants": 30
+   "dependants": 30,
+   "tests": 1
   },
   {
    "file": "lib/panel-fit.js",
    "skills": 23,
    "direct": 1,
-   "dependants": 24
+   "dependants": 24,
+   "tests": 1
   },
   {
    "file": "lib/state.js",
    "skills": 21,
    "direct": 3,
-   "dependants": 41
+   "dependants": 41,
+   "tests": 4
   },
   {
    "file": "lib/field-kit.js",
    "skills": 19,
    "direct": 2,
-   "dependants": 33
+   "dependants": 33,
+   "tests": 4
   },
   {
    "file": "lib/keeper.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 36
+   "dependants": 36,
+   "tests": 1
   },
   {
    "file": "lib/merge-rules.js",
    "skills": 15,
    "direct": 1,
-   "dependants": 36
+   "dependants": 36,
+   "tests": 1
   },
   {
    "file": "lib/art-rules.js",
    "skills": 15,
    "direct": 0,
-   "dependants": 35
+   "dependants": 35,
+   "tests": 3
   },
   {
    "file": "lib/sky-math.js",
    "skills": 13,
    "direct": 2,
-   "dependants": 18
+   "dependants": 18,
+   "tests": 1
   },
   {
    "file": "lib/rule-registry.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 34
+   "dependants": 34,
+   "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 11,
    "direct": 1,
-   "dependants": 33
+   "dependants": 33,
+   "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 32
+   "dependants": 32,
+   "tests": 2
   },
   {
    "file": "lib/card-art.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 30
+   "dependants": 30,
+   "tests": 3
   },
   {
    "file": "lib/corrections.js",
    "skills": 10,
    "direct": 0,
-   "dependants": 26
+   "dependants": 26,
+   "tests": 2
   },
   {
    "file": "lib/reactions.js",
    "skills": 10,
    "direct": 1,
-   "dependants": 26
+   "dependants": 26,
+   "tests": 1
   },
   {
    "file": "lib/autopsy.js",
    "skills": 10,
    "direct": 5,
-   "dependants": 23
+   "dependants": 23,
+   "tests": 5
   },
   {
    "file": "lib/astro.js",
    "skills": 10,
    "direct": 9,
-   "dependants": 11
+   "dependants": 11,
+   "tests": 2
   },
   {
    "file": "lib/ladder.js",
    "skills": 9,
    "direct": 4,
-   "dependants": 23
+   "dependants": 23,
+   "tests": 1
   },
   {
    "file": "lib/skyfacts.js",
    "skills": 9,
    "direct": 8,
-   "dependants": 9
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/qr.js",
    "skills": 8,
    "direct": 2,
-   "dependants": 12
+   "dependants": 12,
+   "tests": 2
   },
   {
    "file": "lib/bridges.js",
    "skills": 8,
    "direct": 4,
-   "dependants": 10
+   "dependants": 10,
+   "tests": 1
   },
   {
    "file": "lib/rts.js",
    "skills": 8,
    "direct": 3,
-   "dependants": 10
+   "dependants": 10,
+   "tests": 1
   },
   {
    "file": "lib/motion-throttle.js",
    "skills": 8,
    "direct": 1,
-   "dependants": 9
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/skyask.js",
    "skills": 8,
    "direct": 7,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/stage-pack-h.js",
    "skills": 8,
    "direct": 8,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/where.js",
    "skills": 8,
    "direct": 7,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/better.js",
    "skills": 7,
    "direct": 2,
-   "dependants": 21
+   "dependants": 21,
+   "tests": 3
   },
   {
    "file": "lib/field-stage.js",
    "skills": 7,
    "direct": 7,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 0
   },
   {
    "file": "lib/probe-log.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 20
+   "dependants": 20,
+   "tests": 1
   },
   {
    "file": "lib/spark.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 20
+   "dependants": 20,
+   "tests": 1
   },
   {
    "file": "lib/inbox-health.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 19
+   "dependants": 19,
+   "tests": 1
   },
   {
    "file": "lib/skill-confidence.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 19
+   "dependants": 19,
+   "tests": 1
   },
   {
    "file": "lib/art-source.js",
    "skills": 6,
    "direct": 0,
-   "dependants": 11
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/card-image.js",
    "skills": 6,
    "direct": 1,
-   "dependants": 9
+   "dependants": 9,
+   "tests": 1
   },
   {
    "file": "lib/card-share.js",
    "skills": 6,
    "direct": 2,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/match-history.js",
    "skills": 6,
    "direct": 5,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 3
   },
   {
    "file": "lib/stage-find.js",
    "skills": 6,
    "direct": 4,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/field-worker.js",
    "skills": 6,
    "direct": 6,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/card-forge.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/hero-view.js",
    "skills": 5,
    "direct": 1,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/prints.js",
    "skills": 5,
    "direct": 3,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/reaction-bar.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/observations.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 2
   },
   {
    "file": "lib/opposite-era.js",
    "skills": 5,
    "direct": 5,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/pack5-ui.js",
    "skills": 5,
    "direct": 5,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/pulse.js",
    "skills": 5,
    "direct": 2,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/stage-pack-i.js",
    "skills": 5,
    "direct": 5,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/movies.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 10
+   "dependants": 10,
+   "tests": 0
   },
   {
    "file": "lib/art-meta.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/card-kinds.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/card-look.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/card-sections.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/lineage.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/void-seal.js",
    "skills": 4,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/card-frame.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 6
   },
   {
    "file": "lib/success-pulse.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 2
   },
   {
    "file": "lib/note-tools.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/stage-math.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/stage-pack-c.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/stage-watch.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/stage-words.js",
    "skills": 4,
    "direct": 4,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/stars.js",
    "skills": 4,
    "direct": 2,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/telemetry.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 50
+   "dependants": 50,
+   "tests": 1
   },
   {
    "file": "lib/date-words.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 1
   },
   {
    "file": "lib/arena-say.js",
    "skills": 3,
    "direct": 2,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/book-news.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/stage-tools.js",
    "skills": 3,
    "direct": 3,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/tome-search.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 1
   },
   {
    "file": "lib/tome.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/parody.js",
    "skills": 3,
    "direct": 1,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 0
   },
   {
    "file": "lib/practice.js",
    "skills": 3,
    "direct": 2,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/skill-family.js",
    "skills": 3,
    "direct": 3,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/stage-tools-dom.js",
    "skills": 3,
    "direct": 3,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/automation-fix.js",
    "skills": 2,
    "direct": 0,
-   "dependants": 48
+   "dependants": 48,
+   "tests": 8
   },
   {
    "file": "lib/watch.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 11
+   "dependants": 12,
+   "tests": 1
   },
   {
    "file": "lib/showers.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 1
   },
   {
    "file": "lib/date-math.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/list-goal.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 2
   },
   {
    "file": "lib/media.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/video.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/arcade-ghost.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/cook-flow.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/eclipses.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/field-cards.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/fx.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/go-ai.js",
    "skills": 2,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/list-ops.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/safety.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/stage-port.js",
    "skills": 2,
    "direct": 2,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/actions.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 22
+   "dependants": 22,
+   "tests": 1
   },
   {
    "file": "lib/gumroad.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 19
+   "dependants": 19,
+   "tests": 4
   },
   {
    "file": "lib/store-db.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 16
+   "dependants": 16,
+   "tests": 1
   },
   {
    "file": "lib/products.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 12
+   "dependants": 12,
+   "tests": 3
   },
   {
    "file": "lib/alt-pay.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 11
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/pay-share.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 11
+   "dependants": 11,
+   "tests": 1
   },
   {
    "file": "lib/store-products.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 11
-  },
-  {
-   "file": "lib/proposal.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 10
-  },
-  {
-   "file": "lib/store.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 10
+   "dependants": 11,
+   "tests": 0
   },
   {
    "file": "lib/automations.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 9
+   "dependants": 10,
+   "tests": 3
+  },
+  {
+   "file": "lib/proposal.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 10,
+   "tests": 2
+  },
+  {
+   "file": "lib/store.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 10,
+   "tests": 6
   },
   {
    "file": "lib/plan.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/noise.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 6
+   "dependants": 6,
+   "tests": 0
   },
   {
    "file": "lib/keep-going.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 3
+   "dependants": 4,
+   "tests": 2
   },
   {
    "file": "lib/learn.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 3
   },
   {
    "file": "lib/rules-engine.js",
    "skills": 1,
    "direct": 0,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/shared-routines.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/appraise-photo.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/field-vector.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/film-discovery.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/repo-look.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/v01d-fixes.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 2
+   "dependants": 2,
+   "tests": 1
   },
   {
    "file": "lib/a11y-modes.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/about-skill.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/backlog-digest.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/calc-more.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/chess-replay.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/compose.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/context-check.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/contradict.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/convert-math.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/council-law.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/date-ask.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/day-blocks.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/decide-cards.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/dev-tools.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/duel-rules.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/eclipse.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/event-date.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/field-attention.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/field-flow.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/field-nca.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/field-resonance.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/field-swarm.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/forge-makes.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/game-health.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/health-habits.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/heat-dose.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/ics.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/linediff.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/list-templates.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/media-local.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/memory-graph.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
+  },
+  {
+   "file": "lib/notebook.js",
+   "skills": 1,
+   "direct": 1,
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/own-parts.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/pdf-qa.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/reefwatch.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/routine-skill.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/routines.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/rules-play.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/service-health.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/skill-use.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/stage-camera.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/stage-image.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/stigmergy-law.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/study-cards.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/tasks.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/taste.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/technical-context.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/template-list.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/term-orbits-law.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/text-tools.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/time-math.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/web4.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/writing-aids.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/zorbleflux.js",
    "skills": 1,
    "direct": 1,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 43
+   "dependants": 43,
+   "tests": 11
   },
   {
    "file": "lib/models.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 33
+   "dependants": 34,
+   "tests": 7
   },
   {
    "file": "lib/pages.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 25
+   "dependants": 25,
+   "tests": 0
   },
   {
    "file": "lib/webauthn.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 24
+   "dependants": 24,
+   "tests": 0
   },
   {
    "file": "lib/void-me.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 23
+   "dependants": 23,
+   "tests": 6
   },
   {
    "file": "lib/code-review.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 20
+   "dependants": 20,
+   "tests": 4
   },
   {
    "file": "lib/review-api.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 19
+   "dependants": 19,
+   "tests": 6
   },
   {
    "file": "lib/persona.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 16
+   "dependants": 16,
+   "tests": 0
   },
   {
    "file": "lib/earnings.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 15
+   "dependants": 15,
+   "tests": 0
   },
   {
    "file": "lib/shortfall.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 13
+   "dependants": 13,
+   "tests": 0
   },
   {
    "file": "lib/router.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 10
+   "dependants": 10,
+   "tests": 5
   },
   {
    "file": "lib/voice.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 10
+   "dependants": 10,
+   "tests": 5
   },
   {
    "file": "lib/memory-scope.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 9
+   "dependants": 9,
+   "tests": 0
   },
   {
    "file": "lib/memory-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 2
   },
   {
    "file": "lib/privacy.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 1
   },
   {
    "file": "lib/self-context.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 8
+   "dependants": 8,
+   "tests": 5
   },
   {
    "file": "lib/cite.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/clef.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 2
   },
   {
    "file": "lib/draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/near-miss.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/paid-access.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 0
   },
   {
    "file": "lib/patch-guard.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/pay-honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/price-lock.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 7
+   "dependants": 7,
+   "tests": 1
   },
   {
    "file": "lib/automations-run.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 5
+   "dependants": 5,
+   "tests": 3
   },
   {
    "file": "lib/film-reviews.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 4
+   "dependants": 4,
+   "tests": 0
   },
   {
    "file": "lib/drive.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/mcp-skills.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 3
+   "dependants": 3,
+   "tests": 1
   },
   {
    "file": "lib/share.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 3
-  },
-  {
-   "file": "lib/mcp.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
-  },
-  {
-   "file": "lib/sale-jobs.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
-  },
-  {
-   "file": "lib/used.js",
-   "skills": 0,
-   "direct": 0,
-   "dependants": 2
+   "dependants": 3,
+   "tests": 2
   },
   {
    "file": "lib/approval-core.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 2,
+   "tests": 9
+  },
+  {
+   "file": "lib/churn.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/mcp.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 3
+  },
+  {
+   "file": "lib/sale-jobs.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/used.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 2,
+   "tests": 0
   },
   {
    "file": "lib/aurora-feed.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/bench-asks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/book-face.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/digest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/email-send.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/honest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/job-draft.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/misskey.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/probe-asks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/product-gap.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 1
   },
   {
    "file": "lib/propose-fix.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 3
   },
   {
    "file": "lib/scene-advance.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 1
+   "dependants": 1,
+   "tests": 2
+  },
+  {
+   "file": "lib/will-guard.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 1,
+   "tests": 2
   },
   {
    "file": "lib/anchor-density.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/appraise.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
+  },
+  {
+   "file": "lib/approval-gate.js",
+   "skills": 0,
+   "direct": 0,
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/arena.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/correction-fix.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 3
   },
   {
    "file": "lib/correction-heat.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/empty-state.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/field-vector-worker.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 0
   },
   {
    "file": "lib/film-share.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/fuzzy.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/ground.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/md.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/page-picture.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/rating-note.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/refusal.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/reinvest.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/rule-propose.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/self-blocks.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 2
   },
   {
    "file": "lib/share-client.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/speak.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/stale-tab.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   },
   {
    "file": "lib/star-parallax.js",
    "skills": 0,
    "direct": 0,
-   "dependants": 0
+   "dependants": 0,
+   "tests": 1
   }
  ],
  "files": {
@@ -1860,7 +2118,8 @@
     "lib/automation-fix.js",
     "lib/shortfall.js",
     "lib/models.js",
-    "lib/honest.js"
+    "lib/honest.js",
+    "lib/will-guard.js"
    ],
    "importedBy": []
   },
@@ -1967,8 +2226,15 @@
     "lib/keep-going.js"
    ],
    "importedBy": [
-    "functions/api/approval.js"
+    "functions/api/approval.js",
+    "lib/approval-gate.js"
    ]
+  },
+  "lib/approval-gate.js": {
+   "imports": [
+    "lib/approval-core.js"
+   ],
+   "importedBy": []
   },
   "lib/arcade-ghost.js": {
    "imports": [],
@@ -2231,6 +2497,7 @@
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
     "lib/approval-core.js",
+    "lib/approval-gate.js",
     "skills/approve-card.js"
    ]
   },
@@ -2558,6 +2825,15 @@
    "imports": [],
    "importedBy": [
     "skills/about-skill.js"
+   ]
+  },
+  "lib/churn.js": {
+   "imports": [],
+   "importedBy": [
+    "lib/will-guard.js"
+   ],
+   "reachedBy": [
+    "functions/api/will.js"
    ]
   },
   "lib/cite.js": {
@@ -3244,6 +3520,9 @@
     "functions/api/approval.js",
     "lib/approval-core.js",
     "skills/approve-card.js"
+   ],
+   "reachedBy": [
+    "lib/approval-gate.js"
    ]
   },
   "lib/keeper.js": {
@@ -3560,6 +3839,7 @@
     "functions/api/support.js",
     "functions/films/rss.js",
     "functions/tools.json.js",
+    "lib/approval-gate.js",
     "lib/bench-asks.js",
     "lib/mcp.js",
     "lib/memory-scope.js",
@@ -3633,6 +3913,12 @@
     "skills/note-tools.js",
     "skills/outline-note.js",
     "skills/qr-scan.js"
+   ]
+  },
+  "lib/notebook.js": {
+   "imports": [],
+   "importedBy": [
+    "skills/notebook.js"
    ]
   },
   "lib/observations.js": {
@@ -4655,6 +4941,7 @@
     "skills/list-tools.js",
     "skills/media-object.js",
     "skills/minimap.js",
+    "skills/notebook.js",
     "skills/noun-heat.js",
     "skills/outline-note.js",
     "skills/photo-scrub.js",
@@ -5129,6 +5416,7 @@
     "functions/api/automations/tick.js",
     "functions/api/hook/[id].js",
     "lib/approval-core.js",
+    "lib/approval-gate.js",
     "lib/keep-going.js",
     "skills/approve-card.js"
    ]
@@ -5183,6 +5471,14 @@
    ],
    "reachedBy": [
     "skills/time.js"
+   ]
+  },
+  "lib/will-guard.js": {
+   "imports": [
+    "lib/churn.js"
+   ],
+   "importedBy": [
+    "functions/api/will.js"
    ]
   },
   "lib/writing-aids.js": {
@@ -5707,6 +6003,13 @@
   },
   "skills/define.js": {
    "imports": [],
+   "importedBy": []
+  },
+  "skills/dependency-health.js": {
+   "imports": [],
+   "external": [
+    " + (r.tests === 1 ? "
+   ],
    "importedBy": []
   },
   "skills/deps.js": {
@@ -6929,6 +7232,13 @@
   "skills/note-tools.js": {
    "imports": [
     "lib/note-tools.js"
+   ],
+   "importedBy": []
+  },
+  "skills/notebook.js": {
+   "imports": [
+    "lib/stage-pack.js",
+    "lib/notebook.js"
    ],
    "importedBy": []
   },

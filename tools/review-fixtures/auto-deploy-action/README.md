@@ -1,0 +1,3 @@
+# Review bench fixture: the deploy action's index.ts
+
+`index.ts` here is a verbatim copy of `index.ts` from the owner's own repository atomeam/auto-deploy-action (commit b6bc2cfa8306944f01616140f523730066f92a23, its package.json and README both say MIT; the repository has no LICENSE file). It is not run and not part of the site. It is kept so Verse's review can be scored on real defects in a deploy action: the cases are in `tools/review-bench.json` (the ones with `"fixture": true`) and `tools/review-bench.mjs` reviews the commit that added this file. Do not edit `index.ts`: the cases name its lines.

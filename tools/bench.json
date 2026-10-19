@@ -6082,6 +6082,7 @@
   {"ask": "name you next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "name your next 10 upgrades you want", "want": "skill:wants"},
   {"ask": "what upgrades do you want", "want": "skill:wants"},
+<<<<<<< HEAD
   {"ask": "verse status", "want": "skill:status", "says": "Verse status"},
   {"ask": "how much is verse", "want": "skill:services", "says": "Paid Verse"},
   {"ask": "what does verse cost", "want": "skill:services", "says": "Paid Verse"},
@@ -6108,4 +6109,70 @@
   {"ask": "any new verse films", "want": "skill:films"},
   {"ask": "verse quest", "want": "skill:monopoly"},
   {"ask": "play tic tac toe against verse", "want": "skill:tictactoe"}
+=======
+  {
+    "ask": "decision matrix for pasta vs pizza",
+    "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "make a weighted decision matrix for which laptop to buy",
+    "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "decision matrix for moving to berlin",
+    "want": "skill:decision-matrix"
+  },
+  {
+    "ask": "certainty budget",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "certainty budget of 3",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "refill certainty",
+    "want": "skill:certainty-budget"
+  },
+  {
+    "ask": "show stale work",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "note that I edited the pitch",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "note that I decided the pitch",
+    "want": "skill:stale-work"
+  },
+  {
+    "ask": "set priority deep",
+    "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "set priority interruptible",
+    "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "show deferred",
+    "want": "skill:interrupt-priority"
+  },
+  {
+    "ask": "daily note",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "open my notebook",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "what links to Garden Plan",
+    "want": "skill:notebook"
+  },
+  {
+    "ask": "what am I missing in my notes",
+    "want": "skill:notebook"
+  }
+>>>>>>> origin/main
 ]

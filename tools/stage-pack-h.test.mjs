@@ -110,11 +110,12 @@ test('nearChoir: matchers that also accept come first, then word overlap; the an
   assert.equal(H.nearChoir('pancake', many, () => { throw new Error('boom'); }).near.length, 3);
 });
 
-test('the three skills are real, tight and registered', () => {
+test('the three skills are real, tight and registered', async () => {
   const by = new Map(real.map((s) => [s.name, s]));
   for (const n of ['negative-summons', 'echo-disagrees', 'near-choir']) {
-    const s = by.get(n);
-    assert.ok(s, n);
+    const s = (await ({ 'negative-summons': () => import(resolve(dir, 'negative-summons.js')), 'echo-disagrees': () => import(resolve(dir, 'echo-disagrees.js')), 'near-choir': () => import(resolve(dir, 'near-choir.js')) })[n]()).default; // each loaded by its own file name, as well as in the folder scan above
+    assert.equal(s.name, n);
+    assert.ok(by.get(n), n + ' is also in the folder scan');
     for (const e of s.examples) assert.equal(s.match(e.toLowerCase(), e), true, n + ' takes "' + e + '"');
     for (const e of s.nearMisses) assert.equal(s.match(e.toLowerCase(), e), false, n + ' leaves "' + e + '"');
   }

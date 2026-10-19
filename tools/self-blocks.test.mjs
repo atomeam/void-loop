@@ -110,3 +110,35 @@ test('one ask said again in other words is one line, with how many times it was 
   const sec = selfSections({ entries: [], asks: said.map((ask) => ({ ask, kind: 'build', at: '2026-10-18T08:00:00Z' })) }).find((s) => s.id === 'asked');
   assert.equal(sec.count, '3 waiting'); assert.match(sec.blocks[0].items[0].sub, /asked 2 times/);
 });
+
+test('no theatre: the words say a model wrote them, what it was given sits under them, and each claim names its source', async () => {
+  const { selfSections, sectionHtml, modelLabel } = await import('../void-live-deploy/lib/self-blocks.js');
+  const { VOICE_SYSTEM } = await import('../void-live-deploy/lib/voice.js');
+  const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+  const daily = { kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'I feel the hunger to grow.', weakest: 'The stage is thin.', next_game: 'Go.', better: 'Route better.', model: '@cf/test/model-1', given: 'Facts about Verse:\n<b>The stage 11/94 proven</b>' };
+  const secs = selfSections({ entries: [daily], asks: [], follow: null }, Date.parse('2026-10-19T07:00:00Z'));
+  const words = secs.find((s) => s.id === 'words'), html = sectionHtml(words, esc);
+  assert.match(html, /Written by Verse's model \(test\/model-1\) from these facts/); assert.match(html, /not a felt state/); assert.ok(!/My own words, kept as I said them/.test(html));
+  assert.match(html, /<details class="vs-given">/); assert.ok(html.includes('&lt;b&gt;The stage 11/94') && !html.includes('<b>The stage'), 'what it was given is shown as text');
+  const growth = secs.find((s) => s.id === 'growth'), notes = growth.blocks.filter((b) => b.t === 'note').map((b) => b.text);
+  assert.equal(notes.length, 3); assert.match(notes[0], /skills\/families\.json/); assert.match(notes[1], /not a finding/); assert.match(notes[2], /not a plan until a ledger line/);
+  assert.equal(modelLabel(''), "Verse's model"); assert.equal(modelLabel('@cf/meta/llama<x>'), "Verse's model (meta/llamax)");
+  assert.ok(!selfSections({ entries: [{ ...daily, given: undefined }], asks: [], follow: null }).find((s) => s.id === 'words').blocks.some((b) => b.t === 'given'), 'an older entry with no record of what it was given shows none');
+  assert.match(VOICE_SYSTEM, /never write "I feel"/); assert.ok(!/hate not knowing|hungry|curious/.test(VOICE_SYSTEM), 'the character lines are gone from the readout prompt');
+  const built = selfSections({ entries: [daily], asks: [], follow: { total: 5, built: 2, recent: [], asked: [] } }).find((s) => s.id === 'built');
+  assert.ok(built.blocks.some((b) => b.t === 'note' && /void\.growth\.json/.test(b.text)));
+});
+
+test('evidence: tags are parsed, only well-formed ones kept, and the card names the files the entry\'s own source map knows', async () => {
+  const { parseVoice, evidenceOf, taggedFacts } = await import('../void-live-deploy/lib/voice.js');
+  const { selfSections, sourceNote } = await import('../void-live-deploy/lib/self-blocks.js');
+  assert.deepEqual(evidenceOf({ thoughts: ['s1', 'S2', 'x', 'S100', 'S1'], weakest: 'S3', better: [] }), { thoughts: ['S1', 'S2'] });
+  const p = parseVoice('{"thoughts":"The stage is the weakest family at 11 of 94 proven.","better":"Prove more of it.","evidence":{"thoughts":["S3"],"better":["S1","S9"]},"asks":[]}');
+  assert.deepEqual(p.evidence, { thoughts: ['S3'], better: ['S1', 'S9'] });
+  const t = taggedFacts([['skills/families.json', 'The stage 11/94'], ['void.growth.json', ''], ['void.growth.json (the last 7 days)', '21 built']]);
+  assert.deepEqual(t.sources, { S1: 'skills/families.json', S2: 'void.growth.json (the last 7 days)' }); assert.match(t.text, /^\[S1 skills\/families\.json\] The stage 11\/94\n\[S2 /);
+  const entry = { evidence: { thoughts: ['S1'], better: ['S1', 'S9'], weakest: ['S9'] }, sources: t.sources };
+  assert.match(sourceNote(entry, 'thoughts'), /skills\/families\.json \(S1\)/); assert.ok(!/S9/.test(sourceNote(entry, 'better')), 'a tag the facts never had is not shown'); assert.equal(sourceNote(entry, 'weakest'), '');
+  const secs = selfSections({ entries: [{ kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'The stage is thin.', weakest: 'The stage, 11 of 94 proven.', evidence: { weakest: ['S1'] }, sources: { S1: 'skills/families.json' } }], asks: [], follow: null });
+  assert.match(secs.find((x) => x.id === 'growth').blocks.filter((b) => b.t === 'note')[0].text, /^Source \(cited by the model.*skills\/families\.json \(S1\)/);
+});

@@ -25,7 +25,7 @@ export const SHOWN_KEY = 'a2m.void.shown.v1'; // the asks already previewed here
 export const LEDGER_URL = '/void.growth.json';
 const SHOWN_KINDS = new Set(['grow', 'build', 'fix']);
 const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-const ASK_RE = /^(?:(?:hey\s+)?(?:verse|void),?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:\s+(?:with\s+you|in\s+(?:verse|void)|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
+const ASK_RE = /^(?:(?:hey\s+)?(?:verse|void),?\s+)?(?:please\s+)?(?:show\s+me\s+what(?:'?s|\s+is)\s+new|what(?:'?s|\s+is)\s+new(?:,?\s+pussy\s?cat|\s+(?:with\s+you|in\s+(?:verse|void)|here))?|show\s+me\s+what\s+you(?:'ve)?\s+(?:made|built|did|learned)|what\s+did\s+you\s+(?:make|build)(?:\s+for\s+me)?|what\s+have\s+you\s+(?:made|built)|look\s+what\s+you\s+(?:did|made))(?:\s+(?:today|lately|recently|overnight|while\s+i\s+was\s+away))?$/;
 
 /** the ask wants the walkthrough. Pure. */
 export const showcaseOf = (text) => ASK_RE.test(CLEAN(text));
@@ -391,14 +391,17 @@ const ALL_RE = /^(?:(?:show|walk) me (?:through )?|i want to see )?(?:everything
 export const everythingOf = (text) => ALL_RE.test(CLEAN(text));
 
 async function run(text, api) {
+  // "what's new, pussycat" (asked 100+ times; the Tom Jones song, 1965) is the same question as "what's new", with a nod to the song first
+  const cat = /pussy\s?cat/.test(CLEAN(text)) ? 'Meow, the Tom Jones song (1965) · ' : '';
+  const say = (m) => api.say(cat + m);
   const stageApi = api.stage;
   let list = [];
-  try { list = await ledger(); } catch (_) { api.say("can't read what I made just now"); return 'none'; }
+  try { list = await ledger(); } catch (_) { say("can't read what I made just now"); return 'none'; }
   const V = await verifiedSet();
   // everything, asked for by name: every playable build, whether or not this device has been shown it (never on its own)
   if (everythingOf(text)) {
     const all = whatsNew(sinceLast(list), { verified: V }).steps;
-    if (!all.length) { api.say('nothing to show yet'); return 'none'; }
+    if (!all.length) { say('nothing to show yet'); return 'none'; }
     markShown(all);
     start(stageApi, all, { label: 'Everything I made' });
     return 'showcase';
@@ -409,17 +412,18 @@ async function run(text, api) {
   // a thing is previewed once (owner, 2026-10-16): with nothing new there is no replay, only the count and the way to see it all
   if (!fresh.steps.length) {
     const n = whatsNew(sinceLast(list), { verified: V }).steps.length;
-    api.say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
+    say((floor ? 'nothing new since you last looked' : 'nothing new to show yet') + wip + (n ? ' · say "show me everything you made" for all ' + n.toLocaleString('en') : ''));
     return 'showcase'; // it answered (the count and how to see it all): 'none' let the ask fall through to the encyclopedia, so claims-verify dropped "what's new"
   }
   markShown(fresh.steps);
+  if (cat) api.say(cat.trim());
   start(stageApi, fresh.steps, { label: 'Built while you were away' + wip });
   return 'showcase';
 }
 
 export default {
   name: 'showcase',
-  examples: ['show me what you made', "what's new", 'what did you make for me', 'look what you did', 'show me everything you made'],
+  examples: ['show me what you made', "what's new", "what's new pussycat", 'what did you make for me', 'look what you did', 'show me everything you made'],
   nearMisses: ["what's new in the news", 'show me what you can do', 'what did you make for dinner'],
   match(lower, text) { return showcaseOf(text || lower) || everythingOf(text || lower); },
   run,

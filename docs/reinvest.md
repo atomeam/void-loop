@@ -36,7 +36,7 @@ approval, and nothing is bought automatically.
 ## The plan for a hypothetical first $100
 
 <!-- plan -->
-_As of 2026-10-17. Rewritten daily by tools/reinvest.mjs._
+_As of 2026-10-18. Rewritten daily by tools/reinvest.mjs._
 
 **The first $100:** keep $20 in reserve; do every free path first (below); fund 3 items for $40.50; hold $39.50 for the next item that becomes worth buying (re-ranked daily).
 
@@ -44,12 +44,12 @@ _As of 2026-10-17. Rewritten daily by tools/reinvest.mjs._
 | --- | --- | --- | --- | --- |
 | a-to-mind.com renewal, set aside (Cloudflare at-cost .com, about $10.50/yr) | $10.50 | ready | the store and every film link live on the domain; losing it would end all revenue | the domain never lapses |
 | Cloudflare Workers Paid | $15 | ready | the free AI cap was hit (125% on Oct 14): answers fail after it, and every failed answer is a lost visitor or sale | no more capped answers; 10M requests and 1M KV writes a month |
-| a small test batch of printed Forge models (Verse's 'micro-business test') | $15 | queued | Verse asked for a tiny product test; physical prints show whether people pay for the objects, not just the files | first physical-goods sale or a clear no |
+| a small test batch of printed Forge models (V01D's 'micro-business test') | $15 | queued | V01D asked for a tiny product test; physical prints show whether people pay for the objects, not just the files | first physical-goods sale or a clear no |
 
 **Free first ($0, built before anything is bought):**
 
 - Turn on Stripe for fixed-price checkout (no monthly fee; per-sale fee only)
-- Ads-free promotion: post every Verse film as a Short, list Verse in AI directories and the MCP registry (live), share store packs
+- Ads-free promotion: post every V01D film as a Short, list V01D in AI directories and the MCP registry (live), share store packs
 - CI compute: keep the public repo on GitHub's free runners and trim the slowest workflows
 - stay under Workers AI's free 10k neurons/day and 1k KV writes/day (wishlist 1 and 2: gemma, edge cache)
 - Cloudflare Email Routing to Adam's inbox (free) plus the bot inbox

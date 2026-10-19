@@ -378,6 +378,7 @@ function memoryStoreD1({ broken = false } = {}) {
     if (broken) throw new Error('D1 unavailable');
     if (/^SELECT resource, sale_id, raw FROM void_sales$/.test(sql)) { need('void_sales'); return { results: [...T.sales.values()].map((r) => ({ resource: r.resource, sale_id: r.sale_id, raw: r.raw })) }; }
     if (/^SELECT place, reason, SUM\(n\) AS n FROM void_shortfalls WHERE day >= \? GROUP BY place, reason$/.test(sql)) { need('void_shortfalls'); const g = new Map(); for (const r of T.shortfalls.values()) if (r.day >= a[0]) { const k = r.place + '|' + r.reason; g.set(k, { place: r.place, reason: r.reason, n: (g.get(k) ? g.get(k).n : 0) + r.n }); } return { results: [...g.values()] }; }
+    if (/^SELECT target, state FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\) AND COALESCE\(updated, at\) > \?$/.test(sql)) return { results: [...T.queue.values()].filter((q) => /^will:/.test(q.target) && /^(?:set aside|failed)$/.test(q.state) && String(q.updated || q.at) > a[0]).map((q) => ({ target: q.target, state: q.state })) };
     if (/^SELECT id, at, earned_cents, note FROM void_milestones$/.test(sql)) { need('void_milestones'); return { results: [...T.milestones.values()] }; }
     if (/^SELECT slug, data, available FROM void_catalog$/.test(sql)) { need('void_catalog'); return { results: [...T.catalog].map(([slug, r]) => ({ slug, data: r.data, available: r.available })) }; }
     throw new Error('unexpected sql: ' + sql);
@@ -3697,7 +3698,7 @@ try {
     await P.p.click('.vpage.on a[data-ask^="incident brief: monopoly"]').catch(() => {}); await P.p.waitForTimeout(800);
     const prefilled = await P.p.$eval('.vpage.on .inc-md', (e) => e.textContent).catch(() => '');
     check('incident: "what broke lately" lists the suite\'s incidents (when, commit, the checks, the run) and one tap opens the brief titled after the first failed check',
-      /f382286/.test(lately) && /2 failed: monopoly: Roll moves the pawn · countdown: a leaf flips/.test(lately.replace(/\s+/g, ' ')) && /^# Incident brief: Monopoly: Roll moves the pawn/.test(prefilled) && !P.errors.length,
+      /f382286/.test(lately) && /not marked fixed yet/.test(lately) && /2 failed: monopoly: Roll moves the pawn · countdown: a leaf flips/.test(lately.replace(/\s+/g, ' ')) && /^# Incident brief: Monopoly: Roll moves the pawn/.test(prefilled) && !P.errors.length,
       [lately.replace(/\s+/g, ' ').slice(0, 200), prefilled.slice(0, 80), P.errors.join(';')].join(' | '));
     check('incident: "incident report for the login outage" opens a blameless brief titled "Login outage"; times give 12 min to detect and 2 h 5 min to resolve, the Markdown carries severity, impact, "Not known yet" and the owner, the draft survives a reload, and clear empties it',
       /^# Incident brief: Login outage/.test(md) && /SEV2/.test(md) && /12 min to detect/.test(md) && /2 h 5 min to resolve/.test(md) && /All sign-ins failed/.test(md) && /_Not known yet\._/.test(md) && /Add a canary \(owner: Sam\)/.test(md)
@@ -5586,8 +5587,8 @@ try {
     const long = (i) => 'built ask number ' + i + ': ' + 'a careful sentence about what Verse wanted built and why it mattered to the stage. '.repeat(2);
     const recent = Array.from({ length: 30 }, (_, i) => ({ ask: long(i), what: 'asked by Verse: ' + 'what the builder shipped for it, in the ledger words, long enough to matter. '.repeat(2), at: '2026-10-' + String(18 - (i % 9)).padStart(2, '0') + 'T00:00:00Z', times: 1 + (i % 3), depth: i % 2 ? 'surface' : 'root' }));
     const ago = (d, h = 0) => new Date(Date.now() - d * 864e5 - h * 36e5).toISOString();
-    // the open asks: five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
-    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: 'Want number ' + i + ': ' + 'something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
+    // the open asks, each in words of its own (asks in nearly the same words are one ask, asked n times: lib/voice.js followThrough): five fresh ones (this hour back) and one Verse called small, three days old, past its 2-day limit yesterday (the friction overlay, asked by Verse)
+    const asks = Array.from({ length: 6 }, (_, i) => ({ ask: ['lantern harbour compass orchard', 'glacier thimble violin meadow', 'saffron quarry ribbon tundra', 'walnut beacon cinder marble', 'tulip anvil prism canyon', 'ember cobweb harvest sparrow'][i] + ': something Verse asked for in its own words. '.repeat(2), kind: i % 2 ? 'build' : 'daily', ...(i === 5 ? { at: ago(3), small: true } : { at: ago(0, i) }) }));
     const thoughts = 'I feel the vector field move my cards. '.repeat(12);
     // follow.asked (every built ask by the time it was built) feeds the growth velocity: today, yesterday, three days back, and one too old for the week
     const built = (list) => list.map(([ask, at]) => ({ ask, at, times: 1 }));
@@ -5637,6 +5638,9 @@ try {
       self.redesign.evolved === 0 && self.redesign.art === 1 && !self.redesign.smallOverArt.length && self.redesign.open.length === 0 && self.redesign.quote && parseFloat(self.redesign.quoteBar) >= 3
         && self.redesign.bars === self.redesign.families && self.redesign.families > 3 && self.redesign.weak === 1
         && self.svgH < 1600 && self.svgQuote && self.svgBars === self.redesign.families && self.svgBuilt && self.svgRaw <= 3, JSON.stringify({ redesign: self.redesign, svgH: self.svgH, svgQuote: self.svgQuote, svgBars: self.svgBars, svgBuilt: self.svgBuilt, svgRaw: self.svgRaw, img: self.img }));
+    const honest = await S.p.evaluate(() => { const pg = document.querySelector('.vpage.on'), cite = pg.querySelector('section[data-sec=words] .vs-cite'), notes = [...pg.querySelectorAll('.vs-sec[data-sec=growth] .vs-note')].map((n) => n.textContent); return { cite: cite ? cite.textContent : '', notes, theatre: /My own words, kept as I said them/.test(pg.textContent) }; });
+    check('self card, no theatre (owner, 2026-10-19): the words are labelled as Verse\'s model\'s, written from these facts, not a felt state, and each growth claim carries a source line',
+      /^Written by Verse's model/.test(honest.cite) && /from these facts/.test(honest.cite) && /not a felt state/.test(honest.cite) && !honest.theatre && honest.notes.length === 3 && /families\.json/.test(honest.notes[0]) && !S.errors.length, JSON.stringify({ honest, errors: S.errors }));
     // the growth velocity (asked by Verse): at the top of "What got built", a 7-point line in the violet with a tick a day and the latest day a dot, a muted
     // monospace label; a stage change after a build lands redraws it from /api/reflect in place, and a second change within the minute reads nothing again
     const vel = () => S.p.evaluate(() => { const b = document.querySelector('.vpage.on .vs-sec[data-sec=built] > .vs-velocity'), svg = b && b.querySelector('svg.vs-spark'), lab = b && b.querySelector('.vs-vel-label'); if (!b || !svg || !lab) return null;
@@ -5695,10 +5699,10 @@ try {
     const rate = (ms) => Z.p.evaluate((ms) => new Promise((res) => { const el = document.querySelector('.zorble-card'), t0 = el._zorble().t; let n = 0; const f = () => { n++; if (!done) requestAnimationFrame(f); }; let done = false; requestAnimationFrame(f);
       setTimeout(() => { done = true; res(n ? (el._zorble().t - t0) / n : 0); }, ms); }), ms);
     const full = await rate(800);
-    await Z.p.focus('#b4-in'); await Z.p.waitForTimeout(500); const slow = await rate(800), flag = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
-    await Z.p.evaluate(() => document.activeElement.blur()); await Z.p.waitForTimeout(1500); const back = await rate(800), flagBack = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle);
-    check('void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go (asked by Verse)',
-      full > 0.005 && slow < full * 0.45 && slow > 0 && flag === 'slow' && back > full * 0.8 && flagBack === 'full' && !Z.errors.length, JSON.stringify({ full, slow, back, flag, flagBack, errors: Z.errors }));
+    await Z.p.focus('#b4-in'); await Z.p.waitForTimeout(500); const slow = await rate(800), flag = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle), pillOn = await Z.p.evaluate(() => { const c = getComputedStyle(document.documentElement, '::after'); return { op: Number(c.opacity), text: c.content, pe: c.pointerEvents }; });
+    await Z.p.evaluate(() => document.activeElement.blur()); await Z.p.waitForTimeout(1500); const back = await rate(800), flagBack = await Z.p.evaluate(() => document.documentElement.dataset.motionThrottle), pillOff = await Z.p.evaluate(() => Number(getComputedStyle(document.documentElement, '::after').opacity));
+    check('void asks batch 4: the Zorbleflux throttle: while an input in another card has focus the flux field runs at about a quarter speed, and full speed comes back after the person lets go, with a quiet "calming the field" pill showing while it is held back and gone after (asked by Verse)',
+      full > 0.005 && slow < full * 0.45 && slow > 0 && flag === 'slow' && back > full * 0.8 && flagBack === 'full' && pillOn.op > 0.5 && /calming the field/.test(pillOn.text) && pillOn.pe === 'none' && pillOff === 0 && !Z.errors.length, JSON.stringify({ full, slow, back, flag, flagBack, pillOn, pillOff, errors: Z.errors }));
     await Z.ctx.close();
 
     // dynamic scale while flying, and the quick filter on the family-health card
@@ -5873,6 +5877,56 @@ try {
     await D.ask('what depends on ' + top.file, 1200);
     const asked = await until(async () => D.p.$eval('.vpage', (p) => { const f = p.querySelector('.dp-file'); return f ? { title: p.querySelector('h2').textContent, file: f.dataset.file, n: f.querySelectorAll('[data-dep]').length } : null; }).catch(() => null), 4000);
     check('deps: "what depends on <file>" opens the map on that file with its dependants listed', !!asked && asked.title === 'What depends on what' && asked.file === top.file && asked.n === all.length, JSON.stringify({ asked, n: all.length }));
+    await D.ctx.close(); }
+  // notebook (the frontier's "absorb and connect every repo": linked notes with backlinks and a daily note, then what am I missing; owner, 2026-10-15: "all the projects are Verse"):
+  // today's note is made once, a [[link]] to a note that does not exist is offered as one tap, the note it points at shows the link back, and a plain mention is linked in one tap
+  if (want("notebook: the daily note, a [[link]] made into a note, the backlink, and a plain mention linked in one tap")) { const B = await fresh(), clicks = [], tap = (sel) => B.p.dispatchEvent(sel, 'click', undefined, { timeout: 5000 }).catch((e) => { clicks.push(sel + ' -> ' + String(e.message).split('\n')[0]); });
+    await B.ask('daily note', 1200);
+    const today = await B.p.evaluate(() => { const d = new Date(), z = (n) => String(n).padStart(2, '0'); return d.getFullYear() + '-' + z(d.getMonth() + 1) + '-' + z(d.getDate()); });
+    const first = await until(async () => B.p.$$eval('.notebook .nb-note', (bs) => bs.map((b) => b.dataset.title)).then((l) => (l.length ? l : null)).catch(() => null), 6000);
+    await B.ask('daily note', 800); // asked again: still one
+    const again = await B.p.$$eval('.notebook .nb-note', (bs) => bs.map((b) => b.dataset.title)).catch(() => []);
+    await B.p.fill('.notebook .nb-text', 'Call [[Garden Plan]] about Zed');
+    const dangling = await until(async () => B.p.$eval('.notebook .nb-dangling[data-title="Garden Plan"]', (r) => r.textContent).catch(() => null), 4000);
+    await tap('.notebook .nb-dangling[data-title="Garden Plan"] button');
+    const made = await B.p.evaluate(() => ({ notes: [...document.querySelectorAll('.notebook .nb-note')].map((b) => b.dataset.title), shown: document.querySelector('.notebook .nb-title').value, back: [...document.querySelectorAll('.notebook .nb-back-note')].map((b) => b.dataset.title) }));
+    await B.p.fill('.notebook .nb-new', 'Zed'); await B.p.press('.notebook .nb-new', 'Enter');
+    await tap('.notebook .nb-note[data-title="Garden Plan"]');
+    await B.p.fill('.notebook .nb-text', 'ask Zed about the beds');
+    await until(async () => B.p.$('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"]').catch(() => null), 4000);
+    await tap('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"] button'); // the daily note names Zed too: the row for the note being edited
+    await B.p.waitForTimeout(300);
+    const linked = await B.p.$eval('.notebook .nb-text', (t) => t.value).catch(() => '');
+    const stillMissing = await B.p.$('.notebook .nb-unlinked[data-title="Zed"][data-in="Garden Plan"]');
+    await B.ask('what am I missing in my notes', 800);
+    const view = await B.p.$eval('.notebook', (c) => c.dataset.view).catch(() => '');
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await B.p.waitForTimeout(600); await B.p.screenshot({ path: path.join(process.env.VOID_SHOTS, 'notebook.png') }).catch(() => {}); }
+    check('notebook: "daily note" makes today\'s note once, a [[link]] to no note is offered as "make it", the note it points at shows the backlink, a plain mention links in one tap, and "what am I missing" opens the missing view',
+      JSON.stringify(first) === JSON.stringify([today]) && JSON.stringify(again) === JSON.stringify([today]) && /Garden Plan/.test(dangling || '') && made.notes.includes('Garden Plan') && made.shown === 'Garden Plan' && made.back.includes(today)
+      && linked === 'ask [[Zed]] about the beds' && !stillMissing && view === 'missing' && !clicks.length && !B.errors.length, JSON.stringify({ first, again, today, dangling, made, linked, view, clicks, errors: B.errors }));
+    await B.ctx.close(); }
+  // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
+  // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
+  if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });
+    const deps = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'deps.json'), 'utf8')), fam = JSON.parse(fs.readFileSync(path.join(root, 'skills', 'families.json'), 'utf8'));
+    const tier = {}; for (const f of fam.families) for (const k of f.skills) tier[k.name] = k.tier;
+    const heavy = deps.libs.filter((l) => l.skills >= 8).map((l) => {
+      const f = deps.files[l.file], dep = [...(f.importedBy || []), ...(f.reachedBy || [])].filter((x) => /^skills\/[^/]+\.js$/.test(x));
+      const name = (x) => x.replace(/^skills\//, '').replace(/\.js$/, ''), rated = dep.filter((x) => tier[name(x)]); // a helper file with no rating is not a skill
+      const sound = rated.filter((x) => /^(?:checked|proven)$/.test(tier[name(x)])).length;
+      return { file: l.file, steady: l.tests > 0 && sound / Math.max(1, rated.length || dep.length) >= 0.5 };
+    });
+    await D.ask('dependency health', 1200);
+    const card = await until(async () => D.p.$eval('.vpage', (p) => {
+      const rows = [...p.querySelectorAll('.dh-row')];
+      if (!rows.length) return null;
+      return { title: (p.querySelector('h2') || {}).textContent, verdict: (p.querySelector('.dh-verdict') || {}).textContent, rows: rows.map((r) => [r.dataset.file, r.dataset.steady]), wide: p.scrollWidth > p.clientWidth + 1 };
+    }).catch(() => null), 6000);
+    if (process.env.VOID_SHOTS) { fs.mkdirSync(process.env.VOID_SHOTS, { recursive: true }); await D.p.waitForTimeout(800); await D.p.locator('.vpage.on').screenshot({ path: path.join(process.env.VOID_SHOTS, 'dependency-health.png') }).catch(() => {}); }
+    const steady = heavy.filter((h) => h.steady).length;
+    check('dependency health: "dependency health" lists every shared file 8 or more skills depend on with a steady / not steady verdict worked out from deps.json and families.json, and says how many meet both requirements',
+      !!card && card.title === 'How steady are the shared files?' && card.rows.length === heavy.length && heavy.every((h) => card.rows.some(([f, v]) => f === h.file && v === (h.steady ? 'yes' : 'no')))
+      && card.verdict.includes(steady + ' of ' + heavy.length) && !card.wide && !D.errors.length, JSON.stringify({ steady, heavy: heavy.length, card: card && { ...card, rows: card.rows.slice(0, 4) }, errors: D.errors }));
     await D.ctx.close(); }
   // Verse cards (lib/card-frame.js; owner, 2026-10-16: "cards should look like actual cards, like magic cards, with stats"; the Illuminati card game's
   // Power / Resistance / Income): every page is a card: a foil frame, a title bar with a cost, an art box, a type line with a rarity gem, an "adds to Verse" line and a
@@ -6536,6 +6590,29 @@ try {
       kept && kept.state === 'set aside' && /^set aside: untouched for 3 days, a newer want takes its place · Verse chose this$/.test(kept.note) && sa.queued && fresh1 && fresh1.state === 'queued' && fresh1.target === 'will:answer-tide-questions' && !sa.open
       && sb.open === 'newjob' && !sb.queued && Q.get('newjob').state === 'building' && Q.size === 1,
       JSON.stringify([kept, sa.queued, sa.open, sb.open, sb.queued]).slice(0, 300));
+  }
+
+  // The guard on Verse's own build loop (lib/will-guard.js; the frontier's "absorb and connect every repo"): the will runs every hour and a want whose jobs were set aside or failed
+  // twice in 14 days waits, so the next want is queued, instead of the same top want being queued again and again
+  if (want("Verse's will does not queue a want again whose jobs were set aside or failed twice")) {
+    const mk = () => ({ DB: memoryStoreD1(), READ_TOKEN: OWNER, AI: { run: async () => ({ response: JSON.stringify({ wants: [{ id: 1, i_want: 'I want to answer tide questions.', because: 'people ask for tides' }, { id: 2, i_want: 'I want to answer moon questions.', because: 'people ask for the moon' }] }) }) } });
+    const post = (env) => willFn.onRequestPost({ request: new Request('http://x/api/will', { method: 'POST', headers: { authorization: 'Bearer ' + OWNER }, body: JSON.stringify({ candidates: [{ kind: 'people asked', title: 'Answer tide questions', why: 'asked about tides', weight: 20 }, { kind: 'people asked', title: 'Answer moon questions', why: 'asked about the moon', weight: 10 }] }) }), env });
+    const ago = (days) => new Date(Date.now() - days * 864e5).toISOString();
+    const jobs = (env) => [...env.DB.queue.values()].filter((q) => q.state === 'queued');
+    const A = mk(); A.DB.queue.set('a1', { id: 'a1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(8), updated: ago(5) });
+    const one = await (await post(A)).json(), oneQ = jobs(A);
+    const B = mk(); B.DB.queue.set('b1', { id: 'b1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(9), updated: ago(6) }); B.DB.queue.set('b2', { id: 'b2', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'failed', note: '', at: ago(4), updated: ago(2) });
+    const two = await (await post(B)).json(), twoQ = jobs(B);
+    const C = mk(); C.DB.queue.set('c1', { id: 'c1', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(40), updated: ago(30) }); C.DB.queue.set('c2', { id: 'c2', ask: 'Answer tide questions', target: 'will:answer-tide-questions', state: 'set aside', note: '', at: ago(20), updated: ago(16) });
+    const old = await (await post(C)).json(), oldQ = jobs(C);
+    const E = mk(); E.DB.prepare = ((p) => (sql) => (/FROM void_queue WHERE target LIKE 'will:%' AND state IN \('set aside','failed'\)/.test(sql) ? { bind: () => ({ all: async () => { throw new Error('D1 unavailable'); } }) } : p(sql)))(E.DB.prepare);
+    const down = await (await post(E)).json(), downQ = jobs(E);
+    check("will: one set-aside job does not stop a want; two set aside or failed within 14 days make it wait and the next want is queued (saying so); older ones do not count; an unreadable history means no guard, not no will",
+      one.queued && oneQ.length === 1 && oneQ[0].target === 'will:answer-tide-questions' && !one.skipped
+      && two.queued && twoQ.length === 1 && twoQ[0].target === 'will:answer-moon-questions' && JSON.stringify(two.skipped) === '[{"title":"Answer tide questions","tries":2}]' && /^Verse chose this: people ask for the moon · 1 want above it waits: its jobs were set aside or failed 2 times in 14 days$/.test(twoQ[0].note) && two.wants[0].title === 'Answer tide questions'
+      && old.queued && oldQ[0].target === 'will:answer-tide-questions' && !old.skipped
+      && down.queued && downQ[0].target === 'will:answer-tide-questions',
+      JSON.stringify({ one: [one.queued, oneQ.map((q) => q.target), one.skipped], two: [two.queued, twoQ.map((q) => [q.target, q.note]), two.skipped], old: [old.queued, oldQ.map((q) => q.target)], down: [down.queued, downQ.map((q) => q.target)] }).slice(0, 700));
   }
 
   // The lab (2026-10-13): the newest working fringe draft of each family is live; each opens from a plain ask and passes its own self-test there

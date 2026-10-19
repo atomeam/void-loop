@@ -77,6 +77,23 @@ export function foldAsks(asks) {
   return out;
 }
 
+const GROW_SOURCE = {
+  weakest: "Source: a model's judgement over the family bars (counts from skills/families.json, proven skills over all skills). Check it against those bars.",
+  next_game: "Source: a model's pick. Nothing in the repo ranks games, so this is a suggestion, not a finding.",
+  better: "Source: a proposal for builders, written by the model from the facts given. It is not a plan until a ledger line says it was built.",
+};
+/** the model's short name for the card's label ("a Workers AI language model" when none was recorded). Pure. */
+export function modelLabel(m) {
+  const t = String(m || '').replace(/^@cf\//, '').replace(/[^A-Za-z0-9._/:-]/g, '').slice(0, 60);
+  return t ? "Verse's model (" + t + ')' : "Verse's model";
+}
+/** the files a field's cited tags name, only tags the entry's own source map knows: "Source: skills/families.json (S3), void.growth.json (S1)", or '' when none was cited. Pure. */
+export function sourceNote(entry, field) {
+  const ev = entry && entry.evidence && entry.evidence[field], src = (entry && entry.sources) || {};
+  const tags = (Array.isArray(ev) ? ev : []).filter((t) => typeof src[t] === 'string');
+  return tags.length ? 'Source (cited by the model, tags checked against the facts it was given): ' + tags.map((t) => String(src[t]).slice(0, 120) + ' (' + t + ')').join(', ') : '';
+}
+
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
@@ -87,17 +104,23 @@ export function selfSections(v, now = Date.now()) {
   // the owner's redesign (2026-10-18, "its still ugly"): Verse's own paragraph is a quotation and the only thing open; everything else is a closed
   // block whose heading carries its count; how sure it is of its skills (the page's family bars) sits right under its words
   const voice = sentence((daily || build || {}).thoughts);
-  out.push({ id: 'words', title: '', log: false, blocks: voice ? [{ t: 'quote', text: voice, cite: 'My own words, kept as I said them. The people who build me read them first.' }]
-    : [{ t: 'note', text: 'My own words, kept as I said them. The people who build me read them first.' }] });
+  // no theatre (owner, 2026-10-19: "is this really Verse thoughts, or is this pretend"): the words are a language model's, prompted to speak as Verse from the
+  // facts it was given, and the card says so; what it was given sits under them, and each claim below says where it comes from
+  const src = daily || build || {}, label = modelLabel(src.model), given = String(src.given || '').trim();
+  const LABEL = 'Written by ' + label + ' from these facts. Kept word for word; it is a readout, not a felt state.';
+  out.push({ id: 'words', title: '', log: false, blocks: (voice ? [{ t: 'quote', text: voice, cite: LABEL }] : [{ t: 'note', text: LABEL }])
+    .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
+    .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest right now', 'weakest'], ['Next game I want to learn', 'next_game'], ["How I'd get better", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest right now / Next game / How I\'d get better', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest right now / Next game / How I\'d get better', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
     if (daily) blocks.push({ t: 'p', text: sentence(build.thoughts) }); // without a daily entry these words are already the quotation above
     if (sentence(build.better)) blocks.push({ t: 'p', text: "What I'd add: " + sentence(build.better) });
+    if (blocks.length) blocks.push({ t: 'note', text: 'Source: the model, asked right after this shipped, given what shipped and the facts above. A reading of the change, not a measurement.', tight: true });
     if (blocks.length) late.push({ id: 'shipped', title: 'On what just shipped', log: false, blocks });
   }
   const asks = foldAsks((v && v.asks) || []).slice(0, 12);
@@ -116,6 +139,7 @@ export function selfSections(v, now = Date.now()) {
         sub: [r.at ? day(r.at) : '', r.times > 1 ? 'asked ' + r.times + ' times' : ''].filter(Boolean).join(' · '),
         detail: { ask: sentence(r.ask), what: sentence(r.what) || '(the ledger line is not in this view)', at: r.at ? day(r.at) : '', ref: /^https:\/\/github\.com\//.test(String(r.ref || '')) ? r.ref : '' } })) });
     }
+    blocks.push({ t: 'note', text: 'Source: void.growth.json. An ask counts as built only when a ledger line names it (lib/voice.js followThrough); the model does not decide that.', tight: true });
     out.push({ id: 'built', title: 'What got built', count: f.built + ' of ' + f.total + ' asks', log: true, blocks });
   }
   return out.concat(late);
@@ -125,6 +149,7 @@ export function selfSections(v, now = Date.now()) {
 export function sectionHtml(s, esc) {
   const body = s.blocks.map((b) => {
     if (b.t === 'quote') return '<blockquote class="vs-voice"><p>' + esc(b.text) + '</p>' + (b.cite ? '<footer class="sub vs-cite">' + esc(b.cite) + '</footer>' : '') + '</blockquote>';
+    if (b.t === 'given') return '<details class="vs-given"><summary class="sub">What the model was given</summary><pre class="sub" style="white-space:pre-wrap;margin:6px 0">' + esc(b.text) + '</pre></details>';
     if (b.t === 'slot') return '<div ' + b.attr + '></div>';
     if (b.t === 'spark') return velocityHtml(b.velocity, esc, b.friction || null);
     if (b.t === 'sub') return '<h4 class="vs-h4">' + esc(b.text) + '</h4>';

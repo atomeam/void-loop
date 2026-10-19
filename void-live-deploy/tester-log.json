@@ -1,15 +1,92 @@
 {
- "note": "V01D's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
- "cases": 59,
- "runsTotal": 174,
+ "note": "Verse's site tester: what it checked on a-to-mind.com and what each run improved (tools/site-test.mjs).",
+ "cases": 68,
+ "runsTotal": 185,
  "kinds": {
-  "grow": 52,
-  "file": 68,
+  "grow": 61,
+  "file": 70,
   "teach": 7,
   "tighten": 7,
   "none": 40
  },
  "runs": [
+  {
+   "at": "2026-10-19T00:40:40Z",
+   "passed": 70,
+   "of": 71,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"film metadata for ikiru pls\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T18:45:56Z",
+   "passed": 59,
+   "of": 71,
+   "kind": "file",
+   "note": "fix: \"yo film metadata for ikiru\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-18T18:18:28Z",
+   "passed": 68,
+   "of": 70,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"fimls by kurosawa\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T16:03:13Z",
+   "passed": 59,
+   "of": 69,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"films by kurosawa pls\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T14:06:18Z",
+   "passed": 67,
+   "of": 68,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo films by kurosawa\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T13:46:58Z",
+   "passed": 57,
+   "of": 68,
+   "kind": "file",
+   "note": "fix: \"find me a sc-ifi film from the 80s\" refused: don't know this yet; console: Failed to load resource: the server responded with a status of 404 ()"
+  },
+  {
+   "at": "2026-10-18T12:35:31Z",
+   "passed": 64,
+   "of": 67,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s pls\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T11:21:11Z",
+   "passed": 56,
+   "of": 66,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"yo find me a sci-fi film from the 80s\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T10:17:16Z",
+   "passed": 55,
+   "of": 65,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"film metadata for Ikiru\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T10:02:42Z",
+   "passed": 54,
+   "of": 64,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"films by Kurosawa\" (skill:film-metadata)"
+  },
+  {
+   "at": "2026-10-18T09:26:58Z",
+   "passed": 62,
+   "of": 63,
+   "kind": "grow",
+   "note": "new ground passed, kept as a regression case: \"find me a sci-fi film from the 80s\" (skill:film-metadata)"
+  },
   {
    "at": "2026-10-18T08:43:06Z",
    "passed": 52,
@@ -72,83 +149,6 @@
    "of": 55,
    "kind": "grow",
    "note": "new ground passed, kept as a regression case: \"decision matrix for whether to move to Berlin\" (skill:decision-matrix)"
-  },
-  {
-   "at": "2026-10-18T05:16:07Z",
-   "passed": 45,
-   "of": 54,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"csv table: name,age ⏎ ann,30 ⏎ bo,25\" (skill:csv-table)"
-  },
-  {
-   "at": "2026-10-18T05:01:15Z",
-   "passed": 52,
-   "of": 53,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"weave a constellation called night ops\" (skill:constellation-weaver)"
-  },
-  {
-   "at": "2026-10-18T04:39:06Z",
-   "passed": 42,
-   "of": 52,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"flip this card\" (skill:card-play)"
-  },
-  {
-   "at": "2026-10-18T04:27:19Z",
-   "passed": 41,
-   "of": 51,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"dyslexia friendly font\" (skill:accessibility-modes)"
-  },
-  {
-   "at": "2026-10-18T04:16:45Z",
-   "passed": 48,
-   "of": 50,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"set my ambition temperature for the podcast\" (skill:anneal-ambition)"
-  },
-  {
-   "at": "2026-10-18T04:03:13Z",
-   "passed": 46,
-   "of": 48,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"swarm mind\" (skill:swarm-mind)"
-  },
-  {
-   "at": "2026-10-18T03:06:28Z",
-   "passed": 42,
-   "of": 48,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"attention field\" (skill:attention-field-mind)"
-  },
-  {
-   "at": "2026-10-18T02:53:48Z",
-   "passed": 44,
-   "of": 46,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"send it away\" (skill:dismiss)"
-  },
-  {
-   "at": "2026-10-18T00:52:54Z",
-   "passed": 35,
-   "of": 45,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"icebreakers about hiking\" (skill:dating)"
-  },
-  {
-   "at": "2026-10-18T00:31:24Z",
-   "passed": 42,
-   "of": 44,
-   "kind": "grow",
-   "note": "new ground passed, kept as a regression case: \"yo bitcoin price\" (skill:crypto)"
-  },
-  {
-   "at": "2026-10-18T00:19:50Z",
-   "passed": 42,
-   "of": 44,
-   "kind": "file",
-   "note": "fix: \"population of Japan\" console: Access to fetch at 'https://restcountries.com/v3.1/name/Japan?fields=name,capital,population,currencies,languages,area,f"
   }
  ],
  "seen": {
@@ -167,7 +167,7 @@
   "skill:video-play": "2026-10-15T07:02:38Z",
   "skill:define": "2026-10-15T08:58:55Z",
   "skill:digest": "2026-10-15T06:50:33Z",
-  "skill:film-metadata": "2026-10-15T08:17:23Z",
+  "skill:film-metadata": "2026-10-19T00:40:40Z",
   "skill:cartoon": "2026-10-15T16:35:42Z",
   "skill:challenge": "2026-10-18T00:02:54Z",
   "skill:checkers": "2026-10-15T08:58:55Z",
@@ -369,6 +369,39 @@
   "skill:backlog-digest": "2026-10-18T08:43:06Z",
   "skill:mutate": "2026-10-18T08:43:06Z",
   "skill:near-choir": "2026-10-18T08:43:06Z",
-  "skill:negative-summons": "2026-10-18T08:43:06Z"
+  "skill:negative-summons": "2026-10-18T08:43:06Z",
+  "skill:calendar-file": "2026-10-18T09:26:58Z",
+  "skill:night-ritual": "2026-10-18T09:26:58Z",
+  "skill:note-tools": "2026-10-18T09:26:58Z",
+  "skill:noun-heat": "2026-10-18T10:02:42Z",
+  "skill:oracle": "2026-10-18T10:02:42Z",
+  "skill:outline-note": "2026-10-18T10:02:42Z",
+  "skill:overload": "2026-10-18T10:17:16Z",
+  "skill:own-parts": "2026-10-18T10:17:16Z",
+  "skill:partial-answer": "2026-10-18T10:17:16Z",
+  "skill:photo-scrub": "2026-10-18T11:21:11Z",
+  "skill:plan-stability": "2026-10-18T11:21:11Z",
+  "skill:qr-scan": "2026-10-18T11:21:11Z",
+  "skill:recipe-stack": "2026-10-18T12:35:31Z",
+  "skill:remediation-velocity": "2026-10-18T12:35:31Z",
+  "skill:riot": "2026-10-18T12:35:31Z",
+  "skill:safety-kit": "2026-10-18T13:46:58Z",
+  "skill:sheaf-check": "2026-10-18T13:46:58Z",
+  "skill:skill-eclipse": "2026-10-18T13:46:58Z",
+  "skill:dependency-health": "2026-10-18T14:06:18Z",
+  "skill:soundscape": "2026-10-18T14:06:18Z",
+  "skill:spectators": "2026-10-18T14:06:18Z",
+  "skill:spectral-review": "2026-10-18T16:03:13Z",
+  "skill:stage-arrange": "2026-10-18T16:03:13Z",
+  "skill:stage-export": "2026-10-18T16:03:13Z",
+  "skill:notebook": "2026-10-18T18:18:28Z",
+  "skill:stage-find": "2026-10-18T18:18:28Z",
+  "skill:stage-fx": "2026-10-18T18:18:28Z",
+  "skill:stage-image": "2026-10-18T18:45:56Z",
+  "skill:stage-organize": "2026-10-18T18:45:56Z",
+  "skill:stage-print": "2026-10-18T18:45:56Z",
+  "skill:stage-style": "2026-10-19T00:40:40Z",
+  "skill:stakes-phase": "2026-10-19T00:40:40Z",
+  "skill:stale-work": "2026-10-19T00:40:40Z"
  }
 }
