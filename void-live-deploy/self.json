@@ -476,6 +476,34 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T05:24:47Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-19T05:24:44Z",
+   "subject": "what just shipped is about Verse, not the Just Cause games; bench asks"
+  },
+  {
+   "at": "2026-10-19T05:23:36Z",
+   "subject": "Regenerate the MCP skill tools (writing aids earned its place)"
+  },
+  {
+   "at": "2026-10-19T05:22:15Z",
+   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T05:17:34Z",
+   "subject": "Casual greetings answer without a search; writing aids gain proofread and thread"
+  },
+  {
+   "at": "2026-10-19T05:16:09Z",
+   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T05:04:50Z",
+   "subject": "The self facts stop calling index entries skills; the developer-log card ignores conditions and 'would' lines"
+  },
+  {
    "at": "2026-10-19T05:00:05Z",
    "subject": "Site test: new ground passed, kept as a regression case: \"dim the void\""
   },
@@ -526,34 +554,6 @@
   {
    "at": "2026-10-19T04:04:49Z",
    "subject": "Incident: the browser suite failed on a4f85965 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T04:01:55Z",
-   "subject": "Studio games: bench asks and regenerated cards"
-  },
-  {
-   "at": "2026-10-19T04:01:52Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T03:59:27Z",
-   "subject": "Verse Studio's first four games: Null Sweep, Merge Void, Dim the Void, Void Breaker"
-  },
-  {
-   "at": "2026-10-19T03:58:46Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T03:58:33Z",
-   "subject": "Tests for the game kit and a map line for the art tools"
-  },
-  {
-   "at": "2026-10-19T03:52:40Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T03:52:29Z",
-   "subject": "Card art floors rise in the daily run, and the infrastructure is tested end to end"
   }
  ],
  "builders": {

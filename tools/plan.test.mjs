@@ -56,8 +56,10 @@ test('the skill asks the engine, then runs only the checklist ask with its steps
     globalThis.fetch = async () => new Response(JSON.stringify({ steps: null, note: 'no model' }));
     asked.length = 0; said.length = 0;
     assert.equal(await skill.run('plan my garden', { stage, say: (s) => said.push(s) }), 'intent');
-    assert.equal(asked.length, 0, 'no steps: nothing summoned');
-    assert.match(said[0], /could not plan "my garden" right now/);
+    assert.equal(asked.length, 1, 'no steps from the engine: the starter plan is put up as one checklist');
+    assert.match(asked[0], /^make a list with Write what done looks like for my garden/);
+    assert.match(said[0], /a starter plan for "my garden": the answer engine had nothing just now/);
+    assert.match(said[1], /planned "my garden"/, 'and it is a real plan, with its undo');
   } finally { globalThis.fetch = was; }
 });
 
@@ -268,4 +270,13 @@ test('/api/answer passes the note on; the skill adds only the sticky ask for it'
     await skill.run('make a plan to learn spanish', { stage, say: () => {} });
     assert.ok(asked.every((a) => a.length < 200), 'a long note is cut, never passed whole');
   } finally { globalThis.fetch = was; }
+});
+
+test('the starter plan: general steps for a "learn X" goal and for any other goal, each short enough for a list ask', async () => {
+  const { fallbackSteps } = await import('../void-live-deploy/skills/intent.js');
+  const a = fallbackSteps('learn guitar'), b = fallbackSteps('my garden');
+  assert.equal(a.learn, true); assert.equal(b.learn, false);
+  assert.ok(a.steps.length >= 4 && a.steps.every((x) => x.length <= 60 && !/[,;]/.test(x)));
+  assert.ok(a.steps[0].includes('guitar') && b.steps[0].includes('my garden'));
+  assert.ok(fallbackSteps('').steps.length >= 3, 'an empty goal still gives steps');
 });
