@@ -15,7 +15,8 @@ import { spawnSync } from 'node:child_process';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const out = resolve(root, 'void-live-deploy/self.json');
-const clip = (s, n) => String(s || '').replace(/\s+/g, ' ').trim().slice(0, n);
+// cut on a word with an ellipsis, never mid-word (owner, 2026-10-19: the wants card showed "last used on a de" and "sent to the n")
+const clip = (s, n) => { const t = String(s || '').replace(/\s+/g, ' ').trim(); if (t.length <= n) return t; const c = t.slice(0, n - 1), sp = c.lastIndexOf(' '); return (sp > n * 0.6 ? c.slice(0, sp) : c).replace(/[\s,;:(\-–—]+$/, '') + '…'; };
 
 // skills that are games Verse plays with you (names as in skills/index.json)
 export const GAMES = ['tictactoe', 'othello', 'mancala', 'checkers', 'chess', 'aggravation', 'go', 'monopoly', 'battleship', 'poker', 'fireworks', 'connect4'];

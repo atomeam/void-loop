@@ -5564,8 +5564,13 @@ try {
     // a tap on a chip copies it (the chip marks itself copied; the whisper says so) and runs no ask
     await W.p.click('.vpage.on .wants-block[data-block=asks] .wants-chip'); await W.p.waitForTimeout(300);
     const tapped = await W.p.evaluate(() => ({ copied: !!document.querySelector('.vpage.on .wants-chip.copied'), said: document.getElementById('whisper').textContent.trim(), stillOpen: /What I want built/.test(document.querySelector('.vpage.on') ? document.querySelector('.vpage.on').textContent : '') }));
+    // the saved card (copy card, save card): one "- " line per item with its date in brackets, and no "where it comes from" lines (owner, 2026-10-19: a saved wants card ran every item into one paragraph)
+    const saved = await W.p.evaluate(async () => { const m = await import('/lib/card-share.js'); return m.readCard(document.querySelector('.vpage.on')).b; });
+    check('wants card: the saved card keeps one "- " line per item with its date in brackets, and leaves out the lines about where each list comes from',
+      typeof saved === 'string' && /^- I want to answer every question about tides\. \(asked 9 times\)$/m.test(saved) && /^- Give the map card terrain \(Asked in my daily reflection, 2026-10-08\)$/m.test(saved) && !/What I chose to become next/.test(saved) && !W.errors.length, JSON.stringify({ saved: String(saved).slice(0, 600), errors: W.errors }));
     check('wants card: a tap on an item copies it and keeps the card open', tapped.stillOpen && (tapped.copied ? tapped.said === 'copied' : tapped.said === 'select it to copy') && !W.errors.length, JSON.stringify({ tapped, errors: W.errors }));
-    await W.ask('what do you think of yourself', 300); await until(async () => /What I think of myself/.test(await W.page()), 6000);
+    // wait for its asks too: they come from /api/reflect after the title (a check right after the title failed once, 2026-10-19)
+    await W.ask('what do you think of yourself', 300); await until(async () => { const t = await W.page(); return /What I think of myself/.test(t) && /asked for/i.test(t); }, 6000);
     const selfCard = await W.p.evaluate(() => { const pg = document.querySelector('.vpage.on'); return { h2: pg ? pg.querySelector('h2').textContent : '', asked: !!(pg && pg.querySelector('.vs-sec[data-sec=asked]')) }; });
     check('wants card: "what do you think of yourself" still opens the self card, not the wants card', selfCard.h2 === 'What I think of myself' && selfCard.asked && !W.errors.length, JSON.stringify({ selfCard, errors: W.errors }));
     await W.ctx.close(); }
@@ -5993,6 +5998,17 @@ try {
     check('studio games: Verse Breaker draws its field, serves on the pointer and keeps score for both seats',
       !!opened && /Move the pointer/.test(before) && !!playing && painted > 200 && /^Verse: /.test(why) && !B.errors.length, JSON.stringify({ before, playing, painted, why, errors: B.errors }));
     await B.ctx.close(); }
+  // the Verse arcade cabinet (owner, 2026-10-19: "also a 3d arcade machine", "Verse brand cabinet of course")
+  if (want("arcade: a card of the six arcade games with your record, and a pick opens that game (the 3D cabinet is in tools/test_3d.mjs)")) { const B = await fresh();
+    await B.ask('arcade games', 900);
+    const picks = await until(async () => { const n = await B.p.$$eval('.arcade-pick', (l) => l.map((b) => b.textContent)).catch(() => []); return n.length ? n : null; }, 6000) || [];
+    await B.p.click('.arcade-pick[data-arcade="null-sweep"]');
+    const opened = await until(async () => B.p.$('.nsweep').catch(() => null), 6000);
+    const gone = !(await B.p.$('.arcade-view'));
+    check('arcade: a card of the six arcade games with your record, and a pick opens that game (the 3D cabinet is in tools/test_3d.mjs)',
+      picks.length === 6 && /Verse Pong/.test(picks[0]) && !!opened && gone && !B.errors.length, JSON.stringify({ picks, opened: !!opened, gone, errors: B.errors }));
+    await B.ctx.close(); }
+
   // dependency health (asked by Verse, 2026-10-18: "Create a 'dependency-health' skill that compares the current deps.json against stability requirements"): the same map
   // held against two requirements per shared lib file, worked out here again from the two JSON files so the card is checked against its sources, not against itself
   if (want("dependency health: the card judges every heavily used shared file against its two requirements")) { const D = await fresh({ phone: true });

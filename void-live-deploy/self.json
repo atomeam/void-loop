@@ -137,7 +137,7 @@
    "state": "shipped",
    "date": "2026-10-07",
    "ask": "group the clock and the note",
-   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\", \"br"
+   "from": "board Next #3, grouping half: drag one and they all move, \"move the group to the top left\", \"make the group bigger\"…"
   },
   {
    "state": "shipped",
@@ -148,13 +148,13 @@
   {
    "state": "shipped",
    "date": "2026-10-10",
-   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily ran ",
+   "ask": "before rotating the GitHub token: `gh secret list` shows VOID_OWNER_TOKEN set 2026-10-09T21:58Z and the voice daily…",
    "from": "map PR #344"
   },
   {
    "state": "shipped",
    "date": "2026-10-15",
-   "ask": "video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline (of",
+   "ask": "video skill: play any YouTube, Rumble, Vimeo, Dailymotion, Internet Archive, PeerTube, Odysee or Twitch video inline…",
    "from": "asked by the owner"
   },
   {
@@ -265,7 +265,7 @@
    "state": "open",
    "date": "",
    "ask": "The growth inbox, deeper",
-   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a de"
+   "from": "asked by Verse, 2026-10-16; first slices live: skill health, family map, stability, divergence, bloom, last used on a…"
   },
   {
    "state": "open",
@@ -276,13 +276,13 @@
   {
    "state": "open",
    "date": "",
-   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser checks",
+   "ask": "The fast checks take 15 to 26 minutes (perf3d and glyphs run 11 to 13 minutes each): give the two longest browser…",
    "from": "claude 2026-10-18"
   },
   {
    "state": "open",
    "date": "",
-   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait for",
+   "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
    "from": "claude 2026-10-18"
   },
   {
@@ -294,7 +294,7 @@
   {
    "state": "open",
    "date": "",
-   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the n",
+   "ask": "Let a note's [[links]] reach the stage: a tap on a link opens that note in the notebook, and a note can be sent to the…",
    "from": "claude 2026-10-18"
   },
   {
@@ -320,6 +320,7 @@
  ],
  "minis": [
   "aggravation",
+  "arcade",
   "battleship",
   "book",
   "calculator",
@@ -411,7 +412,7 @@
    },
    {
     "term": "the forge",
-    "means": "Verse's maker: you type (or sketch) an object, Verse builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house, sailboat,"
+    "means": "Verse's maker: you type (or sketch) an object, Verse builds a 3D model of it you can spin and inspect up close, and \"print it\" downloads an STL sized for a home printer (inside a 180 mm cube). Each thing is a recipe of shapes blended into one mesh with a flat base (skills/forge-rules.js, skills/forge.js). Ten things so far: rocket, vase, bottle, table, snowman, lighthouse, teapot, house…"
    },
    {
     "term": "frontier #14",
@@ -472,16 +473,44 @@
   "date": "2026-10-15",
   "by": "claude",
   "item": "Verse values anything from a photo",
-  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the browser,"
+  "what": "steps 1 and 2 shipped. The vision slot is lib/models.js path vision (Workers AI LLaVA, the site's own binding); skills/appraise.js + functions/api/appraise.js + lib/appraise-photo.js: one photo, downsized in the…"
  },
  "commits": [
+  {
+   "at": "2026-10-19T06:22:58Z",
+   "subject": "Incident: the browser suite failed on de5e2cc1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T06:18:18Z",
+   "subject": "Incident: the browser suite failed on de5e2cc1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T06:09:17Z",
+   "subject": "Incident: the browser suite failed on af8b602d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T06:06:56Z",
+   "subject": "Register the arcade rack test"
+  },
+  {
+   "at": "2026-10-19T06:05:09Z",
+   "subject": "Incident: the browser suite failed on af8b602d (void-live-deploy/incidents.json)"
+  },
   {
    "at": "2026-10-19T06:01:43Z",
    "subject": "The arcade: 'arcade games' opens the game rack with an arcade row of the six Studio games and your record against Verse"
   },
   {
+   "at": "2026-10-19T05:59:49Z",
+   "subject": "Regenerate the dependency map"
+  },
+  {
    "at": "2026-10-19T05:54:03Z",
    "subject": "Incident: the browser suite failed on 4a6edd73 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T05:53:43Z",
+   "subject": "The developer-log card checks GitHub: main, the named PRs and commits, as they really are"
   },
   {
    "at": "2026-10-19T05:52:25Z",
@@ -526,67 +555,39 @@
   {
    "at": "2026-10-19T05:17:34Z",
    "subject": "Casual greetings answer without a search; writing aids gain proofread and thread"
-  },
-  {
-   "at": "2026-10-19T05:16:09Z",
-   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:04:50Z",
-   "subject": "The self facts stop calling index entries skills; the developer-log card ignores conditions and 'would' lines"
-  },
-  {
-   "at": "2026-10-19T05:00:05Z",
-   "subject": "Site test: new ground passed, kept as a regression case: \"dim the void\""
-  },
-  {
-   "at": "2026-10-19T04:58:49Z",
-   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T04:50:06Z",
-   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T04:44:02Z",
-   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T04:32:30Z",
-   "subject": "The four studio games say Verse: Merge Verse, Dim the Verse, Verse Breaker"
   }
  ],
  "builders": {
   "finished": [
    {
-    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude, 2026-10-1",
-    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card (ski"
+    "name": "Verse's open asks audited and linked, Service Health, seasons (Claude…",
+    "line": "64 of the 66 asks tools/asks-link.mjs --open listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card…"
    },
    {
     "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Verse)",
-    "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family alo"
+    "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family…"
    },
    {
     "name": "Art Forge (claude, helper/art-forge)",
-    "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md. Next"
+    "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md.…"
    },
    {
     "name": "Web4: Verse as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
-    "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line that"
+    "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line…"
    },
    {
-    "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16, helper/bo",
-    "line": "lib/tome.js + skills/guide.js: \"open the book\" / \"menu\" / \"help\" dim the stage and fill it with a leather tome, parchment pages set in a serif (running heads, drop capitals, the asks as ink, folios), a leaf that swings over the spine, Esc c"
+    "name": "The book is a Skyrim tome, and the menus go to it (Claude, 2026-10-16…",
+    "line": "lib/tome.js + skills/guide.js: \"open the book\" / \"menu\" / \"help\" dim the stage and fill it with a leather tome, parchment pages set in a serif (running heads, drop capitals, the asks as ink, folios), a leaf that swings over the spine, Esc…"
    },
    {
-    "name": "The showcase proves what it says, the scoreboards read true, the Examine view (C",
-    "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no sourc"
+    "name": "The showcase proves what it says, the scoreboards read true, the Examine view…",
+    "line": "the preview flags a step that shows nothing (skills/showcase.js proved), tools/better.mjs is one daily better score with a pit-crew step, the bench counts a moved-out skill's answer (tools/routed.mjs), the will stops wanting things no…"
    }
   ],
   "ladders": [
    {
     "name": "Parallel builders, one ship (Claude, 2026-10-15)",
-    "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node tools/families"
+    "line": "builders in worktrees commit without pushing; cherry-pick them onto a branch from origin/main, and on a conflict in skills/index.json or families.json take either side and regenerate (node tools/skills-index.mjs --write, node…"
    },
    {
     "name": "Where edits collide",

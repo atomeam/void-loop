@@ -1,6 +1,6 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 690,
+ "counted": 692,
  "libs": [
   {
    "file": "lib/stage-pack.js",
@@ -18,23 +18,23 @@
   },
   {
    "file": "lib/state.js",
-   "skills": 27,
+   "skills": 28,
    "direct": 3,
-   "dependants": 47,
+   "dependants": 48,
    "tests": 4
   },
   {
    "file": "lib/placement.js",
-   "skills": 27,
+   "skills": 28,
    "direct": 1,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 1
   },
   {
    "file": "lib/panel-fit.js",
-   "skills": 23,
+   "skills": 24,
    "direct": 1,
-   "dependants": 24,
+   "dependants": 25,
    "tests": 1
   },
   {
@@ -46,9 +46,9 @@
   },
   {
    "file": "lib/ladder.js",
-   "skills": 16,
-   "direct": 9,
-   "dependants": 30,
+   "skills": 17,
+   "direct": 10,
+   "dependants": 31,
    "tests": 2
   },
   {
@@ -1712,7 +1712,8 @@
     "lib/memory-scope.js",
     "lib/memory-core.js",
     "lib/proposal.js",
-    "lib/plan.js"
+    "lib/plan.js",
+    "skills/take.js"
    ],
    "importedBy": [
     "functions/api/bench.js",
@@ -3606,6 +3607,7 @@
    ],
    "importedBy": [
     "lib/game-health.js",
+    "skills/arcade.js",
     "skills/dim-void.js",
     "skills/family-health.js",
     "skills/growth.js",
@@ -4065,6 +4067,7 @@
    "reachedBy": [
     "lib/arena.js",
     "skills/aggravation.js",
+    "skills/arcade.js",
     "skills/battleship.js",
     "skills/checkers.js",
     "skills/chess.js",
@@ -4184,6 +4187,7 @@
     "lib/arena.js",
     "skills/about-skill.js",
     "skills/aggravation.js",
+    "skills/arcade.js",
     "skills/battleship.js",
     "skills/checkers.js",
     "skills/chess.js",
@@ -5112,6 +5116,7 @@
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
+    "skills/arcade.js",
     "skills/checkers.js",
     "skills/chess.js",
     "skills/codex.js",
@@ -5639,6 +5644,13 @@
     "skills/void-breaker.js",
     "skills/zorbleflux.js"
    ]
+  },
+  "skills/arcade.js": {
+   "imports": [
+    "skills/side-card.js",
+    "lib/ladder.js"
+   ],
+   "importedBy": []
   },
   "skills/archive-of-one.js": {
    "imports": [],
@@ -6645,6 +6657,7 @@
    "reachedBy": [
     "lib/arena.js",
     "skills/aggravation.js",
+    "skills/arcade.js",
     "skills/battleship.js",
     "skills/checkers.js",
     "skills/chess.js",
@@ -6990,6 +7003,12 @@
    ],
    "importedBy": []
   },
+  "skills/mini/arcade.js": {
+   "imports": [
+    "skills/mini/tabletop.js"
+   ],
+   "importedBy": []
+  },
   "skills/mini/battleship.js": {
    "imports": [],
    "importedBy": []
@@ -7170,6 +7189,7 @@
    "imports": [],
    "importedBy": [
     "skills/mini/aggravation.js",
+    "skills/mini/arcade.js",
     "skills/mini/checkers.js",
     "skills/mini/chess.js",
     "skills/mini/connect4.js",
@@ -7846,6 +7866,7 @@
    ],
    "reachedBy": [
     "lib/arena.js",
+    "skills/arcade.js",
     "skills/battleship.js",
     "skills/checkers.js",
     "skills/chess.js",
@@ -7925,6 +7946,7 @@
     "lib/panel-fit.js"
    ],
    "importedBy": [
+    "skills/arcade.js",
     "skills/checkers.js",
     "skills/chess.js",
     "skills/eightball.js",
@@ -8257,7 +8279,17 @@
   },
   "skills/take.js": {
    "imports": [],
-   "importedBy": []
+   "importedBy": [
+    "functions/api/answer.js"
+   ],
+   "reachedBy": [
+    "functions/api/bench.js",
+    "functions/api/card-art.js",
+    "functions/api/mcp.js",
+    "functions/api/merge.js",
+    "functions/api/repo.js",
+    "lib/bench-asks.js"
+   ]
   },
   "skills/task-board.js": {
    "imports": [

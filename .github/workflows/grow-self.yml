@@ -70,7 +70,9 @@ jobs:
           mkdir -p "$RUNNER_TEMP/grow"
           echo "planned=0" >> "$GITHUB_OUTPUT"
           n=$(node -e 'const n = parseInt(process.argv[1], 10); console.log(n >= 1 && n <= 12 ? n : 6)' "$N")
-          code=0; node tools/lacks.mjs plan --out "$RUNNER_TEMP/grow/cand.json" --n "$n" || code=$?
+          code=0; node tools/lacks.mjs plan --cycle --out "$RUNNER_TEMP/grow/cand.json" --n "$n" || code=$?
+          # the card cycle: every card gets a turn (tools/card-cycle.mjs); what the next cards lack and the smartest thing to build for each, then the cursor moves on
+          node tools/card-cycle.mjs --n "$n" --advance | tee -a "$GITHUB_STEP_SUMMARY" || true
           case $code in
             0) echo "planned=1" >> "$GITHUB_OUTPUT"; node tools/lacks.mjs --n "$n" | tee -a "$GITHUB_STEP_SUMMARY" ;;
             3) echo "::notice title=Nothing lacking::every skill already has what it needs" ;;
@@ -133,9 +135,9 @@ jobs:
             title="${title:+$title, and }the card art floors rise to $now"
           fi
           printf '%s | verse | grow | hardened itself: %s (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$title" >> domains/void.agents.log.md
-          git diff -- tools/bench.json tools/art-floor.json domains/void.agents.log.md > "$g/grow.patch"
+          git diff -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md > "$g/grow.patch"
           # only the benchmark, the art floors and the log may change; anything else means a tool misbehaved and nothing is opened
-          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors and the log may change"; exit 1; } || true
+          git diff --name-only | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Unexpected change::only the benchmark, the art floors and the log may change"; exit 1; } || true
           node -e 'JSON.parse(require("fs").readFileSync("tools/bench.json", "utf8")); JSON.parse(require("fs").readFileSync("tools/art-floor.json", "utf8"))'
           echo "passed=1" >> "$GITHUB_OUTPUT"; echo "added=$count" >> "$GITHUB_OUTPUT"; echo "skills=$skills" >> "$GITHUB_OUTPUT"; echo "title=$title" >> "$GITHUB_OUTPUT"
 
@@ -212,14 +214,14 @@ jobs:
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark and the log
-          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark, the art floors and the log"; exit 1; } || true
+          git apply --numstat "$patch" | awk '{print $3}' | grep -vE '^(tools/bench\.json|tools/art-floor\.json|tools/card-cycle\.json|domains/void\.agents\.log\.md)$' && { echo "::error title=Not opened::the patch touches more than the benchmark, the art floors and the log"; exit 1; } || true
           branch="verse/harden-$(date -u +%Y%m%d-%H%M)"
           git switch -c "$branch"
           git apply "$patch"
           [ -n "$(git status --porcelain)" ] || { echo "nothing to propose"; exit 0; }
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add -- tools/bench.json tools/art-floor.json domains/void.agents.log.md
+          git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md
           title="Verse hardens itself: $WHAT"
           git commit -q -m "$title" -m "Verse found its least proven skills in its own files (tools/lacks.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them."
           git push -q origin "$branch"

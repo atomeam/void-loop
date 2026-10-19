@@ -2604,8 +2604,8 @@ say('nothing selected to remove');
     }
     function topicFrom(text) {
       let t = text.trim().replace(/[?.!]+$/, '');
-      t = t.replace(/^(please\s+)?(what|who|where|when)\s+(is|are|was|were)\s+(a|an|the)?\s*/i, '')
-           .replace(/^(please\s+)?(tell\s+me\s+about|explain|define|describe|show\s+me|look\s+up)\s+(a|an|the)?\s*/i, '');
+      t = t.replace(/^(please\s+)?(what|who|where|when)\s+(is|are|was|were)\s+(?:(?:a|an|the)\s+)?/i, '')
+           .replace(/^(please\s+)?(tell\s+me\s+about|explain|define|describe|show\s+me|look\s+up)\s+(?:(?:a|an|the)\s+)?/i, '');
       return t.trim() || text.trim();
     }
     // Answer engine (plan item 2): asks no skill covers get a short sourced answer; excerpt if the model is busy.
@@ -2805,7 +2805,7 @@ say('nothing selected to remove');
       const el = showPage((p) => { p.innerHTML = '<h2>' + esc(topic) + '</h2><div class="sub">…</div>'; });
       try {
         // "who is X" means a person: among the first five results, the first whose Wikidata description reads like a person
-        let hit = null;
+        let hit = null, corrected = '';
         if (/^(please\s+)?who\s+(is|was|are|were)\b|^who'?s\b/i.test(query.trim())) {
           try {
             const g = await fetch('https://en.wikipedia.org/w/api.php?action=query&generator=search&gsrlimit=5&prop=description&format=json&origin=*&gsrsearch=' + encodeURIComponent(topic)).then((x) => x.json());
@@ -2820,6 +2820,15 @@ say('nothing selected to remove');
           const sj = await sr.json();
           if (sr.ok && sj && sj.query && !lookedIn.includes('wikipedia')) lookedIn.push('wikipedia');
           hit = sj && sj.query && sj.query.search && sj.query.search[0];
+          // a misspelling ("nxiety" came back as Political correctness, 2026-10-19): Wikipedia's own suggestion, when the first hit is only loosely what was asked
+          const sug = sj && sj.query && sj.query.searchinfo && sj.query.searchinfo.suggestion;
+          if (sug && sug.toLowerCase() !== topic.toLowerCase() && (!hit || thinMatch(topic, hit.title))) {
+            try {
+              const s2 = await fetch('https://en.wikipedia.org/w/api.php?action=query&list=search&srlimit=1&format=json&origin=*&srsearch=' + encodeURIComponent(sug)).then((x) => x.json());
+              const h2 = s2 && s2.query && s2.query.search && s2.query.search[0];
+              if (h2) { hit = h2; corrected = sug; }
+            } catch (_) {}
+          }
         }
         if (!hit) throw new Error('none');
         const r = await fetch('https://en.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(hit.title.replace(/ /g, '_')));
@@ -2856,10 +2865,13 @@ say('nothing selected to remove');
         const url = (j.content_urls && j.content_urls.desktop && j.content_urls.desktop.page) || ('https://en.wikipedia.org/wiki/' + encodeURIComponent(hit.title));
         el.innerHTML = '<h2>' + esc(j.title || hit.title) + '</h2>'
           + (j.description ? '<div class="sub">' + esc(j.description) + '</div>' : '')
-          + (thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '')) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
-          + '<div class="take-slot"></div>'
+          + (corrected ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Showing “' + esc(corrected) + '” (you typed “' + esc(topic) + '”).</p>'
+            : thinMatch(topic, (j.title || hit.title) + ' ' + (j.description || '') + ' ' + String(j.extract || '').slice(0, 300)) ? '<p class="thin" style="color:#8a8a8a;font-size:13px;margin:0 0 8px">Closest match I found for “' + esc(topic) + '”.</p>' : '')
+          + '<div class="pic-slot"></div>'
           + (j.thumbnail && j.thumbnail.source ? '<img alt="" src="' + esc(j.thumbnail.source) + '">' : '')
           + '<p>' + esc(j.extract || '') + '</p>'
+          // the source first, then Verse's take under it, labelled as a model's reading (owner, 2026-10-19: cards for show, takes above the facts)
+          + '<div class="take-slot"></div>'
           + '<div class="src">Source: <a href="' + esc(url) + '" target="_blank" rel="noopener">Wikipedia</a>' + (j.timestamp ? ' · last edited ' + esc(new Date(j.timestamp).toLocaleDateString([], { year: 'numeric', month: 'short', day: 'numeric' })) : '') + '</div>';
         addCopy(el, false);
         // the card is typed by what the source says the page is (lib/card-kinds.js), and a name that is also a song, an album or a show says so
@@ -2868,7 +2880,7 @@ say('nothing selected to remove');
         // no lead image: the article's own photo (lib/page-picture.js; owner, 2026-10-17: the K-pop card "didnt look" up a picture), placed where a thumbnail goes
         if (!(j.thumbnail && j.thumbnail.source)) import('/lib/page-picture.js').then((m) => m.pictureFor(j.title || hit.title)).then((src) => {
           if (!src || vpageEl !== el || el.querySelector('img[data-page-picture]')) return;
-          const im = document.createElement('img'); im.alt = ''; im.src = src; im.dataset.pagePicture = '1'; const slot = el.querySelector('.take-slot');
+          const im = document.createElement('img'); im.alt = ''; im.src = src; im.dataset.pagePicture = '1'; const slot = el.querySelector('.pic-slot');
           if (slot) slot.after(im); else el.querySelector('h2').after(im); keepCard(el);
         }).catch(() => {});
         // a living thing ("cat", "fox") gets a facts strip from Wikidata under the summary, not just the dictionary-like lead (Adam, 2026-10-15)

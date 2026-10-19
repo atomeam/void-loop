@@ -175,7 +175,7 @@ export function videoAskOf(text, { hasCard = false, late = false } = {}) {
     || t.match(/^(?:play|watch|show\s+me|pull\s+up|bring\s+up|put\s+on)\s+(.+?)\s+(?:on|from)\s+(?:youtube|yt|rumble|vimeo|daily\s?motion|peer\s?tube|odysee|twitch|the\s+internet\s+archive|archive\.org)$/)
     || t.match(/^(?:play|watch|show\s+me|pull\s+up|put\s+on)\s+(?:the\s+)?(.+?)\s+(trailer|music\s+video|video|clip|documentary)$/);
   if (m) { const q = cleanQuery(m[1] + (m[2] && /trailer|music video|documentary/.test(m[2]) ? ' ' + m[2] : '')); if (q) return { kind: 'play', query: q, platform }; }
-  if (late) { m = t.match(/^(?:play|watch|put\s+on)\s+(.{2,120})$/); if (m && !NOT_VIDEO.test(m[1]) && !/\b(?:against|vs\.?|versus|with\s+(?:me|you|(?:verse|void))|a\s+game)\b/.test(m[1])) { const q = cleanQuery(m[1]); if (q) return { kind: 'play', query: q, platform }; } }
+  if (late) { m = t.match(/^(?:play|watch|put\s+on)\s+(.{2,120})$/); if (m && !NOT_VIDEO.test(m[1]) && !/\b(?:against|vs\.?|versus|with\s+(?:me|you|(?:verse|void))|a\s+game|arcade\s+games?)\b/.test(m[1])) { const q = cleanQuery(m[1]); if (q) return { kind: 'play', query: q, platform }; } }
   return null;
 }
 function cleanQuery(q) { return String(q || '').replace(PLAT_STRIP, ' ').replace(/^(?:the\s+)?(?:videos?|vids?|clips?)\s+(?:of|about|for)\s+/, '').replace(/\s+/g, ' ').trim().slice(0, 120) || null; }
