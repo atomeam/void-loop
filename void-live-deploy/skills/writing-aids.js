@@ -59,7 +59,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'writing-aids',
-  examples: ['writing aids', 'shorten this: In order to finish the report I basically just need to check the numbers', 'bulletize this paragraph: We met on Monday. The plan changed.', 'numbered steps from: first open the box then plug it in',
+  examples: ['writing aids', 'proofread: teh cat sat sat on the mat', 'turn this into a thread: One thing happened. Then another thing happened.', 'shorten this: In order to finish the report I basically just need to check the numbers', 'bulletize this paragraph: We met on Monday. The plan changed.', 'numbered steps from: first open the box then plug it in',
     'sentence case: HELLO THERE FRIEND', 'remove filler words: well um it was actually very good', 'count unique words: the cat and the dog', 'reading level of: The cat sat on the mat and looked at the sun.',
     'outline from headings: # Intro ## Why ## How', 'reverse outline: One idea here. Another idea there.', 'suggest synonyms for the words in: a very good idea'],
   nearMisses: ['shorten my commute', 'how do I shorten a url', 'how many unique words are in english', 'what is a reading level', 'bullet journal ideas', 'title case: the lord of the rings', 'synonym for happy', 'word count: a b c'],

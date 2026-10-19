@@ -476,6 +476,58 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T05:24:47Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-19T05:24:44Z",
+   "subject": "what just shipped is about Verse, not the Just Cause games; bench asks"
+  },
+  {
+   "at": "2026-10-19T05:23:36Z",
+   "subject": "Regenerate the MCP skill tools (writing aids earned its place)"
+  },
+  {
+   "at": "2026-10-19T05:22:15Z",
+   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T05:17:34Z",
+   "subject": "Casual greetings answer without a search; writing aids gain proofread and thread"
+  },
+  {
+   "at": "2026-10-19T05:16:09Z",
+   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T05:04:50Z",
+   "subject": "The self facts stop calling index entries skills; the developer-log card ignores conditions and 'would' lines"
+  },
+  {
+   "at": "2026-10-19T05:00:05Z",
+   "subject": "Site test: new ground passed, kept as a regression case: \"dim the void\""
+  },
+  {
+   "at": "2026-10-19T04:58:49Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:50:06Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:44:02Z",
+   "subject": "Incident: the browser suite failed on ecdfb6bb (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T04:32:30Z",
+   "subject": "The four studio games say Verse: Merge Verse, Dim the Verse, Verse Breaker"
+  },
+  {
+   "at": "2026-10-19T04:29:14Z",
+   "subject": "Incident: the browser suite failed on 8a1d83d3 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-19T04:25:49Z",
    "subject": "Incident: the browser suite failed on b1125d44 (void-live-deploy/incidents.json)"
   },
@@ -502,58 +554,6 @@
   {
    "at": "2026-10-19T04:04:49Z",
    "subject": "Incident: the browser suite failed on a4f85965 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T04:01:55Z",
-   "subject": "Studio games: bench asks and regenerated cards"
-  },
-  {
-   "at": "2026-10-19T04:01:52Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T03:59:27Z",
-   "subject": "Verse Studio's first four games: Null Sweep, Merge Void, Dim the Void, Void Breaker"
-  },
-  {
-   "at": "2026-10-19T03:58:46Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T03:58:33Z",
-   "subject": "Tests for the game kit and a map line for the art tools"
-  },
-  {
-   "at": "2026-10-19T03:52:40Z",
-   "subject": "Regenerate after the merge"
-  },
-  {
-   "at": "2026-10-19T03:52:29Z",
-   "subject": "Card art floors rise in the daily run, and the infrastructure is tested end to end"
-  },
-  {
-   "at": "2026-10-19T03:19:42Z",
-   "subject": "Card art measured (source and pixels), the benchmark keeps its record, and four games' rules: Null Sweep, Merge Void, Dim the Void, Void Bre"
-  },
-  {
-   "at": "2026-10-19T03:03:41Z",
-   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:58:18Z",
-   "subject": "The reflection refresh is a status readout: objective question, objective labels, and a guard"
-  },
-  {
-   "at": "2026-10-19T02:56:51Z",
-   "subject": "A commit that carries a conflict marker is refused (pre-commit hook), not only a push"
-  },
-  {
-   "at": "2026-10-19T02:56:24Z",
-   "subject": "Incident: the browser suite failed on ab896628 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T02:55:38Z",
-   "subject": "Keep both sides of the merge in MAP.md and checks.mjs (markers had been committed; never pushed)"
   }
  ],
  "builders": {

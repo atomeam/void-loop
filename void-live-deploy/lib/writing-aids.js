@@ -3,8 +3,8 @@
 // The skill (skills/writing-aids.js) puts them on one stage card with a mode for each. Run: node --test tools/writing-aids.test.mjs
 import { syllables } from '../skills/util.js';
 
-export const MODES = ['shorten', 'bullets', 'steps', 'sentence', 'title', 'filler', 'unique', 'level', 'outline', 'reverse', 'synonyms'];
-export const MODE_LABEL = { shorten: 'Shorten', bullets: 'Bullets', steps: 'Steps', sentence: 'Sentence case', title: 'Title Case', filler: 'No filler', unique: 'Unique words', level: 'Reading level', outline: 'Outline', reverse: 'Reverse outline', synonyms: 'Synonyms' };
+export const MODES = ['shorten', 'bullets', 'steps', 'sentence', 'title', 'filler', 'unique', 'level', 'outline', 'reverse', 'synonyms', 'proofread', 'thread'];
+export const MODE_LABEL = { shorten: 'Shorten', bullets: 'Bullets', steps: 'Steps', sentence: 'Sentence case', title: 'Title Case', filler: 'No filler', unique: 'Unique words', level: 'Reading level', outline: 'Outline', reverse: 'Reverse outline', synonyms: 'Synonyms' , proofread: 'Proofread', thread: 'Thread' };
 export const MAX_TEXT = 4000;
 
 /** a pasted multi-line ask comes through the box with " ⏎ " for each line break; put the breaks back. Pure. */
@@ -193,6 +193,45 @@ export function synonymsIn(text) {
   return out;
 }
 
+
+// ---- proofread and thread ----
+const TYPOS = { teh: 'the', adn: 'and', taht: 'that', wich: 'which', recieve: 'receive', recieved: 'received', definately: 'definitely', definitly: 'definitely', seperate: 'separate',
+  occured: 'occurred', untill: 'until', alot: 'a lot', thier: 'their', becuase: 'because', beacuse: 'because', wierd: 'weird', accomodate: 'accommodate', goverment: 'government',
+  enviroment: 'environment', tommorow: 'tomorrow', tomorow: 'tomorrow', begining: 'beginning', beleive: 'believe', freind: 'friend', occassion: 'occasion', neccessary: 'necessary',
+  necesary: 'necessary', succesful: 'successful', sucess: 'success', embarass: 'embarrass', publically: 'publicly', existance: 'existence', independant: 'independent', calender: 'calendar' };
+const keepCase = (from, to) => (/^[A-Z]/.test(from) ? to.charAt(0).toUpperCase() + to.slice(1) : to);
+/** the mechanical fixes only (doubled words, spaces, capitals, a short list of common typos): { text, fixes: [what, ...] }. It never rewrites a sentence. Pure. */
+export function proofread(text) {
+  let t = unflat(text), fixes = [];
+  const note = (what, n) => { if (n) fixes.push(n > 1 ? what + ' ×' + n : what); };
+  let n = 0;
+  t = t.replace(/\b([A-Za-z']+)(\s+)\1\b/gi, (m, w) => { if (/^(?:had|that|is)$/i.test(w)) return m; n++; return w; }); note('doubled word', n);
+  n = 0; t = t.replace(/[ \t]{2,}/g, () => { n++; return ' '; }); note('extra space', n);
+  n = 0; t = t.replace(/[ \t]+([,.;:!?])/g, (m, c) => { n++; return c; }); note('space before punctuation', n);
+  n = 0; t = t.replace(/([a-z])([,;:])(?=[A-Za-z])/g, (m, a, c) => { n++; return a + c + ' '; }); note('missing space after punctuation', n);
+  n = 0; t = t.replace(/\b(teh|adn|taht|wich|recieve[d]?|definately|definitly|seperate|occured|untill|alot|thier|becuase|beacuse|wierd|accomodate|goverment|enviroment|tommorow|tomorow|begining|beleive|freind|occassion|neccessary|necesary|succesful|sucess|embarass|publically|existance|independant|calender)\b/gi,
+    (m) => { n++; return keepCase(m, TYPOS[m.toLowerCase()]); }); note('common misspelling', n);
+  n = 0; t = t.replace(/\bi\b(?=[\s,.;:!?']|$)/g, () => { n++; return 'I'; }); note('lowercase "I"', n);
+  n = 0; t = t.replace(/(^|[.!?]["')\]]?\s+)([a-z])/g, (m, a, c) => { n++; return a + c.toUpperCase(); }); note('sentence start without a capital', n);
+  n = 0; t = t.replace(/([!?])\1{1,}/g, (m, c) => { n++; return c; }); note('repeated ' + 'punctuation', n);
+  return { text: t.trim(), fixes };
+}
+/** a text as numbered posts of at most `max` characters, split at sentence ends ("1/3 ..."); a single sentence longer than a post is cut at a word. Pure. */
+export function threadOf(text, max = 280) {
+  const sents = unflat(text).replace(/\s+/g, ' ').trim().split(/(?<=[.!?])\s+/).filter(Boolean);
+  const room = max - 8; // "12/12 " fits in the margin
+  const posts = []; let cur = '';
+  const push = () => { if (cur) { posts.push(cur); cur = ''; } };
+  for (let s of sents) {
+    while (s.length > room) { const cut = s.lastIndexOf(' ', room); const at = cut > room / 2 ? cut : room; push(); posts.push(s.slice(0, at).trim()); s = s.slice(at).trim(); }
+    if (!s) continue;
+    if (cur && (cur + ' ' + s).length > room) push();
+    cur = cur ? cur + ' ' + s : s;
+  }
+  push();
+  return posts.length === 1 ? posts : posts.map((p, i) => (i + 1) + '/' + posts.length + ' ' + p);
+}
+
 // ---- one entry for the card ----
 /** run a mode on a text: { out, note }. Pure. */
 export function transform(mode, text) {
@@ -210,6 +249,8 @@ export function transform(mode, text) {
     case 'outline': { const o = outlineFromHeadings(t); return { out: o, note: o ? '' : 'No headings found: start lines with # or 1.' }; }
     case 'reverse': return { out: reverseOutline(t), note: 'First idea of each paragraph. If the outline reads oddly, so might the text.' };
     case 'synonyms': { const s = synonymsIn(t); return { out: s.map((x) => x.word + ': ' + x.options.join(', ')).join('\n'), note: s.length ? 'From a short local list' : 'No overused words from the list found.' }; }
+    case 'proofread': { const r = proofread(t); return { out: r.text, note: r.fixes.length ? 'Fixed: ' + r.fixes.join(', ') + '. Spelling is a short common-mistakes list; read it once yourself.' : 'Nothing mechanical to fix.' }; }
+    case 'thread': { const p = threadOf(t); return { out: p.join('\n\n'), note: p.length + ' post' + (p.length === 1 ? '' : 's') + ' of 280 characters or fewer' }; }
     default: return { out: '', note: '' };
   }
 }
@@ -227,6 +268,8 @@ const RULES = [
   ['level', new RegExp(LEAD + '(?:(?:what(?:\'s|\\s+is)\\s+)?(?:the\\s+)?(?:reading|readability|grade)\\s+(?:level|score|ease)(?:\\s+(?:of|for))?|how\\s+readable\\s+is|reading\\s+level\\s+check|flesch\\s+(?:score|reading\\s+ease)(?:\\s+(?:of|for))?)' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
   ['outline', new RegExp(LEAD + '(?:(?:make|build|create|get|give\\s+me)\\s+(?:me\\s+)?(?:an?\\s+)?)?outline\\s+(?:from|of|out\\s+of)\\s+(?:the\\s+|my\\s+)?headings?' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
   ['reverse', new RegExp(LEAD + '(?:(?:make|build|create|do|get|give\\s+me)\\s+(?:me\\s+)?(?:an?\\s+)?)?reverse\\s+outline(?:\\s+(?:of|for|from))?' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
+  ['proofread', new RegExp(LEAD + '(?:proofread|copy[\\s-]?edit|(?:fix|check|correct)\\s+(?:the\\s+)?(?:grammar|spelling|typos?|punctuation)(?:\\s+(?:and|&)\\s+(?:grammar|spelling|typos?|punctuation))?(?:\\s+(?:in|of|for))?)' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
+  ['thread', new RegExp(LEAD + '(?:(?:turn|convert|change|make|put)' + THIS + '\\s+(?:in)?(?:to\\s+)?(?:into\\s+)?(?:a\\s+)?(?:social\\s+)?(?:thread|tweets?|posts?)|(?:social\\s+)?thread\\s+(?:from|of))' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
   ['synonyms', new RegExp(LEAD + '(?:suggest\\s+)?synonyms?\\s+for\\s+(?:the\\s+words\\s+in|each\\s+word\\s+in|words\\s+in|every\\s+word\\s+in|overused\\s+words\\s+in)' + THIS + '\\s*:\\s*([\\s\\S]+)$', 'i')],
 ];
 const OPEN = /^(?:please\s+)?(?:open\s+|show\s+|make\s+|give\s+me\s+|start\s+)?(?:(?:a|the|my)\s+)?(?:writing\s+aids?|writing\s+tools?\s+card|text\s+tools?\s+card)(?:\s+card)?(?:\s+please)?$/i;
