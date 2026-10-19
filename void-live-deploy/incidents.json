@@ -2,6 +2,33 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-19T19:46:52.917Z",
+   "sha": "81d61f6ae736073961d09dda61c401ec90fff7f9",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39313194651",
+   "suite": "browser suite on main",
+   "checks": [
+    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "domains/void.agents.log.md",
+    "tools/checks.mjs",
+    "tools/families.mjs",
+    "tools/photo-library.test.mjs",
+    "tools/test_void.mjs",
+    "void-live-deploy/lib/photo-library.js",
+    "void-live-deploy/self.json",
+    "void-live-deploy/skills/deps.json",
+    "void-live-deploy/skills/families.json",
+    "void-live-deploy/skills/guide.json",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/order/1755-photos",
+    "void-live-deploy/skills/photos.js",
+    "void-live-deploy/skills/what.json"
+   ]
+  },
+  {
    "at": "2026-10-19T19:35:17.648Z",
    "sha": "bffbcd82f030ae0ecdf603759e9d68ad8a5957ce",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39308398972",
@@ -751,24 +778,6 @@
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/skills/index.json",
     "void-live-deploy/skills/notebook.js"
-   ]
-  },
-  {
-   "at": "2026-10-18T15:47:17.999Z",
-   "sha": "686c6415d5372de6962fca6a6977c3c857270c41",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39140731260",
-   "suite": "browser suite on main",
-   "checks": [
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "stage pack h: nothing echoes until asked; \"what would the echo say ...\" answers once, then shows the counter-view (3 sentences, through the existing /api/answer, one extra call) labelled \"echo: a second view, not a correction\"; Keep keeps the echo and dismisses the first",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/perf3d.test.mjs",
-    "tools/test_extension.mjs",
-    "void-live-deploy/void.growth.json"
    ]
   }
  ]
