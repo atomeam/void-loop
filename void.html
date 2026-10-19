@@ -6147,7 +6147,7 @@ say('nothing selected to remove');
     if (!PAGE) {
       const kick = () => {
         for (const ev of ['pointerdown', 'pointermove', 'keydown', 'touchstart']) window.removeEventListener(ev, kick, true);
-        skillsReady.then(() => import('/skills/showcase.js')).then((m) => m.nudge(stageApi, awayNote)).then((n) => {
+        skillsReady.then(() => import('/skills/showcase.js')).then((m) => { m.watch(stageApi, awayNote); return m.nudge(stageApi, awayNote); }).then((n) => {
           if (n) input.addEventListener('keydown', function off(e) { if (e.key === 'Enter') { input.removeEventListener('keydown', off); if (awayNote.querySelector('.showcase-pill')) awayNote.textContent = ''; } });
         }).catch(() => {});
       };

@@ -2724,6 +2724,21 @@ try {
       !!bellOk && bellOk.count === '2' && /2 new things/.test(bellOk.label) && /wn-pulse/.test(bellOk.anim) && bellOk.fixed === 'fixed' && /1 of 2/.test(bar) && !gone && !P.errors.length, JSON.stringify({ bellOk, bar, gone: !!gone, errors: P.errors }));
     await P.ctx.close();
   }
+  // owner, 2026-10-19: "its supposed to pop up when Verse builds something": with the tab open, a build that ships later still pops up (no reload)
+  if (want("look what I made: a build that ships while the page is open pops up without a reload")) {
+    let LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-w')) { localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-13T00:00:00Z'); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['sticky note buy milk'])); sessionStorage.setItem('sc-w', '1'); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.ctx.route(/\/claims-verified\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ ok: ['sticky note buy milk', 'make a counter'] }) }));
+    await P.p.reload(); await P.p.waitForTimeout(500); await P.p.mouse.move(200, 200); await P.p.waitForTimeout(2500);
+    const before = !!(await P.p.$('#whatsnew-bell')); // everything already previewed: nothing yet
+    LEDGER = LEDGER.concat({ at: '2026-10-19T12:00:00Z', by: 'verse', kind: 'fix', what: 'Verse fixes its counter skill', try: 'make a counter' }); // Verse ships while the tab is open
+    await P.p.evaluate(() => document.dispatchEvent(new Event('visibilitychange'))); // the tab comes back into view
+    const after = await until(async () => P.p.$eval('#whatsnew-bell', (e) => e.dataset.count).catch(() => null), 8000);
+    check('look what I made: with the page open, a build that ships later pops up (the sparkle with its count) when the tab is looked at again, with no reload; nothing pops while nothing is new',
+      !before && after === '1' && !P.errors.length, JSON.stringify({ before, after, errors: P.errors }));
+    await P.ctx.close();
+  }
   if (want("spectator reactions: a closed set of buttons under a look-what-I-made step, live counts, one tap is one reaction, quiet when the endpoint is down")) { // owner, 2026-10-18: a fixed reaction list backed by a basic rate limit
     const LEDGER = [{ at: '2026-10-14T01:00:00Z', by: 'claude', kind: 'grow', what: 'paper notes', show: 'sticky notes look like real paper', try: 'sticky note buy milk' }];
     const TARGET = '2026-10-14t01-00-00z';
@@ -3851,7 +3866,9 @@ try {
       const b = JSON.parse(r.request().postData() || '{}'); posts.push({ b, auth: r.request().headers().authorization });
       return r.fulfill(json({ at: '2026-10-09T11:00:00Z', to: b.to, text: b.text, answer: 'Heard. I will check the live finding before I call rides untested.', correction: true, remember: 'rides has a live finding' }));
     });
-    await O.ask('what do you think of yourself?', 300); await until(async () => /terrain now/.test(await O.page()), 4000);
+    await O.ask('what do you think of yourself?', 300); await until(async () => !!(await O.p.$('.vpage.on [data-v-talk]')) && (await O.p.$eval('.vpage.on [data-v-talk]', (e) => e.textContent).catch(() => '')).includes('terrain now'), 4000);
+    // "Talk to me" is a folded section since the self card's redesign (2026-10-18): open it as the owner would before reading the thread and typing
+    await O.p.evaluate(() => { const d = document.querySelector('.vpage.on details[data-sec=talk]'); if (d) d.open = true; });
     const before = await O.page();
     await O.p.fill('.vpage.on [data-v-reply]', 'Rides is live: <img src=x onerror="window.__x=1"> check the finding');
     await O.p.click('.vpage.on [data-v-send]'); await until(async () => /check the live finding/.test(await O.page()), 4000);
@@ -7045,6 +7062,8 @@ try {
     }
     // the two-step app: "make me an app", then what it should do; and one line that says it all at once
     await R.p.goto(base); await R.p.waitForTimeout(500); await R.p.evaluate(() => localStorage.clear());
+    // the reload's skills load first: a fixed half second was not enough on a loaded runner, and the app ask then raced them (2026-10-19)
+    await R.p.waitForFunction(() => document.documentElement.dataset.skills === 'ready', null, { timeout: 20000 }).catch(() => {});
     await R.ask('clear', 300); // a game the last grown ask stood on the stage is still in the reloaded page's memory: start from an empty stage
     await R.ask('make me an app', 600); await R.ask('something for my groceries and a timer', 900);
     const two = (await R.state()).map((x) => x.kind).sort().join(','), twoSay = await R.whisper();

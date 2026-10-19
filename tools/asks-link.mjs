@@ -83,7 +83,16 @@ if (process.argv[1] && fileURLToPath(import.meta.url) === resolve(process.argv[1
     if (ok && argv.includes('--write')) { links.push({ words: a.ask, ledgerAt: m.entry.at, why: 'built: ' + m.entry.what.slice(0, 220) + ' (linked by tools/asks-link.mjs, shared words: ' + m.shared.join(', ') + ')' }); added++; }
   }
   console.log(ruled + ' linked by the curated rules; ' + open.length + ' open asks after them, ' + rows.filter((r) => r.m && r.m.score >= BAR).length + ' at or over the bar ' + BAR + ', ' + rows.filter((r) => !r.m || r.m.score < BAR).length + ' still to build');
-  if (argv.includes('--write')) { asksJson.links = links; writeFileSync(ASKS, JSON.stringify(asksJson, null, 2) + '\n'); console.log('wrote ' + added + ' links to void.asks.json'); }
+  // all-time totals for the self card (owner, 2026-10-19: it said "24 of 71" one hour and "22 of 66" the next, because it counted only the
+  // 60 reflections kept online): every ask in the voice log, reworded ones folded as the card folds them, and how many of those are built
+  const { sameAsk } = await import('../void-live-deploy/lib/self-blocks.js');
+  const groups = []; for (const a of asks) { const g = groups.find((x) => sameAsk(x[0].ask, a.ask)); if (g) g.push(a); else groups.push([a]); }
+  const stillOpen = new Set(openAsks(asks, ledger, links).map((a) => norm(a.ask)));
+  // through: the newest reflection in the log; asks made online after it are counted on top by /api/reflect
+  const through = [...readFileSync(VOICE, 'utf8').matchAll(/^### (\d{4}-\d\d-\d\d) (\d\d:\d\d) UTC/gm)].map((m) => m[1] + 'T' + m[2] + ':00Z').sort().pop() || '';
+  const totals = { asked: groups.length, built: groups.filter((g) => g.some((a) => !stillOpen.has(norm(a.ask)))).length, through };
+  console.log('all time: ' + totals.built + ' of ' + totals.asked + ' asks built');
+  if (argv.includes('--write')) { asksJson.totals = totals; asksJson.links = links; writeFileSync(ASKS, JSON.stringify(asksJson, null, 2) + '\n'); console.log('wrote ' + added + ' links to void.asks.json'); }
   // --check (tools/refresh.mjs): built asks still unlinked keep showing as "not built" on the wants and self cards (owner, 2026-10-19: "the cards should update and be accurate always")
   else if (argv.includes('--check')) { const n = ruled + rows.filter((r) => r.m && r.m.score >= BAR).length; if (n) { console.log(n + ' built asks are not linked yet (run node tools/asks-link.mjs --write)'); process.exit(1); } console.log('every built ask is linked'); }
 }

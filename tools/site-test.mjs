@@ -22,6 +22,9 @@ export const SUITE = resolve(here, 'site-test.json'), LOG = resolve(here, 'site-
 export const NEW_PER_RUN = 4;
 export const GAP_MS = 3000, UA_TAG = 'VerseSiteTest/1 (+https://a-to-mind.com/; tests only, sends nothing)';
 export const REFUSAL = /don.t know this yet|couldn.t find|isn.t connected|something went wrong/i;
+/** the asks that failed this run and the first reason each, so the log (and the tester card) can name them, not only count them
+ *  (owner, 2026-10-19: the card said "64 of 74" every run and nobody could tell which ten). The suite's own asks only, never a visitor's. Pure. */
+export const failedOf = (results) => (results || []).filter((r) => r && !r.ok).slice(0, 12).map((r) => ({ ask: String(r.ask || '').slice(0, 80), why: String((r.why || [])[0] || '').slice(0, 120) }));
 export const STEP_KINDS = ['goto', 'click', 'fill', 'wait', 'expect', 'shot'];
 
 /** One case's verdict from what the page showed. Pure. r: { text, newThings, errors, fps, loadMs }. */
@@ -238,7 +241,7 @@ if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.ur
     const act = improve(results, suite, log.map((l) => l.key).filter(Boolean));
     if (act.kind === 'teach') act.title = 'site-test: ' + act.note.slice(0, 120);
     if (act.suite !== suite) writeFileSync(SUITE, JSON.stringify(act.suite, null, 2) + '\n');
-    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, kind: act.kind, ...(act.key ? { key: act.key } : {}), note: act.note });
+    log.push({ at: new Date().toISOString().replace(/\.\d+Z$/, 'Z'), passed: results.filter((r) => r.ok).length, of: results.length, kind: act.kind, ...(act.key ? { key: act.key } : {}), failed: failedOf(results), note: act.note });
     writeFileSync(LOG, JSON.stringify(log.slice(-300), null, 1) + '\n');
     writeFileSync(resolve(shots, 'improvement.json'), JSON.stringify(act.kind === 'file' || act.kind === 'teach' ? { title: 'site-test: ' + act.note.slice(0, 120), key: act.key } : { kind: act.kind, note: act.note }));
     console.log('improvement: ' + act.kind + ' · ' + act.note);

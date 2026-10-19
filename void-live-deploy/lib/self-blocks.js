@@ -158,7 +158,7 @@ export function selfSections(v, now = Date.now()) {
 export function sectionHtml(s, esc) {
   const body = s.blocks.map((b) => {
     if (b.t === 'quote') return '<blockquote class="vs-voice"><p>' + esc(b.text) + '</p>' + (b.cite ? '<footer class="sub vs-cite">' + esc(b.cite) + '</footer>' : '') + '</blockquote>';
-    if (b.t === 'given') return '<details class="vs-given"><summary class="sub">What the model was given</summary><pre class="sub" style="white-space:pre-wrap;margin:6px 0">' + esc(b.text) + '</pre></details>';
+    if (b.t === 'given') return '<details class="vs-given" data-share-skip="1"><summary class="sub">What the model was given</summary><pre class="sub" style="white-space:pre-wrap;margin:6px 0">' + esc(b.text) + '</pre></details>';
     if (b.t === 'slot') return '<div ' + b.attr + '></div>';
     if (b.t === 'spark') return velocityHtml(b.velocity, esc, b.friction || null);
     if (b.t === 'sub') return '<h4 class="vs-h4">' + esc(b.text) + '</h4>';
@@ -173,7 +173,7 @@ export function sectionHtml(s, esc) {
     if (b.t === 'list') {
       const more = b.items.filter((it) => it.more).length, skip = (it) => (it.more ? ' data-share-skip="1"' : '');
       return '<ul class="' + esc(b.cls) + ' vs-list">' + b.items.map((it) => '<li data-bullet="1"' + (b.cls.includes('v-built') ? ' data-depth="' + esc(it.depth) + '"' : '') + (it.more ? ' data-more="1" hidden' : it.hidden ? ' hidden' : '') + '><details' + (it.open ? ' open' : '') + '><summary' + (it.more ? ' data-share-short="' + esc(shortLine(it.text)) + '"' : '') + '>' + esc(it.text) + '</summary>'
-        + (it.detail ? '<div class="v-meta"' + skip(it) + '><b>I asked:</b> ' + esc(it.detail.ask) + '<br><b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
+        + (it.detail ? '<div class="v-meta"' + skip(it) + '>' + (sentence(it.detail.ask) === sentence(it.text) ? '' : '<b>I asked:</b> ' + esc(it.detail.ask) + '<br>') + '<b>What was built' + (it.detail.at ? ' (' + esc(it.detail.at) + ')' : '') + ':</b> ' + esc(it.detail.what) + (it.detail.ref ? ' <a href="' + esc(it.detail.ref) + '" rel="noopener">link</a>' : '') + '</div>' : '<div class="v-meta"' + skip(it) + '>' + esc(it.sub) + '</div>')
         + '</details>' + (it.detail && it.sub ? '<div class="vs-sub"' + skip(it) + '>' + esc(it.sub) + '</div>' : '') + '</li>').join('') + '</ul>'
         + (more ? '<button type="button" class="tr-copy vs-more" data-v-more aria-expanded="false" data-n="' + esc(b.items.length) + '">' + esc('show all ' + b.items.length) + '</button>' : '');
     }

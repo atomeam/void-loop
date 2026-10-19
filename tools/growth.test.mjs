@@ -123,3 +123,10 @@ test('"what just shipped?" is about Verse (it came back as a Wikipedia line abou
   for (const q of ['what just shipped?', 'what shipped today', 'what did you just ship', 'what have you just built', 'what has shipped recently']) assert.equal(growthOf(q), true, q);
   for (const q of ['what shipped to my order', 'where did my package ship', 'what have you built', 'when does the iphone ship']) assert.equal(growthOf(q), false, q);
 });
+
+test('the tester card names each run\'s failed asks as asks to tap, not only "64 of 74" (owner, 2026-10-19)', async () => {
+  const { testerRows } = await import('../void-live-deploy/skills/growth.js');
+  const rows = testerRows({ runs: [{ at: '2026-10-19T04:58:40Z', passed: 1, of: 2, kind: 'grow', note: 'n', failed: [{ ask: 'what are you?', why: 'missing text /Verse/' }] }, { at: '2026-10-18T04:58:40Z', passed: 2, of: 2, kind: 'grow', note: 'n' }] });
+  assert.deepEqual(rows[0].failed, [{ ask: 'what are you?', why: 'missing text /Verse/' }]);
+  assert.deepEqual(rows[1].failed, []);
+});

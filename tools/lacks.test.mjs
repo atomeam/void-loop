@@ -103,7 +103,8 @@ test('queue (dry): plain routing gaps become probe jobs within the open limit; a
   const r = spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname, 'queue', f, '--dry', '--empty-queue'], { encoding: 'utf8', env: { ...process.env, VOID_OWNER_TOKEN: '' } });
   assert.equal(r.status, 0, r.stderr);
   const lines = r.stdout.split('\n').filter((l) => l.startsWith('would queue'));
-  assert.equal(lines.length, 2, 'two at a time, like the daily probe: ' + r.stdout);
+  const { PROBE_OPEN_MAX } = await import('./probe-asks.mjs');
+  assert.equal(lines.length, Math.min(3, PROBE_OPEN_MAX), 'within the open limit, like the probe (three plain gaps here): ' + r.stdout);
   assert.match(lines[0], /probe:fly-around/); assert.doesNotMatch(r.stdout, /https|rm -rf/);
   assert.equal(spawnSync(process.execPath, [new URL('./lacks.mjs', import.meta.url).pathname, 'queue'], { encoding: 'utf8' }).status, 2);
 });

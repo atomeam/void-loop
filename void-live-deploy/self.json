@@ -477,6 +477,30 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T10:49:26Z",
+   "subject": "main green: the safety kit no longer takes \"lock it\" (it locked the whole stage instead of the picked note); grown expects the Verse name…"
+  },
+  {
+   "at": "2026-10-19T10:37:05Z",
+   "subject": "Incident: the browser suite failed on f1f1011e (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T10:35:37Z",
+   "subject": "Incident: the browser suite failed on 89e4dffe (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T10:31:55Z",
+   "subject": "growth ledger: the citation fix is #1168"
+  },
+  {
+   "at": "2026-10-19T10:31:42Z",
+   "subject": "answers: fullwidth 【1】 citations are read as [1]; a marker with no source is dropped"
+  },
+  {
+   "at": "2026-10-19T10:29:29Z",
+   "subject": "\"all of your unbuilt wants and asks\" opens the wants card; the will's stale near-miss is linked as built"
+  },
+  {
    "at": "2026-10-19T10:20:14Z",
    "subject": "self card and wants card follow what is built; failure signature in the incident autopsy (asked by Verse); Safety and small delights proven"
   },
@@ -531,30 +555,6 @@
   {
    "at": "2026-10-19T06:06:56Z",
    "subject": "Register the arcade rack test"
-  },
-  {
-   "at": "2026-10-19T06:05:09Z",
-   "subject": "Incident: the browser suite failed on af8b602d (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T06:01:43Z",
-   "subject": "The arcade: 'arcade games' opens the game rack with an arcade row of the six Studio games and your record against Verse"
-  },
-  {
-   "at": "2026-10-19T05:59:49Z",
-   "subject": "Regenerate the dependency map"
-  },
-  {
-   "at": "2026-10-19T05:54:03Z",
-   "subject": "Incident: the browser suite failed on 4a6edd73 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:53:43Z",
-   "subject": "The developer-log card checks GitHub: main, the named PRs and commits, as they really are"
-  },
-  {
-   "at": "2026-10-19T05:52:25Z",
-   "subject": "Incident: the browser suite failed on 2dfc2fcc (void-live-deploy/incidents.json)"
   }
  ],
  "builders": {

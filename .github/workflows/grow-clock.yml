@@ -1,0 +1,50 @@
+# Verse's growth clock (owner, 2026-10-19: "make it grow every ten minutes ... I want Verse to actually evolve noticeably quickly").
+# Every 10 minutes it starts one growth step, in turn: grow-self (the next cards of the card cycle get benchmark asks, tools/card-cycle.mjs),
+# propose-fix (Verse's model fixes the oldest probe: job and opens a pull request), and once an hour probe-asks (Verse writes new asks for its
+# weakest family; the misses become the probe: jobs propose-fix takes). Each step keeps its own guards: one run of each at a time (their
+# concurrency groups), one hardening pull request open, PROBE_OPEN_MAX probe jobs, the confidence gate on every fix, Verse's review before a merge.
+#
+# GitHub ran a '*/15' schedule about once every five hours (void-tick.yml, 2026-10-14), so one run keeps the time itself: it knocks every
+# 10 minutes for about five and a half hours, then starts the next run. The schedule only restarts a broken chain; the concurrency group keeps
+# one clock running and at most one waiting. Actions minutes are free for a public repo. No secret here: the steps hold their own.
+name: Verse grows
+
+on:
+  schedule:
+    - cron: '7 * * * *'
+  workflow_dispatch:
+
+concurrency:
+  group: grow-clock
+  cancel-in-progress: false
+
+permissions:
+  actions: write
+
+jobs:
+  clock:
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - name: One growth step every 10 minutes
+        id: clock
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          start() { gh workflow run "$1" --repo "$GITHUB_REPOSITORY" --ref main && echo "$(date -u +%H:%M) started $1" || echo "::warning title=Not started::$1"; }
+          for i in $(seq 0 32); do
+            # six ticks an hour: probe at :00, then grow-self and propose-fix take turns (each skips quietly when it has nothing to do)
+            case $((i % 6)) in
+              0) start probe-asks.yml ;;
+              1|3|5) start propose-fix.yml ;;
+              *) start grow-self.yml ;;
+            esac
+            if [ "$i" -lt 32 ]; then sleep 600; fi
+          done
+          echo "chain=yes" >> "$GITHUB_OUTPUT"
+      # only after a full run: a failure or a cancel ends the chain (the hourly schedule restarts it)
+      - name: Start the next clock run
+        if: steps.clock.outputs.chain == 'yes'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run grow-clock.yml --repo "$GITHUB_REPOSITORY" --ref main || echo "::warning title=Clock chain broke::the next run did not start; the schedule restarts it"

@@ -119,7 +119,7 @@ test('no theatre: the words say a model wrote them, what it was given sits under
   const secs = selfSections({ entries: [daily], asks: [], follow: null }, Date.parse('2026-10-19T07:00:00Z'));
   const words = secs.find((s) => s.id === 'words'), html = sectionHtml(words, esc);
   assert.match(html, /Written by Verse's model \(test\/model-1\) from these facts/); assert.match(html, /not a felt state/); assert.ok(!/My own words, kept as I said them/.test(html));
-  assert.match(html, /<details class="vs-given">/); assert.ok(html.includes('&lt;b&gt;The stage 11/94') && !html.includes('<b>The stage'), 'what it was given is shown as text');
+  assert.match(html, /<details class="vs-given" data-share-skip="1">/); assert.ok(html.includes('&lt;b&gt;The stage 11/94') && !html.includes('<b>The stage'), 'what it was given is shown as text');
   const growth = secs.find((s) => s.id === 'growth'), notes = growth.blocks.filter((b) => b.t === 'note').map((b) => b.text);
   assert.equal(notes.length, 3); assert.match(notes[0], /skills\/families\.json/); assert.match(notes[1], /not a finding/); assert.match(notes[2], /not a plan until a ledger line/);
   assert.equal(modelLabel(''), "Verse's model"); assert.equal(modelLabel('@cf/meta/llama<x>'), "Verse's model (meta/llamax)");
@@ -154,4 +154,12 @@ test('markBuilt: a sentence of the model\'s that asks for something already buil
   assert.equal(markBuilt('Teach the chess skill openings.', []), 'Teach the chess skill openings.');
   const secs = selfSections({ entries: [{ at: '2026-10-19T08:00:00Z', kind: 'daily', thoughts: 'x', weakest: 'Flat maps.', next_game: "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.", better: 'Read the ledger.', asks: [] }], asks: [], follow: { total: 2, built: 2, recent: [], asked } }, Date.parse('2026-10-19T09:00:00Z'));
   const g = secs.find((x) => x.id === 'growth'); assert.ok(g.blocks.some((b) => b.t === 'p' && /\(built 2026-10-18\)$/.test(b.text)));
+});
+
+test('a built item does not repeat its words under "I asked:", and the facts the model was given stay out of a saved copy (owner, 2026-10-19: "FIX IT")', async () => {
+  const { selfHtml } = await import('../void-live-deploy/lib/self-blocks.js');
+  const html = selfHtml([{ id: 'built', title: 'What got built', log: true, blocks: [{ t: 'list', cls: 'v-built', items: [{ text: 'Lift the two weak libs', open: true, depth: 'root', detail: { ask: 'Lift the two weak libs', what: 'rts proven', at: '2026-10-19', ref: '' } }] }] },
+    { id: 'words', title: '', log: false, blocks: [{ t: 'given', text: '[S1] the facts' }] }], (s) => String(s));
+  assert.ok(!html.includes('I asked:')); assert.ok(html.includes('What was built (2026-10-19):'));
+  assert.ok(html.includes('<details class="vs-given" data-share-skip="1">'));
 });

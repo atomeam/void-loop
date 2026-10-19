@@ -1853,5 +1853,10 @@
       "ledgerAt": "2026-10-19T10:20:14Z",
       "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill, distinguish, between, simulat, develop, log, genuine, system, err)"
     }
-  ]
+  ],
+  "totals": {
+    "asked": 224,
+    "built": 206,
+    "through": "2026-10-18T20:31:00Z"
+  }
 }

@@ -22,7 +22,11 @@ export async function onRequestGet({ request, env }) {
   const [ledger, answered] = request && env.ASSETS ? await Promise.all([asset('/void.growth.json'), asset('/void.asks.json')]) : [null, null];
   const f = ledger ? followThrough(entries, ledger, answered && answered.links) : null;
   const built = new Set(f ? f.built.flatMap((g) => g.ids) : []);
-  const follow = f ? { total: f.total, built: f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
+  // the all-time count (void.asks.json totals, from the whole voice log at deploy) when it is larger: the online window keeps 60 reflections, so its count shrank as old ones fell out
+  // the voice log's totals run to `through`; asks first made after it are counted on top, from this window
+  const T = f && answered && answered.totals && +answered.totals.asked > 0 && answered.totals.through ? answered.totals : null;
+  const newer = (g) => T && String(g.first || '') > String(T.through);
+  const follow = f ? { total: T ? +T.asked + f.built.concat(f.open || []).filter(newer).length : f.total, built: T ? +T.built + f.built.filter(newer).length : f.built.length, recent: f.built.slice().sort((a, b) => String(b.builtAt).localeCompare(String(a.builtAt))).slice(0, 30).map((g) => ({ ask: g.ask, at: g.builtAt, ref: g.ref, what: g.what, times: g.times, depth: g.depth || null })),
     // every built ask by the ledger entry that built it (its time), so a growth-tree branch can say what Verse asked for (Verse's ask:
     // "link the growth card branches to the growth inbox so I can diagnose my own progress")
     asked: f.built.map((g) => ({ ask: g.ask, at: g.builtAt, times: g.times })).slice(0, 200) } : null;
