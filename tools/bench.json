@@ -6360,5 +6360,18 @@
   {"ask": "table from csv: a,b ⏎ 1,2", "want": "skill:csv-table"},
   {"ask": "deadline chain from today: 24 hours, 72 hours, 14 days", "want": "skill:deadlines"},
   {"ask": "when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month", "want": "skill:deadlines"},
-  {"ask": "reporting deadlines from 2026-10-15 14:00", "want": "skill:deadlines"}
+  {"ask": "reporting deadlines from 2026-10-15 14:00", "want": "skill:deadlines"},
+  {"ask": "look at atomeam/void-loop", "want": "skill:repo"},
+  {"ask": "what is in github.com/atomeam/void-loop", "want": "skill:repo"},
+  {"ask": "summarize this transcript: black holes form when massive stars collapse and nothing escapes past the event horizon", "want": "skill:digest"},
+  {"ask": "what did this video teach?", "want": "skill:digest"},
+  {"ask": "pick a movie to watch with me", "want": "skill:movie"},
+  {"ask": "movie night", "want": "skill:movie"},
+  {"ask": "movie card for Nosferatu (1922)", "want": "skill:movie"},
+  {"ask": "shield everything except the notepad for 25 minutes", "want": "skill:deep-work"},
+  {"ask": "lift the shield", "want": "skill:deep-work"},
+  {"ask": "dim everything except the timer", "want": "skill:deep-work"},
+  {"ask": "dependency health", "want": "skill:dependency-health"},
+  {"ask": "show me the dependency health", "want": "skill:dependency-health"},
+  {"ask": "how healthy are your dependencies", "want": "skill:dependency-health"}
 ]
