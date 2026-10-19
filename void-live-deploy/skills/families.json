@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 82,
-  "checked": 69,
-  "proven": 151
+  "tested": 80,
+  "checked": 66,
+  "proven": 156
  },
  "families": [
   {
@@ -797,8 +797,8 @@
    "count": {
     "experiment": 0,
     "tested": 6,
-    "checked": 1,
-    "proven": 11
+    "checked": 0,
+    "proven": 12
    },
    "skills": [
     {
@@ -910,10 +910,12 @@
     },
     {
      "name": "deadlines",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
@@ -972,9 +974,9 @@
    "for": "sums, unit conversions, loans, savings, prices and home projects",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 2,
     "checked": 1,
-    "proven": 12
+    "proven": 14
    },
    "skills": [
     {
@@ -1047,10 +1049,12 @@
     },
     {
      "name": "markets",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 3
     },
     {
@@ -1120,10 +1124,12 @@
     },
     {
      "name": "calc-more",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -1810,8 +1816,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 42,
-    "proven": 23
+    "checked": 40,
+    "proven": 25
    },
    "skills": [
     {
@@ -2021,11 +2027,12 @@
     },
     {
      "name": "collectible",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-18",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -2503,10 +2510,12 @@
     },
     {
      "name": "csv-table",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-19",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {

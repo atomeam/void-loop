@@ -58,8 +58,8 @@
    "count": {
     "experiment": 0,
     "tested": 6,
-    "checked": 1,
-    "proven": 11
+    "checked": 0,
+    "proven": 12
    },
    "from": 91,
    "to": 109
@@ -71,9 +71,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 4,
+    "tested": 2,
     "checked": 1,
-    "proven": 12
+    "proven": 14
    },
    "from": 110,
    "to": 127
@@ -128,8 +128,8 @@
    "count": {
     "experiment": 0,
     "tested": 30,
-    "checked": 42,
-    "proven": 23
+    "checked": 40,
+    "proven": 25
    },
    "from": 173,
    "to": 268
@@ -2091,8 +2091,10 @@
     "when are my deadlines if it started monday 9am: 1 day, 3 days, 2 weeks, 1 month",
     "reporting deadlines from 2026-10-15 14:00"
    ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the time it is the one a traveller is told to ask for first. Turn the page when you are done.",
+   "glow": 100,
    "n": 104
   },
   {
@@ -2332,8 +2334,10 @@
     "crypto board",
     "crypto card"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. It has not failed a reader yet.",
+   "glow": 100,
    "n": 118
   },
   {
@@ -2466,8 +2470,10 @@
     "300 px in cm at 150 dpi",
     "5 cm to pixels at 300 dpi"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Among the numbers and money it is the one a traveller is told to ask for first. Say the words below and it answers.",
+   "glow": 100,
    "n": 126
   },
   {
@@ -3711,8 +3717,10 @@
     "mint a card of the moon",
     "collectible card of tokyo"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "glow": 100,
    "n": 197
   },
   {
@@ -3728,7 +3736,7 @@
    ],
    "tier": "proven",
    "why": "5 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "3 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the stage. Ask, and see.",
    "glow": 100,
    "n": 198
   },
@@ -4563,8 +4571,10 @@
     "paste csv: item;price ⏎ tea;3 ⏎ cake;5",
     "table from csv: a,b ⏎ 1,2"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. The void remembers each asking.",
+   "glow": 100,
    "n": 254
   },
   {
