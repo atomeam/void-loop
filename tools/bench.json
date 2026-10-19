@@ -6411,5 +6411,16 @@
   {"ask": "copy the card to the notepad", "want": "skill:kept"},
   {"ask": "note this card", "want": "skill:kept"},
   {"ask": "answer in four channels", "want": "skill:four-channels"},
-  {"ask": "answer this in four channels: is the plan sound? Claim: yes. Doubt: rent. Method: ask Sam. Risk: cost.", "want": "skill:four-channels"}
+  {"ask": "answer this in four channels: is the plan sound? Claim: yes. Doubt: rent. Method: ask Sam. Risk: cost.", "want": "skill:four-channels"},
+  {"ask": "recent asks", "want": "skill:recent"},
+  {"ask": "what did I ask", "want": "skill:recent"},
+  {"ask": "show my recent asks", "want": "skill:recent"},
+  {"ask": "show me what you made", "want": "skill:showcase"},
+  {"ask": "what's new", "want": "skill:showcase"},
+  {"ask": "what's new pussycat", "want": "skill:showcase"},
+  {"ask": "make my void dark", "want": "skill:dark-look"},
+  {"ask": "switch my void to dark", "want": "skill:dark-look"},
+  {"ask": "what makes you different", "want": "skill:different"},
+  {"ask": "how are you different from chatgpt", "want": "skill:different"},
+  {"ask": "is there anything else like you", "want": "skill:different"}
 ]
