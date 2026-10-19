@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 5,
-  "tested": 90,
-  "checked": 98,
-  "proven": 109
+  "tested": 87,
+  "checked": 97,
+  "proven": 113
  },
  "families": [
   {
@@ -2967,41 +2967,49 @@
    "for": "privacy and trust tools (hide numbers, redact, panic, a casual PIN lock) and opt-in delights (confetti, dust, stamps, tape, a tour)",
    "count": {
     "experiment": 0,
-    "tested": 3,
-    "checked": 1,
-    "proven": 0
+    "tested": 0,
+    "checked": 0,
+    "proven": 4
    },
    "skills": [
     {
      "name": "safety-kit",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 6 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
      "name": "photo-scrub",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
      "name": "stage-fx",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
      "name": "card-play",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     }
    ]

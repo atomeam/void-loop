@@ -142,3 +142,16 @@ test('evidence: tags are parsed, only well-formed ones kept, and the card names 
   const secs = selfSections({ entries: [{ kind: 'daily', at: '2026-10-19T06:00:00Z', thoughts: 'The stage is thin.', weakest: 'The stage, 11 of 94 proven.', evidence: { weakest: ['S1'] }, sources: { S1: 'skills/families.json' } }], asks: [], follow: null });
   assert.match(secs.find((x) => x.id === 'growth').blocks.filter((b) => b.t === 'note')[0].text, /^Source \(cited by the model.*skills\/families\.json \(S1\)/);
 });
+
+test('markBuilt: a sentence of the model\'s that asks for something already built carries "(built <day>)", the rest stays as written (owner, 2026-10-19)', async () => {
+  const { markBuilt, selfSections } = await import('../void-live-deploy/lib/self-blocks.js');
+  const asked = [{ ask: "Build a 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.", at: '2026-10-18T12:43:28Z' },
+    { ask: 'Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off.', at: '2026-10-18T11:45:16Z' }];
+  assert.equal(markBuilt("Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven [S2].", asked), "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven [S2]. (built 2026-10-18)");
+  assert.equal(markBuilt('Teach the chess skill openings. Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off [S2].', asked),
+    'Teach the chess skill openings. Implement a velocity-smoothing curve for the zorbleflux throttle to replace the current hard cut-off [S2]. (built 2026-10-18)');
+  assert.equal(markBuilt('Teach the chess skill openings.', asked), 'Teach the chess skill openings.');
+  assert.equal(markBuilt('Teach the chess skill openings.', []), 'Teach the chess skill openings.');
+  const secs = selfSections({ entries: [{ at: '2026-10-19T08:00:00Z', kind: 'daily', thoughts: 'x', weakest: 'Flat maps.', next_game: "Build the 'decision-matrix' skill under the Deciding family to move it from 0 proven to 1 proven.", better: 'Read the ledger.', asks: [] }], asks: [], follow: { total: 2, built: 2, recent: [], asked } }, Date.parse('2026-10-19T09:00:00Z'));
+  const g = secs.find((x) => x.id === 'growth'); assert.ok(g.blocks.some((b) => b.t === 'p' && /\(built 2026-10-18\)$/.test(b.text)));
+});

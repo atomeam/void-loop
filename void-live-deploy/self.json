@@ -180,6 +180,12 @@
    "date": "2026-10-15",
    "ask": "Verse Site Tester",
    "from": "store-publish: sdk, 4 files, $24.00; next: a minis-stl pack"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-19",
+   "ask": "lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure…",
+   "from": "claude 2026-10-18, asked by Verse"
   }
  ],
  "open": [
@@ -284,12 +290,6 @@
    "date": "",
    "ask": "test_extension case B2 failed once while the machine was loaded, with the card still in its \"arrive\" animation: wait…",
    "from": "claude 2026-10-18"
-  },
-  {
-   "state": "open",
-   "date": "",
-   "ask": "Lift the two shared libs the dependency health card still marks weak",
-   "from": "lib/rts.js, lib/stage-pack-h.js"
   },
   {
    "state": "open",
@@ -477,6 +477,42 @@
  },
  "commits": [
   {
+   "at": "2026-10-19T10:12:01Z",
+   "subject": "the will drops a want for an ask already linked as built (a stale router near-miss kept 'open the self card' on top)"
+  },
+  {
+   "at": "2026-10-19T07:22:27Z",
+   "subject": "Incident: the browser suite failed on 48417596 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T07:17:01Z",
+   "subject": "Incident: the browser suite failed on 48417596 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T07:11:08Z",
+   "subject": "Incident: the browser suite failed on 48417596 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-19T07:05:03Z",
+   "subject": "growth ledger: what #1166 adds"
+  },
+  {
+   "at": "2026-10-19T07:04:30Z",
+   "subject": "video-play leaves \"play an arcade game\" to the arcade cabinet (overlap check)"
+  },
+  {
+   "at": "2026-10-19T06:57:55Z",
+   "subject": "Regenerate the families and the book after the merge"
+  },
+  {
+   "at": "2026-10-19T06:57:51Z",
+   "subject": "Verse arcade cabinet, card cycle, word sweep, accurate wants card; letters no longer dropped"
+  },
+  {
+   "at": "2026-10-19T06:32:17Z",
+   "subject": "Incident: the browser suite failed on de5e2cc1 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-19T06:22:58Z",
    "subject": "Incident: the browser suite failed on de5e2cc1 (void-live-deploy/incidents.json)"
   },
@@ -519,42 +555,6 @@
   {
    "at": "2026-10-19T05:50:36Z",
    "subject": "Incident: the browser suite failed on 2dfc2fcc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:46:10Z",
-   "subject": "Incident: the browser suite failed on 2dfc2fcc (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:42:49Z",
-   "subject": "The will card: an old writer is refused, a built skill is never a want, no local path is shown; the log card skips designed outcomes"
-  },
-  {
-   "at": "2026-10-19T05:31:13Z",
-   "subject": "A plan with no answer engine gives a starter checklist; the growth ledger records this session's shipped work"
-  },
-  {
-   "at": "2026-10-19T05:30:28Z",
-   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:24:47Z",
-   "subject": "Regenerate the families and the book after the merge"
-  },
-  {
-   "at": "2026-10-19T05:24:44Z",
-   "subject": "what just shipped is about Verse, not the Just Cause games; bench asks"
-  },
-  {
-   "at": "2026-10-19T05:23:36Z",
-   "subject": "Regenerate the MCP skill tools (writing aids earned its place)"
-  },
-  {
-   "at": "2026-10-19T05:22:15Z",
-   "subject": "Incident: the browser suite failed on 8a60c2a1 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-19T05:17:34Z",
-   "subject": "Casual greetings answer without a search; writing aids gain proofread and thread"
   }
  ],
  "builders": {

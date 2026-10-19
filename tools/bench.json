@@ -6215,5 +6215,22 @@
   {"ask": "zoom out on the figure", "want": "skill:zoom-figure"},
   {"ask": "play an arcade game", "want": "skill:arcade"},
   {"ask": "arcade machine", "want": "skill:arcade"},
-  {"ask": "verse arcade", "want": "skill:arcade"}
+  {"ask": "verse arcade", "want": "skill:arcade"},
+  {"ask": "hide numbers", "want": "skill:safety-kit"},
+  {"ask": "redact selection", "want": "skill:safety-kit"},
+  {"ask": "set a pin", "want": "skill:safety-kit"},
+  {"ask": "clear my clipboard", "want": "skill:safety-kit"},
+  {"ask": "ephemeral mode", "want": "skill:safety-kit"},
+  {"ask": "auto lock after 5 minutes", "want": "skill:safety-kit"},
+  {"ask": "strip the exif from a photo", "want": "skill:photo-scrub"},
+  {"ask": "remove the location from a picture", "want": "skill:photo-scrub"},
+  {"ask": "photo scrubber", "want": "skill:photo-scrub"},
+  {"ask": "confetti when I finish a goal", "want": "skill:stage-fx"},
+  {"ask": "seasonal stage dust", "want": "skill:stage-fx"},
+  {"ask": "give me the tour", "want": "skill:stage-fx"},
+  {"ask": "undo toast", "want": "skill:stage-fx"},
+  {"ask": "flip this card", "want": "skill:card-play"},
+  {"ask": "stamp it approved", "want": "skill:card-play"},
+  {"ask": "put tape on my notes", "want": "skill:card-play"},
+  {"ask": "rubber band select", "want": "skill:card-play"}
 ]
