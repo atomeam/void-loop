@@ -127,9 +127,9 @@
    "kind": "family",
    "count": {
     "experiment": 1,
-    "tested": 31,
+    "tested": 30,
     "checked": 52,
-    "proven": 11
+    "proven": 12
    },
    "from": 168,
    "to": 263
@@ -3243,8 +3243,10 @@
    "examples": [
     "set a timer for 5 minutes"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. Ask, and see.",
+   "glow": 100,
    "n": 172
   },
   {
