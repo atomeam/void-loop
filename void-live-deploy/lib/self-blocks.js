@@ -85,7 +85,13 @@ const GROW_SOURCE = {
 /** the model's short name for the card's label ("a Workers AI language model" when none was recorded). Pure. */
 export function modelLabel(m) {
   const t = String(m || '').replace(/^@cf\//, '').replace(/[^A-Za-z0-9._/:-]/g, '').slice(0, 60);
-  return t ? 'a language model (' + t + ')' : 'a language model';
+  return t ? "Verse's model (" + t + ')' : "Verse's model";
+}
+/** the files a field's cited tags name, only tags the entry's own source map knows: "Source: skills/families.json (S3), void.growth.json (S1)", or '' when none was cited. Pure. */
+export function sourceNote(entry, field) {
+  const ev = entry && entry.evidence && entry.evidence[field], src = (entry && entry.sources) || {};
+  const tags = (Array.isArray(ev) ? ev : []).filter((t) => typeof src[t] === 'string');
+  return tags.length ? 'Source (cited by the model, tags checked against the facts it was given): ' + tags.map((t) => String(src[t]).slice(0, 120) + ' (' + t + ')').join(', ') : '';
 }
 
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
@@ -101,13 +107,14 @@ export function selfSections(v, now = Date.now()) {
   // no theatre (owner, 2026-10-19: "is this really Verse thoughts, or is this pretend"): the words are a language model's, prompted to speak as Verse from the
   // facts it was given, and the card says so; what it was given sits under them, and each claim below says where it comes from
   const src = daily || build || {}, label = modelLabel(src.model), given = String(src.given || '').trim();
-  const LABEL = 'Written by ' + label + ', prompted to speak as Verse from the facts it was given. Kept word for word; it is not a felt state.';
+  const LABEL = 'Written by ' + label + ' from these facts. Kept word for word; it is a readout, not a felt state.';
   out.push({ id: 'words', title: '', log: false, blocks: (voice ? [{ t: 'quote', text: voice, cite: LABEL }] : [{ t: 'note', text: LABEL }])
+    .concat(sourceNote(src, 'thoughts') ? [{ t: 'note', text: sourceNote(src, 'thoughts'), tight: true }] : [])
     .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest right now', 'weakest'], ['Next game I want to learn', 'next_game'], ["How I'd get better", 'better']].filter(([, k]) => sentence(daily[k])) : [];
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest right now / Next game / How I\'d get better', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest right now / Next game / How I\'d get better', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: sentence(daily[k]) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });

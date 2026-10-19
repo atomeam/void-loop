@@ -10,7 +10,7 @@ import { track } from '../../lib/actions.js';
 import { models } from '../../lib/models.js';
 import { readSelf, selfFacts } from '../../lib/self-context.js';
 import { recordShortfall, reasonOf } from '../../lib/shortfall.js';
-import { VOICE_SYSTEM, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts, readReplies, replyFacts } from '../../lib/voice.js';
+import { VOICE_SYSTEM, taggedFacts, KEEP, KINDS, questionFor, parseVoice, currentAsks, readVoice, weekFacts, followThrough, followFacts, familyFacts, readReplies, replyFacts } from '../../lib/voice.js';
 const pick = (r) => (r && (r.response || (r.choices && r.choices[0] && r.choices[0].message && r.choices[0].message.content) || r.result && r.result.response)) || '';
 const slug = (s) => String(s).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 40);
 
@@ -40,27 +40,28 @@ export async function onRequestPost({ request, env }) {
   const question = questionFor(kind, shipped);
   const facts = await readSelf(env, new URL(request.url).origin);
   const before = await readVoice(env);
-  let context = selfFacts(facts); // includes its games, its miniatures and what it said about itself last time
+  const pieces = [['domains/ (the self canon, the growth inbox) and the skills index, through lib/self-context.js', selfFacts(facts)]]; // includes its games, its miniatures and what it said about itself last time
   // its last week, from the growth ledger (daily), and what became of what it asked for (every time): an ask counts as built
   // only on evidence (lib/voice.js followThrough). A ledger or link file that cannot be read leaves that line out.
   const asset = async (path) => { try { const r = await env.ASSETS.fetch(new Request(new URL(path, request.url))); return r.ok ? await r.json() : null; } catch (_) { return null; } };
   const ledger = await asset('/void.growth.json'), answered = await asset('/void.asks.json');
-  if (kind === 'daily') { const week = weekFacts(ledger); if (week) context += '\n' + week; }
-  const follow = followFacts(followThrough(before, ledger, answered && answered.links)); if (follow) context += '\n' + follow;
-  const fams = familyFacts(await asset('/skills/families.json')); if (fams) context += '\n' + fams;
+  if (kind === 'daily') { const week = weekFacts(ledger); if (week) pieces.push(['void.growth.json (the last 7 days)', week]); }
+  const follow = followFacts(followThrough(before, ledger, answered && answered.links)); if (follow) pieces.push(['void.growth.json and void.asks.json (what became of its asks)', follow]);
+  const fams = familyFacts(await asset('/skills/families.json')); if (fams) pieces.push(['skills/families.json', fams]);
   // what its owner told it when it spoke before (functions/api/voice-reply.js): its memory of the conversation, corrections first
-  const told = replyFacts(await readReplies(env)); if (told) context += '\n' + told;
+  const told = replyFacts(await readReplies(env)); if (told) pieces.push(['the owner\'s replies and corrections (voice-replies)', told]);
+  const { text: context, sources } = taggedFacts(pieces);
   let said = null;
   try {
     const r = await env.AI.run(models('will'), {
-      messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Facts about Verse:\n' + context + '\n\n' + question }],
+      messages: [{ role: 'system', content: VOICE_SYSTEM }, { role: 'user', content: 'Tagged facts about Verse:\n' + context + '\n\n' + question }],
       max_tokens: 900, chat_template_kwargs: { enable_thinking: false },
     });
     said = parseVoice(pick(r));
   } catch (e) { await recordShortfall(env, 'voice', reasonOf(e)); }
   if (!said) return new Response('Verse could not answer just now', { status: 503 });
   const at = new Date().toISOString();
-  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
+  const entry = { at, kind, ...(kind === 'build' ? { shipped } : {}), question, ...said, model: models('will'), given: String(context).slice(0, 1800), sources, by: 'owner', ...(facts && facts.self && facts.self.canon && facts.self.canon.version ? { canon: facts.self.canon.version } : {}), ...(b.run ? { run: String(b.run).slice(0, 40) } : {}) };
   if (kind !== 'daily') { delete entry.weakest; delete entry.next_game; }
   await env.DB.prepare("INSERT INTO void_kv (k, v) VALUES ('voice', ?) ON CONFLICT(k) DO UPDATE SET v = excluded.v").bind(JSON.stringify([entry, ...before].slice(0, KEEP).map((e, i) => { if (i < 2 || !e.given) return e; const { given, ...rest } = e; return rest; }))).run();
   // Verse's concrete small ask goes to the builders' queue, credited to Verse, unless one of its asks is already open
