@@ -567,7 +567,7 @@
    "skills": 2,
    "direct": 2,
    "dependants": 3,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/video.js",
