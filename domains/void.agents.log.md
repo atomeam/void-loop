@@ -931,3 +931,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-19T12:14:16Z | verse | grow | hardened itself: 8 benchmark ask(s) for music, pulse, stigmergy-board, term-orbits, and the card art floors rise to 99 and 74 (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T12:29:26Z | verse | grow | hardened itself: 15 benchmark ask(s) for magnetize, print-file, print-download, fly, video-play (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-19T13:09:17Z | verse | grow | hardened itself: 18 benchmark ask(s) for swarm, throw-off, vector-field-mind, decide-cards, feelings, go (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-19T13:29:23Z | verse | grow | hardened itself: 13 benchmark ask(s) for nca-mind, resonance-mind, merge, zorbleflux, extinction (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)

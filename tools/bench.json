@@ -6276,5 +6276,18 @@
   {"ask": "are you conscious", "want": "skill:feelings"},
   {"ask": "go", "want": "skill:go"},
   {"ask": "play go", "want": "skill:go"},
-  {"ask": "let's play go", "want": "skill:go"}
+  {"ask": "let's play go", "want": "skill:go"},
+  {"ask": "nca mind", "want": "skill:nca-mind"},
+  {"ask": "show me a living lattice", "want": "skill:nca-mind"},
+  {"ask": "neural cellular automaton", "want": "skill:nca-mind"},
+  {"ask": "resonance mind", "want": "skill:resonance-mind"},
+  {"ask": "spectral mind", "want": "skill:resonance-mind"},
+  {"ask": "resonant lattice", "want": "skill:resonance-mind"},
+  {"ask": "merge a pizza and a black hole", "want": "skill:merge"},
+  {"ask": "what do you get if you merge a pizza and a black hole", "want": "skill:merge"},
+  {"ask": "fuse a cat with the moon", "want": "skill:merge"},
+  {"ask": "zorbleflux", "want": "skill:zorbleflux"},
+  {"ask": "play zorbleflux", "want": "skill:zorbleflux"},
+  {"ask": "a zorbleflux game", "want": "skill:zorbleflux"},
+  {"ask": "mass extinction", "want": "skill:extinction"}
 ]
