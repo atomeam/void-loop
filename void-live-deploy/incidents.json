@@ -2,40 +2,14 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-19T02:20:48.608Z",
-   "sha": "02bd5018ad3b6a0e4200137bc8ad2a46d12ee737",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39188697408",
-   "suite": "browser suite on main",
-   "checks": [
-    "refusal object: every \"I cannot\" names what is missing: the page says it, the sources it read and where it is noted; the agent door returns the object as data; one id per gap; an unreachable lookup is a different gap from \"no such thing\"",
-    "counterfactual draft: the shadow starts collapsed with no mark; opening it marks the first dependent sentence and the shadow flips it",
-    "error garden: opening the garden plants the newest incident's red checks as sprouts that name their commit, the header counts them, and opening it again plants nothing twice",
-    "feelings: \"do you love me?\", \"Verse, do you have feelings?\", \"are you conscious\" and \"do you get lonely\" get Verse's own plain answer on the page (no model, no Wikipedia sources, no exclamation marks, no \"here to help\"), and \"do you love me lyrics\" is not taken",
-    "how Verse is different: \"how are you different from chatgpt?\" and \"what makes you different\" show the four lines from Verse's canon with its version (no exclamation marks), and \"what is different about these two words\" is not taken",
-    "living arrows: \"connect the timer to the note in capitals\" says the note gets it when the timer ends; at 0:00 the note reads \"pasta / THE TIMER IS DONE\" with a pulse along the arrow; the note put up after it (\"spare\") is unchanged; \"lock it\" makes the note take nothing; unlocked, it takes the next one",
-    "stage pack e riot: \"start the riot\" draws the things away from their spots by CSS transform only (the saved spots are untouched), \"end the riot\" clears every transform, and with reduced motion there is no riot and the line says so",
-    "printedmotor: \"can you 3d print a motor\" shows three dated steps (318 µm at 41.6 Hz, a waving arm at 28.2%, a soft robot walking on air), the \"Next\" line, and links that open the magnetize step, Pentamote-1 and Linemote-1",
-    "owner board: what Verse earned (net, sales), its milestones and the free-model shortfalls sit on top of the board",
-    "suite ran to the end"
-   ],
-   "touched": [
-    "domains/void.agents.log.md",
-    "tools/self-blocks.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/functions/api/reflect.js",
-    "void-live-deploy/lib/self-blocks.js",
-    "void-live-deploy/lib/voice.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
-   ]
-  },
-  {
-   "at": "2026-10-19T02:09:19.573Z",
+   "at": "2026-10-19T02:24:23.025Z",
    "sha": "24a3d5bea6f58656c46244d1a47479d43dcdcee9",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39188268067",
    "suite": "browser suite on main",
    "checks": [
-    "suite ran to the end"
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
+    "check timeout: no check finished within 300 s"
    ],
    "touched": [
     "domains/void.agents.log.md",
@@ -696,6 +670,27 @@
     "tools/wants.test.mjs",
     "void-live-deploy/incidents.json",
     "void-live-deploy/lib/service-health.js"
+   ]
+  },
+  {
+   "at": "2026-10-18T08:19:40.157Z",
+   "sha": "57c01f522894cbd8b16adc12f056518c215025ae",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39110000209",
+   "suite": "browser suite on main",
+   "checks": [
+    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
+    "the lab: each of the 12 experiments opens in a card from a plain ask and its self-test passes there; \"show me the lab\" lists all 12 and a click opens one",
+    "check timeout: no check finished within 300 s"
+   ],
+   "touched": [
+    "domains/handoff.md",
+    "domains/void.agents.log.md",
+    "tools/telemetry-route.test.mjs",
+    "void-live-deploy/lib/telemetry.js",
+    "void-live-deploy/void.growth.json",
+    "tools/automation-fix.test.mjs",
+    "void-live-deploy/incidents.json",
+    "void-live-deploy/lib/automation-fix.js"
    ]
   }
  ]
