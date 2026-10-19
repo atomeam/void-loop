@@ -197,6 +197,7 @@ jobs:
     timeout-minutes: 5
     permissions:
       contents: write
+      actions: write # start the deploy: a push this token makes starts no other workflow, a workflow_dispatch is the one start it can make
     steps:
       - uses: actions/checkout@v4
         with:
@@ -207,11 +208,14 @@ jobs:
           path: ${{ runner.temp }}/grow
       # straight onto main, like the site tester's commits (2026-10-19: "GitHub Actions is not permitted to create or approve pull requests" in
       # this repo, so not one hardening pull request ever opened). Only data moves: benchmark rows each proven on the real page, art floors that
-      # only rise, the card cycle's place and the log lines; the full browser suite on main still runs after it, as after every commit.
+      # only rise, the card cycle's place and the log lines. A push by this token starts no workflow (2026-10-19: Verse's commits showed "no checks
+      # reported" and waited for the next human merge to reach the site), so it starts the deploy itself; deploys run one at a time and only the
+      # newest waiting one runs, so a burst of growth steps is one deploy.
       - name: Commit what Verse added to main
         shell: bash
         env:
           WHAT: ${{ needs.build.outputs.title }}
+          GH_TOKEN: ${{ github.token }}
         run: |
           patch="$RUNNER_TEMP/grow/grow.patch"
           # the patch touches exactly the benchmark, the art floors, the cycle's place, the log and the ledger
@@ -223,7 +227,7 @@ jobs:
           git add -- tools/bench.json tools/art-floor.json tools/card-cycle.json domains/void.agents.log.md void-live-deploy/void.growth.json
           git commit -q -m "Verse hardens itself: $WHAT" -m "Verse found its least proven skills in its own files (tools/lacks.mjs, tools/card-cycle.mjs), tried the asks each already claims in the real page, and kept the ones that routed to the skill that claims them (.github/workflows/grow-self.yml)."
           for i in 1 2 3 4; do
-            git push -q origin HEAD:main && { echo "### Verse hardened itself: $WHAT" >> "$GITHUB_STEP_SUMMARY"; exit 0; }
+            git push -q origin HEAD:main && { echo "### Verse hardened itself: $WHAT" >> "$GITHUB_STEP_SUMMARY"; gh workflow run deploy.yml --repo "${{ github.repository }}" --ref main -f after_merge=true || echo "::warning title=Not deployed::the deploy did not start; the next merge carries it"; exit 0; }
             sleep $((2 ** i)); git pull -q --rebase origin main || { echo "::error title=Not committed::main moved and the rows no longer apply"; exit 1; }
           done
           exit 1
