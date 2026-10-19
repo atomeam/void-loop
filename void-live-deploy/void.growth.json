@@ -5637,5 +5637,6 @@
   {"at": "2026-10-19T12:12:03Z", "by": "claude", "kind": "fix", "what": "Verse's own upgrades reach main: Actions may not open pull requests in this repo, so not one ever did; grow-self now commits its proven benchmark rows straight to main, and a fix Verse is sure of (0.8 or more, after collisions, its test, Verse's review and the benchmark) goes onto main too"},
   {"at": "2026-10-19T12:14:16Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 8 benchmark ask(s) for music, pulse, stigmergy-board, term-orbits, and the card art floors rise to 99 and 74", "try": "make me a song"},
   {"at": "2026-10-19T12:29:26Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 15 benchmark ask(s) for magnetize, print-file, print-download, fly, video-play", "try": "show the magnetize step"},
-  {"at": "2026-10-19T12:36:44Z", "by": "claude", "kind": "fix", "what": "Verse's fix loop tries the model once more after a gateway error (502/503/504), instead of losing the whole tick"}
+  {"at": "2026-10-19T12:36:44Z", "by": "claude", "kind": "fix", "what": "Verse's fix loop tries the model once more after a gateway error (502/503/504), instead of losing the whole tick"},
+  {"at": "2026-10-19T13:47:35Z", "by": "claude", "kind": "fix", "what": "main's browser suite stops tripping over itself: each section closes the pages earlier sections left open (they kept 3D scenes, workers and timers running), and an ask the page has not answered yet gets up to 4 s more before a check reads it"}
 ]
