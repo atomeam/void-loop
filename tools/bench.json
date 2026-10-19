@@ -6391,5 +6391,20 @@
   {"ask": "when did breaking bad end", "want": "skill:show"},
   {"ask": "what did I decide last tuesday", "want": "skill:echo-chamber"},
   {"ask": "replay my best answers", "want": "skill:echo-chamber"},
-  {"ask": "factor my goal: learn spanish", "want": "skill:eigenwork"}
+  {"ask": "factor my goal: learn spanish", "want": "skill:eigenwork"},
+  {"ask": "sort these lines: pear ⏎ apple ⏎ fig", "want": "skill:text-tools"},
+  {"ask": "remove duplicate lines: a ⏎ b ⏎ a", "want": "skill:text-tools"},
+  {"ask": "food and rides", "want": "skill:rides"},
+  {"ask": "where does waymo run", "want": "skill:rides"},
+  {"ask": "is waymo in austin", "want": "skill:rides"},
+  {"ask": "show my error garden", "want": "skill:error-garden"},
+  {"ask": "plant my test failures in my error garden", "want": "skill:error-garden"},
+  {"ask": "pulse card", "want": "skill:pulse"},
+  {"ask": "pulse of my arrows", "want": "skill:pulse"},
+  {"ask": "turn on family gravity", "want": "skill:family-gravity"},
+  {"ask": "family gravity off", "want": "skill:family-gravity"},
+  {"ask": "gravity only notes", "want": "skill:family-gravity"},
+  {"ask": "start a blood feud between the clock and the note", "want": "skill:feud"},
+  {"ask": "blood feud between the counter and the timer", "want": "skill:feud"},
+  {"ask": "end the feud", "want": "skill:feud"}
 ]
