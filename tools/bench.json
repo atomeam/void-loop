@@ -6452,5 +6452,7 @@
   {"ask": "cook pasta: boil 10 min then rest 2", "want": "skill:recipe-stack"},
   {"ask": "make rice: simmer 15 min then rest 5 min", "want": "skill:recipe-stack"},
   {"ask": "clean this feedback: You always miss the deadline. The login page is brilliant. | work: login page deadline", "want": "skill:gauge-feedback"},
-  {"ask": "clean this feedback you never test the checkout flow", "want": "skill:gauge-feedback"}
+  {"ask": "clean this feedback you never test the checkout flow", "want": "skill:gauge-feedback"},
+  {"ask": "open the codex on space", "want": "skill:codex"},
+  {"ask": "a question I am avoiding: am I ready", "want": "skill:hunting-question"}
 ]
