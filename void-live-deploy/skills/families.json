@@ -13,10 +13,10 @@
  "smoke_at": "2026-10-18",
  "bench_at": "2026-10-17",
  "totals": {
-  "experiment": 5,
-  "tested": 87,
-  "checked": 97,
-  "proven": 113
+  "experiment": 0,
+  "tested": 85,
+  "checked": 89,
+  "proven": 128
  },
  "families": [
   {
@@ -24,10 +24,10 @@
    "name": "Making things",
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
-    "experiment": 2,
-    "tested": 10,
-    "checked": 10,
-    "proven": 13
+    "experiment": 0,
+    "tested": 7,
+    "checked": 6,
+    "proven": 22
    },
    "skills": [
     {
@@ -50,11 +50,12 @@
     },
     {
      "name": "music",
-     "tier": "checked",
-     "why": "a self-test, 7 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "promoted": "2026-10-17",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -148,26 +149,32 @@
     },
     {
      "name": "magnetize",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
      "name": "print-file",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
      "name": "print-download",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -231,26 +238,32 @@
     },
     {
      "name": "throw-off",
-     "tier": "tested",
-     "why": "1 browser-suite mention",
+     "tier": "proven",
+     "why": "1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
      "name": "swarm",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
      "name": "vector-field-mind",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -290,18 +303,22 @@
     },
     {
      "name": "nca-mind",
-     "tier": "checked",
-     "why": "a self-test, 2 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
      "name": "resonance-mind",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
@@ -322,21 +339,23 @@
     },
     {
      "name": "stigmergy-board",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "streak": 1,
-     "since": "2026-10-18"
+     "success_rate": 1,
+     "promoted": "2026-10-19",
+     "streak": 1
     },
     {
      "name": "term-orbits",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "2 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "streak": 1,
-     "since": "2026-10-18"
+     "success_rate": 1,
+     "promoted": "2026-10-19",
+     "streak": 1
     }
    ]
   },
@@ -347,8 +366,8 @@
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 6,
-    "proven": 17
+    "checked": 3,
+    "proven": 20
    },
    "skills": [
     {
@@ -415,10 +434,12 @@
     },
     {
      "name": "go",
-     "tier": "checked",
-     "why": "a self-test, 4 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19"
     },
     {
      "name": "monopoly",
@@ -562,18 +583,22 @@
     },
     {
      "name": "merge",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
      "name": "zorbleflux",
-     "tier": "checked",
-     "why": "a self-test, 3 browser-suite mentions",
+     "tier": "proven",
+     "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     }
    ]
@@ -1088,9 +1113,9 @@
    "for": "sleep, cycles, food, heart and calm",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 0,
-    "proven": 8
+    "proven": 9
    },
    "skills": [
     {
@@ -1167,10 +1192,12 @@
     },
     {
      "name": "feelings",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 2
     },
     {
@@ -1188,8 +1215,8 @@
    "name": "Words and the world",
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
-    "experiment": 1,
-    "tested": 10,
+    "experiment": 0,
+    "tested": 11,
     "checked": 6,
     "proven": 11
    },
@@ -1324,12 +1351,13 @@
     },
     {
      "name": "video-play",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-15"
+     "success_rate": 1,
+     "promoted": "2026-10-19",
+     "streak": 2
     },
     {
      "name": "define",
@@ -1751,10 +1779,10 @@
    "name": "The stage",
    "for": "notes, lists, links and how the stage looks and is arranged",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 30,
-    "checked": 52,
-    "proven": 12
+    "checked": 51,
+    "proven": 14
    },
    "skills": [
     {
@@ -1803,12 +1831,13 @@
     },
     {
      "name": "pulse",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "1 real ask in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "streak": 2,
-     "since": "2026-10-17"
+     "success_rate": 1,
+     "promoted": "2026-10-19",
+     "streak": 2
     },
     {
      "name": "friction",
@@ -1966,10 +1995,12 @@
     },
     {
      "name": "fly",
-     "tier": "tested",
-     "why": "5 browser-suite mentions",
+     "tier": "proven",
+     "why": "5 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
@@ -2006,10 +2037,12 @@
     },
     {
      "name": "extinction",
-     "tier": "checked",
-     "why": "a self-test, 1 browser-suite mention",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-19",
      "streak": 1
     },
     {
@@ -2934,20 +2967,21 @@
    "name": "Deciding",
    "for": "ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards",
    "count": {
-    "experiment": 1,
-    "tested": 0,
+    "experiment": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 1
    },
    "skills": [
     {
      "name": "decide-cards",
-     "tier": "experiment",
-     "why": "nothing checks it yet",
+     "tier": "tested",
+     "why": "3 real asks in the benchmark",
      "last_tested": "2026-10-18",
      "last_tested_by": "the daily smoke test",
-     "streak": 1,
-     "since": "2026-10-18"
+     "success_rate": 1,
+     "promoted": "2026-10-19",
+     "streak": 1
     },
     {
      "name": "decision-matrix",

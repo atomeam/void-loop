@@ -43,7 +43,12 @@ const wanted = new Set(); // the sections --only picked: none at all is a failed
 // 28-minute budget (the whole suite ran to 1,652 s of 1,680 s on main that day). --only still narrows within the shard;
 // --list shows the shard's headings.
 const SHARD = parseShard(argOf('--shard') || process.env.VOID_SHARD);
-const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); return on; };
+// every context fresh() opens, so each new section starts with the ones earlier sections left open closed (2026-10-19: 366 opened, 353 closed,
+// and a check that threw skipped its close; the leftover pages kept their 3D scenes, workers and timers running, and a full shard failed
+// a dozen checks that each passed alone). The shared page `t` stays.
+const OPEN = new Set(); let SHARED = null;
+const sweep = () => { for (const c of OPEN) if (c !== SHARED) { OPEN.delete(c); c.close().catch(() => {}); } };
+const want = (label) => { const on = (!ONLY.length || ONLY.every((w) => label.toLowerCase().includes(w))) && inShard(label, SHARD); if (on && ONLY.length) wanted.add(label); if (on) sweep(); return on; };
 // everything outside the named sections (the long run of asks on the one shared page `t`, and the checks that read what
 // those asks left behind): --only "core" runs it. Plain setup (declarations, no checks) always runs.
 const CORE = want('core: the shared page, the asks typed one after another');
@@ -104,6 +109,7 @@ const until = async (fn, ms = 4000) => { const end = Date.now() + ms; for (;;) {
 // After a reload or a goto: the page's skills are in (void.html sets data-skills="ready" on <html> once every module has
 // loaded and the kept things are rendered), then a short settle. Replaces guessed 1.5 s waits: quicker on a fast machine,
 // and right on a slow one, where the skills took longer than the guess (suite speed, 2026-10-16).
+const ASK_SLACK_MS = 4000; // the most an unlogged ask waits beyond its own wait (fresh().ask)
 const skillsUp = async (p, settleMs = 200) => { const ok = await until(() => p.evaluate(() => document.documentElement.dataset.skills === 'ready' || !document.getElementById('stage')).catch(() => false), 10000); await p.waitForTimeout(ok ? settleMs : 1500); return ok; };
 // Voice stubs: a fake SpeechRecognition that "hears" window.__said, and speechSynthesis that records what it would say.
 const VOICE_STUB = () => {
@@ -426,6 +432,7 @@ async function fresh(...inits) {
   const opt = inits[0] && typeof inits[0] === 'object' && ('base' in inits[0] || 'mini3d' in inits[0] || 'phone' in inits[0]) ? inits.shift() : {}; // not { content } init scripts
   const at = opt.base || base;
   const ctx = await browser.newContext(opt.phone ? { viewport: { width: 390, height: 844 }, screen: { width: 390, height: 844 }, isMobile: true, hasTouch: true, deviceScaleFactor: 3 } : {}); // { phone: true }: a 390 px touch screen at 3x, as a phone is
+  OPEN.add(ctx); ctx.on('close', () => OPEN.delete(ctx));
   for (const init of inits) await ctx.addInitScript(init);
   // Card miniatures (skills/scene3d.js) stay off here, so cards keep their 2D look as on a device without WebGL: the
   // headless browser draws WebGL in software and a first 3D frame can hold the page for seconds, which would make the
@@ -477,7 +484,12 @@ async function fresh(...inits) {
   // the stall report below needs the debugger attached BEFORE a page hangs (Chrome cannot answer "enable" from a page that is stuck in a loop)
   ctx.newCDPSession(p).then((cdp) => { cdp.send('Debugger.enable').then(() => { p.__cdp = cdp; }, () => {}); }, () => {});
   await p.goto(at); await skillsUp(p, 100); // the skills are in before the first ask (it used to be a 700 ms guess, which the skills outran on a slow machine: the first ask then raced them)
-  const ask = async (t, w = 450) => { watch.ask = t; await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w); };
+  // after the fixed wait, an ask the page has not logged yet gets up to ASK_SLACK_MS more (2026-10-19: a full shard on a busy machine read
+  // empty cards in a dozen checks because the first answer took longer than 450-500 ms; each passed alone). An ask the page answered in
+  // time costs nothing more; the page logs every answer in its loop log (LOOP_KEY), the same signal tools/bench.mjs waits on.
+  const logged = (t, since) => p.evaluate(([q, s]) => { try { return JSON.parse(localStorage.getItem('a2m.void.loop.v1') || '[]').some((x) => String(x.ask).trim() === q.trim() && String(x.t) >= s); } catch (_) { return false; } }, [t, since]).catch(() => false);
+  const ask = async (t, w = 450) => { watch.ask = t; const since = new Date(Date.now() - 1000).toISOString(); await p.fill('#input', t); await p.keyboard.press('Enter'); await p.waitForTimeout(w);
+    if (!(await logged(t, since))) { await until(() => logged(t, since), ASK_SLACK_MS); await p.waitForTimeout(150); } };
   const state = () => p.evaluate(() => Object.values(JSON.parse(localStorage.getItem('a2m.void.state.v1') || '{}')));
   const page = () => p.$eval('.vpage.on', (e) => e.innerText).catch(() => '');
   const whisper = () => p.$eval('#whisper', (e) => e.textContent);
@@ -486,7 +498,7 @@ async function fresh(...inits) {
 
 try {
   let menu, art, tr, mp, airPg, uvPg, quakePg, loanPg, loanX, fuelPg, calPg, proPg, h2oPg, calForm, nfA, nfB, nfC, hrA, hrB, hrC, hrD, hrE, hrF, hrG, hrH, tipPg, tipSplit, svPg, svTime, svNeed, svCalc, sleepPg, wakePg, needPg, gpaPg, wgpPg, finPg, cumPg, ltrPg, gpForm, duePg, conPg, ivfPg, farPg, ovPg, ovRg, ovCalc, hmPaint, hmTile, hmCarpet, hfCoats, hfCeil, hfCost, hfOpen, hfCarpet, hfTile, hfPaint, hmCalc, wlWp, wlRep, wlCost, wlDw, wlCeil, wlLong, wlPaint, wlBack, wlDw2, wlCalc, rmA, rmB, rmC, rmD, rmE, rmF, rmG, pollenPg, an, man, os, micAfter, spoken, sharedAsk, sharedLink, errs1, fb, names, schemaOk, calc, made, owner, idAsks, paidAgent, toolText, buyLine, timedOut, brokenLine; // declared up front: the CORE blocks below assign them (tools/test_void.mjs --only)
-  let t = await fresh();
+  let t = await fresh(); SHARED = t.ctx;
   if (CORE) { // the shared page `t`: skipped by --only unless it says "core"
   check('surface is empty on arrival', (await t.p.$$eval('#stage > *', (d) => d.length)) === 0 && !(await t.page()));
   check('noscript text stays hidden', !(await t.p.evaluate(() => document.body.innerText)).includes('It needs JavaScript'));

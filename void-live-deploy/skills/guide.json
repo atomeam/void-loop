@@ -14,10 +14,10 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "kind": "family",
    "count": {
-    "experiment": 2,
-    "tested": 10,
-    "checked": 10,
-    "proven": 13
+    "experiment": 0,
+    "tested": 7,
+    "checked": 6,
+    "proven": 22
    },
    "from": 5,
    "to": 40
@@ -30,8 +30,8 @@
    "count": {
     "experiment": 0,
     "tested": 5,
-    "checked": 6,
-    "proven": 17
+    "checked": 3,
+    "proven": 20
    },
    "from": 41,
    "to": 70
@@ -85,9 +85,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 1,
     "checked": 0,
-    "proven": 8
+    "proven": 9
    },
    "from": 128,
    "to": 138
@@ -98,8 +98,8 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 10,
+    "experiment": 0,
+    "tested": 11,
     "checked": 6,
     "proven": 11
    },
@@ -126,10 +126,10 @@
    "for": "notes, lists, links and how the stage looks and is arranged",
    "kind": "family",
    "count": {
-    "experiment": 1,
+    "experiment": 0,
     "tested": 30,
-    "checked": 52,
-    "proven": 12
+    "checked": 51,
+    "proven": 14
    },
    "from": 173,
    "to": 268
@@ -154,8 +154,8 @@
    "for": "ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards",
    "kind": "family",
    "count": {
-    "experiment": 1,
-    "tested": 0,
+    "experiment": 0,
+    "tested": 1,
     "checked": 0,
     "proven": 1
    },
@@ -362,8 +362,10 @@
     "make me a lullaby",
     "make a beat"
    ],
-   "tier": "checked",
-   "why": "a self-test, 7 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 7 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Proven 3 times over by those who asked, and kept among the making things. Say the words below and it answers.",
+   "glow": 100,
    "n": 8
   },
   {
@@ -542,8 +544,10 @@
     "how do I magnetize a printed motor",
     "magnetize a printed motor"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "An old art of the making things, tested each day before the sun is up.",
+   "glow": 100,
    "n": 19
   },
   {
@@ -557,8 +561,10 @@
     "export the stage as 3mf",
     "download a 3mf of the stage"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Of all the making things, this one is trusted enough to be taught. Turn the page when you are done.",
+   "glow": 100,
    "n": 20
   },
   {
@@ -572,8 +578,10 @@
     "download the print file offline",
     "save the print file for offline"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page.",
+   "glow": 100,
    "n": 21
   },
   {
@@ -681,8 +689,10 @@
     "throw this off the screen",
     "toss it off the screen"
    ],
-   "tier": "tested",
-   "why": "1 browser-suite mention",
+   "tier": "proven",
+   "why": "1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Checked by its own test, by the suite, and by strangers: the three witnesses of the making things. Let the stage be the proof.",
+   "glow": 100,
    "n": 28
   },
   {
@@ -696,8 +706,10 @@
     "void agents",
     "show me the swarm"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Among the making things it is the one a traveller is told to ask for first.",
+   "glow": 100,
    "n": 29
   },
   {
@@ -711,8 +723,10 @@
     "vector field mind",
     "evolving vector field"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. Let the stage be the proof.",
+   "glow": 100,
    "n": 30
   },
   {
@@ -788,8 +802,10 @@
     "show me a living lattice",
     "neural cellular automaton"
    ],
-   "tier": "checked",
-   "why": "a self-test, 2 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Say the words below and it answers.",
+   "glow": 100,
    "n": 35
   },
   {
@@ -803,8 +819,10 @@
     "spectral mind",
     "resonant lattice"
    ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Earned, not claimed, over 3 real askings. Turn the page when you are done.",
+   "glow": 100,
    "n": 36
   },
   {
@@ -846,8 +864,9 @@
     "leave a trail on onboarding",
     "leave a trail on the launch plan"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 39
   },
   {
@@ -860,8 +879,9 @@
     "watch my words drift",
     "watch my terms drift apart"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "2 real asks in the benchmark",
+   "glow": 100,
    "n": 40
   },
   {
@@ -1100,8 +1120,10 @@
     "play go",
     "let's play go"
    ],
-   "tier": "checked",
-   "why": "a self-test, 4 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 4 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. Say the words below and it answers.",
+   "glow": 100,
    "n": 50,
    "game": {
     "title": "Go",
@@ -1440,8 +1462,10 @@
     "what do you get if you merge a pizza and a black hole",
     "fuse a cat with the moon"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+   "flavor": "Not a boast but a record: 3 askings, each one answered. The void remembers each asking.",
+   "glow": 100,
    "n": 68
   },
   {
@@ -1455,8 +1479,10 @@
     "play zorbleflux",
     "a zorbleflux game"
    ],
-   "tier": "checked",
-   "why": "a self-test, 3 browser-suite mentions",
+   "tier": "proven",
+   "why": "a self-test, 3 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Asked 3 times in earnest, and never once left unanswered. Turn the page when you are done.",
+   "glow": 100,
    "n": 69
   },
   {
@@ -2600,8 +2626,10 @@
     "do you have feelings",
     "are you conscious"
    ],
-   "tier": "tested",
-   "why": "2 browser-suite mentions",
+   "tier": "proven",
+   "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. It has not failed a reader yet.",
+   "glow": 100,
    "n": 137
   },
   {
@@ -2742,8 +2770,9 @@
     "watch the apollo 11 landing",
     "put on lofi hip hop"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 145
   },
   {
@@ -3037,7 +3066,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Earned, not claimed, over 3 real askings. Turn the page when you are done.",
+   "flavor": "Among the words and the world it is the one a traveller is told to ask for first. Turn the page when you are done.",
    "glow": 100,
    "n": 163
   },
@@ -3373,8 +3402,9 @@
     "pulse card",
     "pulse of my arrows"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "1 real ask in the benchmark",
+   "glow": 100,
    "n": 179
   },
   {
@@ -3668,8 +3698,10 @@
     "look around",
     "fly mode"
    ],
-   "tier": "tested",
-   "why": "5 browser-suite mentions",
+   "tier": "proven",
+   "why": "5 browser-suite mentions, 3 real asks in the benchmark",
+   "flavor": "3 who came with a need went away with an answer. The page is theirs. Ask, and see.",
+   "glow": 100,
    "n": 198
   },
   {
@@ -3738,8 +3770,10 @@
    "examples": [
     "mass extinction"
    ],
-   "tier": "checked",
-   "why": "a self-test, 1 browser-suite mention",
+   "tier": "proven",
+   "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+   "flavor": "1 who came with a need went away with an answer. The page is theirs.",
+   "glow": 100,
    "n": 203
   },
   {
@@ -4190,7 +4224,7 @@
    ],
    "tier": "proven",
    "why": "a self-test, 3 real asks in the benchmark",
-   "flavor": "Written by the hands that use it; 3 real askings stand behind this page. Say the words below and it answers.",
+   "flavor": "Of all the stage, this one is trusted enough to be taught. Say the words below and it answers.",
    "glow": 100,
    "n": 234
   },
@@ -5435,8 +5469,9 @@
     "rank pizza, tacos, sushi",
     "weighted pros and cons for moving to Berlin"
    ],
-   "tier": "experiment",
-   "why": "nothing checks it yet",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
+   "glow": 100,
    "n": 313
   },
   {
