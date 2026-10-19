@@ -1,7 +1,23 @@
 {
-  "at": "2026-10-18T11:46:31.131Z",
+  "at": "2026-10-19T14:02:10.494Z",
   "mode": "dry-run",
   "max_per_run": 3,
-  "selected": [],
+  "selected": [
+    {
+      "id": "ask-20261018-2031-1",
+      "ask": "Fix the router to ensure 'open the self card' correctly triggers the look skill instead of defaulting to a text answer.",
+      "target": "voice:ask-20261018-2031-1"
+    },
+    {
+      "id": "ask-20261018-1006-1",
+      "ask": "Implement a velocity-smoothing curve for the zorbleflux throttle to replace the hard cut-off.",
+      "target": "voice:ask-20261018-1006-1"
+    },
+    {
+      "id": "ask-20261018-1000-1",
+      "ask": "Implement the 'zorbleflux-throttle' visual indicator to prevent high-frequency input from creating visual noise on the stage.",
+      "target": "voice:ask-20261018-1000-1"
+    }
+  ],
   "note": "Small reversible Verse asks only. No spend. Owner confirm still required for bridge delivery."
 }
