@@ -6289,5 +6289,16 @@
   {"ask": "zorbleflux", "want": "skill:zorbleflux"},
   {"ask": "play zorbleflux", "want": "skill:zorbleflux"},
   {"ask": "a zorbleflux game", "want": "skill:zorbleflux"},
-  {"ask": "mass extinction", "want": "skill:extinction"}
+  {"ask": "mass extinction", "want": "skill:extinction"},
+  {"ask": "play chess", "want": "skill:chess"},
+  {"ask": "chess", "want": "skill:chess"},
+  {"ask": "lets play chess", "want": "skill:chess"},
+  {"ask": "dismiss this", "want": "skill:dismiss"},
+  {"ask": "send this away", "want": "skill:dismiss"},
+  {"ask": "dismiss the selected thing", "want": "skill:dismiss"},
+  {"ask": "what is this worth", "want": "skill:appraise"},
+  {"ask": "value this", "want": "skill:appraise"},
+  {"ask": "appraise this coin", "want": "skill:appraise"},
+  {"ask": "approve later: keep morning-digest running every 2 hours", "want": "skill:approve-card"},
+  {"ask": "approve later: keep the nightly-check automation running every day", "want": "skill:approve-card"}
 ]
