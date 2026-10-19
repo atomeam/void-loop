@@ -6312,5 +6312,12 @@
   {"ask": "how healthy are your skills", "want": "skill:family-health"},
   {"ask": "show my recent asks as a card", "want": "skill:ask-clipboard"},
   {"ask": "ask clipboard", "want": "skill:ask-clipboard"},
-  {"ask": "re-run the third recent ask", "want": "skill:ask-clipboard"}
+  {"ask": "re-run the third recent ask", "want": "skill:ask-clipboard"},
+  {"ask": "attention field", "want": "skill:attention-field-mind"},
+  {"ask": "attention mind", "want": "skill:attention-field-mind"},
+  {"ask": "show the bench", "want": "skill:bench"},
+  {"ask": "bench icon", "want": "skill:bench"},
+  {"ask": "busy blocks: standup 9-9:30, lunch 12-1, review 2:30-4", "want": "skill:busy-blocks"},
+  {"ask": "busy blocks", "want": "skill:busy-blocks"},
+  {"ask": "add busy block 5-6pm gym", "want": "skill:busy-blocks"}
 ]

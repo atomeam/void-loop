@@ -5642,5 +5642,6 @@
   {"at": "2026-10-19T13:29:23Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 13 benchmark ask(s) for nca-mind, resonance-mind, merge, zorbleflux, extinction", "try": "nca mind"},
   {"at": "2026-10-19T13:47:35Z", "by": "claude", "kind": "fix", "what": "main's browser suite stops tripping over itself: each section closes the pages earlier sections left open (they kept 3D scenes, workers and timers running), and an ask the page has not answered yet gets up to 4 s more before a check reads it"},
   {"at": "2026-10-19T14:09:28Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 11 benchmark ask(s) for chess, dismiss, appraise, approve-card", "try": "play chess"},
-  {"at": "2026-10-19T14:29:37Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 12 benchmark ask(s) for fireworks, poker, family-health, ask-clipboard", "try": "play fireworks"}
+  {"at": "2026-10-19T14:29:37Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 12 benchmark ask(s) for fireworks, poker, family-health, ask-clipboard", "try": "play fireworks"},
+  {"at": "2026-10-19T15:09:39Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 7 benchmark ask(s) for attention-field-mind, bench, busy-blocks", "try": "attention field"}
 ]
