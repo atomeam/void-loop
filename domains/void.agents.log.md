@@ -973,3 +973,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T04:11:53Z | verse | grow | hardened itself: 9 benchmark ask(s) for checkers, social, stakes-phase (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T04:31:44Z | verse | grow | hardened itself: 12 benchmark ask(s) for duel, pong, snake, study-cards (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T05:11:59Z | verse | grow | hardened itself: 6 benchmark ask(s) for time-capsule, v01d-fixes (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-20T05:21:49Z | verse | grow | hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4 (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)

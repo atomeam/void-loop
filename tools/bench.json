@@ -6581,5 +6581,14 @@
   {"ask": "open the capsule aurora", "want": "skill:time-capsule"},
   {"ask": "Verse's fixes", "want": "skill:v01d-fixes"},
   {"ask": "show Verse's fixes", "want": "skill:v01d-fixes"},
-  {"ask": "fixes waiting for me", "want": "skill:v01d-fixes"}
+  {"ask": "fixes waiting for me", "want": "skill:v01d-fixes"},
+  {"ask": "export my calendar", "want": "skill:calendar-file"},
+  {"ask": "download my calendar as ics", "want": "skill:calendar-file"},
+  {"ask": "download an ics file", "want": "skill:calendar-file"},
+  {"ask": "make a clock", "want": "skill:clock"},
+  {"ask": "clock", "want": "skill:clock"},
+  {"ask": "give me a clock", "want": "skill:clock"},
+  {"ask": "what is web4", "want": "skill:web4"},
+  {"ask": "are you web4", "want": "skill:web4"},
+  {"ask": "web 1 2 3 4", "want": "skill:web4"}
 ]
