@@ -13,7 +13,7 @@ const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 test('a proven skill is a mythic card: cost in words said, power from its success rate, toughness from the real asks, collector number from the book', () => {
   const deps = JSON.parse(readFileSync(resolve(root, 'deps.json'), 'utf8')), st = { book, fam, deps }, c = cardOf({ ...lookup(st, 'forge') });
   assert.equal(c.rarity, RARITY.proven); assert.equal(c.rarity.name, 'Mythic');
-  assert.equal(c.power, 9); assert.equal(c.toughness, 10, 'forge: "10 real asks in the benchmark"');
+  assert.equal(c.power, 9); assert.equal(c.toughness, 4, 'forge: "10 real asks in the benchmark" read on 0-9');
   assert.ok(c.cost >= 1 && c.cost <= 6); assert.match(c.typeLine, /^Skill — Making things$/);
   assert.match(c.number, /^\d{3}\/221$|^\d{3}\/\d{3}$/); assert.ok(c.adds.length > 10 && c.adds.length <= 120);
   assert.match(c.tested, /^2026-/);
@@ -41,7 +41,7 @@ test('every skill in the book makes a card whose numbers stay in a card\'s range
 test('the chrome is a type bar with a gem, an adds line, and a footer with the plate; a source card has no plate', () => {
   const deps = JSON.parse(readFileSync(resolve(root, 'deps.json'), 'utf8')), c = cardOf({ ...lookup({ book, fam, deps }, 'forge') }), h = chromeHtml(c, esc);
   assert.match(h.type, /class="vc-type"/); assert.match(h.type, /vc-gem/); assert.match(h.adds, /Adds to Verse/);
-  assert.match(h.foot, /class="vc-pt"/); assert.match(h.foot, /P<b>9<\/b>/); assert.match(h.foot, /R<b>10<\/b>/); assert.match(h.foot, /Mythic/); assert.match(h.foot, /Verse/);
+  assert.match(h.foot, /class="vc-pt"/); assert.match(h.foot, /P<b>9<\/b>/); assert.match(h.foot, /R<b>4<\/b>/); assert.match(h.foot, /Mythic/); assert.match(h.foot, /Verse/);
   const a = chromeHtml(cardOf({ kind: 'Answer' }), esc); assert.doesNotMatch(a.foot, /vc-pt/); assert.equal(a.adds, '');
 });
 
@@ -97,4 +97,27 @@ test('a skill card of a song or a film paints that kind\'s art, not the generic 
   assert.equal(song.artKind, 'Song'); assert.equal(film.artKind, 'Film');
   assert.notEqual(chromeHtml(song, esc).art, plain); assert.notEqual(chromeHtml(song, esc).art, chromeHtml(film, esc).art);
   for (const bad of ['', 'Skill', 'Answer', 'Nonsense', '<script>']) assert.equal(cardOf({ skill: { name: 'x', tier: 'tested' }, artKind: bad }).artKind, '');
+});
+
+test('every stat sits on 0-9: resistance grows about 3 a tenfold of proving asks, an answer is as tough as its source is fresh (owner, 2026-10-18)', async () => {
+  const { asksResistance, freshness, cardOf } = await import('../void-live-deploy/lib/card-frame.js');
+  assert.deepEqual([0, 1, 2, 10, 99, 100, 1000, 50000].map(asksResistance), [0, 1, 2, 4, 7, 7, 9, 9]);
+  assert.deepEqual([null, 0, 1, 7, 30, 365, 4000].map(freshness), [1, 9, 8, 6, 5, 1, 1]);
+  const fresh = cardOf({ kind: 'Answer', sources: 2, ageDays: 1 }), stale = cardOf({ kind: 'Answer', sources: 2, ageDays: 400 });
+  assert.ok(fresh.toughness > stale.toughness, 'a fresh source outlasts a stale one');
+  const busy = cardOf({ skill: { name: 'calc', tier: 'proven', success_rate: 1, why: '9999 real asks' } });
+  assert.equal(busy.toughness, 9, 'the most-asked skill tops out at 9, not 99');
+});
+
+test('a card prints its abilities as keywords, each from a fact: Proven, Fresh, Linked, Sourced', async () => {
+  const { cardOf, chromeHtml, keywordsOf } = await import('../void-live-deploy/lib/card-frame.js');
+  const esc = (x) => String(x).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  assert.deepEqual(keywordsOf({ tier: 'proven', tested: '2026-10-17', arrows: 2, today: '2026-10-18' }), ['Proven', 'Fresh', 'Linked']);
+  assert.deepEqual(keywordsOf({ tier: 'tested', tested: '2026-09-01', arrows: 0, today: '2026-10-18' }), []);
+  assert.deepEqual(keywordsOf({ fetched: true, sources: 2 }), ['Sourced']);
+  assert.deepEqual(keywordsOf({ fetched: true, sources: 1 }), []);
+  const c = cardOf({ skill: { name: 'calc', tier: 'proven', success_rate: 1, why: '40 real asks', last_tested: '2026-10-18' }, deps: { imports: ['lib/x.js'], importedBy: [] }, today: '2026-10-18' });
+  const h = chromeHtml(c, esc);
+  assert.match(h.adds, /class="vc-kw"[^>]*>Proven</); assert.match(h.adds, />Fresh</); assert.match(h.adds, />Linked</);
+  assert.equal(chromeHtml(cardOf({ kind: 'Answer', sources: 2, ageDays: 3 }), esc).adds.match(/class="vc-kw"/g).length, 1, 'an answer on two sources is Sourced');
 });

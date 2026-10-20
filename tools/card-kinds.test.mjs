@@ -22,7 +22,7 @@ test('a name that is also a song says so: the sister pages\' titles name the oth
 test('the card carries the type, its colour and its glyph family', () => {
   const c = cardOf({ entity: { kind: 'Film', also: ['Song'], detail: '1965 · Clive Donner', chapter: 'stage' }, sources: 1, ageDays: 40 });
   assert.equal(c.typeLine, 'Film · Song — 1965 · Clive Donner'); assert.equal(c.chapter, 'stage');
-  assert.equal(c.power, 1); assert.equal(c.toughness, 40); assert.equal(c.rarity, null);
+  assert.equal(c.power, 1); assert.equal(c.toughness, 4, 'a source edited 40 days ago reads as freshness 4 of 9'); assert.equal(c.rarity, null);
 });
 
 test('newInSub: the line under the header keeps only what the header does not already say (owner, 2026-10-18, "The Fourth Kind")', () => {
