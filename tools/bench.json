@@ -6689,5 +6689,6 @@
   {"ask": "draw a line", "want": "skill:shape"},
   {"ask": "any collisions", "want": "skill:collide"},
   {"ask": "turn the misses into jobs", "want": "skill:miss-jobs"},
-  {"ask": "answer in four channels: should we move to Berlin?", "want": "skill:four-channels"}
+  {"ask": "answer in four channels: should we move to Berlin?", "want": "skill:four-channels"},
+  {"ask": "forge the timer and the note", "want": "skill:forge-table"}
 ]
