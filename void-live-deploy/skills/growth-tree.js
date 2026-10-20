@@ -194,18 +194,15 @@ const WEEK_ORDER = ['grow', 'build', 'fix', 'retire', 'finding', 'idea'];
 // Markdown, clipped
 /** the owner's words as some older ledger lines quoted them, and as the site shows them: his meaning, spelled right (the
  *  owner, 2026-10-13: "the message is more important than crediting me", and pasting his typos read as ridicule). */
-export const OWNER_WORDS = {
-  'Verse should have a 3d/Vr draw layer as well': 'Verse should have a 3D/VR draw layer as well',
-  'we are working towards fully working Vr Verse': 'we are working towards a fully working VR Verse',
-  'if it is Theatre it needs to seriosly be worked on until Voids Will is more real': 'if it is theatre, it needs to be seriously worked on until Verse\'s will is more real',
-  'this should be taken seriosly': 'this should be taken seriously',
-};
-/** a ledger line as the site shows it: the owner's words as he meant them, spelled right (OWNER_WORDS); a quote of his that
- *  has no corrected form is left out and only the credit stays, so a typo never reaches the page. (What Verse studies is left out before the ledger is served: tools/public-ledger.mjs.) The ledger is never changed. Pure. */
+/** a ledger line as the site shows it: none of the owner's words (owner, 2026-10-20: stop quoting him on a site that built itself, typos and all).
+ *  Any bracket that credits him goes, with whatever it quotes, and a quote of his outside a bracket goes too, in any quote marks; the rest of
+ *  the sentence stays. (What Verse studies is left out before the ledger is served: tools/public-ledger.mjs.) The ledger is never changed. Pure. */
+const OWNER = String.raw`\b(?:the\s+)?(?:owner|Adam|Atom)\b`;
+const QUOTE = String.raw`(?:["“][^"”]*["”]|‘[^’]*’|(?<![\w])'[^'\n]*'(?![\w]))`;
+const OWNER_PARENS = new RegExp(String.raw`\s*\([^()]*` + OWNER + String.raw`[^()]*\)`, 'gi');
+const OWNER_SAID = new RegExp(String.raw`(` + OWNER + String.raw`[^"“‘'\n:]{0,60}?):\s*` + QUOTE + String.raw`(?:\s*(?:[;,]|and|then)\s*` + QUOTE + String.raw`)*`, 'gi');
 export function publicWhat(what) {
-  const q = /((?:\bthe\s+)?\bowner(?:,\s*\d{4}-\d\d-\d\d)?:\s*)"([^"]*)"/gi;
-  return String(what || '').replace(q, (m, lead, said) => (OWNER_WORDS[said] ? lead + '"' + OWNER_WORDS[said] + '"' : lead.replace(/:\s*$/, '')))
-    .replace(/\s{2,}/g, ' ');
+  return String(what || '').replace(OWNER_PARENS, '').replace(OWNER_SAID, '$1').replace(/\s+([.,;:])/g, '$1').replace(/\s{2,}/g, ' ').trim();
 }
 export function plainly(what, n = 90) {
   const t = publicWhat(String(what || '')).replace(/[`*]/g, '').replace(/\s+/g, ' ').trim();
