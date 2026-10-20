@@ -6687,5 +6687,7 @@
   {"ask": "find a rumble video about bitcoin", "want": "skill:video"},
   {"ask": "make a square", "want": "skill:shape"},
   {"ask": "draw a line", "want": "skill:shape"},
-  {"ask": "any collisions", "want": "skill:collide"}
+  {"ask": "any collisions", "want": "skill:collide"},
+  {"ask": "turn the misses into jobs", "want": "skill:miss-jobs"},
+  {"ask": "answer in four channels: should we move to Berlin?", "want": "skill:four-channels"}
 ]
