@@ -6525,5 +6525,11 @@
   {"ask": "how hot are my nouns", "want": "skill:noun-heat"},
   {"ask": "noun heat", "want": "skill:noun-heat"},
   {"ask": "glitch oracle: what is rain", "want": "skill:oracle"},
-  {"ask": "ask the glitch oracle, how far is the moon", "want": "skill:oracle"}
+  {"ask": "ask the glitch oracle, how far is the moon", "want": "skill:oracle"},
+  {"ask": "eclipse media skills until friday", "want": "skill:skill-eclipse"},
+  {"ask": "eclipse money skills for an hour", "want": "skill:skill-eclipse"},
+  {"ask": "lift the eclipse", "want": "skill:skill-eclipse"},
+  {"ask": "turn today's misses into jobs", "want": "skill:miss-jobs"},
+  {"ask": "surprise me", "want": "skill:pick-for-me"},
+  {"ask": "pick something cozy", "want": "skill:pick-for-me"}
 ]
