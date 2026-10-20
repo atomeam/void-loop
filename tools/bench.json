@@ -6707,5 +6707,7 @@
   {"ask": "pick for me", "want": "skill:pick-for-me"},
   {"ask": "open the book", "want": "skill:guide"},
   {"ask": "the guide", "want": "skill:guide"},
-  {"ask": "show me everything you can do", "want": "skill:guide"}
+  {"ask": "show me everything you can do", "want": "skill:guide"},
+  {"ask": "favorite this", "want": "skill:bookmarks"},
+  {"ask": "unfavorite this", "want": "skill:bookmarks"}
 ]
