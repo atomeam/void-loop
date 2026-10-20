@@ -1,4 +1,4 @@
-// shared routines — frontier #13's second piece: a routine can spread between Voids. "offer my morning as Sam" sends that
+// shared routines — frontier #13's second piece: a routine can spread between Verses. "offer my morning as Sam" sends that
 // routine's asks (only them: at most four, short, refused when one holds a secret) with the display name the person chose, to a
 // list the owner reviews; nothing is shown to anyone until the owner approves it. "routines from others" shows the approved
 // ones with their author. Nothing else about the person is sent or kept: no account, no address, no browser details.
