@@ -6641,5 +6641,9 @@
   {"ask": "make a nested bullet list", "want": "skill:outline-note"},
   {"ask": "how fast do you fix your misses", "want": "skill:remediation-velocity"},
   {"ask": "remediation velocity", "want": "skill:remediation-velocity"},
-  {"ask": "how quickly do you fix a miss", "want": "skill:remediation-velocity"}
+  {"ask": "how quickly do you fix a miss", "want": "skill:remediation-velocity"},
+  {"ask": "bench alarms", "want": "skill:bench"},
+  {"ask": "align left", "want": "skill:stage-arrange"},
+  {"ask": "align the notes to the right", "want": "skill:stage-arrange"},
+  {"ask": "distribute spacing", "want": "skill:stage-arrange"}
 ]
