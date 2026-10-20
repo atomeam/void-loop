@@ -6711,5 +6711,7 @@
   {"ask": "favorite this", "want": "skill:bookmarks"},
   {"ask": "unfavorite this", "want": "skill:bookmarks"},
   {"ask": "a question I'm avoiding: should I quit my job", "want": "skill:hunting-question"},
-  {"ask": "ask the glitch oracle why is the sky blue", "want": "skill:oracle"}
+  {"ask": "ask the glitch oracle why is the sky blue", "want": "skill:oracle"},
+  {"ask": "spectral review", "want": "skill:spectral-review"},
+  {"ask": "spectral review of A good map shows the way, because every road has a name. However, it honestly really needs a legend.", "want": "skill:spectral-review"}
 ]
