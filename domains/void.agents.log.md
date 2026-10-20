@@ -989,3 +989,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T13:33:25Z | verse | grow | hardened itself: 4 benchmark ask(s) for causal-scars, counterfactual-draft (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T13:53:40Z | verse | grow | hardened itself: 4 benchmark ask(s) for list-tools, veto-council (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T14:33:59Z | verse | grow | hardened itself: 5 benchmark ask(s) for backlog-digest, video (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-20T14:54:06Z | verse | grow | hardened itself: 3 benchmark ask(s) for shape, collide (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)

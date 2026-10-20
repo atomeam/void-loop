@@ -6684,5 +6684,8 @@
   {"ask": "summarise your unbuilt asks by family", "want": "skill:backlog-digest"},
   {"ask": "play the moon landing video", "want": "skill:video"},
   {"ask": "show me the video of the apollo 11 launch", "want": "skill:video"},
-  {"ask": "find a rumble video about bitcoin", "want": "skill:video"}
+  {"ask": "find a rumble video about bitcoin", "want": "skill:video"},
+  {"ask": "make a square", "want": "skill:shape"},
+  {"ask": "draw a line", "want": "skill:shape"},
+  {"ask": "any collisions", "want": "skill:collide"}
 ]
