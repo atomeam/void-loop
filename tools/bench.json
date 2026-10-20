@@ -6665,5 +6665,9 @@
   {"ask": "make the clock 30% transparent", "want": "skill:stage-style"},
   {"ask": "tint the clock red", "want": "skill:stage-style"},
   {"ask": "show my state", "want": "skill:state"},
-  {"ask": "what is stored on this device", "want": "skill:state"}
+  {"ask": "what is stored on this device", "want": "skill:state"},
+  {"ask": "begin the night ritual", "want": "skill:night-ritual"},
+  {"ask": "replay my best answers from this week", "want": "skill:echo-chamber"},
+  {"ask": "thought gravity", "want": "skill:swarm-mind"},
+  {"ask": "neural field", "want": "skill:swarm-mind"}
 ]
