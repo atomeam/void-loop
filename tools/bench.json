@@ -6633,5 +6633,13 @@
   {"ask": "forge the timer with the note", "want": "skill:forge-table"},
   {"ask": "check my argument edit", "want": "skill:homotopy-edit"},
   {"ask": "start the night ritual", "want": "skill:night-ritual"},
-  {"ask": "end the ritual", "want": "skill:night-ritual"}
+  {"ask": "end the ritual", "want": "skill:night-ritual"},
+  {"ask": "show the near choir", "want": "skill:near-choir"},
+  {"ask": "what almost answered that", "want": "skill:near-choir"},
+  {"ask": "nested bullet note", "want": "skill:outline-note"},
+  {"ask": "outline note: groceries; > milk; > > oat; > bread", "want": "skill:outline-note"},
+  {"ask": "make a nested bullet list", "want": "skill:outline-note"},
+  {"ask": "how fast do you fix your misses", "want": "skill:remediation-velocity"},
+  {"ask": "remediation velocity", "want": "skill:remediation-velocity"},
+  {"ask": "how quickly do you fix a miss", "want": "skill:remediation-velocity"}
 ]
