@@ -6499,5 +6499,15 @@
   {"ask": "turn on reduced motion", "want": "skill:accessibility-modes"},
   {"ask": "colorblind safe palette", "want": "skill:accessibility-modes"},
   {"ask": "summon everything except urgency", "want": "skill:negative-summons"},
-  {"ask": "summon everything except noise", "want": "skill:negative-summons"}
+  {"ask": "summon everything except noise", "want": "skill:negative-summons"},
+  {"ask": "digest your backlog", "want": "skill:backlog-digest"},
+  {"ask": "play a local audio file", "want": "skill:media-object"},
+  {"ask": "local video player", "want": "skill:media-object"},
+  {"ask": "playlist of local files", "want": "skill:media-object"},
+  {"ask": "copy the stage as an image", "want": "skill:stage-image"},
+  {"ask": "copy this card as a png", "want": "skill:stage-image"},
+  {"ask": "qr code for this stage view", "want": "skill:stage-image"},
+  {"ask": "export this note as markdown", "want": "skill:note-tools"},
+  {"ask": "export the stage as text", "want": "skill:note-tools"},
+  {"ask": "find milk on the stage", "want": "skill:note-tools"}
 ]
