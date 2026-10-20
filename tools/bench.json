@@ -6697,5 +6697,8 @@
   {"ask": "battleship board game", "want": "skill:battleship"},
   {"ask": "play monopoly", "want": "skill:monopoly"},
   {"ask": "play voidquest", "want": "skill:monopoly"},
-  {"ask": "play solar quest", "want": "skill:monopoly"}
+  {"ask": "play solar quest", "want": "skill:monopoly"},
+  {"ask": "make my void light", "want": "skill:light-look"},
+  {"ask": "light look", "want": "skill:light-look"},
+  {"ask": "switch my void to light", "want": "skill:light-look"}
 ]
