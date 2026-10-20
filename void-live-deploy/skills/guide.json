@@ -113,9 +113,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
-    "proven": 4
+    "proven": 3
    },
    "from": 168,
    "to": 172
@@ -155,9 +155,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 0,
+    "tested": 1,
     "checked": 0,
-    "proven": 2
+    "proven": 1
    },
    "from": 313,
    "to": 315
@@ -3259,10 +3259,8 @@
     "dating profile builder",
     "icebreaker coach"
    ],
-   "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
-   "flavor": "An old art of the out in the world, tested each day before the sun is up. So it is written.",
-   "glow": 100,
+   "tier": "tested",
+   "why": "a self-test",
    "n": 171
   },
   {
@@ -4236,11 +4234,11 @@
    "title": "Spectral review",
    "line": "\"spectral review of <text>\" splits a pasted text into three bands by fixed rules: slow (the thesis: headings and the first sentence of each paragraph), mid",
    "examples": [
-    "spectral review of Our plan is very simple. We basically just ship it, because users really want it.",
-    "spectral review: I think this is actually quite good, but honestly it needs work."
+    "spectral review",
+    "spectral review of A good map shows the way, because every road has a name. However, it honestly really needs a legend."
    ],
    "tier": "proven",
-   "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+   "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
    "flavor": "Earned, not claimed, over 2 real askings. The void remembers each asking.",
    "glow": 100,
    "n": 226
@@ -5711,9 +5709,8 @@
     "rank pizza, tacos, sushi",
     "weighted pros and cons for moving to Berlin"
    ],
-   "tier": "proven",
-   "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
-   "flavor": "An old art of the deciding, tested each day before the sun is up. Let the stage be the proof.",
+   "tier": "tested",
+   "why": "3 real asks in the benchmark",
    "glow": 100,
    "n": 314
   },
@@ -6855,7 +6852,7 @@
     {
      "rank": 19,
      "name": "spectral-review",
-     "catches": "spectral review of Our plan is very simple. We basically just ship it, because u"
+     "catches": "spectral review"
     },
     {
      "rank": 20,
