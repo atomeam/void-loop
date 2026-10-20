@@ -345,6 +345,8 @@ for (const [name, file] of [
   ['lineage', 'lineage.test.mjs'],
   ['remediation-velocity', 'remediation-velocity.test.mjs'],
   ['backlog-digest', 'backlog-digest.test.mjs'],
+  ['growth-speed', 'growth-speed.test.mjs'],
+  ['fix-friction', 'fix-friction.test.mjs'],
   ['card-kinds', 'card-kinds.test.mjs'],
   ['merge-rules', 'merge-rules.test.mjs'],
   ['merge-route', 'merge-route.test.mjs'],
