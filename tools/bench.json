@@ -6533,5 +6533,16 @@
   {"ask": "surprise me", "want": "skill:pick-for-me"},
   {"ask": "pick something cozy", "want": "skill:pick-for-me"},
   {"ask": "is my plan stable", "want": "skill:plan-stability"},
-  {"ask": "is my plan brittle", "want": "skill:plan-stability"}
+  {"ask": "is my plan brittle", "want": "skill:plan-stability"},
+  {"ask": "what can this figure do", "want": "skill:figure-can"},
+  {"ask": "what can motelet do", "want": "skill:figure-can"},
+  {"ask": "what does this figure do", "want": "skill:figure-can"},
+  {"ask": "linemote", "want": "skill:part"},
+  {"ask": "show me linemote 1", "want": "skill:part"},
+  {"ask": "my photos", "want": "skill:photos"},
+  {"ask": "show my photos", "want": "skill:photos"},
+  {"ask": "add photos", "want": "skill:photos"},
+  {"ask": "make this a poster", "want": "skill:poster"},
+  {"ask": "print this card as a poster", "want": "skill:poster"},
+  {"ask": "turn this into a poster", "want": "skill:poster"}
 ]
