@@ -368,6 +368,9 @@ for (const [name, file] of [
   ['thinking math', 'thinking-math.test.mjs'],
   ['tools pack 3', 'tools-pack3.test.mjs'],
   ['convert-math', 'convert-math.test.mjs'],
+  ['haiku', 'haiku.test.mjs'],
+  ['palette', 'palette.test.mjs'],
+  ['coinflip', 'coinflip.test.mjs'],
 ]) {
   addScript(name, file);
 }
