@@ -6700,5 +6700,6 @@
   {"ask": "play solar quest", "want": "skill:monopoly"},
   {"ask": "make my void light", "want": "skill:light-look"},
   {"ask": "light look", "want": "skill:light-look"},
-  {"ask": "switch my void to light", "want": "skill:light-look"}
+  {"ask": "switch my void to light", "want": "skill:light-look"},
+  {"ask": "what do you keep on this device", "want": "skill:state"}
 ]
