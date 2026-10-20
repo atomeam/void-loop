@@ -15,8 +15,8 @@
  "totals": {
   "experiment": 0,
   "tested": 55,
-  "checked": 9,
-  "proven": 239
+  "checked": 8,
+  "proven": 241
  },
  "families": [
   {
@@ -818,9 +818,9 @@
     {
      "name": "calendar-file",
      "tier": "proven",
-     "why": "a self-test, 3 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 2
@@ -874,9 +874,9 @@
     {
      "name": "calendar",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 14 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "why": "9 browser-suite mentions, 14 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1
     },
     {
@@ -1270,8 +1270,8 @@
    "count": {
     "experiment": 0,
     "tested": 8,
-    "checked": 1,
-    "proven": 19
+    "checked": 0,
+    "proven": 20
    },
    "sources": {
     "read": 20,
@@ -1280,7 +1280,6 @@
     "answered": 0,
     "points": 1.4,
     "one_live_from_proven": [
-     "digest",
      "video",
      "news",
      "joke",
@@ -1289,7 +1288,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 8 more proven: digest, video, news, joke, book, show and 2 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 7 more proven: video, news, joke, book, show, sport and 1 more."
    },
    "skills": [
     {
@@ -1314,12 +1313,12 @@
     },
     {
      "name": "digest",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-19",
+     "promoted": "2026-10-20",
      "streak": 3,
      "source": {
       "sites": [
@@ -1331,8 +1330,7 @@
       "second": true,
       "answered": false,
       "points": 2,
-      "next": "live",
-      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
+      "words": "source 2 of 3: archive.org, makertube.net, tilvids.com; named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -2777,7 +2775,7 @@
     "experiment": 0,
     "tested": 5,
     "checked": 3,
-    "proven": 34
+    "proven": 35
    },
    "skills": [
     {
@@ -2792,10 +2790,10 @@
     },
     {
      "name": "backlog-digest",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 2
@@ -2810,6 +2808,13 @@
      "streak": 2
     },
     {
+     "name": "growth-speed",
+     "tier": "checked",
+     "why": "a self-test, 1 browser-suite mention",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests"
+    },
+    {
      "name": "guide",
      "tier": "proven",
      "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
@@ -2822,9 +2827,9 @@
     {
      "name": "growth",
      "tier": "proven",
-     "why": "a self-test, 15 browser-suite mentions, 19 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 16 browser-suite mentions, 19 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 3
     },
@@ -3174,8 +3179,8 @@
     {
      "name": "wants",
      "tier": "proven",
-     "why": "a self-test, 7 browser-suite mentions, 13 real asks in the benchmark",
-     "last_tested": "2026-10-19",
+     "why": "a self-test, 12 browser-suite mentions, 13 real asks in the benchmark",
+     "last_tested": "2026-10-20",
      "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 2
