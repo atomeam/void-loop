@@ -6,7 +6,7 @@
  * says so instead of opening an empty gallery. "internet archive" and "archive this email" stay where they go now.
  * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
  */
-const ASK_RE = /^(?:please\s+)?(?:walk|tour|wander|stroll)\s+(?:me\s+)?(?:through\s+)?(?:the\s+|my\s+)?(?:archive|archive of one)$|^(?:please\s+)?(?:walk\s+the\s+archive)$|^(?:please\s+)?(?:open|show(?:\s+me)?)\s+(?:the\s+|my\s+)archive of one$/;
+const ASK_RE = /^(?:please\s+)?(?:walk|tour|wander|stroll)\s+(?:me\s+)?(?:through\s+)?(?:the\s+|my\s+)?(?:archive|archive of one)$|^(?:please\s+)?(?:walk\s+me\s+through\s+the\s+archive)$|^(?:please\s+)?(?:walk\s+the\s+archive)$|^(?:please\s+)?(?:open|show(?:\s+me)?)\s+(?:the\s+|my\s+)archive of one$/;
 const clean = (s) => String(s || '').trim().toLowerCase().replace(/[’]/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
 
 /** the ask wants the archive walk. Pure. */
