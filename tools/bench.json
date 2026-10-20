@@ -6590,5 +6590,13 @@
   {"ask": "give me a clock", "want": "skill:clock"},
   {"ask": "what is web4", "want": "skill:web4"},
   {"ask": "are you web4", "want": "skill:web4"},
-  {"ask": "web 1 2 3 4", "want": "skill:web4"}
+  {"ask": "web 1 2 3 4", "want": "skill:web4"},
+  {"ask": "what should I do now", "want": "skill:shortcut"},
+  {"ask": "suggest something for right now", "want": "skill:shortcut"},
+  {"ask": "give me a shortcut", "want": "skill:shortcut"},
+  {"ask": "leave a whisper on the clock: remember milk", "want": "skill:whisper-network"},
+  {"ask": "leave a whisper on the note: call back", "want": "skill:whisper-network"},
+  {"ask": "proof-carrying claims", "want": "skill:witness-claims"},
+  {"ask": "make proof-carrying claims", "want": "skill:witness-claims"},
+  {"ask": "proof-carrying claims: revenue grew 10% @ data: q3.csv; users stay @ assumes: price holds; launch is easy", "want": "skill:witness-claims"}
 ]
