@@ -5707,5 +5707,6 @@
   {"at": "2026-10-20T14:33:59Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 5 benchmark ask(s) for backlog-digest, video", "try": "backlog digest"},
   {"at": "2026-10-20T14:54:06Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 3 benchmark ask(s) for shape, collide", "try": "make a square"},
   {"at": "2026-10-20T15:13:51Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 2 benchmark ask(s) for miss-jobs, four-channels", "try": "turn the misses into jobs"},
-  {"at": "2026-10-20T15:54:07Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for forge-table", "try": "forge the timer and the note"}
+  {"at": "2026-10-20T15:54:07Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for forge-table", "try": "forge the timer and the note"},
+  {"at": "2026-10-20T16:14:01Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for swarm-mind", "try": "swarm mind"}
 ]
