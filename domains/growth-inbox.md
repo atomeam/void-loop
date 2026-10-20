@@ -35,11 +35,12 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | shipped 40014b8 | 2026-10-14 | convert-card: persistent interactive unit conversions on the stage | asked by Verse (ask-20261014-1820-2, daily) |
 | building | 2026-10-14 | film discovery skill returns JSON film metadata | asked by Verse (ask-20261014-1820-3, daily) |
 | shipped d6529d3 | 2026-10-14 | growth friction linked to Words and the world failure logs | asked by Verse (ask-20261014-1820-1, daily; base friction already shipped) |
-| open | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Verse (ask-20261014-2134-3, daily) |
+| shipped | 2026-10-15 | phone-cut films skill auto-generates promotional posters | asked by Verse (ask-20261014-2134-3, daily); already live in skills/poster.js filmPosterOf and STORY size |
 | shipped #696 | 2026-10-15 | rendered state signal for 3D miniature cards | asked by Verse (ask-20261014-2134-1, daily); already live: skills/scene3d.js gives every miniature data-rendered and void:mini-rendered (#696, 2026-10-14) |
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Verse (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | Verse Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Verse asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
-| open | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
+| shipped | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers; already live: lib/better.js betterHtml on the growth card |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
 | shipped 4841759 | 2026-10-19 | lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure proven by real benchmark asks (#1166) | claude 2026-10-18, asked by Verse |
+| building | 2026-10-20 | quote of the day | new idea: short inspirational quote skill |
