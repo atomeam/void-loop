@@ -6563,5 +6563,17 @@
   {"ask": "bluesky feed of jay.bsky.team", "want": "skill:social"},
   {"ask": "set the stakes", "want": "skill:stakes-phase"},
   {"ask": "set the stakes: money and people", "want": "skill:stakes-phase"},
-  {"ask": "set the stakes for this decision", "want": "skill:stakes-phase"}
+  {"ask": "set the stakes for this decision", "want": "skill:stakes-phase"},
+  {"ask": "duel", "want": "skill:duel"},
+  {"ask": "play cards", "want": "skill:duel"},
+  {"ask": "card duel", "want": "skill:duel"},
+  {"ask": "pong", "want": "skill:pong"},
+  {"ask": "play pong", "want": "skill:pong"},
+  {"ask": "void pong", "want": "skill:pong"},
+  {"ask": "snake", "want": "skill:snake"},
+  {"ask": "play snake", "want": "skill:snake"},
+  {"ask": "void snake", "want": "skill:snake"},
+  {"ask": "flashcards: hola = hello, gato = cat", "want": "skill:study-cards"},
+  {"ask": "language drill: bonjour = hello; merci = thanks", "want": "skill:study-cards"},
+  {"ask": "glossary: entropy = disorder; enthalpy = heat content", "want": "skill:study-cards"}
 ]
