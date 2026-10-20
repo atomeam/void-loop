@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 55,
+  "tested": 53,
   "checked": 9,
-  "proven": 239
+  "proven": 241
  },
  "families": [
   {
@@ -1795,9 +1795,9 @@
    "for": "food delivery, rides and Waymo, social feeds and dating",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 3
+    "proven": 4
    },
    "skills": [
     {
@@ -1821,10 +1821,12 @@
     },
     {
      "name": "dating",
-     "tier": "tested",
-     "why": "a self-test",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-20",
      "streak": 3
     },
     {
@@ -2342,9 +2344,9 @@
     {
      "name": "spectral-review",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "promoted": "2026-10-20",
      "streak": 2
@@ -3188,19 +3190,19 @@
    "for": "ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 0,
     "checked": 0,
-    "proven": 1
+    "proven": 2
    },
    "skills": [
     {
      "name": "decide-cards",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-19",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-19",
+     "promoted": "2026-10-20",
      "streak": 2
     },
     {
