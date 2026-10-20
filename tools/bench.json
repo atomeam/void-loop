@@ -6679,5 +6679,10 @@
   {"ask": "remove checked items from the list", "want": "skill:list-tools"},
   {"ask": "sort the list", "want": "skill:list-tools"},
   {"ask": "convene a council on whether to rewrite the app", "want": "skill:veto-council"},
-  {"ask": "convene a council on moving offices", "want": "skill:veto-council"}
+  {"ask": "convene a council on moving offices", "want": "skill:veto-council"},
+  {"ask": "backlog digest", "want": "skill:backlog-digest"},
+  {"ask": "summarise your unbuilt asks by family", "want": "skill:backlog-digest"},
+  {"ask": "play the moon landing video", "want": "skill:video"},
+  {"ask": "show me the video of the apollo 11 launch", "want": "skill:video"},
+  {"ask": "find a rumble video about bitcoin", "want": "skill:video"}
 ]
