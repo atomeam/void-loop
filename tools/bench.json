@@ -6531,5 +6531,7 @@
   {"ask": "lift the eclipse", "want": "skill:skill-eclipse"},
   {"ask": "turn today's misses into jobs", "want": "skill:miss-jobs"},
   {"ask": "surprise me", "want": "skill:pick-for-me"},
-  {"ask": "pick something cozy", "want": "skill:pick-for-me"}
+  {"ask": "pick something cozy", "want": "skill:pick-for-me"},
+  {"ask": "is my plan stable", "want": "skill:plan-stability"},
+  {"ask": "is my plan brittle", "want": "skill:plan-stability"}
 ]
