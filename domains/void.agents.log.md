@@ -997,3 +997,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T17:14:26Z | verse | grow | hardened itself: 3 benchmark ask(s) for light-look (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T17:32:22Z | verse | grow | hardened itself: 1 benchmark ask(s) for state (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T17:54:32Z | verse | grow | hardened itself: 2 benchmark ask(s) for work (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-20T18:14:37Z | verse | grow | hardened itself: 1 benchmark ask(s) for pick-for-me (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)

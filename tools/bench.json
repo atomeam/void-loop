@@ -6703,5 +6703,6 @@
   {"ask": "switch my void to light", "want": "skill:light-look"},
   {"ask": "what do you keep on this device", "want": "skill:state"},
   {"ask": "remote jobs for python", "want": "skill:work"},
-  {"ask": "jobs as a writer", "want": "skill:work"}
+  {"ask": "jobs as a writer", "want": "skill:work"},
+  {"ask": "pick for me", "want": "skill:pick-for-me"}
 ]
