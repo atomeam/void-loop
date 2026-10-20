@@ -477,84 +477,84 @@
  },
  "commits": [
   {
-   "at": "2026-10-19T19:27:32Z",
-   "subject": "Verse Photos, step 1: a photo library kept on this device. 'add photos' keeps pictures full size in this browser (never uploaded, the same…"
+   "at": "2026-10-20T05:32:20Z",
+   "subject": "Verse hardens itself: 8 benchmark ask(s) for shortcut, whisper-network, witness-claims"
   },
   {
-   "at": "2026-10-19T19:26:32Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T05:22:09Z",
+   "subject": "Verse fixes its archive-of-one skill: learn to handle \"walk the archive\""
   },
   {
-   "at": "2026-10-19T19:12:31Z",
-   "subject": "Incident: the browser suite failed on bffbcd82 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T05:22:01Z",
+   "subject": "Verse hardens itself: 9 benchmark ask(s) for calendar-file, clock, web4"
   },
   {
-   "at": "2026-10-19T19:00:12Z",
-   "subject": "Regenerate deps, the skill tools list and the self/asks cards after the merge"
+   "at": "2026-10-20T05:12:08Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for time-capsule, v01d-fixes"
   },
   {
-   "at": "2026-10-19T18:53:21Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-20T04:31:55Z",
+   "subject": "Verse hardens itself: 12 benchmark ask(s) for duel, pong, snake, study-cards"
   },
   {
-   "at": "2026-10-19T18:53:16Z",
-   "subject": "the self card never stays on '…': a cached library older than the page still draws it, a failed draw says so, and an unreachable…"
+   "at": "2026-10-20T04:12:05Z",
+   "subject": "Verse hardens itself: 9 benchmark ask(s) for checkers, social, stakes-phase"
   },
   {
-   "at": "2026-10-19T18:51:48Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for pulse, family-gravity, feud"
+   "at": "2026-10-20T03:51:57Z",
+   "subject": "Verse hardens itself: 10 benchmark ask(s) for flow-canvas, attention-field-mind, service-health, sheaf-check"
   },
   {
-   "at": "2026-10-19T18:50:33Z",
-   "subject": "Verse hardens itself: 7 benchmark ask(s) for text-tools, rides, error-garden"
+   "at": "2026-10-20T03:11:39Z",
+   "subject": "Verse hardens itself: 11 benchmark ask(s) for figure-can, part, photos, poster"
   },
   {
-   "at": "2026-10-19T18:30:45Z",
-   "subject": "Verse hardens itself: 8 benchmark ask(s) for media-pick, show, echo-chamber, eigenwork"
+   "at": "2026-10-20T02:51:34Z",
+   "subject": "Verse hardens itself: 2 benchmark ask(s) for plan-stability"
   },
   {
-   "at": "2026-10-19T18:27:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T02:11:42Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for skill-eclipse, miss-jobs, pick-for-me"
   },
   {
-   "at": "2026-10-19T18:16:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T01:51:37Z",
+   "subject": "Verse hardens itself: 10 benchmark ask(s) for store, share, noun-heat, oracle"
   },
   {
-   "at": "2026-10-19T18:05:02Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T01:11:32Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for know, merges"
   },
   {
-   "at": "2026-10-19T18:02:49Z",
-   "subject": "Incident: the browser suite failed on 3cab42c9 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T00:51:24Z",
+   "subject": "Verse hardens itself: 10 benchmark ask(s) for backlog-digest, media-object, stage-image, note-tools"
   },
   {
-   "at": "2026-10-19T17:57:32Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-20T00:40:12Z",
+   "subject": "Verse hardens itself: 5 benchmark ask(s) for accessibility-modes, negative-summons"
   },
   {
-   "at": "2026-10-19T17:53:56Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-20T00:11:20Z",
+   "subject": "Verse hardens itself: 10 benchmark ask(s) for list-tools, qr-scan, living-cards-mind, memory-graph"
   },
   {
-   "at": "2026-10-19T17:50:50Z",
-   "subject": "Verse hardens itself: 10 benchmark ask(s) for technical-context, spanish, deps, draft-triad"
+   "at": "2026-10-19T23:51:07Z",
+   "subject": "Verse hardens itself: 7 benchmark ask(s) for soundscape, ask-diff, list-templates"
   },
   {
-   "at": "2026-10-19T17:50:11Z",
-   "subject": "the self card is never the same twice: 'Since you last looked' leads (asks built, skills and proven since this device last opened it, the…"
+   "at": "2026-10-19T23:11:17Z",
+   "subject": "Verse hardens itself: 10 benchmark ask(s) for task-board, template-list, error-garden, invite"
   },
   {
-   "at": "2026-10-19T17:46:06Z",
-   "subject": "reinvest: today's plan for Verse's money"
+   "at": "2026-10-19T22:50:53Z",
+   "subject": "Verse hardens itself: 7 benchmark ask(s) for partial-answer, anneal-ambition, incident-autopsy"
   },
   {
-   "at": "2026-10-19T17:39:57Z",
-   "subject": "Incident: the browser suite failed on 7930edd2 (void-live-deploy/incidents.json)"
+   "at": "2026-10-19T22:33:15Z",
+   "subject": "Incident: the browser suite failed on 5ace9392 (void-live-deploy/incidents.json)"
   },
   {
-   "at": "2026-10-19T17:34:41Z",
-   "subject": "Regenerate the families and the book after the merge"
+   "at": "2026-10-19T22:31:15Z",
+   "subject": "Verse hardens itself: 6 benchmark ask(s) for spectral-review, task-diagram, idea-certificate"
   }
  ],
  "builders": {

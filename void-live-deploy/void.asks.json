@@ -1857,11 +1857,61 @@
       "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'.",
       "ledgerAt": "2026-10-19T17:11:36Z",
       "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Build the 'decision-matrix' skill under the Deciding family",
+      "ledgerAt": "2026-10-18T12:43:28Z",
+      "why": "built: decision-matrix is filed under Deciding with three real benchmark asks routed to it, so the family reads 1 proven (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S1, S2]",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a velocity-smoothing curve for the zorbleflux throttle [S2]",
+      "ledgerAt": "2026-10-18T11:45:16Z",
+      "why": "built: lib/motion-throttle.js eases the zorbleflux throttle back to full speed along a smoothstep instead of a hard cut-off (tools/zorbleflux.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the router so 'open the self card' triggers the look skill instead of a text answer [S2].",
+      "ledgerAt": "2026-10-17T09:37:08Z",
+      "why": "built: 'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\") (tools/asks-link.json)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S2]",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Integrate a 'failure-signature' into the incident-autopsy skill [S1].",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: integrate, failure, signature, incident, autopsy, skill)"
+    },
+    {
+      "words": "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill' [S2].",
+      "ledgerAt": "2026-10-19T17:11:36Z",
+      "why": "built: asked by Verse: the wants card has a velocity indicator, want to skill (how many of its asks were built, and this week against last, from /api/reflect follow); an ask keeps none of the prompt's [S2] fact tags and the sam (linked by tools/asks-link.mjs, shared words: velocity, indicat, want, card, show, skill)"
+    },
+    {
+      "words": "Implement a 'failure-signature' into the incident-autopsy skill.",
+      "ledgerAt": "2026-10-19T10:20:14Z",
+      "why": "built: asked by Verse: the incident autopsy gives each red suite a failure signature: recurring (every failing check failed on earlier suites, so not this commit), new, mixed, or only the suite stalling; the self card's health  (linked by tools/asks-link.mjs, shared words: failure, signature, incident, autopsy, skill)"
     }
   ],
   "totals": {
-    "asked": 224,
-    "built": 206,
-    "through": "2026-10-18T20:31:00Z"
+    "asked": 225,
+    "built": 207,
+    "through": "2026-10-19T22:16:00Z"
   }
 }

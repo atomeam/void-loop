@@ -2810,7 +2810,8 @@ say('nothing selected to remove');
           try { const cf = await import('/lib/correction-fix.js'), r = await cf.suggestFix(entry, fam, { owner, fetchFn: fetch }); out.innerHTML = cf.resultHtml(r.sent, r.got, esc); } catch (_) { out.textContent = ' that did not work just now'; } // void-review: ok: resultHtml escapes every word with esc
           b.disabled = false;
         });
-        const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw });
+        let previewed = new Set(); try { previewed = new Set(JSON.parse(localStorage.getItem('a2m.void.shown.v1') || '[]')); } catch (_) {} // the walkthrough's demos are not answers to correct
+        const f = m.mountForm(formEl, document, { storage: localStorage, log, onSaved: draw, previewed });
         if (said && m.wantsCorrection(said)) { const sec = slot.closest('details'); if (sec) { sec.open = true; sec.dataset.focused = '1'; } if (slot.scrollIntoView) slot.scrollIntoView({ block: 'center' }); f.box.focus(); }
       } catch (_) {}
     }

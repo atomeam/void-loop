@@ -5675,6 +5675,32 @@ try {
       /drew this card with an older library/.test(old) && !/^\s*What I think of myself\s*…\s*$/.test(old) && /could not reach my reflections/.test(down) && !/haven.t been asked yet/.test(down) && !K.errors.length,
       JSON.stringify({ old: old.slice(0, 200), down: down.slice(0, 200), errors: K.errors }));
     await K.ctx.close(); }
+  // the self card as the owner read it on 2026-10-20 ("fix everything on this card, why is it still repeating about go"): citation tags in the words,
+  // "Go" picked by the model every day, "Verse hardens itself: 8 benchmark ask(s)" as what shipped, and a walkthrough demo offered to correct
+  if (want("self card: the weakest area and next capability come from the ratings")) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker;
+    if (!sessionStorage.getItem('sc-sf')) { sessionStorage.setItem('sc-sf', '1');
+      localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['spectral review of our plan is very simple']));
+      localStorage.setItem('a2m.void.loop.v1', JSON.stringify([{ t: '2026-10-20T01:00:00Z', ask: 'spectral review of Our plan is very simple', note: 'skill:spectral-review', score: 'pass' }, { t: '2026-10-20T01:01:00Z', ask: 'rank pizza, tacos, sushi', note: 'skill:decide-cards', score: 'pass' }])); } });
+    const fam = { families: [
+      { id: 'decide', name: 'Deciding', skills: [{ name: 'decide-cards', tier: 'tested', why: '3 real asks in the benchmark' }, { name: 'decision-matrix', tier: 'proven', why: 'a self-test, 2 browser-suite mentions, 3 real asks in the benchmark' }] },
+      { id: 'games', name: 'Games', skills: [{ name: 'chess', tier: 'proven', why: 'all three' }, { name: 'go', tier: 'proven', why: 'all three' }] } ] };
+    await S.ctx.route(/\/skills\/families\.json(\?.*)?$/, (rt) => rt.fulfill(json(fam)));
+    await S.ctx.route(/\/api\/reflect$/, (rt) => rt.fulfill(json({ entries: [
+      { at: '2026-10-20T06:00:00Z', kind: 'daily', thoughts: 'Verse is a blank stage with 303 skills across 12 families [S1, S3, S4].', weakest: 'The Deciding family is the least proven [S4].', next_game: 'Go [Games can play]', better: 'Scale the stage family [S3].', asks: [] },
+      { at: '2026-10-20T05:00:00Z', kind: 'build', shipped: 'Verse hardens itself: 8 benchmark ask(s) for shortcut, whisper-network, witness-claims', thoughts: 'The system shipped 8 benchmark asks [S2].', better: 'Add more [S3].', asks: [] }],
+      asks: [], follow: { total: 3, built: 1, recent: [], asked: [] } })));
+    const loopKey = await S.p.evaluate(() => Object.keys(localStorage).find((k) => /loop/.test(k)) || '');
+    await S.ask('what do you think of yourself?', 300); await S.p.waitForTimeout(2500);
+    await S.p.$$eval('.vpage.on details', (ds) => ds.forEach((d) => { d.open = true; }));
+    const card = await S.page();
+    await S.ask('tell verse what it got wrong', 300); await S.p.waitForTimeout(1500);
+    const correct = await S.p.$$eval('.vpage.on .corr-list li', (l) => l.map((x) => x.textContent)).catch(() => []);
+    check('self card: the weakest area and next capability come from the ratings (Deciding, 1 of 2 proven; decide-cards and what would move it up), not "Go"; no [S1]-style tags; what shipped reads "Better at shortcut, whisper network and witness claims"; a walkthrough demo is not offered to correct, a real answer is',
+      /Deciding: 1 of 2 skills proven/.test(card) && /decide-cards in Deciding \(tested: 3 real asks in the benchmark\); a self-test or a browser-suite check would move it up/.test(card)
+        && !/\bGo\b/.test(card) && !/\[S\d/.test(card) && !/Games can play/.test(card) && /Better at shortcut, whisper network and witness claims: 8 more ways of asking answered right/.test(card) && !/hardens itself/.test(card)
+        && !correct.some((c) => /spectral review/.test(c)) && (loopKey !== 'a2m.void.loop.v1' || correct.some((c) => /rank pizza/.test(c))) && !S.errors.length,
+      JSON.stringify({ card: card.replace(/\s+/g, ' ').slice(0, 1400), correct, loopKey, errors: S.errors }));
+    await S.ctx.close(); }
   // Verse's asks, batch 4 (2026-10-18): the self card folds its long lists and opens Correct me for a correction, its picture has headings; error reactions on the
   // incident autopsy; the Zorbleflux throttle; dynamic scale while flying; the proven / experiment quick filter on the family-health card
   if (want('void asks batch 4')) { const S = await fresh(() => { delete Navigator.prototype.serviceWorker; });
@@ -9974,6 +10000,19 @@ try {
         && !/no checks reported/.test(live) && /but GitHub does/.test(none) && asked.filter((u) => /check-runs/.test(u)).length === 1 && !S.errors.length,
       JSON.stringify({ live, none, asked, errors: S.errors }));
     await S.ctx.close(); }
+  // dating, used the way a person does: the adults-only check, then the profile builder with openers for what they named
+  if (want("dating: openers for an interest after the 18+ check, a bio as you type, and a no keeps it shut")) { const D = await fresh();
+    await D.ask('give me dating app openers about cooking', 700);
+    const gate = await D.page();
+    await D.p.click('.vpage.on .dt-18'); await D.p.waitForTimeout(200);
+    const openers = await D.p.$$eval('.vpage.on .dt-ice li', (l) => l.map((x) => x.textContent));
+    await D.p.fill('.vpage.on .dt-name', 'Sam'); await D.p.fill('.vpage.on .dt-vibe', 'curious night owl');
+    const bioText = await D.p.$eval('.vpage.on .dt-bio', (e) => e.textContent).catch(() => '');
+    const N = await fresh(); await N.ask('dating profile', 700); await N.p.click('.vpage.on .dt-no'); await N.p.waitForTimeout(200); const no = await N.page();
+    check('dating: "give me dating app openers about cooking" asks for 18+ first, then shows three openers about cooking and a bio that fills in as you type; saying no keeps it shut',
+      /adults only/.test(gate) && openers.length === 3 && openers.every((o) => /cooking/.test(o)) && /^Sam, curious night owl\./.test(bioText) && /Come back when you are 18/.test(no) && !/dt-ice/.test(no) && !D.errors.length && !N.errors.length,
+      JSON.stringify({ gate: gate.slice(0, 120), openers, bioText, no: no.slice(0, 120), errors: D.errors.concat(N.errors) }));
+    await D.ctx.close(); await N.ctx.close(); }
   // the shared realistic 3D scene and the 3D board games (tools/test_3d.mjs)
   // each 3D block has its own label ("3d: chess and checkers", --list shows them): --only "3d chess" runs just that one;
   // the section's own words still run them all

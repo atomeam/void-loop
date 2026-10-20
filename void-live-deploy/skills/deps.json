@@ -83,28 +83,28 @@
    "file": "lib/rule-registry.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 34,
+   "dependants": 35,
    "tests": 1
   },
   {
    "file": "lib/guide.js",
    "skills": 11,
    "direct": 1,
-   "dependants": 33,
+   "dependants": 34,
    "tests": 2
   },
   {
    "file": "lib/card-subject.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 32,
+   "dependants": 33,
    "tests": 2
   },
   {
    "file": "lib/card-art.js",
    "skills": 11,
    "direct": 0,
-   "dependants": 30,
+   "dependants": 31,
    "tests": 4
   },
   {
@@ -213,6 +213,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-confidence.js",
+   "skills": 6,
+   "direct": 1,
+   "dependants": 20,
+   "tests": 1
+  },
+  {
    "file": "lib/spark.js",
    "skills": 6,
    "direct": 1,
@@ -221,13 +228,6 @@
   },
   {
    "file": "lib/inbox-health.js",
-   "skills": 6,
-   "direct": 1,
-   "dependants": 19,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-confidence.js",
    "skills": 6,
    "direct": 1,
    "dependants": 19,
@@ -2683,6 +2683,7 @@
     "lib/bench-asks.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-blocks.js",
     "lib/self-context.js",
     "lib/voice.js",
     "skills/about-skill.js",
@@ -2839,6 +2840,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-blocks.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/tome.js",
@@ -3437,6 +3439,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-blocks.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
@@ -4609,6 +4612,7 @@
     "lib/card-image.js",
     "lib/card-share.js",
     "lib/duel-rules.js",
+    "lib/self-blocks.js",
     "lib/self-context.js",
     "lib/skill-confidence.js",
     "lib/voice.js",
@@ -4674,7 +4678,8 @@
   },
   "lib/self-blocks.js": {
    "imports": [
-    "lib/spark.js"
+    "lib/spark.js",
+    "lib/skill-confidence.js"
    ],
    "importedBy": []
   },
@@ -4763,6 +4768,7 @@
     "lib/card-art.js"
    ],
    "importedBy": [
+    "lib/self-blocks.js",
     "skills/growth.js"
    ],
    "reachedBy": [

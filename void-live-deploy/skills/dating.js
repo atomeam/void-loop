@@ -7,7 +7,8 @@
 /** { open } | { icebreaker: interest } | null. Pure. */
 export function datingAsk(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:give\s+me\s+)?(?:some\s+)?(?:an?\s+)?(?:dating\s+)?(?:icebreakers?|opening\s+lines?|openers?|first\s+messages?)\s+(?:for\s+(?:someone|a\s+person|a\s+match)\s+(?:who\s+likes|into)\s+|about\s+)([a-z ,&'-]{2,40})$/);
+  // "give me dating app openers about cooking", "write me three hinge openers about dogs" (2026-10-20: the app's name fell to the encyclopedia)
+  const m = t.match(/^(?:(?:give|write|suggest)\s+me\s+|i\s+need\s+)?(?:some\s+|a\s+few\s+|three\s+)?(?:an?\s+)?(?:(?:dating|tinder|hinge|bumble)\s+(?:app\s+)?|dating\s+)?(?:icebreakers?|opening\s+lines?|openers?|first\s+messages?)\s+(?:for\s+(?:someone|a\s+person|a\s+match)\s+(?:who\s+likes|into)\s+|about\s+)([a-z ,&'-]{2,40})$/);
   if (m) return { icebreaker: m[1].trim() };
   if (/^(?:(?:open|start|show|build|make|help\s+me\s+(?:write|build|make))\s+)?(?:a\s+|my\s+|the\s+)?(?:dating(?:\s+(?:profile(?:\s+builder)?|bio|card|coach|app))?|profile\s+builder|icebreaker\s+coach)$/.test(t)) return { open: true };
   return null;
@@ -52,8 +53,8 @@ function run(text, api) {
 }
 export default {
   name: 'dating',
-  examples: ['dating profile', 'dating profile builder', 'icebreaker coach', 'icebreakers about hiking', 'open dating'],
-  nearMisses: ['date today', 'what is the date', 'carbon dating', 'update my profile'],
+  examples: ['dating profile', 'dating profile builder', 'icebreaker coach', 'icebreakers about hiking', 'open dating', 'give me dating app openers about cooking'],
+  nearMisses: ['date today', 'what is the date', 'carbon dating', 'update my profile', 'openers for a chess game', 'icebreaker ships'],
   match(lower, text) { return !!datingAsk(text || lower); },
   run,
 };

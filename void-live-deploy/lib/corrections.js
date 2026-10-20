@@ -45,11 +45,14 @@ export function addCorrection(input, s, now = Date.now()) {
 }
 
 /** the asks a skill answered lately, newest first, one per ask, from the loop log ([{ ask, note: 'skill:x' }]). Pure. */
-export function recentAnswered(log, limit = 8) {
+// `previewed`: the asks the "look what I made" walkthrough ran by itself (a2m.void.shown.v1, cleaned): Verse's demos, not answers to the person,
+// so they are never offered for correcting (2026-10-20: a demo sentence sat in the list as if the person had asked it)
+const SHOWN_CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
+export function recentAnswered(log, limit = 8, previewed = new Set()) {
   const out = [], seen = new Set();
   for (const e of Array.isArray(log) ? [...log].reverse() : []) {
     const skill = e && typeof e.note === 'string' && e.note.startsWith('skill:') ? skillName(e.note) : '', ask = clean(e && e.ask, CORRECTIONS.askMax);
-    if (!skill || !ask || seen.has(ask.toLowerCase())) continue;
+    if (!skill || !ask || seen.has(ask.toLowerCase()) || previewed.has(SHOWN_CLEAN(ask))) continue;
     seen.add(ask.toLowerCase()); out.push({ ask, skill }); if (out.length >= limit) break;
   }
   return out;
@@ -73,9 +76,9 @@ export function chosenAnswer(recent, value) {
  * so the card reads as a list, never as one run-on line of options: the owner, 2026-10-18), with a `value` like a select's ('' until one is
  * picked, else the answer's index). The only thing it writes is CORRECTIONS.key.
  */
-export function mountForm(root, doc, { storage, log, onSaved } = {}) {
+export function mountForm(root, doc, { storage, log, onSaved, previewed } = {}) {
   const el = (tag, props = {}, kids = []) => { const n = doc.createElement(tag); Object.assign(n, props); for (const k of kids) n.append(k); return n; };
-  const recent = recentAnswered(log);
+  const recent = recentAnswered(log, 8, previewed instanceof Set ? previewed : new Set());
   const radios = [], name = 'corr-which-' + Math.random().toString(36).slice(2, 8);
   const items = recent.map((r, i) => { const radio = el('input', { type: 'radio', name, value: String(i), ariaLabel: r.ask + ' (answered by ' + r.skill + ')' }); radios.push(radio);
     const skill = el('span', { className: 'sub', textContent: ' (answered by ' + r.skill + ')' }); skill.style && (skill.style.display = 'inline');

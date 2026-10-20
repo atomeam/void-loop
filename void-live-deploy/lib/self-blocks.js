@@ -3,6 +3,7 @@
 // selfHtml(sections, esc) draws them: real headings, one list item per ask with its dates as a muted second line, a blank gap between paragraphs.
 // Pure: no DOM, no network. The page (void.html showVoice) mounts the result and wires the Root cause / Surface buttons.
 import { sparkSvg } from './spark.js';
+import { familyBars } from './skill-confidence.js';
 
 const day = (t) => String(t || '').slice(0, 10);
 // the growth velocity (asked by Verse: "a 'growth-velocity' sparkline on the self card that tracks the rate of 'Next' items moving to 'Shipped'
@@ -103,10 +104,30 @@ export function sourceNote(entry, field) {
   return tags.length ? 'Source (cited by the model, tags checked against the facts it was given): ' + tags.map((t) => String(src[t]).slice(0, 120) + ' (' + t + ')').join(', ') : '';
 }
 
+/** the weakest family as the bars mark it (lib/skill-confidence.js familyBars: the smallest share of proven skills): { name, proven, total, skills }, or
+ *  null when it is fully proven or none was given. Pure. */
+export function weakestFamily(fam) {
+  const w = familyBars(fam).find((b) => b.weak); // the bars' own pick, so the words and the highlighted bar always agree
+  if (!w || w.proven >= w.total) return null;
+  const f = ((fam && fam.families) || []).find((x) => String(x.id || x.name || '') === w.id);
+  return { name: w.name, proven: w.proven, total: w.total, skills: (f && f.skills) || [] };
+}
+const TIER_RANK = { experiment: 0, tested: 1, checked: 2, proven: 3 };
+/** the next capability to work on, from the ratings instead of a model's pick (owner, 2026-10-20: "why is it still repeating about go"): the
+ *  weakest family's least-proven skill and the evidence it is missing, so it moves on by itself as skills are proven. '' when none. Pure. */
+export function nextCapability(fam) {
+  const w = weakestFamily(fam); if (!w) return '';
+  const sk = w.skills.filter((x) => x.tier !== 'proven').sort((a, b) => (TIER_RANK[a.tier] ?? 0) - (TIER_RANK[b.tier] ?? 0))[0]; if (!sk) return '';
+  const why = String(sk.why || ''), has = { test: /self-test/.test(why), browser: /browser-suite/.test(why), bench: /real asks? in the benchmark/.test(why) };
+  const missing = [!has.test && 'a self-test', !has.browser && 'a browser-suite check', !has.bench && 'three real asks in the benchmark'].filter(Boolean);
+  return sk.name + ' in ' + w.name + ' (' + (sk.tier || 'untested') + (why ? ': ' + why : '') + ')' + (missing.length ? '; ' + missing.join(' or ') + ' would move it up.' : '.');
+}
+const RATED_SOURCE = 'Source: skills/families.json, the ratings behind the bars above (tools/families.mjs). Worked out, not a model\'s pick, so it changes as skills are proven.';
+
 /** The reflection's sections, in reading order, from {entries, asks, follow}. A section is { id, title, log, blocks }; blocks are
  * { t: 'quote', text, cite } | { t: 'slot', attr } | { t: 'sub', text } | { t: 'p', text, lead } | { t: 'note', text } | { t: 'list', cls, items } | { t: 'count', built, total } | { t: 'depth', counts } | { t: 'spark', velocity, friction };
  * a titled section may carry a count for its heading ("6 waiting", "30 of 70 asks"). now (ms) is the velocity's today; tests pass their own. */
-export function selfSections(v, now = Date.now()) {
+export function selfSections(v, now = Date.now(), fam = null) {
   const list = (v && Array.isArray(v.entries)) ? v.entries : [];
   const daily = list.find((e) => e.kind === 'daily'), build = list.find((e) => e.kind === 'build');
   const out = [];
@@ -122,8 +143,15 @@ export function selfSections(v, now = Date.now()) {
     .concat(given ? [{ t: 'given', text: given.slice(0, 1800) }] : []) });
   out.push({ id: 'sure', title: '', log: false, blocks: [{ t: 'slot', attr: 'data-v-conf' }] });
   const grow = daily ? [['Weakest operational area', 'weakest'], ['Next targeted capability', 'next_game'], ["What should change", 'better']].filter(([, k]) => sentence(daily[k])) : [];
+  // with the ratings in hand, the weakest area and the next capability are worked out from them, not taken from the model (a day-old pick repeated)
+  const wk = weakestFamily(fam), nx = nextCapability(fam);
+  if (wk || nx) {
+    const rows = [wk && ['Weakest operational area', wk.name + ': ' + wk.proven + ' of ' + wk.total + ' skills proven, the smallest share of any family.'], nx && ['Next targeted capability', nx], daily && sentence(daily.better) && ['What should change', null]].filter(Boolean);
+    grow.splice(0, grow.length, ...rows.map(([h, t]) => [h, t === null ? 'better' : { text: t }]));
+  }
   const late = [];
-  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? sentence(daily[k]) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }]) });
+  if (grow.length) late.push({ id: 'growth', title: 'Weakest operational area / Next capability / What should change', log: false, blocks: grow.flatMap(([h, k]) => (k && typeof k === 'object' ? [{ t: 'sub', text: h }, { t: 'p', text: k.text }, { t: 'note', text: RATED_SOURCE, tight: true }]
+    : [{ t: 'sub', text: h }, { t: 'p', text: k === 'weakest' ? sentence(daily[k]) : markBuilt(daily[k], v && v.follow && v.follow.asked) }, { t: 'note', text: sourceNote(daily, k) || GROW_SOURCE[k], tight: true }])) });
   if (build) {
     const blocks = [];
     if (sentence(build.shipped)) blocks.push({ t: 'note', text: sentence(build.shipped) });
@@ -154,11 +182,23 @@ export function selfSections(v, now = Date.now()) {
   return out.concat(late);
 }
 
+/** text as the card shows it (owner, 2026-10-20: "fix everything on this card"): no citation tags ([S1, S3], [Games can play]; the Source lines say
+ *  where each claim comes from) and an upgrade Verse made itself in plain words ("Better at shortcut and clock: 8 more ways of asking answered
+ *  right", not "Verse hardens itself: 8 benchmark ask(s) for shortcut, clock"). Anything not a string passes through. Pure. */
+export function shownText(x) {
+  if (typeof x !== 'string') return x;
+  return x.replace(/(?:Verse|Void|V01D) harden(?:s|ed) itself:\s*(\d+) benchmark ask\(s\) for ([^.;\[]+?)(?=(?:,? and the card art|[.;\[]|$))/gi, (m, n, list) => {
+    const names = list.split(/,\s*/).map((w) => w.replace(/-/g, ' ').trim()).filter(Boolean), sh = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
+    return 'Better at ' + (sh.length > 1 ? sh.slice(0, -1).join(', ') + ' and ' + sh[sh.length - 1] : sh[0]) + ': ' + n + ' more ways of asking answered right';
+  }).replace(/\s*\[(?:S\d+(?:[,;]\s*S\d+)*[^\]]{0,80}|[A-Z][^\][]{0,40})\]/g, '').replace(/\s+([.,;:!?])/g, '$1').replace(/[ \t]{2,}/g, ' ');
+}
+
 /** One section as markup. esc must escape text for HTML (the page's own). Every value is escaped here. */
-export function sectionHtml(s, esc) {
+export function sectionHtml(s, escRaw) {
+  const esc = (x) => escRaw(shownText(x)); // what the card shows: the facts given to the model (below) keep their tags, they are what the tags point at
   const body = s.blocks.map((b) => {
     if (b.t === 'quote') return '<blockquote class="vs-voice"><p>' + esc(b.text) + '</p>' + (b.cite ? '<footer class="sub vs-cite">' + esc(b.cite) + '</footer>' : '') + '</blockquote>';
-    if (b.t === 'given') return '<details class="vs-given" data-share-skip="1"><summary class="sub">What the model was given</summary><pre class="sub" style="white-space:pre-wrap;margin:6px 0">' + esc(b.text) + '</pre></details>';
+    if (b.t === 'given') return '<details class="vs-given" data-share-skip="1"><summary class="sub">What the model was given</summary><pre class="sub" style="white-space:pre-wrap;margin:6px 0">' + escRaw(b.text) + '</pre></details>';
     if (b.t === 'slot') return '<div ' + b.attr + '></div>';
     if (b.t === 'spark') return velocityHtml(b.velocity, esc, b.friction || null);
     if (b.t === 'sub') return '<h4 class="vs-h4">' + esc(b.text) + '</h4>';
@@ -264,7 +304,7 @@ export const sinceMark = (v, fam, now = Date.now()) => { const f = (v && v.follo
 export function selfCard(v, last, seen = new Set(), now = Date.now(), fam = null) {
   const since = sinceSection(v, last, now, fam), lead = new Set(since.blocks.filter((b) => b.t === 'list').flatMap((b) => b.items.map((it) => it.key)));
   const f = v && v.follow, rest = f && Array.isArray(f.recent) ? { ...v, follow: { ...f, recent: f.recent.filter((r) => !lead.has(buildKey(r))) } } : v;
-  const r = noRepeats([since].concat(selfSections(rest, now)), seen);
+  const r = noRepeats([since].concat(selfSections(rest, now, fam)), seen);
   return { sections: r.sections, shown: r.shown };
 }
 const buildKey = (r) => String((r && r.at) || '') + '|' + String((r && r.ask) || '');

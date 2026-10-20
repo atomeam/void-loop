@@ -6598,5 +6598,8 @@
   {"ask": "leave a whisper on the note: call back", "want": "skill:whisper-network"},
   {"ask": "proof-carrying claims", "want": "skill:witness-claims"},
   {"ask": "make proof-carrying claims", "want": "skill:witness-claims"},
-  {"ask": "proof-carrying claims: revenue grew 10% @ data: q3.csv; users stay @ assumes: price holds; launch is easy", "want": "skill:witness-claims"}
+  {"ask": "proof-carrying claims: revenue grew 10% @ data: q3.csv; users stay @ assumes: price holds; launch is easy", "want": "skill:witness-claims"},
+  {"ask": "help me write a dating profile", "want": "skill:dating"},
+  {"ask": "give me dating app openers about cooking", "want": "skill:dating"},
+  {"ask": "icebreakers about hiking", "want": "skill:dating"}
 ]
