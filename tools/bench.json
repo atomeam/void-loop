@@ -6484,5 +6484,15 @@
   {"ask": "diff \"make a timer\" and \"make a focus timer for writing\"", "want": "skill:ask-diff"},
   {"ask": "shopping list template", "want": "skill:list-templates"},
   {"ask": "meeting agenda template", "want": "skill:list-templates"},
-  {"ask": "bug list template", "want": "skill:list-templates"}
+  {"ask": "bug list template", "want": "skill:list-templates"},
+  {"ask": "check all on the list", "want": "skill:list-tools"},
+  {"ask": "scan a qr code", "want": "skill:qr-scan"},
+  {"ask": "read a barcode", "want": "skill:qr-scan"},
+  {"ask": "qr code scanner", "want": "skill:qr-scan"},
+  {"ask": "living spatial cards mind", "want": "skill:living-cards-mind"},
+  {"ask": "show me the living cards mind", "want": "skill:living-cards-mind"},
+  {"ask": "living cards", "want": "skill:living-cards-mind"},
+  {"ask": "what do you know about me", "want": "skill:memory-graph"},
+  {"ask": "what are my interests", "want": "skill:memory-graph"},
+  {"ask": "what do I usually ask for", "want": "skill:memory-graph"}
 ]
