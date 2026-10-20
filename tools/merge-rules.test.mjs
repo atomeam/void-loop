@@ -21,7 +21,7 @@ test('the pair key is unordered and folded', () => {
 
 test('stats follow the fixed rules exactly', () => {
   const a = card({ power: 9, resistance: 10, income: 3, cost: 3, depth: 0 }), b = card({ power: 5, resistance: 3, income: 4, cost: 2, depth: 0 });
-  assert.deepEqual(mergeStats(a, b), { power: 11, resistance: 7, income: 7, cost: 5, depth: 1, tier: 'tested' }); // 9 + floor(5/2); ceil(13/2); 3+4; ceil(18/4)=5
+  assert.deepEqual(mergeStats(a, b), { power: 9, resistance: 6, income: 7, cost: 4, depth: 1, tier: 'tested' }); // 9 + floor(5/2) capped at 9; resistance 10 is read as 9, ceil(12/2); 3+4; ceil(15/4)=4
   assert.deepEqual(mergeStats(b, a), mergeStats(a, b), 'symmetric');
   const fresh = mergeStats(freshCard('pizza'), freshCard('black hole'));
   assert.deepEqual(fresh, { power: 1, resistance: 1, income: 0, cost: 1, depth: 1, tier: 'tested' }); // 1 + floor(1/2)
@@ -41,7 +41,7 @@ test('depth is the deepest parent plus one and rarity rises with it', () => {
 
 test('numbers stay inside their caps and cost never drops below a parent', () => {
   const big = card({ power: 99, resistance: 99, income: 9, cost: 9, depth: 0 });
-  assert.deepEqual(mergeStats(big, big), { power: 99, resistance: 99, income: 9, cost: 9, depth: 1, tier: 'tested' });
+  assert.deepEqual(mergeStats(big, big), { power: 9, resistance: 9, income: 9, cost: 9, depth: 1, tier: 'tested' });
   assert.equal(mergeStats(card({ cost: 6, power: 1, resistance: 1 }), freshCard('z')).cost, 6, 'at least the dearer parent');
   const junk = mergeStats({ name: 'a', power: 'lots', resistance: NaN, income: -5, cost: 1e9, depth: 'deep' }, freshCard('b'));
   for (const k of ['power', 'resistance', 'income', 'cost', 'depth']) assert.ok(Number.isInteger(junk[k]) && junk[k] >= 0, k);
@@ -99,11 +99,11 @@ test('no number a model writes reaches a card', () => {
 test('a skill name brings the skill\'s real stats; any other idea is 1 / 1 / 0', () => {
   const fam = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/families.json', import.meta.url), 'utf8')), book = JSON.parse(readFileSync(new URL('../void-live-deploy/skills/guide.json', import.meta.url), 'utf8'));
   const forge = parentCard('Forge', { fam, book, deps: null });
-  assert.equal(forge.power, 9); assert.equal(forge.resistance, 10); assert.deepEqual(forge.kinds, ['Skill']); assert.equal(forge.depth, 0);
+  assert.equal(forge.power, 9); assert.equal(forge.resistance, 4); assert.deepEqual(forge.kinds, ['Skill']); assert.equal(forge.depth, 0);
   const idea = parentCard('a pizza', { fam, book });
   assert.deepEqual([idea.power, idea.resistance, idea.income, idea.depth], [1, 1, 0, 0]);
   const m = mergedCard(forge, idea);
-  assert.equal(m.power, 9 + 0); assert.equal(m.resistance, 6); assert.deepEqual(m.kinds, ['Skill']);
+  assert.equal(m.power, 9 + 0); assert.equal(m.resistance, 3); assert.deepEqual(m.kinds, ['Skill']);
   assert.match(m.typeLine, /^Skill · ?|^Skill — merged, depth 1$/);
 });
 
