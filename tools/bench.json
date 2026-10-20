@@ -6660,5 +6660,10 @@
   {"ask": "tag the clock as work", "want": "skill:stage-organize"},
   {"ask": "print this stage as a one-page sheet", "want": "skill:stage-print"},
   {"ask": "print the stage", "want": "skill:stage-print"},
-  {"ask": "export my stage as a sheet", "want": "skill:stage-print"}
+  {"ask": "export my stage as a sheet", "want": "skill:stage-print"},
+  {"ask": "set opacity to 50%", "want": "skill:stage-style"},
+  {"ask": "make the clock 30% transparent", "want": "skill:stage-style"},
+  {"ask": "tint the clock red", "want": "skill:stage-style"},
+  {"ask": "show my state", "want": "skill:state"},
+  {"ask": "what is stored on this device", "want": "skill:state"}
 ]
