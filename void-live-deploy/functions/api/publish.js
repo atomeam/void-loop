@@ -1,4 +1,4 @@
-// Publish your Verse at a-to-mind.com/@name (paid Voids; the tier is checked here, never trusted from the page).
+// Publish your Verse at a-to-mind.com/@name (paid Verses; the tier is checked here, never trusted from the page).
 // GET    (Bearer session)                  -> { handle | null }
 // POST   (Bearer session) { handle, look, cards } -> { ok, handle, url } | 401 not signed in | 402 not paid | 400 bad handle | 409 taken
 // DELETE (Bearer session)                  -> { ok } (the page is gone; the handle is free again)
