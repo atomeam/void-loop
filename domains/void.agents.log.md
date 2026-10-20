@@ -1001,3 +1001,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T18:54:46Z | verse | grow | hardened itself: 3 benchmark ask(s) for guide (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T19:15:23Z | verse | grow | hardened itself: 2 benchmark ask(s) for bookmarks (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T19:54:44Z | verse | grow | hardened itself: 1 benchmark ask(s) for hunting-question (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-20T21:15:01Z | verse | grow | hardened itself: 1 benchmark ask(s) for oracle (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
