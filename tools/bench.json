@@ -6598,5 +6598,15 @@
   {"ask": "leave a whisper on the note: call back", "want": "skill:whisper-network"},
   {"ask": "proof-carrying claims", "want": "skill:witness-claims"},
   {"ask": "make proof-carrying claims", "want": "skill:witness-claims"},
-  {"ask": "proof-carrying claims: revenue grew 10% @ data: q3.csv; users stay @ assumes: price holds; launch is easy", "want": "skill:witness-claims"}
+  {"ask": "proof-carrying claims: revenue grew 10% @ data: q3.csv; users stay @ assumes: price holds; launch is easy", "want": "skill:witness-claims"},
+  {"ask": "water tracker", "want": "skill:health-habits"},
+  {"ask": "water cups tracker 10 cups", "want": "skill:health-habits"},
+  {"ask": "stretch timer", "want": "skill:health-habits"},
+  {"ask": "start the riot", "want": "skill:riot"},
+  {"ask": "end the riot", "want": "skill:riot"},
+  {"ask": "are things overlapping", "want": "skill:collide"},
+  {"ask": "check for collisions", "want": "skill:collide"},
+  {"ask": "weave a constellation called night ops", "want": "skill:constellation-weaver"},
+  {"ask": "weave a constellation called study from the timer and the note", "want": "skill:constellation-weaver"},
+  {"ask": "summon the constellation night ops", "want": "skill:constellation-weaver"}
 ]
