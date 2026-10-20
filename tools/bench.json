@@ -6675,5 +6675,9 @@
   {"ask": "map the scars of my decisions", "want": "skill:causal-scars"},
   {"ask": "what depends on this decision", "want": "skill:causal-scars"},
   {"ask": "write the opposite of my plan", "want": "skill:counterfactual-draft"},
-  {"ask": "what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish.", "want": "skill:counterfactual-draft"}
+  {"ask": "what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish.", "want": "skill:counterfactual-draft"},
+  {"ask": "remove checked items from the list", "want": "skill:list-tools"},
+  {"ask": "sort the list", "want": "skill:list-tools"},
+  {"ask": "convene a council on whether to rewrite the app", "want": "skill:veto-council"},
+  {"ask": "convene a council on moving offices", "want": "skill:veto-council"}
 ]
