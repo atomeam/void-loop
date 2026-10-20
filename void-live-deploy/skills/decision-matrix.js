@@ -10,7 +10,7 @@ const MAXOPT = 6, MAXCRIT = 8;
 /** the title and options an ask names, or null when it is not a decision-matrix ask. Pure. */
 export function parseDecision(text) {
   const t = tidy(text);
-  const m = /^(?:please\s+)?(?:(?:make|build|create|show|start|give|open|set\s+up)\s+(?:me\s+)?(?:a\s+|an\s+|my\s+|the\s+)?)?(?:(?:weighted\s+)?(?:decision\s+)?(?:matrix|grid)|(?:weighted\s+matrix)|(?:.+?\s+vs\s+.+?))(?:\s+(?:for|about|on|of)\s+(.+?))?(?:\s+please)?$/i.exec(t);
+  const m = /^(?:please\s+)?(?:(?:make|build|create|show|start|give|open|set\s+up)\s+(?:me\s+)?(?:a\s+|an\s+|my\s+|the\s+)?)?(?:(?:(?:weighted\s+)?(?:decision\s+)?(?:matrix|grid))|(?:weighted\s+matrix)|(?:.+?\s+vs\s+.+?))(?:\s+(?:for|about|on|of)\s+(.+?))?(?:\s+please)?$/i.exec(t);
   if (!m) return null;
   const topic = (m[1] || '').trim().slice(0, 80);
   const vs = topic.split(/\s+(?:vs\.?|versus)\s+/i).map((s) => s.trim()).filter(Boolean);
@@ -94,7 +94,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'decision-matrix',
-  examples: ['decision matrix for whether to move to Berlin', 'decision matrix for pasta vs pizza', 'make a decision matrix', 'decision matrix for iphone vs samsung', 'weighted matrix for choosing a college'],
+  examples: ['decision matrix for whether to move to Berlin', 'decision matrix for pasta vs pizza', 'make a decision matrix', 'decision matrix for iphone vs samsung', 'weighted matrix for choosing a college', 'weighted matrix for hiring a designer'],
   nearMisses: ['what is a decision matrix', 'how do I make a decision', 'add milk to my list'],
   parseDecision,
   match(lower, text) { return !!parseDecision(text || lower); },
