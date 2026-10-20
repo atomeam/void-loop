@@ -4,7 +4,7 @@
  * this browser: nothing is uploaded. Ordering it waits for a print-on-demand account (its key as a Pages secret) and a yes
  * on the confirm line, so the card says that plainly and shows no price it has no source for.
  * "make this a poster", "print this card as a poster", "turn this into a poster".
- * A V01D film's poster (asked by Void, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
+ * A Verse film's poster (asked by Verse, 2026-10-15): "film poster", "make a poster for the newest film", "poster for the film
  * miss-board-4" read the film's metadata (skills/films.js filmMeta, /api/films) and add a 9:16 phone-story size for promo.
  */
 import { filmMeta } from './films.js';
@@ -18,13 +18,13 @@ export function posterOf(text) {
   return /^(?:please\s+)?(?:(?:make|print|turn)\s+(?:this|the open card|this card|it)\s+(?:as|into)\s+an?\s+poster|make\s+(?:this|it)\s+(?:an?\s+)?poster|(?:make|print)\s+an?\s+poster\s+(?:of|from)\s+(?:this|this card|it)|poster\s+of\s+this(?:\s+card)?)$/.test(t);
 }
 
-// a V01D film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
-// "order …" stays the confirm line's, and other films ("movie poster for inception") are not V01D's
+// a Verse film's poster: "film poster", "make a poster for the newest film", "poster for the film miss-board-4" -> { which };
+// "order …" stays the confirm line's, and other films ("movie poster for inception") are not Verse's
 export const STORY = { w: 9, h: 16, name: 'phone story', px: [1080, 1920] };
 export function filmPosterOf(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
   if (/^order\b/.test(t)) return null;
-  const OF = "(?:v0[1i]d'?s?\\s+|void'?s?\\s+)?";
+  const OF = "(?:v0[1i]d'?s?\\s+|(?:verse|void)'?s?\\s+|verse'?s?\\s+)?";
   let m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?poster\\s+(?:for|of)\\s+(?:the\\s+)?film\\s+([a-z0-9][a-z0-9-]{2,60}-\\d+)$'));
   if (m) return { which: m[1] };
   m = t.match(new RegExp('^(?:(?:make|create|draw|print|give me)\\s+)?(?:an?\\s+)?(?:promo(?:tional)?\\s+)?(?:poster\\s+(?:for|of)\\s+(?:the\\s+)?(?:newest\\s+|latest\\s+|new\\s+|last\\s+)?' + OF + 'films?|' + OF + 'film\\s+poster)$'));
@@ -33,9 +33,9 @@ export function filmPosterOf(text) {
 // the poster's words for one film: its own hook as the title (without the "| an AI built this itself #Shorts" tail), then
 // where and when it shows. Pure.
 export function filmCard(meta) {
-  const title = String(meta.title || meta.experiment || 'V01D FILMS').replace(/\s*\|.*$/, '').trim() || 'V01D FILMS';
+  const title = String(meta.title || meta.experiment || 'VERSE FILMS').replace(/\s*\|.*$/, '').trim() || 'VERSE FILMS';
   const day = /^\d{4}-\d{2}-\d{2}$/.test(meta.day || '') ? new Date(meta.day + 'T12:00:00Z').toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric', timeZone: 'UTC' }) : '';
-  return { title, text: 'V01D FILMS · Now showing' + (day ? ' · ' + day : '') + '\nAn AI built this experiment by itself and filmed it.\nWatch free at a-to-mind.com/films' };
+  return { title, text: 'VERSE FILMS · Now showing' + (day ? ' · ' + day : '') + '\nAn AI built this experiment by itself and filmed it.\nWatch free at a-to-mind.com/films' };
 }
 
 // Where each line goes on a w×h poster: the title large at the top, the card's text wrapped inside the margins, a small
@@ -53,7 +53,7 @@ export function layoutPoster({ title, text }, w, h, measure) {
   };
   const titleSize = Math.round(w * 0.07), bodySize = Math.round(w * 0.028), markSize = Math.round(w * 0.016);
   let y = margin + titleSize, cut = false;
-  for (const l of wrap(title || 'V01D', titleSize).slice(0, 3)) { lines.push({ text: l, size: titleSize, x: margin, y, weight: 600 }); y += titleSize * 1.15; }
+  for (const l of wrap(title || 'Verse', titleSize).slice(0, 3)) { lines.push({ text: l, size: titleSize, x: margin, y, weight: 600 }); y += titleSize * 1.15; }
   y += bodySize * 1.2;
   const foot = h - margin, last = foot - markSize * 3;
   for (const para of String(text || '').split(/\n+/).map((p) => p.trim()).filter(Boolean)) {
@@ -97,7 +97,7 @@ function draw(card, w, h) {
 
 async function filmPoster(want, api) {
   const { showPage } = api;
-  const el0 = showPage((p) => { p.innerHTML = '<h2>A poster for a V01D film</h2><p>\u2026</p>'; });
+  const el0 = showPage((p) => { p.innerHTML = '<h2>A poster for a Verse film</h2><p>\u2026</p>'; });
   let meta = null;
   try {
     const j = await fetch('/api/films').then((r) => r.json());
@@ -105,8 +105,8 @@ async function filmPoster(want, api) {
     meta = want.which === 'newest' ? all[0] : all.find((f) => f.experiment === want.which || f.id === want.which);
   } catch (_) {}
   if (api._pageStill && !api._pageStill(el0)) return 'poster';
-  if (!meta) { el0.innerHTML = '<h2>A poster for a V01D film</h2><p>' + (want.which === 'newest' ? 'The films could not be read just now. Try again in a minute.' : 'No V01D film of that experiment yet. Say <b>film metadata</b> to see them all.') + '</p>'; return 'poster'; } // void-review: ok (fixed strings only)
-  return showPoster(filmCard(meta), api, [STORY, ...POSTER_SIZES], 'A poster for a V01D film', 'From the film: ');
+  if (!meta) { el0.innerHTML = '<h2>A poster for a Verse film</h2><p>' + (want.which === 'newest' ? 'The films could not be read just now. Try again in a minute.' : 'No Verse film of that experiment yet. Say <b>film metadata</b> to see them all.') + '</p>'; return 'poster'; } // void-review: ok (fixed strings only)
+  return showPoster(filmCard(meta), api, [STORY, ...POSTER_SIZES], 'A poster for a Verse film', 'From the film: ');
 }
 
 async function run(text, api) {
@@ -148,4 +148,5 @@ export default {
   nearMisses: ['what is a poster', 'poster sizes', 'share this card', 'how do I hang a poster', 'order this as a poster'],
   match(lower, text) { return posterOf(text) || !!filmPosterOf(text); },
   run,
+  suite() { return { ok: !!filmPosterOf('film poster') && filmPosterOf('make a poster for the newest film').which === 'newest' && posterOf('make this a poster') }; },
 };
