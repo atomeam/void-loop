@@ -32,16 +32,17 @@ export function privateFree(text) {
 // the sentence stays. Verse's own asks and words are not touched. The repo keeps the quotes (append-only records, build notes);
 // only what is served is filtered (tools/public-ledger.mjs, tools/self-context.mjs, tools/public-quotes.mjs). Pure.
 const WHO = String.raw`(?:the\s+owner|owner|Adam|Atom)`;
-const QUOTED = String.raw`["“][^"”]{0,900}["”]`; // a quote may wrap onto the next comment line
+const QUOTED = String.raw`(?:["“][^"”]{0,900}["”]|‘[^’]{0,300}’|(?<![\w])'[^'\n]{1,300}'(?![\w]))`; // a quote may wrap onto the next comment line; single quotes count too (2026-10-20: ('Void is now Verse …') got through)
 const QUOTES = String.raw`${QUOTED}(?:\s*(?:[;,]|and|then)\s*${QUOTED})*`;
 const ATTRIB_IN_PARENS = new RegExp(String.raw`\s*\([^()]*\b${WHO}\b[^()]*?:\s*${QUOTES}[^()]*\)`, 'g');
 const ATTRIB_BARE = new RegExp(String.raw`(\b${WHO}\b[^"“”\n:]{0,60}?):\s*${QUOTES}`, 'g');
+const QUOTE_IN_OWNER_PARENS = new RegExp(String.raw`\s*\([^()]*\b${WHO}\b[^()]*${QUOTED}[^()]*\)`, 'g'); // "(owner, 2026-10-18, 'fix this': …)": the quote before the colon
 const WORDS = new RegExp(String.raw`(\b(?:in\s+)?(?:the\s+)?(?:owner|Adam|Atom)'s\s+(?:own\s+)?words)[,:]?\s*${QUOTES}`, 'g'); // "in the owner's words "…""
-export const quotesOwner = (s) => new RegExp(String.raw`\b${WHO}\b[^"“”\n:]{0,60}?:\s*${QUOTED}`).test(String(s || '')) || new RegExp(WORDS.source).test(String(s || '')); // both patterns are built from this file's own constants, never from the text tested (void-review: ok)
+export const quotesOwner = (s) => new RegExp(String.raw`\b${WHO}\b[^"“”\n:]{0,60}?:\s*${QUOTED}`).test(String(s || '')) || new RegExp(QUOTE_IN_OWNER_PARENS.source).test(String(s || '')) || new RegExp(WORDS.source).test(String(s || '')); // both patterns are built from this file's own constants, never from the text tested (void-review: ok)
 export function quoteFree(text) {
   const t = String(text == null ? '' : text);
   if (!quotesOwner(t)) return t;
-  return t.replace(ATTRIB_IN_PARENS, '').replace(ATTRIB_BARE, '$1').replace(WORDS, '$1').replace(/[ \t]{2,}/g, ' ').replace(/\s+([.,;:])/g, '$1');
+  return t.replace(ATTRIB_IN_PARENS, '').replace(QUOTE_IN_OWNER_PARENS, '').replace(ATTRIB_BARE, '$1').replace(WORDS, '$1').replace(/[ \t]{2,}/g, ' ').replace(/\s+([.,;:])/g, '$1');
 }
 /** every string in a JSON value through quoteFree (keys untouched). Pure. */
 export const deepQuoteFree = (v) => (typeof v === 'string' ? quoteFree(v) : Array.isArray(v) ? v.map(deepQuoteFree) : v && typeof v === 'object' ? Object.fromEntries(Object.entries(v).map(([k, x]) => [k, deepQuoteFree(x)])) : v);

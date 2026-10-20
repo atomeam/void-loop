@@ -104,8 +104,11 @@ export function plan(data, { n = 6, first = [] } = {}) {
   const have = new Set((Array.isArray(data.bench) ? data.bench : (data.bench && (data.bench.asks || data.bench.items)) || []).map((r) => String(r && r.ask || '').trim().toLowerCase()));
   // the card cycle's next cards come first (tools/card-cycle.mjs: every card gets a turn), then the least proven ones
   const ranked = rank(data), on = new Set(first), ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name)));
-  const picks = ordered.slice(0, Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6))), candidates = [], seen = new Set();
-  for (const p of picks) {
+  // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
+  // the weakest skills that can still be hardened (2026-10-20: the top six were all done, the plan came back empty and grow-self stopped)
+  const want = Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6)), picks = [], candidates = [], seen = new Set();
+  for (const p of ordered) {
+    if (picks.length >= want) break;
     let k = 0;
     for (const ex of p.examples) {
       const a = ex.trim(), key = a.toLowerCase();
@@ -113,6 +116,7 @@ export function plan(data, { n = 6, first = [] } = {}) {
       if (!usable(a) || have.has(key) || seen.has(key)) continue;
       seen.add(key); k++; candidates.push({ ask: a, want: 'skill:' + p.name });
     }
+    if (k) picks.push(p);
   }
   return { picks: picks.map((p) => ({ name: p.name, score: p.score, reasons: p.reasons })), candidates };
 }

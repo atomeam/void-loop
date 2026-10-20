@@ -1765,7 +1765,7 @@ Object.values(things).forEach((th) => {
       ext: { state: ext, esc, draft: extDraft, draftSaid, proposalFromTab, propose: extPropose, boxName, stepsOf, ACT_WHY, DRAFT_WHY },
       alterThing: (th, kind, lower) => applyTargetAlters(th, kind, lower), // the shared targeting: a kind's own words, then colour, then position
       emit: (th, value) => emit(th, value), // a skill's own thing hands its output down its arrows (frontier #24) // the "look what I made" walkthrough closes the card a step opened (skills/showcase.js)
-      ask: (t, attach) => { confirmAttach = attach && typeof attach === 'object' ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
+      ask: (t, attach) => { quietAsk = !!(attach && attach.quiet); confirmAttach = attach && typeof attach === 'object' && !attach.quiet ? attach : null; return handle(String(t || '')); }, // a card that opens something asks as if typed; `attach` rides a gated ask into its fingerprint (the proposal's exact draft)
       log: (a) => loopLog(a) }; // a stage thing's own event (a shaken 8 ball) goes in the same history as asks
 
     // Click any stage object or person and it lifts in the hand. A flick throws it off the
@@ -4826,6 +4826,7 @@ say('nothing selected to remove');
     const NO_RE = /^(no|n|nope|cancel|stop|don'?t|no thanks|never ?mind)\s*[.!]?$/;
     let pendingConfirm = null, lastConfirm = null;
     let confirmAttach = null; // set by stageApi.ask for one ask: exact content (the proposal draft) the yes must cover
+    let quietAsk = false; // set by stageApi.ask(t, { quiet: true }) for one ask: a demo the person did not type (the walkthrough's previews), kept out of their recent asks
     async function approvalCall(body) {
       const r = await fetch('/api/approval', { method: 'POST', headers: { authorization: 'Bearer ' + ownerToken(), 'content-type': 'application/json' }, body: JSON.stringify(body) });
       let j = null; try { j = await r.json(); } catch (_) {}
@@ -5767,6 +5768,7 @@ say('nothing selected to remove');
     }
     async function handle(raw) {
       const typed = (raw || '').trim();
+      const quiet = quietAsk; quietAsk = false; // read once: an ask this one starts is the person's again
       if (!typed) return;
       relayAsk = relayingIn ? null : typed; // a summon from the person goes to a shared Verse; one that came from it does not go back
       const fixed = await fuzzyFix(fixTypos(typed)); typoFix = fixed !== typed ? { from: typed, to: fixed } : null; // the hand-written slips, then the fuzzy layer
@@ -5780,7 +5782,7 @@ say('nothing selected to remove');
       { const K = await keeperReady; const k = K && K.keeperOf(text); if (k) { currentAsk = text; showPage((p) => { p.innerHTML = '<h2>' + esc(text) + '</h2><p class="kept">' + esc(k.answer) + '</p><div class="src">kept by Verse</div>'; }); say(''); loopLog({ domain: 'void.page', ask: '[kept]', score: 'pass', note: 'kept ' + k.kind }); return; } }
       // a pasted Verse card (its copied text, or just its code line) opens as that card again; nothing is sent anywhere (lib/card-share.js)
       { const sh = await shareReady; const sc = sh && sh.parse(typed); if (sc) { showSharedCard(sc); return; } }
-      rememberAsk(text);
+      if (!quiet) rememberAsk(text); // a walkthrough preview is Verse's ask, not the person's (owner, 2026-10-20: "that spectral line is weird")
       if (pendingForget && forgetAnswer(lower0)) return;
       if (pendingPublish && publishAnswer(lower0)) return;
       if (await handlePublishAsk(lower0)) return;
@@ -5877,6 +5879,16 @@ say('nothing selected to remove');
       return words.length && words.every((w) => hl.includes(w)) ? 1 : 0;
     }
     const ASKS_KEY = 'a2m.void.asks.v1';
+    // once per device: the walkthrough's previews that were saved as the person's own asks before they were kept out (2026-10-20) are taken
+    // back out. The previewed asks are the ones the walkthrough remembers showing (a2m.void.shown.v1).
+    try {
+      if (!localStorage.getItem('a2m.void.asks.clean.v1')) {
+        const shown = new Set((JSON.parse(localStorage.getItem('a2m.void.shown.v1') || '[]') || []).map((x) => String(x).trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ')));
+        const kept = JSON.parse(localStorage.getItem(ASKS_KEY) || '[]');
+        if (Array.isArray(kept) && shown.size) localStorage.setItem(ASKS_KEY, JSON.stringify(kept.filter((x) => !shown.has(String(x).trim().toLowerCase().replace(/[’']/g, "'").replace(/[?!.]+$/, '').replace(/\s+/g, ' ')))));
+        localStorage.setItem('a2m.void.asks.clean.v1', '1');
+      }
+    } catch (_) {}
     function recentAsks(n = 5) { // the box shows the newest 5; 12 are kept for the ask clipboard card (skills/ask-clipboard.js)
       try {
         const raw = JSON.parse(localStorage.getItem(ASKS_KEY) || '[]');

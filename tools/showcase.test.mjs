@@ -2,7 +2,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
-import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, everythingOf, proved } from '../void-live-deploy/skills/showcase.js';
+import { showcaseOf, playable, sinceLast, whatsNew, newestAt, lineOf, KNOWN, everythingOf, proved, hardenedLine, trayOf } from '../void-live-deploy/skills/showcase.js';
 
 const e = (at, kind, what, extra = {}) => ({ at, by: 'claude', kind, what, ...extra });
 
@@ -52,19 +52,24 @@ test('every known build in the real ledger still matches a line, and its ask is 
   }
 });
 
-test('the site shows the owner\'s words as he meant them, spelled right; a quote with no corrected form keeps only the credit (owner, 2026-10-13)', async () => {
-  const { publicWhat, OWNER_WORDS } = await import('../void-live-deploy/skills/growth-tree.js');
+test('the site never quotes the owner, in any quote marks, and drops the brackets that credit him (owner, 2026-10-20)', async () => {
+  const { publicWhat } = await import('../void-live-deploy/skills/growth-tree.js');
   const { ordered } = await import('../void-live-deploy/skills/growth.js');
   const { lineOf } = await import('../void-live-deploy/skills/showcase.js');
   const assert = (await import('node:assert/strict')).default;
-  const typo = Object.keys(OWNER_WORDS).find((k) => /Theatre/.test(k));
-  assert.equal(publicWhat('Verse\'s will made real (owner: "' + typo + '"): Verse hears'), 'Verse\'s will made real (owner: "if it is theatre, it needs to be seriously worked on until Verse\'s will is more real"): Verse hears');
-  assert.equal(publicWhat('a card (the owner: "make it bluer plz"): it is'), 'a card (the owner): it is');
+  assert.equal(publicWhat('a card (the owner: "make it bluer plz"): it is'), 'a card: it is');
+  assert.equal(publicWhat("the self card folds repeats (owner, 2026-10-18, 'fix this': report-to-growth): one line"), 'the self card folds repeats: one line');
+  assert.equal(publicWhat("Void is now Verse everywhere (owner: 'Void is now Verse rename everywhere', scope 'truly everything'); asks still work"), 'Void is now Verse everywhere; asks still work');
+  assert.equal(publicWhat('Verse: the name everywhere (owner, 2026-10-18); the page says Verse'), 'Verse: the name everywhere; the page says Verse');
+  assert.equal(publicWhat('the owner said: "dont do that" and it stopped'), 'the owner said and it stopped');
   assert.equal(publicWhat('the stage keeps its look (2026-10-09)'), 'the stage keeps its look (2026-10-09)');
-  for (const bad of Object.keys(OWNER_WORDS)) {
-    assert.ok(!ordered([{ at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'x (owner: "' + bad + '")' }])[0].what.includes(bad));
-    assert.ok(!lineOf('Will made real (the owner: "' + bad + '"): more').includes(bad));
-  }
+  assert.equal(publicWhat("Verse's own card keeps Verse's words"), "Verse's own card keeps Verse's words");
+  assert.ok(!ordered([{ at: '2026-10-13T00:00:00Z', kind: 'grow', what: 'x (owner: "seriosly")' }])[0].what.includes('seriosly'));
+  assert.ok(!lineOf('Will made real (the owner: "seriosly"): more').includes('seriosly'));
+  // the real ledger: no line the site shows still quotes him
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const left = ledger.map((e) => publicWhat(e.what)).filter((w) => /\b(?:owner|Adam|Atom)\b[^"“‘'\n:]{0,60}?:\s*(?:["“‘][^"”’]{2,}["”’]|(?<![\w])'[^'\n]{2,}'(?![\w]))/i.test(w) || /\((?:[^()]*\b(?:owner|Adam|Atom)\b)[^()]*\)/i.test(w));
+  assert.deepEqual(left.slice(0, 3), []);
 });
 
 test('a build still waiting for its live check is not shown and not marked shown: it is offered the day it answers', () => {
@@ -130,4 +135,21 @@ test('a drop moves the step\'s things to where it landed, kept inside the stage'
   assert.deepEqual(dropDelta({ x: 10, y: 10 }, 300, 200, 800, 600), { dx: 250, dy: 170 });
   assert.deepEqual(dropDelta({ x: 100, y: 100 }, -50, 9999, 800, 600), { dx: -92, dy: 420 }, 'clamped to the stage');
   assert.equal(dropDelta(null, 1, 1, 800, 600), null); assert.equal(dropDelta({ x: 'a', y: 0 }, 1, 1, 800, 600), null);
+});
+
+test('Verse\'s own upgrades say what got better, not "Verse hardened itself" every time (owner, 2026-10-20)', () => {
+  assert.equal(hardenedLine('Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4'), 'Better at calendar file, clock and web4: 9 more ways of asking answered right');
+  assert.equal(hardenedLine('Verse hardened itself: 9 benchmark ask(s) for habit-ring, minimap, recipe-stack, gauge-feedback'), 'Better at habit ring, minimap, recipe stack and 1 more: 9 more ways of asking answered right');
+  assert.equal(hardenedLine('Verse hardened itself: 3 benchmark ask(s) for clock, and the card art floors rise to 0.61 and 0.58'), 'Better at clock: 3 more ways of asking answered right, and sharper card art');
+  assert.equal(hardenedLine('Verse hardened itself: the card art floors rise to 0.61 and 0.58'), 'Sharper card art: my art scores went up');
+  assert.equal(hardenedLine('sticky notes look like real paper'), null);
+  assert.equal(playable({ kind: 'grow', what: 'Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4', try: 'export my calendar' }).line, 'Better at calendar file, clock and web4: 9 more ways of asking answered right');
+  assert.equal(playable({ kind: 'grow', what: 'Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4', try: 'export my calendar', show: 'a chosen line' }).line, 'a chosen line', 'a line written for the person still wins');
+  // the real ledger: no step and no tray chip reads "Verse hardened itself", and the chips tell the upgrades apart
+  const ledger = JSON.parse(readFileSync(new URL('../void-live-deploy/void.growth.json', import.meta.url), 'utf8'));
+  const steps = ledger.filter((e) => /^Verse hardened itself/.test(e.what || '')).map(playable).filter(Boolean);
+  assert.ok(steps.length >= 5, String(steps.length));
+  assert.ok(steps.every((s) => !/hardened itself/i.test(s.line)), JSON.stringify(steps.slice(0, 3)));
+  const chips = trayOf([{ line: 'x' }].concat(steps), 0, 6).map((c) => c.line);
+  assert.equal(new Set(chips).size, chips.length, JSON.stringify(chips));
 });

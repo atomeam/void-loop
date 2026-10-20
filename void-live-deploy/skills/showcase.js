@@ -47,6 +47,23 @@ export function lineOf(what) {
   return cut.length > 90 ? cut.slice(0, 89).replace(/\s+\S*$/, '') + '…' : cut;
 }
 
+/** what one of Verse's own upgrades did, from the line grow-self writes ("Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock,
+ *  web4[, and the card art floors rise to …]"): "Better at calendar file, clock and web4: 9 more ways of asking answered right". The first
+ *  clause alone read "Verse hardened itself" on every one of them (owner, 2026-10-20: "it should be saying the upgrade not just Verse hardened
+ *  itself a bunch of times"). null for any other line. Pure. */
+export function hardenedLine(what) {
+  const m = /^(?:Verse|Void|V01D) hardened itself:\s*(.+)$/i.exec(String(what || '').replace(/\s+/g, ' ').trim());
+  if (!m) return null;
+  const [asksPart, ...rest] = m[1].split(/,? and (?=the card art)/i);
+  const art = /card art/i.test(rest.join(' ') + ' ' + asksPart);
+  const a = /^(\d+) benchmark ask\(s\) for (.+)$/i.exec(asksPart.trim());
+  if (!a) return art ? 'Sharper card art: my art scores went up' : null;
+  const names = a[2].split(/,\s*/).map((x) => x.replace(/-/g, ' ').trim()).filter(Boolean);
+  const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
+  const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
+  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '');
+}
+
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */
 // shipped lines a later change undid: never previewed again (owner, 2026-10-18: the "try:" suggestions were removed, so "real suggestions on the empty stage" is no longer true)
 const RETIRED = [/real suggestions on the empty stage/i];
@@ -55,7 +72,7 @@ export function playable(e) {
   if (!e || !SHOWN_KINDS.has(e.kind)) return null;
   if (RETIRED.some((r) => r.test(String(e.show || '')))) return null;
   if (!lineOf(e.what)) return null; // a line about what Verse studies is never shown
-  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || lineOf(e.what), ask: e.try }; // never the walkthrough itself
+  if (e.try) return showcaseOf(e.try) ? null : { line: e.show || hardenedLine(e.what) || lineOf(e.what), ask: e.try }; // never the walkthrough itself
   const k = KNOWN.find((x) => x.match.test(String(e.what || '')));
   return k ? { line: k.show, ask: k.try } : null;
 }
@@ -248,7 +265,7 @@ async function step(stageApi) {
   place(el);
   const before = new Set(Object.keys(stageApi.things())), pageBefore = document.querySelector('.vpage');
   tour.made = { ids: [], pageBefore };
-  await stageApi.ask(s.ask);
+  await stageApi.ask(s.ask, { quiet: true }); // a preview: not saved as the person's own ask
   if (!tour || tour.steps[tour.i] !== s) return;
   tour.made.ids = Object.keys(stageApi.things()).filter((id) => !before.has(id));
   place(el); // clear of what the step just put up
