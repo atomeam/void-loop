@@ -986,3 +986,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T12:12:53Z | verse | grow | hardened itself: 5 benchmark ask(s) for stage-style, state (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T12:33:33Z | verse | grow | hardened itself: 4 benchmark ask(s) for night-ritual, echo-chamber, swarm-mind (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T12:53:24Z | verse | grow | hardened itself: 2 benchmark ask(s) for homotopy-edit, eigenwork (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
+2026-10-20T13:33:25Z | verse | grow | hardened itself: 4 benchmark ask(s) for causal-scars, counterfactual-draft (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)

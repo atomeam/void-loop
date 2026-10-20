@@ -6671,5 +6671,9 @@
   {"ask": "thought gravity", "want": "skill:swarm-mind"},
   {"ask": "neural field", "want": "skill:swarm-mind"},
   {"ask": "check my edit", "want": "skill:homotopy-edit"},
-  {"ask": "factor my goal launch a podcast", "want": "skill:eigenwork"}
+  {"ask": "factor my goal launch a podcast", "want": "skill:eigenwork"},
+  {"ask": "map the scars of my decisions", "want": "skill:causal-scars"},
+  {"ask": "what depends on this decision", "want": "skill:causal-scars"},
+  {"ask": "write the opposite of my plan", "want": "skill:counterfactual-draft"},
+  {"ask": "what if my assumption is false: people want speed. Document: We ship fast. People want speed, so we skip polish.", "want": "skill:counterfactual-draft"}
 ]
