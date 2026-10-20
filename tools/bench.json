@@ -6691,5 +6691,11 @@
   {"ask": "turn the misses into jobs", "want": "skill:miss-jobs"},
   {"ask": "answer in four channels: should we move to Berlin?", "want": "skill:four-channels"},
   {"ask": "forge the timer and the note", "want": "skill:forge-table"},
-  {"ask": "swarm mind", "want": "skill:swarm-mind"}
+  {"ask": "swarm mind", "want": "skill:swarm-mind"},
+  {"ask": "play battleship", "want": "skill:battleship"},
+  {"ask": "let's play battleship", "want": "skill:battleship"},
+  {"ask": "battleship board game", "want": "skill:battleship"},
+  {"ask": "play monopoly", "want": "skill:monopoly"},
+  {"ask": "play voidquest", "want": "skill:monopoly"},
+  {"ask": "play solar quest", "want": "skill:monopoly"}
 ]
