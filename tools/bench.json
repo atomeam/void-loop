@@ -6645,5 +6645,14 @@
   {"ask": "bench alarms", "want": "skill:bench"},
   {"ask": "align left", "want": "skill:stage-arrange"},
   {"ask": "align the notes to the right", "want": "skill:stage-arrange"},
-  {"ask": "distribute spacing", "want": "skill:stage-arrange"}
+  {"ask": "distribute spacing", "want": "skill:stage-arrange"},
+  {"ask": "show only clocks", "want": "skill:type-filter"},
+  {"ask": "show only notes", "want": "skill:type-filter"},
+  {"ask": "filter the stage by type", "want": "skill:type-filter"},
+  {"ask": "export my stage as json", "want": "skill:stage-export"},
+  {"ask": "import a stage from json", "want": "skill:stage-export"},
+  {"ask": "email-ready text of my stage", "want": "skill:stage-export"},
+  {"ask": "search kept items for pizza", "want": "skill:stage-find"},
+  {"ask": "search the stage for milk", "want": "skill:stage-find"},
+  {"ask": "show all timers on the stage", "want": "skill:stage-find"}
 ]
