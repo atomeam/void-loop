@@ -6494,5 +6494,10 @@
   {"ask": "living cards", "want": "skill:living-cards-mind"},
   {"ask": "what do you know about me", "want": "skill:memory-graph"},
   {"ask": "what are my interests", "want": "skill:memory-graph"},
-  {"ask": "what do I usually ask for", "want": "skill:memory-graph"}
+  {"ask": "what do I usually ask for", "want": "skill:memory-graph"},
+  {"ask": "dyslexia friendly font", "want": "skill:accessibility-modes"},
+  {"ask": "turn on reduced motion", "want": "skill:accessibility-modes"},
+  {"ask": "colorblind safe palette", "want": "skill:accessibility-modes"},
+  {"ask": "summon everything except urgency", "want": "skill:negative-summons"},
+  {"ask": "summon everything except noise", "want": "skill:negative-summons"}
 ]
