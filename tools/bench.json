@@ -6709,5 +6709,6 @@
   {"ask": "the guide", "want": "skill:guide"},
   {"ask": "show me everything you can do", "want": "skill:guide"},
   {"ask": "favorite this", "want": "skill:bookmarks"},
-  {"ask": "unfavorite this", "want": "skill:bookmarks"}
+  {"ask": "unfavorite this", "want": "skill:bookmarks"},
+  {"ask": "a question I'm avoiding: should I quit my job", "want": "skill:hunting-question"}
 ]
