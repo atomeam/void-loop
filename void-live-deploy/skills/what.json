@@ -107,6 +107,7 @@
  "grades": "GPA from your grades, the score you need on a final, cumulative GPA, and a percent as a letter grade",
  "group": "\"group the clock and the note\", \"move the group to the top left\", \"make the group bigger\", \"ungroup\"",
  "growth": "\"growth\" / \"how have you grown\": Verse's growth ledger, newest first",
+ "growth-speed": "\"growth speed gauge\", \"show your growth speed\": a gauge on the stage for how fast Verse's own asks become…",
  "guide": "The book: everything Verse can do, one page each, read like a Skyrim book",
  "habit-ring": "\"habit ring for write, walk, sleep\" puts 1 to 7 habits on the stage as SVG rings; tap a ring to mark today…",
  "health-habits": "Small daily trackers on one stage card: \"water tracker\" (cups), \"stretch timer\", \"mood tracker\" (one tap)…",

@@ -5687,5 +5687,6 @@
   {"at": "2026-10-20T04:31:44Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 12 benchmark ask(s) for duel, pong, snake, study-cards", "try": "duel"},
   {"at": "2026-10-20T05:11:59Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 6 benchmark ask(s) for time-capsule, v01d-fixes", "try": "seal a time capsule until 2027-01-01"},
   {"at": "2026-10-20T05:21:49Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4", "try": "export my calendar"},
-  {"at": "2026-10-20T05:32:08Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 8 benchmark ask(s) for shortcut, whisper-network, witness-claims", "try": "what should I do now"}
+  {"at": "2026-10-20T05:32:08Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 8 benchmark ask(s) for shortcut, whisper-network, witness-claims", "try": "what should I do now"},
+  {"at": "2026-10-20T08:34:21Z", "by": "claude", "kind": "build", "what": "Backlog digest says how many days each unbuilt ask has waited, the oldest and the median (asked by Verse)", "asked": "Add a 'velocity' metric to the backlog digest showing how many days an ask has remained unbuilt", "show": "Backlog digest shows how many days each ask has waited", "try": "digest your backlog"}
 ]
