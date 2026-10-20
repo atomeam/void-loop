@@ -6,8 +6,8 @@
 //   pair key   unordered: the two idea keys sorted and joined with "|", so merge(A, B) and merge(B, A) are one cached result.
 //   idea key   folded: accents removed, lower case, letters and digits only, a leading "a/an/the/some/my" dropped, a trailing plural "s"
 //              dropped, at most 60 characters ("A Pizza!" and "pizzas" are the same idea).
-//   Power      = max(parent powers) + floor(min(parent powers) / 2), at most 99.
-//   Resistance = the average of the parents' resistances, rounded up, at most 99.
+//   Power      = max(parent powers) + floor(min(parent powers) / 2), at most 9 (the cards' 0-9 scale).
+//   Resistance = the average of the parents' resistances, rounded up, at most 9.
 //   Income     = sum of the parents' incomes, at most 9.
 //   cost       = ceil((Power + Resistance) / 4), never below the dearer parent's cost, 1 to 9.
 //   depth      = max(parent depths) + 1; rarity rises with depth: 1 Uncommon, 2 Rare, 3 or more Mythic (depth 0, an unmerged idea, is Common).
@@ -17,7 +17,7 @@
 // The word list for the deterministic name is the parents' own names: with no model, a merge still has a readable name.
 
 const KEY_MAX = 60, NAME_MAX = 40, LINE_MAX = 120;
-export const LIMITS = { KEY_MAX, NAME_MAX, LINE_MAX, POWER_MAX: 99, RESISTANCE_MAX: 99, INCOME_MAX: 9, COST_MAX: 9, KINDS_MAX: 3 };
+export const LIMITS = { KEY_MAX, NAME_MAX, LINE_MAX, POWER_MAX: 9, RESISTANCE_MAX: 9, INCOME_MAX: 9, COST_MAX: 9, KINDS_MAX: 3 };
 export const TIER_BY_DEPTH = ['experiment', 'tested', 'checked', 'proven']; // keys of RARITY in lib/card-frame.js: Common, Uncommon, Rare, Mythic
 
 /** the folded key of an idea's name, or '' when nothing is left. Pure. */
@@ -50,11 +50,11 @@ export function freshCard(name) {
 export function cardFromStats(name, c) {
   const kind = String((c && c.typeLine) || '').split(/\s+[\u2014-]\s+/)[0].trim();
   return { name: sanitiseName(name) || freshCard(name).name, key: ideaKey(name), kinds: [kind || 'Skill'],
-    power: int(c && c.power, 1, 99, 1), resistance: int(c && c.toughness, 1, 99, 1), income: int(c && c.income, 0, 9, 0), cost: int(c && c.cost, 1, 9, 1), depth: 0 };
+    power: int(c && c.power, 1, 9, 1), resistance: int(c && c.toughness, 1, 9, 1), income: int(c && c.income, 0, 9, 0), cost: int(c && c.cost, 1, 9, 1), depth: 0 };
 }
 
 const norm = (c) => ({ name: String(c.name || ''), key: String(c.key || ideaKey(c.name)), kinds: Array.isArray(c.kinds) && c.kinds.length ? c.kinds.map(String) : ['Idea'],
-  power: int(c.power, 1, 99, 1), resistance: int(c.resistance, 1, 99, 1), income: int(c.income, 0, 9, 0), cost: int(c.cost, 1, 9, 1), depth: int(c.depth, 0, 99, 0) });
+  power: int(c.power, 1, 9, 1), resistance: int(c.resistance, 1, 9, 1), income: int(c.income, 0, 9, 0), cost: int(c.cost, 1, 9, 1), depth: int(c.depth, 0, 99, 0) });
 /** the two cards in key order (ties keep their given order, which cannot matter: equal keys are one idea). Pure. */
 export function ordered(a, b) { const x = norm(a), y = norm(b); return x.key <= y.key ? [x, y] : [y, x]; }
 
@@ -69,8 +69,9 @@ export function mergeKinds(a, b) {
 /** the merged card's numbers from its parents by the fixed rules above: { power, resistance, income, cost, depth, tier }. Pure. */
 export function mergeStats(a, b) {
   const [x, y] = ordered(a, b);
-  const power = Math.min(99, Math.max(x.power, y.power) + Math.floor(Math.min(x.power, y.power) / 2));
-  const resistance = Math.min(99, Math.ceil((x.resistance + y.resistance) / 2));
+  // a merge stays on the cards' 0-9 scale (lib/card-frame.js asksResistance): two strong parents make a 9, never a 13
+  const power = Math.min(9, Math.max(x.power, y.power) + Math.floor(Math.min(x.power, y.power) / 2));
+  const resistance = Math.min(9, Math.ceil((x.resistance + y.resistance) / 2));
   const income = Math.min(9, x.income + y.income);
   const cost = Math.min(9, Math.max(1, Math.ceil((power + resistance) / 4), x.cost, y.cost));
   const depth = Math.max(x.depth, y.depth) + 1;
