@@ -6608,5 +6608,22 @@
   {"ask": "check for collisions", "want": "skill:collide"},
   {"ask": "weave a constellation called night ops", "want": "skill:constellation-weaver"},
   {"ask": "weave a constellation called study from the timer and the note", "want": "skill:constellation-weaver"},
-  {"ask": "summon the constellation night ops", "want": "skill:constellation-weaver"}
+  {"ask": "summon the constellation night ops", "want": "skill:constellation-weaver"},
+  {"ask": "walk the archive", "want": "skill:archive-of-one"},
+  {"ask": "walk me through the archive", "want": "skill:archive-of-one"},
+  {"ask": "open my archive of one", "want": "skill:archive-of-one"},
+  {"ask": "immune check: make the app better and also fix everything", "want": "skill:ask-immune"},
+  {"ask": "check my ask for vague goals", "want": "skill:ask-immune"},
+  {"ask": "immune check", "want": "skill:ask-immune"},
+  {"ask": "show my clipboard stack", "want": "skill:copy-stack"},
+  {"ask": "last 5 copies", "want": "skill:copy-stack"},
+  {"ask": "copy item 2 from the clipboard stack", "want": "skill:copy-stack"},
+  {"ask": "dating profile", "want": "skill:dating"},
+  {"ask": "dating profile builder", "want": "skill:dating"},
+  {"ask": "icebreaker coach", "want": "skill:dating"},
+  {"ask": "show the undo pile", "want": "skill:dismissed-pile"},
+  {"ask": "what did I dismiss", "want": "skill:dismissed-pile"},
+  {"ask": "last 20 dismissed", "want": "skill:dismissed-pile"},
+  {"ask": "echo this", "want": "skill:echo-disagrees"},
+  {"ask": "keep the echo", "want": "skill:echo-disagrees"}
 ]
