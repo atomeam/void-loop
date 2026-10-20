@@ -2,6 +2,33 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-20T20:17:20.159Z",
+   "sha": "c730f6d7ff96a1738f128ff39802c84ebfbf73bd",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39490033962",
+   "suite": "browser suite on main",
+   "checks": [
+    "aesthetic perimeter: selected text is violet, not the browser blue; scrolling boxes use a thin bar; the depth filter pill that is on looks different from one that is off",
+    "suite ran to the end"
+   ],
+   "touched": [
+    "void-live-deploy/functions/api/publish.js",
+    "void-live-deploy/functions/api/routines.js",
+    "void-live-deploy/lib/pages.js",
+    "void-live-deploy/lib/shared-routines.js",
+    "void-live-deploy/skills/share.js",
+    "docs/reinvest.md",
+    "domains/void.agents.log.md",
+    "domains/void.better.json",
+    "domains/void.pit-crew.json",
+    "domains/void.reinvest.json",
+    "findings/rides/2026-10-20T1827.json",
+    "tools/bench.json",
+    "tools/card-cycle.json",
+    "tools/retest.json",
+    "tools/skills-smoke.json"
+   ]
+  },
+  {
    "at": "2026-10-20T09:35:39.419Z",
    "sha": "bf3ad0857b8a88fe7a549922be0704687b2e089d",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39398227895",
@@ -791,27 +818,6 @@
     "void-live-deploy/skills/families.json",
     "void-live-deploy/skills/guide.json",
     "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-18T17:08:04.717Z",
-   "sha": "b7e52007e6e65b6d4ab9f17a746a5164c53599d5",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39146847584",
-   "suite": "browser suite on main",
-   "checks": [
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "docs/MAP.md",
-    "domains/void.agents.log.md",
-    "domains/void.frontier.md",
-    "tools/incident-log.mjs",
-    "tools/incident-log.test.mjs",
-    "tools/test_void.mjs",
-    "void-live-deploy/skills/incident.js",
-    "void-live-deploy/void.growth.json",
-    "void-live-deploy/incidents.json"
    ]
   }
  ]
