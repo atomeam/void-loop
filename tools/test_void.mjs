@@ -2868,6 +2868,26 @@ try {
         && !/I made/.test(r.reload) && !r.typed && /nothing new since you last looked.*for all 4/.test(r.typedSaid) && /^1 of 4 · Everything I made/.test(r.all) && !P.errors.length,
       JSON.stringify({ ...r, errors: P.errors }).slice(0, 900));
     await P.ctx.close(); }
+  // the walkthrough says what Verse's own upgrades did, and its previews are Verse's asks, not yours (owner, 2026-10-20: "it should be saying the
+  // upgrade not just Verse hardened itself a bunch of times"; "that spectral line is weird", a preview saved in the person's recent asks)
+  if (want("look what I made: an upgrade says what got better, and its preview stays out of your recent asks")) {
+    const LEDGER = [{ at: '2026-10-12T02:00:00Z', by: 'verse', kind: 'grow', what: 'Verse hardened itself: 9 benchmark ask(s) for counter, clock, web4', try: 'make a counter' }];
+    const P = await fresh(() => { if (!sessionStorage.getItem('sc-q')) { sessionStorage.setItem('sc-q', '1'); localStorage.setItem('a2m.void.growthSeen.v1', '2026-10-11T00:00:00Z');
+      localStorage.setItem('a2m.void.asks.v1', JSON.stringify(['spectral review of Our plan is very simple', 'my own ask'])); localStorage.setItem('a2m.void.shown.v1', JSON.stringify(['spectral review of our plan is very simple'])); } });
+    await P.ctx.route(/\/void\.growth\.json(?:\?|$)/, (r) => r.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(LEDGER) }));
+    await P.p.reload(); await P.p.waitForTimeout(500);
+    const asks = () => P.p.evaluate(() => JSON.parse(localStorage.getItem('a2m.void.asks.v1') || '[]'));
+    const cleaned = await asks();
+    await P.p.mouse.move(220, 220);
+    await until(async () => P.p.$('[data-showcase="show"]'), 8000); await P.p.click('[data-showcase="show"]');
+    const bar = await until(async () => ((await P.state()).some((t) => t.kind === 'counter') ? P.p.$eval('#showcase-bar', (e) => e.innerText.replace(/\s+/g, ' ')) : ''), 6000).catch(() => '');
+    const afterPreview = await asks();
+    await P.ask('sticky note buy milk', 800); const afterTyped = await asks();
+    check('look what I made: an upgrade Verse made itself reads "Better at counter, clock and web4: 9 more ways of asking answered right", not "Verse hardened itself"; its preview puts the counter up without saving "make a counter" as your ask, a typed ask is still saved, and a preview saved before this is taken out of your recent asks once',
+      /Better at counter, clock and web4: 9 more ways of asking answered right/.test(bar) && !/hardened itself/i.test(bar)
+        && JSON.stringify(cleaned) === '["my own ask"]' && !afterPreview.includes('make a counter') && afterTyped[0] === 'sticky note buy milk' && !P.errors.length,
+      JSON.stringify({ bar, cleaned, afterPreview, afterTyped, errors: P.errors }));
+    await P.ctx.close(); }
   // the preview proves itself (owner, 2026-10-16: "the preview is supposed to actually preview what it says it almost never does"): a
   // step whose ask nothing answers says so on its line and files the ask as a miss (preview:nothing-shown); a step that puts a thing
   // on the stage is left alone

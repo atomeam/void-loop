@@ -16,8 +16,12 @@ const esc = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const FILLER_RE = new RegExp('\\b(?:' + FILLER.map(esc).join('|') + ')\\b', 'gi');
 const CONN_RE = new RegExp('\\b(?:' + CONNECTIVES.map(esc).join('|') + ')\\b', 'gi');
 
-/** the text of a "spectral review of ..." ask, or null. Pure. */
+// what a bare "spectral review" shows: a sample paragraph Verse wrote, with a thesis, an argument and some filler for the high band to strike.
+// The examples used to be a pasted sentence ("spectral review of Our plan is very simple…"), which read like a person's own words on the page.
+export const SAMPLE = 'A good map shows the way. It works because every road has a name, and the names honestly really help. However, a map that basically shows everything is quite literally hard to read.';
+/** the text of a "spectral review of ..." ask (a bare "spectral review" is the sample), or null. Pure. */
 export function textOf(text) {
+  if (/^\s*(?:show\s+me\s+(?:a\s+)?)?spectral\s+review(?:\s+(?:demo|sample|example))?\s*[.!?]?\s*$/i.test(String(text || ''))) return SAMPLE;
   const m = /^\s*(?:please\s+)?(?:(?:give|do|run|make)\s+(?:me\s+)?(?:a\s+)?)?spectral\s+(?:review|edit|pass)\s*(?:of|on|for|:)\s*([\s\S]{12,})$/i.exec(String(text || ''));
   return m ? m[1].trim().slice(0, MAX_TEXT) : null;
 }
@@ -122,7 +126,7 @@ export function ask(lower, text, stageApi) {
 
 export default {
   name: 'spectral-review',
-  examples: ['spectral review of Our plan is very simple. We basically just ship it, because users really want it.', 'spectral review: I think this is actually quite good, but honestly it needs work.'],
+  examples: ['spectral review', 'spectral review of A good map shows the way, because every road has a name. However, it honestly really needs a legend.'],
   nearMisses: ['spectral analysis of the sun', 'review my essay', 'what is spectral clustering'],
   textOf,
   match(lower, text) { return !!textOf(text || lower); },
