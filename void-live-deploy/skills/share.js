@@ -1,5 +1,5 @@
 /**
- * share skill — a link to this card (plan item 10, shared Voids)
+ * share skill — a link to this card (plan item 10, shared Verses)
  * Uses the share target already on Verse (?share_text=). Does not publish, rename, or send.
  * "share this card", "share this card: rain in Lisbon".
  */
