@@ -6669,5 +6669,7 @@
   {"ask": "begin the night ritual", "want": "skill:night-ritual"},
   {"ask": "replay my best answers from this week", "want": "skill:echo-chamber"},
   {"ask": "thought gravity", "want": "skill:swarm-mind"},
-  {"ask": "neural field", "want": "skill:swarm-mind"}
+  {"ask": "neural field", "want": "skill:swarm-mind"},
+  {"ask": "check my edit", "want": "skill:homotopy-edit"},
+  {"ask": "factor my goal launch a podcast", "want": "skill:eigenwork"}
 ]

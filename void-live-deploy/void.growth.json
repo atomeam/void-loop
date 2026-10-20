@@ -5700,5 +5700,6 @@
   {"at": "2026-10-20T11:33:06Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 9 benchmark ask(s) for type-filter, stage-export, stage-find", "try": "show only clocks"},
   {"at": "2026-10-20T11:53:05Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 6 benchmark ask(s) for stage-organize, stage-print", "try": "put the kept cards in folder recipes"},
   {"at": "2026-10-20T12:12:54Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 5 benchmark ask(s) for stage-style, state", "try": "set opacity to 50%"},
-  {"at": "2026-10-20T12:33:33Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 4 benchmark ask(s) for night-ritual, echo-chamber, swarm-mind", "try": "begin the night ritual"}
+  {"at": "2026-10-20T12:33:33Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 4 benchmark ask(s) for night-ritual, echo-chamber, swarm-mind", "try": "begin the night ritual"},
+  {"at": "2026-10-20T12:53:24Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 2 benchmark ask(s) for homotopy-edit, eigenwork", "try": "check my edit"}
 ]
