@@ -6544,5 +6544,15 @@
   {"ask": "add photos", "want": "skill:photos"},
   {"ask": "make this a poster", "want": "skill:poster"},
   {"ask": "print this card as a poster", "want": "skill:poster"},
-  {"ask": "turn this into a poster", "want": "skill:poster"}
+  {"ask": "turn this into a poster", "want": "skill:poster"},
+  {"ask": "flow canvas", "want": "skill:flow-canvas"},
+  {"ask": "adaptive flow canvas", "want": "skill:flow-canvas"},
+  {"ask": "show me the adaptive flow canvas", "want": "skill:flow-canvas"},
+  {"ask": "attention field mind", "want": "skill:attention-field-mind"},
+  {"ask": "service health", "want": "skill:service-health"},
+  {"ask": "are the services up", "want": "skill:service-health"},
+  {"ask": "is uber down", "want": "skill:service-health"},
+  {"ask": "do my notes agree: launch: friday; owner: ana | launch: monday", "want": "skill:sheaf-check"},
+  {"ask": "sheaf check: price: 5 | price: 5.0; color: red", "want": "skill:sheaf-check"},
+  {"ask": "check if my notes agree: a: 1 --- a: 2", "want": "skill:sheaf-check"}
 ]
