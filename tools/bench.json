@@ -6554,5 +6554,14 @@
   {"ask": "is uber down", "want": "skill:service-health"},
   {"ask": "do my notes agree: launch: friday; owner: ana | launch: monday", "want": "skill:sheaf-check"},
   {"ask": "sheaf check: price: 5 | price: 5.0; color: red", "want": "skill:sheaf-check"},
-  {"ask": "check if my notes agree: a: 1 --- a: 2", "want": "skill:sheaf-check"}
+  {"ask": "check if my notes agree: a: 1 --- a: 2", "want": "skill:sheaf-check"},
+  {"ask": "play checkers", "want": "skill:checkers"},
+  {"ask": "checkers", "want": "skill:checkers"},
+  {"ask": "lets play checkers", "want": "skill:checkers"},
+  {"ask": "social feed", "want": "skill:social"},
+  {"ask": "bsky.app.bsky.social feed", "want": "skill:social"},
+  {"ask": "bluesky feed of jay.bsky.team", "want": "skill:social"},
+  {"ask": "set the stakes", "want": "skill:stakes-phase"},
+  {"ask": "set the stakes: money and people", "want": "skill:stakes-phase"},
+  {"ask": "set the stakes for this decision", "want": "skill:stakes-phase"}
 ]
