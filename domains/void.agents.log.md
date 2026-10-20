@@ -976,3 +976,4 @@ Format: `ISO | slug | role | event | note`
 2026-10-20T05:21:49Z | verse | grow | hardened itself: 9 benchmark ask(s) for calendar-file, clock, web4 (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T05:32:08Z | verse | grow | hardened itself: 8 benchmark ask(s) for shortcut, whisper-network, witness-claims (tools/lacks.mjs, tools/art-score.mjs, tools/art-pixels.mjs, grow-self.yml)
 2026-10-20T08:34:21Z | claude | build | Backlog digest says how many days each unbuilt ask has waited, the oldest and the median (asked by Verse)
+2026-10-20T08:52:06Z | claude | build | Wants card shows the why Verse gave for each open ask, from the reflection that asked it (asked by Verse)
