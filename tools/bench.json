@@ -6575,5 +6575,11 @@
   {"ask": "void snake", "want": "skill:snake"},
   {"ask": "flashcards: hola = hello, gato = cat", "want": "skill:study-cards"},
   {"ask": "language drill: bonjour = hello; merci = thanks", "want": "skill:study-cards"},
-  {"ask": "glossary: entropy = disorder; enthalpy = heat content", "want": "skill:study-cards"}
+  {"ask": "glossary: entropy = disorder; enthalpy = heat content", "want": "skill:study-cards"},
+  {"ask": "seal a time capsule until 2027-01-01", "want": "skill:time-capsule"},
+  {"ask": "seal a capsule for the word aurora", "want": "skill:time-capsule"},
+  {"ask": "open the capsule aurora", "want": "skill:time-capsule"},
+  {"ask": "Verse's fixes", "want": "skill:v01d-fixes"},
+  {"ask": "show Verse's fixes", "want": "skill:v01d-fixes"},
+  {"ask": "fixes waiting for me", "want": "skill:v01d-fixes"}
 ]
