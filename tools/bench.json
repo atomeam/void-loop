@@ -6509,5 +6509,11 @@
   {"ask": "qr code for this stage view", "want": "skill:stage-image"},
   {"ask": "export this note as markdown", "want": "skill:note-tools"},
   {"ask": "export the stage as text", "want": "skill:note-tools"},
-  {"ask": "find milk on the stage", "want": "skill:note-tools"}
+  {"ask": "find milk on the stage", "want": "skill:note-tools"},
+  {"ask": "what is voidquest", "want": "skill:know"},
+  {"ask": "which games do you know", "want": "skill:know"},
+  {"ask": "which miniatures do you have", "want": "skill:know"},
+  {"ask": "what did you merge", "want": "skill:merges"},
+  {"ask": "merge log", "want": "skill:merges"},
+  {"ask": "what merged lately", "want": "skill:merges"}
 ]
