@@ -6654,5 +6654,11 @@
   {"ask": "email-ready text of my stage", "want": "skill:stage-export"},
   {"ask": "search kept items for pizza", "want": "skill:stage-find"},
   {"ask": "search the stage for milk", "want": "skill:stage-find"},
-  {"ask": "show all timers on the stage", "want": "skill:stage-find"}
+  {"ask": "show all timers on the stage", "want": "skill:stage-find"},
+  {"ask": "put the kept cards in folder recipes", "want": "skill:stage-organize"},
+  {"ask": "open folder recipes", "want": "skill:stage-organize"},
+  {"ask": "tag the clock as work", "want": "skill:stage-organize"},
+  {"ask": "print this stage as a one-page sheet", "want": "skill:stage-print"},
+  {"ask": "print the stage", "want": "skill:stage-print"},
+  {"ask": "export my stage as a sheet", "want": "skill:stage-print"}
 ]
