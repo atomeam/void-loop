@@ -1,44 +1,40 @@
 /**
- * palette skill — "make a color palette", "colors for teal", "generate a palette".
- * Client-side harmonious colors from a seed hue. Nothing is sent. Empty surface stays empty.
+ * palette skill - generate a color palette from a mood or theme.
+ * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
+ * Invented for growth (2026-10-20).
  */
-export function paletteOf(text) {
-  const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  const m = t.match(/^(?:make|generate|create|give me|show)\s+(?:a\s+)?(?:color\s+)?palette(?:\s+(?:for|of|with)\s+(.+))?$/) || t.match(/^(?:color\s+scheme|colors)\s+(?:for|of)\s+(.+)$/);
-  return m ? (m[1] || 'random') : null;
-}
+const WHEN = /^(?:make|create|generate|give me)?\s*(?:a\s+)?(?:color\s+)?palette\s+(?:for|from|of)\s+(.+)$/i;
 
-function hsl(h, s, l) { return `hsl(${h % 360}, ${s}%, ${l}%)`; }
-function colorsFor(seed) {
-  const base = seed === 'random' ? Math.floor(Math.random() * 360) : (seed.charCodeAt(0) * 7) % 360;
-  return [
-    { name: 'primary', hex: hsl(base, 70, 50) },
-    { name: 'accent', hex: hsl(base + 30, 65, 55) },
-    { name: 'light', hex: hsl(base, 40, 85) },
-    { name: 'dark', hex: hsl(base, 50, 25) },
-    { name: 'complement', hex: hsl(base + 180, 60, 45) },
-  ];
+function colorsFor(mood) {
+  const m = String(mood || '').toLowerCase();
+  if (/calm|peace|relax/.test(m)) return ['#A8D5E5', '#7EBDC2', '#F2E9E4', '#E6E6FA', '#B8E0D2'];
+  if (/energy|energetic|vibrant|joy|happy/.test(m)) return ['#FF6B6B', '#FFE66D', '#4ECDC4', '#45B7D1', '#FFA07A'];
+  if (/sunset|dusk|evening|warm/.test(m)) return ['#FF7E5F', '#FEB47B', '#FF6B6B', '#C06C84', '#6C5B7B'];
+  return ['#6C5CE7', '#A29BFE', '#FD79A8', '#E17055', '#00B894']; // default
 }
 
 function run(text, api) {
-  const seed = paletteOf(text);
-  if (!seed) return 'none';
   const { showPage, esc } = api;
-  const cols = colorsFor(seed);
-  const swatches = cols.map((c) => '<div style="display:inline-block;margin:4px;text-align:center"><div style="width:64px;height:64px;background:' + c.hex + ';border-radius:8px;border:1px solid rgba(255,255,255,.2)"></div><div class="sub" style="font-size:11px">' + esc(c.name) + '</div></div>').join('');
-  showPage((p) => {
-    p.innerHTML = '<h2>Color palette</h2><div class="sub">Seed: ' + esc(seed) + '</div><div style="margin:12px 0">' + swatches + '</div><div class="src">Generated in this browser. Nothing is sent.</div>';
+  const m = String(text).match(WHEN);
+  const mood = m ? m[1].trim() : 'calm';
+  const cols = colorsFor(mood);
+  showPage((el) => {
+    el.innerHTML = '<h2>Color palette for ' + esc(mood) + '</h2>'
+      + '<div style="display:flex;gap:8px;margin:12px 0">' + cols.map(c => '<div style="width:48px;height:48px;background:' + c + ';border-radius:8px" title="' + c + '"></div>').join('') + '</div>'
+      + '<p>' + cols.map(c => esc(c)).join(' · ') + '</p>'
+      + '<div class="src">Generated in this browser · no external source</div>';
   });
   return 'palette';
 }
 
 export default {
   name: 'palette',
-  examples: ['make a color palette', 'colors for teal', 'generate a palette', 'color scheme for blue'],
-  nearMisses: ['what colors do you like', 'paint a picture', 'hex color of red'],
-  match(lower, text) { return !!paletteOf(text); },
+  examples: ['make a color palette for calm', 'palette for sunset', 'color palette from joy'],
+  nearMisses: ['what is a palette', 'paint palette', 'palette knife'],
+  match(lower) { return WHEN.test(String(lower || '').trim()); },
   run,
   suite() {
-    return { ok: paletteOf('make a color palette') === 'random' && paletteOf('colors for teal') === 'teal' && paletteOf('hello') === null };
+    const ok = WHEN.test('make a color palette for calm') && colorsFor('calm').length === 5 && colorsFor('sunset')[0] === '#FF7E5F' && !WHEN.test('what is a palette');
+    return { ok };
   },
 };
