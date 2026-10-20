@@ -1,4 +1,4 @@
-// /api/routines — routines people offer to other Voids (lib/shared-routines.js). POST an offer: it waits, pending, for the
+// /api/routines — routines people offer to other Verses (lib/shared-routines.js). POST an offer: it waits, pending, for the
 // owner. GET: the approved ones, { id, name, author, asks }. The owner (Bearer READ_TOKEN) reads what waits with ?pending=1
 // and decides with POST { approve: id } or { reject: id }. Stored: the routine's name, its asks, the chosen display name, the
 // state and the day; no IPs or browser details (the connection is hashed only for a 60s rate-limit window, as /api/miss).
