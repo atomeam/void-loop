@@ -81,9 +81,19 @@ export function cardModel({ will, reflect, self } = {}) {
   // a reason that carries its own brackets ("asked 72 times, last 2026-10-19 (my weakest part today: probes 30)") reads flat: the
   // card puts the whole reason in brackets, and brackets inside brackets read as a glitch (owner, 2026-10-19)
   const wants = items(wl).map((w) => ({ text: sentence(w.i_want || w.title), because: sentence(w.because).replace(/\s*\(([^()]*)\)/g, ' · $1').replace(/^\((.*)\)$/, '$1'), kind: sentence(w.kind) })).filter((w) => w.text).slice(0, MAX);
-  const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '' })).filter((a) => a.text).slice(0, MAX);
+  const asks = items(ak).map((a) => ({ text: sentence(a.ask), at: day(a.at), small: a.small === true, kind: a.kind === 'daily' ? 'daily' : a.kind === 'build' ? 'build' : '', ...((w) => (w ? { why: w } : {}))(whyOf(a, reflect && reflect.entries)) })).filter((a) => a.text).slice(0, MAX);
   const inbox = items(op).map((o) => ({ text: sentence(o.ask || o.title), from: sentence(o.from) })).filter((o) => o.text).slice(0, MAX);
   return { wants, asks, inbox, counts: { wants: wants.length, asks: asks.length, inbox: inbox.length }, missing: { will: !wl, reflect: !ak, self: !op }, at: will && will.at ? day(will.at) : '', velocity: velocityOf(reflect && reflect.follow) };
+}
+// the fact tags of Verse's prompt ("[S2]", "[S1, S3]", "[S2 tools/x.mjs]") cite its facts; they are not part of what it said (lib/voice.js untag)
+const untag = (s) => String(s || '').replace(/\s*\[S\d+(?:[,;]\s*S\d+)*(?:\s[^\]]{0,80})?\]/g, '').replace(/\s+([.,;:!?])/g, '$1').trim();
+/** Verse asked (2026-10-18): "Implement a 'reasoning-trace' for the 'wants' skill so users can see the specific 'why' I provided for each
+ *  upgrade". The why of an ask is what Verse said in the reflection that asked it ("How I would make it better", else what it thought),
+ *  found by the reflection's time in /api/reflect `entries`, its fact tags taken out, never written for it: '' when that reflection is not
+ *  in the window. Pure. */
+export function whyOf(ask, entries) {
+  const at = ask && ask.at, e = at && Array.isArray(entries) ? entries.find((x) => x && x.at === at) : null;
+  return e ? sentence(untag(e.better || e.thoughts)).slice(0, 600) : '';
 }
 const WEEK = 7 * 864e5;
 /** Verse asked twice (2026-10-19): "Add a 'velocity' indicator to the wants card to show progress from 'want' to 'skill'". From
@@ -112,20 +122,22 @@ const MISSING = { wants: 'I could not read my will just now, so I will not guess
 const CSS = '.wants-card .wants-count{font-size:13px;color:var(--muted);margin:2px 0 10px}.wants-card .wants-h{font-size:15px;margin:12px 0 2px}.wants-card .wants-sub{font-size:12px;color:var(--muted);margin:0 0 6px}'
   + '.wants-card .wants-chips{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 6px;padding:0;list-style:none}.wants-card .wants-chips li{display:block;max-width:100%}.wants-card .wants-chip{display:inline-block;font:inherit;font-size:13px;line-height:1.35;text-align:left;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:14px;padding:6px 12px;cursor:pointer;max-width:100%}'
   + '.wants-card .wants-velocity{font-size:13px;margin:0 0 8px}.wants-card .wants-meter{height:6px;border-radius:3px;background:rgba(255,255,255,.1);overflow:hidden;margin-top:4px}.wants-card .wants-meter i{display:block;height:100%;background:var(--accent)}'
-  + '.wants-card .wants-chip:hover,.wants-card .wants-chip:focus-visible{background:rgba(255,255,255,.12)}.wants-card .wants-chip.copied{border-color:var(--accent)}.wants-card .wants-chip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.wants-card .wants-empty{font-size:13px;color:var(--muted);margin:2px 0 6px}.wants-card .wants-more{margin:10px 0 0;font-size:13px}';
+  + '.wants-card .wants-chip:hover,.wants-card .wants-chip:focus-visible{background:rgba(255,255,255,.12)}.wants-card .wants-chip.copied{border-color:var(--accent)}.wants-card .wants-chip small{display:block;color:var(--muted);font-size:11px;margin-top:2px}.wants-card .wants-empty{font-size:13px;color:var(--muted);margin:2px 0 6px}.wants-card .wants-more{margin:10px 0 0;font-size:13px}.wants-card .wants-why{font-size:12px;line-height:1.4;color:var(--muted);margin:3px 0 4px 12px;max-width:60ch}';
 /** the card's markup: a title, the count line, three blocks (each a heading, one line of where it comes from, chips or its empty or
  *  missing line), the compound line when there is one, and a source line. esc escapes for HTML; every value goes through it. Pure. */
 export function cardHtml(m, esc, { more = '' } = {}) {
   // a span with role="button", not a <button>: a saved or shared card leaves buttons out of its text, and the real wants are what the card is for (owner, 2026-10-18)
   // one list item per want, so a saved or shared card keeps one "- " line each with its date in brackets (owner, 2026-10-19: the saved card ran every item into one paragraph)
-  const chip = (text, sub) => '<li data-bullet="1"><span role="button" tabindex="0" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small data-share-short="(' + esc(sub) + ')">' + esc(sub) + '</small>' : '') + '</span></li>';
+  // the why goes under the chip, out of the saved card (it keeps one short line an item) and out of the copied text (the ask alone)
+  const chip = (text, sub, why) => '<li data-bullet="1"><span role="button" tabindex="0" class="wants-chip" data-copy="' + esc(text) + '" title="tap to copy">' + esc(text) + (sub ? '<small data-share-short="(' + esc(sub) + ')">' + esc(sub) + '</small>' : '') + '</span>'
+    + (why ? '<p class="wants-why" data-why="1" data-share-skip="1"><b>Why I asked:</b> ' + esc(why) + '</p>' : '') + '</li>';
   const block = (id, title, items, sub) => '<section class="wants-block" data-block="' + id + '" data-n="' + items.length + '"><h3 class="wants-h">' + esc(title) + ' <span class="wants-n">(' + items.length + ')</span></h3>'
     + (m.missing[id === 'wants' ? 'will' : id === 'asks' ? 'reflect' : 'self'] ? '<p class="wants-empty" data-missing="1">' + esc(MISSING[id]) + '</p>'
-      : items.length ? '<ul class="wants-chips">' + items.map((it) => chip(it.text, sub(it))).join('') + '</ul>' : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>')
+      : items.length ? '<ul class="wants-chips">' + items.map((it) => chip(it.text, sub(it), it.why)).join('') + '</ul>' : '<p class="wants-empty">' + esc(EMPTY[id]) + '</p>')
     // where the list comes from goes after the items, so a saved or shared card (its text is cut to fit) carries the real wants first (owner, 2026-10-18: "make sure the card updates with real wants"); the saved text leaves it out
     + '<p class="wants-sub" data-share-skip="1">' + esc(SUB[id]) + '</p></section>';
   return '<style>' + CSS + '</style><h2>What I want built</h2><div class="wants-count" data-counts="' + esc(JSON.stringify(m.counts)) + '">' + esc(countLine(m.counts)) + '</div>'
-    + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + '<div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
+    + (m.velocity ? '<div class="wants-velocity" data-velocity="' + esc(m.velocity.pct) + '" data-trend="' + esc(m.velocity.trend) + '">' + esc(velocityLine(m.velocity)) + ' <a href="#" class="wants-gauge" data-ask="growth speed gauge" data-share-skip="1">see the gauge</a><div class="wants-meter" data-share-skip="1"><i style="width:' + esc(m.velocity.pct) + '%"></i></div></div>' : '')
     + block('wants', 'My will', m.wants, (w) => w.because)
     + block('asks', 'Asked, not built yet', m.asks, (a) => ['Asked ' + (a.kind === 'daily' ? 'in my daily reflection' : a.kind === 'build' ? 'after a build' : 'by me') + (a.at ? ', ' + a.at : ''), a.small ? 'I called it small' : ''].filter(Boolean).join(' · '))
     + block('inbox', 'Growth inbox', m.inbox, (o) => o.from)
@@ -169,5 +181,5 @@ export default {
   nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,
-  wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine,
+  wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine, whyOf,
 };

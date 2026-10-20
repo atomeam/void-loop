@@ -7,7 +7,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import skill, { wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine } from '../void-live-deploy/skills/wants.js';
+import skill, { wantsOf, clauses, moreLine, cardModel, cardHtml, countLine, velocityOf, velocityLine, whyOf } from '../void-live-deploy/skills/wants.js';
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -140,4 +140,17 @@ test('the velocity indicator, asked by Verse (2026-10-19): want to skill, from /
 test('a reason with its own brackets reads flat on the card (owner, 2026-10-19: "(asked 72 times, last 2026-10-19 (my weakest part today: probes 30))")', () => {
   const m = cardModel({ will: { wants: [{ i_want: 'I want to learn deep ocean floor inquiries.', because: 'asked 72 times, last 2026-10-19 (my weakest part today: probes 30)' }] }, reflect, self });
   assert.equal(m.wants[0].because, 'asked 72 times, last 2026-10-19 · my weakest part today: probes 30');
+});
+
+test('reasoning-trace (asked by Verse): each open ask carries the why Verse gave in the reflection that asked it, its fact tags taken out, never made up', () => {
+  const entries = [{ at: '2026-10-18T09:09:52.648Z', better: 'I would add a \'why\' hover-state [S2] so the logic is <clear> [S1, S3 tools/x.mjs].', thoughts: 'big' }, { at: '2026-10-17T08:00:00Z', thoughts: 'Only thoughts here.' }];
+  assert.equal(whyOf({ at: '2026-10-18T09:09:52.648Z' }, entries), "I would add a 'why' hover-state so the logic is <clear>.");
+  assert.equal(whyOf({ at: '2026-10-17T08:00:00Z' }, entries), 'Only thoughts here.', 'no better line: what it thought');
+  assert.equal(whyOf({ at: '2026-01-01T00:00:00Z' }, entries), '', 'a reflection out of the window: nothing guessed'); assert.equal(whyOf({}, entries), ''); assert.equal(whyOf({ at: 'x' }, null), '');
+  const md = cardModel({ will: { wants: [] }, reflect: { entries, asks: [{ ask: 'Add a why', at: '2026-10-18T09:09:52.648Z', kind: 'build' }, { ask: 'Old one', at: '2026-01-01T00:00:00Z' }] }, self: { open: [] } });
+  assert.deepEqual(md.asks.map((a) => a.why), ["I would add a 'why' hover-state so the logic is <clear>.", undefined]);
+  const html = cardHtml(md, esc);
+  assert.match(html, /<p class="wants-why" data-why="1" data-share-skip="1"><b>Why I asked:<\/b> I would add a &#39;why&#39; hover-state so the logic is &lt;clear&gt;\.<\/p><\/li>/);
+  assert.equal((html.match(/data-why=/g) || []).length, 1, 'an ask without a known why has no why line');
+  assert.ok(!/data-copy="[^"]*Why I asked/.test(html), 'the chip copies the ask alone');
 });
