@@ -6625,5 +6625,13 @@
   {"ask": "what did I dismiss", "want": "skill:dismissed-pile"},
   {"ask": "last 20 dismissed", "want": "skill:dismissed-pile"},
   {"ask": "echo this", "want": "skill:echo-disagrees"},
-  {"ask": "keep the echo", "want": "skill:echo-disagrees"}
+  {"ask": "keep the echo", "want": "skill:echo-disagrees"},
+  {"ask": "how many hours til gta6", "want": "skill:event-countdown"},
+  {"ask": "how long until gta 6 comes out", "want": "skill:event-countdown"},
+  {"ask": "countdown to the world cup", "want": "skill:event-countdown"},
+  {"ask": "forge these", "want": "skill:forge-table"},
+  {"ask": "forge the timer with the note", "want": "skill:forge-table"},
+  {"ask": "check my argument edit", "want": "skill:homotopy-edit"},
+  {"ask": "start the night ritual", "want": "skill:night-ritual"},
+  {"ask": "end the ritual", "want": "skill:night-ritual"}
 ]
