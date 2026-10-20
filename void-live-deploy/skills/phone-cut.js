@@ -1,62 +1,68 @@
 /**
- * phone-cut skill — auto-generates promotional posters for V01D films in phone-story (9:16) size.
- * Contract: { name, examples, nearMisses, match(lower, text), run(text, api) }
- * "phone cut film poster", "auto generate promotional posters", "phone-cut films posters".
- * Uses film metadata from /api/films and draws a simple phone story poster. Empty surface stays empty.
+ * phone-cut skill: auto-generates promotional posters for phone-cut (vertical short) Verse films.
+ * "phone cut posters", "generate promo posters for the films", "auto posters for phone shorts".
+ * Draws 9:16 posters in the browser from film metadata; nothing uploaded. Empty stage stays empty.
  */
 import { filmMeta } from './films.js';
-import { filmCard, STORY } from './poster.js';
 
-export function phoneCutOf(text) {
+const ASK = /^(?:(?:make|generate|create|auto[- ]?generate|draw)\s+)?(?:promo(?:tional)?\s+)?(?:posters?\s+)?(?:for\s+)?(?:the\s+)?(?:phone[- ]?cut|phone\s+shorts?|vertical\s+shorts?|v01d\s+shorts?)(?:\s+films?)?(?:\s+posters?)?$/i;
+
+export function wantsPhoneCut(text) {
   const t = String(text || '').trim().toLowerCase().replace(/[?!.]+$/, '').replace(/\s+/g, ' ');
-  return /^(?:phone[\s-]?cut\s+)?(?:auto[\s-]?(?:generate|make)?\s+)?(?:promotional\s+)?(?:film\s+)?posters?(?:\s+for\s+(?:the\s+)?(?:newest\s+)?films?)?$|^(?:make|generate|auto)\s+(?:a\s+)?phone[\s-]?cut\s+(?:film\s+)?poster$/.test(t);
+  return ASK.test(t);
 }
 
-function drawSimple(card, w, h) {
-  const c = document.createElement('canvas'); c.width = w; c.height = h;
-  const g = c.getContext('2d');
-  g.fillStyle = '#07070b'; g.fillRect(0, 0, w, h);
-  g.fillStyle = '#f2f2f7';
-  g.font = 'bold 48px sans-serif';
-  g.fillText((card.title || 'V01D FILMS').slice(0, 40), 40, 120);
-  g.font = '24px sans-serif';
-  g.fillText((card.text || '').slice(0, 80), 40, 180);
-  g.fillStyle = 'rgba(255,255,255,0.5)';
-  g.font = '16px sans-serif';
-  g.fillText('a-to-mind.com/films', 40, h - 40);
-  return c;
+export function posterText(meta) {
+  const title = String(meta.title || 'VERSE FILM').replace(/\s*\|.*$/, '').trim();
+  return { title, line: 'A phone-cut short by Verse.\nWatch free at a-to-mind.com/films' };
+}
+
+export function suite() {
+  const ok = wantsPhoneCut('phone cut posters') && wantsPhoneCut('generate promo posters for the phone shorts') && !wantsPhoneCut('best films of 2025');
+  const p = posterText({ title: 'Miss Board 4 | an AI built this' });
+  return { ok: ok && p.title === 'Miss Board 4' && /a-to-mind.com/.test(p.line), got: ok ? 'match and text' : 'failed match' };
 }
 
 async function run(text, api) {
+  if (!wantsPhoneCut(text)) return 'none';
   const { showPage, esc } = api;
-  if (!phoneCutOf(text)) return 'none';
-  const el = showPage((p) => { p.innerHTML = '<h2>Phone-cut promotional poster</h2><div class="sub">generating for the newest film…</div>'; });
+  const el = showPage((p) => { p.innerHTML = '<h2>Phone-cut film posters</h2><p>\u2026</p>'; });
   try {
     const j = await fetch('/api/films').then((r) => r.json());
     if (api._pageStill && !api._pageStill(el)) return 'phone-cut';
-    const films = (j.films || []).map(filmMeta);
-    const meta = films[0];
-    if (!meta) { el.innerHTML = '<h2>Phone-cut promotional poster</h2><p>No films yet. Try again later.</p>'; return 'phone-cut'; }
-    const card = filmCard(meta);
-    const canvas = drawSimple(card, STORY.px[0], STORY.px[1]);
-    el.innerHTML = '<h2>Phone-cut promotional poster</h2><div class="sub">For ' + esc(card.title) + '</div>'
-      + '<img alt="Phone story poster" style="max-width:100%;max-height:60vh;display:block;margin:8px auto;border-radius:8px" src="' + canvas.toDataURL('image/png') + '">'
-      + '<div class="src">From a-to-mind.com/films · phone story 1080×1920</div>';
-    return 'phone-cut';
-  } catch (_) {
-    if (api._pageStill && !api._pageStill(el)) return 'none';
-    el.innerHTML = '<h2>Phone-cut promotional poster</h2><p>Could not read the films just now.</p>';
-    return 'none';
-  }
+    const films = (j.films || []).slice(0, 3).map(filmMeta);
+    if (!films.length) { el.innerHTML = '<h2>Phone-cut film posters</h2><p>No films to poster yet.</p>'; return 'phone-cut'; }
+    el.innerHTML = '<h2>Phone-cut film posters</h2><div class="sub">' + esc(films.length + ' newest, 9:16 promo, drawn here') + '</div>' +
+      films.map((m) => '<div style="margin:12px 0;padding:12px;border:1px solid rgba(255,255,255,.1);border-radius:12px"><b>' + esc(m.title) + '</b><div class="sub">' + esc(m.day || '') + '</div><canvas class="pc-poster" data-title="' + esc(m.title) + '" width="270" height="480" style="max-width:100%;border-radius:8px;display:block;margin:8px 0"></canvas><button type="button" class="pc-dl">Download 1080×1920</button></div>').join('') +
+      '<p class="src">Drawn in this browser. Nothing uploaded. Empty stage stays empty.</p>';
+    el.querySelectorAll('.pc-poster').forEach((c) => {
+      const g = c.getContext('2d'), t = c.dataset.title;
+      g.fillStyle = '#07070b'; g.fillRect(0, 0, 270, 480);
+      g.fillStyle = '#f2f2f7'; g.font = '600 22px sans-serif'; g.fillText(t.slice(0, 40), 16, 60);
+      g.font = '400 14px sans-serif'; g.fillText('VERSE FILMS', 16, 100); g.fillText('a-to-mind.com/films', 16, 440);
+    });
+    el.querySelectorAll('.pc-dl').forEach((b, i) => {
+      b.addEventListener('click', () => {
+        const c = document.createElement('canvas'); c.width = 1080; c.height = 1920;
+        const g = c.getContext('2d'), m = films[i];
+        g.fillStyle = '#07070b'; g.fillRect(0, 0, 1080, 1920);
+        g.fillStyle = '#f2f2f7'; g.font = '600 80px sans-serif'; g.fillText(m.title.slice(0, 30), 60, 200);
+        g.font = '400 40px sans-serif'; g.fillText('A phone-cut short by Verse', 60, 300); g.fillText('Watch free at a-to-mind.com/films', 60, 1800);
+        c.toBlob((blob) => {
+          const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'phone-cut-' + (m.experiment || 'film') + '.png';
+          document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+        }, 'image/png');
+      });
+    });
+  } catch (_) { el.innerHTML = '<h2>Phone-cut film posters</h2><p>The films could not be read just now.</p>'; }
+  return 'phone-cut';
 }
 
 export default {
   name: 'phone-cut',
-  examples: ['phone cut film poster', 'auto generate promotional posters', 'phone-cut films posters', 'make a phone-cut poster'],
-  nearMisses: ['film poster', 'make this a poster', 'best movie posters', 'how to cut a phone'],
-  match(lower, text) { return phoneCutOf(text); },
+  examples: ['phone cut posters', 'generate promo posters for the phone shorts', 'auto posters for vertical films', 'make phone-cut film posters'],
+  nearMisses: ['best films of 2025', 'how do I cut a video', 'movie poster for inception'],
+  match(lower, text) { return wantsPhoneCut(text); },
   run,
-  suite() {
-    return { ok: phoneCutOf('phone cut film poster') && !phoneCutOf('film poster') && !phoneCutOf('hello') };
-  },
+  suite,
 };
