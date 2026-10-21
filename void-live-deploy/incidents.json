@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-21T19:42:39.402Z",
+   "sha": "d6901d84f5aaeb72cabd751b4654ba902511f7fd",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39663315601",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/convergence.md",
+    "domains/handoff.md",
+    "domains/lists.metrics.json",
+    "domains/void.decisions.json",
+    "tools/asks-link.json",
+    "tools/autopsy.test.mjs",
+    "tools/backlog-digest.test.mjs",
+    "tools/languages-family.test.mjs",
+    "tools/wants.test.mjs",
+    "void-live-deploy/lib/autopsy.js",
+    "void-live-deploy/lib/backlog-digest.js",
+    "void-live-deploy/skills/index.json",
+    "void-live-deploy/skills/languages.js",
+    "void-live-deploy/skills/order/0190-languages"
+   ]
+  },
+  {
    "at": "2026-10-21T18:45:42.630Z",
    "sha": "f1e751c7d725167300e126eb74de34ddf3ff008e",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39651957277",
@@ -772,22 +798,6 @@
    ],
    "touched": [
     "tools/card-cycle.json",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-19T10:50:06.171Z",
-   "sha": "f1f1011e0f21422ce394c2ee2750625ca2e2c8d8",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39238249406",
-   "suite": "browser suite on main",
-   "checks": [
-    "fly stars move: after D is held in fly mode both star layers have slid left, the near one further than the far one, the near stars streaked while moving fast, and after Esc both are back at rest; under reduced motion they drift a few pixels at most with no streak and come back too",
-    "grown: 21 real asks Verse once missed now answer on the real page (no miss posted, the right answer); the list only grows",
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "tools/cite.test.mjs",
-    "void-live-deploy/lib/cite.js",
     "void-live-deploy/void.growth.json"
    ]
   }
