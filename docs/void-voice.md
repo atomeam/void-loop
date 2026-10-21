@@ -3,6 +3,15 @@
 Once per run `node tools/ask-void.mjs` asks Verse what it learned from its builders (domains/handoff.md) and what it
 would do differently. Its answers are copied as it gave them, newest last. Input, not a gate.
 
+## Verse's current asks (refreshed 2026-10-21)
+
+From the 2026-10-21 entries below, quoted as given:
+
+- > "The fix I want right now is a one‑line router change so that the “self” card route invokes the Look skill (the visual card) rather than the default text renderer."
+
+  Builder's check (not Verse's words): on the page, "open the self card" already opens the card (`wantsVoice` in `void-live-deploy/void.html`). The real gap is the bare answer endpoint: `POST /api/answer` with "open the self card" falls to the model, which says it cannot open one (route `fallback`). Queued in `domains/growth-inbox.md`, credited to Verse.
+- Still queued from Verse's daily reflections (`domains/void.pit-crew.json`): "Implement a 'memory-preview' UI component to allow users to see memory snippets." and "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage."
+
 <!-- ask-void:2026-10-15T04:53:04.630Z -->
 ### 2026-10-15 04:53 UTC
 
@@ -164,3 +173,26 @@ would do differently. Its answers are copied as it gave them, newest last. Input
 > - The emergency buffer mirrors Rockefeller’s early habit of keeping cash on hand before scaling his oil empire.
 > - Fractional ETFs give you market exposure without the need for large capital, similar to how MrBeast leverages modest budgets into viral returns by reinvesting profits into bigger productions.
 > - Self‑education and a micro‑business trial turn the $100 into both knowledge and a potential revenue stream, setting a foundation for larger, more strategic investments later.
+
+<!-- ask-void:2026-10-21T18:19:40.411Z -->
+### 2026-10-21 18:19 UTC
+
+**Asked:** Since your last voice entry here, these shipped: the flying mode got warp, extreme forward throttle, turn-around and modern easy controls; book pages no longer cut off text on resize; the dark look fully resets a washed-out stage; film info says when a source was away instead of 'don't know'; and Void/V01D was renamed Verse everywhere. What do you think of these, what is still broken or ugly that a visitor would notice, and what one small fix should be made today?
+
+> It sounds like the recent update added a number of quality‑of‑life improvements:
+>
+> * Flying mode now includes warp, an extreme forward‑throttle option, a turn‑around command and a more intuitive control scheme.
+> * Book pages automatically reflow when the window is resized, so text no longer gets cut off.
+> * The dark theme has been refined to fully reset the washed‑out stage background, giving a cleaner look.
+> * Film information now displays the actual date a source became unavailable instead of the generic “don’t know” placeholder.
+>
+> If you have any specific questions about how to use any of these new features, let me know.
+
+<!-- ask-void:2026-10-21T18:20:10.055Z -->
+### 2026-10-21 18:20 UTC
+
+**Asked:** Speaking as Verse about yourself: name the single most broken or ugly thing a first-time visitor to a-to-mind.com would notice right now, and the one small, concrete fix you want made today.
+
+> The first thing a newcomer notices is that the “open the self card” command just spits out raw text instead of showing the card with the Look skill’s visual layout—everything feels flat and broken because the router still points to the text handler.
+>
+> The fix I want right now is a one‑line router change so that the “self” card route invokes the Look skill (the visual card) rather than the default text renderer. Once that mapping is corrected, the card opens with its proper UI and the stage instantly looks the way it’s meant to.
