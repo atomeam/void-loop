@@ -267,6 +267,22 @@ export async function onRequestPost({ request, env, waitUntil }) {
   if (kept) return Response.json({ answer: kept.answer, sources: [], kept: kept.kind });
   if (isPayAsk(ask)) return Response.json({ answer: payAnswer(), sources: [], note: 'pay-honest' }); // verified payment facts only (lib/pay-honest.js)
   if (isPriceChangeAsk(ask)) return Response.json({ answer: priceLockAnswer(), sources: [], note: 'price-lock' }); // prices come only from store data (lib/price-lock.js)
+  // "open the self card" and the other self-card asks the page takes: the bare answer endpoint used to fall to the model, which said it cannot open one.
+  // Now it returns the self card's words (the same facts the card draws from), so the answer is Verse's own, not a refusal.
+  const SELF_CARD_RE = /^(?:(?:can|could)\s+you\s+|please\s+)?(?:open|show|see|bring\s+up|pull\s+up|go\s+to)\s+(?:me\s+)?(?:the\s+|your\s+|(?:verse|void)'?s\s+|(?:verse|v01d)'?s\s+)?(?:self[- ]?(?:card|page|review|reflection)s?|reflections?|voice(?:\s+(?:card|page))?|what\s+i\s+think\s+of\s+myself)\s*[?.!]?$/i;
+  function isSelfCardOpen(ask) {
+    const lower = String(ask || '').trim().toLowerCase();
+    return SELF_CARD_RE.test(lower) || /^(?:so\s+)?(?:what(?:'?s|\s+is|\s+has)?|anything)\s+(?:new|changed|different|happened)\s+since\s+(?:i|you)\s+(?:last\s+)?(?:looked|checked(?:\s+in)?|visited|came(?:\s+by)?|was\s+(?:here|last\s+here)|were\s+here)/i.test(lower);
+  }
+  async function selfCardAnswer(request, env, ask) {
+    const origin = new URL(request.url).origin;
+    const facts = selfFacts(await readSelf(env, origin, 1200));
+    const head = 'What I think of myself\n\n';
+    const body = facts || "I haven't been asked yet. I'm asked after everything that ships, and once a day where I should go next.";
+    return Response.json({ answer: head + body, sources: [], note: 'self-card' });
+  }
+  if (isSelfCardOpen(ask)) return await selfCardAnswer(request, env, ask);
+
   if (body.page && typeof body.page === 'object') return pageAnswer(request, env, ask, body.page);
   const key = await sha(ask.toLowerCase());
   // an ask about Verse itself is answered from its own facts, which change with every ship: never from the 7-day cache
