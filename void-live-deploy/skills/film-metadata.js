@@ -45,10 +45,18 @@ async function run(text, api) {
       catch (_) { const pre = el.querySelector('.fm-json'); if (pre) { pre.closest('details').open = true; const s = getSelection(), g = document.createRange(); g.selectNodeContents(pre); s.removeAllRanges(); s.addRange(g); } b.textContent = 'Select and copy below'; }
     });
     return 'film-metadata';
-  } catch (_) {
+  } catch (err) {
+    // LADDER FIX #1152: trap any network/API failure, render a graceful card, and ALWAYS return the skill name
+    // so the router never falls back to "don't know this yet".
     if (!api._pageStill(el)) return 'film-metadata';
-    el.innerHTML = '<h2>Film metadata</h2><p>The film service did not answer just now, so no film is listed. Ask again in a moment.</p>';
-    return 'film-metadata'; // the skill answered, honestly: the source was away
+    const msg = err && err.message ? String(err.message) : 'The film service did not answer just now.';
+    el.innerHTML = '<h2>Film metadata</h2>'
+      + '<div style="margin:10px 0;padding:12px;border:1px solid #e0a24a;border-radius:8px;background:rgba(224,162,74,.08);color:#e0a24a">'
+      + '<b>Metadata service unreachable</b><br>'
+      + '<span style="font-size:13px;opacity:.9">Could not fetch details. The upstream source may be down or blocking the request.</span>'
+      + '</div>'
+      + '<div style="font-size:11px;opacity:.5;margin-top:8px">Log: ' + esc(msg) + '</div>';
+    return 'film-metadata';
   }
 }
 
