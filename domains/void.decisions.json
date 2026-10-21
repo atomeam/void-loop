@@ -291,12 +291,12 @@
     "why": "built in part 2026-10-16: the status card now says what failed and what verify.yml does about it; a suggested patch per failing check is not written"
   },
   "ask-20261021-1627-2": {
-    "decision": "queued",
-    "why": "one ask in 6 wordings (memory-preview: a snippet of what an export holds before the download); the 5 rewordings are duplicates of this one. helper/memory-preview is a placeholder card with no real snippets, so it was not merged; build it inside the memory/export card that already exists (combine, don't add). Lists run 2026-10-21."
+    "decision": "built",
+    "why": "built in lists run 3 (2026-10-21) inside the memory-graph card, not as a new skill: 'preview my memory' shows the export's counts, size and biggest labels before the download (tools/memory-preview.test.mjs); the 5 rewordings link to the same ledger line."
   },
   "ask-20261021-1627-1": {
-    "decision": "queued",
-    "why": "one ask in 3 wordings (scale the Deciding family's proven count); the 2 rewordings are duplicates. decision-matrix (2026-10-18) already joined Deciding; helper/deciding-skill is a placeholder and was not merged. Next: real benchmark asks for decide-cards, decision-matrix and triangulate. Lists run 2026-10-21."
+    "decision": "built",
+    "why": "built in lists run 3 (2026-10-21): decide-cards gets its own test (tools/decide-cards.test.mjs) beside its 3 benchmark asks, triangulate gets 3 real benchmark asks beside its self-test, so both meet the proven rule (two kinds of evidence with 3 real asks); decision-matrix was already proven. No new skill was added."
   },
   "ask-20261021-1627-3": {
     "decision": "built",

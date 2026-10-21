@@ -84,3 +84,18 @@ test('--staged refuses a commit that carries a conflict marker (the unfinished-m
   assert.match(run().stderr, /b\.json: not valid JSON/);
   assert.equal(spawnSync(process.execPath, [tool, '--staged'], { cwd: mkdtempSync(join(tmpdir(), 'notrepo-')), encoding: 'utf8' }).status, 1, 'outside a repository it refuses instead of passing silently');
 });
+
+import { ledgerShrinks, LEDGERS } from './prepush.mjs';
+test('the ledger guard: a ledger cut to a placeholder or missing a section is refused; growth, small files and other paths pass', () => {
+  const md = '# Frontier\n\n## Open\n' + '- item\n'.repeat(100) + '\n## Done\n' + '- done\n'.repeat(50);
+  assert.match(ledgerShrinks('domains/void.frontier.md', md, 'SEE_DISK'), /shrank/);
+  assert.match(ledgerShrinks('domains/void.frontier.md', md, md.replace('## Done', '## Finished') + 'x'.repeat(10)), /lost the heading "## Done"/);
+  assert.equal(ledgerShrinks('domains/void.frontier.md', md, md + '- new\n'), '');
+  assert.equal(ledgerShrinks('domains/void.frontier.md', md, md.replace('- item\n', '')), '', 'a line removed is fine');
+  const json = JSON.stringify(Array.from({ length: 40 }, (_, i) => ({ id: i, what: 'grew a skill' })));
+  assert.match(ledgerShrinks('void-live-deploy/void.growth.json', json, '[]'), /shrank/);
+  assert.equal(ledgerShrinks('tools/other.json', json, '[]'), '', 'not a ledger');
+  assert.equal(ledgerShrinks('domains/handoff.md', 'short', ''), '', 'too small to judge');
+  assert.equal(ledgerShrinks('domains/handoff.md', md, null), '', 'a deleted file is not judged here');
+  assert.ok(LEDGERS.includes('domains/void.frontier.md') && LEDGERS.includes('void-live-deploy/void.growth.json'));
+});

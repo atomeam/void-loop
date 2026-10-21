@@ -1,119 +1,166 @@
 {
-  "note": "One entry per run of the lists routine (every V01D backlog caught up). closed = items built, merged or closed as duplicates this run (WIP cap 8); pct_blocked = blocked items over items touched; dup_rate = duplicate asks over open asks at the start; median_days = queue entry to built, for the asks closed this run. Public: counts only, no visitor words.",
-  "runs": [
+ "note": "One entry per run of the lists routine (every V01D backlog caught up). closed = items built, merged or closed as duplicates this run (WIP cap 8); pct_blocked = blocked items over items touched; dup_rate = duplicate asks over open asks at the start; median_days = queue entry to built, for the asks closed this run. Public: counts only, no visitor words.",
+ "runs": [
+  {
+   "at": "2026-10-21T16:35:00Z",
+   "run": 1,
+   "closed": 7,
+   "touched": 8,
+   "pct_blocked": 12.5,
+   "top_block": "no live payment rail for a paid store item (Gumroad listing, Cash App tag or wallet not configured)",
+   "dup_rate": 0.33,
+   "median_days": 3.3,
+   "asks_open_start": 30,
+   "asks_open_end": 23,
+   "items": [
     {
-      "at": "2026-10-21T16:35:00Z",
-      "run": 1,
-      "closed": 7,
-      "touched": 8,
-      "pct_blocked": 12.5,
-      "top_block": "no live payment rail for a paid store item (Gumroad listing, Cash App tag or wallet not configured)",
-      "dup_rate": 0.33,
-      "median_days": 3.3,
-      "asks_open_start": 30,
-      "asks_open_end": 23,
-      "items": [
-        {
-          "what": "lib/stage-tools.js (a placeholder) and lib/tome.js (cut off) restored on main, plus a wiped-file guard in the fast checks",
-          "list": "site tester / live breakage",
-          "status": "built",
-          "pr": "https://github.com/atomeam/void-loop/pull/1194"
-        },
-        {
-          "what": "5 asks already built but never linked (open the self card x3, zorbleflux throttle, decision-matrix in Deciding)",
-          "list": "void.asks.json",
-          "status": "built (linked)"
-        },
-        {
-          "what": "backlog digest velocity: days each ask has waited, oldest and median",
-          "list": "void.asks.json",
-          "status": "built"
-        },
-        {
-          "what": "incident autopsy escalates a stall only when it repeats across 3 suites",
-          "list": "void.asks.json",
-          "status": "built"
-        },
-        {
-          "what": "growth-speed gauge (2 wordings): 'growth speed' opens the wants card's want-to-skill meter",
-          "list": "void.asks.json",
-          "status": "built (extended the wants card)"
-        },
-        {
-          "what": "spanish + translate merged into the languages family",
-          "list": "convergence",
-          "status": "built",
-          "doc": "docs/convergence.md"
-        },
-        {
-          "what": "memory-preview (6 wordings, one ask) and Scale Deciding (3 wordings, one ask): duplicates folded into one open ask each; the helper drafts (helper/memory-preview, helper/growth-speed, helper/deciding-skill) are placeholders and were not merged",
-          "list": "void.asks.json",
-          "status": "duplicate",
-          "link": "domains/void.decisions.json"
-        },
-        {
-          "what": "site-tester store item (needs-gumroad)",
-          "list": "store.queue.jsonl",
-          "status": "blocked",
-          "reason": "paid item with no live rail: no Gumroad listing, and the Cash App and USDC rails report not configured (/api/store/status special_rails is empty)",
-          "unblock": "either list it on Gumroad, set the Cash App tag or wallet the special rails read, or open it as pay-what-you-want (Adam's sample rule) once the alt-pay tests use another fixture",
-          "who": "next lists run (pay-what-you-want workaround); Adam only for a Gumroad listing",
-          "tried": [
-            "pay-what-you-want (blocked this run: tools/alt-pay.test.mjs uses site-tester as its paid fixture, so it needs its own fixture first)",
-            "x402 route exists but needs the wallet configured"
-          ]
-        }
-      ]
+     "what": "lib/stage-tools.js (a placeholder) and lib/tome.js (cut off) restored on main, plus a wiped-file guard in the fast checks",
+     "list": "site tester / live breakage",
+     "status": "built",
+     "pr": "https://github.com/atomeam/void-loop/pull/1194"
     },
     {
-      "at": "2026-10-21T20:05:00Z",
-      "run": 2,
-      "closed": 5,
-      "touched": 5,
-      "pct_blocked": 0.0,
-      "top_block": "none this run",
-      "dup_rate": 0.0,
-      "median_days": 0.9,
-      "asks_open_start": 23,
-      "asks_open_end": 23,
-      "items": [
-        {
-          "what": "run 1's lists PR was stuck on a void.growth.json conflict: merged main in (both ledger lines kept) and it merged",
-          "list": "handoff",
-          "status": "built",
-          "pr": "https://github.com/atomeam/void-loop/pull/1195"
-        },
-        {
-          "what": "the fast checks red on main, one batch: fuzzy (translate now answers inside the languages family), privacy-guard (a standard's section number read as an address), map-coverage (triangulate and grow-lessons.mjs named), star-parallax (D turns since the fly controls changed; the test strafes with E), triangulate placed in Deciding, and the generated files (copies, deps, families, guide, what, self, mcp-skills) refreshed",
-          "list": "handoff Up for grabs (fast checks red on main)",
-          "status": "built"
-        },
-        {
-          "what": "suntimes and worldtime both took a bare 'sunrise' or 'when is sunset': the bare ask goes to suntimes (where you are, day length, twilight), a named place stays with the world clock",
-          "list": "convergence",
-          "status": "built (merged pair)",
-          "doc": "docs/convergence.md"
-        },
-        {
-          "what": "decision-matrix took 'france vs spain', 'show the grid' and '2x2 matrix': it now needs the words decision matrix or decision grid; tools/decision-matrix-narrow.test.mjs",
-          "list": "site tester / overlap check",
-          "status": "built"
-        },
-        {
-          "what": "site-tester store item, blocked since 2026-10-15 on a paid rail: opened as pay-what-you-want (free plus tip) with its $24 price kept as wouldBe; the alt-pay tests use their own fixture",
-          "list": "store.queue.jsonl",
-          "status": "built (workaround)",
-          "tried": [
-            "pay-what-you-want under the sample rule (shipped)"
-          ]
-        },
-        {
-          "what": "the showcase check (a line cut to what a person reads) is red on main and its files are in the open PR 1187",
-          "list": "site tester / fast checks",
-          "status": "duplicate",
-          "link": "https://github.com/atomeam/void-loop/pull/1187"
-        }
-      ]
+     "what": "5 asks already built but never linked (open the self card x3, zorbleflux throttle, decision-matrix in Deciding)",
+     "list": "void.asks.json",
+     "status": "built (linked)"
+    },
+    {
+     "what": "backlog digest velocity: days each ask has waited, oldest and median",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "incident autopsy escalates a stall only when it repeats across 3 suites",
+     "list": "void.asks.json",
+     "status": "built"
+    },
+    {
+     "what": "growth-speed gauge (2 wordings): 'growth speed' opens the wants card's want-to-skill meter",
+     "list": "void.asks.json",
+     "status": "built (extended the wants card)"
+    },
+    {
+     "what": "spanish + translate merged into the languages family",
+     "list": "convergence",
+     "status": "built",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "memory-preview (6 wordings, one ask) and Scale Deciding (3 wordings, one ask): duplicates folded into one open ask each; the helper drafts (helper/memory-preview, helper/growth-speed, helper/deciding-skill) are placeholders and were not merged",
+     "list": "void.asks.json",
+     "status": "duplicate",
+     "link": "domains/void.decisions.json"
+    },
+    {
+     "what": "site-tester store item (needs-gumroad)",
+     "list": "store.queue.jsonl",
+     "status": "blocked",
+     "reason": "paid item with no live rail: no Gumroad listing, and the Cash App and USDC rails report not configured (/api/store/status special_rails is empty)",
+     "unblock": "either list it on Gumroad, set the Cash App tag or wallet the special rails read, or open it as pay-what-you-want (Adam's sample rule) once the alt-pay tests use another fixture",
+     "who": "next lists run (pay-what-you-want workaround); Adam only for a Gumroad listing",
+     "tried": [
+      "pay-what-you-want (blocked this run: tools/alt-pay.test.mjs uses site-tester as its paid fixture, so it needs its own fixture first)",
+      "x402 route exists but needs the wallet configured"
+     ]
     }
-  ]
+   ]
+  },
+  {
+   "at": "2026-10-21T20:05:00Z",
+   "run": 2,
+   "closed": 5,
+   "touched": 5,
+   "pct_blocked": 0.0,
+   "top_block": "none this run",
+   "dup_rate": 0.0,
+   "median_days": 0.9,
+   "asks_open_start": 23,
+   "asks_open_end": 23,
+   "items": [
+    {
+     "what": "run 1's lists PR was stuck on a void.growth.json conflict: merged main in (both ledger lines kept) and it merged",
+     "list": "handoff",
+     "status": "built",
+     "pr": "https://github.com/atomeam/void-loop/pull/1195"
+    },
+    {
+     "what": "the fast checks red on main, one batch: fuzzy (translate now answers inside the languages family), privacy-guard (a standard's section number read as an address), map-coverage (triangulate and grow-lessons.mjs named), star-parallax (D turns since the fly controls changed; the test strafes with E), triangulate placed in Deciding, and the generated files (copies, deps, families, guide, what, self, mcp-skills) refreshed",
+     "list": "handoff Up for grabs (fast checks red on main)",
+     "status": "built"
+    },
+    {
+     "what": "suntimes and worldtime both took a bare 'sunrise' or 'when is sunset': the bare ask goes to suntimes (where you are, day length, twilight), a named place stays with the world clock",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "decision-matrix took 'france vs spain', 'show the grid' and '2x2 matrix': it now needs the words decision matrix or decision grid; tools/decision-matrix-narrow.test.mjs",
+     "list": "site tester / overlap check",
+     "status": "built"
+    },
+    {
+     "what": "site-tester store item, blocked since 2026-10-15 on a paid rail: opened as pay-what-you-want (free plus tip) with its $24 price kept as wouldBe; the alt-pay tests use their own fixture",
+     "list": "store.queue.jsonl",
+     "status": "built (workaround)",
+     "tried": [
+      "pay-what-you-want under the sample rule (shipped)"
+     ]
+    },
+    {
+     "what": "the showcase check (a line cut to what a person reads) is red on main and its files are in the open PR 1187",
+     "list": "site tester / fast checks",
+     "status": "duplicate",
+     "link": "https://github.com/atomeam/void-loop/pull/1187"
+    }
+   ]
+  },
+  {
+   "at": "2026-10-21T22:45:00Z",
+   "run": 3,
+   "closed": 6,
+   "touched": 6,
+   "pct_blocked": 0.0,
+   "top_block": "none this run",
+   "dup_rate": 0.52,
+   "median_days": 0.3,
+   "asks_open_start": 31,
+   "asks_open_end": 14,
+   "items": [
+    {
+     "what": "memory-preview (9 wordings of one ask): 'preview my memory' shows what an export holds (counts, size, the biggest labels) before the download, built inside the memory-graph card, no new skill; tools/memory-preview.test.mjs",
+     "list": "void.asks.json",
+     "status": "built",
+     "dups": 8
+    },
+    {
+     "what": "Scale the Deciding family (9 wordings of one ask): decide-cards gets its own test beside its 3 benchmark asks, triangulate gets 3 real benchmark asks beside its self-test; Deciding reads 3 of 3 proven (was 1); tools/decide-cards.test.mjs",
+     "list": "void.asks.json",
+     "status": "built",
+     "dups": 8
+    },
+    {
+     "what": "template-list and list-templates both took 'packing list template': one routing place, skills/list-starters.js (rank 451), every old ask lands where it did (route snapshot: 0 moved, 0 new misses), both names kept as parts; tools/list-starters-family.test.mjs",
+     "list": "convergence",
+     "status": "built (merged pair)",
+     "doc": "docs/convergence.md"
+    },
+    {
+     "what": "ledger guard in prepush (asked by Verse, run 118): a push that cuts a shared ledger under half its size or drops a section heading is refused; tools/prepush.test.mjs",
+     "list": "handoff Up for grabs",
+     "status": "built"
+    },
+    {
+     "what": "Verse's creative kit (queued 2026-10-15): the digital slice shipped as the Verse Remix Kit, a free sample with the tip jar: three 90 BPM stems Verse synthesized, 16 chord progressions, a 52-card lyric deck; uploaded and downloaded back from R2 and opened before listing",
+     "list": "store.queue.jsonl",
+     "status": "built"
+    },
+    {
+     "what": "store catalog drift: lib/store-products.js had been hand-edited (the Verse names, site-tester as pay-what-you-want) while domains/store.products.json still had the old rows, so any publish reverted them; the source now matches, so publishing keeps both",
+     "list": "site tester / fast checks (alt-pay)",
+     "status": "built"
+    }
+   ]
+  }
+ ]
 }

@@ -139,7 +139,7 @@
     {
       "match": "stickies",
       "ledgerAt": "2026-10-14T02:46:52Z",
-      "why": "stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft · not sent'"
+      "why": "stickies a plan puts up say what they are: a tab on the paper reads 'note to self' or 'draft \u00b7 not sent'"
     },
     {
       "match": "plan history",
@@ -315,6 +315,16 @@
       "match": "growth-speed'? gauge",
       "ledgerAt": "2026-10-21T16:30:48Z",
       "why": "duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21)"
+    },
+    {
+      "match": "memory.?preview",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs)"
+    },
+    {
+      "match": "deciding family",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json)"
     }
   ],
   "extra": [

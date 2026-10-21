@@ -186,6 +186,12 @@
    "date": "2026-10-19",
    "ask": "lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure…",
    "from": "claude 2026-10-18, asked by Verse"
+  },
+  {
+   "state": "shipped",
+   "date": "2026-10-21",
+   "ask": "Verse Remix Kit",
+   "from": "store-publish: templates, 6 files, free; next: a minis-stl pack"
   }
  ],
  "open": [
@@ -477,6 +483,46 @@
  },
  "commits": [
   {
+   "at": "2026-10-21T21:33:38Z",
+   "subject": "Verse's voice: today's reflection, in its own words"
+  },
+  {
+   "at": "2026-10-21T20:29:02Z",
+   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T20:20:24Z",
+   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T20:17:11Z",
+   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T20:07:01Z",
+   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T20:04:29Z",
+   "subject": "Incident: the browser suite failed on d18f925d (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T19:59:35Z",
+   "subject": "grades: category-weighted class grade and the grade a final left you (#1200)"
+  },
+  {
+   "at": "2026-10-21T19:53:54Z",
+   "subject": "Incident: the browser suite failed on 12211721 (void-live-deploy/incidents.json)"
+  },
+  {
+   "at": "2026-10-21T19:49:07Z",
+   "subject": "Lists run 2: main's red fast checks green (fuzzy, privacy, map, parallax, overlap, generated files), suntimes owns the bare sunrise ask…"
+  },
+  {
+   "at": "2026-10-21T19:42:40Z",
+   "subject": "Incident: the browser suite failed on d6901d84 (void-live-deploy/incidents.json)"
+  },
+  {
    "at": "2026-10-21T19:37:48Z",
    "subject": "Lists run 1: four of Verse's asks built, one skill merge, duplicates and blocks recorded, lists metrics (#1195)"
   },
@@ -515,50 +561,18 @@
   {
    "at": "2026-10-21T18:26:10Z",
    "subject": "Incident: the browser suite failed on f1e751c7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T18:21:40Z",
-   "subject": "Verse's voice 2026-10-21: two answers verbatim, current asks refreshed, the answer-endpoint self-card gap queued (asked by Verse)"
-  },
-  {
-   "at": "2026-10-21T18:20:11Z",
-   "subject": "grow-self: let the lessons file through every allowlist so hardening runs commit again"
-  },
-  {
-   "at": "2026-10-21T18:17:25Z",
-   "subject": "Incident: the browser suite failed on 2819b0fd (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T18:12:27Z",
-   "subject": "Forethinkers 2026-10-21 14:07: smallest arm-waving printed motor sized from the full text; battery figure heat rule corrected to ASTM F963…"
-  },
-  {
-   "at": "2026-10-21T16:48:44Z",
-   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T16:44:10Z",
-   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T16:31:07Z",
-   "subject": "Incident: the browser suite failed on 5f4a9d6a (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T16:25:52Z",
-   "subject": "Restore two wiped page scripts on main: lib/stage-tools.js (was PLACEHOLDER_REPLACE_ME) and lib/tome.js (cut off mid-comment); keep their…"
-  },
-  {
-   "at": "2026-10-21T16:09:02Z",
-   "subject": "Incident: the browser suite failed on 9077f9a7 (void-live-deploy/incidents.json)"
-  },
-  {
-   "at": "2026-10-21T16:05:43Z",
-   "subject": "reinvest: today's plan for Verse's money"
   }
  ],
  "builders": {
   "finished": [
+   {
+    "name": "Lists caught up, run 3 (Grok Bot, 2026-10-21)",
+    "line": "two of Verse's asks that it had made 9 times each are built: 'preview my memory' (inside the memory card) and the Deciding family (3 of 3 proven now). template-list and list-templates are one routing place (skills/list-starters.js…"
+   },
+   {
+    "name": "Lists caught up, run 2 (Grok Bot, 2026-10-21)",
+    "line": "run 1's lists PR (https://github.com/atomeam/void-loop/pull/1195) was stuck on a ledger conflict and is merged. The fast checks that were red on main are green except two: fuzzy, privacy-guard (a standard's section number like \"section…"
+   },
    {
     "name": "Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/voi…",
     "line": "main had two wiped page scripts (lib/stage-tools.js was the word PLACEHOLDER_REPLACE_ME, lib/tome.js cut off mid-comment) and both are whole again with their intended changes, plus tools/wiped-files.test.mjs in the fast checks. Built from…"
@@ -574,14 +588,6 @@
    {
     "name": "Family gravity in the living cards mind (Claude, 2026-10-17, asked by Verse)",
     "line": "each card in F-038 belongs to a skill family (idea and mind: Verse itself; stage and card: The stage; you: Out in the world), and cards of one family drift toward a common centre until they sit 0.14 apart; dragging one brings its family…"
-   },
-   {
-    "name": "Art Forge (claude, helper/art-forge)",
-    "line": "every answer or merged card paints its subject once with Workers AI (/api/card-art, 30 a day, ART_OFF=1, cached in D1), the whole-card copy/save includes it, tools/prepaint-art.mjs --go pre-paints; playbook docs/playbooks/art-forge.md.…"
-   },
-   {
-    "name": "Web4: Verse as the fourth step of the web (Claude, 2026-10-16, helper/web4)",
-    "line": "skills/web4.js + lib/web4.js (one source) + a Verse Book page + tools/web4.test.mjs: \"what is web4\" is one card, the four steps as a ladder (read, write and share, own, ask and it appears), each with a tappable ask, and the honest line…"
    }
   ],
   "ladders": [

@@ -1,12 +1,12 @@
 {
  "note": "Who imports whom under void-live-deploy/ (tools/deps.mjs, from the import lines; asked by Verse). libs: each lib file with the skills that depend on it, directly or through another file (skills), directly (direct), and every dependant of any kind (dependants). files: each file's imports, the files that import it (importedBy) and the ones that reach it through them (reachedBy).",
- "counted": 696,
+ "counted": 697,
  "libs": [
   {
    "file": "lib/stage-pack.js",
-   "skills": 57,
+   "skills": 58,
    "direct": 50,
-   "dependants": 63,
+   "dependants": 64,
    "tests": 6
   },
   {
@@ -332,6 +332,13 @@
    "tests": 1
   },
   {
+   "file": "lib/skill-family.js",
+   "skills": 5,
+   "direct": 5,
+   "dependants": 5,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-pack-i.js",
    "skills": 5,
    "direct": 5,
@@ -403,13 +410,6 @@
   },
   {
    "file": "lib/note-tools.js",
-   "skills": 4,
-   "direct": 4,
-   "dependants": 4,
-   "tests": 1
-  },
-  {
-   "file": "lib/skill-family.js",
    "skills": 4,
    "direct": 4,
    "dependants": 4,
@@ -633,9 +633,23 @@
    "tests": 1
   },
   {
+   "file": "lib/list-templates.js",
+   "skills": 2,
+   "direct": 1,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
    "file": "lib/stage-port.js",
    "skills": 2,
    "direct": 2,
+   "dependants": 2,
+   "tests": 1
+  },
+  {
+   "file": "lib/template-list.js",
+   "skills": 2,
+   "direct": 1,
    "dependants": 2,
    "tests": 1
   },
@@ -983,13 +997,6 @@
    "tests": 1
   },
   {
-   "file": "lib/list-templates.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
    "file": "lib/media-local.js",
    "skills": 1,
    "direct": 1,
@@ -1001,7 +1008,7 @@
    "skills": 1,
    "direct": 1,
    "dependants": 1,
-   "tests": 1
+   "tests": 2
   },
   {
    "file": "lib/notebook.js",
@@ -1124,13 +1131,6 @@
   },
   {
    "file": "lib/telemetry-live.js",
-   "skills": 1,
-   "direct": 1,
-   "dependants": 1,
-   "tests": 1
-  },
-  {
-   "file": "lib/template-list.js",
    "skills": 1,
    "direct": 1,
    "dependants": 1,
@@ -3699,6 +3699,9 @@
    "imports": [],
    "importedBy": [
     "skills/list-templates.js"
+   ],
+   "reachedBy": [
+    "skills/list-starters.js"
    ]
   },
   "lib/match-history.js": {
@@ -4792,6 +4795,7 @@
     "skills/dates.js",
     "skills/games.js",
     "skills/languages.js",
+    "skills/list-starters.js",
     "skills/time.js"
    ]
   },
@@ -5030,6 +5034,7 @@
     "skills/copy-stack.js",
     "skills/dim-void.js",
     "skills/dismissed-pile.js",
+    "skills/list-starters.js",
     "skills/merge-void.js",
     "skills/null-sweep.js",
     "skills/stage-find.js"
@@ -5347,6 +5352,9 @@
    "imports": [],
    "importedBy": [
     "skills/template-list.js"
+   ],
+   "reachedBy": [
+    "skills/list-starters.js"
    ]
   },
   "lib/term-orbits-law.js": {
@@ -6843,12 +6851,22 @@
    "imports": [],
    "importedBy": []
   },
+  "skills/list-starters.js": {
+   "imports": [
+    "lib/skill-family.js",
+    "skills/template-list.js",
+    "skills/list-templates.js"
+   ],
+   "importedBy": []
+  },
   "skills/list-templates.js": {
    "imports": [
     "lib/stage-pack.js",
     "lib/list-templates.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/list-starters.js"
+   ]
   },
   "skills/list-tools.js": {
    "imports": [
@@ -6965,7 +6983,8 @@
    ],
    "external": [
     ", { headers: { authorization: ",
-    " takes it away again.</p>"
+    " takes it away again.</p>",
+    ", "
    ],
    "importedBy": []
   },
@@ -8356,7 +8375,9 @@
     "lib/stage-pack.js",
     "lib/template-list.js"
    ],
-   "importedBy": []
+   "importedBy": [
+    "skills/list-starters.js"
+   ]
   },
   "skills/term-orbits.js": {
    "imports": [

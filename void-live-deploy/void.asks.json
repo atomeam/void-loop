@@ -1912,11 +1912,101 @@
       "words": "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage",
       "ledgerAt": "2026-10-21T16:30:48Z",
       "why": "built: duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21) (tools/asks-link.json)"
+    },
+    {
+      "words": "Fix the 'fuzzy' and 'privacy-guard' fast checks that are currently red on main.",
+      "ledgerAt": "2026-10-16T06:06:16Z",
+      "why": "built: lib/fuzzy.js: a slip of a skill's trigger word still activates the skill (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they are about to export before they trigger the full download.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Scale the Deciding family by developing and testing new skills in that category.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see snippets of memory",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills within the Deciding family to increase its proven skill count",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement the 'memory-preview' UI component to allow users to see memory snippets",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to allow users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop new skills for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show memory snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills for the Deciding family to increase its proven skill count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Develop and test new skills specifically for the Deciding family to increase its proven count.",
+      "ledgerAt": "2026-10-21T22:32:30Z",
+      "why": "built: decide-cards has its own test beside its three benchmark asks and triangulate has three real benchmark asks beside its self-test (tools/decide-cards.test.mjs, tools/bench.json) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component that allows users to see a snippet of what they asked.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
+    },
+    {
+      "words": "Implement a 'memory-preview' UI component to show user input snippets.",
+      "ledgerAt": "2026-10-21T22:32:28Z",
+      "why": "built: 'preview my memory' in the memory card shows what an export holds (counts, size, the biggest labels) before anything downloads (tools/memory-preview.test.mjs) (tools/asks-link.json)"
     }
   ],
   "totals": {
-    "asked": 227,
-    "built": 210,
-    "through": "2026-10-20T21:31:00Z"
+    "asked": 229,
+    "built": 215,
+    "through": "2026-10-21T21:33:00Z"
   }
 }
