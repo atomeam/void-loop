@@ -2,6 +2,32 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
+   "at": "2026-10-21T19:53:54.313Z",
+   "sha": "12211721c333099f09afe6dc579b974ef7370a25",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39664930344",
+   "suite": "browser suite on main",
+   "checks": [
+    "suite ran to the end"
+   ],
+   "touched": [
+    "docs/MAP.md",
+    "docs/convergence.md",
+    "domains/handoff.md",
+    "domains/lists.metrics.json",
+    "domains/store.queue.jsonl",
+    "tools/alt-pay.test.mjs",
+    "tools/checks.mjs",
+    "tools/decision-matrix-narrow.test.mjs",
+    "tools/families.mjs",
+    "tools/fuzzy.test.mjs",
+    "tools/privacy-guard.test.mjs",
+    "tools/star-parallax.test.mjs",
+    "void-live-deploy/code-review/index.html",
+    "void-live-deploy/index.html",
+    "void-live-deploy/lib/mcp-skills.js"
+   ]
+  },
+  {
    "at": "2026-10-21T19:42:39.402Z",
    "sha": "d6901d84f5aaeb72cabd751b4654ba902511f7fd",
    "run": "https://github.com/atomeam/void-loop/actions/runs/39663315601",
@@ -785,19 +811,6 @@
     ".github/workflows/propose-fix.yml",
     "tools/propose-fix.mjs",
     "tools/propose-fix.test.mjs",
-    "void-live-deploy/void.growth.json"
-   ]
-  },
-  {
-   "at": "2026-10-19T12:07:38.911Z",
-   "sha": "23a945ee55b4e411ec8d2a3665d5ba519968cd2e",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39247638288",
-   "suite": "browser suite on main",
-   "checks": [
-    "check timeout: no check finished within 300 s"
-   ],
-   "touched": [
-    "tools/card-cycle.json",
     "void-live-deploy/void.growth.json"
    ]
   }
