@@ -2,9 +2,9 @@
  "note": "Every red browser suite on main, newest first (tools/incident-log.mjs, written by verify.yml; asked by Verse). Check names and shas only.",
  "incidents": [
   {
-   "at": "2026-10-21T02:43:25.458Z",
-   "sha": "e25f738556c4b4cbdb9481a21fde9b2553ee573a",
-   "run": "https://github.com/atomeam/void-loop/actions/runs/39534370884",
+   "at": "2026-10-21T02:44:00.889Z",
+   "sha": "8db2beb1e65e1b7392923bf73e8b33bdc3b0be31",
+   "run": "https://github.com/atomeam/void-loop/actions/runs/39534423957",
    "suite": "browser suite on main",
    "checks": [
     "tools pack 4 align: \"align top\" gives every card one top and \"align left\" one left edge",
@@ -16,6 +16,7 @@
     "suite ran to the end"
    ],
    "touched": [
+    ".gitattributes",
     "tools/film-discovery.test.mjs",
     "tools/site-test.json"
    ]
