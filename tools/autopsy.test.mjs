@@ -114,7 +114,7 @@ test('the suite\'s own stalls and end-of-run flags are counted apart, never unma
   ] };
   assert.ok(isSuiteMeta('check timeout: no check finished within 300 s') && isSuiteMeta('suite ran to the end') && !isSuiteMeta('clock: check timeout') && !isSuiteMeta(''));
   const a = autopsy(J, FAM, GUIDE);
-  assert.deepEqual(a.suite, { timeouts: 2, ended: 1, incidents: 2 }); assert.equal(a.failing, 1); assert.deepEqual(a.unmapped, []);
+  assert.deepEqual(a.suite, { timeouts: 2, ended: 1, incidents: 2, stalled: 2, threshold: 3, escalated: false }); assert.equal(a.failing, 1); assert.deepEqual(a.unmapped, []);
   assert.equal(a.recent[0].checks.filter((c) => c.meta).length, 2);
   const h = autopsyHtml(a, (s) => String(s)); assert.ok(h.includes('data-autopsy-suite') && h.includes('2 stalled checks') && h.includes('(the suite itself)'));
   assert.deepEqual(failurePlants(J).map((x) => x.text), ['clock']);
@@ -139,4 +139,14 @@ test('failure signature: a check that failed on an earlier red suite is recurrin
   assert.equal(a.recent[0].signature.kind, 'recurring');
   assert.match(autopsyHtml(a), /data-signature="recurring">Recurring: /);
   assert.match(pulseHtml(a), /data-signature="recurring">Recurring: /);
+});
+test('a stall escalates only when the timeout signature repeats across STALL_REPEAT suites (asked by Verse)', async () => {
+  const { autopsy, autopsyHtml, STALL_REPEAT } = await import('../void-live-deploy/lib/autopsy.js');
+  const fam = { families: [{ id: 'time', name: 'Time', skills: [{ name: 'clock' }] }] };
+  const red = (n) => ({ incidents: Array.from({ length: n }, (_, k) => ({ at: '2026-10-1' + k + 'T09:00:00Z', sha: 'abcdef' + k + '000', suite: 's', checks: ['check timeout: no check finished within 300 s'] })) });
+  assert.equal(STALL_REPEAT, 3);
+  const two = autopsy(red(2), fam, { pages: [] }), three = autopsy(red(3), fam, { pages: [] });
+  assert.equal(two.suite.stalled, 2); assert.equal(two.suite.escalated, false); assert.equal(three.suite.escalated, true);
+  assert.match(autopsyHtml(two), /data-stall-escalated="0">Not escalated: 2 of the 3/); assert.match(autopsyHtml(three), /data-stall-escalated="1">Escalated:<\/b> the stall repeats across 3 suites/);
+  assert.equal(autopsy({ incidents: [{ at: '2026-10-17T09:00:00Z', sha: 'aaaaaaa1', suite: 's', checks: ['clock: "set it" fails'] }] }, fam, { pages: [] }).suite.escalated, false);
 });

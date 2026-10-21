@@ -1,0 +1,27 @@
+{
+  "note": "One entry per run of the lists routine (every V01D backlog caught up). closed = items built, merged or closed as duplicates this run (WIP cap 8); pct_blocked = blocked items over items touched; dup_rate = duplicate asks over open asks at the start; median_days = queue entry to built, for the asks closed this run. Public: counts only, no visitor words.",
+  "runs": [
+    {
+      "at": "2026-10-21T16:35:00Z",
+      "run": 1,
+      "closed": 7,
+      "touched": 8,
+      "pct_blocked": 12.5,
+      "top_block": "no live payment rail for a paid store item (Gumroad listing, Cash App tag or wallet not configured)",
+      "dup_rate": 0.33,
+      "median_days": 3.3,
+      "asks_open_start": 30,
+      "asks_open_end": 23,
+      "items": [
+        { "what": "lib/stage-tools.js (a placeholder) and lib/tome.js (cut off) restored on main, plus a wiped-file guard in the fast checks", "list": "site tester / live breakage", "status": "built", "pr": "https://github.com/atomeam/void-loop/pull/1194" },
+        { "what": "5 asks already built but never linked (open the self card x3, zorbleflux throttle, decision-matrix in Deciding)", "list": "void.asks.json", "status": "built (linked)" },
+        { "what": "backlog digest velocity: days each ask has waited, oldest and median", "list": "void.asks.json", "status": "built" },
+        { "what": "incident autopsy escalates a stall only when it repeats across 3 suites", "list": "void.asks.json", "status": "built" },
+        { "what": "growth-speed gauge (2 wordings): 'growth speed' opens the wants card's want-to-skill meter", "list": "void.asks.json", "status": "built (extended the wants card)" },
+        { "what": "spanish + translate merged into the languages family", "list": "convergence", "status": "built", "doc": "docs/convergence.md" },
+        { "what": "memory-preview (6 wordings, one ask) and Scale Deciding (3 wordings, one ask): duplicates folded into one open ask each; the helper drafts (helper/memory-preview, helper/growth-speed, helper/deciding-skill) are placeholders and were not merged", "list": "void.asks.json", "status": "duplicate", "link": "domains/void.decisions.json" },
+        { "what": "site-tester store item (needs-gumroad)", "list": "store.queue.jsonl", "status": "blocked", "reason": "paid item with no live rail: no Gumroad listing, and the Cash App and USDC rails report not configured (/api/store/status special_rails is empty)", "unblock": "either list it on Gumroad, set the Cash App tag or wallet the special rails read, or open it as pay-what-you-want (Adam's sample rule) once the alt-pay tests use another fixture", "who": "next lists run (pay-what-you-want workaround); Adam only for a Gumroad listing", "tried": ["pay-what-you-want (blocked this run: tools/alt-pay.test.mjs uses site-tester as its paid fixture, so it needs its own fixture first)", "x402 route exists but needs the wallet configured"] }
+      ]
+    }
+  ]
+}

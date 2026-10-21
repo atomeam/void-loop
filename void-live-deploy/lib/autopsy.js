@@ -62,6 +62,9 @@ export const GO_LOG = { id: 'go-against-void', name: 'Go against Verse', replay:
 export const isGoLog = (check) => /\bgo\s+(?:against|vs\.?|with)\s+(?:v01d|void|verse|you|the\s+computer)\b|\bgo[- ]ai\b/i.test(String(check || '').slice(0, 160));
 
 /** the suite's own bookkeeping lines (a stalled check, the end-of-run flag): the runner failing, not a skill, so they are counted apart and never listed as unmapped (asked by Verse and the owner: the autopsy read 30 of its 74 "failures" as unmapped noise). */
+/** how many red suites must share the stall (the "check timeout" signature) before it is escalated as a real incident (asked by Verse: "telemetry
+ *  only escalates to an incident if the timeout signature repeats across N samples"): one stalled run is a busy machine; three is a pattern. */
+export const STALL_REPEAT = 3;
 export const isSuiteMeta = (check) => /^(?:check timeout|suite ran to the end)\b/i.test(String(check || '').trim());
 
 /** an incident's failure signature (asked by Verse: "a 'failure-signature' into the incident-autopsy skill so it can distinguish ... a genuine
@@ -101,8 +104,10 @@ export function autopsy(incidentsJson, fam, guide, focus = '') {
   if (want) placed = placed.map((i) => ({ ...i, checks: i.checks.filter((c) => c.family === want) })).filter((i) => i.checks.length);
   for (const i of placed) {
     const m = i.checks.filter((c) => c.meta); if (m.length) suite.incidents += 1;
+    if (m.some((c) => /^check timeout/i.test(c.text))) suite.stalled = (suite.stalled || 0) + 1;
     for (const c of m) { if (/^check timeout/i.test(c.text)) suite.timeouts += 1; else suite.ended += 1; }
   }
+  suite.stalled = suite.stalled || 0; suite.threshold = STALL_REPEAT; suite.escalated = suite.stalled >= STALL_REPEAT;
   for (const i of placed) for (const c of i.checks.filter((x) => !x.meta)) {
     if (isGoLog(c.text)) goLog.push({ sha: i.sha, at: i.at, text: c.text });
     if (c.family) counts.set(c.family, { id: c.family, name: c.name, count: (counts.get(c.family) || { count: 0 }).count + 1 }); else un.set(c.text, (un.get(c.text) || 0) + 1);
@@ -142,7 +147,9 @@ export function autopsyHtml(a, esc = escHtml) {
     (a.focus ? '<p class="lead" data-autopsy-focus="' + esc(a.focus) + '">Only <b>' + esc(fam ? fam.name : a.focus) + '</b>: ' + esc(a.failing) + ' failing check' + (a.failing === 1 ? '' : 's') + ' in the logs. <a href="#" data-ask="incident autopsy">all families</a></p>'
       : '<p class="lead">' + (top.length ? 'Most failing checks recorded: <b>' + top.map((f) => esc(f.name)).join('</b>, <b>') + '</b> (' + esc(top[0].count) + ' of ' + esc(a.failing) + ').' : 'No failing check could be placed in a family.')
       + ' From the ' + esc(a.total) + ' red browser suites on main in <code>incidents.json</code>; a count is failing checks, not a rating.</p>')
-    + (!a.focus && a.suite && (a.suite.timeouts || a.suite.ended) ? '<p class="sub" data-autopsy-suite="1"><b>The suite itself:</b> ' + esc(a.suite.timeouts) + ' stalled check' + (a.suite.timeouts === 1 ? '' : 's') + ' (no check finished within 300 s) and ' + esc(a.suite.ended) + ' end-of-run flag' + (a.suite.ended === 1 ? '' : 's') + ' in ' + esc(a.suite.incidents) + ' of the ' + esc(a.total) + ' red suites: the runner stalling, not a skill failing, so none of it is counted in a family.</p>' : '')
+    + (!a.focus && a.suite && (a.suite.timeouts || a.suite.ended) ? '<p class="sub" data-autopsy-suite="1"><b>The suite itself:</b> ' + esc(a.suite.timeouts) + ' stalled check' + (a.suite.timeouts === 1 ? '' : 's') + ' (no check finished within 300 s) and ' + esc(a.suite.ended) + ' end-of-run flag' + (a.suite.ended === 1 ? '' : 's') + ' in ' + esc(a.suite.incidents) + ' of the ' + esc(a.total) + ' red suites: the runner stalling, not a skill failing, so none of it is counted in a family.'
+      + (a.suite.escalated ? ' <b data-stall-escalated="1">Escalated:</b> the stall repeats across ' + esc(a.suite.stalled) + ' suites (the bar is ' + esc(a.suite.threshold) + '), so it is treated as an incident to fix, not noise.'
+        : a.suite.stalled ? ' <span data-stall-escalated="0">Not escalated: ' + esc(a.suite.stalled) + ' of the ' + esc(a.suite.threshold) + ' repeats it takes.</span>' : '') + '</p>' : '')
     + (a.families.length && !a.focus ? '<div class="vh">By family</div><ul data-autopsy-families="1">' + a.families.map((f) => '<li data-family="' + esc(f.id) + '"><a href="#" data-ask="' + esc('incident autopsy for ' + f.id) + '"><b>' + esc(f.name) + '</b></a> <span style="font-variant-numeric:tabular-nums">' + esc(f.count) + '</span></li>').join('') + '</ul>' : '')
     + (a.goLog && a.goLog.length ? '<div class="vh">' + esc(GO_LOG.name) + ' log</div><div class="sub" data-autopsy-golog="' + esc(a.goLog.length) + '">' + esc(a.goLog.length) + ' failing check' + (a.goLog.length === 1 ? '' : 's') + ' from the games against Verse, latest <code>' + esc(a.goLog[0].sha.slice(0, 8)) + '</code>: '
       + esc(a.goLog[0].text.slice(0, 140)) + ' <a href="#" data-ask="' + esc(GO_LOG.replay) + '">play it again</a></div>' : '')
