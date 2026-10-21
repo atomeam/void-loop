@@ -3,3 +3,4 @@ domains/inputs/** -text
 domains/void.agents.log.md merge=union
 drafts/fringe/** -text
 void-live-deploy/fringe/** -text
+.github/workflows/*.yml text eol=lf
