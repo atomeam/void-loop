@@ -40,11 +40,11 @@ export const KNOWN = [
   { match: /^Ask whether coral can survive heatwaves/i, show: 'the coral card reads the Florida Keys reef live', try: 'can coral survive heatwaves' },
 ];
 
-/** a ledger line cut to what a person reads: the first clause, at most 90 characters. Pure. */
+/** a ledger line cut to what a person reads: the first clause, at most 180 characters so the richer "Why these / Added" detail survives. Pure. */
 export function lineOf(what) {
   const s = publicWhat(what).replace(/\s+/g, ' ').trim();
   const cut = s.split(/(?<=[a-z0-9)"])[:;](?=\s)/i)[0].trim();
-  return cut.length > 90 ? cut.slice(0, 89).replace(/\s+\S*$/, '') + '…' : cut;
+  return cut.length > 180 ? cut.slice(0, 179).replace(/\s+\S*$/, '') + '…' : cut;
 }
 
 /** what one of Verse's own upgrades did, from the line grow-self writes ("Verse hardened itself: 9 benchmark ask(s) for calendar-file, clock,
@@ -58,10 +58,12 @@ export function hardenedLine(what) {
   const art = /card art/i.test(rest.join(' ') + ' ' + asksPart);
   const a = /^(\d+) benchmark ask\(s\) for (.+)$/i.exec(asksPart.trim());
   if (!a) return art ? 'Sharper card art: my art scores went up' : null;
+  // keep the richer "Why these / Added / Did not route" tail when present (owner 2026-10-21)
+  const tail = m[1].includes('Why these') || m[1].includes('Added:') || m[1].includes('Did not route') ? ' — ' + m[1].split(/Why these|Added:|Did not route/)[1].slice(0, 120).trim() : '';
   const names = a[2].split(/,\s*/).map((x) => x.replace(/-/g, ' ').trim()).filter(Boolean);
   const shown = names.length > 3 ? names.slice(0, 3).concat(names.length - 3 + ' more') : names;
   const list = shown.length > 1 ? shown.slice(0, -1).join(', ') + ' and ' + shown[shown.length - 1] : shown[0];
-  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '');
+  return 'Better at ' + list + ': ' + a[1] + ' more ways of asking answered right' + (art ? ', and sharper card art' : '') + tail;
 }
 
 /** { line, ask } for a ledger entry that can be shown on the stage, or null. Pure. */

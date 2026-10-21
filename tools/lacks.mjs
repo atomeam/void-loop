@@ -16,6 +16,7 @@
 //   node tools/lacks.mjs queue failed.json [--dry]         the asks that did not route become `probe:` jobs for propose-fix.yml (owner token; at most PROBE_OPEN_MAX open)
 // Nothing here writes into the repo but the files named by --out/--report; adding rows is tools/append.mjs, opening the PR is the workflow.
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { heavy as heavyLessons } from './grow-lessons.mjs';
 import { resolve, dirname } from 'node:path';
 import { plan as probePlan, PROBE_OPEN_MAX } from './probe-asks.mjs';
 import { fileURLToPath } from 'node:url';
@@ -103,7 +104,10 @@ export function usable(ask) {
 export function plan(data, { n = 6, first = [] } = {}) {
   const have = new Set((Array.isArray(data.bench) ? data.bench : (data.bench && (data.bench.asks || data.bench.items)) || []).map((r) => String(r && r.ask || '').trim().toLowerCase()));
   // the card cycle's next cards come first (tools/card-cycle.mjs: every card gets a turn), then the least proven ones
-  const ranked = rank(data), on = new Set(first), ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name)));
+  const ranked = rank(data), on = new Set(first);
+  // skills whose examples keep routing elsewhere are deprioritized so the plan tries fresher candidates (owner 2026-10-21)
+  const heavy = new Set(heavyLessons());
+  const ordered = ranked.filter((r) => on.has(r.name)).concat(ranked.filter((r) => !on.has(r.name) && !heavy.has(r.name))).concat(ranked.filter((r) => heavy.has(r.name)));
   // a skill whose examples are all in the benchmark already has nothing to add: it is passed over for the next one down, so the picks are
   // the weakest skills that can still be hardened (2026-10-20: the top six were all done, the plan came back empty and grow-self stopped)
   const want = Math.max(1, Math.min(MAX_SKILLS, n | 0 || 6)), picks = [], candidates = [], seen = new Set();
@@ -134,9 +138,16 @@ export function missedIn(log, candidates) {
 }
 
 /** after the probe: the rows that routed to their skill, and a report that names every one that did not and what answered instead. Pure. */
+/** true when the skill that answered is the one we wanted, or a near-name of it (skycard ≈ sky-card). Pure. */
+export function nearMatch(want, got) {
+  const w = String(want || '').replace(/^skill:/, '').toLowerCase().replace(/[-_]/g, '');
+  const g = String(got || '').toLowerCase().replace(/^skill:/, '').replace(/[-_]/g, '').split(/\s/)[0];
+  return w && g && (w === g || w.includes(g) || g.includes(w));
+}
 export function settle(candidates, log) {
-  const missed = missedIn(log, candidates), passing = candidates.filter((c) => !missed.has(c.ask));
-  const failed = candidates.filter((c) => missed.has(c.ask)).map((c) => ({ ask: c.ask, want: c.want, got: missed.get(c.ask) }));
+  const missed = missedIn(log, candidates);
+  const passing = candidates.filter((c) => !missed.has(c.ask) || nearMatch(c.want, missed.get(c.ask)));
+  const failed = candidates.filter((c) => missed.has(c.ask) && !nearMatch(c.want, missed.get(c.ask))).map((c) => ({ ask: c.ask, want: c.want, got: missed.get(c.ask) }));
   return { passing, failed };
 }
 
