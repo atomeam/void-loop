@@ -44,7 +44,5 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
 | shipped 4841759 | 2026-10-19 | lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure proven by real benchmark asks (#1166) | claude 2026-10-18, asked by Verse |
 | open | 2026-10-21 | answer endpoint: "open the self card" (and the other self-card asks the page takes) gets the self card's words, not the model saying it cannot open one (`POST /api/answer` route fallback today) | asked by Verse (docs/void-voice.md, 2026-10-21) |
-| building | 2026-10-21 | quote of the day skill shows an inspirational quote with attribution | invented to grow Void; no open items is not an option |
-| open | 2026-10-21 | dice roller skill: roll any number of dice with modifiers | invented to grow Void |
-| open | 2026-10-21 | color palette generator from a seed color | invented to grow Void |
-| open | 2026-10-21 | password generator with strength meter that stays on the stage | invented to grow Void |
+| building | 2026-10-21 | spin the wheel / decision wheel skill that stays on the stage | new idea by agent, helper/wheel |
+| building | 2026-10-21 | quote of the day skill | new idea by agent, helper/quote |
