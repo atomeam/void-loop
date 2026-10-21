@@ -310,6 +310,11 @@
       "match": "open the self card",
       "ledgerAt": "2026-10-17T09:37:08Z",
       "why": "'open the self card' opens the self card with its Correct me form (the voice skill; checked 2026-10-19 with node tools/ask.mjs \"open the self card\", \"open your self card\", \"show me the self card\")"
+    },
+    {
+      "match": "growth-speed'? gauge",
+      "ledgerAt": "2026-10-21T16:30:48Z",
+      "why": "duplicate of the wants card's want-to-skill meter (built 2026-10-19T17:11:36Z); 'growth speed' now opens it (lists run 2026-10-21)"
     }
   ],
   "extra": [

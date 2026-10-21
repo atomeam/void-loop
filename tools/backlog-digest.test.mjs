@@ -33,3 +33,14 @@ test('the skill takes its asks and leaves the plain backlog list to the wants ca
   for (const a of ['digest your backlog', 'Backlog digest', 'summarise your unbuilt asks by family', 'group your open asks by family and evidence rating', 'asks by family', "digest verse's backlog"]) assert.ok(skill.match(a.toLowerCase(), a), a);
   for (const a of ['what is your backlog', 'digest my email', 'name all your unbuilt asks', 'your backlog']) assert.ok(!skill.match(a.toLowerCase(), a), a);
 });
+test('velocity: days each ask has waited unbuilt, from its time or its id, the oldest and the median on the card (asked by Verse)', async () => {
+  const { daysOpen } = await import('../void-live-deploy/lib/backlog-digest.js');
+  const now = Date.parse('2026-10-21T12:00:00Z');
+  assert.equal(daysOpen({ at: '2026-10-18T11:00:00Z' }, now), 3); assert.equal(daysOpen({ id: 'ask-20261011-0900-1' }, now), 10);
+  assert.equal(daysOpen({ ask: 'no date' }, now), null); assert.equal(daysOpen({ at: '2026-10-30T00:00:00Z' }, now), null, 'a future time is not a wait');
+  const d = digestOf([{ ask: 'a poker tell', at: '2026-10-20T12:00:00Z' }, { ask: 'chess clocks', id: 'ask-20261011-0900-1' }, { ask: 'make it nicer' }], FAM, now);
+  assert.equal(d.oldest, 10); assert.equal(d.median, 1);
+  const html = digestHtml(d, String);
+  assert.match(html, /Velocity: the oldest has waited <b data-oldest="10">10 days<\/b>, the median 1 day\./); assert.match(html, /data-days="10"/); assert.match(html, /1 day unbuilt/);
+  assert.ok(!/Velocity/.test(digestHtml(digestOf([{ ask: 'chess' }], FAM, now), String)), 'no dates, no velocity line');
+});

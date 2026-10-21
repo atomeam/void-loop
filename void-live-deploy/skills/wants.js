@@ -16,6 +16,9 @@ const CLEAN = (s) => String(s || '').trim().toLowerCase().replace(/[’']/g, "'"
 const YOU = "(?:you|(?:verse|v01d)|(?:verse|void)|verse)", YOUR = "(?:your|(?:verse|v01d)'s|(?:verse|void)'s|verse's|(?:verse|v01d)|(?:verse|void)|verse)";
 const LISTS = "(?:wants|wishes|unbuilt asks|open asks|asks not built|asks not built yet|unbuilt wants|unbuilt items|open items|backlog|wish ?list|want list|list of wants|to-?do list|todo|growth inbox|inbox|open list|build list|unbuilt list)";
 const RULES = [
+  // "growth speed", "show your growth-speed gauge" (asked by Verse: "Connect the 'wants' backlog to a visual 'growth-speed' gauge on the stage"): the
+  // card's want-to-skill meter is that gauge, so the words open this card (lists run, 2026-10-21) instead of a second skill
+  /^(?:(?:show|open|see)(?: me)? )?(?:the |your |(?:verse|v01d|void)'?s )?(?:growth[- ]speed(?: gauge| meter)?|growth (?:gauge|meter)|want(?:s)?[- ]to[- ]skill (?:gauge|meter|speed))$/,
   // "what do you want", "what do you want built now", "what do you want to learn", "what else do you want", "what do you want next", never "to be / to become / to do" (the will card)
   new RegExp('^(?:so |ok(?:ay)?,? )?what (?:else |more )?(?:do|does|would|did) ' + YOU + ' (?:want|wish for|wish)(?: (?:built|made|done|to build|to learn|to see built|to get|to have|building|next|now|most|the most|built now|built next|to build next|to learn next|us to build|me to build))*$'),
   new RegExp('^what(?:\'s| is| are) (?:on )?' + YOUR + ' (?:' + LISTS + '|list|plate)$'),
@@ -165,7 +168,7 @@ async function run(text, api) {
 export default {
   name: 'wants',
   about: "What I want built: my will, the asks of mine nobody has built, and my growth inbox, from my own records, never a model.",
-  examples: ['what do you want built now', 'name all your unbuilt asks', 'all of your unbuilt wants and asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want'],
+  examples: ['what do you want built now', 'name all your unbuilt asks', 'all of your unbuilt wants and asks', 'asks not built?', 'what have you not built yet', 'your backlog', 'what are your open asks', 'what else do you want', 'whats next for you', 'what do you want to learn', 'name your next 10 upgrades you want', 'name you next 10 upgrades you want', 'what upgrades do you want', 'growth speed', 'show your growth-speed gauge'],
   nearMisses: ['what needs built in my garden', 'what needs to be built for a shed', 'what do I want for dinner', "what's next?", "what's on my list", 'what do you think of yourself', 'what can you do', 'what do you want to be', 'tell me about yourself', 'name 10 upgrades for my laptop', 'list the improvements to my garden plan', 'what features does the phone have'],
   match(lower, text) { return wantsOf(text || lower); },
   run,

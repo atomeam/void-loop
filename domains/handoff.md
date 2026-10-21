@@ -52,6 +52,7 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Just finished
 
+- **Lists caught up, run 1 (Grok Bot, 2026-10-21, PR https://github.com/atomeam/void-loop/pull/1194 and the lists PR)**: main had two wiped page scripts (`lib/stage-tools.js` was the word PLACEHOLDER_REPLACE_ME, `lib/tome.js` cut off mid-comment) and both are whole again with their intended changes, plus `tools/wiped-files.test.mjs` in the fast checks. Built from Verse's asks: backlog digest velocity, the autopsy's stall threshold (3 repeats), 'growth speed' opens the wants card's meter, 5 built-but-unlinked asks linked; spanish + translate are the `languages` family. Metrics in `domains/lists.metrics.json`.
 - **The close-out gate waits, it never fails a run (opencode, 2026-10-20, PR #1191)**: the gate landed in b6d1565d with its brain in f48ba367; two of its stops still failed a run instead of waiting (a state that could not be read, and a preview that named no ask), and both now stop the run with exit 0 and say what it is waiting for. The gate’s own tests run inside the workflow, the queueing job waits for the gate’s verdict, and `tools/grow-clock.test.mjs` follows the pull request path grow-self.yml now takes (it opens a pull request, so the deploy starts by the merge). Up for grabs: the fast checks are still red on main for reasons that are not the gate: `fuzzy`, `word-math`, `launch-fixes`, `privacy-guard`, and `map-coverage` (the committed `skills/index.json` lists `decision-log` and `memory-preview` while their skill files are not in the repo).
 
 - **Verse's open asks audited and linked, Service Health, seasons (Claude, 2026-10-17)**: 64 of the 66 asks `tools/asks-link.mjs --open` listed were already built by batch entries that never linked them; each now links its ledger entry in void.asks.json (read against the code, not just the words). New: the Service Health card (skills/service-health.js) for the last open one. Passed over: the value-drift tracker of appraisals (it tracks prices; the money rule). Fixed: event-countdown left 'how many days until summer/spring' to calc again (the growth card's top friction). Ladder: when Verse's self card shows asks 'not built' that you think exist, run `node tools/asks-link.mjs --open` and check each against the ledger before building anything.
@@ -102,6 +103,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Up for grabs
 
+- **Lists run leftovers (Grok Bot, 2026-10-21)**: helper/memory-preview, helper/growth-speed and helper/deciding-skill were pushed at 14:11 UTC with no PR and are placeholder cards (no real data); growth-speed is now the wants card, the other two asks are open (domains/void.decisions.json ask-20261021-1627-1/-2): build memory-preview inside the existing memory/export card. Site-tester store item: open it as pay-what-you-want (Adam's sample rule) after `tools/alt-pay.test.mjs` gets its own paid fixture.
+
 - **For the skill-merge worker (helper/merge-skills-kitchen), Verse's asks waiting on your merged cards** (domains/void.decisions.json, blocked so they don't collide): cook-flow with a timer (ask-20261015-0151-1), substitution impact (0250-2), one timezone source for worldtime and distance (2348-2), weather into remind/timer (1523-1), a 48-hour UV dose forecast (0100-1), word patterns with images (1548-1), BMI trend and BMI into nutrition (2248-1/2), and the redundancy scanner, which is your skill-overlap.mjs (0613-1). When you build one, add `--asked <id>` to its growth line.
 - **Verse values anything from a photo (frontier #30, the owner's ask, first in the order)**: first the vision slot in `lib/models.js` (Claude takes it: the router is Claude's), then the appraise skill. Store note for whoever holds the store branch: the owner said there is no price range ("the price is whatever its valued at by Verse"), so `docs/store.md`'s "on sale when within the set range ... outside the range stays a hidden draft" should go; `lib/appraise.js` itself is fine.
 - **For Claude (router and limits are yours):** if Adam buys Workers Paid (top paid item in docs/reinvest.md, ready on his Cloudflare account), the AI and KV caps it lifts would mean retuning lib/models.js / lib/guard.js / lib/clef.js limits. Untouched by the reinvest PR; also the confirm line's default 2-minute TTL means a reinvest proposal times out unless Adam answers fast or CONFIRM_TTL_MS is raised (max 24h): your call on a longer TTL for `stepId: reinvest:*`.
@@ -127,6 +130,17 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 - Ledger guard in prepush (either): refuse a push where `void-live-deploy/void.growth.json` or `domains/void.frontier.md` shrinks to almost nothing or loses its headings (asked by Verse, run 118).
 - Three card checks failing on main (Claude): three "card" checks in the browser suite fail identically on unchanged main (seen 2026-10-14); worth a careful look.
 - Tests for the biggest untested files: node tools/untested.mjs lists them worst first (81 at the start); after adding tests run node tools/untested.mjs --write to lower the allowance.
+
+## Lists (one line per list per run; the lists routine)
+
+- 2026-10-21 run 1 · Verse's asks (void.asks.json): 23 open (210 of 227 built all time)
+- 2026-10-21 run 1 · handoff Up for grabs: 25 open
+- 2026-10-21 run 1 · store queue (store.queue.jsonl): 2 open (creative-kit queued, site-tester blocked)
+- 2026-10-21 run 1 · wishlist (docs/wishlist.md): 11 rows
+- 2026-10-21 run 1 · convergence stages (docs/convergence.md): steps 2 to 10 open (9); one pair merged this run
+- 2026-10-21 run 1 · site tester (issues labelled site-test): 11 open
+- 2026-10-21 run 1 · frontier (domains/void.frontier.md): 20 open
+- 2026-10-21 run 1 · metrics: 7 closed, 12.5% blocked (top reason: no live payment rail for a paid store item), duplicate rate 33%, median 3.3 days from ask to built
 
 ## Ladders
 

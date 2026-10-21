@@ -289,5 +289,17 @@
   "ask-20261013-1808-1": {
     "decision": "built",
     "why": "built in part 2026-10-16: the status card now says what failed and what verify.yml does about it; a suggested patch per failing check is not written"
+  },
+  "ask-20261021-1627-2": {
+    "decision": "queued",
+    "why": "one ask in 6 wordings (memory-preview: a snippet of what an export holds before the download); the 5 rewordings are duplicates of this one. helper/memory-preview is a placeholder card with no real snippets, so it was not merged; build it inside the memory/export card that already exists (combine, don't add). Lists run 2026-10-21."
+  },
+  "ask-20261021-1627-1": {
+    "decision": "queued",
+    "why": "one ask in 3 wordings (scale the Deciding family's proven count); the 2 rewordings are duplicates. decision-matrix (2026-10-18) already joined Deciding; helper/deciding-skill is a placeholder and was not merged. Next: real benchmark asks for decide-cards, decision-matrix and triangulate. Lists run 2026-10-21."
+  },
+  "ask-20261021-1627-3": {
+    "decision": "built",
+    "why": "'growth speed' opens the wants card, whose want-to-skill meter is the growth-speed gauge (lists run 2026-10-21); helper/growth-speed's fixed 40% bar was not merged"
   }
 }

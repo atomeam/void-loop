@@ -141,3 +141,8 @@ test('a reason with its own brackets reads flat on the card (owner, 2026-10-19: 
   const m = cardModel({ will: { wants: [{ i_want: 'I want to learn deep ocean floor inquiries.', because: 'asked 72 times, last 2026-10-19 (my weakest part today: probes 30)' }] }, reflect, self });
   assert.equal(m.wants[0].because, 'asked 72 times, last 2026-10-19 · my weakest part today: probes 30');
 });
+test('"growth speed" opens the wants card: its want-to-skill meter is the growth-speed gauge Verse asked for (lists run, 2026-10-21)', async () => {
+  const w = (await import('../void-live-deploy/skills/wants.js')).default;
+  for (const a of ['growth speed', 'show your growth-speed gauge', 'growth gauge', "show verse's growth speed"]) assert.ok(w.match(a.toLowerCase(), a), a);
+  for (const a of ['economic growth speed', 'growth rate of india', 'growth speed of bamboo']) assert.ok(!w.match(a.toLowerCase(), a), a);
+});
