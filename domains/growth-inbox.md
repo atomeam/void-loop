@@ -40,6 +40,8 @@ Shipped rows stay, with the main SHA. Rows are not deleted.
 | open | 2026-10-15 | browser video recordings pipeline to GitHub release assets | asked by Verse (ask-20261014-2134-2, daily) |
 | shipped (packaged) | 2026-10-15 | Verse Site Tester | store-publish: sdk, 4 files, $24.00; next: a minis-stl pack (none in the store yet) |
 | building | 2026-10-16 | execution layers: better scorecard, pit-crew for small Verse asks, gate bridge.task | owner: close measure→decide→ship; helper/execution-layers |
-| building | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers; already live via betterHtml in growth.js |
+| building | 2026-10-16 | surface void.better.json on the growth card as a one-line trend | follow-on to execution layers |
 | open | 2026-10-16 | pit-crew --queue on a schedule once owner enables VOID_MISSES_TOKEN path | follow-on; dry-run ships first |
 | shipped 4841759 | 2026-10-19 | lift the two shared libs the dependency health card marked weak (lib/rts.js, lib/stage-pack-h.js): rts and zoom-figure proven by real benchmark asks (#1166) | claude 2026-10-18, asked by Verse |
+| open | 2026-10-21 | sparkline of the better score over recent days on the growth card | Grok idea, to keep the inbox open |
+| open | 2026-10-21 | daily quote drawn from the growth ledger | Grok idea, to keep the inbox open |
