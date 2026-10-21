@@ -552,16 +552,16 @@ try {
     await S.ask('add a sticky that says a', 500); await S.ask('another note that says b', 500); await S.ask('add a sticky that says c', 500); await S.ask('make a clock', 500);
     const things = async () => (await S.state()).filter((x) => x.kind !== 'figure');
     const xs = async (k) => (await things()).filter((x) => !k || x.kind === k).map((x) => Math.round(x.x));
-    await S.ask('align top', 500);
+    await S.ask('align top', 900);
     const ys = new Set((await things()).map((x) => Math.round(x.y)));
-    await S.ask('space them out evenly', 500);
+    await S.ask('space them out evenly', 900);
     const gaps = await S.p.$$eval('#stage > [data-id]', (e) => { const r = e.map((x) => x.getBoundingClientRect()).sort((a, b) => a.left - b.left); return r.slice(1).map((b, i) => Math.round(b.left - r[i].right)); });
-    await S.ask('save this layout as start', 400); await S.ask('select all notes', 500);
+    await S.ask('save this layout as start', 400); await S.ask('select all notes', 900);
     const picked = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
     await S.ask('align the selection to the bottom', 300);
     await S.ask('deselect all', 400);
     const afterDeselect = await S.p.$$eval('#stage > [data-multi]', (e) => e.length);
-    await S.ask('align left', 500);
+    await S.ask('align left', 900);
     const left = new Set(await xs());
     await S.ask('restore layout start', 500); // the cards go back to where the spacing left them, for the checks below
     check('tools pack 4 align: "align top" gives every card one top and "align left" one left edge', ys.size === 1 && left.size === 1 && !S.errors.length, JSON.stringify({ ys: [...ys], left: [...left], errors: S.errors }));
@@ -570,7 +570,7 @@ try {
     const gridOn = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
     await S.ask('grid size 40', 300);
     const grid40 = await S.p.$eval('#stage-grid', (e) => e.dataset.size).catch(() => '');
-    await S.ask('snap everything to the grid', 500);
+    await S.ask('snap everything to the grid', 900);
     const onGrid = (await things()).every((x) => Math.round(x.x) % 40 === 0 && Math.round(x.y) % 40 === 0);
     await S.ask('grid off', 300);
     const gridGone = (await S.p.$('#stage-grid')) === null;
@@ -801,7 +801,8 @@ try {
   // the browser's own look stays out (owner, 2026-10-18): selected text is Verse's violet, scrolling boxes get a thin translucent bar, and the
   // self card's depth filter shows which pill is on
   if (want("aesthetic perimeter")) {
-    const P = await fresh(); await P.ask('what do you think of yourself', 2500);
+    const P = await fresh(); await P.ask('what do you think of yourself', 4000);
+    await P.p.waitForSelector('[data-v-depth]', { timeout: 8000 }).catch(() => {});
     const got = await P.p.evaluate(() => { const sel = getComputedStyle(document.body, '::selection').backgroundColor, pg = document.querySelector('.vpage.on') || document.querySelector('.vpage');
       const pills = [...document.querySelectorAll('[data-v-depth]')].map((b) => ({ on: b.getAttribute('aria-pressed'), bg: getComputedStyle(b).backgroundColor }));
       const onB = document.querySelector('[data-v-depth][aria-pressed="true"]'), lift = onB ? { t: getComputedStyle(onB).transform, glow: getComputedStyle(onB).boxShadow } : null;

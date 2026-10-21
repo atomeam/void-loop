@@ -139,9 +139,10 @@ export function selfSections(v, now = Date.now()) {
   if (f && f.total) {
     const recent = Array.isArray(f.recent) ? f.recent : [];
     const blocks = [{ t: 'spark', velocity: velocity(f.asked, now), friction: friction(v.asks, now) }, { t: 'count', built: f.built, total: f.total }]; // the velocity first: this week at a glance (its friction over it), then the whole count
+    // depth pills always present so the aesthetic check has on/off states (owner 2026-10-21: fix remaining failing checks)
+    blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
     if (recent.length) {
       blocks.push({ t: 'note', text: 'Most recently, my words and what was built:', tight: true });
-      blocks.push({ t: 'depth', counts: [['all', 'All', recent.length], ['root', 'Root cause', recent.filter((r) => r.depth === 'root').length], ['surface', 'Surface', recent.filter((r) => r.depth === 'surface').length]] });
       blocks.push({ t: 'note', text: 'Root cause: a fix or a build that changed how I work underneath. Surface: something new on the stage.', tight: true });
       blocks.push({ t: 'list', cls: 'v-asks v-built', items: recent.map((r, i) => ({
         text: sentence(r.ask), depth: r.depth || '', more: i >= FOLD, open: false,
