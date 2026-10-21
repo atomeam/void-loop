@@ -5721,5 +5721,6 @@
   {"at": "2026-10-20T20:25:25Z", "by": "verse", "kind": "fix", "what": "Verse fixes its decision-matrix skill: learn to handle \"weighted matrix for hiring a designer\"", "try": "weighted matrix for hiring a designer"},
   {"at": "2026-10-20T21:15:01Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for oracle", "try": "ask the glitch oracle why is the sky blue"},
   {"at": "2026-10-20T21:35:15Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 2 benchmark ask(s) for spectral-review", "try": "spectral review"},
-  {"at": "2026-10-20T21:53:27Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable", "try": "something unkeepable"}
+  {"at": "2026-10-20T21:53:27Z", "by": "verse", "kind": "grow", "what": "Verse hardened itself: 1 benchmark ask(s) for unkeepable", "try": "something unkeepable"},
+  {"at": "2026-10-21T18:36:32Z", "by": "rides-live", "kind": "finding", "what": "rides tested against a live service, occasion 7: asked OSRM public demo router (router.project-osrm.org) for the drive from SFO to Union Square, San Francisco and got a route back, 21 min and 23.2 km, in 983 ms; attempt live, no key, no person in the loop (artifact findings/rides/2026-10-21T1836.json)", "ref": "https://github.com/atomeam/void-loop/blob/main/findings/rides/2026-10-21T1836.json"}
 ]
