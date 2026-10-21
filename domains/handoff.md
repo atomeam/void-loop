@@ -15,8 +15,8 @@ The owner, 2026-10-15: "Don't just stay out of each other's way ... build ladder
 
 ## Working on
 
-- opencode (Option 1) · helper/grow-self-closeout · the close-out gate for grow-self.yml: the gate’s brain (tools/grow-gate.mjs, tools/grow-self.state.json) is now in the repo, an open "made by Verse" pull request stops the run with exit 0, a list that cannot be read stops it too, the preview that is out is verified on the live site and closed before the next one starts, and tools/grow-self.test.mjs locks all of it · 2026-10-20 22:40 UTC
 
+- opencode (Option 1) · helper/grow-self-closeout · fix-the-rungs for LongCat’s ladder: CRLF-proof the grow-self.test.mjs split regexes (watchdog #1152 sibling), then fix the /api/filmfind 404 in skills/film-metadata.js so "film metadata for ikiru" fails gracefully instead of crashing the router · 2026-10-20 23:10 UTC
 - Claude (fly helper) · worktree-agent-a15d345f1755e8c3b · look around and fly around Verse (owner, 2026-10-18): a camera over the stage, skills/fly.js + lib/stage-camera.js, view only, nothing in void.html · 2026-10-18 01:40 UTC
 - Claude (this session) · claude/modest-lovelace-u962xp · Grok's builds onto the field-mind engine (owner, 2026-10-18: "all of groks builds should be what v01ds engine is built on"): four themes in flight (attention, NCA lattices, resonance, swarms and implicit fields), each one lib/field-<theme>.js with every draft a named variant citing its F-id, one card per theme; also the Art Director for the Art Forge and the displacement ripple · 2026-10-18 00:20 UTC
 - Claude (resonance helper) · worktree-agent-abe08e3d6012c89ea · Grok's sound drafts on the field engine, asked by Owner ("all of groks builds should be what v01ds engine is built on"): F-027, F-034, F-037, F-042, F-044, F-048 as variants of lib/field-resonance.js, one card skills/resonance-mind.js · 2026-10-18 00:40 UTC
