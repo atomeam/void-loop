@@ -221,7 +221,35 @@ export default [
    "README.txt",
    "steps.json"
   ],
-  "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)",
-  "wouldBe": "$24.00"
+  "wouldBe": "$24.00",
+  "openUntil": "a live paid rail (Gumroad listing, Stripe, Cash App tag or USDC wallet): then it goes back to $24 with a free sample (lists run 2, the sample rule)"
+ },
+ {
+  "id": "remix-kit",
+  "name": "Verse Remix Kit",
+  "cents": 0,
+  "kind": "download",
+  "pack": "templates",
+  "pwyw": true,
+  "files": [
+   {
+    "key": "store/remix-kit-v1.zip"
+   }
+  ],
+  "blurb": "Free sample: three 90 BPM stems synthesized by Verse (drums, bass, chord pad in A minor), 16 chord progressions and a 52-card lyric prompt deck. Loop, remix, make it yours.",
+  "license": "Personal use; prints and clips may be shared with credit to Verse (a-to-mind.com)",
+  "tier": "personal",
+  "origin": "v01d",
+  "status": "live",
+  "published": "2026-10-21",
+  "bytes": 5650231,
+  "contents": [
+   "README.txt",
+   "chord-progressions.txt",
+   "lyric-prompt-deck.txt",
+   "verse-bass-90bpm-am.wav",
+   "verse-chords-pad-90bpm-am.wav",
+   "verse-drums-90bpm.wav"
+  ]
  }
 ];

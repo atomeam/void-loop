@@ -155,9 +155,9 @@
    "kind": "family",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 0,
     "checked": 0,
-    "proven": 1
+    "proven": 3
    },
    "from": 313,
    "to": 316
@@ -2379,7 +2379,7 @@
     "weighted gpa A in AP, B+ honors, A-"
    ],
    "tier": "proven",
-   "why": "8 browser-suite mentions, 20 real asks in the benchmark",
+   "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
    "flavor": "Of the numbers and money; set down here after it answered true 20 times. So it is written.",
    "glow": 100,
    "n": 119
@@ -5764,8 +5764,9 @@
     "rank pizza, tacos, sushi",
     "weighted pros and cons for moving to Berlin"
    ],
-   "tier": "tested",
-   "why": "3 real asks in the benchmark",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "An old art of the deciding, tested each day before the sun is up. Let the stage be the proof.",
    "glow": 100,
    "n": 314
   },
@@ -5796,8 +5797,10 @@
     "triangulate: should I open source Verse",
     "three perspectives on moving to Berlin"
    ],
-   "tier": "tested",
-   "why": "a self-test",
+   "tier": "proven",
+   "why": "a self-test, 3 real asks in the benchmark",
+   "flavor": "Of all the deciding, this one is trusted enough to be taught.",
+   "glow": 100,
    "n": 316
   },
   {
@@ -6626,7 +6629,7 @@
     "swaps",
     "heart",
     "writing-aids",
-    "template-list",
+    "list-starters",
     "health-habits",
     "note-tools",
     "stage-image",
@@ -6785,7 +6788,6 @@
     "stakes-phase",
     "stale-work",
     "witness-claims",
-    "list-templates",
     "certainty-budget",
     "interrupt-priority",
     "stage-find",
@@ -7362,8 +7364,8 @@
     },
     {
      "rank": 93,
-     "name": "template-list",
-     "catches": "packing list for a beach trip"
+     "name": "list-starters",
+     "catches": "most skills can be combined"
     },
     {
      "rank": 94,
@@ -8317,28 +8319,28 @@
     },
     {
      "rank": 252,
-     "name": "list-templates",
-     "catches": "shopping list template"
-    },
-    {
-     "rank": 253,
      "name": "certainty-budget",
      "catches": "certainty budget"
     },
     {
-     "rank": 254,
+     "rank": 253,
      "name": "interrupt-priority",
      "catches": "set priority deep"
     },
     {
-     "rank": 255,
+     "rank": 254,
      "name": "stage-find",
      "catches": "search kept items for pizza"
     },
     {
-     "rank": 256,
+     "rank": 255,
      "name": "dismissed-pile",
      "catches": "show the undo pile"
+    },
+    {
+     "rank": 256,
+     "name": "bookmarks",
+     "catches": "favorite this"
     }
    ],
    "n": 396
@@ -8350,43 +8352,43 @@
    "rules": [
     {
      "rank": 257,
-     "name": "bookmarks",
-     "catches": "favorite this"
-    },
-    {
-     "rank": 258,
      "name": "stage-export",
      "catches": "export my stage as json"
     },
     {
-     "rank": 259,
+     "rank": 258,
      "name": "copy-stack",
      "catches": "show my clipboard stack"
     },
     {
-     "rank": 260,
+     "rank": 259,
      "name": "study-cards",
      "catches": "flashcards: hola = hello, gato = cat"
     },
     {
-     "rank": 261,
+     "rank": 260,
      "name": "dev-tools",
      "catches": "a"
     },
     {
-     "rank": 262,
+     "rank": 261,
      "name": "accessibility-modes",
      "catches": "dyslexia friendly font"
     },
     {
-     "rank": 263,
+     "rank": 262,
      "name": "about-skill",
      "catches": "play chess"
     },
     {
-     "rank": 264,
+     "rank": 263,
      "name": "backlog-digest",
      "catches": "digest your backlog"
+    },
+    {
+     "rank": 264,
+     "name": "calendar-file",
+     "catches": "export my calendar"
     }
    ],
    "n": 397
@@ -8394,35 +8396,30 @@
   {
    "kind": "rules",
    "chapter": "rules",
-   "title": "Rules CCLXV–CCLXX",
+   "title": "Rules CCLXV–CCLXIX",
    "rules": [
     {
      "rank": 265,
-     "name": "calendar-file",
-     "catches": "export my calendar"
-    },
-    {
-     "rank": 266,
      "name": "remediation-velocity",
      "catches": "how fast do you fix your misses"
     },
     {
-     "rank": 267,
+     "rank": 266,
      "name": "dependency-health",
      "catches": "dependency health"
     },
     {
-     "rank": 268,
+     "rank": 267,
      "name": "notebook",
      "catches": "daily note"
     },
     {
-     "rank": 269,
+     "rank": 268,
      "name": "terminal",
      "catches": "set a timer for 5 minutes"
     },
     {
-     "rank": 270,
+     "rank": 269,
      "name": "photos",
      "catches": "my photos"
     }

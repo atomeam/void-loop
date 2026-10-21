@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 28,
+  "tested": 26,
   "checked": 11,
-  "proven": 265
+  "proven": 267
  },
  "families": [
   {
@@ -1085,9 +1085,9 @@
     {
      "name": "grades",
      "tier": "proven",
-     "why": "8 browser-suite mentions, 20 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "why": "a self-test, 8 browser-suite mentions, 20 real asks in the benchmark",
+     "last_tested": "2026-10-21",
+     "last_tested_by": "its tests",
      "success_rate": 1,
      "streak": 4
     },
@@ -3238,19 +3238,19 @@
    "for": "ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards",
    "count": {
     "experiment": 0,
-    "tested": 2,
+    "tested": 0,
     "checked": 0,
-    "proven": 1
+    "proven": 3
    },
    "skills": [
     {
      "name": "decide-cards",
-     "tier": "tested",
-     "why": "3 real asks in the benchmark",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
+     "last_tested": "2026-10-21",
+     "last_tested_by": "its tests",
      "success_rate": 1,
-     "promoted": "2026-10-19",
+     "promoted": "2026-10-21",
      "streak": 3
     },
     {
@@ -3265,10 +3265,12 @@
     },
     {
      "name": "triangulate",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-21",
-     "last_tested_by": "its tests"
+     "last_tested_by": "its tests",
+     "success_rate": 1,
+     "promoted": "2026-10-21"
     }
    ]
   },

@@ -16,6 +16,8 @@ export const SKILL_NAMES = [...new Set([...skillNames, ...(familyList.families |
 
 /** Words for a skill id. Unknown ids still show, under their registry name. */
 const WHAT = {
+  'list-starters': 'ready-made lists: packing, chores, bills and guests, and starter templates for shopping, agendas and more',
+  languages: 'answer in Spanish and translate anything',
   part: 'named printable parts (Linemote-1 and the like)',
   figure: 'summoned figures on the stage',
   make: 'make an app from stage parts',
