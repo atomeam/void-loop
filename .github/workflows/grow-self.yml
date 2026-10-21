@@ -188,6 +188,11 @@ jobs:
             what="Verse looked and found nothing to add this cycle. Candidates tried: ${failed:-none}."
             printf '%s | verse | finding | %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$what" >> domains/void.agents.log.md
             node tools/grow.mjs finding "$what" --by verse || true
+            # the finding must leave this job or the ledger never sees it
+            git diff -- domains/void.agents.log.md void-live-deploy/void.growth.json > "$g/grow.patch" || true
+            echo "passed=1" >> "$GITHUB_OUTPUT"
+            echo "added=0" >> "$GITHUB_OUTPUT"
+            echo "title=nothing to add this cycle" >> "$GITHUB_OUTPUT"
             echo "::notice title=Nothing to add::none of the asks routed to their skill and the art floors did not move; the report lists them; a finding was written to the ledger"
             exit 0
           fi
