@@ -36,6 +36,7 @@ for (const [name, file] of [
   ['fringe', 'fringe.mjs'],
   ['telemetry-route', 'telemetry-route.test.mjs'],
   ['about-skill', 'about-skill.test.mjs'],
+  ['grades', 'grades.test.mjs'],
   ['wiped-files', 'wiped-files.test.mjs'],
   ['decision-matrix-narrow', 'decision-matrix-narrow.test.mjs'],
   ['match-history', 'match-history.test.mjs'],
