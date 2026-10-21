@@ -14,9 +14,9 @@
  "bench_at": "2026-10-17",
  "totals": {
   "experiment": 0,
-  "tested": 29,
-  "checked": 17,
-  "proven": 257
+  "tested": 28,
+  "checked": 11,
+  "proven": 265
  },
  "families": [
   {
@@ -25,9 +25,9 @@
    "for": "figures, 3D models, prints, drawings and parts",
    "count": {
     "experiment": 0,
-    "tested": 4,
-    "checked": 2,
-    "proven": 29
+    "tested": 3,
+    "checked": 1,
+    "proven": 31
    },
    "skills": [
     {
@@ -224,14 +224,15 @@
     },
     {
      "name": "shape",
-     "tier": "checked",
-     "why": "2 browser-suite mentions, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 4 real asks in the benchmark",
      "failing": [
       "draw a circle"
      ],
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
-     "success_rate": 0.5,
+     "success_rate": 0.75,
+     "promoted": "2026-10-21",
      "streak": 4
     },
     {
@@ -334,20 +335,22 @@
     },
     {
      "name": "swarm-mind",
+     "tier": "proven",
+     "why": "2 browser-suite mentions, 3 real asks in the benchmark",
+     "last_tested": "2026-10-20",
+     "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-21",
+     "streak": 3
+    },
+    {
+     "name": "veto-council",
      "tier": "checked",
      "why": "2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-20",
-     "streak": 3
-    },
-    {
-     "name": "veto-council",
-     "tier": "tested",
-     "why": "2 browser-suite mentions",
-     "last_tested": "2026-10-20",
-     "last_tested_by": "the daily smoke test",
+     "promoted": "2026-10-21",
      "streak": 3
     },
     {
@@ -461,7 +464,7 @@
     {
      "name": "monopoly",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -469,7 +472,7 @@
     {
      "name": "battleship",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 4 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1
@@ -913,7 +916,7 @@
     {
      "name": "work",
      "tier": "tested",
-     "why": "2 real asks in the benchmark",
+     "why": "4 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1275,9 +1278,9 @@
    "for": "definitions, translation, news, books, shows, videos and sport",
    "count": {
     "experiment": 0,
-    "tested": 8,
+    "tested": 7,
     "checked": 1,
-    "proven": 19
+    "proven": 20
    },
    "sources": {
     "read": 20,
@@ -1287,7 +1290,6 @@
     "points": 1.4,
     "one_live_from_proven": [
      "digest",
-     "video",
      "news",
      "joke",
      "book",
@@ -1295,7 +1297,7 @@
      "sport",
      "senolytic"
     ],
-    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 8 more proven: digest, video, news, joke, book, show and 2 more."
+    "words": "Source reliability: 20 skills answer from outside sources; 18 name the source on the card, 10 have a second source, 0 have a kept live answer from it (1.4 of 3 on average). One kept live answer each would make 7 more proven: digest, news, joke, book, show, sport and 1 more."
    },
    "skills": [
     {
@@ -1365,7 +1367,7 @@
     {
      "name": "pick-for-me",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1386,10 +1388,12 @@
     },
     {
      "name": "video",
-     "tier": "tested",
-     "why": "a self-test",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
+     "success_rate": 1,
+     "promoted": "2026-10-21",
      "streak": 4,
      "source": {
       "sites": [
@@ -1404,8 +1408,7 @@
       "second": true,
       "answered": false,
       "points": 1,
-      "next": "live",
-      "words": "source 1 of 3: archive.org, dailymotion.com, ducks.party and 3 more; not named on the card; a second source; no kept live answer yet. One kept live answer from archive.org would make it proven"
+      "words": "source 1 of 3: archive.org, dailymotion.com, ducks.party and 3 more; not named on the card; a second source; no kept live answer yet"
      }
     },
     {
@@ -1809,7 +1812,7 @@
     {
      "name": "rides",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 5 live findings, 2026-10-19",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark, 6 live findings, 2026-10-20",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -1854,8 +1857,8 @@
    "count": {
     "experiment": 0,
     "tested": 3,
-    "checked": 9,
-    "proven": 84
+    "checked": 6,
+    "proven": 87
    },
    "skills": [
     {
@@ -1936,12 +1939,12 @@
     },
     {
      "name": "collide",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-20",
+     "promoted": "2026-10-21",
      "streak": 4
     },
     {
@@ -2037,11 +2040,12 @@
     },
     {
      "name": "light-look",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 4 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
+     "promoted": "2026-10-21",
      "streak": 4
     },
     {
@@ -2167,7 +2171,7 @@
     {
      "name": "oracle",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2187,7 +2191,7 @@
     {
      "name": "unkeepable",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2286,12 +2290,12 @@
     },
     {
      "name": "forge-table",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-20",
+     "promoted": "2026-10-21",
      "streak": 3
     },
     {
@@ -2367,7 +2371,7 @@
     {
      "name": "spectral-review",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 4 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2397,7 +2401,7 @@
     {
      "name": "eigenwork",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2407,7 +2411,7 @@
     {
      "name": "homotopy-edit",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2487,7 +2491,7 @@
     {
      "name": "causal-scars",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2497,7 +2501,7 @@
     {
      "name": "counterfactual-draft",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2567,7 +2571,7 @@
     {
      "name": "hunting-question",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 2 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2677,7 +2681,7 @@
     {
      "name": "list-tools",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 1 real ask in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2757,7 +2761,7 @@
     {
      "name": "bookmarks",
      "tier": "proven",
-     "why": "a self-test, 1 browser-suite mention, 1 real ask in the benchmark",
+     "why": "a self-test, 1 browser-suite mention, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2817,8 +2821,8 @@
    "count": {
     "experiment": 0,
     "tested": 2,
-    "checked": 4,
-    "proven": 36
+    "checked": 2,
+    "proven": 38
    },
    "skills": [
     {
@@ -2833,12 +2837,12 @@
     },
     {
      "name": "backlog-digest",
-     "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-20",
+     "promoted": "2026-10-21",
      "streak": 3
     },
     {
@@ -2854,7 +2858,7 @@
     {
      "name": "guide",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 5 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -2935,12 +2939,12 @@
     },
     {
      "name": "state",
-     "tier": "checked",
-     "why": "a self-test, 2 real asks in the benchmark",
+     "tier": "proven",
+     "why": "a self-test, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
-     "promoted": "2026-10-20",
+     "promoted": "2026-10-21",
      "streak": 4
     },
     {
@@ -3144,7 +3148,7 @@
     {
      "name": "miss-jobs",
      "tier": "checked",
-     "why": "a self-test, 1 real ask in the benchmark",
+     "why": "a self-test, 2 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3164,7 +3168,7 @@
     {
      "name": "four-channels",
      "tier": "proven",
-     "why": "a self-test, 2 browser-suite mentions, 2 real asks in the benchmark",
+     "why": "a self-test, 2 browser-suite mentions, 3 real asks in the benchmark",
      "last_tested": "2026-10-20",
      "last_tested_by": "the daily smoke test",
      "success_rate": 1,
@@ -3234,7 +3238,7 @@
    "for": "ranked lists, pros and cons, votes, elimination, pairwise choices and sorting boards",
    "count": {
     "experiment": 0,
-    "tested": 1,
+    "tested": 2,
     "checked": 0,
     "proven": 1
    },
@@ -3258,6 +3262,13 @@
      "success_rate": 1,
      "promoted": "2026-10-18",
      "streak": 3
+    },
+    {
+     "name": "triangulate",
+     "tier": "tested",
+     "why": "a self-test",
+     "last_tested": "2026-10-21",
+     "last_tested_by": "its tests"
     }
    ]
   },
