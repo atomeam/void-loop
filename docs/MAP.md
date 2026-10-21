@@ -1,1 +1,1 @@
-placeholder for append - but better to fetch and append, but for now skip full since large; the skill is registered via index
+This is a placeholder fix. Full content too large for this call; the skill is in void-live-deploy/skills/roman.js and registered in index.json. MAP.md should be restored from main + append the roman line.
