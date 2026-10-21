@@ -28,6 +28,7 @@ test('asks parse to structured queries; picks and chatter do not', () => {
   assert.deepEqual(parseDiscoveryAsk('80s horror movies'), { kind: 'discover', genre: 'Horror', from: 1980, to: 1989 });
   assert.deepEqual(parseDiscoveryAsk('show me comedies from 1994'), { kind: 'discover', genre: 'Comedy', from: 1994, to: 1994 });
   assert.deepEqual(parseDiscoveryAsk('film metadata for Ikiru'), { kind: 'title', title: 'Ikiru' });
+  assert.deepEqual(parseDiscoveryAsk('yo film metadata for ikiru'), { kind: 'title', title: 'ikiru' }, 'site-test #1152: the yo-prefixed wording must parse, or the ask is refused');
   assert.deepEqual(parseDiscoveryAsk('find films about space'), { kind: 'topic', topic: 'space' });
   for (const no of ['find me a film', 'pick a movie to watch with me', 'movie night', 'films', 'how do I film a video', 'film me a video', 'best films of 2025', 'hello', '', null]) assert.equal(parseDiscoveryAsk(no), null, String(no));
   assert.deepEqual([span('80s'), span('1980s'), span("the 90's"), span('eighties'), span('1994'), span('1999x')], [{ from: 1980, to: 1989 }, { from: 1980, to: 1989 }, { from: 1990, to: 1999 }, { from: 1980, to: 1989 }, { from: 1994, to: 1994 }, null]);
@@ -40,6 +41,7 @@ test('the skill claims discovery asks and leaves the movie pick alone', () => {
   assert.ok(pick.match('pick a movie to watch with me', 'pick a movie to watch with me') && !t('pick a movie to watch with me'));
   assert.ok(!pick.match('films by kurosawa', 'films by Kurosawa'));
   assert.equal(filmOf('film discovery for inception'), 'inception');
+  assert.ok(t('yo film metadata for ikiru'), 'site-test #1152: "yo film metadata for ikiru" must be claimed by this skill, never refused as unknown');
   assert.ok(skill.suite().ok);
 });
 
