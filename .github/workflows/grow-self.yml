@@ -40,6 +40,7 @@ jobs:
       contents: read
       pull-requests: read # the one-preview-at-a-time gate reads the labels of open pull requests
     outputs:
+      open: ${{ steps.open.outputs.open }}
       passed: ${{ steps.settle.outputs.passed }}
       added: ${{ steps.settle.outputs.added }}
       skills: ${{ steps.settle.outputs.skills }}
@@ -54,7 +55,7 @@ jobs:
           node-version: 22
           cache: npm
       - name: Checks (no dependencies needed)
-        run: node --test tools/lacks.test.mjs
+        run: node --test tools/lacks.test.mjs tools/grow-gate.test.mjs tools/grow-self.test.mjs
 
       # Never pile up (owner, 2026-10-20: "close out before next preview starts"). The old guard read a "verse hardens"
       # label that nothing ever creates, so it passed on every run while the loop pushed preview after preview. This one
@@ -69,7 +70,11 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           echo "open=1" >> "$GITHUB_OUTPUT"
-          state=$(node tools/grow-gate.mjs status)
+          # a state that cannot be read is not "closed": the run waits for it (exit 0) instead of failing, and nothing starts
+          if ! state=$(node tools/grow-gate.mjs status); then
+            echo "::notice title=Waiting::the gate's state could not be read, so nothing new starts this cycle"
+            exit 0
+          fi
           echo "state=$state" >> "$GITHUB_OUTPUT"
           [ "$state" = "closed" ] || echo "::notice title=Closing first::the last preview is still open; this run verifies it live before it starts another"
           if ! prs=$(gh pr list --repo "${{ github.repository }}" --state open --json number,labels --jq '[.[] | select(any(.labels[]; .name == "made by Verse" or .name == "verse hardens"))] | length'); then
@@ -127,7 +132,11 @@ jobs:
           echo "blocked=0" >> "$GITHUB_OUTPUT"
           if [ "$(node tools/grow-gate.mjs status)" != "open" ]; then echo "no preview is waiting"; exit 0; fi
           ask=$(node tools/grow-gate.mjs try)
-          [ -n "$ask" ] || { echo "::error title=No ask to close::the open preview has no ask, so it cannot be verified"; exit 1; }
+          if [ -z "$ask" ]; then
+            echo "blocked=1" >> "$GITHUB_OUTPUT"
+            echo "::notice title=Waiting::the open preview names no ask, so it cannot be verified; close it by hand (node tools/grow-gate.mjs close --proof \"...\")"
+            exit 0
+          fi
           echo "previous preview: $ask"
           regex=$(node -e 'const s = process.argv[1]; console.log(s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"))' "$ask")
           if VOID_SITE=https://a-to-mind.com VOID_CLAIMS_ONLY="^${regex}$" node tools/claims-verify.mjs --live --check; then
@@ -210,7 +219,7 @@ jobs:
   # runs one script from main that only reads a list of plain asks (each is checked again for shape before it is queued).
   queue-gaps:
     needs: build
-    if: always() && needs.build.result == 'success' && !inputs.dry
+    if: always() && needs.build.result == 'success' && needs.build.outputs.open == '0' && !inputs.dry
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:

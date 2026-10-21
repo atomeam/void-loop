@@ -51,3 +51,27 @@ test('the gate stops the run itself: an open preview pull request ends the job w
   assert.ok(gate.indexOf('exit 0') < gate.indexOf('echo "open=0"'), '"open=0" is written only after every stop has been passed');
   assert.match(y, /if: steps\.open\.outputs\.open == '0'/, 'the rest of the job only runs when the gate is clear');
 });
+
+test("the gate waits, it never fails the run: every stop is an exit 0", () => {
+  const gate = y.slice(y.indexOf('- name: One preview at a time'), y.indexOf('- name: Think it up'));
+  const close = y.slice(y.indexOf('- name: Close out the previous preview'), y.indexOf('- name: Sync void.html copies'));
+  assert.ok(gate && close, 'the gate and the close-out steps exist');
+  assert.doesNotMatch(gate, /exit 1/, 'a preview that is open is a wait, not a failed run');
+  assert.doesNotMatch(close, /exit 1/, 'a preview that does not answer is a wait, not a failed run');
+  // a state that cannot be read blocks the run instead of breaking it
+  assert.match(gate, /if ! state=\$\(node tools\/grow-gate\.mjs status\)/);
+  assert.match(gate, /the gate.s state could not be read, so nothing new starts this cycle/);
+  // the preview that names no ask waits too, and says how to close it by hand
+  assert.match(close, /blocked=1/);
+  assert.match(close, /close it by hand/);
+});
+
+test("the work, the queueing and the tests of the gate all wait for the gate", () => {
+  // the gate's verdict is a job output, so a job that writes or queues can wait for it
+  assert.match(y, /open: \$\{\{ steps\.open\.outputs\.open \}\}/);
+  assert.match(y, /needs\.build\.outputs\.open == '0'/);
+  // the gate's own checks run inside the workflow, so a broken gate is caught before it can stack anything
+  const checks = y.slice(y.indexOf('- name: Checks (no dependencies needed)'), y.indexOf('- name: One preview at a time'));
+  assert.ok(checks.includes('tools/grow-gate.test.mjs'), 'the gate has its own test in the workflow');
+  assert.ok(checks.includes('tools/grow-self.test.mjs'), 'the gate step is locked by a test in the workflow');
+});
