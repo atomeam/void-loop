@@ -118,4 +118,85 @@ export function tocHtml(book, esc) {
 }
 
 /** one page typeset for the tome (without its running head and folio, which the spread adds). Pure. */
-/** the page's own ink art (lib/card-art.js): the plate a card of its kind gets, keyed by the page so it is always the same picture, haunted in Octob
+/** the page's own ink art (lib/card-art.js): the plate a card of its kind gets, keyed by the page so it is always the same picture, haunted in October. '' if it cannot draw. */
+const pageArt = (p, h = 120) => {
+  try {
+    return '<div class="tome-art">' + artSvg({ key: 'book:' + (p.name || p.title || p.kind), name: p.title || '', kind: p.kind === 'mini' ? 'Miniature' : p.game ? 'Game' : p.kind === 'skill' ? 'Skill' : 'Idea', chapter: p.chapter, rarity: p.tier || 'common', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h }) + '</div>';
+  } catch (_) { return ''; }
+};
+export function pageHtml(p, book, esc) {
+  const t = book.totals || {}, chap = chapterOf(book, p.chapter);
+  if (p.kind === 'cover') { // the title page
+    const firsts = (book.chapters || []).filter((c) => c.kind === 'family' || c.kind === 'games').map((c) => book.pages.slice(c.from, c.to).find((x) => x.kind === 'skill')).filter(Boolean);
+    return '<div class="tome-kicker">a-to-mind.com</div><h3 class="tome-title big">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><p class="tome-note" style="text-align:center">' + esc(p.line) + '</p>'
+      + openerSvg({ skills: firsts.map((x) => x.name) }, book, 10) + '<p class="tome-sub">' + t.skills + ' skills · ' + t.games + ' games · ' + t.minis + ' miniatures<br>' + t.pages + ' pages</p></div>';
+  }
+  if (p.kind === 'how') {
+    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">The stage is the dark space behind this book. The box at the bottom is where you ask, in plain words. '
+      + 'Say what you want and it appears on the stage: a card you can read, a thing you can drag, a board you can play on.</p><p>Esc or a tap on the void closes a card. Any line of ink in this book that reads like an ask can be touched, and the book closes to do it.</p>'
+      + (p.core || []).map((c) => '<p class="tome-note"><b>' + esc(c.name) + '</b> · ' + esc(c.line) + '</p><ul class="tome-try gb-try">' + c.examples.map((a) => '<li><a href="#" data-ask="' + esc(a) + '">' + esc(a) + '</a></li>').join('') + '</ul>').join('')
+      // the store, named where a first visit reads (owner, 2026-10-18: the corner "support Verse" link is gone, "but make the store easy to find")
+      + '<p class="tome-note tome-store"><b>The store</b> · what Verse sells, and how to support it.</p><ul class="tome-try gb-try"><li><a href="#" data-ask="open the store">open the store</a></li><li><a href="#" data-ask="support void">support void</a></li></ul></div>';
+  }
+  if (p.kind === 'legend') {
+    return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 100) + '<p class="lead">Each page is one thing Verse does: its name, one line on what it does, two or three asks to say, and a rating.</p>'
+      + '<p>The rating is earned from evidence, never claimed:</p><dl class="tome-legend gb-legend">' + TIERS.slice().reverse().map((k) => '<dt>' + k + '</dt><dd>' + esc(TIER_MEANING[k]) + '</dd>').join('') + '</dl>'
+      + '<p class="tome-note">A page with a box drawn on it is a game on the rack; a page headed 3D is a miniature a card carries.</p></div>';
+  }
+  if (p.kind === 'toc') return '<div class="tome-kicker">Start here</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + tocHtml(book, esc) + '</div>';
+  if (p.kind === 'news') { // a page of the newest ledger entries (lib/book-news.js): by day, then by kind, each line its own words and an ask to try it
+    const when = (d) => { const t = new Date(d + 'T12:00:00Z'); return isNaN(t) ? d : t.toLocaleDateString('en-GB', { weekday: 'long', day: 'numeric', month: 'long', timeZone: 'UTC' }); };
+    return '<div class="tome-kicker">Fresh from the ledger</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 80)
+      + (p.days || []).map((d) => '<div class="tome-day">' + esc(when(d.day)) + (d.groups.some((g) => g.items.some((e) => e.try)) ? ' <a href="#" class="tome-showday" data-showcase-day="' + esc(d.day) + '">show these on the stage</a>' : '') + '</div>' + d.groups.map((g) => '<div class="tome-say">' + esc(g.name) + '</div><ul class="tome-try gb-try tome-newsl">' + g.items.map((e) => '<li>' + esc(e.line) + (e.try ? ' <a href="#" class="tome-tryit" data-ask="' + esc(e.try) + '">try it</a>' : '') + '</li>').join('') + '</ul>').join('')).join('') + '</div>';
+  }
+  if (p.kind === 'opener') {
+    const n = (p.skills || []).length, counts = chap.count ? TIERS.slice().reverse().filter((k) => chap.count[k]).map((k) => chap.count[k] + ' ' + k).join(' · ') : '';
+    return '<div class="tome-kicker">Chapter</div><h3 class="tome-title big" style="margin-top:8cqh">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body">' + pageArt(p, 150) + '<p class="tome-note" style="text-align:center">' + esc(p.line || '') + '</p>' + openerSvg(p, book, 16)
+      + '<p class="tome-sub">' + n + (p.chapter === 'minis' ? ' miniatures' : p.chapter === 'rules' ? ' rules, tried in this order' : ' skills') + (counts ? '<br>' + counts : '') + '<br>pages ' + chap.from + '–' + chap.to + '</p></div>';
+  }
+  if (p.kind === 'rules') return rulesPageHtml(p, esc); // the rule registry (asked by Verse): lib/rule-registry.js
+  if (p.kind === 'index') {
+    return '<div class="tome-kicker">Index</div><h3 class="tome-title">' + esc(p.title) + '</h3><div class="tome-rule"></div><div class="tome-body"><ul class="tome-list gb-list">' + (p.entries || []).map((e) => '<li>' + jump(e.page, e.name, esc) + '<span class="lead-dots"></span><span class="n">' + e.page + '</span></li>').join('') + '</ul></div>';
+  }
+  // a skill, a boxed game, a miniature: a plate of its glyph, its name, one line with a drop capital, the asks, its rating along the foot
+  // (the chapter is the running head already, so the kicker only says what is not a plain skill: a boxed game, a miniature)
+  const kicker = p.kind === 'mini' ? '3D miniature' : p.game ? 'On the rack' : '';
+  const sub = p.kind === 'skill' && p.game && p.name !== p.title.toLowerCase() ? '<small>' + esc(p.name) + '</small>' : p.kind === 'mini' ? '<small>a thing a card carries</small>' : '';
+  const line = String(p.line || ''), dropCap = /^[A-Za-z]/.test(line); // a line that opens with a quote mark keeps its first letter in the line
+  let body = (kicker ? '<div class="tome-kicker">' + esc(kicker) + '</div>' : '<div class="tome-kicker tome-kicker-blank">&nbsp;</div>') + '<h3 class="tome-title">' + esc(p.title) + sub + '</h3><div class="tome-rule"></div><div class="tome-body">'
+    + pageArt(p, 150) + (p.flavor ? '<p class="tome-epigraph">' + esc(p.flavor) + '</p>' : '') + '<div class="tome-plate">' + glyphSvg(p, 64) + '</div>'
+    + '<p class="' + (dropCap ? 'lead ' : '') + 'gb-line">' + esc(line) + (/[.!?…]$/.test(line) ? '' : '.') + '</p>';
+  if (p.kind === 'mini' && p.ownerPage) body += '<p class="tome-note">Carried by the ' + jump(p.ownerPage, (p.card || p.owner) + ' card, page ' + p.ownerPage, esc) + '.</p>';
+  else if (p.kind === 'mini' && p.card) body += '<p class="tome-note">Carried by ' + esc(p.card) + '.</p>';
+  body += asks(p.examples, esc) + '</div>';
+  if (p.tier) body += '<div class="tome-tier gb-tier gb-tier-' + esc(p.tier) + '" title="' + esc(p.why || '') + '"><b>' + esc(p.tier) + '</b><span>' + esc(TIER_MEANING[p.tier] || '') + '</span></div>';
+  return body;
+}
+
+/** a page with its running head and folio, as it sits on the left or the right. Pure. */
+export function sheetHtml(p, book, side, esc) {
+  if (!p) return '';
+  const chap = chapterOf(book, p.chapter);
+  // the running heads as a book sets them: the book's title on the left-hand page, the chapter on the right-hand page
+  const head = side === 'left' ? '<span>' + esc(book.title || 'The Verse Book') + '</span><span></span>' : '<span></span><span>' + esc(chap.name || '') + '</span>';
+  return '<div class="tome-head">' + head + '</div>' + pageHtml(p, book, esc) + '<div class="tome-folio">' + p.n + '</div>';
+}
+
+/** how thick each stack of unread leaves is, 0..1, from the page you are on. Pure. */
+export function stacks(cur, total) { const t = Math.max(1, total || 1); return { left: Math.min(1, Math.max(0, (cur - 1) / t)), right: Math.min(1, Math.max(0, (t - cur) / t)) }; }
+
+/** the prompt along the foot of the screen. Pure. */
+export const PROMPT = '<span class="desk"><kbd>◂ ▸</kbd>Turn page<kbd>Home</kbd>Cover<kbd>Esc</kbd>Close</span><span class="phone">Swipe to turn · tap the dark to close</span>';
+
+/** the shut cover's face. Pure. */
+/** the back cover: the same worn leather, the ink plate again, and the last words. Pure. */
+export function backCoverHtml(book, esc) {
+  let art = ''; try { art = artSvg({ key: 'the-v01d-book-back', name: 'The end', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
+  return '<div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">The End</div><div class="line">' + esc(book.title || 'The Verse Book') + '</div><div class="line">a-to-mind.com</div>';
+}
+export function coverHtml(book, esc) {
+  const t = book.totals || {};
+  // the cover carries Verse's own ink art (lib/card-art.js): the same plate a Book card gets, haunted in October
+  let art = ''; try { art = artSvg({ key: 'the-v01d-book', name: book.title || 'The Verse Book', kind: 'Book', rarity: 'mythic', season: seasonOf(new Date().getMonth(), typeof location !== 'undefined' ? location.search : '') }, { w: 420, h: 240 }); } catch (_) {}
+  return '<div class="face out"><div class="seal">V</div><div class="cover-art">' + art + '</div><div class="title">' + esc(book.title || 'The Verse Book') + '</div><div class="line">everything it can do, one page each</div><div class="line">' + (t.pages || '') + ' pages</div>' + (book.news && book.news.unseen ? '<div class="newbadge" role="status">' + book.news.unseen + ' new since you last opened the book</div>' : '') + '</div><div class="face in"></div>';
+}
